@@ -29,14 +29,10 @@ import {
   handleAddOrUpdate,
   handleOption,
   handleRemoveById,
-  updateDataByParam,
+  updateDataByParam
 } from '@/services/BusinessCrud';
-import {
-  API_CONSTANTS,
-  PROTABLE_OPTIONS_PUBLIC,
-  STATUS_ENUM,
-  STATUS_MAPPING,
-} from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { YES_OR_NO_ENUM } from '@/types/Public/constants';
 import { Cluster } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
@@ -114,7 +110,7 @@ export default () => {
   const handleChangeEnable = async (record: Partial<Cluster.Instance>) => {
     await executeAndCallback(async () => {
       await updateDataByParam(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, {
-        id: record.id,
+        id: record.id
       });
     });
   };
@@ -124,11 +120,7 @@ export default () => {
    */
   const handleHeartBeat = async () => {
     await executeAndCallback(async () => {
-      await handleOption(
-        API_CONSTANTS.CLUSTER_INSTANCE_HEARTBEATS,
-        l('rc.ci.heartbeat'),
-        null,
-      );
+      await handleOption(API_CONSTANTS.CLUSTER_INSTANCE_HEARTBEATS, l('rc.ci.heartbeat'), null);
     });
   };
 
@@ -148,50 +140,50 @@ export default () => {
     {
       title: l('rc.ci.name'),
       dataIndex: 'name',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('rc.ci.alias'),
       dataIndex: 'alias',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('rc.ci.type'),
       dataIndex: 'type',
       hideInSearch: true,
-      width: '8%',
+      width: '8%'
     },
     {
       title: l('rc.ci.jma'),
       dataIndex: 'jobManagerHost',
       copyable: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('rc.ci.ar'),
       dataIndex: 'autoRegisters',
       hideInSearch: true,
       width: '8%',
-      valueEnum: YES_OR_NO_ENUM,
+      valueEnum: YES_OR_NO_ENUM
     },
     {
       title: l('rc.ci.version'),
       dataIndex: 'version',
       hideInSearch: true,
-      width: '5%',
+      width: '5%'
     },
     {
       title: l('rc.ci.status'),
       dataIndex: 'status',
       hideInSearch: true,
       width: '8%',
-      valueEnum: CLUSTER_INSTANCE_STATUS_ENUM,
+      valueEnum: CLUSTER_INSTANCE_STATUS_ENUM
     },
     {
       title: l('global.table.note'),
       dataIndex: 'note',
       width: '5%',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('global.table.isEnable'),
@@ -209,19 +201,19 @@ export default () => {
             onChange={() => handleChangeEnable(record)}
           />
         );
-      },
+      }
     },
     {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
       hideInSearch: true,
-      hideInTable: true,
+      hideInTable: true
     },
     {
       title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       hideInSearch: true,
-      hideInTable: true,
+      hideInTable: true
     },
     {
       title: l('global.table.operate'),
@@ -229,18 +221,15 @@ export default () => {
       valueType: 'option',
       width: '8vw',
       render: (_: any, record: Cluster.Instance) => [
-        <EditBtn
-          key={`${record.id}_edit`}
-          onClick={() => handleEdit(record)}
-        />,
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />,
         <PopconfirmDeleteBtn
           key={`${record.id}_delete`}
           onClick={() => handleDelete(record.id)}
           description={l('rc.ci.deleteConfirm')}
         />,
-        renderWebUiRedirect(record),
-      ],
-    },
+        renderWebUiRedirect(record)
+      ]
+    }
   ];
 
   /**
@@ -265,7 +254,7 @@ export default () => {
       <Button key={'recycle_btn'} type={'primary'} icon={<ClearOutlined />}>
         {l('button.recycle')}
       </Button>
-    </Popconfirm>,
+    </Popconfirm>
   ];
 
   /**
@@ -284,7 +273,7 @@ export default () => {
           queryList(API_CONSTANTS.CLUSTER_INSTANCE, {
             ...params,
             sorter,
-            filter,
+            filter
           })
         }
       />

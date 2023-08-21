@@ -19,5 +19,5 @@ const Console: React.FC = (props: any) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   height: Studio.bottomContainer.height,
-  console: Studio.bottomContainerContent.console,
+  console: Studio.bottomContainerContent.console
 }))(Console);

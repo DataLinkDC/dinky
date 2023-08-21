@@ -24,19 +24,12 @@ import {
   renderJDSmsForm,
   renderTencentSmsForm,
   renderUniSmsForm,
-  renderYunpianSmsForm,
+  renderYunpianSmsForm
 } from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/function';
-import {
-  MANU_FACTURERS,
-  SMS_TYPE,
-} from '@/pages/RegCenter/Alert/AlertInstance/constans';
+import { MANU_FACTURERS, SMS_TYPE } from '@/pages/RegCenter/Alert/AlertInstance/constans';
 import { SWITCH_OPTIONS } from '@/services/constants';
 import { l } from '@/utils/intl';
-import {
-  ProForm,
-  ProFormSelect,
-  ProFormSwitch,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
 import { useCallback } from 'react';
 
 const Sms = (props: any) => {
@@ -69,7 +62,7 @@ const Sms = (props: any) => {
           return undefined;
       }
     },
-    [values.manufacturers],
+    [values.manufacturers]
   );
 
   /**
@@ -79,20 +72,14 @@ const Sms = (props: any) => {
     <>
       <ProForm.Group>
         <ProFormSelect
-          name="manufacturers"
+          name='manufacturers'
           label={l('rc.ai.manufacturers')}
           width={'md'}
           options={MANU_FACTURERS}
-          rules={[
-            { required: true, message: l('rc.ai.manufacturersPleaseHolder') },
-          ]}
+          rules={[{ required: true, message: l('rc.ai.manufacturersPleaseHolder') }]}
           placeholder={l('rc.ai.manufacturersPleaseHolder')}
         />
-        <ProFormSwitch
-          name="enabled"
-          label={l('global.table.isEnable')}
-          {...SWITCH_OPTIONS()}
-        />
+        <ProFormSwitch name='enabled' label={l('global.table.isEnable')} {...SWITCH_OPTIONS()} />
       </ProForm.Group>
 
       <ProForm.Group>{renderFormBySmsType(values.manufacturers)}</ProForm.Group>

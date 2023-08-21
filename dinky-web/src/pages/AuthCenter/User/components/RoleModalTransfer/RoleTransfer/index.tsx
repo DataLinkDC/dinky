@@ -18,14 +18,16 @@
 
 import TableTransfer from '@/components/TableTransfer';
 import { getData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { InitRoleTransferState } from '@/types/AuthCenter/init.d';
+import { RoleTransferState } from '@/types/AuthCenter/state.d';
 import { l } from '@/utils/intl';
 import { ProColumns } from '@ant-design/pro-components';
 import { useEffect, useState } from 'react';
 
 type TransferFromProps = {
-  user: Partial<UserBaseInfo.Role>;
+  role: Partial<UserBaseInfo.Role>;
   onChange: (values: string[]) => void;
 };
 
@@ -33,35 +35,33 @@ const RoleTransfer = (props: TransferFromProps) => {
   /**
    * status
    */
-  const { user, onChange: handleChange } = props;
-  const [targetKeys, setTargetKeys] = useState<string[]>([]);
-  const [roleTableList, setRoleTableList] = useState<UserBaseInfo.Role[]>([]);
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const { role, onChange: handleChange } = props;
+
+  const [roleTransferState, setRoleTransferState] =
+    useState<RoleTransferState>(InitRoleTransferState);
 
   /**
    * select change
    * @param sourceSelectedKeys
    * @param targetSelectedKeys
    */
-  const onSelectChange = (
-    sourceSelectedKeys: string[],
-    targetSelectedKeys: string[],
-  ) => {
+  const onSelectChange = (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
     const newSelectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys];
-    setSelectedKeys(newSelectedKeys);
+    setRoleTransferState((prevState) => ({ ...prevState, selectedKeys: newSelectedKeys }));
   };
 
   /**
    * get data
    */
   useEffect(() => {
-    getData(API_CONSTANTS.GET_ROLES_BY_USERID, { id: user.id }).then(
-      (result) => {
-        setRoleTableList(result.datas.roles);
-        setTargetKeys(result.datas.roleIds);
-        handleChange(result.datas.roleIds);
-      },
-    );
+    getData(API_CONSTANTS.GET_ROLES_BY_USERID, { id: role.id }).then((result) => {
+      setRoleTransferState((prevState) => ({
+        ...prevState,
+        roleList: result.datas.roles,
+        targetKeys: result.datas.roleIds
+      }));
+      handleChange(result.datas.roleIds);
+    });
   }, []);
 
   /**
@@ -70,17 +70,17 @@ const RoleTransfer = (props: TransferFromProps) => {
   const columns: ProColumns<UserBaseInfo.Role>[] = [
     {
       dataIndex: 'roleCode',
-      title: l('role.roleCode'),
+      title: l('role.roleCode')
     },
     {
       dataIndex: 'roleName',
-      title: l('role.roleName'),
+      title: l('role.roleName')
     },
     {
       dataIndex: 'note',
       title: l('global.table.note'),
-      ellipsis: true,
-    },
+      ellipsis: true
+    }
   ];
 
   /**
@@ -88,7 +88,7 @@ const RoleTransfer = (props: TransferFromProps) => {
    * @param nextTargetKeys
    */
   const onChange = (nextTargetKeys: string[]) => {
-    setTargetKeys(nextTargetKeys);
+    setRoleTransferState((prevState) => ({ ...prevState, targetKeys: nextTargetKeys }));
     handleChange(nextTargetKeys);
   };
 
@@ -98,17 +98,16 @@ const RoleTransfer = (props: TransferFromProps) => {
   return (
     <>
       <TableTransfer
-        dataSource={roleTableList}
-        targetKeys={targetKeys}
-        selectedKeys={selectedKeys}
+        dataSource={roleTransferState.roleList}
+        targetKeys={roleTransferState.targetKeys}
+        selectedKeys={roleTransferState.selectedKeys}
         rowKey={(item) => item.id}
         onChange={onChange}
         onSelectChange={onSelectChange}
         filterOption={(inputValue, item: UserBaseInfo.Role) => {
           if (!item.roleCode || !item.roleName) return false;
           return (
-            item.roleCode.toLowerCase().indexOf(inputValue.toLowerCase()) !==
-              -1 ||
+            item.roleCode.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1 ||
             item.roleName.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
           );
         }}

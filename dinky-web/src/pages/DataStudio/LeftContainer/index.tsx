@@ -17,13 +17,8 @@
  *
  */
 
-import {
-  CircleBtn,
-  CircleButtonProps,
-} from '@/components/CallBackButton/CircleBtn';
-import MovableSidebar, {
-  MovableSidebarProps,
-} from '@/components/Sidebar/MovableSidebar';
+import { CircleBtn, CircleButtonProps } from '@/components/CallBackButton/CircleBtn';
+import MovableSidebar, { MovableSidebarProps } from '@/components/Sidebar/MovableSidebar';
 import useThemeValue from '@/hooks/useThemeValue';
 import ProjectTitle from '@/pages/DataStudio/LeftContainer/Project/ProjectTitle';
 import { StateType, STUDIO_MODEL, VIEW } from '@/pages/DataStudio/model';
@@ -36,12 +31,10 @@ export type LeftContainerProps = {
   size: number;
 };
 const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
-  const { dispatch, size, toolContentHeight, leftContainer, rightContainer } =
-    props;
+  const { dispatch, size, toolContentHeight, leftContainer, rightContainer } = props;
   const themeValue = useThemeValue();
 
-  const MAX_WIDTH =
-    size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700;
+  const MAX_WIDTH = size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700;
   /**
    * 侧边栏大小变化
    * @param width
@@ -49,7 +42,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
   const handleReSizeChange = (width: any) => {
     dispatch({
       type: STUDIO_MODEL.updateLeftWidth,
-      payload: width,
+      payload: width
     });
   };
 
@@ -59,7 +52,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
   const handleMinimize = () => {
     dispatch({
       type: STUDIO_MODEL.updateSelectLeftKey,
-      payload: '',
+      payload: ''
     });
   };
 
@@ -88,23 +81,14 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
     enable: { right: true },
     btnGroup: BtnRoute[leftContainer.selectKey]
       ? BtnRoute[leftContainer.selectKey].map((item: CircleButtonProps) => (
-          <CircleBtn
-            title={item.title}
-            icon={item.icon}
-            onClick={item.onClick}
-            key={item.title}
-          />
+          <CircleBtn title={item.title} icon={item.icon} onClick={item.onClick} key={item.title} />
         ))
       : [],
-    style: { borderInlineEnd: '1px solid ' + themeValue.borderColor },
+    style: { borderInlineEnd: '1px solid ' + themeValue.borderColor }
   };
 
   const content = (
-    <Tabs
-      activeKey={leftContainer.selectKey}
-      items={LeftSide}
-      tabBarStyle={{ display: 'none' }}
-    />
+    <Tabs activeKey={leftContainer.selectKey} items={LeftSide} tabBarStyle={{ display: 'none' }} />
   );
 
   return (
@@ -118,5 +102,5 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   leftContainer: Studio.leftContainer,
   rightContainer: Studio.rightContainer,
-  toolContentHeight: Studio.toolContentHeight,
+  toolContentHeight: Studio.toolContentHeight
 }))(LeftContainer);

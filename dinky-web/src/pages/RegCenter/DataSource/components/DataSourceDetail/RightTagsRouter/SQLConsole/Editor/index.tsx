@@ -25,7 +25,7 @@ import React, { memo } from 'react';
 const CodeEditProps = {
   height: '26vh',
   lineNumbers: 'on',
-  language: 'sql',
+  language: 'sql'
   // autoRange: true, // todo: 使用此配置项,后续可以自动识别光标位置,根据;分割,得到 sql 片段区间, 在左侧自动添加 执行按钮 和 区间选中效果, 规划内,暂未实现
 };
 
@@ -42,7 +42,7 @@ const Editor: React.FC<EditorProps> = (props) => {
   return (
     <>
       <Row>
-        <Col flex="auto">
+        <Col flex='auto'>
           <StartButton>
             <PlayCircleOutlined
               title={l('rc.ds.console.exec')}
@@ -53,7 +53,7 @@ const Editor: React.FC<EditorProps> = (props) => {
           </StartButton>
           <CodeEdit
             {...CodeEditProps}
-            onChange={handleInputChange}
+            onChange={(value) => handleInputChange(value ?? '')}
             code={inputValue}
           />
         </Col>

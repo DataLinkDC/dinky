@@ -23,25 +23,26 @@ import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDelet
 import { PermissionsModal } from '@/pages/AuthCenter/RowPermissions/components/PermissionsModal';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
-import { API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
-import { RowPermissions } from '@/types/User/data';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { RowPermissions } from '@/types/AuthCenter/data.d';
+import { InitRowPermissionsState } from '@/types/AuthCenter/init.d';
+import { RowPermissionsState } from '@/types/AuthCenter/state.d';
 import { getTenantByLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
 
 const PermissionsProTable: React.FC = () => {
-  const [formValues, setFormValues] = useState<Partial<RowPermissions>>({});
-  const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [rowPermissions, setRowPermissions] =
+    useState<RowPermissionsState>(InitRowPermissionsState);
+
   const actionRef = useRef<ActionType>();
 
   const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
-    setLoading(true);
+    setRowPermissions((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setLoading(false);
+    setRowPermissions((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
@@ -51,7 +52,6 @@ const PermissionsProTable: React.FC = () => {
    */
   const handleDeleteSubmit = async (id: number) => {
     await executeAndCallbackRefresh(async () => {
-      // TODO: DELETE role interface is use /api/rowPermissions/delete  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/rowPermissions (rowPermissions)
       await handleRemoveById(API_CONSTANTS.ROW_PERMISSIONS_DELETE, id);
     });
   };
@@ -62,11 +62,15 @@ const PermissionsProTable: React.FC = () => {
    */
   const handleAddOrUpdateSubmit = async (value: any) => {
     await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(API_CONSTANTS.ROW_PERMISSIONS, {
-        ...value,
-        tenantId: getTenantByLocalStorage(),
-      });
-      handleModalVisible(false);
+      await handleAddOrUpdate(
+        API_CONSTANTS.ROW_PERMISSIONS,
+        {
+          ...value,
+          tenantId: getTenantByLocalStorage()
+        },
+        () => {},
+        () => setRowPermissions((prevState) => ({ ...prevState, addedRowPermissionsOpen: false }))
+      );
     });
   };
 
@@ -75,16 +79,22 @@ const PermissionsProTable: React.FC = () => {
    * @param record
    */
   const handleEditVisible = (record: Partial<RowPermissions>) => {
-    setFormValues(record);
-    handleUpdateModalVisible(true);
+    setRowPermissions((prevState) => ({
+      ...prevState,
+      value: record,
+      editRowPermissionsOpen: false
+    }));
   };
 
   /**
    * cancel
    */
   const handleCancel = () => {
-    handleModalVisible(false);
-    handleUpdateModalVisible(false);
+    setRowPermissions((prevState) => ({
+      ...prevState,
+      addedRowPermissionsOpen: false,
+      editRowPermissionsOpen: false
+    }));
   };
 
   /**
@@ -94,37 +104,37 @@ const PermissionsProTable: React.FC = () => {
   const columns: ProColumns<RowPermissions>[] = [
     {
       title: l('role.roleCode'),
-      dataIndex: 'roleCode',
+      dataIndex: 'roleCode'
     },
     {
       title: l('role.roleName'),
-      dataIndex: 'roleName',
+      dataIndex: 'roleName'
     },
     {
       title: l('rowPermissions.tableName'),
       dataIndex: 'tableName',
-      copyable: true,
+      copyable: true
     },
 
     {
       title: l('rowPermissions.expression'),
       dataIndex: 'expression',
       ellipsis: true,
-      copyable: true,
+      copyable: true
     },
     {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
       hideInSearch: true,
       sorter: true,
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       hideInSearch: true,
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.operate'),
@@ -132,17 +142,14 @@ const PermissionsProTable: React.FC = () => {
       valueType: 'option',
       width: '10vh',
       render: (_: any, record: RowPermissions) => [
-        <EditBtn
-          key={`${record.id}_edit`}
-          onClick={() => handleEditVisible(record)}
-        />,
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />,
         <PopconfirmDeleteBtn
           key={`${record.id}_delete`}
           onClick={() => handleDeleteSubmit(record.id)}
           description={l('rowPermissions.deleteConfirm')}
-        />,
-      ],
-    },
+        />
+      ]
+    }
   ];
 
   /**
@@ -154,18 +161,20 @@ const PermissionsProTable: React.FC = () => {
         {...PROTABLE_OPTIONS_PUBLIC}
         headerTitle={l('rowPermissions.management')}
         actionRef={actionRef}
-        loading={loading}
+        loading={rowPermissions.loading}
         toolBarRender={() => [
           <CreateBtn
-            key="createBtn"
-            onClick={() => handleModalVisible(true)}
-          />,
+            key='createBtn'
+            onClick={() =>
+              setRowPermissions((prevState) => ({ ...prevState, addedRowPermissionsOpen: true }))
+            }
+          />
         ]}
         request={(params: any, sorter: any, filter: any) =>
           queryList(API_CONSTANTS.ROW_PERMISSIONS, {
             ...params,
             sorter,
-            filter,
+            filter
           })
         }
         columns={columns}
@@ -175,7 +184,7 @@ const PermissionsProTable: React.FC = () => {
       <PermissionsModal
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={modalVisible}
+        modalVisible={rowPermissions.addedRowPermissionsOpen}
         values={{}}
       />
 
@@ -183,8 +192,8 @@ const PermissionsProTable: React.FC = () => {
       <PermissionsModal
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={updateModalVisible}
-        values={formValues}
+        modalVisible={rowPermissions.editRowPermissionsOpen}
+        values={rowPermissions.value}
       />
     </>
   );

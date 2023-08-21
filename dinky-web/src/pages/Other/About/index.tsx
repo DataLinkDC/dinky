@@ -27,29 +27,29 @@ export const AlertRestProps = {
   showIcon: true,
   style: {
     margin: -12,
-    marginBottom: 24,
-  },
+    marginBottom: 24
+  }
 };
 
 export const ImageRestProps = {
   height: 300,
-  width: 250,
+  width: 250
 };
 
 export const TypographyRestProps = {
   ellipsis: true,
   strong: true,
   style: {
-    marginRight: '2vw',
-  },
+    marginRight: '2vw'
+  }
 };
 
 const About: React.FC = () => {
   return (
     <>
       <PageContainer title={false}>
-        <ProCard ghost split="vertical">
-          <ProCard wrap ghost colSpan="55%">
+        <ProCard ghost split='vertical'>
+          <ProCard wrap ghost colSpan='55%'>
             <ProCard>
               <QRCode />
             </ProCard>

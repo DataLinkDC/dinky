@@ -43,21 +43,18 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
     contentHeight,
     handlerMinimize,
     handlerMaxsize,
-    tagList,
+    tagList
   } = props;
   const [showBtn, setShowBtn] = useState(false);
 
   return (
-    <div
-      onMouseEnter={() => setShowBtn(true)}
-      onMouseLeave={() => setShowBtn(false)}
-    >
+    <div onMouseEnter={() => setShowBtn(true)} onMouseLeave={() => setShowBtn(false)}>
       <Resizable
         className={'container'}
         style={{
           ...style,
           display: visible ? 'block' : 'none',
-          borderRadius: 5,
+          borderRadius: 5
         }}
         onResize={onResize}
         defaultSize={defaultSize}
@@ -92,7 +89,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
           <div
             style={{
               backgroundColor: token.colorBgBase,
-              borderBlockColor: themeValue.borderColor,
+              borderBlockColor: themeValue.borderColor
             }}
             className={'container-header'}
           >
@@ -100,10 +97,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
             <div className={showBtn ? 'show' : 'hide'}>
               <Space size={5}>
                 {props.btnGroup}
-                <CircleBtn
-                  onClick={props.handlerMinimize}
-                  icon={<MinusOutlined />}
-                />
+                <CircleBtn onClick={props.handlerMinimize} icon={<MinusOutlined />} />
               </Space>
             </div>
           </div>
@@ -111,7 +105,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
             style={{
               height: contentHeight,
               backgroundColor: token.colorBgBase,
-              overflow: 'auto',
+              overflow: 'auto'
             }}
           >
             {children}

@@ -22,19 +22,14 @@ import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import { SWITCH_OPTIONS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import {
-  ProForm,
-  ProFormDigit,
-  ProFormGroup,
-  ProFormSwitch,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormDigit, ProFormGroup, ProFormSwitch } from '@ant-design/pro-components';
 import { useForm } from 'antd/es/form/Form';
 import { connect } from 'umi';
 
 const ExecuteConfig = (props: any) => {
   const {
     dispatch,
-    tabs: { panes, activeKey },
+    tabs: { panes, activeKey }
   } = props;
   const [form] = useForm();
   const current = getCurrentData(panes, activeKey);
@@ -51,7 +46,7 @@ const ExecuteConfig = (props: any) => {
     }
     dispatch({
       type: STUDIO_MODEL.saveTabs,
-      payload: { ...props.tabs },
+      payload: { ...props.tabs }
     });
   };
 
@@ -59,31 +54,31 @@ const ExecuteConfig = (props: any) => {
     <>
       <ProForm
         initialValues={{
-          maxRowNum: 100,
+          maxRowNum: 100
         }}
         style={{ padding: '10px' }}
         form={form}
         submitter={false}
-        layout="vertical"
+        layout='vertical'
         onValuesChange={onValuesChange}
       >
         <ProFormGroup>
           <ProFormSwitch
             label={l('pages.datastudio.label.execConfig.preview.result')}
-            name="useResult"
+            name='useResult'
             tooltip={{
               title: l('pages.datastudio.label.execConfig.preview.result.tip'),
-              icon: <InfoCircleOutlined />,
+              icon: <InfoCircleOutlined />
             }}
             {...SWITCH_OPTIONS()}
           />
 
           <ProFormSwitch
             label={l('pages.datastudio.label.execConfig.changelog')}
-            name="useChangeLog"
+            name='useChangeLog'
             tooltip={{
               title: l('pages.datastudio.label.execConfig.changelog.tip'),
-              icon: <InfoCircleOutlined />,
+              icon: <InfoCircleOutlined />
             }}
             {...SWITCH_OPTIONS()}
           />
@@ -91,17 +86,17 @@ const ExecuteConfig = (props: any) => {
         <ProFormGroup>
           <ProFormSwitch
             label={l('pages.datastudio.label.execConfig.autostop')}
-            name="useAutoCancel"
+            name='useAutoCancel'
             tooltip={{
               title: l('pages.datastudio.label.execConfig.autostop.tip'),
-              icon: <InfoCircleOutlined />,
+              icon: <InfoCircleOutlined />
             }}
             {...SWITCH_OPTIONS()}
           />
           <ProFormDigit
             width={'xs'}
             label={l('pages.datastudio.label.execConfig.maxrow')}
-            name="maxRowNum"
+            name='maxRowNum'
             tooltip={l('pages.datastudio.label.execConfig.maxrow.tip')}
             min={1}
             max={9999}
@@ -113,5 +108,5 @@ const ExecuteConfig = (props: any) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs,
+  tabs: Studio.tabs
 }))(ExecuteConfig);

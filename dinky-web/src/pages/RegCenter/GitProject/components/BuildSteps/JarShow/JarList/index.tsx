@@ -18,7 +18,7 @@
  */
 
 import { handleOption } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { BuildJarList } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { ProList } from '@ant-design/pro-components';
@@ -67,17 +67,17 @@ const JarList: React.FC<JarListProps> = (props) => {
             color={record.orderLine > 3 ? 'default' : 'success'}
           >{`No.${record.orderLine}`}</Tag>
         );
-      },
+      }
     },
     {
       dataIndex: 'index',
-      valueType: 'indexBorder',
+      valueType: 'indexBorder'
     },
     {
       title: l('rc.gp.ucl.jarPath'),
       dataIndex: 'jarPath',
-      copyable: true,
-    },
+      copyable: true
+    }
   ];
 
   /**
@@ -90,12 +90,12 @@ const JarList: React.FC<JarListProps> = (props) => {
       <>
         <ProList
           dataSource={record.classList as any[]}
-          rowKey="index"
+          rowKey='index'
           size={'small'}
           pagination={{
             pageSize: 5,
             hideOnSinglePage: true,
-            showSizeChanger: false,
+            showSizeChanger: false
           }}
           renderItem={(item, index) => {
             return (
@@ -116,17 +116,14 @@ const JarList: React.FC<JarListProps> = (props) => {
    */
   const handleDragSortEnd = async (newDataSource: BuildJarList[]) => {
     setLoading(true);
-    const updatedItems = newDataSource.map(
-      (item: BuildJarList, index: number) => ({
-        ...item,
-        orderLine: index + 1,
-      }),
-    );
-    await handleOption(
-      API_CONSTANTS.GIT_DRAGEND_SORT_JAR,
-      l('rc.gp.ucl.jarOrder'),
-      { projectId, jars: updatedItems },
-    );
+    const updatedItems = newDataSource.map((item: BuildJarList, index: number) => ({
+      ...item,
+      orderLine: index + 1
+    }));
+    await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_JAR, l('rc.gp.ucl.jarOrder'), {
+      projectId,
+      jars: updatedItems
+    });
     setClasses(updatedItems);
     setLoading(false);
     actionRef.current?.reload();
@@ -141,7 +138,7 @@ const JarList: React.FC<JarListProps> = (props) => {
         style={{
           overflowY: 'auto',
           msOverflowY: 'hidden',
-          marginLeft: '0.5vw',
+          marginLeft: '0.5vw'
         }}
         columns={columns}
         toolBarRender={false}
@@ -151,15 +148,15 @@ const JarList: React.FC<JarListProps> = (props) => {
         loading={loading}
         dataSource={classes as BuildJarList[]}
         search={false}
-        rowKey="orderLine"
+        rowKey='orderLine'
         revalidateOnFocus
         pagination={{
           defaultPageSize: 5,
-          hideOnSinglePage: true,
+          hideOnSinglePage: true
         }}
         expandable={{
           expandRowByClick: false,
-          expandedRowRender: (record) => renderUdf(record),
+          expandedRowRender: (record) => renderUdf(record)
         }}
         dragSortKey={'orderLine'}
         onDragSortEnd={handleDragSortEnd}

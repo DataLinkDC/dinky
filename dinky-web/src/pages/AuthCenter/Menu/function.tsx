@@ -17,7 +17,7 @@
  *
  */
 
-import { SysMenu } from '@/types/RegCenter/data';
+import { SysMenu } from '@/types/AuthCenter/data';
 import { searchTreeNode } from '@/utils/function';
 import { l } from '@/utils/intl';
 import * as Icons from '@ant-design/icons';
@@ -44,20 +44,12 @@ const renderMenuType = (menuType: string) => {
 
 const renderTitle = (value: SysMenu) => (
   <Space>
-    {value.perms && (
-      <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.perms}</span>
-    )}
+    {value.perms && <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.perms}</span>}
     {value.type && (
-      <span style={{ color: 'grey' }}>
-        &nbsp;&nbsp;&nbsp;{renderMenuType(value.type)}
-      </span>
+      <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{renderMenuType(value.type)}</span>
     )}
-    {value.note && (
-      <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.note}</span>
-    )}
-    {value.path && (
-      <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.path}</span>
-    )}
+    {value.note && <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.note}</span>}
+    {value.path && <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.path}</span>}
   </Space>
 );
 
@@ -67,18 +59,25 @@ export const sortTreeData = (treeData: SysMenu[]): SysMenu[] => {
     .sort((a, b) => a.orderNum - b.orderNum)
     .map((item) => ({
       ...item,
-      children: item.children ? sortTreeData(item.children) : [],
+      children: item.children ? sortTreeData(item.children) : []
     }));
 };
 
 /**
- * 规则
- * level 1 -> 100000 平级下新增 获取当前级别最大的 + 100000 下级新增 获取当前级别最大的 + 10000
- *        level 2 -> 110000 平级下新增 获取当前级别最大的 + 10000 下级新增 获取当前级别最大的 + 1000
- *           level 3 -> 111000 平级下新增 获取当前级别最大的 + 1000 下级新增 获取当前级别最大的 + 100
- *             level 4 -> 111100 平级下新增 获取当前级别最大的 + 100 下级新增 获取当前级别最大的 + 10
- *                 level 5 -> 111110 平级下新增 获取当前级别最大的 + 10 下级新增 获取当前级别最大的 + 1
+ * 递归获取 tree 下的最大的 orderNum ,
  */
+export const getMaxOrderNumToNextOrderNum = (tree: SysMenu[]): number => {
+  let maxOrderNum = 0;
+  tree.forEach((item) => {
+    if (item.orderNum > maxOrderNum) {
+      maxOrderNum = item.orderNum;
+    }
+    if (item.children) {
+      maxOrderNum = Math.max(maxOrderNum, getMaxOrderNumToNextOrderNum(item.children));
+    }
+  });
+  return maxOrderNum;
+};
 
 /**
  * build menu tree
@@ -88,40 +87,12 @@ export const sortTreeData = (treeData: SysMenu[]): SysMenu[] => {
  * @param nextOrderNum
  * @returns {any}
  */
-export const buildMenuTree = (
-  data: SysMenu[],
-  searchValue: string = '',
-  level = 1,
-  nextOrderNum = 0,
-): any =>
+export const buildMenuTree = (data: SysMenu[], searchValue: string = '', level = 1): any =>
   data
     .filter(
-      (sysMenu: SysMenu) =>
-        sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1,
+      (sysMenu: SysMenu) => sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
     )
     .map((item: SysMenu) => {
-      // 获取第一级别的 orderNum 的长度
-      const levelOrderNumLength = data.pop()?.orderNum.toString().length ?? 0;
-
-      let increment = 0;
-      if (level <= levelOrderNumLength - 1) {
-        // 获取当前级别最大的 orderNum
-        increment = Math.pow(10, levelOrderNumLength - 1 - level);
-      }
-
-      // 获取当前级别最大的 orderNum
-      let maxChildOrderNum =
-        item.children?.length > 0
-          ? Math.max(...item.children.map((item) => item.orderNum))
-          : item.orderNum;
-
-      // 更新当前级别最大的 orderNum
-      const updatedNextOrderNum = nextOrderNum + increment;
-      // 计算差值
-      const diff = maxChildOrderNum - updatedNextOrderNum;
-      // 更新最大的 orderNum 为下级的 orderNum
-      const lastUpdatedNextOrderNum = updatedNextOrderNum + diff + increment;
-
       return {
         isLeaf: !item.children || item.children.length === 0,
         name: item.name,
@@ -130,7 +101,6 @@ export const buildMenuTree = (
         icon: <IconRender icon={item.icon} />,
         content: item.note,
         path: item.path,
-        nextOrderNum: lastUpdatedNextOrderNum,
         orderNum: item.orderNum,
         level: level,
         value: item.id,
@@ -143,12 +113,7 @@ export const buildMenuTree = (
         ),
         fullInfo: item,
         key: item.id,
-        children: buildMenuTree(
-          item.children,
-          searchValue,
-          level + 1,
-          updatedNextOrderNum,
-        ),
+        children: buildMenuTree(item.children, searchValue, level + 1)
       };
     });
 
@@ -159,12 +124,11 @@ export const buildMenuTree = (
 export const buildMenuFormTree = (
   data: SysMenu[],
   searchValue: string = '',
-  filterButton = false,
+  filterButton = false
 ): any =>
   data
     .filter(
-      (sysMenu: SysMenu) =>
-        sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1,
+      (sysMenu: SysMenu) => sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
     )
     .filter((sysMenu: SysMenu) => (filterButton ? sysMenu.type !== 'F' : false))
     .map((item: SysMenu) => {
@@ -187,6 +151,6 @@ export const buildMenuFormTree = (
         ),
         fullInfo: item,
         key: item.id,
-        children: buildMenuFormTree(item.children, searchValue, filterButton),
+        children: buildMenuFormTree(item.children, searchValue, filterButton)
       };
     });

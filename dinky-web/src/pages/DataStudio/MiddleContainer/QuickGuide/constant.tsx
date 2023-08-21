@@ -23,51 +23,51 @@ export const QUICK_GUIDE = [
   {
     key: 'clusterInstance',
     label: l('datastudio.middle.qg.clusterInstance'),
-    link: '/registration/cluster/instance',
+    link: '/registration/cluster/instance'
   },
   {
     key: 'clusterConfiguration',
     label: l('datastudio.middle.qg.clusterConfiguration'),
-    link: '/registration/cluster/configuration',
+    link: '/registration/cluster/configuration'
   },
   {
     key: 'database',
     label: l('datastudio.middle.qg.database'),
-    link: '/registration/database',
+    link: '/registration/database'
   },
   {
     key: 'alertInstance',
     label: l('datastudio.middle.qg.alertInstance'),
-    link: '/registration/alert/instance',
+    link: '/registration/alert/instance'
   },
   {
     key: 'alertGroup',
     label: l('datastudio.middle.qg.alertGroup'),
-    link: '/registration/alert/group',
+    link: '/registration/alert/group'
   },
   {
     key: 'fragment',
     label: l('datastudio.middle.qg.fragment'),
-    link: '/registration/fragment',
+    link: '/registration/fragment'
   },
   {
     key: 'document',
     label: l('datastudio.middle.qg.document'),
-    link: '/registration/document',
+    link: '/registration/document'
   },
   {
     key: 'gitprojects',
     label: l('datastudio.middle.qg.gitprojects'),
-    link: '/registration/gitprojects',
+    link: '/registration/gitprojects'
   },
   {
     key: 'udf',
     label: l('datastudio.middle.qg.udf'),
-    link: '/registration/udf',
+    link: '/registration/udf'
   },
   {
     key: 'resource',
     label: l('datastudio.middle.qg.resource'),
-    link: '/registration/resource',
-  },
+    link: '/registration/resource'
+  }
 ];

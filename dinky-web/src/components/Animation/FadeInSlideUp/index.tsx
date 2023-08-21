@@ -26,7 +26,7 @@ const FadeInSlideUp = (props: any) => {
   const style = useSpring({
     from: { opacity: 0, transform: 'translateY(100px)' },
     to: { opacity: 1, transform: 'translateY(0)' },
-    config: { duration: 1000 },
+    config: { duration: 1000 }
   });
 
   return <animated.div style={style}>{children}</animated.div>;

@@ -20,9 +20,7 @@ import { API } from './services/data';
 /**
  * @see https://umijs.org/zh-CN/plugins/plugin-access
  * */
-export default function access(
-  initialState: { currentUser?: API.CurrentUser } | undefined,
-) {
+export default function access(initialState: { currentUser?: API.CurrentUser } | undefined) {
   const { currentUser } = initialState ?? {};
   return {
     canAdmin: currentUser && currentUser.user.superAdminFlag,
@@ -35,8 +33,8 @@ export default function access(
       //TODOpath可以是window.location.href、key
 
       return currentUser?.menuList?.some?.(
-        (item) => item?.path?.startsWith(path) || item?.path?.endsWith(path),
+        (item) => item?.path?.startsWith(path) || item?.path?.endsWith(path)
       );
-    },
+    }
   };
 }

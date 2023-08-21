@@ -1,6 +1,6 @@
 import { MetricsLayout } from '@/pages/Metrics/Job/data';
 import { putDataAsArray, queryList } from '@/services/api';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 
 /**
  * 获取 运行的 flink任务 列表
@@ -11,7 +11,7 @@ export async function getFlinkRunTask() {
     filter: {},
     currentPage: 1,
     status: 'RUNNING',
-    sorter: { id: 'descend' },
+    sorter: { id: 'descend' }
   });
 }
 

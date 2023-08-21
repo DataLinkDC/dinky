@@ -36,11 +36,11 @@ const CheckPoints = (props: JobProps) => {
       </ProCard>
       <br />
       <ProCard>
-        <Tabs defaultActiveKey="history" size="small">
-          <TabPane tab={'History'} key="history">
+        <Tabs defaultActiveKey='history' size='small'>
+          <TabPane tab={'History'} key='history'>
             <CheckpointTable jobDetail={jobDetail} />
           </TabPane>
-          <TabPane tab={'SavePoint'} key="savepoint">
+          <TabPane tab={'SavePoint'} key='savepoint'>
             <SavepointTable jobDetail={jobDetail} />
           </TabPane>
         </Tabs>

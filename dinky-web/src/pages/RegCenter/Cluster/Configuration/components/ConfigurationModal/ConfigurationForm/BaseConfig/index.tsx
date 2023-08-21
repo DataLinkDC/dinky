@@ -24,7 +24,7 @@ import {
   ProFormGroup,
   ProFormSelect,
   ProFormSwitch,
-  ProFormText,
+  ProFormText
 } from '@ant-design/pro-components';
 import { Divider } from 'antd';
 import React from 'react';
@@ -33,31 +33,31 @@ const BaseConfig: React.FC = () => {
     <>
       <Divider>{l('rc.cc.baseConfig')}</Divider>
       <ProFormGroup>
-        <ProFormDigit name="id" hidden={true} />
+        <ProFormDigit name='id' hidden={true} />
         <ProFormSelect
-          name="type"
+          name='type'
           label={l('rc.cc.type')}
-          width="md"
+          width='md'
           options={CLUSTER_CONFIG_TYPE}
           rules={[{ required: true, message: l('rc.cc.typePlaceholder') }]}
           placeholder={l('rc.cc.typePlaceholder')}
         />
         <ProFormText
-          name="name"
+          name='name'
           label={l('rc.cc.name')}
-          width="md"
+          width='md'
           rules={[{ required: true, message: l('rc.cc.namePlaceholder') }]}
           placeholder={l('rc.cc.namePlaceholder')}
         />
 
         <ProFormText
-          name="note"
+          name='note'
           label={l('global.table.note')}
-          width="lg"
+          width='lg'
           placeholder={l('global.table.notePlaceholder')}
         />
         <ProFormSwitch
-          name="enabled"
+          name='enabled'
           label={l('global.table.isEnable')}
           initialValue={false}
           checkedChildren={l('button.enable')}

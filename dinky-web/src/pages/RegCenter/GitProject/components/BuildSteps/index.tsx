@@ -20,12 +20,12 @@
 import { AutoSteps } from '@/pages/RegCenter/GitProject/components/BuildSteps/AutoSteps';
 import {
   JavaSteps,
-  PythonSteps,
+  PythonSteps
 } from '@/pages/RegCenter/GitProject/components/BuildSteps/constants';
 import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
 import { renderStatus } from '@/pages/RegCenter/GitProject/function';
 import { getSseData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { GitProject } from '@/types/RegCenter/data';
 import { Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -66,9 +66,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     }
     // 这里不要代理。sse使用代理会变成同步
     // const eventSource = new EventSource("http://127.0.0.1:8888" + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
-    const eventSource = getSseData(
-      API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + '?id=' + values.id,
-    );
+    const eventSource = getSseData(API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + '?id=' + values.id);
 
     let stepArray: BuildStepsState[] = []; // 步骤数组
     let globalCurrentStep: number = 0;
@@ -116,7 +114,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
                   }
                   setCurrentStep(item.step);
                 }
-              },
+              }
             };
           });
           globalCurrentStep = currentStep;
@@ -144,9 +142,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
             stepArray[currentStep - 1].status = renderStatus(status);
           }
           if ((status === 2 && currentStep === stepNum) || status === 0) {
-            stepArray
-              .filter((x) => x.status != 'wait')
-              .forEach((d) => (d.disabled = false));
+            stepArray.filter((x) => x.status != 'wait').forEach((d) => (d.disabled = false));
             finish = true;
             eventSource.close();
             return;

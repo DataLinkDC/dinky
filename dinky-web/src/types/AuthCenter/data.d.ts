@@ -1,21 +1,37 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *   Licensed to the Apache Software Foundation (ASF) under one or more
+ *   contributor license agreements.  See the NOTICE file distributed with
+ *   this work for additional information regarding copyright ownership.
+ *   The ASF licenses this file to You under the Apache License, Version 2.0
+ *   (the "License"); you may not use this file except in compliance with
+ *   the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
  */
 
-import { ExcludeNameAndEnableColumns } from '@/types/Public/data';
+import { BaseBeanColumns, ExcludeNameAndEnableColumns } from '@/types/Public/data';
+
+export type SysMenu = BaseBeanColumns & {
+  parentId: number; // 父级
+  orderNum: number; // 排序
+  path: string; // 路由
+  component: string; // 组件
+  type: string; // C菜单 F按钮 M目录
+  display: boolean; // 菜单状态(0显示 1隐藏)
+  perms: string; // 权限标识
+  icon: string; // 图标
+  rootMenu: boolean;
+  note: string;
+  children: SysMenu[];
+};
 
 declare namespace UserBaseInfo {
   export type User = ExcludeNameAndEnableColumns & {

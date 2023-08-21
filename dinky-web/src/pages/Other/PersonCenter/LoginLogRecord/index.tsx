@@ -19,8 +19,8 @@
 
 import { renderTimeLineItems } from '@/pages/Other/PersonCenter/LoginLogRecord/function';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
-import { LoginLog } from '@/types/User/data';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { LoginLog } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { Button, Card, Spin, Timeline } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -37,14 +37,12 @@ const LoginLogRecord: React.FC<LoginLogRecordProps> = (props) => {
   const queryLoginLog = useCallback(
     async (id: number) => {
       setRefresh(true);
-      await queryDataByParams(`${API_CONSTANTS.LOGIN_RECORD}/${id}`).then(
-        (res) => {
-          setLoginRecord(res);
-          setRefresh(false);
-        },
-      );
+      await queryDataByParams(`${API_CONSTANTS.LOGIN_RECORD}/${id}`).then((res) => {
+        setLoginRecord(res);
+        setRefresh(false);
+      });
     },
-    [userId],
+    [userId]
   );
 
   useEffect(() => {
@@ -55,19 +53,11 @@ const LoginLogRecord: React.FC<LoginLogRecordProps> = (props) => {
     <>
       <Card
         bordered={false}
-        extra={
-          <Button onClick={() => queryLoginLog(userId)}>
-            {l('button.refresh')}
-          </Button>
-        }
-        size="small"
+        extra={<Button onClick={() => queryLoginLog(userId)}>{l('button.refresh')}</Button>}
+        size='small'
       >
         <Spin spinning={refresh}>
-          <Timeline
-            mode={'alternate'}
-            reverse
-            items={renderTimeLineItems(loginRecord)}
-          />
+          <Timeline mode={'alternate'} reverse items={renderTimeLineItems(loginRecord)} />
         </Spin>
       </Card>
     </>

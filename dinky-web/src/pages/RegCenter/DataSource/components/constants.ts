@@ -27,56 +27,56 @@ export const DATA_SOURCE_TYPE_OPTIONS = [
     options: [
       {
         label: 'MySQL',
-        value: 'MySQL',
+        value: 'MySQL'
       },
       {
         label: 'Oracle',
-        value: 'Oracle',
+        value: 'Oracle'
       },
       {
         label: 'PostgreSQL',
-        value: 'PostgreSQL',
+        value: 'PostgreSQL'
       },
       {
         label: 'SQLServer',
-        value: 'SQLServer',
+        value: 'SQLServer'
       },
       {
         label: 'Phoenix',
-        value: 'Phoenix',
-      },
-    ],
+        value: 'Phoenix'
+      }
+    ]
   },
   {
     label: 'OLAP',
     options: [
       {
         label: 'ClickHouse',
-        value: 'ClickHouse',
+        value: 'ClickHouse'
       },
       {
         label: 'Doris',
-        value: 'Doris',
+        value: 'Doris'
       },
       {
         label: 'StarRocks',
-        value: 'StarRocks',
+        value: 'StarRocks'
       },
       {
         label: 'Presto',
-        value: 'Presto',
-      },
-    ],
+        value: 'Presto'
+      }
+    ]
   },
   {
     label: 'DataWarehouse/DataLake',
     options: [
       {
         label: 'Hive',
-        value: 'Hive',
-      },
-    ],
-  },
+        value: 'Hive'
+      }
+    ]
+  }
 ];
 
 /**
@@ -86,28 +86,28 @@ export const GROUP_TYPE = [
   {
     key: 'source',
     value: 'source',
-    label: l('rc.ds.source'),
+    label: l('rc.ds.source')
   },
   {
     key: 'warehouse',
     value: 'warehouse',
-    label: l('rc.ds.warehouse'),
+    label: l('rc.ds.warehouse')
   },
   {
     key: 'application',
     value: 'application',
-    label: l('rc.ds.application'),
+    label: l('rc.ds.application')
   },
   {
     key: 'backup',
     value: 'backup',
-    label: l('rc.ds.backup'),
+    label: l('rc.ds.backup')
   },
   {
     key: 'other',
     value: 'other',
-    label: l('rc.ds.other'),
-  },
+    label: l('rc.ds.other')
+  }
 ];
 
 /**
@@ -117,53 +117,53 @@ export const AUTO_COMPLETE_TYPE = [
   {
     key: 'mysql',
     value: 'jdbc:mysql://localhost:3306/dinky?useSSL=false&serverTimezone=UTC',
-    label: 'jdbc:mysql://localhost:3306/dinky?useSSL=false&serverTimezone=UTC',
+    label: 'jdbc:mysql://localhost:3306/dinky?useSSL=false&serverTimezone=UTC'
   },
   {
     key: 'oracle',
     value: 'jdbc:oracle:thin:@localhost:1521:orcl',
-    label: 'jdbc:oracle:thin:@localhost:1521:orcl',
+    label: 'jdbc:oracle:thin:@localhost:1521:orcl'
   },
   {
     key: 'postgresql',
     value: 'jdbc:postgresql://localhost:5432/dinky',
-    label: 'jdbc:postgresql://localhost:5432/dinky',
+    label: 'jdbc:postgresql://localhost:5432/dinky'
   },
   {
     key: 'clickhouse',
     value: 'jdbc:clickhouse://localhost:8123/dinky',
-    label: 'jdbc:clickhouse://localhost:8123/dinky',
+    label: 'jdbc:clickhouse://localhost:8123/dinky'
   },
   {
     key: 'sqlserver',
     value: 'jdbc:sqlserver://localhost:1433;DatabaseName=dinky',
-    label: 'jdbc:sqlserver://localhost:1433;DatabaseName=dinky',
+    label: 'jdbc:sqlserver://localhost:1433;DatabaseName=dinky'
   },
   {
     key: 'doris',
     value: 'jdbc:mysql://localhost:9030/dinky?useSSL=false&serverTimezone=UTC',
-    label: 'jdbc:mysql://localhost:9030/dinky?useSSL=false&serverTimezone=UTC',
+    label: 'jdbc:mysql://localhost:9030/dinky?useSSL=false&serverTimezone=UTC'
   },
   {
     key: 'phoenix',
     value: 'jdbc:phoenix:localhost:2181',
-    label: 'jdbc:phoenix:localhost:2181',
+    label: 'jdbc:phoenix:localhost:2181'
   },
   {
     key: 'hive',
     value: 'jdbc:hive2://localhost:10000/dinky',
-    label: 'jdbc:hive2://localhost:10000/dinky',
+    label: 'jdbc:hive2://localhost:10000/dinky'
   },
   {
     key: 'starrocks',
     value: 'jdbc:mysql://localhost:9030/dinky?useSSL=false&serverTimezone=UTC',
-    label: 'jdbc:mysql://localhost:9030/dinky?useSSL=false&serverTimezone=UTC',
+    label: 'jdbc:mysql://localhost:9030/dinky?useSSL=false&serverTimezone=UTC'
   },
   {
     key: 'presto',
     value: 'jdbc:presto://localhost:8080/dinky',
-    label: 'jdbc:presto://localhost:8080/dinky',
-  },
+    label: 'jdbc:presto://localhost:8080/dinky'
+  }
 ];
 
 export const QUERY_KEYWORD = [
@@ -186,5 +186,5 @@ export const QUERY_KEYWORD = [
   '!',
   'desc',
   'asc',
-  'not in ()',
+  'not in ()'
 ];

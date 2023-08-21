@@ -17,7 +17,7 @@
  */
 
 import TenantTransfer from '@/pages/AuthCenter/Tenant/components/TenantModalTransfer/TenantTransfer';
-import { UserBaseInfo } from '@/types/User/data.d';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { Modal } from 'antd';
 import React, { useState } from 'react';
@@ -31,13 +31,7 @@ type TableTransferFromProps = {
 };
 
 const TenantModalTransfer: React.FC<TableTransferFromProps> = (props) => {
-  const {
-    tenant,
-    modalVisible,
-    onCancel,
-    onSubmit: handleSubmit,
-    onChange: handleChange,
-  } = props;
+  const { tenant, modalVisible, onCancel, onSubmit: handleSubmit, onChange: handleChange } = props;
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
   const handleValueChange = (value: string[]) => {
@@ -56,10 +50,7 @@ const TenantModalTransfer: React.FC<TableTransferFromProps> = (props) => {
         onCancel={() => onCancel()}
         onOk={() => handleSubmit(targetKeys)}
       >
-        <TenantTransfer
-          tenant={tenant}
-          onChange={(value) => handleValueChange(value)}
-        />
+        <TenantTransfer tenant={tenant} onChange={(value) => handleValueChange(value)} />
       </Modal>
     </>
   );

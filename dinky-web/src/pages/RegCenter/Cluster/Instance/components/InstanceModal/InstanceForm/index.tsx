@@ -27,7 +27,7 @@ import {
   ProFormGroup,
   ProFormSelect,
   ProFormText,
-  ProFormTextArea,
+  ProFormTextArea
 } from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
@@ -45,48 +45,47 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
       <>
         <ProFormGroup>
           <ProFormText
-            name="name"
+            name='name'
             label={l('rc.ci.name')}
-            width="md"
+            width='md'
             rules={[{ required: true, message: l('rc.ci.namePlaceholder') }]}
             placeholder={l('rc.ci.namePlaceholder')}
           />
 
           <ProFormText
-            name="alias"
+            name='alias'
             label={l('rc.ci.alias')}
-            width="sm"
+            width='sm'
             placeholder={l('rc.ci.aliasPlaceholder')}
           />
 
           <ProFormSelect
-            name="type"
+            name='type'
             label={l('rc.ci.type')}
-            width="sm"
+            width='sm'
             options={CLUSTER_INSTANCE_TYPE}
             rules={[{ required: true, message: l('rc.ci.typePlaceholder') }]}
             placeholder={l('rc.ci.typePlaceholder')}
           />
 
           <ProFormTextArea
-            name="hosts"
+            name='hosts'
             label={l('rc.ci.jmha')}
-            width="md"
+            width='md'
             tooltip={l('rc.ci.jmha.tips')}
             validateTrigger={['onChange']}
             rules={[
               {
                 required: true,
-                validator: (rule, hostsValue) =>
-                  validatorJMHAAdderess(rule, hostsValue),
-              },
+                validator: (rule, hostsValue) => validatorJMHAAdderess(rule, hostsValue)
+              }
             ]}
             placeholder={l('rc.ci.jmhaPlaceholder')}
           />
           <ProFormTextArea
-            name="note"
+            name='note'
             label={l('global.table.note')}
-            width="md"
+            width='md'
             placeholder={l('global.table.notePlaceholder')}
           />
         </ProFormGroup>
@@ -97,12 +96,7 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
   return (
     <>
       {/*// @ts-ignore*/}
-      <ProForm
-        {...MODAL_FORM_OPTIONS}
-        form={form}
-        initialValues={value}
-        submitter={false}
-      >
+      <ProForm {...MODAL_FORM_OPTIONS} form={form} initialValues={value} submitter={false}>
         {renderForm()}
       </ProForm>
     </>

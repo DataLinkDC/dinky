@@ -23,7 +23,7 @@ import {
   SyncOutlined,
   UpCircleFilled,
   VerticalAlignBottomOutlined,
-  VerticalAlignTopOutlined,
+  VerticalAlignTopOutlined
 } from '@ant-design/icons';
 import { PlayCircleFilled } from '@ant-design/icons/lib/icons';
 import { Space } from 'antd';
@@ -60,7 +60,7 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
     handleBackTop,
     handleBackBottom,
     handleUpScroll,
-    handleDownScroll,
+    handleDownScroll
   } = props;
 
   /**

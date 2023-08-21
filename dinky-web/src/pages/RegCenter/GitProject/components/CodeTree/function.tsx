@@ -38,7 +38,7 @@ export const buildTreeData = (data: any): any =>
         path: item.path,
         title: item.name,
         key: buildKey,
-        children: buildTreeData(item.children),
+        children: buildTreeData(item.children)
       };
     }
     return {
@@ -49,6 +49,6 @@ export const buildTreeData = (data: any): any =>
       content: item.content,
       path: item.path,
       title: item.name,
-      key: buildKey,
+      key: buildKey
     };
   });

@@ -27,10 +27,10 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
       codeEncoding,
       space,
       codePosition,
-      jobRunningMsg,
+      jobRunningMsg
     },
     token,
-    tabs,
+    tabs
   } = props;
   const themeValue = useThemeValue();
 
@@ -45,7 +45,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
         Number(data['heapUsed'] / 1024 / 1024).toFixed(0) +
           '/' +
           Number(data['max'] / 1024 / 1024).toFixed(0) +
-          'M',
+          'M'
       );
     };
     return () => {
@@ -62,11 +62,10 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
             style={{
               width:
                 (1 -
-                  parseInt(memDetailInfo.split('/')[0]) /
-                    parseInt(memDetailInfo.split('/')[1])) *
+                  parseInt(memDetailInfo.split('/')[0]) / parseInt(memDetailInfo.split('/')[1])) *
                   100 +
                 '%',
-              backgroundColor: token.colorFill,
+              backgroundColor: token.colorFill
             }}
           >
             {memDetailInfo}
@@ -75,38 +74,38 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
       ),
       title: l('pages.datastudio.footer.memDetails', '', {
         max: memDetailInfo.split('/')[1],
-        used: memDetailInfo.split('/')[0],
+        used: memDetailInfo.split('/')[0]
       }),
-      isShow: () => true,
+      isShow: () => true
     },
     {
       text: codeType,
       title: l('pages.datastudio.footer.codeType') + codeType,
-      isShow: (type) => TabsPageType.project === type,
+      isShow: (type) => TabsPageType.project === type
     },
     {
       text: lineSeparator,
       title: l('pages.datastudio.footer.lineSeparator') + lineSeparator,
-      isShow: (type) => TabsPageType.project === type,
+      isShow: (type) => TabsPageType.project === type
     },
     {
       text: codeEncoding,
       title: l('pages.datastudio.footer.codeEncoding') + codeEncoding,
-      isShow: (type) => TabsPageType.project === type,
+      isShow: (type) => TabsPageType.project === type
     },
     {
       text: 'Space: ' + space,
       title: 'Space: ' + space,
-      isShow: (type) => TabsPageType.project === type,
+      isShow: (type) => TabsPageType.project === type
     },
     {
       text: codePosition[0] + ':' + codePosition[1],
       title: l('pages.datastudio.footer.codePosition', '', {
         Ln: codePosition[0],
-        Col: codePosition[1],
+        Col: codePosition[1]
       }),
-      isShow: (type) => TabsPageType.project === type,
-    },
+      isShow: (type) => TabsPageType.project === type
+    }
   ];
 
   /**
@@ -116,11 +115,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
     return routes
       .filter((x) => {
         if (x.isShow) {
-          return x.isShow(
-            currentTab?.type,
-            currentTab?.subType,
-            currentTab?.params,
-          );
+          return x.isShow(currentTab?.type, currentTab?.subType, currentTab?.params);
         }
         return false;
       })
@@ -147,30 +142,18 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
           height: VIEW.footerHeight,
           width: '100%',
           display: 'flex',
-          paddingInline: 10,
+          paddingInline: 10
         }}
       >
         <Space style={{ direction: 'ltr', width: '30%%' }}>
-          <Button
-            size={'small'}
-            type={'text'}
-            block
-            style={{ paddingInline: 4 }}
-          >
+          <Button size={'small'} type={'text'} block style={{ paddingInline: 4 }}>
             Welcome to Dinky !
           </Button>
         </Space>
-        <Space
-          onClick={() => setViewJobRunning(true)}
-          style={{ direction: 'rtl', width: '30%' }}
-        >
+        <Space onClick={() => setViewJobRunning(true)} style={{ direction: 'rtl', width: '30%' }}>
           {jobRunningMsg.jobName} - {jobRunningMsg.runningLog}
         </Space>
-        <Space
-          style={{ direction: 'rtl', width: '70%' }}
-          size={4}
-          direction={'horizontal'}
-        >
+        <Space style={{ direction: 'rtl', width: '70%' }} size={4} direction={'horizontal'}>
           {renderFooterRightInfo(route)}
         </Space>
       </div>
@@ -185,5 +168,5 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
 };
 export default connect(({ Studio }: { Studio: StateType }) => ({
   footContainer: Studio.footContainer,
-  tabs: Studio.tabs,
+  tabs: Studio.tabs
 }))(FooterContainer);

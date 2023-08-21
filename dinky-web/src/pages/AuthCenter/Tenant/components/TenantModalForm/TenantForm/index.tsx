@@ -17,13 +17,9 @@
  */
 
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
-import {
-  ProForm,
-  ProFormText,
-  ProFormTextArea,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React from 'react';
@@ -47,13 +43,13 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
     return (
       <>
         <ProFormText
-          name="tenantCode"
+          name='tenantCode'
           label={l('tenant.TenantCode')}
           placeholder={l('tenant.EnterTenantCode')}
           rules={[{ required: true, message: l('tenant.EnterTenantCode') }]}
         />
         <ProFormTextArea
-          name="note"
+          name='note'
           allowClear
           label={l('global.table.note')}
           placeholder={l('tenant.EnterTenantNote')}

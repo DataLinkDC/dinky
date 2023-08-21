@@ -29,7 +29,7 @@ import { connect } from 'umi';
 const JobInfo = (props: any) => {
   const {
     dispatch,
-    tabs: { panes, activeKey },
+    tabs: { panes, activeKey }
   } = props;
   const current = getCurrentData(panes, activeKey);
   const [form] = useForm();
@@ -45,13 +45,13 @@ const JobInfo = (props: any) => {
     }
     dispatch({
       type: STUDIO_MODEL.saveTabs,
-      payload: { ...props.tabs },
+      payload: { ...props.tabs }
     });
   };
 
   return (
     <div style={{ paddingInline: 8 }}>
-      <Descriptions bordered size="small" column={1}>
+      <Descriptions bordered size='small' column={1}>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.id')}>
           <Paragraph copyable>{current.id}</Paragraph>
         </Descriptions.Item>
@@ -61,9 +61,7 @@ const JobInfo = (props: any) => {
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.dialect')}>
           {current.dialect}
         </Descriptions.Item>
-        <Descriptions.Item
-          label={l('pages.datastudio.label.jobInfo.versionId')}
-        >
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.versionId')}>
           {current.versionId}
         </Descriptions.Item>
         <Descriptions.Item label={l('global.table.createTime')}>
@@ -74,14 +72,14 @@ const JobInfo = (props: any) => {
         </Descriptions.Item>
       </Descriptions>
       <Form
-        layout="vertical"
+        layout='vertical'
         form={form}
         // className={styles.form_setting}
         onValuesChange={onValuesChange}
       >
         <Row>
           <Col span={24}>
-            <Form.Item label={l('global.table.note')} name="note">
+            <Form.Item label={l('global.table.note')} name='note'>
               <TextArea rows={4} maxLength={255} />
             </Form.Item>
           </Col>
@@ -92,5 +90,5 @@ const JobInfo = (props: any) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs,
+  tabs: Studio.tabs
 }))(JobInfo);

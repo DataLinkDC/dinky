@@ -26,14 +26,9 @@ import {
   ScalaSvg,
   ShellSvg,
   XMLSvg,
-  YAMLSvg,
+  YAMLSvg
 } from '@/components/Icons/CodeLanguageIcon';
-import {
-  DIALECT,
-  LANGUAGE_KEY,
-  LANGUAGE_ZH,
-  TENANT_ID,
-} from '@/services/constants';
+import { DIALECT, LANGUAGE_KEY, LANGUAGE_ZH, TENANT_ID } from '@/services/constants';
 import { CODE_EDIT_THEME, THEME } from '@/types/Public/data';
 import { l } from '@/utils/intl';
 import cookies from 'js-cookie';
@@ -138,9 +133,9 @@ export function convertCodeEditTheme() {
         token: 'readonly',
         foreground: '#e73a6e',
         background: '#141414',
-        fontStyle: 'italic',
+        fontStyle: 'italic'
       },
-      { token: 'number', foreground: '#ffffff' },
+      { token: 'number', foreground: '#ffffff' }
     ],
     // colors is an object of color identifiers and their color values.
     colors: {
@@ -153,8 +148,8 @@ export function convertCodeEditTheme() {
       'editor.selectionBackground': '#4ba1ef', //  editor selection highlight color
       'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
       'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
-      'editor.wordHighlightBackground': '#8bb2d2', //  editor word highlight color
-    },
+      'editor.wordHighlightBackground': '#8bb2d2' //  editor word highlight color
+    }
   });
 
   const theme = getLocalTheme();
@@ -288,11 +283,7 @@ export const getIcon = (type: string) => {
  * @param splitChar split character
  * @param isLeft is left
  */
-export const renderIcon = (
-  type: string,
-  splitChar: string,
-  isLeft: boolean,
-) => {
+export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => {
   if (isLeft) {
     return <FolderSvgExpand />;
   } else {
@@ -349,9 +340,7 @@ export const parseSecondStr = (s_time: number) => {
         l('global.time.second');
       if (hour > 24) {
         hour = Math.floor(Math.floor(second_time / 60) / 60) % 24;
-        let day = Math.floor(
-          Math.floor(Math.floor(second_time / 60) / 60) / 24,
-        );
+        let day = Math.floor(Math.floor(Math.floor(second_time / 60) / 60) / 24);
         time =
           day +
           l('global.time.day') +
@@ -455,7 +444,7 @@ export const buildTreeData = (data: any): any =>
         title: buildTitleLabel(),
         desc: item?.desc ?? item?.description,
         key: buildKey,
-        children: buildTreeData(item.children),
+        children: buildTreeData(item.children)
       };
     }
     return {
@@ -469,7 +458,7 @@ export const buildTreeData = (data: any): any =>
       fullName: item?.fullName,
       desc: item?.desc ?? item?.description,
       title: buildTitleLabel(),
-      key: buildKey,
+      key: buildKey
     };
   });
 
@@ -499,10 +488,7 @@ export const unSupportView = (name: string) => {
  * @param {string} searchValue
  * @returns {any}
  */
-export const searchTreeNode = (
-  originValue: string,
-  searchValue: string,
-): any => {
+export const searchTreeNode = (originValue: string, searchValue: string): any => {
   let title = <>{originValue}</>;
 
   // searchValue is not empty and trim() after length > 0
@@ -531,10 +517,7 @@ export const transformTreeData = <T,>(data: T[]): T[] => {
   });
 };
 
-export const transformTableDataToCsv = <T,>(
-  column: string[],
-  data: T[],
-): string => {
+export const transformTableDataToCsv = <T,>(column: string[], data: T[]): string => {
   let row = '';
   let csvData = '';
   for (const title of column) {

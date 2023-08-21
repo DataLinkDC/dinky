@@ -19,11 +19,7 @@
 
 import { DATE_RANGE_OPTIONS } from '@/pages/Metrics/Server/constants';
 import { l } from '@/utils/intl';
-import {
-  LightFilter,
-  ProFormDateTimeRangePicker,
-  ProFormRadio,
-} from '@ant-design/pro-components';
+import { LightFilter, ProFormDateTimeRangePicker, ProFormRadio } from '@ant-design/pro-components';
 import React from 'react';
 
 type GlobalFilterProps = {
@@ -35,35 +31,28 @@ type GlobalFilterProps = {
   handleRangeChange: (e: any) => void;
 };
 const GlobalFilter: React.FC<GlobalFilterProps> = (props) => {
-  const {
-    custom,
-    dateRange,
-    startTime,
-    endTime,
-    handleDateRadioChange,
-    handleRangeChange,
-  } = props;
+  const { custom, dateRange, startTime, endTime, handleDateRadioChange, handleRangeChange } = props;
 
   return (
     <>
       <LightFilter bordered size={'small'}>
         <ProFormRadio.Group
-          name="dateRange"
-          radioType="radio"
+          name='dateRange'
+          radioType='radio'
           initialValue={dateRange}
           fieldProps={{ onChange: handleDateRadioChange }}
           options={DATE_RANGE_OPTIONS(custom)}
         />
         {dateRange == 'custom' && (
           <ProFormDateTimeRangePicker
-            name="datetimeRanger"
+            name='datetimeRanger'
             label={l('metrics.filter.custom.range')}
             allowClear={false}
             initialValue={[startTime, endTime]}
             fieldProps={{
               onChange: handleRangeChange,
               style: { width: '100%' },
-              value: [startTime, endTime],
+              value: [startTime, endTime]
             }}
           />
         )}

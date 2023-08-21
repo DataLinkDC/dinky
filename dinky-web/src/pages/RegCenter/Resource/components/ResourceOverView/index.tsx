@@ -23,12 +23,8 @@ import FileShow from '@/pages/RegCenter/Resource/components/FileShow';
 import FileTree from '@/pages/RegCenter/Resource/components/FileTree';
 import ResourceModal from '@/pages/RegCenter/Resource/components/ResourceModal';
 import ResourcesUploadModal from '@/pages/RegCenter/Resource/components/ResourcesUploadModal';
-import {
-  handleOption,
-  handleRemoveById,
-  queryDataByParams,
-} from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
+import { handleOption, handleRemoveById, queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { ProCard } from '@ant-design/pro-components';
 import { MenuInfo } from 'rc-menu/es/interface';
 import { Resizable } from 're-resizable';
@@ -55,30 +51,26 @@ const ResourceOverView: React.FC = () => {
   const [formValue, setFormValue] = useState<Resource>({
     id: 0,
     fileName: '',
-    description: '',
+    description: ''
   });
   const [uploadValue] = useState({
     url: API_CONSTANTS.RESOURCE_UPLOAD,
     pid: '',
-    description: '',
+    description: ''
   });
 
-  const updateTreeData = (
-    list: any[],
-    key: React.Key,
-    children: any[],
-  ): any[] =>
+  const updateTreeData = (list: any[], key: React.Key, children: any[]): any[] =>
     list.map((node) => {
       if (node.path === key) {
         return {
           ...node,
-          children,
+          children
         };
       }
       if (node.children) {
         return {
           ...node,
-          children: updateTreeData(node.children, key, children),
+          children: updateTreeData(node.children, key, children)
         };
       }
       return node;
@@ -86,14 +78,14 @@ const ResourceOverView: React.FC = () => {
 
   const refreshTreeData = async (pid: number, path: string) => {
     const data = await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {
-      pid: pid,
+      pid: pid
     });
     setTreeData((origin) => updateTreeData(origin, path, data));
   };
 
   const refreshTree = async () => {
-    await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, { pid: -1 }).then(
-      (res) => setTreeData(res),
+    await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, { pid: -1 }).then((res) =>
+      setTreeData(res)
     );
   };
 
@@ -108,10 +100,10 @@ const ResourceOverView: React.FC = () => {
   const queryContent = useCallback(
     async (id: number) => {
       await queryDataByParams(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {
-        id,
+        id
       }).then((res) => setContent(res));
     },
-    [clickedNode],
+    [clickedNode]
   );
 
   /**
@@ -122,7 +114,7 @@ const ResourceOverView: React.FC = () => {
   const handleNodeClick = async (info: any) => {
     const {
       node: { id, isLeaf, key },
-      node,
+      node
     } = info;
     setSelectedKeys([key] as any);
     setClickedNode(node);
@@ -133,9 +125,7 @@ const ResourceOverView: React.FC = () => {
     }
   };
   const getSelectedNode = () => {
-    const indexes = (rightClickedNode.pos.split('-') as string[]).map((x) =>
-      parseInt(x),
-    );
+    const indexes = (rightClickedNode.pos.split('-') as string[]).map((x) => parseInt(x));
     if (indexes.length === 1) {
       return treeData[indexes[0]];
     } else {
@@ -168,9 +158,7 @@ const ResourceOverView: React.FC = () => {
   };
 
   const getSelectedParentNode = () => {
-    const indexes = (rightClickedNode.pos.split('-') as string[]).map((x) =>
-      parseInt(x),
-    );
+    const indexes = (rightClickedNode.pos.split('-') as string[]).map((x) => parseInt(x));
     let temp = treeData[indexes[0]];
     for (let i = 1; i < indexes.length - 2; i++) {
       temp = temp.children[indexes[i]];
@@ -184,10 +172,7 @@ const ResourceOverView: React.FC = () => {
   const handleDelete = async () => {
     //todo delete
     if (rightClickedNode) {
-      await handleRemoveById(
-        API_CONSTANTS.RESOURCE_REMOVE,
-        rightClickedNode.id,
-      );
+      await handleRemoveById(API_CONSTANTS.RESOURCE_REMOVE, rightClickedNode.id);
       // await refreshTree()
       const { node, index } = getSelectedParentNode();
       node.children.splice(index, 1);
@@ -251,7 +236,7 @@ const ResourceOverView: React.FC = () => {
       width: '10vw',
       left: event.clientX + 20, // + 20 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
       top: event.clientY + 20, // + 20 是为了让鼠标不至于在选中的节点上
-      zIndex: 888,
+      zIndex: 888
     });
   };
 
@@ -269,7 +254,7 @@ const ResourceOverView: React.FC = () => {
     if (editModal === 'createFolder') {
       const d = (
         await handleOption(API_CONSTANTS.RESOURCE_CREATE_FOLDER, '创建文件夹', {
-          ...value,
+          ...value
         })
       ).datas;
       if (getSelectedNode().children) {
@@ -313,17 +298,12 @@ const ResourceOverView: React.FC = () => {
         <Resizable
           defaultSize={{
             width: 500,
-            height: '100%',
+            height: '100%'
           }}
           minWidth={200}
           maxWidth={1200}
         >
-          <ProCard
-            ghost
-            hoverable
-            colSpan={'18%'}
-            className={'siderTree schemaTree'}
-          >
+          <ProCard ghost hoverable colSpan={'18%'} className={'siderTree schemaTree'}>
             <FileTree
               loadData={asyncLoadData}
               selectedKeys={selectedKeys}
@@ -342,11 +322,7 @@ const ResourceOverView: React.FC = () => {
         </Resizable>
         <ProCard.Divider type={'vertical'} />
         <ProCard ghost hoverable className={'schemaTree'}>
-          <FileShow
-            onChange={handleContentChange}
-            code={content}
-            item={clickedNode}
-          />
+          <FileShow onChange={handleContentChange} code={content} item={clickedNode} />
         </ProCard>
       </ProCard>
       {showEditModal && (

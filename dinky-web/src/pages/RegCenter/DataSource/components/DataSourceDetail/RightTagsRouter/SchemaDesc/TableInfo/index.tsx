@@ -29,24 +29,16 @@ const TableInfo: React.FC<TableInfoProps> = (props) => {
   return (
     <>
       <Descriptions size={'small'} bordered column={4}>
-        <Descriptions.Item label="Name">{tableInfo.name}</Descriptions.Item>
-        <Descriptions.Item label="Schema">{tableInfo.schema}</Descriptions.Item>
-        <Descriptions.Item label="Catalog">
-          {tableInfo.catalog}
-        </Descriptions.Item>
-        <Descriptions.Item label="Rows">{tableInfo.rows}</Descriptions.Item>
-        <Descriptions.Item label="Type">{tableInfo.type}</Descriptions.Item>
-        <Descriptions.Item label="Engine">{tableInfo.engine}</Descriptions.Item>
-        <Descriptions.Item label="Options">
-          {tableInfo.options}
-        </Descriptions.Item>
-        <Descriptions.Item label="CreateTime">
-          {tableInfo.createTime}
-        </Descriptions.Item>
-        <Descriptions.Item label="UpdateTime">
-          {tableInfo.updateTime || '-'}
-        </Descriptions.Item>
-        <Descriptions.Item label="Comment" span={3}>
+        <Descriptions.Item label='Name'>{tableInfo.name}</Descriptions.Item>
+        <Descriptions.Item label='Schema'>{tableInfo.schema}</Descriptions.Item>
+        <Descriptions.Item label='Catalog'>{tableInfo.catalog}</Descriptions.Item>
+        <Descriptions.Item label='Rows'>{tableInfo.rows}</Descriptions.Item>
+        <Descriptions.Item label='Type'>{tableInfo.type}</Descriptions.Item>
+        <Descriptions.Item label='Engine'>{tableInfo.engine}</Descriptions.Item>
+        <Descriptions.Item label='Options'>{tableInfo.options}</Descriptions.Item>
+        <Descriptions.Item label='CreateTime'>{tableInfo.createTime}</Descriptions.Item>
+        <Descriptions.Item label='UpdateTime'>{tableInfo.updateTime || '-'}</Descriptions.Item>
+        <Descriptions.Item label='Comment' span={3}>
           {tableInfo.comment || '-'}
         </Descriptions.Item>
       </Descriptions>

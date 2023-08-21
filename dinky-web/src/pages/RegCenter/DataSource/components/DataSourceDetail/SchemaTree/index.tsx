@@ -35,8 +35,7 @@ type SchemaTreeProps = {
 };
 
 const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
-  const { treeData, onNodeClick, style, expandKeys, onExpand, selectKeys } =
-    props;
+  const { treeData, onNodeClick, style, expandKeys, onExpand, selectKeys } = props;
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -48,7 +47,7 @@ const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
     (e: { target: { value: React.SetStateAction<string> } }) => {
       setSearchValue(e.target.value);
     },
-    [searchValue],
+    [searchValue]
   );
 
   /**

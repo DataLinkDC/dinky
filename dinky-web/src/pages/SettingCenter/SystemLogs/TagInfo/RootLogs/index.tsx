@@ -17,7 +17,7 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { useEffect, useState } from 'react';
 
 /**
@@ -27,7 +27,7 @@ const CodeEditProps = {
   height: '82vh',
   width: '100%',
   lineNumbers: 'on',
-  language: 'java',
+  language: 'java'
 };
 const RootLogs = () => {
   const [code, setCode] = useState<string>('');
@@ -44,7 +44,7 @@ const RootLogs = () => {
   const restRootLogProps = {
     code: code,
     showFloatButton: true,
-    refreshLogCallback: queryLogs,
+    refreshLogCallback: queryLogs
   };
 
   return (

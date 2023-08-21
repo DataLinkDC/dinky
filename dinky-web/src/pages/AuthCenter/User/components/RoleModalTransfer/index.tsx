@@ -17,7 +17,7 @@
  */
 
 import RoleTransfer from '@/pages/AuthCenter/User/components/RoleModalTransfer/RoleTransfer';
-import { UserBaseInfo } from '@/types/User/data.d';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { Modal } from 'antd';
 import { useState } from 'react';
@@ -31,13 +31,7 @@ type RoleTransferFromProps = {
 };
 
 const RoleModalTransfer = (props: RoleTransferFromProps) => {
-  const {
-    user,
-    modalVisible,
-    onCancel,
-    onSubmit: handleSubmit,
-    onChange: handleChange,
-  } = props;
+  const { user, modalVisible, onCancel, onSubmit: handleSubmit, onChange: handleChange } = props;
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
   const handleValueChange = (value: string[]) => {
@@ -60,10 +54,7 @@ const RoleModalTransfer = (props: RoleTransferFromProps) => {
         onCancel={() => handleCancel()}
         onOk={() => handleSubmit(targetKeys)}
       >
-        <RoleTransfer
-          user={user}
-          onChange={(value) => handleValueChange(value)}
-        />
+        <RoleTransfer role={user} onChange={(value) => handleValueChange(value)} />
       </Modal>
     </>
   );

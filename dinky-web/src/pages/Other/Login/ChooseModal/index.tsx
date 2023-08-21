@@ -19,7 +19,7 @@
 
 import TenantCard from '@/pages/Other/Login/ChooseModal/TenantCard';
 import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { setTenantStorageAndCookie } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { CheckGroupValueType } from '@ant-design/pro-card/es/components/CheckCard/Group';
@@ -35,13 +35,7 @@ type ChooseModalProps = {
 };
 
 const ChooseModal: React.FC<ChooseModalProps> = (props) => {
-  const {
-    tenantVisible,
-    handleTenantVisible,
-    submitting,
-    tenant,
-    handleChooseTenant,
-  } = props;
+  const { tenantVisible, handleTenantVisible, submitting, tenant, handleChooseTenant } = props;
   const [check, setChecked] = useState<boolean>(true);
   const [checkedTenantId, setCheckedTenantId] = useState<any>();
 
@@ -68,7 +62,7 @@ const ChooseModal: React.FC<ChooseModalProps> = (props) => {
         okText={l('button.confirm')}
         okButtonProps={{
           disabled: check,
-          loading: submitting,
+          loading: submitting
         }}
       >
         <TenantCard tenant={tenant} handleChangeTenant={tenantChange} />

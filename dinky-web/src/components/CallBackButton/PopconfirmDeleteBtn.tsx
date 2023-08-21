@@ -31,18 +31,14 @@ export const PopconfirmDeleteBtn: React.FC<PopconfirmProps> = (props) => {
 
   return (
     <Popconfirm
-      placement="topRight"
+      placement='topRight'
       title={l('button.delete')}
       description={<div className={'needWrap'}>{description} </div>}
       onConfirm={onClick}
       okText={l('button.confirm')}
       cancelText={l('button.cancel')}
     >
-      <Button
-        title={l('button.delete')}
-        key={'DeleteIcon'}
-        icon={<DangerDeleteIcon />}
-      />
+      <Button title={l('button.delete')} key={'DeleteIcon'} icon={<DangerDeleteIcon />} />
     </Popconfirm>
   );
 };

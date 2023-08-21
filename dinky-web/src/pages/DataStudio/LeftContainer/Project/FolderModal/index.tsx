@@ -40,9 +40,9 @@ const FolderModal: React.FC<JobModalProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
   /**
    * when modalVisible or values changed, set form values
@@ -82,7 +82,7 @@ const FolderModal: React.FC<JobModalProps> = (props) => {
         modalProps={{
           destroyOnClose: true,
           maskClosable: false,
-          onCancel: handleCancel,
+          onCancel: handleCancel
         }}
         onFinish={async (values) => submitForm(values)}
       >

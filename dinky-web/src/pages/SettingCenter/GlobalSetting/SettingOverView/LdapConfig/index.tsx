@@ -39,9 +39,7 @@ export const LdapConfig = ({ data, onSave }: LdapConfigProps) => {
     setLoading(true);
     const datas = await queryDataByParams(API_CONSTANTS.LDAP_TEST_CONNECT);
     if (datas) {
-      SuccessMessage(
-        l('sys.ldap.settings.testConnect.success', '', { count: datas }),
-      );
+      SuccessMessage(l('sys.ldap.settings.testConnect.success', '', { count: datas }));
     }
     setLoading(false);
   };
@@ -60,16 +58,12 @@ export const LdapConfig = ({ data, onSave }: LdapConfigProps) => {
   const renderToolBar = () => {
     return [
       <Space key={'ldapToolBar'}>
-        <Tag
-          icon={<ApiFilled />}
-          color="#87d068"
-          onClick={() => testConnection()}
-        >
+        <Tag icon={<ApiFilled />} color='#87d068' onClick={() => testConnection()}>
           {l('sys.ldap.settings.testConnect')}
         </Tag>
         <TestLogin />
         <LoadUser />
-      </Space>,
+      </Space>
     ];
   };
 

@@ -50,7 +50,7 @@ const JobStatusPie = () => {
         }
         newJobStatusData.push({
           type: item,
-          value: statusCountData[item],
+          value: statusCountData[item]
         });
       }
       setJobStatusData(newJobStatusData);
@@ -68,33 +68,33 @@ const JobStatusPie = () => {
     label: {
       type: 'spider',
       labelHeight: 40,
-      content: '{name}\n{value}',
+      content: '{name}\n{value}'
     },
     interactions: [
       {
-        type: 'element-selected',
+        type: 'element-selected'
       },
       {
-        type: 'element-active',
-      },
+        type: 'element-active'
+      }
     ],
     statistic: {
       title: {
         style: {
-          fontSize: '16px',
+          fontSize: '16px'
         },
-        customHtml: () => l('home.job.instance'),
+        customHtml: () => l('home.job.instance')
       },
       content: {
         style: {
           whiteSpace: 'pre-wrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
-          fontSize: '24px',
+          fontSize: '24px'
         },
-        content: String(jobCount),
-      },
-    },
+        content: String(jobCount)
+      }
+    }
   };
   return (
     <div style={{ height: '35vh' }}>

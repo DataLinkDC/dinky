@@ -29,13 +29,10 @@ import {
   handleOption,
   handlePutDataByParams,
   handleRemoveById,
-  updateDataByParam,
+  updateDataByParam
 } from '@/services/BusinessCrud';
-import {
-  API_CONSTANTS,
-  PROTABLE_OPTIONS_PUBLIC,
-  PRO_LIST_CARD_OPTIONS,
-} from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { DataSources } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import { WarningMessage } from '@/utils/messages';
@@ -44,7 +41,7 @@ import {
   CheckCircleOutlined,
   CopyTwoTone,
   ExclamationCircleOutlined,
-  HeartTwoTone,
+  HeartTwoTone
 } from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
 import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
@@ -67,9 +64,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const [detailPage, setDetailPage] = useState<boolean>(false);
   const [updateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState<DataSources.DataSource[]>([]);
-  const [formValues, setFormValues] = useState<Partial<DataSources.DataSource>>(
-    {},
-  );
+  const [formValues, setFormValues] = useState<Partial<DataSources.DataSource>>({});
 
   /**
    * execute query  list
@@ -115,7 +110,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
         await executeAndCallbackRefresh(async () => {
           await handleRemoveById(API_CONSTANTS.DATASOURCE_DELETE, id);
         });
-      },
+      }
     });
   };
 
@@ -146,7 +141,9 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
       await handlePutDataByParams(
         API_CONSTANTS.DATASOURCE_CHECK_HEARTBEAT_BY_ID,
         l('button.heartbeat'),
-        { id: item.id },
+        {
+          id: item.id
+        }
       );
     });
   };
@@ -198,11 +195,11 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
     if (item.status) {
       dispatch({
         type: STUDIO_MODEL.updateSelectDatabaseId,
-        payload: item.id,
+        payload: item.id
       });
       setFormValues(item);
       navigate(`/registration/database/detail/${item.id}`, {
-        state: { from: '/registration/database' },
+        state: { from: '/registration/database' }
       });
       setDetailPage(!detailPage);
     } else {
@@ -217,18 +214,13 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const renderDataSourceActionButton = (item: DataSources.DataSource) => {
     return [
       <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />,
-      <NormalDeleteBtn
-        key={`${item.id}_delete`}
-        onClick={() => handleDeleteSubmit(item.id)}
-      />,
+      <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />,
       <Button
         className={'options-button'}
         key={`${item.id}_heart`}
         onClick={() => handleCheckHeartBeat(item)}
         title={l('button.heartbeat')}
-        icon={
-          <HeartTwoTone twoToneColor={item.status ? '#1ac431' : '#e10d0d'} />
-        }
+        icon={<HeartTwoTone twoToneColor={item.status ? '#1ac431' : '#e10d0d'} />}
       />,
       <Button
         className={'options-button'}
@@ -236,7 +228,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
         onClick={() => onCopyDataBase(item)}
         title={l('button.copy')}
         icon={<CopyTwoTone />}
-      />,
+      />
     ];
   };
   /**
@@ -246,21 +238,13 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const renderDataSourceContent = (item: DataSources.DataSource) => {
     return (
       <Space className={'hidden-overflow'}>
-        <Tag color="cyan">{item.type}</Tag>
+        <Tag color='cyan'>{item.type}</Tag>
         <EnableSwitchBtn record={item} onChange={() => handleEnable(item)} />
         <Tag
-          icon={
-            item.status ? (
-              <CheckCircleOutlined />
-            ) : (
-              <ExclamationCircleOutlined />
-            )
-          }
+          icon={item.status ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
           color={item.status ? 'success' : 'warning'}
         >
-          {item.status
-            ? l('global.table.status.normal')
-            : l('global.table.status.abnormal')}
+          {item.status ? l('global.table.status.normal') : l('global.table.status.abnormal')}
         </Tag>
       </Space>
     );
@@ -273,12 +257,10 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
     subTitle: renderDataSourceSubTitle(item),
     actions: <DataAction>{renderDataSourceActionButton(item)}</DataAction>,
     avatar: (
-      <Space onClick={() => enterDetailPageClickHandler(item)}>
-        {renderDBIcon(item.type, 60)}
-      </Space>
+      <Space onClick={() => enterDetailPageClickHandler(item)}>{renderDBIcon(item.type, 60)}</Space>
     ),
     content: renderDataSourceContent(item),
-    key: item.id,
+    key: item.id
   }));
 
   /**
@@ -305,10 +287,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
             actionRef={actionRef}
             headerTitle={l('rc.ds.management')}
             toolBarRender={() => [
-              <CreateBtn
-                key={'CreateBtn'}
-                onClick={() => setModalVisible(true)}
-              />,
+              <CreateBtn key={'CreateBtn'} onClick={() => setModalVisible(true)} />
             ]}
             dataSource={renderDataSource}
           />
@@ -332,15 +311,12 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
           />
         </>
       ) : (
-        <DataSourceDetail
-          backClick={() => setDetailPage(false)}
-          dataSource={formValues}
-        />
+        <DataSourceDetail backClick={() => setDetailPage(false)} dataSource={formValues} />
       )}
     </>
   );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  database: Studio.database,
+  database: Studio.database
 }))(DataSourceTable);

@@ -21,7 +21,7 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
   const [enumCache] = useState({
     base: [] as BaseConfigProperties[],
     hdfs: [] as BaseConfigProperties[],
-    oss: [] as BaseConfigProperties[],
+    oss: [] as BaseConfigProperties[]
   });
   useEffect(() => {
     if (data.length < 1) {
@@ -47,9 +47,7 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
       }
     });
 
-    const baseConfigProperties = data.filter(
-      (d, index) => !needDeleteIndexes.includes(index),
-    );
+    const baseConfigProperties = data.filter((d, index) => !needDeleteIndexes.includes(index));
     // @ts-ignore
     enumCache[m].forEach((x) => {
       baseConfigProperties.push(x);
@@ -80,7 +78,7 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
       frontType: '',
       key: 'resource.settings.model',
       note: '',
-      value: value.target.value.toLocaleUpperCase(),
+      value: value.target.value.toLocaleUpperCase()
     });
   };
   return (

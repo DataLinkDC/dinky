@@ -23,5 +23,5 @@ export default {
   'app.response.error': 'Error',
   'app.response.exception': 'Server exception',
   'app.response.notlogin': 'Not Login',
-  'app.response.notexist': 'you visit the page or interface does not exist',
+  'app.response.notexist': 'you visit the page or interface does not exist'
 };

@@ -18,7 +18,7 @@
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
@@ -40,7 +40,7 @@ const CodeShowProps = {
   width: '100%',
   lineNumbers: 'on',
   language: 'sql',
-  showFloatButton: true,
+  showFloatButton: true
 };
 
 const GenSQL: React.FC<GenSQLProps> = (props) => {
@@ -50,10 +50,9 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
 
   const queryDDL = useCallback(async () => {
     //get gen sql
-    const genSQLData = await queryDataByParams(
-      API_CONSTANTS.DATASOURCE_GET_GEN_SQL,
-      { ...queryParams },
-    );
+    const genSQLData = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_GEN_SQL, {
+      ...queryParams
+    });
     setGenSQL(genSQLData);
   }, [queryParams]);
 
@@ -92,20 +91,20 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
       key: 'flinkddl',
       label: renderLabel(genSQL.flinkSqlCreate || '', 'Flink DDL'),
       disabled: tagDisabled,
-      children: renderContent(genSQL.flinkSqlCreate),
+      children: renderContent(genSQL.flinkSqlCreate)
     },
     {
       key: 'select',
       label: renderLabel(genSQL.sqlSelect || '', 'Select'),
       disabled: tagDisabled,
-      children: renderContent(genSQL.sqlSelect),
+      children: renderContent(genSQL.sqlSelect)
     },
     {
       key: 'sqlddl',
       label: renderLabel(genSQL.sqlCreate || '', 'SQL DDL'),
       disabled: tagDisabled,
-      children: renderContent(genSQL.sqlCreate),
-    },
+      children: renderContent(genSQL.sqlCreate)
+    }
   ];
 
   // tab props
@@ -114,7 +113,7 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
     onChange: (key: string) => setActiveKey(key),
     tabPosition: 'left',
     size: 'small',
-    items: tabList,
+    items: tabList
   };
 
   /**
@@ -125,10 +124,7 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
       {genSQL.flinkSqlCreate || genSQL.sqlSelect || genSQL.sqlCreate ? (
         <ProCard tabs={{ ...restTabProps }} />
       ) : (
-        <Empty
-          className={'code-content-empty'}
-          description={l('rc.ds.detail.tips')}
-        />
+        <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')} />
       )}
     </>
   );

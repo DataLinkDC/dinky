@@ -21,7 +21,7 @@
 export const THEME = {
   NAV_THEME: 'navTheme',
   dark: 'realDark',
-  light: 'light',
+  light: 'light'
 };
 
 /**
@@ -31,7 +31,7 @@ export const CODE_EDIT_THEME = {
   VS: 'vs',
   DARK: 'vs-dark',
   HC_BLACK: 'hc-black',
-  VS_CUSTOME: 'vs-custom',
+  VS_CUSTOME: 'vs-custom'
 };
 
 export const MonacoEditorOptions = {
@@ -41,7 +41,7 @@ export const MonacoEditorOptions = {
   fontSize: 14, //  font size
   automaticLayout: true, //  auto layout
   scrollBeyondLastLine: false, //is scroll beyond the last line
-  autoDetectHighContrast: true, // auto detect high contrast
+  autoDetectHighContrast: true // auto detect high contrast
 };
 
 export type BaseBeanColumns = ExcludeNameAndEnableColumns & {

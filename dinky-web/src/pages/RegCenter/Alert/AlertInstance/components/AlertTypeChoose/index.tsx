@@ -20,10 +20,7 @@ import React, { useEffect } from 'react';
 
 import { FormContextValue } from '@/components/Context/FormContext';
 import InstanceForm from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm';
-import {
-  buildJSONData,
-  getJSONData,
-} from '@/pages/RegCenter/Alert/AlertInstance/function';
+import { buildJSONData, getJSONData } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
 import { Alert } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
@@ -49,7 +46,7 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
     onCancel: handleCancelVisible,
     onTest: handleTest,
     modalVisible,
-    values,
+    values
   } = props;
 
   /**
@@ -62,9 +59,9 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
 
   /**
@@ -100,12 +97,12 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
       <Button key={'AlertCancel'} onClick={handleCancel}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'AlertTest'} type="primary" onClick={testSend}>
+      <Button key={'AlertTest'} type='primary' onClick={testSend}>
         {l('button.test')}
       </Button>,
-      <Button key={'AlertFinish'} type="primary" onClick={submit}>
+      <Button key={'AlertFinish'} type='primary' onClick={submit}>
         {l('button.finish')}
-      </Button>,
+      </Button>
     ];
   };
 

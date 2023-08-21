@@ -48,11 +48,7 @@ const JobDesc = (props: JobProps) => {
   const getUserConfig = (config: any) => {
     let formList = [];
     for (let configKey in config) {
-      formList.push(
-        <Descriptions.Item label={configKey}>
-          {config[configKey]}
-        </Descriptions.Item>,
-      );
+      formList.push(<Descriptions.Item label={configKey}>{config[configKey]}</Descriptions.Item>);
     }
     return formList;
   };
@@ -60,37 +56,25 @@ const JobDesc = (props: JobProps) => {
   return (
     <>
       <ProCard>
-        <Descriptions
-          title={l('devops.jobinfo.config.JobBaseInfo')}
-          bordered
-          size="small"
-        >
+        <Descriptions title={l('devops.jobinfo.config.JobBaseInfo')} bordered size='small'>
           <Descriptions.Item label={l('global.table.status')}>
             {TagJobStatus(jobDetail?.instance?.status)}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.submitType')}>
-            <Tag color="pink">
+            <Tag color='pink'>
               <RocketOutlined /> {jobDetail?.history?.type}
             </Tag>
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.RestartStrategy')}>
-            <Tag color="blue" title={'Restart Strategy'}>
-              {
-                jobDetail?.jobHistory?.config['execution-config'][
-                  'restart-strategy'
-                ]
-              }
+            <Tag color='blue' title={'Restart Strategy'}>
+              {jobDetail?.jobHistory?.config['execution-config']['restart-strategy']}
             </Tag>
           </Descriptions.Item>
 
-          <Descriptions.Item
-            label={l('devops.jobinfo.config.ClusterInstanceName')}
-          >
-            <Link to={'/registration/cluster/instance'}>
-              {jobDetail?.cluster?.alias}
-            </Link>
+          <Descriptions.Item label={l('devops.jobinfo.config.ClusterInstanceName')}>
+            <Link to={'/registration/cluster/instance'}>{jobDetail?.cluster?.alias}</Link>
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.JobId')}>
@@ -106,9 +90,7 @@ const JobDesc = (props: JobProps) => {
           </Descriptions.Item>
 
           {jobDetail?.clusterConfiguration ? (
-            <Descriptions.Item
-              label={l('devops.jobinfo.config.clusterConfiguration')}
-            >
+            <Descriptions.Item label={l('devops.jobinfo.config.clusterConfiguration')}>
               <Link to={'/registration/cluster/instance'}>
                 {jobDetail?.clusterConfiguration?.name}
               </Link>
@@ -116,9 +98,7 @@ const JobDesc = (props: JobProps) => {
           ) : undefined}
 
           <Descriptions.Item label={l('devops.jobinfo.config.useSqlFragment')}>
-            {jobDetail?.history?.config?.useSqlFragment
-              ? l('button.enable')
-              : l('button.disable')}
+            {jobDetail?.history?.config?.useSqlFragment ? l('button.enable') : l('button.disable')}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.JobType')}>
@@ -136,29 +116,18 @@ const JobDesc = (props: JobProps) => {
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.JobParallelism')}>
-            {
-              jobDetail?.jobHistory?.config['execution-config'][
-                'job-parallelism'
-              ]
-            }
+            {jobDetail?.jobHistory?.config['execution-config']['job-parallelism']}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('global.table.useTime')}>
             {parseSecondStr(jobDetail?.instance?.duration)}
           </Descriptions.Item>
 
-          <Descriptions.Item
-            label={l('devops.jobinfo.config.startFromSavePoint')}
-          >
-            {getSavePointStrategy(
-              jobDetail?.history?.config?.savePointStrategy,
-            )}
+          <Descriptions.Item label={l('devops.jobinfo.config.startFromSavePoint')}>
+            {getSavePointStrategy(jobDetail?.history?.config?.savePointStrategy)}
           </Descriptions.Item>
 
-          <Descriptions.Item
-            label={l('devops.jobinfo.config.savePointPath')}
-            span={2}
-          >
+          <Descriptions.Item label={l('devops.jobinfo.config.savePointPath')} span={2}>
             {jobDetail?.history?.config.savePointPath}
           </Descriptions.Item>
         </Descriptions>

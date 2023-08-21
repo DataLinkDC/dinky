@@ -20,20 +20,20 @@ import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
 import {
   getAlertIcon,
   getJSONData,
-  getSmsType,
+  getSmsType
 } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import {
   createOrModifyAlertInstance,
-  sendTest,
+  sendTest
 } from '@/pages/RegCenter/Alert/AlertInstance/service';
 import { queryList } from '@/services/api';
 import { handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
 import {
-  API_CONSTANTS,
   PROTABLE_OPTIONS_PUBLIC,
   PRO_LIST_CARD_OPTIONS,
-  SWITCH_OPTIONS,
+  SWITCH_OPTIONS
 } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import { EditTwoTone } from '@ant-design/icons';
@@ -52,9 +52,7 @@ const AlertInstanceList: React.FC = () => {
   const [formValues, setFormValues] = useState<Partial<Alert.AlertInstance>>();
   const [addVisible, handleAddVisible] = useState<boolean>(false);
   const [updateVisible, handleUpdateVisible] = useState<boolean>(false);
-  const [alertInstanceList, setAlertInstanceList] = useState<
-    Alert.AlertInstance[]
-  >([]);
+  const [alertInstanceList, setAlertInstanceList] = useState<Alert.AlertInstance[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   /**
@@ -88,7 +86,7 @@ const AlertInstanceList: React.FC = () => {
         await executeAndCallbackRefresh(async () => {
           await handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id);
         });
-      },
+      }
     });
   };
 
@@ -99,7 +97,7 @@ const AlertInstanceList: React.FC = () => {
   const handleEnable = async (item: Alert.AlertInstance) => {
     await executeAndCallbackRefresh(async () => {
       await updateDataByParam(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {
-        id: item.id,
+        id: item.id
       });
     });
   };
@@ -154,7 +152,7 @@ const AlertInstanceList: React.FC = () => {
         key={'DeleteAlertInstanceIcon'}
         icon={<DangerDeleteIcon />}
         onClick={() => handleDeleteSubmit(item.id)}
-      />,
+      />
     ];
   };
 
@@ -171,7 +169,7 @@ const AlertInstanceList: React.FC = () => {
   const renderAlertInstanceContent = (item: Alert.AlertInstance) => {
     return (
       <Space className={'hidden-overflow'}>
-        <Tag color="#5BD8A6">
+        <Tag color='#5BD8A6'>
           {item.type} {renderSubType(item)}
         </Tag>
         <Switch
@@ -191,7 +189,7 @@ const AlertInstanceList: React.FC = () => {
     subTitle: renderAlertInstanceSubTitle(item),
     actions: renderAlertInstanceActionButton(item),
     avatar: getAlertIcon(item.type, 60),
-    content: renderAlertInstanceContent(item),
+    content: renderAlertInstanceContent(item)
   }));
 
   /**
@@ -199,10 +197,7 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderToolBar = () => {
     return () => [
-      <CreateBtn
-        key={'CreateAlertInstanceBtn'}
-        onClick={() => handleAddVisible(true)}
-      />,
+      <CreateBtn key={'CreateAlertInstanceBtn'} onClick={() => handleAddVisible(true)} />
     ];
   };
 

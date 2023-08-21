@@ -21,7 +21,7 @@ import CountFormatter from '@/components/CountFormatter';
 import { BatchJobIcon, StreamingJobIcon } from '@/components/Icons/HomeIcon';
 import { imgStyle } from '@/pages/Home/constants';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { BatchStreamingOverView } from '@/types/Home/data';
 import { l } from '@/utils/intl';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
@@ -30,7 +30,7 @@ import React, { useEffect, useState } from 'react';
 export const BatchStreamProportion: React.FC = () => {
   const [data, setData] = useState<BatchStreamingOverView>({
     batchJobCount: 0,
-    streamingJobCount: 0,
+    streamingJobCount: 0
   });
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export const BatchStreamProportion: React.FC = () => {
             value: data?.batchJobCount || 0,
             suffix: l('global.item'),
             icon: <BatchJobIcon style={imgStyle} />,
-            formatter: (value) => <CountFormatter value={Number(value)} />,
+            formatter: (value) => <CountFormatter value={Number(value)} />
           }}
         />
         <StatisticCard.Divider />
@@ -58,7 +58,7 @@ export const BatchStreamProportion: React.FC = () => {
             value: data?.streamingJobCount || 0,
             suffix: l('global.item'),
             icon: <StreamingJobIcon style={imgStyle} />,
-            formatter: (value) => <CountFormatter value={Number(value)} />,
+            formatter: (value) => <CountFormatter value={Number(value)} />
           }}
         />
       </StatisticCard.Group>

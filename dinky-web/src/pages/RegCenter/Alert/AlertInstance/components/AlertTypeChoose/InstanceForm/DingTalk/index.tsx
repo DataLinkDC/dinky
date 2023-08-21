@@ -23,7 +23,7 @@ import {
   ProFormRadio,
   ProFormSwitch,
   ProFormText,
-  ProFormTextArea,
+  ProFormTextArea
 } from '@ant-design/pro-components';
 import { Radio } from 'antd';
 
@@ -35,57 +35,52 @@ const DingTalk = (props: any) => {
       {/* base columns */}
       <ProForm.Group>
         <ProFormTextArea
-          width="lg"
+          width='lg'
           allowClear
-          name="webhook"
+          name='webhook'
           label={l('rc.ai.webhook')}
           rules={[{ required: true, message: l('rc.ai.webhookPleaseHolder') }]}
           placeholder={l('rc.ai.webhookPleaseHolder')}
         />
         <ProFormTextArea
-          width="md"
-          name="keyword"
+          width='md'
+          name='keyword'
           label={l('rc.ai.keyword')}
           placeholder={l('rc.ai.keywordPleaseHolder')}
         />
         <ProFormText.Password
-          width="lg"
+          width='lg'
           allowClear
-          name="secret"
+          name='secret'
           label={l('rc.ai.secret')}
           placeholder={l('rc.ai.secretPleaseHolder')}
         />
 
         {/* advanced columns */}
         <ProFormRadio.Group
-          name="msgtype"
+          name='msgtype'
           width={'xs'}
           label={l('rc.ai.msgtype')}
           rules={[{ required: true, message: l('rc.ai.msgtypePleaseHolder') }]}
         >
           <Radio.Group>
-            <Radio value="markdown">{l('rc.ai.markdown')}</Radio>
-            <Radio value="text">{l('rc.ai.text')}</Radio>
+            <Radio value='markdown'>{l('rc.ai.markdown')}</Radio>
+            <Radio value='text'>{l('rc.ai.text')}</Radio>
           </Radio.Group>
         </ProFormRadio.Group>
       </ProForm.Group>
 
       <ProForm.Group>
         <ProFormSwitch
-          width="xs"
-          name="isEnableProxy"
+          width='xs'
+          name='isEnableProxy'
           label={l('rc.ai.isEnableProxy')}
           {...SWITCH_OPTIONS()}
         />
+        <ProFormSwitch width='xs' name='isAtAll' label={l('rc.ai.isAtAll')} {...SWITCH_OPTIONS()} />
         <ProFormSwitch
-          width="xs"
-          name="isAtAll"
-          label={l('rc.ai.isAtAll')}
-          {...SWITCH_OPTIONS()}
-        />
-        <ProFormSwitch
-          width="xs"
-          name="enabled"
+          width='xs'
+          name='enabled'
           label={l('global.table.isEnable')}
           {...SWITCH_OPTIONS()}
         />
@@ -93,12 +88,10 @@ const DingTalk = (props: any) => {
         {!values.isAtAll && (
           <>
             <ProFormTextArea
-              width="xl"
-              name="atMobiles"
+              width='xl'
+              name='atMobiles'
               label={l('rc.ai.atMobiles')}
-              rules={[
-                { required: true, message: l('rc.ai.atMobilesPleaseHolder') },
-              ]}
+              rules={[{ required: true, message: l('rc.ai.atMobilesPleaseHolder') }]}
               placeholder={l('rc.ai.atMobilesPleaseHolder')}
             />
           </>
@@ -110,36 +103,32 @@ const DingTalk = (props: any) => {
         {values.isEnableProxy && (
           <>
             <ProFormText
-              width="md"
-              name="proxy"
+              width='md'
+              name='proxy'
               label={l('rc.ai.proxy')}
-              rules={[
-                { required: true, message: l('rc.ai.proxyPleaseHolder') },
-              ]}
+              rules={[{ required: true, message: l('rc.ai.proxyPleaseHolder') }]}
               placeholder={l('rc.ai.proxyPleaseHolder')}
             />
 
             <ProFormDigit
-              width="lg"
-              name="port"
+              width='lg'
+              name='port'
               label={l('rc.ai.port')}
               rules={[{ required: true, message: l('rc.ai.portPleaseHolder') }]}
               placeholder={l('rc.ai.portPleaseHolder')}
             />
             <ProFormText
-              width="md"
-              name="user"
+              width='md'
+              name='user'
               label={l('rc.ai.user')}
               rules={[{ required: true, message: l('rc.ai.userPleaseHolder') }]}
               placeholder={l('rc.ai.userPleaseHolder')}
             />
             <ProFormText.Password
               width={'lg'}
-              name="password"
+              name='password'
               label={l('rc.ai.password')}
-              rules={[
-                { required: true, message: l('rc.ai.passwordPleaseHolder') },
-              ]}
+              rules={[{ required: true, message: l('rc.ai.passwordPleaseHolder') }]}
               placeholder={l('rc.ai.passwordPleaseHolder')}
             />
           </>

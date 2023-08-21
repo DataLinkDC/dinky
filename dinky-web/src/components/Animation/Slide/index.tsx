@@ -25,7 +25,7 @@ const Slide = (props: any) => {
   const style = useSpring({
     from: { transform: 'translateX(-100%)' },
     to: { transform: 'translateX(0%)' },
-    config: { duration: 1000 },
+    config: { duration: 1000 }
   });
 
   return <animated.div style={{ ...style }}>{children}</animated.div>;

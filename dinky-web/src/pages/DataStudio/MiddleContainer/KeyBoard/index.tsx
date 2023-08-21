@@ -33,13 +33,13 @@ const KeyBoard = () => {
               <Divider plain orientationMargin={0} />
               <Text keyboard>{item.label}</Text>
               {item.description}
-              <Divider type="vertical" />
+              <Divider type='vertical' />
             </>
           ) : (
             <>
               <Text keyboard>{item.label}</Text>
               {item.description}
-              <Divider type="vertical" />
+              <Divider type='vertical' />
             </>
           )}
         </>
@@ -48,14 +48,10 @@ const KeyBoard = () => {
   };
 
   return (
-    <Typography
-      style={{ padding: '2px', textAlign: 'center', border: 'salmon' }}
-    >
+    <Typography style={{ padding: '2px', textAlign: 'center', border: 'salmon' }}>
       <br />
       <Title level={4}>{l('shortcut.title')}</Title>
-      <Paragraph
-        style={{ padding: 0, margin: 0, textAlign: 'center', border: 'salmon' }}
-      >
+      <Paragraph style={{ padding: 0, margin: 0, textAlign: 'center', border: 'salmon' }}>
         {buildKeyBoard()}
       </Paragraph>
     </Typography>

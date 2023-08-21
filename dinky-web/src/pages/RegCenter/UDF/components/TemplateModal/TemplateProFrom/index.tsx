@@ -16,18 +16,11 @@
  */
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
-import {
-  CODE_TYPE,
-  FUNCTION_TYPE_FILTER,
-} from '@/pages/RegCenter/UDF/constants';
+import { CODE_TYPE, FUNCTION_TYPE_FILTER } from '@/pages/RegCenter/UDF/constants';
 import { UDFTemplate } from '@/types/RegCenter/data';
 import { renderLanguage } from '@/utils/function';
 import { l } from '@/utils/intl';
-import {
-  ProForm,
-  ProFormSelect,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { Select } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { DefaultOptionType } from 'antd/es/select';
@@ -43,7 +36,7 @@ const CodeEditProps = {
   width: '40vw',
   lineNumbers: 'on',
   language: 'java',
-  showFloatButton: true,
+  showFloatButton: true
 };
 
 /**
@@ -59,9 +52,7 @@ const TemplateProFrom: React.FC<TemplateFormProps> = (props) => {
   const { values, form } = props;
 
   const [codeValue, setCodeValue] = useState<string>(values.templateCode || '');
-  const [codeLanguage, setCodeLanguage] = useState<string>(
-    lowerCase(values.codeType) || 'java',
-  );
+  const [codeLanguage, setCodeLanguage] = useState<string>(lowerCase(values.codeType) || 'java');
 
   const handleCodeTypeChange = (value: string) => {
     setCodeLanguage(renderLanguage(toLower(value), ''));
@@ -72,7 +63,7 @@ const TemplateProFrom: React.FC<TemplateFormProps> = (props) => {
     FUNCTION_TYPE_FILTER.map((item) => {
       return functionTypes.push({
         value: item.value,
-        label: item.text,
+        label: item.text
       });
     });
     return functionTypes;
@@ -84,21 +75,17 @@ const TemplateProFrom: React.FC<TemplateFormProps> = (props) => {
         <ProForm.Group>
           <ProFormText
             width={'xl'}
-            name="name"
+            name='name'
             label={l('rc.template.name')}
             placeholder={l('rc.template.namePlaceholder')}
-            rules={[
-              { required: true, message: l('rc.template.namePlaceholder') },
-            ]}
+            rules={[{ required: true, message: l('rc.template.namePlaceholder') }]}
           />
         </ProForm.Group>
         <ProForm.Group>
           <ProForm.Item
-            name="codeType"
+            name='codeType'
             label={l('rc.template.codeType')}
-            rules={[
-              { required: true, message: l('rc.template.codeTypePlaceholder') },
-            ]}
+            rules={[{ required: true, message: l('rc.template.codeTypePlaceholder') }]}
           >
             <Select
               onSelect={handleCodeTypeChange}
@@ -112,13 +99,13 @@ const TemplateProFrom: React.FC<TemplateFormProps> = (props) => {
           </ProForm.Item>
           <ProFormSelect
             width={'md'}
-            name="functionType"
+            name='functionType'
             label={l('rc.template.functionType')}
             rules={[
               {
                 required: true,
-                message: l('rc.template.functionTypePlaceholder'),
-              },
+                message: l('rc.template.functionTypePlaceholder')
+              }
             ]}
             placeholder={l('rc.template.functionTypePlaceholder')}
             options={renderFunctionType()}
@@ -126,15 +113,15 @@ const TemplateProFrom: React.FC<TemplateFormProps> = (props) => {
         </ProForm.Group>
         <ProForm.Group>
           <ProForm.Item
-            name="templateCode"
+            name='templateCode'
             label={l('rc.template.templateCodeLabel', '', {
-              language: codeLanguage,
+              language: codeLanguage
             })}
             rules={[
               {
                 required: true,
-                message: l('rc.template.templateCodePlaceholder'),
-              },
+                message: l('rc.template.templateCodePlaceholder')
+              }
             ]}
           >
             <CodeEdit
@@ -155,7 +142,7 @@ const TemplateProFrom: React.FC<TemplateFormProps> = (props) => {
         form={form}
         initialValues={{
           ...values,
-          codeType: values.codeType || CODE_TYPE.JAVA,
+          codeType: values.codeType || CODE_TYPE.JAVA
         }}
         submitter={false}
       >

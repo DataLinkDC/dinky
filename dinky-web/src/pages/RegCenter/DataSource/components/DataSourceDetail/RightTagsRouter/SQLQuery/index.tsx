@@ -20,7 +20,8 @@ import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceD
 import QueryForm from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery/QueryForm';
 import { buildColumnsQueryKeyWord } from '@/pages/RegCenter/DataSource/components/function';
 import { handleOption } from '@/services/BusinessCrud';
-import { API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { ProTable } from '@ant-design/pro-table';
 import { Alert, Empty, Form } from 'antd';
@@ -33,19 +34,17 @@ type SQLQueryProps = {
 
 const SQLQuery: React.FC<SQLQueryProps> = (props) => {
   const {
-    queryParams: { id: dbId, schemaName, tableName },
+    queryParams: { id: dbId, schemaName, tableName }
   } = props;
 
   // state
   const [form] = Form.useForm();
   const [tableData, setTableData] = useState({ columns: [{}], rowData: [{}] });
-  const [autoCompleteColumns, setAutoCompleteColumns] = useState<
-    DefaultOptionType[]
-  >([]);
+  const [autoCompleteColumns, setAutoCompleteColumns] = useState<DefaultOptionType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<{ isErr: boolean; msg: string }>({
     isErr: false,
-    msg: '',
+    msg: ''
   });
 
   // query data
@@ -62,13 +61,13 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
           where: values.where,
           order: values.order,
           limitStart: '0',
-          limitEnd: '500',
-        },
-      },
+          limitEnd: '500'
+        }
+      }
     );
     const {
       code,
-      datas: { columns, rowData },
+      datas: { columns, rowData }
     } = result; // 获取到的数据
     if (code === 1) {
       setErrMsg({ isErr: true, msg: result.datas.error });
@@ -82,7 +81,7 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
       key: item,
       ellipsis: true,
       tooltip: item,
-      width: '8%',
+      width: '8%'
     }));
     setAutoCompleteColumns(buildColumnsQueryKeyWord(columns));
     setTableData({ columns: tableColumns, rowData: rowData });
@@ -115,12 +114,7 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
     return (
       <>
         {errMsg.isErr ? (
-          <Alert
-            message="Error"
-            description={errMsg.msg}
-            type="error"
-            showIcon
-          />
+          <Alert message='Error' description={errMsg.msg} type='error' showIcon />
         ) : (
           <></>
         )}
@@ -137,7 +131,7 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
       autoCompleteColumns={autoCompleteColumns}
       form={form}
       onSubmit={(values) => fetchData(values)}
-    />,
+    />
   ];
 
   /**
@@ -154,9 +148,9 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
           search={false}
           pagination={{
             defaultPageSize: 15,
-            hideOnSinglePage: true,
+            hideOnSinglePage: true
           }}
-          dateFormatter="string"
+          dateFormatter='string'
           columns={tableData.columns}
           dataSource={tableData.rowData}
           toolBarRender={renderToolBar}
@@ -164,14 +158,11 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
           options={{
             density: false,
             reload: false,
-            fullScreen: true,
+            fullScreen: true
           }}
         />
       ) : (
-        <Empty
-          className={'code-content-empty'}
-          description={l('rc.ds.detail.tips')}
-        />
+        <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')} />
       )}
     </Height80VHDiv>
   );

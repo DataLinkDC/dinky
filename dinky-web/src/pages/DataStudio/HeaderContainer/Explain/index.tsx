@@ -47,11 +47,9 @@ export type ExplainProps = {
 };
 const Explain: React.FC<ExplainProps> = (props: any) => {
   const [explainData, setExplainData] = useState([]);
-  const [result, setResult] = useState(
-    <Text>{l('pages.datastudio.explain.validate')}</Text>,
-  );
+  const [result, setResult] = useState(<Text>{l('pages.datastudio.explain.validate')}</Text>);
   const {
-    tabs: { panes, activeKey },
+    tabs: { panes, activeKey }
   } = props;
   const current = getCurrentData(panes, activeKey);
 
@@ -69,7 +67,7 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
       ...current,
       // useSession: useSession,
       // session: currentSession.session,
-      configJson: JSON.stringify(current.config),
+      configJson: JSON.stringify(current.config)
     };
     setResult(<Text>{l('pages.datastudio.explain.validate')}</Text>);
     setExplainData([]);
@@ -78,7 +76,7 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
       const errorExplainData: [] = [];
       let errorCount: number = 0;
       if (!res.datas) {
-        setResult(<Text type="danger">{res.msg}</Text>);
+        setResult(<Text type='danger'>{res.msg}</Text>);
         return;
       } else {
         for (let i in res.datas) {
@@ -91,19 +89,15 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
       }
       if (errorCount == 0) {
         setExplainData(res.datas);
-        setResult(
-          <Text type="success">
-            {l('pages.datastudio.explain.validate.allright')}
-          </Text>,
-        );
+        setResult(<Text type='success'>{l('pages.datastudio.explain.validate.allright')}</Text>);
       } else {
         setExplainData(errorExplainData);
         setResult(
-          <Text type="danger">
+          <Text type='danger'>
             {l('pages.datastudio.explain.validate.error', '', {
-              errorCount: errorCount,
+              errorCount: errorCount
             })}
-          </Text>,
+          </Text>
         );
       }
     });
@@ -115,18 +109,18 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
         <ProList<ExplainItem>
           toolBarRender={false}
           search={{
-            filterType: 'light',
+            filterType: 'light'
           }}
-          rowKey="id"
+          rowKey='id'
           dataSource={explainData}
           pagination={{
-            pageSize: 5,
+            pageSize: 5
           }}
-          showActions="hover"
+          showActions='hover'
           metas={{
             avatar: {
               dataIndex: 'index',
-              search: false,
+              search: false
             },
             title: {
               dataIndex: 'type',
@@ -134,12 +128,12 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
               render: (_, row) => {
                 return (
                   <Space size={0}>
-                    <Tag color="blue" key={row.type}>
+                    <Tag color='blue' key={row.type}>
                       <ConsoleSqlOutlined /> {row.type}
                     </Tag>
                   </Space>
                 );
-              },
+              }
             },
             description: {
               search: false,
@@ -147,44 +141,38 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
                 return (
                   <>
                     {row.sql ? (
-                      <Paragraph
-                        ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}
-                      >
+                      <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}>
                         {row.sql}
                       </Paragraph>
                     ) : null}
                     {row.error ? (
                       <Paragraph>
-                        <CodeShow
-                          code={row.error}
-                          language="java"
-                          height="500px"
-                        />
+                        <CodeShow code={row.error} language='java' height='500px' />
                       </Paragraph>
                     ) : null}
                   </>
                 );
-              },
+              }
             },
             subTitle: {
               render: (_, row) => {
                 return (
                   <Space size={0}>
                     {row.parseTrue ? (
-                      <Tag color="#44b549">
+                      <Tag color='#44b549'>
                         {l('pages.datastudio.explain.validate.grammar.right')}
                       </Tag>
                     ) : (
-                      <Tag color="#ff4d4f">
+                      <Tag color='#ff4d4f'>
                         {l('pages.datastudio.explain.validate.grammar.error')}
                       </Tag>
                     )}
                     {row.explainTrue ? (
-                      <Tag color="#108ee9">
+                      <Tag color='#108ee9'>
                         {l('pages.datastudio.explain.validate.logic.right')}
                       </Tag>
                     ) : (
-                      <Tag color="#ff4d4f">
+                      <Tag color='#ff4d4f'>
                         {l('pages.datastudio.explain.validate.logic.error')}
                       </Tag>
                     )}
@@ -192,12 +180,12 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
                   </Space>
                 );
               },
-              search: false,
-            },
+              search: false
+            }
           }}
           options={{
             search: false,
-            setting: false,
+            setting: false
           }}
         />
       </>
@@ -226,5 +214,5 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs,
+  tabs: Studio.tabs
 }))(Explain);

@@ -28,7 +28,7 @@ import {
   StateType,
   STUDIO_MODEL,
   TabsItemType,
-  TabsPageType,
+  TabsPageType
 } from '@/pages/DataStudio/model';
 import { RightSide } from '@/pages/DataStudio/route';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
@@ -43,7 +43,7 @@ const MiddleContainer = (props: any) => {
   const {
     tabs: { panes, activeKey },
     rightKey,
-    dispatch,
+    dispatch
   } = props;
   const themeValue = useThemeValue();
 
@@ -81,14 +81,12 @@ const MiddleContainer = (props: any) => {
     if (newRightSideAvailableKey.length === 0) {
       dispatch({
         type: STUDIO_MODEL.updateSelectRightKey,
-        payload: '',
+        payload: ''
       });
       return;
     }
 
-    const oldIndex = oldRightSideAvailableKey.findIndex(
-      (value) => value === rightKey,
-    );
+    const oldIndex = oldRightSideAvailableKey.findIndex((value) => value === rightKey);
     let selectKey: string;
     if (oldIndex >= newRightSideAvailableKey.length) {
       selectKey = newRightSideAvailableKey.pop() as string;
@@ -98,7 +96,7 @@ const MiddleContainer = (props: any) => {
 
     dispatch({
       type: STUDIO_MODEL.updateSelectRightKey,
-      payload: selectKey,
+      payload: selectKey
     });
   };
 
@@ -112,23 +110,23 @@ const MiddleContainer = (props: any) => {
 
     dispatch({
       type: STUDIO_MODEL.updateTabsActiveKey,
-      payload: key,
+      payload: key
     });
 
     // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
     const name = value.toString().replace('.', '/');
     dispatch({
       type: STUDIO_MODEL.updateDatabaseSelectKey,
-      payload: [name],
+      payload: [name]
     });
-  }
+  };
 
   /**
    * 关闭所有标签
    */
   const handleCloseAllTabs = () => {
     dispatch({
-      type: STUDIO_MODEL.closeAllTabs,
+      type: STUDIO_MODEL.closeAllTabs
     });
     setContextMenuVisible(false);
   };
@@ -139,7 +137,7 @@ const MiddleContainer = (props: any) => {
   const handleCloseOtherTabs = () => {
     dispatch({
       type: STUDIO_MODEL.closeOtherTabs,
-      payload: includeTab,
+      payload: includeTab
     });
     setContextMenuVisible(false);
   };
@@ -161,7 +159,7 @@ const MiddleContainer = (props: any) => {
       width: '10vw',
       zIndex: 9999,
       left: info.clientX + 10, // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
-      top: info.clientY + 10, // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
+      top: info.clientY + 10 // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
     });
   };
 
@@ -193,7 +191,7 @@ const MiddleContainer = (props: any) => {
         overlayStyle={{ ...contextMenuPosition }}
         menu={{
           items: STUDIO_TAG_RIGHT_CONTEXT_MENU,
-          onClick: handleMenuClick,
+          onClick: handleMenuClick
         }}
         open={contextMenuVisible}
         onOpenChange={setContextMenuVisible}
@@ -212,12 +210,7 @@ const MiddleContainer = (props: any) => {
       switch (item.type) {
         case TabsPageType.metadata:
           const params = item.params as MetadataParams;
-          return (
-            <RightTagsRouter
-              tableInfo={params.tableInfo}
-              queryParams={params.queryParams}
-            />
-          );
+          return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams} />;
         case TabsPageType.project:
           if (parseInt(activeKey) < 0) {
             return TabsPageType.None;
@@ -233,7 +226,7 @@ const MiddleContainer = (props: any) => {
       key: item.key,
       label: (
         <Space
-          onClick={(e) => updateActiveKey(item.key, item.label) }
+          onClick={(e) => updateActiveKey(item.key, item.label)}
           size={0}
           onContextMenu={(e) => handleRightClick(e, item)}
           key={item.key}
@@ -243,12 +236,10 @@ const MiddleContainer = (props: any) => {
         </Space>
       ),
       children: (
-        <ContentScroll
-          height={activeKey === item.key ? props.centerContentHeight - 35 : 0}
-        >
+        <ContentScroll height={activeKey === item.key ? props.centerContentHeight - 35 : 0}>
           {renderContent()}
         </ContentScroll>
-      ),
+      )
     };
   });
 
@@ -260,13 +251,13 @@ const MiddleContainer = (props: any) => {
     if (panes.length === 1) {
       dispatch({
         type: STUDIO_MODEL.updateSelectRightKey,
-        payload: '',
+        payload: ''
       });
     }
 
     dispatch({
       type: STUDIO_MODEL.closeTab,
-      payload: targetKey,
+      payload: targetKey
     });
   };
 
@@ -288,26 +279,28 @@ const MiddleContainer = (props: any) => {
     }
 
     return (
-        <ConfigProvider
-            theme={{
-              components: {
-                Tabs: {
-                  margin: 0,
-                  borderRadiusLG: 0,
-                },
-              },
-            }}>
-          <Tabs
-              className={'data-studio-tabs'}
-              tabBarStyle={{borderBlock: `1px solid ${themeValue.borderColor}`}}
-              hideAdd
-              // onTabClick={(active, e) => {updateActiveKey(active, tabItems[active].label)}}
-              activeKey={activeKey}
-              type="editable-card"
-              onEdit={closeTab}
-              items={tabItems}/>
-          {renderRightClickMenu()}
-        </ConfigProvider>
+      <ConfigProvider
+        theme={{
+          components: {
+            Tabs: {
+              margin: 0,
+              borderRadiusLG: 0
+            }
+          }
+        }}
+      >
+        <Tabs
+          className={'data-studio-tabs'}
+          tabBarStyle={{ borderBlock: `1px solid ${themeValue.borderColor}` }}
+          hideAdd
+          // onTabClick={(active, e) => {updateActiveKey(active, tabItems[active].label)}}
+          activeKey={activeKey}
+          type='editable-card'
+          onEdit={closeTab}
+          items={tabItems}
+        />
+        {renderRightClickMenu()}
+      </ConfigProvider>
     );
   };
 
@@ -317,5 +310,5 @@ const MiddleContainer = (props: any) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   centerContentHeight: Studio.centerContentHeight,
-  rightKey: Studio.rightContainer.selectKey,
+  rightKey: Studio.rightContainer.selectKey
 }))(MiddleContainer);

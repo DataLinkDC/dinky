@@ -17,7 +17,7 @@
  *
  */
 
-import { UserBaseInfo } from '@/types/User/data';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { CheckGroupValueType } from '@ant-design/pro-card/es/components/CheckCard/Group';
 import { CheckCard } from '@ant-design/pro-components';
 import React from 'react';
@@ -39,7 +39,7 @@ const TenantCard: React.FC<TenantCardProps> = (props) => {
           <CheckCard
             size={'default'}
             key={item.id}
-            avatar="/icons/tenant_default.svg"
+            avatar='/icons/tenant_default.svg'
             title={item.tenantCode}
             value={item.id}
             description={item.note}

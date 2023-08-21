@@ -25,7 +25,7 @@ import {
   DeleteTwoTone,
   EditTwoTone,
   PlusCircleTwoTone,
-  UpCircleTwoTone,
+  UpCircleTwoTone
 } from '@ant-design/icons';
 import { MenuItemType } from 'antd/es/menu/hooks/useItems';
 import { DefaultOptionType } from 'antd/es/select';
@@ -45,29 +45,29 @@ export const FOLDER_RIGHT_MENU = (disabled = false): MenuItemType[] => [
   {
     key: 'addSubFolder',
     icon: <PlusCircleTwoTone />,
-    label: l('right.menu.createSubFolder'),
+    label: l('right.menu.createSubFolder')
   },
   {
     key: 'createTask',
     icon: <PlusCircleTwoTone />,
-    label: l('right.menu.createTask'),
+    label: l('right.menu.createTask')
   },
   {
     key: 'delete',
     icon: <DeleteTwoTone twoToneColor={'red'} />,
-    label: l('button.delete'),
+    label: l('button.delete')
   },
   {
     key: 'renameFolder',
     icon: <EditTwoTone />,
-    label: l('right.menu.rename'),
+    label: l('right.menu.rename')
   },
   {
     key: 'paste',
     icon: <CompassTwoTone />,
     label: l('right.menu.paste'),
-    disabled: !disabled,
-  },
+    disabled: !disabled
+  }
 ];
 
 /**
@@ -84,29 +84,29 @@ export const JOB_RIGHT_MENU = (disabled = false): MenuItemType[] => [
   {
     key: 'edit',
     icon: <EditTwoTone />,
-    label: l('button.edit'),
+    label: l('button.edit')
   },
   {
     key: 'exportJson',
     icon: <UpCircleTwoTone />,
-    label: l('right.menu.exportJson'),
+    label: l('right.menu.exportJson')
   },
   {
     key: 'copy',
     icon: <CopyTwoTone />,
-    label: l('right.menu.copy'),
+    label: l('right.menu.copy')
   },
   {
     key: 'cut',
     icon: <CopyrightTwoTone />,
     label: l('right.menu.cut'),
-    disabled: disabled,
+    disabled: disabled
   },
   {
     key: 'delete',
     icon: <DeleteTwoTone twoToneColor={'red'} />,
-    label: l('button.delete'),
-  },
+    label: l('button.delete')
+  }
 ];
 
 /**
@@ -119,86 +119,86 @@ export const JOB_TYPE: DefaultOptionType[] = [
     options: [
       {
         value: 'FlinkSql',
-        label: 'FlinkSql',
+        label: 'FlinkSql'
       },
       {
         value: 'FlinkJar',
-        label: 'FlinkJar',
+        label: 'FlinkJar'
       },
       {
         value: 'FlinkSqlEnv',
-        label: 'FlinkSqlEnv',
+        label: 'FlinkSqlEnv'
       },
       {
         value: 'KubernetesApplication',
-        label: 'KubernetesApplication',
-      },
-    ],
+        label: 'KubernetesApplication'
+      }
+    ]
   },
   {
     label: 'Jdbc Query Type',
     options: [
       {
         value: 'Sql',
-        label: 'Sql',
+        label: 'Sql'
       },
       {
         value: 'Mysql',
-        label: 'Mysql',
+        label: 'Mysql'
       },
       {
         value: 'Oracle',
-        label: 'Oracle',
+        label: 'Oracle'
       },
       {
         value: 'SqlServer',
-        label: 'SqlServer',
+        label: 'SqlServer'
       },
       {
         value: 'PostgreSql',
-        label: 'PostgreSql',
+        label: 'PostgreSql'
       },
       {
         value: 'ClickHouse',
-        label: 'ClickHouse',
+        label: 'ClickHouse'
       },
       {
         value: 'Doris',
-        label: 'Doris',
+        label: 'Doris'
       },
       {
         value: 'Hive',
-        label: 'Hive',
+        label: 'Hive'
       },
       {
         value: 'Phoenix',
-        label: 'Phoenix',
+        label: 'Phoenix'
       },
       {
         value: 'StarRocks',
-        label: 'StarRocks',
+        label: 'StarRocks'
       },
       {
         value: 'Presto',
-        label: 'Presto',
-      },
-    ],
+        label: 'Presto'
+      }
+    ]
   },
   {
     label: 'Other Type',
     options: [
       {
         value: 'Java',
-        label: 'Java',
+        label: 'Java'
       },
       {
         value: 'Scala',
-        label: 'Scala',
+        label: 'Scala'
       },
       {
         value: 'Python',
-        label: 'Python',
-      },
-    ],
-  },
+        label: 'Python'
+      }
+    ]
+  }
 ];

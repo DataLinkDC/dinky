@@ -48,7 +48,7 @@ export const ALERT_TYPE = {
   FEISHU: 'FeiShu',
   EMAIL: 'Email',
   SMS: 'Sms',
-  GROUP: 'Group',
+  GROUP: 'Group'
 };
 
 /**
@@ -212,18 +212,4 @@ export type UDFTemplate = BaseBeanColumns & {
   codeType: string;
   functionType: string;
   templateCode: string;
-};
-
-export type SysMenu = BaseBeanColumns & {
-  parentId: number; // 父级
-  orderNum: number; // 排序
-  path: string; // 路由
-  component: string; // 组件
-  type: string; // C菜单 F按钮 M目录
-  display: boolean; // 菜单状态(0显示 1隐藏)
-  perms: string; // 权限标识
-  icon: string; // 图标
-  rootMenu: boolean;
-  note: string;
-  children: SysMenu[];
 };

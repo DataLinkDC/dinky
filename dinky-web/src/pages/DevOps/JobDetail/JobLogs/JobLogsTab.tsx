@@ -38,19 +38,19 @@ const JobLogsTab = (props: JobProps) => {
           {
             label: 'Exception',
             key: 'Exception',
-            children: <ExceptionTab jobDetail={jobDetail} />,
+            children: <ExceptionTab jobDetail={jobDetail} />
           },
 
           {
             label: 'JobManager',
             key: 'JobManager',
-            children: <JobManagerLogsTab jobDetail={jobDetail} />,
+            children: <JobManagerLogsTab jobDetail={jobDetail} />
           },
           {
             label: 'TaskManager',
             key: 'TaskManager',
-            children: <TaskManagerLogsTab jobDetail={jobDetail} />,
-          },
+            children: <TaskManagerLogsTab jobDetail={jobDetail} />
+          }
         ]}
       />
       {/*</ProCard>*/}

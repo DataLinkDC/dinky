@@ -44,9 +44,9 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
 
   const [submitting, setSubmitting] = React.useState<boolean>(false);
@@ -85,14 +85,9 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
       <Button key={'cancel'} onClick={() => handleCancel()}>
         {l('button.cancel')}
       </Button>,
-      <Button
-        key={'finish'}
-        loading={submitting}
-        type="primary"
-        onClick={() => submitForm()}
-      >
+      <Button key={'finish'} loading={submitting} type='primary' onClick={() => submitForm()}>
         {l('button.finish')}
-      </Button>,
+      </Button>
     ];
   };
 

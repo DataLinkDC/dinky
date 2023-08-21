@@ -25,17 +25,9 @@ import CodeShow from '@/components/CustomEditor/CodeShow';
 import GlobalVarDrawer from '@/pages/RegCenter/GlobalVar/components/GlobalVarDrawer';
 import GlobalVarModal from '@/pages/RegCenter/GlobalVar/components/GlobalVarModal';
 import { queryList } from '@/services/api';
-import {
-  handleAddOrUpdate,
-  handleRemoveById,
-  updateDataByParam,
-} from '@/services/BusinessCrud';
-import {
-  API_CONSTANTS,
-  PROTABLE_OPTIONS_PUBLIC,
-  STATUS_ENUM,
-  STATUS_MAPPING,
-} from '@/services/constants';
+import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
+import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Document, GlobalVar } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
@@ -47,8 +39,7 @@ const GlobalVarProTable = () => {
    * state
    */
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
   const actionRef = useRef<ActionType>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -79,7 +70,7 @@ const GlobalVarProTable = () => {
   const handleChangeEnable = async (value: Partial<GlobalVar>) => {
     await executeAndCallbackRefresh(async () => {
       await updateDataByParam(API_CONSTANTS.GLOBAL_VARIABLE_ENABLE, {
-        id: value.id,
+        id: value.id
       });
     });
   };
@@ -133,7 +124,7 @@ const GlobalVarProTable = () => {
       sorter: true,
       render: (dom, record) => {
         return <a onClick={() => handleOpenDrawer(record)}>{dom}</a>;
-      },
+      }
     },
     {
       title: l('rc.gv.value'),
@@ -141,12 +132,12 @@ const GlobalVarProTable = () => {
       hideInTable: true,
       render: (_, record) => {
         return <CodeShow width={'75vh'} code={record.fragmentValue} />;
-      },
+      }
     },
     {
       title: l('global.table.note'),
       dataIndex: 'note',
-      valueType: 'textarea',
+      valueType: 'textarea'
     },
     {
       title: l('global.table.isEnable'),
@@ -165,7 +156,7 @@ const GlobalVarProTable = () => {
       },
       filters: STATUS_MAPPING(),
       filterMultiple: false,
-      valueEnum: STATUS_ENUM(),
+      valueEnum: STATUS_ENUM()
     },
     {
       title: l('global.table.createTime'),
@@ -173,7 +164,7 @@ const GlobalVarProTable = () => {
       hideInSearch: true,
       width: '20vh',
       sorter: true,
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.lastUpdateTime'),
@@ -181,24 +172,21 @@ const GlobalVarProTable = () => {
       width: '20vh',
       hideInSearch: true,
       sorter: true,
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.operate'),
       width: '10vh',
       valueType: 'option',
       render: (_, record) => [
-        <EditBtn
-          key={`${record.id}_edit`}
-          onClick={() => handleClickEdit(record)}
-        />,
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />,
         <PopconfirmDeleteBtn
           key={`${record.id}_delete`}
           onClick={() => handleDeleteSubmit(record.id)}
           description={l('rc.gv.deleteConfirm')}
-        />,
-      ],
-    },
+        />
+      ]
+    }
   ];
 
   /**
@@ -213,16 +201,13 @@ const GlobalVarProTable = () => {
         loading={loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
-          <CreateBtn
-            key={'vartable'}
-            onClick={() => handleModalVisible(true)}
-          />,
+          <CreateBtn key={'vartable'} onClick={() => handleModalVisible(true)} />
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.GLOBAL_VARIABLE, {
             ...params,
             sorter,
-            filter,
+            filter
           })
         }
         columns={columns}

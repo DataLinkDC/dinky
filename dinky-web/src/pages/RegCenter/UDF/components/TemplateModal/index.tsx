@@ -43,9 +43,9 @@ const TemplateModal: React.FC<TemplateModalProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
 
   /**
@@ -82,14 +82,9 @@ const TemplateModal: React.FC<TemplateModalProps> = (props) => {
       <Button key={'cancel'} onClick={() => handleCancel()}>
         {l('button.cancel')}
       </Button>,
-      <Button
-        key={'finish'}
-        loading={submitting}
-        type="primary"
-        onClick={() => submitForm()}
-      >
+      <Button key={'finish'} loading={submitting} type='primary' onClick={() => submitForm()}>
         {l('button.finish')}
-      </Button>,
+      </Button>
     ];
   };
 

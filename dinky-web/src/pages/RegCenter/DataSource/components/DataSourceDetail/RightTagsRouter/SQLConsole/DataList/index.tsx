@@ -35,7 +35,7 @@ const DataList: React.FC<DataListProps> = (props) => {
           position: ['bottomCenter'],
           pageSize: 10,
           showQuickJumper: true,
-          hideOnSinglePage: true,
+          hideOnSinglePage: true
         }}
         columns={columns}
         dataSource={data}

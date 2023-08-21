@@ -41,20 +41,15 @@ const DocumentModalForm: React.FC<DocumentModalProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
 
   /**
    * init props
    */
-  const {
-    onSubmit: handleSubmit,
-    onCancel: handleModalVisible,
-    modalVisible,
-    values,
-  } = props;
+  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
 
   /**
    * handle cancel

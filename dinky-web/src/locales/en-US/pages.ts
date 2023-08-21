@@ -20,20 +20,17 @@ export default {
   'layouts.userLayout.title': 'Dinky Real-time Platform ',
   'login.error': 'Login failed, please try again! Reason：{msg}',
   'login.result': '{msg}\t\t{time}',
-  'login.notbindtenant':
-    'You have not bound a tenant, please contact the administrator',
+  'login.notbindtenant': 'You have not bound a tenant, please contact the administrator',
   'login.username.placeholder': 'Username',
   'login.username.required': 'Please input your username!',
   'login.chooseTenant': 'Please Choose Tenant',
   'login.chooseTenantFailed': 'Tenant selection failed, please check. . . ',
-  'login.chooseTenantSuccess':
-    '{msg}, Use [ {tenantCode} ] to enter the system, loading. . .',
+  'login.chooseTenantSuccess': '{msg}, Use [ {tenantCode} ] to enter the system, loading. . .',
   'login.password.placeholder': 'Password',
   'login.password.required': 'Please input your password!',
   'login.rememberMe': 'Remember me',
   'login.ldapLogin': 'LDAP Login',
-  'about.Community':
-    'Welcome to join the Dinky Official Community, Build a win-win situation',
+  'about.Community': 'Welcome to join the Dinky Official Community, Build a win-win situation',
   'about.QQcode': 'QQ Official Community Group',
   'about.wechatCode': 'Wechat Official Account',
   'about.dingTalkCode': 'DingTalk Official Community Group',
@@ -104,8 +101,7 @@ export default {
   'devops.jobinfo.smart_stop': 'Smart Stop',
   'devops.jobinfo.reonline': 'Re-Online',
   'devops.jobinfo.reonlineJob': 'Re-online Job',
-  'devops.jobinfo.reonlineJobConfirm':
-    'Are you sure you want to re-launch this job? ',
+  'devops.jobinfo.reonlineJobConfirm': 'Are you sure you want to re-launch this job? ',
   'devops.jobinfo.reonline.success': 'Re-online successfully',
   'devops.jobinfo.reonline.failed': 'Failed to re-online',
   'devops.jobinfo.restart': 'Restart',
@@ -144,8 +140,7 @@ export default {
   'devops.jobinfo.version.versionList': 'Job Version',
   'devops.jobinfo.version.latestVersion': 'Current Version',
   'devops.jobinfo.version.delete': 'Delete Version',
-  'devops.jobinfo.version.delete.sure':
-    'Are you sure you want to remove this version？V{version}',
+  'devops.jobinfo.version.delete.sure': 'Are you sure you want to remove this version？V{version}',
 
   'devops.jobinfo.ck.id': 'ID',
   'devops.jobinfo.ck.taskid': 'Task ID',
@@ -158,8 +153,7 @@ export default {
   'devops.jobinfo.ck.state_size': 'State Size',
   'devops.jobinfo.ck.trigger_timestamp': 'Trigger Time',
   'devops.jobinfo.ck.recovery': 'Recovering from Checkpoint! ',
-  'devops.jobinfo.ck.recoveryConfirm':
-    'Are you sure to Recover from Checkpoint [{path}]?',
+  'devops.jobinfo.ck.recoveryConfirm': 'Are you sure to Recover from Checkpoint [{path}]?',
   'devops.jobinfo.ck.recovery.success': 'Recovery job succeeded',
   'devops.jobinfo.ck.recovery.failed': 'Recovery job failed',
   'devops.jobinfo.ck.recovery.recoveryTo': 'Recovery Here',
@@ -290,8 +284,7 @@ export default {
     'Modify Menu: click on the node you want to modify in the tree view on the left, and render the modification form here',
   'menu.tips.2':
     'Add Root Menu: click the button in the upper right corner of the tree view to add',
-  'menu.tips.3':
-    'Add/Delete SubMenu: Right-click on the tree view to add/delete',
+  'menu.tips.3': 'Add/Delete SubMenu: Right-click on the tree view to add/delete',
 
   // rowPermissions
   'rowPermissions.management': 'Row Permissions Management',
@@ -299,8 +292,7 @@ export default {
   'rowPermissions.tableNamePlaceholder': 'Please enter table name',
   'rowPermissions.expression': 'Expression',
   'rowPermissions.expressionPlaceholder': 'Please enter expression',
-  'rowPermissions.deleteConfirm':
-    'Are you sure you want to delete this row permissions',
+  'rowPermissions.deleteConfirm': 'Are you sure you want to delete this row permissions',
   'rowPermissions.roleName': 'Role Name',
   'rowPermissions.roleNamePlaceholder': 'Please select an role',
   'rowPermissions.create': 'Create Row Permissions',
@@ -323,10 +315,8 @@ export default {
   'rc.ci.heartbeat': 'Heartbeat Detection',
   'rc.ci.recycleConfirm':
     'Are you sure to recycle all automatically created and expired Flink instances? ',
-  'rc.ci.jmha.validate.slash':
-    'Does not comply with the rules! Cannot contain /',
-  'rc.ci.jmha.validate.port':
-    'Does not meet the rules! Port number range [0-65535]',
+  'rc.ci.jmha.validate.slash': 'Does not comply with the rules! Cannot contain /',
+  'rc.ci.jmha.validate.port': 'Does not meet the rules! Port number range [0-65535]',
   'rc.ci.jmha.tips':
     'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example: 192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081',
   'rc.ci.jmhaPlaceholder': 'Please enter the JobManager HA address!',
@@ -354,8 +344,7 @@ export default {
   'rc.cc.hadoopConfigPathHelp':
     'Specify the configuration file path (without / at the end), the following files need to be included: core-site.xml, hdfs-site.xml, yarn-site.xml! ',
   'rc.cc.libPath': 'Flink Lib Path',
-  'rc.cc.libPathPlaceholder':
-    'Please enter the hdfs path of lib! Values such as hdfs:///flink/lib',
+  'rc.cc.libPathPlaceholder': 'Please enter the hdfs path of lib! Values such as hdfs:///flink/lib',
   'rc.cc.libPathHelp':
     'Specify the hdfs path of lib (without / at the end), which needs to include the dependencies of Flink runtime',
   'rc.cc.flinkConfig': 'Flink Config',
@@ -369,8 +358,7 @@ export default {
   'rc.cc.deleteConfig': 'Delete configuration item',
   'rc.cc.key': 'Config Key',
   'rc.cc.value': 'Config Value',
-  'rc.cc.submitSqlConfig':
-    'Submit FlinkSQL Config items (required in Application mode)',
+  'rc.cc.submitSqlConfig': 'Submit FlinkSQL Config items (required in Application mode)',
   'rc.cc.sqlSubmitJarPath': 'Jar File Path',
   'rc.cc.sqlSubmitJarPathHelp':
     'Please enter the Jar file path! eg: hdfs:///dlink/jar/dlink-app.jar',
@@ -408,8 +396,7 @@ export default {
   'rc.cc.docker.tag': 'Docker Tag Version',
   'rc.cc.docker.tagHelp': 'Docker Tag version! eg: 1.0.0',
   'rc.cc.docker.file': 'Docker Image File',
-  'rc.cc.docker.fileHelp':
-    'Docker image file! eg: /opt/module/dinky/docker/Dockerfile',
+  'rc.cc.docker.fileHelp': 'Docker image file! eg: /opt/module/dinky/docker/Dockerfile',
   'rc.cc.k8sConfig': 'Kubernetes Config',
   'rc.cc.k8s.preConfig': 'Kubernetes preset configuration',
   'rc.cc.k8s.defineConfig': 'Kubernetes default configuration',
@@ -428,11 +415,9 @@ export default {
   'rc.cc.k8s.configFileHelp':
     'Default ~/.kube/config, fill in the kube file path, which can be used as a remote connection! eg: /opt/module/kube/config',
   'rc.cc.k8s.account': 'K8s Submit Account',
-  'rc.cc.k8s.accountHelp':
-    'The account submitted by K8s, default default! eg: default',
+  'rc.cc.k8s.accountHelp': 'The account submitted by K8s, default default! eg: default',
   'rc.cc.k8s.podTemplate': 'K8s Pod Template',
-  'rc.cc.k8s.podTemplateHelp':
-    'K8s Pod template! Fill in your own pod template!',
+  'rc.cc.k8s.podTemplateHelp': 'K8s Pod template! Fill in your own pod template!',
   'rc.cc.k8sOp.version': 'Flink Version',
   'rc.cc.k8sOp.versionHelp': 'Please select the Flink version!',
   'rc.cc.k8sOp.unSupportBatch': ' (UnSupport Batch)',
@@ -453,17 +438,14 @@ export default {
   'rc.ds.deleteConfirm': 'Are you sure to delete this DataSource? ',
   'rc.ds.namePlaceholder': 'Please enter a name!',
   'rc.ds.groupNamePlaceholder': 'Please select a group type!',
-  'rc.ds.typePlaceholder':
-    'Please select the DataSource type! Enter keywords to search',
+  'rc.ds.typePlaceholder': 'Please select the DataSource type! Enter keywords to search',
   'rc.ds.urlPlaceholder': 'Please enter a properly formatted url link!',
   'rc.ds.usernamePlaceholder': 'Please enter username!',
   'rc.ds.passwordPlaceholder': 'Please enter password!',
-  'rc.ds.flinkConfigPlaceholder':
-    'Please specify the default configuration of Flink With!',
+  'rc.ds.flinkConfigPlaceholder': 'Please specify the default configuration of Flink With!',
   'rc.ds.flinkConfigTooltip':
     'Avoid disclosure of private information, and reuse the connection configuration as a global variable. In FlinkSQL, you can use `variable reference method` to load the connection configuration. Explanation: The reference name refers to the unique identifier, which is the `name` in this form. Note that you need to enable global variables (the original fragment mechanism)',
-  'rc.ds.flinkTemplatePlaceholder':
-    'Please specify the generation template of Flink With!',
+  'rc.ds.flinkTemplatePlaceholder': 'Please specify the generation template of Flink With!',
   'rc.ds.flinkTemplateTooltip':
     'Flink connection template is an extended function for generating FlinkSQL DDL. Among them, the schemaName in `variable reference method` refers to dynamically obtaining the database, and the tableName in `variable reference method` refers to dynamically obtaining the table name',
   'rc.ds.source': 'Source',
@@ -484,8 +466,7 @@ export default {
   'rc.ds.detail.tag.console': 'Console',
 
   // tips
-  'rc.ds.detail.tips':
-    'Click on the table on the left to get relevant information',
+  'rc.ds.detail.tips': 'Click on the table on the left to get relevant information',
 
   // columns info
   'rc.ds.no': 'No.',
@@ -539,8 +520,7 @@ export default {
     'Please enter the @user ID (enterprise and micro user name spelled out), separated by multiple commas!',
   'rc.ai.sendTypePleaseHolder': 'Please choose Send Type',
   'rc.ai.agentIdPleaseHolder': 'Please enter AgentId',
-  'rc.ai.receiversPleaseHolder':
-    'Please enter recipient email address! Separate multiple commas',
+  'rc.ai.receiversPleaseHolder': 'Please enter recipient email address! Separate multiple commas',
   'rc.ai.receiverCcsPleaseHolder':
     'Please enter the receiverCcs email address! Separate multiple commas!',
   'rc.ai.serverHostPleaseHolder': 'Mail server host',
@@ -612,8 +592,7 @@ export default {
   'rc.ai.appSecret': 'App Secret',
   'rc.ai.appSecretPleaseHolder': 'Please enter App Secret',
   'rc.ai.senders': 'Domestic SMS signature channel number',
-  'rc.ai.sendersPleaseHolder':
-    'Please enter the domestic SMS signature channel number',
+  'rc.ai.sendersPleaseHolder': 'Please enter the domestic SMS signature channel number',
   'rc.ai.url': 'APP access address',
   'rc.ai.urlPleaseHolder':
     'Please enter the APP access address, the address obtained after creating the SMS application',
@@ -675,17 +654,13 @@ export default {
   'rc.doc.delete': 'Delete Document',
   'rc.doc.deleteConfirm': 'Are you sure you want to delete the this Document? ',
   'rc.doc.namePlaceholder': 'Please enter a name!',
-  'rc.doc.versionPlaceholder':
-    'Please select the version this Document belongs to!',
+  'rc.doc.versionPlaceholder': 'Please select the version this Document belongs to!',
   'rc.doc.fillValuePlaceholder':
     'Please enter the fill value, use the name in the editor to trigger the prompt eg: If you want to input parameters in the function LTRIM(parms), the syntax is: LTRIM(${1:}) At this time The 1 represents the first cursor. If you need multiple numbers + 1, you can switch the cursor with the tab key; if you don`t need parameters, directly enter the desired fill value',
   'rc.doc.fillValueHelp': 'Please enter the fill value',
-  'rc.doc.descriptionPlaceholder':
-    'Please enter the Document description information!',
-  'rc.doc.typePlaceholder':
-    'Please select the function type this Document belongs to!',
-  'rc.doc.subTypePlaceholder':
-    'Please select the function type this Document belongs to!',
+  'rc.doc.descriptionPlaceholder': 'Please enter the Document description information!',
+  'rc.doc.typePlaceholder': 'Please select the function type this Document belongs to!',
+  'rc.doc.subTypePlaceholder': 'Please select the function type this Document belongs to!',
   'rc.doc.categoryPlaceholder': 'Please select the type of this Document!',
 
   // global variable
@@ -696,8 +671,7 @@ export default {
   'rc.gv.create': 'Create Global Variable',
   'rc.gv.modify': 'Modify Global Variables',
   'rc.gv.delete': 'Delete Global Variable',
-  'rc.gv.deleteConfirm':
-    'Are you sure you want to delete this Global Variable? ',
+  'rc.gv.deleteConfirm': 'Are you sure you want to delete this Global Variable? ',
   'rc.gv.namePlaceholder': 'Please enter a name!',
   'rc.gv.valuePlaceholder': 'Please enter the Global Variable value',
 
@@ -798,10 +772,8 @@ export default {
   'sys.setting.maven.tooltip': 'The main parameters of Maven compilation',
   'sys.setting.ds.tooltip':
     'DolphinScheduler plug-in settings that allow you to push dinky tasks to the DolphinScheduler workflow',
-  'sys.setting.ldap.tooltip':
-    'Unified authentication service LDAP docking configuration',
-  'sys.setting.metrics.tooltip':
-    'Monitor monitoring page settings, adjust Metrics detection',
+  'sys.setting.ldap.tooltip': 'Unified authentication service LDAP docking configuration',
+  'sys.setting.metrics.tooltip': 'Monitor monitoring page settings, adjust Metrics detection',
   'sys.setting.resource.tooltip': 'Resource storage settings',
   'sys.setting.modify': 'Modify Settings {key}',
   'sys.env.settings.pythonHome': 'Python Env variables',
@@ -827,8 +799,7 @@ export default {
   'sys.maven.settings.repository': 'Maven warehouse address',
   'sys.maven.settings.repository.note': 'Maven warehouse address',
   'sys.maven.settings.repositoryUser': 'Maven warehouse user name',
-  'sys.maven.settings.repositoryUser.note':
-    'Maven private server authentication user name',
+  'sys.maven.settings.repositoryUser.note': 'Maven private server authentication user name',
   'sys.maven.settings.repositoryPassword': 'Maven warehouse password',
   'sys.maven.settings.repositoryPassword.note':
     'Maven private server authentication password, please note: For security reasons, the password will not be displayed in plain text, and it has been desensitized when it returns',
@@ -849,14 +820,12 @@ export default {
   'sys.ldap.settings.enable': 'Whether to enable the ldap',
   'sys.ldap.settings.enable.note': 'Turn the LDAP login function on',
   'sys.ldap.settings.url': 'ldap address of service',
-  'sys.ldap.settings.url.note':
-    'ldap address of service，eg：ldap://192.168.111.1:389 ',
+  'sys.ldap.settings.url.note': 'ldap address of service，eg：ldap://192.168.111.1:389 ',
   'sys.ldap.settings.userDn': 'Login User name (DN)',
   'sys.ldap.settings.userDn.note':
     'User name for connecting to the ldap service, or the administrator DN',
   'sys.ldap.settings.userPassword': 'login password',
-  'sys.ldap.settings.userPassword.note':
-    'Password used to connect to the ldap service',
+  'sys.ldap.settings.userPassword.note': 'Password used to connect to the ldap service',
   'sys.ldap.settings.timeLimit': 'Connection Timeout',
   'sys.ldap.settings.timeLimit.note':
     'The maximum time to connect to the ldap service is disconnected',
@@ -880,8 +849,7 @@ export default {
     'After opening the automatic import of users, the new user login needs a default tenant code, otherwise it cannot log in',
 
   'sys.ldap.settings.testConnect': 'Test Connect',
-  'sys.ldap.settings.testConnect.success':
-    'Test Connect Successful, {count} users were obtained',
+  'sys.ldap.settings.testConnect.success': 'Test Connect Successful, {count} users were obtained',
   'sys.ldap.settings.testLogin': 'Test Login',
   'sys.ldap.settings.loadUser': 'Load User',
   'sys.ldap.settings.loadable': 'Whether it can be imported',
@@ -890,12 +858,10 @@ export default {
   'sys.metrics.settings.sys.enable': 'Dinky JVM Monitor switch',
   'sys.metrics.settings.sys.enable.note':
     'This switch is related to Dinky JVM Monitor, which determines the display of Dinky Server in the monitoring page and the collection of JVM Metrics',
-  'sys.metrics.settings.sys.gatherTiming':
-    'Dinky JVM Metrics collection time granularity',
+  'sys.metrics.settings.sys.gatherTiming': 'Dinky JVM Metrics collection time granularity',
   'sys.metrics.settings.sys.gatherTiming.note':
     'Dinky JVM Metrics collection time granularity, timed task interval trigger',
-  'sys.metrics.settings.flink.gatherTiming':
-    'Flink Metrics collection time granularity',
+  'sys.metrics.settings.flink.gatherTiming': 'Flink Metrics collection time granularity',
   'sys.metrics.settings.flink.gatherTiming.note':
     'Flink Metrics collection time granularity, scheduled task interval trigger',
   'sys.metrics.settings.flink.gatherTimeout':
@@ -926,8 +892,7 @@ export default {
   'sys.resource.settings.enable': 'Whether to enable Resource',
   'sys.resource.settings.enable.note':
     'Enable the resource management function. If you switch the storage mode, you need to turn off this switch. After the relevant configuration is completed, turn it on again.',
-  'sys.resource.settings.upload.base.path':
-    'The root path of the upload directory',
+  'sys.resource.settings.upload.base.path': 'The root path of the upload directory',
   'sys.resource.settings.upload.base.path.note':
     'resource store on HDFS/OSS path, resource file will store to this base path, self configuration, please make sure the directory exists on hdfs and have read write permissions. /dinky is recommended',
   'sys.resource.settings.model': 'Storage mode: support HDFS, OSS',
@@ -946,8 +911,7 @@ export default {
   'sys.resource.settings.oss.accessKey.note':
     'Access key is like a user ID, which can uniquely identify your account',
   'sys.resource.settings.oss.secretKey': 'Secret key is your account password',
-  'sys.resource.settings.oss.secretKey.note':
-    'Secret key is your account password',
+  'sys.resource.settings.oss.secretKey.note': 'Secret key is your account password',
   'sys.resource.settings.oss.bucketName': 'default bucket name',
   'sys.resource.settings.oss.bucketName.note': 'default bucket name',
   'sys.resource.settings.oss.region': 'region',
@@ -972,8 +936,7 @@ export default {
   'metrics.flink.subTask': 'SubTask',
   'metrics.flink.subTask.placeholder': 'Please select a SubTask Name',
   'metrics.flink.metrics.name': 'Metric Name',
-  'metrics.flink.metrics.placeholder':
-    'Please select the Metric Name (multiple choices)',
+  'metrics.flink.metrics.placeholder': 'Please select the Metric Name (multiple choices)',
 
   // metadata
   'pages.metadata.NoDatabaseSelected': 'No database selected',
@@ -995,13 +958,11 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig': 'Flink cluster Config',
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     'Select Flink cluster Config for remote submission tasks in [{type}] mode',
-  'pages.datastudio.label.jobConfig.clusterConfig.tip2':
-    'Select Flink cluster Config',
+  'pages.datastudio.label.jobConfig.clusterConfig.tip2': 'Select Flink cluster Config',
   'pages.datastudio.label.jobConfig.jar': 'Executable Jar',
   'pages.datastudio.label.jobConfig.jar.tip1':
     'Select executable Jar for remote submission of Jar tasks in [{type}] mode. When the parameter item has a value, only the executable Jar will be submitted.',
-  'pages.datastudio.label.jobConfig.jar.tip2':
-    'Select executable Jar, not required',
+  'pages.datastudio.label.jobConfig.jar.tip2': 'Select executable Jar, not required',
   'pages.datastudio.label.jobConfig.execmode.tip':
     'Specify the execution mode of the Flink task, the default is Local',
   'pages.datastudio.label.jobConfig.execmode.k8s.tip':
@@ -1009,8 +970,7 @@ export default {
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL environment',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
     'Select the FlinkSQL execution environment of the current task, and the environment statement will be executed in advance. The default is none. ',
-  'pages.datastudio.label.jobConfig.flinksql.env.tip2':
-    'Select FlinkSQL environment, optional',
+  'pages.datastudio.label.jobConfig.flinksql.env.tip2': 'Select FlinkSQL environment, optional',
   'pages.datastudio.label.jobConfig.parallelism': 'Parallelism',
   'pages.datastudio.label.jobConfig.parallelism.tip':
     'Set the parallelism of Flink tasks, the minimum is 1',
@@ -1029,8 +989,7 @@ export default {
   'pages.datastudio.label.jobConfig.savePointStrategy.tip':
     'Specify the SavePoint strategy, the default is disabled',
   'pages.datastudio.label.jobConfig.savePointpath': 'SavePointpath',
-  'pages.datastudio.label.jobConfig.savePointpath.tip1':
-    'Restore Flink task from SavePointPath',
+  'pages.datastudio.label.jobConfig.savePointpath.tip1': 'Restore Flink task from SavePointPath',
   'pages.datastudio.label.jobConfig.savePointpath.tip2': 'hdfs://...',
   'pages.datastudio.label.jobConfig.alertGroup': 'Alarm Group',
   'pages.datastudio.label.jobConfig.alertGroup.tip': 'Select alert group',
@@ -1057,8 +1016,7 @@ export default {
   'pages.datastudio.label.execConfig.changelog.tip':
     'Open the print stream, it will run synchronously and return the ChangeLog containing op information, it is not enabled by default and returns the final result Table',
   'pages.datastudio.label.execConfig.maxrow': 'Maximum number of rows',
-  'pages.datastudio.label.execConfig.maxrow.tip':
-    'The maximum number of rows of preview data',
+  'pages.datastudio.label.execConfig.maxrow.tip': 'The maximum number of rows of preview data',
   'pages.datastudio.label.execConfig.autostop': 'AutoStop',
   'pages.datastudio.label.execConfig.autostop.tip':
     'Enable autostop, it will automatically stop the task after capturing the maximum number of records',
@@ -1070,12 +1028,10 @@ export default {
   'pages.datastudio.label.version.id': 'Version ID',
   'pages.datastudio.label.version.diff': 'Version Diff',
   'pages.datastudio.label.version.rollback': 'Rollback',
-  'pages.datastudio.label.version.rollback.flinksql':
-    'Rollback Flink SQL Version',
+  'pages.datastudio.label.version.rollback.flinksql': 'Rollback Flink SQL Version',
   'pages.datastudio.label.version.rollback.flinksqlConfirm':
     'Are you sure to RollBack the Flink SQL version to [{versionId}]? ',
-  'pages.datastudio.label.version.diff.tip':
-    'Only compare with the content in the current editor',
+  'pages.datastudio.label.version.diff.tip': 'Only compare with the content in the current editor',
   'pages.datastudio.label.version.leftTitle':
     'Version number: [{versionId}] Creation time: [{createTime}]',
   'pages.datastudio.label.version.rightTitle':
@@ -1087,60 +1043,41 @@ export default {
   'pages.datastudio.editor.exec.success': 'Execution succeeded',
   'pages.datastudio.editor.exec.error': 'Task [jobName}] execution failed',
   'pages.datastudio.editor.async.submit': 'Submit jobs asynchronously',
-  'pages.datastudio.editor.async.submiting':
-    'The task [{jobName}] is submitting asynchronously',
+  'pages.datastudio.editor.async.submiting': 'The task [{jobName}] is submitting asynchronously',
   'pages.datastudio.editor.async.submitConfirm':
     'Are you sure to asynchronously submit the job [{jobName}] to its configured cluster? Please make sure your work has been saved! ',
   'pages.datastudio.editor.async.success': 'Asynchronous submission succeeded',
   'pages.datastudio.editor.async.error': 'Asynchronous submission failed',
-  'pages.datastudio.editor.query.explan.error':
-    'Failed to get job execution plan, reason:\n{msg}',
-  'pages.datastudio.editor.query.ds.error':
-    'Failed to get dolphin data, reason:\n{msg}',
+  'pages.datastudio.editor.query.explan.error': 'Failed to get job execution plan, reason:\n{msg}',
+  'pages.datastudio.editor.query.ds.error': 'Failed to get dolphin data, reason:\n{msg}',
   'pages.datastudio.editor.release.job': 'Release job',
   'pages.datastudio.editor.release.jobConfirm':
     'Are you sure to release the job [{jobName}]? Please make sure your work has been saved! ',
-  'pages.datastudio.editor.release.job.success':
-    'Release job [{jobName}] succeeded',
+  'pages.datastudio.editor.release.job.success': 'Release job [{jobName}] succeeded',
   'pages.datastudio.editor.release.job.error': 'Publish job [{jobName}] failed',
   'pages.datastudio.editor.edit.job': 'Maintenance job',
-  'pages.datastudio.editor.edit.jobConfirm':
-    'Confirm the maintenance job [{jobName}]? ',
-  'pages.datastudio.editor.edit.job.success':
-    'Maintenance job [{jobName}] succeeded',
+  'pages.datastudio.editor.edit.jobConfirm': 'Confirm the maintenance job [{jobName}]? ',
+  'pages.datastudio.editor.edit.job.success': 'Maintenance job [{jobName}] succeeded',
   'pages.datastudio.editor.online.job': 'Online job',
   'pages.datastudio.editor.online.jobConfirm':
     'Are you sure you want to go online with [{jobName}]? ',
-  'pages.datastudio.editor.online.job.success':
-    'Online job [{jobName}] succeeded',
-  'pages.datastudio.editor.online.job.error':
-    'Online job [{jobName}] failed, reason:\n {msg}',
+  'pages.datastudio.editor.online.job.success': 'Online job [{jobName}] succeeded',
+  'pages.datastudio.editor.online.job.error': 'Online job [{jobName}] failed, reason:\n {msg}',
   'pages.datastudio.editor.stop.job': 'Stop job',
-  'pages.datastudio.editor.stop.jobConfirm':
-    'Are you sure to stop the job [{jobName}]? ',
-  'pages.datastudio.editor.stop.job.success':
-    'Stop job [{jobName}] successfully',
-  'pages.datastudio.editor.stop.job.error':
-    'Stop job [{jobName}] failed, reason:\n {msg}',
+  'pages.datastudio.editor.stop.jobConfirm': 'Are you sure to stop the job [{jobName}]? ',
+  'pages.datastudio.editor.stop.job.success': 'Stop job [{jobName}] successfully',
+  'pages.datastudio.editor.stop.job.error': 'Stop job [{jobName}] failed, reason:\n {msg}',
   'pages.datastudio.editor.offline.job': 'Offline job',
-  'pages.datastudio.editor.offline.jobConfirm':
-    'Are you sure about offline job [{jobName}]? ',
-  'pages.datastudio.editor.offline.job.success':
-    'Offline job [{jobName}] succeeded',
-  'pages.datastudio.editor.offline.job.error':
-    'Offline job [{jobName}] failed, reason:\n {msg}',
+  'pages.datastudio.editor.offline.jobConfirm': 'Are you sure about offline job [{jobName}]? ',
+  'pages.datastudio.editor.offline.job.success': 'Offline job [{jobName}] succeeded',
+  'pages.datastudio.editor.offline.job.error': 'Offline job [{jobName}] failed, reason:\n {msg}',
   'pages.datastudio.editor.delete.job': 'Delete job',
-  'pages.datastudio.editor.delete.jobConfirm':
-    'Are you sure to cancel the job [{jobName}]? ',
-  'pages.datastudio.editor.delete.job.success':
-    'Logout job [{jobName}] succeeded',
-  'pages.datastudio.editor.delete.job.error':
-    'Delete job [{jobName}] failed, reason:\n {msg}',
+  'pages.datastudio.editor.delete.jobConfirm': 'Are you sure to cancel the job [{jobName}]? ',
+  'pages.datastudio.editor.delete.job.success': 'Logout job [{jobName}] succeeded',
+  'pages.datastudio.editor.delete.job.error': 'Delete job [{jobName}] failed, reason:\n {msg}',
   'pages.datastudio.editor.recovery.job': 'Recovery Job',
-  'pages.datastudio.editor.recovery.jobConfirm':
-    'Are you sure to restore job [{jobName}]? ',
-  'pages.datastudio.editor.recovery.job.success':
-    'The recovery job [{jobName}] succeeded',
+  'pages.datastudio.editor.recovery.jobConfirm': 'Are you sure to restore job [{jobName}]? ',
+  'pages.datastudio.editor.recovery.job.success': 'The recovery job [{jobName}] succeeded',
   'pages.datastudio.editor.api.doc': 'API Manual',
   'pages.datastudio.editor.usehelp': 'Use help',
   'pages.datastudio.editor.clearConsole': 'Clear Console',
@@ -1160,30 +1097,22 @@ export default {
   'pages.datastudio.editor.push.ds.timeout.strategy': 'Timeout strategy',
   'pages.datastudio.editor.push.ds.timeout.alarm': 'Timeout warning',
   'pages.datastudio.editor.push.ds.timeout.error': 'Timeout failed',
-  'pages.datastudio.editor.push.ds.timeout.strategy.tip':
-    'A timeout strategy must be selected',
-  'pages.datastudio.editor.push.ds.add.job.error':
-    'Failed to create job, reason:\n{msg}',
+  'pages.datastudio.editor.push.ds.timeout.strategy.tip': 'A timeout strategy must be selected',
+  'pages.datastudio.editor.push.ds.add.job.error': 'Failed to create job, reason:\n{msg}',
   'pages.datastudio.editor.push.ds.prejob': 'Pre-job',
   'pages.datastudio.editor.push.ds.prejob.tip': 'Select prejob task',
   'pages.datastudio.editor.push.ds.job.priority': 'Priority',
   'pages.datastudio.editor.push.ds.errortry.count': 'Number of failed retries',
-  'pages.datastudio.editor.push.ds.errortry.min':
-    'Failure retry interval (minutes)',
-  'pages.datastudio.editor.push.ds.delayed.time':
-    'Delayed execution time (minutes)',
-  'pages.datastudio.editor.push.ds.timeout.min':
-    'Timeout alarm duration (minutes)',
+  'pages.datastudio.editor.push.ds.errortry.min': 'Failure retry interval (minutes)',
+  'pages.datastudio.editor.push.ds.delayed.time': 'Delayed execution time (minutes)',
+  'pages.datastudio.editor.push.ds.timeout.min': 'Timeout alarm duration (minutes)',
   'pages.datastudio.editor.push.ds.running.tag': 'running flag',
   'pages.datastudio.editor.stop': 'Stop',
-  'pages.datastudio.editor.release':
-    'Release, will not be able to modify after release',
-  'pages.datastudio.editor.edit':
-    'Maintenance, click to enter the editing state',
+  'pages.datastudio.editor.release': 'Release, will not be able to modify after release',
+  'pages.datastudio.editor.edit': 'Maintenance, click to enter the editing state',
   'pages.datastudio.editor.online':
     'Online, automatic recovery, alarms, etc. will take effect after online',
-  'pages.datastudio.editor.offline':
-    'Offline, will enter the latest release status',
+  'pages.datastudio.editor.offline': 'Offline, will enter the latest release status',
   'pages.datastudio.editor.delete': 'Logout, will enter the recycle bin',
   'pages.datastudio.editor.recovery': 'Recovery, will enter maintenance mode',
   'pages.datastudio.editor.api': 'View API',
@@ -1198,16 +1127,14 @@ export default {
   'pages.datastudio.explain.validate.msg': 'FlinkSql Syntax and logic check',
   'pages.datastudio.explain.validate': 'Validating...',
   'pages.datastudio.explain.validate.allright': 'All Right',
-  'pages.datastudio.explain.validate.error':
-    'There are errors, a total of {errorCount}',
+  'pages.datastudio.explain.validate.error': 'There are errors, a total of {errorCount}',
   'pages.datastudio.explain.validate.grammar.right': 'Grammar Right',
   'pages.datastudio.explain.validate.grammar.error': 'Grammar Error',
   'pages.datastudio.explain.validate.logic.right': 'Logical Right',
   'pages.datastudio.explain.validate.logic.error': 'Logical Error',
 
   // footer
-  'pages.datastudio.footer.memDetails':
-    'Maximum heap size: {max}\nUsed:   {used}M',
+  'pages.datastudio.footer.memDetails': 'Maximum heap size: {max}\nUsed:   {used}M',
   'pages.datastudio.footer.codeType': 'Code Type: ',
   'pages.datastudio.footer.lineSeparator': 'Line Separator: ',
   'pages.datastudio.footer.codeEncoding': 'File Encoding: ',
@@ -1229,8 +1156,7 @@ export default {
   // project
   'datastudio.project.create.rootFolder': 'Create Root Folder',
   'datastudio.project.create.folder.name': 'Folder Name',
-  'datastudio.project.create.folder.name.placeholder':
-    'Please enter the folder name',
+  'datastudio.project.create.folder.name.placeholder': 'Please enter the folder name',
   'datastudio.project.create.folder.tip':
     'No job, please click the new directory in the upper left corner',
   'datastudio.project.delete.job': 'Delete [{type}] Job [{name}]',
@@ -1248,5 +1174,5 @@ export default {
   'catalog.udf.templateId': 'UDF Template',
   'catalog.udf.templateId.placeholder': 'Please select UDF template',
   'catalog.udf.className': 'Class/Method Name',
-  'catalog.udf.className.placeholder': 'Please enter the class or method name',
+  'catalog.udf.className.placeholder': 'Please enter the class or method name'
 };

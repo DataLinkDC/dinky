@@ -15,34 +15,30 @@
  * limitations under the License.
  */
 
-import CodeShow from '@/components/CustomEditor/CodeShow';
+import CodeShow, { CodeShowFormProps } from '@/components/CustomEditor/CodeShow';
 import { l } from '@/utils/intl';
 import { Empty } from 'antd';
 import React from 'react';
 
-const CodeEditProps = {
+const CodeEditProps: any = {
   height: '82vh',
   width: '100%',
   lineNumbers: 'on',
-  language: 'java',
+  language: 'java'
 };
 
 type LogsShowProps = {
   code: string;
   refreshLogCallback: () => void;
 };
-// todo:
-//    If the log is too large and there are too many contents,
-//    MonacoEditor will have performance problems.
-//    It is planned to optimize it through `react-virtualized`
 
 const LogsShow: React.FC<LogsShowProps> = (props) => {
   const { code, refreshLogCallback } = props;
 
-  const restLogsShowProps = {
+  const restLogsShowProps: CodeShowFormProps = {
     showFloatButton: true,
     code,
-    refreshLogCallback,
+    refreshLogCallback
   };
 
   return (
@@ -50,10 +46,7 @@ const LogsShow: React.FC<LogsShowProps> = (props) => {
       {code ? (
         <CodeShow {...restLogsShowProps} {...CodeEditProps} />
       ) : (
-        <Empty
-          className={'code-content-empty'}
-          description={l('sys.info.logList.tips')}
-        />
+        <Empty className={'code-content-empty'} description={l('sys.info.logList.tips')} />
       )}
     </>
   );

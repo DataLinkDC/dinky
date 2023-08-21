@@ -23,11 +23,7 @@ type AuthorizedProps = {
   children?: ReactElement | null;
 };
 
-export function Authorized({
-  path,
-  denied = null,
-  children = null,
-}: AuthorizedProps) {
+export function Authorized({ path, denied = null, children = null }: AuthorizedProps) {
   const { isAdmin, blocks = [] } = useContext(AccessContext);
 
   if (isAdmin) return children;
@@ -41,7 +37,7 @@ export function Authorized({
 
 export const AccessContextProvider = ({
   children,
-  currentUser,
+  currentUser
 }: {
   children: React.ReactNode;
   currentUser: Partial<API.CurrentUser | undefined>;
@@ -53,7 +49,7 @@ export const AccessContextProvider = ({
       if (type === 'F') {
         blocks.push({
           path,
-          name,
+          name
         });
       }
 
@@ -65,11 +61,7 @@ export const AccessContextProvider = ({
 
   flatTree(currentUser?.menuList ?? []);
 
-  return (
-    <AccessContext.Provider value={{ isAdmin, blocks }}>
-      {children}
-    </AccessContext.Provider>
-  );
+  return <AccessContext.Provider value={{ isAdmin, blocks }}>{children}</AccessContext.Provider>;
 };
 
 export const useAccess = () => useContext(AccessContext);

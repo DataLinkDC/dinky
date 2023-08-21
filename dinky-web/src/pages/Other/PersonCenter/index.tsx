@@ -24,16 +24,12 @@ import BaseInfo from '@/pages/Other/PersonCenter/BaseInfo';
 import LoginLogRecord from '@/pages/Other/PersonCenter/LoginLogRecord';
 import OperationLogRecord from '@/pages/Other/PersonCenter/OperationLogRecord';
 import { handleOption } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { useModel } from '@@/exports';
 import { SecurityScanTwoTone } from '@ant-design/icons';
-import {
-  PageContainer,
-  PageLoading,
-  ProCard,
-} from '@ant-design/pro-components';
+import { PageContainer, PageLoading, ProCard } from '@ant-design/pro-components';
 import { Descriptions, Divider, Form, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
@@ -51,7 +47,7 @@ const PersonCenter = () => {
       flushSync(() => {
         setInitialState((s) => ({
           ...s,
-          currentUser: userInfo,
+          currentUser: userInfo
         }));
       });
     }
@@ -110,14 +106,8 @@ const PersonCenter = () => {
    * @param value
    * @returns {Promise<void>}
    */
-  const handleSubmitPassWord = async (
-    value: UserBaseInfo.ChangePasswordParams,
-  ) => {
-    await handleOption(
-      API_CONSTANTS.USER_MODIFY_PASSWORD,
-      l('button.changePassword'),
-      value,
-    );
+  const handleSubmitPassWord = async (value: UserBaseInfo.ChangePasswordParams) => {
+    await handleOption(API_CONSTANTS.USER_MODIFY_PASSWORD, l('button.changePassword'), value);
     form.resetFields();
   };
 
@@ -138,7 +128,7 @@ const PersonCenter = () => {
         <>
           <LoginLogRecord userId={user?.id} />
         </>
-      ),
+      )
     },
     {
       key: 'operation',
@@ -152,7 +142,7 @@ const PersonCenter = () => {
         <>
           <OperationLogRecord userId={user?.id} />
         </>
-      ),
+      )
     },
     {
       key: 'changePassword',
@@ -163,14 +153,9 @@ const PersonCenter = () => {
         </>
       ),
       children: (
-        <PasswordForm
-          form={form}
-          renderSubmit
-          values={user}
-          onSubmit={handleSubmitPassWord}
-        />
-      ),
-    },
+        <PasswordForm form={form} renderSubmit values={user} onSubmit={handleSubmitPassWord} />
+      )
+    }
   ];
 
   /**
@@ -179,15 +164,10 @@ const PersonCenter = () => {
   return (
     <Pop>
       <PageContainer title={false}>
-        <ProCard
-          ghost
-          gutter={[16, 16]}
-          hoverable
-          loading={!loading && currentUser}
-        >
+        <ProCard ghost gutter={[16, 16]} hoverable loading={!loading && currentUser}>
           <ProCard
             style={{ height: '91vh', textAlign: 'center', overflowY: 'auto' }}
-            colSpan="22%"
+            colSpan='22%'
             hoverable
             bordered
           >
@@ -216,7 +196,7 @@ const PersonCenter = () => {
               type: 'card',
               animated: true,
               onChange: (key: string) => setActiveKey(key),
-              items: tabList,
+              items: tabList
             }}
           />
         </ProCard>

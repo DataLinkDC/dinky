@@ -19,7 +19,7 @@
 import { FormContextValue } from '@/components/Context/FormContext';
 import TenantForm from '@/pages/AuthCenter/Tenant/components/TenantModalForm/TenantForm';
 import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { Form, Modal } from 'antd';
 import React, { useEffect } from 'react';
@@ -41,9 +41,9 @@ const TenantModalForm: React.FC<TenantModalFormProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
 
   /**
@@ -75,15 +75,15 @@ const TenantModalForm: React.FC<TenantModalFormProps> = (props) => {
    * render
    */
   return (
-      <Modal
-        {...NORMAL_MODAL_OPTIONS}
-        title={values.id ? l('tenant.update') : l('tenant.create')}
-        open={modalVisible}
-        onOk={() => submitForm()}
-        onCancel={() => handleCancel()}
-      >
-        <TenantForm values={values} form={form} />
-      </Modal>
+    <Modal
+      {...NORMAL_MODAL_OPTIONS}
+      title={values.id ? l('tenant.update') : l('tenant.create')}
+      open={modalVisible}
+      onOk={() => submitForm()}
+      onCancel={() => handleCancel()}
+    >
+      <TenantForm values={values} form={form} />
+    </Modal>
   );
 };
 

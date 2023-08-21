@@ -28,10 +28,13 @@ import {
   handleAddOrUpdate,
   handleOption,
   handleRemoveById,
-  queryDataByParams,
+  queryDataByParams
 } from '@/services/BusinessCrud';
-import { API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data.d';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { InitRoleListState } from '@/types/AuthCenter/init.d';
+import { RoleListState } from '@/types/AuthCenter/state.d';
 import { getTenantByLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
@@ -43,21 +46,14 @@ const RoleProTable: React.FC = () => {
   /**
    * status
    */
-  const [formValues, setFormValues] = useState<Partial<UserBaseInfo.Role>>({});
-  const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [assignMenu, setAssignMenu] = useState<boolean>(false);
-  const [openViewUserList, setOpenViewUserList] = useState<boolean>(false);
-  const [roleUserList, setRoleUserList] = useState<UserBaseInfo.User[]>([]);
+  const [roleListState, setRoleListState] = useState<RoleListState>(InitRoleListState);
 
   const actionRef = useRef<ActionType>();
 
   const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
-    setLoading(true);
+    setRoleListState((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setLoading(false);
+    setRoleListState((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
@@ -77,11 +73,15 @@ const RoleProTable: React.FC = () => {
    */
   const handleAddOrUpdateSubmit = async (value: any) => {
     await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(API_CONSTANTS.ROLE_ADDED_OR_UPDATE, {
-        ...value,
-        tenantId: getTenantByLocalStorage(),
-      });
-      handleModalVisible(false);
+      await handleAddOrUpdate(
+        API_CONSTANTS.ROLE_ADDED_OR_UPDATE,
+        {
+          ...value,
+          tenantId: getTenantByLocalStorage()
+        },
+        () => {},
+        () => setRoleListState((prevState) => ({ ...prevState, addedRoleOpen: false }))
+      );
     });
   };
 
@@ -89,18 +89,26 @@ const RoleProTable: React.FC = () => {
    * cancel
    */
   const handleCancel = () => {
-    handleModalVisible(false);
-    handleUpdateModalVisible(false);
-    setAssignMenu(false);
+    setRoleListState((prevState) => ({
+      ...prevState,
+      addedRoleOpen: false,
+      editRoleOpen: false,
+      assignMenuOpen: false,
+      viewUsersOpen: false
+    }));
   };
 
   const handleAssignMenuSubmit = async (selectKeys: Key[]) => {
     await executeAndCallbackRefresh(async () => {
-      await handleOption(API_CONSTANTS.ROLE_ASSIGN_MENU, l('role.assign'), {
-        roleId: formValues.id,
-        menuIds: selectKeys,
-      });
-      handleCancel();
+      await handleOption(
+        API_CONSTANTS.ROLE_ASSIGN_MENU,
+        l('role.assign'),
+        {
+          roleId: roleListState.value.id,
+          menuIds: selectKeys
+        },
+        () => handleCancel()
+      );
     });
   };
 
@@ -109,8 +117,7 @@ const RoleProTable: React.FC = () => {
    * @param record
    */
   const handleEditVisible = (record: Partial<UserBaseInfo.Role>) => {
-    setFormValues(record);
-    handleUpdateModalVisible(true);
+    setRoleListState((prevState) => ({ ...prevState, value: record, editRoleOpen: true }));
   };
 
   /**
@@ -118,16 +125,18 @@ const RoleProTable: React.FC = () => {
    * @param record
    */
   const handleAssignVisible = (record: Partial<UserBaseInfo.Role>) => {
-    setFormValues(record);
-    setAssignMenu(true);
+    setRoleListState((prevState) => ({ ...prevState, value: record, assignMenuOpen: true }));
   };
 
   const handleClickViewUserList = (record: Partial<UserBaseInfo.Role>) => {
-    setFormValues(record);
-    queryDataByParams(API_CONSTANTS.ROLE_USER_LIST, { roleId: record.id }).then(
-      (res) => setRoleUserList(res),
+    queryDataByParams(API_CONSTANTS.ROLE_USER_LIST, { roleId: record.id }).then((res) =>
+      setRoleListState((prevState) => ({
+        ...prevState,
+        roleUserList: res,
+        value: record,
+        viewUsersOpen: true
+      }))
     );
-    setOpenViewUserList(true);
   };
 
   /**
@@ -138,52 +147,46 @@ const RoleProTable: React.FC = () => {
       title: l('role.roleCode'),
       dataIndex: 'roleCode',
       render: (_, record: UserBaseInfo.Role) => (
-        <a onClick={() => handleClickViewUserList(record)}>
-          {' '}
-          {record.roleCode}{' '}
-        </a>
-      ),
+        <a onClick={() => handleClickViewUserList(record)}> {record.roleCode} </a>
+      )
     },
     {
       title: l('role.roleName'),
-      dataIndex: 'roleName',
+      dataIndex: 'roleName'
     },
     {
       title: l('role.belongTenant'),
       hideInSearch: true,
       render: (_: any, record: UserBaseInfo.Role) => {
-        return <Tag color="blue">{record.tenant.tenantCode}</Tag>;
-      },
+        return <Tag color='blue'>{record.tenant.tenantCode}</Tag>;
+      }
     },
     {
       title: l('global.table.note'),
       dataIndex: 'note',
       hideInSearch: true,
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       hideInSearch: true,
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       hideInSearch: true,
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.operate'),
       valueType: 'option',
       width: '10vh',
       render: (_: any, record: UserBaseInfo.Role) => [
-        <EditBtn
-          key={`${record.id}_edit`}
-          onClick={() => handleEditVisible(record)}
-        />,
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />,
         <>
           {record.id !== 1 && (
             <PopconfirmDeleteBtn
@@ -197,9 +200,9 @@ const RoleProTable: React.FC = () => {
             onClick={() => handleAssignVisible(record)}
             title={l('role.assignMenu', '', { roleName: record.roleName })}
           />
-        </>,
-      ],
-    },
+        </>
+      ]
+    }
   ];
 
   /**
@@ -211,12 +214,12 @@ const RoleProTable: React.FC = () => {
         {...PROTABLE_OPTIONS_PUBLIC}
         headerTitle={l('role.roleManagement')}
         actionRef={actionRef}
-        loading={loading}
+        loading={roleListState.loading}
         toolBarRender={() => [
           <CreateBtn
             key={'toolBarRender'}
-            onClick={() => handleModalVisible(true)}
-          />,
+            onClick={() => setRoleListState((prevState) => ({ ...prevState, addedRoleOpen: true }))}
+          />
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.ROLE, { ...params, sorter, filter })
@@ -227,31 +230,31 @@ const RoleProTable: React.FC = () => {
       <RoleModalForm
         onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={modalVisible}
+        modalVisible={roleListState.addedRoleOpen}
         values={{}}
       />
       {/* modify */}
       <RoleModalForm
         onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={updateModalVisible}
-        values={formValues}
+        modalVisible={roleListState.editRoleOpen}
+        values={roleListState.value}
       />
-      {Object.keys(formValues).length > 0 && (
+      {Object.keys(roleListState.value).length > 0 && (
         <AssignMenu
-          values={formValues}
-          open={assignMenu}
+          values={roleListState.value}
+          open={roleListState.assignMenuOpen}
           onSubmit={handleAssignMenuSubmit}
-          onClose={() => setAssignMenu(false)}
+          onClose={() => setRoleListState((prevState) => ({ ...prevState, assignMenuOpen: false }))}
         />
       )}
-      {Object.keys(formValues).length > 0 && (
+      {Object.keys(roleListState.value).length > 0 && (
         <RoleUserList
-          role={formValues}
-          open={openViewUserList}
-          userList={roleUserList}
-          loading={loading}
-          onClose={() => setOpenViewUserList(false)}
+          role={roleListState.value}
+          open={roleListState.viewUsersOpen}
+          userList={roleListState.roleUserList}
+          loading={roleListState.loading}
+          onClose={() => setRoleListState((prevState) => ({ ...prevState, viewUsersOpen: false }))}
         />
       )}
     </>

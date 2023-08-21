@@ -21,14 +21,10 @@ import { FormContextValue } from '@/components/Context/FormContext';
 import { JOB_TYPE } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import { isUDF } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
-import {
-  ModalForm,
-  ProFormSelect,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { ProFormCascader } from '@ant-design/pro-form/lib';
 import { Form } from 'antd';
 import React, { useEffect } from 'react';
@@ -42,9 +38,7 @@ type JobModalProps = {
 };
 const JobModal: React.FC<JobModalProps> = (props) => {
   const { onCancel, onSubmit, modalVisible, title, values } = props;
-  const [jobType, setJobType] = React.useState<string>(
-    values.type || 'FlinkSql',
-  );
+  const [jobType, setJobType] = React.useState<string>(values.type || 'FlinkSql');
   const [udfTemplate, setUdfTemplate] = React.useState<any[]>([]);
   const [form] = Form.useForm<Catalogue>();
 
@@ -53,9 +47,9 @@ const JobModal: React.FC<JobModalProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
   /**
    * when modalVisible or values changed, set form values
@@ -68,8 +62,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
   const queryUdfTemplate = async () => {
     await queryDataByParams(API_CONSTANTS.UDF_TEMPLATE_TREE).then((res) => {
       res.map((item: any) => {
-        if (item.value === jobType)
-          res = item.children.map((item: any) => item);
+        if (item.value === jobType) res = item.children.map((item: any) => item);
       });
       setUdfTemplate(res);
     });
@@ -105,9 +98,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     if (isUDF(formData.type) && formData.configJson) {
       // todo: 有个 bug 接口入参载荷正常, 但是接口获取的 configJson 提示无法
       const { templateId } = formData.configJson;
-      formData.configJson.templateId = (templateId as any[])
-        .sort((a, b) => a - b)
-        .pop();
+      formData.configJson.templateId = (templateId as any[]).sort((a, b) => a - b).pop();
     }
     onSubmit({ ...values, ...formData } as Catalogue);
   };
@@ -125,7 +116,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
           rules={[{ required: true, message: l('catalog.type.placeholder') }]}
         />
         <ProFormText
-          name="name"
+          name='name'
           label={l('catalog.name')}
           tooltip={l('catalog.name.tip')}
           placeholder={l('catalog.name.placeholder')}
@@ -139,13 +130,13 @@ const JobModal: React.FC<JobModalProps> = (props) => {
               placeholder={l('catalog.udf.templateId.placeholder')}
               fieldProps={{
                 changeOnSelect: true,
-                options: udfTemplate,
+                options: udfTemplate
               }}
               rules={[
                 {
                   required: true,
-                  message: l('catalog.udf.templateId.placeholder'),
-                },
+                  message: l('catalog.udf.templateId.placeholder')
+                }
               ]}
             />
 
@@ -156,8 +147,8 @@ const JobModal: React.FC<JobModalProps> = (props) => {
               rules={[
                 {
                   required: true,
-                  message: l('catalog.udf.className.placeholder'),
-                },
+                  message: l('catalog.udf.className.placeholder')
+                }
               ]}
             />
           </>
@@ -180,7 +171,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
         modalProps={{
           destroyOnClose: true,
           maskClosable: false,
-          onCancel: handleCancel,
+          onCancel: handleCancel
         }}
         onFinish={async (values) => submitForm(values)}
       >

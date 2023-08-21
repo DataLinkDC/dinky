@@ -15,13 +15,11 @@ const MetaData = (props: any) => {
   const {
     dispatch,
     toolContentHeight,
-    database: { dbData, selectDatabaseId, expandKeys, selectKeys },
+    database: { dbData, selectDatabaseId, expandKeys, selectKeys }
   } = props;
   const [treeData, setTreeData] = useState<[]>([]);
   const [isLoadingDatabase, setIsLoadingDatabase] = useState(false);
-  const selectDb = (dbData as DataSources.DataSource[]).filter(
-    (x) => x.id === selectDatabaseId,
-  )[0];
+  const selectDb = (dbData as DataSources.DataSource[]).filter((x) => x.id === selectDatabaseId)[0];
 
   /**
    * @description: 刷新树数据
@@ -80,21 +78,19 @@ const MetaData = (props: any) => {
    * 构建数据库列表 下拉框
    */
   const getDataBaseOptions = () => {
-    return dbData.map(
-      ({ id, name, type, enabled, status }: DataSources.DataSource) => ({
-        key: id,
-        value: id,
-        label: (
-          <TagAlignLeft>
-            <Tag key={id} color={enabled ? 'processing' : 'error'}>
-              {type}
-            </Tag>
-            {name}
-          </TagAlignLeft>
-        ),
-        disabled: !enabled || !status,
-      }),
-    );
+    return dbData.map(({ id, name, type, enabled, status }: DataSources.DataSource) => ({
+      key: id,
+      value: id,
+      label: (
+        <TagAlignLeft>
+          <Tag key={id} color={enabled ? 'processing' : 'error'}>
+            {type}
+          </Tag>
+          {name}
+        </TagAlignLeft>
+      ),
+      disabled: !enabled || !status
+    }));
   };
 
   /**
@@ -106,11 +102,11 @@ const MetaData = (props: any) => {
     // 选中的key
     dispatch({
       type: STUDIO_MODEL.updateDatabaseSelectKey,
-      payload: keys,
+      payload: keys
     });
 
     const {
-      node: { isLeaf, parentId: schemaName, name: tableName, fullInfo },
+      node: { isLeaf, parentId: schemaName, name: tableName, fullInfo }
     } = info;
 
     if (!isLeaf) {
@@ -138,7 +134,7 @@ const MetaData = (props: any) => {
   const handleSelectDataBaseId = (databaseId: number) => {
     dispatch({
       type: STUDIO_MODEL.updateSelectDatabaseId,
-      payload: databaseId,
+      payload: databaseId
     });
     onChangeDataBase(databaseId);
   };
@@ -150,7 +146,7 @@ const MetaData = (props: any) => {
   const handleTreeExpand = (expandedKeys: Key[]) => {
     dispatch({
       type: STUDIO_MODEL.updateDatabaseExpandKey,
-      payload: expandedKeys,
+      payload: expandedKeys
     });
   };
 
@@ -171,7 +167,7 @@ const MetaData = (props: any) => {
           placeholder={l('pages.metadata.selectDatabase')}
           options={getDataBaseOptions()}
           fieldProps={{
-            onSelect: (selectId) => handleSelectDataBaseId(selectId as number),
+            onSelect: (selectId) => handleSelectDataBaseId(selectId as number)
           }}
         />
       </ProForm>
@@ -190,5 +186,5 @@ const MetaData = (props: any) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   toolContentHeight: Studio.toolContentHeight,
   leftContainer: Studio.leftContainer,
-  database: Studio.database,
+  database: Studio.database
 }))(MetaData);

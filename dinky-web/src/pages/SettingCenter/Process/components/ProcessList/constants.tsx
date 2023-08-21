@@ -23,7 +23,7 @@ export enum ProcessType {
   SQL_EXECUTE = 'SQL_EXECUTE',
   SQL_SUBMIT = 'SQL_SUBMIT',
   LINEAGE = 'LINEAGE',
-  UNKNOWN = 'UNKNOWN',
+  UNKNOWN = 'UNKNOWN'
 }
 
 export enum ProcessStatus {
@@ -32,5 +32,5 @@ export enum ProcessStatus {
   FAILED = 'FAILED',
   CANCELED = 'CANCELED',
   FINISHED = 'FINISHED',
-  UNKNOWN = 'UNKNOWN',
+  UNKNOWN = 'UNKNOWN'
 }

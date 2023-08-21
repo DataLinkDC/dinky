@@ -25,7 +25,7 @@ import {
   buildClusterConfigOptions,
   buildClusterOptions,
   buildEnvOptions,
-  buildRunModelOptions,
+  buildRunModelOptions
 } from '@/pages/DataStudio/RightContainer/JobConfig/function';
 import { AlertStateType } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
@@ -38,7 +38,7 @@ import {
   ProFormList,
   ProFormSelect,
   ProFormSwitch,
-  ProFormText,
+  ProFormText
 } from '@ant-design/pro-components';
 import { Badge, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
@@ -54,7 +54,7 @@ const JobConfig = (props: any) => {
     tabs: { panes, activeKey },
     env,
     group,
-    rightContainer,
+    rightContainer
   } = props;
 
   const current = getCurrentData(panes, activeKey);
@@ -62,8 +62,8 @@ const JobConfig = (props: any) => {
     connectors: [],
     sessionConfig: {
       clusterId: current.clusterId,
-      clusterName: current.clusterName,
-    },
+      clusterName: current.clusterName
+    }
   };
   const [form] = useForm();
   form.setFieldsValue(current);
@@ -79,7 +79,7 @@ const JobConfig = (props: any) => {
     }
     dispatch({
       type: STUDIO_MODEL.saveTabs,
-      payload: { ...props.tabs },
+      payload: { ...props.tabs }
     });
   };
 
@@ -97,17 +97,17 @@ const JobConfig = (props: any) => {
           envId: 0,
           parallelism: 1,
           savePointStrategy: 0,
-          alertGroupId: 0,
+          alertGroupId: 0
         }}
         className={'data-studio-form'}
         style={{ paddingInline: '15px', overflow: 'scroll' }}
         form={form}
         submitter={false}
-        layout="vertical"
+        layout='vertical'
         onValuesChange={onValuesChange}
       >
         <ProFormSelect
-          name="type"
+          name='type'
           label={l('global.table.execmode')}
           tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
           options={buildRunModelOptions()}
@@ -119,39 +119,30 @@ const JobConfig = (props: any) => {
           current.type === RUN_MODE.STANDALONE) && (
           <>
             {currentSession.session ? (
-              currentSession.sessionConfig &&
-              currentSession.sessionConfig.clusterId ? (
+              currentSession.sessionConfig && currentSession.sessionConfig.clusterId ? (
                 <>
-                  <Badge status="success" />
-                  <Text type="success">
-                    {currentSession.sessionConfig.clusterName}
-                  </Text>
+                  <Badge status='success' />
+                  <Text type='success'>{currentSession.sessionConfig.clusterName}</Text>
                 </>
               ) : (
                 <>
-                  <Badge status="error" />
-                  <Text type="danger">
-                    {l('pages.devops.jobinfo.localenv')}
-                  </Text>
+                  <Badge status='error' />
+                  <Text type='danger'>{l('pages.devops.jobinfo.localenv')}</Text>
                 </>
               )
             ) : (
               <>
                 <ProFormSelect
                   style={{ width: '100%' }}
-                  placeholder={l(
-                    'pages.datastudio.label.jobConfig.cluster.tip',
-                  )}
+                  placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
                   label={l('pages.datastudio.label.jobConfig.cluster')}
-                  tooltip={l(
-                    'pages.datastudio.label.jobConfig.clusterConfig.tip1',
-                    '',
-                    { type: current.type },
-                  )}
-                  name="clusterId"
+                  tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                    type: current.type
+                  })}
+                  name='clusterId'
                   options={buildClusterOptions(sessionCluster)}
                   fieldProps={{
-                    onChange: onChangeClusterSession,
+                    onChange: onChangeClusterSession
                   }}
                 />
               </>
@@ -164,25 +155,19 @@ const JobConfig = (props: any) => {
           current.type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR) && (
           <>
             <ProFormSelect
-              name="clusterConfigurationId"
-              placeholder={l(
-                'pages.datastudio.label.jobConfig.clusterConfig.tip2',
-              )}
+              name='clusterConfigurationId'
+              placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip2')}
               label={l('pages.datastudio.label.jobConfig.clusterConfig')}
-              tooltip={l(
-                'pages.datastudio.label.jobConfig.clusterConfig.tip1',
-                '',
-                {
-                  type: current.type,
-                },
-              )}
+              tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                type: current.type
+              })}
               options={buildClusterConfigOptions(current, clusterConfiguration)}
             />
           </>
         )}
 
         <ProFormSelect
-          name="envId"
+          name='envId'
           label={l('pages.datastudio.label.jobConfig.flinksql.env')}
           tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
           options={buildEnvOptions(env)}
@@ -193,7 +178,7 @@ const JobConfig = (props: any) => {
           <ProFormDigit
             width={'xs'}
             label={l('pages.datastudio.label.jobConfig.parallelism')}
-            name="parallelism"
+            name='parallelism'
             tooltip={l('pages.datastudio.label.jobConfig.parallelism.tip')}
             max={9999}
             min={1}
@@ -201,31 +186,31 @@ const JobConfig = (props: any) => {
 
           <ProFormSwitch
             label={l('pages.datastudio.label.jobConfig.insert')}
-            name="statementSet"
-            valuePropName="checked"
+            name='statementSet'
+            valuePropName='checked'
             tooltip={{
               title: l('pages.datastudio.label.jobConfig.insert.tip'),
-              icon: <InfoCircleOutlined />,
+              icon: <InfoCircleOutlined />
             }}
             {...SWITCH_OPTIONS()}
           />
           <ProFormSwitch
             label={l('pages.datastudio.label.jobConfig.fragment')}
-            name="fragment"
-            valuePropName="checked"
+            name='fragment'
+            valuePropName='checked'
             tooltip={{
               title: l('pages.datastudio.label.jobConfig.fragment.tip'),
-              icon: <InfoCircleOutlined />,
+              icon: <InfoCircleOutlined />
             }}
             {...SWITCH_OPTIONS()}
           />
           <ProFormSwitch
             label={l('pages.datastudio.label.jobConfig.batchmode')}
-            name="batchModel"
-            valuePropName="checked"
+            name='batchModel'
+            valuePropName='checked'
             tooltip={{
               title: l('pages.datastudio.label.jobConfig.batchmode.tip'),
-              icon: <InfoCircleOutlined />,
+              icon: <InfoCircleOutlined />
             }}
             {...SWITCH_OPTIONS()}
           />
@@ -233,7 +218,7 @@ const JobConfig = (props: any) => {
 
         <ProFormSelect
           label={l('pages.datastudio.label.jobConfig.savePointStrategy')}
-          name="savePointStrategy"
+          name='savePointStrategy'
           tooltip={l('pages.datastudio.label.jobConfig.savePointStrategy.tip')}
           options={SAVE_POINT_TYPE}
         />
@@ -242,17 +227,15 @@ const JobConfig = (props: any) => {
           <>
             <ProFormText
               label={l('pages.datastudio.label.jobConfig.savePointpath')}
-              name="savePointPath"
+              name='savePointPath'
               tooltip={l('pages.datastudio.label.jobConfig.savePointpath.tip1')}
-              placeholder={l(
-                'pages.datastudio.label.jobConfig.savePointpath.tip2',
-              )}
+              placeholder={l('pages.datastudio.label.jobConfig.savePointpath.tip2')}
             />
           </>
         )}
         <ProFormSelect
           label={l('pages.datastudio.label.jobConfig.alertGroup')}
-          name="alertGroupId"
+          name='alertGroupId'
           placeholder={l('pages.datastudio.label.jobConfig.alertGroup.tip')}
           options={buildAlertGroupOptions(group)}
         />
@@ -265,22 +248,18 @@ const JobConfig = (props: any) => {
           copyIconProps={false}
           creatorButtonProps={{
             style: { width: '100%' },
-            creatorButtonText: l('pages.datastudio.label.jobConfig.addConfig'),
+            creatorButtonText: l('pages.datastudio.label.jobConfig.addConfig')
           }}
         >
           <ProFormGroup style={{ display: 'flex', width: '100%' }}>
-            <Space key={'config'} style={{ display: 'flex' }} align="baseline">
+            <Space key={'config'} style={{ display: 'flex' }} align='baseline'>
               <ProFormText
-                name="key"
-                placeholder={l(
-                  'pages.datastudio.label.jobConfig.addConfig.params',
-                )}
+                name='key'
+                placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}
               />
               <ProFormText
-                name="value"
-                placeholder={l(
-                  'pages.datastudio.label.jobConfig.addConfig.value',
-                )}
+                name='value'
+                placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}
               />
             </Space>
           </ProFormGroup>
@@ -290,13 +269,11 @@ const JobConfig = (props: any) => {
   );
 };
 
-export default connect(
-  ({ Studio, Alert }: { Studio: StateType; Alert: AlertStateType }) => ({
-    sessionCluster: Studio.sessionCluster,
-    clusterConfiguration: Studio.clusterConfiguration,
-    rightContainer: Studio.rightContainer,
-    tabs: Studio.tabs,
-    env: Studio.env,
-    group: Alert.group,
-  }),
-)(JobConfig);
+export default connect(({ Studio, Alert }: { Studio: StateType; Alert: AlertStateType }) => ({
+  sessionCluster: Studio.sessionCluster,
+  clusterConfiguration: Studio.clusterConfiguration,
+  rightContainer: Studio.rightContainer,
+  tabs: Studio.tabs,
+  env: Studio.env,
+  group: Alert.group
+}))(JobConfig);

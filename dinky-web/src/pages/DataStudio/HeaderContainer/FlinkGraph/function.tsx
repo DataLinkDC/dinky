@@ -4,7 +4,7 @@ const escape2Html = (str: string) => {
     gt: '>',
     nbsp: ' ',
     amp: '&',
-    quot: '"',
+    quot: '"'
   };
   return str.replace(/&(lt|gt|nbsp|amp|quot);/gi, function (all, t) {
     return arrEntities[t];
@@ -13,9 +13,7 @@ const escape2Html = (str: string) => {
 const getRangeText = (str: string) => {
   str = escape2Html(str);
   // @ts-ignore
-  const canvas =
-    getRangeText.canvas ||
-    (getRangeText.canvas = document.createElement('canvas'));
+  const canvas = getRangeText.canvas || (getRangeText.canvas = document.createElement('canvas'));
   const context = canvas.getContext('2d');
   context.font = '10px sans-serif';
   let result = '';
@@ -39,20 +37,20 @@ export const buildGraphData = (data: any) => {
       title: data.nodes[i].pact,
       items: [
         {
-          text: getRangeText(data.nodes[i].description),
+          text: getRangeText(data.nodes[i].description)
         },
         {
           text: '\r\nParallelism: ',
-          value: '\r\n  ' + data.nodes[i].parallelism,
-        },
-      ],
+          value: '\r\n  ' + data.nodes[i].parallelism
+        }
+      ]
     };
     if (data.nodes[i].inputs) {
       for (let j in data.nodes[i].inputs) {
         edges.push({
           source: data.nodes[i].inputs[j].id.toString(),
           target: data.nodes[i].id.toString(),
-          value: data.nodes[i].inputs[j].ship_strategy,
+          value: data.nodes[i].inputs[j].ship_strategy
         });
       }
     }

@@ -19,7 +19,7 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { useRequest } from '@@/exports';
 import { ProCard } from '@ant-design/pro-components';
 import { Spin, Tabs, Typography } from 'antd';
@@ -32,17 +32,17 @@ const JobManagerLogsTab = (props: JobProps) => {
 
   const log = useRequest({
     url: API_CONSTANTS.GET_JOBMANAGER_LOG,
-    params: { address: jmaddr },
+    params: { address: jmaddr }
   });
 
   const stdout = useRequest({
     url: API_CONSTANTS.GET_JOBMANAGER_STDOUT,
-    params: { address: jmaddr },
+    params: { address: jmaddr }
   });
 
   const dump = useRequest({
     url: API_CONSTANTS.GET_JOBMANAGER_THREAD_DUMP,
-    params: { address: jmaddr },
+    params: { address: jmaddr }
   });
 
   const getLog = (ur: any) => {
@@ -61,7 +61,7 @@ const JobManagerLogsTab = (props: JobProps) => {
           items={[
             { label: 'Log', key: 'LOG', children: getLog(log) },
             { label: 'Std Out', key: 'STDOUT', children: getLog(stdout) },
-            { label: 'Thread Dump', key: 'DUMP', children: getLog(dump) },
+            { label: 'Thread Dump', key: 'DUMP', children: getLog(dump) }
           ]}
         />
       </ProCard>

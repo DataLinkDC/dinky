@@ -38,7 +38,7 @@ const QuickGuide = () => {
             </>
           ) : (
             <>
-              <Divider type="vertical" />
+              <Divider type='vertical' />
               <Link to={item.link} key={item.key}>
                 {item.label}
               </Link>
@@ -50,13 +50,9 @@ const QuickGuide = () => {
   };
 
   return (
-    <Typography
-      style={{ padding: '2px', textAlign: 'center', border: 'salmon' }}
-    >
+    <Typography style={{ padding: '2px', textAlign: 'center', border: 'salmon' }}>
       <Title level={4}>{l('datastudio.middle.qg')}</Title>
-      <Paragraph
-        style={{ padding: 0, margin: 0, textAlign: 'center', border: 'salmon' }}
-      >
+      <Paragraph style={{ padding: 0, margin: 0, textAlign: 'center', border: 'salmon' }}>
         {buildQuickGuide()}
       </Paragraph>
     </Typography>

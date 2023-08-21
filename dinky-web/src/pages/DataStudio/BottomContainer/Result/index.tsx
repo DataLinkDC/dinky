@@ -1,17 +1,9 @@
-import {
-  getCurrentData,
-  getCurrentTab,
-  mapDispatchToProps,
-} from '@/pages/DataStudio/function';
+import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
-import {
-  DataStudioParams,
-  StateType,
-  TabsPageType,
-} from '@/pages/DataStudio/model';
+import { DataStudioParams, StateType, TabsPageType } from '@/pages/DataStudio/model';
 import { postAll } from '@/services/api';
 import { handleGetOption } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { FireOutlined, SearchOutlined } from '@ant-design/icons';
@@ -31,7 +23,7 @@ type Data = {
 const Result = (props: any) => {
   const {
     saveTabs,
-    tabs: { panes, activeKey },
+    tabs: { panes, activeKey }
   } = props;
   const [data, setData] = useState<Data>({});
   const [loading, setLoading] = useState<boolean>(true);
@@ -48,47 +40,36 @@ const Result = (props: any) => {
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex,
+    dataIndex: DataIndex
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex.toString());
   };
   const getColumnSearchProps = (dataIndex: string): ColumnType<Data> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
           style={{ marginBottom: 8, display: 'block' }}
         />
         <Space>
           <Button
-            type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
+            type='primary'
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
             icon={<SearchOutlined />}
-            size="small"
+            size='small'
             style={{ width: 90 }}
           >
             {l('button.search')}
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
+            size='small'
             style={{ width: 90 }}
           >
             {l('button.reset')}
@@ -114,7 +95,7 @@ const Result = (props: any) => {
         <Highlight label={text ? text.toString() : ''} words={[searchText]} />
       ) : (
         text
-      ),
+      )
   });
 
   const loadData = async (isRefresh?: boolean) => {
@@ -131,11 +112,9 @@ const Result = (props: any) => {
     } else {
       if (isSql(current.dialect)) {
         // common sql
-        const res = await handleGetOption(
-          'api/studio/getCommonSqlData',
-          'Get Data',
-          { taskId: (currentTabs?.params as DataStudioParams).taskId },
-        );
+        const res = await handleGetOption('api/studio/getCommonSqlData', 'Get Data', {
+          taskId: (currentTabs?.params as DataStudioParams).taskId
+        });
         if (res.datas) {
           (currentTabs?.params as DataStudioParams).resultData = res.datas;
           saveTabs({ ...props.tabs });
@@ -145,16 +124,14 @@ const Result = (props: any) => {
         // flink sql
         if (current.jobInstanceId) {
           const res = await postAll(API_CONSTANTS.GET_JOB_BY_ID, {
-            id: current.jobInstanceId,
+            id: current.jobInstanceId
           });
           const jobData = res.datas;
           if ('unknown' !== jobData.status.toLowerCase()) {
             const jid = jobData.jid;
-            const tableData = await handleGetOption(
-              'api/studio/getJobData',
-              'Get Data',
-              { jobId: jid },
-            );
+            const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', {
+              jobId: jid
+            });
             const datas = tableData.datas;
             datas.jid = jid;
             if (datas.success) {
@@ -178,7 +155,7 @@ const Result = (props: any) => {
         title: item,
         dataIndex: item,
         sorter: (a, b) => a[item] - b[item],
-        ...getColumnSearchProps(item),
+        ...getColumnSearchProps(item)
       };
     }) as ColumnsType<any>;
   };
@@ -197,13 +174,13 @@ const Result = (props: any) => {
             <Space>
               <Button
                 loading={loading}
-                type="primary"
+                type='primary'
                 onClick={showDetail}
                 icon={<SearchOutlined />}
               >
                 {l('pages.datastudio.label.result.query.latest.data')}
               </Button>
-              <Tag color="blue" key={data.jid}>
+              <Tag color='blue' key={data.jid}>
                 <FireOutlined /> {data.jid}
               </Tag>
             </Space>
@@ -215,15 +192,12 @@ const Result = (props: any) => {
   const renderDownloadButton = () => {
     if (current && data.columns) {
       const _utf = '\uFEFF';
-      const csvDataBlob = new Blob(
-        [_utf + transformTableDataToCsv(data.columns!, data.rowData!)],
-        {
-          type: 'text/csv',
-        },
-      );
+      const csvDataBlob = new Blob([_utf + transformTableDataToCsv(data.columns!, data.rowData!)], {
+        type: 'text/csv'
+      });
       const url = URL.createObjectURL(csvDataBlob);
       return (
-        <Button type="link" href={url}>
+        <Button type='link' href={url}>
           Export Csv
         </Button>
       );
@@ -235,13 +209,7 @@ const Result = (props: any) => {
     <div style={{ width: '100%' }}>
       <div style={{ direction: 'rtl' }}>
         {renderDownloadButton()}
-        {current ? (
-          isSql(current.dialect) ? (
-            <></>
-          ) : (
-            renderFlinkSQLContent()
-          )
-        ) : undefined}
+        {current ? isSql(current.dialect) ? <></> : renderFlinkSQLContent() : undefined}
       </div>
       {data.columns ? (
         <Table
@@ -260,7 +228,7 @@ const Result = (props: any) => {
 
 export default connect(
   ({ Studio }: { Studio: StateType }) => ({
-    tabs: Studio.tabs,
+    tabs: Studio.tabs
   }),
-  mapDispatchToProps,
+  mapDispatchToProps
 )(Result);

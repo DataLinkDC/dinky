@@ -33,11 +33,7 @@ const GlobalVarDrawer: React.FC<GlobalVarDrawerProps> = (props) => {
 
   return (
     <>
-      <Drawer
-        width={'50%'}
-        open={modalVisible}
-        onClose={() => handleCancel(false)}
-      >
+      <Drawer width={'50%'} open={modalVisible} onClose={() => handleCancel(false)}>
         <GlobalVarDesc values={values} columns={columns} />
       </Drawer>
     </>

@@ -17,7 +17,7 @@
  *
  */
 
-import { LoginLog } from '@/types/User/data';
+import { LoginLog } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { Space, Typography } from 'antd';
 import { TimelineItemProps } from 'antd/es/timeline/TimelineItem';
@@ -25,14 +25,12 @@ import moment from 'moment';
 
 const { Text } = Typography;
 
-export const renderTimeLineItems = (
-  loginRecord: LoginLog[],
-): TimelineItemProps[] => {
+export const renderTimeLineItems = (loginRecord: LoginLog[]): TimelineItemProps[] => {
   return loginRecord
     .filter((item) => !item.isDeleted)
     .map((item) => {
       const renderTitle = (
-        <Space direction="vertical">
+        <Space direction='vertical'>
           <Text>
             {l('user.username')}: {item.username}
           </Text>
@@ -47,10 +45,9 @@ export const renderTimeLineItems = (
 
       const renderLabel = (
         <>
-          <Space direction="vertical">
+          <Space direction='vertical'>
             <Text>
-              {l('user.login.accesstime')}:{' '}
-              {moment(item.accessTime).format('YYYY-MM-DD HH:mm:ss')}
+              {l('user.login.accesstime')}: {moment(item.accessTime).format('YYYY-MM-DD HH:mm:ss')}
             </Text>
             <Text>
               {l('user.login.ip')}: {item.ip}
@@ -63,7 +60,7 @@ export const renderTimeLineItems = (
         key: item.id,
         color: item.status === 10004 ? 'green' : 'red',
         label: renderLabel,
-        children: renderTitle,
+        children: renderTitle
       };
     });
 };

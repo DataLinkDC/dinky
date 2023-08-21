@@ -28,13 +28,11 @@ import RcResizeObserver from 'rc-resize-observer';
 import React, { useState } from 'react';
 
 const DevOverView: React.FC = () => {
-  const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>(
-    'vertical',
-  );
+  const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
 
   return (
     <RcResizeObserver
-      key="resize-observer"
+      key='resize-observer'
       onResize={(offset) => {
         setSplit(offset.width < 596 ? 'horizontal' : 'vertical');
       }}
@@ -42,17 +40,17 @@ const DevOverView: React.FC = () => {
       <ProCard
         title={
           <>
-            <Badge status="processing" />
+            <Badge status='processing' />
             {l('home.develop')}
           </>
         }
         headerBordered
         bordered
-        size="small"
+        size='small'
         split={split}
       >
-        <ProCard split="vertical">
-          <ProCard split="horizontal" colSpan={'40%'}>
+        <ProCard split='vertical'>
+          <ProCard split='horizontal' colSpan={'40%'}>
             <ProCard>
               <BatchStreamProportion />
             </ProCard>

@@ -17,11 +17,8 @@
  *
  */
 
-import {
-  YES_OR_NO_ENUM,
-  YES_OR_NO_FILTERS_MAPPING,
-} from '@/types/Public/constants';
-import { UserBaseInfo } from '@/types/User/data';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer } from 'antd';
@@ -51,12 +48,12 @@ const TenantUserList: React.FC<TenantUserListProps> = (props) => {
     {
       title: l('user.username'),
       dataIndex: 'username',
-      key: 'username',
+      key: 'username'
     },
     {
       title: l('user.nickname'),
       dataIndex: 'nickname',
-      key: 'nickname',
+      key: 'nickname'
     },
     {
       title: l('user.superAdminFlag'),
@@ -64,7 +61,7 @@ const TenantUserList: React.FC<TenantUserListProps> = (props) => {
       valueEnum: YES_OR_NO_ENUM,
       hideInSearch: true,
       filters: YES_OR_NO_FILTERS_MAPPING,
-      filterMultiple: false,
+      filterMultiple: false
     },
     {
       title: l('user.tenantAdminFlag'),
@@ -72,7 +69,7 @@ const TenantUserList: React.FC<TenantUserListProps> = (props) => {
       valueEnum: YES_OR_NO_ENUM,
       hideInSearch: true,
       filters: YES_OR_NO_FILTERS_MAPPING,
-      filterMultiple: false,
+      filterMultiple: false
     },
     {
       title: l('global.table.operate'),
@@ -83,19 +80,13 @@ const TenantUserList: React.FC<TenantUserListProps> = (props) => {
         <Button
           type={'link'}
           key={`${record.id}_set_tenant_m`}
-          title={
-            record.tenantAdminFlag
-              ? l('tenant.cancel.admin')
-              : l('tenant.set.admin')
-          }
+          title={record.tenantAdminFlag ? l('tenant.cancel.admin') : l('tenant.set.admin')}
           onClick={() => onSubmit(record)}
         >
-          {record.tenantAdminFlag
-            ? l('tenant.cancel.admin')
-            : l('tenant.set.admin')}
-        </Button>,
-      ],
-    },
+          {record.tenantAdminFlag ? l('tenant.cancel.admin') : l('tenant.set.admin')}
+        </Button>
+      ]
+    }
   ];
 
   return (
@@ -111,7 +102,7 @@ const TenantUserList: React.FC<TenantUserListProps> = (props) => {
           search={false}
           pagination={false}
           options={false}
-          rowKey="id"
+          rowKey='id'
           actionRef={actionRef}
           loading={loading}
           dataSource={userList}

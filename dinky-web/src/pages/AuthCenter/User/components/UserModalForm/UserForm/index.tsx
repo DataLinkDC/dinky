@@ -17,7 +17,7 @@
  */
 
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
@@ -39,37 +39,37 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     return (
       <>
         <ProFormText
-          name="username"
+          name='username'
           label={l('user.username')}
           placeholder={l('user.usernamePlaceholder')}
           rules={[
             {
               required: true,
-              message: l('user.usernamePlaceholder'),
-            },
+              message: l('user.usernamePlaceholder')
+            }
           ]}
         />
 
         <ProFormText
-          name="nickname"
+          name='nickname'
           label={l('user.nickname')}
           placeholder={l('user.nicknamePlaceholder')}
           rules={[
             {
               required: true,
-              message: l('user.nicknamePlaceholder'),
-            },
+              message: l('user.nicknamePlaceholder')
+            }
           ]}
         />
 
         <ProFormText
-          name="worknum"
+          name='worknum'
           label={l('user.jobnumber')}
           placeholder={l('user.jobnumberPlaceholder')}
         />
 
         <ProFormText
-          name="mobile"
+          name='mobile'
           label={l('user.phone')}
           placeholder={l('user.phonePlaceholder')}
         />

@@ -17,7 +17,7 @@
 
 import {
   ProcessStatus,
-  ProcessType,
+  ProcessType
 } from '@/pages/SettingCenter/Process/components/ProcessList/constants';
 import { Tag } from 'antd';
 

@@ -35,11 +35,7 @@ export const getSubMinTime = (currentTime: Date, minutes: number) => {
  * @param {boolean} isStart | is start time , if true , the time is 00:00:00.000    if false , the time is 23:59:59.999
  * @returns {Date} | return the time before several days
  */
-export const getSubDateTime = (
-  currentTime: Date,
-  day: number,
-  isStart: boolean,
-) => {
+export const getSubDateTime = (currentTime: Date, day: number, isStart: boolean) => {
   const pastTime = new Date(
     currentTime.getFullYear(),
     currentTime.getMonth(),
@@ -47,7 +43,7 @@ export const getSubDateTime = (
     isStart ? 0 : 23,
     isStart ? 0 : 59,
     isStart ? 0 : 59,
-    isStart ? 0 : 999,
+    isStart ? 0 : 999
   );
   return pastTime;
 };
@@ -66,7 +62,7 @@ export const getDayOfMonth = (currentTime: Date, isFirst: boolean) => {
     isFirst ? 0 : 23,
     isFirst ? 0 : 59,
     isFirst ? 0 : 59,
-    isFirst ? 0 : 999,
+    isFirst ? 0 : 999
   );
   return pastTime;
 };

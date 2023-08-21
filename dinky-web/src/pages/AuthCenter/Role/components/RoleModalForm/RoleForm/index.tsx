@@ -18,13 +18,9 @@
  */
 
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data.d';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
-import {
-  ProForm,
-  ProFormText,
-  ProFormTextArea,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React from 'react';
@@ -45,21 +41,21 @@ const RoleProForm: React.FC<RoleProFormProps> = (props) => {
     return (
       <>
         <ProFormText
-          name="roleCode"
+          name='roleCode'
           label={l('role.roleCode')}
           placeholder={l('role.EnterRoleCode')}
           rules={[{ required: true, message: l('role.EnterRoleCode') }]}
         />
 
         <ProFormText
-          name="roleName"
+          name='roleName'
           label={l('role.roleName')}
           placeholder={l('role.EnterRoleName')}
           rules={[{ required: true, message: l('role.EnterRoleName') }]}
         />
 
         <ProFormTextArea
-          name="note"
+          name='note'
           label={l('global.table.note')}
           placeholder={l('role.EnterNote')}
           allowClear

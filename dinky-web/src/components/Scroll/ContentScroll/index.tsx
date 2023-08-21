@@ -13,11 +13,11 @@ const ContentScroll: React.FC<ContentScrollProps> = (props) => {
 
   return (
     <div
-      className="content-scroll"
+      className='content-scroll'
       style={{
         height: height,
         display: height < 1 ? 'none' : 'block',
-        backgroundColor: token.colorBgBase,
+        backgroundColor: token.colorBgBase
       }}
     >
       {children}

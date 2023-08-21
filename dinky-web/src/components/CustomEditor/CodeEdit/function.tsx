@@ -15,11 +15,7 @@
  * limitations under the License.
  */
 
-import {
-  Column,
-  ISuggestions,
-  MetaData,
-} from '@/components/CustomEditor/CodeEdit/data';
+import { Column, ISuggestions, MetaData } from '@/components/CustomEditor/CodeEdit/data';
 import { Document, GlobalVar } from '@/types/RegCenter/data.d';
 import * as monaco from 'monaco-editor';
 import keyWordJsonData from './keyword.json';
@@ -33,18 +29,16 @@ const buildMetaDataSuggestions = () => {
       label: item.table,
       kind: monaco.languages.CompletionItemKind.Constant,
       insertText: item.table,
-      insertTextRules:
-        monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      detail: 'FlinkSQL Connector => ' + item.connector,
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      detail: 'FlinkSQL Connector => ' + item.connector
     });
     item.columns.forEach((column: Column) => {
       metaDataSuggestions.push({
         label: column.name,
         kind: monaco.languages.CompletionItemKind.Field,
         insertText: column.name,
-        insertTextRules:
-          monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        detail: 'Column => ' + column.type + ' from ' + item.table,
+        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        detail: 'Column => ' + column.type + ' from ' + item.table
       });
     });
   });
@@ -60,9 +54,8 @@ const buildFullDocumentSuggestions = () => {
       label: item.name,
       kind: monaco.languages.CompletionItemKind.Snippet,
       insertText: item.fillValue,
-      insertTextRules:
-        monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      detail: item.description,
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      detail: item.description
     });
   });
   return fullDocumentSuggestions;
@@ -91,9 +84,8 @@ const buildKeyWordJsonSuggestions = () => {
         label: item,
         kind: monaco.languages.CompletionItemKind.Keyword,
         insertText: item,
-        insertTextRules:
-          monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        detail: key,
+        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        detail: key
       });
     });
   });
@@ -109,9 +101,8 @@ const buildGlobalVariableSuggestions = () => {
       label: item.name,
       kind: monaco.languages.CompletionItemKind.Variable,
       insertText: item.fragmentValue,
-      insertTextRules:
-        monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      detail: item.note,
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      detail: item.note
     });
   });
   return globalVariableSuggestions;

@@ -39,10 +39,7 @@ const SchemaDesc: React.FC<SchemaDescProps> = (props) => {
           <ColumnInfo columnInfo={tableColumns} />
         </>
       ) : (
-        <Empty
-          className={'code-content-empty'}
-          description={l('rc.ds.detail.tips')}
-        />
+        <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')} />
       )}
     </Height80VHDiv>
   );

@@ -36,10 +36,7 @@ export const getFormData = (values: Partial<Alert.AlertGroup>) => {
  * @param values
  * @param params
  */
-export const buildFormData = (
-  values: Partial<Alert.AlertGroup>,
-  params: any,
-) => {
+export const buildFormData = (values: Partial<Alert.AlertGroup>, params: any) => {
   let newValue = values;
   if (params.alertInstanceIds) {
     newValue.alertInstanceIds = params.alertInstanceIds.join(',');

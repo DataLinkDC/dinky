@@ -18,7 +18,7 @@
 import { Height80VHDiv } from '@/components/StyledComponents';
 import {
   tempColumns,
-  tempData,
+  tempData
 } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLConsole/data';
 import DataList from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLConsole/DataList';
 import Editor from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLConsole/Editor';
@@ -49,7 +49,7 @@ const SQLConsole: React.FC = () => {
         <Alert
           style={{ margin: 0, height: '2vw', alignItems: 'center' }}
           message={msg}
-          type="error"
+          type='error'
           showIcon
         />
       );
@@ -58,7 +58,7 @@ const SQLConsole: React.FC = () => {
         <Alert
           style={{ margin: 0, height: '2vw', alignItems: 'center' }}
           message={msg}
-          type="success"
+          type='success'
           showIcon
         />
       );
@@ -75,10 +75,7 @@ const SQLConsole: React.FC = () => {
       />
       {/*{renderAlertMsg(false, '执行成功')}*/}
       {loading ? (
-        <Result
-          icon={<PageLoading spin={loading} />}
-          title={l('rc.ds.console.running')}
-        />
+        <Result icon={<PageLoading spin={loading} />} title={l('rc.ds.console.running')} />
       ) : (
         <DataList columns={tempColumns} data={tempData} />
       )}

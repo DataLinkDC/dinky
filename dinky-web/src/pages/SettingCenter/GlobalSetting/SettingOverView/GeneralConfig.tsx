@@ -26,14 +26,7 @@ import { SaveTwoTone, SettingTwoTone } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { ProListMetas, ProListProps } from '@ant-design/pro-list';
 import { ActionType } from '@ant-design/pro-table';
-import {
-  Descriptions,
-  Input,
-  Radio,
-  RadioChangeEvent,
-  Space,
-  Switch,
-} from 'antd';
+import { Descriptions, Input, Radio, RadioChangeEvent, Space, Switch } from 'antd';
 import React, { useRef } from 'react';
 
 type GeneralConfigProps = {
@@ -46,14 +39,7 @@ type GeneralConfigProps = {
 };
 
 const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
-  const {
-    data,
-    tag,
-    onSave: handleSubmit,
-    loading,
-    toolBarRender,
-    selectChanges,
-  } = props;
+  const { data, tag, onSave: handleSubmit, loading, toolBarRender, selectChanges } = props;
 
   const actionRef = useRef<ActionType>();
 
@@ -72,11 +58,11 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
       ? []
       : [
           <EditBtn
-            key="edit"
+            key='edit'
             onClick={() => {
               action.startEditable(entity.key);
             }}
-          />,
+          />
         ];
   };
 
@@ -108,10 +94,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     } else if (entity.frontType === 'option') {
       // @ts-ignore
       return (
-        <Radio.Group
-          onChange={selectChanges[entity.key]}
-          defaultValue={entity.value.toLowerCase()}
-        >
+        <Radio.Group onChange={selectChanges[entity.key]} defaultValue={entity.value.toLowerCase()}>
           {entity.example.map((item: any) => {
             return (
               <Radio.Button key={item} value={item.toLowerCase()}>
@@ -129,31 +112,24 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
   const metasRestProps: ProListMetas = {
     title: {
       editable: false,
-      render: (dom: any, entity: BaseConfigProperties) => renderTitle(entity),
+      render: (dom: any, entity: BaseConfigProperties) => renderTitle(entity)
     },
     avatar: {
       editable: false,
-      render: () => <SettingTwoTone />,
+      render: () => <SettingTwoTone />
     },
     description: {
       editable: false,
-      render: (dom: any, entity: BaseConfigProperties) => (
-        <>{l(`sys.${entity.key}.note`)}</>
-      ),
+      render: (dom: any, entity: BaseConfigProperties) => <>{l(`sys.${entity.key}.note`)}</>
     },
     content: {
       dataIndex: 'value',
-      render: (dom: any, entity: BaseConfigProperties) =>
-        renderValuesOfForm(entity),
+      render: (dom: any, entity: BaseConfigProperties) => renderValuesOfForm(entity)
     },
     actions: {
-      render: (
-        text: any,
-        row: BaseConfigProperties,
-        index: number,
-        action: any,
-      ) => renderActions(action, row),
-    },
+      render: (text: any, row: BaseConfigProperties, index: number, action: any) =>
+        renderActions(action, row)
+    }
   };
 
   /**
@@ -181,11 +157,9 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
         </>
       ),
       actionRender: (row, config, dom) =>
-        row.frontType === 'boolean' || row.frontType === 'option'
-          ? []
-          : [dom.save, dom.cancel],
-      onSave: async (key, record) => handleSave(record),
-    },
+        row.frontType === 'boolean' || row.frontType === 'option' ? [] : [dom.save, dom.cancel],
+      onSave: async (key, record) => handleSave(record)
+    }
   };
 
   /**

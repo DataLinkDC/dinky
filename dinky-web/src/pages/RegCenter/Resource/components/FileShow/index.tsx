@@ -26,7 +26,7 @@ import React from 'react';
 const CodeEditProps = {
   height: '88vh',
   width: '100%',
-  lineNumbers: 'on',
+  lineNumbers: 'on'
 };
 
 type FileShowProps = {
@@ -39,7 +39,7 @@ const FileShow: React.FC<FileShowProps> = (props) => {
   const {
     item: { name, isLeaf },
     code,
-    onChange,
+    onChange
   } = props;
 
   /**
@@ -50,7 +50,7 @@ const FileShow: React.FC<FileShowProps> = (props) => {
     showFloatButton: true,
     code,
     onChange: onChange,
-    language: renderLanguage(name, '.'),
+    language: renderLanguage(name, '.')
   };
 
   /**
@@ -60,18 +60,10 @@ const FileShow: React.FC<FileShowProps> = (props) => {
   const renderContent = () => {
     if (name && unSupportView(name) && isLeaf) {
       return (
-        <Empty
-          className={'code-content-empty'}
-          description={l('rc.gp.codeTree.unSupportView')}
-        />
+        <Empty className={'code-content-empty'} description={l('rc.gp.codeTree.unSupportView')} />
       );
     } else if (code === '' || code === null || code === undefined) {
-      return (
-        <Empty
-          className={'code-content-empty'}
-          description={l('rc.resource.click')}
-        />
-      );
+      return <Empty className={'code-content-empty'} description={l('rc.resource.click')} />;
     } else {
       return <CodeEdit {...restCodeShowProps} {...CodeEditProps} />;
     }

@@ -19,14 +19,10 @@
 
 import FadeIn from '@/components/Animation/FadeIn';
 import { getData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import {
-  ProForm,
-  ProFormCheckbox,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { SubmitterProps } from '@ant-design/pro-form/es/components';
 import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -51,7 +47,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
         setLdapEnabled(res.datas);
         form.setFieldValue('ldapLogin', res.datas);
       },
-      (err) => console.error(err),
+      (err) => console.error(err)
     );
   }, []);
 
@@ -65,43 +61,41 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
     return (
       <>
         <ProFormText
-          name="username"
+          name='username'
           width={'md'}
           fieldProps={{
             size: 'large',
-            prefix: <UserOutlined />,
+            prefix: <UserOutlined />
           }}
           required
           placeholder={l('login.username.placeholder')}
           rules={[
             {
               required: true,
-              message: l('login.username.required'),
-            },
+              message: l('login.username.required')
+            }
           ]}
         />
         <ProFormText.Password
-          name="password"
+          name='password'
           fieldProps={{
             size: 'large',
-            prefix: <LockOutlined />,
+            prefix: <LockOutlined />
           }}
           placeholder={l('login.password.placeholder')}
           rules={[
             {
               required: true,
-              message: l('login.password.required'),
-            },
+              message: l('login.password.required')
+            }
           ]}
         />
         <Row>
           <Col span={18}>
-            <ProFormCheckbox name="autoLogin">
-              {l('login.rememberMe')}
-            </ProFormCheckbox>
+            <ProFormCheckbox name='autoLogin'>{l('login.rememberMe')}</ProFormCheckbox>
           </Col>
           <Col span={6}>
-            <ProFormCheckbox name="ldapLogin" hidden={!ldapEnabled}>
+            <ProFormCheckbox name='ldapLogin' hidden={!ldapEnabled}>
               {l('login.ldapLogin')}
             </ProFormCheckbox>
           </Col>
@@ -119,8 +113,8 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
       htmlType: 'submit',
       size: 'large',
       shape: 'round',
-      style: { width: '100%' },
-    },
+      style: { width: '100%' }
+    }
   };
 
   return (

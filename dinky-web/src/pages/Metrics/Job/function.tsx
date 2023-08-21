@@ -43,7 +43,7 @@ export const buildMetricsList = (subTasks: string[]) =>
     return {
       key: subTask,
       label: label,
-      value: subTask,
+      value: subTask
     };
   });
 
@@ -66,7 +66,7 @@ export const buildSubTaskList = (subTaskList: SubTask[]) =>
     return {
       key: subTask.name,
       label: label,
-      value: subTask.id,
+      value: subTask.id
     };
   });
 
@@ -95,7 +95,7 @@ export const buildRunningJobList = (metrics: Task[]) =>
     return {
       key: item.name,
       label: label,
-      value: item.id,
+      value: item.id
     };
   });
 
@@ -104,17 +104,10 @@ export const buildRunningJobList = (metrics: Task[]) =>
  * @param {string} metricsId
  * @returns {JSX.Element}
  */
-export const renderMetricsChartTitle = (
-  metricsId: string,
-  titleWidth: string | number,
-) => {
+export const renderMetricsChartTitle = (metricsId: string, titleWidth: string | number) => {
   return (
     <>
-      <Paragraph
-        style={{ width: titleWidth }}
-        code
-        ellipsis={{ tooltip: true }}
-      >
+      <Paragraph style={{ width: titleWidth }} code ellipsis={{ tooltip: true }}>
         {metricsId}
       </Paragraph>
     </>

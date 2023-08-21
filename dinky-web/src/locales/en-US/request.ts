@@ -20,13 +20,11 @@ export default {
   'app.request.error': 'Request error',
   'app.request.200': 'The server successfully returned the requested data. ',
   'app.request.201': 'New or modified data is successful. ',
-  'app.request.202':
-    'A request has entered the background queue (asynchronous task). ',
+  'app.request.202': 'A request has entered the background queue (asynchronous task). ',
   'app.request.204': 'Data deleted successfully. ',
   'app.request.400':
     'There was an error in the request sent, and the server did not create or modify data. ',
-  'app.request.401':
-    'The user does not have permission (token, username, password error). ',
+  'app.request.401': 'The user does not have permission (token, username, password error). ',
   'app.request.403': 'Sorry, you are not authorized to access this page.',
   'app.request.404': 'Sorry, the page you visited does not exist.',
   'app.request.405': 'The request method is not allowed. ',
@@ -34,8 +32,7 @@ export default {
   'app.request.410':
     'The requested resource is permanently deleted and will no longer be available. ',
   'app.request.422': 'When creating an object, a validation error occurred. ',
-  'app.request.500':
-    'An error occurred on the server, please check the server. ',
+  'app.request.500': 'An error occurred on the server, please check the server. ',
   'app.request.502': 'Gateway error. ',
   'app.request.503': 'The service is unavailable. ',
   'app.request.504': 'The gateway timed out. ',
@@ -48,8 +45,7 @@ export default {
   'app.request.heartbeat.connection.failed':
     ' The heartbeat of the data source is abnormal, and the detection time is: {time} ',
   'app.request.upload.failed': ' Upload failed. ',
-  'app.request.update.setting.success':
-    'Modify the configuration successfully！',
+  'app.request.update.setting.success': 'Modify the configuration successfully！',
   'app.request.error.try': 'Failed, please try again',
   'app.request.geterror.try': 'Get failed, please try again',
   'app.request.delete.error': 'Delete failed, please try again',
@@ -59,5 +55,5 @@ export default {
   'app.request.running': 'Now is ',
   'app.request.test.alert.msg': 'Sending test alert message',
   'app.request.loading': 'Loading...',
-  'app.request.back': 'Back Home',
+  'app.request.back': 'Back Home'
 };

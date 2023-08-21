@@ -41,24 +41,22 @@ const ExceptionTab = (props: JobProps) => {
     location: '',
     stacktrace: '',
     taskName: '',
-    timestamp: '',
+    timestamp: ''
   });
 
   const renderLogTab = () => {
-    var logs = [];
+    let logs = [];
     const rte = jobDetail?.jobHistory?.exceptions['root-exception'];
     logs.push({
       taskName: 'RootException',
       stacktrace: rte,
-      exceptionName: rte,
+      exceptionName: rte
     });
-    logs.push(
-      ...jobDetail.jobHistory?.exceptions['exceptionHistory']['entries'],
-    );
+    logs.push(...jobDetail.jobHistory?.exceptions['exceptionHistory']['entries']);
     return (
       <Row>
         <Col span={3}>
-          <div id="scrollableDiv">
+          <div id='scrollableDiv'>
             <List
               size={'small'}
               header={'Exception List'}
@@ -85,9 +83,7 @@ const ExceptionTab = (props: JobProps) => {
               <blockquote>{currentLog.exceptionName}</blockquote>
             </Paragraph>
             <CodeShow
-              code={
-                currentLog.stacktrace ? currentLog.stacktrace : 'No Exception'
-              }
+              code={currentLog.stacktrace ? currentLog.stacktrace : 'No Exception'}
               height={500}
             />
           </Card>

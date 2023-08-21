@@ -43,9 +43,9 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
 
   const [submitting, setSubmitting] = React.useState<boolean>(false);
@@ -84,14 +84,9 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
       <Button key={'cancel'} onClick={() => handleCancel()}>
         {l('button.cancel')}
       </Button>,
-      <Button
-        key={'finish'}
-        loading={submitting}
-        type="primary"
-        onClick={() => submitForm()}
-      >
+      <Button key={'finish'} loading={submitting} type='primary' onClick={() => submitForm()}>
         {l('button.finish')}
-      </Button>,
+      </Button>
     ];
   };
 
@@ -105,8 +100,8 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
           bodyStyle: {
             maxHeight: '70vh',
             overflowY: 'auto',
-            overflowX: 'hidden',
-          },
+            overflowX: 'hidden'
+          }
         }}
         title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}
         submitter={{ render: () => [...renderFooter()] }}

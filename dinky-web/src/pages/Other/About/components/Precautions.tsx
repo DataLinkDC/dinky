@@ -25,7 +25,7 @@ export const Precautions = () => {
       <Alert
         message={l('about.precautions')}
         description={l('about.wechatApply')}
-        type="warning"
+        type='warning'
         {...AlertRestProps}
       />
     </>

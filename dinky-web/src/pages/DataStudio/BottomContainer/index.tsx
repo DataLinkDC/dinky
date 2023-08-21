@@ -22,7 +22,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
   const handleMinimize = () => {
     dispatch({
       type: STUDIO_MODEL.updateSelectBottomKey,
-      payload: '',
+      payload: ''
     });
   };
 
@@ -33,7 +33,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
   const updateBottomHeight = (height: number) => {
     dispatch({
       type: STUDIO_MODEL.updateBottomHeight,
-      payload: height,
+      payload: height
     });
   };
 
@@ -44,14 +44,14 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
   const updateCenterContentHeight = (height: number) => {
     dispatch({
       type: STUDIO_MODEL.updateCenterContentHeight,
-      payload: height,
+      payload: height
     });
   };
 
   const updateSelectBottomSubKey = (key: string) => {
     dispatch({
       type: STUDIO_MODEL.updateSelectBottomSubKey,
-      payload: key,
+      payload: key
     });
   };
 
@@ -62,7 +62,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
   const updateToolContentHeight = (height: number) => {
     dispatch({
       type: STUDIO_MODEL.updateToolContentHeight,
-      payload: height,
+      payload: height
     });
   };
   const getSubTabs = () => {
@@ -71,8 +71,8 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       Object.keys(LeftBottomMoreTabs).map((x) =>
         LeftBottomMoreTabs[x].map((y) => {
           return { ...y, key: x + '/' + y.key };
-        }),
-      ),
+        })
+      )
     ).flatMap((x) => x);
   };
 
@@ -82,11 +82,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
    * @param direction
    * @param {{offsetHeight: any}} elementRef
    */
-  const resizeCallback = (
-    event: any,
-    direction: any,
-    elementRef: { offsetHeight: any },
-  ) => {
+  const resizeCallback = (event: any, direction: any, elementRef: { offsetHeight: any }) => {
     updateBottomHeight(elementRef.offsetHeight);
     const centerContentHeight =
       document.documentElement.clientHeight -
@@ -111,14 +107,14 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
               {item.icon}
               {item.label}
             </span>
-          ),
+          )
         };
       });
       return (
         <Tabs
           style={{ height: '32px', display: '-webkit-box' }}
           items={items}
-          type="card"
+          type='card'
           onChange={(key: string) => {
             updateSelectBottomSubKey(key.split('/')[1]);
           }}
@@ -127,8 +123,8 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
             '/' +
             bottomContainer.selectSubKey[bottomContainer.selectKey]
           }
-          size="small"
-          tabPosition="top"
+          size='small'
+          tabPosition='top'
         />
       );
     }
@@ -139,7 +135,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       ...LeftBottomSide.map((x) => {
         return { ...x, key: x.key + '/' };
       }),
-      ...getSubTabs(),
+      ...getSubTabs()
     ].map((item) => {
       return {
         ...item,
@@ -147,7 +143,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
           <ContentScroll height={props.bottomContainer.height - VIEW.midMargin}>
             {item.children}
           </ContentScroll>
-        ),
+        )
       };
     });
   };
@@ -162,9 +158,9 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
               Tabs: {
                 horizontalMargin: '0',
                 cardPaddingSM: '6px',
-                horizontalItemPadding: '0',
-              },
-            },
+                horizontalItemPadding: '0'
+              }
+            }
           }}
         >
           <Space>
@@ -178,7 +174,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
         zIndex: 999,
         height: bottomContainer.height,
         marginTop: 0,
-        backgroundColor: '#fff',
+        backgroundColor: '#fff'
       }}
       defaultSize={{ width: '100%', height: bottomContainer.height }}
       minHeight={VIEW.midMargin}
@@ -188,7 +184,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
         direction: any,
         elementRef: {
           offsetHeight: any;
-        },
+        }
       ) => resizeCallback(event, direction, elementRef)}
       btnGroup={[<CircleBtn key={'max'} icon={<PlusOutlined />} />]}
       enable={{ top: true }}
@@ -212,5 +208,5 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   leftContainer: Studio.leftContainer,
   bottomContainer: Studio.bottomContainer,
-  centerContentHeight: Studio.centerContentHeight,
+  centerContentHeight: Studio.centerContentHeight
 }))(BottomContainer);

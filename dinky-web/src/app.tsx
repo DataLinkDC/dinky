@@ -20,13 +20,10 @@ import RightContent from '@/components/RightContent';
 import { AccessContextProvider } from '@/hooks/useAccess';
 import { UnAccessible } from '@/pages/Other/403';
 import { API_CONSTANTS } from '@/services/constants';
+import { SysMenu } from '@/types/AuthCenter/data';
 import { THEME } from '@/types/Public/data';
-import { SysMenu } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import {
-  PageLoading,
-  Settings as LayoutSettings,
-} from '@ant-design/pro-components';
+import { PageLoading, Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
 import { JSX } from 'react';
@@ -34,10 +31,7 @@ import { Reducer, StoreEnhancer } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { Navigate } from 'umi';
-import {
-  default as defaultSettings,
-  default as Settings,
-} from '../config/defaultSettings';
+import { default as defaultSettings, default as Settings } from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { getDataByParamsReturnResult } from './services/BusinessCrud';
 import { API } from './services/data';
@@ -66,25 +60,18 @@ export function patchRoutes({ routes }: any) {
 const queryUserInfo = async () => {
   return getDataByParamsReturnResult(API_CONSTANTS.CURRENT_USER).then(
     (result) => {
-      const {
-        user,
-        roleList,
-        tenantList,
-        currentTenant,
-        menuList,
-        saTokenInfo,
-      } = result.datas;
+      const { user, roleList, tenantList, currentTenant, menuList, saTokenInfo } = result.datas;
       extraRoutes = menuList;
       const currentUser: API.CurrentUser = {
         user: {
           ...user,
-          avatar: user.avatar ?? '/icons/user_avatar.png',
+          avatar: user.avatar ?? '/icons/user_avatar.png'
         },
         roleList: roleList,
         tenantList: tenantList,
         currentTenant: currentTenant,
         menuList: menuList,
-        tokenInfo: saTokenInfo,
+        tokenInfo: saTokenInfo
       };
       return currentUser;
     },
@@ -92,7 +79,7 @@ const queryUserInfo = async () => {
       history.push(loginPath);
       console.log(error);
       return undefined;
-    },
+    }
   );
 };
 
@@ -114,12 +101,12 @@ export async function getInitialState(): Promise<{
     return {
       fetchUserInfo,
       currentUser,
-      settings: defaultSettings as Partial<LayoutSettings>,
+      settings: defaultSettings as Partial<LayoutSettings>
     };
   }
   return {
     fetchUserInfo,
-    settings: defaultSettings as Partial<LayoutSettings>,
+    settings: defaultSettings as Partial<LayoutSettings>
   };
 }
 
@@ -135,9 +122,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       return (
         <>
           <img height={50} width={50} src={Settings.logo} alt={'logo'} />
-          <span style={{ marginLeft: 10, color: 'white' }}>
-            {Settings.title}
-          </span>
+          <span style={{ marginLeft: 10, color: 'white' }}>{Settings.title}</span>
         </>
       );
     },
@@ -145,14 +130,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     footerRender: () => <Footer />,
     siderWidth: 180,
     waterMarkProps: {
-      content:
-        initialState?.currentUser?.user.username +
-        ' ' +
-        new Date().toLocaleString(),
+      content: initialState?.currentUser?.user.username + ' ' + new Date().toLocaleString(),
       fontColor:
-        theme === THEME.light || undefined
-          ? 'rgba(0, 0, 0, 0.15)'
-          : 'rgba(255, 255, 255, 0.15)',
+        theme === THEME.light || undefined ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)'
     },
     isChildrenLayout: true,
     onPageChange: () => {
@@ -173,7 +153,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         </AccessContextProvider>
       );
     },
-    ...initialState?.settings,
+    ...initialState?.settings
   };
 };
 
@@ -183,26 +163,25 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request = {
-  ...errorConfig,
+  ...errorConfig
 };
 
 // 这个是redux-persist 的配置
 const persistConfig = {
   key: 'root', // 自动框架生产的根目录id 是root。不变
-  storage, // 这个是选择用什么存储，session 还是 storage
+  storage // 这个是选择用什么存储，session 还是 storage
 };
 
-const persistEnhancer: StoreEnhancer =
-  (next) => (reducer: Reducer<any, any>) => {
-    const store = next(persistReducer(persistConfig, reducer));
-    const persist = persistStore(store);
-    return { ...store, persist };
-  };
+const persistEnhancer: StoreEnhancer = (next) => (reducer: Reducer<any, any>) => {
+  const store = next(persistReducer(persistConfig, reducer));
+  const persist = persistStore(store);
+  return { ...store, persist };
+};
 
 export const dva = {
   config: {
-    extraEnhancers: [persistEnhancer],
-  },
+    extraEnhancers: [persistEnhancer]
+  }
 };
 
 /***
@@ -210,22 +189,19 @@ export const dva = {
  */
 const patch = (oldRoutes: any, routes: SysMenu[]) => {
   oldRoutes[1].routes = oldRoutes[1].routes.map(
-    (route: {
-      routes: { path: any; element: JSX.Element }[];
-      path: string;
-    }) => {
+    (route: { routes: { path: any; element: JSX.Element }[]; path: string }) => {
       if (route.routes && route.routes.length) {
         const redirect = routes.filter((r) => r.path.startsWith(route.path));
         if (redirect.length) {
           route.routes.shift();
           route.routes.unshift({
             path: route.path,
-            element: <Navigate to={redirect[0].path} />,
+            element: <Navigate to={redirect[0].path} />
           });
         }
       }
       return route;
-    },
+    }
   );
 };
 
@@ -244,7 +220,7 @@ export function onRouteChange({
   location,
   clientRoutes,
   routes,
-  action,
+  action
 }: {
   location: any;
   clientRoutes: any;

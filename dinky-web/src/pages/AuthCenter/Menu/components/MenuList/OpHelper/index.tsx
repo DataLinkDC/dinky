@@ -25,13 +25,13 @@ export default () => {
     <>
       <Space
         className={'code-content-empty'}
-        direction="horizontal"
+        direction='horizontal'
         size={'large'}
         style={{ width: '100%' }}
       >
-        <Alert showIcon banner message={l('menu.tips.1')} type="success" />
-        <Alert showIcon banner message={l('menu.tips.2')} type="info" />
-        <Alert showIcon banner message={l('menu.tips.3')} type="warning" />
+        <Alert showIcon banner message={l('menu.tips.1')} type='success' />
+        <Alert showIcon banner message={l('menu.tips.2')} type='info' />
+        <Alert showIcon banner message={l('menu.tips.3')} type='warning' />
       </Space>
     </>
   );

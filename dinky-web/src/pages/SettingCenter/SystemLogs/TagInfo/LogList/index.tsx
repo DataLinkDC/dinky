@@ -18,7 +18,7 @@
 import LogsShow from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsShow';
 import LogsTree from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsTree';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { ProCard } from '@ant-design/pro-components';
 import { useEffect, useState } from 'react';
 
@@ -35,7 +35,7 @@ const LogList = () => {
 
   const queryLogContent = async (fileName: string) => {
     await queryDataByParams(API_CONSTANTS.SYSTEM_ROOT_LOG_READ, {
-      path: fileName,
+      path: fileName
     }).then((res) => {
       setLog(res);
     });
@@ -47,7 +47,7 @@ const LogList = () => {
 
   const handleNodeClick = async (info: any) => {
     const {
-      node: { path, isLeaf },
+      node: { path, isLeaf }
     } = info;
     if (isLeaf) {
       setClickFileName(path);
@@ -63,16 +63,10 @@ const LogList = () => {
     <>
       <ProCard ghost>
         <ProCard ghost colSpan={'18%'} className={'siderTree'}>
-          <LogsTree
-            treeData={treeData}
-            onNodeClick={(info: any) => handleNodeClick(info)}
-          />
+          <LogsTree treeData={treeData} onNodeClick={(info: any) => handleNodeClick(info)} />
         </ProCard>
         <ProCard ghost>
-          <LogsShow
-            code={log}
-            refreshLogCallback={() => refreshLogByClickNode()}
-          />
+          <LogsShow code={log} refreshLogCallback={() => refreshLogByClickNode()} />
         </ProCard>
       </ProCard>
     </>

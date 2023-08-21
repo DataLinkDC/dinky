@@ -28,46 +28,34 @@ export const UsingHelp = () => {
       <Alert
         message={l('about.usingHelp')}
         icon={<SmileOutlined />}
-        type="info"
+        type='info'
         {...AlertRestProps}
       />
       <Paragraph>
         <Typography.Text {...TypographyRestProps}>
           <LinkOutlined /> GitHub：
-          <a
-            href={'https://github.com/DataLinkDC/dinky'}
-            target={'_blank'}
-            rel="noreferrer"
-          >
+          <a href={'https://github.com/DataLinkDC/dinky'} target={'_blank'} rel='noreferrer'>
             https://github.com/DataLinkDC/dinky
           </a>
         </Typography.Text>
         <br />
         <Typography.Text {...TypographyRestProps}>
           <LinkOutlined /> Gitee:{' '}
-          <a
-            href={'https://gitee.com/DataLinkDC/Dinky'}
-            target={'_blank'}
-            rel="noreferrer"
-          >
+          <a href={'https://gitee.com/DataLinkDC/Dinky'} target={'_blank'} rel='noreferrer'>
             https://gitee.com/DataLinkDC/Dinky
           </a>
         </Typography.Text>
         <br />
         <Typography.Text {...TypographyRestProps}>
           <LinkOutlined /> Document:{' '}
-          <a href={'http://www.dlink.top'} target={'_blank'} rel="noreferrer">
+          <a href={'http://www.dlink.top'} target={'_blank'} rel='noreferrer'>
             http://www.dlink.top
           </a>
         </Typography.Text>
         <br />
         <Typography.Text {...TypographyRestProps}>
           <LinkOutlined /> bilibili:{' '}
-          <a
-            href={'https://space.bilibili.com/366484959/video'}
-            target={'_blank'}
-            rel="noreferrer"
-          >
+          <a href={'https://space.bilibili.com/366484959/video'} target={'_blank'} rel='noreferrer'>
             https://space.bilibili.com/366484959/video
           </a>
         </Typography.Text>

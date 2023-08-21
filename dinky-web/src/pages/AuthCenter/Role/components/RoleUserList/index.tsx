@@ -18,11 +18,8 @@
  */
 
 import { USER_TYPE_ENUM } from '@/pages/AuthCenter/User/components/constants';
-import {
-  YES_OR_NO_ENUM,
-  YES_OR_NO_FILTERS_MAPPING,
-} from '@/types/Public/constants';
-import { UserBaseInfo } from '@/types/User/data';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
+import { YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Drawer } from 'antd';
@@ -51,27 +48,27 @@ const RoleUserList: React.FC<RoleUserListProps> = (props) => {
     {
       title: l('user.username'),
       dataIndex: 'username',
-      key: 'username',
+      key: 'username'
     },
     {
       title: l('user.nickname'),
       dataIndex: 'nickname',
-      key: 'nickname',
+      key: 'nickname'
     },
     {
       title: l('user.jobnumber'),
-      dataIndex: 'worknum',
+      dataIndex: 'worknum'
     },
     {
       title: l('user.phone'),
       dataIndex: 'mobile',
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('user.type'),
       dataIndex: 'userType',
       valueEnum: USER_TYPE_ENUM(),
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('user.superAdminFlag'),
@@ -79,8 +76,8 @@ const RoleUserList: React.FC<RoleUserListProps> = (props) => {
       valueEnum: YES_OR_NO_ENUM,
       hideInSearch: true,
       filters: YES_OR_NO_FILTERS_MAPPING,
-      filterMultiple: false,
-    },
+      filterMultiple: false
+    }
   ];
 
   return (

@@ -37,7 +37,7 @@ const NonHeap: React.FC<NonHeapProps> = (props) => {
   const dataList: NonHeap[] = data.map((x) => {
     return {
       time: x.time,
-      value: parseInt(String(x.jvm.nonHeapMax / (1024 * 1024))),
+      value: parseInt(String(x.jvm.nonHeapMax / (1024 * 1024)))
     };
   });
 
@@ -46,13 +46,13 @@ const NonHeap: React.FC<NonHeapProps> = (props) => {
     data: dataList,
     yAxis: {
       min: 0,
-      max: max,
+      max: max
     },
     tooltip: {
       formatter: (datum: Datum) => {
         return { name: 'NonHeap Memory', value: datum.value + ' MB' };
-      },
-    },
+      }
+    }
   };
 
   return <Area {...config} />;

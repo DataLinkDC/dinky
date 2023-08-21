@@ -25,7 +25,7 @@ const SlowlyAppear = (props: any) => {
   const slowlyAppearProps = useSpring({
     opacity: 1,
     from: { opacity: 0 },
-    config: { duration: 1000 },
+    config: { duration: 1000 }
   });
 
   return <animated.h1 style={slowlyAppearProps}>{children}</animated.h1>;

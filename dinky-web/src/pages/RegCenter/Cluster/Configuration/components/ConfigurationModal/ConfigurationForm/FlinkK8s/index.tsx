@@ -21,7 +21,7 @@ import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { TagAlignCenter } from '@/components/StyledComponents';
 import {
   ExposedTypeOptions,
-  versionOptions,
+  versionOptions
 } from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8s/contants';
 import { KUBERNETES_CONFIG_LIST } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
 import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
@@ -32,7 +32,7 @@ import {
   ProFormItem,
   ProFormList,
   ProFormSelect,
-  ProFormText,
+  ProFormText
 } from '@ant-design/pro-components';
 import { Col, Divider, Row, Space } from 'antd';
 
@@ -40,7 +40,7 @@ const CodeEditProps = {
   height: '40vh',
   width: '90vh',
   lineNumbers: 'on',
-  language: 'yaml',
+  language: 'yaml'
 };
 
 const FlinkK8s = (props: { type: string; value: any }) => {
@@ -53,12 +53,7 @@ const FlinkK8s = (props: { type: string; value: any }) => {
           <ProFormText
             tooltip={item.tooltip}
             key={item.name}
-            name={[
-              'configJson',
-              'kubernetesConfig',
-              'configuration',
-              item.name,
-            ]}
+            name={['configJson', 'kubernetesConfig', 'configuration', item.name]}
             label={item.label}
             width={260}
             placeholder={item.placeholder}
@@ -73,47 +68,38 @@ const FlinkK8s = (props: { type: string; value: any }) => {
       key: 'defaultPodTemplate',
       label: <TagAlignCenter>Default Pod Template</TagAlignCenter>,
       children: (
-        <ProFormItem
-          key="dpe"
-          name={['configJson', 'kubernetesConfig', 'podTemplate']}
-        >
+        <ProFormItem key='dpe' name={['configJson', 'kubernetesConfig', 'podTemplate']}>
           <CodeEdit
             {...CodeEditProps}
             code={value.configJson?.kubernetesConfig.podTemplate ?? ''}
           />
         </ProFormItem>
-      ),
+      )
     },
     {
       key: 'JMPodTemplate',
       label: <TagAlignCenter>JM Pod Template</TagAlignCenter>,
       children: (
-        <ProFormItem
-          key="jmdpe"
-          name={['configJson', 'kubernetesConfig', 'jmPodTemplate']}
-        >
+        <ProFormItem key='jmdpe' name={['configJson', 'kubernetesConfig', 'jmPodTemplate']}>
           <CodeEdit
             {...CodeEditProps}
             code={value.configJson?.kubernetesConfig.jmPodTemplate ?? ''}
           />
         </ProFormItem>
-      ),
+      )
     },
     {
       key: 'TMPodTemplate',
       label: <TagAlignCenter>TM Pod Template</TagAlignCenter>,
       children: (
-        <ProFormItem
-          key="tmdpe"
-          name={['configJson', 'kubernetesConfig', 'tmPodTemplate']}
-        >
+        <ProFormItem key='tmdpe' name={['configJson', 'kubernetesConfig', 'tmPodTemplate']}>
           <CodeEdit
             {...CodeEditProps}
             code={value.configJson?.kubernetesConfig.tmPodTemplate ?? ''}
           />
         </ProFormItem>
-      ),
-    },
+      )
+    }
   ];
 
   return (
@@ -128,7 +114,7 @@ const FlinkK8s = (props: { type: string; value: any }) => {
                   'configJson',
                   'kubernetesConfig',
                   'configuration',
-                  'kubernetes.rest-service.exposed.type',
+                  'kubernetes.rest-service.exposed.type'
                 ]}
                 label={l('rc.cc.k8s.exposed')}
                 tooltip={l('rc.cc.k8s.exposedHelp')}
@@ -154,32 +140,20 @@ const FlinkK8s = (props: { type: string; value: any }) => {
             deleteIconProps={{ tooltipText: l('rc.cc.deleteConfig') }}
             creatorButtonProps={{
               style: { width: '100%' },
-              creatorButtonText: l('rc.cc.addConfig'),
+              creatorButtonText: l('rc.cc.addConfig')
             }}
           >
-            <ProFormGroup key="flinkGroup">
-              <Space
-                key={'config'}
-                style={{ display: 'flex' }}
-                align="baseline"
-              >
-                <ProFormText
-                  width={'md'}
-                  name="name"
-                  placeholder={l('rc.cc.key')}
-                />
-                <ProFormText
-                  width={'sm'}
-                  name="value"
-                  placeholder={l('rc.cc.value')}
-                />
+            <ProFormGroup key='flinkGroup'>
+              <Space key={'config'} style={{ display: 'flex' }} align='baseline'>
+                <ProFormText width={'md'} name='name' placeholder={l('rc.cc.key')} />
+                <ProFormText width={'sm'} name='value' placeholder={l('rc.cc.value')} />
               </Space>
             </ProFormGroup>
           </ProFormList>
         </Col>
         <ProCard.Divider type={'vertical'} />
         <Col span={12}>
-          <ProCard size="small" tabs={{ type: 'card', items: configTags }} />
+          <ProCard size='small' tabs={{ type: 'card', items: configTags }} />
         </Col>
       </Row>
     </>

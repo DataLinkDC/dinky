@@ -27,7 +27,7 @@ enum ErrorCode {
   'app.response.sucess' = 0,
   'app.response.error' = 1,
   'app.response.exception' = 5,
-  'app.response.notlogin' = 401,
+  'app.response.notlogin' = 401
 }
 
 // 与后端约定的响应数据格式
@@ -82,7 +82,7 @@ export const errorConfig: RequestConfig = {
         // 发送请求时出了点问题
         ErrorNotification(error.toString(), l('app.request.failed'));
       }
-    },
+    }
   },
 
   // 请求拦截器
@@ -91,7 +91,7 @@ export const errorConfig: RequestConfig = {
       // 拦截请求配置，进行个性化处理。
       const url = config?.url;
       return { ...config, url };
-    },
+    }
   ],
 
   // 响应拦截器
@@ -101,6 +101,6 @@ export const errorConfig: RequestConfig = {
       // 不再需要异步处理读取返回体内容，可直接在data中读出，部分字段可在 config 中找到
       const { data = {} as any, config } = response;
       return response;
-    },
-  ],
+    }
+  ]
 };

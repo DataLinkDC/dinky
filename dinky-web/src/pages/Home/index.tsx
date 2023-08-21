@@ -25,14 +25,14 @@ import { Col, Row } from 'antd';
 export default () => {
   return (
     <PageContainer title={false}>
-      <Authorized path="/home/jobOverView">
+      <Authorized path='/home/jobOverView'>
         <Row style={{ marginTop: '5px', marginBottom: '10px' }}>
           <Col span={24}>
             <JobOverView />
           </Col>
         </Row>
       </Authorized>
-      <Authorized path="/home/devOverView">
+      <Authorized path='/home/devOverView'>
         <Row>
           <Col span={24}>
             <DevOverView />

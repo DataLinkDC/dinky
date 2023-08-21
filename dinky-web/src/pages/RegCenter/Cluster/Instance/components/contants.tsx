@@ -27,8 +27,8 @@ export const CLUSTER_INSTANCE_TYPE = [
   { value: ClusterType.YARN_SESSION, label: ClusterType.YARN_SESSION },
   {
     value: ClusterType.KUBERNETES_SESSION,
-    label: ClusterType.KUBERNETES_SESSION,
-  },
+    label: ClusterType.KUBERNETES_SESSION
+  }
 ];
 
 /**
@@ -37,10 +37,10 @@ export const CLUSTER_INSTANCE_TYPE = [
 export const CLUSTER_INSTANCE_STATUS_ENUM = {
   1: {
     text: <Tag color={'success'}>{l('global.table.status.normal')}</Tag>,
-    status: 'Success',
+    status: 'Success'
   },
   0: {
     text: <Tag color={'error'}>{l('global.table.status.abnormal')}</Tag>,
-    status: 'Error',
-  },
+    status: 'Error'
+  }
 };

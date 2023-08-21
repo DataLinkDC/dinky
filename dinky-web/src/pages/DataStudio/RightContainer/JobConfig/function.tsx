@@ -34,36 +34,36 @@ export const buildRunModelOptions = () => {
   resultReturn.push(
     {
       label: 'Local',
-      value: RUN_MODE.LOCAL,
+      value: RUN_MODE.LOCAL
     },
     {
       label: 'Standalone',
-      value: RUN_MODE.STANDALONE,
+      value: RUN_MODE.STANDALONE
     },
     {
       label: 'Yarn Session',
-      value: RUN_MODE.YARN_SESSION,
+      value: RUN_MODE.YARN_SESSION
     },
     {
       label: 'Yarn Per-Job',
-      value: RUN_MODE.YARN_PER_JOB,
+      value: RUN_MODE.YARN_PER_JOB
     },
     {
       label: 'Yarn Application',
-      value: RUN_MODE.YARN_APPLICATION,
+      value: RUN_MODE.YARN_APPLICATION
     },
     {
       label: 'Kubernetes Session',
-      value: RUN_MODE.KUBERNETES_SESSION,
+      value: RUN_MODE.KUBERNETES_SESSION
     },
     {
       label: 'Kubernetes Application',
-      value: RUN_MODE.KUBERNETES_APPLICATION,
+      value: RUN_MODE.KUBERNETES_APPLICATION
     },
     {
       label: 'Kubernetes Operator Application',
-      value: RUN_MODE.KUBERNETES_APPLICATION_OPERATOR,
-    },
+      value: RUN_MODE.KUBERNETES_APPLICATION_OPERATOR
+    }
   );
 
   return resultReturn;
@@ -87,7 +87,7 @@ export const buildClusterOptions = (sessionCluster: Cluster.Instance[]) => {
     sessionClusterOptions.push({
       label: tag,
       value: item.id,
-      key: item.id,
+      key: item.id
     });
   }
   return sessionClusterOptions;
@@ -99,10 +99,7 @@ export const buildClusterOptions = (sessionCluster: Cluster.Instance[]) => {
  * @param {Cluster.Config[]} clusterConfiguration
  * @returns {any[]}
  */
-export const buildClusterConfigOptions = (
-  current: any,
-  clusterConfiguration: Cluster.Config[],
-) => {
+export const buildClusterConfigOptions = (current: any, clusterConfiguration: Cluster.Config[]) => {
   const clusterConfigOptions: DefaultOptionType[] = [];
   for (const item of clusterConfiguration) {
     if (current.type.search(item.type.toLowerCase()) === -1) {
@@ -117,7 +114,7 @@ export const buildClusterConfigOptions = (
     clusterConfigOptions.push({
       label: tag,
       value: item.id,
-      key: item.id,
+      key: item.id
     });
   }
   return clusterConfigOptions;
@@ -133,14 +130,14 @@ export const buildEnvOptions = (env: any[]) => {
     {
       label: l('button.disable'),
       value: 0,
-      key: 0,
-    },
+      key: 0
+    }
   ];
   for (const item of env) {
     const tag = (
       <>
         <TagAlignLeft>
-          {item.enabled ? <Badge status="success" /> : <Badge status="error" />}
+          {item.enabled ? <Badge status='success' /> : <Badge status='error' />}
           {item.fragment ? <PaperClipOutlined /> : undefined}
           {item.name}
         </TagAlignLeft>
@@ -149,7 +146,7 @@ export const buildEnvOptions = (env: any[]) => {
     envList.push({
       label: tag,
       value: item.id,
-      key: item.id,
+      key: item.id
     });
   }
   return envList;
@@ -164,14 +161,14 @@ export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
   const alertGroupOptions: DefaultOptionType[] = [
     {
       label: l('button.disable'),
-      value: 0,
-    },
+      value: 0
+    }
   ];
   for (const item of alertGroups) {
     alertGroupOptions.push({
       label: item.name,
       value: item.id,
-      key: item.id,
+      key: item.id
     });
   }
   return alertGroupOptions;

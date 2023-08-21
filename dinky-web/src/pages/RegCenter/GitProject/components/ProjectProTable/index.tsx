@@ -36,7 +36,7 @@ import {
   GIT_PROJECT_STATUS_ENUM,
   GIT_PROJECT_TYPE,
   GIT_PROJECT_TYPE_ENUM,
-  renderBranchesTagColor,
+  renderBranchesTagColor
 } from '@/pages/RegCenter/GitProject/constans';
 import { queryList } from '@/services/api';
 import {
@@ -44,14 +44,10 @@ import {
   handleOption,
   handlePutDataByParams,
   handleRemoveById,
-  updateDataByParam,
+  updateDataByParam
 } from '@/services/BusinessCrud';
-import {
-  API_CONSTANTS,
-  PROTABLE_OPTIONS_PUBLIC,
-  STATUS_ENUM,
-  STATUS_MAPPING,
-} from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { GitProject } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { BranchesOutlined, BuildTwoTone } from '@ant-design/icons';
@@ -63,12 +59,10 @@ const ProjectProTable: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [loading, setLoading] = useState<boolean>(false);
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [buildModalVisible, handleBuildVisible] = useState<boolean>(false);
   const [logModalVisible, handleLogVisible] = useState<boolean>(false);
-  const [codeTreeModalVisible, handleCodeTreeVisible] =
-    useState<boolean>(false);
+  const [codeTreeModalVisible, handleCodeTreeVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState<Partial<GitProject>>({});
 
   /**
@@ -92,8 +86,8 @@ const ProjectProTable: React.FC = () => {
     await executeAndCallback(
       async () =>
         await updateDataByParam(API_CONSTANTS.GIT_PROJECT_ENABLE, {
-          id: value.id,
-        }),
+          id: value.id
+        })
     );
   };
 
@@ -127,7 +121,9 @@ const ProjectProTable: React.FC = () => {
       const result = await handlePutDataByParams(
         API_CONSTANTS.GIT_PROJECT_BUILD,
         l('rc.gp.building'),
-        { id: value.id },
+        {
+          id: value.id
+        }
       );
       if (result) {
         setFormValues(value);
@@ -152,16 +148,15 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleDragSortEnd = async (newDataSource: GitProject[]) => {
-    const updatedItems = newDataSource.map(
-      (item: GitProject, index: number) => ({ ...item, orderLine: index + 1 }),
-    );
+    const updatedItems = newDataSource.map((item: GitProject, index: number) => ({
+      ...item,
+      orderLine: index + 1
+    }));
     await executeAndCallback(
       async () =>
-        await handleOption(
-          API_CONSTANTS.GIT_DRAGEND_SORT_PROJECT,
-          l('rc.gp.ucl.projectOrder'),
-          { sortList: updatedItems },
-        ),
+        await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_PROJECT, l('rc.gp.ucl.projectOrder'), {
+          sortList: updatedItems
+        })
     );
   };
 
@@ -172,11 +167,9 @@ const ProjectProTable: React.FC = () => {
    */
   const handleDeleteSubmit = async (id: number) => {
     await executeAndCallback(
-      async () => await handleRemoveById(API_CONSTANTS.GIT_PROJECT_DELETE, id),
+      async () => await handleRemoveById(API_CONSTANTS.GIT_PROJECT_DELETE, id)
     );
-    await queryList(API_CONSTANTS.GIT_PROJECT).then((res) =>
-      handleDragSortEnd(res.data),
-    );
+    await queryList(API_CONSTANTS.GIT_PROJECT).then((res) => handleDragSortEnd(res.data));
     actionRef.current?.reload();
   };
 
@@ -197,34 +190,31 @@ const ProjectProTable: React.FC = () => {
             color={record.orderLine > 3 ? 'default' : 'success'}
           >{`No.${record.orderLine}`}</Tag>
         );
-      },
+      }
     },
     {
       title: l('rc.gp.name'),
       dataIndex: 'name',
       ellipsis: true,
-      width: '10%',
+      width: '10%'
     },
     {
       title: l('rc.gp.branch'),
       dataIndex: 'branch',
       renderText: (text: string, record: GitProject) => {
         return (
-          <Tag
-            icon={<BranchesOutlined />}
-            color={renderBranchesTagColor(record.branch)}
-          >
+          <Tag icon={<BranchesOutlined />} color={renderBranchesTagColor(record.branch)}>
             {record.branch}
           </Tag>
         );
-      },
+      }
     },
     {
       title: l('rc.gp.url'),
       dataIndex: 'url',
       copyable: true,
       ellipsis: true,
-      width: '10%',
+      width: '10%'
     },
     {
       title: l('rc.gp.codeType'),
@@ -233,7 +223,7 @@ const ProjectProTable: React.FC = () => {
       filterMultiple: false,
       width: '6%',
       valueEnum: GIT_PROJECT_CODE_TYPE_ENUM,
-      filters: GIT_PROJECT_CODE_TYPE,
+      filters: GIT_PROJECT_CODE_TYPE
     },
     {
       title: l('rc.gp.type'),
@@ -242,14 +232,14 @@ const ProjectProTable: React.FC = () => {
       filterMultiple: false,
       width: '8%',
       valueEnum: GIT_PROJECT_TYPE_ENUM,
-      filters: GIT_PROJECT_TYPE,
+      filters: GIT_PROJECT_TYPE
     },
     {
       title: l('rc.gp.buildStep'),
       dataIndex: 'buildStep',
       hideInSearch: true,
       filters: GIT_PROJECT_BUILD_STEP,
-      valueEnum: GIT_PROJECT_BUILD_STEP_ENUM,
+      valueEnum: GIT_PROJECT_BUILD_STEP_ENUM
     },
     {
       title: l('rc.gp.buildState'),
@@ -257,19 +247,19 @@ const ProjectProTable: React.FC = () => {
       hideInSearch: true,
       filterMultiple: false,
       filters: GIT_PROJECT_STATUS,
-      valueEnum: GIT_PROJECT_STATUS_ENUM,
+      valueEnum: GIT_PROJECT_STATUS_ENUM
     },
     {
       title: l('rc.gp.lastBuild'),
       dataIndex: 'lastBuild',
       hideInSearch: true,
       valueType: 'dateTime',
-      width: '12%',
+      width: '12%'
     },
     {
       title: l('global.table.note'),
       dataIndex: 'description',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('global.table.isEnable'),
@@ -287,7 +277,7 @@ const ProjectProTable: React.FC = () => {
             onChange={() => handleChangeEnable(record)}
           />
         );
-      },
+      }
     },
     {
       title: l('global.table.operate'),
@@ -309,30 +299,23 @@ const ProjectProTable: React.FC = () => {
         <Popconfirm
           className={'options-button'}
           key={`${record.id}_build`}
-          placement="topRight"
+          placement='topRight'
           title={l('button.build')}
           description={l('rc.gp.buildConfirm')}
           onConfirm={() => handleBuild(record)}
           okText={l('button.confirm')}
           cancelText={l('button.cancel')}
         >
-          <Button
-            title={l('button.build')}
-            key={`${record.id}_buildbtn`}
-            icon={<BuildTwoTone />}
-          />
+          <Button title={l('button.build')} key={`${record.id}_buildbtn`} icon={<BuildTwoTone />} />
         </Popconfirm>,
-        <EditBtn
-          key={`${record.id}_edit`}
-          onClick={() => handleEdit(record)}
-        />,
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />,
         <PopconfirmDeleteBtn
           key={`${record.id}_delete`}
           onClick={() => handleDeleteSubmit(record.id)}
           description={l('rc.gp.deleteConfirm')}
-        />,
-      ],
-    },
+        />
+      ]
+    }
   ];
 
   /**
@@ -366,12 +349,7 @@ const ProjectProTable: React.FC = () => {
   const renderClassList = (record: GitProject) => {
     const { udfClassMapList, id } = record;
     if (udfClassMapList) {
-      return (
-        <ClassList
-          projectId={id}
-          jarAndClassesList={JSON.parse(udfClassMapList)}
-        />
-      );
+      return <ClassList projectId={id} jarAndClassesList={JSON.parse(udfClassMapList)} />;
     }
     return <Empty image={Empty.PRESENTED_IMAGE_DEFAULT} />;
   };
@@ -389,14 +367,11 @@ const ProjectProTable: React.FC = () => {
         actionRef={actionRef}
         dragSortKey={'id'}
         toolBarRender={() => [
-          <CreateBtn
-            key={'gittable'}
-            onClick={() => handleModalVisible(true)}
-          />,
+          <CreateBtn key={'gittable'} onClick={() => handleModalVisible(true)} />
         ]}
         expandable={{
           expandRowByClick: false,
-          expandedRowRender: (record: GitProject) => renderClassList(record),
+          expandedRowRender: (record: GitProject) => renderClassList(record)
         }}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.GIT_PROJECT, { ...params, sorter, filter })
@@ -419,27 +394,15 @@ const ProjectProTable: React.FC = () => {
       />
       {/* build steps modal */}
       {buildModalVisible && (
-        <BuildSteps
-          title={l('rc.gp.build')}
-          onCancel={handleCancel}
-          values={formValues as any}
-        />
+        <BuildSteps title={l('rc.gp.build')} onCancel={handleCancel} values={formValues as any} />
       )}
       {/* show build log modal */}
       {/*{logModalVisible &&  <ShowLog modalVisible={logModalVisible} onCancel={handleCancel} values={formValues}/>}*/}
       {logModalVisible && (
-        <BuildSteps
-          title={l('rc.gp.log')}
-          onCancel={handleCancel}
-          values={formValues as any}
-        />
+        <BuildSteps title={l('rc.gp.log')} onCancel={handleCancel} values={formValues as any} />
       )}
       {/* show code tree modal */}
-      <CodeTree
-        modalVisible={codeTreeModalVisible}
-        onCancel={handleCancel}
-        values={formValues}
-      />
+      <CodeTree modalVisible={codeTreeModalVisible} onCancel={handleCancel} values={formValues} />
     </>
   );
 };

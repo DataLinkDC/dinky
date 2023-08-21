@@ -19,9 +19,10 @@
 
 import { buildMenuTree, sortTreeData } from '@/pages/AuthCenter/Menu/function';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
-import { SysMenu } from '@/types/RegCenter/data';
-import { UserBaseInfo } from '@/types/User/data';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { InitRoleAssignMenuState } from '@/types/AuthCenter/init.d';
+import { RoleAssignMenuState } from '@/types/AuthCenter/state.d';
 import { l } from '@/utils/intl';
 import { Key } from '@ant-design/pro-components';
 import { Button, Drawer, Empty, Input, Space, Spin, Tree } from 'antd';
@@ -39,24 +40,17 @@ const { DirectoryTree } = Tree;
 const AssignMenu: React.FC<AssignMenuProps> = (props) => {
   const { open, onClose, onSubmit, values } = props;
 
-  const [loading, setLoading] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
-  const [selectValue, handleSelectValue] = useState<Key[]>([]);
-  const [menuData, setMenuData] = useState<{
-    menus: SysMenu[];
-    selectedMenuIds: number[];
-  }>({
-    menus: [],
-    selectedMenuIds: [],
-  });
+  const [roleAssignMenu, setRoleAssignMenu] =
+    useState<RoleAssignMenuState>(InitRoleAssignMenuState);
 
   useEffect(() => {
-    setLoading(true);
     open &&
-      queryDataByParams(API_CONSTANTS.ROLE_MENU_LIST, { id: values.id }).then(
-        (res) => setMenuData(res),
-      );
-    setLoading(false);
+      queryDataByParams(
+        API_CONSTANTS.ROLE_MENU_LIST,
+        { id: values.id },
+        () => setRoleAssignMenu((prevState) => ({ ...prevState, loading: true })),
+        () => setRoleAssignMenu((prevState) => ({ ...prevState, loading: false }))
+      ).then((res) => setRoleAssignMenu((prevState) => ({ ...prevState, menuTreeData: res })));
   }, [values, open]);
 
   /**
@@ -64,17 +58,23 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
    */
   const handleClose = useCallback(() => {
     onClose();
-    setMenuData({ menus: [], selectedMenuIds: [] });
+    setRoleAssignMenu((prevState) => ({
+      ...prevState,
+      menuTreeData: InitRoleAssignMenuState.menuTreeData
+    }));
   }, [values]);
 
   /**
    * when submit menu , use loading
    */
   const handleSubmit = async () => {
-    setLoading(true);
-    onSubmit(selectValue);
-    setLoading(false);
-    setMenuData({ menus: [], selectedMenuIds: [] });
+    setRoleAssignMenu((prevState) => ({ ...prevState, loading: true }));
+    onSubmit(roleAssignMenu.selectValue);
+    setRoleAssignMenu((prevState) => ({
+      ...prevState,
+      loading: false,
+      menuTreeData: InitRoleAssignMenuState.menuTreeData
+    }));
   };
 
   /**
@@ -85,7 +85,7 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
       <>
         <Space>
           <Button onClick={handleClose}>{l('button.cancel')}</Button>
-          <Button type="primary" loading={loading} onClick={handleSubmit}>
+          <Button type='primary' loading={roleAssignMenu.loading} onClick={handleSubmit}>
             {l('button.submit')}
           </Button>
         </Space>
@@ -97,54 +97,54 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
    * search tree node
    */
   const onSearchChange = useCallback(
-    (e: { target: { value: React.SetStateAction<string> } }) => {
-      setSearchValue(e.target.value);
+    (e: { target: { value: string } }) => {
+      setRoleAssignMenu((prevState) => ({ ...prevState, searchValue: e.target.value }));
     },
-    [searchValue],
+    [roleAssignMenu.searchValue]
   );
 
   const onCheck = (selectKeys: any) => {
-    handleSelectValue(selectKeys);
+    setRoleAssignMenu((prevState) => ({ ...prevState, selectValue: selectKeys }));
   };
 
   return (
-      <Drawer
-        title={l('role.assignMenu', '', { roleName: values.roleName })}
-        open={open}
-        width={'55%'}
-        maskClosable={false}
-        onClose={handleClose}
-        extra={renderExtraButtons()}
-      >
-        {menuData.menus.length > 0 ? (
-          <>
-            <Input
-              placeholder={l('global.search.text')}
-              allowClear
-              style={{ marginBottom: 16 }}
-              value={searchValue}
-              onChange={onSearchChange}
+    <Drawer
+      title={l('role.assignMenu', '', { roleName: values.roleName })}
+      open={open}
+      width={'55%'}
+      maskClosable={false}
+      onClose={handleClose}
+      extra={renderExtraButtons()}
+    >
+      {roleAssignMenu.menuTreeData.menus.length > 0 ? (
+        <>
+          <Input
+            placeholder={l('global.search.text')}
+            allowClear
+            style={{ marginBottom: 16 }}
+            value={roleAssignMenu.searchValue}
+            onChange={onSearchChange}
+          />
+          <Spin spinning={roleAssignMenu.loading}>
+            <DirectoryTree
+              selectable
+              defaultCheckedKeys={[...roleAssignMenu.menuTreeData.selectedMenuIds]}
+              checkable
+              defaultExpandAll
+              onCheck={(keys) => onCheck(keys)}
+              multiple={true}
+              className={'treeList'}
+              treeData={buildMenuTree(
+                sortTreeData(roleAssignMenu.menuTreeData.menus),
+                roleAssignMenu.searchValue
+              )}
             />
-            <Spin spinning={loading}>
-              <DirectoryTree
-                selectable
-                defaultCheckedKeys={[...menuData.selectedMenuIds]}
-                checkable
-                defaultExpandAll
-                onCheck={(keys) => onCheck(keys)}
-                multiple={true}
-                className={'treeList'}
-                treeData={buildMenuTree(
-                  sortTreeData(menuData.menus),
-                  searchValue,
-                )}
-              />
-            </Spin>
-          </>
-        ) : (
-          <Empty className={'code-content-empty'} />
-        )}
-      </Drawer>
+          </Spin>
+        </>
+      ) : (
+        <Empty className={'code-content-empty'} />
+      )}
+    </Drawer>
   );
 };
 

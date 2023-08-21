@@ -16,38 +16,29 @@
  */
 
 import { l } from '@/utils/intl';
-import {
-  ProForm,
-  ProFormDigit,
-  ProFormSwitch,
-  ProFormTextArea,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormDigit, ProFormSwitch, ProFormTextArea } from '@ant-design/pro-components';
 import { ProFormText } from '@ant-design/pro-form';
 
 export const renderCommonSmsForm = () => {
   return (
     <>
       <ProFormText
-        name="accessKeyId"
+        name='accessKeyId'
         label={l('rc.ai.accessKeyId')}
         width={'md'}
-        rules={[
-          { required: true, message: l('rc.ai.accessKeyIdPleaseHolder') },
-        ]}
+        rules={[{ required: true, message: l('rc.ai.accessKeyIdPleaseHolder') }]}
         placeholder={l('rc.ai.accessKeyIdPleaseHolder')}
       />
       <ProFormText.Password
-        name="accessKeySecret"
+        name='accessKeySecret'
         label={l('rc.ai.accessKeySecret')}
         width={'sm'}
-        rules={[
-          { required: true, message: l('rc.ai.accessKeyIdPleaseHolder') },
-        ]}
+        rules={[{ required: true, message: l('rc.ai.accessKeyIdPleaseHolder') }]}
         placeholder={l('rc.ai.accessKeyIdPleaseHolder')}
       />
 
       <ProFormText
-        name="templateId"
+        name='templateId'
         label={l('rc.ai.templateId')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.templateIdPleaseHolder') }]}
@@ -62,24 +53,22 @@ export const renderAlibabaSmsForm = () => {
     <>
       {renderCommonSmsForm()}
       <ProFormTextArea
-        name="requestUrl"
+        name='requestUrl'
         label={l('rc.ai.requestUrl')}
         width={'md'}
         rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
         placeholder={l('rc.ai.requestUrlPleaseHolder')}
       />
       <ProFormTextArea
-        name="templateName"
+        name='templateName'
         label={l('rc.ai.templateName')}
         width={'sm'}
-        rules={[
-          { required: true, message: l('rc.ai.templateNamePleaseHolder') },
-        ]}
+        rules={[{ required: true, message: l('rc.ai.templateNamePleaseHolder') }]}
         placeholder={l('rc.ai.templateNamePleaseHolder')}
       />
 
       <ProFormTextArea
-        name="signature"
+        name='signature'
         label={l('rc.ai.signature')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.signaturePleaseHolder') }]}
@@ -87,7 +76,7 @@ export const renderAlibabaSmsForm = () => {
       />
 
       <ProFormText
-        name="regionId"
+        name='regionId'
         label={l('rc.ai.regionId')}
         width={'md'}
         initialValue={'cn-hangzhou'}
@@ -96,7 +85,7 @@ export const renderAlibabaSmsForm = () => {
       />
 
       <ProFormText
-        name="action"
+        name='action'
         label={l('rc.ai.action')}
         width={'sm'}
         disabled
@@ -105,7 +94,7 @@ export const renderAlibabaSmsForm = () => {
       />
 
       <ProFormText
-        name="version"
+        name='version'
         label={l('rc.ai.version')}
         width={'sm'}
         disabled
@@ -120,14 +109,14 @@ export const renderHuaWeiSmsForm = () => {
   return (
     <>
       <ProFormText
-        name="appKey"
+        name='appKey'
         label={l('rc.ai.appKey')}
         width={'md'}
         rules={[{ required: true, message: l('rc.ai.appKeyPleaseHolder') }]}
         placeholder={l('rc.ai.appKeyPleaseHolder')}
       />
       <ProFormText.Password
-        name="appSecret"
+        name='appSecret'
         label={l('rc.ai.appSecret')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.appSecretPleaseHolder') }]}
@@ -135,7 +124,7 @@ export const renderHuaWeiSmsForm = () => {
       />
 
       <ProFormText
-        name="signature"
+        name='signature'
         label={l('rc.ai.signature')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.signaturePleaseHolder') }]}
@@ -143,33 +132,31 @@ export const renderHuaWeiSmsForm = () => {
       />
 
       <ProFormText
-        name="sender"
+        name='sender'
         label={l('rc.ai.senders')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.sendersPleaseHolder') }]}
         placeholder={l('rc.ai.sendersPleaseHolder')}
       />
       <ProFormText
-        name="templateId"
+        name='templateId'
         label={l('rc.ai.templateId')}
         width={'lg'}
         rules={[{ required: true, message: l('rc.ai.templateIdPleaseHolder') }]}
         placeholder={l('rc.ai.templateIdPleaseHolder')}
       />
       <ProFormTextArea
-        name="url"
+        name='url'
         label={l('rc.ai.url')}
         width={'md'}
         rules={[{ required: true, message: l('rc.ai.urlPleaseHolder') }]}
         placeholder={l('rc.ai.urlPleaseHolder')}
       />
       <ProFormTextArea
-        name="statusCallBack"
+        name='statusCallBack'
         label={l('rc.ai.statusCallBack')}
         width={'md'}
-        rules={[
-          { required: true, message: l('rc.ai.statusCallBackPleaseHolder') },
-        ]}
+        rules={[{ required: true, message: l('rc.ai.statusCallBackPleaseHolder') }]}
         placeholder={l('rc.ai.statusCallBackPleaseHolder')}
       />
     </>
@@ -180,7 +167,7 @@ export const renderYunpianSmsForm = () => {
   return (
     <>
       <ProFormText
-        name="apikey"
+        name='apikey'
         label={l('rc.ai.apikey')}
         width={'lg'}
         rules={[{ required: true, message: l('rc.ai.apikeyPleaseHolder') }]}
@@ -188,7 +175,7 @@ export const renderYunpianSmsForm = () => {
       />
 
       <ProFormText
-        name="templateId"
+        name='templateId'
         label={l('rc.ai.templateId')}
         width={'md'}
         rules={[{ required: true, message: l('rc.ai.templateIdPleaseHolder') }]}
@@ -196,17 +183,15 @@ export const renderYunpianSmsForm = () => {
       />
 
       <ProFormTextArea
-        name="templateName"
+        name='templateName'
         label={l('rc.ai.templateName')}
         width={'lg'}
-        rules={[
-          { required: true, message: l('rc.ai.templateNamePleaseHolder') },
-        ]}
+        rules={[{ required: true, message: l('rc.ai.templateNamePleaseHolder') }]}
         placeholder={l('rc.ai.templateNamePleaseHolder')}
       />
 
       <ProFormTextArea
-        name="callbackUrl"
+        name='callbackUrl'
         label={l('rc.ai.callbackUrl')}
         width={'md'}
         placeholder={l('rc.ai.callbackUrlPleaseHolder')}
@@ -220,21 +205,21 @@ export const renderTencentSmsForm = () => {
     <>
       {renderCommonSmsForm()}
       <ProFormText
-        name="sdkAppId"
+        name='sdkAppId'
         label={l('rc.ai.sdkAppId')}
         width={'md'}
         rules={[{ required: true, message: l('rc.ai.sdkAppIdPleaseHolder') }]}
         placeholder={l('rc.ai.sdkAppIdPleaseHolder')}
       />
       <ProFormText
-        name="signature"
+        name='signature'
         label={l('rc.ai.signature')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.signaturePleaseHolder') }]}
         placeholder={l('rc.ai.signaturePleaseHolder')}
       />
       <ProFormText
-        name="territory"
+        name='territory'
         label={l('rc.ai.regionId')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.regionIdPleaseHolder') }]}
@@ -242,7 +227,7 @@ export const renderTencentSmsForm = () => {
       />
 
       <ProFormTextArea
-        name="requestUrl"
+        name='requestUrl'
         label={l('rc.ai.requestUrl')}
         width={'xl'}
         rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
@@ -251,18 +236,16 @@ export const renderTencentSmsForm = () => {
       />
       <ProForm.Group>
         <ProFormDigit
-          name="connTimeout"
+          name='connTimeout'
           label={l('rc.ai.connTimeout')}
           width={'md'}
-          rules={[
-            { required: true, message: l('rc.ai.connTimeoutPleaseHolder') },
-          ]}
+          rules={[{ required: true, message: l('rc.ai.connTimeoutPleaseHolder') }]}
           placeholder={l('rc.ai.connTimeoutPleaseHolder')}
           initialValue={60}
         />
 
         <ProFormText
-          name="action"
+          name='action'
           label={l('rc.ai.action')}
           width={'sm'}
           disabled
@@ -271,7 +254,7 @@ export const renderTencentSmsForm = () => {
         />
 
         <ProFormText
-          name="version"
+          name='version'
           label={l('rc.ai.version')}
           width={'sm'}
           disabled
@@ -288,17 +271,15 @@ export const renderUniSmsForm = () => {
     <>
       {renderCommonSmsForm()}
       <ProFormTextArea
-        name="templateName"
+        name='templateName'
         label={l('rc.ai.templateName')}
         width={'md'}
-        rules={[
-          { required: true, message: l('rc.ai.templateNamePleaseHolder') },
-        ]}
+        rules={[{ required: true, message: l('rc.ai.templateNamePleaseHolder') }]}
         placeholder={l('rc.ai.templateNamePleaseHolder')}
       />
 
       <ProFormTextArea
-        name="signature"
+        name='signature'
         label={l('rc.ai.signature')}
         width={'md'}
         rules={[{ required: true, message: l('rc.ai.signaturePleaseHolder') }]}
@@ -306,7 +287,7 @@ export const renderUniSmsForm = () => {
       />
 
       <ProFormSwitch
-        name="is-simple"
+        name='is-simple'
         label={l('rc.ai.isSimple')}
         unCheckedChildren={l('rc.ai.isSimple.no')}
         checkedChildren={l('rc.ai.isSimple.yes')}
@@ -321,14 +302,14 @@ export const renderJDSmsForm = () => {
     <>
       {renderCommonSmsForm()}
       <ProFormText
-        name="signature"
+        name='signature'
         label={l('rc.ai.signature')}
         width={'md'}
         rules={[{ required: true, message: l('rc.ai.signaturePleaseHolder') }]}
         placeholder={l('rc.ai.signaturePleaseHolder')}
       />
       <ProFormText
-        name="region"
+        name='region'
         label={l('rc.ai.regionId')}
         width={'lg'}
         rules={[{ required: true, message: l('rc.ai.regionIdPleaseHolder') }]}
@@ -342,32 +323,28 @@ export const renderCloopenSmsForm = () => {
   return (
     <>
       <ProFormText
-        name="accessKeyId"
+        name='accessKeyId'
         label={l('rc.ai.accessKeyId')}
         width={'md'}
-        rules={[
-          { required: true, message: l('rc.ai.accessKeyIdPleaseHolder') },
-        ]}
+        rules={[{ required: true, message: l('rc.ai.accessKeyIdPleaseHolder') }]}
         placeholder={l('rc.ai.accessKeyIdPleaseHolder')}
       />
       <ProFormText
-        name="accessKeySecret"
+        name='accessKeySecret'
         label={l('rc.ai.accessKeySecret')}
         width={'sm'}
-        rules={[
-          { required: true, message: l('rc.ai.accessKeySecretPleaseHolder') },
-        ]}
+        rules={[{ required: true, message: l('rc.ai.accessKeySecretPleaseHolder') }]}
         placeholder={l('rc.ai.accessKeySecretPleaseHolder')}
       />
       <ProFormText
-        name="appId"
+        name='appId'
         label={l('rc.ai.appId')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.appIdPleaseHolder') }]}
         placeholder={l('rc.ai.appIdPleaseHolder')}
       />
       <ProFormTextArea
-        name="baseUrl"
+        name='baseUrl'
         label={l('rc.ai.baseUrl')}
         width={'xl'}
         rules={[{ required: true, message: l('rc.ai.baseUrlPleaseHolder') }]}
@@ -381,21 +358,21 @@ export const renderEmaySmsForm = () => {
   return (
     <>
       <ProFormText
-        name="appid"
+        name='appid'
         label={l('rc.ai.appId')}
         width={'lg'}
         rules={[{ required: true, message: l('rc.ai.appIdPleaseHolder') }]}
         placeholder={l('rc.ai.appIdPleaseHolder')}
       />
       <ProFormText.Password
-        name="secretKey"
+        name='secretKey'
         label={l('rc.ai.secretKey')}
         width={'md'}
         rules={[{ required: true, message: l('rc.ai.secretKeyPleaseHolder') }]}
         placeholder={l('rc.ai.secretKeyPleaseHolder')}
       />
       <ProFormTextArea
-        name="requestUrl"
+        name='requestUrl'
         label={l('rc.ai.requestUrl')}
         width={'lg'}
         rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
@@ -410,14 +387,14 @@ export const renderCtyunForm = () => {
     <>
       {renderCommonSmsForm()}
       <ProFormText
-        name="signature"
+        name='signature'
         label={l('rc.ai.signature')}
         width={'md'}
         rules={[{ required: true, message: l('rc.ai.signaturePleaseHolder') }]}
         placeholder={l('rc.ai.signaturePleaseHolder')}
       />
       <ProFormText
-        name="action"
+        name='action'
         label={l('rc.ai.action')}
         width={'sm'}
         disabled
@@ -425,17 +402,15 @@ export const renderCtyunForm = () => {
         placeholder={l('rc.ai.actionPleaseHolder')}
       />
       <ProFormTextArea
-        name="templateName"
+        name='templateName'
         label={l('rc.ai.templateName')}
         width={'md'}
-        rules={[
-          { required: true, message: l('rc.ai.templateNamePleaseHolder') },
-        ]}
+        rules={[{ required: true, message: l('rc.ai.templateNamePleaseHolder') }]}
         placeholder={l('rc.ai.templateNamePleaseHolder')}
       />
 
       <ProFormTextArea
-        name="requestUrl"
+        name='requestUrl'
         label={l('rc.ai.requestUrl')}
         width={'lg'}
         initialValue={'https://sms-global.ctapi.ctyun.cn/sms/api/v1'}

@@ -35,9 +35,7 @@ type ConfigurationFormProps = {
 const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
   const { form, value } = props;
 
-  const [type, setType] = React.useState<string>(
-    value.type || ClusterType.YARN,
-  );
+  const [type, setType] = React.useState<string>(value.type || ClusterType.YARN);
 
   const renderAllForm = () => {
     return (

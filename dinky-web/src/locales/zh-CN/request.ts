@@ -51,5 +51,5 @@ export default {
   'app.request.running': '正在',
   'app.request.test.alert.msg': '正在发送测试告警信息',
   'app.request.loading': '加载中...',
-  'app.request.back': '返回主页',
+  'app.request.back': '返回主页'
 };

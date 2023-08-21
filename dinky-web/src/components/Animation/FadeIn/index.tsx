@@ -24,8 +24,8 @@ const FadeIn = (props: any) => {
     from: { opacity: 0 },
     config: {
       duration: 1000,
-      delay: 1000,
-    },
+      delay: 1000
+    }
   });
 
   return <animated.div style={fadeIn}>{children}</animated.div>;

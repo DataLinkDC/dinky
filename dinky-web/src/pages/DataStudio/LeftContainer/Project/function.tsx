@@ -1,6 +1,5 @@
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
-import { SysMenu } from '@/types/RegCenter/data';
-import { Catalogue } from '@/types/Studio/data';
+import { Catalogue } from '@/types/Studio/data.d';
 import { searchTreeNode } from '@/utils/function';
 
 export const generateList = (data: any, list: any[]) => {
@@ -30,8 +29,8 @@ export const getParentKey = (key: number | string, tree: any): any => {
 };
 
 /**
- * build menu tree
- * @param {SysMenu[]} data
+ * build Catalogue tree
+ * @param {Catalogue[]} data
  * @param {string} searchValue
  * @param path
  * @returns {any}
@@ -40,7 +39,7 @@ export const getParentKey = (key: number | string, tree: any): any => {
 export const buildProjectTree = (
   data: Catalogue[],
   searchValue: string = '',
-  path?: string[],
+  path?: string[]
 ): any =>
   data.map((item: Catalogue) => {
     const currentPath = path ? [...path, item.name] : [item.name];
@@ -50,8 +49,7 @@ export const buildProjectTree = (
       name: item.name,
       parentId: item.parentId,
       label: searchTreeNode(item.name, searchValue),
-      icon:
-        item.type && item.children.length === 0 && getTabIcon(item.type, 20),
+      icon: item.type && item.children.length === 0 && getTabIcon(item.type, 20),
       value: item.id,
       path: currentPath,
       type: item.type,
@@ -60,7 +58,7 @@ export const buildProjectTree = (
       key: item.id,
       id: item.id,
       taskId: item.taskId,
-      children: buildProjectTree(item.children, searchValue, currentPath),
+      children: buildProjectTree(item.children, searchValue, currentPath)
     };
   });
 

@@ -16,8 +16,7 @@ export function useLocalStorage(key: string, initialValue: any) {
   const handleSetState = React.useCallback(
     (value: any) => {
       try {
-        const nextState =
-          typeof value === 'function' ? value(localState) : value;
+        const nextState = typeof value === 'function' ? value(localState) : value;
         window.localStorage.setItem(key, nextState);
         setLocalState(nextState);
         window.dispatchEvent(new Event('local-storage'));
@@ -25,7 +24,7 @@ export function useLocalStorage(key: string, initialValue: any) {
         console.warn(e);
       }
     },
-    [key, localState],
+    [key, localState]
   );
 
   return [localState, handleSetState];

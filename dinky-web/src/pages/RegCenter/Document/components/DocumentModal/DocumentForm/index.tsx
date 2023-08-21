@@ -22,7 +22,7 @@ import {
   DOCUMENT_CATEGORY,
   DOCUMENT_FUNCTION_TYPE,
   DOCUMENT_SUBTYPE,
-  VERSIONS,
+  VERSIONS
 } from '@/pages/RegCenter/Document/constans';
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
 import { Document } from '@/types/RegCenter/data';
@@ -33,7 +33,7 @@ import {
   ProFormSelect,
   ProFormSwitch,
   ProFormText,
-  ProFormTextArea,
+  ProFormTextArea
 } from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
@@ -47,7 +47,7 @@ type DocumentFormProps = {
 
 const CodeEditProps = {
   height: '25vh',
-  lineNumbers: 'on',
+  lineNumbers: 'on'
 };
 
 const DocumentForm: React.FC<DocumentFormProps> = (props) => {
@@ -56,27 +56,25 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
   /**
    * status
    */
-  const [codeFillValue, setCodeFillValue] = useState<string>(
-    values.fillValue || '',
-  );
+  const [codeFillValue, setCodeFillValue] = useState<string>(values.fillValue || '');
 
   const [categoryList] = useState<DefaultOptionType[]>(
-    DOCUMENT_CATEGORY.map((item) => ({ label: item.text, value: item.value })),
+    DOCUMENT_CATEGORY.map((item) => ({ label: item.text, value: item.value }))
   );
 
   const [typeList] = useState<DefaultOptionType[]>(
     DOCUMENT_FUNCTION_TYPE.map((item) => ({
       label: item.text,
-      value: item.value,
-    })),
+      value: item.value
+    }))
   );
 
   const [subTypeList] = useState<DefaultOptionType[]>(
-    DOCUMENT_SUBTYPE.map((item) => ({ label: item.text, value: item.value })),
+    DOCUMENT_SUBTYPE.map((item) => ({ label: item.text, value: item.value }))
   );
 
   const [versionOptions] = useState<DefaultOptionType[]>(
-    VERSIONS.map((item) => ({ label: item.text, value: item.value })),
+    VERSIONS.map((item) => ({ label: item.text, value: item.value }))
   );
 
   /**
@@ -95,41 +93,41 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
     return (
       <>
         <ProFormText
-          name="name"
+          name='name'
           label={l('rc.doc.name')}
           placeholder={l('rc.doc.namePlaceholder')}
           rules={[{ required: true, message: l('rc.doc.namePlaceholder') }]}
         />
 
         <ProFormSelect
-          name="category"
+          name='category'
           label={l('rc.doc.category')}
           rules={[{ required: true, message: l('rc.doc.categoryPlaceholder') }]}
           options={categoryList}
         />
 
         <ProFormSelect
-          name="type"
+          name='type'
           label={l('rc.doc.functionType')}
           rules={[{ required: true, message: l('rc.doc.typePlaceholder') }]}
           options={typeList}
         />
 
         <ProFormSelect
-          name="subtype"
+          name='subtype'
           label={l('rc.doc.subFunctionType')}
           rules={[{ required: true, message: l('rc.doc.subTypePlaceholder') }]}
           options={subTypeList}
         />
 
         <ProFormTextArea
-          name="description"
+          name='description'
           label={l('rc.doc.description')}
           placeholder={l('rc.doc.descriptionPlaceholder')}
         />
 
         <ProFormItem
-          name="fillValue"
+          name='fillValue'
           label={l('rc.doc.fillValue')}
           tooltip={l('rc.doc.fillValuePlaceholder')}
           rules={[{ required: true, message: l('rc.doc.fillValueHelp') }]}
@@ -145,14 +143,14 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
         </ProFormItem>
 
         <ProFormSelect
-          name="version"
+          name='version'
           label={l('rc.doc.version')}
           rules={[{ required: true, message: l('rc.doc.versionPlaceholder') }]}
           options={versionOptions}
         />
 
         <ProFormSwitch
-          name="enabled"
+          name='enabled'
           label={l('global.table.isEnable')}
           checkedChildren={l('button.enable')}
           unCheckedChildren={l('button.disable')}

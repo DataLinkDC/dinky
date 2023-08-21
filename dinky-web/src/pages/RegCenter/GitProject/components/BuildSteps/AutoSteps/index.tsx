@@ -47,7 +47,7 @@ const CodeShowProps = {
   height: '50vh',
   language: 'java',
   lineNumbers: 'on',
-  showFloatButton: true,
+  showFloatButton: true
 };
 
 export const AutoSteps: React.FC<BuildStepsProps> = (props) => {
@@ -63,7 +63,7 @@ export const AutoSteps: React.FC<BuildStepsProps> = (props) => {
     backgroundColor: token.colorFillAlter,
     borderRadius: token.borderRadiusLG,
     border: `1px dashed ${token.colorBorder}`,
-    marginTop: 16,
+    marginTop: 16
   };
 
   return (

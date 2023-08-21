@@ -21,7 +21,7 @@
 export const CODE_TYPE = {
   JAVA: 'Java',
   PYTHON: 'Python',
-  SCALA: 'Scala',
+  SCALA: 'Scala'
 };
 
 /**
@@ -30,16 +30,16 @@ export const CODE_TYPE = {
 export const CODE_TYPE_FILTER = [
   {
     value: CODE_TYPE.JAVA,
-    text: CODE_TYPE.JAVA,
+    text: CODE_TYPE.JAVA
   },
   {
     value: CODE_TYPE.PYTHON,
-    text: CODE_TYPE.PYTHON,
+    text: CODE_TYPE.PYTHON
   },
   {
     value: CODE_TYPE.SCALA,
-    text: CODE_TYPE.SCALA,
-  },
+    text: CODE_TYPE.SCALA
+  }
 ];
 
 /**
@@ -47,14 +47,14 @@ export const CODE_TYPE_FILTER = [
  */
 export const CODE_TYPE_ENUM = {
   JAVA: {
-    text: 'Java',
+    text: 'Java'
   },
   PYTHON: {
-    text: 'Python',
+    text: 'Python'
   },
   SCALA: {
-    text: 'Scala',
-  },
+    text: 'Scala'
+  }
 };
 
 /**
@@ -63,21 +63,21 @@ export const CODE_TYPE_ENUM = {
 export const FUNCTION_TYPE = {
   UDF: 'UDF',
   UDAF: 'UDAF',
-  UDTF: 'UDTF',
+  UDTF: 'UDTF'
 };
 /**
  * function type enum
  */
 export const FUNCTION_TYPE_ENUM = {
   UDF: {
-    text: 'UDF',
+    text: 'UDF'
   },
   UDAF: {
-    text: 'UDAF',
+    text: 'UDAF'
   },
   UDTF: {
-    text: 'UDTF',
-  },
+    text: 'UDTF'
+  }
 };
 /**
  * function type filter
@@ -85,14 +85,14 @@ export const FUNCTION_TYPE_ENUM = {
 export const FUNCTION_TYPE_FILTER = [
   {
     value: FUNCTION_TYPE.UDF,
-    text: FUNCTION_TYPE.UDF,
+    text: FUNCTION_TYPE.UDF
   },
   {
     value: FUNCTION_TYPE.UDAF,
-    text: FUNCTION_TYPE.UDAF,
+    text: FUNCTION_TYPE.UDAF
   },
   {
     value: FUNCTION_TYPE.UDTF,
-    text: FUNCTION_TYPE.UDTF,
-  },
+    text: FUNCTION_TYPE.UDTF
+  }
 ];

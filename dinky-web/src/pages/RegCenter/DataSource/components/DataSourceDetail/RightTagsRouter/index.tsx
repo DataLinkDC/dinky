@@ -21,14 +21,10 @@ import SchemaDesc from '@/pages/RegCenter/DataSource/components/DataSourceDetail
 import SQLConsole from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLConsole';
 import SQLQuery from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import {
-  BookOutlined,
-  ConsoleSqlOutlined,
-  HighlightOutlined,
-} from '@ant-design/icons';
+import { BookOutlined, ConsoleSqlOutlined, HighlightOutlined } from '@ant-design/icons';
 import { ProCardTabsProps } from '@ant-design/pro-card/es/typing';
 import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
@@ -47,14 +43,12 @@ type RightTagsRouterProps = {
 
 const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
   const { tableInfo, queryParams, tagDisabled = false, rightButtons } = props;
-  const [tableColumns, setTableColumns] = useState<
-    Partial<DataSources.Column[]>
-  >([]);
+  const [tableColumns, setTableColumns] = useState<Partial<DataSources.Column[]>>([]);
   useEffect(() => {
     const fetchData = async () => {
       const result = await queryDataByParams(
         API_CONSTANTS.DATASOURCE_GET_COLUMNS_BY_TABLE,
-        queryParams,
+        queryParams
       );
       setTableColumns(result);
     };
@@ -75,10 +69,8 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
           {l('rc.ds.detail.tag.desc')}
         </Space>
       ),
-      children: (
-        <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns} />
-      ),
-      disabled: tagDisabled,
+      children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns} />,
+      disabled: tagDisabled
     },
     {
       key: 'query',
@@ -89,7 +81,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
         </Space>
       ),
       children: <SQLQuery queryParams={queryParams} />,
-      disabled: tagDisabled,
+      disabled: tagDisabled
     },
     {
       key: 'gensql',
@@ -100,7 +92,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
         </Space>
       ),
       children: <GenSQL tagDisabled={tagDisabled} queryParams={queryParams} />,
-      disabled: tagDisabled,
+      disabled: tagDisabled
     },
     {
       key: 'console',
@@ -110,8 +102,8 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
           {l('rc.ds.detail.tag.console')}
         </Space>
       ),
-      children: <SQLConsole />,
-    },
+      children: <SQLConsole />
+    }
   ];
 
   // tab props
@@ -121,7 +113,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
     tabBarExtraContent: rightButtons,
     animated: true,
     onChange: (key: string) => setActiveKey(key),
-    items: tabList,
+    items: tabList
   };
 
   /**
@@ -129,12 +121,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
    */
   return (
     <>
-      <ProCard
-        className={'schemaTree'}
-        size="small"
-        bordered
-        tabs={{ ...restTabProps }}
-      />
+      <ProCard className={'schemaTree'} size='small' bordered tabs={{ ...restTabProps }} />
     </>
   );
 };

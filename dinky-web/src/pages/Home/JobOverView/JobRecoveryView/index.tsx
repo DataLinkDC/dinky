@@ -33,12 +33,12 @@ const JobRecoveryView: React.FC = () => {
     width: 80,
     autoFit: false,
     percent: 0.7,
-    color: ['#5B8FF9', '#E8EDF3'],
+    color: ['#5B8FF9', '#E8EDF3']
   };
 
   return (
     <StatisticCard
-      chartPlacement="right"
+      chartPlacement='right'
       statistic={{
         title: l('home.job.recovery'),
         value: 2,
@@ -46,14 +46,10 @@ const JobRecoveryView: React.FC = () => {
         formatter: (value) => <CountFormatter value={Number(value)} />,
         description: (
           <Space>
-            <Statistic
-              title={l('home.job.online')}
-              value="5 "
-              suffix={l('global.item')}
-            />
-            <Statistic title={l('home.job.recovery.rate')} value="40 %" />
+            <Statistic title={l('home.job.online')} value='5 ' suffix={l('global.item')} />
+            <Statistic title={l('home.job.recovery.rate')} value='40 %' />
           </Space>
-        ),
+        )
       }}
       chart={
         <div className={styles['tiny-charts']}>

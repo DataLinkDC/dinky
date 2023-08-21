@@ -28,10 +28,7 @@ import { createRoot } from 'react-dom/client';
  * @param title The title of the modal.
  * @param content The content to display in the modal.
  */
-export const ErrorModelWithCode = (
-  title: any = l('global.error'),
-  content: string,
-) => {
+export const ErrorModelWithCode = (title: any = l('global.error'), content: string) => {
   /** Create a new div element to mount the modal. */
   const modalRoot = document.createElement('div');
 
@@ -44,42 +41,31 @@ export const ErrorModelWithCode = (
       afterClose={() => root.unmount()}
       title={title}
       content={content}
-    />,
+    />
   );
 };
 
 // @ts-ignore
 export const createModelTypes = <T extends any>(
-  target: T,
-): [
-  { [K in keyof T['reducers']]: string },
-  { [K in keyof T['effects']]: string },
-] => {
+  target: T
+): [{ [K in keyof T['reducers']]: string }, { [K in keyof T['effects']]: string }] => {
   type TargetType = typeof target;
 
   // @ts-ignore
-  const MODEL_SYNC: { [K in keyof TargetType['reducers']]: string } =
-    Object.fromEntries(
-      // @ts-ignore
-      new Map<keyof TargetType['reducers'], string>(
-        Object.keys(target['reducers']).map((obj: string) => [
-          obj,
-          `${target.namespace}/${obj}`,
-        ]),
-      ),
-    );
+  const MODEL_SYNC: { [K in keyof TargetType['reducers']]: string } = Object.fromEntries(
+    // @ts-ignore
+    new Map<keyof TargetType['reducers'], string>(
+      Object.keys(target['reducers']).map((obj: string) => [obj, `${target.namespace}/${obj}`])
+    )
+  );
 
   // @ts-ignore
-  const MODEL_ASYNC: { [K in keyof TargetType['effects']]: string } =
-    Object.fromEntries(
-      // @ts-ignore
-      new Map<keyof TargetType['effects'], string>(
-        Object.keys(target['effects']).map((obj: string) => [
-          obj,
-          `${target.namespace}/${obj}`,
-        ]),
-      ),
-    );
+  const MODEL_ASYNC: { [K in keyof TargetType['effects']]: string } = Object.fromEntries(
+    // @ts-ignore
+    new Map<keyof TargetType['effects'], string>(
+      Object.keys(target['effects']).map((obj: string) => [obj, `${target.namespace}/${obj}`])
+    )
+  );
 
   return [MODEL_SYNC, MODEL_ASYNC];
 };

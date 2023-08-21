@@ -19,7 +19,7 @@
 import { FormContextValue } from '@/components/Context/FormContext';
 import UserForm from '@/pages/AuthCenter/User/components/UserModalForm/UserForm';
 import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { Form, Modal } from 'antd';
 import React, { useEffect } from 'react';
@@ -41,20 +41,15 @@ const UserModalForm: React.FC<UserModalFormProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
 
   /**
    * init props
    */
-  const {
-    onSubmit: handleSubmit,
-    onCancel: handleModalVisible,
-    modalVisible,
-    values,
-  } = props;
+  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
 
   /**
    * when modalVisible or values changed, set form values

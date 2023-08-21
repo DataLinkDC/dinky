@@ -20,7 +20,7 @@
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { removeById } from '@/services/api';
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { DeleteTwoTone } from '@ant-design/icons';
@@ -47,36 +47,36 @@ const JobVersionTab = (props: JobProps) => {
     statement: jobDetail.history.statement,
     createTime: jobDetail.history.startTime,
     versionId: 'LATEST',
-    isLatest: true,
+    isLatest: true
   };
 
   const [currentVersion, setCurrentVersion] = useState<Version>({
-    statement: '',
+    statement: ''
   });
 
   const versionList = useRequest(
     {
       url: API_CONSTANTS.GET_JOB_VERSION,
-      params: { taskId: jobDetail.history.taskId },
+      params: { taskId: jobDetail.history.taskId }
     },
     {
       onSuccess: (data: Version[], params) => {
         data.splice(0, 0, latestVersion);
-      },
-    },
+      }
+    }
   );
 
   const deleteVersion = (item: Version) => {
     Modal.confirm({
       title: l('devops.jobinfo.version.delete'),
       content: l('devops.jobinfo.version.delete.sure', '', {
-        version: item.versionId,
+        version: item.versionId
       }),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
         const result = await removeById(API_CONSTANTS.GET_JOB_VERSION, {
-          versionId: item.id,
+          versionId: item.id
         });
         if (result) {
           message.success('Delete Success');
@@ -84,7 +84,7 @@ const JobVersionTab = (props: JobProps) => {
           message.error('Delete faile');
         }
         versionList.run();
-      },
+      }
     });
   };
 
@@ -92,7 +92,7 @@ const JobVersionTab = (props: JobProps) => {
     return (
       <Row>
         <Col span={3}>
-          <div id="scrollableDiv">
+          <div id='scrollableDiv'>
             <List
               size={'small'}
               header={l('devops.jobinfo.version.versionList')}
@@ -104,19 +104,14 @@ const JobVersionTab = (props: JobProps) => {
                       setCurrentVersion(item);
                     }}
                   >
-                    <Skeleton
-                      avatar
-                      title={false}
-                      loading={versionList.loading}
-                      active
-                    >
+                    <Skeleton avatar title={false} loading={versionList.loading} active>
                       <List.Item.Meta
                         title={
                           <a>
                             {!item.isLatest ? (
                               'V' + item.versionId
                             ) : (
-                              <Tag key={'v-latest'} color="green">
+                              <Tag key={'v-latest'} color='green'>
                                 {l('devops.jobinfo.version.latestVersion')}
                               </Tag>
                             )}
@@ -142,20 +137,16 @@ const JobVersionTab = (props: JobProps) => {
             bordered={false}
             extra={
               <>
-                <Tag key={'v-type'} color="blue">
+                <Tag key={'v-type'} color='blue'>
                   {currentVersion?.type}
                 </Tag>
-                <Tag key={'v-dialect'} color="yellow">
+                <Tag key={'v-dialect'} color='yellow'>
                   {currentVersion?.dialect}
                 </Tag>
               </>
             }
           >
-            <CodeShow
-              code={currentVersion?.statement}
-              height={500}
-              language={'sql'}
-            />
+            <CodeShow code={currentVersion?.statement} height={500} language={'sql'} />
           </Card>
         </Col>
       </Row>

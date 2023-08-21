@@ -23,17 +23,13 @@ import AlertGroupForm from '@/pages/RegCenter/Alert/AlertGroup/components/AlertG
 import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { queryList } from '@/services/api';
+import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
 import {
-  handleAddOrUpdate,
-  handleRemoveById,
-  updateDataByParam,
-} from '@/services/BusinessCrud';
-import {
-  API_CONSTANTS,
   PROTABLE_OPTIONS_PUBLIC,
   PRO_LIST_CARD_OPTIONS,
-  SWITCH_OPTIONS,
+  SWITCH_OPTIONS
 } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import { EditTwoTone, PlusOutlined } from '@ant-design/icons';
@@ -50,8 +46,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * state
    */
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
   const [alertGroupList, setAlertGroupList] = useState<Alert.AlertGroup[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -100,7 +95,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
         await exexuteWithRefreshLoading(async () => {
           await handleRemoveById(API_CONSTANTS.ALERT_GROUP_DELETE, id);
         });
-      },
+      }
     });
   };
 
@@ -111,7 +106,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
   const handleEnable = async (item: Alert.AlertGroup) => {
     await exexuteWithRefreshLoading(async () => {
       await updateDataByParam(API_CONSTANTS.ALERT_GROUP_ENABLE, {
-        id: item.id,
+        id: item.id
       });
     });
   };
@@ -140,13 +135,9 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const renderToolBar = () => {
     return () => [
-      <Button
-        key={'CreateAlertGroup'}
-        type="primary"
-        onClick={() => handleModalVisible(true)}
-      >
+      <Button key={'CreateAlertGroup'} type='primary' onClick={() => handleModalVisible(true)}>
         <PlusOutlined /> {l('button.create')}
-      </Button>,
+      </Button>
     ];
   };
 
@@ -177,7 +168,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
         key={'DeleteAlertGroupIcon'}
         icon={<DangerDeleteIcon />}
         onClick={() => handleDeleteSubmit(item.id)}
-      />,
+      />
     ];
   };
 
@@ -196,9 +187,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
             checked={item.enabled}
             onChange={() => handleEnable(item)}
           />
-          <Tag color="warning">
-            {l('rc.ag.alertCount', '', { count: instanceCnt })}
-          </Tag>
+          <Tag color='warning'>{l('rc.ag.alertCount', '', { count: instanceCnt })}</Tag>
         </Space>
       </>
     );
@@ -213,7 +202,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
       <Descriptions size={'small'} layout={'vertical'} column={1}>
         <DescriptionsItem className={'hidden-overflow'} key={item.id}>
           <Tooltip key={item.id} title={item.name}>
-            <Tag color="success">{item.name}</Tag>
+            <Tag color='success'>{item.name}</Tag>
           </Tooltip>
         </DescriptionsItem>
       </Descriptions>
@@ -227,7 +216,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
     subTitle: renderAlertGroupSubTitle(item),
     actions: renderAlertGroupActionButton(item),
     avatar: getAlertIcon(ALERT_TYPE.GROUP, 60),
-    content: renderAlertGroupContent(item),
+    content: renderAlertGroupContent(item)
   }));
 
   return (
@@ -267,8 +256,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryInstance: () =>
     dispatch({
       type: ALERT_MODEL_ASYNC.queryInstance,
-      payload: {},
-    }),
+      payload: {}
+    })
 });
 
 export default connect(() => ({}), mapDispatchToProps)(AlertGroupTableList);
