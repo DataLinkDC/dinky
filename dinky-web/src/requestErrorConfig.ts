@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
+import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { ErrorNotification } from '@/utils/messages';
 import { history } from '@@/core/history';
 import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 // 错误处理方案： 错误类型
 enum ErrorCode {

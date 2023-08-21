@@ -19,13 +19,13 @@ import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/G
 import { LoadUser } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig/compontents/LoadUser';
 import { TestLogin } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig/compontents/TestLogin';
 import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import { SuccessMessage } from '@/utils/messages';
 import { ApiFilled } from '@ant-design/icons';
 import { Space, Tag } from 'antd';
 import React from 'react';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 interface LdapConfigProps {
   data: BaseConfigProperties[];

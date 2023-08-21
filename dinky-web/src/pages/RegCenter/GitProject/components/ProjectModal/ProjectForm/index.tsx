@@ -20,7 +20,8 @@
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { CLONE_TYPES, GIT_PROJECT_CODE_TYPE_ENUM } from '@/pages/RegCenter/GitProject/constans';
 import { getDataByParams } from '@/services/BusinessCrud';
-import {  SWITCH_OPTIONS } from '@/services/constants';
+import { SWITCH_OPTIONS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { GitProject } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import {
@@ -35,7 +36,6 @@ import { Input, Radio, Select } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React, { useState } from 'react';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 /**
  * props
@@ -70,7 +70,9 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
    */
   const getBranchList = async () => {
     const values = form.getFieldsValue();
-    await getDataByParams(API_CONSTANTS.GIT_BRANCH, { ...values }).then((result: any) =>   setBranches(result));
+    await getDataByParams(API_CONSTANTS.GIT_BRANCH, { ...values }).then((result: any) =>
+      setBranches(result)
+    );
   };
 
   /**
