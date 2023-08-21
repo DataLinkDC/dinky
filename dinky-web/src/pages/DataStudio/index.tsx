@@ -97,11 +97,11 @@ const DataStudio = (props: any) => {
     width: document.documentElement.clientWidth,
     height: document.documentElement.clientHeight,
     contentHeight:
-      document.documentElement.clientHeight -
-      VIEW.headerHeight -
-      VIEW.headerNavHeight -
-      VIEW.footerHeight -
-      VIEW.otherHeight
+        document.documentElement.clientHeight
+        - VIEW.headerHeight
+        - VIEW.headerNavHeight
+        - VIEW.footerHeight
+        - VIEW.otherHeight
   });
 
   const [size, setSize] = useState(getClientSize());
@@ -164,21 +164,17 @@ const DataStudio = (props: any) => {
     }
 
     const params = currentTab.params as DataStudioParams;
-    getTaskDetails(params.taskId).then((res) => {
-      const changed = Object.keys(res).some((key) => {
-        return (
-          res[key] !== params.taskData[key] &&
-          (res[key] instanceof Object
-            ? JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])
-            : true)
-        );
-      });
 
-      if (changed) {
-        setIsModalUpdateTabContentOpen(true);
-        setNewTabData(res);
-      }
-    });
+    const taskDetails = await getTaskDetails(params.taskId);
+    const changed = !taskDetails &&
+        Object.keys(taskDetails).some((key) =>
+            taskDetails[key] !== params.taskData[key] &&
+            JSON.stringify(taskDetails[key]) !== JSON.stringify(params.taskData[key]));
+
+    if (changed) {
+      setIsModalUpdateTabContentOpen(true);
+      setNewTabData(taskDetails);
+    }
   };
 
   useEffect(() => {
@@ -188,21 +184,16 @@ const DataStudio = (props: any) => {
 
   /**
    * 渲染头部
-   * @returns {JSX.Element}
    */
-  const renderHeaderContainer = () => (
-    <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
-  );
+  const renderHeaderContainer = () => <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />;
 
   /**
    * 渲染左侧侧边栏
-   * @returns {JSX.Element}
    */
   const renderLeftContainer = () => <LeftContainer size={size} />;
 
   /**
    * 渲染右侧侧边栏
-   * @returns {JSX.Element}
    */
   const renderRightContainer = () => <RightContainer size={size} bottomHeight={bottomHeight} />;
 
