@@ -28,8 +28,11 @@ jobs:
          filters: |
            frontend:
              - 'dinky-web/**'
+           backend:
+             - '!dinky-web/**'           
 
       - name: Run spotless apply
+        if:  steps.filter.outputs.backend == 'true'
         run : ./mvnw -T 4C -B --no-snapshot-updates clean spotless:apply -P flink-all
       - name: Run frontend format
         if:  steps.filter.outputs.frontend == 'true'
