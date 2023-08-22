@@ -17,12 +17,7 @@
  *
  */
 import { FlexCenterDiv } from '@/components/StyledComponents';
-import {
-  getCurrentData,
-  getCurrentTab,
-  isDataStudioTabsItemType,
-  mapDispatchToProps
-} from '@/pages/DataStudio/function';
+import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
 import { buildGraphData } from '@/pages/DataStudio/HeaderContainer/FlinkGraph/function';
@@ -37,7 +32,7 @@ import {
   isSql,
   offLineTask
 } from '@/pages/DataStudio/HeaderContainer/service';
-import { DataStudioTabsItemType, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import { DataStudioParams, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { l } from '@/utils/intl';
 import { ErrorNotification } from '@/utils/messages';
@@ -87,8 +82,6 @@ const HeaderContainer = (props: any) => {
   const [messageApi, messageContextHolder] = message.useMessage();
   const handlerStop = () => {
     const current = getCurrentData(panes, activeKey);
-    if (!current) return;
-
     modal.confirm({
       title: l('pages.datastudio.editor.stop.job'),
       content: l('pages.datastudio.editor.stop.jobConfirm', '', {
@@ -99,18 +92,15 @@ const HeaderContainer = (props: any) => {
       onOk: async () => {
         offLineTask(l('pages.datastudio.editor.stop.job'), current.id, 'canceljob').then(
           (result) => {
-            const currentTab = getCurrentTab(panes, activeKey);
-            if (isDataStudioTabsItemType(currentTab)) {
-              currentTab.params.taskData.jobInstanceId = 0;
-            }
-
+            (
+              getCurrentTab(panes, activeKey)?.params as DataStudioParams
+            ).taskData.jobInstanceId = 0;
             saveTabs({ ...props.tabs });
           }
         );
       }
     });
   };
-
   const handlerExec = () => {
     const current = getCurrentData(panes, activeKey);
     if (!current) {
@@ -127,6 +117,7 @@ const HeaderContainer = (props: any) => {
       jobName: current.name,
       taskId: current.id
     };
+
     const taskKey = Math.random() * 1000 + '';
 
     notificationApi.success({
@@ -153,10 +144,8 @@ const HeaderContainer = (props: any) => {
         });
         if (res.datas.success) {
           messageApi.success(l('pages.datastudio.editor.exec.success'));
-          const currentTab = getCurrentTab(panes, activeKey);
-          if (isDataStudioTabsItemType(currentTab)) {
-            currentTab.params.taskData.jobInstanceId = res.datas.jobInstanceId;
-          }
+          (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId =
+            res.datas.jobInstanceId;
           saveTabs({ ...props.tabs });
         } else {
           ErrorNotification(
@@ -320,7 +309,7 @@ const HeaderContainer = (props: any) => {
         .forEach((r) => {
           r.click();
           e.preventDefault();
-        });
+      });
     };
   };
   renderHotkey();

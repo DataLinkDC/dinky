@@ -146,7 +146,7 @@ export function getCurrentTab(
 }
 
 export const getCurrentData = (
-  panes: DataStudioTabsItemType[],
+  panes: TabsItemType[],
   activeKey: string
 ): Record<string, any> | undefined => {
   const item = getCurrentTab(panes, activeKey);

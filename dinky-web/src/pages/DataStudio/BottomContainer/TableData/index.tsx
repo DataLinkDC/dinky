@@ -5,6 +5,7 @@ import {getData, getSseData, postAll} from "@/services/api";
 import TextArea from "antd/es/input/TextArea";
 import {Modal, Select, Tabs} from "antd";
 import {API_CONSTANTS} from "@/services/endpoints";
+import {getCurrentData} from "@/pages/DataStudio/function";
 
 export async function getWatchTables(statement: string) {
   return postAll('api/statement/getWatchTables', {statement});
@@ -57,8 +58,7 @@ const TableData = (props: any) => {
     let tables: [string] = result.datas
     Modal.confirm({
       title: 'Please select table name',
-      content:
-          <Select defaultValue="" style={{width: 120}} onChange={e => title = e}
+      content: <Select defaultValue="" style={{width: 120}} onChange={e => title = e}
                   options={tables.map((table) => ({value: table}))}/>,
       onOk() {
         const activeKey = `${panes.length + 1}`;
@@ -88,5 +88,5 @@ const TableData = (props: any) => {
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   height: Studio.bottomContainer.height,
-  statement:(Studio.tabs.panes.find(pane => Studio.tabs.activeKey === pane.key)?.params as DataStudioParams).taskData?.statement
+  statement: getCurrentData(Studio.tabs.panes, Studio.tabs.activeKey)?.statement
 }))(TableData);
