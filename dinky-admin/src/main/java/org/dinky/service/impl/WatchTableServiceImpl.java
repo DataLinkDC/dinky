@@ -92,9 +92,7 @@ public class WatchTableServiceImpl implements WatchTableService {
         String destination = getDestination(fullName);
         Set<Target> destinations = registerTableMap.get(fullName);
         if (destinations != null) {
-            destinations.stream()
-                    .filter(d -> d.destination.equals(destination))
-                    .forEach(Target::complete);
+            destinations.stream().filter(d -> d.destination.equals(destination)).forEach(Target::complete);
             destinations.removeIf(d -> d.destination.equals(destination));
         }
     }
@@ -116,11 +114,11 @@ public class WatchTableServiceImpl implements WatchTableService {
 
     public static String getDestination(String table) {
         String fn = getFullTableName(table);
-        return String.format("/topic/table/%s",fn);
+        return String.format("/topic/table/%s", fn);
     }
 
     public static String getDestinationByFullName(String tableFullName) {
-        return String.format("/topic/table/%s",tableFullName);
+        return String.format("/topic/table/%s", tableFullName);
     }
 
     public static final class Target {

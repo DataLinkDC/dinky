@@ -17,9 +17,9 @@
  */
 
 import ErrorShowModal from '@/components/Modal/ErrorModalShow';
-import {l} from '@/utils/intl';
-import {createRoot} from 'react-dom/client';
-import React from "react";
+import { l } from '@/utils/intl';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 
 /**
  * A function that displays a modal containing an error message in code editor.
@@ -27,7 +27,10 @@ import React from "react";
  * @param title The title of the modal.
  * @param content The content to display in the modal.
  */
-export const ErrorModelWithCode = (title: string |  React.JSX.Element = l('global.error'), content: string = '') => {
+export const ErrorModelWithCode = (
+  title: string | React.JSX.Element = l('global.error'),
+  content: string = ''
+) => {
   /** Create a new div element to mount the modal. */
   const modalRoot = document.createElement('div');
 
@@ -44,18 +47,27 @@ export const ErrorModelWithCode = (title: string |  React.JSX.Element = l('globa
   );
 };
 
-interface BaseModeType {['reducers']: {}, ['effects']: {}, ['namespace']: string}
-type MemberType<T extends BaseModeType, U> = U extends 'effects' ? T['effects'] : T['reducers']
+interface BaseModeType {
+  ['reducers']: {};
+  ['effects']: {};
+  ['namespace']: string;
+}
+type MemberType<T extends BaseModeType, U> = U extends 'effects' ? T['effects'] : T['reducers'];
 
-function getModelTypes<T extends BaseModeType>(target: T, type: 'effects' | 'reducers'):
-    { [K in keyof MemberType<T, typeof type>]: string } {
-  const reducers = Object.keys(target[type]).map((obj: string) => [obj, `${target.namespace}/${obj}`]);
+function getModelTypes<T extends BaseModeType>(
+  target: T,
+  type: 'effects' | 'reducers'
+): { [K in keyof MemberType<T, typeof type>]: string } {
+  const reducers = Object.keys(target[type]).map((obj: string) => [
+    obj,
+    `${target.namespace}/${obj}`
+  ]);
   // @ts-ignore
-  return Object.fromEntries(new Map<keyof typeof target[type], string>(reducers));
+  return Object.fromEntries(new Map<keyof (typeof target)[type], string>(reducers));
 }
 
 export const createModelTypes = <T extends BaseModeType>(
   target: T
 ): [{ [K in keyof T['reducers']]: string }, { [K in keyof T['effects']]: string }] => {
-  return [ getModelTypes(target, 'reducers'), getModelTypes(target, 'effects') ];
+  return [getModelTypes(target, 'reducers'), getModelTypes(target, 'effects')];
 };

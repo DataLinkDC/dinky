@@ -1,7 +1,7 @@
+import { TaskDataType } from '@/pages/DataStudio/model';
 import { postAll } from '@/services/api';
 import { handleGetOption, handleOption } from '@/services/BusinessCrud';
 import { DIALECT, RUN_MODE } from '@/services/constants';
-import {TaskDataType} from "@/pages/DataStudio/model";
 
 export async function explainSql(params: any) {
   return postAll('/api/studio/explainSql', params);

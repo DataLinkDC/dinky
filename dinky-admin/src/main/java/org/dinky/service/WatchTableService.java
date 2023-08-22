@@ -25,5 +25,4 @@ public interface WatchTableService {
     SseEmitter registerListenEntry(String table);
 
     void unRegisterListenEntry(String table);
-
 }

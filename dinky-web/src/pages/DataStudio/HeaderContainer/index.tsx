@@ -91,7 +91,7 @@ const HeaderContainer = (props: any) => {
   const handlerStop = () => {
     const current = getCurrentData(panes, activeKey);
     if (!current) {
-        return;
+      return;
     }
 
     modal.confirm({
@@ -321,7 +321,7 @@ const HeaderContainer = (props: any) => {
         .forEach((r) => {
           r.click();
           e.preventDefault();
-      });
+        });
     };
   };
   renderHotkey();

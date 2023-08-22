@@ -20,6 +20,7 @@
 import { CircleButtonProps } from '@/components/CallBackButton/CircleBtn';
 import Console from '@/pages/DataStudio/BottomContainer/Console';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
+import TableData from '@/pages/DataStudio/BottomContainer/TableData';
 import MetaData from '@/pages/DataStudio/LeftContainer/MetaData';
 import Project from '@/pages/DataStudio/LeftContainer/Project';
 import { TabsPageSubType, TabsPageType } from '@/pages/DataStudio/model';
@@ -51,8 +52,7 @@ import {
   ToolOutlined
 } from '@ant-design/icons';
 import { DiffEditor } from '@monaco-editor/react';
-import React, { ReactNode } from 'react';
-import TableData from "@/pages/DataStudio/BottomContainer/TableData";
+import { ReactNode } from 'react';
 
 export const LeftSide = [
   {

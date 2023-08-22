@@ -99,9 +99,7 @@ const TaskManagerLogsTab = (props: JobProps) => {
     );
   };
 
-  return (
-      <ProCard>{renderLogTab()}</ProCard>
-  );
+  return <ProCard>{renderLogTab()}</ProCard>;
 };
 
 export default TaskManagerLogsTab;

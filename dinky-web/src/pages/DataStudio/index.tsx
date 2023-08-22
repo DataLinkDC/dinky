@@ -29,7 +29,13 @@ import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataBase } from '@/pages/DataStudio/LeftContainer/MetaData/service';
 import { getTaskData, getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import {StateType, TabsItemType, TabsPageType, TaskDataType, VIEW} from '@/pages/DataStudio/model';
+import {
+  StateType,
+  TabsItemType,
+  TabsPageType,
+  TaskDataType,
+  VIEW
+} from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
   getClusterConfigurationData,
@@ -95,11 +101,11 @@ const DataStudio = (props: any) => {
     width: document.documentElement.clientWidth,
     height: document.documentElement.clientHeight,
     contentHeight:
-        document.documentElement.clientHeight
-        - VIEW.headerHeight
-        - VIEW.headerNavHeight
-        - VIEW.footerHeight
-        - VIEW.otherHeight
+      document.documentElement.clientHeight -
+      VIEW.headerHeight -
+      VIEW.headerNavHeight -
+      VIEW.footerHeight -
+      VIEW.otherHeight
   });
 
   const [size, setSize] = useState(getClientSize());
@@ -184,7 +190,9 @@ const DataStudio = (props: any) => {
   /**
    * 渲染头部
    */
-  const renderHeaderContainer = () => <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />;
+  const renderHeaderContainer = () => (
+    <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
+  );
 
   /**
    * 渲染左侧侧边栏

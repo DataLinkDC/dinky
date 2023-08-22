@@ -98,10 +98,10 @@ export type MetadataParams = {
 };
 
 export type TaskDataBaseType = {
-  id: number,
-  name: string,
-  statement: string,
-}
+  id: number;
+  name: string;
+  statement: string;
+};
 
 export type TaskDataType = TaskDataBaseType & Record<string, any>;
 
