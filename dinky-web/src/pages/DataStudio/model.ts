@@ -11,7 +11,6 @@ import ICodeEditor = editor.ICodeEditor;
 
 /**
  * 初始化布局宽高度
- * @type {{topHeight: number, leftMargin: number, footerHeight: number, paddingInline: number, bottomHeight: number, midMargin: number, otherHeight: number, sideWidth: number, leftToolWidth: number, rightMargin: number, headerNavHeight: number, headerHeight: number, marginTop: number}}
  */
 export const VIEW = {
   headerHeight: 32,
@@ -126,7 +125,7 @@ export interface TabsItemType {
   path: string[];
   console: ConsoleType;
   isModified: boolean;
-};
+}
 
 export interface MetadataTabsItemType extends TabsItemType {
   params: MetadataParams;
@@ -181,9 +180,11 @@ export type Container = {
   width: number | string;
   maxWidth?: number | string;
 };
+
 export type BottomContainerContent = {
   console: string;
 };
+
 export type SessionType = {
   session?: string;
   sessionConfig?: {
