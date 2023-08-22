@@ -37,30 +37,26 @@ import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/servic
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Document } from '@/types/RegCenter/data';
+import { InitDocumentState } from '@/types/RegCenter/init';
+import { DocumentState } from '@/types/RegCenter/state';
 import { l } from '@/utils/intl';
+import { ProTable } from '@ant-design/pro-components';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useRef, useState } from 'react';
 
 const DocumentTableList: React.FC = () => {
-  const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState<Partial<Document>>({});
+  const [documentState, setDocumentState] = useState<DocumentState>(InitDocumentState);
+
   const actionRef = useRef<ActionType>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   const handleCancel = () => {
-    handleModalVisible(false);
-    handleUpdateModalVisible(false);
-    setDrawerOpen(false);
+    setDocumentState(InitDocumentState);
   };
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
-    setLoading(true);
+    setDocumentState({ ...documentState, loading: true });
     await callback();
-    setLoading(false);
     handleCancel();
     actionRef.current?.reload?.();
   };
@@ -96,13 +92,11 @@ const DocumentTableList: React.FC = () => {
   };
 
   const handleClickEdit = (record: Partial<Document>) => {
-    setFormValues(record);
-    handleUpdateModalVisible(true);
+    setDocumentState((prevState) => ({ ...prevState, value: record, editDocumentOpen: true }));
   };
 
   const handleOpenDrawer = (record: Partial<Document>) => {
-    setFormValues(record);
-    setDrawerOpen(true);
+    setDocumentState((prevState) => ({ ...prevState, value: record, drawerOpen: true }));
   };
 
   /**
@@ -179,7 +173,7 @@ const DocumentTableList: React.FC = () => {
         return (
           <EnableSwitchBtn
             key={`${record.id}_enable`}
-            disabled={drawerOpen}
+            disabled={documentState.drawerOpen}
             record={record}
             onChange={() => handleChangeEnable(record)}
           />
@@ -222,11 +216,19 @@ const DocumentTableList: React.FC = () => {
       {/*TABLE*/}
       <ProTable<Document>
         {...PROTABLE_OPTIONS_PUBLIC}
-        loading={loading}
+        loading={documentState.loading}
         headerTitle={l('rc.doc.management')}
         actionRef={actionRef}
         toolBarRender={() => [
-          <CreateBtn key={'doctable'} onClick={() => handleModalVisible(true)} />
+          <CreateBtn
+            key={'doctable'}
+            onClick={() =>
+              setDocumentState((prevState) => ({
+                ...prevState,
+                addedDocumentOpen: true
+              }))
+            }
+          />
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.DOCUMENT, { ...params, sorter, filter })
@@ -235,26 +237,23 @@ const DocumentTableList: React.FC = () => {
       />
       {/*ADDED*/}
       <DocumentModalForm
-        key={formValues.id}
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={modalVisible}
+        modalVisible={documentState.addedDocumentOpen}
         values={{}}
       />
       {/*UPDATED*/}
       <DocumentModalForm
-        key={formValues.id}
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={updateModalVisible}
-        values={formValues}
+        modalVisible={documentState.editDocumentOpen}
+        values={documentState.value}
       />
       {/*DRAWER*/}
       <DocumentDrawer
-        key={formValues.id}
         onCancel={() => handleCancel()}
-        modalVisible={drawerOpen}
-        values={formValues}
+        modalVisible={documentState.drawerOpen}
+        values={documentState.value}
         columns={columns}
       />
     </>

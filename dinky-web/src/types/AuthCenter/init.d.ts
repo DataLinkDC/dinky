@@ -26,7 +26,7 @@ import {
   TenantListState,
   TenantTransferState,
   UserListState
-} from '@/types/AuthCenter/state';
+} from '@/types/AuthCenter/state.d';
 import { InitContextMenuPosition } from '@/types/Public/state.d';
 
 /**

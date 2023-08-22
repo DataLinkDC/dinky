@@ -16,3 +16,130 @@
  *   limitations under the License.
  *
  */
+
+import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
+import { Resource } from '@/pages/RegCenter/Resource/components/ResourceOverView';
+import { ContextMenuPosition } from '@/types/Public/state';
+import {
+  Alert,
+  Cluster,
+  Document,
+  GitProject,
+  GlobalVar,
+  UDFTemplate
+} from '@/types/RegCenter/data.d';
+
+/**
+ * alert group state
+ */
+export interface AlertGroupState {
+  alertGroupList: Alert.AlertGroup[];
+  loading: boolean;
+  addedAlertGroupOpen: boolean;
+  editAlertGroupOpen: boolean;
+  value: Partial<Alert.AlertGroup>;
+}
+
+/**
+ * alert instance state
+ */
+export interface AlertInstanceState {
+  alertInstanceList: Alert.AlertInstance[];
+  loading: boolean;
+  addedAlertInstanceOpen: boolean;
+  editAlertInstanceOpen: boolean;
+  value: Partial<Alert.AlertInstance>;
+}
+
+/**
+ * cluster configuration state
+ */
+export interface ClusterConfigState {
+  loading: boolean;
+  addedClusterConfigOpen: boolean;
+  editClusterConfigOpen: boolean;
+  value: Partial<Cluster.Config>;
+}
+
+/**
+ * cluster instance state
+ */
+export interface ClusterInstanceState {
+  loading: boolean;
+  addedClusterInstanceOpen: boolean;
+  editClusterInstanceOpen: boolean;
+  value: Partial<Cluster.Instance>;
+}
+
+/**
+ * document state
+ */
+export interface DocumentState {
+  addedDocumentOpen: boolean;
+  editDocumentOpen: boolean;
+  value: Partial<Document>;
+  loading: boolean;
+  drawerOpen: boolean;
+}
+
+/**
+ * git project state
+ */
+export interface GitProjectState {
+  loading: boolean;
+  addedOpen: boolean;
+  editOpen: boolean;
+  buildOpen: boolean;
+  logOpen: boolean;
+  codeTreeOpen: boolean;
+  value: Partial<GitProject>;
+}
+
+/**
+ * git build steps state
+ */
+export interface GitBuildStepsState {
+  logRecord: string;
+  currentStep: number;
+  showListOpen: boolean;
+  percent: number;
+  steps: BuildStepsState[];
+}
+
+/**
+ * global variable state
+ */
+export interface GlobalVarState {
+  loading: boolean;
+  addedOpen: boolean;
+  editOpen: boolean;
+  value: Partial<GlobalVar>;
+  drawerOpen: boolean;
+}
+
+/**
+ * resource state
+ */
+export interface ResourceState {
+  treeData: any[];
+  content: string;
+  clickedNode: any;
+  rightClickedNode: any;
+  contextMenuOpen: boolean;
+  contextMenuPosition: ContextMenuPosition;
+  selectedKeys: string[];
+  editOpen: boolean;
+  uploadOpen: boolean;
+  value: Partial<Resource>;
+}
+
+/**
+ * template state
+ */
+export interface TemplateState {
+  loading: boolean;
+  addedOpen: boolean;
+  editOpen: boolean;
+  value: Partial<UDFTemplate>;
+  drawerOpen: boolean;
+}

@@ -29,6 +29,8 @@ import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/servic
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Document, GlobalVar } from '@/types/RegCenter/data';
+import { InitGlobalVarState } from '@/types/RegCenter/init';
+import { GlobalVarState } from '@/types/RegCenter/state';
 import { l } from '@/utils/intl';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -38,27 +40,20 @@ const GlobalVarProTable = () => {
   /**
    * state
    */
-  const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState({});
+  const [globalVarState, setGlobalVarState] = useState<GlobalVarState>(InitGlobalVarState);
+
   const actionRef = useRef<ActionType>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   /**
    * handle cancel all
    */
   const handleCancel = () => {
-    handleModalVisible(false);
-    handleUpdateModalVisible(false);
-    setDrawerOpen(false);
-    setFormValues({});
+    setGlobalVarState(InitGlobalVarState);
   };
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
-    setLoading(true);
+    setGlobalVarState((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setLoading(false);
     handleCancel();
     actionRef.current?.reload?.();
   };
@@ -90,8 +85,7 @@ const GlobalVarProTable = () => {
    * @param {Partial<Document>} record
    */
   const handleClickEdit = (record: Partial<Document>) => {
-    setFormValues(record);
-    handleUpdateModalVisible(true);
+    setGlobalVarState((prevState) => ({ ...prevState, value: record, editOpen: true }));
   };
 
   /**
@@ -99,8 +93,7 @@ const GlobalVarProTable = () => {
    * @param {Partial<Document>} record
    */
   const handleOpenDrawer = (record: Partial<Document>) => {
-    setFormValues(record);
-    setDrawerOpen(true);
+    setGlobalVarState((prevState) => ({ ...prevState, value: record, drawerOpen: true }));
   };
 
   /**
@@ -148,7 +141,7 @@ const GlobalVarProTable = () => {
         return (
           <EnableSwitchBtn
             key={`${record.id}_enable`}
-            disabled={drawerOpen}
+            disabled={globalVarState.drawerOpen}
             record={record}
             onChange={() => handleChangeEnable(record)}
           />
@@ -198,10 +191,13 @@ const GlobalVarProTable = () => {
       <ProTable<GlobalVar>
         headerTitle={l('rc.gv.Management')}
         actionRef={actionRef}
-        loading={loading}
+        loading={globalVarState.loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
-          <CreateBtn key={'vartable'} onClick={() => handleModalVisible(true)} />
+          <CreateBtn
+            key={'vartable'}
+            onClick={() => setGlobalVarState((prevState) => ({ ...prevState, addedOpen: true }))}
+          />
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.GLOBAL_VARIABLE, {
@@ -217,22 +213,22 @@ const GlobalVarProTable = () => {
       <GlobalVarModal
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={modalVisible}
+        modalVisible={globalVarState.addedOpen}
         values={{}}
       />
       {/*update*/}
       <GlobalVarModal
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={updateModalVisible}
-        values={formValues}
+        modalVisible={globalVarState.editOpen}
+        values={globalVarState.value}
       />
 
       {/*drawer render*/}
       <GlobalVarDrawer
         onCancel={() => handleCancel()}
-        values={formValues}
-        modalVisible={drawerOpen}
+        values={globalVarState.value}
+        modalVisible={globalVarState.drawerOpen}
         columns={columns}
       />
     </>

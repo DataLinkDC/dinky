@@ -26,7 +26,9 @@ import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
 import { renderStatus } from '@/pages/RegCenter/GitProject/function';
 import { getSseData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
-import { GitProject } from '@/types/RegCenter/data';
+import { GitProject } from '@/types/RegCenter/data.d';
+import { InitGitBuildStepsState } from '@/types/RegCenter/init.d';
+import { GitBuildStepsState } from '@/types/RegCenter/state.d';
 import { Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 
@@ -36,7 +38,7 @@ import React, { useEffect, useState } from 'react';
 type BuildStepsProps = {
   onCancel: (flag?: boolean) => void;
   title: string;
-  values: GitProject;
+  values: Partial<GitProject>;
 };
 
 export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
@@ -44,6 +46,9 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
    * extract props
    */
   const { onCancel: handleModalVisible, title, values } = props;
+  // todo: refactor this
+  const [buildStepState, setBuildStepState] = useState<GitBuildStepsState>(InitGitBuildStepsState);
+
   let [logList, setLogList] = useState<Record<number, string[]>>({});
   const [log, setLog] = useState<string>('');
   const [currentStep, setCurrentStep] = useState<number>(0);

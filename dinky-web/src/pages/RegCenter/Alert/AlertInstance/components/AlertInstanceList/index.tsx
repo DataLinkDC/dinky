@@ -35,6 +35,8 @@ import {
 } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert } from '@/types/RegCenter/data.d';
+import { InitAlertInstanceState } from '@/types/RegCenter/init.d';
+import { AlertInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { EditTwoTone } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
@@ -48,28 +50,26 @@ const AlertInstanceList: React.FC = () => {
   /**
    * status
    */
+  const [alertInstanceState, setAlertInstanceState] =
+    useState<AlertInstanceState>(InitAlertInstanceState);
+
   const actionRef = useRef<ActionType>();
-  const [formValues, setFormValues] = useState<Partial<Alert.AlertInstance>>();
-  const [addVisible, handleAddVisible] = useState<boolean>(false);
-  const [updateVisible, handleUpdateVisible] = useState<boolean>(false);
-  const [alertInstanceList, setAlertInstanceList] = useState<Alert.AlertInstance[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
 
   /**
    * execute query alert instance list
    * set alert instance list
    */
   const queryAlertInstanceList = async () => {
-    await queryList(API_CONSTANTS.ALERT_INSTANCE).then((res) => {
-      setAlertInstanceList(res.data);
-    });
+    await queryList(API_CONSTANTS.ALERT_INSTANCE).then((res) =>
+      setAlertInstanceState((prevState) => ({ ...prevState, alertInstanceList: res.data }))
+    );
   };
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
-    setLoading(true);
+    setAlertInstanceState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     await queryAlertInstanceList();
-    setLoading(false);
+    setAlertInstanceState((prevState) => ({ ...prevState, loading: false }));
   };
 
   /**
@@ -107,7 +107,7 @@ const AlertInstanceList: React.FC = () => {
    */
   useEffect(() => {
     queryAlertInstanceList();
-  }, [addVisible, updateVisible]);
+  }, [alertInstanceState.addedAlertInstanceOpen, alertInstanceState.editAlertInstanceOpen]);
 
   /**
    * render alert instance sub title
@@ -130,8 +130,11 @@ const AlertInstanceList: React.FC = () => {
    * @param item
    */
   const editClick = (item: Alert.AlertInstance) => {
-    setFormValues(item);
-    handleUpdateVisible(!updateVisible);
+    setAlertInstanceState((prevState) => ({
+      ...prevState,
+      value: item,
+      editAlertInstanceOpen: true
+    }));
   };
 
   /**
@@ -185,7 +188,7 @@ const AlertInstanceList: React.FC = () => {
   /**
    * render data source
    */
-  const renderDataSource = alertInstanceList.map((item) => ({
+  const renderDataSource = alertInstanceState.alertInstanceList.map((item) => ({
     subTitle: renderAlertInstanceSubTitle(item),
     actions: renderAlertInstanceActionButton(item),
     avatar: getAlertIcon(item.type, 60),
@@ -197,7 +200,12 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderToolBar = () => {
     return () => [
-      <CreateBtn key={'CreateAlertInstanceBtn'} onClick={() => handleAddVisible(true)} />
+      <CreateBtn
+        key={'CreateAlertInstanceBtn'}
+        onClick={() =>
+          setAlertInstanceState((prevState) => ({ ...prevState, addedAlertInstanceOpen: true }))
+        }
+      />
     ];
   };
 
@@ -205,10 +213,13 @@ const AlertInstanceList: React.FC = () => {
    * click cancel button callback
    */
   const cancelHandler = () => {
-    handleAddVisible(false);
-    handleUpdateVisible(false);
+    setAlertInstanceState((prevState) => ({
+      ...prevState,
+      addedAlertInstanceOpen: false,
+      editAlertInstanceOpen: false,
+      value: {}
+    }));
     actionRef.current?.reload();
-    setFormValues(undefined);
   };
 
   /**
@@ -238,7 +249,7 @@ const AlertInstanceList: React.FC = () => {
       <ProList<Alert.AlertInstance>
         {...PROTABLE_OPTIONS_PUBLIC}
         {...(PRO_LIST_CARD_OPTIONS as any)}
-        loading={loading}
+        loading={alertInstanceState.loading}
         actionRef={actionRef}
         headerTitle={l('rc.ai.management')}
         toolBarRender={renderToolBar()}
@@ -246,24 +257,24 @@ const AlertInstanceList: React.FC = () => {
       />
 
       {/* added */}
-      {addVisible && (
+      {alertInstanceState.addedAlertInstanceOpen && (
         <AlertTypeChoose
           onTest={handleTestSend}
           onCancel={cancelHandler}
-          modalVisible={addVisible}
+          modalVisible={alertInstanceState.addedAlertInstanceOpen}
           onSubmit={handleSubmit}
           values={{}}
         />
       )}
       {/* modify */}
 
-      {updateVisible && (
+      {alertInstanceState.editAlertInstanceOpen && (
         <AlertTypeChoose
           onTest={handleTestSend}
           onCancel={cancelHandler}
-          modalVisible={updateVisible}
+          modalVisible={alertInstanceState.editAlertInstanceOpen}
           onSubmit={handleSubmit}
-          values={formValues}
+          values={alertInstanceState.value}
         />
       )}
     </>

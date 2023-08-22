@@ -31,6 +31,8 @@ import {
 } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
+import { InitAlertGroupState } from '@/types/RegCenter/init.d';
+import { AlertGroupState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { EditTwoTone, PlusOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
@@ -45,11 +47,8 @@ const AlertGroupTableList: React.FC = (props: any) => {
   /**
    * state
    */
-  const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState({});
-  const [alertGroupList, setAlertGroupList] = useState<Alert.AlertGroup[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [alertGroupState, setAlertGroupState] = useState<AlertGroupState>(InitAlertGroupState);
+
   const actionRef = useRef<ActionType>();
 
   /**
@@ -57,9 +56,9 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * set alert instance list
    */
   const queryAlertGroupList = async () => {
-    await queryList(API_CONSTANTS.ALERT_GROUP).then((res) => {
-      setAlertGroupList(res.data);
-    });
+    await queryList(API_CONSTANTS.ALERT_GROUP).then((res) =>
+      setAlertGroupState((prevState) => ({ ...prevState, alertGroupList: res.data }))
+    );
   };
 
   /**
@@ -68,17 +67,17 @@ const AlertGroupTableList: React.FC = (props: any) => {
   useEffect(() => {
     queryAlertGroupList();
     props.queryInstance();
-  }, [modalVisible]);
+  }, [alertGroupState.loading]);
 
   /**
    * execute and refresh loading
    * @param callback
    */
   const exexuteWithRefreshLoading = async (callback: any) => {
-    setLoading(true);
+    setAlertGroupState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     await queryAlertGroupList();
-    setLoading(false);
+    setAlertGroupState((prevState) => ({ ...prevState, loading: false }));
   };
 
   /**
@@ -92,9 +91,9 @@ const AlertGroupTableList: React.FC = (props: any) => {
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
-        await exexuteWithRefreshLoading(async () => {
-          await handleRemoveById(API_CONSTANTS.ALERT_GROUP_DELETE, id);
-        });
+        await exexuteWithRefreshLoading(
+          async () => await handleRemoveById(API_CONSTANTS.ALERT_GROUP_DELETE, id)
+        );
       }
     });
   };
@@ -105,9 +104,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const handleEnable = async (item: Alert.AlertGroup) => {
     await exexuteWithRefreshLoading(async () => {
-      await updateDataByParam(API_CONSTANTS.ALERT_GROUP_ENABLE, {
-        id: item.id
-      });
+      await updateDataByParam(API_CONSTANTS.ALERT_GROUP_ENABLE, { id: item.id });
     });
   };
 
@@ -115,9 +112,12 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * cancel callback
    */
   const handleCleanState = () => {
-    setFormValues({});
-    handleModalVisible(false);
-    handleUpdateModalVisible(false);
+    setAlertGroupState((prevState) => ({
+      ...prevState,
+      value: {},
+      addedAlertGroupOpen: false,
+      editAlertGroupOpen: false
+    }));
   };
 
   /**
@@ -125,9 +125,13 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const handleSubmit = async (value: Alert.AlertGroup) => {
     await exexuteWithRefreshLoading(async () => {
-      await handleAddOrUpdate(API_CONSTANTS.ALERT_GROUP, value);
+      await handleAddOrUpdate(
+        API_CONSTANTS.ALERT_GROUP,
+        value,
+        () => {},
+        () => handleCleanState()
+      );
     });
-    handleCleanState();
   };
 
   /**
@@ -135,7 +139,13 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const renderToolBar = () => {
     return () => [
-      <Button key={'CreateAlertGroup'} type='primary' onClick={() => handleModalVisible(true)}>
+      <Button
+        key={'CreateAlertGroup'}
+        type='primary'
+        onClick={() =>
+          setAlertGroupState((prevState) => ({ ...prevState, addedAlertGroupOpen: true }))
+        }
+      >
         <PlusOutlined /> {l('button.create')}
       </Button>
     ];
@@ -146,8 +156,11 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * @param item
    */
   const editClick = (item: Alert.AlertGroup) => {
-    setFormValues(item);
-    handleUpdateModalVisible(!updateModalVisible);
+    setAlertGroupState((prevState) => ({
+      ...prevState,
+      editAlertGroupOpen: !prevState.editAlertGroupOpen,
+      value: item
+    }));
   };
 
   /**
@@ -212,7 +225,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
   /**
    * render data source
    */
-  const renderDataSource = alertGroupList.map((item: Alert.AlertGroup) => ({
+  const renderDataSource = alertGroupState.alertGroupList.map((item: Alert.AlertGroup) => ({
     subTitle: renderAlertGroupSubTitle(item),
     actions: renderAlertGroupActionButton(item),
     avatar: getAlertIcon(ALERT_TYPE.GROUP, 60),
@@ -227,7 +240,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
           {...PROTABLE_OPTIONS_PUBLIC}
           {...(PRO_LIST_CARD_OPTIONS as any)}
           actionRef={actionRef}
-          loading={loading}
+          loading={alertGroupState.loading}
           headerTitle={l('rc.ag.management')}
           toolBarRender={renderToolBar()}
           dataSource={renderDataSource}
@@ -236,15 +249,15 @@ const AlertGroupTableList: React.FC = (props: any) => {
         <AlertGroupForm
           onSubmit={handleSubmit}
           onCancel={handleCleanState}
-          modalVisible={modalVisible}
+          modalVisible={alertGroupState.addedAlertGroupOpen}
           values={{}}
         />
-        {formValues && Object.keys(formValues).length > 0 && (
+        {alertGroupState.value && Object.keys(alertGroupState.value).length > 0 && (
           <AlertGroupForm
             onSubmit={handleSubmit}
             onCancel={handleCleanState}
-            modalVisible={updateModalVisible}
-            values={formValues}
+            modalVisible={alertGroupState.editAlertGroupOpen}
+            values={alertGroupState.value}
           />
         )}
       </PageContainer>

@@ -37,6 +37,8 @@ import {
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Cluster } from '@/types/RegCenter/data';
+import { InitClusterConfigState } from '@/types/RegCenter/init.d';
+import { ClusterConfigState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
@@ -49,11 +51,10 @@ export default () => {
   /**
    * state
    */
+  const [clusterConfigState, setClusterConfigState] =
+    useState<ClusterConfigState>(InitClusterConfigState);
+
   const actionRef = useRef<ActionType>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [createOpen, setCreateOpen] = useState<boolean>(false);
-  const [modifyOpen, setModifyOpen] = useState<boolean>(false);
-  const [formValue, setFormValue] = useState<Partial<Cluster.Config>>({});
 
   const { data, run } = useRequest({
     url: API_CONSTANTS.CLUSTER_CONFIGURATION,
@@ -67,10 +68,10 @@ export default () => {
    * @returns {Promise<void>}
    */
   const executeAndCallbackRefresh = async (callback: () => void) => {
-    setLoading(true);
+    setClusterConfigState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     await run();
-    setLoading(false);
+    setClusterConfigState((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
@@ -120,9 +121,12 @@ export default () => {
    * cancel
    */
   const handleCancel = async () => {
-    setCreateOpen(false);
-    setModifyOpen(false);
-    setFormValue({});
+    setClusterConfigState((prevState) => ({
+      ...prevState,
+      addedClusterConfigOpen: false,
+      editClusterConfigOpen: false,
+      value: {}
+    }));
   };
 
   /**
@@ -159,8 +163,11 @@ export default () => {
    */
   const editClick = (item: Cluster.Config) => {
     item.configJson = JSON.parse(item.configJson);
-    setFormValue(item);
-    setModifyOpen(!modifyOpen);
+    setClusterConfigState((prevState) => ({
+      ...prevState,
+      editClusterConfigOpen: true,
+      value: item
+    }));
   };
 
   /**
@@ -231,7 +238,12 @@ export default () => {
    * tool bar render
    */
   const toolBarRender = () => [
-    <CreateBtn key={'configcreate'} onClick={() => setCreateOpen(true)} />
+    <CreateBtn
+      key={'configcreate'}
+      onClick={() =>
+        setClusterConfigState((prevState) => ({ ...prevState, addedClusterConfigOpen: true }))
+      }
+    />
   ];
 
   /**
@@ -242,7 +254,7 @@ export default () => {
       <ProList<Cluster.Config>
         {...PROTABLE_OPTIONS_PUBLIC}
         {...(PRO_LIST_CARD_OPTIONS as any)}
-        loading={loading}
+        loading={clusterConfigState.loading}
         actionRef={actionRef}
         headerTitle={l('rc.cc.management')}
         toolBarRender={toolBarRender}
@@ -251,17 +263,17 @@ export default () => {
 
       {/*added*/}
       <ConfigurationModal
-        visible={createOpen}
+        visible={clusterConfigState.addedClusterConfigOpen}
         onClose={handleCancel}
         value={{}}
         onSubmit={handleSubmit}
       />
       {/*modify*/}
-      {modifyOpen && (
+      {clusterConfigState.editClusterConfigOpen && (
         <ConfigurationModal
-          visible={modifyOpen}
+          visible={clusterConfigState.editClusterConfigOpen}
           onClose={handleCancel}
-          value={formValue}
+          value={clusterConfigState.value}
           onSubmit={handleSubmit}
         />
       )}

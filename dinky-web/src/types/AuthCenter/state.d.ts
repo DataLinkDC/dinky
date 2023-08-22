@@ -24,15 +24,15 @@ import { Key } from '@ant-design/pro-components';
 /**
  * meuTree点击节点 单击和右击
  */
-export type MenuTreeClickNode = {
+export interface MenuTreeClickNode {
   oneClickedNode: any;
   rightClickedNode: any;
-};
+}
 
 /**
  * 菜单管理 的state
  */
-export type MenuState = {
+export interface MenuState {
   sysMenuValue: Partial<SysMenu>;
   contextMenuPosition: ContextMenuPosition;
   selectedKeys: string[] | number[];
@@ -44,12 +44,12 @@ export type MenuState = {
   contextMenuOpen: boolean;
   isEditDisabled: boolean;
   isRootMenu: boolean;
-};
+}
 
 /**
  * 给角色分配菜单 的state
  */
-export type RoleAssignMenuState = {
+export interface RoleAssignMenuState {
   loading: boolean;
   searchValue: string;
   selectValue: Key[];
@@ -57,12 +57,12 @@ export type RoleAssignMenuState = {
     menus: SysMenu[];
     selectedMenuIds: number[];
   };
-};
+}
 
 /**
  * 角色管理 的state
  */
-export type RoleListState = {
+export interface RoleListState {
   loading: boolean;
   value: Partial<UserBaseInfo.Role>;
   addedRoleOpen: boolean;
@@ -70,31 +70,31 @@ export type RoleListState = {
   assignMenuOpen: boolean;
   viewUsersOpen: boolean;
   roleUserList: UserBaseInfo.User[];
-};
+}
 
 /**
  * 角色行权限 的state
  */
-export type RowPermissionsState = {
+export interface RowPermissionsState {
   loading: boolean;
   value: Partial<RowPermissions>;
   addedRowPermissionsOpen: boolean;
   editRowPermissionsOpen: boolean;
-};
+}
 
 /**
  * 租户分配用户 的state
  */
-export type TenantTransferState = {
+export interface TenantTransferState {
   targetKeys: string[];
   selectedKeys: string[];
   userList: UserBaseInfo.User[];
-};
+}
 
 /**
  * 租户管理 的state
  */
-export type TenantListState = {
+export interface TenantListState {
   loading: boolean;
   value: Partial<UserBaseInfo.Tenant>;
   assignUserOpen: boolean;
@@ -103,18 +103,18 @@ export type TenantListState = {
   viewUsersOpen: boolean;
   tenantUserList: UserBaseInfo.User[];
   tenantUserIds: string[];
-};
+}
 
 /**
  * 给用户分配角色 的state
  */
-export type RoleTransferState = {
+export interface RoleTransferState {
   targetKeys: string[];
   selectedKeys: string[];
   roleList: UserBaseInfo.Role[];
-};
+}
 
-export type UserListState = {
+export interface UserListState {
   loading: boolean;
   value: Partial<UserBaseInfo.User>;
   addedUserOpen: boolean;
@@ -122,4 +122,4 @@ export type UserListState = {
   assignRoleOpen: boolean;
   roleIds: string[];
   editPasswordOpen: boolean;
-};
+}

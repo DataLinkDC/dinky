@@ -135,7 +135,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
   /**
    * rest props for ProList
    */
-  const restProps: ProListProps = {
+  const restProps: ProListProps<BaseConfigProperties> = {
     toolBarRender: toolBarRender,
     rowKey: 'key',
     style: { margin: 0 },
@@ -146,16 +146,8 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     showActions: 'hover',
     metas: { ...metasRestProps },
     editable: {
-      saveText: (
-        <>
-          <SaveTwoTone title={l('button.save')} />
-        </>
-      ),
-      cancelText: (
-        <>
-          <BackIcon title={l('button.back')} />
-        </>
-      ),
+      saveText: <SaveTwoTone title={l('button.save')} />,
+      cancelText: <BackIcon title={l('button.back')} />,
       actionRender: (row, config, dom) =>
         row.frontType === 'boolean' || row.frontType === 'option' ? [] : [dom.save, dom.cancel],
       onSave: async (key, record) => handleSave(record)
@@ -165,11 +157,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
   /**
    * render list
    */
-  return (
-    <>
-      <ProList<BaseConfigProperties> {...restProps} />
-    </>
-  );
+  return <ProList<BaseConfigProperties> {...restProps} />;
 };
 
 export default GeneralConfig;

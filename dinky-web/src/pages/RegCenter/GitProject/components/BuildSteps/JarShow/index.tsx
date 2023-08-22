@@ -24,7 +24,7 @@ import React, { useEffect } from 'react';
 /** props
  */
 type JarShowProps = {
-  value: GitProject;
+  value: Partial<GitProject>;
   data: any;
 };
 

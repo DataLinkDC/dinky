@@ -127,7 +127,7 @@ const TemplateProFrom: React.FC<TemplateFormProps> = (props) => {
             <CodeEdit
               {...CodeEditProps}
               code={codeValue}
-              onChange={(value) => setCodeValue(value)}
+              onChange={(value) => setCodeValue(value ?? '')}
               language={codeLanguage}
             />
           </ProForm.Item>
