@@ -18,11 +18,13 @@
  */
 
 import {
-  DataStudioParams,
+  DataStudioTabsItemType,
   EnvType,
   JobRunningMsgType,
+  MetadataTabsItemType,
   STUDIO_MODEL,
-  TabsItemType
+  TabsItemType,
+  TabsPageType
 } from '@/pages/DataStudio/model';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { Dispatch } from '@@/plugin-dva/types';
@@ -115,22 +117,52 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
     })
 });
 
-export const getCurrentTab = (panes: any, activeKey: string) => {
-  return (panes as TabsItemType[]).find((item) => item.key === activeKey);
-};
+export function isDataStudioTabsItemType(
+  item: DataStudioTabsItemType | MetadataTabsItemType | TabsItemType | undefined
+): item is DataStudioTabsItemType {
+  return item?.type === TabsPageType.project;
+}
 
-export const getCurrentData = (panes: any, activeKey: string) => {
-  return (getCurrentTab(panes, activeKey)?.params as DataStudioParams)?.taskData;
+export function isMetadataTabsItemType(
+  item: DataStudioTabsItemType | MetadataTabsItemType | TabsItemType | undefined
+): item is MetadataTabsItemType {
+  return item?.type === TabsPageType.metadata;
+}
+
+export function getCurrentTab(
+  panes: TabsItemType[],
+  activeKey: string
+): DataStudioTabsItemType | MetadataTabsItemType | undefined {
+  const item = panes.find((item) => item.key === activeKey);
+  if (item?.type === 'project') {
+    return item as DataStudioTabsItemType;
+  }
+
+  if (item?.type === 'metadata') {
+    return item as MetadataTabsItemType;
+  }
+
+  return undefined;
+}
+
+export const getCurrentData = (
+  panes: DataStudioTabsItemType[],
+  activeKey: string
+): Record<string, any> | undefined => {
+  const item = getCurrentTab(panes, activeKey);
+  if (isDataStudioTabsItemType(item)) {
+    return item.params.taskData;
+  }
+  return undefined;
 };
 
 export const getFooterValue = (panes: any, activeKey: string) => {
   const currentTab = getCurrentTab(panes, activeKey);
-  let footerValue: object = {};
-  if (currentTab && currentTab.type === 'project') {
-    footerValue = {
+  if (isDataStudioTabsItemType(currentTab)) {
+    return {
       codePosition: [1, 1],
-      codeType: (currentTab.params as DataStudioParams).taskData.dialect
+      codeType: currentTab.params.taskData.dialect
     };
   }
-  return footerValue;
+  return {};
 };

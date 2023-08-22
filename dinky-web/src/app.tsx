@@ -19,6 +19,7 @@ import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
 import { AccessContextProvider } from '@/hooks/useAccess';
 import { UnAccessible } from '@/pages/Other/403';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { SysMenu } from '@/types/AuthCenter/data';
 import { THEME } from '@/types/Public/data';
 import { l } from '@/utils/intl';
@@ -34,7 +35,6 @@ import { default as defaultSettings, default as Settings } from '../config/defau
 import { errorConfig } from './requestErrorConfig';
 import { getDataByParamsReturnResult } from './services/BusinessCrud';
 import { API } from './services/data';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;

@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 export type FooterContainerProps = {
   token: GlobalToken;
 };
+
 type ButtonRoute = {
   text: React.ReactNode;
   title: string;
@@ -32,11 +33,13 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
     token,
     tabs
   } = props;
+
   const themeValue = useThemeValue();
-
   const [viewJobRunning, setViewJobRunning] = useState(false);
-
   const [memDetailInfo, setMemDetailInfo] = useState(memDetails);
+
+  const currentTab = getCurrentTab(tabs.panes ?? [], tabs.activeKey);
+
   useEffect(() => {
     const eventSource = getSseData('/api/sse/getJvmInfo');
     eventSource.onmessage = (event) => {
@@ -53,7 +56,6 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
     };
   }, []);
 
-  const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
   const route: ButtonRoute[] = [
     {
       text: (

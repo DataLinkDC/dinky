@@ -65,6 +65,10 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
           });
         }}
         onChange={(v, d) => {
+          if (!current) {
+            return;
+          }
+
           current.statement = v;
           dispatch({
             type: STUDIO_MODEL.saveTabs,

@@ -1,6 +1,11 @@
-import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
+import {
+  getCurrentData,
+  getCurrentTab,
+  isDataStudioTabsItemType,
+  mapDispatchToProps
+} from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
-import { DataStudioParams, StateType, TabsPageType } from '@/pages/DataStudio/model';
+import { StateType } from '@/pages/DataStudio/model';
 import { postAll } from '@/services/api';
 import { handleGetOption } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -28,7 +33,7 @@ const Result = (props: any) => {
   const [data, setData] = useState<Data>({});
   const [loading, setLoading] = useState<boolean>(true);
   const currentTabs = getCurrentTab(panes, activeKey);
-  const current = getCurrentData(panes, activeKey);
+  const current = getCurrentData(panes, activeKey) ?? [];
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -99,24 +104,22 @@ const Result = (props: any) => {
   });
 
   const loadData = async (isRefresh?: boolean) => {
-    if (!currentTabs) {
+    if (!isDataStudioTabsItemType(currentTabs)) {
       return;
     }
 
-    if (currentTabs.type !== TabsPageType.project) {
-      return;
-    }
+    const params = currentTabs.params;
 
-    if ((currentTabs?.params as DataStudioParams).resultData && !isRefresh) {
-      setData((currentTabs?.params as DataStudioParams).resultData);
+    if (params.resultData && !isRefresh) {
+      setData(params.resultData);
     } else {
       if (isSql(current.dialect)) {
         // common sql
         const res = await handleGetOption('api/studio/getCommonSqlData', 'Get Data', {
-          taskId: (currentTabs?.params as DataStudioParams).taskId
+          taskId: params.taskId
         });
         if (res.datas) {
-          (currentTabs?.params as DataStudioParams).resultData = res.datas;
+          params.resultData = res.datas;
           saveTabs({ ...props.tabs });
           setData(res.datas);
         }
@@ -135,7 +138,7 @@ const Result = (props: any) => {
             const datas = tableData.datas;
             datas.jid = jid;
             if (datas.success) {
-              (currentTabs?.params as DataStudioParams).resultData = datas;
+              params.resultData = datas;
               saveTabs({ ...props.tabs });
             }
           }
@@ -144,6 +147,7 @@ const Result = (props: any) => {
     }
     setLoading(false);
   };
+
   useEffect(() => {
     setData({});
     loadData();

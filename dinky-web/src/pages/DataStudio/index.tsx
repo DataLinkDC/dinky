@@ -19,19 +19,17 @@ import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import { getConsoleData } from '@/pages/DataStudio/BottomContainer/Console/service';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import { getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
+import {
+  getCurrentTab,
+  isDataStudioTabsItemType,
+  mapDispatchToProps
+} from '@/pages/DataStudio/function';
 import HeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataBase } from '@/pages/DataStudio/LeftContainer/MetaData/service';
 import { getTaskData, getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import {
-  DataStudioParams,
-  StateType,
-  TabsItemType,
-  TabsPageType,
-  VIEW
-} from '@/pages/DataStudio/model';
+import { StateType, TabsItemType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
   getClusterConfigurationData,
@@ -159,21 +157,22 @@ const DataStudio = (props: any) => {
     }
 
     const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
-    if (currentTab?.type !== 'project') {
+    if (!isDataStudioTabsItemType(currentTab)) {
       return;
     }
 
-    const params = currentTab.params as DataStudioParams;
+    const params = currentTab.params;
+    const res = await getTaskDetails(params.taskId);
 
-    const taskDetails = await getTaskDetails(params.taskId);
-    const changed = !taskDetails &&
-        Object.keys(taskDetails).some((key) =>
-            taskDetails[key] !== params.taskData[key] &&
-            JSON.stringify(taskDetails[key]) !== JSON.stringify(params.taskData[key]));
+    const changed = Object.keys(res).some(
+      (key) =>
+        res[key] !== params.taskData[key] ||
+        JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])
+    );
 
     if (changed) {
       setIsModalUpdateTabContentOpen(true);
-      setNewTabData(taskDetails);
+      setNewTabData(res);
     }
   };
 
@@ -198,7 +197,12 @@ const DataStudio = (props: any) => {
   const renderRightContainer = () => <RightContainer size={size} bottomHeight={bottomHeight} />;
 
   const updateTabContent = () => {
-    (getCurrentTab(tabs.panes, tabs.activeKey)?.params as DataStudioParams).taskData = newTabData;
+    const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
+    if (!isDataStudioTabsItemType(currentTab)) {
+      return;
+    }
+
+    currentTab.params.taskData = newTabData;
     saveTabs({ ...tabs });
     setIsModalUpdateTabContentOpen(false);
   };
