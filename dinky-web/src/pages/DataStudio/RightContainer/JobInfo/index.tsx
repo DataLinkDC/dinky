@@ -31,7 +31,7 @@ const JobInfo = (props: any) => {
     dispatch,
     tabs: { panes, activeKey }
   } = props;
-  const current = getCurrentData(panes, activeKey);
+  const current = getCurrentData(panes, activeKey) ?? {};
   const [form] = useForm();
   form.setFieldsValue(current);
   const onValuesChange = (change: any, all: any) => {
