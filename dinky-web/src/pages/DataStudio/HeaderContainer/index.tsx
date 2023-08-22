@@ -32,7 +32,14 @@ import {
   isSql,
   offLineTask
 } from '@/pages/DataStudio/HeaderContainer/service';
-import {DataStudioParams, DataStudioTabsItemType, StateType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
+import {
+  DataStudioParams,
+  DataStudioTabsItemType,
+  StateType,
+  TabsPageType,
+  TaskDataType,
+  VIEW
+} from '@/pages/DataStudio/model';
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { l } from '@/utils/intl';
 import { ErrorNotification } from '@/utils/messages';
@@ -59,6 +66,7 @@ const headerStyle: React.CSSProperties = {
   fontSize: '16px',
   padding: '4px 10px'
 };
+
 type ButtonRoute = {
   icon: React.ReactNode;
   title: string;
@@ -85,7 +93,7 @@ const HeaderContainer = (props: any) => {
     if (!current) {
         return;
     }
-    
+
     modal.confirm({
       title: l('pages.datastudio.editor.stop.job'),
       content: l('pages.datastudio.editor.stop.jobConfirm', '', {
@@ -116,7 +124,7 @@ const HeaderContainer = (props: any) => {
       return;
     }
 
-    const param: any = {
+    const param: TaskDataType = {
       ...current,
       jobName: current.name,
       taskId: current.id

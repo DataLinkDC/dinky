@@ -1,6 +1,6 @@
 import React, {ReactNode, useEffect, useState} from "react";
 import {connect} from "@@/exports";
-import {DataStudioParams, StateType} from "@/pages/DataStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {getData, getSseData, postAll} from "@/services/api";
 import TextArea from "antd/es/input/TextArea";
 import {Modal, Select, Tabs} from "antd";

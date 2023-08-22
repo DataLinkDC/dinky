@@ -96,9 +96,18 @@ export type MetadataParams = {
   // eslint-disable-next-line @typescript-eslint/ban-types
   tableInfo: {};
 };
+
+export type TaskDataBaseType = {
+  id: number,
+  name: string,
+  statement: string,
+}
+
+export type TaskDataType = TaskDataBaseType & Record<string, any>;
+
 export type DataStudioParams = {
   taskId: number;
-  taskData: Record<string, any>;
+  taskData: TaskDataType;
   resultData: Record<string, any>;
 };
 

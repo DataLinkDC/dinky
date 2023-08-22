@@ -29,7 +29,7 @@ import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataBase } from '@/pages/DataStudio/LeftContainer/MetaData/service';
 import { getTaskData, getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import { StateType, TabsItemType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import {StateType, TabsItemType, TabsPageType, TaskDataType, VIEW} from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
   getClusterConfigurationData,
@@ -86,7 +86,7 @@ const DataStudio = (props: any) => {
   const { token } = useToken();
   const themeValue = useThemeValue();
   const [isModalUpdateTabContentOpen, setIsModalUpdateTabContentOpen] = useState(false);
-  const [newTabData, setNewTabData] = useState({});
+  const [newTabData, setNewTabData] = useState<TaskDataType>();
   const app = getDvaApp(); // 获取dva的实例
   const persist = app._store.persist;
   const bottomHeight = bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
@@ -201,6 +201,8 @@ const DataStudio = (props: any) => {
     if (!isDataStudioTabsItemType(currentTab)) {
       return;
     }
+
+    if (!newTabData) return;
 
     currentTab.params.taskData = newTabData;
     saveTabs({ ...tabs });

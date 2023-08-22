@@ -1,6 +1,7 @@
 import { postAll } from '@/services/api';
 import { handleGetOption, handleOption } from '@/services/BusinessCrud';
 import { DIALECT, RUN_MODE } from '@/services/constants';
+import {TaskDataType} from "@/pages/DataStudio/model";
 
 export async function explainSql(params: any) {
   return postAll('/api/studio/explainSql', params);
@@ -8,7 +9,7 @@ export async function explainSql(params: any) {
 export async function getJobPlan(title: string, params: any) {
   return handleOption('/api/studio/getJobPlan', title, params);
 }
-export async function executeSql(title: string, params: any) {
+export async function executeSql(title: string, params: TaskDataType) {
   return handleOption('/api/studio/executeSql', title, params);
 }
 export function offLineTask(title: string, id: number, type: string) {
