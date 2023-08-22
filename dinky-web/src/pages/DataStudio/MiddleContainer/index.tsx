@@ -18,25 +18,18 @@
 import ContentScroll from '@/components/Scroll/ContentScroll';
 import useThemeValue from '@/hooks/useThemeValue';
 import { STUDIO_TAG_RIGHT_CONTEXT_MENU } from '@/pages/DataStudio/constants';
+import { isDataStudioTabsItemType, isMetadataTabsItemType } from '@/pages/DataStudio/function';
 import Editor from '@/pages/DataStudio/MiddleContainer/Editor';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
-import {
-  DataStudioTabsItemType,
-  MetadataTabsItemType,
-  StateType,
-  STUDIO_MODEL,
-  TabsItemType,
-  TabsPageType
-} from '@/pages/DataStudio/model';
+import { StateType, STUDIO_MODEL, TabsItemType, TabsPageType } from '@/pages/DataStudio/model';
 import { RightSide } from '@/pages/DataStudio/route';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
 import { connect } from '@@/exports';
 import { ConfigProvider, Divider, Dropdown, Space, Tabs } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useState } from 'react';
-import {isDataStudioTabsItemType, isMetadataTabsItemType} from "@/pages/DataStudio/function";
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
@@ -214,12 +207,12 @@ const MiddleContainer = (props: any) => {
         }
 
         const v = item.params;
-        return <Editor statement={v.taskData.statement}/>;
+        return <Editor statement={v.taskData.statement} />;
       }
 
       if (isMetadataTabsItemType(item)) {
-        const params =item.params;
-        return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams}/>;
+        const params = item.params;
+        return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams} />;
       }
 
       return <></>;

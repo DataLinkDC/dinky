@@ -17,7 +17,12 @@
  *
  */
 import { FlexCenterDiv } from '@/components/StyledComponents';
-import {getCurrentData, getCurrentTab, isDataStudioTabsItemType, mapDispatchToProps} from '@/pages/DataStudio/function';
+import {
+  getCurrentData,
+  getCurrentTab,
+  isDataStudioTabsItemType,
+  mapDispatchToProps
+} from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
 import { buildGraphData } from '@/pages/DataStudio/HeaderContainer/FlinkGraph/function';
@@ -32,7 +37,7 @@ import {
   isSql,
   offLineTask
 } from '@/pages/DataStudio/HeaderContainer/service';
-import { DataStudioTabsItemType, StateType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
+import { DataStudioTabsItemType, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { l } from '@/utils/intl';
 import { ErrorNotification } from '@/utils/messages';
@@ -82,7 +87,7 @@ const HeaderContainer = (props: any) => {
   const [messageApi, messageContextHolder] = message.useMessage();
   const handlerStop = () => {
     const current = getCurrentData(panes, activeKey);
-    if (!current)return;
+    if (!current) return;
 
     modal.confirm({
       title: l('pages.datastudio.editor.stop.job'),
@@ -310,10 +315,12 @@ const HeaderContainer = (props: any) => {
   };
   const renderHotkey = () => {
     document.onkeydown = (e) => {
-      routes.filter(r => r.hotKey?.(e)).forEach(r => {
+      routes
+        .filter((r) => r.hotKey?.(e))
+        .forEach((r) => {
           r.click();
           e.preventDefault();
-      });
+        });
     };
   };
   renderHotkey();

@@ -1,4 +1,4 @@
-import {getCurrentData, isDataStudioTabsItemType} from '@/pages/DataStudio/function';
+import { getCurrentData } from '@/pages/DataStudio/function';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import { connect } from '@@/exports';
 import { Editor } from '@monaco-editor/react';

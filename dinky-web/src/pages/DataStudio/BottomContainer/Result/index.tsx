@@ -1,6 +1,11 @@
-import {getCurrentData, getCurrentTab, isDataStudioTabsItemType, mapDispatchToProps} from '@/pages/DataStudio/function';
+import {
+  getCurrentData,
+  getCurrentTab,
+  isDataStudioTabsItemType,
+  mapDispatchToProps
+} from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
-import { DataStudioTabsItemType, StateType, TabsPageType} from '@/pages/DataStudio/model';
+import { StateType } from '@/pages/DataStudio/model';
 import { postAll } from '@/services/api';
 import { handleGetOption } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -103,7 +108,7 @@ const Result = (props: any) => {
       return;
     }
 
-    const params = currentTabs.params
+    const params = currentTabs.params;
 
     if (params.resultData && !isRefresh) {
       setData(params.resultData);

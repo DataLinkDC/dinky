@@ -1,7 +1,7 @@
 import useThemeValue from '@/hooks/useThemeValue';
 import JobRunningModal from '@/pages/DataStudio/FooterContainer/JobRunningModal';
 import { getCurrentTab } from '@/pages/DataStudio/function';
-import {DataStudioTabsItemType, StateType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
+import { StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { getSseData } from '@/services/api';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
@@ -38,7 +38,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const [viewJobRunning, setViewJobRunning] = useState(false);
   const [memDetailInfo, setMemDetailInfo] = useState(memDetails);
 
-  const currentTab = getCurrentTab((tabs.panes) ?? [], tabs.activeKey);
+  const currentTab = getCurrentTab(tabs.panes ?? [], tabs.activeKey);
 
   useEffect(() => {
     const eventSource = getSseData('/api/sse/getJvmInfo');

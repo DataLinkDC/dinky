@@ -19,19 +19,17 @@ import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import { getConsoleData } from '@/pages/DataStudio/BottomContainer/Console/service';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import {getCurrentTab, isDataStudioTabsItemType, mapDispatchToProps} from '@/pages/DataStudio/function';
+import {
+  getCurrentTab,
+  isDataStudioTabsItemType,
+  mapDispatchToProps
+} from '@/pages/DataStudio/function';
 import HeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataBase } from '@/pages/DataStudio/LeftContainer/MetaData/service';
 import { getTaskData, getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import {
-  DataStudioParams, DataStudioTabsItemType,
-  StateType,
-  TabsItemType,
-  TabsPageType,
-  VIEW
-} from '@/pages/DataStudio/model';
+import { StateType, TabsItemType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
   getClusterConfigurationData,
@@ -164,16 +162,18 @@ const DataStudio = (props: any) => {
     }
 
     const params = currentTab.params;
-    const res = await getTaskDetails(params.taskId)
+    const res = await getTaskDetails(params.taskId);
 
-    const changed = Object.keys(res).some((key) =>
-        res[key] !== params.taskData[key] || JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key]));
+    const changed = Object.keys(res).some(
+      (key) =>
+        res[key] !== params.taskData[key] ||
+        JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])
+    );
 
     if (changed) {
       setIsModalUpdateTabContentOpen(true);
       setNewTabData(res);
     }
-
   };
 
   useEffect(() => {
@@ -184,7 +184,9 @@ const DataStudio = (props: any) => {
   /**
    * 渲染头部
    */
-  const renderHeaderContainer = () => <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />;
+  const renderHeaderContainer = () => (
+    <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
+  );
 
   /**
    * 渲染左侧侧边栏
@@ -198,7 +200,7 @@ const DataStudio = (props: any) => {
 
   const updateTabContent = () => {
     const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
-    if(!isDataStudioTabsItemType(currentTab)) {
+    if (!isDataStudioTabsItemType(currentTab)) {
       return;
     }
 
