@@ -169,8 +169,8 @@ export default {
   'global.success': '成功',
   'global.getdata.tips': '获取数据',
 
-  'global.notifaction.iknow': '我知道了',
-  'global.notifaction.full-error': '完整错误信息',
+  'global.notification.iknow': '我知道了',
+  'global.notification.full-error': '完整错误信息',
 
   'global.item': '个',
   'global.bout': '次',

@@ -172,8 +172,8 @@ export default {
   'global.success': 'Success',
   'global.getdata.tips': 'Get Data',
 
-  'global.notifaction.iknow': 'I understand',
-  'global.notifaction.full-error': 'Complete error message',
+  'global.notification.iknow': 'I understand',
+  'global.notification.full-error': 'Complete error message',
 
   'global.item': 'Pieces',
   'global.bout': 'Times',

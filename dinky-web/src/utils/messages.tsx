@@ -57,7 +57,7 @@ export const ErrorNotification = (
   const moreBtn =
     description.length > 40 ? (
       <Button type='primary' danger onClick={() => ErrorModelWithCode(title, description)}>
-        {l('global.notifaction.full-error')}
+        {l('global.notification.full-error')}
       </Button>
     ) : (
       <></>
