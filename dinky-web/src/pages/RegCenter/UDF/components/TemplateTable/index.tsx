@@ -97,10 +97,9 @@ const TemplateTable: React.FC = () => {
    */
   const handleChangeEnable = async (value: Partial<UDFTemplate>) => {
     await executeAndCallback(
-      async () =>
-        await updateDataByParam(API_CONSTANTS.UDF_TEMPLATE_ENABLE, {
-          id: value.id
-        })
+      async () => updateDataByParam(API_CONSTANTS.UDF_TEMPLATE_ENABLE, {
+        id: value.id
+      })
     );
   };
 

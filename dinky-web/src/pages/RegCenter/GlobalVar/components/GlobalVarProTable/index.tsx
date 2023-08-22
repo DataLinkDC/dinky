@@ -63,11 +63,9 @@ const GlobalVarProTable = () => {
    * @param value
    */
   const handleChangeEnable = async (value: Partial<GlobalVar>) => {
-    await executeAndCallbackRefresh(async () => {
-      await updateDataByParam(API_CONSTANTS.GLOBAL_VARIABLE_ENABLE, {
-        id: value.id
-      });
-    });
+    await executeAndCallbackRefresh(async () => updateDataByParam(API_CONSTANTS.GLOBAL_VARIABLE_ENABLE, {
+      id: value.id
+    }));
   };
 
   /**
@@ -75,9 +73,7 @@ const GlobalVarProTable = () => {
    * @param id role id
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleRemoveById(API_CONSTANTS.GLOBAL_VARIABLE_DELETE, id);
-    });
+    await executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.GLOBAL_VARIABLE_DELETE, id));
   };
 
   /**
@@ -102,9 +98,7 @@ const GlobalVarProTable = () => {
    * @returns {Promise<void>}
    */
   const handleAddOrUpdateSubmit = async (value: Partial<GlobalVar>) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(API_CONSTANTS.GLOBAL_VARIABLE, value);
-    });
+    await executeAndCallbackRefresh(async () => handleAddOrUpdate(API_CONSTANTS.GLOBAL_VARIABLE, value));
   };
 
   /**

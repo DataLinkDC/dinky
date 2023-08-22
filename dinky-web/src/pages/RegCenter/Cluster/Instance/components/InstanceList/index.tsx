@@ -104,9 +104,7 @@ export default () => {
    * @param id
    */
   const handleDelete = async (id: number) => {
-    await executeAndCallback(async () => {
-      await handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_DELETE, id);
-    });
+    await executeAndCallback(async () => handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_DELETE, id));
   };
 
   /**
@@ -114,29 +112,21 @@ export default () => {
    * @param record
    */
   const handleChangeEnable = async (record: Partial<Cluster.Instance>) => {
-    await executeAndCallback(async () => {
-      await updateDataByParam(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, {
-        id: record.id
-      });
-    });
+    await executeAndCallback(async () => updateDataByParam(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, {id: record.id}));
   };
 
   /**
    * check heart beat
    */
   const handleHeartBeat = async () => {
-    await executeAndCallback(async () => {
-      await handleOption(API_CONSTANTS.CLUSTER_INSTANCE_HEARTBEATS, l('rc.ci.heartbeat'), null);
-    });
+    await executeAndCallback(async () => handleOption(API_CONSTANTS.CLUSTER_INSTANCE_HEARTBEATS, l('rc.ci.heartbeat'), null));
   };
 
   /**
    * recycle instance
    */
   const handleRecycle = async () => {
-    await executeAndCallback(async () => {
-      await handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_RECYCLE, 0);
-    });
+    await executeAndCallback(async () =>  handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_RECYCLE, 0));
   };
 
   /**

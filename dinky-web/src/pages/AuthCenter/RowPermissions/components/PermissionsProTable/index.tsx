@@ -39,7 +39,7 @@ const PermissionsProTable: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
 
-  const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
+  const executeAndCallbackRefresh = async (callback: () => void) => {
     setRowPermissions((prevState) => ({ ...prevState, loading: true }));
     await callback();
     setRowPermissions((prevState) => ({ ...prevState, loading: false }));
@@ -51,9 +51,7 @@ const PermissionsProTable: React.FC = () => {
    * @param id role id
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleRemoveById(API_CONSTANTS.ROW_PERMISSIONS_DELETE, id);
-    });
+    await executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.ROW_PERMISSIONS_DELETE, id));
   };
 
   /**
@@ -61,8 +59,7 @@ const PermissionsProTable: React.FC = () => {
    * @param value
    */
   const handleAddOrUpdateSubmit = async (value: any) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(
+    await executeAndCallbackRefresh(async () => handleAddOrUpdate(
         API_CONSTANTS.ROW_PERMISSIONS,
         {
           ...value,
@@ -70,8 +67,7 @@ const PermissionsProTable: React.FC = () => {
         },
         () => {},
         () => setRowPermissions((prevState) => ({ ...prevState, addedOpen: false }))
-      );
-    });
+    ));
   };
 
   /**

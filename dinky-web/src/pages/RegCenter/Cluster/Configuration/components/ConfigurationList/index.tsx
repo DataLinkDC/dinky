@@ -85,11 +85,7 @@ export default () => {
       content: l('rc.cc.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
-      onOk: async () => {
-        await executeAndCallbackRefresh(async () => {
-          await handleRemoveById(API_CONSTANTS.CLUSTER_CONFIGURATION_DELETE, id);
-        });
-      }
+      onOk: async () => executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.CLUSTER_CONFIGURATION_DELETE, id))
     });
   };
 
@@ -98,11 +94,9 @@ export default () => {
    * @param item
    */
   const handleEnable = async (item: Cluster.Config) => {
-    await executeAndCallbackRefresh(async () => {
-      await updateDataByParam(API_CONSTANTS.CLUSTER_CONFIGURATION_ENABLE, {
-        id: item.id
-      });
-    });
+    await executeAndCallbackRefresh(async () =>  updateDataByParam(API_CONSTANTS.CLUSTER_CONFIGURATION_ENABLE, {
+      id: item.id
+    }));
   };
 
   /**
@@ -110,11 +104,9 @@ export default () => {
    * @param item
    */
   const handleStartCluster = async (item: Cluster.Config) => {
-    await executeAndCallbackRefresh(async () => {
-      await handlePutDataByParams(API_CONSTANTS.CLUSTER_CONFIGURATION_START, l('rc.cc.start'), {
-        id: item.id
-      });
-    });
+    await executeAndCallbackRefresh(async () => handlePutDataByParams(API_CONSTANTS.CLUSTER_CONFIGURATION_START, l('rc.cc.start'), {
+      id: item.id
+    }));
   };
 
   /**
@@ -123,8 +115,8 @@ export default () => {
   const handleCancel = async () => {
     setClusterConfigState((prevState) => ({
       ...prevState,
-      addedClusterConfigOpen: false,
-      editClusterConfigOpen: false,
+      addedOpen: false,
+      editOpen: false,
       value: {}
     }));
   };

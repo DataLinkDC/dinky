@@ -52,7 +52,7 @@ const TenantProTable: React.FC = () => {
     );
   };
 
-  const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
+  const executeAndCallbackRefresh = async (callback: () => void) => {
     setTenantState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     setTenantState((prevState) => ({ ...prevState, loading: false }));
@@ -64,14 +64,12 @@ const TenantProTable: React.FC = () => {
    * @param value
    */
   const handleAddOrUpdateSubmit = async (value: Partial<UserBaseInfo.Tenant>) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(
+    await executeAndCallbackRefresh(async () => handleAddOrUpdate(
         API_CONSTANTS.TENANT,
         value,
         () => {},
         () => setTenantState((prevState) => ({ ...prevState, addedOpen: false }))
-      );
-    });
+    ));
   };
 
   /**
@@ -79,22 +77,18 @@ const TenantProTable: React.FC = () => {
    * @param id tenant id
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleRemoveById(API_CONSTANTS.TENANT_DELETE, id);
-    });
+    await executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.TENANT_DELETE, id));
   };
 
   /**
    * assign user to tenant
    */
   const handleAssignUserSubmit = async () => {
-    await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(API_CONSTANTS.ASSIGN_USER_TO_TENANT, {
-        tenantId: tenantState.value.id,
-        userIds: tenantState.tenantUserIds
-      });
-      setTenantState((prevState) => ({ ...prevState, assignUserOpen: false }));
-    });
+    await executeAndCallbackRefresh(async () => handleAddOrUpdate(API_CONSTANTS.ASSIGN_USER_TO_TENANT, {
+      tenantId: tenantState.value.id,
+      userIds: tenantState.tenantUserIds
+    }));
+    setTenantState((prevState) => ({ ...prevState, assignUserOpen: false }));
   };
   const handleCancel = () => {
     setTenantState((prevState) => ({

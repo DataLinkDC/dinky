@@ -80,11 +80,7 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleChangeEnable = async (value: Partial<GitProject>) => {
-    await executeAndCallback(
-      async () =>
-        await updateDataByParam(API_CONSTANTS.GIT_PROJECT_ENABLE, {
-          id: value.id
-        })
+    await executeAndCallback(async () => updateDataByParam(API_CONSTANTS.GIT_PROJECT_ENABLE, {id: value.id})
     );
   };
 
@@ -145,10 +141,10 @@ const ProjectProTable: React.FC = () => {
       orderLine: index + 1
     }));
     await executeAndCallback(
-      async () =>
-        await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_PROJECT, l('rc.gp.ucl.projectOrder'), {
-          sortList: updatedItems
-        })
+      async () => handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_PROJECT, l('rc.gp.ucl.projectOrder'), {
+        sortList: updatedItems
+      })
+
     );
   };
 

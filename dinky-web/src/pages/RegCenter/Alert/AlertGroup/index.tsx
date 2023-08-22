@@ -56,7 +56,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * set alert instance list
    */
   const queryAlertGroupList = async () => {
-    await queryList(API_CONSTANTS.ALERT_GROUP).then((res) =>
+    queryList(API_CONSTANTS.ALERT_GROUP).then((res) =>
       setAlertGroupState((prevState) => ({ ...prevState, alertGroupList: res.data }))
     );
   };
@@ -90,11 +90,9 @@ const AlertGroupTableList: React.FC = (props: any) => {
       content: l('rc.ag.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
-      onOk: async () => {
-        await exexuteWithRefreshLoading(
-          async () => await handleRemoveById(API_CONSTANTS.ALERT_GROUP_DELETE, id)
-        );
-      }
+      onOk: async () => exexuteWithRefreshLoading(
+          async () => handleRemoveById(API_CONSTANTS.ALERT_GROUP_DELETE, id)
+      )
     });
   };
 
@@ -103,9 +101,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * @param item
    */
   const handleEnable = async (item: Alert.AlertGroup) => {
-    await exexuteWithRefreshLoading(async () => {
-      await updateDataByParam(API_CONSTANTS.ALERT_GROUP_ENABLE, { id: item.id });
-    });
+    await exexuteWithRefreshLoading(async () => updateDataByParam(API_CONSTANTS.ALERT_GROUP_ENABLE, { id: item.id }));
   };
 
   /**
@@ -124,14 +120,13 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * handle add alert instance
    */
   const handleSubmit = async (value: Alert.AlertGroup) => {
-    await exexuteWithRefreshLoading(async () => {
-      await handleAddOrUpdate(
+    await exexuteWithRefreshLoading(async () =>
+        handleAddOrUpdate(
         API_CONSTANTS.ALERT_GROUP,
         value,
         () => {},
         () => handleCleanState()
-      );
-    });
+    ));
   };
 
   /**

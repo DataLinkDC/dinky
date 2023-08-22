@@ -60,7 +60,7 @@ const AlertInstanceList: React.FC = () => {
    * set alert instance list
    */
   const queryAlertInstanceList = async () => {
-    await queryList(API_CONSTANTS.ALERT_INSTANCE).then((res) =>
+    queryList(API_CONSTANTS.ALERT_INSTANCE).then((res) =>
       setAlertInstanceState((prevState) => ({ ...prevState, alertInstanceList: res.data }))
     );
   };
@@ -82,11 +82,7 @@ const AlertInstanceList: React.FC = () => {
       content: l('rc.ai.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
-      onOk: async () => {
-        await executeAndCallbackRefresh(async () => {
-          await handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id);
-        });
-      }
+      onOk: async () => executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id))
     });
   };
 
@@ -95,11 +91,10 @@ const AlertInstanceList: React.FC = () => {
    * @param item
    */
   const handleEnable = async (item: Alert.AlertInstance) => {
-    await executeAndCallbackRefresh(async () => {
-      await updateDataByParam(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {
-        id: item.id
-      });
-    });
+    await executeAndCallbackRefresh(async () =>
+        updateDataByParam(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {
+      id: item.id
+    }));
   };
 
   /**
@@ -133,7 +128,7 @@ const AlertInstanceList: React.FC = () => {
     setAlertInstanceState((prevState) => ({
       ...prevState,
       value: item,
-      editAlertInstanceOpen: true
+      editOpen: true
     }));
   };
 

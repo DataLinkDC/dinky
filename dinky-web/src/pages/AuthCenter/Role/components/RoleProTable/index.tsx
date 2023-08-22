@@ -50,7 +50,7 @@ const RoleProTable: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
 
-  const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
+  const executeAndCallbackRefresh = async (callback: () => void) => {
     setRoleListState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     setRoleListState((prevState) => ({ ...prevState, loading: false }));
@@ -62,9 +62,7 @@ const RoleProTable: React.FC = () => {
    * @param id role id
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleRemoveById(API_CONSTANTS.ROLE_DELETE, id);
-    });
+    await executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.ROLE_DELETE, id));
   };
 
   /**

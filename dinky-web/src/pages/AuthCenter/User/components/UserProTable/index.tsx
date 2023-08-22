@@ -92,22 +92,18 @@ const UserProTable = () => {
    * @param value
    */
   const handleDeleteUser = async (value: UserBaseInfo.User) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleRemoveById(API_CONSTANTS.USER_DELETE, value.id);
-    });
+    await executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.USER_DELETE, value.id));
   };
 
   /**
    * user add role to submit
    */
   const handleGrantRoleSubmit = async () => {
-    await executeAndCallbackRefresh(async () => {
-      await handlePutData(API_CONSTANTS.USER_ASSIGN_ROLE, {
-        userId: userState.value.id,
-        roleIds: userState.roleIds
-      });
-      setUserState((prevState) => ({ ...prevState, assignRoleOpen: true }));
-    });
+    await executeAndCallbackRefresh(async () => handlePutData(API_CONSTANTS.USER_ASSIGN_ROLE, {
+      userId: userState.value.id,
+      roleIds: userState.roleIds
+    }));
+    setUserState((prevState) => ({ ...prevState, assignRoleOpen: true }));
   };
 
   /**
@@ -115,9 +111,7 @@ const UserProTable = () => {
    * @param value
    */
   const handleChangeEnable = async (value: UserBaseInfo.User) => {
-    await executeAndCallbackRefresh(async () => {
-      await updateDataByParam(API_CONSTANTS.USER_ENABLE, { id: value.id });
-    });
+    await executeAndCallbackRefresh(async () => updateDataByParam(API_CONSTANTS.USER_ENABLE, { id: value.id }));
   };
 
   /**
@@ -136,18 +130,14 @@ const UserProTable = () => {
    * @param value
    */
   const handleSubmitUser = async (value: Partial<UserBaseInfo.User>) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(API_CONSTANTS.USER, value);
-      setUserState((prevState) => ({ ...prevState, addedOpen: false }));
-    });
+    await executeAndCallbackRefresh(async () => handleAddOrUpdate(API_CONSTANTS.USER, value));
+    setUserState((prevState) => ({ ...prevState, addedOpen: false }));
   };
 
   const handleRecoveryUser = async (value: UserBaseInfo.User) => {
-    await executeAndCallbackRefresh(async () => {
-      await handlePutDataByParams(API_CONSTANTS.USER_RECOVERY, l('button.recovery'), {
-        id: value.id
-      });
-    });
+    await executeAndCallbackRefresh(async () => handlePutDataByParams(API_CONSTANTS.USER_RECOVERY, l('button.recovery'), {
+      id: value.id
+    }));
   };
 
   const handleResetPassword = async (value: UserBaseInfo.User) => {
