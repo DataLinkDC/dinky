@@ -164,21 +164,16 @@ const DataStudio = (props: any) => {
     }
 
     const params = currentTab.params;
-    getTaskDetails(params.taskId).then((res) => {
-      const changed = Object.keys(res).some((key) => {
-        return (
-          res[key] !== params.taskData[key] &&
-          (res[key] instanceof Object
-            ? JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])
-            : true)
-        );
-      });
+    const res = await getTaskDetails(params.taskId)
 
-      if (changed) {
-        setIsModalUpdateTabContentOpen(true);
-        setNewTabData(res);
-      }
-    });
+    const changed = Object.keys(res).some((key) =>
+        res[key] !== params.taskData[key] || JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key]));
+
+    if (changed) {
+      setIsModalUpdateTabContentOpen(true);
+      setNewTabData(res);
+    }
+
   };
 
   useEffect(() => {
