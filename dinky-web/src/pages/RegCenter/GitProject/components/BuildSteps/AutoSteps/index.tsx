@@ -35,7 +35,7 @@ export type BuildMsgData = {
 };
 
 type BuildStepsProps = {
-  values: GitProject;
+  values: Partial<GitProject>;
   steps: any[];
   percent: number;
   currentStep: number;

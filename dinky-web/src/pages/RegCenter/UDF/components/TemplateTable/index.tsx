@@ -32,6 +32,8 @@ import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/servic
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { UDFTemplate } from '@/types/RegCenter/data';
+import { InitTemplateState } from '@/types/RegCenter/init.d';
+import { TemplateState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { ProTable } from '@ant-design/pro-components';
 import { ActionType, ProColumns } from '@ant-design/pro-table';
@@ -47,11 +49,8 @@ const CodeShowProps: any = {
 
 const TemplateTable: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [drawer, setDrawer] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState<Partial<UDFTemplate>>({});
+
+  const [templateState, setTemplateState] = useState<TemplateState>(InitTemplateState);
 
   /**
    * execute and callback function
@@ -59,9 +58,9 @@ const TemplateTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const executeAndCallback = async (callback: () => void) => {
-    setLoading(true);
+    setTemplateState((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setLoading(false);
+    setTemplateState((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
@@ -69,10 +68,7 @@ const TemplateTable: React.FC = () => {
    * cancel all status
    */
   const handleCancel = () => {
-    setFormValues({});
-    handleModalVisible(false);
-    handleUpdateModalVisible(false);
-    setDrawer(false);
+    setTemplateState(InitTemplateState);
     actionRef.current?.reload?.();
   };
 
@@ -81,8 +77,7 @@ const TemplateTable: React.FC = () => {
    * @param value
    */
   const handleEdit = async (value: Partial<UDFTemplate>) => {
-    setFormValues(value);
-    handleUpdateModalVisible(true);
+    setTemplateState({ ...templateState, editOpen: true, value: value });
   };
 
   /**
@@ -101,11 +96,10 @@ const TemplateTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleChangeEnable = async (value: Partial<UDFTemplate>) => {
-    await executeAndCallback(
-      async () =>
-        await updateDataByParam(API_CONSTANTS.UDF_TEMPLATE_ENABLE, {
-          id: value.id
-        })
+    await executeAndCallback(async () =>
+      updateDataByParam(API_CONSTANTS.UDF_TEMPLATE_ENABLE, {
+        id: value.id
+      })
     );
   };
 
@@ -125,8 +119,7 @@ const TemplateTable: React.FC = () => {
    * @param {Partial<UDFTemplate>} record
    */
   const handleOpenDrawer = (record: Partial<UDFTemplate>) => {
-    setFormValues(record);
-    setDrawer(true);
+    setTemplateState({ ...templateState, drawerOpen: true, value: record });
   };
 
   const columns: ProColumns<UDFTemplate>[] = [
@@ -173,7 +166,7 @@ const TemplateTable: React.FC = () => {
         return (
           <EnableSwitchBtn
             key={`${record.id}_enable`}
-            disabled={drawer}
+            disabled={templateState.drawerOpen}
             record={record}
             onChange={() => handleChangeEnable(record)}
           />
@@ -214,11 +207,14 @@ const TemplateTable: React.FC = () => {
     <>
       <ProTable<UDFTemplate>
         {...PROTABLE_OPTIONS_PUBLIC}
-        loading={loading}
+        loading={templateState.loading}
         actionRef={actionRef}
         headerTitle={l('rc.udf.management')}
         toolBarRender={() => [
-          <CreateBtn key={'template'} onClick={() => handleModalVisible(true)} />
+          <CreateBtn
+            key={'template'}
+            onClick={() => setTemplateState((prevState) => ({ ...prevState, addedOpen: true }))}
+          />
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.UDF_TEMPLATE, { ...params, sorter, filter })
@@ -226,31 +222,31 @@ const TemplateTable: React.FC = () => {
         columns={columns}
       />
       {/* added */}
-      {modalVisible && (
+      {templateState.editOpen && (
         <TemplateModal
-          values={formValues}
-          visible={modalVisible}
+          values={templateState.value}
+          visible={templateState.addedOpen}
           onCancel={handleCancel}
           onSubmit={(value: Partial<UDFTemplate>) => handleAddOrUpdateSubmit(value)}
         />
       )}
 
       {/* modify */}
-      {updateModalVisible && (
+      {templateState.editOpen && (
         <TemplateModal
-          values={formValues}
-          visible={updateModalVisible}
+          values={templateState.value}
+          visible={templateState.editOpen}
           onCancel={handleCancel}
           onSubmit={(value: Partial<UDFTemplate>) => handleAddOrUpdateSubmit(value)}
         />
       )}
 
       {/* drawer */}
-      {drawer && (
+      {templateState.drawerOpen && (
         <UDFTemplateDrawer
           onCancel={() => handleCancel()}
-          values={formValues}
-          modalVisible={drawer}
+          values={templateState.value}
+          modalVisible={templateState.drawerOpen}
           columns={columns}
         />
       )}

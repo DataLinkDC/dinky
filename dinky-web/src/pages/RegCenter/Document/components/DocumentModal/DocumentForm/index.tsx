@@ -133,9 +133,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
           rules={[{ required: true, message: l('rc.doc.fillValueHelp') }]}
         >
           <CodeEdit
-            onChange={(value) => {
-              handleFillValueChange(value);
-            }}
+            onChange={(value) => handleFillValueChange(value ?? '')}
             code={codeFillValue}
             language={'sql'}
             {...CodeEditProps}

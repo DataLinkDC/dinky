@@ -25,6 +25,8 @@ import ResourceModal from '@/pages/RegCenter/Resource/components/ResourceModal';
 import ResourcesUploadModal from '@/pages/RegCenter/Resource/components/ResourcesUploadModal';
 import { handleOption, handleRemoveById, queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { InitResourceState } from '@/types/RegCenter/init.d';
+import { ResourceState } from '@/types/RegCenter/state.d';
 import { ProCard } from '@ant-design/pro-components';
 import { MenuInfo } from 'rc-menu/es/interface';
 import { Resizable } from 're-resizable';
@@ -38,21 +40,10 @@ export type Resource = {
 };
 
 const ResourceOverView: React.FC = () => {
-  const [treeData, setTreeData] = useState<Partial<any[]>>([]);
-  const [content, setContent] = useState<string>('');
-  const [clickedNode, setClickedNode] = useState({});
-  const [rightClickedNode, setRightClickedNode] = useState<any>();
-  const [contextMenuVisible, setContextMenuVisible] = useState(false);
-  const [contextMenuPosition, setContextMenuPosition] = useState({});
-  const [selectedKeys, setSelectedKeys] = useState([]);
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [resourceState, setResourceState] = useState<ResourceState>(InitResourceState);
+
   const [editModal, setEditModal] = useState<string>('');
-  const [showUpload, setShowUpload] = useState(false);
-  const [formValue, setFormValue] = useState<Resource>({
-    id: 0,
-    fileName: '',
-    description: ''
-  });
+
   const [uploadValue] = useState({
     url: API_CONSTANTS.RESOURCE_UPLOAD,
     pid: '',
@@ -62,10 +53,7 @@ const ResourceOverView: React.FC = () => {
   const updateTreeData = (list: any[], key: React.Key, children: any[]): any[] =>
     list.map((node) => {
       if (node.path === key) {
-        return {
-          ...node,
-          children
-        };
+        return { ...node, children };
       }
       if (node.children) {
         return {
@@ -80,12 +68,15 @@ const ResourceOverView: React.FC = () => {
     const data = await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {
       pid: pid
     });
-    setTreeData((origin) => updateTreeData(origin, path, data));
+    setResourceState((prevState) => ({
+      ...prevState,
+      treeData: updateTreeData(prevState.treeData, path, data)
+    }));
   };
 
   const refreshTree = async () => {
     await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, { pid: -1 }).then((res) =>
-      setTreeData(res)
+      setResourceState((prevState) => ({ ...prevState, treeData: res }))
     );
   };
 
@@ -101,9 +92,9 @@ const ResourceOverView: React.FC = () => {
     async (id: number) => {
       await queryDataByParams(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {
         id
-      }).then((res) => setContent(res));
+      }).then((res) => setResourceState((prevState) => ({ ...prevState, content: res })));
     },
-    [clickedNode]
+    [resourceState.clickedNode]
   );
 
   /**
@@ -116,20 +107,21 @@ const ResourceOverView: React.FC = () => {
       node: { id, isLeaf, key },
       node
     } = info;
-    setSelectedKeys([key] as any);
-    setClickedNode(node);
+    setResourceState((prevState) => ({ ...prevState, selectedKeys: [key], clickedNode: node }));
     if (isLeaf) {
       await queryContent(id);
     } else {
-      setContent('');
+      setResourceState((prevState) => ({ ...prevState, content: '' }));
     }
   };
   const getSelectedNode = () => {
-    const indexes = (rightClickedNode.pos.split('-') as string[]).map((x) => parseInt(x));
+    const indexes = (resourceState.rightClickedNode.pos.split('-') as string[]).map((x) =>
+      parseInt(x)
+    );
     if (indexes.length === 1) {
-      return treeData[indexes[0]];
+      return resourceState.treeData[indexes[0]];
     } else {
-      let temp = treeData[indexes[0]];
+      let temp = resourceState.treeData[indexes[0]];
       for (let i = 1; i < indexes.length - 1; i++) {
         temp = temp.children[indexes[i]];
       }
@@ -141,25 +133,30 @@ const ResourceOverView: React.FC = () => {
    * the node right click event OF upload,
    */
   const handleCreateFolder = () => {
-    if (rightClickedNode) {
+    if (resourceState.rightClickedNode) {
       setEditModal('createFolder');
-      const { id } = rightClickedNode;
-      setShowEditModal(true);
-      setFormValue({ id, fileName: '', description: '' });
-      setContextMenuVisible(false);
+      const { id } = resourceState.rightClickedNode;
+      setResourceState((prevState) => ({
+        ...prevState,
+        editOpen: true,
+        value: { id, fileName: '', description: '' },
+        contextMenuOpen: false
+      }));
     }
   };
   const handleUpload = () => {
-    if (rightClickedNode) {
-      uploadValue.pid = rightClickedNode.id;
+    if (resourceState.rightClickedNode) {
+      uploadValue.pid = resourceState.rightClickedNode.id;
       // todo: upload
-      setShowUpload(true);
+      setResourceState((prevState) => ({ ...prevState, uploadOpen: true }));
     }
   };
 
   const getSelectedParentNode = () => {
-    const indexes = (rightClickedNode.pos.split('-') as string[]).map((x) => parseInt(x));
-    let temp = treeData[indexes[0]];
+    const indexes = (resourceState.rightClickedNode.pos.split('-') as string[]).map((x) =>
+      parseInt(x)
+    );
+    let temp = resourceState.treeData[indexes[0]];
     for (let i = 1; i < indexes.length - 2; i++) {
       temp = temp.children[indexes[i]];
     }
@@ -170,9 +167,8 @@ const ResourceOverView: React.FC = () => {
    * the node right click event OF delete,
    */
   const handleDelete = async () => {
-    //todo delete
-    if (rightClickedNode) {
-      await handleRemoveById(API_CONSTANTS.RESOURCE_REMOVE, rightClickedNode.id);
+    if (resourceState.rightClickedNode) {
+      await handleRemoveById(API_CONSTANTS.RESOURCE_REMOVE, resourceState.rightClickedNode.id);
       // await refreshTree()
       const { node, index } = getSelectedParentNode();
       node.children.splice(index, 1);
@@ -183,16 +179,19 @@ const ResourceOverView: React.FC = () => {
    * the node right click event OF rename,
    */
   const handleRename = () => {
-    if (rightClickedNode) {
+    if (resourceState.rightClickedNode) {
       setEditModal('rename');
-      const { id, name, desc } = rightClickedNode;
-      setShowEditModal(true);
-      setFormValue({ id, fileName: name, description: desc });
-      setContextMenuVisible(false);
+      const { id, name, desc } = resourceState.rightClickedNode;
+      setResourceState((prevState) => ({
+        ...prevState,
+        editOpen: true,
+        value: { id, fileName: name, description: desc },
+        contextMenuOpen: false
+      }));
     }
   };
   const handleRefresh = async () => {
-    if (rightClickedNode) {
+    if (resourceState.rightClickedNode) {
       // const {id, name, desc, path} = rightClickedNode;
       //todo refresh
     }
@@ -227,24 +226,24 @@ const ResourceOverView: React.FC = () => {
   const handleRightClick = (info: any) => {
     // 获取右键点击的节点信息
     const { node, event } = info;
-    setSelectedKeys([node.key] as any);
-    setRightClickedNode(node);
-    setContextMenuVisible(true);
-    setContextMenuPosition({
-      position: 'fixed',
-      cursor: 'context-menu',
-      width: '10vw',
-      left: event.clientX + 20, // + 20 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
-      top: event.clientY + 20, // + 20 是为了让鼠标不至于在选中的节点上
-      zIndex: 888
-    });
+    setResourceState((prevState) => ({
+      ...prevState,
+      selectedKeys: [node.key],
+      rightClickedNode: node,
+      contextMenuOpen: true,
+      contextMenuPosition: {
+        ...prevState.contextMenuPosition,
+        left: event.clientX + 20,
+        top: event.clientY + 20
+      }
+    }));
   };
 
   /**
    * the rename cancel
    */
   const handleModalCancel = () => {
-    setShowEditModal(false);
+    setResourceState((prevState) => ({ ...prevState, editOpen: false }));
   };
 
   /**
@@ -262,7 +261,7 @@ const ResourceOverView: React.FC = () => {
       } else {
         getSelectedNode().children = [d];
       }
-      setShowEditModal(false);
+      setResourceState((prevState) => ({ ...prevState, editOpen: false }));
     } else if (editModal === 'rename') {
       await handleOption(API_CONSTANTS.RESOURCE_RENAME, '重命名', { ...value });
       getSelectedNode().fileName = value.fileName;
@@ -270,7 +269,7 @@ const ResourceOverView: React.FC = () => {
     }
   };
   const handleUploadCancel = () => {
-    setShowUpload(false);
+    setResourceState((prevState) => ({ ...prevState, uploadOpen: false }));
   };
 
   /**
@@ -278,7 +277,7 @@ const ResourceOverView: React.FC = () => {
    * @param value
    */
   const handleContentChange = (value: any) => {
-    setContent(value);
+    setResourceState((prevState) => ({ ...prevState, content: value }));
     // todo: save content
   };
 
@@ -306,15 +305,17 @@ const ResourceOverView: React.FC = () => {
           <ProCard ghost hoverable colSpan={'18%'} className={'siderTree schemaTree'}>
             <FileTree
               loadData={asyncLoadData}
-              selectedKeys={selectedKeys}
-              treeData={treeData}
+              selectedKeys={resourceState.selectedKeys}
+              treeData={resourceState.treeData}
               onRightClick={handleRightClick}
               onNodeClick={(info: any) => handleNodeClick(info)}
             />
             <RightContextMenu
-              contextMenuPosition={contextMenuPosition}
-              open={contextMenuVisible}
-              openChange={() => setContextMenuVisible(false)}
+              contextMenuPosition={resourceState.contextMenuPosition}
+              open={resourceState.contextMenuOpen}
+              openChange={() =>
+                setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }))
+              }
               items={RIGHT_CONTEXT_MENU()}
               onClick={handleMenuClick}
             />
@@ -322,22 +323,26 @@ const ResourceOverView: React.FC = () => {
         </Resizable>
         <ProCard.Divider type={'vertical'} />
         <ProCard ghost hoverable className={'schemaTree'}>
-          <FileShow onChange={handleContentChange} code={content} item={clickedNode} />
+          <FileShow
+            onChange={handleContentChange}
+            code={resourceState.content}
+            item={resourceState.clickedNode}
+          />
         </ProCard>
       </ProCard>
-      {showEditModal && (
+      {resourceState.editOpen && (
         <ResourceModal
           title={editModal}
-          formValues={formValue}
+          formValues={resourceState.value}
           onOk={handleModalSubmit}
           onClose={handleModalCancel}
-          visible={showEditModal}
+          visible={resourceState.editOpen}
         />
       )}
-      {showUpload && (
+      {resourceState.uploadOpen && (
         <ResourcesUploadModal
           onUpload={uploadValue}
-          visible={showUpload}
+          visible={resourceState.uploadOpen}
           onOk={handleUploadCancel}
           onClose={handleUploadCancel}
         />

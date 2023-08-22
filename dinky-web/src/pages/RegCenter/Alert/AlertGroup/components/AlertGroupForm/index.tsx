@@ -47,21 +47,20 @@ type AlertGroupFormProps = {
 
 const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
   /**
+   * extract props
+   */
+  const {
+    onSubmit: handleSubmit,
+    onCancel: handleModalVisible,
+    modalVisible,
+    instance,
+    values
+  } = props;
+  /**
    * state
    */
   const [form] = Form.useForm();
-  const [formVals, setFormVals] = useState<Partial<Alert.AlertGroup>>({
-    id: props.values.id,
-    name: props.values.name,
-    alertInstanceIds: props.values.alertInstanceIds,
-    note: props.values.note,
-    enabled: props.values.enabled ? props.values.enabled : true
-  });
-
-  /**
-   * extract props
-   */
-  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, instance } = props;
+  const [formVals, setFormVals] = useState<Partial<Alert.AlertGroup>>({ ...values });
 
   /**
    * build alert instance select options

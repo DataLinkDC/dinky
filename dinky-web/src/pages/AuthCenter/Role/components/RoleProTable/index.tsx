@@ -50,7 +50,7 @@ const RoleProTable: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
 
-  const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
+  const executeAndCallbackRefresh = async (callback: () => void) => {
     setRoleListState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     setRoleListState((prevState) => ({ ...prevState, loading: false }));
@@ -62,9 +62,7 @@ const RoleProTable: React.FC = () => {
    * @param id role id
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleRemoveById(API_CONSTANTS.ROLE_DELETE, id);
-    });
+    await executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.ROLE_DELETE, id));
   };
 
   /**
@@ -80,7 +78,7 @@ const RoleProTable: React.FC = () => {
           tenantId: getTenantByLocalStorage()
         },
         () => {},
-        () => setRoleListState((prevState) => ({ ...prevState, addedRoleOpen: false }))
+        () => setRoleListState((prevState) => ({ ...prevState, addedOpen: false }))
       );
     });
   };
@@ -91,8 +89,8 @@ const RoleProTable: React.FC = () => {
   const handleCancel = () => {
     setRoleListState((prevState) => ({
       ...prevState,
-      addedRoleOpen: false,
-      editRoleOpen: false,
+      addedOpen: false,
+      editOpen: false,
       assignMenuOpen: false,
       viewUsersOpen: false
     }));
@@ -117,7 +115,7 @@ const RoleProTable: React.FC = () => {
    * @param record
    */
   const handleEditVisible = (record: Partial<UserBaseInfo.Role>) => {
-    setRoleListState((prevState) => ({ ...prevState, value: record, editRoleOpen: true }));
+    setRoleListState((prevState) => ({ ...prevState, value: record, editOpen: true }));
   };
 
   /**
@@ -230,14 +228,14 @@ const RoleProTable: React.FC = () => {
       <RoleModalForm
         onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={roleListState.addedRoleOpen}
+        modalVisible={roleListState.addedOpen}
         values={{}}
       />
       {/* modify */}
       <RoleModalForm
         onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={roleListState.editRoleOpen}
+        modalVisible={roleListState.editOpen}
         values={roleListState.value}
       />
       {Object.keys(roleListState.value).length > 0 && (

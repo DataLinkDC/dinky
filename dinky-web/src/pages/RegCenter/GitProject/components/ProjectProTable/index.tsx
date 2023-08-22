@@ -48,7 +48,9 @@ import {
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
-import { GitProject } from '@/types/RegCenter/data';
+import { GitProject } from '@/types/RegCenter/data.d';
+import { InitGitProjectState } from '@/types/RegCenter/init.d';
+import { GitProjectState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { BranchesOutlined, BuildTwoTone } from '@ant-design/icons';
 import { ActionType, DragSortTable, ProColumns } from '@ant-design/pro-table';
@@ -56,14 +58,9 @@ import { Button, Empty, Popconfirm, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 
 const ProjectProTable: React.FC = () => {
+  const [gitProjectStatus, setGitProjectStatus] = useState<GitProjectState>(InitGitProjectState);
+
   const actionRef = useRef<ActionType>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [buildModalVisible, handleBuildVisible] = useState<boolean>(false);
-  const [logModalVisible, handleLogVisible] = useState<boolean>(false);
-  const [codeTreeModalVisible, handleCodeTreeVisible] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState<Partial<GitProject>>({});
 
   /**
    * execute and callback function
@@ -71,9 +68,9 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const executeAndCallback = async (callback: () => void) => {
-    setLoading(true);
+    setGitProjectStatus((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setLoading(false);
+    setGitProjectStatus((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload();
   };
 
@@ -83,11 +80,8 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleChangeEnable = async (value: Partial<GitProject>) => {
-    await executeAndCallback(
-      async () =>
-        await updateDataByParam(API_CONSTANTS.GIT_PROJECT_ENABLE, {
-          id: value.id
-        })
+    await executeAndCallback(async () =>
+      updateDataByParam(API_CONSTANTS.GIT_PROJECT_ENABLE, { id: value.id })
     );
   };
 
@@ -97,8 +91,7 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleShowLog = async (value: Partial<GitProject>) => {
-    setFormValues(value);
-    handleLogVisible(true);
+    setGitProjectStatus((prevState) => ({ ...prevState, value: value, logOpen: true }));
   };
 
   /**
@@ -107,8 +100,7 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleShowCodeTree = async (value: Partial<GitProject>) => {
-    setFormValues(value);
-    handleCodeTreeVisible(true);
+    setGitProjectStatus((prevState) => ({ ...prevState, value: value, codeTreeOpen: true }));
   };
 
   /**
@@ -125,10 +117,8 @@ const ProjectProTable: React.FC = () => {
           id: value.id
         }
       );
-      if (result) {
-        setFormValues(value);
-        handleBuildVisible(true);
-      }
+      if (result)
+        setGitProjectStatus((prevState) => ({ ...prevState, value: value, buildOpen: true }));
     });
   };
 
@@ -138,8 +128,7 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleEdit = async (value: Partial<GitProject>) => {
-    setFormValues(value);
-    handleUpdateModalVisible(true);
+    setGitProjectStatus((prevState) => ({ ...prevState, value: value, editOpen: true }));
   };
 
   /**
@@ -152,11 +141,10 @@ const ProjectProTable: React.FC = () => {
       ...item,
       orderLine: index + 1
     }));
-    await executeAndCallback(
-      async () =>
-        await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_PROJECT, l('rc.gp.ucl.projectOrder'), {
-          sortList: updatedItems
-        })
+    await executeAndCallback(async () =>
+      handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_PROJECT, l('rc.gp.ucl.projectOrder'), {
+        sortList: updatedItems
+      })
     );
   };
 
@@ -322,12 +310,7 @@ const ProjectProTable: React.FC = () => {
    * cancel all status
    */
   const handleCancel = () => {
-    setFormValues({});
-    handleModalVisible(false);
-    handleUpdateModalVisible(false);
-    handleBuildVisible(false);
-    handleLogVisible(false);
-    handleCodeTreeVisible(false);
+    setGitProjectStatus(InitGitProjectState);
     actionRef.current?.reload();
   };
 
@@ -363,11 +346,14 @@ const ProjectProTable: React.FC = () => {
         {...PROTABLE_OPTIONS_PUBLIC}
         headerTitle={l('rc.gp.management')}
         columns={columns}
-        loading={loading}
+        loading={gitProjectStatus.loading}
         actionRef={actionRef}
         dragSortKey={'id'}
         toolBarRender={() => [
-          <CreateBtn key={'gittable'} onClick={() => handleModalVisible(true)} />
+          <CreateBtn
+            key={'gittable'}
+            onClick={() => setGitProjectStatus((prevState) => ({ ...prevState, addedOpen: true }))}
+          />
         ]}
         expandable={{
           expandRowByClick: false,
@@ -382,27 +368,39 @@ const ProjectProTable: React.FC = () => {
       <ProjectModal
         onCancel={handleCancel}
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
-        modalVisible={modalVisible}
+        modalVisible={gitProjectStatus.addedOpen}
         values={{}}
       />
       {/* modify modal form */}
       <ProjectModal
         onCancel={handleCancel}
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
-        modalVisible={updateModalVisible}
-        values={formValues}
+        modalVisible={gitProjectStatus.editOpen}
+        values={gitProjectStatus.value}
       />
       {/* build steps modal */}
-      {buildModalVisible && (
-        <BuildSteps title={l('rc.gp.build')} onCancel={handleCancel} values={formValues as any} />
+      {gitProjectStatus.buildOpen && (
+        <BuildSteps
+          title={l('rc.gp.build')}
+          onCancel={handleCancel}
+          values={gitProjectStatus.value}
+        />
       )}
       {/* show build log modal */}
       {/*{logModalVisible &&  <ShowLog modalVisible={logModalVisible} onCancel={handleCancel} values={formValues}/>}*/}
-      {logModalVisible && (
-        <BuildSteps title={l('rc.gp.log')} onCancel={handleCancel} values={formValues as any} />
+      {gitProjectStatus.logOpen && (
+        <BuildSteps
+          title={l('rc.gp.log')}
+          onCancel={handleCancel}
+          values={gitProjectStatus.value}
+        />
       )}
       {/* show code tree modal */}
-      <CodeTree modalVisible={codeTreeModalVisible} onCancel={handleCancel} values={formValues} />
+      <CodeTree
+        modalVisible={gitProjectStatus.codeTreeOpen}
+        onCancel={handleCancel}
+        values={gitProjectStatus.value}
+      />
     </>
   );
 };

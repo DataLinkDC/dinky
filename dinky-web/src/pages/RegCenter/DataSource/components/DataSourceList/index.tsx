@@ -79,7 +79,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * extra callback
    * @param callback
    */
-  const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
+  const executeAndCallbackRefresh = async (callback: () => void) => {
     setLoading(true);
     await callback();
     await queryDataSourceList();
@@ -91,9 +91,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * @param item
    */
   const saveOrUpdateHandle = async (item: Partial<DataSources.DataSource>) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(API_CONSTANTS.DATASOURCE, item);
-    });
+    await executeAndCallbackRefresh(async () => handleAddOrUpdate(API_CONSTANTS.DATASOURCE, item));
   };
 
   /**
@@ -106,11 +104,8 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
       content: l('rc.ds.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
-      onOk: async () => {
-        await executeAndCallbackRefresh(async () => {
-          await handleRemoveById(API_CONSTANTS.DATASOURCE_DELETE, id);
-        });
-      }
+      onOk: async () =>
+        executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.DATASOURCE_DELETE, id))
     });
   };
 
@@ -119,9 +114,9 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * @param item
    */
   const handleEnable = async (item: DataSources.DataSource) => {
-    await executeAndCallbackRefresh(async () => {
-      await updateDataByParam(API_CONSTANTS.DATASOURCE_ENABLE, { id: item.id });
-    });
+    await executeAndCallbackRefresh(async () =>
+      updateDataByParam(API_CONSTANTS.DATASOURCE_ENABLE, { id: item.id })
+    );
   };
 
   /**
@@ -137,21 +132,17 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * @param item
    */
   const handleCheckHeartBeat = async (item: DataSources.DataSource) => {
-    await executeAndCallbackRefresh(async () => {
-      await handlePutDataByParams(
-        API_CONSTANTS.DATASOURCE_CHECK_HEARTBEAT_BY_ID,
-        l('button.heartbeat'),
-        {
-          id: item.id
-        }
-      );
-    });
+    await executeAndCallbackRefresh(async () =>
+      handlePutDataByParams(API_CONSTANTS.DATASOURCE_CHECK_HEARTBEAT_BY_ID, l('button.heartbeat'), {
+        id: item.id
+      })
+    );
   };
 
   const onCopyDataBase = async (item: DataSources.DataSource) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleOption(API_CONSTANTS.DATASOURCE_COPY, l('button.copy'), item);
-    });
+    await executeAndCallbackRefresh(async () =>
+      handleOption(API_CONSTANTS.DATASOURCE_COPY, l('button.copy'), item)
+    );
   };
 
   /**

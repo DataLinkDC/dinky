@@ -39,7 +39,7 @@ const PermissionsProTable: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
 
-  const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
+  const executeAndCallbackRefresh = async (callback: () => void) => {
     setRowPermissions((prevState) => ({ ...prevState, loading: true }));
     await callback();
     setRowPermissions((prevState) => ({ ...prevState, loading: false }));
@@ -51,9 +51,9 @@ const PermissionsProTable: React.FC = () => {
    * @param id role id
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleRemoveById(API_CONSTANTS.ROW_PERMISSIONS_DELETE, id);
-    });
+    await executeAndCallbackRefresh(async () =>
+      handleRemoveById(API_CONSTANTS.ROW_PERMISSIONS_DELETE, id)
+    );
   };
 
   /**
@@ -61,17 +61,17 @@ const PermissionsProTable: React.FC = () => {
    * @param value
    */
   const handleAddOrUpdateSubmit = async (value: any) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(
+    await executeAndCallbackRefresh(async () =>
+      handleAddOrUpdate(
         API_CONSTANTS.ROW_PERMISSIONS,
         {
           ...value,
           tenantId: getTenantByLocalStorage()
         },
         () => {},
-        () => setRowPermissions((prevState) => ({ ...prevState, addedRowPermissionsOpen: false }))
-      );
-    });
+        () => setRowPermissions((prevState) => ({ ...prevState, addedOpen: false }))
+      )
+    );
   };
 
   /**
@@ -82,7 +82,7 @@ const PermissionsProTable: React.FC = () => {
     setRowPermissions((prevState) => ({
       ...prevState,
       value: record,
-      editRowPermissionsOpen: false
+      editOpen: false
     }));
   };
 
@@ -92,8 +92,8 @@ const PermissionsProTable: React.FC = () => {
   const handleCancel = () => {
     setRowPermissions((prevState) => ({
       ...prevState,
-      addedRowPermissionsOpen: false,
-      editRowPermissionsOpen: false
+      addedOpen: false,
+      editOpen: false
     }));
   };
 
@@ -165,9 +165,7 @@ const PermissionsProTable: React.FC = () => {
         toolBarRender={() => [
           <CreateBtn
             key='createBtn'
-            onClick={() =>
-              setRowPermissions((prevState) => ({ ...prevState, addedRowPermissionsOpen: true }))
-            }
+            onClick={() => setRowPermissions((prevState) => ({ ...prevState, addedOpen: true }))}
           />
         ]}
         request={(params: any, sorter: any, filter: any) =>
@@ -184,7 +182,7 @@ const PermissionsProTable: React.FC = () => {
       <PermissionsModal
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={rowPermissions.addedRowPermissionsOpen}
+        modalVisible={rowPermissions.addedOpen}
         values={{}}
       />
 
@@ -192,7 +190,7 @@ const PermissionsProTable: React.FC = () => {
       <PermissionsModal
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={rowPermissions.editRowPermissionsOpen}
+        modalVisible={rowPermissions.editOpen}
         values={rowPermissions.value}
       />
     </>

@@ -37,3 +37,9 @@ export const InitContextMenuPosition: ContextMenuPosition = {
   width: '12vw',
   zIndex: 1000
 };
+
+export interface BaseState {
+  addedOpen: boolean;
+  editOpen: boolean;
+  loading: boolean;
+}

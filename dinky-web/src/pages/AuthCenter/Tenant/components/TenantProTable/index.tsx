@@ -52,7 +52,7 @@ const TenantProTable: React.FC = () => {
     );
   };
 
-  const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
+  const executeAndCallbackRefresh = async (callback: () => void) => {
     setTenantState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     setTenantState((prevState) => ({ ...prevState, loading: false }));
@@ -64,14 +64,14 @@ const TenantProTable: React.FC = () => {
    * @param value
    */
   const handleAddOrUpdateSubmit = async (value: Partial<UserBaseInfo.Tenant>) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(
+    await executeAndCallbackRefresh(async () =>
+      handleAddOrUpdate(
         API_CONSTANTS.TENANT,
         value,
         () => {},
-        () => setTenantState((prevState) => ({ ...prevState, addedTenantOpen: false }))
-      );
-    });
+        () => setTenantState((prevState) => ({ ...prevState, addedOpen: false }))
+      )
+    );
   };
 
   /**
@@ -79,28 +79,26 @@ const TenantProTable: React.FC = () => {
    * @param id tenant id
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleRemoveById(API_CONSTANTS.TENANT_DELETE, id);
-    });
+    await executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.TENANT_DELETE, id));
   };
 
   /**
    * assign user to tenant
    */
   const handleAssignUserSubmit = async () => {
-    await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(API_CONSTANTS.ASSIGN_USER_TO_TENANT, {
+    await executeAndCallbackRefresh(async () =>
+      handleAddOrUpdate(API_CONSTANTS.ASSIGN_USER_TO_TENANT, {
         tenantId: tenantState.value.id,
         userIds: tenantState.tenantUserIds
-      });
-      setTenantState((prevState) => ({ ...prevState, assignUserOpen: false }));
-    });
+      })
+    );
+    setTenantState((prevState) => ({ ...prevState, assignUserOpen: false }));
   };
   const handleCancel = () => {
     setTenantState((prevState) => ({
       ...prevState,
-      addedTenantOpen: false,
-      editTenantOpen: false,
+      addedOpen: false,
+      editOpen: false,
       assignUserOpen: false
     }));
   };
@@ -114,7 +112,7 @@ const TenantProTable: React.FC = () => {
    * @param record
    */
   const handleEditVisible = (record: Partial<UserBaseInfo.Tenant>) => {
-    setTenantState((prevState) => ({ ...prevState, editTenantOpen: true, value: record }));
+    setTenantState((prevState) => ({ ...prevState, editOpen: true, value: record }));
   };
   /**
    * assign user visible change
@@ -208,7 +206,7 @@ const TenantProTable: React.FC = () => {
         toolBarRender={() => [
           <CreateBtn
             key={'tenantTable'}
-            onClick={() => setTenantState((prevState) => ({ ...prevState, addedTenantOpen: true }))}
+            onClick={() => setTenantState((prevState) => ({ ...prevState, addedOpen: true }))}
           />
         ]}
         request={(params, sorter, filter: any) =>
@@ -222,7 +220,7 @@ const TenantProTable: React.FC = () => {
         key={'tenantFormAdd'}
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={tenantState.addedTenantOpen}
+        modalVisible={tenantState.addedOpen}
         values={{}}
       />
 
@@ -231,7 +229,7 @@ const TenantProTable: React.FC = () => {
         key={'tenantFormUpdate'}
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={tenantState.editTenantOpen}
+        modalVisible={tenantState.editOpen}
         values={tenantState.value}
       />
       {/* assign user to tenant */}

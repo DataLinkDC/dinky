@@ -26,7 +26,7 @@ import { Editor, OnChange } from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 import { useState } from 'react';
 
-type CodeEditFormProps = {
+export type CodeEditFormProps = {
   height?: string;
   width?: string;
   language?: string;
