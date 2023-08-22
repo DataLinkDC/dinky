@@ -16,11 +16,9 @@
  *
  */
 
-// ================================ About Modal Compents ================================
-
 import ErrorShowModal from '@/components/Modal/ErrorModalShow';
-import { l } from '@/utils/intl';
-import { createRoot } from 'react-dom/client';
+import {l} from '@/utils/intl';
+import {createRoot} from 'react-dom/client';
 
 /**
  * A function that displays a modal containing an error message in code editor.
@@ -28,7 +26,7 @@ import { createRoot } from 'react-dom/client';
  * @param title The title of the modal.
  * @param content The content to display in the modal.
  */
-export const ErrorModelWithCode = (title: any = l('global.error'), content: string) => {
+export const ErrorModelWithCode = (title: string = l('global.error'), content: string = '') => {
   /** Create a new div element to mount the modal. */
   const modalRoot = document.createElement('div');
 
@@ -45,27 +43,16 @@ export const ErrorModelWithCode = (title: any = l('global.error'), content: stri
   );
 };
 
-// @ts-ignore
-export const createModelTypes = <T extends any>(
+interface BaseModeType {['reducers']: {}, ['effects']: {}, ['namespace']: string}
+
+function getModelTypes<T extends BaseModeType>(target: T, type: 'effects' | 'reducers') {
+  const reducers = Object.keys(target[type]).map((obj: string) => [obj, `${target.namespace}/${obj}`]);
+  // @ts-ignore
+  return Object.fromEntries(new Map<keyof typeof target[type], string>(reducers));
+}
+
+export const createModelTypes = <T extends BaseModeType>(
   target: T
-): [{ [K in keyof T['reducers']]: string }, { [K in keyof T['effects']]: string }] => {
-  type TargetType = typeof target;
-
-  // @ts-ignore
-  const MODEL_SYNC: { [K in keyof TargetType['reducers']]: string } = Object.fromEntries(
-    // @ts-ignore
-    new Map<keyof TargetType['reducers'], string>(
-      Object.keys(target['reducers']).map((obj: string) => [obj, `${target.namespace}/${obj}`])
-    )
-  );
-
-  // @ts-ignore
-  const MODEL_ASYNC: { [K in keyof TargetType['effects']]: string } = Object.fromEntries(
-    // @ts-ignore
-    new Map<keyof TargetType['effects'], string>(
-      Object.keys(target['effects']).map((obj: string) => [obj, `${target.namespace}/${obj}`])
-    )
-  );
-
-  return [MODEL_SYNC, MODEL_ASYNC];
+): [{ [K in keyof BaseModeType['reducers']]: string }, { [K in keyof BaseModeType['effects']]: string }] => {
+  return [ getModelTypes(target, 'reducers'), getModelTypes(target, 'effects')];
 };
