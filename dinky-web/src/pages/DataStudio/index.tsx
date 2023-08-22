@@ -19,19 +19,17 @@ import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import { getConsoleData } from '@/pages/DataStudio/BottomContainer/Console/service';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import { getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
+import {
+  getCurrentTab,
+  isDataStudioTabsItemType,
+  mapDispatchToProps
+} from '@/pages/DataStudio/function';
 import HeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataBase } from '@/pages/DataStudio/LeftContainer/MetaData/service';
 import { getTaskData, getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import {
-  DataStudioParams,
-  StateType,
-  TabsItemType,
-  TabsPageType,
-  VIEW
-} from '@/pages/DataStudio/model';
+import { StateType, TabsItemType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
   getClusterConfigurationData,
@@ -159,26 +157,23 @@ const DataStudio = (props: any) => {
     }
 
     const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
-    if (currentTab?.type !== 'project') {
+    if (!isDataStudioTabsItemType(currentTab)) {
       return;
     }
 
-    const params = currentTab.params as DataStudioParams;
-    getTaskDetails(params.taskId).then((res) => {
-      const changed = Object.keys(res).some((key) => {
-        return (
-          res[key] !== params.taskData[key] &&
-          (res[key] instanceof Object
-            ? JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])
-            : true)
-        );
-      });
+    const params = currentTab.params;
+    const res = await getTaskDetails(params.taskId);
 
-      if (changed) {
-        setIsModalUpdateTabContentOpen(true);
-        setNewTabData(res);
-      }
-    });
+    const changed = Object.keys(res).some(
+      (key) =>
+        res[key] !== params.taskData[key] ||
+        JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])
+    );
+
+    if (changed) {
+      setIsModalUpdateTabContentOpen(true);
+      setNewTabData(res);
+    }
   };
 
   useEffect(() => {
@@ -188,7 +183,6 @@ const DataStudio = (props: any) => {
 
   /**
    * 渲染头部
-   * @returns {JSX.Element}
    */
   const renderHeaderContainer = () => (
     <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
@@ -196,18 +190,21 @@ const DataStudio = (props: any) => {
 
   /**
    * 渲染左侧侧边栏
-   * @returns {JSX.Element}
    */
   const renderLeftContainer = () => <LeftContainer size={size} />;
 
   /**
    * 渲染右侧侧边栏
-   * @returns {JSX.Element}
    */
   const renderRightContainer = () => <RightContainer size={size} bottomHeight={bottomHeight} />;
 
   const updateTabContent = () => {
-    (getCurrentTab(tabs.panes, tabs.activeKey)?.params as DataStudioParams).taskData = newTabData;
+    const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
+    if (!isDataStudioTabsItemType(currentTab)) {
+      return;
+    }
+
+    currentTab.params.taskData = newTabData;
     saveTabs({ ...tabs });
     setIsModalUpdateTabContentOpen(false);
   };

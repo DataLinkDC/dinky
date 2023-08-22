@@ -17,7 +17,12 @@
  *
  */
 import { FlexCenterDiv } from '@/components/StyledComponents';
-import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
+import {
+  getCurrentData,
+  getCurrentTab,
+  isDataStudioTabsItemType,
+  mapDispatchToProps
+} from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
 import { buildGraphData } from '@/pages/DataStudio/HeaderContainer/FlinkGraph/function';
@@ -32,7 +37,7 @@ import {
   isSql,
   offLineTask
 } from '@/pages/DataStudio/HeaderContainer/service';
-import { DataStudioParams, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import { DataStudioTabsItemType, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { l } from '@/utils/intl';
 import { ErrorNotification } from '@/utils/messages';
@@ -82,6 +87,8 @@ const HeaderContainer = (props: any) => {
   const [messageApi, messageContextHolder] = message.useMessage();
   const handlerStop = () => {
     const current = getCurrentData(panes, activeKey);
+    if (!current) return;
+
     modal.confirm({
       title: l('pages.datastudio.editor.stop.job'),
       content: l('pages.datastudio.editor.stop.jobConfirm', '', {
@@ -92,17 +99,24 @@ const HeaderContainer = (props: any) => {
       onOk: async () => {
         offLineTask(l('pages.datastudio.editor.stop.job'), current.id, 'canceljob').then(
           (result) => {
-            (
-              getCurrentTab(panes, activeKey)?.params as DataStudioParams
-            ).taskData.jobInstanceId = 0;
+            const currentTab = getCurrentTab(panes, activeKey);
+            if (isDataStudioTabsItemType(currentTab)) {
+              currentTab.params.taskData.jobInstanceId = 0;
+            }
+
             saveTabs({ ...props.tabs });
           }
         );
       }
     });
   };
+
   const handlerExec = () => {
     const current = getCurrentData(panes, activeKey);
+    if (!current) {
+      return;
+    }
+
     if (!isSql(current.dialect) && !isOnline(current.type)) {
       messageApi.warning(l('pages.datastudio.editor.execute.warn', '', { type: current.type }));
       return;
@@ -113,7 +127,6 @@ const HeaderContainer = (props: any) => {
       jobName: current.name,
       taskId: current.id
     };
-    const key = current.key;
     const taskKey = Math.random() * 1000 + '';
 
     notificationApi.success({
@@ -140,8 +153,10 @@ const HeaderContainer = (props: any) => {
         });
         if (res.datas.success) {
           messageApi.success(l('pages.datastudio.editor.exec.success'));
-          (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId =
-            res.datas.jobInstanceId;
+          const currentTab = getCurrentTab(panes, activeKey);
+          if (isDataStudioTabsItemType(currentTab)) {
+            currentTab.params.taskData.jobInstanceId = res.datas.jobInstanceId;
+          }
           saveTabs({ ...props.tabs });
         } else {
           ErrorNotification(
@@ -279,7 +294,6 @@ const HeaderContainer = (props: any) => {
 
   /**
    * @description: 生成面包屑
-   * @type {({title: JSX.Element} | {title: string})[]}
    */
   const renderBreadcrumbItems = () => {
     if (!activeBreadcrumbTitle) {
@@ -301,19 +315,18 @@ const HeaderContainer = (props: any) => {
   };
   const renderHotkey = () => {
     document.onkeydown = (e) => {
-      routes.forEach((r) => {
-        if (r.hotKey && r.hotKey(e)) {
+      routes
+        .filter((r) => r.hotKey?.(e))
+        .forEach((r) => {
           r.click();
           e.preventDefault();
-        }
-      });
+        });
     };
   };
   renderHotkey();
 
   /**
    * @description: 渲染右侧按钮
-   * @returns {JSX.Element}
    */
   const renderRightButtons = () => {
     return (
@@ -327,7 +340,7 @@ const HeaderContainer = (props: any) => {
                   return x.isShow(
                     currentTab?.type,
                     currentTab?.subType,
-                    (currentTab?.params as DataStudioParams).taskData
+                    (currentTab as DataStudioTabsItemType)?.params.taskData
                   );
                 }
               }

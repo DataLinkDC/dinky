@@ -18,18 +18,12 @@
 import ContentScroll from '@/components/Scroll/ContentScroll';
 import useThemeValue from '@/hooks/useThemeValue';
 import { STUDIO_TAG_RIGHT_CONTEXT_MENU } from '@/pages/DataStudio/constants';
+import { isDataStudioTabsItemType, isMetadataTabsItemType } from '@/pages/DataStudio/function';
 import Editor from '@/pages/DataStudio/MiddleContainer/Editor';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
-import {
-  DataStudioParams,
-  MetadataParams,
-  StateType,
-  STUDIO_MODEL,
-  TabsItemType,
-  TabsPageType
-} from '@/pages/DataStudio/model';
+import { StateType, STUDIO_MODEL, TabsItemType, TabsPageType } from '@/pages/DataStudio/model';
 import { RightSide } from '@/pages/DataStudio/route';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
 import { connect } from '@@/exports';
@@ -207,19 +201,21 @@ const MiddleContainer = (props: any) => {
    */
   const tabItems = panes.map((item: TabsItemType) => {
     const renderContent = () => {
-      switch (item.type) {
-        case TabsPageType.metadata:
-          const params = item.params as MetadataParams;
-          return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams} />;
-        case TabsPageType.project:
-          if (parseInt(activeKey) < 0) {
-            return TabsPageType.None;
-          }
-          const v = item.params as DataStudioParams;
-          return <Editor statement={v.taskData.statement} />;
-        default:
-          return <></>;
+      if (isDataStudioTabsItemType(item)) {
+        if (parseInt(activeKey) < 0) {
+          return TabsPageType.None;
+        }
+
+        const v = item.params;
+        return <Editor statement={v.taskData.statement} />;
       }
+
+      if (isMetadataTabsItemType(item)) {
+        const params = item.params;
+        return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams} />;
+      }
+
+      return <></>;
     };
 
     return {
