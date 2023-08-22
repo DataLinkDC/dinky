@@ -32,7 +32,7 @@ import {
   isSql,
   offLineTask
 } from '@/pages/DataStudio/HeaderContainer/service';
-import { DataStudioParams, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import {DataStudioParams, DataStudioTabsItemType, StateType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { l } from '@/utils/intl';
 import { ErrorNotification } from '@/utils/messages';
@@ -82,6 +82,10 @@ const HeaderContainer = (props: any) => {
   const [messageApi, messageContextHolder] = message.useMessage();
   const handlerStop = () => {
     const current = getCurrentData(panes, activeKey);
+    if (!current) {
+        return;
+    }
+    
     modal.confirm({
       title: l('pages.datastudio.editor.stop.job'),
       content: l('pages.datastudio.editor.stop.jobConfirm', '', {
@@ -121,7 +125,7 @@ const HeaderContainer = (props: any) => {
     const taskKey = Math.random() * 1000 + '';
 
     notificationApi.success({
-      message: l('pages.datastudio.editor.submiting', '', {
+      message: l('pages.datastudio.editor.submitting', '', {
         jobName: param.name
       }),
       description: param.statement.substring(0, 40) + '...',
@@ -130,7 +134,7 @@ const HeaderContainer = (props: any) => {
       icon: <SmileOutlined style={{ color: '#108ee9' }} />
     });
 
-    executeSql(l('pages.datastudio.editor.submiting', '', { jobName: param.name }), param).then(
+    executeSql(l('pages.datastudio.editor.submitting', '', { jobName: param.name }), param).then(
       (res) => {
         notificationApi.destroy(taskKey);
         if (!res) {

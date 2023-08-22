@@ -1039,11 +1039,11 @@ export default {
 
   'pages.datastudio.editor.execute.warn':
     'The execution mode of this task is [{type}], which does not support SQL query, please save it manually and use the button on the right - job submission',
-  'pages.datastudio.editor.submiting': 'The new task [{jobName}] is executing',
+  'pages.datastudio.editor.submitting': 'The new task [{jobName}] is executing',
   'pages.datastudio.editor.exec.success': 'Execution succeeded',
   'pages.datastudio.editor.exec.error': 'Task [jobName}] execution failed',
   'pages.datastudio.editor.async.submit': 'Submit jobs asynchronously',
-  'pages.datastudio.editor.async.submiting': 'The task [{jobName}] is submitting asynchronously',
+  'pages.datastudio.editor.async.submitting': 'The task [{jobName}] is submitting asynchronously',
   'pages.datastudio.editor.async.submitConfirm':
     'Are you sure to asynchronously submit the job [{jobName}] to its configured cluster? Please make sure your work has been saved! ',
   'pages.datastudio.editor.async.success': 'Asynchronous submission succeeded',
