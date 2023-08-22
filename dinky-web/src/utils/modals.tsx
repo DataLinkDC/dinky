@@ -19,6 +19,7 @@
 import ErrorShowModal from '@/components/Modal/ErrorModalShow';
 import {l} from '@/utils/intl';
 import {createRoot} from 'react-dom/client';
+import React from "react";
 
 /**
  * A function that displays a modal containing an error message in code editor.
@@ -26,7 +27,7 @@ import {createRoot} from 'react-dom/client';
  * @param title The title of the modal.
  * @param content The content to display in the modal.
  */
-export const ErrorModelWithCode = (title: string = l('global.error'), content: string = '') => {
+export const ErrorModelWithCode = (title: string |  React.JSX.Element = l('global.error'), content: string = '') => {
   /** Create a new div element to mount the modal. */
   const modalRoot = document.createElement('div');
 
