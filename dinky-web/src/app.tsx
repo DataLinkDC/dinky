@@ -190,7 +190,7 @@ export const dva = {
 const patch = (oldRoutes: any, routes: SysMenu[]) => {
   oldRoutes[1].routes = oldRoutes[1].routes.map(
     (route: { routes: { path: any; element: JSX.Element }[]; path: string }) => {
-      if (route.routes && route.routes.length) {
+      if (route.routes?.length) {
         const redirect = routes.filter((r) => r.path.startsWith(route.path));
         if (redirect.length) {
           route.routes.shift();
