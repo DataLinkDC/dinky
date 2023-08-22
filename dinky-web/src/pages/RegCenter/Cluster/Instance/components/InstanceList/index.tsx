@@ -34,9 +34,9 @@ import {
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { YES_OR_NO_ENUM } from '@/types/Public/constants';
-import { Cluster } from '@/types/RegCenter/data';
-import { InitClusterInstanceState } from '@/types/RegCenter/init';
-import { ClusterInstanceState } from '@/types/RegCenter/state';
+import { Cluster } from '@/types/RegCenter/data.d';
+import { InitClusterInstanceState } from '@/types/RegCenter/init.d';
+import { ClusterInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { ClearOutlined, HeartTwoTone } from '@ant-design/icons';
 import { ActionType, ProTable } from '@ant-design/pro-components';

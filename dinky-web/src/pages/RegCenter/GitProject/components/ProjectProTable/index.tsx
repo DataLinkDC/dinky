@@ -48,9 +48,9 @@ import {
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
-import { GitProject } from '@/types/RegCenter/data';
-import { InitGitProjectState } from '@/types/RegCenter/init';
-import { GitProjectState } from '@/types/RegCenter/state';
+import { GitProject } from '@/types/RegCenter/data.d';
+import { InitGitProjectState } from '@/types/RegCenter/init.d';
+import { GitProjectState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { BranchesOutlined, BuildTwoTone } from '@ant-design/icons';
 import { ActionType, DragSortTable, ProColumns } from '@ant-design/pro-table';
