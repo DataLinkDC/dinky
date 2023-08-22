@@ -360,9 +360,6 @@ const Model: ModelType = {
   reducers: {
     /**
      * 更新工具栏高度
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: any, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     updateToolContentHeight(state, { payload }) {
       return {
@@ -372,9 +369,6 @@ const Model: ModelType = {
     },
     /**
      * 更新中间内容高度
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: any, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     updateCenterContentHeight(state, { payload }) {
       return {
@@ -384,9 +378,6 @@ const Model: ModelType = {
     },
     /**
      * 更新左侧选中key
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: {selectKey: any, width: number | string, height: number | string, maxWidth?: number | string}, bottomContainer: Container}}
      */
     updateSelectLeftKey(state, { payload }) {
       return {
@@ -400,9 +391,6 @@ const Model: ModelType = {
     },
     /**
      * 更新左侧宽度
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: {selectKey: string, width: any, height: number | string, maxWidth?: number | string}, bottomContainer: Container}}
      */
     updateLeftWidth(state, { payload }) {
       return {
@@ -415,9 +403,6 @@ const Model: ModelType = {
     },
     /**
      * 更新右侧选中key
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: {selectKey: any, width: number | string, height: number | string, maxWidth?: number | string}, leftContainer: Container, bottomContainer: Container}}
      */
     updateSelectRightKey(state, { payload }) {
       return {
@@ -430,9 +415,6 @@ const Model: ModelType = {
     },
     /**
      * 更新右侧选中key
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: {selectKey: string, width: any, height: number | string, maxWidth?: number | string}, leftContainer: Container, bottomContainer: Container}}
      */
     updateRightWidth(state, { payload }) {
       return {
@@ -445,9 +427,6 @@ const Model: ModelType = {
     },
     /**
      * 更新底部选中key
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: {selectKey: any, width: number | string, height: number | string, maxWidth?: number | string}}}
      */
     updateSelectBottomKey(state, { payload }) {
       let centerContentHeight = 0;
@@ -492,9 +471,6 @@ const Model: ModelType = {
     },
     /**
      * 更新底部高度
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: {selectKey: string, width: number | string, height: any, maxWidth?: number | string}}}
      */
     updateBottomHeight(state, { payload }) {
       return {
@@ -507,9 +483,6 @@ const Model: ModelType = {
     },
     /**
      * 更新数据库列表
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     saveDataBase(state, { payload }) {
       return {
@@ -525,9 +498,6 @@ const Model: ModelType = {
     },
     /**
      * 更新tabs activeKey
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSourceDataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: any}, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     updateTabsActiveKey(state, { payload }) {
       const itemTypes = state.tabs.panes.filter((x) => x.key === payload);
@@ -563,9 +533,6 @@ const Model: ModelType = {
     },
     /**
      * 移除标签
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, tabs: {panes: TabsItemType[], activeBreadcrumbTitle: string, activeKey: string}, project: {data: any[], expandKeys: [], selectKey: []}, leftContainer: Container, env: EnvType[], footContainer: {codeType: string, jobRunningMsg: JobRunningMsgType, codeEncoding: string, memDetails: string, lineSeparator: string, space: number, codePosition: [number, number]}, clusterConfiguration: Cluster.Config[], toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectDatabaseId: number | null, expandKeys: [], selectKey: []}, sessionCluster: Cluster.Instance[], isFullScreen: boolean, rightContainer: Container, bottomContainerContent: BottomContainerContent, bottomContainer: Container}}
      */
     removeTag(state, { payload }) {
       const needRemoveKey = payload;
@@ -597,9 +564,6 @@ const Model: ModelType = {
 
     /**
      *  关闭tab
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: number}, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     closeTab(state, { payload }) {
       const needCloseKey = (payload as TargetKey).toString();
@@ -651,9 +615,6 @@ const Model: ModelType = {
     },
     /**
      * 添加tab 如果存在则不添加
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: number}, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     addTab(state, { payload }) {
       const node = payload as TabsItemType;
@@ -708,9 +669,6 @@ const Model: ModelType = {
     },
     /**
      * 关闭其他tab
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectDatabaseId: number | null, expandKeys: [], selectKey: []}, tabs: {panes: TabsItemType[], activeBreadcrumbTitle: string, activeKey: any}, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     closeOtherTabs(state, { payload }) {
       // 从 pans 中找到需要关闭的 tab
@@ -727,9 +685,6 @@ const Model: ModelType = {
 
     /**
      * 更新选中数据库id
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], selectDatabaseId: any, tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     updateSelectDatabaseId(state, { payload }) {
       return {
@@ -752,9 +707,6 @@ const Model: ModelType = {
     },
     /**
      * 更新数据库选中key
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectKey: [], selectKeys: any, selectDatabaseId: number | null, expandKeys: []}, tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     updateDatabaseSelectKey(state, { payload }) {
       return {

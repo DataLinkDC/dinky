@@ -152,4 +152,5 @@ export const getFooterValue = (panes: any, activeKey: string) => {
             codeType: currentTab.params.taskData.dialect
         };
     }
+    return {};
 };
