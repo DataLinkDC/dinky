@@ -58,7 +58,7 @@ jobs:
         run: cd dinky-web && npm install --prefer-offline --no-audit --progress=false --legacy-peer-deps
       - name: Run frontend format
         if:  steps.filter.outputs.frontend == 'true'
-        run: cd dinky-web && npm run lint
+        run: cd dinky-web && npm run lint:prettier
 
       - name: Check for modified files
         id: git-check
