@@ -45,8 +45,10 @@ export const ErrorModelWithCode = (title: string |  React.JSX.Element = l('globa
 };
 
 interface BaseModeType {['reducers']: {}, ['effects']: {}, ['namespace']: string}
+type MemberType<T extends BaseModeType, U> = U extends 'effects' ? T['effects'] : T['reducers']
 
-function getModelTypes<T extends BaseModeType>(target: T, type: 'effects' | 'reducers') {
+function getModelTypes<T extends BaseModeType>(target: T, type: 'effects' | 'reducers'):
+    { [K in keyof MemberType<T, typeof type>]: string } {
   const reducers = Object.keys(target[type]).map((obj: string) => [obj, `${target.namespace}/${obj}`]);
   // @ts-ignore
   return Object.fromEntries(new Map<keyof typeof target[type], string>(reducers));
@@ -54,6 +56,6 @@ function getModelTypes<T extends BaseModeType>(target: T, type: 'effects' | 'red
 
 export const createModelTypes = <T extends BaseModeType>(
   target: T
-): [{ [K in keyof BaseModeType['reducers']]: string }, { [K in keyof BaseModeType['effects']]: string }] => {
-  return [ getModelTypes(target, 'reducers'), getModelTypes(target, 'effects')];
+): [{ [K in keyof T['reducers']]: string }, { [K in keyof T['effects']]: string }] => {
+  return [ getModelTypes(target, 'reducers'), getModelTypes(target, 'effects') ];
 };
