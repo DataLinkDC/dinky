@@ -66,7 +66,9 @@ const DocumentTableList: React.FC = () => {
    * @param id
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.DOCUMENT_DELETE, id));
+    await executeAndCallbackRefresh(async () =>
+      handleRemoveById(API_CONSTANTS.DOCUMENT_DELETE, id)
+    );
   };
 
   /**
@@ -74,7 +76,9 @@ const DocumentTableList: React.FC = () => {
    * @param value
    */
   const handleChangeEnable = async (value: Partial<Document>) => {
-    await executeAndCallbackRefresh(async () => updateDataByParam(API_CONSTANTS.DOCUMENT_ENABLE, { id: value.id }));
+    await executeAndCallbackRefresh(async () =>
+      updateDataByParam(API_CONSTANTS.DOCUMENT_ENABLE, { id: value.id })
+    );
   };
 
   /**

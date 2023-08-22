@@ -82,7 +82,10 @@ const AlertInstanceList: React.FC = () => {
       content: l('rc.ai.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
-      onOk: async () => executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id))
+      onOk: async () =>
+        executeAndCallbackRefresh(async () =>
+          handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id)
+        )
     });
   };
 
@@ -92,9 +95,10 @@ const AlertInstanceList: React.FC = () => {
    */
   const handleEnable = async (item: Alert.AlertInstance) => {
     await executeAndCallbackRefresh(async () =>
-        updateDataByParam(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {
-      id: item.id
-    }));
+      updateDataByParam(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {
+        id: item.id
+      })
+    );
   };
 
   /**
@@ -197,9 +201,7 @@ const AlertInstanceList: React.FC = () => {
     return () => [
       <CreateBtn
         key={'CreateAlertInstanceBtn'}
-        onClick={() =>
-          setAlertInstanceState((prevState) => ({ ...prevState, addedOpen: true }))
-        }
+        onClick={() => setAlertInstanceState((prevState) => ({ ...prevState, addedOpen: true }))}
       />
     ];
   };

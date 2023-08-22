@@ -18,7 +18,7 @@
  */
 
 import { RowPermissions, SysMenu, UserBaseInfo } from '@/types/AuthCenter/data.d';
-import {BaseState, ContextMenuPosition} from '@/types/Public/state.d';
+import { BaseState, ContextMenuPosition } from '@/types/Public/state.d';
 import { Key } from '@ant-design/pro-components';
 
 /**
@@ -32,7 +32,7 @@ export interface MenuTreeClickNode {
 /**
  * 菜单管理 的state
  */
-export interface MenuState  extends  BaseState{
+export interface MenuState extends BaseState {
   sysMenuValue: Partial<SysMenu>;
   contextMenuPosition: ContextMenuPosition;
   selectedKeys: string[] | number[];
@@ -59,7 +59,7 @@ export interface RoleAssignMenuState {
 /**
  * 角色管理 的state
  */
-export interface RoleListState extends BaseState{
+export interface RoleListState extends BaseState {
   value: Partial<UserBaseInfo.Role>;
   assignMenuOpen: boolean;
   viewUsersOpen: boolean;
@@ -85,7 +85,7 @@ export interface TenantTransferState {
 /**
  * 租户管理 的state
  */
-export interface TenantListState  extends BaseState {
+export interface TenantListState extends BaseState {
   value: Partial<UserBaseInfo.Tenant>;
   assignUserOpen: boolean;
   viewUsersOpen: boolean;
@@ -102,7 +102,7 @@ export interface RoleTransferState {
   roleList: UserBaseInfo.Role[];
 }
 
-export interface UserListState  extends BaseState  {
+export interface UserListState extends BaseState {
   value: Partial<UserBaseInfo.User>;
   assignRoleOpen: boolean;
   roleIds: string[];

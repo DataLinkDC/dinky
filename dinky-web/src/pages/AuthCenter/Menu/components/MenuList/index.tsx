@@ -63,10 +63,12 @@ const MenuList: React.FC = () => {
    * @param id role id
    */
   const handleDeleteSubmit = async () => {
-    await executeAndCallbackRefresh(async () => handleRemoveById(
+    await executeAndCallbackRefresh(async () =>
+      handleRemoveById(
         API_CONSTANTS.MENU_DELETE,
         menuState.clickNode?.rightClickedNode.key as number
-    ));
+      )
+    );
     setMenuState((prevState) => ({ ...prevState, contextMenuOpen: false }));
   };
 

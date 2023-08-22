@@ -92,17 +92,21 @@ const UserProTable = () => {
    * @param value
    */
   const handleDeleteUser = async (value: UserBaseInfo.User) => {
-    await executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.USER_DELETE, value.id));
+    await executeAndCallbackRefresh(async () =>
+      handleRemoveById(API_CONSTANTS.USER_DELETE, value.id)
+    );
   };
 
   /**
    * user add role to submit
    */
   const handleGrantRoleSubmit = async () => {
-    await executeAndCallbackRefresh(async () => handlePutData(API_CONSTANTS.USER_ASSIGN_ROLE, {
-      userId: userState.value.id,
-      roleIds: userState.roleIds
-    }));
+    await executeAndCallbackRefresh(async () =>
+      handlePutData(API_CONSTANTS.USER_ASSIGN_ROLE, {
+        userId: userState.value.id,
+        roleIds: userState.roleIds
+      })
+    );
     setUserState((prevState) => ({ ...prevState, assignRoleOpen: true }));
   };
 
@@ -111,7 +115,9 @@ const UserProTable = () => {
    * @param value
    */
   const handleChangeEnable = async (value: UserBaseInfo.User) => {
-    await executeAndCallbackRefresh(async () => updateDataByParam(API_CONSTANTS.USER_ENABLE, { id: value.id }));
+    await executeAndCallbackRefresh(async () =>
+      updateDataByParam(API_CONSTANTS.USER_ENABLE, { id: value.id })
+    );
   };
 
   /**
@@ -135,9 +141,11 @@ const UserProTable = () => {
   };
 
   const handleRecoveryUser = async (value: UserBaseInfo.User) => {
-    await executeAndCallbackRefresh(async () => handlePutDataByParams(API_CONSTANTS.USER_RECOVERY, l('button.recovery'), {
-      id: value.id
-    }));
+    await executeAndCallbackRefresh(async () =>
+      handlePutDataByParams(API_CONSTANTS.USER_RECOVERY, l('button.recovery'), {
+        id: value.id
+      })
+    );
   };
 
   const handleResetPassword = async (value: UserBaseInfo.User) => {

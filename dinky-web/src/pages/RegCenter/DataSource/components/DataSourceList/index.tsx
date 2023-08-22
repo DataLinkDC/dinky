@@ -104,7 +104,8 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
       content: l('rc.ds.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
-      onOk: async () => executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.DATASOURCE_DELETE, id))
+      onOk: async () =>
+        executeAndCallbackRefresh(async () => handleRemoveById(API_CONSTANTS.DATASOURCE_DELETE, id))
     });
   };
 
@@ -113,7 +114,9 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * @param item
    */
   const handleEnable = async (item: DataSources.DataSource) => {
-    await executeAndCallbackRefresh(async () => updateDataByParam(API_CONSTANTS.DATASOURCE_ENABLE, { id: item.id }));
+    await executeAndCallbackRefresh(async () =>
+      updateDataByParam(API_CONSTANTS.DATASOURCE_ENABLE, { id: item.id })
+    );
   };
 
   /**
@@ -129,17 +132,17 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * @param item
    */
   const handleCheckHeartBeat = async (item: DataSources.DataSource) => {
-    await executeAndCallbackRefresh(async () => handlePutDataByParams(
-        API_CONSTANTS.DATASOURCE_CHECK_HEARTBEAT_BY_ID,
-        l('button.heartbeat'),
-        {
-          id: item.id
-        }
-    ));
+    await executeAndCallbackRefresh(async () =>
+      handlePutDataByParams(API_CONSTANTS.DATASOURCE_CHECK_HEARTBEAT_BY_ID, l('button.heartbeat'), {
+        id: item.id
+      })
+    );
   };
 
   const onCopyDataBase = async (item: DataSources.DataSource) => {
-    await executeAndCallbackRefresh(async () => handleOption(API_CONSTANTS.DATASOURCE_COPY, l('button.copy'), item));
+    await executeAndCallbackRefresh(async () =>
+      handleOption(API_CONSTANTS.DATASOURCE_COPY, l('button.copy'), item)
+    );
   };
 
   /**

@@ -90,9 +90,10 @@ const AlertGroupTableList: React.FC = (props: any) => {
       content: l('rc.ag.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
-      onOk: async () => exexuteWithRefreshLoading(
-          async () => handleRemoveById(API_CONSTANTS.ALERT_GROUP_DELETE, id)
-      )
+      onOk: async () =>
+        exexuteWithRefreshLoading(async () =>
+          handleRemoveById(API_CONSTANTS.ALERT_GROUP_DELETE, id)
+        )
     });
   };
 
@@ -101,7 +102,9 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * @param item
    */
   const handleEnable = async (item: Alert.AlertGroup) => {
-    await exexuteWithRefreshLoading(async () => updateDataByParam(API_CONSTANTS.ALERT_GROUP_ENABLE, { id: item.id }));
+    await exexuteWithRefreshLoading(async () =>
+      updateDataByParam(API_CONSTANTS.ALERT_GROUP_ENABLE, { id: item.id })
+    );
   };
 
   /**
@@ -121,12 +124,13 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const handleSubmit = async (value: Alert.AlertGroup) => {
     await exexuteWithRefreshLoading(async () =>
-        handleAddOrUpdate(
+      handleAddOrUpdate(
         API_CONSTANTS.ALERT_GROUP,
         value,
         () => {},
         () => handleCleanState()
-    ));
+      )
+    );
   };
 
   /**
@@ -137,9 +141,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
       <Button
         key={'CreateAlertGroup'}
         type='primary'
-        onClick={() =>
-          setAlertGroupState((prevState) => ({ ...prevState, addedOpen: true }))
-        }
+        onClick={() => setAlertGroupState((prevState) => ({ ...prevState, addedOpen: true }))}
       >
         <PlusOutlined /> {l('button.create')}
       </Button>

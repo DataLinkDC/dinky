@@ -19,7 +19,7 @@
 
 import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
 import { Resource } from '@/pages/RegCenter/Resource/components/ResourceOverView';
-import {BaseState, ContextMenuPosition} from '@/types/Public/state.d';
+import { BaseState, ContextMenuPosition } from '@/types/Public/state.d';
 import {
   Alert,
   Cluster,
@@ -32,7 +32,7 @@ import {
 /**
  * alert group state
  */
-export interface AlertGroupState  extends BaseState {
+export interface AlertGroupState extends BaseState {
   alertGroupList: Alert.AlertGroup[];
   value: Partial<Alert.AlertGroup>;
 }
@@ -40,7 +40,7 @@ export interface AlertGroupState  extends BaseState {
 /**
  * alert instance state
  */
-export interface AlertInstanceState  extends BaseState{
+export interface AlertInstanceState extends BaseState {
   alertInstanceList: Alert.AlertInstance[];
   value: Partial<Alert.AlertInstance>;
 }
@@ -55,7 +55,7 @@ export interface ClusterConfigState extends BaseState {
 /**
  * cluster instance state
  */
-export interface ClusterInstanceState extends BaseState  {
+export interface ClusterInstanceState extends BaseState {
   value: Partial<Cluster.Instance>;
 }
 
@@ -116,7 +116,7 @@ export interface ResourceState {
 /**
  * template state
  */
-export interface TemplateState extends BaseState{
+export interface TemplateState extends BaseState {
   value: Partial<UDFTemplate>;
   drawerOpen: boolean;
 }
