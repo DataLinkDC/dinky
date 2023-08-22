@@ -84,7 +84,7 @@ const MenuList: React.FC = () => {
         setMenuState((prevState) => ({ ...prevState, loading: true }));
       },
       () => {
-        setMenuState((prevState) => ({ ...prevState, addedMenuOpen: false, loading: false }));
+        setMenuState((prevState) => ({ ...prevState, addedOpen: false, loading: false }));
         queryMenuData();
       }
     );
@@ -96,8 +96,8 @@ const MenuList: React.FC = () => {
   const handleCancel = () => {
     setMenuState((prevState) => ({
       ...prevState,
-      addedMenuOpen: false,
-      editMenuOpen: false,
+      addedOpen: false,
+      editOpen: false,
       contextMenuOpen: false
     }));
   };
@@ -108,8 +108,8 @@ const MenuList: React.FC = () => {
   const handleCreateSubMenu = () => {
     setMenuState((prevState) => ({
       ...prevState,
-      addedMenuOpen: true,
-      editMenuOpen: false,
+      addedOpen: true,
+      editOpen: false,
       contextMenuOpen: false,
       isRootMenu: false,
       sysMenuValue: {}
@@ -162,18 +162,18 @@ const MenuList: React.FC = () => {
       selectedKeys: [key],
       clickNode: { ...prevState.clickNode, oneClickedNode: info },
       sysMenuValue: fullInfo,
-      editMenuOpen: true,
-      addedMenuOpen: false,
+      editOpen: true,
+      addedOpen: false,
       isEditDisabled: true,
       isRootMenu: fullInfo.parentId === -1
     }));
   };
 
   const renderRightCardExtra = () => {
-    const { editMenuOpen, sysMenuValue, isEditDisabled } = menuState;
+    const { editOpen, sysMenuValue, isEditDisabled } = menuState;
     return (
       <>
-        {editMenuOpen && sysMenuValue && isEditDisabled && (
+        {editOpen && sysMenuValue && isEditDisabled && (
           <Button
             size={'small'}
             type={'primary'}
@@ -182,7 +182,7 @@ const MenuList: React.FC = () => {
             {l('button.edit')}
           </Button>
         )}
-        {editMenuOpen && sysMenuValue && !isEditDisabled && (
+        {editOpen && sysMenuValue && !isEditDisabled && (
           <Button
             size={'small'}
             type={'dashed'}
@@ -201,8 +201,8 @@ const MenuList: React.FC = () => {
    */
   const renderRightContent = () => {
     const {
-      editMenuOpen,
-      addedMenuOpen,
+      addedOpen,
+      editOpen,
       selectedKeys,
       isRootMenu,
       menuTreeData,
@@ -211,7 +211,7 @@ const MenuList: React.FC = () => {
     } = menuState;
 
     // default
-    if (!editMenuOpen && !addedMenuOpen) {
+    if (!editOpen && !addedOpen) {
       return (
         <>
           <OpHelper />
@@ -219,7 +219,7 @@ const MenuList: React.FC = () => {
       );
     }
     // update
-    if (sysMenuValue && editMenuOpen) {
+    if (sysMenuValue && editOpen) {
       return (
         <>
           <MenuForm
@@ -229,7 +229,7 @@ const MenuList: React.FC = () => {
             disabled={isEditDisabled}
             values={sysMenuValue}
             onCancel={handleCancel}
-            open={editMenuOpen}
+            open={editOpen}
             onSubmit={async (value: Partial<SysMenu>): Promise<boolean> =>
               await handleAddOrUpdateSubmit(value)
             }
@@ -238,7 +238,7 @@ const MenuList: React.FC = () => {
       );
     }
     // add
-    if (addedMenuOpen) {
+    if (addedOpen) {
       return (
         <>
           <MenuForm
@@ -246,7 +246,7 @@ const MenuList: React.FC = () => {
             isRootMenu={isRootMenu}
             treeData={menuTreeData}
             values={{}}
-            open={addedMenuOpen}
+            open={addedOpen}
             onCancel={handleCancel}
             onSubmit={(value: Partial<SysMenu>) => handleAddOrUpdateSubmit(value)}
           />
@@ -295,14 +295,14 @@ const MenuList: React.FC = () => {
   };
 
   const renderAddSubMenuTitle = () => {
-    const { sysMenuValue, editMenuOpen, addedMenuOpen, isRootMenu } = menuState;
+    const { sysMenuValue, editOpen, addedOpen, isRootMenu } = menuState;
     return (
       <>
-        {sysMenuValue?.id && editMenuOpen
+        {sysMenuValue?.id && editOpen
           ? l('menu.edit')
-          : !sysMenuValue?.id && addedMenuOpen && !isRootMenu
+          : !sysMenuValue?.id && addedOpen && !isRootMenu
           ? l('right.menu.addSub')
-          : !sysMenuValue?.id && addedMenuOpen && isRootMenu
+          : !sysMenuValue?.id && addedOpen && isRootMenu
           ? l('right.menu.createRoot')
           : ''}
       </>

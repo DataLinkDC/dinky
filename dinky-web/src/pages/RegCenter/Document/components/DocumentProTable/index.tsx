@@ -92,7 +92,7 @@ const DocumentTableList: React.FC = () => {
   };
 
   const handleClickEdit = (record: Partial<Document>) => {
-    setDocumentState((prevState) => ({ ...prevState, value: record, editDocumentOpen: true }));
+    setDocumentState((prevState) => ({ ...prevState, value: record, editOpen: true }));
   };
 
   const handleOpenDrawer = (record: Partial<Document>) => {
@@ -225,7 +225,7 @@ const DocumentTableList: React.FC = () => {
             onClick={() =>
               setDocumentState((prevState) => ({
                 ...prevState,
-                addedDocumentOpen: true
+                addedOpen: true
               }))
             }
           />
@@ -239,14 +239,14 @@ const DocumentTableList: React.FC = () => {
       <DocumentModalForm
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={documentState.addedDocumentOpen}
+        modalVisible={documentState.addedOpen}
         values={{}}
       />
       {/*UPDATED*/}
       <DocumentModalForm
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={documentState.editDocumentOpen}
+        modalVisible={documentState.editOpen}
         values={documentState.value}
       />
       {/*DRAWER*/}

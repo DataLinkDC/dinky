@@ -70,8 +70,8 @@ export default () => {
   const handleCancel = async () => {
     setClusterInstanceStatus((prevState) => ({
       ...prevState,
-      addedClusterInstanceOpen: false,
-      editClusterInstanceOpen: false,
+      addedOpen: false,
+      editOpen: false,
       value: {}
     }));
   };
@@ -94,7 +94,7 @@ export default () => {
   const handleEdit = async (value: Partial<Cluster.Instance>) => {
     setClusterInstanceStatus((prevState) => ({
       ...prevState,
-      editClusterInstanceOpen: true,
+      editOpen: true,
       value: value
     }));
   };
@@ -245,7 +245,7 @@ export default () => {
     <CreateBtn
       key={'instancecreate'}
       onClick={() =>
-        setClusterInstanceStatus((prevState) => ({ ...prevState, addedClusterInstanceOpen: true }))
+        setClusterInstanceStatus((prevState) => ({ ...prevState, addedOpen: true }))
       }
     />,
     <Button
@@ -290,14 +290,14 @@ export default () => {
       />
       {/*added*/}
       <InstanceModal
-        visible={clusterInstanceStatus.addedClusterInstanceOpen}
+        visible={clusterInstanceStatus.addedOpen}
         onClose={handleCancel}
         value={{}}
         onSubmit={handleSubmit}
       />
       {/*modify*/}
       <InstanceModal
-        visible={clusterInstanceStatus.editClusterInstanceOpen}
+        visible={clusterInstanceStatus.editOpen}
         onClose={handleCancel}
         value={clusterInstanceStatus.value}
         onSubmit={handleSubmit}

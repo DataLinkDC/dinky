@@ -18,7 +18,7 @@
  */
 
 import { RowPermissions, SysMenu, UserBaseInfo } from '@/types/AuthCenter/data.d';
-import { ContextMenuPosition } from '@/types/Public/state';
+import {BaseState, ContextMenuPosition} from '@/types/Public/state.d';
 import { Key } from '@ant-design/pro-components';
 
 /**
@@ -32,15 +32,12 @@ export interface MenuTreeClickNode {
 /**
  * 菜单管理 的state
  */
-export interface MenuState {
+export interface MenuState  extends  BaseState{
   sysMenuValue: Partial<SysMenu>;
   contextMenuPosition: ContextMenuPosition;
   selectedKeys: string[] | number[];
   clickNode: MenuTreeClickNode;
   menuTreeData: SysMenu[];
-  addedMenuOpen: boolean;
-  editMenuOpen: boolean;
-  loading: boolean;
   contextMenuOpen: boolean;
   isEditDisabled: boolean;
   isRootMenu: boolean;
@@ -62,11 +59,8 @@ export interface RoleAssignMenuState {
 /**
  * 角色管理 的state
  */
-export interface RoleListState {
-  loading: boolean;
+export interface RoleListState extends BaseState{
   value: Partial<UserBaseInfo.Role>;
-  addedRoleOpen: boolean;
-  editRoleOpen: boolean;
   assignMenuOpen: boolean;
   viewUsersOpen: boolean;
   roleUserList: UserBaseInfo.User[];
@@ -75,11 +69,8 @@ export interface RoleListState {
 /**
  * 角色行权限 的state
  */
-export interface RowPermissionsState {
-  loading: boolean;
+export interface RowPermissionsState extends BaseState {
   value: Partial<RowPermissions>;
-  addedRowPermissionsOpen: boolean;
-  editRowPermissionsOpen: boolean;
 }
 
 /**
@@ -94,12 +85,9 @@ export interface TenantTransferState {
 /**
  * 租户管理 的state
  */
-export interface TenantListState {
-  loading: boolean;
+export interface TenantListState  extends BaseState {
   value: Partial<UserBaseInfo.Tenant>;
   assignUserOpen: boolean;
-  addedTenantOpen: boolean;
-  editTenantOpen: boolean;
   viewUsersOpen: boolean;
   tenantUserList: UserBaseInfo.User[];
   tenantUserIds: string[];
@@ -114,11 +102,8 @@ export interface RoleTransferState {
   roleList: UserBaseInfo.Role[];
 }
 
-export interface UserListState {
-  loading: boolean;
+export interface UserListState  extends BaseState  {
   value: Partial<UserBaseInfo.User>;
-  addedUserOpen: boolean;
-  editUserOpen: boolean;
   assignRoleOpen: boolean;
   roleIds: string[];
   editPasswordOpen: boolean;

@@ -19,7 +19,7 @@
 
 import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
 import { Resource } from '@/pages/RegCenter/Resource/components/ResourceOverView';
-import { ContextMenuPosition } from '@/types/Public/state';
+import {BaseState, ContextMenuPosition} from '@/types/Public/state.d';
 import {
   Alert,
   Cluster,
@@ -32,51 +32,37 @@ import {
 /**
  * alert group state
  */
-export interface AlertGroupState {
+export interface AlertGroupState  extends BaseState {
   alertGroupList: Alert.AlertGroup[];
-  loading: boolean;
-  addedAlertGroupOpen: boolean;
-  editAlertGroupOpen: boolean;
   value: Partial<Alert.AlertGroup>;
 }
 
 /**
  * alert instance state
  */
-export interface AlertInstanceState {
+export interface AlertInstanceState  extends BaseState{
   alertInstanceList: Alert.AlertInstance[];
-  loading: boolean;
-  addedAlertInstanceOpen: boolean;
-  editAlertInstanceOpen: boolean;
   value: Partial<Alert.AlertInstance>;
 }
 
 /**
  * cluster configuration state
  */
-export interface ClusterConfigState {
-  loading: boolean;
-  addedClusterConfigOpen: boolean;
-  editClusterConfigOpen: boolean;
+export interface ClusterConfigState extends BaseState {
   value: Partial<Cluster.Config>;
 }
 
 /**
  * cluster instance state
  */
-export interface ClusterInstanceState {
-  loading: boolean;
-  addedClusterInstanceOpen: boolean;
-  editClusterInstanceOpen: boolean;
+export interface ClusterInstanceState extends BaseState  {
   value: Partial<Cluster.Instance>;
 }
 
 /**
  * document state
  */
-export interface DocumentState {
-  addedDocumentOpen: boolean;
-  editDocumentOpen: boolean;
+export interface DocumentState extends BaseState {
   value: Partial<Document>;
   loading: boolean;
   drawerOpen: boolean;
@@ -85,10 +71,7 @@ export interface DocumentState {
 /**
  * git project state
  */
-export interface GitProjectState {
-  loading: boolean;
-  addedOpen: boolean;
-  editOpen: boolean;
+export interface GitProjectState extends BaseState {
   buildOpen: boolean;
   logOpen: boolean;
   codeTreeOpen: boolean;
@@ -109,10 +92,7 @@ export interface GitBuildStepsState {
 /**
  * global variable state
  */
-export interface GlobalVarState {
-  loading: boolean;
-  addedOpen: boolean;
-  editOpen: boolean;
+export interface GlobalVarState extends BaseState {
   value: Partial<GlobalVar>;
   drawerOpen: boolean;
 }
@@ -136,10 +116,7 @@ export interface ResourceState {
 /**
  * template state
  */
-export interface TemplateState {
-  loading: boolean;
-  addedOpen: boolean;
-  editOpen: boolean;
+export interface TemplateState extends BaseState{
   value: Partial<UDFTemplate>;
   drawerOpen: boolean;
 }

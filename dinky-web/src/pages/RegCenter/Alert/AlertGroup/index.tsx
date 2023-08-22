@@ -115,8 +115,8 @@ const AlertGroupTableList: React.FC = (props: any) => {
     setAlertGroupState((prevState) => ({
       ...prevState,
       value: {},
-      addedAlertGroupOpen: false,
-      editAlertGroupOpen: false
+      addedOpen: false,
+      editOpen: false
     }));
   };
 
@@ -143,7 +143,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
         key={'CreateAlertGroup'}
         type='primary'
         onClick={() =>
-          setAlertGroupState((prevState) => ({ ...prevState, addedAlertGroupOpen: true }))
+          setAlertGroupState((prevState) => ({ ...prevState, addedOpen: true }))
         }
       >
         <PlusOutlined /> {l('button.create')}
@@ -158,7 +158,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
   const editClick = (item: Alert.AlertGroup) => {
     setAlertGroupState((prevState) => ({
       ...prevState,
-      editAlertGroupOpen: !prevState.editAlertGroupOpen,
+      editAlertGroupOpen: !prevState.editOpen,
       value: item
     }));
   };
@@ -249,14 +249,14 @@ const AlertGroupTableList: React.FC = (props: any) => {
         <AlertGroupForm
           onSubmit={handleSubmit}
           onCancel={handleCleanState}
-          modalVisible={alertGroupState.addedAlertGroupOpen}
+          modalVisible={alertGroupState.addedOpen}
           values={{}}
         />
         {alertGroupState.value && Object.keys(alertGroupState.value).length > 0 && (
           <AlertGroupForm
             onSubmit={handleSubmit}
             onCancel={handleCleanState}
-            modalVisible={alertGroupState.editAlertGroupOpen}
+            modalVisible={alertGroupState.editOpen}
             values={alertGroupState.value}
           />
         )}

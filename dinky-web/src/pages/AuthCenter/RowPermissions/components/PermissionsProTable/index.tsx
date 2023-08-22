@@ -69,7 +69,7 @@ const PermissionsProTable: React.FC = () => {
           tenantId: getTenantByLocalStorage()
         },
         () => {},
-        () => setRowPermissions((prevState) => ({ ...prevState, addedRowPermissionsOpen: false }))
+        () => setRowPermissions((prevState) => ({ ...prevState, addedOpen: false }))
       );
     });
   };
@@ -82,7 +82,7 @@ const PermissionsProTable: React.FC = () => {
     setRowPermissions((prevState) => ({
       ...prevState,
       value: record,
-      editRowPermissionsOpen: false
+      editOpen: false
     }));
   };
 
@@ -92,8 +92,8 @@ const PermissionsProTable: React.FC = () => {
   const handleCancel = () => {
     setRowPermissions((prevState) => ({
       ...prevState,
-      addedRowPermissionsOpen: false,
-      editRowPermissionsOpen: false
+      addedOpen: false,
+      editOpen: false
     }));
   };
 
@@ -166,7 +166,7 @@ const PermissionsProTable: React.FC = () => {
           <CreateBtn
             key='createBtn'
             onClick={() =>
-              setRowPermissions((prevState) => ({ ...prevState, addedRowPermissionsOpen: true }))
+              setRowPermissions((prevState) => ({ ...prevState, addedOpen: true }))
             }
           />
         ]}
@@ -184,7 +184,7 @@ const PermissionsProTable: React.FC = () => {
       <PermissionsModal
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={rowPermissions.addedRowPermissionsOpen}
+        modalVisible={rowPermissions.addedOpen}
         values={{}}
       />
 
@@ -192,7 +192,7 @@ const PermissionsProTable: React.FC = () => {
       <PermissionsModal
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={rowPermissions.editRowPermissionsOpen}
+        modalVisible={rowPermissions.editOpen}
         values={rowPermissions.value}
       />
     </>

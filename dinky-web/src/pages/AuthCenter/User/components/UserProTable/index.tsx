@@ -68,7 +68,7 @@ const UserProTable = () => {
    * @param value
    */
   const handleEditVisible = (value: UserBaseInfo.User) => {
-    setUserState((prevState) => ({ ...prevState, value: value, editUserOpen: true }));
+    setUserState((prevState) => ({ ...prevState, value: value, editOpen: true }));
   };
 
   /**
@@ -138,7 +138,7 @@ const UserProTable = () => {
   const handleSubmitUser = async (value: Partial<UserBaseInfo.User>) => {
     await executeAndCallbackRefresh(async () => {
       await handleAddOrUpdate(API_CONSTANTS.USER, value);
-      setUserState((prevState) => ({ ...prevState, addedUserOpen: false }));
+      setUserState((prevState) => ({ ...prevState, addedOpen: false }));
     });
   };
 
@@ -325,7 +325,7 @@ const UserProTable = () => {
         toolBarRender={() => [
           <CreateBtn
             key={'CreateUser'}
-            onClick={() => setUserState((prevState) => ({ ...prevState, addedUserOpen: true }))}
+            onClick={() => setUserState((prevState) => ({ ...prevState, addedOpen: true }))}
           />
         ]}
         request={(params, sorter, filter: any) =>
@@ -341,8 +341,8 @@ const UserProTable = () => {
       <UserModalForm
         key={'handleSubmitUser'}
         onSubmit={handleSubmitUser}
-        onCancel={() => setUserState((prevState) => ({ ...prevState, addedUserOpen: false }))}
-        modalVisible={userState.addedUserOpen}
+        onCancel={() => setUserState((prevState) => ({ ...prevState, addedOpen: false }))}
+        modalVisible={userState.addedOpen}
         values={{}}
       />
       <PasswordModal
@@ -358,9 +358,9 @@ const UserProTable = () => {
             key={'handleUpdateUser'}
             onSubmit={handleSubmitUser}
             onCancel={() =>
-              setUserState((prevState) => ({ ...prevState, editUserOpen: false, value: {} }))
+              setUserState((prevState) => ({ ...prevState, editOpen: false, value: {} }))
             }
-            modalVisible={userState.editUserOpen}
+            modalVisible={userState.editOpen}
             values={userState.value}
           />
         </>

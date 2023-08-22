@@ -107,7 +107,7 @@ const AlertInstanceList: React.FC = () => {
    */
   useEffect(() => {
     queryAlertInstanceList();
-  }, [alertInstanceState.addedAlertInstanceOpen, alertInstanceState.editAlertInstanceOpen]);
+  }, [alertInstanceState.addedOpen, alertInstanceState.editOpen]);
 
   /**
    * render alert instance sub title
@@ -203,7 +203,7 @@ const AlertInstanceList: React.FC = () => {
       <CreateBtn
         key={'CreateAlertInstanceBtn'}
         onClick={() =>
-          setAlertInstanceState((prevState) => ({ ...prevState, addedAlertInstanceOpen: true }))
+          setAlertInstanceState((prevState) => ({ ...prevState, addedOpen: true }))
         }
       />
     ];
@@ -215,8 +215,8 @@ const AlertInstanceList: React.FC = () => {
   const cancelHandler = () => {
     setAlertInstanceState((prevState) => ({
       ...prevState,
-      addedAlertInstanceOpen: false,
-      editAlertInstanceOpen: false,
+      addedOpen: false,
+      editOpen: false,
       value: {}
     }));
     actionRef.current?.reload();
@@ -257,22 +257,22 @@ const AlertInstanceList: React.FC = () => {
       />
 
       {/* added */}
-      {alertInstanceState.addedAlertInstanceOpen && (
+      {alertInstanceState.addedOpen && (
         <AlertTypeChoose
           onTest={handleTestSend}
           onCancel={cancelHandler}
-          modalVisible={alertInstanceState.addedAlertInstanceOpen}
+          modalVisible={alertInstanceState.addedOpen}
           onSubmit={handleSubmit}
           values={{}}
         />
       )}
       {/* modify */}
 
-      {alertInstanceState.editAlertInstanceOpen && (
+      {alertInstanceState.editOpen && (
         <AlertTypeChoose
           onTest={handleTestSend}
           onCancel={cancelHandler}
-          modalVisible={alertInstanceState.editAlertInstanceOpen}
+          modalVisible={alertInstanceState.editOpen}
           onSubmit={handleSubmit}
           values={alertInstanceState.value}
         />

@@ -165,7 +165,7 @@ export default () => {
     item.configJson = JSON.parse(item.configJson);
     setClusterConfigState((prevState) => ({
       ...prevState,
-      editClusterConfigOpen: true,
+      editOpen: true,
       value: item
     }));
   };
@@ -241,7 +241,7 @@ export default () => {
     <CreateBtn
       key={'configcreate'}
       onClick={() =>
-        setClusterConfigState((prevState) => ({ ...prevState, addedClusterConfigOpen: true }))
+        setClusterConfigState((prevState) => ({ ...prevState, addedOpen: true }))
       }
     />
   ];
@@ -263,15 +263,15 @@ export default () => {
 
       {/*added*/}
       <ConfigurationModal
-        visible={clusterConfigState.addedClusterConfigOpen}
+        visible={clusterConfigState.addedOpen}
         onClose={handleCancel}
         value={{}}
         onSubmit={handleSubmit}
       />
       {/*modify*/}
-      {clusterConfigState.editClusterConfigOpen && (
+      {clusterConfigState.editOpen && (
         <ConfigurationModal
-          visible={clusterConfigState.editClusterConfigOpen}
+          visible={clusterConfigState.editOpen}
           onClose={handleCancel}
           value={clusterConfigState.value}
           onSubmit={handleSubmit}

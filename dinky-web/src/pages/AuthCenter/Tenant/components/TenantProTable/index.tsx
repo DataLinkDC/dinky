@@ -69,7 +69,7 @@ const TenantProTable: React.FC = () => {
         API_CONSTANTS.TENANT,
         value,
         () => {},
-        () => setTenantState((prevState) => ({ ...prevState, addedTenantOpen: false }))
+        () => setTenantState((prevState) => ({ ...prevState, addedOpen: false }))
       );
     });
   };
@@ -99,8 +99,8 @@ const TenantProTable: React.FC = () => {
   const handleCancel = () => {
     setTenantState((prevState) => ({
       ...prevState,
-      addedTenantOpen: false,
-      editTenantOpen: false,
+      addedOpen: false,
+      editOpen: false,
       assignUserOpen: false
     }));
   };
@@ -114,7 +114,7 @@ const TenantProTable: React.FC = () => {
    * @param record
    */
   const handleEditVisible = (record: Partial<UserBaseInfo.Tenant>) => {
-    setTenantState((prevState) => ({ ...prevState, editTenantOpen: true, value: record }));
+    setTenantState((prevState) => ({ ...prevState, editOpen: true, value: record }));
   };
   /**
    * assign user visible change
@@ -208,7 +208,7 @@ const TenantProTable: React.FC = () => {
         toolBarRender={() => [
           <CreateBtn
             key={'tenantTable'}
-            onClick={() => setTenantState((prevState) => ({ ...prevState, addedTenantOpen: true }))}
+            onClick={() => setTenantState((prevState) => ({ ...prevState, addedOpen: true }))}
           />
         ]}
         request={(params, sorter, filter: any) =>
@@ -222,7 +222,7 @@ const TenantProTable: React.FC = () => {
         key={'tenantFormAdd'}
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={tenantState.addedTenantOpen}
+        modalVisible={tenantState.addedOpen}
         values={{}}
       />
 
@@ -231,7 +231,7 @@ const TenantProTable: React.FC = () => {
         key={'tenantFormUpdate'}
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={tenantState.editTenantOpen}
+        modalVisible={tenantState.editOpen}
         values={tenantState.value}
       />
       {/* assign user to tenant */}
