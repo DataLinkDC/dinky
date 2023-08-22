@@ -17,7 +17,7 @@
  *
  */
 import { FlexCenterDiv } from '@/components/StyledComponents';
-import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
+import {getCurrentData, getCurrentTab, isDataStudioTabsItemType, mapDispatchToProps} from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
 import { buildGraphData } from '@/pages/DataStudio/HeaderContainer/FlinkGraph/function';
@@ -94,7 +94,11 @@ const HeaderContainer = (props: any) => {
       onOk: async () => {
         offLineTask(l('pages.datastudio.editor.stop.job'), current.id, 'canceljob').then(
           (result) => {
-            (getCurrentTab(panes, activeKey) as DataStudioTabsItemType).params.taskData.jobInstanceId = 0;
+            const currentTab = getCurrentTab(panes, activeKey);
+            if (isDataStudioTabsItemType(currentTab)) {
+              currentTab.params.taskData.jobInstanceId = 0;
+            }
+
             saveTabs({ ...props.tabs });
           }
         );
@@ -144,8 +148,10 @@ const HeaderContainer = (props: any) => {
         });
         if (res.datas.success) {
           messageApi.success(l('pages.datastudio.editor.exec.success'));
-          (getCurrentTab(panes, activeKey) as DataStudioTabsItemType).params.taskData.jobInstanceId =
-            res.datas.jobInstanceId;
+          const currentTab = getCurrentTab(panes, activeKey);
+          if (isDataStudioTabsItemType(currentTab)) {
+            currentTab.params.taskData.jobInstanceId = res.datas.jobInstanceId;
+          }
           saveTabs({ ...props.tabs });
         } else {
           ErrorNotification(

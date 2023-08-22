@@ -1,4 +1,4 @@
-import { getFooterValue } from '@/pages/DataStudio/function';
+import {getFooterValue, isDataStudioTabsItemType} from '@/pages/DataStudio/function';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
@@ -6,6 +6,8 @@ import { l } from '@/utils/intl';
 import { createModelTypes } from '@/utils/modals';
 import { Effect, Reducer } from '@@/plugin-dva/types';
 import React from 'react';
+import {editor} from "monaco-editor";
+import ICodeEditor = editor.ICodeEditor;
 
 /**
  * 初始化布局宽高度
@@ -111,7 +113,7 @@ export enum TabsPageSubType {
   flinkSql = 'flinksql'
 }
 
-export type TabsItemType = {
+export interface TabsItemType {
   id: string;
   label: string;
   breadcrumbLabel: string;
@@ -122,19 +124,19 @@ export type TabsItemType = {
   icon: any;
   closable: boolean;
   path: string[];
-  task?: TaskType;
   console: ConsoleType;
-  monaco?: any;
   isModified: boolean;
-  sqlMetaData?: SqlMetaData;
-  metaStore?: MetaStoreCatalogType[];
 };
 
-export type MetadataTabsItemType = TabsItemType & {
+export interface MetadataTabsItemType extends TabsItemType {
   params: MetadataParams;
+  sqlMetaData?: SqlMetaData;
+  metaStore?: MetaStoreCatalogType[];
 }
 
-export type DataStudioTabsItemType = TabsItemType & {
+export interface DataStudioTabsItemType extends TabsItemType {
+  task?: TaskType;
+  monaco?: ICodeEditor;
   params: DataStudioParams;
 }
 
@@ -572,7 +574,10 @@ const Model: ModelType = {
       } = state;
 
       const index = panes.findIndex((item, index) => {
-        return (item as DataStudioTabsItemType).params.taskId === needRemoveKey;
+        if (isDataStudioTabsItemType(item)) {
+          return item.params.taskId === needRemoveKey;
+        }
+        return false;
       });
 
       // 关闭 传过来的key

@@ -1,4 +1,4 @@
-import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
+import {getCurrentData, getCurrentTab, isDataStudioTabsItemType, mapDispatchToProps} from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { DataStudioTabsItemType, StateType, TabsPageType} from '@/pages/DataStudio/model';
 import { postAll } from '@/services/api';
@@ -99,14 +99,11 @@ const Result = (props: any) => {
   });
 
   const loadData = async (isRefresh?: boolean) => {
-    const params = (currentTabs as DataStudioTabsItemType)?.params
-    if (!currentTabs) {
+    if (!isDataStudioTabsItemType(currentTabs)) {
       return;
     }
 
-    if (currentTabs.type !== TabsPageType.project) {
-      return;
-    }
+    const params = currentTabs.params
 
     if (params.resultData && !isRefresh) {
       setData(params.resultData);
@@ -145,6 +142,7 @@ const Result = (props: any) => {
     }
     setLoading(false);
   };
+
   useEffect(() => {
     setData({});
     loadData();

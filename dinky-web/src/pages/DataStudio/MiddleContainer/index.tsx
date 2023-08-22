@@ -36,6 +36,7 @@ import { connect } from '@@/exports';
 import { ConfigProvider, Divider, Dropdown, Space, Tabs } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useState } from 'react';
+import {isDataStudioTabsItemType, isMetadataTabsItemType} from "@/pages/DataStudio/function";
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
@@ -207,19 +208,21 @@ const MiddleContainer = (props: any) => {
    */
   const tabItems = panes.map((item: TabsItemType) => {
     const renderContent = () => {
-      switch (item.type) {
-        case TabsPageType.metadata:
-          const params = (item as MetadataTabsItemType).params;
-          return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams} />;
-        case TabsPageType.project:
-          if (parseInt(activeKey) < 0) {
-            return TabsPageType.None;
-          }
-          const v = (item as DataStudioTabsItemType).params;
-          return <Editor statement={v.taskData.statement} />;
-        default:
-          return <></>;
+      if (isDataStudioTabsItemType(item)) {
+        if (parseInt(activeKey) < 0) {
+          return TabsPageType.None;
+        }
+
+        const v = item.params;
+        return <Editor statement={v.taskData.statement}/>;
       }
+
+      if (isMetadataTabsItemType(item)) {
+        const params =item.params;
+        return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams}/>;
+      }
+
+      return <></>;
     };
 
     return {

@@ -19,7 +19,7 @@ import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import { getConsoleData } from '@/pages/DataStudio/BottomContainer/Console/service';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import { getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
+import {getCurrentTab, isDataStudioTabsItemType, mapDispatchToProps} from '@/pages/DataStudio/function';
 import HeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataBase } from '@/pages/DataStudio/LeftContainer/MetaData/service';
@@ -159,11 +159,11 @@ const DataStudio = (props: any) => {
     }
 
     const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
-    if (currentTab?.type !== 'project') {
+    if (!isDataStudioTabsItemType(currentTab)) {
       return;
     }
 
-    const params = (currentTab as DataStudioTabsItemType)?.params;
+    const params = currentTab.params;
     getTaskDetails(params.taskId).then((res) => {
       const changed = Object.keys(res).some((key) => {
         return (
@@ -188,26 +188,26 @@ const DataStudio = (props: any) => {
 
   /**
    * 渲染头部
-   * @returns {JSX.Element}
    */
-  const renderHeaderContainer = () => (
-    <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
-  );
+  const renderHeaderContainer = () => <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />;
 
   /**
    * 渲染左侧侧边栏
-   * @returns {JSX.Element}
    */
   const renderLeftContainer = () => <LeftContainer size={size} />;
 
   /**
    * 渲染右侧侧边栏
-   * @returns {JSX.Element}
    */
   const renderRightContainer = () => <RightContainer size={size} bottomHeight={bottomHeight} />;
 
   const updateTabContent = () => {
-    (getCurrentTab(tabs.panes, tabs.activeKey) as DataStudioTabsItemType).params.taskData = newTabData;
+    const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
+    if(!isDataStudioTabsItemType(currentTab)) {
+      return;
+    }
+
+    currentTab.params.taskData = newTabData;
     saveTabs({ ...tabs });
     setIsModalUpdateTabContentOpen(false);
   };
