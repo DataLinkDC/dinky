@@ -17,7 +17,11 @@
  *
  */
 
-import {getCurrentData, getCurrentTab, isDataStudioTabsItemType} from '@/pages/DataStudio/function';
+import {
+  getCurrentData,
+  getCurrentTab,
+  isDataStudioTabsItemType
+} from '@/pages/DataStudio/function';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
 import { Col, Descriptions, Form, Row } from 'antd';
@@ -37,8 +41,8 @@ const JobInfo = (props: any) => {
   form.setFieldsValue(current);
   const onValuesChange = (change: any, all: any) => {
     const pane = getCurrentTab(panes, activeKey);
-    if(!isDataStudioTabsItemType(pane)){
-      return
+    if (!isDataStudioTabsItemType(pane)) {
+      return;
     }
 
     Object.keys(change).forEach((key) => {
