@@ -20,14 +20,13 @@ import VersionList from '@/components/VersionList';
 import { TaskHistoryListItem } from '@/components/VersionList/data';
 import { getCurrentData } from '@/pages/DataStudio/function';
 import { StateType } from '@/pages/DataStudio/model';
-import { removeById } from '@/services/api';
-import { handleOption } from '@/services/BusinessCrud';
+import { handleOption, handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { RocketOutlined, SyncOutlined } from '@ant-design/icons';
 import { DiffEditor } from '@monaco-editor/react';
-import { Button, Card, message, Modal, Tag } from 'antd';
+import { Button, Card, Modal, Tag } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
@@ -127,12 +126,7 @@ const HistoryVersion = (props: any) => {
   };
 
   const deleteVersion = async (item: TaskHistoryListItem) => {
-    const result = await removeById(API_CONSTANTS.GET_JOB_VERSION, { versionId: item.id });
-    if (result) {
-      message.success('Delete Success');
-    } else {
-      message.error('Delete faile');
-    }
+    await handleRemoveById(API_CONSTANTS.GET_JOB_VERSION, item.id);
     versionList.run();
   };
 

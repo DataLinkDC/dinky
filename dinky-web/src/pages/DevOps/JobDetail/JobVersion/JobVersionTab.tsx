@@ -21,16 +21,17 @@ import CodeShow from '@/components/CustomEditor/CodeShow';
 import VersionList from '@/components/VersionList';
 import { TaskHistoryListItem } from '@/components/VersionList/data';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import { removeById } from '@/services/api';
+import { handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
-import { Card, Col, message, Row, Tag } from 'antd';
+import { Card, Col, Row, Tag } from 'antd';
 import { useState } from 'react';
 
 const JobVersionTab = (props: JobProps) => {
   const { jobDetail } = props;
   const latestVersion: TaskHistoryListItem = {
+    id: -1,
     type: jobDetail.history.type,
     statement: jobDetail.history.statement,
     createTime: jobDetail.history.startTime,
@@ -38,7 +39,7 @@ const JobVersionTab = (props: JobProps) => {
     isLatest: true
   };
 
-  const [currentVersion, setCurrentVersion] = useState<TaskHistoryListItem>({ statement: '' });
+  const [currentVersion, setCurrentVersion] = useState<TaskHistoryListItem>();
 
   const versionList = useRequest(
     {
@@ -53,12 +54,7 @@ const JobVersionTab = (props: JobProps) => {
   );
 
   const deleteVersion = async (item: TaskHistoryListItem) => {
-    const result = await removeById(API_CONSTANTS.GET_JOB_VERSION, { versionId: item.id });
-    if (result) {
-      message.success('Delete Success');
-    } else {
-      message.error('Delete faile');
-    }
+    await handleRemoveById(API_CONSTANTS.GET_JOB_VERSION, item.id);
     versionList.run();
   };
 
@@ -89,7 +85,7 @@ const JobVersionTab = (props: JobProps) => {
               </>
             }
           >
-            <CodeShow code={currentVersion?.statement} height={500} language={'sql'} />
+            <CodeShow code={currentVersion?.statement ?? ''} height={500} language={'sql'} />
           </Card>
         </Col>
       </Row>

@@ -17,7 +17,7 @@
  */
 
 export type TaskHistoryListItem = {
-  id?: number;
+  id: number;
   taskId?: number;
   name?: string;
   dialect?: string;
