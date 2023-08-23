@@ -29,9 +29,9 @@ class WatchTableServiceImplTest {
     void getDestination() {
         String tableName = "`default_catalog`.`default_database`.`Orders`";
         String result = WatchTableServiceImpl.getDestination( tableName);
-        assertEquals("/topic/table/123/`default_catalog`.`default_database`.`print_Orders`", result);
+        assertEquals("/topic/table/`default_catalog`.`default_database`.`print_Orders`", result);
 
         result = WatchTableServiceImpl.getDestination("Orders");
-        assertEquals("/topic/table/123/`default_catalog`.`default_database`.`print_Orders`", result);
+        assertEquals("/topic/table/`default_catalog`.`default_database`.`print_Orders`", result);
     }
 }
