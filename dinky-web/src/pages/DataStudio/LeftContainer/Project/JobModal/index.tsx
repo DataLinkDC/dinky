@@ -127,6 +127,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
             <ProFormCascader
               name={['configJson', 'templateId']}
               label={l('catalog.udf.templateId')}
+              shouldUpdate={(prevValues, curValues) => prevValues.type !== curValues.type}
               placeholder={l('catalog.udf.templateId.placeholder')}
               fieldProps={{
                 changeOnSelect: true,

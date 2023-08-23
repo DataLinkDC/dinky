@@ -26,7 +26,7 @@ import {
   TenantListState,
   TenantTransferState,
   UserListState
-} from '@/types/AuthCenter/state';
+} from '@/types/AuthCenter/state.d';
 import { InitContextMenuPosition } from '@/types/Public/state.d';
 
 /**
@@ -44,8 +44,8 @@ export const InitMenuState = (): MenuState => {
       rightClickedNode: {}
     },
     menuTreeData: [],
-    addedMenuOpen: false,
-    editMenuOpen: false,
+    addedOpen: false,
+    editOpen: false,
     loading: false,
     contextMenuOpen: false,
     isEditDisabled: true,
@@ -74,8 +74,8 @@ export const InitRoleAssignMenuState: RoleAssignMenuState = {
 export const InitRoleListState: RoleListState = {
   loading: false,
   value: {},
-  addedRoleOpen: false,
-  editRoleOpen: false,
+  addedOpen: false,
+  editOpen: false,
   assignMenuOpen: false,
   viewUsersOpen: false,
   roleUserList: []
@@ -88,8 +88,8 @@ export const InitRoleListState: RoleListState = {
 export const InitRowPermissionsState: RowPermissionsState = {
   loading: false,
   value: {},
-  addedRowPermissionsOpen: false,
-  editRowPermissionsOpen: false
+  addedOpen: false,
+  editOpen: false
 };
 
 /**
@@ -109,8 +109,8 @@ export const InitTenantTransferState: TenantTransferState = {
 export const InitTenantListState: TenantListState = {
   loading: false,
   value: {},
-  addedTenantOpen: false,
-  editTenantOpen: false,
+  addedOpen: false,
+  editOpen: false,
   assignUserOpen: false,
   viewUsersOpen: false,
   tenantUserList: [],
@@ -130,8 +130,8 @@ export const InitRoleTransferState: RoleTransferState = {
 export const InitUserListState: UserListState = {
   loading: false,
   value: {},
-  addedUserOpen: false,
-  editUserOpen: false,
+  addedOpen: false,
+  editOpen: false,
   assignRoleOpen: false,
   roleList: [],
   editPasswordOpen: false

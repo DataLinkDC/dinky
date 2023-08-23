@@ -34,7 +34,9 @@ import {
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { YES_OR_NO_ENUM } from '@/types/Public/constants';
-import { Cluster } from '@/types/RegCenter/data';
+import { Cluster } from '@/types/RegCenter/data.d';
+import { InitClusterInstanceState } from '@/types/RegCenter/init.d';
+import { ClusterInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { ClearOutlined, HeartTwoTone } from '@ant-design/icons';
 import { ActionType, ProTable } from '@ant-design/pro-components';
@@ -46,11 +48,9 @@ export default () => {
   /**
    * state
    */
+  const [clusterInstanceStatus, setClusterInstanceStatus] =
+    useState<ClusterInstanceState>(InitClusterInstanceState);
   const actionRef = useRef<ActionType>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [createOpen, setCreateOpen] = useState<boolean>(false);
-  const [modifyOpen, setModifyeOpen] = useState<boolean>(false);
-  const [formValue, setFormValue] = useState<Partial<Cluster.Instance>>({});
 
   /**
    * execute and callback function
@@ -58,9 +58,9 @@ export default () => {
    * @returns {Promise<void>}
    */
   const executeAndCallback = async (callback: () => void) => {
-    setLoading(true);
+    setClusterInstanceStatus((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setLoading(false);
+    setClusterInstanceStatus((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
@@ -68,9 +68,12 @@ export default () => {
    * cancel
    */
   const handleCancel = async () => {
-    setCreateOpen(false);
-    setModifyeOpen(false);
-    setFormValue({});
+    setClusterInstanceStatus((prevState) => ({
+      ...prevState,
+      addedOpen: false,
+      editOpen: false,
+      value: {}
+    }));
   };
 
   /**
@@ -89,8 +92,11 @@ export default () => {
    * @param value
    */
   const handleEdit = async (value: Partial<Cluster.Instance>) => {
-    setFormValue(value);
-    setModifyeOpen(true);
+    setClusterInstanceStatus((prevState) => ({
+      ...prevState,
+      editOpen: true,
+      value: value
+    }));
   };
 
   /**
@@ -98,9 +104,9 @@ export default () => {
    * @param id
    */
   const handleDelete = async (id: number) => {
-    await executeAndCallback(async () => {
-      await handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_DELETE, id);
-    });
+    await executeAndCallback(async () =>
+      handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_DELETE, id)
+    );
   };
 
   /**
@@ -108,29 +114,27 @@ export default () => {
    * @param record
    */
   const handleChangeEnable = async (record: Partial<Cluster.Instance>) => {
-    await executeAndCallback(async () => {
-      await updateDataByParam(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, {
-        id: record.id
-      });
-    });
+    await executeAndCallback(async () =>
+      updateDataByParam(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, { id: record.id })
+    );
   };
 
   /**
    * check heart beat
    */
   const handleHeartBeat = async () => {
-    await executeAndCallback(async () => {
-      await handleOption(API_CONSTANTS.CLUSTER_INSTANCE_HEARTBEATS, l('rc.ci.heartbeat'), null);
-    });
+    await executeAndCallback(async () =>
+      handleOption(API_CONSTANTS.CLUSTER_INSTANCE_HEARTBEATS, l('rc.ci.heartbeat'), null)
+    );
   };
 
   /**
    * recycle instance
    */
   const handleRecycle = async () => {
-    await executeAndCallback(async () => {
-      await handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_RECYCLE, 0);
-    });
+    await executeAndCallback(async () =>
+      handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_RECYCLE, 0)
+    );
   };
 
   /**
@@ -236,7 +240,10 @@ export default () => {
    * tool bar render
    */
   const toolBarRender = () => [
-    <CreateBtn key={'instancecreate'} onClick={() => setCreateOpen(true)} />,
+    <CreateBtn
+      key={'instancecreate'}
+      onClick={() => setClusterInstanceStatus((prevState) => ({ ...prevState, addedOpen: true }))}
+    />,
     <Button
       key={'heartbeat_all'}
       type={'primary'}
@@ -267,7 +274,7 @@ export default () => {
         {...PROTABLE_OPTIONS_PUBLIC}
         columns={columns}
         actionRef={actionRef}
-        loading={loading}
+        loading={clusterInstanceStatus.loading}
         toolBarRender={toolBarRender}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.CLUSTER_INSTANCE, {
@@ -279,16 +286,16 @@ export default () => {
       />
       {/*added*/}
       <InstanceModal
-        visible={createOpen}
+        visible={clusterInstanceStatus.addedOpen}
         onClose={handleCancel}
         value={{}}
         onSubmit={handleSubmit}
       />
       {/*modify*/}
       <InstanceModal
-        visible={modifyOpen}
+        visible={clusterInstanceStatus.editOpen}
         onClose={handleCancel}
-        value={formValue}
+        value={clusterInstanceStatus.value}
         onSubmit={handleSubmit}
       />
     </>

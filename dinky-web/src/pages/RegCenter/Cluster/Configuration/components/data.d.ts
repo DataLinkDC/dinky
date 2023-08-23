@@ -27,8 +27,3 @@ export type FormConfig = {
   showOnSubmitType?: string;
   showType?: string;
 };
-
-export type ConfigItem = {
-  name: string;
-  value: string;
-};

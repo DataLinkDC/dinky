@@ -18,38 +18,35 @@
  */
 
 import { RowPermissions, SysMenu, UserBaseInfo } from '@/types/AuthCenter/data.d';
-import { ContextMenuPosition } from '@/types/Public/state';
+import { BaseState, ContextMenuPosition } from '@/types/Public/state.d';
 import { Key } from '@ant-design/pro-components';
 
 /**
  * meuTree点击节点 单击和右击
  */
-export type MenuTreeClickNode = {
+export interface MenuTreeClickNode {
   oneClickedNode: any;
   rightClickedNode: any;
-};
+}
 
 /**
  * 菜单管理 的state
  */
-export type MenuState = {
+export interface MenuState extends BaseState {
   sysMenuValue: Partial<SysMenu>;
   contextMenuPosition: ContextMenuPosition;
   selectedKeys: string[] | number[];
   clickNode: MenuTreeClickNode;
   menuTreeData: SysMenu[];
-  addedMenuOpen: boolean;
-  editMenuOpen: boolean;
-  loading: boolean;
   contextMenuOpen: boolean;
   isEditDisabled: boolean;
   isRootMenu: boolean;
-};
+}
 
 /**
  * 给角色分配菜单 的state
  */
-export type RoleAssignMenuState = {
+export interface RoleAssignMenuState {
   loading: boolean;
   searchValue: string;
   selectValue: Key[];
@@ -57,69 +54,57 @@ export type RoleAssignMenuState = {
     menus: SysMenu[];
     selectedMenuIds: number[];
   };
-};
+}
 
 /**
  * 角色管理 的state
  */
-export type RoleListState = {
-  loading: boolean;
+export interface RoleListState extends BaseState {
   value: Partial<UserBaseInfo.Role>;
-  addedRoleOpen: boolean;
-  editRoleOpen: boolean;
   assignMenuOpen: boolean;
   viewUsersOpen: boolean;
   roleUserList: UserBaseInfo.User[];
-};
+}
 
 /**
  * 角色行权限 的state
  */
-export type RowPermissionsState = {
-  loading: boolean;
+export interface RowPermissionsState extends BaseState {
   value: Partial<RowPermissions>;
-  addedRowPermissionsOpen: boolean;
-  editRowPermissionsOpen: boolean;
-};
+}
 
 /**
  * 租户分配用户 的state
  */
-export type TenantTransferState = {
+export interface TenantTransferState {
   targetKeys: string[];
   selectedKeys: string[];
   userList: UserBaseInfo.User[];
-};
+}
 
 /**
  * 租户管理 的state
  */
-export type TenantListState = {
-  loading: boolean;
+export interface TenantListState extends BaseState {
   value: Partial<UserBaseInfo.Tenant>;
   assignUserOpen: boolean;
-  addedTenantOpen: boolean;
-  editTenantOpen: boolean;
   viewUsersOpen: boolean;
   tenantUserList: UserBaseInfo.User[];
   tenantUserIds: string[];
-};
+}
 
 /**
  * 给用户分配角色 的state
  */
-export type RoleTransferState = {
+export interface RoleTransferState {
   targetKeys: string[];
   selectedKeys: string[];
   roleList: UserBaseInfo.Role[];
-};
+}
 
-export type UserListState = {
-  loading: boolean;
+export interface UserListState extends BaseState {
   value: Partial<UserBaseInfo.User>;
-  addedUserOpen: boolean;
-  editUserOpen: boolean;
   assignRoleOpen: boolean;
   roleIds: string[];
   editPasswordOpen: boolean;
-};
+}

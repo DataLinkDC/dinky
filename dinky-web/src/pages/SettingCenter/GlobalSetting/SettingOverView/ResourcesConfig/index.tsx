@@ -83,15 +83,10 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
   };
   return (
     <>
-      {/*tooltip={l('sys.setting.resource.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
-        tag={
-          <>
-            <Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>
-          </>
-        }
+        tag={<Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>}
         data={baseData}
         selectChanges={{ 'resource.settings.model': selectChange }}
       />
