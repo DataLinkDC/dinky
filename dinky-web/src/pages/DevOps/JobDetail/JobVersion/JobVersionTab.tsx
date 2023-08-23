@@ -25,7 +25,7 @@ import { removeById } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
-import { Card, Col, message, Modal, Row, Tag } from 'antd';
+import { Card, Col, message, Row, Tag } from 'antd';
 import { useState } from 'react';
 
 const JobVersionTab = (props: JobProps) => {
@@ -52,22 +52,14 @@ const JobVersionTab = (props: JobProps) => {
     }
   );
 
-  const deleteVersion = (item: TaskHistoryListItem) => {
-    Modal.confirm({
-      title: l('devops.jobinfo.version.delete'),
-      content: l('devops.jobinfo.version.delete.sure', '', { version: item.versionId }),
-      okText: l('button.confirm'),
-      cancelText: l('button.cancel'),
-      onOk: async () => {
-        const result = await removeById(API_CONSTANTS.GET_JOB_VERSION, { versionId: item.id });
-        if (result) {
-          message.success('Delete Success');
-        } else {
-          message.error('Delete faile');
-        }
-        versionList.run();
-      }
-    });
+  const deleteVersion = async (item: TaskHistoryListItem) => {
+    const result = await removeById(API_CONSTANTS.GET_JOB_VERSION, { versionId: item.id });
+    if (result) {
+      message.success('Delete Success');
+    } else {
+      message.error('Delete faile');
+    }
+    versionList.run();
   };
 
   const renderVersionList = () => {

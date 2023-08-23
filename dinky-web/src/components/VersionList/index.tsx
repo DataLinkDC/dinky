@@ -16,9 +16,10 @@
  *
  */
 
+import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { TaskHistoryListItem } from '@/components/VersionList/data';
 import { l } from '@/utils/intl';
-import { DeleteOutlined, DeliveredProcedureOutlined } from '@ant-design/icons';
+import { DeliveredProcedureOutlined } from '@ant-design/icons';
 import { List, Skeleton, Space, Tag, Tooltip } from 'antd';
 import { ListItemTypeProps } from 'antd/es/list/Item';
 
@@ -62,7 +63,7 @@ const VersionList = (props: VersionListProps) => {
             description={item.createTime}
           />
           {!item.isLatest && (
-            <Space>
+            <Space onClick={(e) => e.stopPropagation()}>
               {onRollBackListen && (
                 <Tooltip title={l('devops.jobinfo.version.rollBack')}>
                   <DeliveredProcedureOutlined onClick={() => onRollBackListen(item)} />
@@ -70,7 +71,18 @@ const VersionList = (props: VersionListProps) => {
               )}
               {onDeleteListen && (
                 <Tooltip title={l('devops.jobinfo.version.delete')}>
-                  <DeleteOutlined onClick={() => onDeleteListen(item)} />
+                  <PopconfirmDeleteBtn
+                    description={l('devops.jobinfo.version.delete.sure', '', {
+                      version: item.versionId
+                    })}
+                    onClick={() => {
+                      onDeleteListen(item);
+                    }}
+                    options={{
+                      size: 'small',
+                      type: 'dashed '
+                    }}
+                  />
                 </Tooltip>
               )}
             </Space>
@@ -79,6 +91,7 @@ const VersionList = (props: VersionListProps) => {
       </List.Item>
     );
   };
+
   return (
     <List
       {...options}
