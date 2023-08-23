@@ -30,8 +30,8 @@ const HeaderDropdown: React.FC<HeaderDropdownProps> = ({ overlayClassName: cls, 
   const className = useEmotionCss(({ token }) => {
     return {
       [`@media screen and (max-width: ${token.screenXS})`]: {
-        width: '100%',
-      },
+        width: '100%'
+      }
     };
   });
   return (

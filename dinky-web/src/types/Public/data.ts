@@ -15,46 +15,42 @@
  * limitations under the License.
  */
 
-
 /**
  * theme of nav
  */
 export const THEME = {
-  NAV_THEME: "navTheme",
-  dark: "realDark",
-  light: "light",
+  NAV_THEME: 'navTheme',
+  dark: 'realDark',
+  light: 'light'
 };
-
 
 /**
  * MonacoEditor of CodeEdit's theme
  */
 export const CODE_EDIT_THEME = {
-  VS: "vs",
-  DARK: "vs-dark",
-  HC_BLACK: "hc-black",
-  VS_CUSTOME: "vs-custom",
+  VS: 'vs',
+  DARK: 'vs-dark',
+  HC_BLACK: 'hc-black',
+  VS_CUSTOME: 'vs-custom'
 };
-
 
 export const MonacoEditorOptions = {
   // selectOnLineNumbers: true,
   renderSideBySide: false, //  side by side
-  autoIndent: "None", //  auto indent
+  autoIndent: 'None', //  auto indent
   fontSize: 14, //  font size
   automaticLayout: true, //  auto layout
-  scrollBeyondLastLine: false,  //is scroll beyond the last line
-  autoDetectHighContrast: true, // auto detect high contrast
+  scrollBeyondLastLine: false, //is scroll beyond the last line
+  autoDetectHighContrast: true // auto detect high contrast
 };
 
-
 export type BaseBeanColumns = ExcludeNameAndEnableColumns & {
-  name: string,
-  enabled: boolean,
-}
+  name: string;
+  enabled: boolean;
+};
 
 export type ExcludeNameAndEnableColumns = {
-  id: number,
-  createTime: Date,
-  updateTime: Date,
-}
+  id: number;
+  createTime: Date;
+  updateTime: Date;
+};

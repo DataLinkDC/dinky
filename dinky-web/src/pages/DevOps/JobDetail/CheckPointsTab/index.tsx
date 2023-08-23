@@ -17,37 +17,35 @@
  *
  */
 
+import CheckpointTable from '@/pages/DevOps/JobDetail/CheckPointsTab/components/CheckpointTable';
+import CkDesc from '@/pages/DevOps/JobDetail/CheckPointsTab/components/CkDesc';
+import SavepointTable from '@/pages/DevOps/JobDetail/CheckPointsTab/components/SavePointTable';
+import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import { ProCard } from '@ant-design/pro-components';
+import { Tabs } from 'antd';
 
-import { Tabs} from 'antd';
-import {Jobs} from "@/types/DevOps/data";
-import {ProCard} from "@ant-design/pro-components";
-import CkDesc from "@/pages/DevOps/JobDetail/CheckPointsTab/components/CkDesc";
-import CheckpointTable from "@/pages/DevOps/JobDetail/CheckPointsTab/components/CheckpointTable";
-import SavepointTable from "@/pages/DevOps/JobDetail/CheckPointsTab/components/SavePointTable";
-import {JobProps} from "@/pages/DevOps/JobDetail/data";
-
-const {TabPane} = Tabs;
+const { TabPane } = Tabs;
 
 const CheckPoints = (props: JobProps) => {
-
-  const {jobDetail} = props;
+  const { jobDetail } = props;
 
   return (
     <>
       <ProCard>
-        <CkDesc jobDetail={jobDetail}/>
+        <CkDesc jobDetail={jobDetail} />
       </ProCard>
-      <br/>
+      <br />
       <ProCard>
-        <Tabs defaultActiveKey="history" size="small">
-          <TabPane tab={"History"} key="history">
-            <CheckpointTable jobDetail={jobDetail}/>
+        <Tabs defaultActiveKey='history' size='small'>
+          <TabPane tab={'History'} key='history'>
+            <CheckpointTable jobDetail={jobDetail} />
           </TabPane>
-          <TabPane tab={"SavePoint"} key="savepoint">
+          <TabPane tab={'SavePoint'} key='savepoint'>
             <SavepointTable jobDetail={jobDetail} />
           </TabPane>
         </Tabs>
       </ProCard>
-    </>)
+    </>
+  );
 };
 export default CheckPoints;

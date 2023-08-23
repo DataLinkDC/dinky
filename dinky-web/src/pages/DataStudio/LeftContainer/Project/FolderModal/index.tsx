@@ -17,78 +17,79 @@
  *
  */
 
-import { ModalForm } from "@ant-design/pro-components";
-import {Form} from "antd";
-import React, {useEffect} from "react";
-import {Catalogue} from "@/types/Studio/data";
-import {FormContextValue} from "@/components/Context/FormContext";
-import FolderForm from "@/pages/DataStudio/LeftContainer/Project/FolderModal/FolderForm";
+import { FormContextValue } from '@/components/Context/FormContext';
+import FolderForm from '@/pages/DataStudio/LeftContainer/Project/FolderModal/FolderForm';
+import { Catalogue } from '@/types/Studio/data';
+import { ModalForm } from '@ant-design/pro-components';
+import { Form } from 'antd';
+import React, { useEffect } from 'react';
 
 type JobModalProps = {
-    onCancel: () => void
-    onSubmit: (values: Catalogue) => void
-    modalVisible: boolean
-    title: React.ReactNode
-    values: Partial<Catalogue>
-}
-const FolderModal:React.FC<JobModalProps> = ( props ) => {
-
-    const {onCancel, onSubmit, modalVisible,title,values} = props;
-
-    const [form] = Form.useForm<Catalogue>();
-    /**
-     * init form context
-     */
-    const formContext = React.useMemo<FormContextValue>(
-        () => ({
-            resetForm: () => form.resetFields(), // 定义 resetForm 方法
-        }),
-        [form],
-    );
-    /**
-     * when modalVisible or values changed, set form values
-     */
-    useEffect(() => {
-        if (modalVisible) form.resetFields();
-        form.setFieldsValue(values);
-    }, [open, values, form]);
-
-
-    /**
-     * handle cancel
-     */
-    const handleCancel = () => {
-        onCancel();
-        formContext.resetForm();
-    };
-
-
-
-    /**
-     * submit form
-     */
-    const submitForm = async (formData: Catalogue ) => {
-        await form.validateFields();
-        const newValue = await form.getFieldsValue();
-        onSubmit({...values, name: newValue.name} as Catalogue);
-    };
-
-    return <>
-        <ModalForm<Catalogue>
-            title={title}
-            form={form}
-            width={'30%'}
-            initialValues={values}
-            open={modalVisible}
-            layout={'horizontal'}
-            autoFocusFirstInput
-            modalProps={{destroyOnClose: true, maskClosable: false, onCancel: handleCancel}}
-            onFinish={async (values) => submitForm(values)}
-        >
-            <FolderForm />
-        </ModalForm>
-    </>
+  onCancel: () => void;
+  onSubmit: (values: Catalogue) => void;
+  modalVisible: boolean;
+  title: React.ReactNode;
+  values: Partial<Catalogue>;
 };
+const FolderModal: React.FC<JobModalProps> = (props) => {
+  const { onCancel, onSubmit, modalVisible, title, values } = props;
 
+  const [form] = Form.useForm<Catalogue>();
+  /**
+   * init form context
+   */
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
+    }),
+    [form]
+  );
+  /**
+   * when modalVisible or values changed, set form values
+   */
+  useEffect(() => {
+    if (modalVisible) form.resetFields();
+    form.setFieldsValue(values);
+  }, [open, values, form]);
+
+  /**
+   * handle cancel
+   */
+  const handleCancel = () => {
+    onCancel();
+    formContext.resetForm();
+  };
+
+  /**
+   * submit form
+   */
+  const submitForm = async (formData: Catalogue) => {
+    await form.validateFields();
+    const newValue = await form.getFieldsValue();
+    onSubmit({ ...values, name: newValue.name } as Catalogue);
+  };
+
+  return (
+    <>
+      <ModalForm<Catalogue>
+        title={title}
+        form={form}
+        width={'30%'}
+        initialValues={values}
+        open={modalVisible}
+        layout={'horizontal'}
+        autoFocusFirstInput
+        modalProps={{
+          destroyOnClose: true,
+          maskClosable: false,
+          onCancel: handleCancel
+        }}
+        onFinish={async (values) => submitForm(values)}
+      >
+        <FolderForm />
+      </ModalForm>
+    </>
+  );
+};
 
 export default FolderModal;

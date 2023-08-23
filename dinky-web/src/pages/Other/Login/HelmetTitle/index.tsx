@@ -17,18 +17,18 @@
  *
  */
 
-
-import {l} from "@/utils/intl";
-import Settings from "../../../../../config/defaultSettings";
-import {Helmet} from "@@/exports";
-import React from "react";
+import { l } from '@/utils/intl';
+import { Helmet } from '@@/exports';
+import Settings from '../../../../../config/defaultSettings';
 
 export default () => {
-  return <>
-    <Helmet>
-      <title>
-        {l("menu.login")} - {Settings.title}
-      </title>
-    </Helmet>
-  </>
-}
+  return (
+    <>
+      <Helmet>
+        <title>
+          {l('menu.login')} - {Settings.title}
+        </title>
+      </Helmet>
+    </>
+  );
+};

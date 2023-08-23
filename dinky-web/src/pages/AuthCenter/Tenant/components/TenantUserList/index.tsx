@@ -17,103 +17,100 @@
  *
  */
 
-
-
-
-import React, {useEffect, useRef} from "react";
-import {UserBaseInfo} from "@/types/User/data";
-import {Button, Drawer} from "antd";
-import {l} from "@/utils/intl";
-import {YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING} from "@/types/Public/constants";
-import {ActionType, ProColumns, ProTable} from "@ant-design/pro-components";
-
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING } from '@/types/Public/constants';
+import { l } from '@/utils/intl';
+import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
+import { Button, Drawer } from 'antd';
+import React, { useEffect, useRef } from 'react';
 
 type TenantUserListProps = {
-    tenant : Partial<UserBaseInfo.Tenant>,
-    userList : UserBaseInfo.User[],
-    open : boolean,
-    loading : boolean,
-    onClose : () => void,
-    onSubmit : (values : Partial<UserBaseInfo.User>) => void
-}
-const TenantUserList:React.FC<TenantUserListProps>= (props) => {
+  tenant: Partial<UserBaseInfo.Tenant>;
+  userList: UserBaseInfo.User[];
+  open: boolean;
+  loading: boolean;
+  onClose: () => void;
+  onSubmit: (values: Partial<UserBaseInfo.User>) => void;
+};
+const TenantUserList: React.FC<TenantUserListProps> = (props) => {
+  const actionRef = useRef<ActionType>();
+  const { tenant, loading, userList, open, onClose, onSubmit } = props;
 
-    const actionRef = useRef<ActionType>();
-    const {tenant, loading, userList,open,onClose,onSubmit} = props;
+  useEffect(() => {
+    actionRef.current?.reload?.();
+  }, [userList, tenant]);
 
-    useEffect(() => {
-        actionRef.current?.reload?.();
-    },[userList,tenant]);
+  /**
+   * user infon list
+   * @type {({dataIndex: string, title: string, key: string} | {dataIndex: string, title: string, key: string} | {dataIndex: string, title: string, key: string} | {hideInSearch: boolean, dataIndex: string, valueEnum: {true: {text: JSX.Element, status: string}, false: {text: JSX.Element, status: string}}, filters: ({text: string, value: number} | {text: string, value: number})[], title: string, filterMultiple: boolean} | {hideInSearch: boolean, dataIndex: string, valueEnum: {true: {text: JSX.Element, status: string}, false: {text: JSX.Element, status: string}}, filters: ({text: string, value: number} | {text: string, value: number})[], title: string, filterMultiple: boolean} | {valueType: string, width: string, fixed: string, title: string, render: (_: any, record: UserBaseInfo.User) => JSX.Element[]})[]}
+   */
+  const userColumns: ProColumns<UserBaseInfo.User>[] = [
+    {
+      title: l('user.username'),
+      dataIndex: 'username',
+      key: 'username'
+    },
+    {
+      title: l('user.nickname'),
+      dataIndex: 'nickname',
+      key: 'nickname'
+    },
+    {
+      title: l('user.superAdminFlag'),
+      dataIndex: 'superAdminFlag',
+      valueEnum: YES_OR_NO_ENUM,
+      hideInSearch: true,
+      filters: YES_OR_NO_FILTERS_MAPPING,
+      filterMultiple: false
+    },
+    {
+      title: l('user.tenantAdminFlag'),
+      dataIndex: 'tenantAdminFlag',
+      valueEnum: YES_OR_NO_ENUM,
+      hideInSearch: true,
+      filters: YES_OR_NO_FILTERS_MAPPING,
+      filterMultiple: false
+    },
+    {
+      title: l('global.table.operate'),
+      valueType: 'option',
+      width: '12vh',
+      fixed: 'right',
+      render: (_: any, record: UserBaseInfo.User) => [
+        <Button
+          type={'link'}
+          key={`${record.id}_set_tenant_m`}
+          title={record.tenantAdminFlag ? l('tenant.cancel.admin') : l('tenant.set.admin')}
+          onClick={() => onSubmit(record)}
+        >
+          {record.tenantAdminFlag ? l('tenant.cancel.admin') : l('tenant.set.admin')}
+        </Button>
+      ]
+    }
+  ];
 
-    /**
-     * user infon list
-     * @type {({dataIndex: string, title: string, key: string} | {dataIndex: string, title: string, key: string} | {dataIndex: string, title: string, key: string} | {hideInSearch: boolean, dataIndex: string, valueEnum: {true: {text: JSX.Element, status: string}, false: {text: JSX.Element, status: string}}, filters: ({text: string, value: number} | {text: string, value: number})[], title: string, filterMultiple: boolean} | {hideInSearch: boolean, dataIndex: string, valueEnum: {true: {text: JSX.Element, status: string}, false: {text: JSX.Element, status: string}}, filters: ({text: string, value: number} | {text: string, value: number})[], title: string, filterMultiple: boolean} | {valueType: string, width: string, fixed: string, title: string, render: (_: any, record: UserBaseInfo.User) => JSX.Element[]})[]}
-     */
-    const userColumns :ProColumns<UserBaseInfo.User>[] = [
-        {
-            title: l("user.username"),
-            dataIndex: 'username',
-            key: 'username',
-        },
-        {
-            title: l("user.nickname"),
-            dataIndex: 'nickname',
-            key: 'nickname',
-        },
-        {
-            title: l("user.superAdminFlag"),
-            dataIndex: "superAdminFlag",
-            valueEnum: YES_OR_NO_ENUM,
-            hideInSearch: true,
-            filters: YES_OR_NO_FILTERS_MAPPING,
-            filterMultiple: false,
-        },
-        {
-            title: l("user.tenantAdminFlag"),
-            dataIndex: "tenantAdminFlag",
-            valueEnum: YES_OR_NO_ENUM,
-            hideInSearch: true,
-            filters: YES_OR_NO_FILTERS_MAPPING,
-            filterMultiple: false,
-        },
-        {
-            title: l("global.table.operate"),
-            valueType: "option",
-            width: "12vh",
-            fixed: "right",
-            render: (_: any, record: UserBaseInfo.User) => [
-               <Button
-                   type={'link'}
-                   key={`${record.id}_set_tenant_m`}
-                   title={ record.tenantAdminFlag ? l('tenant.cancel.admin') :l('tenant.set.admin')}
-                   onClick={() => onSubmit(record)}
-               >
-                   { record.tenantAdminFlag ? l('tenant.cancel.admin') :l('tenant.set.admin')}
-               </Button>
-            ],
-        },
-    ]
-
-    return <>
-    <Drawer
+  return (
+    <>
+      <Drawer
         title={`${tenant.tenantCode} - ${l('tenant.user.list')}`}
         width={'50%'}
         open={open}
         maskClosable={false}
         onClose={onClose}
-    >
-           <ProTable<UserBaseInfo.User>
-               search={false}
-               pagination={false}
-               options={false}
-               rowKey="id"
-               actionRef={actionRef}
-               loading={loading}
-               dataSource={userList}
-               columns={userColumns}
-           />
-    </Drawer>
+      >
+        <ProTable<UserBaseInfo.User>
+          search={false}
+          pagination={false}
+          options={false}
+          rowKey='id'
+          actionRef={actionRef}
+          loading={loading}
+          dataSource={userList}
+          columns={userColumns}
+        />
+      </Drawer>
     </>
-}
+  );
+};
 
-export default TenantUserList
+export default TenantUserList;

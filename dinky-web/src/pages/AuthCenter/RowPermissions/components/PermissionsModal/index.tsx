@@ -17,102 +17,93 @@
  *
  */
 
-
-import React, {useEffect, useState} from 'react';
-import {Form, Modal} from 'antd';
-import {l} from "@/utils/intl";
-import {RowPermissions, UserBaseInfo} from "@/types/User/data";
-import {API_CONSTANTS, NORMAL_MODAL_OPTIONS} from "@/services/constants";
-import PermissionsForm from "@/pages/AuthCenter/RowPermissions/components/PermissionsModal/PermissionsForm";
-import {FormContextValue} from "@/components/Context/FormContext";
-import {queryList} from "@/services/api";
+import { FormContextValue } from '@/components/Context/FormContext';
+import PermissionsForm from '@/pages/AuthCenter/RowPermissions/components/PermissionsModal/PermissionsForm';
+import { queryList } from '@/services/api';
+import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { RowPermissions, UserBaseInfo } from '@/types/AuthCenter/data';
+import { l } from '@/utils/intl';
+import { Form, Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
 
 /**
  * RoleSelectPermissionsFormProps
  */
-type RoleSelectPermissionsFormProps = {
-    onCancel: (flag?: boolean) => void;
-    onSubmit: (values: Partial<RowPermissions>) => void;
-    modalVisible: boolean;
-    values: Partial<RowPermissions>;
+type RolePermissionsFormProps = {
+  onCancel: (flag?: boolean) => void;
+  onSubmit: (values: Partial<RowPermissions>) => void;
+  modalVisible: boolean;
+  values: Partial<RowPermissions>;
 };
 
+export const PermissionsModal: React.FC<RolePermissionsFormProps> = (props) => {
+  /**
+   * init form
+   */
+  const [form] = Form.useForm();
+  /**
+   * init form context
+   */
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
+    }),
+    [form]
+  );
 
-export const PermissionsModal: React.FC<RoleSelectPermissionsFormProps> = (props) => {
+  const [roleList, setRoleList] = useState<Partial<UserBaseInfo.Role>[]>([]);
 
-    /**
-     * init form
-     */
-    const [form] = Form.useForm();
-    /**
-     * init form context
-     */
-    const formContext = React.useMemo<FormContextValue>(() => ({
-        resetForm: () => form.resetFields(), // 定义 resetForm 方法
-    }), [form]);
+  /**
+   * init role list
+   */
+  useEffect(() => {
+    queryList(API_CONSTANTS.ROLE).then((res) => {
+      setRoleList(res.data);
+    });
+  }, []);
 
-    const [roleList, setRoleList] = useState<Partial<UserBaseInfo.Role>[]>([]);
+  /**
+   * init props
+   */
+  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
 
+  /**
+   * when modalVisible or values changed, set form values
+   */
+  useEffect(() => {
+    form.setFieldsValue(values);
+  }, [modalVisible, values, form]);
 
-    /**
-     * init role list
-     */
-    useEffect(() => {
-        queryList(API_CONSTANTS.ROLE).then((res) => {
-            setRoleList(res.data);
-        });
-    }, []);
+  /**
+   * cancel modal
+   */
+  const handleCancel = () => {
+    handleModalVisible();
+    formContext.resetForm();
+  };
 
-    /**
-     * init props
-     */
-    const {
-        onSubmit: handleSubmit,
-        onCancel: handleModalVisible,
-        modalVisible,
-        values
-    } = props;
+  /**
+   * submit form
+   */
+  const submitForm = async () => {
+    const fieldsValue = await form.validateFields();
+    handleSubmit({ ...values, ...fieldsValue });
+    handleCancel();
+  };
 
-
-    /**
-     * when modalVisible or values changed, set form values
-     */
-    useEffect(() => {
-        form.setFieldsValue(values);
-    }, [modalVisible, values, form]);
-
-
-    /**
-     * cancel modal
-     */
-    const handleCancel = () => {
-        handleModalVisible();
-        formContext.resetForm();
-    }
-
-
-    /**
-     * submit form
-     * @returns {Promise<void>}
-     */
-    const submitForm = async () => {
-        const fieldsValue = await form.validateFields();
-        await handleSubmit({...values, ...fieldsValue});
-        await handleCancel();
-    };
-
-    /**
-     * render
-     */
-    return <>
-        <Modal
-            {...NORMAL_MODAL_OPTIONS}
-            title={values.id ? l('rowPermissions.update') : l('rowPermissions.create')}
-            open={modalVisible}
-            onOk={() => submitForm()}
-            onCancel={() => handleCancel()}
-        >
-            <PermissionsForm form={form} values={values} roles={roleList}/>
-        </Modal>
-    </>
+  /**
+   * render
+   */
+  return (
+    <Modal
+      {...NORMAL_MODAL_OPTIONS}
+      title={values.id ? l('rowPermissions.update') : l('rowPermissions.create')}
+      open={modalVisible}
+      onOk={() => submitForm()}
+      onCancel={() => handleCancel()}
+    >
+      <PermissionsForm form={form} values={values} roles={roleList} />
+    </Modal>
+  );
 };

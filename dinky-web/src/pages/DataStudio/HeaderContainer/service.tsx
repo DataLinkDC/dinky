@@ -1,24 +1,23 @@
-import {StudioParam} from "@/pages/DataStudio/data.d";
-import {postAll} from "@/services/api";
-import {handleGetOption, handleOption, handlePutData} from "@/services/BusinessCrud";
-import {DIALECT, RUN_MODE} from "@/services/constants";
-import {l} from "@/utils/intl";
+import { TaskDataType } from '@/pages/DataStudio/model';
+import { postAll } from '@/services/api';
+import { handleGetOption, handleOption } from '@/services/BusinessCrud';
+import { DIALECT, RUN_MODE } from '@/services/constants';
 
 export async function explainSql(params: any) {
   return postAll('/api/studio/explainSql', params);
 }
-export async function getJobPlan(title:string,params: any) {
-  return handleOption('/api/studio/getJobPlan',title, params);
+export async function getJobPlan(title: string, params: any) {
+  return handleOption('/api/studio/getJobPlan', title, params);
 }
-export async function executeSql(title:string,params: any) {
-  return handleOption('/api/studio/executeSql',title, params);
+export async function executeSql(title: string, params: TaskDataType) {
+  return handleOption('/api/studio/executeSql', title, params);
 }
-export function offLineTask(title:string,id: number, type: string) {
-  return handleGetOption('api/task/offLineTask',title,{id, type});
+export function offLineTask(title: string, id: number, type: string) {
+  return handleGetOption('api/task/offLineTask', title, { id, type });
 }
 
 export const isSql = (dialect: string) => {
-  if (!dialect){
+  if (!dialect) {
     return false;
   }
   switch (dialect.toLowerCase()) {
@@ -48,4 +47,4 @@ export const isOnline = (type: string) => {
     default:
       return false;
   }
-}
+};

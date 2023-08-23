@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 
-import {request} from '@umijs/max';
+import { request } from '@umijs/max';
 
-import {METHOD_CONSTANTS} from "@/services/constants";
-import proxy from "../../config/proxy";
-import {PublicParams} from "@/services/data";
-
+import { METHOD_CONSTANTS } from '@/services/constants';
+import { PublicParams } from '@/services/data';
 
 // ============================ CRUD REQUEST ============================
 
@@ -33,11 +31,10 @@ export async function queryList(url: string, params?: PublicParams.TableParams) 
   return request(url, {
     method: METHOD_CONSTANTS.POST,
     data: {
-      ...params,
-    },
+      ...params
+    }
   });
 }
-
 
 /**
  * add or update data
@@ -48,8 +45,8 @@ export async function addOrUpdateData(url: string, params: any) {
   return request(url, {
     method: METHOD_CONSTANTS.PUT,
     data: {
-      ...params,
-    },
+      ...params
+    }
   });
 }
 
@@ -62,19 +59,17 @@ export async function removeById(url: string, params: any) {
   return request(url, {
     method: METHOD_CONSTANTS.DELETE,
     params: {
-      ...params,
-    },
+      ...params
+    }
   });
 }
-
-
 
 export async function getData(url: string, params?: any) {
   return request(url, {
     method: METHOD_CONSTANTS.GET,
     params: {
-      ...params,
-    },
+      ...params
+    }
   });
 }
 
@@ -82,53 +77,50 @@ export async function removeData(url: string, params: [any]) {
   return request(url, {
     method: METHOD_CONSTANTS.DELETE,
     data: {
-      ...params,
-    },
+      ...params
+    }
   });
 }
-export  function getSseData(url: string) {
+export function getSseData(url: string) {
   return new EventSource(url);
 }
-
-
 
 export async function putData(url: string, params: any) {
   return request(url, {
     method: METHOD_CONSTANTS.PUT,
     params: {
-      ...params,
-    },
+      ...params
+    }
   });
 }
 export async function putDataJson(url: string, params: any) {
   return request(url, {
     method: METHOD_CONSTANTS.PUT,
     data: {
-      ...params,
-    },
+      ...params
+    }
   });
 }
 export async function putDataAsArray(url: string, data: any[]) {
   return request(url, {
     method: METHOD_CONSTANTS.PUT,
-    data: data,
+    data: data
   });
 }
-
 
 export async function postDataArray(url: string, params: number[]) {
   return request(url, {
     method: METHOD_CONSTANTS.POST,
     data: {
-      ...params,
-    },
+      ...params
+    }
   });
 }
 
 export async function postAll(url: string, params?: any) {
   return request(url, {
     method: METHOD_CONSTANTS.POST,
-    data: params,
+    data: params
   });
 }
 
@@ -136,25 +128,23 @@ export async function getInfoById(url: string, id: number) {
   return request(url, {
     method: METHOD_CONSTANTS.GET,
     params: {
-      id: id,
-    },
+      id: id
+    }
   });
 }
-
 
 export async function updateDataByParams(url: string, params: any) {
   return request(url, {
     method: METHOD_CONSTANTS.PUT,
     params: {
-      ...params,
-    },
+      ...params
+    }
   });
 }
-
 
 export async function getDataByRequestBody(url: string, body: any) {
   return request(url, {
     method: METHOD_CONSTANTS.POST,
-    data: {...body},
+    data: { ...body }
   });
 }

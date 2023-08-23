@@ -15,32 +15,32 @@
  * limitations under the License.
  */
 
-import {Alert, Typography} from 'antd';
-import {l} from '@/utils/intl';
-import React from 'react';
-import {AlertRestProps, TypographyRestProps} from '@/pages/Other/About';
+import { AlertRestProps, TypographyRestProps } from '@/pages/Other/About';
+import { l } from '@/utils/intl';
+import { Alert, Typography } from 'antd';
 
 export const CommunityRules = () => {
-
-  return <>
-    <Alert
-      message={l('about.communityRules')}
-      type="success"
-      {...AlertRestProps}
-    />
-    <Typography.Text  {...TypographyRestProps}>
-      <ul>
-        <li>{l('about.communityRules.1')}</li>
-        <li>{l('about.communityRules.2')}</li>
-        <li>{l('about.communityRules.3')}</li>
-        <li>{l('about.communityRules.4')}</li>
-        <li>
-          <a href={'https://github.com/DataLinkDC/dinky/issues/66'} target={'_blank'} rel="noreferrer">
-            Issue
-          </a>
-          {l('about.communityRules.5')}
-        </li>
-      </ul>
-    </Typography.Text>
-  </>
-}
+  return (
+    <>
+      <Alert message={l('about.communityRules')} type='success' {...AlertRestProps} />
+      <Typography.Text {...TypographyRestProps}>
+        <ul>
+          <li>{l('about.communityRules.1')}</li>
+          <li>{l('about.communityRules.2')}</li>
+          <li>{l('about.communityRules.3')}</li>
+          <li>{l('about.communityRules.4')}</li>
+          <li>
+            <a
+              href={'https://github.com/DataLinkDC/dinky/issues/66'}
+              target={'_blank'}
+              rel='noreferrer'
+            >
+              Issue
+            </a>
+            {l('about.communityRules.5')}
+          </li>
+        </ul>
+      </Typography.Text>
+    </>
+  );
+};

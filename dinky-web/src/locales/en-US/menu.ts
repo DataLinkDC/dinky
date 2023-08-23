@@ -83,13 +83,13 @@ export default {
   'menu.datastudio.historyVision': 'History Vision',
   'menu.datastudio.jobInfo': 'Job Info',
 
- 'menu.datastudio.tool':'Tool',
- 'menu.datastudio.result':'Result',
- 'menu.datastudio.bi':'BI',
- 'menu.datastudio.lineage':'Lineage',
- 'menu.datastudio.process':'Process',
- 'menu.datastudio.history':'History',
- 'menu.datastudio.table-data':'Table Data',
+  'menu.datastudio.tool': 'Tool',
+  'menu.datastudio.result': 'Result',
+  'menu.datastudio.bi': 'BI',
+  'menu.datastudio.lineage': 'Lineage',
+  'menu.datastudio.process': 'Process',
+  'menu.datastudio.history': 'History',
+  'menu.datastudio.table-data': 'Table Data',
 
-  'menu.datastudio.tool.text-comparison':'Text Comparison',
+  'menu.datastudio.tool.text-comparison': 'Text Comparison'
 };

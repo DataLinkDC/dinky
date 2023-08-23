@@ -17,38 +17,40 @@
  *
  */
 
-import {ActionType, ProTable} from '@ant-design/pro-components';
-import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING} from '@/services/constants';
-import {ProColumns} from '@ant-design/pro-table';
-import {Cluster} from '@/types/RegCenter/data';
-import {l} from '@/utils/intl';
-import {queryList} from '@/services/api';
-import {CreateBtn} from '@/components/CallBackButton/CreateBtn';
-import React, {useRef, useState} from 'react';
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
+import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import { CLUSTER_INSTANCE_STATUS_ENUM } from '@/pages/RegCenter/Cluster/Instance/components/contants';
+import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
-import {handleAddOrUpdate, handleOption, handleRemoveById, updateDataByParam} from '@/services/BusinessCrud';
-import {EditBtn} from '@/components/CallBackButton/EditBtn';
-import {PopconfirmDeleteBtn} from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import {EnableSwitchBtn} from '@/components/CallBackButton/EnableSwitchBtn';
-import {Button, Popconfirm} from 'antd';
-import {ClearOutlined, HeartTwoTone} from '@ant-design/icons';
-import {renderWebUiRedirect} from '@/pages/RegCenter/Cluster/Instance/components/function';
+import { queryList } from '@/services/api';
 import {
-  CLUSTER_INSTANCE_STATUS_ENUM
-} from '@/pages/RegCenter/Cluster/Instance/components/contants';
-import {YES_OR_NO_ENUM} from "@/types/Public/constants";
-
+  handleAddOrUpdate,
+  handleOption,
+  handleRemoveById,
+  updateDataByParam
+} from '@/services/BusinessCrud';
+import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { YES_OR_NO_ENUM } from '@/types/Public/constants';
+import { Cluster } from '@/types/RegCenter/data.d';
+import { InitClusterInstanceState } from '@/types/RegCenter/init.d';
+import { ClusterInstanceState } from '@/types/RegCenter/state.d';
+import { l } from '@/utils/intl';
+import { ClearOutlined, HeartTwoTone } from '@ant-design/icons';
+import { ActionType, ProTable } from '@ant-design/pro-components';
+import { ProColumns } from '@ant-design/pro-table';
+import { Button, Popconfirm } from 'antd';
+import { useRef, useState } from 'react';
 
 export default () => {
-
   /**
    * state
    */
+  const [clusterInstanceStatus, setClusterInstanceStatus] =
+    useState<ClusterInstanceState>(InitClusterInstanceState);
   const actionRef = useRef<ActionType>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [createOpen, setCreateOpen] = useState<boolean>(false);
-  const [modifyOpen, setModifyeOpen] = useState<boolean>(false);
-  const [formValue, setFormValue] = useState<Partial<Cluster.Instance>>({});
 
   /**
    * execute and callback function
@@ -56,9 +58,9 @@ export default () => {
    * @returns {Promise<void>}
    */
   const executeAndCallback = async (callback: () => void) => {
-    setLoading(true);
+    setClusterInstanceStatus((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setLoading(false);
+    setClusterInstanceStatus((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
@@ -66,9 +68,12 @@ export default () => {
    * cancel
    */
   const handleCancel = async () => {
-    setCreateOpen(false);
-    setModifyeOpen(false);
-    setFormValue({});
+    setClusterInstanceStatus((prevState) => ({
+      ...prevState,
+      addedOpen: false,
+      editOpen: false,
+      value: {}
+    }));
   };
 
   /**
@@ -87,8 +92,11 @@ export default () => {
    * @param value
    */
   const handleEdit = async (value: Partial<Cluster.Instance>) => {
-    setFormValue(value);
-    setModifyeOpen(true);
+    setClusterInstanceStatus((prevState) => ({
+      ...prevState,
+      editOpen: true,
+      value: value
+    }));
   };
 
   /**
@@ -96,9 +104,9 @@ export default () => {
    * @param id
    */
   const handleDelete = async (id: number) => {
-    await executeAndCallback(async () => {
-      await handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_DELETE, id);
-    });
+    await executeAndCallback(async () =>
+      handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_DELETE, id)
+    );
   };
 
   /**
@@ -106,27 +114,27 @@ export default () => {
    * @param record
    */
   const handleChangeEnable = async (record: Partial<Cluster.Instance>) => {
-    await executeAndCallback(async () => {
-      await updateDataByParam(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, {id: record.id});
-    });
+    await executeAndCallback(async () =>
+      updateDataByParam(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, { id: record.id })
+    );
   };
 
   /**
    * check heart beat
    */
   const handleHeartBeat = async () => {
-    await executeAndCallback(async () => {
-      await handleOption(API_CONSTANTS.CLUSTER_INSTANCE_HEARTBEATS, l('rc.ci.heartbeat'), null);
-    });
+    await executeAndCallback(async () =>
+      handleOption(API_CONSTANTS.CLUSTER_INSTANCE_HEARTBEATS, l('rc.ci.heartbeat'), null)
+    );
   };
 
   /**
    * recycle instance
    */
   const handleRecycle = async () => {
-    await executeAndCallback(async () => {
-      await handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_RECYCLE, 0);
-    });
+    await executeAndCallback(async () =>
+      handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_RECYCLE, 0)
+    );
   };
 
   /**
@@ -136,50 +144,50 @@ export default () => {
     {
       title: l('rc.ci.name'),
       dataIndex: 'name',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('rc.ci.alias'),
       dataIndex: 'alias',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('rc.ci.type'),
       dataIndex: 'type',
       hideInSearch: true,
-      width: '8%',
+      width: '8%'
     },
     {
       title: l('rc.ci.jma'),
       dataIndex: 'jobManagerHost',
       copyable: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('rc.ci.ar'),
       dataIndex: 'autoRegisters',
       hideInSearch: true,
       width: '8%',
-      valueEnum: YES_OR_NO_ENUM,
+      valueEnum: YES_OR_NO_ENUM
     },
     {
       title: l('rc.ci.version'),
       dataIndex: 'version',
       hideInSearch: true,
-      width: '5%',
+      width: '5%'
     },
     {
       title: l('rc.ci.status'),
       dataIndex: 'status',
       hideInSearch: true,
       width: '8%',
-      valueEnum: CLUSTER_INSTANCE_STATUS_ENUM,
+      valueEnum: CLUSTER_INSTANCE_STATUS_ENUM
     },
     {
       title: l('global.table.note'),
       dataIndex: 'note',
       width: '5%',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('global.table.isEnable'),
@@ -190,21 +198,26 @@ export default () => {
       filterMultiple: false,
       valueEnum: STATUS_ENUM(),
       render: (_: any, record: Cluster.Instance) => {
-        return <EnableSwitchBtn key={`${record.id}_enable`} record={record}
-                                onChange={() => handleChangeEnable(record)}/>;
-      },
+        return (
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
+        );
+      }
     },
     {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
       hideInSearch: true,
-      hideInTable: true,
+      hideInTable: true
     },
     {
       title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       hideInSearch: true,
-      hideInTable: true,
+      hideInTable: true
     },
     {
       title: l('global.table.operate'),
@@ -212,44 +225,79 @@ export default () => {
       valueType: 'option',
       width: '8vw',
       render: (_: any, record: Cluster.Instance) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)}/>,
-        <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDelete(record.id)}
-                             description={l('rc.ci.deleteConfirm')}/>,
-        renderWebUiRedirect(record),
-      ],
-    },
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />,
+        <PopconfirmDeleteBtn
+          key={`${record.id}_delete`}
+          onClick={() => handleDelete(record.id)}
+          description={l('rc.ci.deleteConfirm')}
+        />,
+        renderWebUiRedirect(record)
+      ]
+    }
   ];
 
   /**
    * tool bar render
    */
   const toolBarRender = () => [
-    <CreateBtn key={'instancecreate'} onClick={() => setCreateOpen(true)}/>,
-    <Button key={'heartbeat_all'} type={'primary'} icon={<HeartTwoTone/>}
-            onClick={() => handleHeartBeat()}>{l('button.heartbeat')}</Button>,
-    <Popconfirm key={'recycle'} title={l('rc.ci.recycle')} description={l('rc.ci.recycleConfirm')}
-                onConfirm={handleRecycle}>
-      <Button key={'recycle_btn'} type={'primary'} icon={<ClearOutlined/>}>{l('button.recycle')}</Button>
-    </Popconfirm>,
+    <CreateBtn
+      key={'instancecreate'}
+      onClick={() => setClusterInstanceStatus((prevState) => ({ ...prevState, addedOpen: true }))}
+    />,
+    <Button
+      key={'heartbeat_all'}
+      type={'primary'}
+      icon={<HeartTwoTone />}
+      onClick={() => handleHeartBeat()}
+    >
+      {l('button.heartbeat')}
+    </Button>,
+    <Popconfirm
+      key={'recycle'}
+      title={l('rc.ci.recycle')}
+      description={l('rc.ci.recycleConfirm')}
+      onConfirm={handleRecycle}
+    >
+      <Button key={'recycle_btn'} type={'primary'} icon={<ClearOutlined />}>
+        {l('button.recycle')}
+      </Button>
+    </Popconfirm>
   ];
 
   /**
    * render
    */
-  return <>
-    <ProTable<Cluster.Instance>
-      headerTitle={l('rc.ci.management')}
-      {...PROTABLE_OPTIONS_PUBLIC}
-      columns={columns}
-      actionRef={actionRef}
-      loading={loading}
-      toolBarRender={toolBarRender}
-      request={(params, sorter, filter: any) => queryList(API_CONSTANTS.CLUSTER_INSTANCE, {...params, sorter, filter})}
-    />
-    {/*added*/}
-    <InstanceModal visible={createOpen} onClose={handleCancel} value={{}} onSubmit={handleSubmit}/>
-    {/*modify*/}
-    <InstanceModal visible={modifyOpen} onClose={handleCancel} value={formValue} onSubmit={handleSubmit}/>
-
-  </>;
+  return (
+    <>
+      <ProTable<Cluster.Instance>
+        headerTitle={l('rc.ci.management')}
+        {...PROTABLE_OPTIONS_PUBLIC}
+        columns={columns}
+        actionRef={actionRef}
+        loading={clusterInstanceStatus.loading}
+        toolBarRender={toolBarRender}
+        request={(params, sorter, filter: any) =>
+          queryList(API_CONSTANTS.CLUSTER_INSTANCE, {
+            ...params,
+            sorter,
+            filter
+          })
+        }
+      />
+      {/*added*/}
+      <InstanceModal
+        visible={clusterInstanceStatus.addedOpen}
+        onClose={handleCancel}
+        value={{}}
+        onSubmit={handleSubmit}
+      />
+      {/*modify*/}
+      <InstanceModal
+        visible={clusterInstanceStatus.editOpen}
+        onClose={handleCancel}
+        value={clusterInstanceStatus.value}
+        onSubmit={handleSubmit}
+      />
+    </>
+  );
 };

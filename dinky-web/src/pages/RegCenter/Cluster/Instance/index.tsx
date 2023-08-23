@@ -17,15 +17,16 @@
  *
  */
 
-import React from "react";
-import {PageContainer} from "@ant-design/pro-components";
-import InstanceList from "@/pages/RegCenter/Cluster/Instance/components/InstanceList";
-import Pop from "@/components/Animation/Pop";
+import Pop from '@/components/Animation/Pop';
+import InstanceList from '@/pages/RegCenter/Cluster/Instance/components/InstanceList';
+import { PageContainer } from '@ant-design/pro-components';
 
 export default () => {
-    return <Pop>
-        <PageContainer title={false}>
-            <InstanceList/>
-        </PageContainer>
+  return (
+    <Pop>
+      <PageContainer title={false}>
+        <InstanceList />
+      </PageContainer>
     </Pop>
-}
+  );
+};

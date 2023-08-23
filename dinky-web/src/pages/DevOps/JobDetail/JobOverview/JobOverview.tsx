@@ -17,27 +17,19 @@
  *
  */
 
-
-import {Descriptions, Tag, Typography} from 'antd';
-import {Link} from 'umi';
-import {Jobs} from "@/types/DevOps/data";
-import {l} from '@/utils/intl';
-import {ProCard} from "@ant-design/pro-components";
-import {TagJobStatus} from "@/pages/DevOps/function";
-import {RocketOutlined} from "@ant-design/icons";
-import { parseSecondStr } from '@/utils/function';
-import JobDesc from "@/pages/DevOps/JobDetail/JobOverview/components/JobDesc";
-import FlinkTable from "@/pages/DevOps/JobDetail/JobOverview/components/FlinkTable";
-import {JobProps} from "@/pages/DevOps/JobDetail/data";
+import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import FlinkTable from '@/pages/DevOps/JobDetail/JobOverview/components/FlinkTable';
+import JobDesc from '@/pages/DevOps/JobDetail/JobOverview/components/JobDesc';
 
 const JobConfigTab = (props: JobProps) => {
+  const { jobDetail } = props;
 
-  const {jobDetail} = props;
-
-  return <>
-    <JobDesc jobDetail={jobDetail}/>
-    <FlinkTable jobDetail={jobDetail}/>
-  </>
+  return (
+    <>
+      <JobDesc jobDetail={jobDetail} />
+      <FlinkTable jobDetail={jobDetail} />
+    </>
+  );
 };
 
 export default JobConfigTab;

@@ -17,14 +17,12 @@
  *
  */
 
-
-import {Progress, Steps, theme} from "antd";
-import React, {useEffect} from "react";
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import {GitProject} from "@/types/RegCenter/data";
-import {processColor} from "@/pages/RegCenter/GitProject/constans";
-import JarShow from "@/pages/RegCenter/GitProject/components/BuildSteps/JarShow";
-
+import CodeShow from '@/components/CustomEditor/CodeShow';
+import JarShow from '@/pages/RegCenter/GitProject/components/BuildSteps/JarShow';
+import { processColor } from '@/pages/RegCenter/GitProject/constans';
+import { GitProject } from '@/types/RegCenter/data';
+import { Progress, Steps, theme } from 'antd';
+import React from 'react';
 
 export type BuildMsgData = {
   type: number; // //   1 是log  2是部分状态
@@ -34,65 +32,67 @@ export type BuildMsgData = {
   resultType?: number; // 1:log 2: jar list or class list
   log: string;
   showList: boolean;
-
-}
-
+};
 
 type BuildStepsProps = {
-  values: GitProject;
+  values: Partial<GitProject>;
   steps: any[];
   percent: number;
   currentStep: number;
   log: string;
   showList: boolean;
-}
-
-const CodeShowProps = {
-  height: "50vh",
-  language: "java",
-  lineNumbers: "on",
-  showFloatButton: true,
 };
 
+const CodeShowProps = {
+  height: '50vh',
+  language: 'java',
+  lineNumbers: 'on',
+  showFloatButton: true
+};
 
 export const AutoSteps: React.FC<BuildStepsProps> = (props) => {
-
-  const {
-    values, steps, percent, currentStep, log,showList
-  } = props;
+  const { values, steps, percent, currentStep, log, showList } = props;
 
   /**
    * state
    */
-  const {token} = theme.useToken();
-
+  const { token } = theme.useToken();
 
   const contentStyle: React.CSSProperties = {
     color: token.colorTextTertiary,
     backgroundColor: token.colorFillAlter,
     borderRadius: token.borderRadiusLG,
     border: `1px dashed ${token.colorBorder}`,
-    marginTop: 16,
+    marginTop: 16
   };
 
-  return <>
-    <Steps
+  return (
+    <>
+      <Steps
         initial={0}
         type={'navigation'}
         status={'wait'}
         size={'small'}
         onChange={(current) => current}
-        current={currentStep-1}
+        current={currentStep - 1}
         items={steps}
         percent={percent}
-    />
-    <Progress percent={percent} strokeColor={processColor}/>
-    <div style={contentStyle}>
-      {
-        // if resultType is 1, data is log, else data is jar list or class list
-        !showList ?
-        <CodeShow  code={log || ""} options={{scrollBeyondLastLine: true}} {...CodeShowProps}/> : <JarShow value={values} data={log}/>
-      }
-    </div>
-  </>;
+      />
+      <Progress percent={percent} strokeColor={processColor} />
+      <div style={contentStyle}>
+        {
+          // if resultType is 1, data is log, else data is jar list or class list
+          !showList ? (
+            <CodeShow
+              code={log || ''}
+              options={{ scrollBeyondLastLine: true }}
+              {...CodeShowProps}
+            />
+          ) : (
+            <JarShow value={values} data={log} />
+          )
+        }
+      </div>
+    </>
+  );
 };

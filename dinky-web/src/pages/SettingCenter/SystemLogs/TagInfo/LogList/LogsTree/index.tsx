@@ -15,33 +15,32 @@
  * limitations under the License.
  */
 
-
-import React from "react";
-import {Empty, Tree} from "antd";
-import {buildTreeData} from "@/utils/function";
+import { buildTreeData } from '@/utils/function';
+import { Empty, Tree } from 'antd';
+import React from 'react';
 
 type LogsTreeProps = {
   treeData: Partial<any>[];
-  onNodeClick: (info: any) => void
-}
+  onNodeClick: (info: any) => void;
+};
 
-
-const {DirectoryTree} = Tree;
-
+const { DirectoryTree } = Tree;
 
 const LogsTree: React.FC<LogsTreeProps> = (props) => {
+  const { treeData, onNodeClick } = props;
 
-  const {treeData, onNodeClick} = props;
-
-  return <>
-    {
-      (treeData.length > 0) ?
+  return (
+    <>
+      {treeData.length > 0 ? (
         <DirectoryTree
           onSelect={(_, info) => onNodeClick(info)}
           treeData={buildTreeData(treeData)}
-        /> : <Empty className={"code-content-empty"}/>
-    }
-  </>;
+        />
+      ) : (
+        <Empty className={'code-content-empty'} />
+      )}
+    </>
+  );
 };
 
 export default LogsTree;

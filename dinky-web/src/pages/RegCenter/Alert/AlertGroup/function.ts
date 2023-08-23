@@ -17,19 +17,18 @@
  *
  */
 
-
-import {Alert} from "@/types/RegCenter/data";
+import { Alert } from '@/types/RegCenter/data';
 
 /**
  * parse alertInstanceIds to array and rebuild form data
  * @param values
  */
 export const getFormData = (values: Partial<Alert.AlertGroup>) => {
-  let alertInstanceIds: string [] = [];
-  if (values && values.alertInstanceIds && values.alertInstanceIds !== "") {
-    alertInstanceIds = values.alertInstanceIds.split(",");
+  let alertInstanceIds: string[] = [];
+  if (values && values.alertInstanceIds && values.alertInstanceIds !== '') {
+    alertInstanceIds = values.alertInstanceIds.split(',');
   }
-  return {...values, alertInstanceIds: alertInstanceIds};
+  return { ...values, alertInstanceIds: alertInstanceIds };
 };
 
 /**
@@ -40,8 +39,8 @@ export const getFormData = (values: Partial<Alert.AlertGroup>) => {
 export const buildFormData = (values: Partial<Alert.AlertGroup>, params: any) => {
   let newValue = values;
   if (params.alertInstanceIds) {
-    newValue.alertInstanceIds = params.alertInstanceIds.join(",");
+    newValue.alertInstanceIds = params.alertInstanceIds.join(',');
     delete params.alertInstanceIds;
   }
-  return {...newValue, ...params};
+  return { ...newValue, ...params };
 };

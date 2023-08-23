@@ -25,14 +25,12 @@ export default {
   'login.username.required': 'Please input your username!',
   'login.chooseTenant': 'Please Choose Tenant',
   'login.chooseTenantFailed': 'Tenant selection failed, please check. . . ',
-  'login.chooseTenantSuccess':
-    '{msg}, Use [ {tenantCode} ] to enter the system, loading. . .',
+  'login.chooseTenantSuccess': '{msg}, Use [ {tenantCode} ] to enter the system, loading. . .',
   'login.password.placeholder': 'Password',
   'login.password.required': 'Please input your password!',
   'login.rememberMe': 'Remember me',
   'login.ldapLogin': 'LDAP Login',
-  'about.Community':
-    'Welcome to join the Dinky Official Community, Build a win-win situation',
+  'about.Community': 'Welcome to join the Dinky Official Community, Build a win-win situation',
   'about.QQcode': 'QQ Official Community Group',
   'about.wechatCode': 'Wechat Official Account',
   'about.dingTalkCode': 'DingTalk Official Community Group',
@@ -87,7 +85,6 @@ export default {
   'home.develop.re.ag': 'Alarm Group',
   'home.develop.re.git': 'Git Project',
 
-
   //-------------------------------- devops --------------------------------
   // devops
 
@@ -109,7 +106,8 @@ export default {
   'devops.jobinfo.reonline.failed': 'Failed to re-online',
   'devops.jobinfo.restart': 'Restart',
   'devops.jobinfo.stopJob': 'Stop job',
-  'devops.jobinfo.stopJobConfirm': 'Are you sure to just stop this job without SavePoint operation? ',
+  'devops.jobinfo.stopJobConfirm':
+    'Are you sure to just stop this job without SavePoint operation? ',
   'devops.jobinfo.canceljob.success': 'Normal stop succeeded',
   'devops.jobinfo.canceljob.failed': 'Normal stop failed',
   'devops.jobinfo.job.key': '{key} Job',
@@ -123,6 +121,7 @@ export default {
   'devops.jobinfo.config.JobMonitor': 'Monitor',
   'devops.jobinfo.config.JobLineage': 'Lineage',
   'devops.jobinfo.config.JobAlert': 'Alert',
+  'devops.jobinfo.config.OperatorGraph': 'Operator Graph',
   'devops.jobinfo.config.JobBaseInfo': 'Job Base Info',
   'devops.jobinfo.config.UserCustomConf': 'Custom Config',
   'devops.jobinfo.config.taskId': 'Dinky Job ID',
@@ -176,6 +175,7 @@ export default {
   'user.username': 'User Name',
   'user.jobnumber': 'Job Number',
   'user.phone': 'Phone Number',
+  'user.status': 'Is Deleted',
   'user.type': 'User Type',
   'user.nickname': 'Nick Name',
   'user.superAdminFlag': 'Super Admin',
@@ -185,6 +185,8 @@ export default {
   'user.assignRole': 'Assign Role',
   'user.delete': 'Delete User',
   'user.deleteConfirm': 'Are you sure delete this User？',
+  'user.recovery': 'Are you sure to Recover this User?',
+  'user.reset': 'Are you sure to Reset this User Password?',
   'user.usernamePlaceholder': 'Please enter user name',
   'user.jobnumberPlaceholder': 'Please enter job number',
   'user.nicknamePlaceholder': 'Please enter nickname',
@@ -236,7 +238,6 @@ export default {
   'tenant.cancel.admin': 'Cancel Tenant Admin',
   'tenant.user.list': 'User List',
 
-
   // role
   'role.roleManagement': 'Role Management',
   'role.roleCode': 'Role Code',
@@ -279,8 +280,10 @@ export default {
   'menu.type.menu': 'Menu',
   'menu.type.button': 'Button',
   'menu.edit': 'Edit Menu',
-  'menu.tips.1': 'Modify Menu: click on the node you want to modify in the tree view on the left, and render the modification form here',
-  'menu.tips.2': 'Add Root Menu: click the button in the upper right corner of the tree view to add',
+  'menu.tips.1':
+    'Modify Menu: click on the node you want to modify in the tree view on the left, and render the modification form here',
+  'menu.tips.2':
+    'Add Root Menu: click the button in the upper right corner of the tree view to add',
   'menu.tips.3': 'Add/Delete SubMenu: Right-click on the tree view to add/delete',
 
   // rowPermissions
@@ -294,7 +297,6 @@ export default {
   'rowPermissions.roleNamePlaceholder': 'Please select an role',
   'rowPermissions.create': 'Create Row Permissions',
   'rowPermissions.update': 'Update Row Permissions',
-
 
   //-------------------------------- register center --------------------------------
   'rc.ci.management': 'Cluster Instance Management',
@@ -311,10 +313,12 @@ export default {
   'rc.ci.deleteConfirm': 'Are you sure to delete this Flink Cluster instance? ',
   'rc.ci.recycle': 'Recycle Flink Cluster Instances',
   'rc.ci.heartbeat': 'Heartbeat Detection',
-  'rc.ci.recycleConfirm': 'Are you sure to recycle all automatically created and expired Flink instances? ',
+  'rc.ci.recycleConfirm':
+    'Are you sure to recycle all automatically created and expired Flink instances? ',
   'rc.ci.jmha.validate.slash': 'Does not comply with the rules! Cannot contain /',
   'rc.ci.jmha.validate.port': 'Does not meet the rules! Port number range [0-65535]',
-  'rc.ci.jmha.tips': 'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example: 192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081',
+  'rc.ci.jmha.tips':
+    'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example: 192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081',
   'rc.ci.jmhaPlaceholder': 'Please enter the JobManager HA address!',
   'rc.ci.typePlaceholder': 'Please select a cluster type!',
   'rc.ci.namePlaceholder': 'Please enter a name!',
@@ -335,43 +339,56 @@ export default {
   'rc.cc.hadoopConfig': 'Hadoop Config',
   'rc.cc.hadoop.defineConfig': 'Hadoop Custom Config (high priority)',
   'rc.cc.hadoopConfigPath': 'Hadoop Config file path',
-  'rc.cc.hadoopConfigPathPlaceholder': 'Please enter the hadoop configuration file path, such as /etc/hadoop/conf! ',
-  'rc.cc.hadoopConfigPathHelp': 'Specify the configuration file path (without / at the end), the following files need to be included: core-site.xml, hdfs-site.xml, yarn-site.xml! ',
+  'rc.cc.hadoopConfigPathPlaceholder':
+    'Please enter the hadoop configuration file path, such as /etc/hadoop/conf! ',
+  'rc.cc.hadoopConfigPathHelp':
+    'Specify the configuration file path (without / at the end), the following files need to be included: core-site.xml, hdfs-site.xml, yarn-site.xml! ',
   'rc.cc.libPath': 'Flink Lib Path',
   'rc.cc.libPathPlaceholder': 'Please enter the hdfs path of lib! Values such as hdfs:///flink/lib',
-  'rc.cc.libPathHelp': 'Specify the hdfs path of lib (without / at the end), which needs to include the dependencies of Flink runtime',
+  'rc.cc.libPathHelp':
+    'Specify the hdfs path of lib (without / at the end), which needs to include the dependencies of Flink runtime',
   'rc.cc.flinkConfig': 'Flink Config',
   'rc.cc.flink.defineConfig': 'Flink Custom Config (high priority)',
   'rc.cc.flinkConfigPath': 'Flink Config File Path',
-  'rc.cc.flinkConfigPathPlaceholder': 'Please enter the flink-conf.yaml path! Values such as /opt/module/flink/conf ',
-  'rc.cc.flinkConfigPathHelp': 'Please enter flink-conf.yaml path! Values such as /opt/module/flink/conf ',
+  'rc.cc.flinkConfigPathPlaceholder':
+    'Please enter the flink-conf.yaml path! Values such as /opt/module/flink/conf ',
+  'rc.cc.flinkConfigPathHelp':
+    'Please enter flink-conf.yaml path! Values such as /opt/module/flink/conf ',
   'rc.cc.addConfig': 'Add Config item',
   'rc.cc.deleteConfig': 'Delete configuration item',
   'rc.cc.key': 'Config Key',
   'rc.cc.value': 'Config Value',
   'rc.cc.submitSqlConfig': 'Submit FlinkSQL Config items (required in Application mode)',
   'rc.cc.sqlSubmitJarPath': 'Jar File Path',
-  'rc.cc.sqlSubmitJarPathHelp': 'Please enter the Jar file path! eg: hdfs:///dlink/jar/dlink-app.jar',
+  'rc.cc.sqlSubmitJarPathHelp':
+    'Please enter the Jar file path! eg: hdfs:///dlink/jar/dlink-app.jar',
   'rc.cc.defineConfig': 'Flink Default Config (high priority)',
   'rc.cc.jmMem': 'JobManager Memory',
-  'rc.cc.jmMemHelp': 'Please enter the JobManager memory size! This parameter configuration item is: jobmanager.memory.process.size eg: 1024MB',
+  'rc.cc.jmMemHelp':
+    'Please enter the JobManager memory size! This parameter configuration item is: jobmanager.memory.process.size eg: 1024MB',
   'rc.cc.tmMem': 'TaskManager Memory',
-  'rc.cc.tmMemHelp': 'Please enter the TaskManager memory size! This parameter configuration item is: taskmanager.memory.process.size eg: 1024MB',
+  'rc.cc.tmMemHelp':
+    'Please enter the TaskManager memory size! This parameter configuration item is: taskmanager.memory.process.size eg: 1024MB',
   'rc.cc.tmHeap': 'TaskManager Heap Memory',
-  'rc.cc.tmHeapHelp': 'Please enter the TaskManager heap memory size! This parameter configuration item is: taskmanager.memory.framework.heap.size eg: 1024MB',
+  'rc.cc.tmHeapHelp':
+    'Please enter the TaskManager heap memory size! This parameter configuration item is: taskmanager.memory.framework.heap.size eg: 1024MB',
   'rc.cc.tsNum': 'Number of Slots',
   'rc.cc.tsNumHelp': 'Please enter the number of TaskSlot! eg: 1',
   'rc.cc.spDir': 'SavePoint Path',
-  'rc.cc.spDirHelp': 'Please enter the savepoint path! This parameter configuration item is: tate.savepoints.dir eg: hdfs:///dinky/sp',
+  'rc.cc.spDirHelp':
+    'Please enter the savepoint path! This parameter configuration item is: tate.savepoints.dir eg: hdfs:///dinky/sp',
   'rc.cc.ckpDir': 'CheckPoint Path',
-  'rc.cc.ckpDirHelp': 'Please enter the checkpoint path! This parameter configuration item is: state.checkpoints.dir eg: hdfs:///dinky/ckp',
+  'rc.cc.ckpDirHelp':
+    'Please enter the checkpoint path! This parameter configuration item is: state.checkpoints.dir eg: hdfs:///dinky/ckp',
   'rc.cc.dockerConfig': 'Docker Config',
   'rc.cc.docker.dinky.addr': 'Dinky Remote Address',
   'rc.cc.docker.dinky.addrHelp': 'Dinky remote address! eg: 127.0.0.1:8888',
   'rc.cc.docker.instance': 'Docker Instance',
-  'rc.cc.docker.instanceHelp': 'Docker instance! eg: local: unix:///var/run/docker.sock or remote: tcp://remoteIp:2375',
+  'rc.cc.docker.instanceHelp':
+    'Docker instance! eg: local: unix:///var/run/docker.sock or remote: tcp://remoteIp:2375',
   'rc.cc.docker.url': 'DockerHub Container Address',
-  'rc.cc.docker.urlHelp': 'DockerHub container address! eg: (Aliyun, docker.io, harbor) registry.cn-hangzhou.aliyuncs.com/dlink/dlink:1.0.0',
+  'rc.cc.docker.urlHelp':
+    'DockerHub container address! eg: (Aliyun, docker.io, harbor) registry.cn-hangzhou.aliyuncs.com/dlink/dlink:1.0.0',
   'rc.cc.docker.username': 'DockerHub Username',
   'rc.cc.docker.usernameHelp': 'DockerHub username! eg: dinky',
   'rc.cc.docker.password': 'DockerHub Password',
@@ -386,7 +403,8 @@ export default {
   'rc.cc.k8s.namespace': 'Kubernetes Namespace',
   'rc.cc.k8s.namespaceHelp': 'Kubernetes namespace! eg: default',
   'rc.cc.k8s.image': 'Flink Image Address',
-  'rc.cc.k8s.imageHelp': 'Flink image address! eg: registry.cn-hangzhou.aliyuncs.com/flink/flink:1.17.0',
+  'rc.cc.k8s.imageHelp':
+    'Flink image address! eg: registry.cn-hangzhou.aliyuncs.com/flink/flink:1.17.0',
   'rc.cc.k8s.exposed': 'Exposed Port Type',
   'rc.cc.k8s.exposedHelp': 'Exposed port type! eg: NodePort',
   'rc.cc.k8s.jmCpu': 'JobManager CPU Config',
@@ -394,7 +412,8 @@ export default {
   'rc.cc.k8s.tmCpu': 'TaskManager CPU Config',
   'rc.cc.k8s.tmCpuHelp': 'TaskManager CPU configuration! eg: 10',
   'rc.cc.k8s.configFile': 'Kube File Path',
-  'rc.cc.k8s.configFileHelp': 'Default ~/.kube/config, fill in the kube file path, which can be used as a remote connection! eg: /opt/module/kube/config',
+  'rc.cc.k8s.configFileHelp':
+    'Default ~/.kube/config, fill in the kube file path, which can be used as a remote connection! eg: /opt/module/kube/config',
   'rc.cc.k8s.account': 'K8s Submit Account',
   'rc.cc.k8s.accountHelp': 'The account submitted by K8s, default default! eg: default',
   'rc.cc.k8s.podTemplate': 'K8s Pod Template',
@@ -402,7 +421,6 @@ export default {
   'rc.cc.k8sOp.version': 'Flink Version',
   'rc.cc.k8sOp.versionHelp': 'Please select the Flink version!',
   'rc.cc.k8sOp.unSupportBatch': ' (UnSupport Batch)',
-
 
   // datasource
   'rc.ds.management': 'DataSource Management',
@@ -425,16 +443,20 @@ export default {
   'rc.ds.usernamePlaceholder': 'Please enter username!',
   'rc.ds.passwordPlaceholder': 'Please enter password!',
   'rc.ds.flinkConfigPlaceholder': 'Please specify the default configuration of Flink With!',
-  'rc.ds.flinkConfigTooltip': 'Avoid disclosure of private information, and reuse the connection configuration as a global variable. In FlinkSQL, you can use `variable reference method` to load the connection configuration. Explanation: The reference name refers to the unique identifier, which is the `name` in this form. Note that you need to enable global variables (the original fragment mechanism)',
+  'rc.ds.flinkConfigTooltip':
+    'Avoid disclosure of private information, and reuse the connection configuration as a global variable. In FlinkSQL, you can use `variable reference method` to load the connection configuration. Explanation: The reference name refers to the unique identifier, which is the `name` in this form. Note that you need to enable global variables (the original fragment mechanism)',
   'rc.ds.flinkTemplatePlaceholder': 'Please specify the generation template of Flink With!',
-  'rc.ds.flinkTemplateTooltip': 'Flink connection template is an extended function for generating FlinkSQL DDL. Among them, the schemaName in `variable reference method` refers to dynamically obtaining the database, and the tableName in `variable reference method` refers to dynamically obtaining the table name',
+  'rc.ds.flinkTemplateTooltip':
+    'Flink connection template is an extended function for generating FlinkSQL DDL. Among them, the schemaName in `variable reference method` refers to dynamically obtaining the database, and the tableName in `variable reference method` refers to dynamically obtaining the table name',
   'rc.ds.source': 'Source',
   'rc.ds.warehouse': 'Data Warehouse',
   'rc.ds.application': 'Application',
   'rc.ds.backup': 'Backup',
   'rc.ds.other': 'Other',
-  'rc.ds.enter': 'Click the icon picture in the list to enter the details page of the DataSource! Support viewing the database & table information of the DataSource, and timely query',
-  'rc.ds.enter.error': 'The DataSource status is abnormal and cannot be entered, only after the heartbeat is normal!',
+  'rc.ds.enter':
+    'Click the icon picture in the list to enter the details page of the DataSource! Support viewing the database & table information of the DataSource, and timely query',
+  'rc.ds.enter.error':
+    'The DataSource status is abnormal and cannot be entered, only after the heartbeat is normal!',
 
   // datasource of schema info page
   // tags
@@ -467,7 +489,6 @@ export default {
   'rc.ds.console.exec': 'Execute',
   'rc.ds.console.running': 'Running...',
 
-
   // alert instance
   'rc.ai.management': 'Alert Instance Management',
   'rc.ai.name': 'Name',
@@ -488,23 +509,29 @@ export default {
   'rc.ai.proxyPleaseHolder': 'enter proxy',
   'rc.ai.portPleaseHolder': 'enter port',
   'rc.ai.userPleaseHolder': 'enter user',
-  'rc.ai.atUsersPleaseHolder': 'Please enter the user ID (user ID of FeiShu background is required), separated by multiple commas!',
+  'rc.ai.atUsersPleaseHolder':
+    'Please enter the user ID (user ID of FeiShu background is required), separated by multiple commas!',
   'rc.ai.passwordPleaseHolder': 'please enter password',
-  'rc.ai.atMobilesPleaseHolder': 'Please enter the members that need @, multiple use, separated by numbers',
+  'rc.ai.atMobilesPleaseHolder':
+    'Please enter the members that need @, multiple use, separated by numbers',
   'rc.ai.msgtypePleaseHolder': 'please choose message Send Type`',
   'rc.ai.corpIdPleaseHolder': 'Please enter CorpId',
-  'rc.ai.wechatAtUsersPleaseHolder': 'Please enter the @user ID (enterprise and micro user name spelled out), separated by multiple commas!',
+  'rc.ai.wechatAtUsersPleaseHolder':
+    'Please enter the @user ID (enterprise and micro user name spelled out), separated by multiple commas!',
   'rc.ai.sendTypePleaseHolder': 'Please choose Send Type',
   'rc.ai.agentIdPleaseHolder': 'Please enter AgentId',
   'rc.ai.receiversPleaseHolder': 'Please enter recipient email address! Separate multiple commas',
-  'rc.ai.receiverCcsPleaseHolder': 'Please enter the receiverCcs email address! Separate multiple commas!',
+  'rc.ai.receiverCcsPleaseHolder':
+    'Please enter the receiverCcs email address! Separate multiple commas!',
   'rc.ai.serverHostPleaseHolder': 'Mail server host',
   'rc.ai.serverPortPleaseHolder': 'Please enter the mail server port',
   'rc.ai.senderPleaseHolder': 'Please enter the mail server sender Nickname',
   'rc.ai.emailUserPleaseHolder': 'Please enter your email username',
-  'rc.ai.emailPasswordPleaseHolder': 'Please enter the email password! Note: the password is the authorization code',
+  'rc.ai.emailPasswordPleaseHolder':
+    'Please enter the email password! Note: the password is the authorization code',
   'rc.ai.smtpSslTrustPleaseHolder': 'Please enter a trusted domain',
-  'rc.ai.xls.file.pathPleaseHolder': 'Please enter the XLS storage directory! The default is /tmp/xls',
+  'rc.ai.xls.file.pathPleaseHolder':
+    'Please enter the XLS storage directory! The default is /tmp/xls',
   'rc.ai.webhook': 'WebHook Url',
   'rc.ai.keyword': 'KeyWord',
   'rc.ai.secret': 'Secret',
@@ -567,9 +594,11 @@ export default {
   'rc.ai.senders': 'Domestic SMS signature channel number',
   'rc.ai.sendersPleaseHolder': 'Please enter the domestic SMS signature channel number',
   'rc.ai.url': 'APP access address',
-  'rc.ai.urlPleaseHolder': 'Please enter the APP access address, the address obtained after creating the SMS application',
+  'rc.ai.urlPleaseHolder':
+    'Please enter the APP access address, the address obtained after creating the SMS application',
   'rc.ai.statusCallBack': 'Domestic SMS status report destination',
-  'rc.ai.statusCallBackPleaseHolder': 'Please enter the recipient of the domestic SMS status report',
+  'rc.ai.statusCallBackPleaseHolder':
+    'Please enter the recipient of the domestic SMS status report',
   'rc.ai.apikey': 'Account unique identifier',
   'rc.ai.apikeyPleaseHolder': 'Please enter the unique ID of the account',
   'rc.ai.callbackUrl': 'Official callback address',
@@ -626,7 +655,8 @@ export default {
   'rc.doc.deleteConfirm': 'Are you sure you want to delete the this Document? ',
   'rc.doc.namePlaceholder': 'Please enter a name!',
   'rc.doc.versionPlaceholder': 'Please select the version this Document belongs to!',
-  'rc.doc.fillValuePlaceholder': 'Please enter the fill value, use the name in the editor to trigger the prompt eg: If you want to input parameters in the function LTRIM(parms), the syntax is: LTRIM(${1:}) At this time The 1 represents the first cursor. If you need multiple numbers + 1, you can switch the cursor with the tab key; if you don`t need parameters, directly enter the desired fill value',
+  'rc.doc.fillValuePlaceholder':
+    'Please enter the fill value, use the name in the editor to trigger the prompt eg: If you want to input parameters in the function LTRIM(parms), the syntax is: LTRIM(${1:}) At this time The 1 represents the first cursor. If you need multiple numbers + 1, you can switch the cursor with the tab key; if you don`t need parameters, directly enter the desired fill value',
   'rc.doc.fillValueHelp': 'Please enter the fill value',
   'rc.doc.descriptionPlaceholder': 'Please enter the Document description information!',
   'rc.doc.typePlaceholder': 'Please select the function type this Document belongs to!',
@@ -650,7 +680,8 @@ export default {
   'rc.gp.id': 'ID',
   'rc.gp.name': 'Name',
   'rc.gp.level': 'Level',
-  'rc.gp.level.tooltip': 'The smaller the number, the higher the priority, and the scanned UDF classes are repeatedly linked to the priority',
+  'rc.gp.level.tooltip':
+    'The smaller the number, the higher the priority, and the scanned UDF classes are repeatedly linked to the priority',
   'rc.gp.url': 'Project URL',
   'rc.gp.branch': 'Branch',
   'rc.gp.username': 'Username',
@@ -668,11 +699,13 @@ export default {
   'rc.gp.ucl.orderLine': 'Jar Priority',
   'rc.gp.ucl.jarOrder': ' Jar Level Ordering',
   'rc.gp.ucl.projectOrder': 'Project Level Ordering',
-  'rc.gp.ucl.orderLine.tooltip': 'The smaller the number, the higher the priority of loading UDF in Jar',
+  'rc.gp.ucl.orderLine.tooltip':
+    'The smaller the number, the higher the priority of loading UDF in Jar',
   'rc.gp.create': 'Create Project',
   'rc.gp.modify': 'Modify Project',
   'rc.gp.delete': 'Delete Project',
-  'rc.gp.deleteConfirm': 'This operation will delete all downloaded codes under this project \nplease operate with caution \nthis operation is irreversible!! \nAre you sure to delete this Project? ',
+  'rc.gp.deleteConfirm':
+    'This operation will delete all downloaded codes under this project \nplease operate with caution \nthis operation is irreversible!! \nAre you sure to delete this Project? ',
   'rc.gp.namePlaceholder': 'Please enter Project name!',
   'rc.gp.urlPlaceholder': 'Please enter the project address!',
   'rc.gp.branchPlaceholder': 'Please select a branch!',
@@ -720,7 +753,8 @@ export default {
 
   // resource
   'rc.resource.click': 'Click left file to view details',
-  'rc.resource.noResource': '\t\tNo resources\nPlease Click the button above to upload folders/files',
+  'rc.resource.noResource':
+    '\t\tNo resources\nPlease Click the button above to upload folders/files',
   'rc.resource.upload': 'Upload Files/Folders',
 
   //-------------------------------- setting center --------------------------------
@@ -732,10 +766,12 @@ export default {
   'sys.setting.ldap': 'LDAP Configuration',
   'sys.setting.metrics': 'Metrics Configuration',
   'sys.setting.resource': 'Resource Configuration',
-  'sys.setting.dinky.tooltip': 'Mainly modify system variables to ensure stable operation of basic functions',
+  'sys.setting.dinky.tooltip':
+    'Mainly modify system variables to ensure stable operation of basic functions',
   'sys.setting.flink.tooltip': 'Dinky docking Flink main parameters',
   'sys.setting.maven.tooltip': 'The main parameters of Maven compilation',
-  'sys.setting.ds.tooltip': 'DolphinScheduler plug-in settings that allow you to push dinky tasks to the DolphinScheduler workflow',
+  'sys.setting.ds.tooltip':
+    'DolphinScheduler plug-in settings that allow you to push dinky tasks to the DolphinScheduler workflow',
   'sys.setting.ldap.tooltip': 'Unified authentication service LDAP docking configuration',
   'sys.setting.metrics.tooltip': 'Monitor monitoring page settings, adjust Metrics detection',
   'sys.setting.resource.tooltip': 'Resource storage settings',
@@ -747,29 +783,38 @@ export default {
   'sys.setting.tag.integration': 'Integration Configuration',
   'sys.setting.tag.system': 'System Configuration',
   'sys.env.settings.dinkyAddr': 'Dinky Address',
-  'sys.env.settings.dinkyAddr.note': 'The address must be the same as the address configured in the Dinky Application background url',
+  'sys.env.settings.dinkyAddr.note':
+    'The address must be the same as the address configured in the Dinky Application background url',
   'sys.flink.settings.useRestAPI': 'Use Rest API',
-  'sys.flink.settings.useRestAPI.note': 'Whether to use RestAPI when operating and maintaining Flink tasks',
+  'sys.flink.settings.useRestAPI.note':
+    'Whether to use RestAPI when operating and maintaining Flink tasks',
   'sys.flink.settings.sqlSeparator': 'SQL Separator',
   'sys.flink.settings.sqlSeparator.note': 'SQL Separator',
   'sys.flink.settings.jobIdWait': 'Job submission waiting time',
-  'sys.flink.settings.jobIdWait.note': 'Maximum waiting time (seconds) for obtaining Job ID when submitting Application or PerJob tasks',
+  'sys.flink.settings.jobIdWait.note':
+    'Maximum waiting time (seconds) for obtaining Job ID when submitting Application or PerJob tasks',
   'sys.maven.settings.settingsFilePath': 'Maven configuration file path',
-  'sys.maven.settings.settingsFilePath.note': 'Maven configuration file path, eg: /opt/maven/conf/settings.xml , please fill in the full path, including the settings.xml file name',
+  'sys.maven.settings.settingsFilePath.note':
+    'Maven configuration file path, eg: /opt/maven/conf/settings.xml , please fill in the full path, including the settings.xml file name',
   'sys.maven.settings.repository': 'Maven warehouse address',
   'sys.maven.settings.repository.note': 'Maven warehouse address',
   'sys.maven.settings.repositoryUser': 'Maven warehouse user name',
   'sys.maven.settings.repositoryUser.note': 'Maven private server authentication user name',
   'sys.maven.settings.repositoryPassword': 'Maven warehouse password',
-  'sys.maven.settings.repositoryPassword.note': 'Maven private server authentication password, please note: For security reasons, the password will not be displayed in plain text, and it has been desensitized when it returns',
+  'sys.maven.settings.repositoryPassword.note':
+    'Maven private server authentication password, please note: For security reasons, the password will not be displayed in plain text, and it has been desensitized when it returns',
   'sys.dolphinscheduler.settings.enable': 'Whether to enable DolphinScheduler',
-  'sys.dolphinscheduler.settings.enable.note': 'Whether to enable DolphinScheduler, the relevant functions of DolphinScheduler can only be used after it is enabled, please ensure that the relevant configuration of DolphinScheduler is correct',
+  'sys.dolphinscheduler.settings.enable.note':
+    'Whether to enable DolphinScheduler, the relevant functions of DolphinScheduler can only be used after it is enabled, please ensure that the relevant configuration of DolphinScheduler is correct',
   'sys.dolphinscheduler.settings.url': 'DolphinScheduler address',
-  'sys.dolphinscheduler.settings.url.note': 'The address must be consistent with the address configured in the DolphinScheduler background, eg: http://127.0.0.1:12345/dolphinscheduler',
+  'sys.dolphinscheduler.settings.url.note':
+    'The address must be consistent with the address configured in the DolphinScheduler background, eg: http://127.0.0.1:12345/dolphinscheduler',
   'sys.dolphinscheduler.settings.token': 'DolphinScheduler Token',
-  'sys.dolphinscheduler.settings.token.note': 'DolphinScheduler‘s Token, please create a token in DolphinScheduler’s Security Center->Token Management, and fill in the configuration',
+  'sys.dolphinscheduler.settings.token.note':
+    'DolphinScheduler‘s Token, please create a token in DolphinScheduler’s Security Center->Token Management, and fill in the configuration',
   'sys.dolphinscheduler.settings.projectName': 'DolphinScheduler project name',
-  'sys.dolphinscheduler.settings.projectName.note': 'The project name specified in DolphinScheduler, case insensitive',
+  'sys.dolphinscheduler.settings.projectName.note':
+    'The project name specified in DolphinScheduler, case insensitive',
 
   //LDAP
   'sys.ldap.settings.enable': 'Whether to enable the ldap',
@@ -777,23 +822,31 @@ export default {
   'sys.ldap.settings.url': 'ldap address of service',
   'sys.ldap.settings.url.note': 'ldap address of service，eg：ldap://192.168.111.1:389 ',
   'sys.ldap.settings.userDn': 'Login User name (DN)',
-  'sys.ldap.settings.userDn.note': 'User name for connecting to the ldap service, or the administrator DN',
+  'sys.ldap.settings.userDn.note':
+    'User name for connecting to the ldap service, or the administrator DN',
   'sys.ldap.settings.userPassword': 'login password',
   'sys.ldap.settings.userPassword.note': 'Password used to connect to the ldap service',
   'sys.ldap.settings.timeLimit': 'Connection Timeout',
-  'sys.ldap.settings.timeLimit.note': 'The maximum time to connect to the ldap service is disconnected',
+  'sys.ldap.settings.timeLimit.note':
+    'The maximum time to connect to the ldap service is disconnected',
   'sys.ldap.settings.baseDn': 'BaseDn',
-  'sys.ldap.settings.baseDn.note': 'Dinky will conduct a user search on this base dn,eg：ou=users,dc=dinky,dc=com',
+  'sys.ldap.settings.baseDn.note':
+    'Dinky will conduct a user search on this base dn,eg：ou=users,dc=dinky,dc=com',
   'sys.ldap.settings.filter': 'User filtering rules',
-  'sys.ldap.settings.filter.note': 'User filtering by using the filter syntax of the ldap，eg: (&(objectClass=inetOrgPerson))',
+  'sys.ldap.settings.filter.note':
+    'User filtering by using the filter syntax of the ldap，eg: (&(objectClass=inetOrgPerson))',
   'sys.ldap.settings.autoload': 'User atically map users when logging in',
-  'sys.ldap.settings.autoload.note': 'When turned on, when a user logs in with LDAP, if there is no corresponding Dinky user mapping, the LDAP information is automatically pulled to create a Dinky user mapping to it. If this feature is closed, you will not be able to log in for unimported LDAP users',
+  'sys.ldap.settings.autoload.note':
+    'When turned on, when a user logs in with LDAP, if there is no corresponding Dinky user mapping, the LDAP information is automatically pulled to create a Dinky user mapping to it. If this feature is closed, you will not be able to log in for unimported LDAP users',
   'sys.ldap.settings.castUsername': 'The LDAP user-name segment',
-  'sys.ldap.settings.castUsername.note': 'It is necessary to fill in the attribute field of the user in an LDAP to correspond to the Dinky user. Generally, cn or uid indicates the unique identity of the user',
+  'sys.ldap.settings.castUsername.note':
+    'It is necessary to fill in the attribute field of the user in an LDAP to correspond to the Dinky user. Generally, cn or uid indicates the unique identity of the user',
   'sys.ldap.settings.castNickname': 'The LDAP nickname field',
-  'sys.ldap.settings.castNickname.note': 'Need to fill in the attribute field of the user in an LDAP to correspond to the Dinky nickname, must be filled in, generally selected as sn or other identification, not required unique',
+  'sys.ldap.settings.castNickname.note':
+    'Need to fill in the attribute field of the user in an LDAP to correspond to the Dinky nickname, must be filled in, generally selected as sn or other identification, not required unique',
   'sys.ldap.settings.defaultTeant': 'The LDAP imports the default tenant code',
-  'sys.ldap.settings.defaultTeant.note': 'After opening the automatic import of users, the new user login needs a default tenant code, otherwise it cannot log in',
+  'sys.ldap.settings.defaultTeant.note':
+    'After opening the automatic import of users, the new user login needs a default tenant code, otherwise it cannot log in',
 
   'sys.ldap.settings.testConnect': 'Test Connect',
   'sys.ldap.settings.testConnect.success': 'Test Connect Successful, {count} users were obtained',
@@ -803,13 +856,18 @@ export default {
 
   // Metrics
   'sys.metrics.settings.sys.enable': 'Dinky JVM Monitor switch',
-  'sys.metrics.settings.sys.enable.note': 'This switch is related to Dinky JVM Monitor, which determines the display of Dinky Server in the monitoring page and the collection of JVM Metrics',
+  'sys.metrics.settings.sys.enable.note':
+    'This switch is related to Dinky JVM Monitor, which determines the display of Dinky Server in the monitoring page and the collection of JVM Metrics',
   'sys.metrics.settings.sys.gatherTiming': 'Dinky JVM Metrics collection time granularity',
-  'sys.metrics.settings.sys.gatherTiming.note': 'Dinky JVM Metrics collection time granularity, timed task interval trigger',
+  'sys.metrics.settings.sys.gatherTiming.note':
+    'Dinky JVM Metrics collection time granularity, timed task interval trigger',
   'sys.metrics.settings.flink.gatherTiming': 'Flink Metrics collection time granularity',
-  'sys.metrics.settings.flink.gatherTiming.note': 'Flink Metrics collection time granularity, scheduled task interval trigger',
-  'sys.metrics.settings.flink.gatherTimeout': 'Flink Metrics collection time granularity, scheduled task interval trigger',
-  'sys.metrics.settings.flink.gatherTimeout.note': 'Flink Metrics collection timeout period, scheduled task interval trigger (this configuration item should be smaller than Flink Metrics collection time granularity)',
+  'sys.metrics.settings.flink.gatherTiming.note':
+    'Flink Metrics collection time granularity, scheduled task interval trigger',
+  'sys.metrics.settings.flink.gatherTimeout':
+    'Flink Metrics collection time granularity, scheduled task interval trigger',
+  'sys.metrics.settings.flink.gatherTimeout.note':
+    'Flink Metrics collection timeout period, scheduled task interval trigger (this configuration item should be smaller than Flink Metrics collection time granularity)',
 
   // process
   'sys.process.id': 'Process ID',
@@ -832,19 +890,26 @@ export default {
 
   // Resource
   'sys.resource.settings.enable': 'Whether to enable Resource',
-  'sys.resource.settings.enable.note': 'Enable the resource management function. If you switch the storage mode, you need to turn off this switch. After the relevant configuration is completed, turn it on again.',
+  'sys.resource.settings.enable.note':
+    'Enable the resource management function. If you switch the storage mode, you need to turn off this switch. After the relevant configuration is completed, turn it on again.',
   'sys.resource.settings.upload.base.path': 'The root path of the upload directory',
-  'sys.resource.settings.upload.base.path.note': 'resource store on HDFS/OSS path, resource file will store to this base path, self configuration, please make sure the directory exists on hdfs and have read write permissions. /dinky is recommended',
+  'sys.resource.settings.upload.base.path.note':
+    'resource store on HDFS/OSS path, resource file will store to this base path, self configuration, please make sure the directory exists on hdfs and have read write permissions. /dinky is recommended',
   'sys.resource.settings.model': 'Storage mode: support HDFS, OSS',
-  'sys.resource.settings.model.note': 'Storage mode: support HDFS, OSS, it will take effect after switching the option, and migrate resource files at the same time',
+  'sys.resource.settings.model.note':
+    'Storage mode: support HDFS, OSS, it will take effect after switching the option, and migrate resource files at the same time',
   'sys.resource.settings.hdfs.root.user': 'HDFS operation user name',
   'sys.resource.settings.hdfs.root.user.note': 'HDFS operation user name',
   'sys.resource.settings.hdfs.fs.defaultFS': 'HDFS defaultFS',
-  'sys.resource.settings.hdfs.fs.defaultFS.note': 'fs.defaultFS configuration items, such as remote: hdfs://localhost:9000, local: file:///',
+  'sys.resource.settings.hdfs.fs.defaultFS.note':
+    'fs.defaultFS configuration items, such as remote: hdfs://localhost:9000, local: file:///',
   'sys.resource.settings.oss.endpoint': 'URL of the object storage service',
-  'sys.resource.settings.oss.endpoint.note': 'The URL of the object storage service, for example: https://oss-cn-hangzhou.aliyuncs.com',
-  'sys.resource.settings.oss.accessKey': 'Access key is like a user ID, which can uniquely identify your account',
-  'sys.resource.settings.oss.accessKey.note': 'Access key is like a user ID, which can uniquely identify your account',
+  'sys.resource.settings.oss.endpoint.note':
+    'The URL of the object storage service, for example: https://oss-cn-hangzhou.aliyuncs.com',
+  'sys.resource.settings.oss.accessKey':
+    'Access key is like a user ID, which can uniquely identify your account',
+  'sys.resource.settings.oss.accessKey.note':
+    'Access key is like a user ID, which can uniquely identify your account',
   'sys.resource.settings.oss.secretKey': 'Secret key is your account password',
   'sys.resource.settings.oss.secretKey.note': 'Secret key is your account password',
   'sys.resource.settings.oss.bucketName': 'default bucket name',
@@ -888,41 +953,51 @@ export default {
   'pages.metadata.catalogRefreshSuccess': 'Refresh Catalog Success',
   'pages.metadata.selectDatabase': 'Select Database',
 
-
   // data-studio
   'pages.datastudio.label.jobConfig': 'Job Config',
   'pages.datastudio.label.jobConfig.cluster': 'Flink cluster',
   'pages.datastudio.label.jobConfig.cluster.tip': 'Select Flink cluster',
   'pages.datastudio.label.jobConfig.clusterConfig': 'Flink cluster Config',
-  'pages.datastudio.label.jobConfig.clusterConfig.tip1': 'Select Flink cluster Config for remote submission tasks in [{type}] mode',
+  'pages.datastudio.label.jobConfig.clusterConfig.tip1':
+    'Select Flink cluster Config for remote submission tasks in [{type}] mode',
   'pages.datastudio.label.jobConfig.clusterConfig.tip2': 'Select Flink cluster Config',
   'pages.datastudio.label.jobConfig.jar': 'Executable Jar',
-  'pages.datastudio.label.jobConfig.jar.tip1': 'Select executable Jar for remote submission of Jar tasks in [{type}] mode. When the parameter item has a value, only the executable Jar will be submitted.',
+  'pages.datastudio.label.jobConfig.jar.tip1':
+    'Select executable Jar for remote submission of Jar tasks in [{type}] mode. When the parameter item has a value, only the executable Jar will be submitted.',
   'pages.datastudio.label.jobConfig.jar.tip2': 'Select executable Jar, not required',
-  'pages.datastudio.label.jobConfig.execmode.tip': 'Specify the execution mode of the Flink task, the default is Local',
-  'pages.datastudio.label.jobConfig.execmode.k8s.tip': 'Specify the execution mode of the Flink task, the default is KUBERNETES_APPLICATION',
+  'pages.datastudio.label.jobConfig.execmode.tip':
+    'Specify the execution mode of the Flink task, the default is Local',
+  'pages.datastudio.label.jobConfig.execmode.k8s.tip':
+    'Specify the execution mode of the Flink task, the default is KUBERNETES_APPLICATION',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL environment',
-  'pages.datastudio.label.jobConfig.flinksql.env.tip1': 'Select the FlinkSQL execution environment of the current task, and the environment statement will be executed in advance. The default is none. ',
+  'pages.datastudio.label.jobConfig.flinksql.env.tip1':
+    'Select the FlinkSQL execution environment of the current task, and the environment statement will be executed in advance. The default is none. ',
   'pages.datastudio.label.jobConfig.flinksql.env.tip2': 'Select FlinkSQL environment, optional',
   'pages.datastudio.label.jobConfig.parallelism': 'Parallelism',
-  'pages.datastudio.label.jobConfig.parallelism.tip': 'Set the parallelism of Flink tasks, the minimum is 1',
+  'pages.datastudio.label.jobConfig.parallelism.tip':
+    'Set the parallelism of Flink tasks, the minimum is 1',
   'pages.datastudio.label.jobConfig.insert': 'Insert StatementSet',
-  'pages.datastudio.label.jobConfig.insert.tip': '[Enhanced Features] Enable the statement set mechanism, multiple Insert statements will be combined into one JobGraph before submission, and the Select statement is invalid',
+  'pages.datastudio.label.jobConfig.insert.tip':
+    '[Enhanced Features] Enable the statement set mechanism, multiple Insert statements will be combined into one JobGraph before submission, and the Select statement is invalid',
   'pages.datastudio.label.jobConfig.fragment': 'Global variables',
-  'pages.datastudio.label.jobConfig.fragment.tip': '[Enhanced Features] Enable FlinkSql global variables, use ":=" to define (end with ";"), to call',
+  'pages.datastudio.label.jobConfig.fragment.tip':
+    '[Enhanced Features] Enable FlinkSql global variables, use ":=" to define (end with ";"), to call',
   'pages.datastudio.label.jobConfig.batchmode': 'Batch Mode',
   'pages.datastudio.label.jobConfig.batchmode.tip': 'Use batch mode',
   'pages.datastudio.label.jobConfig.checkPoint': 'Checkpoint interval',
-  'pages.datastudio.label.jobConfig.checkPoint.tip': 'Set the checkpoint step size of the Flink task, 0 means not enabled',
+  'pages.datastudio.label.jobConfig.checkPoint.tip':
+    'Set the checkpoint step size of the Flink task, 0 means not enabled',
   'pages.datastudio.label.jobConfig.savePointStrategy': 'SavePointStrategy',
-  'pages.datastudio.label.jobConfig.savePointStrategy.tip': 'Specify the SavePoint strategy, the default is disabled',
+  'pages.datastudio.label.jobConfig.savePointStrategy.tip':
+    'Specify the SavePoint strategy, the default is disabled',
   'pages.datastudio.label.jobConfig.savePointpath': 'SavePointpath',
   'pages.datastudio.label.jobConfig.savePointpath.tip1': 'Restore Flink task from SavePointPath',
   'pages.datastudio.label.jobConfig.savePointpath.tip2': 'hdfs://...',
   'pages.datastudio.label.jobConfig.alertGroup': 'Alarm Group',
   'pages.datastudio.label.jobConfig.alertGroup.tip': 'Select alert group',
   'pages.datastudio.label.jobConfig.other': 'Other Config',
-  'pages.datastudio.label.jobConfig.other.tip': 'Other Config items will be applied to the execution environment, such as pipeline.name',
+  'pages.datastudio.label.jobConfig.other.tip':
+    'Other Config items will be applied to the execution environment, such as pipeline.name',
   'pages.datastudio.label.jobConfig.addConfig': 'Add Config item',
   'pages.datastudio.label.jobConfig.addConfig.params': 'parameters',
   'pages.datastudio.label.jobConfig.addConfig.value': 'value',
@@ -934,15 +1009,19 @@ export default {
 
   'pages.datastudio.label.execConfig': 'Execution Config',
   'pages.datastudio.label.execConfig.selectDatabase': 'Select DataSource',
-  'pages.datastudio.label.execConfig.selectDatabase.tip': 'Select the data source for Sql statement execution',
+  'pages.datastudio.label.execConfig.selectDatabase.tip':
+    'Select the data source for Sql statement execution',
   'pages.datastudio.label.execConfig.preview.result': 'Preview Result',
-  'pages.datastudio.label.execConfig.preview.result.tip': 'Open the preview result, it will run synchronously and return the data result',
+  'pages.datastudio.label.execConfig.preview.result.tip':
+    'Open the preview result, it will run synchronously and return the data result',
   'pages.datastudio.label.execConfig.changelog': 'Print ChangeLog',
-  'pages.datastudio.label.execConfig.changelog.tip': 'Open the print stream, it will run synchronously and return the ChangeLog containing op information, it is not enabled by default and returns the final result Table',
+  'pages.datastudio.label.execConfig.changelog.tip':
+    'Open the print stream, it will run synchronously and return the ChangeLog containing op information, it is not enabled by default and returns the final result Table',
   'pages.datastudio.label.execConfig.maxrow': 'Maximum number of rows',
   'pages.datastudio.label.execConfig.maxrow.tip': 'The maximum number of rows of preview data',
   'pages.datastudio.label.execConfig.autostop': 'AutoStop',
-  'pages.datastudio.label.execConfig.autostop.tip': 'Enable autostop, it will automatically stop the task after capturing the maximum number of records',
+  'pages.datastudio.label.execConfig.autostop.tip':
+    'Enable autostop, it will automatically stop the task after capturing the maximum number of records',
 
   'pages.datastudio.label.savepoint': 'Savepoint',
   'pages.task.savePointPath': 'SavePoint Path',
@@ -952,31 +1031,38 @@ export default {
   'pages.datastudio.label.version.diff': 'Version Diff',
   'pages.datastudio.label.version.rollback': 'Rollback',
   'pages.datastudio.label.version.rollback.flinksql': 'Rollback Flink SQL Version',
-  'pages.datastudio.label.version.rollback.flinksqlConfirm': 'Are you sure to RollBack the Flink SQL version to [{versionId}]? ',
+  'pages.datastudio.label.version.rollback.flinksqlConfirm':
+    'Are you sure to RollBack the Flink SQL version to [{versionId}]? ',
   'pages.datastudio.label.version.diff.tip': 'Only compare with the content in the current editor',
-  'pages.datastudio.label.version.leftTitle': 'Version number: [{versionId}] Creation time: [{createTime}]',
-  'pages.datastudio.label.version.rightTitle': 'Version number: [current edited version] creation time: [{createTime}] last update time: [{updateTime}]',
+  'pages.datastudio.label.version.leftTitle':
+    'Version number: [{versionId}] Creation time: [{createTime}]',
+  'pages.datastudio.label.version.rightTitle':
+    'Version number: [current edited version] creation time: [{createTime}] last update time: [{updateTime}]',
 
-  'pages.datastudio.editor.execute.warn': 'The execution mode of this task is [{type}], which does not support SQL query, please save it manually and use the button on the right - job submission',
-  'pages.datastudio.editor.submiting': 'The new task [{jobName}] is executing',
+  'pages.datastudio.editor.execute.warn':
+    'The execution mode of this task is [{type}], which does not support SQL query, please save it manually and use the button on the right - job submission',
+  'pages.datastudio.editor.submitting': 'The new task [{jobName}] is executing',
   'pages.datastudio.editor.exec.success': 'Execution succeeded',
   'pages.datastudio.editor.exec.error': 'Task [jobName}] execution failed',
   'pages.datastudio.editor.async.submit': 'Submit jobs asynchronously',
-  'pages.datastudio.editor.async.submiting': 'The task [{jobName}] is submitting asynchronously',
-  'pages.datastudio.editor.async.submitConfirm': 'Are you sure to asynchronously submit the job [{jobName}] to its configured cluster? Please make sure your work has been saved! ',
+  'pages.datastudio.editor.async.submitting': 'The task [{jobName}] is submitting asynchronously',
+  'pages.datastudio.editor.async.submitConfirm':
+    'Are you sure to asynchronously submit the job [{jobName}] to its configured cluster? Please make sure your work has been saved! ',
   'pages.datastudio.editor.async.success': 'Asynchronous submission succeeded',
   'pages.datastudio.editor.async.error': 'Asynchronous submission failed',
   'pages.datastudio.editor.query.explan.error': 'Failed to get job execution plan, reason:\n{msg}',
   'pages.datastudio.editor.query.ds.error': 'Failed to get dolphin data, reason:\n{msg}',
   'pages.datastudio.editor.release.job': 'Release job',
-  'pages.datastudio.editor.release.jobConfirm': 'Are you sure to release the job [{jobName}]? Please make sure your work has been saved! ',
+  'pages.datastudio.editor.release.jobConfirm':
+    'Are you sure to release the job [{jobName}]? Please make sure your work has been saved! ',
   'pages.datastudio.editor.release.job.success': 'Release job [{jobName}] succeeded',
   'pages.datastudio.editor.release.job.error': 'Publish job [{jobName}] failed',
   'pages.datastudio.editor.edit.job': 'Maintenance job',
   'pages.datastudio.editor.edit.jobConfirm': 'Confirm the maintenance job [{jobName}]? ',
   'pages.datastudio.editor.edit.job.success': 'Maintenance job [{jobName}] succeeded',
   'pages.datastudio.editor.online.job': 'Online job',
-  'pages.datastudio.editor.online.jobConfirm': 'Are you sure you want to go online with [{jobName}]? ',
+  'pages.datastudio.editor.online.jobConfirm':
+    'Are you sure you want to go online with [{jobName}]? ',
   'pages.datastudio.editor.online.job.success': 'Online job [{jobName}] succeeded',
   'pages.datastudio.editor.online.job.error': 'Online job [{jobName}] failed, reason:\n {msg}',
   'pages.datastudio.editor.stop.job': 'Stop job',
@@ -1005,9 +1091,11 @@ export default {
   'pages.datastudio.editor.explan': 'Get the current FlinkSql execution graph',
   'pages.datastudio.editor.explan.tip': 'JobPlan for FlinkSQL',
   'pages.datastudio.editor.exec': 'Execute',
-  'pages.datastudio.editor.exec.tip': 'Submit the current job to the cluster, please save it manually before submitting',
+  'pages.datastudio.editor.exec.tip':
+    'Submit the current job to the cluster, please save it manually before submitting',
   'pages.datastudio.editor.push.ds': 'Push to dolphin scheduler',
-  'pages.datastudio.editor.push.ds.query.error': 'Failed to get dolphin task definition set, reason:\n{msg}',
+  'pages.datastudio.editor.push.ds.query.error':
+    'Failed to get dolphin task definition set, reason:\n{msg}',
   'pages.datastudio.editor.push.ds.timeout.strategy': 'Timeout strategy',
   'pages.datastudio.editor.push.ds.timeout.alarm': 'Timeout warning',
   'pages.datastudio.editor.push.ds.timeout.error': 'Timeout failed',
@@ -1024,7 +1112,8 @@ export default {
   'pages.datastudio.editor.stop': 'Stop',
   'pages.datastudio.editor.release': 'Release, will not be able to modify after release',
   'pages.datastudio.editor.edit': 'Maintenance, click to enter the editing state',
-  'pages.datastudio.editor.online': 'Online, automatic recovery, alarms, etc. will take effect after online',
+  'pages.datastudio.editor.online':
+    'Online, automatic recovery, alarms, etc. will take effect after online',
   'pages.datastudio.editor.offline': 'Offline, will enter the latest release status',
   'pages.datastudio.editor.delete': 'Logout, will enter the recycle bin',
   'pages.datastudio.editor.recovery': 'Recovery, will enter maintenance mode',
@@ -1032,6 +1121,10 @@ export default {
   'pages.datastudio.editor.help': 'View usage help',
   'pages.datastudio.sql.query': 'SQL query',
   'pages.datastudio.submit.job': 'Submit job',
+
+  'pages.datastudio.help.sqlChanged': 'Sql context or configure changed',
+  'pages.datastudio.help.sqlChangedPrompt':
+    'the remote context corresponding to the current sql has changed, will the data be flushed?',
 
   'pages.datastudio.explain.validate.msg': 'FlinkSql Syntax and logic check',
   'pages.datastudio.explain.validate': 'Validating...',
@@ -1043,13 +1136,12 @@ export default {
   'pages.datastudio.explain.validate.logic.error': 'Logical Error',
 
   // footer
-  'pages.datastudio.footer.memDetails': "Maximum heap size: {max}\nUsed:   {used}M",
-  'pages.datastudio.footer.codeType': "Code Type: ",
-  'pages.datastudio.footer.lineSeparator': "Line Separator: ",
-  'pages.datastudio.footer.codeEncoding': "File Encoding: ",
-  'pages.datastudio.footer.codePosition': "Ln {Ln}:Col {Col} ",
+  'pages.datastudio.footer.memDetails': 'Maximum heap size: {max}\nUsed:   {used}M',
+  'pages.datastudio.footer.codeType': 'Code Type: ',
+  'pages.datastudio.footer.lineSeparator': 'Line Separator: ',
+  'pages.datastudio.footer.codeEncoding': 'File Encoding: ',
+  'pages.datastudio.footer.codePosition': 'Ln {Ln}:Col {Col} ',
   'pages.datastudio.label.result.query.latest.data': 'Get the latest data',
-
 
   'datastudio.middle.qg': 'Quick Guide',
   'datastudio.middle.qg.clusterInstance': 'Register Session Cluster',
@@ -1067,18 +1159,22 @@ export default {
   'datastudio.project.create.rootFolder': 'Create Root Folder',
   'datastudio.project.create.folder.name': 'Folder Name',
   'datastudio.project.create.folder.name.placeholder': 'Please enter the folder name',
-  'datastudio.project.create.folder.tip': 'No job, please click the new directory in the upper left corner',
+  'datastudio.project.create.folder.tip':
+    'No job, please click the new directory in the upper left corner',
   'datastudio.project.delete.job': 'Delete [{type}] Job [{name}]',
-  'datastudio.project.delete.job.confirm': 'This operation will delete the execution history of the task and all information of the task. \nPlease operate with caution! This operation is irreversible!!!  \n\t\t\t\tConfirm to delete?',
+  'datastudio.project.delete.job.confirm':
+    'This operation will delete the execution history of the task and all information of the task. \nPlease operate with caution! This operation is irreversible!!!  \n\t\t\t\tConfirm to delete?',
 
   'catalog.name': 'Job Name',
   'catalog.name.placeholder': 'Please enter the job name',
-  'catalog.name.tip': 'This name can be used as the JobName of the FlinkSql task (pipeline.name configuration item)',
+  'catalog.name.tip':
+    'This name can be used as the JobName of the FlinkSql task (pipeline.name configuration item)',
   'catalog.type': 'Job Type',
   'catalog.type.placeholder': 'Please select the job type',
-  'catalog.type.tip': 'The job type determines the execution method of the job, please choose carefully, once selected, it cannot be modified',
+  'catalog.type.tip':
+    'The job type determines the execution method of the job, please choose carefully, once selected, it cannot be modified',
   'catalog.udf.templateId': 'UDF Template',
   'catalog.udf.templateId.placeholder': 'Please select UDF template',
   'catalog.udf.className': 'Class/Method Name',
-  'catalog.udf.className.placeholder': 'Please enter the class or method name',
+  'catalog.udf.className.placeholder': 'Please enter the class or method name'
 };

@@ -17,50 +17,45 @@
  *
  */
 
+import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import ExceptionTab from '@/pages/DevOps/JobDetail/JobLogs/components/ExceptionTab';
+import JobManagerLogsTab from '@/pages/DevOps/JobDetail/JobLogs/components/JobManagerLogsTab';
+import TaskManagerLogsTab from '@/pages/DevOps/JobDetail/JobLogs/components/TaskManagerLogsTab';
+import { Tabs, Typography } from 'antd';
 
-import {Descriptions, Tabs, Tag, Typography} from 'antd';
-import {Jobs} from "@/types/DevOps/data";
-import {ProCard} from "@ant-design/pro-components";
-import ExceptionTab from "@/pages/DevOps/JobDetail/JobLogs/components/ExceptionTab";
-import JobManagerLogsTab from "@/pages/DevOps/JobDetail/JobLogs/components/JobManagerLogsTab";
-import React from "react";
-import TaskManagerLogsTab from "@/pages/DevOps/JobDetail/JobLogs/components/TaskManagerLogsTab";
-import {JobProps} from "@/pages/DevOps/JobDetail/data";
-
-const {Text, Paragraph} = Typography;
+const { Text, Paragraph } = Typography;
 
 const JobLogsTab = (props: JobProps) => {
+  const { jobDetail } = props;
 
-  const {jobDetail} = props;
-
-  return <>
-    {/*<ProCard>*/}
-    <Tabs
-      tabPosition={'left'}
-      size={"small"}
-      items={
-        [
+  return (
+    <>
+      {/*<ProCard>*/}
+      <Tabs
+        tabPosition={'left'}
+        size={'small'}
+        items={[
           {
             label: 'Exception',
             key: 'Exception',
-            children: <ExceptionTab jobDetail={jobDetail}/>,
+            children: <ExceptionTab jobDetail={jobDetail} />
           },
 
           {
             label: 'JobManager',
             key: 'JobManager',
-            children: <JobManagerLogsTab jobDetail={jobDetail}/>,
+            children: <JobManagerLogsTab jobDetail={jobDetail} />
           },
           {
             label: 'TaskManager',
             key: 'TaskManager',
-            children: <TaskManagerLogsTab jobDetail={jobDetail}/>,
-          },
-        ]
-      }
-    />
-    {/*</ProCard>*/}
-  </>
+            children: <TaskManagerLogsTab jobDetail={jobDetail} />
+          }
+        ]}
+      />
+      {/*</ProCard>*/}
+    </>
+  );
 };
 
 export default JobLogsTab;

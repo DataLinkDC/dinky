@@ -16,30 +16,32 @@
  *   limitations under the License.
  *
  */
-import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
-import {ActionType, ProColumns, ProTable} from "@ant-design/pro-components";
-import {Button, Modal, Tag} from "antd";
-import {l} from "@/utils/intl";
-import {handleOption} from "@/services/BusinessCrud";
-import {DiffEditor } from "@monaco-editor/react";
-import React, {useRef, useState} from "react";
-import {RocketOutlined, SyncOutlined} from "@ant-design/icons";
-import {postAll} from "@/services/api";
-import moment from "moment";
-import {getCurrentData} from "@/pages/DataStudio/function";
+import { getCurrentData } from '@/pages/DataStudio/function';
+import { StateType } from '@/pages/DataStudio/model';
+import { postAll } from '@/services/api';
+import { handleOption } from '@/services/BusinessCrud';
+import { l } from '@/utils/intl';
+import { RocketOutlined, SyncOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
+import { DiffEditor } from '@monaco-editor/react';
+import { Button, Modal, Tag } from 'antd';
+import moment from 'moment';
+import React, { useRef, useState } from 'react';
+import { connect } from 'umi';
 
 const url = '/api/task/version';
 
 export type TaskHistoryTableListItem = {
-  id: number,
-  versionId: number,
-  statement: string,
-  createTime: Date,
+  id: number;
+  versionId: number;
+  statement: string;
+  createTime: Date;
 };
 
 const HistoryVersion = (props: any) => {
-  const {  tabs: {panes, activeKey}} = props;
+  const {
+    tabs: { panes, activeKey }
+  } = props;
   const current = getCurrentData(panes, activeKey);
   const actionRef = useRef<ActionType>();
 
@@ -47,74 +49,99 @@ const HistoryVersion = (props: any) => {
   const [versionDiffRow, setVersionDiffRow] = useState<TaskHistoryTableListItem>();
   actionRef.current?.reloadAndRest?.();
 
-
   const cancelHandle = () => {
     setVersionDiffVisible(false);
-  }
+  };
 
   const VersionDiffForm = () => {
-
-    let leftTitle = l('pages.datastudio.label.version.leftTitle','',{
+    let leftTitle = l('pages.datastudio.label.version.leftTitle', '', {
       versionId: versionDiffRow?.versionId,
-      createTime: (moment(versionDiffRow?.createTime).format('YYYY-MM-DD HH:mm:ss')),
-    })
+      createTime: moment(versionDiffRow?.createTime).format('YYYY-MM-DD HH:mm:ss')
+    });
 
-    let rightTitle = l('pages.datastudio.label.version.rightTitle','',{
-      createTime: (moment(current?.createTime).format('YYYY-MM-DD HH:mm:ss')),
-      updateTime: (moment(current?.updateTime).format('YYYY-MM-DD HH:mm:ss')),
-    })
+    let rightTitle = l('pages.datastudio.label.version.rightTitle', '', {
+      createTime: moment(current?.createTime).format('YYYY-MM-DD HH:mm:ss'),
+      updateTime: moment(current?.updateTime).format('YYYY-MM-DD HH:mm:ss')
+    });
     let originalValue = versionDiffRow?.statement;
     let currentValue = current?.statement;
 
     return (
       <>
-        <Modal title={l('pages.datastudio.label.version.diff')} open={versionDiffVisible} destroyOnClose={true} width={"85%"}
-               bodyStyle={{height: "700px"}}
-               onCancel={() => {
-                 cancelHandle();
-               }}
-               footer={[
-                 <Button key="back" onClick={() => {
-                   cancelHandle();
-                 }}>
-                   {l('button.close')}
-                 </Button>,
-               ]}>
-          <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-            <Tag color="green" style={{height: "20px"}}>
-              <RocketOutlined/> {leftTitle}
+        <Modal
+          title={l('pages.datastudio.label.version.diff')}
+          open={versionDiffVisible}
+          destroyOnClose={true}
+          width={'85%'}
+          bodyStyle={{ height: '700px' }}
+          onCancel={() => {
+            cancelHandle();
+          }}
+          footer={[
+            <Button
+              key='back'
+              onClick={() => {
+                cancelHandle();
+              }}
+            >
+              {l('button.close')}
+            </Button>
+          ]}
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between'
+            }}
+          >
+            <Tag color='green' style={{ height: '20px' }}>
+              <RocketOutlined /> {leftTitle}
             </Tag>
-            <Tag color="blue" style={{height: "20px"}}>
-              <SyncOutlined spin/> {rightTitle}
+            <Tag color='blue' style={{ height: '20px' }}>
+              <SyncOutlined spin /> {rightTitle}
             </Tag>
           </div>
-          <br/>
-            <React.StrictMode>
-              <DiffEditor height={"95%"} options={{
+          <br />
+          <React.StrictMode>
+            <DiffEditor
+              height={'95%'}
+              options={{
                 readOnly: true,
                 selectOnLineNumbers: true,
                 lineDecorationsWidth: 20,
                 mouseWheelZoom: true,
-                automaticLayout:true,
-              }} language={"sql"} theme={"vs-dark"} original={originalValue} modified={currentValue}/>
-            </React.StrictMode>
+                automaticLayout: true
+              }}
+              language={'sql'}
+              theme={'vs-dark'}
+              original={originalValue}
+              modified={currentValue}
+            />
+          </React.StrictMode>
         </Modal>
       </>
-    )
-  }
-
+    );
+  };
 
   const onRollBackVersion = async (row: TaskHistoryTableListItem) => {
     Modal.confirm({
       title: l('pages.datastudio.label.version.rollback.flinksql'),
-      content: l('pages.datastudio.label.version.rollback.flinksqlConfirm','',{versionId: row.versionId }),
+      content: l('pages.datastudio.label.version.rollback.flinksqlConfirm', '', {
+        versionId: row.versionId
+      }),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
         const TaskHistoryRollbackItem = {
-          id: current.key, versionId: row.versionId
-        }
-        await handleOption('api/task/rollbackTask', l('pages.datastudio.label.version.rollback.flinksql'), TaskHistoryRollbackItem);
+          id: current.key,
+          versionId: row.versionId
+        };
+        await handleOption(
+          'api/task/rollbackTask',
+          l('pages.datastudio.label.version.rollback.flinksql'),
+          TaskHistoryRollbackItem
+        );
         actionRef.current?.reloadAndRest?.();
       }
     });
@@ -128,46 +155,53 @@ const HistoryVersion = (props: any) => {
       hideInSearch: true
     },
     {
-      sorter:true,
+      sorter: true,
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
       valueType: 'dateTime',
       hideInForm: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
-      align:"center",
+      align: 'center',
       title: l('global.table.operate'),
       valueType: 'option',
       render: (text, record) => (
         <>
-          <Button type="link" onClick={async () => onRollBackVersion(record)}>{l('pages.datastudio.label.version.rollback')}</Button>
-          <Button type="link" title={l('pages.datastudio.label.version.diff.tip')} onClick={() => {
-            setVersionDiffRow(record)
-            setVersionDiffVisible(true)
-          }}>{l('pages.datastudio.label.version.diff')}</Button>
+          <Button type='link' onClick={async () => onRollBackVersion(record)}>
+            {l('pages.datastudio.label.version.rollback')}
+          </Button>
+          <Button
+            type='link'
+            title={l('pages.datastudio.label.version.diff.tip')}
+            onClick={() => {
+              setVersionDiffRow(record);
+              setVersionDiffVisible(true);
+            }}
+          >
+            {l('pages.datastudio.label.version.diff')}
+          </Button>
         </>
-
       )
-    },
+    }
   ];
-
-
 
   return (
     <>
-        <ProTable<TaskHistoryTableListItem>
-          actionRef={actionRef}
-          rowKey="id"
-          request={(params, sorter, filter) => postAll(url, {taskId: current.key, ...params, sorter, filter})}
-          columns={columns}
-          search={false}
-        />
+      <ProTable<TaskHistoryTableListItem>
+        actionRef={actionRef}
+        rowKey='id'
+        request={(params, sorter, filter) =>
+          postAll(url, { taskId: current.key, ...params, sorter, filter })
+        }
+        columns={columns}
+        search={false}
+      />
       {VersionDiffForm()}
     </>
   );
 };
 
-export default connect(({Studio}: { Studio: StateType }) => ({
-  tabs: Studio.tabs,
+export default connect(({ Studio }: { Studio: StateType }) => ({
+  tabs: Studio.tabs
 }))(HistoryVersion);

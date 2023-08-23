@@ -34,4 +34,6 @@ import org.apache.ibatis.annotations.Param;
 public interface UserMapper extends SuperMapper<User> {
 
     Integer queryAdminUserByTenant(@Param("tenantId") Integer tenantId);
+
+    Integer recoveryUser(@Param("id") Integer userId);
 }

@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-import {Button, Form} from 'antd';
-import {l} from '@/utils/intl';
-import React, {useEffect} from 'react';
-import {MODAL_FORM_OPTIONS} from '@/services/constants';
-import {DataSources} from '@/types/RegCenter/data';
+import { FormContextValue } from '@/components/Context/FormContext';
 import DataSourceProForm from '@/pages/RegCenter/DataSource/components/DataSourceModal/DataSourceProForm';
-import {FormContextValue} from '@/components/Context/FormContext';
-import {ModalForm} from '@ant-design/pro-components';
+import { MODAL_FORM_OPTIONS } from '@/services/constants';
+import { DataSources } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { ModalForm } from '@ant-design/pro-components';
+import { Button, Form } from 'antd';
+import React, { useEffect } from 'react';
 
 type DataSourceModalProps = {
   visible: boolean;
@@ -30,14 +30,15 @@ type DataSourceModalProps = {
   onSubmit: (values: Partial<DataSources.DataSource>) => void;
   onTest: (values: Partial<DataSources.DataSource>) => void;
   values: Partial<DataSources.DataSource>;
-}
+};
 
 const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
-
-  const {visible, values, onCancel, onSubmit, onTest} = props;
+  const { visible, values, onCancel, onSubmit, onTest } = props;
   const [submitting, setSubmitting] = React.useState<boolean>(false);
   const [flinkConfigValue, setFlinkConfigValue] = React.useState<string>(values.flinkConfig || '');
-  const [flinkTemplateValue, setFlinkTemplateValue] = React.useState<string>(values.flinkTemplate || '');
+  const [flinkTemplateValue, setFlinkTemplateValue] = React.useState<string>(
+    values.flinkTemplate || ''
+  );
 
   /**
    * init form
@@ -46,9 +47,12 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
   /**
    * init form context
    */
-  const formContext = React.useMemo<FormContextValue>(() => ({
-    resetForm: () => form.resetFields(), // 定义 resetForm 方法
-  }), [form]);
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
+    }),
+    [form]
+  );
 
   /**
    * when modalVisible or values changed, set form values
@@ -56,7 +60,6 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
   useEffect(() => {
     form.setFieldsValue(values);
   }, [visible, values, form]);
-
 
   /**
    * handle cancel
@@ -67,14 +70,13 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
     formContext.resetForm();
   };
 
-
   /**
    * handle flink config value change
    * @param value
    */
   const handleFlinkConfigValueChange = (value: string) => {
     setFlinkConfigValue(value);
-    form.setFieldsValue({flinkConfig: value});
+    form.setFieldsValue({ flinkConfig: value });
   };
 
   /**
@@ -83,7 +85,7 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
    */
   const handleFlinkTemplateValueChange = (value: string) => {
     setFlinkTemplateValue(value);
-    form.setFieldsValue({flinkTemplate: value});
+    form.setFieldsValue({ flinkTemplate: value });
   };
 
   /**
@@ -91,9 +93,8 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
    */
   const handleTestConnect = async () => {
     const fieldsValue = await form.validateFields();
-    onTest({...values, ...fieldsValue});
+    onTest({ ...values, ...fieldsValue });
   };
-
 
   /**
    * submit form
@@ -101,7 +102,7 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setSubmitting(true);
-    await onSubmit({...values, ...fieldsValue});
+    await onSubmit({ ...values, ...fieldsValue });
     handleCancel();
   };
 
@@ -110,30 +111,44 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
    */
   const renderFooter = () => {
     return [
-      <Button key={'cancel'} onClick={() => handleCancel()}>{l('button.cancel')}</Button>,
-      <Button key={'test'} loading={submitting} type="primary"
-              onClick={handleTestConnect}>{l('button.test')}</Button>,
-      <Button key={'finish'} loading={submitting} type="primary"
-              onClick={() => submitForm()}>{l('button.finish')}</Button>,
+      <Button key={'cancel'} onClick={() => handleCancel()}>
+        {l('button.cancel')}
+      </Button>,
+      <Button key={'test'} loading={submitting} type='primary' onClick={handleTestConnect}>
+        {l('button.test')}
+      </Button>,
+      <Button key={'finish'} loading={submitting} type='primary' onClick={() => submitForm()}>
+        {l('button.finish')}
+      </Button>
     ];
   };
 
   /**
    * render
    */
-  return <>
-    <ModalForm<DataSources.DataSource>
-      {...MODAL_FORM_OPTIONS}
-      open={visible}
-      modalProps={{onCancel: handleCancel}}
-      title={values.id ? l('rc.ds.modify') : l('rc.ds.create')}
-      form={form}
-      submitter={{render: () => [...renderFooter()]}}
-      initialValues={{...values, flinkConfig: flinkConfigValue, flinkTemplate: flinkTemplateValue}}
-    >
-      <DataSourceProForm values={values} form={form} flinkConfigChange={handleFlinkConfigValueChange}
-                         flinkTemplateChange={handleFlinkTemplateValueChange}/>
-    </ModalForm>
-  </>;
+  return (
+    <>
+      <ModalForm<DataSources.DataSource>
+        {...MODAL_FORM_OPTIONS}
+        open={visible}
+        modalProps={{ onCancel: handleCancel }}
+        title={values.id ? l('rc.ds.modify') : l('rc.ds.create')}
+        form={form}
+        submitter={{ render: () => [...renderFooter()] }}
+        initialValues={{
+          ...values,
+          flinkConfig: flinkConfigValue,
+          flinkTemplate: flinkTemplateValue
+        }}
+      >
+        <DataSourceProForm
+          values={values}
+          form={form}
+          flinkConfigChange={handleFlinkConfigValueChange}
+          flinkTemplateChange={handleFlinkTemplateValueChange}
+        />
+      </ModalForm>
+    </>
+  );
 };
 export default DataSourceModal;

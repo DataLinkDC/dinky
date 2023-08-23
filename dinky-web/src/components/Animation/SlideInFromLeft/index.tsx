@@ -17,17 +17,16 @@
  *
  */
 
-
-import { useSpring, animated } from 'react-spring';
+import { animated, useSpring } from 'react-spring';
 
 const SlideInFromLeft = (props: any) => {
-    const { children } = props;
-    const style = useSpring({
-        from: { transform: 'translateX(100%)' },
-        to: { transform: 'translateX(10%)' },
-        config: { duration: 1000 },
-    });
-    return <animated.div style={style}>{children}</animated.div>;
+  const { children } = props;
+  const style = useSpring({
+    from: { transform: 'translateX(100%)' },
+    to: { transform: 'translateX(10%)' },
+    config: { duration: 1000 }
+  });
+  return <animated.div style={style}>{children}</animated.div>;
 };
 
-export default SlideInFromLeft
+export default SlideInFromLeft;

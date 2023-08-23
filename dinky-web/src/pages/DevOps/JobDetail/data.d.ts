@@ -1,4 +1,4 @@
-import {Jobs} from "@/types/DevOps/data";
+import { Jobs } from '@/types/DevOps/data';
 
 export type JobProps = {
   jobDetail: Jobs.JobInfoDetail;

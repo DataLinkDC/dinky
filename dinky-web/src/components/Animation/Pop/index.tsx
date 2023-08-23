@@ -17,18 +17,18 @@
  *
  */
 
-import { useSpring, animated } from 'react-spring';
+import { animated, useSpring } from 'react-spring';
 
 //弹出效果：
 const Pop = (props: any) => {
-    const {children} = props;
-    const style = useSpring({
-        from: { transform: 'scale(0)', opacity: 0 },
-        to: { transform: 'scale(1)', opacity: 1 },
-        config: { tension: 300, friction: 20 },
-    });
+  const { children } = props;
+  const style = useSpring({
+    from: { transform: 'scale(0)', opacity: 0 },
+    to: { transform: 'scale(1)', opacity: 1 },
+    config: { tension: 300, friction: 20 }
+  });
 
-    return <animated.div style={style}>{children}</animated.div>;
+  return <animated.div style={style}>{children}</animated.div>;
 };
 
-export default Pop
+export default Pop;

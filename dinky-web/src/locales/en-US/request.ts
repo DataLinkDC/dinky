@@ -37,12 +37,14 @@ export default {
   'app.request.503': 'The service is unavailable. ',
   'app.request.504': 'The gateway timed out. ',
 
-  'app.request.failed':' The request failed, please try again ',
-  'app.request.test.connection':' Testing connection ',
-  'app.request.heartbeat.connection':' Detecting heartbeat ',
-  'app.request.heartbeat.connection.success': 'The heartbeat of the data source is normal, and the detection time is: {time}',
-  'app.request.heartbeat.connection.failed':' The heartbeat of the data source is abnormal, and the detection time is: {time} ',
-  'app.request.upload.failed':' Upload failed. ',
+  'app.request.failed': ' The request failed, please try again ',
+  'app.request.test.connection': ' Testing connection ',
+  'app.request.heartbeat.connection': ' Detecting heartbeat ',
+  'app.request.heartbeat.connection.success':
+    'The heartbeat of the data source is normal, and the detection time is: {time}',
+  'app.request.heartbeat.connection.failed':
+    ' The heartbeat of the data source is abnormal, and the detection time is: {time} ',
+  'app.request.upload.failed': ' Upload failed. ',
   'app.request.update.setting.success': 'Modify the configuration successfully！',
   'app.request.error.try': 'Failed, please try again',
   'app.request.geterror.try': 'Get failed, please try again',
@@ -53,6 +55,5 @@ export default {
   'app.request.running': 'Now is ',
   'app.request.test.alert.msg': 'Sending test alert message',
   'app.request.loading': 'Loading...',
-  'app.request.back': 'Back Home',
-
+  'app.request.back': 'Back Home'
 };

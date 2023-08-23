@@ -17,94 +17,104 @@
  *
  */
 
-
-import {Col, Divider, Row, Space} from "antd";
-import {l} from "@/utils/intl";
-import {ProCard, ProFormGroup, ProFormList, ProFormText} from "@ant-design/pro-components";
-import React from "react";
+import { l } from '@/utils/intl';
+import { ProCard, ProFormGroup, ProFormList, ProFormText } from '@ant-design/pro-components';
+import { Col, Divider, Row, Space } from 'antd';
 
 const YarnConfig = () => {
-    return <>
-        <Row gutter={[16, 16]}>
-            <Col span={10}>
-                <Divider>{l('rc.cc.hadoopConfig')}</Divider>
-                <ProFormGroup>
-                    <ProFormText
-                        name={['configJson', 'hadoopConfigPath']}
-                        label={l('rc.cc.hadoopConfigPath')}
-                        width="md"
-                        rules={[{required: true, message: l('rc.cc.hadoopConfigPathPlaceholder')}]}
-                        placeholder={l('rc.cc.hadoopConfigPathPlaceholder')}
-                        tooltip={l('rc.cc.hadoopConfigPathHelp')}
-                    />
-                </ProFormGroup>
-                <Divider>{l('rc.cc.hadoop.defineConfig')}</Divider>
-                <ProFormList
-                  name={['configJson', 'hadoopConfigList']}
-                   copyIconProps={false}
-                    deleteIconProps={{
-                        tooltipText: l('rc.cc.deleteConfig'),
-                    }}
-                    creatorButtonProps={{
-                        style: {width: '100%'},
-                        creatorButtonText: l('rc.cc.addConfig'),
-                    }}
-                >
-                    <ProFormGroup key="hadoopGroup" style={{ width: '100%'}}>
-                        <Space key={'config'} style={{width: '100%'}} align="baseline">
-                            <ProFormText width={'md'} name="name" placeholder={l('rc.cc.key')}/>
-                            <ProFormText width={'sm'} name="value" placeholder={l('rc.cc.value')}/>
-                        </Space>
-                    </ProFormGroup>
-                </ProFormList>
-            </Col>
+  return (
+    <>
+      <Row gutter={[16, 16]}>
+        <Col span={10}>
+          <Divider>{l('rc.cc.hadoopConfig')}</Divider>
+          <ProFormGroup>
+            <ProFormText
+              name={['configJson', 'hadoopConfigPath']}
+              label={l('rc.cc.hadoopConfigPath')}
+              width='md'
+              rules={[
+                {
+                  required: true,
+                  message: l('rc.cc.hadoopConfigPathPlaceholder')
+                }
+              ]}
+              placeholder={l('rc.cc.hadoopConfigPathPlaceholder')}
+              tooltip={l('rc.cc.hadoopConfigPathHelp')}
+            />
+          </ProFormGroup>
+          <Divider>{l('rc.cc.hadoop.defineConfig')}</Divider>
+          <ProFormList
+            name={['configJson', 'hadoopConfigList']}
+            copyIconProps={false}
+            deleteIconProps={{
+              tooltipText: l('rc.cc.deleteConfig')
+            }}
+            creatorButtonProps={{
+              style: { width: '100%' },
+              creatorButtonText: l('rc.cc.addConfig')
+            }}
+          >
+            <ProFormGroup key='hadoopGroup' style={{ width: '100%' }}>
+              <Space key={'config'} style={{ width: '100%' }} align='baseline'>
+                <ProFormText width={'md'} name='name' placeholder={l('rc.cc.key')} />
+                <ProFormText width={'sm'} name='value' placeholder={l('rc.cc.value')} />
+              </Space>
+            </ProFormGroup>
+          </ProFormList>
+        </Col>
 
-            <ProCard.Divider type={'vertical'}/>
+        <ProCard.Divider type={'vertical'} />
 
-            <Col span={13}>
-                <Divider>{l('rc.cc.flinkConfig')}</Divider>
-                <ProFormGroup>
-                    <ProFormText
-                        name={['configJson', 'flinkLibPath']}
-                        label={l('rc.cc.libPath')}
-                        width="md"
-                        rules={[{required: true, message: l('rc.cc.libPathPlaceholder')}]}
-                        placeholder={l('rc.cc.libPathPlaceholder')}
-                        tooltip={l('rc.cc.libPathHelp')}
-                    />
+        <Col span={13}>
+          <Divider>{l('rc.cc.flinkConfig')}</Divider>
+          <ProFormGroup>
+            <ProFormText
+              name={['configJson', 'flinkLibPath']}
+              label={l('rc.cc.libPath')}
+              width='md'
+              rules={[{ required: true, message: l('rc.cc.libPathPlaceholder') }]}
+              placeholder={l('rc.cc.libPathPlaceholder')}
+              tooltip={l('rc.cc.libPathHelp')}
+            />
 
-                    <ProFormText
-                        name={['configJson', 'flinkConfigPath']}
-                        label={l('rc.cc.flinkConfigPath')}
-                        width="md"
-                        rules={[{required: true, message: l('rc.cc.flinkConfigPathPlaceholder')}]}
-                        placeholder={l('rc.cc.flinkConfigPathPlaceholder')}
-                        tooltip={l('rc.cc.flinkConfigPathHelp')}
-                    />
-                </ProFormGroup>
+            <ProFormText
+              name={['configJson', 'flinkConfigPath']}
+              label={l('rc.cc.flinkConfigPath')}
+              width='md'
+              rules={[
+                {
+                  required: true,
+                  message: l('rc.cc.flinkConfigPathPlaceholder')
+                }
+              ]}
+              placeholder={l('rc.cc.flinkConfigPathPlaceholder')}
+              tooltip={l('rc.cc.flinkConfigPathHelp')}
+            />
+          </ProFormGroup>
 
-                <Divider>{l('rc.cc.flink.defineConfig')}</Divider>
-                <ProFormList
-                    name={['configJson', 'flinkConfigList']}
-                    copyIconProps={false}
-                    deleteIconProps={{
-                        tooltipText: l('rc.cc.deleteConfig'),
-                    }}
-                    creatorButtonProps={{
-                        style: {width: '100%'},
-                        creatorButtonText: l('rc.cc.addConfig'),
-                    }}
-                >
-                    <ProFormGroup key="flinkGroup" style={{display: 'flex',width: '100%'}}>
-                        <Space key={'config'} style={{display: 'flex'}} align="baseline">
-                            <ProFormText width={'md'} name="name" placeholder={l('rc.cc.key')}/>
-                            <ProFormText width={'sm'}  name="value" placeholder={l('rc.cc.value')}/>
-                        </Space>
-                    </ProFormGroup>
-                </ProFormList>
-            </Col>
-        </Row>
+          <Divider>{l('rc.cc.flink.defineConfig')}</Divider>
+          <ProFormList
+            name={['configJson', 'flinkConfigList']}
+            copyIconProps={false}
+            deleteIconProps={{
+              tooltipText: l('rc.cc.deleteConfig')
+            }}
+            creatorButtonProps={{
+              style: { width: '100%' },
+              creatorButtonText: l('rc.cc.addConfig')
+            }}
+          >
+            <ProFormGroup key='flinkGroup' style={{ display: 'flex', width: '100%' }}>
+              <Space key={'config'} style={{ display: 'flex' }} align='baseline'>
+                <ProFormText width={'md'} name='name' placeholder={l('rc.cc.key')} />
+                <ProFormText width={'sm'} name='value' placeholder={l('rc.cc.value')} />
+              </Space>
+            </ProFormGroup>
+          </ProFormList>
+        </Col>
+      </Row>
     </>
-}
+  );
+};
 
 export default YarnConfig;

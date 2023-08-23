@@ -15,17 +15,19 @@
  * limitations under the License.
  */
 
-import {PageContainer} from '@ant-design/pro-layout';
-import JobList from '@/pages/DevOps/JobList';
 import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import JobList from '@/pages/DevOps/JobList';
+import { PageContainer } from '@ant-design/pro-layout';
 
 export default () => {
   /**
    * breadcrumb={{style:{display:'none'}}} is used to hide the breadcrumb || 隐藏右上角的路由导航面包屑
    */
-  return <SlowlyAppear>
-    <PageContainer title={false} breadcrumb={{style:{display:'none'}}}>
-      <JobList/>
-    </PageContainer>
-  </SlowlyAppear>;
-}
+  return (
+    <SlowlyAppear>
+      <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
+        <JobList />
+      </PageContainer>
+    </SlowlyAppear>
+  );
+};

@@ -15,17 +15,20 @@
  * limitations under the License.
  */
 
-
-import { QUERY_KEYWORD} from '@/pages/RegCenter/DataSource/components/constants';
 import {
-  ClickHouseIcons, DefaultDBIcons,
-  DorisIcons, HiveIcons,
+  ClickHouseIcons,
+  DefaultDBIcons,
+  DorisIcons,
+  HiveIcons,
   MysqlIcons,
-  OracleIcons, PhoenixIcons,
-  PostgresqlIcons, PrestoIcons,
-  SqlServerIcons, StarRocksIcons
+  OracleIcons,
+  PhoenixIcons,
+  PostgresqlIcons,
+  PrestoIcons,
+  SqlServerIcons,
+  StarRocksIcons
 } from '@/components/Icons/DBIcons';
-
+import { QUERY_KEYWORD } from '@/pages/RegCenter/DataSource/components/constants';
 
 /**
  * render DB icon
@@ -35,34 +38,34 @@ import {
 export const renderDBIcon = (type: string, size?: number) => {
   switch (type.toLowerCase()) {
     case 'mysql':
-      return <MysqlIcons size={size}/>;
+      return <MysqlIcons size={size} />;
     case 'oracle':
-      return <OracleIcons size={size}/>;
+      return <OracleIcons size={size} />;
     case 'postgresql':
-      return <PostgresqlIcons size={size}/>;
+      return <PostgresqlIcons size={size} />;
     case 'clickhouse':
-      return <ClickHouseIcons size={size}/>;
+      return <ClickHouseIcons size={size} />;
     case 'sqlserver':
-      return <SqlServerIcons size={size}/>;
+      return <SqlServerIcons size={size} />;
     case 'doris':
-      return <DorisIcons size={size}/>;
+      return <DorisIcons size={size} />;
     case 'phoenix':
-      return <PhoenixIcons size={size}/>;
+      return <PhoenixIcons size={size} />;
     case 'hive':
-      return <HiveIcons size={size}/>;
+      return <HiveIcons size={size} />;
     case 'starrocks':
-      return <StarRocksIcons size={size}/>;
+      return <StarRocksIcons size={size} />;
     case 'presto':
-      return <PrestoIcons size={size}/>;
+      return <PrestoIcons size={size} />;
     default:
-      return <DefaultDBIcons size={size}/>;
+      return <DefaultDBIcons size={size} />;
   }
 };
 
 export const buildColumnsQueryKeyWord = (data: string[]) => {
   const result = data.concat(QUERY_KEYWORD).map((item: string | number) => ({
     value: item,
-    label: item,
+    label: item
   }));
   return result;
 };

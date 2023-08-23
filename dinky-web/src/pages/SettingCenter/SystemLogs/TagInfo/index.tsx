@@ -15,51 +15,60 @@
  * limitations under the License.
  */
 
-import {Space} from 'antd';
-import RootLogs from "@/pages/SettingCenter/SystemLogs/TagInfo/RootLogs";
-import LogList from "@/pages/SettingCenter/SystemLogs/TagInfo/LogList";
-import React, {useState} from 'react';
-import {ProCard} from '@ant-design/pro-components';
-import {LogSvg} from '@/components/Icons/CodeLanguageIcon';
-
+import { LogSvg } from '@/components/Icons/CodeLanguageIcon';
+import LogList from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList';
+import RootLogs from '@/pages/SettingCenter/SystemLogs/TagInfo/RootLogs';
+import { ProCard } from '@ant-design/pro-components';
+import { Space } from 'antd';
+import { useState } from 'react';
 
 const TagInfo = () => {
-
   const [activeKey, setActiveKey] = useState('logs');
 
   // tab list
   const tabList = [
     {
       key: 'logs',
-      label: <Space><LogSvg/>{'Root Logs'}</Space>,
-      children: <RootLogs/>,
+      label: (
+        <Space>
+          <LogSvg />
+          {'Root Logs'}
+        </Space>
+      ),
+      children: <RootLogs />
     },
     {
       key: 'logList',
-      label: <Space><LogSvg/>{'Log List'}</Space>,
-      children:  <LogList/>,
-    },
+      label: (
+        <Space>
+          <LogSvg />
+          {'Log List'}
+        </Space>
+      ),
+      children: <LogList />
+    }
   ];
-
 
   /**
    * render
    */
-  return <>
-    <ProCard
+  return (
+    <>
+      <ProCard
         ghost
         className={'schemaTree'}
-        size="small"
+        size='small'
         bordered
         tabs={{
           activeKey: activeKey,
           type: 'card',
           animated: true,
           onChange: (key: string) => setActiveKey(key),
-          items: tabList,
+          items: tabList
         }}
-    />
-  </>;
+      />
+    </>
+  );
 };
 
 export default TagInfo;
