@@ -6,6 +6,7 @@ import { connect } from '@@/exports';
 import { Modal, Select, Tabs } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { ReactNode, useEffect, useState } from 'react';
+import * as React from "react";
 
 export async function getWatchTables(statement: string) {
   return postAll('api/statement/getWatchTables', { statement });
@@ -51,6 +52,17 @@ const TableData = (props: any) => {
   const { statement } = props;
   const [panes, setPanes] = useState<{ label: string; key: string; children: ReactNode }[]>([]);
 
+  function onOk(title: string) {
+    const activeKey = `${panes.length + 1}`;
+    const newPanes = [...panes];
+    newPanes.push({
+      label: title,
+      children: <DataPage title={title}/>,
+      key: activeKey
+    });
+    setPanes(newPanes);
+  }
+
   const addTab = async () => {
     let title: string;
 
@@ -68,29 +80,27 @@ const TableData = (props: any) => {
         />
       ),
       onOk() {
-        const activeKey = `${panes.length + 1}`;
-        const newPanes = [...panes];
-        newPanes.push({
-          label: title,
-          children: <DataPage title={title} />,
-          key: activeKey
-        });
-        setPanes(newPanes);
+        onOk(title);
       }
     });
   };
 
+  const onEdit =  (targetKey: React.MouseEvent | React.KeyboardEvent | string, action: 'add' | 'remove') => {
+    if (action === 'add') {
+      addTab();
+      return;
+    }
+
+    if (action === 'remove') {
+      const newPanes = panes.filter((pane) => pane.key !== targetKey);
+      setPanes(newPanes);
+    }
+  }
+
   return (
     <Tabs
       type='editable-card'
-      onEdit={(targetKey, action) => {
-        if (action === 'add') {
-          addTab();
-        } else if (action === 'remove') {
-          const newPanes = panes.filter((pane) => pane.key !== targetKey);
-          setPanes(newPanes);
-        }
-      }}
+      onEdit={onEdit}
       items={panes}
     />
   );
