@@ -64,11 +64,11 @@ const TableData = (props: any) => {
   }
 
   const addTab = async () => {
-    let title: string;
-
     if (!statement) return;
     const result = await getWatchTables(statement);
-    let tables: [string] = result.datas;
+    const tables: [string] = result.datas;
+
+    let title: string;
     Modal.confirm({
       title: 'Please select table name',
       content: (
@@ -86,24 +86,18 @@ const TableData = (props: any) => {
   };
 
   const onEdit =  (targetKey: React.MouseEvent | React.KeyboardEvent | string, action: 'add' | 'remove') => {
-    if (action === 'add') {
-      addTab();
-      return;
-    }
-
-    if (action === 'remove') {
-      const newPanes = panes.filter((pane) => pane.key !== targetKey);
-      setPanes(newPanes);
+    switch (action) {
+      case 'add':
+        addTab();
+        break;
+      case 'remove':
+        const newPanes = panes.filter((pane) => pane.key !== targetKey);
+        setPanes(newPanes);
+        break;
     }
   }
 
-  return (
-    <Tabs
-      type='editable-card'
-      onEdit={onEdit}
-      items={panes}
-    />
-  );
+  return <Tabs type='editable-card' onEdit={onEdit} items={panes}/>;
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
