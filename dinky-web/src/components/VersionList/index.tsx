@@ -17,11 +17,11 @@
  */
 
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import { TaskVersionListItem } from '@/components/VersionList/data';
 import { l } from '@/utils/intl';
 import { DeliveredProcedureOutlined } from '@ant-design/icons';
 import { List, Skeleton, Space, Tag, Tooltip } from 'antd';
 import { ListItemTypeProps } from 'antd/es/list/Item';
+import {TaskVersionListItem} from "@/types/Studio/data";
 
 export interface VersionListProps {
   data: TaskVersionListItem[];
