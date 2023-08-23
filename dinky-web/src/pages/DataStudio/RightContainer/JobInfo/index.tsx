@@ -46,7 +46,7 @@ const JobInfo = (props: any) => {
     }
 
     Object.keys(change).forEach((key) => {
-      pane.params.taskData[key] = change[key];
+      pane.params.taskData[key] = all[key];
     });
 
     dispatch({

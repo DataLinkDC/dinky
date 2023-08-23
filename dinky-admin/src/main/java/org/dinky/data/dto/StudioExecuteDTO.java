@@ -62,7 +62,7 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
     private Integer parallelism;
     private Integer savePointStrategy;
     private String savePointPath;
-    private Map<String, String> config = new HashMap<>();
+    private Map<String, String> configJson = new HashMap<>();
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public JobConfig getJobConfig() {
@@ -87,7 +87,7 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
                 savePointStrategy,
                 savePointPath,
                 getVariables(),
-                config);
+                configJson);
     }
 
     public Integer getTaskId() {

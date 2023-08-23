@@ -942,7 +942,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Savepoints savepoints = buildSavepoint(config);
         if (Asserts.isNotNull(savepoints)) {
             config.setSavePointPath(savepoints.getPath());
-            config.getConfig().put("execution.savepoint.path", savepoints.getPath());
+            config.getConfigJson().put("execution.savepoint.path", savepoints.getPath());
         }
 
         if (!GatewayType.get(task.getType()).isDeployCluster()) {
@@ -977,7 +977,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private FlinkClusterConfig buildGatewayCfgObj(JobConfig config) {
         FlinkClusterConfig flinkClusterCfg = clusterCfgService.getFlinkClusterCfg(config.getClusterConfigurationId());
         flinkClusterCfg.getAppConfig().setUserJarParas(buildParas(config.getTaskId()));
-        flinkClusterCfg.getFlinkConfig().getConfiguration().putAll(config.getConfig());
+        flinkClusterCfg.getFlinkConfig().getConfiguration().putAll(config.getConfigJson());
 
         //        if (config.isJarTask()) {
         //            JSONObject clusterObj = new JSONObject(flinkClusterCfg);

@@ -47,6 +47,7 @@ import {
 import { Badge, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { connect } from 'umi';
+import {debounce} from "lodash";
 
 const { Text } = Typography;
 
@@ -81,7 +82,7 @@ const JobConfig = (props: any) => {
     }
 
     Object.keys(change).forEach((key) => {
-      pane.params.taskData[key] = change[key];
+      pane.params.taskData[key] = all[key];
     });
 
     dispatch({
@@ -111,7 +112,7 @@ const JobConfig = (props: any) => {
         form={form}
         submitter={false}
         layout='vertical'
-        onValuesChange={onValuesChange}
+        onValuesChange={debounce(onValuesChange, 500)}
       >
         <ProFormSelect
           name='type'

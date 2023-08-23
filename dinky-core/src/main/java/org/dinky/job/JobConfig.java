@@ -74,21 +74,21 @@ public class JobConfig {
     private String savePointPath;
     private GatewayConfig gatewayConfig;
     private Map<String, String> variables;
-    private Map<String, String> config;
+    private Map<String, String> configJson;
 
     public JobConfig() {
-        this.config = new HashMap<String, String>();
+        this.configJson = new HashMap<String, String>();
     }
 
     public void setAddress(String address) {
         if (GatewayType.LOCAL.equalsValue(type)
-                && Asserts.isNotNull(config)
-                && config.containsKey(RestOptions.PORT.key())) {
+                && Asserts.isNotNull(configJson)
+                && configJson.containsKey(RestOptions.PORT.key())) {
             int colonIndex = address.indexOf(':');
             if (colonIndex == -1) {
-                this.address = address + NetConstant.COLON + config.get(RestOptions.PORT.key());
+                this.address = address + NetConstant.COLON + configJson.get(RestOptions.PORT.key());
             } else {
-                this.address = address.replaceAll("(?<=:)\\d{0,6}$", config.get(RestOptions.PORT.key()));
+                this.address = address.replaceAll("(?<=:)\\d{0,6}$", configJson.get(RestOptions.PORT.key()));
             }
         } else {
             this.address = address;
@@ -102,14 +102,14 @@ public class JobConfig {
             boolean useSqlFragment,
             boolean useStatementSet,
             Integer parallelism,
-            Map<String, String> config) {
+            Map<String, String> configJson) {
         this.type = type;
         this.useSession = useSession;
         this.useRemote = useRemote;
         this.useSqlFragment = useSqlFragment;
         this.useStatementSet = useStatementSet;
         this.parallelism = parallelism;
-        this.config = config;
+        this.configJson = configJson;
     }
 
     public JobConfig(
@@ -133,7 +133,7 @@ public class JobConfig {
             Integer savePointStrategyValue,
             String savePointPath,
             Map<String, String> variables,
-            Map<String, String> config) {
+            Map<String, String> configJson) {
         this.type = type;
         this.useResult = useResult;
         this.useChangeLog = useChangeLog;
@@ -155,7 +155,7 @@ public class JobConfig {
         this.savePointStrategy = SavePointStrategy.get(savePointStrategyValue);
         this.savePointPath = savePointPath;
         this.variables = variables;
-        this.config = config;
+        this.configJson = configJson;
     }
 
     public JobConfig(
@@ -175,7 +175,7 @@ public class JobConfig {
             Integer parallelism,
             Integer savePointStrategyValue,
             String savePointPath,
-            Map<String, String> config,
+            Map<String, String> configJson,
             GatewayConfig gatewayConfig) {
         this.type = type;
         this.useResult = useResult;
@@ -192,7 +192,7 @@ public class JobConfig {
         this.parallelism = parallelism;
         this.savePointStrategy = SavePointStrategy.get(savePointStrategyValue);
         this.savePointPath = savePointPath;
-        this.config = config;
+        this.configJson = configJson;
         this.gatewayConfig = gatewayConfig;
         setAddress(address);
     }
@@ -232,7 +232,7 @@ public class JobConfig {
             Integer parallelism,
             Integer savePointStrategyValue,
             String savePointPath,
-            Map<String, String> config,
+            Map<String, String> configJson,
             boolean isJarTask) {
         this.type = type;
         this.step = step;
@@ -251,7 +251,7 @@ public class JobConfig {
         this.parallelism = parallelism;
         this.savePointStrategy = SavePointStrategy.get(savePointStrategyValue);
         this.savePointPath = savePointPath;
-        this.config = config;
+        this.configJson = configJson;
         this.isJarTask = isJarTask;
     }
 
@@ -264,7 +264,7 @@ public class JobConfig {
                 useBatchModel,
                 savePointPath,
                 jobName,
-                config);
+                configJson);
     }
 
     public void buildGatewayConfig(FlinkClusterConfig config) {

@@ -352,9 +352,9 @@ public class JobManager {
     }
 
     public void initClassLoader(JobConfig config) {
-        if (CollUtil.isNotEmpty(config.getConfig())) {
-            String pipelineJars = config.getConfig().get(PipelineOptions.JARS.key());
-            String classpaths = config.getConfig().get(PipelineOptions.CLASSPATHS.key());
+        if (CollUtil.isNotEmpty(config.getConfigJson())) {
+            String pipelineJars = config.getConfigJson().get(PipelineOptions.JARS.key());
+            String classpaths = config.getConfigJson().get(PipelineOptions.CLASSPATHS.key());
             // add custom jar path
             if (StrUtil.isNotBlank(pipelineJars)) {
                 String[] paths = pipelineJars.split(",");
@@ -721,7 +721,7 @@ public class JobManager {
                     .setFlinkConfig(FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(), savePointType, null));
             return Gateway.build(config.getGatewayConfig()).savepointJob(savePoint);
         } else {
-            return FlinkAPI.build(config.getAddress()).savepoints(jobId, savePointType, config.getConfig());
+            return FlinkAPI.build(config.getAddress()).savepoints(jobId, savePointType, config.getConfigJson());
         }
     }
 
