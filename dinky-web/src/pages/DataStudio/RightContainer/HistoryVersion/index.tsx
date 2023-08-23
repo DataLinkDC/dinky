@@ -18,7 +18,6 @@
  */
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
-import {ActionType, ProColumns, ProTable} from "@ant-design/pro-components";
 import {Button, Card, message, Modal, Tag} from "antd";
 import {l} from "@/utils/intl";
 import {handleOption} from "@/services/BusinessCrud";
@@ -29,9 +28,9 @@ import {postAll, removeById} from "@/services/api";
 import moment from "moment";
 import {getCurrentData} from "@/pages/DataStudio/function";
 import {useRequest} from "@@/exports";
-import {API_CONSTANTS} from "@/services/constants";
 import {TaskHistoryListItem} from "@/components/VersionList/data";
 import VersionList from "@/components/VersionList";
+import {API_CONSTANTS} from "@/services/endpoints";
 
 
 const HistoryVersion = (props: any) => {
@@ -39,7 +38,7 @@ const HistoryVersion = (props: any) => {
     const {tabs: {panes, activeKey}} = props;
 
     const current = getCurrentData(panes, activeKey);
-    const versionList = useRequest({url: API_CONSTANTS.GET_JOB_VERSION, params: {taskId: current.id}});
+    const versionList = useRequest({url: API_CONSTANTS.GET_JOB_VERSION, params: {taskId: current?.id}});
 
     const [versionDiffVisible, setVersionDiffVisible] = useState<boolean>(false);
     const [versionDiffRow, setVersionDiffRow] = useState<TaskHistoryListItem>();
@@ -101,7 +100,7 @@ const HistoryVersion = (props: any) => {
             cancelText: l('button.cancel'),
             onOk: async () => {
                 const TaskHistoryRollbackItem = {
-                    id: current.key, versionId: row.versionId
+                    id: current?.key, versionId: row.versionId
                 }
                 await handleOption('api/task/rollbackTask', l('pages.datastudio.label.version.rollback.flinksql'), TaskHistoryRollbackItem);
             }
@@ -129,6 +128,7 @@ const HistoryVersion = (props: any) => {
     return (
         <Card>
             <VersionList
+                loading={versionList.loading}
                 data={versionList.data}
                 onDeleteListen={deleteVersion}
                 onRollBackListen={onRollBackVersion}

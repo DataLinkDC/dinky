@@ -18,27 +18,16 @@
  */
 
 
-import {Jobs} from "@/types/DevOps/data";
-import {ProCard} from "@ant-design/pro-components";
 import {Card, Col, List, message, Modal, Row, Skeleton, Space, Tabs, Tag, Tooltip, Typography} from "antd";
-import moment from "moment";
 import CodeShow from "@/components/CustomEditor/CodeShow";
 import React, {useState} from "react";
 import {useRequest} from "@@/exports";
-import {API_CONSTANTS} from "@/services/constants";
-import {
-    DeleteOutlined,
-    DeleteTwoTone,
-    DeliveredProcedureOutlined,
-    RocketOutlined,
-    RollbackOutlined
-} from "@ant-design/icons";
 import {l} from "@/utils/intl";
 import {JobProps} from "@/pages/DevOps/JobDetail/data";
-import {JOB_LIFE_CYCLE} from "@/pages/DevOps/constants";
-import {getData, removeById, removeData} from "@/services/api";
+import { removeById} from "@/services/api";
 import {TaskHistoryListItem} from "@/components/VersionList/data";
 import VersionList from "@/components/VersionList";
+import {API_CONSTANTS} from "@/services/endpoints";
 
 
 const JobVersionTab = (props: JobProps) => {
@@ -86,6 +75,7 @@ const JobVersionTab = (props: JobProps) => {
             <Row>
                 <Col span={3}>
                     <VersionList
+                        loading={versionList.loading}
                         data={versionList.data}
                         onDeleteListen={deleteVersion}
                         onSelectListen={(item) => setCurrentVersion(item)}
