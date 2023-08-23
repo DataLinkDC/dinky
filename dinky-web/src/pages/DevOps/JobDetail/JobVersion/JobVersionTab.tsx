@@ -19,10 +19,10 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import VersionList from '@/components/VersionList';
-import { TaskVersionListItem } from '@/components/VersionList/data';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { TaskVersionListItem } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { Card, Col, Row, Tag } from 'antd';

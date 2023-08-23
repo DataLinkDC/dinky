@@ -17,11 +17,11 @@
  *
  */
 import VersionList from '@/components/VersionList';
-import { TaskVersionListItem } from '@/components/VersionList/data';
 import { getCurrentData } from '@/pages/DataStudio/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { handleOption, handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { TaskVersionListItem } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { RocketOutlined, SyncOutlined } from '@ant-design/icons';
