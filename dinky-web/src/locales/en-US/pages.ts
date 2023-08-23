@@ -141,6 +141,7 @@ export default {
   'devops.jobinfo.version.versionList': 'Job Version',
   'devops.jobinfo.version.latestVersion': 'Current Version',
   'devops.jobinfo.version.delete': 'Delete Version',
+  'devops.jobinfo.version.rollBack': 'Roll bcak this version',
   'devops.jobinfo.version.delete.sure': 'Are you sure you want to remove this version？V{version}',
 
   'devops.jobinfo.ck.id': 'ID',

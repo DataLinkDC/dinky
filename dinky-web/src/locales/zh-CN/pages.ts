@@ -136,6 +136,7 @@ export default {
   'devops.jobinfo.version.versionList': '版本列表',
   'devops.jobinfo.version.latestVersion': '当前版本',
   'devops.jobinfo.version.delete': '删除版本',
+  'devops.jobinfo.version.rollBack': '回滚到此版本',
   'devops.jobinfo.version.delete.sure': '确定删除此版本吗？V{version}',
 
   'devops.jobinfo.ck.id': 'ID',
