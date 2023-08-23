@@ -22,6 +22,7 @@ package org.dinky.configure.schedule.metrics;
 import org.dinky.configure.MetricConfig;
 import org.dinky.configure.schedule.BaseSchedule;
 import org.dinky.data.annotation.GaugeM;
+import org.dinky.data.enums.MetricsType;
 import org.dinky.data.metrics.BaseMetrics;
 import org.dinky.data.metrics.Cpu;
 import org.dinky.data.metrics.Jvm;
@@ -90,9 +91,9 @@ public class GatherSysIndicator extends BaseSchedule {
         metricsTotal.setMem(Mem.of());
 
         MetricsVO metrics = new MetricsVO();
-        metrics.setContent(JSONUtil.toJsonStr(metricsTotal));
+        metrics.setContent(metricsTotal);
         metrics.setHeartTime(now);
-        metrics.setModel("local");
+        metrics.setModel(MetricsType.LOCAL.getType());
         MetricConfig.getMetricsQueue().add(metrics);
 
         log.debug("Collecting jvm information ends.");

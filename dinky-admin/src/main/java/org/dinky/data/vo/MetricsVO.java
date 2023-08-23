@@ -19,6 +19,7 @@
 
 package org.dinky.data.vo;
 
+import org.dinky.configure.schedule.metrics.FlinkMetricsIndicator;
 import org.dinky.data.metrics.MetricsTotal;
 
 import java.time.LocalDateTime;
@@ -29,8 +30,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MetricsVO {
-    private String content;
+    private Object content;
     private MetricsTotal metricsTotal;
     private String model;
     private LocalDateTime heartTime;
+
+    public FlinkMetricsIndicator.FlinkMetrics flinkContent(){
+        if (content instanceof FlinkMetricsIndicator.FlinkMetrics){
+            return (FlinkMetricsIndicator.FlinkMetrics) content;
+        }else {
+            return new FlinkMetricsIndicator.FlinkMetrics();
+        }
+    }
 }

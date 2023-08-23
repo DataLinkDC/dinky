@@ -49,7 +49,7 @@ const JobDetail:FC = (props: any) => {
     params: { id: id },
   }, {
     cacheKey: 'data-detail',
-    pollingInterval: 1000,
+    pollingInterval: 3000,
   });
 
   // Extract the job info detail from the fetched data

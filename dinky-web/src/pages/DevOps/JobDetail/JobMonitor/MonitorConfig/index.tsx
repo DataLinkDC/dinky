@@ -18,48 +18,48 @@
  */
 
 
-import {ModalForm, ProFormDateTimeRangePicker} from "@ant-design/pro-components";
+import {ModalForm, ProCard, ProFormDateTimeRangePicker} from "@ant-design/pro-components";
 import React from "react";
 import {l} from "@/utils/intl";
-import {Button, Col, Row} from "antd";
-import { Radio } from 'antd';
+import {Button, Card, Col, Dropdown, MenuProps, Typography, Space, DatePicker, Select} from "antd";
+import {Radio} from 'antd';
 import MonitorConfigForm from "@/pages/DevOps/JobDetail/JobMonitor/MonitorConfig/components/MonitorConfigForm";
 import {Jobs} from "@/types/DevOps/data";
+import {DownOutlined} from "@ant-design/icons";
+
+const { RangePicker } = DatePicker;
 
 type GlobalFilterProps = {
-  startTime: any;
-  endTime: any;
-  handleDateRadioChange: (e: any) => void;
-  handleRangeChange: (e: any) => void;
-  jobDetail: Jobs.JobInfoDetail;
+    startTime: any;
+    endTime: any;
+    handleDateRadioChange: (e: any) => void;
+    handleRangeChange: (e: any) => void;
+    jobDetail: Jobs.JobInfoDetail;
 }
 
-const MonitorFilter: React.FC<GlobalFilterProps> = (props) => {
-  const { startTime, endTime, handleDateRadioChange, handleRangeChange,jobDetail} = props;
 
-  return <Row>
-    <Col>
-      <Radio.Group defaultValue="a" onChange={handleDateRadioChange}>
-        <Radio.Button value="1h">{l('metrics.filter.1hour')}</Radio.Button>
-        <Radio.Button value="24h">{l('metrics.filter.1day')}</Radio.Button>
-        <Radio.Button value="168h">{l('metrics.filter.1week')}</Radio.Button>
-      </Radio.Group>
-    </Col>
-    <Col span={19}>
-      <ProFormDateTimeRangePicker
-        name="datetimeRanger"
-        allowClear={false}
-        initialValue={[startTime, endTime]}
-        fieldProps={{
-          onChange: handleRangeChange,
-          value: [startTime, endTime],
-        }}
-      />
-    </Col>
-    <Col>
-      <MonitorConfigForm jobDetail={jobDetail}/>
-    </Col>
-  </Row>;
+const MonitorFilter: React.FC<GlobalFilterProps> = (props) => {
+    const {startTime, endTime, handleDateRadioChange, handleRangeChange, jobDetail} = props;
+
+    return <Space style={{marginBottom:20}}>
+        <Radio.Group defaultValue="a" onChange={handleDateRadioChange}>
+            <Radio.Button value="1h">{l('metrics.filter.1hour')}</Radio.Button>
+            <Radio.Button value="24h">{l('metrics.filter.1day')}</Radio.Button>
+            <Radio.Button value="168h">{l('metrics.filter.1week')}</Radio.Button>
+        </Radio.Group>
+
+        {/*<ProFormDateTimeRangePicker*/}
+        {/*    name="datetimeRanger"*/}
+        {/*    allowClear={false}*/}
+        {/*    initialValue={[startTime, endTime]}*/}
+        {/*    fieldProps={{*/}
+        {/*        onChange: handleRangeChange,*/}
+        {/*        value: [startTime, endTime],*/}
+        {/*    }}*/}
+        {/*/>*/}
+        <RangePicker showTime />
+        <MonitorConfigForm jobDetail={jobDetail}/>
+    </Space>;
 }
 
 export default MonitorFilter;

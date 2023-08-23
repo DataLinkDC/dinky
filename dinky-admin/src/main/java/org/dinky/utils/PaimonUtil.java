@@ -19,6 +19,7 @@
 
 package org.dinky.utils;
 
+import cn.hutool.json.JSONUtil;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.function.constant.PathConstant;
 
@@ -113,9 +114,9 @@ public class PaimonUtil {
 
                 BinaryRow row = new BinaryRow(30);
                 BinaryRowWriter writer = new BinaryRowWriter(row);
-                writer.writeTimestamp(0, Timestamp.fromLocalDateTime(now), 0);
+                writer.writeTimestamp(0, Timestamp.fromLocalDateTime(now), 3);
                 writer.writeString(1, BinaryString.fromString(metrics.getModel()));
-                writer.writeString(2, BinaryString.fromString(metrics.getContent()));
+                writer.writeString(2, BinaryString.fromString(JSONUtil.toJsonStr(metrics.getContent())));
                 writer.writeString(3, BinaryString.fromString(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
                 write.write(row);
             }

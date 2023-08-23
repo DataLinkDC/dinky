@@ -1,43 +1,44 @@
 import {Col, Radio} from "antd";
 import {Line} from "@ant-design/charts";
 import {ProCard, StatisticCard} from "@ant-design/pro-components";
-import React, {useEffect, useState} from "react";
+import React, {forwardRef, Ref, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {ChartData, JobMetrics} from "@/pages/Metrics/Job/data";
-import {renderMetricsChartTitle} from "@/pages/Metrics/Job/function";
-
+import Paragraph from "antd/es/typography/Paragraph";
+import {useRequest} from "@@/exports";
 
 type FlinkChartProps = {
   title: string
-  data: ChartData[]
+  data?: ChartData[]
   chartType: string
   chartSize: string
-  onChangeJobState:(chartSize:string,chartType:string) => void
+  onChangeJobState: (chartSize: string, chartType: string) => void
+  requestParams?: any
+  autoResfeh?: boolean
 }
 
+const FlinkChart = (props: FlinkChartProps) => {
 
-const FlinkChart: React.FC<FlinkChartProps> = (props) => {
-  const {data, title, chartType, chartSize,onChangeJobState} = props;
+  const {
+    data,
+    title,
+    chartType="Chart",
+    chartSize="25%",
+    onChangeJobState,
+    requestParams,
+    autoResfeh
+  } = props;
+
   const [chartProps, setChartProps] = useState({
-    chartType:chartType,
-    chartSize:chartSize,
-    titleWidth: "50%"
+    chartType: chartType,
+    chartSize: chartSize,
+    titleWidth: "100%"
   });
 
 
-  const [counter, setCounter] = useState(0);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCounter((prevCounter) => prevCounter + 1);
-    }, 1000); // 每隔1000毫秒（1秒）更新一次
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
   const config = {
     animation: false,
-    data: data,
+    data: data ?? [],
     xField: 'time',
     yField: 'value',
     xAxis: {
@@ -63,7 +64,7 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
             titleWidth: e.target.value == '25%' ? '50%' : '100%',
             chartSize: e.target.value
           }))
-          onChangeJobState(e.target.value,chartProps.chartType)
+          onChangeJobState(e.target.value, chartProps.chartType)
 
         }}
         style={{paddingRight: '5%', paddingTop: '2%'}}
@@ -78,8 +79,7 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
    * render chart type radio
    * @returns {[JSX.Element]}
    */
-  const renderChartNumericRadio = () => [
-    <>
+  const renderChartNumericRadio = (): [JSX.Element] => [
       <Radio.Group
         size="small"
         buttonStyle="solid"
@@ -89,7 +89,7 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
             ...prevState,
             chartType: e.target.value
           }))
-          onChangeJobState(chartProps.chartSize,e.target.value)
+          onChangeJobState(chartProps.chartSize, e.target.value)
 
         }}
         style={{textAlign: "left", paddingLeft: '5%'}}
@@ -97,14 +97,21 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
         <Radio.Button value="Chart">Chart</Radio.Button>
         <Radio.Button value="Numeric">Numeric</Radio.Button>
       </Radio.Group>
-    </>
   ]
 
-
+  const renderMetricsChartTitle = (metricsId: string, titleWidth: string | number) => {
+    return <>
+      <Paragraph
+        style={{width: titleWidth}}
+        code ellipsis={{tooltip: true}}>
+        {metricsId}
+      </Paragraph>
+    </>
+  }
   /**
    * render
    */
-  return data === undefined ? <></> : <>
+  return <>
     <Col span={chartProps.chartSize == '25%' ? 6 : 12}>
       <ProCard
         bodyStyle={{textAlign: 'center'}}
@@ -123,11 +130,8 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
             justifyContent: "center",
             alignItems: "center"
           }}>
-            <StatisticCard
-              statistic={{
-                value: data != undefined ? data[data.length - 1].value : 0,
-              }}
-            />
+            {/*<StatisticCard statistic={{value: data?data[-1].value:0}}/>*/}
+            {/*{data}*/}
           </StatisticCard.Group>
         }
       </ProCard>
@@ -135,8 +139,5 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
     </Col>
   </>
 }
-FlinkChart.defaultProps={
-  chartSize:"25%",
-  chartType:"Chart"
-}
-export default FlinkChart;
+
+export default forwardRef(FlinkChart);

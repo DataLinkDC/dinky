@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,18 +67,19 @@ public class MonitorController {
 
     @GetMapping(value = "/getLastUpdateData", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ApiOperation("Get Last Update Data")
-    public SseEmitter getLastUpdateData(Long lastTime) {
+    public SseEmitter getLastUpdateData(Long lastTime, String layoutName) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         return monitorService.sendLatestData(
                 emitter,
-                DateUtil.date(Opt.ofNullable(lastTime).orElse(DateUtil.date().getTime())));
+                DateUtil.date(Opt.ofNullable(lastTime).orElse(DateUtil.date().getTime())),
+                layoutName);
     }
 
-    @PutMapping("/saveFlinkMetrics")
+    @PutMapping("/saveFlinkMetrics/{layout}")
     @ApiOperation("Save Flink Metrics")
     @Log(title = "Save Flink Metrics", businessType = BusinessType.INSERT)
-    public Result<Void> saveFlinkMetricLayout(@RequestBody List<MetricsLayoutDTO> metricsList) {
-        monitorService.saveFlinkMetricLayout(metricsList);
+    public Result<Void> saveFlinkMetricLayout(@PathVariable(value = "layout") String layoutName, @RequestBody List<MetricsLayoutDTO> metricsList) {
+        monitorService.saveFlinkMetricLayout(layoutName,metricsList);
         return Result.succeed();
     }
 
@@ -86,4 +88,11 @@ public class MonitorController {
     public Result<Map<String, List<Metrics>>> getMetricsLayout() {
         return Result.succeed(monitorService.getMetricsLayout());
     }
+
+    @GetMapping("/getMetricsLayoutByName")
+    @ApiOperation("Get Metrics Layout by task to Display")
+    public Result<List<Metrics>> getMetricsLayoutByName(@RequestParam String layoutName) {
+        return Result.succeed(monitorService.getMetricsLayoutByName(layoutName));
+    }
+
 }

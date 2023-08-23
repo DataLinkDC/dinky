@@ -1,6 +1,7 @@
-import {getData, queryList} from "@/services/api";
+import {getData} from "@/services/api";
 import {API_CONSTANTS} from "@/services/constants";
 
-export async function getMetricsLayout() {
-  return getData(API_CONSTANTS.GET_METRICS_LAYOUT)
+
+export async function  getMetricsLayout(params:{}) {
+  return (await getData(API_CONSTANTS.GET_METRICS_LAYOUT_BY_NAME,params)).datas;
 }

@@ -22,6 +22,7 @@ package org.dinky.configure.schedule.metrics;
 import org.dinky.configure.MetricConfig;
 import org.dinky.configure.schedule.BaseSchedule;
 import org.dinky.context.TenantContextHolder;
+import org.dinky.data.enums.MetricsType;
 import org.dinky.data.model.Configuration;
 import org.dinky.data.model.History;
 import org.dinky.data.model.JobInstance;
@@ -34,7 +35,9 @@ import org.dinky.service.MonitorService;
 import org.dinky.utils.HttpUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,11 +87,13 @@ public class FlinkMetricsIndicator extends BaseSchedule {
                 .map((f) -> CompletableFuture.runAsync(() -> addFlinkMetrics(f, now)))
                 .toArray(CompletableFuture[]::new);
         AsyncUtil.waitAll(array);
-        MetricsVO metricsVO = new MetricsVO();
-        metricsVO.setModel("flink");
-        metricsVO.setHeartTime(now);
-        metricsVO.setContent(JSONUtil.toJsonStr(FLINK_METRICS_DATA_MAP.get(now)));
-        MetricConfig.getMetricsQueue().add(metricsVO);
+        for (FlinkMetrics flinkMetrics : FLINK_METRICS_DATA_MAP.get(now)) {
+            MetricsVO metricsVO = new MetricsVO();
+            metricsVO.setModel(MetricsType.FLINK.getType());
+            metricsVO.setHeartTime(now);
+            metricsVO.setContent(flinkMetrics);
+            MetricConfig.getMetricsQueue().add(metricsVO);
+        }
         FLINK_METRICS_DATA_MAP.remove(now);
     }
 
@@ -118,15 +123,28 @@ public class FlinkMetricsIndicator extends BaseSchedule {
         List<History> historyList = historyService.listByIds(
                 jobInstances.stream().map(JobInstance::getHistoryId).collect(Collectors.toList()));
         List<Metrics> metricsList = monitorService.list();
-        Set<Integer> taskIdSet = metricsList.stream().map(Metrics::getTaskId).collect(Collectors.toSet());
+        // 使用流将List转换为Map，taskId为键，LayoutName为值,
+        // 如果一个任务被分配到多个layoutName，则存储到Set去重
+        Map<Integer, Set<String>> taskMap = metricsList.stream()
+                .collect(Collectors.toMap(
+                        Metrics::getTaskId,
+                        metrics -> new HashSet<>(Collections.singletonList(metrics.getLayoutName())),
+                        (existingValue, newValue) -> {
+                            existingValue.addAll(newValue);
+                            return existingValue;
+                        }
+                ));
+
         for (JobInstance jobInstance : jobInstances) {
             Integer taskId = jobInstance.getTaskId();
-            if (!taskIdSet.contains(taskId)) {
+            if (!taskMap.containsKey(taskId)) {
                 continue;
             }
             FlinkMetrics flinkMetrics = new FlinkMetrics();
             flinkMetrics.setTaskId(taskId);
             flinkMetrics.setJobId(jobInstance.getJid());
+            flinkMetrics.setLayoutNames(taskMap.get(taskId));
+
             TASK_FLINK_METRICS_MAP.put(taskId, flinkMetrics);
             metricsList.stream().filter(x -> x.getTaskId().equals(taskId)).forEach(m -> {
                 Map<String, Map<String, String>> verticesAndMetricsMap = flinkMetrics.getVerticesAndMetricsMap();
@@ -196,8 +214,9 @@ public class FlinkMetricsIndicator extends BaseSchedule {
 
     @Setter
     @Getter
-    static class FlinkMetrics {
+    public static class FlinkMetrics {
         private String jobId;
+        private Set<String> layoutNames;
         private Integer taskId;
         private List<String> urls = new CopyOnWriteArrayList<>();
         /** jobId -> metricsId -> metricsValue */

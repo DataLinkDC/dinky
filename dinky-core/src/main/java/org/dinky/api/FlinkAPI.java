@@ -19,6 +19,7 @@
 
 package org.dinky.api;
 
+import cn.hutool.core.net.URLEncodeUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.FlinkRestAPIConstant;
 import org.dinky.data.constant.NetConstant;
@@ -383,6 +384,11 @@ public class FlinkAPI {
 
     public JsonNode getJobMetricesItems(String jobId,String verticeId) {
         return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.VERTICES + verticeId + FlinkRestAPIConstant.METRICS);
+    }
+
+    public JsonNode getJobMetricesData(String jobId,String verticeId,String metrics) {
+        return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.VERTICES
+                + verticeId + FlinkRestAPIConstant.METRICS + "?get=" + URLEncodeUtil.encode(metrics));
     }
 
 

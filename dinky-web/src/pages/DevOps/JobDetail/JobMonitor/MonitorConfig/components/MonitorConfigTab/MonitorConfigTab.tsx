@@ -1,42 +1,48 @@
 import React, {useState} from "react";
 import {Button, Transfer} from "antd";
-import {l} from "@/utils/intl";
-import {ModalForm, ProFormSelect} from "@ant-design/pro-components";
 import {JobProps, JobVertice} from "@/pages/DevOps/JobDetail/data";
 import {API_CONSTANTS} from "@/services/constants";
 import {useRequest} from "@@/exports";
+import {Jobs} from "@/types/DevOps/data";
 
+type Props = {
+  vertice: JobVertice,
+  jobDetail: Jobs.JobInfoDetail
+  onValueChange:(verticeId:string,keys:string[])=>any
+}
 
-const MonitorConfigTab = (props: JobProps) => {
+const MonitorConfigTab = (props: Props) => {
 
-    const {jobDetail} = props
-    const jobManagerUrl = jobDetail?.cluster?.jobManagerHost
-    const jobId = jobDetail?.jobHistory?.job?.jid
+  const {vertice, jobDetail,onValueChange} = props
+  const jobManagerUrl = jobDetail?.cluster?.jobManagerHost
+  const jobId = jobDetail?.jobHistory?.job?.jid
 
-    const [targetKeys, setTargetKeys] = useState<string[]>([]);
+  const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
-    const jobMetrics = useRequest((subTask) => (
-        {
-            url: API_CONSTANTS.GET_JOB_MERTICE_ITEMS,
-            params: {address: jobManagerUrl, jobId: jobId, verticeId: subTask}
-        }
-    ), {manual: true});
+  const jobMetricItems = useRequest({
+    url: API_CONSTANTS.GET_JOB_MERTICE_ITEMS,
+    params: {address: jobManagerUrl, jobId: jobId, verticeId: vertice.id}
+  });
 
+  const onChange = (tgk:string[]) => {
+    setTargetKeys(tgk)
+    onValueChange(vertice.id,tgk)
+  }
 
-    return <>
-        <Transfer
-            style={{width: "100vh"}}
-            showSearch={true}
-            dataSource={jobMetrics.data}
-            titles={['监控项', '已选择']}
-            targetKeys={targetKeys}
-            onChange={(tgk) => setTargetKeys(tgk)}
-            rowKey={(item) => item.id}
-            render={(item) => item.id}
-            listStyle={{width: "42vh", height: "50vh"}}
-            oneWay
-        />
-    </>;
+  return <>
+    <Transfer
+      // style={{width: "99vh"}}
+      showSearch={true}
+      dataSource={jobMetricItems.data??[]}
+      titles={['监控项', '已选择']}
+      targetKeys={targetKeys}
+      onChange={(tgk) => onChange(tgk)}
+      rowKey={(item) => item.id}
+      render={(item) => item.id}
+      listStyle={{width: "42vh", height: "50vh"}}
+      oneWay
+    />
+  </>;
 }
 
 export default MonitorConfigTab;

@@ -19,8 +19,11 @@
 
 package org.dinky.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.apache.http.util.TextUtils;
 import org.dinky.configure.MetricConfig;
 import org.dinky.data.dto.MetricsLayoutDTO;
+import org.dinky.data.enums.MetricsType;
 import org.dinky.data.metrics.Jvm;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
@@ -88,7 +91,7 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
     }
 
     @Override
-    public SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate) {
+    public SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate, String layoutName) {
         Queue<MetricsVO> metricsQueue = MetricConfig.getMetricsQueue();
         scheduleRefreshMonitorDataExecutor.execute(() -> {
             try {
@@ -99,6 +102,13 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
                     }
                     for (MetricsVO metrics : metricsQueue) {
                         if (metrics.getHeartTime().isAfter(maxDate)) {
+                            //如果存在layoutName则为flink监控请求，过滤非layoutName指定的监控数据，防止数据过多卡顿
+                            if (!TextUtils.isEmpty(layoutName) &&
+                                    metrics.getModel().equals(MetricsType.FLINK.getType()) &&
+                                    !metrics.flinkContent().getLayoutNames().contains(layoutName)) {
+                                continue;
+                            }
+                            System.out.println(metrics.getHeartTime());
                             sseEmitter.send(metrics);
                             maxDate = metrics.getHeartTime();
                         }
@@ -135,10 +145,13 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveFlinkMetricLayout(List<MetricsLayoutDTO> metricsList) {
+    public void saveFlinkMetricLayout(String layout, List<MetricsLayoutDTO> metricsList) {
         if (CollUtil.isEmpty(metricsList)) {
             return;
         }
+        QueryWrapper<Metrics> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Metrics::getLayoutName, layout);
+        remove(wrapper);
         saveBatch(BeanUtil.copyToList(metricsList, Metrics.class));
     }
 
@@ -153,4 +166,12 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
         });
         return result;
     }
+
+    @Override
+    public List<Metrics> getMetricsLayoutByName(String layoutName) {
+        QueryWrapper<Metrics> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Metrics::getLayoutName, layoutName);
+        return this.baseMapper.selectList(wrapper);
+    }
+
 }

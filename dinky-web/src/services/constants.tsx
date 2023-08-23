@@ -213,6 +213,7 @@ export const API_CONSTANTS = {
   GET_TASKMANAGER_LIST: "api/jobInstance/getTaskManagerList",
   GET_TASKMANAGER_LOG: "api/jobInstance/getTaskManagerLog",
   GET_JOB_MERTICE_ITEMS: "api/jobInstance/getJobMetricsItems",
+  GET_JOB_MERTICE_DATA: "api/jobInstance/getJobMetricsData",
   CANCEL_JOB: "/api/studio/cancel",
   OFFLINE_TASK: "/api/task/offLineTask",
   RESTART_TASK: "/api/task/restartTask",
@@ -238,8 +239,9 @@ export const API_CONSTANTS = {
   MONITOR_GET_LAST_DATA:"/api/monitor/getLastUpdateData",
   JOB_METRICS: "/api/monitor/jobMetrics",
 
-  SAVE_FLINK_METRICS: "/api/monitor/saveFlinkMetrics",
+  SAVE_FLINK_METRICS: "/api/monitor/saveFlinkMetrics/",
   GET_METRICS_LAYOUT: "/api/monitor/getMetricsLayout",
+  GET_METRICS_LAYOUT_BY_NAME: "/api/monitor/getMetricsLayoutByName",
 
   // flink
   FLINK_PROXY: "/api/flink",
