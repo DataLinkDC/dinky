@@ -77,3 +77,15 @@ export type SavePoint = {
   path: string;
   createTime: Date;
 };
+
+export type TaskVersionListItem = {
+  id: number;
+  taskId?: number;
+  name?: string;
+  dialect?: string;
+  type?: string;
+  statement: string;
+  versionId?: string;
+  createTime?: string;
+  isLatest?: boolean;
+};

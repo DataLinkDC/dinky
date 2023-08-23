@@ -16,42 +16,34 @@
  *   limitations under the License.
  *
  */
+import VersionList from '@/components/VersionList';
 import { getCurrentData } from '@/pages/DataStudio/function';
 import { StateType } from '@/pages/DataStudio/model';
-import { postAll } from '@/services/api';
-import { handleOption } from '@/services/BusinessCrud';
+import { handleOption, handleRemoveById } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { TaskVersionListItem } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
+import { useRequest } from '@@/exports';
 import { RocketOutlined, SyncOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
 import { DiffEditor } from '@monaco-editor/react';
-import { Button, Modal, Tag } from 'antd';
+import { Button, Card, Modal, Tag } from 'antd';
 import moment from 'moment';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
-
-const url = '/api/task/version';
-
-export type TaskHistoryTableListItem = {
-  id: number;
-  versionId: number;
-  statement: string;
-  createTime: Date;
-};
 
 const HistoryVersion = (props: any) => {
   const {
     tabs: { panes, activeKey }
   } = props;
+
   const current = getCurrentData(panes, activeKey);
-  const actionRef = useRef<ActionType>();
+  const versionList = useRequest({
+    url: API_CONSTANTS.GET_JOB_VERSION,
+    params: { taskId: current?.id }
+  });
 
   const [versionDiffVisible, setVersionDiffVisible] = useState<boolean>(false);
-  const [versionDiffRow, setVersionDiffRow] = useState<TaskHistoryTableListItem>();
-  actionRef.current?.reloadAndRest?.();
-
-  const cancelHandle = () => {
-    setVersionDiffVisible(false);
-  };
+  const [versionDiffRow, setVersionDiffRow] = useState<TaskVersionListItem>();
 
   const VersionDiffForm = () => {
     let leftTitle = l('pages.datastudio.label.version.leftTitle', '', {
@@ -73,28 +65,15 @@ const HistoryVersion = (props: any) => {
           open={versionDiffVisible}
           destroyOnClose={true}
           width={'85%'}
-          bodyStyle={{ height: '700px' }}
-          onCancel={() => {
-            cancelHandle();
-          }}
+          bodyStyle={{ height: '70vh' }}
+          onCancel={() => setVersionDiffVisible(false)}
           footer={[
-            <Button
-              key='back'
-              onClick={() => {
-                cancelHandle();
-              }}
-            >
+            <Button key='back' onClick={() => setVersionDiffVisible(false)}>
               {l('button.close')}
             </Button>
           ]}
         >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between'
-            }}
-          >
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <Tag color='green' style={{ height: '20px' }}>
               <RocketOutlined /> {leftTitle}
             </Tag>
@@ -124,7 +103,7 @@ const HistoryVersion = (props: any) => {
     );
   };
 
-  const onRollBackVersion = async (row: TaskHistoryTableListItem) => {
+  const onRollBackVersion = async (row: TaskVersionListItem) => {
     Modal.confirm({
       title: l('pages.datastudio.label.version.rollback.flinksql'),
       content: l('pages.datastudio.label.version.rollback.flinksqlConfirm', '', {
@@ -133,72 +112,38 @@ const HistoryVersion = (props: any) => {
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
-        const TaskHistoryRollbackItem = {
-          id: current.key,
+        const TaskVersionRollbackItem = {
+          id: current?.key,
           versionId: row.versionId
         };
         await handleOption(
           'api/task/rollbackTask',
           l('pages.datastudio.label.version.rollback.flinksql'),
-          TaskHistoryRollbackItem
+          TaskVersionRollbackItem
         );
-        actionRef.current?.reloadAndRest?.();
       }
     });
   };
 
-  const columns: ProColumns<TaskHistoryTableListItem>[] = [
-    {
-      title: l('pages.datastudio.label.version.id'),
-      dataIndex: 'versionId',
-      hideInForm: true,
-      hideInSearch: true
-    },
-    {
-      sorter: true,
-      title: l('global.table.createTime'),
-      dataIndex: 'createTime',
-      valueType: 'dateTime',
-      hideInForm: true,
-      hideInSearch: true
-    },
-    {
-      align: 'center',
-      title: l('global.table.operate'),
-      valueType: 'option',
-      render: (text, record) => (
-        <>
-          <Button type='link' onClick={async () => onRollBackVersion(record)}>
-            {l('pages.datastudio.label.version.rollback')}
-          </Button>
-          <Button
-            type='link'
-            title={l('pages.datastudio.label.version.diff.tip')}
-            onClick={() => {
-              setVersionDiffRow(record);
-              setVersionDiffVisible(true);
-            }}
-          >
-            {l('pages.datastudio.label.version.diff')}
-          </Button>
-        </>
-      )
-    }
-  ];
+  const deleteVersion = async (item: TaskVersionListItem) => {
+    await handleRemoveById(API_CONSTANTS.GET_JOB_VERSION, item.id);
+    versionList.run();
+  };
 
   return (
-    <>
-      <ProTable<TaskHistoryTableListItem>
-        actionRef={actionRef}
-        rowKey='id'
-        request={(params, sorter, filter) =>
-          postAll(url, { taskId: current.key, ...params, sorter, filter })
-        }
-        columns={columns}
-        search={false}
+    <Card>
+      <VersionList
+        loading={versionList.loading}
+        data={versionList.data}
+        onDeleteListen={deleteVersion}
+        onRollBackListen={onRollBackVersion}
+        onSelectListen={(item) => {
+          setVersionDiffRow(item);
+          setVersionDiffVisible(true);
+        }}
       />
       {VersionDiffForm()}
-    </>
+    </Card>
   );
 };
 

@@ -71,8 +71,8 @@ public class TaskVersionController {
 
     @DeleteMapping
     @ApiOperation("Delete Task Version")
-    public Result<Boolean> deleteVersion(@RequestParam int versionId) {
-        boolean b = versionService.removeById(versionId);
+    public Result<Boolean> deleteVersion(@RequestParam int id) {
+        boolean b = versionService.removeById(id);
         return Result.succeed(b);
     }
 }

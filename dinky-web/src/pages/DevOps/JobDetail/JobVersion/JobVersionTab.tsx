@@ -18,31 +18,20 @@
  */
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
+import VersionList from '@/components/VersionList';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import { removeById } from '@/services/api';
+import { handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { TaskVersionListItem } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
-import { DeleteTwoTone } from '@ant-design/icons';
-import { ProCard } from '@ant-design/pro-components';
-import { Card, Col, List, message, Modal, Row, Skeleton, Tag } from 'antd';
+import { Card, Col, Row, Tag } from 'antd';
 import { useState } from 'react';
-
-type Version = {
-  id?: number;
-  taskId?: number;
-  name?: string;
-  dialect?: string;
-  type?: string;
-  statement: string;
-  versionId?: string;
-  createTime?: string;
-  isLatest?: boolean;
-};
 
 const JobVersionTab = (props: JobProps) => {
   const { jobDetail } = props;
-  const latestVersion: Version = {
+  const latestVersion: TaskVersionListItem = {
+    id: -1,
     type: jobDetail.history.type,
     statement: jobDetail.history.statement,
     createTime: jobDetail.history.startTime,
@@ -50,9 +39,7 @@ const JobVersionTab = (props: JobProps) => {
     isLatest: true
   };
 
-  const [currentVersion, setCurrentVersion] = useState<Version>({
-    statement: ''
-  });
+  const [currentVersion, setCurrentVersion] = useState<TaskVersionListItem>();
 
   const versionList = useRequest(
     {
@@ -60,76 +47,28 @@ const JobVersionTab = (props: JobProps) => {
       params: { taskId: jobDetail.history.taskId }
     },
     {
-      onSuccess: (data: Version[], params) => {
+      onSuccess: (data: TaskVersionListItem[], params) => {
         data.splice(0, 0, latestVersion);
       }
     }
   );
 
-  const deleteVersion = (item: Version) => {
-    Modal.confirm({
-      title: l('devops.jobinfo.version.delete'),
-      content: l('devops.jobinfo.version.delete.sure', '', {
-        version: item.versionId
-      }),
-      okText: l('button.confirm'),
-      cancelText: l('button.cancel'),
-      onOk: async () => {
-        const result = await removeById(API_CONSTANTS.GET_JOB_VERSION, {
-          versionId: item.id
-        });
-        if (result) {
-          message.success('Delete Success');
-        } else {
-          message.error('Delete faile');
-        }
-        versionList.run();
-      }
-    });
+  const deleteVersion = async (item: TaskVersionListItem) => {
+    await handleRemoveById(API_CONSTANTS.GET_JOB_VERSION, item.id);
+    versionList.run();
   };
 
   const renderVersionList = () => {
     return (
       <Row>
         <Col span={3}>
-          <div id='scrollableDiv'>
-            <List
-              size={'small'}
-              header={l('devops.jobinfo.version.versionList')}
-              dataSource={versionList.data}
-              renderItem={(item: Version) => (
-                <>
-                  <List.Item
-                    onClick={() => {
-                      setCurrentVersion(item);
-                    }}
-                  >
-                    <Skeleton avatar title={false} loading={versionList.loading} active>
-                      <List.Item.Meta
-                        title={
-                          <a>
-                            {!item.isLatest ? (
-                              'V' + item.versionId
-                            ) : (
-                              <Tag key={'v-latest'} color='green'>
-                                {l('devops.jobinfo.version.latestVersion')}
-                              </Tag>
-                            )}
-                          </a>
-                        }
-                        description={item.createTime}
-                      />
-                      {!item.isLatest ? (
-                        <DeleteTwoTone onClick={() => deleteVersion(item)} />
-                      ) : (
-                        <></>
-                      )}
-                    </Skeleton>
-                  </List.Item>
-                </>
-              )}
-            ></List>
-          </div>
+          <VersionList
+            loading={versionList.loading}
+            data={versionList.data}
+            onDeleteListen={deleteVersion}
+            onSelectListen={(item) => setCurrentVersion(item)}
+            header={l('devops.jobinfo.version.versionList')}
+          />
         </Col>
         <Col span={21}>
           <Card
@@ -146,7 +85,7 @@ const JobVersionTab = (props: JobProps) => {
               </>
             }
           >
-            <CodeShow code={currentVersion?.statement} height={500} language={'sql'} />
+            <CodeShow code={currentVersion?.statement ?? ''} height={500} language={'sql'} />
           </Card>
         </Col>
       </Row>
@@ -155,7 +94,7 @@ const JobVersionTab = (props: JobProps) => {
 
   return (
     <>
-      <ProCard>{renderVersionList()}</ProCard>
+      <Card>{renderVersionList()}</Card>
     </>
   );
 };
