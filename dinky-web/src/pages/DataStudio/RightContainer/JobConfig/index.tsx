@@ -18,7 +18,11 @@
  */
 
 import { SAVE_POINT_TYPE } from '@/pages/DataStudio/constants';
-import {getCurrentData, getCurrentTab, isDataStudioTabsItemType} from '@/pages/DataStudio/function';
+import {
+  getCurrentData,
+  getCurrentTab,
+  isDataStudioTabsItemType
+} from '@/pages/DataStudio/function';
 import { SessionType, StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import {
   buildAlertGroupOptions,
@@ -70,10 +74,10 @@ const JobConfig = (props: any) => {
   const [form] = useForm();
   form.setFieldsValue(current);
 
-  const onValuesChange = (change: {[key in string]: string}, all: any) => {
+  const onValuesChange = (change: { [key in string]: string }, all: any) => {
     const pane = getCurrentTab(panes, activeKey);
-    if(!isDataStudioTabsItemType(pane)){
-      return
+    if (!isDataStudioTabsItemType(pane)) {
+      return;
     }
 
     Object.keys(change).forEach((key) => {
