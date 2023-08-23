@@ -19,8 +19,8 @@ import { showAlertInstance } from '@/pages/RegCenter/Alert/AlertGroup/service';
 import { Alert } from '@/types/RegCenter/data.d';
 import { Reducer } from 'umi';
 
-import { createModelTypes } from '@/utils/modals';
 import { Effect } from '@@/plugin-dva/types';
+import {createModelTypes} from "@/utils/modelUtils";
 
 export type AlertStateType = {
   instance: Alert.AlertInstance[];
