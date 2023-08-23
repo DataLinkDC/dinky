@@ -19,7 +19,7 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import VersionList from '@/components/VersionList';
-import { TaskHistoryListItem } from '@/components/VersionList/data';
+import { TaskVersionListItem } from '@/components/VersionList/data';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -30,7 +30,7 @@ import { useState } from 'react';
 
 const JobVersionTab = (props: JobProps) => {
   const { jobDetail } = props;
-  const latestVersion: TaskHistoryListItem = {
+  const latestVersion: TaskVersionListItem = {
     id: -1,
     type: jobDetail.history.type,
     statement: jobDetail.history.statement,
@@ -39,7 +39,7 @@ const JobVersionTab = (props: JobProps) => {
     isLatest: true
   };
 
-  const [currentVersion, setCurrentVersion] = useState<TaskHistoryListItem>();
+  const [currentVersion, setCurrentVersion] = useState<TaskVersionListItem>();
 
   const versionList = useRequest(
     {
@@ -47,13 +47,13 @@ const JobVersionTab = (props: JobProps) => {
       params: { taskId: jobDetail.history.taskId }
     },
     {
-      onSuccess: (data: TaskHistoryListItem[], params) => {
+      onSuccess: (data: TaskVersionListItem[], params) => {
         data.splice(0, 0, latestVersion);
       }
     }
   );
 
-  const deleteVersion = async (item: TaskHistoryListItem) => {
+  const deleteVersion = async (item: TaskVersionListItem) => {
     await handleRemoveById(API_CONSTANTS.GET_JOB_VERSION, item.id);
     versionList.run();
   };

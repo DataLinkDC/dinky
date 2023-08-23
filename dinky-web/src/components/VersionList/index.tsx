@@ -17,17 +17,17 @@
  */
 
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import { TaskHistoryListItem } from '@/components/VersionList/data';
+import { TaskVersionListItem } from '@/components/VersionList/data';
 import { l } from '@/utils/intl';
 import { DeliveredProcedureOutlined } from '@ant-design/icons';
 import { List, Skeleton, Space, Tag, Tooltip } from 'antd';
 import { ListItemTypeProps } from 'antd/es/list/Item';
 
 export interface VersionListProps {
-  data: TaskHistoryListItem[];
-  onSelectListen?: (value: TaskHistoryListItem) => void;
-  onDeleteListen?: (value: TaskHistoryListItem) => void;
-  onRollBackListen?: (value: TaskHistoryListItem) => void;
+  data: TaskVersionListItem[];
+  onSelectListen?: (value: TaskVersionListItem) => void;
+  onDeleteListen?: (value: TaskVersionListItem) => void;
+  onRollBackListen?: (value: TaskVersionListItem) => void;
   loading?: boolean;
   header?: string;
   options?: ListItemTypeProps;
@@ -44,7 +44,7 @@ const VersionList = (props: VersionListProps) => {
     options
   } = props;
 
-  const renderItem = (item: TaskHistoryListItem) => {
+  const renderItem = (item: TaskVersionListItem) => {
     return (
       <List.Item onClick={() => onSelectListen(item)}>
         <Skeleton title={false} loading={loading} active>
@@ -104,7 +104,7 @@ const VersionList = (props: VersionListProps) => {
       size={'small'}
       header={header}
       dataSource={data}
-      renderItem={(item: TaskHistoryListItem) => renderItem(item)}
+      renderItem={(item: TaskVersionListItem) => renderItem(item)}
     ></List>
   );
 };

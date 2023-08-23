@@ -17,7 +17,7 @@
  *
  */
 import VersionList from '@/components/VersionList';
-import { TaskHistoryListItem } from '@/components/VersionList/data';
+import { TaskVersionListItem } from '@/components/VersionList/data';
 import { getCurrentData } from '@/pages/DataStudio/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { handleOption, handleRemoveById } from '@/services/BusinessCrud';
@@ -43,7 +43,7 @@ const HistoryVersion = (props: any) => {
   });
 
   const [versionDiffVisible, setVersionDiffVisible] = useState<boolean>(false);
-  const [versionDiffRow, setVersionDiffRow] = useState<TaskHistoryListItem>();
+  const [versionDiffRow, setVersionDiffRow] = useState<TaskVersionListItem>();
 
   const VersionDiffForm = () => {
     let leftTitle = l('pages.datastudio.label.version.leftTitle', '', {
@@ -103,7 +103,7 @@ const HistoryVersion = (props: any) => {
     );
   };
 
-  const onRollBackVersion = async (row: TaskHistoryListItem) => {
+  const onRollBackVersion = async (row: TaskVersionListItem) => {
     Modal.confirm({
       title: l('pages.datastudio.label.version.rollback.flinksql'),
       content: l('pages.datastudio.label.version.rollback.flinksqlConfirm', '', {
@@ -112,20 +112,20 @@ const HistoryVersion = (props: any) => {
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
-        const TaskHistoryRollbackItem = {
+        const TaskVersionRollbackItem = {
           id: current?.key,
           versionId: row.versionId
         };
         await handleOption(
           'api/task/rollbackTask',
           l('pages.datastudio.label.version.rollback.flinksql'),
-          TaskHistoryRollbackItem
+          TaskVersionRollbackItem
         );
       }
     });
   };
 
-  const deleteVersion = async (item: TaskHistoryListItem) => {
+  const deleteVersion = async (item: TaskVersionListItem) => {
     await handleRemoveById(API_CONSTANTS.GET_JOB_VERSION, item.id);
     versionList.run();
   };
