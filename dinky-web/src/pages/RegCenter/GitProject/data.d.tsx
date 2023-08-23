@@ -22,4 +22,4 @@ export type BuildStepsState = {
   description: string;
   disabled: boolean;
   onClick: () => void;
-}
+};

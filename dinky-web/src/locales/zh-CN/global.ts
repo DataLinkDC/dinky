@@ -18,9 +18,10 @@
  */
 
 export default {
-  'button.check':'检查',
-  'button.graph':'图',
+  'button.check': '检查',
+  'button.graph': '图',
   'button.create': '新建',
+  'button.recovery': '恢复',
   'button.close': '关闭',
   'button.confirm': '确定',
   'button.cancel': '取消',
@@ -112,8 +113,7 @@ export default {
 
   'global.stay.tuned': '敬请期待',
   'global.mini': '最小化',
-  'global.max':'最大化',
-
+  'global.max': '最大化',
 
   'global.table.operate': '操作',
   'global.table.updateTime': '更新时间',
@@ -152,7 +152,6 @@ export default {
 
   'global.search.text': '输入关键字搜索',
 
-
   'global.savepoint.strategy.disabled': '禁用',
   'global.savepoint.strategy.latest': '最近一次',
   'global.savepoint.strategy.earliest': '最早一次',
@@ -170,8 +169,8 @@ export default {
   'global.success': '成功',
   'global.getdata.tips': '获取数据',
 
-  'global.notifaction.iknow': '我知道了',
-  'global.notifaction.full-error': '完整错误信息',
+  'global.notification.iknow': '我知道了',
+  'global.notification.full-error': '完整错误信息',
 
   'global.item': '个',
   'global.bout': '次',
@@ -195,6 +194,5 @@ export default {
   'global.month.september': '九月',
   'global.month.october': '十月',
   'global.month.november': '十一月',
-  'global.month.december': '十二月',
-
+  'global.month.december': '十二月'
 };

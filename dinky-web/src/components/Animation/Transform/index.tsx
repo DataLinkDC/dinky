@@ -17,18 +17,18 @@
  *
  */
 
-import {useSpring, animated} from 'react-spring';
+import { animated, useSpring } from 'react-spring';
 
 // 变形效果
 const Transform = (props: any) => {
-    const {children} = props;
-    const style = useSpring({
-        from: {transform: 'scale(1) rotate(0deg)'},
-        to: {transform: 'scale(0.5) rotate(180deg)'},
-        config: {duration: 1000},
-    });
+  const { children } = props;
+  const style = useSpring({
+    from: { transform: 'scale(1) rotate(0deg)' },
+    to: { transform: 'scale(0.5) rotate(180deg)' },
+    config: { duration: 1000 }
+  });
 
-    return <animated.div style={style}>{children}</animated.div>;
+  return <animated.div style={style}>{children}</animated.div>;
 };
 
-export default Transform
+export default Transform;

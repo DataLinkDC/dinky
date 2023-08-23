@@ -16,9 +16,9 @@
  *
  */
 
-import React from "react";
-import {Button} from "antd";
-import {UserSwitchOutlined} from "@ant-design/icons";
+import { UserSwitchOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import React from 'react';
 
 type AssignButtonProps = {
   onClick: () => void;
@@ -26,13 +26,13 @@ type AssignButtonProps = {
 };
 
 export const AssignBtn: React.FC<AssignButtonProps> = (props) => {
-  const {onClick,title} = props;
+  const { onClick, title } = props;
 
   return (
     <Button
-      className={"options-button"}
+      className={'options-button'}
       title={title}
-      icon={<UserSwitchOutlined className={"blue-icon"}/>}
+      icon={<UserSwitchOutlined className={'blue-icon'} />}
       onClick={onClick}
     />
   );

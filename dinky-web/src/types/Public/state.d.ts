@@ -17,3 +17,29 @@
  *
  */
 
+export type ContextMenuPosition = {
+  left: number;
+  top: number;
+  position: string;
+  cursor: string;
+  width: number | string;
+  zIndex: number;
+};
+
+/**
+ *  初始化 ContextMenuPosition
+ */
+export const InitContextMenuPosition: ContextMenuPosition = {
+  left: 0,
+  top: 0,
+  position: 'fixed',
+  cursor: 'pointer',
+  width: '12vw',
+  zIndex: 1000
+};
+
+export interface BaseState {
+  addedOpen: boolean;
+  editOpen: boolean;
+  loading: boolean;
+}

@@ -82,13 +82,13 @@ export default {
   'menu.datastudio.savePoint': '保存点',
   'menu.datastudio.historyVision': '历史版本',
   'menu.datastudio.jobInfo': '作业信息',
-  'menu.datastudio.tool':'工具',
-  'menu.datastudio.result':'结果',
-  'menu.datastudio.bi':'BI',
-  'menu.datastudio.lineage':'血缘',
-  'menu.datastudio.process':'进程',
-  'menu.datastudio.history':'历史',
-  'menu.datastudio.table-data':'表数据',
+  'menu.datastudio.tool': '工具',
+  'menu.datastudio.result': '结果',
+  'menu.datastudio.bi': 'BI',
+  'menu.datastudio.lineage': '血缘',
+  'menu.datastudio.process': '进程',
+  'menu.datastudio.history': '历史',
+  'menu.datastudio.table-data': '表数据',
 
-  'menu.datastudio.tool.text-comparison':'文本比对',
+  'menu.datastudio.tool.text-comparison': '文本比对'
 };

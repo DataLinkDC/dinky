@@ -28,6 +28,7 @@ import org.dinky.data.model.User;
 import org.dinky.data.params.AssignRoleParams;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.UserVo;
 import org.dinky.service.UserService;
 
 import java.util.List;
@@ -111,7 +112,7 @@ public class UserController {
     @PostMapping
     @ApiOperation("Get User List")
     public ProTableResult<User> listUser(@RequestBody JsonNode para) {
-        return userService.selectForProTable(para, true);
+        return userService.selectForProTable(para);
     }
 
     /**
@@ -176,5 +177,19 @@ public class UserController {
     public Result<Void> modifyUserToTenantAdmin(
             @RequestParam Integer userId, @RequestParam Integer tenantId, @RequestParam Boolean tenantAdminFlag) {
         return userService.modifyUserToTenantAdmin(userId, tenantId, tenantAdminFlag);
+    }
+
+    @PutMapping("/recovery")
+    @ApiOperation("Recovery User")
+    @Log(title = "Recovery User", businessType = BusinessType.UPDATE)
+    public Result<Void> recoveryUser(@RequestParam("id") Integer userId) {
+        return userService.recoveryUser(userId);
+    }
+
+    @PutMapping("/resetPassword")
+    @ApiOperation("Reset Password")
+    @Log(title = "Reset Password", businessType = BusinessType.UPDATE)
+    public Result<UserVo> resetPassword(@RequestParam("id") Integer userId) {
+        return userService.resetPassword(userId);
     }
 }

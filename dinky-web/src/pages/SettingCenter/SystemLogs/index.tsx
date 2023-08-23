@@ -15,14 +15,16 @@
  * limitations under the License.
  */
 
-import {PageContainer} from "@ant-design/pro-components";
-import TagInfo from "@/pages/SettingCenter/SystemLogs/TagInfo";
-import SlowlyAppear from "@/components/Animation/SlowlyAppear";
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import TagInfo from '@/pages/SettingCenter/SystemLogs/TagInfo';
+import { PageContainer } from '@ant-design/pro-components';
 
 export default () => {
-  return <SlowlyAppear>
-    <PageContainer title={false}>
-      <TagInfo/>
-    </PageContainer>
-  </SlowlyAppear>
-}
+  return (
+    <SlowlyAppear>
+      <PageContainer title={false}>
+        <TagInfo />
+      </PageContainer>
+    </SlowlyAppear>
+  );
+};

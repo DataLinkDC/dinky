@@ -15,14 +15,16 @@
  * limitations under the License.
  */
 
-import {PageContainer} from "@ant-design/pro-components";
-import TemplateTable from "@/pages/RegCenter/UDF/components/TemplateTable";
-import SlowlyAppear from "@/components/Animation/SlowlyAppear";
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import TemplateTable from '@/pages/RegCenter/UDF/components/TemplateTable';
+import { PageContainer } from '@ant-design/pro-components';
 
-export default ()=>{
-    return <SlowlyAppear>
-        <PageContainer title={false}>
-            <TemplateTable/>
-        </PageContainer>
+export default () => {
+  return (
+    <SlowlyAppear>
+      <PageContainer title={false}>
+        <TemplateTable />
+      </PageContainer>
     </SlowlyAppear>
-}
+  );
+};

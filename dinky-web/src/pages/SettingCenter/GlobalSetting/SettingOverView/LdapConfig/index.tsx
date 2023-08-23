@@ -15,39 +15,34 @@
  * limitations under the License.
  */
 
-
-import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import {ProCard} from '@ant-design/pro-components';
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
-import {l} from '@/utils/intl';
-import {Space, Tag} from 'antd';
+import { LoadUser } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig/compontents/LoadUser';
+import { TestLogin } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig/compontents/TestLogin';
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import { l } from '@/utils/intl';
+import { SuccessMessage } from '@/utils/messages';
+import { ApiFilled } from '@ant-design/icons';
+import { Space, Tag } from 'antd';
 import React from 'react';
-import {
-  ApiFilled,
-} from "@ant-design/icons";
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/constants";
-import {SuccessMessage} from "@/utils/messages";
-import {TestLogin} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig/compontents/TestLogin";
-import {LoadUser} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig/compontents/LoadUser";
 
 interface LdapConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
 }
 
-export const LdapConfig = ({data, onSave}: LdapConfigProps) => {
-
+export const LdapConfig = ({ data, onSave }: LdapConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const testConnection = async () => {
     setLoading(true);
     const datas = await queryDataByParams(API_CONSTANTS.LDAP_TEST_CONNECT);
     if (datas) {
-      SuccessMessage(l("sys.ldap.settings.testConnect.success","",{count:datas}))
+      SuccessMessage(l('sys.ldap.settings.testConnect.success', '', { count: datas }));
     }
     setLoading(false);
-  }
+  };
 
   const onSaveHandler = (data: BaseConfigProperties) => {
     setLoading(true);
@@ -62,24 +57,30 @@ export const LdapConfig = ({data, onSave}: LdapConfigProps) => {
    */
   const renderToolBar = () => {
     return [
-      <Space key={"ldapToolBar"}>
-        <Tag icon={<ApiFilled/>} color="#87d068" onClick={() => testConnection()}>
-          {l("sys.ldap.settings.testConnect")}
+      <Space key={'ldapToolBar'}>
+        <Tag icon={<ApiFilled />} color='#87d068' onClick={() => testConnection()}>
+          {l('sys.ldap.settings.testConnect')}
         </Tag>
-        <TestLogin/>
-        <LoadUser/>
+        <TestLogin />
+        <LoadUser />
       </Space>
     ];
   };
 
-  return <>
+  return (
+    <>
       {/*tooltip={l('sys.setting.ldap.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
-        tag={<><Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag></>}
+        tag={
+          <>
+            <Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>
+          </>
+        }
         data={data}
         toolBarRender={renderToolBar}
       />
-  </>;
+    </>
+  );
 };

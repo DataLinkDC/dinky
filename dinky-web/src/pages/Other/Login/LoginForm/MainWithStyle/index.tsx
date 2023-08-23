@@ -15,29 +15,28 @@
  * limitations under the License.
  */
 
-
-import {l} from "@/utils/intl";
-import React from "react";
-import Settings from "../../../../../../config/defaultSettings";
-import style from "../../../../../global.less";
-import Scale from "@/components/Animation/Scale";
+import Scale from '@/components/Animation/Scale';
+import { l } from '@/utils/intl';
+import Settings from '../../../../../../config/defaultSettings';
+import style from '../../../../../global.less';
 
 const MainWithStyle = (props: any) => {
-  const {children} = props;
+  const { children } = props;
 
-  return <div
-    className={style.loginformMain}
-    style={{backgroundImage: `url('/icons/main-bg.svg')`}}
-  >
-    <Scale><img className={style.logo} src={Settings.logo}/></Scale>
-    <div className={style.form}>
-      <div className={style.top}>
-        <div className={style.header}>Dinky</div>
-        <div className={style.desc}>{l("layouts.userLayout.title")}</div>
+  return (
+    <div className={style.loginformMain} style={{ backgroundImage: `url('/icons/main-bg.svg')` }}>
+      <Scale>
+        <img className={style.logo} src={Settings.logo} />
+      </Scale>
+      <div className={style.form}>
+        <div className={style.top}>
+          <div className={style.header}>Dinky</div>
+          <div className={style.desc}>{l('layouts.userLayout.title')}</div>
+        </div>
+        {children}
       </div>
-      {children}
     </div>
-  </div>;
+  );
 };
 
 export default MainWithStyle;

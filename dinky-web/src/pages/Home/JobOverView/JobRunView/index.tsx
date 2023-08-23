@@ -17,45 +17,40 @@
  *
  */
 
-import {StatisticCard} from '@ant-design/pro-components';
+import CountFormatter from '@/components/CountFormatter';
+import styles from '@/global.less';
+import { l } from '@/utils/intl';
+import { TinyArea, TinyAreaConfig } from '@ant-design/plots';
+import { StatisticCard } from '@ant-design/pro-components';
 import React from 'react';
-import {TinyArea, TinyAreaConfig} from '@ant-design/plots';
-import styles from "@/global.less";
-import CountFormatter from "@/components/CountFormatter";
-import {l} from "@/utils/intl";
 
-const {Statistic} = StatisticCard;
+const { Statistic } = StatisticCard;
 
 const JobRunView: React.FC = () => {
-
   const data = [
-    264, 417, 438, 887, 309, 397, 550, 575, 563, 430, 525, 592, 492, 467, 513, 546, 983, 340, 539, 243, 226, 192,
+    264, 417, 438, 887, 309, 397, 550, 575, 563, 430, 525, 592, 492, 467, 513, 546, 983, 340, 539,
+    243, 226, 192
   ];
-  const config:TinyAreaConfig = {
+  const config: TinyAreaConfig = {
     height: 80,
     width: 220,
     autoFit: false,
     data,
     smooth: true,
     areaStyle: {
-      fill: '#d6e3fd',
-    },
+      fill: '#d6e3fd'
+    }
   };
 
   return (
     <StatisticCard
-      chartPlacement="right"
+      chartPlacement='right'
       statistic={{
         title: l('home.job.running'),
         value: 20,
         suffix: l('global.item'),
-        formatter: (value)=> <CountFormatter value={Number(value)}/>,
-        description: (
-          <Statistic
-            title="已守护"
-            value="520 天"
-          />
-        ),
+        formatter: (value) => <CountFormatter value={Number(value)} />,
+        description: <Statistic title='已守护' value='520 天' />
       }}
       chart={
         <div className={styles['tiny-charts']}>
@@ -64,6 +59,6 @@ const JobRunView: React.FC = () => {
       }
     />
   );
-}
+};
 
-export default JobRunView
+export default JobRunView;

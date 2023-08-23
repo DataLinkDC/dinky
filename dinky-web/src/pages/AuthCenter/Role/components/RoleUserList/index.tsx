@@ -17,95 +17,91 @@
  *
  */
 
-
-
-
-import React, {useEffect, useRef} from "react";
-import {UserBaseInfo} from "@/types/User/data";
-import {Button, Drawer} from "antd";
-import {l} from "@/utils/intl";
-import {YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING} from "@/types/Public/constants";
-import {ActionType, ProColumns, ProTable} from "@ant-design/pro-components";
-import tenant from "@/pages/AuthCenter/Tenant";
-import {USER_TYPE_ENUM} from "@/pages/AuthCenter/User/components/constants";
-
+import { USER_TYPE_ENUM } from '@/pages/AuthCenter/User/components/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
+import { YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING } from '@/types/Public/constants';
+import { l } from '@/utils/intl';
+import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
+import { Drawer } from 'antd';
+import React, { useEffect, useRef } from 'react';
 
 type RoleUserListProps = {
-    role : Partial<UserBaseInfo.Role>,
-    userList : UserBaseInfo.User[],
-    open : boolean,
-    loading : boolean,
-    onClose : () => void,
-}
-const RoleUserList:React.FC<RoleUserListProps>= (props) => {
+  role: Partial<UserBaseInfo.Role>;
+  userList: UserBaseInfo.User[];
+  open: boolean;
+  loading: boolean;
+  onClose: () => void;
+};
+const RoleUserList: React.FC<RoleUserListProps> = (props) => {
+  const actionRef = useRef<ActionType>();
+  const { role, loading, userList, open, onClose } = props;
 
-    const actionRef = useRef<ActionType>();
-    const {role,loading, userList,open,onClose} = props;
+  useEffect(() => {
+    actionRef.current?.reload?.();
+  }, [userList, role]);
 
-    useEffect(() => {
-        actionRef.current?.reload?.();
-    },[userList,role]);
+  /**
+   * user infon list
+   * @type {({dataIndex: string, title: string, key: string} | {dataIndex: string, title: string, key: string} | {dataIndex: string, title: string, key: string} | {hideInSearch: boolean, dataIndex: string, valueEnum: {true: {text: JSX.Element, status: string}, false: {text: JSX.Element, status: string}}, filters: ({text: string, value: number} | {text: string, value: number})[], title: string, filterMultiple: boolean} | {hideInSearch: boolean, dataIndex: string, valueEnum: {true: {text: JSX.Element, status: string}, false: {text: JSX.Element, status: string}}, filters: ({text: string, value: number} | {text: string, value: number})[], title: string, filterMultiple: boolean} | {valueType: string, width: string, fixed: string, title: string, render: (_: any, record: UserBaseInfo.User) => JSX.Element[]})[]}
+   */
+  const userColumns: ProColumns<UserBaseInfo.User>[] = [
+    {
+      title: l('user.username'),
+      dataIndex: 'username',
+      key: 'username'
+    },
+    {
+      title: l('user.nickname'),
+      dataIndex: 'nickname',
+      key: 'nickname'
+    },
+    {
+      title: l('user.jobnumber'),
+      dataIndex: 'worknum'
+    },
+    {
+      title: l('user.phone'),
+      dataIndex: 'mobile',
+      hideInSearch: true
+    },
+    {
+      title: l('user.type'),
+      dataIndex: 'userType',
+      valueEnum: USER_TYPE_ENUM(),
+      hideInSearch: true
+    },
+    {
+      title: l('user.superAdminFlag'),
+      dataIndex: 'superAdminFlag',
+      valueEnum: YES_OR_NO_ENUM,
+      hideInSearch: true,
+      filters: YES_OR_NO_FILTERS_MAPPING,
+      filterMultiple: false
+    }
+  ];
 
-    /**
-     * user infon list
-     * @type {({dataIndex: string, title: string, key: string} | {dataIndex: string, title: string, key: string} | {dataIndex: string, title: string, key: string} | {hideInSearch: boolean, dataIndex: string, valueEnum: {true: {text: JSX.Element, status: string}, false: {text: JSX.Element, status: string}}, filters: ({text: string, value: number} | {text: string, value: number})[], title: string, filterMultiple: boolean} | {hideInSearch: boolean, dataIndex: string, valueEnum: {true: {text: JSX.Element, status: string}, false: {text: JSX.Element, status: string}}, filters: ({text: string, value: number} | {text: string, value: number})[], title: string, filterMultiple: boolean} | {valueType: string, width: string, fixed: string, title: string, render: (_: any, record: UserBaseInfo.User) => JSX.Element[]})[]}
-     */
-    const userColumns :ProColumns<UserBaseInfo.User>[] = [
-        {
-            title: l("user.username"),
-            dataIndex: 'username',
-            key: 'username',
-        },
-        {
-            title: l("user.nickname"),
-            dataIndex: 'nickname',
-            key: 'nickname',
-        },
-        {
-            title: l("user.jobnumber"),
-            dataIndex: "worknum",
-        },
-        {
-            title: l("user.phone"),
-            dataIndex: "mobile",
-            hideInSearch: true,
-        },
-        {
-            title: l("user.type"),
-            dataIndex: "userType",
-            valueEnum: USER_TYPE_ENUM(),
-            hideInSearch: true,
-        },
-        {
-            title: l("user.superAdminFlag"),
-            dataIndex: "superAdminFlag",
-            valueEnum: YES_OR_NO_ENUM,
-            hideInSearch: true,
-            filters: YES_OR_NO_FILTERS_MAPPING,
-            filterMultiple: false,
-        },
-    ]
-
-    return <>
-    <Drawer
+  return (
+    <>
+      <Drawer
         title={`${role.roleName} - ${l('role.user.list')}`}
         width={'60%'}
         open={open}
         maskClosable={false}
         onClose={onClose}
-    >
-           <ProTable<UserBaseInfo.User>
-               search={false}
-               pagination={false}
-               options={false}
-               rowKey={record => record.id}
-               actionRef={actionRef}
-               loading={loading}
-               dataSource={userList}
-               columns={userColumns}
-           />
-    </Drawer>
+      >
+        <ProTable<UserBaseInfo.User>
+          search={false}
+          pagination={false}
+          options={false}
+          rowKey={(record) => record.id}
+          actionRef={actionRef}
+          loading={loading}
+          dataSource={userList}
+          columns={userColumns}
+        />
+      </Drawer>
     </>
-}
+  );
+};
 
-export default RoleUserList
+export default RoleUserList;

@@ -16,11 +16,17 @@
  */
 
 module.exports = {
-  singleQuote: true,
-  trailingComma: 'all',
-  printWidth: 100,
-  proseWrap: 'never',
+  singleQuote: true, //  使用单引号
+  semi: true, //  使用分号
+  trailingComma: 'all', //  尾随逗号
+  printWidth: 100, // 该选项指定一行最多允许的字符数。当代码中的一行超过该限制时，Prettier会自动将代码进行换行。建议设置为80到100之间的数字。
+  proseWrap: 'never', // 该选项指定是否对markdown文件换行，默认为never，即不换行。
   endOfLine: 'lf',
+  tabWidth: 2, // 该选项指定使用几个空格代替一个Tab键。一般建议为2或4个空格。
+  jsxSingleQuote: true, // 使用单引号
+  // 每个文件格式化的范围是文件的全部内容
+  rangeStart: 0,
+  rangeEnd: Infinity,
   overrides: [
     {
       files: '.prettierrc',
@@ -32,6 +38,18 @@ module.exports = {
       files: 'document.ejs',
       options: {
         parser: 'html',
+      },
+    },
+    {
+      files: '*.tsx',
+      options: {
+        trailingComma: 'none',
+      },
+    },
+    {
+      files: '*.ts',
+      options: {
+        trailingComma: 'none',
       },
     },
   ],

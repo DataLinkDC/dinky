@@ -15,46 +15,41 @@
  * limitations under the License.
  */
 
-import {useEmotionCss} from "@ant-design/use-emotion-css";
-import {SelectLang, useModel} from '@@/exports';
-import React, {useEffect} from 'react';
-import {LANGUAGE_KEY, LANGUAGE_ZH, STORY_LANGUAGE} from '@/services/constants';
-import useCookie from "react-use-cookie";
-import {useLocalStorage} from "@/utils/hook/useLocalStorage";
+import { LANGUAGE_KEY, LANGUAGE_ZH, STORY_LANGUAGE } from '@/services/constants';
+import { useLocalStorage } from '@/utils/hook/useLocalStorage';
+import { SelectLang, useModel } from '@@/exports';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { useEffect } from 'react';
+import useCookie from 'react-use-cookie';
 
 const LangSwitch = () => {
-
-  const {initialState, setInitialState} = useModel("@@initialState");
+  const { initialState, setInitialState } = useModel('@@initialState');
   const [language, setLanguage] = useLocalStorage(LANGUAGE_KEY, LANGUAGE_ZH);
   const [langCache, setLangCache] = useCookie(STORY_LANGUAGE, language);
 
   useEffect(() => {
-      setLangCache(language)
-      setInitialState((s) => ({
-        ...s,
-        locale: language,
-      }));
+    setLangCache(language);
+    setInitialState((s) => ({
+      ...s,
+      locale: language
+    }));
   }, [initialState]);
 
-
-  const langClassName = useEmotionCss(({token}) => {
+  const langClassName = useEmotionCss(({ token }) => {
     return {
       width: 42,
-      lineHeight: "42px",
-      position: "absolute",
+      lineHeight: '42px',
+      position: 'absolute',
       top: 10,
       right: 10,
       borderRadius: token.borderRadius,
       zIndex: 9999,
-      ":hover": {
-        backgroundColor: token.colorBgTextHover,
-      },
+      ':hover': {
+        backgroundColor: token.colorBgTextHover
+      }
     };
   });
-  return <div className={langClassName}>
-    {SelectLang && <SelectLang/>}
-  </div>
-    ;
+  return <div className={langClassName}>{SelectLang && <SelectLang />}</div>;
 };
 
 export default LangSwitch;

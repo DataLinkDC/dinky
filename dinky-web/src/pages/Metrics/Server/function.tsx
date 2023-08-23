@@ -17,7 +17,6 @@
  *
  */
 
-
 /**
  * 获取当前时间的前几分钟 | get current time before several minutes
  * @param {Date} currentTime | current time
@@ -25,10 +24,9 @@
  * @returns {Date} | return the time before several minutes
  */
 export const getSubMinTime = (currentTime: Date, minutes: number) => {
-    const pastTime = new Date(currentTime.getTime() - minutes * 60000);
-    return pastTime;
+  const pastTime = new Date(currentTime.getTime() - minutes * 60000);
+  return pastTime;
 };
-
 
 /**
  * 获取当前时间的前几天 | get current time before several days
@@ -38,16 +36,17 @@ export const getSubMinTime = (currentTime: Date, minutes: number) => {
  * @returns {Date} | return the time before several days
  */
 export const getSubDateTime = (currentTime: Date, day: number, isStart: boolean) => {
-
-    const pastTime = new Date(
-        currentTime.getFullYear(),
-        currentTime.getMonth(),
-        currentTime.getDate() - day,
-        (isStart ? 0 : 23), (isStart ? 0 : 59), (isStart ? 0 : 59), (isStart ? 0 : 999)
-    );
-    return pastTime;
+  const pastTime = new Date(
+    currentTime.getFullYear(),
+    currentTime.getMonth(),
+    currentTime.getDate() - day,
+    isStart ? 0 : 23,
+    isStart ? 0 : 59,
+    isStart ? 0 : 59,
+    isStart ? 0 : 999
+  );
+  return pastTime;
 };
-
 
 /**
  * 获取当前月的第一天/最后一天 | get the first day / last day of current month
@@ -56,11 +55,14 @@ export const getSubDateTime = (currentTime: Date, day: number, isStart: boolean)
  * @returns {Date} | return the first day / last day of current month
  */
 export const getDayOfMonth = (currentTime: Date, isFirst: boolean) => {
-    const pastTime = new Date(
-        currentTime.getFullYear(),
-        currentTime.getMonth() + (isFirst ? 0 : 1),
-        (isFirst ? 1 : 0),
-        (isFirst ? 0 : 23), (isFirst ? 0 : 59), (isFirst ? 0 : 59), (isFirst ? 0 : 999)
-    );
-    return pastTime;
-}
+  const pastTime = new Date(
+    currentTime.getFullYear(),
+    currentTime.getMonth() + (isFirst ? 0 : 1),
+    isFirst ? 1 : 0,
+    isFirst ? 0 : 23,
+    isFirst ? 0 : 59,
+    isFirst ? 0 : 59,
+    isFirst ? 0 : 999
+  );
+  return pastTime;
+};

@@ -17,22 +17,19 @@
  *
  */
 
-
-import React from "react";
-import UserProTable from "@/pages/AuthCenter/User/components/UserProTable";
-import {PageContainer} from "@ant-design/pro-components";
-import SlowlyAppear from "@/components/Animation/SlowlyAppear";
-
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import UserProTable from '@/pages/AuthCenter/User/components/UserProTable';
+import { PageContainer } from '@ant-design/pro-components';
 
 export default () => {
-
-    /**
-     * render
-     */
-    return <SlowlyAppear>
-        <PageContainer title={false}>
-            <UserProTable/>
-        </PageContainer>
+  /**
+   * render
+   */
+  return (
+    <SlowlyAppear>
+      <PageContainer title={false}>
+        <UserProTable />
+      </PageContainer>
     </SlowlyAppear>
+  );
 };
-

@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
-
-
-export const UserType = {LOCAL:0, LDAP:1}
+export const UserType = { LOCAL: 0, LDAP: 1 };
 
 export const USER_TYPE_ENUM = () => {
-  return {0: "LOCAL", 1: "LDAP"}
-}
+  return { 0: 'LOCAL', 1: 'LDAP' };
+};

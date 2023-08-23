@@ -1,24 +1,22 @@
-import {Jobs} from "@/types/DevOps/data";
-import {ProCard, ProColumns, ProTable} from "@ant-design/pro-components";
-import {Descriptions, Tag, Typography} from "antd";
-import {l} from "@/utils/intl";
-import {TagJobStatus} from "@/pages/DevOps/function";
-import {parseByteStr, parseMilliSecondStr, parseNumStr} from "@/utils/function";
-import {JobProps} from "@/pages/DevOps/JobDetail/data";
+import { TagJobStatus } from '@/pages/DevOps/function';
+import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import { parseByteStr, parseMilliSecondStr, parseNumStr } from '@/utils/function';
+import { l } from '@/utils/intl';
+import { ProCard, ProColumns, ProTable } from '@ant-design/pro-components';
+import { Typography } from 'antd';
 
-const {Text,Link } = Typography;
-
+const { Text, Link } = Typography;
 
 export type VerticesTableListItem = {
-  name: string,
-  status: string,
-  metrics: any,
-  parallelism: number,
-  startTime: string,
-  duration: number,
-  endTime: string,
-  tasks: any,
-}
+  name: string;
+  status: string;
+  metrics: any;
+  parallelism: number;
+  startTime: string;
+  duration: number;
+  endTime: string;
+  tasks: any;
+};
 
 /**
  * Renders the JobConfigTab component.
@@ -27,8 +25,7 @@ export type VerticesTableListItem = {
  * @returns {JSX.Element} - The rendered JobConfigTab component.
  */
 const FlinkTable = (props: JobProps) => {
-
-  const {jobDetail} = props;
+  const { jobDetail } = props;
 
   const columns: ProColumns<VerticesTableListItem>[] = [
     {
@@ -38,7 +35,7 @@ const FlinkTable = (props: JobProps) => {
       width: 400,
       render: (dom, entity) => {
         return <Link>{entity.name}</Link>;
-      },
+      }
     },
     {
       title: l('devops.baseinfo.status'),
@@ -46,53 +43,53 @@ const FlinkTable = (props: JobProps) => {
       sorter: true,
       render: (dom, entity) => {
         return <>{TagJobStatus(entity.status)}</>;
-      },
+      }
     },
     {
       title: l('devops.baseinfo.readbytes'),
       render: (dom, entity) => {
         return parseByteStr(entity.metrics['read-bytes']);
-      },
+      }
     },
     {
       title: l('devops.baseinfo.readrecords'),
       render: (dom, entity) => {
         return parseNumStr(entity.metrics['read-records']);
-      },
+      }
     },
     {
       title: l('devops.baseinfo.writebytes'),
       render: (dom, entity) => {
         return parseByteStr(entity.metrics['write-bytes']);
-      },
+      }
     },
     {
       title: l('devops.baseinfo.writerecords'),
       render: (dom, entity) => {
         return parseNumStr(entity.metrics['write-records']);
-      },
+      }
     },
     {
       title: l('devops.baseinfo.parallelism'),
       sorter: true,
-      dataIndex: 'parallelism',
+      dataIndex: 'parallelism'
     },
     {
       title: l('global.table.startTime'),
       dataIndex: 'start-time',
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.useTime'),
       render: (dom, entity) => {
         return parseMilliSecondStr(entity.duration);
-      },
+      }
     },
     {
-      title:  l('global.table.endTime'),
+      title: l('global.table.endTime'),
       dataIndex: 'end-time',
-      valueType: 'dateTime',
-    },
+      valueType: 'dateTime'
+    }
     // {
     //   title: l('devops.baseinfo.tasks'),
     //   render: (dom, entity) => {
@@ -101,27 +98,26 @@ const FlinkTable = (props: JobProps) => {
     // },
   ];
 
-
-  return(
+  return (
     <>
       <ProCard>
         <ProTable
           columns={columns}
-          style={{width: '100%'}}
+          style={{ width: '100%' }}
           dataSource={jobDetail?.jobHistory?.job.vertices}
-          rowKey="name"
+          rowKey='name'
           pagination={{
             defaultPageSize: 10,
-            showSizeChanger: true,
+            showSizeChanger: true
           }}
           toolBarRender={false}
           search={false}
-          size="small"
+          size='small'
         />
       </ProCard>
-      <br/>
+      <br />
     </>
-  )
-}
+  );
+};
 
 export default FlinkTable;

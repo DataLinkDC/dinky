@@ -15,46 +15,42 @@
  * limitations under the License.
  */
 
-import {ProTable} from "@ant-design/pro-components";
-import React, {useRef, useState} from "react";
-import {l} from "@/utils/intl";
-import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
-import {ActionType, ProColumns} from "@ant-design/pro-table";
-import {UDFTemplate} from "@/types/RegCenter/data";
-import {queryList} from "@/services/api";
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
+import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import CodeShow from '@/components/CustomEditor/CodeShow';
+import TemplateModal from '@/pages/RegCenter/UDF/components/TemplateModal';
 import {
   CODE_TYPE_ENUM,
   CODE_TYPE_FILTER,
   FUNCTION_TYPE_ENUM,
   FUNCTION_TYPE_FILTER
-} from "@/pages/RegCenter/UDF/constants";
-import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
-import {EditBtn} from "@/components/CallBackButton/EditBtn";
-import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
-import {handleAddOrUpdate, handleRemoveById, updateDataByParam} from "@/services/BusinessCrud";
-import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
-import TemplateModal from "@/pages/RegCenter/UDF/components/TemplateModal";
-import UDFTemplateDrawer from "../UDFTemplateDrawer";
-import CodeShow from "@/components/CustomEditor/CodeShow";
+} from '@/pages/RegCenter/UDF/constants';
+import { queryList } from '@/services/api';
+import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { UDFTemplate } from '@/types/RegCenter/data';
+import { InitTemplateState } from '@/types/RegCenter/init.d';
+import { TemplateState } from '@/types/RegCenter/state.d';
+import { l } from '@/utils/intl';
+import { ProTable } from '@ant-design/pro-components';
+import { ActionType, ProColumns } from '@ant-design/pro-table';
+import React, { useRef, useState } from 'react';
+import UDFTemplateDrawer from '../UDFTemplateDrawer';
 
-
-const CodeShowProps = {
-  height: "40vh",
-  width: "40vw",
-  lineNumbers: "on",
-  language: "java",
+const CodeShowProps: any = {
+  height: '40vh',
+  width: '40vw',
+  lineNumbers: 'on',
+  language: 'java'
 };
 
-
 const TemplateTable: React.FC = () => {
-
   const actionRef = useRef<ActionType>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [drawer, setDrawer] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState<Partial<UDFTemplate>>({});
 
+  const [templateState, setTemplateState] = useState<TemplateState>(InitTemplateState);
 
   /**
    * execute and callback function
@@ -62,9 +58,9 @@ const TemplateTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const executeAndCallback = async (callback: () => void) => {
-    setLoading(true);
+    setTemplateState((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setLoading(false);
+    setTemplateState((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
@@ -72,10 +68,7 @@ const TemplateTable: React.FC = () => {
    * cancel all status
    */
   const handleCancel = () => {
-    setFormValues({});
-    handleModalVisible(false);
-    handleUpdateModalVisible(false);
-    setDrawer(false);
+    setTemplateState(InitTemplateState);
     actionRef.current?.reload?.();
   };
 
@@ -84,8 +77,7 @@ const TemplateTable: React.FC = () => {
    * @param value
    */
   const handleEdit = async (value: Partial<UDFTemplate>) => {
-    setFormValues(value);
-    handleUpdateModalVisible(true);
+    setTemplateState({ ...templateState, editOpen: true, value: value });
   };
 
   /**
@@ -104,7 +96,11 @@ const TemplateTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleChangeEnable = async (value: Partial<UDFTemplate>) => {
-    await executeAndCallback(async () => await updateDataByParam(API_CONSTANTS.UDF_TEMPLATE_ENABLE, {id: value.id}));
+    await executeAndCallback(async () =>
+      updateDataByParam(API_CONSTANTS.UDF_TEMPLATE_ENABLE, {
+        id: value.id
+      })
+    );
   };
 
   /**
@@ -113,118 +109,149 @@ const TemplateTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallback(async () => await handleRemoveById(API_CONSTANTS.UDF_TEMPLATE_DELETE, id));
+    await executeAndCallback(
+      async () => await handleRemoveById(API_CONSTANTS.UDF_TEMPLATE_DELETE, id)
+    );
   };
-
 
   /**
    * handle open drawer
    * @param {Partial<UDFTemplate>} record
    */
   const handleOpenDrawer = (record: Partial<UDFTemplate>) => {
-    setFormValues(record)
-    setDrawer(true)
-  }
+    setTemplateState({ ...templateState, drawerOpen: true, value: record });
+  };
 
   const columns: ProColumns<UDFTemplate>[] = [
     {
-      title: l("rc.template.name"),
-      dataIndex: "name",
-      render: (dom :any, record:UDFTemplate) => {
+      title: l('rc.template.name'),
+      dataIndex: 'name',
+      render: (dom: any, record: UDFTemplate) => {
         return <a onClick={() => handleOpenDrawer(record)}>{dom}</a>;
-      }    },
+      }
+    },
     {
-      title: l("rc.template.codeType"),
-      dataIndex: "codeType",
+      title: l('rc.template.codeType'),
+      dataIndex: 'codeType',
       filters: CODE_TYPE_FILTER,
       valueEnum: CODE_TYPE_ENUM,
       filterMultiple: false,
-      onFilter: false,
+      onFilter: false
     },
     {
-      title: l("rc.template.functionType"),
-      dataIndex: "functionType",
+      title: l('rc.template.functionType'),
+      dataIndex: 'functionType',
       filters: FUNCTION_TYPE_FILTER,
       valueEnum: FUNCTION_TYPE_ENUM,
       filterMultiple: false,
-      onFilter: false,
+      onFilter: false
     },
     {
-      title: l("rc.template.templateCode"),
-      dataIndex: "templateCode",
+      title: l('rc.template.templateCode'),
+      dataIndex: 'templateCode',
       filters: FUNCTION_TYPE_FILTER,
       valueEnum: FUNCTION_TYPE_ENUM,
       hideInTable: true,
       filterMultiple: false,
       onFilter: false,
-      render : (dom:any, record:UDFTemplate) => {
+      render: (dom: any, record: UDFTemplate) => {
         return <CodeShow {...CodeShowProps} code={record.templateCode} showFloatButton />;
       }
     },
     {
-      title: l("global.table.isEnable"),
-      dataIndex: "enabled",
+      title: l('global.table.isEnable'),
+      dataIndex: 'enabled',
       hideInSearch: true,
-      render: (_:any, record:UDFTemplate) => {
-        return <EnableSwitchBtn key={`${record.id}_enable`} disabled={drawer} record={record}
-                                onChange={() => handleChangeEnable(record)}/>;
-      },
+      render: (_: any, record: UDFTemplate) => {
+        return (
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            disabled={templateState.drawerOpen}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
+        );
+      }
     },
     {
-      title: l("global.table.createTime"),
-      dataIndex: "createTime",
-      valueType: "dateTime",
+      title: l('global.table.createTime'),
+      dataIndex: 'createTime',
+      valueType: 'dateTime',
       sorter: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
-      title: l("global.table.updateTime"),
-      dataIndex: "updateTime",
-      valueType: "dateTime",
+      title: l('global.table.updateTime'),
+      dataIndex: 'updateTime',
+      valueType: 'dateTime',
       sorter: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
-      title: l("global.table.operate"),
-      width: "10vh",
+      title: l('global.table.operate'),
+      width: '10vh',
       hideInSearch: true,
       hideInDescriptions: true,
       render: (text: any, record: UDFTemplate) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)}/>,
-        <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
-                             description={l("rc.template.deleteConfirm")}/>,
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />,
+        <PopconfirmDeleteBtn
+          key={`${record.id}_delete`}
+          onClick={() => handleDeleteSubmit(record.id)}
+          description={l('rc.template.deleteConfirm')}
+        />
       ]
     }
   ];
 
+  return (
+    <>
+      <ProTable<UDFTemplate>
+        {...PROTABLE_OPTIONS_PUBLIC}
+        loading={templateState.loading}
+        actionRef={actionRef}
+        headerTitle={l('rc.udf.management')}
+        toolBarRender={() => [
+          <CreateBtn
+            key={'template'}
+            onClick={() => setTemplateState((prevState) => ({ ...prevState, addedOpen: true }))}
+          />
+        ]}
+        request={(params, sorter, filter: any) =>
+          queryList(API_CONSTANTS.UDF_TEMPLATE, { ...params, sorter, filter })
+        }
+        columns={columns}
+      />
+      {/* added */}
+      {templateState.editOpen && (
+        <TemplateModal
+          values={templateState.value}
+          visible={templateState.addedOpen}
+          onCancel={handleCancel}
+          onSubmit={(value: Partial<UDFTemplate>) => handleAddOrUpdateSubmit(value)}
+        />
+      )}
 
-  return <>
-    <ProTable<UDFTemplate>
-      {...PROTABLE_OPTIONS_PUBLIC}
-      loading={loading}
-      actionRef={actionRef}
-      headerTitle={l("rc.udf.management")}
-      toolBarRender={() => [<CreateBtn key={"template"} onClick={() => handleModalVisible(true)}/>]}
-      request={(params, sorter, filter: any) => queryList(API_CONSTANTS.UDF_TEMPLATE, {...params, sorter, filter})}
-      columns={columns}
-    />
-    {/* added */}
-    {modalVisible && <TemplateModal values={formValues} visible={modalVisible} onCancel={handleCancel}
-                                    onSubmit={(value: Partial<UDFTemplate>) => handleAddOrUpdateSubmit(value)}/>}
+      {/* modify */}
+      {templateState.editOpen && (
+        <TemplateModal
+          values={templateState.value}
+          visible={templateState.editOpen}
+          onCancel={handleCancel}
+          onSubmit={(value: Partial<UDFTemplate>) => handleAddOrUpdateSubmit(value)}
+        />
+      )}
 
-    {/* modify */}
-    {updateModalVisible && <TemplateModal values={formValues} visible={updateModalVisible} onCancel={handleCancel}
-                                          onSubmit={(value: Partial<UDFTemplate>) => handleAddOrUpdateSubmit(value)}/>}
-
-    {/* drawer */}
-    {drawer &&
-      <UDFTemplateDrawer
-      onCancel={() => handleCancel()}
-      values={formValues}
-      modalVisible={drawer}
-      columns={columns}
-    />}
-  </>;
+      {/* drawer */}
+      {templateState.drawerOpen && (
+        <UDFTemplateDrawer
+          onCancel={() => handleCancel()}
+          values={templateState.value}
+          modalVisible={templateState.drawerOpen}
+          columns={columns}
+        />
+      )}
+    </>
+  );
 };
 
 export default TemplateTable;

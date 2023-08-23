@@ -17,53 +17,58 @@
  *
  */
 
-import {ProCard} from '@ant-design/pro-components';
-import {Badge} from 'antd';
+import BatchStreamProportion from '@/pages/Home/DevOverView/BatchStreamProportion';
+import DevHeatmap from '@/pages/Home/DevOverView/DevHeatmap';
+import ResourceView from '@/pages/Home/DevOverView/ResourceView';
+import TaskDialectRadar from '@/pages/Home/DevOverView/TaskDialectRadar';
+import { l } from '@/utils/intl';
+import { ProCard } from '@ant-design/pro-components';
+import { Badge } from 'antd';
 import RcResizeObserver from 'rc-resize-observer';
-import React, {useState} from 'react';
-import DevHeatmap from "@/pages/Home/DevOverView/DevHeatmap";
-import TaskDialectRadar from "@/pages/Home/DevOverView/TaskDialectRadar";
-import ResourceView from "@/pages/Home/DevOverView/ResourceView";
-import BatchStreamProportion from "@/pages/Home/DevOverView/BatchStreamProportion";
-import {l} from "@/utils/intl";
+import React, { useState } from 'react';
 
 const DevOverView: React.FC = () => {
   const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
 
   return (
     <RcResizeObserver
-      key="resize-observer"
+      key='resize-observer'
       onResize={(offset) => {
         setSplit(offset.width < 596 ? 'horizontal' : 'vertical');
       }}
     >
       <ProCard
-        title={<><Badge status="processing"/>{l('home.develop')}</>}
+        title={
+          <>
+            <Badge status='processing' />
+            {l('home.develop')}
+          </>
+        }
         headerBordered
         bordered
-        size="small"
+        size='small'
         split={split}
       >
-        <ProCard split="vertical">
-          <ProCard split="horizontal" colSpan={'40%'}>
+        <ProCard split='vertical'>
+          <ProCard split='horizontal' colSpan={'40%'}>
             <ProCard>
-              <BatchStreamProportion/>
+              <BatchStreamProportion />
             </ProCard>
-            <ProCard >
-              <DevHeatmap/>
+            <ProCard>
+              <DevHeatmap />
             </ProCard>
           </ProCard>
 
-          <ProCard colSpan={'30%'} >
-            <TaskDialectRadar/>
+          <ProCard colSpan={'30%'}>
+            <TaskDialectRadar />
           </ProCard>
           <ProCard>
-            <ResourceView/>
+            <ResourceView />
           </ProCard>
         </ProCard>
       </ProCard>
     </RcResizeObserver>
   );
-}
+};
 
-export default DevOverView
+export default DevOverView;

@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-
-
 export enum JOB_LIFE_CYCLE {
   UNKNOWN = 0,
   CREATE = 1,
@@ -24,7 +22,7 @@ export enum JOB_LIFE_CYCLE {
   DEBUG = 3,
   RELEASE = 4,
   ONLINE = 5,
-  CANCEL = 6,
+  CANCEL = 6
 }
 
 export enum JOB_STATUS {
@@ -38,5 +36,5 @@ export enum JOB_STATUS {
   FAILING = 'FAILING',
   SUSPENDED = 'SUSPENDED',
   CANCELLING = 'CANCELLING',
-  UNKNOWN = 'UNKNOWN',
+  UNKNOWN = 'UNKNOWN'
 }

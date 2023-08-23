@@ -15,18 +15,19 @@
  * limitations under the License.
  */
 
-import React from "react";
-import {Space} from "antd";
-import {l} from "@/utils/intl";
+import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
+import { l } from '@/utils/intl';
 import {
   DownCircleFilled,
   StopFilled,
   SyncOutlined,
-  UpCircleFilled, VerticalAlignBottomOutlined,
+  UpCircleFilled,
+  VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined
-} from "@ant-design/icons";
-import {PlayCircleFilled} from "@ant-design/icons/lib/icons";
-import {CircleBtn} from "@/components/CallBackButton/CircleBtn";
+} from '@ant-design/icons';
+import { PlayCircleFilled } from '@ant-design/icons/lib/icons';
+import { Space } from 'antd';
+import React from 'react';
 
 /**
  * props
@@ -39,13 +40,12 @@ type EditFloatBtnProps = {
   handleSyncLog?: () => void; // sync log callback
   handleStopAutoRefresh?: () => void; // stop auto refresh callback
   handleStartAutoRefresh?: () => void; // start auto refresh callback
-  handleBackTop?: () => void;  // back to top callback
+  handleBackTop?: () => void; // back to top callback
   handleBackBottom?: () => void; // back to bottom callback
   handleUpScroll?: () => void; // up scroll callback
   handleDownScroll?: () => void; // down scroll callback
-}
+};
 const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
-
   /**
    * init props
    */
@@ -63,31 +63,57 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
     handleDownScroll
   } = props;
 
-
   /**
    * render
    */
-  return <>
-    <Space direction={"vertical"} size={0}>
-      {
-        refreshLogCallback && <>
-          <CircleBtn icon={<SyncOutlined spin={loading}/>} onClick={handleSyncLog} title={l("button.refresh")}/>
-          {autoRefresh ?
-            <CircleBtn icon={<StopFilled spin={stopping}/>} onClick={handleStopAutoRefresh}
-                       title={l("button.stopRefresh")}/>
-            :
-            <CircleBtn icon={<PlayCircleFilled spin={loading}/>} onClick={handleStartAutoRefresh}
-                       title={l("button.startRefresh")}/>
-          }
-        </>
-      }
-      <CircleBtn icon={<VerticalAlignTopOutlined/>} onClick={handleBackTop} title={l("button.backTop")}/>
-      <CircleBtn icon={<VerticalAlignBottomOutlined/>} onClick={handleBackBottom} title={l("button.backBottom")}/>
-      <CircleBtn icon={<UpCircleFilled/>} onClick={handleUpScroll} title={l("button.upScroll")}/>
-      <CircleBtn icon={<DownCircleFilled/>} onClick={handleDownScroll} title={l("button.downScroll")}/>
-    </Space>
-  </>;
-
+  return (
+    <>
+      <Space direction={'vertical'} size={0}>
+        {refreshLogCallback && (
+          <>
+            <CircleBtn
+              icon={<SyncOutlined spin={loading} />}
+              onClick={handleSyncLog}
+              title={l('button.refresh')}
+            />
+            {autoRefresh ? (
+              <CircleBtn
+                icon={<StopFilled spin={stopping} />}
+                onClick={handleStopAutoRefresh}
+                title={l('button.stopRefresh')}
+              />
+            ) : (
+              <CircleBtn
+                icon={<PlayCircleFilled spin={loading} />}
+                onClick={handleStartAutoRefresh}
+                title={l('button.startRefresh')}
+              />
+            )}
+          </>
+        )}
+        <CircleBtn
+          icon={<VerticalAlignTopOutlined />}
+          onClick={handleBackTop}
+          title={l('button.backTop')}
+        />
+        <CircleBtn
+          icon={<VerticalAlignBottomOutlined />}
+          onClick={handleBackBottom}
+          title={l('button.backBottom')}
+        />
+        <CircleBtn
+          icon={<UpCircleFilled />}
+          onClick={handleUpScroll}
+          title={l('button.upScroll')}
+        />
+        <CircleBtn
+          icon={<DownCircleFilled />}
+          onClick={handleDownScroll}
+          title={l('button.downScroll')}
+        />
+      </Space>
+    </>
+  );
 };
 
 export default EditorFloatBtn;

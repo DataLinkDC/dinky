@@ -17,18 +17,19 @@
  *
  */
 
-import {PageContainer} from "@ant-design/pro-components";
-import PermissionsProTable from "@/pages/AuthCenter/RowPermissions/components/PermissionsProTable";
-import SlowlyAppear from "@/components/Animation/SlowlyAppear";
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import PermissionsProTable from '@/pages/AuthCenter/RowPermissions/components/PermissionsProTable';
+import { PageContainer } from '@ant-design/pro-components';
 
 export default () => {
-
-    /**
-     * render
-     */
-    return <SlowlyAppear>
-    <PageContainer title={false}>
-       <PermissionsProTable />
-    </PageContainer>
+  /**
+   * render
+   */
+  return (
+    <SlowlyAppear>
+      <PageContainer title={false}>
+        <PermissionsProTable />
+      </PageContainer>
     </SlowlyAppear>
-}
+  );
+};

@@ -17,87 +17,95 @@
  *
  */
 
-import {GlobalVar} from "@/types/RegCenter/data";
-import {FormInstance} from "antd/es/form/hooks/useForm";
-import {Values} from "async-validator";
-import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
-import {ProForm, ProFormItem, ProFormSwitch, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
-import React, {useState} from "react";
-import {l} from "@/utils/intl";
-import CodeEdit from "@/components/CustomEditor/CodeEdit";
+import CodeEdit from '@/components/CustomEditor/CodeEdit';
+import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
+import { GlobalVar } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import {
+  ProForm,
+  ProFormItem,
+  ProFormSwitch,
+  ProFormText,
+  ProFormTextArea
+} from '@ant-design/pro-components';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
+import React, { useState } from 'react';
 
 type GlobalVarModalProps = {
-    values: Partial<GlobalVar>;
-    form: FormInstance<Values>
-}
-
+  values: Partial<GlobalVar>;
+  form: FormInstance<Values>;
+};
 
 /**
  * global variable code edit props
  */
 const CodeEditProps = {
-    height: "25vh",
-    lineNumbers: "on",
-}
+  height: '25vh',
+  lineNumbers: 'on'
+};
 const GlobalVarForm: React.FC<GlobalVarModalProps> = (props) => {
-    const {values, form} = props;
+  const { values, form } = props;
 
-    const [globalVarValue, setGlobalVarValue] = useState<string>(values.fragmentValue || '');
+  const [globalVarValue, setGlobalVarValue] = useState<string>(values.fragmentValue ?? '');
 
-    const handleGlobalVarChange = (value: string) => {
-        setGlobalVarValue(value);
-    }
+  const handleGlobalVarChange = (value: string) => {
+    setGlobalVarValue(value);
+  };
 
-    const globalVarRender = () => {
-        return (
-            <>
-                <ProFormText
-                    name="name"
-                    label={l('rc.gv.name')}
-                    placeholder={l('rc.gv.namePlaceholder')}
-                    rules={[{required: true, message: l('rc.gv.namePlaceholder')}]}
-                />
+  const globalVarRender = () => {
+    return (
+      <>
+        <ProFormText
+          name='name'
+          label={l('rc.gv.name')}
+          placeholder={l('rc.gv.namePlaceholder')}
+          rules={[{ required: true, message: l('rc.gv.namePlaceholder') }]}
+        />
 
-                <ProFormTextArea
-                    name="note"
-                    label={l('global.table.note')}
-                    placeholder={l('global.table.notePlaceholder')}
-                    allowClear
-                />
+        <ProFormTextArea
+          name='note'
+          label={l('global.table.note')}
+          placeholder={l('global.table.notePlaceholder')}
+          allowClear
+        />
 
-                <ProFormSwitch
-                    name="enabled"
-                    label={l('global.table.isEnable')}
-                    checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-                />
+        <ProFormSwitch
+          name='enabled'
+          label={l('global.table.isEnable')}
+          checkedChildren={l('button.enable')}
+          unCheckedChildren={l('button.disable')}
+        />
 
-                <ProFormItem
-                    name="fragmentValue"
-                    label={l('rc.gv.value')}
-                    rules={[{required: true, message: l('rc.gv.valuePlaceholder')}]}
-                >
-                    <CodeEdit
-                        onChange={(value => handleGlobalVarChange(value))}
-                        code={globalVarValue}
-                        language={"sql"}
-                        {...CodeEditProps}
-                    />
-                </ProFormItem>
-            </>
-        );
-    };
-
-    return <>
-        <ProForm
-            {...FORM_LAYOUT_PUBLIC}
-            layout={"horizontal"}
-            submitter={false}
-            form={form}
-            initialValues={values}
+        <ProFormItem
+          name='fragmentValue'
+          label={l('rc.gv.value')}
+          rules={[{ required: true, message: l('rc.gv.valuePlaceholder') }]}
         >
-            {globalVarRender()}
-        </ProForm>
+          <CodeEdit
+            onChange={(value) => handleGlobalVarChange(value ?? '')}
+            code={globalVarValue}
+            language={'sql'}
+            {...CodeEditProps}
+          />
+        </ProFormItem>
+      </>
+    );
+  };
+
+  return (
+    <>
+      <ProForm
+        {...FORM_LAYOUT_PUBLIC}
+        layout={'horizontal'}
+        submitter={false}
+        form={form}
+        initialValues={values}
+      >
+        {globalVarRender()}
+      </ProForm>
     </>
-}
+  );
+};
 
 export default GlobalVarForm;
