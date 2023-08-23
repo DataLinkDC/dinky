@@ -29,7 +29,7 @@ import {ChartData, MetricsLayout} from "@/pages/Metrics/Job/data";
 import FlinkChart from "@/pages/Metrics/Job/FlinkChart";
 import {FlinkMetricsData, JvmDataRecord, JVMMetric, MetricsDataType} from "@/pages/Metrics/Server/data";
 import {getSseData} from "@/services/api";
-import {API_CONSTANTS} from "@/services/constants";
+import { API_CONSTANTS } from '@/services/endpoints';
 import {queryDataByParams} from "@/services/BusinessCrud";
 import GlobalFilter from "@/pages/Metrics/Server/GlobalFilter";
 import {getSubMinTime} from "@/pages/Metrics/Server/function";

@@ -3,7 +3,7 @@ import {Button, message, Tabs, Transfer} from "antd";
 import {l} from "@/utils/intl";
 import {ModalForm, ProFormSelect} from "@ant-design/pro-components";
 import {JobProps, JobVertice} from "@/pages/DevOps/JobDetail/data";
-import {API_CONSTANTS} from "@/services/constants";
+import { API_CONSTANTS } from '@/services/endpoints';
 import {useRequest} from "@@/exports";
 import MonitorConfigTab
   from "@/pages/DevOps/JobDetail/JobMonitor/MonitorConfig/components/MonitorConfigTab/MonitorConfigTab";

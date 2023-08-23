@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Button, Transfer} from "antd";
 import {JobProps, JobVertice} from "@/pages/DevOps/JobDetail/data";
-import {API_CONSTANTS} from "@/services/constants";
+import { API_CONSTANTS } from '@/services/endpoints';
 import {useRequest} from "@@/exports";
 import {Jobs} from "@/types/DevOps/data";
 

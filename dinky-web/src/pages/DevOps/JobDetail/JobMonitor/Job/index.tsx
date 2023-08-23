@@ -22,7 +22,7 @@ import {ProCard, ProFormSelect} from "@ant-design/pro-components";
 import {Button, Input, Row} from "antd";
 import FlinkChart from "./components/FlinkChart";
 import {getData, getSseData} from "@/services/api";
-import {API_CONSTANTS} from "@/services/constants";
+import { API_CONSTANTS } from '@/services/endpoints';
 import {l} from "@/utils/intl";
 import {buildMetricsList, buildRunningJobList, buildSubTaskList} from "@/pages/Metrics/Job/function";
 import {ChartData, MetricsLayout, SubTask, Task} from "@/pages/Metrics/Job/data";
