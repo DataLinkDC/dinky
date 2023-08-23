@@ -17,94 +17,98 @@
  *
  */
 
-
-import {Card, Col, List, message, Modal, Row, Skeleton, Space, Tabs, Tag, Tooltip, Typography} from "antd";
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import React, {useState} from "react";
-import {useRequest} from "@@/exports";
-import {l} from "@/utils/intl";
-import {JobProps} from "@/pages/DevOps/JobDetail/data";
-import { removeById} from "@/services/api";
-import {TaskHistoryListItem} from "@/components/VersionList/data";
-import VersionList from "@/components/VersionList";
-import {API_CONSTANTS} from "@/services/endpoints";
-
+import CodeShow from '@/components/CustomEditor/CodeShow';
+import VersionList from '@/components/VersionList';
+import { TaskHistoryListItem } from '@/components/VersionList/data';
+import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import { removeById } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { l } from '@/utils/intl';
+import { useRequest } from '@@/exports';
+import { Card, Col, message, Modal, Row, Tag } from 'antd';
+import { useState } from 'react';
 
 const JobVersionTab = (props: JobProps) => {
+  const { jobDetail } = props;
+  const latestVersion: TaskHistoryListItem = {
+    type: jobDetail.history.type,
+    statement: jobDetail.history.statement,
+    createTime: jobDetail.history.startTime,
+    versionId: 'LATEST',
+    isLatest: true
+  };
 
-    const {jobDetail} = props;
-    const latestVersion: TaskHistoryListItem = {
-        type: jobDetail.history.type,
-        statement: jobDetail.history.statement,
-        createTime: jobDetail.history.startTime,
-        versionId: "LATEST",
-        isLatest: true
-    };
+  const [currentVersion, setCurrentVersion] = useState<TaskHistoryListItem>({ statement: '' });
 
-    const [currentVersion, setCurrentVersion] = useState<TaskHistoryListItem>({statement: ""})
-
-    const versionList = useRequest({
-        url: API_CONSTANTS.GET_JOB_VERSION,
-        params: {taskId: jobDetail.history.taskId},
-    }, {
-        onSuccess: (data: TaskHistoryListItem[], params) => {
-            data.splice(0, 0, latestVersion)
-        }
-    });
-
-    const deleteVersion = (item: TaskHistoryListItem) => {
-        Modal.confirm({
-            title: l('devops.jobinfo.version.delete'),
-            content: l('devops.jobinfo.version.delete.sure', '', {version: item.versionId}),
-            okText: l('button.confirm'),
-            cancelText: l('button.cancel'),
-            onOk: async () => {
-                const result = await removeById(API_CONSTANTS.GET_JOB_VERSION, {versionId: item.id});
-                if (result) {
-                    message.success("Delete Success");
-                } else {
-                    message.error("Delete faile");
-                }
-                versionList.run()
-            }
-        });
+  const versionList = useRequest(
+    {
+      url: API_CONSTANTS.GET_JOB_VERSION,
+      params: { taskId: jobDetail.history.taskId }
+    },
+    {
+      onSuccess: (data: TaskHistoryListItem[], params) => {
+        data.splice(0, 0, latestVersion);
+      }
     }
+  );
 
-    const renderVersionList = () => {
-        return (
-            <Row>
-                <Col span={3}>
-                    <VersionList
-                        loading={versionList.loading}
-                        data={versionList.data}
-                        onDeleteListen={deleteVersion}
-                        onSelectListen={(item) => setCurrentVersion(item)}
-                        header={l('devops.jobinfo.version.versionList')}
-                    />
-                </Col>
-                <Col span={21}>
-                    <Card title={"V" + currentVersion?.versionId} bordered={false}
-                          extra={<>
-                              <Tag key={"v-type"} color="blue">{currentVersion?.type}</Tag>
-                              <Tag key={"v-dialect"} color="yellow">{currentVersion?.dialect}</Tag>
-                          </>}>
-                        <CodeShow
-                            code={currentVersion?.statement}
-                            height={500}
-                            language={"sql"}
-                        />
-                    </Card>
-                </Col>
-            </Row>
-        );
-    };
+  const deleteVersion = (item: TaskHistoryListItem) => {
+    Modal.confirm({
+      title: l('devops.jobinfo.version.delete'),
+      content: l('devops.jobinfo.version.delete.sure', '', { version: item.versionId }),
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
+      onOk: async () => {
+        const result = await removeById(API_CONSTANTS.GET_JOB_VERSION, { versionId: item.id });
+        if (result) {
+          message.success('Delete Success');
+        } else {
+          message.error('Delete faile');
+        }
+        versionList.run();
+      }
+    });
+  };
 
+  const renderVersionList = () => {
+    return (
+      <Row>
+        <Col span={3}>
+          <VersionList
+            loading={versionList.loading}
+            data={versionList.data}
+            onDeleteListen={deleteVersion}
+            onSelectListen={(item) => setCurrentVersion(item)}
+            header={l('devops.jobinfo.version.versionList')}
+          />
+        </Col>
+        <Col span={21}>
+          <Card
+            title={'V' + currentVersion?.versionId}
+            bordered={false}
+            extra={
+              <>
+                <Tag key={'v-type'} color='blue'>
+                  {currentVersion?.type}
+                </Tag>
+                <Tag key={'v-dialect'} color='yellow'>
+                  {currentVersion?.dialect}
+                </Tag>
+              </>
+            }
+          >
+            <CodeShow code={currentVersion?.statement} height={500} language={'sql'} />
+          </Card>
+        </Col>
+      </Row>
+    );
+  };
 
-    return <>
-        <Card>
-            {renderVersionList()}
-        </Card>
+  return (
+    <>
+      <Card>{renderVersionList()}</Card>
     </>
+  );
 };
 
 export default JobVersionTab;

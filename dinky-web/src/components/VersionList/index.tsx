@@ -16,77 +16,84 @@
  *
  */
 
-import React from 'react';
-import {List,  Skeleton, Space, Tag, Tooltip} from 'antd';
-import {l} from "@/utils/intl";
-import {DeleteOutlined, DeliveredProcedureOutlined} from "@ant-design/icons";
-import {ListItemTypeProps} from "antd/es/list/Item";
-import {TaskHistoryListItem} from "@/components/VersionList/data";
+import { TaskHistoryListItem } from '@/components/VersionList/data';
+import { l } from '@/utils/intl';
+import { DeleteOutlined, DeliveredProcedureOutlined } from '@ant-design/icons';
+import { List, Skeleton, Space, Tag, Tooltip } from 'antd';
+import { ListItemTypeProps } from 'antd/es/list/Item';
 
 export interface VersionListProps {
-    data: TaskHistoryListItem[];
-    onSelectListen?: (value: TaskHistoryListItem) => void
-    onDeleteListen?: (value: TaskHistoryListItem) => void
-    onRollBackListen?: (value: TaskHistoryListItem) => void
-    loading?: boolean
-    header?: string
-    options?: ListItemTypeProps
+  data: TaskHistoryListItem[];
+  onSelectListen?: (value: TaskHistoryListItem) => void;
+  onDeleteListen?: (value: TaskHistoryListItem) => void;
+  onRollBackListen?: (value: TaskHistoryListItem) => void;
+  loading?: boolean;
+  header?: string;
+  options?: ListItemTypeProps;
 }
 
 const VersionList = (props: VersionListProps) => {
-    const {
-        data,
-        onSelectListen = () => {
-        },
-        onDeleteListen,
-        onRollBackListen,
-        loading,
-        header,
-        options
-    } = props;
+  const {
+    data,
+    onSelectListen = () => {},
+    onDeleteListen,
+    onRollBackListen,
+    loading,
+    header,
+    options
+  } = props;
 
-    const renderItem = (item: TaskHistoryListItem) => {
-        return (
-            <List.Item onClick={() => onSelectListen(item)}>
-                <Skeleton title={false} loading={loading} active>
-                    <List.Item.Meta
-                        title={
-                            <a>{!item.isLatest ? `V${item.versionId}` :
-                                <Tag key={"v-latest"} color="green">{l('devops.jobinfo.version.latestVersion')}</Tag>
-                            }</a>}
-                        description={item.createTime}
-                    />
-                    {!item.isLatest &&
-                        <Space>
-                            {onRollBackListen &&
-                                <Tooltip title={l('devops.jobinfo.version.rollBack')}>
-                                    <DeliveredProcedureOutlined onClick={() => onRollBackListen(item)}/>
-                                </Tooltip>}
-                            {onDeleteListen &&
-                                <Tooltip title={l("devops.jobinfo.version.delete")}>
-                                    <DeleteOutlined onClick={() => onDeleteListen(item)}/>
-                                </Tooltip>}
-                        </Space>}
-                </Skeleton>
-            </List.Item>
-        )
-    }
+  const renderItem = (item: TaskHistoryListItem) => {
     return (
-        <List
-            {...options}
-            pagination={{
-                position: "bottom",
-                align: "end",
-                size: "small",
-                defaultPageSize: 8
-            }}
-            size={"small"}
-            header={header}
-            dataSource={data}
-            renderItem={(item: TaskHistoryListItem) => renderItem(item)}
-        >
-        </List>
+      <List.Item onClick={() => onSelectListen(item)}>
+        <Skeleton title={false} loading={loading} active>
+          <List.Item.Meta
+            title={
+              <a>
+                {!item.isLatest ? (
+                  `V${item.versionId}`
+                ) : (
+                  <Tag key={'v-latest'} color='green'>
+                    {l('devops.jobinfo.version.latestVersion')}
+                  </Tag>
+                )}
+              </a>
+            }
+            description={item.createTime}
+          />
+          {!item.isLatest && (
+            <Space>
+              {onRollBackListen && (
+                <Tooltip title={l('devops.jobinfo.version.rollBack')}>
+                  <DeliveredProcedureOutlined onClick={() => onRollBackListen(item)} />
+                </Tooltip>
+              )}
+              {onDeleteListen && (
+                <Tooltip title={l('devops.jobinfo.version.delete')}>
+                  <DeleteOutlined onClick={() => onDeleteListen(item)} />
+                </Tooltip>
+              )}
+            </Space>
+          )}
+        </Skeleton>
+      </List.Item>
     );
+  };
+  return (
+    <List
+      {...options}
+      pagination={{
+        position: 'bottom',
+        align: 'end',
+        size: 'small',
+        defaultPageSize: 8
+      }}
+      size={'small'}
+      header={header}
+      dataSource={data}
+      renderItem={(item: TaskHistoryListItem) => renderItem(item)}
+    ></List>
+  );
 };
 
 export default VersionList;

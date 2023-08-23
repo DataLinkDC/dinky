@@ -17,13 +17,13 @@
  */
 
 export type TaskHistoryListItem = {
-    id?: number,
-    taskId?: number,
-    name?: string,
-    dialect?: string,
-    type?: string,
-    statement: string,
-    versionId?: string,
-    createTime?: string,
-    isLatest?: boolean
-}
+  id?: number;
+  taskId?: number;
+  name?: string;
+  dialect?: string;
+  type?: string;
+  statement: string;
+  versionId?: string;
+  createTime?: string;
+  isLatest?: boolean;
+};
