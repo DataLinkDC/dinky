@@ -92,10 +92,11 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteGroupById(Integer id) {
-        if (removeById(id)) {
-            alertHistoryService.deleteByAlertGroupId(id);
-            return true;
-        }
-        return false;
+        alertHistoryService.list().forEach(alertHistory -> {
+            if (alertHistory.getAlertGroupId().equals(id)) {
+                alertHistoryService.removeById(alertHistory.getId());
+            }
+        });
+             return removeById(id);
     }
 }
