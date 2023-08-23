@@ -170,18 +170,17 @@ const DataStudio = (props: any) => {
     const params = currentTab.params;
     const res = await getTaskDetails(params.taskId);
 
-    const changed = Object.keys(params.taskData).some(
-        (key) => {
-          // ignore this property
-          if (['updateTime', 'createTime', 'jobInstanceId'].includes(key)) {
-            return false;
-          }
+    const changed = Object.keys(params.taskData).some((key) => {
+      // ignore this property
+      if (['updateTime', 'createTime', 'jobInstanceId'].includes(key)) {
+        return false;
+      }
 
-          if(JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])){
-            console.log('key', key, res[key], params.taskData[key])
-            return true;
-          }
-        });
+      if (JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])) {
+        console.log('key', key, res[key], params.taskData[key]);
+        return true;
+      }
+    });
 
     if (changed) {
       setIsModalUpdateTabContentOpen(true);
