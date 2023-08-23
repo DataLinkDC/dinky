@@ -46,8 +46,8 @@ import {
 } from '@ant-design/pro-components';
 import { Badge, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import { debounce } from 'lodash';
 import { connect } from 'umi';
-import {debounce} from "lodash";
 
 const { Text } = Typography;
 

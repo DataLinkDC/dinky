@@ -11,7 +11,7 @@ export async function getJobPlan(title: string, params: any) {
 }
 export async function executeSql(title: string, params: TaskDataType) {
   // TODO: temp process
-  params.configJson = params.configJson[0]
+  params.configJson = params.configJson[0];
   return handleOption('/api/studio/executeSql', title, params);
 }
 export function offLineTask(title: string, id: number, type: string) {
