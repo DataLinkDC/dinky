@@ -97,6 +97,6 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
                 alertHistoryService.removeById(alertHistory.getId());
             }
         });
-             return removeById(id);
+        return removeById(id);
     }
 }
