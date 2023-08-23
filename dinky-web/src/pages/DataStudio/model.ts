@@ -3,7 +3,7 @@ import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import { createModelTypes } from '@/utils/modals';
+import { createModelTypes } from '@/utils/modelUtils';
 import { Effect, Reducer } from '@@/plugin-dva/types';
 import { editor } from 'monaco-editor';
 import React from 'react';
