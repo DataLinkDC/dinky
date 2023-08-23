@@ -18,7 +18,11 @@
  */
 
 import { SAVE_POINT_TYPE } from '@/pages/DataStudio/constants';
-import { getCurrentData } from '@/pages/DataStudio/function';
+import {
+  getCurrentData,
+  getCurrentTab,
+  isDataStudioTabsItemType
+} from '@/pages/DataStudio/function';
 import { SessionType, StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import {
   buildAlertGroupOptions,
@@ -58,6 +62,8 @@ const JobConfig = (props: any) => {
   } = props;
 
   const current = getCurrentData(panes, activeKey);
+  if (!current) return;
+
   const currentSession: SessionType = {
     connectors: [],
     sessionConfig: {
@@ -68,15 +74,16 @@ const JobConfig = (props: any) => {
   const [form] = useForm();
   form.setFieldsValue(current);
 
-  const onValuesChange = (change: any, all: any) => {
-    for (let i = 0; i < panes.length; i++) {
-      if (panes[i].key === activeKey) {
-        for (let key in change) {
-          panes[i].params.taskData[key] = all[key];
-        }
-        break;
-      }
+  const onValuesChange = (change: { [key in string]: string }, all: any) => {
+    const pane = getCurrentTab(panes, activeKey);
+    if (!isDataStudioTabsItemType(pane)) {
+      return;
     }
+
+    Object.keys(change).forEach((key) => {
+      pane.params.taskData[key] = change[key];
+    });
+
     dispatch({
       type: STUDIO_MODEL.saveTabs,
       payload: { ...props.tabs }
@@ -119,7 +126,7 @@ const JobConfig = (props: any) => {
           current.type === RUN_MODE.STANDALONE) && (
           <>
             {currentSession.session ? (
-              currentSession.sessionConfig && currentSession.sessionConfig.clusterId ? (
+              currentSession.sessionConfig?.clusterId ? (
                 <>
                   <Badge status='success' />
                   <Text type='success'>{currentSession.sessionConfig.clusterName}</Text>

@@ -24,7 +24,8 @@ import {
   MetadataTabsItemType,
   STUDIO_MODEL,
   TabsItemType,
-  TabsPageType
+  TabsPageType,
+  TaskDataType
 } from '@/pages/DataStudio/model';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { Dispatch } from '@@/plugin-dva/types';
@@ -146,9 +147,9 @@ export function getCurrentTab(
 }
 
 export const getCurrentData = (
-  panes: DataStudioTabsItemType[],
+  panes: TabsItemType[],
   activeKey: string
-): Record<string, any> | undefined => {
+): TaskDataType | undefined => {
   const item = getCurrentTab(panes, activeKey);
   if (isDataStudioTabsItemType(item)) {
     return item.params.taskData;

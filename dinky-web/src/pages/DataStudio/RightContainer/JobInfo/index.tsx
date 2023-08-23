@@ -17,7 +17,11 @@
  *
  */
 
-import { getCurrentData } from '@/pages/DataStudio/function';
+import {
+  getCurrentData,
+  getCurrentTab,
+  isDataStudioTabsItemType
+} from '@/pages/DataStudio/function';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
 import { Col, Descriptions, Form, Row } from 'antd';
@@ -32,17 +36,19 @@ const JobInfo = (props: any) => {
     tabs: { panes, activeKey }
   } = props;
   const current = getCurrentData(panes, activeKey);
+
   const [form] = useForm();
   form.setFieldsValue(current);
   const onValuesChange = (change: any, all: any) => {
-    for (let i = 0; i < panes.length; i++) {
-      if (panes[i].key === activeKey) {
-        for (const key in change) {
-          panes[i].params.taskData[key] = all[key];
-        }
-        break;
-      }
+    const pane = getCurrentTab(panes, activeKey);
+    if (!isDataStudioTabsItemType(pane)) {
+      return;
     }
+
+    Object.keys(change).forEach((key) => {
+      pane.params.taskData[key] = change[key];
+    });
+
     dispatch({
       type: STUDIO_MODEL.saveTabs,
       payload: { ...props.tabs }
@@ -53,22 +59,22 @@ const JobInfo = (props: any) => {
     <div style={{ paddingInline: 8 }}>
       <Descriptions bordered size='small' column={1}>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.id')}>
-          <Paragraph copyable>{current.id}</Paragraph>
+          <Paragraph copyable>{current?.id}</Paragraph>
         </Descriptions.Item>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.name')}>
-          {current.name}
+          {current?.name}
         </Descriptions.Item>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.dialect')}>
-          {current.dialect}
+          {current?.dialect}
         </Descriptions.Item>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.versionId')}>
-          {current.versionId}
+          {current?.versionId}
         </Descriptions.Item>
         <Descriptions.Item label={l('global.table.createTime')}>
-          {current.createTime}
+          {current?.createTime}
         </Descriptions.Item>
         <Descriptions.Item label={l('global.table.updateTime')}>
-          {current.updateTime}
+          {current?.updateTime}
         </Descriptions.Item>
       </Descriptions>
       <Form

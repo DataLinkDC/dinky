@@ -68,27 +68,25 @@ const SavepointTable = (props: JobProps) => {
   ];
 
   return (
-    <>
-      <ProTable<SavePoint>
-        columns={columns}
-        style={{ width: '100%' }}
-        request={(params, sorter, filter) =>
-          queryList(API_CONSTANTS.GET_SAVEPOINTS, {
-            ...params,
-            sorter,
-            filter: { taskId: [jobDetail?.instance.taskId] }
-          })
-        }
-        actionRef={actionRef}
-        toolBarRender={false}
-        rowKey='id'
-        pagination={{
-          pageSize: 10
-        }}
-        search={false}
-        size='small'
-      />
-    </>
+    <ProTable<SavePoint>
+      columns={columns}
+      style={{ width: '100%' }}
+      request={(params, sorter, filter) =>
+        queryList(API_CONSTANTS.GET_SAVEPOINTS, {
+          ...params,
+          sorter,
+          filter: { taskId: [jobDetail?.instance.taskId] }
+        })
+      }
+      actionRef={actionRef}
+      toolBarRender={false}
+      rowKey='id'
+      pagination={{
+        pageSize: 10
+      }}
+      search={false}
+      size='small'
+    />
   );
 };
 

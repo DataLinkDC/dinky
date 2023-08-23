@@ -70,9 +70,9 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
    */
   const getBranchList = async () => {
     const values = form.getFieldsValue();
-    await getDataByParams(API_CONSTANTS.GIT_BRANCH, { ...values }).then((result: any) =>
-      setBranches(result)
-    );
+    await getDataByParams(API_CONSTANTS.GIT_BRANCH, { ...values }).then((result: any) => {
+      setBranches(result);
+    });
   };
 
   /**

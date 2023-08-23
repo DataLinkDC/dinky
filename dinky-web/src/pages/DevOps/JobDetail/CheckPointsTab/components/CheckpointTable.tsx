@@ -174,24 +174,22 @@ const CheckpointTable = (props: JobProps) => {
   ];
 
   return (
-    <>
-      <ProTable<CheckPointsDetailInfo>
-        columns={columns}
-        style={{ width: '100%' }}
-        dataSource={checkpoints?.history}
-        onDataSourceChange={(_) => actionRef.current?.reload()}
-        actionRef={actionRef}
-        rowKey='id'
-        pagination={{
-          defaultPageSize: 10,
-          showSizeChanger: true
-        }}
-        toolBarRender={false}
-        dateFormatter='string'
-        search={false}
-        size='small'
-      />
-    </>
+    <ProTable<CheckPointsDetailInfo>
+      columns={columns}
+      style={{ width: '100%' }}
+      dataSource={checkpoints?.history}
+      onDataSourceChange={(_) => actionRef.current?.reload()}
+      actionRef={actionRef}
+      rowKey='id'
+      pagination={{
+        defaultPageSize: 10,
+        showSizeChanger: true
+      }}
+      toolBarRender={false}
+      dateFormatter='string'
+      search={false}
+      size='small'
+    />
   );
 };
 

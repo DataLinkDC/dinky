@@ -22,10 +22,13 @@ package org.dinky.controller;
 import org.dinky.data.result.Result;
 import org.dinky.service.WatchTableService;
 
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,22 +37,21 @@ import lombok.AllArgsConstructor;
 @RestController
 @Api(tags = "Watch Table Controller")
 @AllArgsConstructor
-@RequestMapping("api")
+@RequestMapping("/api")
 public class WatchTableController {
 
     private final WatchTableService watchTableService;
 
-    @PutMapping("/subscribe/watch")
+    @GetMapping(value = "/subscribe/watch", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ApiOperation("Subscribe watch table")
-    public Result subscribe(@RequestParam Integer id, @RequestParam String table) {
-        String destination = watchTableService.registerListenEntry(id, table);
-        return Result.succeed(destination);
+    public SseEmitter subscribe(@RequestParam String table) {
+        return watchTableService.registerListenEntry(table);
     }
 
     @PutMapping("/unSubscribe/watch")
     @ApiOperation("UnSubscribe watch table")
-    public Result unsubscribe(@RequestParam Integer id, @RequestParam String table) {
-        watchTableService.unRegisterListenEntry(id, table);
+    public Result<Void> unsubscribe(@RequestParam String table) {
+        watchTableService.unRegisterListenEntry(table);
         return Result.succeed();
     }
 }

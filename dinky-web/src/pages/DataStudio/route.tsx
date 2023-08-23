@@ -20,6 +20,7 @@
 import { CircleButtonProps } from '@/components/CallBackButton/CircleBtn';
 import Console from '@/pages/DataStudio/BottomContainer/Console';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
+import TableData from '@/pages/DataStudio/BottomContainer/TableData';
 import MetaData from '@/pages/DataStudio/LeftContainer/MetaData';
 import Project from '@/pages/DataStudio/LeftContainer/Project';
 import { TabsPageSubType, TabsPageType } from '@/pages/DataStudio/model';
@@ -148,7 +149,8 @@ export const LeftBottomSide = [
   {
     key: 'menu.datastudio.table-data',
     icon: <TableOutlined />,
-    label: l('menu.datastudio.table-data')
+    label: l('menu.datastudio.table-data'),
+    children: <TableData />
   },
   {
     key: 'menu.datastudio.tool',

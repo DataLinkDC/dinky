@@ -54,18 +54,16 @@ const JobManagerLogsTab = (props: JobProps) => {
   };
 
   return (
-    <>
-      <ProCard>
-        <Tabs
-          size={'small'}
-          items={[
-            { label: 'Log', key: 'LOG', children: getLog(log) },
-            { label: 'Std Out', key: 'STDOUT', children: getLog(stdout) },
-            { label: 'Thread Dump', key: 'DUMP', children: getLog(dump) }
-          ]}
-        />
-      </ProCard>
-    </>
+    <ProCard>
+      <Tabs
+        size={'small'}
+        items={[
+          { label: 'Log', key: 'LOG', children: getLog(log) },
+          { label: 'Std Out', key: 'STDOUT', children: getLog(stdout) },
+          { label: 'Thread Dump', key: 'DUMP', children: getLog(dump) }
+        ]}
+      />
+    </ProCard>
   );
 };
 

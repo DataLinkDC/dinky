@@ -1009,11 +1009,11 @@ export default {
 
   'pages.datastudio.editor.execute.warn':
     '该任务执行模式为【{type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交',
-  'pages.datastudio.editor.submiting': '新任务【{jobName}】正在执行',
+  'pages.datastudio.editor.submitting': '新任务【{jobName}】正在执行',
   'pages.datastudio.editor.exec.success': '执行成功',
   'pages.datastudio.editor.exec.error': '任务【{jobName}】执行失败',
   'pages.datastudio.editor.async.submit': '异步提交作业',
-  'pages.datastudio.editor.async.submiting': '任务【{jobName}】正在异步提交',
+  'pages.datastudio.editor.async.submitting': '任务【{jobName}】正在异步提交',
   'pages.datastudio.editor.async.submitConfirm':
     '确定异步提交作业【{jobName}】到其配置的集群吗？请确认您的作业是否已经被保存！',
   'pages.datastudio.editor.async.success': '异步提交成功',
