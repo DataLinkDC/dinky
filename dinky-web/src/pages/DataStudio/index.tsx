@@ -318,8 +318,8 @@ const DataStudio = (props: any) => {
               mode='inline'
               style={{
                 height: '100%',
-                borderInlineStart: '1px solid ' + themeValue.borderColor,
-                borderBlockStart: '1px solid ' + themeValue.borderColor
+                borderInlineStart: `1px solid ${themeValue.borderColor}`,
+                borderBlockStart: `1px solid ${themeValue.borderColor}`
               }}
               items={RightSide.filter((x) => {
                 if (!x.isShow) {

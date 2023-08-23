@@ -27,7 +27,6 @@ import { DefaultOptionType } from 'antd/es/select';
 
 /**
  * build job run model
- * @returns {DefaultOptionType[]}
  */
 export const buildRunModelOptions = () => {
   let resultReturn: DefaultOptionType[] = [];
@@ -71,8 +70,6 @@ export const buildRunModelOptions = () => {
 
 /**
  * build cluster options
- * @param {Cluster.Instance[]} sessionCluster
- * @returns {any[]}
  */
 export const buildClusterOptions = (sessionCluster: Cluster.Instance[]) => {
   const sessionClusterOptions: DefaultOptionType[] = [];
@@ -95,9 +92,6 @@ export const buildClusterOptions = (sessionCluster: Cluster.Instance[]) => {
 
 /**
  *  build cluster config options
- * @param current
- * @param {Cluster.Config[]} clusterConfiguration
- * @returns {any[]}
  */
 export const buildClusterConfigOptions = (current: any, clusterConfiguration: Cluster.Config[]) => {
   const clusterConfigOptions: DefaultOptionType[] = [];
@@ -122,8 +116,6 @@ export const buildClusterConfigOptions = (current: any, clusterConfiguration: Cl
 
 /**
  * build env options
- * @param {any[]} env
- * @returns {JSX.Element[]}
  */
 export const buildEnvOptions = (env: any[]) => {
   const envList: DefaultOptionType[] = [
@@ -154,8 +146,6 @@ export const buildEnvOptions = (env: any[]) => {
 
 /**
  * build job alert groups
- * @param {Alert.AlertGroup[]} alertGroups
- * @returns {JSX.Element[]}
  */
 export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
   const alertGroupOptions: DefaultOptionType[] = [
