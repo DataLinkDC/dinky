@@ -1,12 +1,13 @@
 {
-  "name": "Dinky",
-  "version": "6.0.0",
-  "private": true,
+  "name": "dinky-web",
+  "version": "1.0.0",
+  "license": "Apache License 2.0",
   "description": "Dinky is an out of the box one-stop real-time computing platform dedicated to the construction and practice of Unified Batch & Streaming and Unified Data Lake & Data Warehouse. Based on Apache Flink, Dinky provides the ability to connect many big data frameworks including OLAP and Data Lake.",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 max build",
     "build": "max build",
     "deploy": "npm run build && npm run gh-pages",
+    "install" : "npm install --registry=https://registry.npm.taobao.org --force",
     "dev": "npm run start:dev",
     "postinstall": "max setup",
     "lint": "npm run lint:js && npm run lint:prettier && npm run tsc",
