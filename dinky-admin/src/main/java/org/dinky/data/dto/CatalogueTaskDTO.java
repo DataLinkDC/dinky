@@ -19,12 +19,10 @@
 
 package org.dinky.data.dto;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.dinky.data.model.TaskExtConfig;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.dinky.data.model.TaskExtConfig;
 
 /**
  * CatalogueTaskDTO

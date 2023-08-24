@@ -19,16 +19,19 @@
 
 package org.dinky.data.typehandler;
 
+import org.dinky.data.model.TaskExtConfig;
 
-import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.extension.handlers.AbstractJsonTypeHandler;
-import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
-import org.dinky.data.model.TaskExtConfig;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.baomidou.mybatisplus.extension.handlers.AbstractJsonTypeHandler;
+import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+
+import cn.hutool.json.JSONUtil;
 
 @MappedTypes({TaskExtConfig.class})
 @MappedJdbcTypes({JdbcType.VARCHAR})

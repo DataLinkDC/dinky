@@ -19,17 +19,13 @@
 
 package org.dinky.data.model;
 
-import cn.hutool.json.JSONUtil;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.StringTypeHandler;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
-
 import org.dinky.data.typehandler.TaskExtConfigTypeHandler;
 import org.dinky.job.JobConfig;
 import org.dinky.mybatis.model.SuperEntity;
+
+import org.apache.ibatis.type.JdbcType;
 
 import java.util.List;
 import java.util.Map;
@@ -108,7 +104,6 @@ public class Task extends SuperEntity<Task> {
     @TableField(typeHandler = TaskExtConfigTypeHandler.class, jdbcType = JdbcType.VARCHAR)
     private TaskExtConfig configJson;
 
-
     @TableField(exist = false)
     private String path;
 
@@ -132,7 +127,8 @@ public class Task extends SuperEntity<Task> {
 
         List<ConfigItem> extCustomConfig = this.configJson.getCustomConfig();
 
-        Map<String, String> parsedConfig = extCustomConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue));
+        Map<String, String> parsedConfig =
+                extCustomConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue));
 
         int jid = Asserts.isNull(jarId) ? 0 : jarId;
         boolean fg = Asserts.isNotNull(fragment) && fragment;
@@ -164,7 +160,7 @@ public class Task extends SuperEntity<Task> {
      * @param key
      * @return String
      */
-    public String findCustomConfigKeyOfValue(String key ) {
+    public String findCustomConfigKeyOfValue(String key) {
         return this.configJson.containsKey(key) ? this.configJson.getCustomConfigValue(key) : null;
     }
 
@@ -173,10 +169,9 @@ public class Task extends SuperEntity<Task> {
      * @param key
      * @return
      */
-    public boolean hasCustomConfigKey(String key ) {
+    public boolean hasCustomConfigKey(String key) {
         return this.configJson.containsKey(key);
     }
-
 
     public JsonNode parseJsonNode(ObjectMapper mapper) {
         ObjectNode jsonNode = mapper.createObjectNode();

@@ -47,8 +47,8 @@ import {
 import { Badge, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
+import { useEffect } from 'react';
 import { connect } from 'umi';
-import {useEffect} from "react";
 
 const { Text } = Typography;
 
@@ -183,7 +183,8 @@ const JobConfig = (props: any) => {
           label={l('pages.datastudio.label.jobConfig.flinksql.env')}
           tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
           options={buildEnvOptions(env)}
-          showSearch initialValue={0}
+          showSearch
+          initialValue={0}
         />
 
         <ProFormGroup>
@@ -257,7 +258,7 @@ const JobConfig = (props: any) => {
         <ProFormList
           label={l('pages.datastudio.label.jobConfig.other')}
           tooltip={l('pages.datastudio.label.jobConfig.other.tip')}
-          name={['configJson','customConfig']}
+          name={['configJson', 'customConfig']}
           copyIconProps={false}
           creatorButtonProps={{
             style: { width: '100%' },

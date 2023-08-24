@@ -17,7 +17,7 @@
  *
  */
 
-import {List} from "antd";
+import { List } from 'antd';
 
 export type Catalogue = {
   id: number;
@@ -38,18 +38,17 @@ export type TaskUdfConfig = {
   templateId: number;
   selectKeys: List<string | number>;
   className: string;
-}
+};
 
 export type ConfigItem = {
-    key: string;
-    value: string;
-}
+  key: string;
+  value: string;
+};
 
 export type TaskExtConfig = {
-  udfConfig: TaskUdfConfig,
-  customConfig: List<Map<string,object>>
-}
-
+  udfConfig: TaskUdfConfig;
+  customConfig: List<Map<string, object>>;
+};
 
 export type Task = {
   id: number;

@@ -359,7 +359,7 @@ const Model: ModelType = {
     }
   },
   effects: {
-    * queryProject({ payload }, { call, put }) {
+    *queryProject({ payload }, { call, put }) {
       const response: [] = yield call(getTaskData, payload);
       yield put({
         type: 'saveProject',
