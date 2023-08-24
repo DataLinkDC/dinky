@@ -62,15 +62,11 @@ public class TaskExtConfig implements Serializable {
     }
 
     // 获取自定义配置的所有key-value
-    public List<Map<String, Object>> getCustomConfigMaps() {
+    public Map<String, String> getCustomConfigMaps() {
         if (customConfig == null) {
             return null;
         }
-        return customConfig.stream().map(item -> {
-            Map<String, Object> map = new java.util.HashMap<>();
-            map.put(item.getKey(), item.getValue());
-            return map;
-        }).collect(Collectors.toList());
+        return customConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue));
     }
 
     // 是否包含某个key

@@ -67,13 +67,11 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
     private Integer savePointStrategy;
     private String savePointPath;
     private TaskExtConfig configJson ;
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     public JobConfig getJobConfig() {
 
-        List<ConfigItem> extCustomConfig = this.configJson.getCustomConfig();
+        Map<String, String> parsedConfig = this.configJson.getCustomConfigMaps();
 
-        Map<String, String> parsedConfig = extCustomConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue));
         return new JobConfig(
                 type,
                 useResult,
