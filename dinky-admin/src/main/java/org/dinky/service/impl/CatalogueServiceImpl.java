@@ -46,7 +46,6 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -134,8 +133,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 for (Catalogue children : childList) {
                     recursionBuildCatalogueAndChildren(list, children);
                 }
-            }else {
-                if (tChild.getIsLeaf() || null != tChild.getTaskId() ) {
+            } else {
+                if (tChild.getIsLeaf() || null != tChild.getTaskId()) {
                     Task task = taskService.getById(tChild.getTaskId());
                     if (task != null) {
                         tChild.setTask(task);
@@ -427,8 +426,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             List<JobInstance> jobInstanceList = jobInstanceService.list(
                     new LambdaQueryWrapper<JobInstance>().eq(JobInstance::getTaskId, catalogue.getTaskId()));
             //  获取 history 表中的作业
-            List<History> historyList =
-                    historyService.list(new LambdaQueryWrapper<History>().eq(History::getTaskId, catalogue.getTaskId()));
+            List<History> historyList = historyService.list(
+                    new LambdaQueryWrapper<History>().eq(History::getTaskId, catalogue.getTaskId()));
             historyList.forEach(history -> {
                 // 查询 job history 表中的作业 通过 id 关联查询
                 JobHistory historyServiceById = jobHistoryService.getById(history.getId());
@@ -442,11 +441,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 jobInstanceService.removeById(jobInstance.getId());
             });
             // 删除 task 表中的作业
-            if (task != null){
+            if (task != null) {
                 taskService.removeById(task.getId());
             }
             // 删除 statement 表中的作业
-            if (statement != null){
+            if (statement != null) {
                 statementService.removeById(statement.getId());
             }
         }

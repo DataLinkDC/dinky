@@ -196,7 +196,11 @@ const Project: React.FC = (props: connect) => {
 
     if (rightActiveKey === 'createTask' || rightActiveKey === 'edit') {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_TASK_URL;
-      options.parentId = modalAllVisible.isCreateTask ? modalAllVisible.value.id : modalAllVisible.isEdit ? modalAllVisible.value.parentId : options.parentId;
+      options.parentId = modalAllVisible.isCreateTask
+        ? modalAllVisible.value.id
+        : modalAllVisible.isEdit
+        ? modalAllVisible.value.parentId
+        : options.parentId;
     } else {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL;
     }

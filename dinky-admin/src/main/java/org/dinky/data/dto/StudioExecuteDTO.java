@@ -19,14 +19,13 @@
 
 package org.dinky.data.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.dinky.data.model.ConfigItem;
 import org.dinky.data.model.TaskExtConfig;
 import org.dinky.job.JobConfig;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -66,14 +65,15 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
     private Integer parallelism;
     private Integer savePointStrategy;
     private String savePointPath;
-    private TaskExtConfig configJson ;
+    private TaskExtConfig configJson;
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public JobConfig getJobConfig() {
 
         List<ConfigItem> extCustomConfig = this.configJson.getCustomConfig();
 
-        Map<String, String> parsedConfig = extCustomConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue));
+        Map<String, String> parsedConfig =
+                extCustomConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue));
         return new JobConfig(
                 type,
                 useResult,

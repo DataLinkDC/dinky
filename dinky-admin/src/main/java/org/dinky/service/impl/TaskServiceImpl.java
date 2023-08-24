@@ -63,7 +63,6 @@ import org.dinky.data.model.Statement;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.TaskExtConfig;
-import org.dinky.data.model.TaskUdfConfig;
 import org.dinky.data.model.TaskVersion;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.data.result.Result;
@@ -155,8 +154,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
@@ -454,12 +451,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             TaskExtConfig taskConfigJson = task.getConfigJson();
 
             if (BeanUtil.isNotEmpty(task.getConfigJson())
-                    && Asserts.isNullString(task.getStatement()) && BeanUtil.isNotEmpty(taskConfigJson.getUdfConfig())){
+                    && Asserts.isNullString(task.getStatement())
+                    && BeanUtil.isNotEmpty(taskConfigJson.getUdfConfig())) {
 
-                UDFTemplate template = udfTemplateService.getById(taskConfigJson.getUdfConfig().getTemplateId());
+                UDFTemplate template =
+                        udfTemplateService.getById(taskConfigJson.getUdfConfig().getTemplateId());
                 if (template != null) {
                     String code = UDFUtil.templateParse(
-                            task.getDialect(), template.getTemplateCode(), taskConfigJson.getUdfConfig().getClassName());
+                            task.getDialect(),
+                            template.getTemplateCode(),
+                            taskConfigJson.getUdfConfig().getClassName());
                     task.setStatement(code);
                 }
             }
