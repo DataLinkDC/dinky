@@ -69,11 +69,6 @@ public class Knife4jConfig {
     @Bean(value = "defaultApi2")
     public Docket defaultApi2() {
 
-        //        OpenApiExtendSetting openApiExtendSetting = new OpenApiExtendSetting();
-        //        openApiExtendSetting.setEnableFooter(false);
-        //        openApiExtendSetting.setEnableFooterCustom(true);
-        //        openApiExtendSetting.setFooterCustomContent("Apache License 2.0 | Copyright © 2023 Dinky, Inc.
-        // DataLinkDC. [鲁ICP备20001630号-2](https://beian.miit.gov.cn)");
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
