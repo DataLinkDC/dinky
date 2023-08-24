@@ -63,9 +63,9 @@ export default () => {
   // });
 
   const queryClusterConfigList = async () => {
-    await queryList(API_CONSTANTS.CLUSTER_CONFIGURATION).then((res) => {
-      setClusterConfigState((prevState) => ({ ...prevState, configList: res.data }));
-    });
+    queryList(API_CONSTANTS.CLUSTER_CONFIGURATION).then((res) =>
+      setClusterConfigState((prevState) => ({ ...prevState, configList: res.data }))
+    );
   };
 
   useEffect(() => {
