@@ -152,9 +152,9 @@ sa-token:
 #################################################################################################################
 knife4j:
   enable: true
-#
-#Dinky:
-#  version: @project.version@
+
+Dinky:
+  version: @project.version@
 sms:
   is-print: false
 
