@@ -7,7 +7,6 @@
     "analyze": "cross-env ANALYZE=1 max build",
     "build": "max build",
     "deploy": "npm run build && npm run gh-pages",
-    "install" : "npm install --registry=https://registry.npm.taobao.org --force",
     "dev": "npm run start:dev",
     "postinstall": "max setup",
     "lint": "npm run lint:js && npm run lint:prettier && npm run tsc",
