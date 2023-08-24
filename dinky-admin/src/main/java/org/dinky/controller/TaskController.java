@@ -73,7 +73,7 @@ public class TaskController {
     @PutMapping
     @ApiOperation("Insert Or Update Task")
     @Log(title = "Insert Or Update Task", businessType = BusinessType.INSERT_OR_UPDATE)
-    public Result<Void> saveOrUpdateTask(@RequestBody Task task) throws Exception {
+    public Result<Void> saveOrUpdateTask(@RequestBody Task task) {
         if (taskService.saveOrUpdateTask(task)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {

@@ -48,6 +48,7 @@ import { Badge, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
 import { connect } from 'umi';
+import {useEffect} from "react";
 
 const { Text } = Typography;
 
@@ -73,7 +74,10 @@ const JobConfig = (props: any) => {
     }
   };
   const [form] = useForm();
-  form.setFieldsValue(current);
+
+  useEffect(() => {
+    form.setFieldsValue(current);
+  }, [current]);
 
   const onValuesChange = (change: { [key in string]: string }, all: any) => {
     const pane = getCurrentTab(panes, activeKey);
@@ -179,7 +183,7 @@ const JobConfig = (props: any) => {
           label={l('pages.datastudio.label.jobConfig.flinksql.env')}
           tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
           options={buildEnvOptions(env)}
-          showSearch
+          showSearch initialValue={0}
         />
 
         <ProFormGroup>
@@ -229,6 +233,7 @@ const JobConfig = (props: any) => {
           name='savePointStrategy'
           tooltip={l('pages.datastudio.label.jobConfig.savePointStrategy.tip')}
           options={SAVE_POINT_TYPE}
+          initialValue={0}
         />
 
         {current.savePointStrategy === 3 && (
@@ -252,7 +257,7 @@ const JobConfig = (props: any) => {
         <ProFormList
           label={l('pages.datastudio.label.jobConfig.other')}
           tooltip={l('pages.datastudio.label.jobConfig.other.tip')}
-          name={'configJson'}
+          name={['configJson','customConfig']}
           copyIconProps={false}
           creatorButtonProps={{
             style: { width: '100%' },

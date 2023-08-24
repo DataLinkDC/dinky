@@ -24,10 +24,13 @@ import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
-import { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import {ModalForm, ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components';
 import { ProFormCascader } from '@ant-design/pro-form/lib';
 import { Form } from 'antd';
 import React, { useEffect } from 'react';
+import {connect} from "@@/exports";
+import {StateType} from "@/pages/DataStudio/model";
+import {AlertStateType} from "@/pages/RegCenter/Alert/AlertInstance/model";
 
 type JobModalProps = {
   onCancel: () => void;
@@ -55,8 +58,9 @@ const JobModal: React.FC<JobModalProps> = (props) => {
    * when modalVisible or values changed, set form values
    */
   useEffect(() => {
+    const newValues = {...values,configJson: values.task?.configJson};
     if (modalVisible) form.resetFields();
-    form.setFieldsValue(values);
+    form.setFieldsValue(newValues);
   }, [open, values, form]);
 
   const queryUdfTemplate = async () => {
@@ -69,7 +73,6 @@ const JobModal: React.FC<JobModalProps> = (props) => {
   };
 
   useEffect(() => {
-    form.setFieldValue('configJson', {});
     isUDF(jobType) && queryUdfTemplate();
   }, [jobType, form]);
 
@@ -96,9 +99,8 @@ const JobModal: React.FC<JobModalProps> = (props) => {
   const submitForm = async (formData: Catalogue) => {
     await form.validateFields();
     if (isUDF(formData.type) && formData.configJson) {
-      // todo: 有个 bug 接口入参载荷正常, 但是接口获取的 configJson 提示无法
-      const { templateId } = formData.configJson;
-      formData.configJson.templateId = (templateId as any[]).sort((a, b) => a - b).pop();
+      const { selectKeys } = formData.configJson.udfConfig;
+      formData.configJson.udfConfig.templateId = selectKeys[selectKeys.length - 1];
     }
     onSubmit({ ...values, ...formData } as Catalogue);
   };
@@ -122,10 +124,16 @@ const JobModal: React.FC<JobModalProps> = (props) => {
           placeholder={l('catalog.name.placeholder')}
           rules={[{ required: true, message: l('catalog.name.placeholder') }]}
         />
+        <ProFormTextArea
+            name='note'
+            label={l('catalog.note')}
+            placeholder={l('catalog.note.placeholder')}
+            rules={[{ required: true, message: l('catalog.note.placeholder') }]}
+        />
         {isUDF(jobType) && (
           <>
             <ProFormCascader
-              name={['configJson', 'templateId']}
+              name={['configJson','udfConfig', "selectKeys"]}
               label={l('catalog.udf.templateId')}
               shouldUpdate={(prevValues, curValues) => prevValues.type !== curValues.type}
               placeholder={l('catalog.udf.templateId.placeholder')}
@@ -142,7 +150,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
             />
 
             <ProFormText
-              name={['configJson', 'className']}
+              name={['configJson','udfConfig', 'className']}
               label={l('catalog.udf.className')}
               placeholder={l('catalog.udf.className.placeholder')}
               rules={[
@@ -182,4 +190,6 @@ const JobModal: React.FC<JobModalProps> = (props) => {
   );
 };
 
+
 export default JobModal;
+

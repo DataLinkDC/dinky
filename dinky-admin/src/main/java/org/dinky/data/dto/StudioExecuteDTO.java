@@ -19,6 +19,10 @@
 
 package org.dinky.data.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import org.dinky.data.model.ConfigItem;
+import org.dinky.data.model.TaskExtConfig;
 import org.dinky.job.JobConfig;
 
 import java.util.HashMap;
@@ -62,10 +66,14 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
     private Integer parallelism;
     private Integer savePointStrategy;
     private String savePointPath;
-    private Map<String, String> configJson = new HashMap<>();
+    private TaskExtConfig configJson ;
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public JobConfig getJobConfig() {
+
+        List<ConfigItem> extCustomConfig = this.configJson.getCustomConfig();
+
+        Map<String, String> parsedConfig = extCustomConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue));
         return new JobConfig(
                 type,
                 useResult,
@@ -87,7 +95,7 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
                 savePointStrategy,
                 savePointPath,
                 getVariables(),
-                configJson);
+                parsedConfig);
     }
 
     public Integer getTaskId() {

@@ -61,8 +61,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 @Import(BeanValidatorPluginsConfiguration.class)
 public class Knife4jConfig {
 
-    @Value("${dinky.version}")
-    private String dinkyVersion;
+//    @Value("${dinky.version}")
+    private String dinkyVersion = "1.0.0";
 
     private final OpenApiExtensionResolver openApiExtensionResolver;
 

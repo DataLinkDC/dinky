@@ -1166,6 +1166,8 @@ export default {
 
   'catalog.name': 'Job Name',
   'catalog.name.placeholder': 'Please enter the job name',
+  'catalog.note': 'Job Description',
+    'catalog.note.placeholder': 'Please enter the job description',
   'catalog.name.tip':
     'This name can be used as the JobName of the FlinkSql task (pipeline.name configuration item)',
   'catalog.type': 'Job Type',

@@ -19,9 +19,15 @@
 
 package org.dinky.data.model;
 
+import cn.hutool.json.JSONUtil;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.StringTypeHandler;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
-import org.dinky.data.typehandler.ListTypeHandler;
+
+import org.dinky.data.typehandler.TaskExtConfigTypeHandler;
 import org.dinky.job.JobConfig;
 import org.dinky.mybatis.model.SuperEntity;
 
@@ -99,8 +105,9 @@ public class Task extends SuperEntity<Task> {
     @TableField(exist = false)
     private List<Savepoints> savePoints;
 
-    @TableField(typeHandler = ListTypeHandler.class)
-    private List<Map<String, String>> configJson;
+    @TableField(typeHandler = TaskExtConfigTypeHandler.class, jdbcType = JdbcType.VARCHAR)
+    private TaskExtConfig configJson;
+
 
     @TableField(exist = false)
     private String path;
@@ -122,9 +129,10 @@ public class Task extends SuperEntity<Task> {
 
     public JobConfig buildSubmitConfig() {
         boolean useRemote = clusterId != null && clusterId != 0;
-        Map<String, String> map = configJson.stream()
-                .filter(Asserts::isNotNull)
-                .collect(Collectors.toMap(item -> item.get("name"), item -> item.get("value"), (a, b) -> b));
+
+        List<ConfigItem> extCustomConfig = this.configJson.getCustomConfig();
+
+        Map<String, String> parsedConfig = extCustomConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue));
 
         int jid = Asserts.isNull(jarId) ? 0 : jarId;
         boolean fg = Asserts.isNotNull(fragment) && fragment;
@@ -147,9 +155,28 @@ public class Task extends SuperEntity<Task> {
                 parallelism,
                 savePointStrategy,
                 savePointPath,
-                map,
+                parsedConfig,
                 isJarTask());
     }
+
+    /**
+     * 根据key获取自定义配置的值
+     * @param key
+     * @return String
+     */
+    public String findCustomConfigKeyOfValue(String key ) {
+        return this.configJson.containsKey(key) ? this.configJson.getCustomConfigValue(key) : null;
+    }
+
+    /**
+     * 判断是否有自定义配置
+     * @param key
+     * @return
+     */
+    public boolean hasCustomConfigKey(String key ) {
+        return this.configJson.containsKey(key);
+    }
+
 
     public JsonNode parseJsonNode(ObjectMapper mapper) {
         ObjectNode jsonNode = mapper.createObjectNode();

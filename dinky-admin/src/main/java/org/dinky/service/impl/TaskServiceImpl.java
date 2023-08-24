@@ -62,6 +62,8 @@ import org.dinky.data.model.Savepoints;
 import org.dinky.data.model.Statement;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
+import org.dinky.data.model.TaskExtConfig;
+import org.dinky.data.model.TaskUdfConfig;
 import org.dinky.data.model.TaskVersion;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.data.result.Result;
@@ -448,14 +450,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public boolean saveOrUpdateTask(Task task) {
         if (Dialect.isUDF(task.getDialect())) {
-            if (CollUtil.isNotEmpty(task.getConfigJson())
-                    && Asserts.isNullString(task.getStatement())
-                    && Convert.toInt(task.getConfigJson().get(0).get("templateId"), 0) != 0) {
-                Map<String, String> config = task.getConfigJson().get(0);
-                UDFTemplate template = udfTemplateService.getById(config.get("templateId"));
+
+            TaskExtConfig taskConfigJson = task.getConfigJson();
+
+            if (BeanUtil.isNotEmpty(task.getConfigJson())
+                    && Asserts.isNullString(task.getStatement()) && BeanUtil.isNotEmpty(taskConfigJson.getUdfConfig())){
+
+                UDFTemplate template = udfTemplateService.getById(taskConfigJson.getUdfConfig().getTemplateId());
                 if (template != null) {
                     String code = UDFUtil.templateParse(
-                            task.getDialect(), template.getTemplateCode(), config.get("className"));
+                            task.getDialect(), template.getTemplateCode(), taskConfigJson.getUdfConfig().getClassName());
                     task.setStatement(code);
                 }
             }
