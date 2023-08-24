@@ -39,46 +39,25 @@ public class TaskExtConfig implements Serializable {
 
     // 获取自定义配置的某个key的值
     public String getCustomConfigValue(String key) {
-        if (customConfig == null) {
-            return null;
-        }
-        if (!containsKey(key)) {
-            return null;
-        }
-        for (ConfigItem item : customConfig) {
-            if (item.getKey().equals(key)) {
-                return item.getValue();
-            }
-        }
-        return null;
+        return customConfig.stream()
+                .filter(item -> item.getKey().equals(key))
+                .findFirst()
+                .get()
+                .getValue();
     }
 
     // 获取自定义配置的所有key
     public List<String> getCustomConfigKeys() {
-        if (customConfig == null) {
-            return null;
-        }
         return customConfig.stream().map(ConfigItem::getKey).collect(Collectors.toList());
     }
 
     // 获取自定义配置的所有key-value
     public Map<String, String> getCustomConfigMaps() {
-        if (customConfig == null) {
-            return null;
-        }
         return customConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue));
     }
 
     // 是否包含某个key
     public boolean containsKey(String key) {
-        if (customConfig == null) {
-            return false;
-        }
-        for (ConfigItem item : customConfig) {
-            if (item.getKey().equals(key)) {
-                return true;
-            }
-        }
-        return false;
+        return customConfig.stream().anyMatch(item -> item.getKey().equals(key));
     }
 }
