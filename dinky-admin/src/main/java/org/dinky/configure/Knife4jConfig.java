@@ -69,7 +69,6 @@ public class Knife4jConfig {
     @Bean(value = "defaultApi2")
     public Docket defaultApi2() {
 
-
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .groupName(dinkyVersion)
