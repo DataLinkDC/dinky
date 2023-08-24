@@ -132,15 +132,15 @@ const JobConfig = (props: any) => {
           <>
             {currentSession.session ? (
               currentSession.sessionConfig?.clusterId ? (
-                <>
+                <Space>
                   <Badge status='success' />
                   <Text type='success'>{currentSession.sessionConfig.clusterName}</Text>
-                </>
+                </Space>
               ) : (
-                <>
+                <Space>
                   <Badge status='error' />
                   <Text type='danger'>{l('pages.devops.jobinfo.localenv')}</Text>
-                </>
+                </Space>
               )
             ) : (
               <>
@@ -254,7 +254,6 @@ const JobConfig = (props: any) => {
           options={buildAlertGroupOptions(group)}
         />
 
-        {/*todo 这里需要优化，有有异常抛出*/}
         <ProFormList
           label={l('pages.datastudio.label.jobConfig.other')}
           tooltip={l('pages.datastudio.label.jobConfig.other.tip')}
@@ -271,6 +270,13 @@ const JobConfig = (props: any) => {
                 name='key'
                 placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}
               />
+              {/*todo: 通过接口拿到预设配置渲染下拉框 */}
+              {/*<ProFormSelect*/}
+              {/*  name='key'*/}
+              {/*  mode={'single'} allowClear={false}*/}
+              {/*  placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}*/}
+              {/*  options={[{ label: 'String', value: 'String' }, { label: 'Int', value: 'Int' }]}*/}
+              {/*/>*/}
               <ProFormText
                 name='value'
                 placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}
