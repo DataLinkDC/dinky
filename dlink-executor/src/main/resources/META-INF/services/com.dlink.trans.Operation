@@ -1,0 +1,6 @@
+com.dlink.trans.ddl.AddJarOperation
+com.dlink.trans.ddl.CreateAggTableOperation
+com.dlink.trans.ddl.CreateCDCSourceOperation
+com.dlink.trans.ddl.SetOperation
+com.dlink.trans.ddl.ShowFragmentOperation
+com.dlink.trans.ddl.ShowFragmentsOperation

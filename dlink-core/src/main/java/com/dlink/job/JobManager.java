@@ -617,6 +617,19 @@ public class JobManager {
         config.addGatewayConfig(executor.getSetConfig());
 
         if (runMode.isApplicationMode()) {
+
+            /*
+             * In setups with dynamic classloading, you may see an exception in the style com.foo.X cannot be cast to
+             * com.foo.X. This means that multiple versions of the class com.foo.X have been loaded by different class
+             * loaders, and types of that class are attempted to be assigned to each other.
+             * 
+             * One common reason is that a library is not compatible with Flink’s inverted classloading approach. You
+             * can turn off inverted classloading to verify this (set classloader.resolve-order: parent-first in the
+             * Flink config) or exclude the library from inverted classloading (set
+             * classloader.parent-first-patterns-additional in the Flink config).
+             */
+            config.getGatewayConfig().getFlinkConfig().getConfiguration()
+                    .put(CoreOptions.CLASSLOADER_RESOLVE_ORDER.key(), "parent-first");
             // Application mode need to submit dlink-app.jar that in the hdfs or image.
             gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
         } else {
