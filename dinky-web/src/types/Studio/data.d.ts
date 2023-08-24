@@ -17,6 +17,8 @@
  *
  */
 
+import { List } from 'antd';
+
 export type Catalogue = {
   id: number;
   name: string;
@@ -28,8 +30,24 @@ export type Catalogue = {
   createTime: Date;
   updateTime: Date;
   children: Catalogue[];
-  configJson: Object<string, object>;
+  configJson: TaskExtConfig;
   task: Task;
+};
+
+export type TaskUdfConfig = {
+  templateId: number;
+  selectKeys: List<string | number>;
+  className: string;
+};
+
+export type ConfigItem = {
+  key: string;
+  value: string;
+};
+
+export type TaskExtConfig = {
+  udfConfig: TaskUdfConfig;
+  customConfig: List<Map<string, object>>;
 };
 
 export type Task = {
@@ -58,7 +76,7 @@ export type Task = {
   statement: string;
   clusterName: string;
   savePoints: SavePoint[];
-  configJson: Object<string, object>;
+  configJson: TaskExtConfig;
   path: string;
   jarName: string;
   clusterConfigurationName: string;

@@ -17,80 +17,51 @@
  *
  */
 
-import {
-  getCurrentData,
-  getCurrentTab,
-  isDataStudioTabsItemType
-} from '@/pages/DataStudio/function';
-import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
+import { getCurrentData } from '@/pages/DataStudio/function';
+import { StateType, TaskDataType } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
-import { Col, Descriptions, Form, Row } from 'antd';
-import { useForm } from 'antd/es/form/Form';
-import TextArea from 'antd/es/input/TextArea';
+import { Descriptions } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { useEffect, useState } from 'react';
 import { connect } from 'umi';
 
 const JobInfo = (props: any) => {
   const {
-    dispatch,
     tabs: { panes, activeKey }
   } = props;
-  const current = getCurrentData(panes, activeKey);
 
-  const [form] = useForm();
-  form.setFieldsValue(current);
-  const onValuesChange = (change: any, all: any) => {
-    const pane = getCurrentTab(panes, activeKey);
-    if (!isDataStudioTabsItemType(pane)) {
-      return;
-    }
+  const [currentInfo, setCurrentInfo] = useState<Partial<TaskDataType>>(
+    getCurrentData(panes, activeKey) ?? {}
+  );
 
-    Object.keys(change).forEach((key) => {
-      pane.params.taskData[key] = all[key];
-    });
-
-    dispatch({
-      type: STUDIO_MODEL.saveTabs,
-      payload: { ...props.tabs }
-    });
-  };
+  useEffect(() => {
+    setCurrentInfo({ ...currentInfo, ...getCurrentData(panes, activeKey) });
+  }, [activeKey, panes]);
 
   return (
     <div style={{ paddingInline: 8 }}>
       <Descriptions bordered size='small' column={1}>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.id')}>
-          <Paragraph copyable>{current?.id}</Paragraph>
+          <Paragraph copyable>{currentInfo?.id}</Paragraph>
         </Descriptions.Item>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.name')}>
-          {current?.name}
+          {currentInfo?.name}
         </Descriptions.Item>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.dialect')}>
-          {current?.dialect}
+          {currentInfo?.dialect}
         </Descriptions.Item>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.versionId')}>
-          {current?.versionId}
+          {currentInfo?.versionId}
         </Descriptions.Item>
         <Descriptions.Item label={l('global.table.createTime')}>
-          {current?.createTime}
+          {currentInfo?.createTime}
         </Descriptions.Item>
         <Descriptions.Item label={l('global.table.updateTime')}>
-          {current?.updateTime}
+          {currentInfo?.updateTime}
         </Descriptions.Item>
+
+        <Descriptions.Item label={l('global.table.note')}>{currentInfo?.note}</Descriptions.Item>
       </Descriptions>
-      <Form
-        layout='vertical'
-        form={form}
-        // className={styles.form_setting}
-        onValuesChange={onValuesChange}
-      >
-        <Row>
-          <Col span={24}>
-            <Form.Item label={l('global.table.note')} name='note'>
-              <TextArea rows={4} maxLength={255} />
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form>
     </div>
   );
 };

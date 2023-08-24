@@ -24,7 +24,11 @@ import { DefaultOptionType } from 'rc-select/es/Select';
  * Cluster config type
  */
 export const CLUSTER_CONFIG_TYPE: DefaultOptionType[] = [
-  { value: ClusterType.YARN, label: 'Flink On Yarn', key: ClusterType.YARN },
+  {
+    value: ClusterType.YARN,
+    label: 'Flink On Yarn',
+    key: ClusterType.YARN
+  },
   {
     value: ClusterType.KUBERNETES_NATIVE,
     label: 'Kubernetes Native',

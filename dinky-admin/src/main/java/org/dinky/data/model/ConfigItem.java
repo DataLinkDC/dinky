@@ -17,30 +17,20 @@
  *
  */
 
-package org.dinky.data.dto;
+package org.dinky.data.model;
 
-import org.dinky.data.model.TaskExtConfig;
+import java.io.Serializable;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/**
- * CatalogueTaskDTO
- *
- * @since 2021/6/1 20:16
- */
-@Getter
-@Setter
-public class CatalogueTaskDTO {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ConfigItem implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    private Integer id;
-    private Integer tenantId;
-    private Integer parentId;
-    private Integer taskId;
-    private boolean isLeaf;
-    private String name;
-    private String type;
-    private String dialect;
-    private String note;
-    private TaskExtConfig configJson;
+    private String key;
+    private String value;
 }

@@ -27,6 +27,7 @@ import { DataAction } from '@/components/StyledComponents';
 import { imgStyle } from '@/pages/Home/constants';
 import ConfigurationModal from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal';
 import { CLUSTER_CONFIG_TYPE } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
+import { queryList } from '@/services/api';
 import {
   handleAddOrUpdate,
   handleOption,
@@ -42,10 +43,9 @@ import { ClusterConfigState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
-import { useRequest } from '@umijs/max';
 import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default () => {
   /**
@@ -56,11 +56,21 @@ export default () => {
 
   const actionRef = useRef<ActionType>();
 
-  const { data, run } = useRequest({
-    url: API_CONSTANTS.CLUSTER_CONFIGURATION,
-    method: 'POST',
-    data: {}
-  });
+  // const { data, run  } = useRequest({
+  //   url: API_CONSTANTS.CLUSTER_CONFIGURATION,
+  //   method: 'POST',
+  //   data: {}
+  // });
+
+  const queryClusterConfigList = async () => {
+    queryList(API_CONSTANTS.CLUSTER_CONFIGURATION).then((res) =>
+      setClusterConfigState((prevState) => ({ ...prevState, configList: res.data }))
+    );
+  };
+
+  useEffect(() => {
+    queryClusterConfigList();
+  }, []);
 
   /**
    * execute and callback function
@@ -70,7 +80,7 @@ export default () => {
   const executeAndCallbackRefresh = async (callback: () => void) => {
     setClusterConfigState((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    await run();
+    await queryClusterConfigList();
     setClusterConfigState((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
@@ -225,13 +235,16 @@ export default () => {
   /**
    * render data list
    */
-  const renderData = data?.map((item: Cluster.Config) => ({
-    subTitle: renderDataSubTitle(item),
-    actions: <DataAction>{renderDataActionButton(item)}</DataAction>,
-    avatar: <ClusterConfigIcon style={imgStyle} />,
-    content: renderDataContent(item),
-    key: item.id
-  }));
+  const renderData = (list: Cluster.Config[]) =>
+    list.map((item: Cluster.Config) => {
+      return {
+        subTitle: renderDataSubTitle(item),
+        actions: <DataAction>{renderDataActionButton(item)}</DataAction>,
+        avatar: <ClusterConfigIcon style={imgStyle} />,
+        content: renderDataContent(item),
+        key: item.id
+      };
+    });
 
   /**
    * tool bar render
@@ -255,7 +268,7 @@ export default () => {
         actionRef={actionRef}
         headerTitle={l('rc.cc.management')}
         toolBarRender={toolBarRender}
-        dataSource={renderData}
+        dataSource={renderData(clusterConfigState.configList)}
       />
 
       {/*added*/}

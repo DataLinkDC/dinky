@@ -47,6 +47,7 @@ import {
 import { Badge, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
+import { useEffect } from 'react';
 import { connect } from 'umi';
 
 const { Text } = Typography;
@@ -73,7 +74,10 @@ const JobConfig = (props: any) => {
     }
   };
   const [form] = useForm();
-  form.setFieldsValue(current);
+
+  useEffect(() => {
+    form.setFieldsValue(current);
+  }, [current]);
 
   const onValuesChange = (change: { [key in string]: string }, all: any) => {
     const pane = getCurrentTab(panes, activeKey);
@@ -128,15 +132,15 @@ const JobConfig = (props: any) => {
           <>
             {currentSession.session ? (
               currentSession.sessionConfig?.clusterId ? (
-                <>
+                <Space>
                   <Badge status='success' />
                   <Text type='success'>{currentSession.sessionConfig.clusterName}</Text>
-                </>
+                </Space>
               ) : (
-                <>
+                <Space>
                   <Badge status='error' />
                   <Text type='danger'>{l('pages.devops.jobinfo.localenv')}</Text>
-                </>
+                </Space>
               )
             ) : (
               <>
@@ -180,6 +184,7 @@ const JobConfig = (props: any) => {
           tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
           options={buildEnvOptions(env)}
           showSearch
+          initialValue={0}
         />
 
         <ProFormGroup>
@@ -229,6 +234,7 @@ const JobConfig = (props: any) => {
           name='savePointStrategy'
           tooltip={l('pages.datastudio.label.jobConfig.savePointStrategy.tip')}
           options={SAVE_POINT_TYPE}
+          initialValue={0}
         />
 
         {current.savePointStrategy === 3 && (
@@ -248,11 +254,10 @@ const JobConfig = (props: any) => {
           options={buildAlertGroupOptions(group)}
         />
 
-        {/*todo 这里需要优化，有有异常抛出*/}
         <ProFormList
           label={l('pages.datastudio.label.jobConfig.other')}
           tooltip={l('pages.datastudio.label.jobConfig.other.tip')}
-          name={'configJson'}
+          name={['configJson', 'customConfig']}
           copyIconProps={false}
           creatorButtonProps={{
             style: { width: '100%' },
@@ -265,6 +270,13 @@ const JobConfig = (props: any) => {
                 name='key'
                 placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}
               />
+              {/*todo: 通过接口拿到预设配置渲染下拉框 */}
+              {/*<ProFormSelect*/}
+              {/*  name='key'*/}
+              {/*  mode={'single'} allowClear={false}*/}
+              {/*  placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}*/}
+              {/*  options={[{ label: 'String', value: 'String' }, { label: 'Int', value: 'Int' }]}*/}
+              {/*/>*/}
               <ProFormText
                 name='value'
                 placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}

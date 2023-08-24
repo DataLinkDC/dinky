@@ -46,7 +46,6 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -106,11 +105,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
         List<Catalogue> returnList = new ArrayList<>();
         for (Iterator<Catalogue> iterator = catalogueList.iterator(); iterator.hasNext(); ) {
-            Catalogue menu = iterator.next();
-            //  get all child menu of parent menu id , the -1 is root menu
-            if (menu.getParentId() == 0) {
-                recursionBuildCatalogueAndChildren(catalogueList, menu);
-                returnList.add(menu);
+            Catalogue catalogue = iterator.next();
+            //  get all child catalogue of parent catalogue id , the 0 is root catalogue
+            if (catalogue.getParentId() == 0) {
+                recursionBuildCatalogueAndChildren(catalogueList, catalogue);
+                returnList.add(catalogue);
             }
         }
         if (returnList.isEmpty()) {
@@ -131,14 +130,15 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         for (Catalogue tChild : childList) {
             if (hasChild(list, tChild)) {
                 // Determine whether there are child nodes
-                for (Catalogue n : childList) {
-                    if (n.getIsLeaf()) {
-                        Task task = taskService.getById(n.getTaskId());
-                        if (task != null) {
-                            n.setTask(task);
-                        }
+                for (Catalogue children : childList) {
+                    recursionBuildCatalogueAndChildren(list, children);
+                }
+            } else {
+                if (tChild.getIsLeaf() || null != tChild.getTaskId()) {
+                    Task task = taskService.getById(tChild.getTaskId());
+                    if (task != null) {
+                        tChild.setTask(task);
                     }
-                    recursionBuildCatalogueAndChildren(list, n);
                 }
             }
         }
@@ -147,11 +147,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     /**
      * Determine whether there are child nodes
      * @param list
-     * @param menu
+     * @param catalogue
      * @return
      */
-    private boolean hasChild(List<Catalogue> list, Catalogue menu) {
-        return getChildList(list, menu).size() > 0;
+    private boolean hasChild(List<Catalogue> list, Catalogue catalogue) {
+        return getChildList(list, catalogue).size() > 0;
     }
 
     /**
@@ -191,7 +191,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }
         task.setName(catalogueTaskDTO.getName());
         task.setDialect(catalogueTaskDTO.getType());
-        task.setConfigJson(Collections.singletonList(catalogueTaskDTO.getConfig()));
+        task.setConfigJson(catalogueTaskDTO.getConfigJson());
+        task.setNote(catalogueTaskDTO.getNote());
         taskService.saveOrUpdateTask(task);
 
         catalogue.setTenantId(catalogueTaskDTO.getTenantId());
@@ -413,41 +414,44 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }
         // 获取 catalogue 表中的作业
         Catalogue catalogue = getById(catalogueId);
-        // 如果是文件夹 , 且下边没有子文件夹 , 则删除
-        if (catalogue.getIsLeaf()) {
-            return removeById(catalogueId)
-                    ? Result.succeed(Status.DELETE_SUCCESS)
-                    : Result.failed(Status.DELETE_FAILED);
+
+        // 判断书否为空 且 是否为叶子节点
+        if (BeanUtil.isNotEmpty(catalogue) && catalogue.getIsLeaf()) {
+            // doing: cascade delete jobInstance && jobHistory && history && statement
+            // 获取 task 表中的作业
+            Task task = taskService.getById(catalogue.getTaskId());
+            // 获取 statement 表中的作业
+            Statement statement = statementService.getById(catalogue.getTaskId());
+            // 获取 job instance 表中的作业
+            List<JobInstance> jobInstanceList = jobInstanceService.list(
+                    new LambdaQueryWrapper<JobInstance>().eq(JobInstance::getTaskId, catalogue.getTaskId()));
+            //  获取 history 表中的作业
+            List<History> historyList = historyService.list(
+                    new LambdaQueryWrapper<History>().eq(History::getTaskId, catalogue.getTaskId()));
+            historyList.forEach(history -> {
+                // 查询 job history 表中的作业 通过 id 关联查询
+                JobHistory historyServiceById = jobHistoryService.getById(history.getId());
+                // 删除 job history 表中的作业
+                jobHistoryService.removeById(historyServiceById.getId());
+                // 删除 history 表中的作业
+                historyService.removeById(history.getId());
+            });
+            jobInstanceList.forEach(jobInstance -> {
+                // 删除 job instance 表中的作业
+                jobInstanceService.removeById(jobInstance.getId());
+            });
+            // 删除 task 表中的作业
+            if (task != null) {
+                taskService.removeById(task.getId());
+            }
+            // 删除 statement 表中的作业
+            if (statement != null) {
+                statementService.removeById(statement.getId());
+            }
         }
-        // doing: cascade delete jobInstance && jobHistory && history && statement
-        // 获取 task 表中的作业
-        Task task = taskService.getById(catalogue.getTaskId());
-        // 获取 statement 表中的作业
-        Statement statement = statementService.getById(catalogue.getTaskId());
-        // 获取 job instance 表中的作业
-        List<JobInstance> jobInstanceList = jobInstanceService.list(
-                new LambdaQueryWrapper<JobInstance>().eq(JobInstance::getTaskId, catalogue.getTaskId()));
-        //  获取 history 表中的作业
-        List<History> historyList =
-                historyService.list(new LambdaQueryWrapper<History>().eq(History::getTaskId, catalogue.getTaskId()));
-        historyList.forEach(history -> {
-            // 查询 job history 表中的作业 通过 id 关联查询
-            JobHistory historyServiceById = jobHistoryService.getById(history.getId());
-            // 删除 job history 表中的作业
-            jobHistoryService.removeById(historyServiceById.getId());
-            // 删除 history 表中的作业
-            historyService.removeById(history.getId());
-        });
-        jobInstanceList.forEach(jobInstance -> {
-            // 删除 job instance 表中的作业
-            jobInstanceService.removeById(jobInstance.getId());
-        });
-        // 删除 task 表中的作业
-        taskService.removeById(task.getId());
-        // 删除 statement 表中的作业
-        statementService.removeById(statement.getId());
-        removeById(catalogueId);
-        return Result.succeed(Status.DELETE_SUCCESS);
+
+        // 如果是文件夹 , 且下边没有子文件夹 , 则删除
+        return Result.succeed(removeById(catalogueId) ? Status.DELETE_SUCCESS : Status.DELETE_FAILED);
     }
 
     /**

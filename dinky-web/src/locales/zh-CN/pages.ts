@@ -1129,6 +1129,8 @@ export default {
 
   'catalog.name': '作业名称',
   'catalog.name.placeholder': '请输入作业名称',
+  'catalog.note': '作业描述',
+  'catalog.note.placeholder': '请输入作业描述',
   'catalog.name.tip': '此名称可作为 FlinkSql 任务的 JobName ([配置项: pipeline.name])',
   'catalog.type': '作业类型',
   'catalog.type.placeholder': '请选择作业类型',
