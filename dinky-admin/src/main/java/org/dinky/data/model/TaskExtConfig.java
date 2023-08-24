@@ -42,7 +42,7 @@ public class TaskExtConfig implements Serializable {
         return customConfig.stream()
                 .filter(item -> item.getKey().equals(key))
                 .findFirst()
-                .get()
+                .orElseGet(() -> new ConfigItem(key, ""))
                 .getValue();
     }
 
