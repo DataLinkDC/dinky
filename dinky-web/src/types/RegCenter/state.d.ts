@@ -50,6 +50,7 @@ export interface AlertInstanceState extends BaseState {
  */
 export interface ClusterConfigState extends BaseState {
   value: Partial<Cluster.Config>;
+  configList: Cluster.Config[];
 }
 
 /**

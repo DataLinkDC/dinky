@@ -37,8 +37,8 @@ import {
 export const InitAlertGroupState: AlertGroupState = {
   alertGroupList: [],
   loading: false,
-  addedAlertGroupOpen: false,
-  editAlertGroupOpen: false,
+  addedOpen: false,
+  editOpen: false,
   value: {}
 };
 
@@ -49,8 +49,8 @@ export const InitAlertGroupState: AlertGroupState = {
 export const InitAlertInstanceState: AlertInstanceState = {
   alertInstanceList: [],
   loading: false,
-  addedAlertInstanceOpen: false,
-  editAlertInstanceOpen: false,
+  addedOpen: false,
+  editOpen: false,
   value: {}
 };
 
@@ -60,9 +60,10 @@ export const InitAlertInstanceState: AlertInstanceState = {
  */
 export const InitClusterConfigState: ClusterConfigState = {
   loading: false,
-  addedClusterConfigOpen: false,
-  editClusterConfigOpen: false,
-  value: {}
+  addedOpen: false,
+  editOpen: false,
+  value: {},
+  configList: []
 };
 
 /**
@@ -71,8 +72,8 @@ export const InitClusterConfigState: ClusterConfigState = {
  */
 export const InitClusterInstanceState: ClusterInstanceState = {
   loading: false,
-  addedClusterInstanceOpen: false,
-  editClusterInstanceOpen: false,
+  addedOpen: false,
+  editOpen: false,
   value: {}
 };
 
@@ -82,8 +83,8 @@ export const InitClusterInstanceState: ClusterInstanceState = {
  */
 export const InitDocumentState: DocumentState = {
   loading: false,
-  addedDocumentOpen: false,
-  editDocumentOpen: false,
+  addedOpen: false,
+  editOpen: false,
   value: {},
   drawerOpen: false
 };
