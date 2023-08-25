@@ -154,6 +154,10 @@ export default {
   'devops.jobinfo.ck.recovery.failed': '恢复作业失败',
   'devops.jobinfo.ck.recovery.recoveryTo': '此处恢复',
 
+  'devops.jobinfo.metrics.configMetrics': '任务监控配置',
+  'devops.jobinfo.metrics.metricsItems': '监控项列表',
+  'devops.jobinfo.metrics.selected': '已选择',
+
   'devops.baseinfo.taskid': '任务ID',
   'devops.baseinfo.name': '任务名称',
   'devops.baseinfo.status': '状态',

@@ -67,6 +67,7 @@ import lombok.RequiredArgsConstructor;
 public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> implements MonitorService {
     private final Executor scheduleRefreshMonitorDataExecutor;
 
+
     @Override
     public List<MetricsVO> getData(Date startTime, Date endTime) {
         endTime = Opt.ofNullable(endTime).orElse(DateUtil.date());
@@ -108,7 +109,6 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
                                     !metrics.flinkContent().getLayoutNames().contains(layoutName)) {
                                 continue;
                             }
-                            System.out.println(metrics.getHeartTime());
                             sseEmitter.send(metrics);
                             maxDate = metrics.getHeartTime();
                         }
@@ -146,12 +146,12 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveFlinkMetricLayout(String layout, List<MetricsLayoutDTO> metricsList) {
-        if (CollUtil.isEmpty(metricsList)) {
-            return;
-        }
         QueryWrapper<Metrics> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(Metrics::getLayoutName, layout);
         remove(wrapper);
+        if (CollUtil.isEmpty(metricsList)) {
+            return;
+        }
         saveBatch(BeanUtil.copyToList(metricsList, Metrics.class));
     }
 

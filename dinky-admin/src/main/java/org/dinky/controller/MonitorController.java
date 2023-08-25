@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.configure.schedule.metrics.FlinkMetricsIndicator;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.enums.BusinessType;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,7 +57,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/monitor")
 @RequiredArgsConstructor
 public class MonitorController {
+
     private final MonitorService monitorService;
+    @Autowired
+    private FlinkMetricsIndicator flinkMetricsIndicator;
 
     @GetMapping("/getSysData")
     @ApiOperation("Get System Data")
@@ -80,6 +85,7 @@ public class MonitorController {
     @Log(title = "Save Flink Metrics", businessType = BusinessType.INSERT)
     public Result<Void> saveFlinkMetricLayout(@PathVariable(value = "layout") String layoutName, @RequestBody List<MetricsLayoutDTO> metricsList) {
         monitorService.saveFlinkMetricLayout(layoutName,metricsList);
+        flinkMetricsIndicator.getAndCheckFlinkUrlAvailable();
         return Result.succeed();
     }
 

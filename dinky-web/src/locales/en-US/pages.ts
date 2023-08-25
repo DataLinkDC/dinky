@@ -158,6 +158,10 @@ export default {
   'devops.jobinfo.ck.recovery.failed': 'Recovery job failed',
   'devops.jobinfo.ck.recovery.recoveryTo': 'Recovery Here',
 
+  'devops.jobinfo.metrics.configMetrics': 'Metrics Config',
+  'devops.jobinfo.metrics.metricsItems': 'Metrics Items',
+  'devops.jobinfo.metrics.selected': 'Selected',
+
   'devops.baseinfo.taskid': 'Task Id',
   'devops.baseinfo.name': 'Job Name',
   'devops.baseinfo.status': 'Status',

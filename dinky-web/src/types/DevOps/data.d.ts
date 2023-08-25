@@ -52,9 +52,35 @@ declare namespace Jobs {
     clusterName: string;
   };
 
+  export type JobVertices = {
+    id: string;
+    name: string;
+    maxParallelism: number;
+    parallelism: number;
+    status: string;
+    duration: number;
+    tasks: any;
+    metrics: any;
+  };
+
+  export type Job = {
+    jid: string;
+    name: string;
+    isStoppable: false;
+    state: string;
+    'start-time': number;
+    'end-time': number;
+    duration: number;
+    maxParallelism: number;
+    now: number;
+    timestamps: any;
+    vertices: JobVertices[];
+    'status-counts': {};
+    plan: {};
+  };
   export type JobHistoryItem = {
     id: number;
-    job: any;
+    job: Job;
     exceptions: any;
     checkpoints: any;
     checkpointsConfig: any;
