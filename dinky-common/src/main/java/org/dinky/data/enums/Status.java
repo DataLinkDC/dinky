@@ -109,6 +109,8 @@ public enum Status {
     KICK_OUT(10024, "token has been kicked offline", "token 已被踢下线"),
     TOKEN_FREEZED(10025, "token has been frozen", "token 已被冻结"),
     NO_PREFIX(10026, "The token was not submitted according to the specified prefix", "未按照指定前缀提交 token"),
+    STATE_CODE_ERROR(10027, "state inconsistency or state and code not pair", "状态码前后不一致或状态码和code不匹配"),
+    CASDOOR_DEFAULT_TENANT_NOFOUND(10028, "The Casdoor default tenant does not exist", "casdoor默认租户不存在"),
 
     // role
     ROLE_ALREADY_EXISTS(10101, "Role Already Exists", "角色已存在"),

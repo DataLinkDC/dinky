@@ -20,6 +20,7 @@
 package org.dinky.data.enums;
 
 public enum UserType {
+    CASDOOR(2, "CASDOOR"),
     LDAP(1, "LDAP"),
     LOCAL(0, "LOCAL");
 

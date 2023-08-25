@@ -158,6 +158,11 @@ public class SystemConfiguration {
     private final Configuration<Boolean> ldapEnable =
             key("ldap.settings.enable").booleanType().defaultValue(false).note("LDAP ON-OFF");
 
+    private final Configuration<String> casdoorDefaultTeant = key("casdoor.settings.defaultTeant")
+            .stringType()
+            .defaultValue("DefaultTenant")
+            .note("casdoor default default teant code");
+
     private final Configuration<Boolean> metricsSysEnable = key("metrics.settings.sys.enable")
             .booleanType()
             .defaultValue(false)

@@ -27,6 +27,9 @@ import org.dinky.data.result.Result;
 import org.dinky.service.UserService;
 import org.dinky.utils.I18nMsgUtils;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.casbin.casdoor.service.CasdoorAuthService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,6 +61,8 @@ public class AdminController {
 
     private final UserService userService;
 
+    private final CasdoorAuthService casdoorAuthService;
+
     /**
      * user login
      *
@@ -68,6 +73,33 @@ public class AdminController {
     @ApiOperation(value = "Login", notes = "Login")
     public Result<UserDTO> login(@RequestBody LoginDTO loginDTO) {
         return userService.loginUser(loginDTO);
+    }
+
+    /**
+     * get casdoor login url
+     *
+     * @param request
+     * @return redirect address
+     */
+    @PostMapping("/getCasdoorUrl")
+    @ApiOperation("Get Casdoor Url")
+    public Result<String> getCasdoorUrl(HttpServletRequest request) {
+        String origin = request.getParameter("origin");
+        String url = casdoorAuthService.getSigninUrl(origin);
+        return Result.succeed(url, "Get Url successful");
+    }
+
+    /**
+     * user login with casdoor
+     *
+     * @param code
+     * @param state
+     * @return {@link Result}{@link UserDTO} obtain the user's UserDTO
+     */
+    @PostMapping("/loginWithCasdoor")
+    @ApiOperation("loginWithCasdoor")
+    public Result<UserDTO> loginWithCasdoor(@RequestParam("code") String code, @RequestParam("state") String state) {
+        return userService.loginCasdoorUser(code, state);
     }
 
     /**
