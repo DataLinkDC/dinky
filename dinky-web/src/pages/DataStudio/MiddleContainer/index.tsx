@@ -123,6 +123,10 @@ const MiddleContainer = (props: any) => {
       type: STUDIO_MODEL.closeAllTabs
     });
     setContextMenuVisible(false);
+    dispatch({
+        type: STUDIO_MODEL.updateSelectRightKey,
+        payload: ''
+    });
   };
 
   /**
