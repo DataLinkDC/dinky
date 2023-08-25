@@ -124,8 +124,8 @@ const MiddleContainer = (props: any) => {
     });
     setContextMenuVisible(false);
     dispatch({
-        type: STUDIO_MODEL.updateSelectRightKey,
-        payload: ''
+      type: STUDIO_MODEL.updateSelectRightKey,
+      payload: ''
     });
   };
 
