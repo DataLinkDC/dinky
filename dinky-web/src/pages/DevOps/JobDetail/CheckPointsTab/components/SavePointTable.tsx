@@ -17,82 +17,77 @@
  *
  */
 
-
-
-import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import {l} from "@/utils/intl";
-import {useRef} from "react";
-import {SavePointTableListItem} from "@/pages/DataStudio/RightContainer/SavePoints";
-import {queryList} from "@/services/api";
-import {JobProps} from "@/pages/DevOps/JobDetail/data";
-import {API_CONSTANTS} from "@/services/constants";
-
+import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import { queryList } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { SavePoint } from '@/types/Studio/data';
+import { l } from '@/utils/intl';
+import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import { useRef } from 'react';
 
 const SavepointTable = (props: JobProps) => {
-
-  const {jobDetail} = props;
+  const { jobDetail } = props;
 
   const actionRef = useRef<ActionType>();
 
-  const columns: ProColumns<SavePointTableListItem>[] = [
+  const columns: ProColumns<SavePoint>[] = [
     {
       title: l('devops.jobinfo.ck.id'),
       align: 'center',
       dataIndex: 'id',
-      hideInTable: true,
+      hideInTable: true
     },
     {
       title: l('devops.jobinfo.ck.taskid'),
       align: 'center',
       dataIndex: 'taskId',
-      hideInTable: true,
+      hideInTable: true
     },
     {
       title: l('devops.jobinfo.ck.name'),
       align: 'center',
-      dataIndex: 'name',
+      dataIndex: 'name'
     },
     {
       title: l('devops.jobinfo.ck.checkpoint_type'),
       align: 'center',
-      dataIndex: 'type',
+      dataIndex: 'type'
     },
     {
       title: l('devops.jobinfo.ck.external_path'),
       align: 'center',
       copyable: true,
-      dataIndex: 'path',
+      dataIndex: 'path'
     },
     {
       title: l('devops.jobinfo.ck.trigger_timestamp'),
       align: 'center',
       valueType: 'dateTime',
-      dataIndex: 'createTime',
-    },
+      dataIndex: 'createTime'
+    }
   ];
 
-
   return (
-    <>
-      <ProTable<SavePointTableListItem>
-        columns={columns}
-        style={{width: '100%'}}
-        request={(params, sorter, filter) => queryList(API_CONSTANTS.GET_SAVEPOINTS, {
+    <ProTable<SavePoint>
+      columns={columns}
+      style={{ width: '100%' }}
+      request={(params, sorter, filter) =>
+        queryList(API_CONSTANTS.GET_SAVEPOINTS, {
           ...params,
           sorter,
-          filter:{taskId: [jobDetail?.instance.taskId]}
-        })}
-        actionRef={actionRef}
-        toolBarRender={false}
-        rowKey="id"
-        pagination={{
-          pageSize: 10,
-        }}
-        search={false}
-        size="small"
-      />
-    </>
-  )
+          filter: { taskId: [jobDetail?.instance.taskId] }
+        })
+      }
+      actionRef={actionRef}
+      toolBarRender={false}
+      rowKey='id'
+      pagination={{
+        pageSize: 10
+      }}
+      search={false}
+      size='small'
+    />
+  );
 };
 
 export default SavepointTable;

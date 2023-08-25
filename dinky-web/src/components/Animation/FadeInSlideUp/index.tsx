@@ -19,17 +19,17 @@
 
 // 淡入效果并从上方滑入
 
-import {useSpring, animated} from 'react-spring';
+import { animated, useSpring } from 'react-spring';
 
 const FadeInSlideUp = (props: any) => {
-    const {children} = props;
-    const style = useSpring({
-        from: { opacity: 0, transform: 'translateY(100px)' },
-        to: { opacity: 1, transform: 'translateY(0)' },
-        config: { duration: 1000 },
-    });
+  const { children } = props;
+  const style = useSpring({
+    from: { opacity: 0, transform: 'translateY(100px)' },
+    to: { opacity: 1, transform: 'translateY(0)' },
+    config: { duration: 1000 }
+  });
 
-    return <animated.div style={style}>{children}</animated.div>;
+  return <animated.div style={style}>{children}</animated.div>;
 };
 
-export default FadeInSlideUp
+export default FadeInSlideUp;

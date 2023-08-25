@@ -17,105 +17,116 @@
  *
  */
 
-import {RowPermissions, UserBaseInfo} from "@/types/User/data";
-import {Values} from "async-validator";
-import {FormInstance} from "antd/es/form/hooks/useForm";
-import React, {useState} from "react";
-import {l} from "@/utils/intl";
-import {ProForm, ProFormItem, ProFormSelect, ProFormText} from "@ant-design/pro-components";
-import CodeEdit from "@/components/CustomEditor/CodeEdit";
-import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
-import {DefaultOptionType} from "rc-select/lib/Select";
+import CodeEdit from '@/components/CustomEditor/CodeEdit';
+import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
+import { RowPermissions, UserBaseInfo } from '@/types/AuthCenter/data';
+import { l } from '@/utils/intl';
+import { ProForm, ProFormItem, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
+import { DefaultOptionType } from 'rc-select/lib/Select';
+import React, { useState } from 'react';
 
 /**
  * PermissionsFormProps
  */
 type PermissionsFormProps = {
-    values: Partial<RowPermissions>;
-    form: FormInstance<Values>;
-    roles: Partial<UserBaseInfo.Role>[]
-}
+  values: Partial<RowPermissions>;
+  form: FormInstance<Values>;
+  roles: Partial<UserBaseInfo.Role>[];
+};
 
 /**
  * CodeEditProps
- * @type {{lineNumbers: string, height: string}}
  */
 const CodeEditProps = {
-    height: "25vh",
-    lineNumbers: "off",
-}
+  height: '25vh',
+  lineNumbers: 'off'
+};
 
 const PermissionsForm: React.FC<PermissionsFormProps> = (props) => {
+  const { values, roles, form } = props;
+  const [expression, setExpression] = useState<string>(values.expression ?? '');
 
-    const {values,roles, form} = props;
-    const [expression, setExpression] = useState<string>(values.expression || '');
+  /**
+   * get role options
+   */
+  const getRoleOptions = () => {
+    const itemList: DefaultOptionType[] = roles.map((item) => ({
+      label: item.roleName,
+      value: item.id
+    }));
+    return itemList;
+  };
 
-    /**
-     * get role options
-     * @returns {DefaultOptionType[]}
-     */
-    const getRoleOptions = () => {
-        const itemList: DefaultOptionType []  = [];
-        roles.map((item) => {
-           return itemList.push({
-                label: item.roleName,
-                value: item.id,
-            })
-        })
-        return itemList;
-    };
+  /**
+   * render row permissions form
+   */
+  const renderRowPermissionsForm = () => {
+    return (
+      <>
+        <ProFormSelect
+          name='roleId'
+          label={l('rowPermissions.roleName')}
+          rules={[
+            {
+              required: true,
+              message: l('rowPermissions.roleNamePlaceholder')
+            }
+          ]}
+          options={getRoleOptions()}
+        />
 
-    /**
-     * render row permissions form
-     * @returns {JSX.Element}
-     */
-    const renderRowPermissionsForm = () => {
-        return <>
-            <ProFormSelect
-                name="roleId"
-                label={l('rowPermissions.roleName')}
-                rules={[{required: true, message: l('rowPermissions.roleNamePlaceholder')}]}
-                options={getRoleOptions()}
-            />
+        <ProFormText
+          name='tableName'
+          label={l('rowPermissions.tableName')}
+          rules={[
+            {
+              required: true,
+              message: l('rowPermissions.tableNamePlaceholder')
+            }
+          ]}
+        />
 
-            <ProFormText
-                name="tableName"
-                label={l('rowPermissions.tableName')}
-                rules={[{required: true, message: l('rowPermissions.tableNamePlaceholder')}]}
-            />
-
-            <ProFormItem
-                name="expression"
-                label={l('rowPermissions.expression')}
-                rules={[{required: true, message: l('rowPermissions.expressionPlaceholder')}]}
-            >
-                <CodeEdit
-                    onChange={(value => {
-                        setExpression(value)
-                    })}
-                    code={expression}
-                    language={"sql"}
-                    {...CodeEditProps}
-                />
-            </ProFormItem>
-        </>
-    };
-
-
-    /**
-     * render
-     */
-    return <>
-        <ProForm
-            {...FORM_LAYOUT_PUBLIC}
-            form={form}
-            submitter={false}
-            layout={'horizontal'}
-            initialValues={values}
+        <ProFormItem
+          name='expression'
+          label={l('rowPermissions.expression')}
+          rules={[
+            {
+              required: true,
+              message: l('rowPermissions.expressionPlaceholder')
+            }
+          ]}
         >
-            {renderRowPermissionsForm()}
-        </ProForm>
+          <CodeEdit
+            onChange={(value) => {
+              setExpression(value ?? '');
+            }}
+            code={expression}
+            language={'sql'}
+            {...CodeEditProps}
+          />
+        </ProFormItem>
+      </>
+    );
+  };
+
+  /**
+   * render
+   */
+  return (
+    <>
+      <ProForm
+        {...FORM_LAYOUT_PUBLIC}
+        form={form}
+        submitter={false}
+        layout={'horizontal'}
+        initialValues={values}
+      >
+        {renderRowPermissionsForm()}
+      </ProForm>
     </>
+  );
 };
 
 export default PermissionsForm;

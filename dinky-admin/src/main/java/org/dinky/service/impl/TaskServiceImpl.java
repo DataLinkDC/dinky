@@ -62,6 +62,7 @@ import org.dinky.data.model.Savepoints;
 import org.dinky.data.model.Statement;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
+import org.dinky.data.model.TaskExtConfig;
 import org.dinky.data.model.TaskVersion;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.data.result.Result;
@@ -153,8 +154,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
@@ -448,14 +447,20 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public boolean saveOrUpdateTask(Task task) {
         if (Dialect.isUDF(task.getDialect())) {
-            if (CollUtil.isNotEmpty(task.getConfigJson())
+
+            TaskExtConfig taskConfigJson = task.getConfigJson();
+
+            if (BeanUtil.isNotEmpty(task.getConfigJson())
                     && Asserts.isNullString(task.getStatement())
-                    && Convert.toInt(task.getConfigJson().get(0).get("templateId"), 0) != 0) {
-                Map<String, String> config = task.getConfigJson().get(0);
-                UDFTemplate template = udfTemplateService.getById(config.get("templateId"));
+                    && BeanUtil.isNotEmpty(taskConfigJson.getUdfConfig())) {
+
+                UDFTemplate template =
+                        udfTemplateService.getById(taskConfigJson.getUdfConfig().getTemplateId());
                 if (template != null) {
                     String code = UDFUtil.templateParse(
-                            task.getDialect(), template.getTemplateCode(), config.get("className"));
+                            task.getDialect(),
+                            template.getTemplateCode(),
+                            taskConfigJson.getUdfConfig().getClassName());
                     task.setStatement(code);
                 }
             }
@@ -942,7 +947,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Savepoints savepoints = buildSavepoint(config);
         if (Asserts.isNotNull(savepoints)) {
             config.setSavePointPath(savepoints.getPath());
-            config.getConfig().put("execution.savepoint.path", savepoints.getPath());
+            config.getConfigJson().put("execution.savepoint.path", savepoints.getPath());
         }
 
         if (!GatewayType.get(task.getType()).isDeployCluster()) {
@@ -977,7 +982,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private FlinkClusterConfig buildGatewayCfgObj(JobConfig config) {
         FlinkClusterConfig flinkClusterCfg = clusterCfgService.getFlinkClusterCfg(config.getClusterConfigurationId());
         flinkClusterCfg.getAppConfig().setUserJarParas(buildParas(config.getTaskId()));
-        flinkClusterCfg.getFlinkConfig().getConfiguration().putAll(config.getConfig());
+        flinkClusterCfg.getFlinkConfig().getConfiguration().putAll(config.getConfigJson());
 
         //        if (config.isJarTask()) {
         //            JSONObject clusterObj = new JSONObject(flinkClusterCfg);

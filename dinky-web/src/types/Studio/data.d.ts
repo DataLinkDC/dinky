@@ -17,66 +17,93 @@
  *
  */
 
+import { List } from 'antd';
 
 export type Catalogue = {
-    id: number;
-    name: string;
-    tenantId: number;
-    taskId: number;
-    type: string;
-    parentId: number;
-    isLeaf: boolean;
-    createTime: Date;
-    updateTime: Date;
-    children: Catalogue[];
-    configJson: Object<string, object>;
-    task: Task;
+  id: number;
+  name: string;
+  tenantId: number;
+  taskId: number;
+  type: string;
+  parentId: number;
+  isLeaf: boolean;
+  createTime: Date;
+  updateTime: Date;
+  children: Catalogue[];
+  configJson: TaskExtConfig;
+  task: Task;
 };
 
+export type TaskUdfConfig = {
+  templateId: number;
+  selectKeys: List<string | number>;
+  className: string;
+};
+
+export type ConfigItem = {
+  key: string;
+  value: string;
+};
+
+export type TaskExtConfig = {
+  udfConfig: TaskUdfConfig;
+  customConfig: List<Map<string, object>>;
+};
 
 export type Task = {
-    id: number;
-    name: string;
-    dialect: string;
-    tenantId: number;
-    type: string;
-    checkPoint: number;
-    savePointStrategy: number;
-    savePointPath: string;
-    parallelism: number;
-    fragment: boolean;
-    statementSet: boolean;
-    batchModel: boolean;
-    clusterId: number;
-    clusterConfigurationId: number;
-    databaseId: number;
-    jarId: number;
-    envId: number;
-    alertGroupId: number;
-    note: string;
-    step: number;
-    jobInstanceId: number;
-    versionId: number;
-    statement: string;
-    clusterName: string;
-    savePoints: SavePoint[];
-    configJson: Object<string, object>;
-    path: string;
-    jarName: string;
-    clusterConfigurationName: string;
-    databaseName: string;
-    envName: string;
-    alertGroupName: string;
-    createTime: Date;
-    updateTime: Date;
+  id: number;
+  name: string;
+  dialect: string;
+  tenantId: number;
+  type: string;
+  checkPoint: number;
+  savePointStrategy: number;
+  savePointPath: string;
+  parallelism: number;
+  fragment: boolean;
+  statementSet: boolean;
+  batchModel: boolean;
+  clusterId: number;
+  clusterConfigurationId: number;
+  databaseId: number;
+  jarId: number;
+  envId: number;
+  alertGroupId: number;
+  note: string;
+  step: number;
+  jobInstanceId: number;
+  versionId: number;
+  statement: string;
+  clusterName: string;
+  savePoints: SavePoint[];
+  configJson: TaskExtConfig;
+  path: string;
+  jarName: string;
+  clusterConfigurationName: string;
+  databaseName: string;
+  envName: string;
+  alertGroupName: string;
+  createTime: Date;
+  updateTime: Date;
 };
 
-
 export type SavePoint = {
-    id: number,
-    taskId: number,
-    name: string,
-    type: string,
-    path: string,
-    createTime: Date,
+  id: number;
+  taskId: number;
+  name: string;
+  type: string;
+  path: string;
+  createTime: Date;
+};
+
+export type TaskVersionListItem = {
+  id: number;
+  taskId?: number;
+  name?: string;
+  dialect?: string;
+  type?: string;
+  statement: string;
+  versionId?: string;
+  createTime?: string;
+  isLatest?: boolean;
 };

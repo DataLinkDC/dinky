@@ -17,40 +17,40 @@
  *
  */
 
-import Icon, {DeleteTwoTone, PlusCircleTwoTone} from '@ant-design/icons';
-import {l} from "@/utils/intl";
-import React from "react";
-import {BackIcon} from "@/components/Icons/CustomIcons";
-import {MenuItemType} from "antd/es/menu/hooks/useItems";
-import {DefaultOptionType} from "antd/es/select";
-import {Space} from "antd";
-import {TagAlignLeft} from "@/components/StyledComponents";
+import { BackIcon } from '@/components/Icons/CustomIcons';
+import { TagAlignLeft } from '@/components/StyledComponents';
+import { IconRender } from '@/pages/AuthCenter/Menu/function';
+import { l } from '@/utils/intl';
 import * as Icons from '@ant-design/icons';
-import {IconRender} from "@/pages/AuthCenter/Menu/function";
-
-
-
+import { DeleteTwoTone, PlusCircleTwoTone } from '@ant-design/icons';
+import { Space } from 'antd';
+import { MenuItemType } from 'antd/es/menu/hooks/useItems';
+import { DefaultOptionType } from 'antd/es/select';
 
 /**
  * menu icon options
  * @returns {DefaultOptionType[]}
  * @constructor
  */
-export const MENU_ICON_OPTIONS = () :DefaultOptionType[] => {
+export const MENU_ICON_OPTIONS = (): DefaultOptionType[] => {
+  const iconNameList = Object.keys(Icons);
+  Array.from(iconNameList).sort((a, b) => a.localeCompare(b));
 
-    const iconNameList = Object.keys(Icons);
-    Array.from(iconNameList).sort((a, b) => a.localeCompare(b));
-
-    return iconNameList.map((iconName) => {
-
-        return {
-            label: <TagAlignLeft><Space><IconRender icon={iconName} key={iconName}/>{iconName}</Space></TagAlignLeft>, // render icon component
-            key: iconName,
-            value: iconName,
-        };
-    });
-}
-
+  return iconNameList.map((iconName) => {
+    return {
+      label: (
+        <TagAlignLeft>
+          <Space>
+            <IconRender icon={iconName} key={iconName} />
+            {iconName}
+          </Space>
+        </TagAlignLeft>
+      ), // render icon component
+      key: iconName,
+      value: iconName
+    };
+  });
+};
 
 /**
  *  the right context menu
@@ -59,39 +59,38 @@ export const MENU_ICON_OPTIONS = () :DefaultOptionType[] => {
  * @constructor
  */
 export const RIGHT_CONTEXT_MENU = (isDisabled = false): MenuItemType[] => [
-    {
-        key: 'addSub',
-        icon: <PlusCircleTwoTone/>,
-        label: l('right.menu.addSub'),
-        disabled: isDisabled,
-    },
-    {
-        key: 'delete',
-        icon: <DeleteTwoTone twoToneColor={'red'}/>,
-        label: l('button.delete'),
-    },
-    {
-        key: 'cancel',
-        icon: <BackIcon/>,
-        label: l('button.cancel'),
-    },
+  {
+    key: 'addSub',
+    icon: <PlusCircleTwoTone />,
+    label: l('right.menu.addSub'),
+    disabled: isDisabled
+  },
+  {
+    key: 'delete',
+    icon: <DeleteTwoTone twoToneColor={'red'} />,
+    label: l('button.delete')
+  },
+  {
+    key: 'cancel',
+    icon: <BackIcon />,
+    label: l('button.cancel')
+  }
 ];
 
-
 export const MENU_TYPE_OPTIONS = [
-    {
-        title: l('menu.type.dir'),
-        label: l('menu.type.dir'),
-        value: 'M',
-    },
-    {
-        title: l('menu.type.menu'),
-        label: l('menu.type.menu'),
-        value: 'C',
-    },
-    {
-        title: l('menu.type.button'),
-        label: l('menu.type.button'),
-        value: 'F',
-    }
+  {
+    title: l('menu.type.dir'),
+    label: l('menu.type.dir'),
+    value: 'M'
+  },
+  {
+    title: l('menu.type.menu'),
+    label: l('menu.type.menu'),
+    value: 'C'
+  },
+  {
+    title: l('menu.type.button'),
+    label: l('menu.type.button'),
+    value: 'F'
+  }
 ];

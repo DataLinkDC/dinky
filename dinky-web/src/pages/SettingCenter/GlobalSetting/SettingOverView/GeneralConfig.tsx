@@ -17,17 +17,17 @@
  *
  */
 
-import React, {useRef} from 'react';
-import {ProList} from '@ant-design/pro-components';
-import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import {Descriptions, Input, Radio, RadioChangeEvent, Space, Switch} from 'antd';
-import {l} from '@/utils/intl';
-import {SaveTwoTone, SettingTwoTone} from '@ant-design/icons';
-import {EditBtn} from '@/components/CallBackButton/EditBtn';
-import {SWITCH_OPTIONS} from '@/services/constants';
-import {ActionType} from '@ant-design/pro-table';
-import {ProListMetas, ProListProps} from '@ant-design/pro-list';
-import {BackIcon} from '@/components/Icons/CustomIcons';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { BackIcon } from '@/components/Icons/CustomIcons';
+import { SWITCH_OPTIONS } from '@/services/constants';
+import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import { l } from '@/utils/intl';
+import { SaveTwoTone, SettingTwoTone } from '@ant-design/icons';
+import { ProList } from '@ant-design/pro-components';
+import { ProListMetas, ProListProps } from '@ant-design/pro-list';
+import { ActionType } from '@ant-design/pro-table';
+import { Descriptions, Input, Radio, RadioChangeEvent, Space, Switch } from 'antd';
+import React, { useRef } from 'react';
 
 type GeneralConfigProps = {
   data: BaseConfigProperties[];
@@ -36,19 +36,10 @@ type GeneralConfigProps = {
   loading: boolean;
   toolBarRender?: any;
   selectChanges?: Record<string, (value: RadioChangeEvent) => void>;
-}
+};
 
 const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
-
-  const {
-    data,
-    tag,
-    onSave: handleSubmit,
-    loading,
-    toolBarRender,
-    selectChanges
-  } = props;
-
+  const { data, tag, onSave: handleSubmit, loading, toolBarRender, selectChanges } = props;
 
   const actionRef = useRef<ActionType>();
 
@@ -63,14 +54,16 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
    * @param entity entity
    */
   const renderActions = (action: any, entity: BaseConfigProperties) => {
-    return entity.frontType === 'boolean' || entity.frontType ==='option' ? [] : [
-      <EditBtn
-        key="edit"
-        onClick={() => {
-          action.startEditable(entity.key);
-        }}
-      />
-    ];
+    return entity.frontType === 'boolean' || entity.frontType === 'option'
+      ? []
+      : [
+          <EditBtn
+            key='edit'
+            onClick={() => {
+              action.startEditable(entity.key);
+            }}
+          />
+        ];
   };
 
   /**
@@ -78,42 +71,52 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
    * @param entity
    */
   const renderTitle = (entity: BaseConfigProperties) => {
-    return <>
-      <Descriptions.Item>
-        {l(`sys.${entity.key}`)}
-      </Descriptions.Item>
-      <Space style={{marginLeft: 15}} size={0}>
-        {tag}
-      </Space>
-    </>;
+    return (
+      <>
+        <Descriptions.Item>{l(`sys.${entity.key}`)}</Descriptions.Item>
+        <Space style={{ marginLeft: 15 }} size={0}>
+          {tag}
+        </Space>
+      </>
+    );
   };
 
   const renderValuesOfForm = (entity: BaseConfigProperties) => {
     if (entity.frontType === 'boolean') {
-      return <Switch {...SWITCH_OPTIONS()} style={{width: '4vw'}} checked={entity.value}
-        onChange={(checked) => handleSubmit({...entity, value: checked})}
-      />;
+      return (
+        <Switch
+          {...SWITCH_OPTIONS()}
+          style={{ width: '4vw' }}
+          checked={entity.value}
+          onChange={(checked) => handleSubmit({ ...entity, value: checked })}
+        />
+      );
     } else if (entity.frontType === 'option') {
       // @ts-ignore
-      return <Radio.Group onChange={selectChanges[entity.key]} defaultValue={entity.value.toLowerCase()}>
-        {entity.example.map((item: any) => {
-          return <Radio.Button key={item} value={item.toLowerCase()}>{item}</Radio.Button>
-        })}
-      </Radio.Group>
+      return (
+        <Radio.Group onChange={selectChanges[entity.key]} defaultValue={entity.value.toLowerCase()}>
+          {entity.example.map((item: any) => {
+            return (
+              <Radio.Button key={item} value={item.toLowerCase()}>
+                {item}
+              </Radio.Button>
+            );
+          })}
+        </Radio.Group>
+      );
     } else {
-      return <Input style={{width: '30vw'}} disabled value={entity.value}/>;
+      return <Input style={{ width: '30vw' }} disabled value={entity.value} />;
     }
-  }
-
+  };
 
   const metasRestProps: ProListMetas = {
     title: {
       editable: false,
-      render: (dom: any, entity: BaseConfigProperties) => renderTitle(entity),
+      render: (dom: any, entity: BaseConfigProperties) => renderTitle(entity)
     },
     avatar: {
       editable: false,
-      render: () => <SettingTwoTone/>,
+      render: () => <SettingTwoTone />
     },
     description: {
       editable: false,
@@ -121,41 +124,40 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     },
     content: {
       dataIndex: 'value',
-      render: (dom: any, entity: BaseConfigProperties) => renderValuesOfForm(entity),
+      render: (dom: any, entity: BaseConfigProperties) => renderValuesOfForm(entity)
     },
     actions: {
-      render: (text: any, row: BaseConfigProperties, index: number, action: any) => renderActions(action, row),
-    },
+      render: (text: any, row: BaseConfigProperties, index: number, action: any) =>
+        renderActions(action, row)
+    }
   };
-
 
   /**
    * rest props for ProList
    */
-  const restProps: ProListProps = {
-    toolBarRender:toolBarRender,
+  const restProps: ProListProps<BaseConfigProperties> = {
+    toolBarRender: toolBarRender,
     rowKey: 'key',
-    style: {margin: 0},
+    style: { margin: 0 },
     loading: loading,
     actionRef: actionRef,
     size: 'small',
     dataSource: data,
     showActions: 'hover',
-    metas: {...metasRestProps},
+    metas: { ...metasRestProps },
     editable: {
-      saveText: <><SaveTwoTone title={l('button.save')}/></>,
-      cancelText: <><BackIcon title={l('button.back')}/></>,
-      actionRender: (row, config, dom) => row.frontType === 'boolean'|| row.frontType ==='option' ? [] : [dom.save, dom.cancel],
-      onSave: async (key, record) => handleSave(record),
+      saveText: <SaveTwoTone title={l('button.save')} />,
+      cancelText: <BackIcon title={l('button.back')} />,
+      actionRender: (row, config, dom) =>
+        row.frontType === 'boolean' || row.frontType === 'option' ? [] : [dom.save, dom.cancel],
+      onSave: async (key, record) => handleSave(record)
     }
   };
 
   /**
    * render list
    */
-  return <>
-    <ProList<BaseConfigProperties> {...restProps} />
-  </>;
+  return <ProList<BaseConfigProperties> {...restProps} />;
 };
 
 export default GeneralConfig;

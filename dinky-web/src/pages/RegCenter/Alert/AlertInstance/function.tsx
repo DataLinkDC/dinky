@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-
-import {Alert, ALERT_TYPE} from "@/types/RegCenter/data.d";
 import {
   AlertGroupSvg,
   DefaultSvg,
@@ -26,18 +24,19 @@ import {
   SmsSvg,
   WeChatSvg
 } from '@/components/Icons/AlertIcon';
-import {MANU_FACTURERS} from '@/pages/RegCenter/Alert/AlertInstance/constans';
+import { MANU_FACTURERS } from '@/pages/RegCenter/Alert/AlertInstance/constans';
+import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 
 /**
  * get json data to alert instance
  * @param values
  */
 export const getJSONData = (values: Partial<Alert.AlertInstance>) => {
-  if (!values.params || values.params === "") {
+  if (!values.params || values.params === '') {
     return values;
   }
   let data = JSON.parse(values.params);
-  return {...data, ...values};
+  return { ...data, ...values };
 };
 
 /**
@@ -60,7 +59,7 @@ export const buildJSONData = (values: Partial<Alert.AlertInstance>, params: any)
     delete params.type;
   }
   let data: string = JSON.stringify(params);
-  return {...newValue, params: data};
+  return { ...newValue, params: data };
 };
 
 /**
@@ -71,22 +70,22 @@ export const buildJSONData = (values: Partial<Alert.AlertInstance>, params: any)
 export const getAlertIcon = (type: string, size?: number) => {
   switch (type) {
     case ALERT_TYPE.DINGTALK:
-      return <DingTalkSvg size={size}/>;
+      return <DingTalkSvg size={size} />;
     case ALERT_TYPE.WECHAT:
-      return <WeChatSvg size={size}/>;
+      return <WeChatSvg size={size} />;
     case ALERT_TYPE.FEISHU:
-      return <FeiShuSvg size={size}/>;
+      return <FeiShuSvg size={size} />;
     case ALERT_TYPE.SMS:
-      return <SmsSvg size={size}/>;
+      return <SmsSvg size={size} />;
     case ALERT_TYPE.EMAIL:
-      return <EmailSvg size={size}/>;
+      return <EmailSvg size={size} />;
     case ALERT_TYPE.GROUP:
-      return <AlertGroupSvg size={size}/>;
+      return <AlertGroupSvg size={size} />;
     default:
-      return <DefaultSvg size={size}/>;
+      return <DefaultSvg size={size} />;
   }
 };
 
 export const getSmsType = (type: number) => {
   return MANU_FACTURERS.find((item) => item.value === type)?.label;
-}
+};

@@ -17,90 +17,86 @@
  *
  */
 
-
-import React, {useEffect, useState} from 'react';
-import {Form, Modal} from 'antd';
-import {l} from "@/utils/intl";
-import {NORMAL_MODAL_OPTIONS} from "@/services/constants";
-import {UserBaseInfo} from "@/types/User/data";
-import {FormContextValue} from "@/components/Context/FormContext";
-import PasswordForm from "@/pages/AuthCenter/User/components/PasswordModal/PasswordForm";
+import { FormContextValue } from '@/components/Context/FormContext';
+import PasswordForm from '@/pages/AuthCenter/User/components/PasswordModal/PasswordForm';
+import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
+import { l } from '@/utils/intl';
+import { Form, Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
 
 type PasswordModalFormProps = {
-    onCancel: (flag?: boolean) => void;
-    onSubmit: (values: UserBaseInfo.ChangePasswordParams) => void;
-    modalVisible: boolean;
-    values: Partial<UserBaseInfo.User>;
+  onCancel: (flag?: boolean) => void;
+  onSubmit: (values: UserBaseInfo.ChangePasswordParams) => void;
+  modalVisible: boolean;
+  values: Partial<UserBaseInfo.User>;
 };
 
-
 const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
+  /**
+   * init props
+   */
+  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
 
-    /**
-     * init props
-     */
-    const {
-        onSubmit: handleSubmit,
-        onCancel: handleModalVisible,
-        modalVisible,
-        values
-    } = props;
+  /**
+   * status
+   */
+  const [form] = Form.useForm();
+  /**
+   * init form context
+   */
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
+    }),
+    [form]
+  );
 
+  /**
+   * when modalVisible or values changed, set form values
+   */
+  useEffect(() => {
+    form.setFieldsValue(values);
+  }, [modalVisible, values, form]);
 
-    /**
-     * status
-     */
-    const [form] = Form.useForm();
-    /**
-     * init form context
-     */
-    const formContext = React.useMemo<FormContextValue>(() => ({
-        resetForm: () => form.resetFields(), // 定义 resetForm 方法
-    }), [form]);
+  const [formVals, setFormVals] = useState<Partial<UserBaseInfo.ChangePasswordParams>>({
+    ...values
+  });
 
-    /**
-     * when modalVisible or values changed, set form values
-     */
-    useEffect(() => {
-        form.setFieldsValue(values);
-    }, [modalVisible, values, form]);
+  /**
+   * handle cancel
+   */
+  const handleCancel = () => {
+    handleModalVisible();
+    formContext.resetForm();
+  };
 
+  /**
+   * submit form
+   */
+  const submitForm = async () => {
+    const fieldsValue = await form.validateFields();
+    setFormVals({ ...formVals, ...fieldsValue });
+    await handleSubmit({ ...formVals, ...fieldsValue });
+    await handleCancel();
+  };
 
-    const [formVals, setFormVals] = useState<Partial<UserBaseInfo.ChangePasswordParams>>({...values});
-
-
-    /**
-     * handle cancel
-     */
-    const handleCancel = () => {
-        handleModalVisible();
-        formContext.resetForm();
-    }
-
-    /**
-     * submit form
-     */
-    const submitForm = async () => {
-        const fieldsValue = await form.validateFields();
-        setFormVals({...formVals, ...fieldsValue});
-        await handleSubmit({...formVals, ...fieldsValue});
-        await handleCancel();
-    };
-
-    /**
-     * render
-     */
-    return <>
-        <Modal
-            {...NORMAL_MODAL_OPTIONS}
-            title={l('button.changePassword')}
-            open={modalVisible}
-            onCancel={() => handleCancel()}
-            onOk={() => submitForm()}
-        >
-            <PasswordForm values={values as any} form={form}/>
-        </Modal>
+  /**
+   * render
+   */
+  return (
+    <>
+      <Modal
+        {...NORMAL_MODAL_OPTIONS}
+        title={l('button.changePassword')}
+        open={modalVisible}
+        onCancel={() => handleCancel()}
+        onOk={() => submitForm()}
+      >
+        <PasswordForm values={values as any} form={form} />
+      </Modal>
     </>
+  );
 };
 
 export default PasswordModal;

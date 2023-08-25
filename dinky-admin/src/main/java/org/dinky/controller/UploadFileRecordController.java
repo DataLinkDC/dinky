@@ -35,11 +35,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.hutool.json.JSONUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 /** FileUploadController */
 @Slf4j
+@Api(tags = "File Upload Controller")
 @RestController
 @RequestMapping("/api/uploadFileRecord")
 public class UploadFileRecordController {

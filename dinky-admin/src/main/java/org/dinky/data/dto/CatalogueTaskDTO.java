@@ -19,8 +19,7 @@
 
 package org.dinky.data.dto;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.dinky.data.model.TaskExtConfig;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,5 +41,6 @@ public class CatalogueTaskDTO {
     private String name;
     private String type;
     private String dialect;
-    private Map<String, String> config = new HashMap<>();
+    private String note;
+    private TaskExtConfig configJson;
 }

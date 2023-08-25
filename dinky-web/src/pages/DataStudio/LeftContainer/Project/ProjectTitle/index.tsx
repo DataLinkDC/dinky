@@ -17,83 +17,83 @@
  *
  */
 
-import React, {useState} from "react";
-import {Space} from "antd";
-import Title from "@/components/Front/Title";
-import {l} from "@/utils/intl";
-import {connect} from "@umijs/max";
-import {StateType} from "@/pages/DataStudio/model";
-import {Catalogue} from "@/types/Studio/data";
-import {handleAddOrUpdate} from "@/services/BusinessCrud";
-import {BtnRoute} from "@/pages/DataStudio/route";
-import FolderModal from "@/pages/DataStudio/LeftContainer/Project/FolderModal";
+import Title from '@/components/Front/Title';
+import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
+import { StateType, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
+import { BtnRoute } from '@/pages/DataStudio/route';
+import { handleAddOrUpdate } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { Catalogue } from '@/types/Studio/data';
+import { l } from '@/utils/intl';
+import { connect } from '@umijs/max';
+import { Space } from 'antd';
+import React, { useState } from 'react';
 
 const ProjectTitle: React.FC<StateType & connect> = (props) => {
+  const {
+    leftContainer: { selectKey },
+    dispatch
+  } = props;
 
-    const {
-        leftContainer: {selectKey},
-        dispatch,
-    } = props;
+  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
 
-    const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const handleCancelCreate = async () => {
+    handleModalVisible(false);
+  };
 
+  const handleCreateClick = async () => {
+    handleModalVisible(true);
+  };
 
-    const handleCancelCreate = async () => {
-        handleModalVisible(false);
+  /**
+   * 创建根目录, 并刷新目录树
+   * @param {Catalogue} values
+   * @returns {Promise<void>}
+   */
+  const handleSubmit = async (values: Catalogue) => {
+    await handleAddOrUpdate(
+      API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL,
+      {
+        ...values,
+        isLeaf: false,
+        parentId: 0
+      },
+      () => {
+        handleCancelCreate();
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+      }
+    );
+  };
 
+  const btn = BtnRoute['menu.datastudio.project'];
+  btn[0].onClick = () => handleCreateClick();
+
+  /**
+   * 渲染侧边栏标题
+   * @returns {JSX.Element}
+   */
+  const renderTitle = () => {
+    if (selectKey && selectKey === 'menu.datastudio.project') {
+      return (
+        <Space>
+          <Title>{l(selectKey)}</Title>
+          <FolderModal
+            title={l('right.menu.createRoot')}
+            modalVisible={createModalVisible}
+            onCancel={handleCancelCreate}
+            onSubmit={handleSubmit}
+            values={{}}
+          />
+        </Space>
+      );
+    } else {
+      return <Title>{l(selectKey)}</Title>;
     }
+  };
 
-    const handleCreateClick = async () => {
-        handleModalVisible(true);
-    }
+  return <>{renderTitle()}</>;
+};
 
-    /**
-     * 创建根目录, 并刷新目录树
-     * @param {Catalogue} values
-     * @returns {Promise<void>}
-     */
-    const handleSubmit = async (values: Catalogue) => {
-        await handleAddOrUpdate('/api/catalogue/saveOrUpdateCatalogue', {
-            ...values,
-            isLeaf: false,
-            parentId: 0,
-        }, ()=>{
-            handleCancelCreate();
-            dispatch({type: 'Studio/queryProject'});
-        });
-    };
-
-    const btn = BtnRoute['menu.datastudio.project'];
-    btn[0].onClick = () => handleCreateClick();
-
-
-    /**
-     * 渲染侧边栏标题
-     * @returns {JSX.Element}
-     */
-    const renderTitle = () => {
-        if (selectKey && selectKey === "menu.datastudio.project") {
-            return <Space>
-                <Title>{l(selectKey)}</Title>
-                <FolderModal
-                    title={l('right.menu.createRoot')}
-                    modalVisible={createModalVisible}
-                    onCancel={handleCancelCreate}
-                    onSubmit={handleSubmit} values={{}}
-                />
-            </Space>
-        } else {
-            return <Title>{l(selectKey)}</Title>
-        }
-    }
-
-
-    return <>
-        {renderTitle()}
-    </>
-}
-
-
-export default connect(({Studio}: { Studio: StateType }) => ({
-    leftContainer: Studio.leftContainer,
+export default connect(({ Studio }: { Studio: StateType }) => ({
+  leftContainer: Studio.leftContainer
 }))(ProjectTitle);

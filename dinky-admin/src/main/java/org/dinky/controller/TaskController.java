@@ -50,6 +50,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.tree.Tree;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
+@Api(tags = "Task Controller")
 @RequestMapping("/api/task")
 @RequiredArgsConstructor
 public class TaskController {
@@ -71,7 +73,7 @@ public class TaskController {
     @PutMapping
     @ApiOperation("Insert Or Update Task")
     @Log(title = "Insert Or Update Task", businessType = BusinessType.INSERT_OR_UPDATE)
-    public Result<Void> saveOrUpdateTask(@RequestBody Task task) throws Exception {
+    public Result<Void> saveOrUpdateTask(@RequestBody Task task) {
         if (taskService.saveOrUpdateTask(task)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {

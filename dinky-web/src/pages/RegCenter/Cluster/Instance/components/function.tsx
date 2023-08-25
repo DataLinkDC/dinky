@@ -17,13 +17,12 @@
  *
  */
 
-import {l} from "@/utils/intl";
-import {RuleObject} from "rc-field-form/es/interface";
-import {Cluster} from "@/types/RegCenter/data";
-import {RUN_MODE} from "@/services/constants";
-import {Button} from "antd";
-import {WebIcon} from "@/components/Icons/CustomIcons";
-import React from "react";
+import { WebIcon } from '@/components/Icons/CustomIcons';
+import { RUN_MODE } from '@/services/constants';
+import { Cluster } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { Button } from 'antd';
+import { RuleObject } from 'rc-field-form/es/interface';
 
 /**
  * validatorJMHAAdderess
@@ -31,39 +30,47 @@ import React from "react";
  * @param value
  */
 export const validatorJMHAAdderess = (rule: RuleObject, value = '') => {
-    let hostArray = [];
-    if (value.trim().length === 0) {
-        return Promise.reject(new Error(l('rc.ci.jmhaPlaceholder')));
-    } else {
-        hostArray = value.split(',')
-        for (let i = 0; i < hostArray.length; i++) {
-            if (hostArray[i].includes('/')) {
-                return Promise.reject(new Error(l('rc.ci.jmha.validate.slash')));
-            }
-            if (parseInt(hostArray[i].split(':')[1]) >= 65535) {
-                return Promise.reject(new Error(l('rc.ci.jmha.validate.port')));
-            }
-        }
-        return Promise.resolve();
+  let hostArray = [];
+  if (value.trim().length === 0) {
+    return Promise.reject(new Error(l('rc.ci.jmhaPlaceholder')));
+  } else {
+    hostArray = value.split(',');
+    for (let i = 0; i < hostArray.length; i++) {
+      if (hostArray[i].includes('/')) {
+        return Promise.reject(new Error(l('rc.ci.jmha.validate.slash')));
+      }
+      if (parseInt(hostArray[i].split(':')[1]) >= 65535) {
+        return Promise.reject(new Error(l('rc.ci.jmha.validate.port')));
+      }
     }
-}
+    return Promise.resolve();
+  }
+};
 
 /**
  * render WebUi icon button
  * @param record
  */
 export const renderWebUiRedirect = (record: Cluster.Instance) => {
-    if (record.status && (record.type === RUN_MODE.YARN_SESSION || record.type === RUN_MODE.STANDALONE || record.type === RUN_MODE.YARN_APPLICATION || record.type === RUN_MODE.YARN_PER_JOB)) {
-        return <>
-            <Button
-                icon={<WebIcon/>}
-                key={`${record.id}_webui`}
-                type="link"
-                title={`http://${record.jobManagerHost}/#/overview`}
-                href={`http://${record.jobManagerHost}/#/overview`}
-                target="_blank"
-            />
-        </>
-    }
-    return undefined
-}
+  if (
+    record.status &&
+    (record.type === RUN_MODE.YARN_SESSION ||
+      record.type === RUN_MODE.STANDALONE ||
+      record.type === RUN_MODE.YARN_APPLICATION ||
+      record.type === RUN_MODE.YARN_PER_JOB)
+  ) {
+    return (
+      <>
+        <Button
+          icon={<WebIcon />}
+          key={`${record.id}_webui`}
+          type='link'
+          title={`http://${record.jobManagerHost}/#/overview`}
+          href={`http://${record.jobManagerHost}/#/overview`}
+          target='_blank'
+        />
+      </>
+    );
+  }
+  return undefined;
+};

@@ -19,12 +19,10 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.model.TaskExtConfig;
 import org.dinky.job.JobConfig;
 
-import java.util.HashMap;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -62,10 +60,12 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
     private Integer parallelism;
     private Integer savePointStrategy;
     private String savePointPath;
-    private Map<String, String> config = new HashMap<>();
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private TaskExtConfig configJson;
 
     public JobConfig getJobConfig() {
+
+        Map<String, String> parsedConfig = this.configJson.getCustomConfigMaps();
+
         return new JobConfig(
                 type,
                 useResult,
@@ -87,7 +87,7 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
                 savePointStrategy,
                 savePointPath,
                 getVariables(),
-                config);
+                parsedConfig);
     }
 
     public Integer getTaskId() {

@@ -35,5 +35,5 @@ export default {
   ...pwa,
   ...request,
   ...response,
-  ...shortcutKey,
+  ...shortcutKey
 };

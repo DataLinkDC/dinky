@@ -27,6 +27,7 @@ logs.zip
 hs_err_pid*
 .idea/*
 !.idea/icon.png
+!.idea/vcs.xml
 build
 target/*
 *.iml
@@ -34,11 +35,9 @@ target/*
 */target/*
 */*/target/*
 */*/*/target/*
-dlink-web/node_modules/*
-dlink-web/node/*
-dlink-web/dist/*
-dlink-web/.mfsu-production
+dlink-web/*
 
+# Dinky Web gitignore
 dinky-web/node_modules/*
 dinky-web/node/*
 dinky-web/dist/*

@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-import {BaseBeanColumns} from '@/types/Public/data';
-import React from "react";
+import { BaseBeanColumns } from '@/types/Public/data';
 
 /**
  * about alert
@@ -26,23 +25,22 @@ declare namespace Alert {
    * alert group
    */
   export type AlertGroup = BaseBeanColumns & {
-    alertInstanceIds: string,
-    note: string,
+    alertInstanceIds: string;
+    note: string;
   };
 
   /**
    * alert instance
    */
   export type AlertInstance = BaseBeanColumns & {
-    type: string,
-    params: string,
+    type: string;
+    params: string;
   };
 }
 
-
 export type AlertConfig = {
-  type: string,
-}
+  type: string;
+};
 
 export const ALERT_TYPE = {
   DINGTALK: 'DingTalk',
@@ -50,10 +48,8 @@ export const ALERT_TYPE = {
   FEISHU: 'FeiShu',
   EMAIL: 'Email',
   SMS: 'Sms',
-  GROUP: 'Group',
+  GROUP: 'Group'
 };
-
-
 
 /**
  * about flink cluster
@@ -64,14 +60,14 @@ declare namespace Cluster {
    * mainly used for `yarn session` `standalone`
    */
   export type Instance = BaseBeanColumns & {
-    alias: string,
-    type: string,
-    hosts: string,
-    jobManagerHost: string,
-    autoRegisters: boolean,
-    version: string,
-    status: number,
-    note: string,
+    alias: string;
+    type: string;
+    hosts: string;
+    jobManagerHost: string;
+    autoRegisters: boolean;
+    version: string;
+    status: number;
+    note: string;
   };
 
   /**
@@ -79,11 +75,11 @@ declare namespace Cluster {
    * mainly used for `projob` `application` `k8s` and start a new session cluster
    */
   export type Config = BaseBeanColumns & {
-    type: string,
-    config?: any,
-    configJson: any,
-    isAvailable?: boolean,
-    note: string,
+    type: string;
+    config?: any;
+    configJson: any;
+    isAvailable?: boolean;
+    note: string;
   };
 }
 
@@ -91,123 +87,117 @@ declare namespace Cluster {
  * about database and metadata
  */
 declare namespace DataSources {
-
   /**
    * database info
    */
   export type DataSource = BaseBeanColumns & {
-    groupName: string,
-    type: string,
-    url: string,
-    username: string,
-    password: string,
-    note: string,
-    flinkConfig: string,
-    flinkTemplate: string,
-    dbVersion: string,
-    status: boolean,
-    healthTime: Date,
-    heartbeatTime: Date,
+    groupName: string;
+    type: string;
+    url: string;
+    username: string;
+    password: string;
+    note: string;
+    flinkConfig: string;
+    flinkTemplate: string;
+    dbVersion: string;
+    status: boolean;
+    healthTime: Date;
+    heartbeatTime: Date;
   };
-
 
   /**
    * table info
    */
   export type Table = {
-    name: string,
-    schema: string,
-    catalog: string,
-    comment: string,
-    type: string,
-    engine: string,
-    options: string,
-    rows: number,
-    createTime: string,
-    updateTime: string,
+    name: string;
+    schema: string;
+    catalog: string;
+    comment: string;
+    type: string;
+    engine: string;
+    options: string;
+    rows: number;
+    createTime: string;
+    updateTime: string;
   };
 
   /**
    * table columns info
    */
   export type Column = {
-    name: string,
-    type: string,
-    comment: string,
-    keyFlag: boolean,
-    autoIncrement: boolean,
-    defaultValue: string,
-    nullable: string,
-    javaType: string,
-    columnFamily: string,
-    position: number,
-    precision: number,
-    scale: number,
-    characterSet: string,
-    collation: string,
+    name: string;
+    type: string;
+    comment: string;
+    keyFlag: boolean;
+    autoIncrement: boolean;
+    defaultValue: string;
+    nullable: string;
+    javaType: string;
+    columnFamily: string;
+    position: number;
+    precision: number;
+    scale: number;
+    characterSet: string;
+    collation: string;
   };
 
   /**
    * table columns info
    */
   export type SqlGeneration = {
-    flinkSqlCreate: string,
-    sqlSelect: string,
-    sqlCreate: string,
+    flinkSqlCreate: string;
+    sqlSelect: string;
+    sqlCreate: string;
   };
-
 }
-
 
 /**
  * about document
  */
 export type Document = BaseBeanColumns & {
-  category: string,
-  type: string,
-  subtype: string,
-  description: string,
-  fillValue: string,
-  version: string,
-  likeNum: number,
+  category: string;
+  type: string;
+  subtype: string;
+  description: string;
+  fillValue: string;
+  version: string;
+  likeNum: number;
 };
-
 
 /**
  * global variable
  */
 export type GlobalVar = BaseBeanColumns & {
-  fragmentValue: string,
-  note: string,
+  fragmentValue: string;
+  note: string;
 };
 
 export type BuildJarList = {
   jarPath: string;
   orderLine: number;
   classList: string[];
-}
+};
 
 /**
  * git project
  */
 export type GitProject = BaseBeanColumns & {
-  url: string,
-  branch: string,
-  username: string,
-  password: string,
-  privateKey: string,
-  pom: string,
-  buildArgs: string,
-  codeType: number,
-  type: number,
-  lastBuild: Date,
-  description: string,
-  buildState: number,
-  buildStep: number,
-  udfClassMapList: string,
-  orderLine: number,
-}
-
+  url: string;
+  branch: string;
+  username: string;
+  password: string;
+  privateKey: string;
+  pom: string;
+  buildArgs: string;
+  codeType: number;
+  type: number;
+  lastBuild: Date;
+  description: string;
+  buildState: number;
+  buildStep: number;
+  udfClassMapList: string;
+  orderLine: number;
+};
 
 export type GitProjectTreeNode = {
   name: string;
@@ -216,24 +206,10 @@ export type GitProjectTreeNode = {
   size: number;
   leaf: boolean;
   children: GitProjectTreeNode[];
-}
+};
 
 export type UDFTemplate = BaseBeanColumns & {
-  codeType: string,
-  functionType: string,
-  templateCode: string
-}
-
-export type SysMenu = BaseBeanColumns & {
-  parentId: number, // 父级
-  orderNum: number, // 排序
-  path: string, // 路由
-  component: string, // 组件
-  type: string,// C菜单 F按钮 M目录
-  display: boolean, // 菜单状态(0显示 1隐藏)
-  perms: string, // 权限标识
-  icon: string, // 图标
-  rootMenu: boolean,
-  note: string,
-  children: SysMenu[],
+  codeType: string;
+  functionType: string;
+  templateCode: string;
 };

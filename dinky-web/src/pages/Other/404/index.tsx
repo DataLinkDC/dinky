@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
+import { l } from '@/utils/intl';
 import { history } from '@umijs/max';
 import { Button, Result } from 'antd';
 import React from 'react';
-import {l} from "@/utils/intl";
 
 const NoFoundPage: React.FC = () => (
   <Result
-    status="404"
-    title="404"
+    status='404'
+    title='404'
     subTitle={l('app.request.404')}
     extra={
-      <Button type="primary" onClick={() => history.push('/')}>
+      <Button type='primary' onClick={() => history.push('/')}>
         {l('app.request.back')}
       </Button>
     }

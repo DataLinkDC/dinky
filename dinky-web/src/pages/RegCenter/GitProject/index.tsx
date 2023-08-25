@@ -17,20 +17,19 @@
  *
  */
 
-import {PageContainer} from "@ant-design/pro-layout";
-import ProjectProTable from "@/pages/RegCenter/GitProject/components/ProjectProTable";
-import FadeIn from "@/components/Animation/FadeIn";
-import SlowlyAppear from "@/components/Animation/SlowlyAppear";
-
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import ProjectProTable from '@/pages/RegCenter/GitProject/components/ProjectProTable';
+import { PageContainer } from '@ant-design/pro-layout';
 
 export default () => {
-
   /**
    * render
    */
-  return <SlowlyAppear>
-    <PageContainer title={false}>
-      <ProjectProTable/>
-    </PageContainer>
-  </SlowlyAppear>;
+  return (
+    <SlowlyAppear>
+      <PageContainer title={false}>
+        <ProjectProTable />
+      </PageContainer>
+    </SlowlyAppear>
+  );
 };

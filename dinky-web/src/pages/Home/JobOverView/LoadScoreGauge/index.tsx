@@ -17,12 +17,10 @@
  *
  */
 
-import React from 'react';
-import {Gauge, GaugeConfig} from '@ant-design/plots';
-import {l} from "@/utils/intl";
+import { l } from '@/utils/intl';
+import { Gauge, GaugeConfig } from '@ant-design/plots';
 
 const LoadScoreGauge = () => {
-
   const ticks = [0, 1 / 3, 2 / 3, 1];
   const color = ['#30BF78', '#FAAD14', '#F4664A'];
 
@@ -33,19 +31,19 @@ const LoadScoreGauge = () => {
     innerRadius: 0.75,
     range: {
       ticks,
-      color,
+      color
     },
     indicator: {
       pointer: {
         style: {
-          stroke: '#D0D0D0',
-        },
+          stroke: '#D0D0D0'
+        }
       },
       pin: {
         style: {
-          stroke: '#D0D0D0',
-        },
-      },
+          stroke: '#D0D0D0'
+        }
+      }
     },
     statistic: {
       title: {
@@ -63,13 +61,17 @@ const LoadScoreGauge = () => {
           return {
             fontSize: '24px',
             lineHeight: 1,
-            color: percent < ticks[1] ? color[0] : percent < ticks[2] ? color[1] : color[2],
+            color: percent < ticks[1] ? color[0] : percent < ticks[2] ? color[1] : color[2]
           };
-        },
-      },
-    },
+        }
+      }
+    }
   };
-  return <div style={{height: '35vh'}}><Gauge {...config} /></div>;
+  return (
+    <div style={{ height: '35vh' }}>
+      <Gauge {...config} />
+    </div>
+  );
 };
 
-export default LoadScoreGauge
+export default LoadScoreGauge;

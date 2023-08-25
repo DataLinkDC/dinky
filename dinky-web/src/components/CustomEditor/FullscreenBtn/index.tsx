@@ -15,27 +15,28 @@
  * limitations under the License.
  */
 
-
-import React from "react";
-import {FullscreenExitOutlined, FullscreenOutlined} from "@ant-design/icons";
-import {l} from "@/utils/intl";
-import {FloatButton} from "antd";
+import { l } from '@/utils/intl';
+import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
+import { FloatButton } from 'antd';
+import React from 'react';
 
 type FullscreenBtnProps = {
   isFullscreen: boolean;
   fullScreenCallBack: () => void;
-}
+};
 const FullscreenBtn: React.FC<FullscreenBtnProps> = (props) => {
+  const { isFullscreen, fullScreenCallBack } = props;
 
-  const {isFullscreen, fullScreenCallBack} = props;
-
-  return <>
-    <FloatButton
-      className={"full-screen"}
-      icon={isFullscreen ? <FullscreenExitOutlined/> : <FullscreenOutlined/>}
-      tooltip={isFullscreen ? l("global.fullScreen.exit") : l("global.fullScreen")}
-      onClick={fullScreenCallBack}/>
-  </>;
+  return (
+    <>
+      <FloatButton
+        className={'full-screen'}
+        icon={isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+        tooltip={isFullscreen ? l('global.fullScreen.exit') : l('global.fullScreen')}
+        onClick={fullScreenCallBack}
+      />
+    </>
+  );
 };
 
 export default FullscreenBtn;

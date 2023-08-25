@@ -35,5 +35,5 @@ export default {
   ...pages,
   ...request,
   ...response,
-  ...shortcutKey,
+  ...shortcutKey
 };

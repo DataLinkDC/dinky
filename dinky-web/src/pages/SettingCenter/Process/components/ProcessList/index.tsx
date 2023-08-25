@@ -15,81 +15,85 @@
  * limitations under the License.
  */
 
-import React from "react";
-import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
-import {getData} from "@/services/api";
-import {ProTable} from "@ant-design/pro-components";
-import {Process} from "@/types/SettingCenter/data";
-import {ProColumns} from "@ant-design/pro-table";
-import SubStepsTable from "@/pages/SettingCenter/Process/components/ProcessList/SubStepsTable";
-import {l} from "@/utils/intl";
-import {MatchProcessStatus, MatchProcessType} from "@/pages/SettingCenter/Process/components/ProcessList/function";
+import {
+  MatchProcessStatus,
+  MatchProcessType
+} from '@/pages/SettingCenter/Process/components/ProcessList/function';
+import SubStepsTable from '@/pages/SettingCenter/Process/components/ProcessList/SubStepsTable';
+import { getData } from '@/services/api';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { Process } from '@/types/SettingCenter/data';
+import { l } from '@/utils/intl';
+import { ProTable } from '@ant-design/pro-components';
+import { ProColumns } from '@ant-design/pro-table';
+import React from 'react';
 
 const ProcessList: React.FC = () => {
-
   const processColumns: ProColumns<Process>[] = [
     {
-      title: l("sys.process.id"),
-      dataIndex: "pid",
+      title: l('sys.process.id'),
+      dataIndex: 'pid'
     },
     {
-      title: l("sys.process.name"),
-      dataIndex: "name",
+      title: l('sys.process.name'),
+      dataIndex: 'name'
     },
     {
-      title: l("sys.process.taskId"),
-      dataIndex: "taskId",
+      title: l('sys.process.taskId'),
+      dataIndex: 'taskId'
     },
     {
-      title: l("sys.process.type"),
-      dataIndex: "type",
+      title: l('sys.process.type'),
+      dataIndex: 'type',
       render: (_, record) => {
         return MatchProcessType(record.type);
       }
     },
     {
-      title: l("sys.process.status"),
-      dataIndex: "status",
+      title: l('sys.process.status'),
+      dataIndex: 'status',
       render: (_, record) => {
         return MatchProcessStatus(record.status);
       }
     },
     {
-      title: l("sys.process.startTime"),
-      dataIndex: "startTime",
-      valueType: "dateTime",
+      title: l('sys.process.startTime'),
+      dataIndex: 'startTime',
+      valueType: 'dateTime'
     },
     {
-      title: l("sys.process.endTime"),
-      dataIndex: "endTime",
-      valueType: "dateTime",
+      title: l('sys.process.endTime'),
+      dataIndex: 'endTime',
+      valueType: 'dateTime'
     },
     {
-      title: l("sys.process.duration"),
-      dataIndex: "time",
+      title: l('sys.process.duration'),
+      dataIndex: 'time'
     },
     {
-      title: l("sys.process.operator"),
-      dataIndex: "userId",
+      title: l('sys.process.operator'),
+      dataIndex: 'userId'
     }
   ];
 
-
-  return <>
-    <ProTable<Process>
-      headerTitle={false}
-      {...PROTABLE_OPTIONS_PUBLIC}
-      rowKey="pid"
-      size={"small"}
-      search={false}
-      columns={processColumns}
-      request={() => getData(API_CONSTANTS.PROCESS_LIST, {active: false})}
-      expandable={{
-        expandRowByClick: true,
-        expandedRowRender: record => <SubStepsTable steps={record.steps}/>
-      }}
-    />
-  </>;
+  return (
+    <>
+      <ProTable<Process>
+        headerTitle={false}
+        {...PROTABLE_OPTIONS_PUBLIC}
+        rowKey='pid'
+        size={'small'}
+        search={false}
+        columns={processColumns}
+        request={() => getData(API_CONSTANTS.PROCESS_LIST, { active: false })}
+        expandable={{
+          expandRowByClick: true,
+          expandedRowRender: (record) => <SubStepsTable steps={record.steps} />
+        }}
+      />
+    </>
+  );
 };
 
 export default ProcessList;

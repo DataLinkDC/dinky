@@ -15,34 +15,36 @@
  * limitations under the License.
  */
 
-import {PROTABLE_OPTIONS_PUBLIC} from '@/services/constants';
-import {ProTable} from '@ant-design/pro-components';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { ProTable } from '@ant-design/pro-components';
+import { ProColumns } from '@ant-design/pro-table';
 import React from 'react';
-import {ProColumns} from '@ant-design/pro-table';
 
 type DataListProps = {
   columns: ProColumns[];
   data: any[];
-}
+};
 const DataList: React.FC<DataListProps> = (props) => {
-  const {columns, data} = props;
+  const { columns, data } = props;
 
-  return <>
-    <ProTable
-      {...PROTABLE_OPTIONS_PUBLIC}
-      pagination={{
-        position: ['bottomCenter'],
-        pageSize: 10,
-        showQuickJumper: true,
-        hideOnSinglePage: true,
-      }}
-      columns={columns}
-      dataSource={data}
-      search={false}
-      options={false}
-      scroll={{x: 'max-content'}}
-    />
-  </>;
+  return (
+    <>
+      <ProTable
+        {...PROTABLE_OPTIONS_PUBLIC}
+        pagination={{
+          position: ['bottomCenter'],
+          pageSize: 10,
+          showQuickJumper: true,
+          hideOnSinglePage: true
+        }}
+        columns={columns}
+        dataSource={data}
+        search={false}
+        options={false}
+        scroll={{ x: 'max-content' }}
+      />
+    </>
+  );
 };
 
 export default DataList;

@@ -30,7 +30,7 @@ public class UDFUtils extends UDFUtil {
 
     public static UDF taskToUDF(Task task) {
         return UDF.builder()
-                .className(task.getSavePointPath())
+                .className(task.getConfigJson().getUdfConfig().getClassName())
                 .code(task.getStatement())
                 .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
                 .build();

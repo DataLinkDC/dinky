@@ -17,9 +17,9 @@
  *
  */
 
-import React, {useState, useEffect} from 'react';
-import {Heatmap, G2, HeatmapConfig} from '@ant-design/plots';
-import {WEEK_LIST} from "@/pages/Home/constants";
+import { WEEK_LIST } from '@/pages/Home/constants';
+import { G2, Heatmap, HeatmapConfig } from '@ant-design/plots';
+import { useEffect, useState } from 'react';
 
 const DevHeatmap = () => {
   const [data, setData] = useState([]);
@@ -43,7 +43,7 @@ const DevHeatmap = () => {
         stroke: '#fff',
         lineWidth: 1,
         fill: cfg.color,
-        paht: [],
+        paht: []
       };
       const points = cfg.points;
       const path = [
@@ -51,26 +51,26 @@ const DevHeatmap = () => {
         ['L', points[1].x, points[1].y],
         ['L', points[2].x, points[2].y],
         ['L', points[3].x, points[3].y],
-        ['Z'],
+        ['Z']
       ]; // @ts-ignore
 
       attrs.path = this.parsePath(path);
       group.addShape('path', {
-        attrs,
+        attrs
       });
 
       if (cfg.data.lastWeek) {
         const linePath = [
           ['M', points[2].x, points[2].y],
-          ['L', points[3].x, points[3].y],
+          ['L', points[3].x, points[3].y]
         ]; // 最后一周的多边形添加右侧边框
 
         group.addShape('path', {
           attrs: {
             path: this.parsePath(linePath),
             lineWidth: 4,
-            stroke: '#404040',
-          },
+            stroke: '#404040'
+          }
         });
 
         if (cfg.data.lastDay) {
@@ -78,19 +78,19 @@ const DevHeatmap = () => {
             attrs: {
               path: this.parsePath([
                 ['M', points[1].x, points[1].y],
-                ['L', points[2].x, points[2].y],
+                ['L', points[2].x, points[2].y]
               ]),
               lineWidth: 4,
-              stroke: '#404040',
-            },
+              stroke: '#404040'
+            }
           });
         }
       }
 
       return group;
-    },
+    }
   });
-  const config :HeatmapConfig = {
+  const config: HeatmapConfig = {
     data,
     height: 200,
     autoFit: false,
@@ -102,29 +102,29 @@ const DevHeatmap = () => {
     meta: {
       day: {
         type: 'cat',
-        values: WEEK_LIST,
+        values: WEEK_LIST
       },
       week: {
-        type: 'cat',
+        type: 'cat'
       },
       commits: {
-        sync: true,
+        sync: true
       },
       date: {
-        type: 'cat',
-      },
+        type: 'cat'
+      }
     },
     yAxis: {
-      grid: null,
+      grid: null
     },
     tooltip: {
       title: 'date',
-      showMarkers: false,
+      showMarkers: false
     },
     interactions: [
       {
-        type: 'element-active',
-      },
+        type: 'element-active'
+      }
     ],
     xAxis: {
       position: 'top',
@@ -135,7 +135,7 @@ const DevHeatmap = () => {
         style: {
           fontSize: 12,
           fill: '#666',
-          textBaseline: 'top',
+          textBaseline: 'top'
         },
         formatter: (val) => {
           if (val === '2') {
@@ -153,12 +153,12 @@ const DevHeatmap = () => {
           }
 
           return '';
-        },
-      },
-    },
+        }
+      }
+    }
   };
 
   return <Heatmap {...config} />;
 };
 
-export default DevHeatmap
+export default DevHeatmap;

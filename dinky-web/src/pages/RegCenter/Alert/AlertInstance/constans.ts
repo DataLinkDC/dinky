@@ -15,78 +15,75 @@
  * limitations under the License.
  */
 
-
-import {ALERT_TYPE} from '@/types/RegCenter/data.d';
-import {l} from '@/utils/intl';
-import {DefaultOptionType} from 'rc-select/es/Select';
-
+import { ALERT_TYPE } from '@/types/RegCenter/data.d';
+import { l } from '@/utils/intl';
+import { DefaultOptionType } from 'rc-select/es/Select';
 
 export const ALERT_TYPE_LIST_OPTIONS: DefaultOptionType[] = [
   {
     label: l('rc.ai.dingTalk'),
     value: ALERT_TYPE.DINGTALK,
-    disabled: false,
+    disabled: false
   },
   {
     label: l('rc.ai.wechat'),
     value: ALERT_TYPE.WECHAT,
-    disabled: false,
+    disabled: false
   },
   {
     label: l('rc.ai.feishu'),
     value: ALERT_TYPE.FEISHU,
-    disabled: false,
+    disabled: false
   },
   {
     label: l('rc.ai.email'),
     value: ALERT_TYPE.EMAIL,
-    disabled: false,
+    disabled: false
   },
   {
     label: l('rc.ai.sms'),
     value: ALERT_TYPE.SMS,
-    disabled: false,
+    disabled: false
   }
 ];
-
 
 export const MANU_FACTURERS = [
   {
     label: l('rc.ai.mf.alibaba'),
-    value: 1,
+    value: 1
   },
   {
     label: l('rc.ai.mf.huawei'),
-    value: 2,
+    value: 2
   },
   {
     label: l('rc.ai.mf.yunpian'),
-    value: 3,
+    value: 3
   },
   {
     label: l('rc.ai.mf.tencent'),
-    value: 4,
+    value: 4
   },
   {
     label: l('rc.ai.mf.uni'),
-    value: 5,
+    value: 5
   },
   {
     label: l('rc.ai.mf.jdcloud'),
-    value: 6,
+    value: 6
   },
   {
     label: l('rc.ai.mf.cloopen'),
-    value: 7,
+    value: 7
   },
   {
     label: l('rc.ai.mf.emay'),
-    value: 8,
+    value: 8
   },
   {
     label: l('rc.ai.mf.ctyun'),
-    value: 9,
-  },
+    value: 9
+  }
 ];
 
 export enum SMS_TYPE {
@@ -98,5 +95,5 @@ export enum SMS_TYPE {
   JDCLOUD = 6,
   CLOOPEN = 7,
   EMAY = 8,
-  CTYUN = 9,
+  CTYUN = 9
 }

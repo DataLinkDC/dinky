@@ -21,6 +21,7 @@ export default {
   'button.create': 'Create',
   'button.close': 'Close',
   'button.confirm': 'Confirm',
+  'button.recovery': 'Recovery',
   'button.cancel': 'Cancel',
   'button.finish': 'Finish',
   'button.back': 'Back',
@@ -110,8 +111,7 @@ export default {
 
   'global.stay.tuned': 'Stay tuned',
   'global.mini': 'Mini Size',
-  'global.max':'Max Size',
-
+  'global.max': 'Max Size',
 
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
@@ -172,13 +172,12 @@ export default {
   'global.success': 'Success',
   'global.getdata.tips': 'Get Data',
 
-  'global.notifaction.iknow': 'I understand',
-  'global.notifaction.full-error': 'Complete error message',
+  'global.notification.iknow': 'I understand',
+  'global.notification.full-error': 'Complete error message',
 
   'global.item': 'Pieces',
   'global.bout': 'Times',
   'global.size': ' Size: {size}',
-
 
   'global.week.sunday': 'Sunday',
   'global.week.monday': 'Monday',
@@ -198,5 +197,5 @@ export default {
   'global.month.september': 'September',
   'global.month.october': 'October',
   'global.month.november': 'November',
-  'global.month.december': 'December',
+  'global.month.december': 'December'
 };

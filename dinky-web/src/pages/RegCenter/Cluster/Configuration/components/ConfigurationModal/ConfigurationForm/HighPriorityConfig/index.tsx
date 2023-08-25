@@ -17,37 +17,39 @@
  *
  */
 
-import {Divider} from "antd";
-import {l} from "@/utils/intl";
-import {ProFormGroup, ProFormText} from "@ant-design/pro-components";
-import {FLINK_CONFIG_LIST} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
-import React from "react";
+import { FLINK_CONFIG_LIST } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
+import { l } from '@/utils/intl';
+import { ProFormGroup, ProFormText } from '@ant-design/pro-components';
+import { Divider } from 'antd';
 
 const HighPriorityConfig = () => {
+  const renderHighPriorityConfig = () => {
+    return FLINK_CONFIG_LIST.map((item) => (
+      <>
+        <ProFormText
+          name={['configJson', 'flinkConfig', 'configuration', item.name]}
+          label={item.label}
+          width={400}
+          placeholder={item.placeholder}
+          tooltip={item.tooltip}
+        />
+      </>
+    ));
+  };
 
-    const renderHighPriorityConfig = () => {
-        return FLINK_CONFIG_LIST.map(item => <>
-            <ProFormText
-                name={['configJson', 'flinkConfig','configuration', item.name]}
-                label={item.label}
-                width={400}
-                placeholder={item.placeholder}
-                tooltip={item.tooltip}
-            />
-        </>)
-    };
-
-    return <>
-        <Divider>{l('rc.cc.defineConfig')}</Divider>
-        <ProFormGroup direction={'horizontal'} align={'baseline'}>
-            {renderHighPriorityConfig()}
-          <ProFormText
-            name={['configJson','clusterConfig', 'flinkConfigPath']}
-            label={"Flink Conf Yaml Path"}
-            width={400}
-          />
-        </ProFormGroup>
+  return (
+    <>
+      <Divider>{l('rc.cc.defineConfig')}</Divider>
+      <ProFormGroup direction={'horizontal'} align={'baseline'}>
+        {renderHighPriorityConfig()}
+        <ProFormText
+          name={['configJson', 'clusterConfig', 'flinkConfigPath']}
+          label={'Flink Conf Yaml Path'}
+          width={400}
+        />
+      </ProFormGroup>
     </>
-}
+  );
+};
 
-export default HighPriorityConfig
+export default HighPriorityConfig;

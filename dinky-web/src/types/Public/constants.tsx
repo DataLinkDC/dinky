@@ -17,31 +17,32 @@
  *
  */
 
-import {l} from "@/utils/intl";
-import {Tag} from "antd";
-import React from "react";
+import { l } from '@/utils/intl';
+import { Tag } from 'antd';
 
 /**
  * the table filter enum
  * @type {{true: {text: JSX.Element, status: string}, false: {text: JSX.Element, status: string}}}
  */
 export const YES_OR_NO_ENUM = {
-    true: {text: <Tag color={'success'}>{l('global.yes')}</Tag>, status: 'Success'},
-    false: {text: <Tag color={'error'}>{l('global.no')}</Tag>, status: 'Error'},
-}
+  true: {
+    text: <Tag color={'success'}>{l('global.yes')}</Tag>,
+    status: 'Success'
+  },
+  false: { text: <Tag color={'error'}>{l('global.no')}</Tag>, status: 'Error' }
+};
 
 /**
  * the table filter mapping
  * @type {({text: string, value: boolean} | {text: string, value: boolean})[]}
  */
-export const YES_OR_NO_FILTERS_MAPPING =  [
-    {
-        value: 1,
-        text: l("global.yes"),
-    },
-    {
-        value: 0,
-        text: l("global.no"),
-    },
+export const YES_OR_NO_FILTERS_MAPPING = [
+  {
+    value: 1,
+    text: l('global.yes')
+  },
+  {
+    value: 0,
+    text: l('global.no')
+  }
 ];
-

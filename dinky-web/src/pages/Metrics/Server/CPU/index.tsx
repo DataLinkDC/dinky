@@ -17,45 +17,42 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
-import {Area, AreaConfig} from "@ant-design/plots";
-import {JVMMetric, MetricsDataType} from "@/pages/Metrics/Server/data";
-import {Datum} from "@antv/g2plot";
-import {AreaOptions as G2plotConfig} from "@antv/g2plot/lib/plots/area/types";
-
+import { JVMMetric } from '@/pages/Metrics/Server/data';
+import { Area, AreaConfig } from '@ant-design/plots';
+import { Datum } from '@antv/g2plot';
+import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
+import React from 'react';
 
 type CpuProps = {
-    data: JVMMetric[];
+  data: JVMMetric[];
   chartConfig: G2plotConfig;
-}
+};
 type Cpu = {
-    time: Date;
-    value: string | number;
-}
+  time: Date;
+  value: string | number;
+};
 const CPU: React.FC<CpuProps> = (props) => {
+  const { data, chartConfig } = props;
 
-    const {data,chartConfig} = props;
+  const dataList: Cpu[] = data.map((x) => {
+    return { time: x.time, value: Number(x.jvm.cpuUsed.toFixed(2)) };
+  });
 
-    const dataList: Cpu[] = data.map(x => {
-        return {time: x.time, value: Number(x.jvm.cpuUsed.toFixed(2))};
-    })
+  const config: AreaConfig = {
+    ...chartConfig,
+    data: dataList,
+    yAxis: {
+      min: 0,
+      max: 100
+    },
+    tooltip: {
+      formatter: (datum: Datum) => {
+        return { name: 'Cpu Used', value: datum.value + ' %' };
+      }
+    }
+  };
 
-
-    const config: AreaConfig = {
-      ...chartConfig,
-        data: dataList,
-        yAxis: {
-            min: 0,
-            max: 100
-        },
-        tooltip: {
-            formatter: (datum: Datum) => {
-                return {name: "Cpu Used", value: datum.value + ' %'};
-            },
-        }
-    };
-
-    return <Area {...config} />;
-}
+  return <Area {...config} />;
+};
 
 export default CPU;

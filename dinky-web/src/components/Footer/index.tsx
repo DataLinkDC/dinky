@@ -24,21 +24,25 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   return (
     <DefaultFooter
-      style={{background: 'url(/icons/footer-bg.svg) 100% 100% no-repeat', backgroundSize: "cover", bottom: 0}}
+      style={{
+        background: 'url(/icons/footer-bg.svg) 100% 100% no-repeat',
+        backgroundSize: 'cover',
+        bottom: 0
+      }}
       copyright={`${currentYear} ` + l('app.copyright.produced')}
       links={[
         {
           key: 'Dinky',
           title: 'Dinky',
           href: 'https://github.com/DataLinkDC/dinky',
-          blankTarget: true,
+          blankTarget: true
         },
         {
           key: 'github',
           title: <GithubOutlined />,
           href: 'https://github.com/DataLinkDC/dinky',
-          blankTarget: true,
-        },
+          blankTarget: true
+        }
       ]}
     />
   );

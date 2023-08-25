@@ -40,7 +40,7 @@ class JobConfigTest {
         Map<String, String> config = new HashMap<>();
         config.put(RestOptions.PORT.key(), "9999");
 
-        jobConfig.setConfig(config);
+        jobConfig.setConfigJson(config);
         jobConfig.setAddress("127.0.0.1:7777");
         assertEquals("127.0.0.1:9999", jobConfig.getAddress());
 

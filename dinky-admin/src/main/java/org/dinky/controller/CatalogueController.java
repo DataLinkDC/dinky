@@ -43,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ZipUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
+@Api(tags = "Catalogue Controller")
 @RequestMapping("/api/catalogue")
 @RequiredArgsConstructor
 public class CatalogueController {
@@ -127,7 +129,7 @@ public class CatalogueController {
      * @param catalogueTaskDTO {@link CatalogueTaskDTO}
      * @return {@link Result}< {@link Catalogue}>}
      */
-    @PutMapping("/createTask")
+    @PutMapping("/saveOrUpdateCatalogueAndTask")
     @Log(title = "Create Catalogue And Task", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Create Catalogue And Task")
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
