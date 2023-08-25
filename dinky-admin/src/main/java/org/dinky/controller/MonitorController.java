@@ -59,6 +59,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MonitorController {
 
     private final MonitorService monitorService;
+
     @Autowired
     private FlinkMetricsIndicator flinkMetricsIndicator;
 
@@ -83,8 +84,9 @@ public class MonitorController {
     @PutMapping("/saveFlinkMetrics/{layout}")
     @ApiOperation("Save Flink Metrics")
     @Log(title = "Save Flink Metrics", businessType = BusinessType.INSERT)
-    public Result<Void> saveFlinkMetricLayout(@PathVariable(value = "layout") String layoutName, @RequestBody List<MetricsLayoutDTO> metricsList) {
-        monitorService.saveFlinkMetricLayout(layoutName,metricsList);
+    public Result<Void> saveFlinkMetricLayout(
+            @PathVariable(value = "layout") String layoutName, @RequestBody List<MetricsLayoutDTO> metricsList) {
+        monitorService.saveFlinkMetricLayout(layoutName, metricsList);
         flinkMetricsIndicator.getAndCheckFlinkUrlAvailable();
         return Result.succeed();
     }
@@ -100,5 +102,4 @@ public class MonitorController {
     public Result<List<Metrics>> getMetricsLayoutByName(@RequestParam String layoutName) {
         return Result.succeed(monitorService.getMetricsLayoutByName(layoutName));
     }
-
 }

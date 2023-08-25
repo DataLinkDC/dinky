@@ -43,7 +43,6 @@ import org.springframework.stereotype.Component;
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.json.JSONUtil;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;

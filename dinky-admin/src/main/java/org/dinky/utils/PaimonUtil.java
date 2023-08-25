@@ -19,7 +19,6 @@
 
 package org.dinky.utils;
 
-import cn.hutool.json.JSONUtil;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.function.constant.PathConstant;
 
@@ -62,6 +61,7 @@ import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

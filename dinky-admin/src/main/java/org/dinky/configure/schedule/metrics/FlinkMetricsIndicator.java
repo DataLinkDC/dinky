@@ -132,8 +132,7 @@ public class FlinkMetricsIndicator extends BaseSchedule {
                         (existingValue, newValue) -> {
                             existingValue.addAll(newValue);
                             return existingValue;
-                        }
-                ));
+                        }));
 
         for (JobInstance jobInstance : jobInstances) {
             Integer taskId = jobInstance.getTaskId();

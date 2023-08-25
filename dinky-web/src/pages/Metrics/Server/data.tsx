@@ -23,11 +23,11 @@ export type MetricsDataType = {
   //     cpu: CPUType,
   //     mem: MemoryType,
   // },
-  content: any,
-  metricsTotal: number,
-  model: string,
-  heartTime: Date,
-}
+  content: any;
+  metricsTotal: number;
+  model: string;
+  heartTime: Date;
+};
 export type JVMMetric = {
   jvm: JVMType;
   cpu: CPUType;

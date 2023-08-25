@@ -19,7 +19,6 @@
 
 package org.dinky.api;
 
-import cn.hutool.core.net.URLEncodeUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.FlinkRestAPIConstant;
 import org.dinky.data.constant.NetConstant;
@@ -40,6 +39,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
+import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
@@ -382,14 +382,16 @@ public class FlinkAPI {
         return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.THREAD_DUMP);
     }
 
-    public JsonNode getJobMetricesItems(String jobId,String verticeId) {
-        return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.VERTICES + verticeId + FlinkRestAPIConstant.METRICS);
+    public JsonNode getJobMetricesItems(String jobId, String verticeId) {
+        return get(FlinkRestAPIConstant.JOBS
+                + jobId
+                + FlinkRestAPIConstant.VERTICES
+                + verticeId
+                + FlinkRestAPIConstant.METRICS);
     }
 
-    public JsonNode getJobMetricesData(String jobId,String verticeId,String metrics) {
-        return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.VERTICES
-                + verticeId + FlinkRestAPIConstant.METRICS + "?get=" + URLEncodeUtil.encode(metrics));
+    public JsonNode getJobMetricesData(String jobId, String verticeId, String metrics) {
+        return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.VERTICES + verticeId
+                + FlinkRestAPIConstant.METRICS + "?get=" + URLEncodeUtil.encode(metrics));
     }
-
-
 }

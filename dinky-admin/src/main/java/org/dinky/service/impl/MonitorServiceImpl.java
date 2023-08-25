@@ -19,8 +19,6 @@
 
 package org.dinky.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.apache.http.util.TextUtils;
 import org.dinky.configure.MetricConfig;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.enums.MetricsType;
@@ -32,6 +30,7 @@ import org.dinky.process.exception.DinkyException;
 import org.dinky.service.MonitorService;
 import org.dinky.utils.PaimonUtil;
 
+import org.apache.http.util.TextUtils;
 import org.apache.paimon.data.Timestamp;
 import org.apache.paimon.predicate.Predicate;
 import org.apache.paimon.predicate.PredicateBuilder;
@@ -52,6 +51,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -66,7 +66,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> implements MonitorService {
     private final Executor scheduleRefreshMonitorDataExecutor;
-
 
     @Override
     public List<MetricsVO> getData(Date startTime, Date endTime) {
@@ -103,10 +102,10 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
                     }
                     for (MetricsVO metrics : metricsQueue) {
                         if (metrics.getHeartTime().isAfter(maxDate)) {
-                            //如果存在layoutName则为flink监控请求，过滤非layoutName指定的监控数据，防止数据过多卡顿
-                            if (!TextUtils.isEmpty(layoutName) &&
-                                    metrics.getModel().equals(MetricsType.FLINK.getType()) &&
-                                    !metrics.flinkContent().getLayoutNames().contains(layoutName)) {
+                            // 如果存在layoutName则为flink监控请求，过滤非layoutName指定的监控数据，防止数据过多卡顿
+                            if (!TextUtils.isEmpty(layoutName)
+                                    && metrics.getModel().equals(MetricsType.FLINK.getType())
+                                    && !metrics.flinkContent().getLayoutNames().contains(layoutName)) {
                                 continue;
                             }
                             sseEmitter.send(metrics);
@@ -173,5 +172,4 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
         wrapper.lambda().eq(Metrics::getLayoutName, layoutName);
         return this.baseMapper.selectList(wrapper);
     }
-
 }

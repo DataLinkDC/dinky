@@ -35,10 +35,10 @@ public class MetricsVO {
     private String model;
     private LocalDateTime heartTime;
 
-    public FlinkMetricsIndicator.FlinkMetrics flinkContent(){
-        if (content instanceof FlinkMetricsIndicator.FlinkMetrics){
+    public FlinkMetricsIndicator.FlinkMetrics flinkContent() {
+        if (content instanceof FlinkMetricsIndicator.FlinkMetrics) {
             return (FlinkMetricsIndicator.FlinkMetrics) content;
-        }else {
+        } else {
             return new FlinkMetricsIndicator.FlinkMetrics();
         }
     }
