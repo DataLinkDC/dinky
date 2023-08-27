@@ -39,6 +39,7 @@ import org.apache.paimon.predicate.PredicateBuilder;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +56,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import avro.shaded.com.google.common.collect.Lists;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
@@ -85,7 +85,7 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
             Predicate lessOrEqual = p.lessOrEqual(0, endTS);
             Predicate local =
                     p.in(1, jobIds.stream().map(BinaryString::fromString).collect(Collectors.toList()));
-            return Lists.newArrayList(local, greaterOrEqual, lessOrEqual);
+            return CollUtil.newArrayList(local, greaterOrEqual, lessOrEqual);
         };
         List<MetricsVO> metricsVOList =
                 PaimonUtil.batchReadTable(PaimonUtil.METRICS_IDENTIFIER, MetricsVO.class, filter);
