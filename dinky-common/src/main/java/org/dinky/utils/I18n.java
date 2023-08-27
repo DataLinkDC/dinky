@@ -10,15 +10,14 @@ import java.util.ResourceBundle;
 
 public final class I18n {
 
-    private final static String MESSAGES_BASE = "message";
+    private static final String MESSAGES_BASE = "message";
     private static ResourceBundle bundle;
 
     private I18n() {
     }
 
     public static Locale getLocale() {
-        Locale defaultLocale = Locale.getDefault();
-        return defaultLocale;
+        return Locale.getDefault();
     }
 
     public static boolean isSupported(Locale l) {
