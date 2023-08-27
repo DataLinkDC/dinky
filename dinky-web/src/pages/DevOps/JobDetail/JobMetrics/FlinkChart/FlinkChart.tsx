@@ -91,7 +91,6 @@ const FlinkChart = (props: FlinkChartProps) => {
             </StatisticCard.Group>
           )}
         </ProCard>
-        <ProCard />
       </Col>
 
       <Modal

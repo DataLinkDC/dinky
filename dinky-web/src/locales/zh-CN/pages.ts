@@ -898,6 +898,7 @@ export default {
   'metrics.filter.60seconds': '60秒',
   'metrics.filter.5minutes': '5分钟',
   'metrics.filter.10minutes': '10分钟',
+  'metrics.filter.real': '实时',
   'metrics.filter.1hour': '1小时',
   'metrics.filter.2hours': '2小时',
   'metrics.filter.5hours': '5小时',

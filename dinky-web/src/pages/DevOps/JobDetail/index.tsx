@@ -43,8 +43,6 @@ const JobDetail = (props: any) => {
   const params = useLocation();
   const id = params.search.split('=')[1];
 
-  // const jobInfoDetail = Devops?.jobInfoDetail
-  // Set the initial tab key state
   const [tabKey, setTabKey] = useState<string>(OperatorEnum.JOB_BASE_INFO);
 
   // Define the components for each job operator
@@ -70,7 +68,7 @@ const JobDetail = (props: any) => {
       onSuccess: (data: Jobs.JobInfoDetail, params) => {
         dispatch({
           type: 'Devops/setJobInfoDetail',
-          payload: data
+          jobDetail: data
         });
       }
     }

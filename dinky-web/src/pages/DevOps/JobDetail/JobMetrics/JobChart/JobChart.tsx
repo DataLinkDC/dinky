@@ -18,6 +18,8 @@
  */
 
 import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
+import FlinkChart from '@/pages/DevOps/JobDetail/JobMetrics/FlinkChart/FlinkChart';
+import { getMetricsData } from '@/pages/DevOps/JobDetail/JobMetrics/service';
 import { DevopsType } from '@/pages/DevOps/JobDetail/model';
 import { ChartData } from '@/pages/Metrics/Job/data';
 import { FlinkMetricsData, MetricsDataType } from '@/pages/Metrics/Server/data';
@@ -26,18 +28,39 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { connect } from '@@/exports';
 import { Row } from 'antd';
 import { useEffect, useState } from 'react';
-import FlinkChart from './FlinkChart/FlinkChart';
 
 const JobChart = (props: any) => {
-  const { loading, jobDetail, metricsTarget } = props;
+  const { loading, jobDetail, metricsTarget, layoutName, timeRange } = props;
 
   // const isLoading = loading?.effects['monitors/queryMetricsTarget']
 
   const [eventSource, setEventSource] = useState<EventSource>();
   const [chartDatas, setChartDatas] = useState<Record<string, ChartData[]>>({});
 
-  const dataProcess = (data: MetricsDataType) => {
-    if (data.model != 'flink') {
+  const sseUrl = `${
+    API_CONSTANTS.MONITOR_GET_LAST_DATA
+  }?lastTime=${new Date().getTime()}&layoutName=${layoutName}`;
+
+  useEffect(() => {
+    getMetricsData({
+      startTime: timeRange.startTime,
+      endTime: timeRange.endTime,
+      taskIds: jobDetail.instance.taskId
+    }).then((result) => {
+      const chData = {};
+      console.log(timeRange);
+      (result as MetricsDataType[]).forEach((d) => dataProcess(chData, d));
+      if (!timeRange.isReal) {
+        eventSource?.close();
+        setEventSource(undefined);
+      } else {
+        !eventSource && setEventSource(getSseData(sseUrl));
+      }
+    });
+  }, [timeRange]);
+
+  const dataProcess = (chData: Record<string, ChartData[]>, data: MetricsDataType) => {
+    if (data.model == 'local') {
       return;
     }
     const fd = data.content as FlinkMetricsData;
@@ -49,28 +72,21 @@ const JobChart = (props: any) => {
           time: data.heartTime,
           value: verticesMap[verticeId][mertics]
         };
-        if (!(key in chartDatas)) {
-          chartDatas[key] = [];
+        if (!(key in chData)) {
+          chData[key] = [];
         }
-        chartDatas[key].push(value);
-        setChartDatas(chartDatas);
+        chData[key].push(value);
       })
     );
+    setChartDatas(chData);
   };
 
   useEffect(() => {
-    const layoutName = `${jobDetail?.instance?.name}-${jobDetail?.instance?.taskId}`;
-    const url = `${
-      API_CONSTANTS.MONITOR_GET_LAST_DATA
-    }?lastTime=${new Date().getTime()}&layoutName=${layoutName}`;
-    setEventSource(getSseData(url));
-  }, []);
-
-  useEffect(() => {
     eventSource &&
+      timeRange.isReal &&
       (eventSource.onmessage = (e) => {
         let result = JSON.parse(e.data);
-        dataProcess(result);
+        dataProcess(chartDatas, result);
       });
   }, [eventSource]);
 
@@ -95,13 +111,11 @@ const JobChart = (props: any) => {
       );
     });
   };
-  return (
-    <>
-      <Row gutter={[8, 16]}>{renderMetricsCardList(metricsTarget ?? {}, chartDatas)}</Row>
-    </>
-  );
+  return <Row gutter={[8, 16]}>{renderMetricsCardList(metricsTarget ?? {}, chartDatas)}</Row>;
 };
+
 export default connect(({ Devops }: { Devops: DevopsType }) => ({
   jobDetail: Devops.jobInfoDetail,
-  metricsTarget: Devops.metrics.jobMetricsTarget
+  metricsTarget: Devops.metrics.jobMetricsTarget,
+  layoutName: Devops.metrics.layoutName
 }))(JobChart);

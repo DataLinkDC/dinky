@@ -229,12 +229,12 @@ export enum API_CONSTANTS {
 
   // monitor
   MONITOR_GET_SYSTEM_DATA = '/api/monitor/getSysData',
+  MONITOR_GET_FLINK_DATA = '/api/monitor/getFlinkData',
   MONITOR_GET_LAST_DATA = '/api/monitor/getLastUpdateData',
+  METRICS_LAYOUT_GET_BY_NAME = '/api/monitor/getMetricsLayoutByName',
   JOB_METRICS = '/api/monitor/jobMetrics',
-
   SAVE_FLINK_METRICS = '/api/monitor/saveFlinkMetrics/',
   GET_METRICS_LAYOUT = '/api/monitor/getMetricsLayout',
-  GET_METRICS_LAYOUT_BY_NAME = '/api/monitor/getMetricsLayoutByName',
 
   // flink
   FLINK_PROXY = '/api/flink',

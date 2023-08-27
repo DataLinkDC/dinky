@@ -31,7 +31,6 @@ import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
 import { Row } from 'antd';
 import { useEffect, useState } from 'react';
-import Job from './Job';
 
 const commonChartConfig: G2plotConfig = {
   data: [],
@@ -226,7 +225,7 @@ export default () => {
           );
         })}
 
-      <Job />
+      {/*<Job />*/}
     </PageContainer>
   );
 };

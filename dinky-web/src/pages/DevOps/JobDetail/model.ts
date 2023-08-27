@@ -22,7 +22,6 @@ export type DevopsModelType = {
   reducers: {
     updateMetricsTarget: Reducer;
     setMetricsTarget: Reducer;
-    setLayoutName: Reducer;
     setJobInfoDetail: Reducer;
   };
 };
@@ -68,17 +67,14 @@ const Devops: DevopsModelType = {
       };
     },
 
-    setLayoutName(state, { payload }) {
-      state.metrics.layoutName = payload;
+    setJobInfoDetail(state, { jobDetail }) {
       return {
-        ...state
-      };
-    },
-
-    setJobInfoDetail(state, { payload }) {
-      state.jobInfoDetail = payload;
-      return {
-        ...state
+        ...state,
+        jobInfoDetail: jobDetail,
+        metrics: {
+          ...state.metrics,
+          layoutName: `${jobDetail.instance.name}-${jobDetail.instance.taskId}`
+        }
       };
     }
   }

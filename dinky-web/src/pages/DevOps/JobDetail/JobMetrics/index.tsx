@@ -17,35 +17,42 @@
  *
  */
 
-import MetricsBanner from '@/pages/DevOps/JobDetail/JobMetrics/components/MetricsBanner';
+import { MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
+import MetricsFilter from '@/pages/DevOps/JobDetail/JobMetrics/MetricsFilter/MetricsFilter';
 import { DevopsType } from '@/pages/DevOps/JobDetail/model';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import JobChart from './components/JobChart';
+import JobChart from './JobChart/JobChart';
 
 const JobMetrics = (props: any) => {
-  const { jobDetail, dispatch } = props;
+  const { layoutName, dispatch } = props;
+
+  const [timeRange, setTimeRange] = useState<MetricsTimeFilter>({
+    startTime: new Date().getTime() - 60000,
+    endTime: new Date().getTime(),
+    isReal: true
+  });
 
   useEffect(() => {
-    const layoutName = `${jobDetail?.instance?.name}-${jobDetail?.instance?.taskId}`;
-    dispatch({
-      type: 'Devops/setLayoutName',
-      payload: layoutName
-    });
     dispatch({
       type: 'Devops/queryMetricsTarget',
       payload: { layoutName: layoutName }
     });
   }, []);
 
+  const onTimeSelectChange = (filter: MetricsTimeFilter) => {
+    setTimeRange(filter);
+  };
+
   return (
     <>
-      <MetricsBanner />
-      <JobChart />
+      <MetricsFilter onTimeSelect={onTimeSelectChange} />
+      <JobChart timeRange={timeRange} />
     </>
   );
 };
 
 export default connect(({ Devops }: { Devops: DevopsType }) => ({
-  jobDetail: Devops.jobInfoDetail
+  jobDetail: Devops.jobInfoDetail,
+  layoutName: Devops.metrics.layoutName
 }))(JobMetrics);

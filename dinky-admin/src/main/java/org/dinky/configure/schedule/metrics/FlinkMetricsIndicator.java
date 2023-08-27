@@ -22,7 +22,6 @@ package org.dinky.configure.schedule.metrics;
 import org.dinky.configure.MetricConfig;
 import org.dinky.configure.schedule.BaseSchedule;
 import org.dinky.context.TenantContextHolder;
-import org.dinky.data.enums.MetricsType;
 import org.dinky.data.model.Configuration;
 import org.dinky.data.model.History;
 import org.dinky.data.model.JobInstance;
@@ -89,7 +88,7 @@ public class FlinkMetricsIndicator extends BaseSchedule {
         AsyncUtil.waitAll(array);
         for (FlinkMetrics flinkMetrics : FLINK_METRICS_DATA_MAP.get(now)) {
             MetricsVO metricsVO = new MetricsVO();
-            metricsVO.setModel(MetricsType.FLINK.getType());
+            metricsVO.setModel(flinkMetrics.getJobId());
             metricsVO.setHeartTime(now);
             metricsVO.setContent(flinkMetrics);
             MetricConfig.getMetricsQueue().add(metricsVO);

@@ -1,5 +1,5 @@
 import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
-import MonitorConfigTab from '@/pages/DevOps/JobDetail/JobMetrics/components/MetricsConfigTab/MetricsConfigTab';
+import MonitorConfigTab from '@/pages/DevOps/JobDetail/JobMetrics/MetricsFilter/MetricsConfigTab';
 import { putMetricsLayout } from '@/pages/DevOps/JobDetail/JobMetrics/service';
 import { DevopsType } from '@/pages/DevOps/JobDetail/model';
 import { l } from '@/utils/intl';

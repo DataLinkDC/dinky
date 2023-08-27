@@ -16,3 +16,9 @@ export type JobMetricsItem = {
   createTime: string;
   updateTime: string;
 };
+
+export type MetricsTimeFilter = {
+  startTime: number;
+  endTime?: number;
+  isReal: boolean;
+};
