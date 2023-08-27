@@ -26,27 +26,28 @@ import { FlinkMetricsData, MetricsDataType } from '@/pages/Metrics/Server/data';
 import { getSseData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { connect } from '@@/exports';
-import { Row } from 'antd';
+import {Row, Spin} from 'antd';
 import { useEffect, useState } from 'react';
 
 const JobChart = (props: any) => {
-  const { loading, jobDetail, metricsTarget, layoutName, timeRange } = props;
-
-  // const isLoading = loading?.effects['monitors/queryMetricsTarget']
+  const {jobDetail, metricsTarget, layoutName, timeRange } = props;
 
   const [eventSource, setEventSource] = useState<EventSource>();
   const [chartDatas, setChartDatas] = useState<Record<string, ChartData[]>>({});
+  const [loading, setLoading] = useState<boolean>(false);
 
   const sseUrl = `${
     API_CONSTANTS.MONITOR_GET_LAST_DATA
   }?lastTime=${new Date().getTime()}&layoutName=${layoutName}`;
 
   useEffect(() => {
+    setLoading(true);
     getMetricsData({
       startTime: timeRange.startTime,
       endTime: timeRange.endTime,
       taskIds: jobDetail.instance.taskId
     }).then((result) => {
+      setLoading(false);
       const chData = {};
       console.log(timeRange);
       (result as MetricsDataType[]).forEach((d) => dataProcess(chData, d));
@@ -111,7 +112,9 @@ const JobChart = (props: any) => {
       );
     });
   };
-  return <Row gutter={[8, 16]}>{renderMetricsCardList(metricsTarget ?? {}, chartDatas)}</Row>;
+  return <Spin spinning={loading}>
+    <Row gutter={[8, 16]}>{renderMetricsCardList(metricsTarget ?? {}, chartDatas)}</Row>
+  </Spin>;
 };
 
 export default connect(({ Devops }: { Devops: DevopsType }) => ({
