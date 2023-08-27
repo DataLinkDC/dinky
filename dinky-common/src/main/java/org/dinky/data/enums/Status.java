@@ -20,9 +20,10 @@
 package org.dinky.data.enums;
 
 import org.dinky.utils.I18n;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.util.Optional;
+
+import org.springframework.context.i18n.LocaleContextHolder;
 
 /**
  * Status enum.
@@ -259,7 +260,9 @@ public enum Status {
         return this.code;
     }
 
-    public String getKey() {return this.key;}
+    public String getKey() {
+        return this.key;
+    }
 
     public String getMsg() {
         I18n.setLocale(LocaleContextHolder.getLocale());
