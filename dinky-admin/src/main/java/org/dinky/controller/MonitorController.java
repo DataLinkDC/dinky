@@ -52,6 +52,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
 import io.swagger.annotations.Api;
@@ -78,7 +79,7 @@ public class MonitorController {
         List<MetricsVO> data = monitorService.getData(
                 DateUtil.date(startTime),
                 DateUtil.date(Opt.ofNullable(endTime).orElse(DateUtil.date().getTime())),
-                List.of(MetricsType.LOCAL.getType()));
+                CollUtil.newArrayList(MetricsType.LOCAL.getType()));
         return Result.succeed(data);
     }
 
