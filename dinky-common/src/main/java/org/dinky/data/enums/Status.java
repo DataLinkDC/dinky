@@ -265,7 +265,6 @@ public enum Status {
     }
 
     public String getMsg() {
-        I18n.setLocale(LocaleContextHolder.getLocale());
         return I18n.getMessage(this.getKey());
     }
 

@@ -28,6 +28,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dinky.utils.I18n;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
@@ -42,11 +43,14 @@ public class LocaleChangeInterceptor implements AsyncHandlerInterceptor {
         if (Asserts.isNotNull(cookie)) {
             // Proceed in cookie
             LocaleContextHolder.setLocale(parseLocaleValue(cookie.getValue()));
+            I18n.setLocale(LocaleContextHolder.getLocale());
+
         }
         // Proceed in header
         String newLocale = request.getHeader(BaseConstant.LOCALE_LANGUAGE_COOKIE);
         if (Asserts.isNotNull(newLocale)) {
             LocaleContextHolder.setLocale(parseLocaleValue(newLocale));
+            I18n.setLocale(LocaleContextHolder.getLocale());
         }
         return true;
     }
