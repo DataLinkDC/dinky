@@ -21,8 +21,6 @@ package org.dinky.controller;
 
 import org.dinky.data.vo.CascaderVO;
 
-import org.apache.flink.configuration.ConfigOption;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -80,9 +78,14 @@ public class FlinkConfController {
     private static void loadDataByGroup(String clazz, List<CascaderVO> dataList, String group) {
         try {
             Class<?> loadClass = ClassLoaderUtil.getContextClassLoader().loadClass(clazz);
-            Field[] fields = ReflectUtil.getFields(
-                    loadClass,
-                    f -> f.getType().isAssignableFrom(ConfigOption.class) && Modifier.isStatic(f.getModifiers()));
+            Field[] fields = ReflectUtil.getFields(loadClass, f -> {
+                try {
+                    return f.getType().isAssignableFrom(Class.forName("org.apache.flink.configuration.ConfigOption"))
+                            && Modifier.isStatic(f.getModifiers());
+                } catch (ClassNotFoundException e) {
+                    return false;
+                }
+            });
             List<CascaderVO> configList = new ArrayList<>();
             for (Field field : fields) {
                 CascaderVO config = new CascaderVO();
