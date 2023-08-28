@@ -20,6 +20,7 @@
 package org.dinky.data.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class TaskExtConfig implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private TaskUdfConfig udfConfig;
-    private List<ConfigItem> customConfig;
+    private List<ConfigItem> customConfig=new ArrayList<>();
 
     // 获取自定义配置的某个key的值
     public String getCustomConfigValue(String key) {
