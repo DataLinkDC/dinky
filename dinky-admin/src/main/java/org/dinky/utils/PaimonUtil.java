@@ -61,6 +61,7 @@ import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -113,9 +114,9 @@ public class PaimonUtil {
 
                 BinaryRow row = new BinaryRow(30);
                 BinaryRowWriter writer = new BinaryRowWriter(row);
-                writer.writeTimestamp(0, Timestamp.fromLocalDateTime(now), 0);
+                writer.writeTimestamp(0, Timestamp.fromLocalDateTime(now), 3);
                 writer.writeString(1, BinaryString.fromString(metrics.getModel()));
-                writer.writeString(2, BinaryString.fromString(metrics.getContent()));
+                writer.writeString(2, BinaryString.fromString(JSONUtil.toJsonStr(metrics.getContent())));
                 writer.writeString(3, BinaryString.fromString(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
                 write.write(row);
             }

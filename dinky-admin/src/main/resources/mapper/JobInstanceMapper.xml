@@ -32,7 +32,7 @@
                 and dh.type = #{param.type}
             </if>
             <if test='param.taskId!=null and param.taskId!=""'>
-                and a.task_id = #{param.taskId}
+                and a.task_id in (${param.taskId})
             </if>
             <if test='param.step!=null and param.step!=""'>
                 and a.step = #{param.step}

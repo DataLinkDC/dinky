@@ -21,6 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.configure.MetricConfig;
 import org.dinky.data.dto.MetricsLayoutDTO;
+import org.dinky.data.enums.MetricsType;
 import org.dinky.data.metrics.Jvm;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
@@ -29,6 +30,8 @@ import org.dinky.process.exception.DinkyException;
 import org.dinky.service.MonitorService;
 import org.dinky.utils.PaimonUtil;
 
+import org.apache.http.util.TextUtils;
+import org.apache.paimon.data.BinaryString;
 import org.apache.paimon.data.Timestamp;
 import org.apache.paimon.predicate.Predicate;
 import org.apache.paimon.predicate.PredicateBuilder;
@@ -49,6 +52,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -56,6 +60,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -65,7 +70,7 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
     private final Executor scheduleRefreshMonitorDataExecutor;
 
     @Override
-    public List<MetricsVO> getData(Date startTime, Date endTime) {
+    public List<MetricsVO> getData(Date startTime, Date endTime, List<String> jobIds) {
         endTime = Opt.ofNullable(endTime).orElse(DateUtil.date());
         Timestamp startTS = Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(startTime));
         Timestamp endTS = Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(endTime));
@@ -73,10 +78,12 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
         if (endTime.compareTo(startTime) < 1) {
             throw new DinkyException("The end date must be greater than the start date!");
         }
+
         Function<PredicateBuilder, List<Predicate>> filter = p -> {
             Predicate greaterOrEqual = p.greaterOrEqual(0, startTS);
             Predicate lessOrEqual = p.lessOrEqual(0, endTS);
-            Predicate local = p.equal(2, "local");
+            Predicate local =
+                    p.in(1, jobIds.stream().map(BinaryString::fromString).collect(Collectors.toList()));
             return CollUtil.newArrayList(local, greaterOrEqual, lessOrEqual);
         };
         List<MetricsVO> metricsVOList =
@@ -84,11 +91,12 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
         return metricsVOList.stream()
                 .filter(x -> x.getHeartTime().isAfter(startTS.toLocalDateTime()))
                 .filter(x -> x.getHeartTime().isBefore(endTS.toLocalDateTime()))
+                .peek(vo -> vo.setContent(new JSONObject(vo.getContent().toString())))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate) {
+    public SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate, String layoutName) {
         Queue<MetricsVO> metricsQueue = MetricConfig.getMetricsQueue();
         scheduleRefreshMonitorDataExecutor.execute(() -> {
             try {
@@ -99,6 +107,12 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
                     }
                     for (MetricsVO metrics : metricsQueue) {
                         if (metrics.getHeartTime().isAfter(maxDate)) {
+                            // 过滤非layoutName指定的Flink监控数据，防止数据过多卡顿
+                            if (!TextUtils.isEmpty(layoutName)
+                                    && !metrics.getModel().equals(MetricsType.LOCAL.getType())
+                                    && !metrics.flinkContent().getLayoutNames().contains(layoutName)) {
+                                continue;
+                            }
                             sseEmitter.send(metrics);
                             maxDate = metrics.getHeartTime();
                         }
@@ -135,7 +149,10 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveFlinkMetricLayout(List<MetricsLayoutDTO> metricsList) {
+    public void saveFlinkMetricLayout(String layout, List<MetricsLayoutDTO> metricsList) {
+        QueryWrapper<Metrics> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Metrics::getLayoutName, layout);
+        remove(wrapper);
         if (CollUtil.isEmpty(metricsList)) {
             return;
         }
@@ -152,5 +169,12 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
             result.get(layoutName).add(x);
         });
         return result;
+    }
+
+    @Override
+    public List<Metrics> getMetricsLayoutByName(String layoutName) {
+        QueryWrapper<Metrics> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Metrics::getLayoutName, layoutName);
+        return this.baseMapper.selectList(wrapper);
     }
 }

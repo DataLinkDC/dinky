@@ -52,7 +52,7 @@ public class MetricConfig {
     /** Entering the lake every 10 states */
     @Scheduled(fixedRate = 10000)
     @PreDestroy
-    public void writeScheduled() {
+    public void writeScheduled() throws Exception {
         PaimonUtil.writeMetrics(new ArrayList<>(METRICS_QUEUE));
         METRICS_QUEUE.clear();
     }

@@ -27,18 +27,22 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface MonitorService extends IService<Metrics> {
-    List<MetricsVO> getData(Date startTime, Date endTime);
+    List<MetricsVO> getData(Date startTime, Date endTime, List<String> jobIds);
 
-    SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate);
+    SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate, String layoutName);
 
     SseEmitter sendJvmInfo(SseEmitter sseEmitter);
 
-    void saveFlinkMetricLayout(List<MetricsLayoutDTO> metricsList);
+    @Transactional(rollbackFor = Exception.class)
+    void saveFlinkMetricLayout(String layout, List<MetricsLayoutDTO> metricsList);
 
     Map<String, List<Metrics>> getMetricsLayout();
+
+    List<Metrics> getMetricsLayoutByName(String layoutName);
 }
