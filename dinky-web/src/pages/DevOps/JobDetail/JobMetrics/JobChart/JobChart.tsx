@@ -18,7 +18,6 @@
  */
 
 import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
-import FlinkChart from '@/pages/DevOps/JobDetail/JobMetrics/FlinkChart/FlinkChart';
 import { getMetricsData } from '@/pages/DevOps/JobDetail/JobMetrics/service';
 import { DevopsType } from '@/pages/DevOps/JobDetail/model';
 import { ChartData } from '@/pages/Metrics/Job/data';
@@ -28,6 +27,7 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { connect } from '@@/exports';
 import {Row, Spin} from 'antd';
 import { useEffect, useState } from 'react';
+import FlinkChart from "@/components/FlinkChart";
 
 const JobChart = (props: any) => {
   const {jobDetail, metricsTarget, layoutName, timeRange } = props;
@@ -39,6 +39,28 @@ const JobChart = (props: any) => {
   const sseUrl = `${
     API_CONSTANTS.MONITOR_GET_LAST_DATA
   }?lastTime=${new Date().getTime()}&layoutName=${layoutName}`;
+
+  const dataProcess = (chData: Record<string, ChartData[]>, data: MetricsDataType) => {
+    if (data.model == 'local') {
+      return;
+    }
+    const fd = data.content as FlinkMetricsData;
+    const verticesMap = fd.verticesAndMetricsMap;
+    Object.keys(verticesMap).forEach((verticeId) =>
+        Object.keys(verticesMap[verticeId]).forEach((mertics) => {
+          const key = `${verticeId}-${mertics}`;
+          const value = {
+            time: data.heartTime,
+            value: verticesMap[verticeId][mertics]
+          };
+          if (!(key in chData)) {
+            chData[key] = [];
+          }
+          chData[key].push(value);
+        })
+    );
+    setChartDatas(chData);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -55,40 +77,20 @@ const JobChart = (props: any) => {
         eventSource?.close();
         setEventSource(undefined);
       } else {
-        !eventSource && setEventSource(getSseData(sseUrl));
+        if (!eventSource){
+          setEventSource(getSseData(sseUrl))
+        }
       }
     });
   }, [timeRange]);
 
-  const dataProcess = (chData: Record<string, ChartData[]>, data: MetricsDataType) => {
-    if (data.model == 'local') {
-      return;
-    }
-    const fd = data.content as FlinkMetricsData;
-    const verticesMap = fd.verticesAndMetricsMap;
-    Object.keys(verticesMap).forEach((verticeId) =>
-      Object.keys(verticesMap[verticeId]).forEach((mertics) => {
-        const key = `${verticeId}-${mertics}`;
-        const value = {
-          time: data.heartTime,
-          value: verticesMap[verticeId][mertics]
-        };
-        if (!(key in chData)) {
-          chData[key] = [];
-        }
-        chData[key].push(value);
-      })
-    );
-    setChartDatas(chData);
-  };
-
   useEffect(() => {
-    eventSource &&
-      timeRange.isReal &&
-      (eventSource.onmessage = (e) => {
+    if (eventSource && timeRange.isReal){
+      eventSource.onmessage = (e) => {
         let result = JSON.parse(e.data);
         dataProcess(chartDatas, result);
-      });
+      }
+    }
   }, [eventSource]);
 
   const renderMetricsCardList = (
@@ -108,6 +110,7 @@ const JobChart = (props: any) => {
           chartType={metricsItem.showType}
           title={metricsItem.metrics}
           data={chartData[key] ?? []}
+          extraType={"agrandir"}
         />
       );
     });

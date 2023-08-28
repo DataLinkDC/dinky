@@ -30,7 +30,7 @@ import { l } from '@/utils/intl';
 import { ProCard, ProFormSelect } from '@ant-design/pro-components';
 import { Button, Input, Row } from 'antd';
 import { useEffect, useState } from 'react';
-import FlinkChart from './FlinkChart';
+import FlinkChart from '../../../components/FlinkChart';
 
 const getJobMetrics = async (job: JobMetrics) => {
   const url =
@@ -212,6 +212,7 @@ const Job = () => {
                 }}
                 data={chartData[j.taskId + j.subTaskId + j.metrics]}
                 title={j.metrics}
+                extraType={'size'}
               />
             );
           })}
