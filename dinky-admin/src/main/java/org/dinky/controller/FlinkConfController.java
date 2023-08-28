@@ -1,19 +1,41 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.dinky.controller;
 
-import cn.hutool.core.util.ClassLoaderUtil;
-import cn.hutool.core.util.ReflectUtil;
-import io.swagger.annotations.Api;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.flink.configuration.ConfigOption;
 import org.dinky.data.vo.CascaderVO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import org.apache.flink.configuration.ConfigOption;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import cn.hutool.core.util.ClassLoaderUtil;
+import cn.hutool.core.util.ReflectUtil;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
@@ -49,7 +71,8 @@ public class FlinkConfController {
         loadDataByGroup("org.apache.flink.configuration.ResourceManagerOptions", dataList, "ResourceManager");
         loadDataByGroup("org.apache.flink.configuration.HistoryServerOptions", dataList, "HistoryServer");
         loadDataByGroup("org.apache.flink.configuration.MetricOptions", dataList, "Metric");
-        loadDataByGroup("org.apache.flink.configuration.NettyShuffleEnvironmentOptions", dataList, "NettyShuffleEnvironment");
+        loadDataByGroup(
+                "org.apache.flink.configuration.NettyShuffleEnvironmentOptions", dataList, "NettyShuffleEnvironment");
         loadDataByGroup("org.apache.flink.configuration.RestartStrategyOptions", dataList, "RestartStrategy");
         return dataList;
     }
@@ -57,7 +80,9 @@ public class FlinkConfController {
     private static void loadDataByGroup(String clazz, List<CascaderVO> dataList, String group) {
         try {
             Class<?> loadClass = ClassLoaderUtil.getContextClassLoader().loadClass(clazz);
-            Field[] fields = ReflectUtil.getFields(loadClass, f -> f.getType().isAssignableFrom(ConfigOption.class) && Modifier.isStatic(f.getModifiers()));
+            Field[] fields = ReflectUtil.getFields(
+                    loadClass,
+                    f -> f.getType().isAssignableFrom(ConfigOption.class) && Modifier.isStatic(f.getModifiers()));
             List<CascaderVO> configList = new ArrayList<>();
             for (Field field : fields) {
                 CascaderVO config = new CascaderVO();
