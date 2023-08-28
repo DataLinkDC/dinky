@@ -141,7 +141,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
     @Override
     public JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance) {
-        Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMsg());
+        Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
         String key = jobInstance.getId().toString();
         FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
         if (pool.containsKey(key)) {
@@ -164,7 +164,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
     @Override
     public JobInfoDetail refreshJobInfoDetailInfo(JobInstance jobInstance) {
-        Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMsg());
+        Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
         JobInfoDetail jobInfoDetail;
         FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
         String key = jobInstance.getId().toString();
@@ -238,7 +238,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public void initTenantByJobInstanceId(Integer id) {
         Integer tenantId = baseMapper.getTenantByJobInstanceId(id);
-        Asserts.checkNull(tenantId, Status.JOB_INSTANCE_NOT_EXIST.getMsg());
+        Asserts.checkNull(tenantId, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
         TenantContextHolder.set(tenantId);
     }
 }

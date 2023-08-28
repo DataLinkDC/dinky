@@ -23,8 +23,6 @@ import org.dinky.utils.I18n;
 
 import java.util.Optional;
 
-import org.springframework.context.i18n.LocaleContextHolder;
-
 /**
  * Status enum.
  *
@@ -264,7 +262,7 @@ public enum Status {
         return this.key;
     }
 
-    public String getMsg() {
+    public String getMessage() {
         return I18n.getMessage(this.getKey());
     }
 

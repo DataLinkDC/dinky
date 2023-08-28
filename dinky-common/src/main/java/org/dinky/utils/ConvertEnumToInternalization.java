@@ -53,9 +53,9 @@ public class ConvertEnumToInternalization {
             BufferedWriter codeFileWriter = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(path + "message_code.properties"), StandardCharsets.UTF_8));
             BufferedWriter enMsgFileWriter = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(path + "message_en_US.properties"), StandardCharsets.UTF_8));
+                    new FileOutputStream(path + "i18n/messages_en_US.properties"), StandardCharsets.UTF_8));
             BufferedWriter zhMsgFileWriter = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(path + "message_zh_CN.properties"), StandardCharsets.UTF_8));
+                    new FileOutputStream(path + "i18n/messages_zh_CN.properties"), StandardCharsets.UTF_8));
 
             for (Map.Entry<String, String> entry : codeMap.entrySet()) {
                 codeFileWriter.write(entry.getKey() + "=" + entry.getValue() + "\n");

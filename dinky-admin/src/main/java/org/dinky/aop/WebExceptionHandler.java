@@ -23,7 +23,7 @@ import org.dinky.data.enums.CodeEnum;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.result.Result;
-import org.dinky.utils.I18nMsgUtils;
+import org.dinky.utils.I18n;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -64,7 +64,7 @@ public class WebExceptionHandler {
     @ExceptionHandler
     public Result<Void> busException(BusException e) {
         if (StrUtil.isEmpty(e.getMsg())) {
-            return Result.failed(I18nMsgUtils.getMsg(e.getCode(), e.getErrorArgs()));
+            return Result.failed(I18n.getMessage(e.getCode(), e.getMessage()));
         }
         return Result.failed(e.getMsg());
     }

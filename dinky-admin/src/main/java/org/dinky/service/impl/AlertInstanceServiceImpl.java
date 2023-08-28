@@ -78,7 +78,7 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         Alert alert = Alert.buildTest(alertConfig);
 
         AlertMsg alertMsg = getAlertMsg(alertInstance);
-        String title = Status.TEST_MSG_JOB_NAME_TITLE.getMsg()
+        String title = Status.TEST_MSG_JOB_NAME_TITLE.getMessage()
                 + "【"
                 + alertMsg.getJobName()
                 + "】："
@@ -94,10 +94,10 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         String uuid = UUID.randomUUID().toString();
 
         AlertMsg.AlertMsgBuilder alertMsgBuilder = AlertMsg.builder()
-                .alertType(Status.TEST_MSG_TITLE.getMsg())
+                .alertType(Status.TEST_MSG_TITLE.getMessage())
                 .alertTime(currentDateTime)
                 .jobID(uuid)
-                .jobName(Status.TEST_MSG_JOB_NAME.getMsg())
+                .jobName(Status.TEST_MSG_JOB_NAME.getMessage())
                 .jobType("SQL")
                 .jobStatus("FAILED")
                 .jobStartTime(currentDateTime)
@@ -110,8 +110,8 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
         if (!alertInstance.getType().equals("Sms")) {
             if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
-                alertMsgBuilder.linkUrl("[" + Status.TEST_MSG_JOB_URL.getMsg() + " FlinkWeb](" + linkUrl + ")");
-                alertMsgBuilder.exceptionUrl("[" + Status.TEST_MSG_JOB_LOG_URL.getMsg() + "](" + exceptionUrl + ")");
+                alertMsgBuilder.linkUrl("[" + Status.TEST_MSG_JOB_URL.getMessage() + " FlinkWeb](" + linkUrl + ")");
+                alertMsgBuilder.exceptionUrl("[" + Status.TEST_MSG_JOB_LOG_URL.getMessage() + "](" + exceptionUrl + ")");
             } else {
                 alertMsgBuilder.linkUrl(linkUrl);
                 alertMsgBuilder.exceptionUrl(exceptionUrl);

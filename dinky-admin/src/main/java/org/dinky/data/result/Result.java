@@ -63,7 +63,7 @@ public class Result<T> implements Serializable {
     public Result(Status status) {
         if (status != null) {
             this.code = status.getCode();
-            this.msg = status.getMsg();
+            this.msg = status.getMessage();
         }
     }
 
@@ -78,7 +78,7 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> succeed(Status status) {
-        return of(null, CodeEnum.SUCCESS.getCode(), status.getMsg());
+        return of(null, CodeEnum.SUCCESS.getCode(), status.getMessage());
     }
 
     public static <T> Result<T> succeed() {
@@ -94,15 +94,15 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> succeed(T model, Status status) {
-        return of(model, CodeEnum.SUCCESS.getCode(), status.getMsg());
+        return of(model, CodeEnum.SUCCESS.getCode(), status.getMessage());
     }
 
     public static <T> Result<T> succeed(T model, Status status, Object... args) {
-        return of(model, CodeEnum.SUCCESS.getCode(), MessageFormat.format(status.getMsg(), args));
+        return of(model, CodeEnum.SUCCESS.getCode(), MessageFormat.format(status.getMessage(), args));
     }
 
     public static <T> Result<T> succeed(Status status, Object... args) {
-        return of(null, CodeEnum.SUCCESS.getCode(), MessageFormat.format(status.getMsg(), args));
+        return of(null, CodeEnum.SUCCESS.getCode(), MessageFormat.format(status.getMessage(), args));
     }
 
     public static <T> Result<T> data(T model) {
@@ -114,7 +114,7 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> of(T datas, Integer code, Status status) {
-        return new Result<>(datas, code, status.getMsg(), new DateTime().toString(), code == 0);
+        return new Result<>(datas, code, status.getMessage(), new DateTime().toString(), code == 0);
     }
 
     public static <T> Result<T> failed() {
@@ -126,15 +126,15 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> failed(Status status) {
-        return of(null, CodeEnum.ERROR.getCode(), status.getMsg());
+        return of(null, CodeEnum.ERROR.getCode(), status.getMessage());
     }
 
     public static <T> Result<T> failed(Status status, Object... args) {
-        return of(null, CodeEnum.ERROR.getCode(), MessageFormat.format(status.getMsg(), args));
+        return of(null, CodeEnum.ERROR.getCode(), MessageFormat.format(status.getMessage(), args));
     }
 
     public static <T> Result<T> failed(T model, Status status, Object... args) {
-        return of(model, CodeEnum.ERROR.getCode(), MessageFormat.format(status.getMsg(), args));
+        return of(model, CodeEnum.ERROR.getCode(), MessageFormat.format(status.getMessage(), args));
     }
 
     public static <T> Result<T> failed(T model, String msg) {
@@ -142,7 +142,7 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> failed(T model, Status status) {
-        return of(model, CodeEnum.ERROR.getCode(), status.getMsg());
+        return of(model, CodeEnum.ERROR.getCode(), status.getMessage());
     }
 
     /**
@@ -153,7 +153,7 @@ public class Result<T> implements Serializable {
      * @return result
      */
     public static <T> Result<T> errorWithArgs(Status status, Object... args) {
-        return new Result<>(status.getCode(), MessageFormat.format(status.getMsg(), args));
+        return new Result<>(status.getCode(), MessageFormat.format(status.getMessage(), args));
     }
 
     /**
@@ -165,7 +165,7 @@ public class Result<T> implements Serializable {
     public static Result<Void> getResultFromStatus(Status status) {
         Result<Void> result = new Result<Void>();
         result.setCode(status.getCode());
-        result.setMsg(status.getMsg());
+        result.setMsg(status.getMessage());
         return result;
     }
 }

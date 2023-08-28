@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public final class I18n {
     private static final Logger logger = LoggerFactory.getLogger(I18n.class);
 
-    private static final String MESSAGES_BASE = "message";
+    private static final String MESSAGES_BASE = "i18n.messages";
     private static ResourceBundle bundle;
 
     private I18n() {}
