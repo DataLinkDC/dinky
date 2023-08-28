@@ -408,6 +408,30 @@ export function parseMilliSecondStr(second_time: number) {
   return parseSecondStr(second_time / 1000);
 }
 
+
+/**
+ * Calculate how many days the dates differ
+ * @returns {any}
+ */
+export function differenceDays(startDateString: string, endDateString: string): number {
+  const startDate = new Date(startDateString);
+  const endDate = new Date(endDateString);
+
+  // 将日期对象的时间部分设为0，只保留日期
+  startDate.setHours(0, 0, 0, 0);
+  endDate.setHours(0, 0, 0, 0);
+
+  // 计算两个日期的时间差（毫秒）
+  const timeDifference = endDate.getTime() - startDate.getTime();
+
+  // 将毫秒转换为天数
+  const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+
+  return Math.floor(daysDifference);
+}
+
+
+
 /**
  * build tree data
  * @param data

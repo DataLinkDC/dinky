@@ -71,7 +71,6 @@ const JobChart = (props: any) => {
     }).then((result) => {
       setLoading(false);
       const chData = {};
-      console.log(timeRange);
       (result as MetricsDataType[]).forEach((d) => dataProcess(chData, d));
       if (!timeRange.isReal) {
         eventSource?.close();
@@ -110,7 +109,6 @@ const JobChart = (props: any) => {
           chartType={metricsItem.showType}
           title={metricsItem.metrics}
           data={chartData[key] ?? []}
-          extraType={"agrandir"}
         />
       );
     });

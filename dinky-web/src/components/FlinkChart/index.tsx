@@ -24,6 +24,7 @@ import {ProCard, StatisticCard} from '@ant-design/pro-components';
 import {Col, Modal, Radio} from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
 import React, {useState} from 'react';
+import { differenceDays  } from '@/utils/function';
 
 type extraRenderType = 'size' | 'agrandir';
 type FlinkChartProps = {
@@ -33,15 +34,17 @@ type FlinkChartProps = {
     chartSize?: string;
     extraType?: extraRenderType;
     onChangeJobState?: (chartSize: string, chartType: string) => void;
+    chartOptions?: any;
 };
 
 const FlinkChart = (props: FlinkChartProps) => {
     const {
-        data,
+        data = [],
         title,
         chartType = 'Chart',
         chartSize = '25%',
-        extraType='agrandir',
+        extraType = 'agrandir',
+        chartOptions = {},
         onChangeJobState = () => {
         }
     } = props;
@@ -53,15 +56,34 @@ const FlinkChart = (props: FlinkChartProps) => {
         extraType: extraType,
     });
 
+    const getLineTimeMask = (charData: ChartData[]) => {
+        if (!charData || charData.length <= 1) {
+            return "HH:mm:ss"
+        }
+        const t1 = charData[charData.length-1].time
+        const t2 = charData[0].time
+        const duration = Math.abs(differenceDays(t1,t2))
+        console.log(duration)
+        if (duration <= 0) {
+            return "HH:mm:ss"
+        } else if (duration >= 1 && duration < 7) {
+            return "MM-DD HH:mm"
+        } else {
+            return "MM-DD"
+        }
+    }
+
     const config = {
         animation: false,
-        data: data ?? [],
+        data: data,
         xField: 'time',
         yField: 'value',
         xAxis: {
             type: 'time',
-            mask: 'HH:mm:ss'
-        }
+            mask: getLineTimeMask(data),
+            tickCount: 40
+        },
+        ...chartOptions
     };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -158,9 +180,13 @@ const FlinkChart = (props: FlinkChartProps) => {
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
                 footer={null}
-                width={'100vh'}
+                width={'100%'}
             >
-                <Line {...config} />
+                <Line
+                    {...config}
+                    forceFit={false}
+                    height={700}
+                />
             </Modal>
         </Col>
     );
