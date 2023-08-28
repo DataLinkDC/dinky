@@ -413,7 +413,7 @@ export function parseMilliSecondStr(second_time: number) {
  * Calculate how many days the dates differ
  * @returns {any}
  */
-export function differenceDays(startDateString: string, endDateString: string): number {
+export function differenceDays(startDateString: any, endDateString: any): number {
   const startDate = new Date(startDateString);
   const endDate = new Date(endDateString);
 
