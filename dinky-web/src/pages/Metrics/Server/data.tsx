@@ -23,7 +23,7 @@ export type MetricsDataType = {
   //     cpu: CPUType,
   //     mem: MemoryType,
   // },
-  content: string;
+  content: any;
   metricsTotal: number;
   model: string;
   heartTime: Date;

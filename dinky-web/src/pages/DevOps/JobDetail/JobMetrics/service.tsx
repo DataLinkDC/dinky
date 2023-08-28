@@ -17,27 +17,18 @@
  *
  */
 
-import { Jobs } from '@/types/DevOps/data';
+import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
+import { getData, putDataAsArray } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
 
-export type JobProps = {
-  jobDetail: Jobs.JobInfoDetail;
-};
+export async function getMetricsLayout(params: {}) {
+  return (await getData(API_CONSTANTS.METRICS_LAYOUT_GET_BY_NAME, params)).datas;
+}
 
-export type JobMetricsItem = {
-  id: number;
-  taskId: number;
-  vertices: string;
-  metrics: string;
-  position: string;
-  showType: string;
-  showSize: string;
-  title: string;
-  createTime: string;
-  updateTime: string;
-};
+export async function getMetricsData(params: {}) {
+  return (await getData(API_CONSTANTS.MONITOR_GET_FLINK_DATA, params)).datas;
+}
 
-export type MetricsTimeFilter = {
-  startTime: number;
-  endTime?: number;
-  isReal: boolean;
-};
+export async function putMetricsLayout(layoutName: string, params: JobMetricsItem[]) {
+  return (await putDataAsArray(API_CONSTANTS.SAVE_FLINK_METRICS + layoutName, params)).datas;
+}

@@ -17,29 +17,19 @@
  *
  */
 
-package org.dinky.data.vo;
+package org.dinky.data.enums;
 
-import org.dinky.configure.schedule.metrics.FlinkMetricsIndicator;
-import org.dinky.data.metrics.MetricsTotal;
+public enum MetricsType {
+    LOCAL("local"),
+    FLINK("flink");
 
-import java.time.LocalDateTime;
+    private final String type;
 
-import lombok.Getter;
-import lombok.Setter;
+    public String getType() {
+        return this.type;
+    }
 
-@Getter
-@Setter
-public class MetricsVO {
-    private Object content;
-    private MetricsTotal metricsTotal;
-    private String model;
-    private LocalDateTime heartTime;
-
-    public FlinkMetricsIndicator.FlinkMetrics flinkContent() {
-        if (content instanceof FlinkMetricsIndicator.FlinkMetrics) {
-            return (FlinkMetricsIndicator.FlinkMetrics) content;
-        } else {
-            return new FlinkMetricsIndicator.FlinkMetrics();
-        }
+    MetricsType(String type) {
+        this.type = type;
     }
 }

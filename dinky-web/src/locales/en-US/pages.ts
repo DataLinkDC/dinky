@@ -159,6 +159,10 @@ export default {
   'devops.jobinfo.ck.recovery.failed': 'Recovery job failed',
   'devops.jobinfo.ck.recovery.recoveryTo': 'Recovery Here',
 
+  'devops.jobinfo.metrics.configMetrics': 'Metrics Config',
+  'devops.jobinfo.metrics.metricsItems': 'Metrics Items',
+  'devops.jobinfo.metrics.selected': 'Selected',
+
   'devops.baseinfo.taskid': 'Task Id',
   'devops.baseinfo.name': 'Job Name',
   'devops.baseinfo.status': 'Status',
@@ -925,9 +929,12 @@ export default {
   'metrics.filter.60seconds': '60 Seconds',
   'metrics.filter.5minutes': '5 Minutes',
   'metrics.filter.10minutes': '10 Minutes',
+  'metrics.filter.real': 'Real Time',
   'metrics.filter.1hour': '1 Hours',
   'metrics.filter.2hours': '2 Hours',
   'metrics.filter.5hours': '5 Hours',
+  'metrics.filter.1day': 'one day',
+  'metrics.filter.1week': 'one week',
   'metrics.filter.custom': 'Custom',
   'metrics.filter.custom.range': 'DateTime Range',
 

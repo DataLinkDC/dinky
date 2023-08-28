@@ -22,6 +22,7 @@ package org.dinky.configure.schedule.metrics;
 import org.dinky.configure.MetricConfig;
 import org.dinky.configure.schedule.BaseSchedule;
 import org.dinky.data.annotation.GaugeM;
+import org.dinky.data.enums.MetricsType;
 import org.dinky.data.metrics.BaseMetrics;
 import org.dinky.data.metrics.Cpu;
 import org.dinky.data.metrics.Jvm;
@@ -42,7 +43,6 @@ import org.springframework.stereotype.Component;
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.json.JSONUtil;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
@@ -90,9 +90,9 @@ public class GatherSysIndicator extends BaseSchedule {
         metricsTotal.setMem(Mem.of());
 
         MetricsVO metrics = new MetricsVO();
-        metrics.setContent(JSONUtil.toJsonStr(metricsTotal));
+        metrics.setContent(metricsTotal);
         metrics.setHeartTime(now);
-        metrics.setModel("local");
+        metrics.setModel(MetricsType.LOCAL.getType());
         MetricConfig.getMetricsQueue().add(metrics);
 
         log.debug("Collecting jvm information ends.");
