@@ -947,7 +947,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Savepoints savepoints = buildSavepoint(config);
         if (Asserts.isNotNull(savepoints)) {
             config.setSavePointPath(savepoints.getPath());
-            config.getConfigJson().put("execution.savepoint.path", savepoints.getPath());
+            config.getConfigJson().put("execution.savepoint.path", savepoints.getPath()); // todo: 写工具类处理相关配置
         }
 
         if (!GatewayType.get(task.getType()).isDeployCluster()) {

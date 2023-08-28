@@ -30,7 +30,7 @@ import { connect } from '@@/exports';
 import { Key } from '@ant-design/pro-components';
 import { Empty, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const { DirectoryTree } = Tree;
 
@@ -48,7 +48,11 @@ type TreeProps = {
 const JobTree: React.FC<TreeProps & connect> = (props) => {
   const { treeData, onNodeClick, style, height, onRightClick, selectedKeys } = props;
   const [searchValue, setSearchValueValue] = useState('');
-  const data = buildProjectTree(treeData, searchValue);
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    setData(buildProjectTree(treeData, searchValue));
+  }, [searchValue]);
 
   const [expandedKeys, setExpandedKeys] = useState<Key[]>();
   const [autoExpandParent, setAutoExpandParent] = useState(true);
@@ -97,7 +101,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
         allowClear={true}
       />
 
-      {treeData.length > 0 ? (
+      {data.length ? (
         <DirectoryTree
           style={{ ...style, height: height - 40 - 16, overflowY: 'auto' }}
           className={'treeList'}
