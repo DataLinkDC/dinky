@@ -180,7 +180,7 @@ public class DataBaseController {
     @ApiOperation("DataBase Check Heart Beat By Id")
     public Result<Void> checkHeartBeatByDataSourceId(@RequestParam Integer id) {
         DataBase dataBase = databaseService.getById(id);
-        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         String error = "";
         try {
             databaseService.checkHeartBeat(dataBase);

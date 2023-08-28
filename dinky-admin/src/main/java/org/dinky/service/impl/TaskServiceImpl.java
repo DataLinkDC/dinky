@@ -222,7 +222,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobResult submitTask(Integer id) {
         Task task = this.getTaskInfoById(id);
-        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMessage());
 
         if (Dialect.notFlinkSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(), task.getDatabaseId(), null));
@@ -296,7 +296,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobResult submitTaskToOnline(Task dtoTask, Integer id) {
         final Task task = dtoTask == null ? this.getTaskInfoById(id) : dtoTask;
-        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMessage());
         task.setStep(JobLifeCycle.ONLINE.getValue());
 
         if (Dialect.notFlinkSql(task.getDialect())) {
@@ -314,7 +314,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobResult restartTask(Integer id, String savePointPath) {
         Task task = this.getTaskInfoById(id);
-        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMessage());
         if (checkJobInstanceId(task)) {
             savepointJobInstance(task.getJobInstanceId(), SavePointType.CANCEL.getValue());
         }
@@ -440,7 +440,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public void initTenantByTaskId(Integer id) {
         Integer tenantId = baseMapper.getTenantByTaskId(id);
-        Asserts.checkNull(tenantId, Status.TASK_NOT_EXIST.getMsg());
+        Asserts.checkNull(tenantId, Status.TASK_NOT_EXIST.getMessage());
         TenantContextHolder.set(tenantId);
     }
 
@@ -624,7 +624,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public String exportSql(Integer id) {
         Task task = getTaskInfoById(id);
-        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMessage());
         if (Dialect.notFlinkSql(task.getDialect())) {
             return task.getStatement();
         }
@@ -817,7 +817,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public Result<JobResult> reOnLineTask(Integer id, String savePointPath) {
         final Task task = this.getTaskInfoById(id);
-        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMessage());
         if (checkJobInstanceId(task)) {
             savepointJobInstance(task.getJobInstanceId(), SavePointType.CANCEL.getValue());
         }

@@ -75,7 +75,7 @@ public class LoginLogServiceImpl extends SuperServiceImpl<LoginLogMapper, LoginL
         loginLog.setAccessTime(LocalDateTime.now());
         loginLog.setIp(ip);
         loginLog.setStatus(status.getCode());
-        loginLog.setMsg(status.getMsg());
+        loginLog.setMsg(status.getMessage());
         saveOrUpdate(loginLog);
     }
 
@@ -92,7 +92,7 @@ public class LoginLogServiceImpl extends SuperServiceImpl<LoginLogMapper, LoginL
         loginLog.setAccessTime(LocalDateTime.now());
         loginLog.setIp(Ipv4Util.LOCAL_IP);
         loginLog.setStatus(status.getCode());
-        loginLog.setMsg(status.getMsg());
+        loginLog.setMsg(status.getMessage());
         saveOrUpdate(loginLog);
     }
 

@@ -34,12 +34,12 @@ public class AuthException extends Exception {
     private Status status;
 
     public AuthException(Status status) {
-        super(status.getMsg());
+        super(status.getMessage());
         this.status = status;
     }
 
     public AuthException(Throwable cause, Status status) {
-        super(status.getMsg(), cause);
+        super(status.getMessage(), cause);
         this.status = status;
     }
 }
