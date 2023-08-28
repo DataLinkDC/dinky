@@ -408,7 +408,6 @@ export function parseMilliSecondStr(second_time: number) {
   return parseSecondStr(second_time / 1000);
 }
 
-
 /**
  * Calculate how many days the dates differ
  * @returns {any}
@@ -429,8 +428,6 @@ export function differenceDays(startDateString: any, endDateString: any): number
 
   return Math.floor(daysDifference);
 }
-
-
 
 /**
  * build tree data

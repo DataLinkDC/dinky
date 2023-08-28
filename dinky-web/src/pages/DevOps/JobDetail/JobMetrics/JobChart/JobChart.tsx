@@ -17,6 +17,7 @@
  *
  */
 
+import FlinkChart from '@/components/FlinkChart';
 import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
 import { getMetricsData } from '@/pages/DevOps/JobDetail/JobMetrics/service';
 import { DevopsType } from '@/pages/DevOps/JobDetail/model';
@@ -25,12 +26,11 @@ import { FlinkMetricsData, MetricsDataType } from '@/pages/Metrics/Server/data';
 import { getSseData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { connect } from '@@/exports';
-import {Row, Spin} from 'antd';
+import { Row, Spin } from 'antd';
 import { useEffect, useState } from 'react';
-import FlinkChart from "@/components/FlinkChart";
 
 const JobChart = (props: any) => {
-  const {jobDetail, metricsTarget, layoutName, timeRange } = props;
+  const { jobDetail, metricsTarget, layoutName, timeRange } = props;
 
   const [eventSource, setEventSource] = useState<EventSource>();
   const [chartDatas, setChartDatas] = useState<Record<string, ChartData[]>>({});
@@ -47,17 +47,17 @@ const JobChart = (props: any) => {
     const fd = data.content as FlinkMetricsData;
     const verticesMap = fd.verticesAndMetricsMap;
     Object.keys(verticesMap).forEach((verticeId) =>
-        Object.keys(verticesMap[verticeId]).forEach((mertics) => {
-          const key = `${verticeId}-${mertics}`;
-          const value = {
-            time: data.heartTime,
-            value: verticesMap[verticeId][mertics]
-          };
-          if (!(key in chData)) {
-            chData[key] = [];
-          }
-          chData[key].push(value);
-        })
+      Object.keys(verticesMap[verticeId]).forEach((mertics) => {
+        const key = `${verticeId}-${mertics}`;
+        const value = {
+          time: data.heartTime,
+          value: verticesMap[verticeId][mertics]
+        };
+        if (!(key in chData)) {
+          chData[key] = [];
+        }
+        chData[key].push(value);
+      })
     );
     setChartDatas(chData);
   };
@@ -76,19 +76,19 @@ const JobChart = (props: any) => {
         eventSource?.close();
         setEventSource(undefined);
       } else {
-        if (!eventSource){
-          setEventSource(getSseData(sseUrl))
+        if (!eventSource) {
+          setEventSource(getSseData(sseUrl));
         }
       }
     });
   }, [timeRange]);
 
   useEffect(() => {
-    if (eventSource && timeRange.isReal){
+    if (eventSource && timeRange.isReal) {
       eventSource.onmessage = (e) => {
         let result = JSON.parse(e.data);
         dataProcess(chartDatas, result);
-      }
+      };
     }
   }, [eventSource]);
 
@@ -113,9 +113,11 @@ const JobChart = (props: any) => {
       );
     });
   };
-  return <Spin spinning={loading}>
-    <Row gutter={[8, 16]}>{renderMetricsCardList(metricsTarget ?? {}, chartDatas)}</Row>
-  </Spin>;
+  return (
+    <Spin spinning={loading}>
+      <Row gutter={[8, 16]}>{renderMetricsCardList(metricsTarget ?? {}, chartDatas)}</Row>
+    </Spin>
+  );
 };
 
 export default connect(({ Devops }: { Devops: DevopsType }) => ({
