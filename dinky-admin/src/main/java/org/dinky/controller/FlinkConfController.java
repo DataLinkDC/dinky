@@ -86,9 +86,10 @@ public class FlinkConfController {
             List<CascaderVO> configList = new ArrayList<>();
             for (Field field : fields) {
                 CascaderVO config = new CascaderVO();
-                ConfigOption<?> fieldValue = (ConfigOption<?>) ReflectUtil.getStaticFieldValue(field);
-                config.setValue(fieldValue.key());
-                config.setLabel(fieldValue.key());
+                Object fieldValue = ReflectUtil.getStaticFieldValue(field);
+                String key = (String) ReflectUtil.invoke(fieldValue, "key");
+                config.setValue(key);
+                config.setLabel(key);
                 configList.add(config);
             }
             CascaderVO cascaderVO = new CascaderVO();
