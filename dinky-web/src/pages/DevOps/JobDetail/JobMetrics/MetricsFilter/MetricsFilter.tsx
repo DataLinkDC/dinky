@@ -32,6 +32,13 @@ type TimeSelectProps = {
 const MetricsFilter = (props: TimeSelectProps) => {
   const { onTimeSelect } = props;
 
+  const onTimeSelectChange = (isReal: boolean, startTime: number, endTime?: number) =>
+    onTimeSelect({
+      startTime: startTime,
+      endTime: endTime,
+      isReal: isReal
+    });
+
   const onTimeRadioChange = (e: any) => {
     const dateKey = e.target.value;
     let filter: MetricsTimeFilter = {
@@ -51,13 +58,6 @@ const MetricsFilter = (props: TimeSelectProps) => {
     }
     onTimeSelect(filter);
   };
-
-  const onTimeSelectChange = (isReal: boolean, startTime: number, endTime?: number) =>
-    onTimeSelect({
-      startTime: startTime,
-      endTime: endTime,
-      isReal: isReal
-    });
 
   return (
     <Space style={{ marginBottom: 20 }}>
