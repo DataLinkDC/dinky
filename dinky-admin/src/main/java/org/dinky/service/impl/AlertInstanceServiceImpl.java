@@ -111,7 +111,8 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         if (!alertInstance.getType().equals("Sms")) {
             if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
                 alertMsgBuilder.linkUrl("[" + Status.TEST_MSG_JOB_URL.getMessage() + " FlinkWeb](" + linkUrl + ")");
-                alertMsgBuilder.exceptionUrl("[" + Status.TEST_MSG_JOB_LOG_URL.getMessage() + "](" + exceptionUrl + ")");
+                alertMsgBuilder.exceptionUrl(
+                        "[" + Status.TEST_MSG_JOB_LOG_URL.getMessage() + "](" + exceptionUrl + ")");
             } else {
                 alertMsgBuilder.linkUrl(linkUrl);
                 alertMsgBuilder.exceptionUrl(exceptionUrl);

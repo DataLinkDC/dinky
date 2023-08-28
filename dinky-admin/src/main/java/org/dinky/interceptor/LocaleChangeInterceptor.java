@@ -21,6 +21,7 @@ package org.dinky.interceptor;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.BaseConstant;
+import org.dinky.utils.I18n;
 
 import java.util.Locale;
 
@@ -28,7 +29,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.dinky.utils.I18n;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
@@ -44,7 +44,6 @@ public class LocaleChangeInterceptor implements AsyncHandlerInterceptor {
             // Proceed in cookie
             LocaleContextHolder.setLocale(parseLocaleValue(cookie.getValue()));
             I18n.setLocale(LocaleContextHolder.getLocale());
-
         }
         // Proceed in header
         String newLocale = request.getHeader(BaseConstant.LOCALE_LANGUAGE_COOKIE);
