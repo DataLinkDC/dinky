@@ -186,7 +186,7 @@ public class JobManager {
 
     private Executor createExecutor() {
         initEnvironmentSetting();
-        if (runMode.isLocalExecute()) {
+        if (!runMode.isLocalExecute()) {
             executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting()); // 构建远端执行器
         } else {
             // 构建本地执行器
