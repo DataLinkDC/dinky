@@ -275,7 +275,7 @@ public class JobConfig {
                 .getFlinkConfig()
                 .getConfiguration()
                 .put(CoreOptions.DEFAULT_PARALLELISM.key(), String.valueOf(parallelism));
-        setUseRemote(false);
+        setUseRemote(false); // todo: remove
     }
 
     public void addGatewayConfig(Map<String, Object> config) {

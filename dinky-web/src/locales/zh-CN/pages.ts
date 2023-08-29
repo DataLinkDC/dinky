@@ -190,6 +190,7 @@ export default {
   'user.isdelete': '该用户已被删除，无法重置密码，请先恢复该用户!',
   'user.reset': '您确定要重置此用户密码吗?',
   'user.resetPassword': '重置密码',
+  'user.changePasswordSuccess': '密码修改成功, 即将跳转至登录页重新登录!',
   'user.resetPasswordSuccess': '用户: {username} 密码重置成功! 新密码为: {password}',
   'user.usernamePlaceholder': '请输入用户名',
   'user.jobnumberPlaceholder': '请输入工号',

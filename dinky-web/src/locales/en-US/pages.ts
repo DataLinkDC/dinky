@@ -203,6 +203,8 @@ export default {
   'user.newpwdPlaceholder': 'Please enter new password',
   'user.repeatpwdPlaceholder': 'Please enter repeat new password',
   'user.oldNewPwdNoMatch': 'The new passwords do not match',
+  'user.changePasswordSuccess':
+    'Password changed successfully, will jump to the login page to re-login!',
   'user.login.status.code': 'Code',
   'user.login.status.msg': 'Message',
   'user.login.accesstime': 'Login Time',

@@ -186,9 +186,10 @@ public class JobManager {
 
     private Executor createExecutor() {
         initEnvironmentSetting();
-        if (!runMode.equals(GatewayType.LOCAL) && !useGateway && config.isUseRemote()) {
-            executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
+        if (!runMode.isLocalExecute()) {
+            executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting()); // 构建远端执行器
         } else {
+            // 构建本地执行器
             if (ArrayUtil.isNotEmpty(config.getJarFiles())) {
                 config.getExecutorSetting()
                         .getConfig()
