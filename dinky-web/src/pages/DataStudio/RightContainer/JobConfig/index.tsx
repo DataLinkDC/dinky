@@ -29,7 +29,8 @@ import {
   buildClusterConfigOptions,
   buildClusterOptions,
   buildEnvOptions,
-  buildRunModelOptions
+  buildRunModelOptions,
+  calculatorWidth
 } from '@/pages/DataStudio/RightContainer/JobConfig/function';
 import { AlertStateType } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
@@ -47,8 +48,10 @@ import {
 import { Badge, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import {ProFormCascader} from "@ant-design/pro-form/lib";
+import {FormListFieldData} from "antd/lib/form/FormList";
 
 const { Text } = Typography;
 
@@ -60,7 +63,8 @@ const JobConfig = (props: any) => {
     tabs: { panes, activeKey },
     env,
     group,
-    rightContainer
+    rightContainer,
+    flinkConfigOptions,
   } = props;
 
   const current = getCurrentData(panes, activeKey);
@@ -76,6 +80,9 @@ const JobConfig = (props: any) => {
   const [form] = useForm();
 
   useEffect(() => {
+    dispatch({
+      type: 'Studio/queryFlinkConfigOptions',
+    })
     form.setFieldsValue(current);
   }, [current]);
 
@@ -264,21 +271,57 @@ const JobConfig = (props: any) => {
             creatorButtonText: l('pages.datastudio.label.jobConfig.addConfig')
           }}
         >
-          <ProFormGroup style={{ display: 'flex', width: '100%' }}>
-            <Space key={'config'} style={{ display: 'flex' }} align='baseline'>
-              <ProFormText
-                name='key'
-                placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}
-              />
-              {/*todo: 通过接口拿到预设配置渲染下拉框 */}
-              {/*<ProFormSelect*/}
-              {/*  name='key'*/}
-              {/*  mode={'single'} allowClear={false}*/}
-              {/*  placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}*/}
-              {/*  options={[{ label: 'String', value: 'String' }, { label: 'Int', value: 'Int' }]}*/}
+          {/*{(fields , { add, remove }) => {*/}
+          {/*  console.log(fields,'fields')*/}
+          {/*  return   <>*/}
+          {/*    {fields.map((field, index) => (*/}
+          {/*        <ProFormGroup >*/}
+          {/*          <Space key={'config'} align='baseline'>*/}
+          {/*              <ProFormCascader*/}
+          {/*                  key={field.key}*/}
+          {/*                  name={['configJson','customConfig', index, 'key']}*/}
+          {/*                  fieldProps={{*/}
+          {/*                    options: flinkConfigOptions,*/}
+          {/*                    showSearch: true,*/}
+          {/*                  }}*/}
+          {/*              />*/}
+          {/*            <ProFormText*/}
+          {/*                name={['index','value']}  width={calculatorWidth(rightContainer.width)- 30}*/}
+          {/*                placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}*/}
+          {/*            />*/}
+          {/*          </Space>*/}
+          {/*        </ProFormGroup>*/}
+
+          {/*    ))}*/}
+
+          {/*  </>*/}
+          {/*}}*/}
+          <ProFormGroup >
+            <Space key={'config'} align='baseline'>
+              {/* todo: 级联组件会受组件的 name 属性一致的影响,造成相同 name 属性值自动填充一样的值, 待寻找合适解决方案 */}
+              {/*<ProFormCascader*/}
+              {/*    name={['index','key']} allowClear*/}
+              {/*    width={calculatorWidth(rightContainer.width) + 30}*/}
+              {/*    placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}*/}
+              {/*    fieldProps={{*/}
+              {/*      options: flinkConfigOptions,*/}
+              {/*      showSearch: true,*/}
+              {/*    }}*/}
+              {/*    rules={[*/}
+              {/*      {*/}
+              {/*        required: true,*/}
+              {/*        message: l('pages.datastudio.label.jobConfig.addConfig.params')*/}
+              {/*      }*/}
+              {/*    ]}*/}
               {/*/>*/}
+              <ProFormSelect
+                name='key' width={calculatorWidth(rightContainer.width) + 30}
+                mode={'single'} allowClear showSearch
+                placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}
+                options={flinkConfigOptions}
+              />
               <ProFormText
-                name='value'
+                name={['index','value']}  width={calculatorWidth(rightContainer.width)- 45}
                 placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}
               />
             </Space>
@@ -295,5 +338,6 @@ export default connect(({ Studio, Alert }: { Studio: StateType; Alert: AlertStat
   rightContainer: Studio.rightContainer,
   tabs: Studio.tabs,
   env: Studio.env,
-  group: Alert.group
+  group: Alert.group,
+  flinkConfigOptions: Studio.flinkConfigOptions
 }))(JobConfig);

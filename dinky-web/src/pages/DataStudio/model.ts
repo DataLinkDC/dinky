@@ -1,13 +1,15 @@
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
-import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
+import { getTaskData} from '@/pages/DataStudio/LeftContainer/Project/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect, Reducer } from '@@/plugin-dva/types';
+import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
 import ICodeEditor = editor.ICodeEditor;
+import {getFlinkConfigs} from "@/pages/DataStudio/RightContainer/JobConfig/service";
 
 /**
  * 初始化布局宽高度
@@ -254,6 +256,7 @@ export type StateType = {
   };
   sessionCluster: Cluster.Instance[];
   clusterConfiguration: Cluster.Config[];
+  flinkConfigOptions: DefaultOptionType[];
   env: EnvType[];
   tabs: TabsType;
   bottomContainerContent: BottomContainerContent;
@@ -265,6 +268,7 @@ export type ModelType = {
   state: StateType;
   effects: {
     queryProject: Effect;
+    queryFlinkConfigOptions: Effect;
   };
   reducers: {
     updateToolContentHeight: Reducer<StateType>;
@@ -294,6 +298,7 @@ export type ModelType = {
     saveEnv: Reducer<StateType>;
     saveFooterValue: Reducer<StateType>;
     updateJobRunningMsg: Reducer<StateType>;
+    saveFlinkConfigOptions: Reducer<StateType>;
   };
 };
 
@@ -342,6 +347,7 @@ const Model: ModelType = {
     },
     sessionCluster: [],
     clusterConfiguration: [],
+    flinkConfigOptions: [],
     env: [],
     footContainer: {
       codePosition: [1, 1],
@@ -362,7 +368,14 @@ const Model: ModelType = {
     *queryProject({ payload }, { call, put }) {
       const response: [] = yield call(getTaskData, payload);
       yield put({
-        type: 'saveProject',
+        type: STUDIO_MODEL.saveProject,
+        payload: response
+      });
+    },
+    *queryFlinkConfigOptions({ payload }, { call, put }) {
+      const response: [] = yield call(getFlinkConfigs, payload);
+      yield put({
+        type: STUDIO_MODEL.saveFlinkConfigOptions,
         payload: response
       });
     }
@@ -505,6 +518,18 @@ const Model: ModelType = {
         ...state,
         project: { ...state.project, data: payload }
       };
+    },
+    /**
+     * flink config options
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, flinkConfigOptions: any, tabs: TabsType, project: {data: any[], expandKeys: [], selectKey: []}, leftContainer: Container, env: EnvType[], footContainer: FooterType, clusterConfiguration: Cluster.Config[], toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectDatabaseId: number | null, expandKeys: [], selectKey: []}, sessionCluster: Cluster.Instance[], isFullScreen: boolean, rightContainer: Container, bottomContainerContent: BottomContainerContent, bottomContainer: Container}}
+     */
+    saveFlinkConfigOptions(state, { payload }) {
+        return {
+            ...state,
+            flinkConfigOptions: payload
+        };
     },
     /**
      * 更新tabs activeKey
