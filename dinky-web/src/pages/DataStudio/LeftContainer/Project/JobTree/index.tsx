@@ -38,7 +38,6 @@ const { DirectoryTree } = Tree;
  * props
  */
 type TreeProps = {
-  treeData: Catalogue[];
   onNodeClick: (info: any) => void;
   onRightClick: (info: any) => void;
   style?: React.CSSProperties;
@@ -46,13 +45,13 @@ type TreeProps = {
 };
 
 const JobTree: React.FC<TreeProps & connect> = (props) => {
-  const { treeData, onNodeClick, style, height, onRightClick, selectedKeys } = props;
+  const { projectData, onNodeClick, style, height, onRightClick, selectedKeys } = props;
   const [searchValue, setSearchValueValue] = useState('');
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<any[]>(buildProjectTree(projectData, searchValue));
 
   useEffect(() => {
-    setData(buildProjectTree(treeData, searchValue));
-  }, [searchValue]);
+    setData(buildProjectTree(projectData, searchValue));
+  }, [searchValue,projectData]);
 
   const [expandedKeys, setExpandedKeys] = useState<Key[]>();
   const [autoExpandParent, setAutoExpandParent] = useState(true);
@@ -124,5 +123,6 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  height: Studio.toolContentHeight
+  height: Studio.toolContentHeight,
+  projectData: Studio.project.data,
 }))(JobTree);
