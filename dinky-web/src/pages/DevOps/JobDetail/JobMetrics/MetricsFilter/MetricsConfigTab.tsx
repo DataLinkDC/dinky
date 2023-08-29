@@ -47,7 +47,6 @@ const MetricsConfigTab = (props: any) => {
         rowKey={(item) => item.id}
         render={(item) => item.id}
         listStyle={{ width: '42vh', height: '50vh' }}
-        oneWay
       />
     </>
   );
