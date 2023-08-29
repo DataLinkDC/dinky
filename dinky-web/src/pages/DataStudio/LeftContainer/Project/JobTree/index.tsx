@@ -24,7 +24,6 @@ import {
 } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { BtnRoute } from '@/pages/DataStudio/route';
-import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { Key } from '@ant-design/pro-components';
@@ -51,7 +50,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
   useEffect(() => {
     setData(buildProjectTree(projectData, searchValue));
-  }, [searchValue,projectData]);
+  }, [searchValue, projectData]);
 
   const [expandedKeys, setExpandedKeys] = useState<Key[]>();
   const [autoExpandParent, setAutoExpandParent] = useState(true);
@@ -124,5 +123,5 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   height: Studio.toolContentHeight,
-  projectData: Studio.project.data,
+  projectData: Studio.project.data
 }))(JobTree);

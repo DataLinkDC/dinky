@@ -58,7 +58,7 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
         isLeaf: false,
         parentId: 0
       },
-        ()=> {},
+      () => {},
       () => {
         handleCancelCreate();
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });

@@ -17,22 +17,22 @@
  *
  */
 
-import {ProjectState} from "@/types/Studio/state.d";
-import {InitContextMenuPosition} from "@/types/Public/state.d";
+import { InitContextMenuPosition } from '@/types/Public/state.d';
+import { ProjectState } from '@/types/Studio/state.d';
 
 export const InitProjectState: ProjectState = {
-    rightActiveKey: '',
-    cutId: 0,
-    contextMenuPosition: InitContextMenuPosition,
-    contextMenuOpen: false,
-    menuItems: [],
-    selectedKeys: [],
-    isLeaf: false,
-    rightClickedNode: {},
-    isCreateSub: false,
-    isEdit: false,
-    isRename: false,
-    isCreateTask: false,
-    isCut: false,
-    value: {},
-}
+  rightActiveKey: '',
+  cutId: 0,
+  contextMenuPosition: InitContextMenuPosition,
+  contextMenuOpen: false,
+  menuItems: [],
+  selectedKeys: [],
+  isLeaf: false,
+  rightClickedNode: {},
+  isCreateSub: false,
+  isEdit: false,
+  isRename: false,
+  isCreateTask: false,
+  isCut: false,
+  value: {}
+};
