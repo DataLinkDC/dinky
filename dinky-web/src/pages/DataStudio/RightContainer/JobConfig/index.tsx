@@ -269,31 +269,6 @@ const JobConfig = (props: any) => {
             creatorButtonText: l('pages.datastudio.label.jobConfig.addConfig')
           }}
         >
-          {/*{(fields , { add, remove }) => {*/}
-          {/*  console.log(fields,'fields')*/}
-          {/*  return   <>*/}
-          {/*    {fields.map((field, index) => (*/}
-          {/*        <ProFormGroup >*/}
-          {/*          <Space key={'config'} align='baseline'>*/}
-          {/*              <ProFormCascader*/}
-          {/*                  key={field.key}*/}
-          {/*                  name={['configJson','customConfig', index, 'key']}*/}
-          {/*                  fieldProps={{*/}
-          {/*                    options: flinkConfigOptions,*/}
-          {/*                    showSearch: true,*/}
-          {/*                  }}*/}
-          {/*              />*/}
-          {/*            <ProFormText*/}
-          {/*                name={['index','value']}  width={calculatorWidth(rightContainer.width)- 30}*/}
-          {/*                placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}*/}
-          {/*            />*/}
-          {/*          </Space>*/}
-          {/*        </ProFormGroup>*/}
-
-          {/*    ))}*/}
-
-          {/*  </>*/}
-          {/*}}*/}
           <ProFormGroup>
             <Space key={'config'} align='baseline'>
               {/* todo: 级联组件会受组件的 name 属性一致的影响,造成相同 name 属性值自动填充一样的值, 待寻找合适解决方案 */}
