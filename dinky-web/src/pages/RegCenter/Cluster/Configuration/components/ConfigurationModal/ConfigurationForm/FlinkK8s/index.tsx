@@ -19,6 +19,7 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { TagAlignCenter } from '@/components/StyledComponents';
+import { StateType } from '@/pages/DataStudio/model';
 import {
   ExposedTypeOptions,
   versionOptions
@@ -26,6 +27,7 @@ import {
 import { KUBERNETES_CONFIG_LIST } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
 import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { l } from '@/utils/intl';
+import { connect } from '@@/exports';
 import {
   ProCard,
   ProFormGroup,
@@ -35,11 +37,6 @@ import {
   ProFormText
 } from '@ant-design/pro-components';
 import { Col, Divider, Row, Space } from 'antd';
-import {connect} from "@@/exports";
-import {StateType} from "@/pages/DataStudio/model";
-import {AlertStateType} from "@/pages/RegCenter/Alert/AlertInstance/model";
-import {calculatorWidth} from "@/pages/DataStudio/RightContainer/JobConfig/function";
-import rightContainer from "@/pages/DataStudio/RightContainer";
 
 const CodeEditProps = {
   height: '40vh',
@@ -48,8 +45,8 @@ const CodeEditProps = {
   language: 'yaml'
 };
 
-const FlinkK8s = (props: { type: string; value: any  } & connect) => {
-  const { type, value ,flinkConfigOptions} = props;
+const FlinkK8s = (props: { type: string; value: any } & connect) => {
+  const { type, value, flinkConfigOptions } = props;
 
   const renderK8sConfig = () => {
     return (
@@ -151,10 +148,13 @@ const FlinkK8s = (props: { type: string; value: any  } & connect) => {
             <ProFormGroup key='flinkGroup'>
               <Space key={'config'} style={{ display: 'flex' }} align='baseline'>
                 <ProFormSelect
-                    name='name' width={'md'}
-                    mode={'single'} allowClear showSearch
-                    placeholder={l('rc.cc.key')}
-                    options={flinkConfigOptions}
+                  name='name'
+                  width={'md'}
+                  mode={'single'}
+                  allowClear
+                  showSearch
+                  placeholder={l('rc.cc.key')}
+                  options={flinkConfigOptions}
                 />
                 <ProFormText width={'sm'} name='value' placeholder={l('rc.cc.value')} />
               </Space>
@@ -170,6 +170,6 @@ const FlinkK8s = (props: { type: string; value: any  } & connect) => {
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType}) => ({
+export default connect(({ Studio }: { Studio: StateType }) => ({
   flinkConfigOptions: Studio.flinkConfigOptions
 }))(FlinkK8s);

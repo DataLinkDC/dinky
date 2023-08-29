@@ -1,4 +1,4 @@
-import {queryDataByParams} from '@/services/BusinessCrud';
+import { queryDataByParams } from '@/services/BusinessCrud';
 
 export function getSessionData() {
   return queryDataByParams('api/cluster/listSessionEnable');

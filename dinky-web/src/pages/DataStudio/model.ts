@@ -1,5 +1,6 @@
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
-import { getTaskData} from '@/pages/DataStudio/LeftContainer/Project/service';
+import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
+import { getFlinkConfigs } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
@@ -9,7 +10,6 @@ import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
 import ICodeEditor = editor.ICodeEditor;
-import {getFlinkConfigs} from "@/pages/DataStudio/RightContainer/JobConfig/service";
 
 /**
  * 初始化布局宽高度
@@ -526,10 +526,10 @@ const Model: ModelType = {
      * @returns {{centerContentHeight: number, flinkConfigOptions: any, tabs: TabsType, project: {data: any[], expandKeys: [], selectKey: []}, leftContainer: Container, env: EnvType[], footContainer: FooterType, clusterConfiguration: Cluster.Config[], toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectDatabaseId: number | null, expandKeys: [], selectKey: []}, sessionCluster: Cluster.Instance[], isFullScreen: boolean, rightContainer: Container, bottomContainerContent: BottomContainerContent, bottomContainer: Container}}
      */
     saveFlinkConfigOptions(state, { payload }) {
-        return {
-            ...state,
-            flinkConfigOptions: payload
-        };
+      return {
+        ...state,
+        flinkConfigOptions: payload
+      };
     },
     /**
      * 更新tabs activeKey

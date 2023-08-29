@@ -17,15 +17,21 @@
  *
  */
 
+import { StateType } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
-import {ProCard, ProFormGroup, ProFormList, ProFormSelect, ProFormText} from '@ant-design/pro-components';
+import { connect } from '@@/exports';
+import {
+  ProCard,
+  ProFormGroup,
+  ProFormList,
+  ProFormSelect,
+  ProFormText
+} from '@ant-design/pro-components';
 import { Col, Divider, Row, Space } from 'antd';
-import {connect} from "@@/exports";
-import {StateType} from "@/pages/DataStudio/model";
 import { DefaultOptionType } from 'antd/es/select';
 
-const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[]; }) => {
-    const { flinkConfigOptions } = props;
+const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
+  const { flinkConfigOptions } = props;
   return (
     <>
       <Row gutter={[16, 16]}>
@@ -111,10 +117,13 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[]; }) => {
             <ProFormGroup key='flinkGroup' style={{ display: 'flex', width: '100%' }}>
               <Space key={'config'} style={{ display: 'flex' }} align='baseline'>
                 <ProFormSelect
-                    name='name' width={'md'}
-                    mode={'single'} allowClear showSearch
-                    placeholder={l('rc.cc.key')}
-                    options={flinkConfigOptions}
+                  name='name'
+                  width={'md'}
+                  mode={'single'}
+                  allowClear
+                  showSearch
+                  placeholder={l('rc.cc.key')}
+                  options={flinkConfigOptions}
                 />
                 <ProFormText width={'sm'} name='value' placeholder={l('rc.cc.value')} />
               </Space>
@@ -126,6 +135,6 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[]; }) => {
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType}) => ({
+export default connect(({ Studio }: { Studio: StateType }) => ({
   flinkConfigOptions: Studio.flinkConfigOptions
 }))(YarnConfig);

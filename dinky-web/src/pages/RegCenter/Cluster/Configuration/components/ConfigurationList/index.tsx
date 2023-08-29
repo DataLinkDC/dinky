@@ -174,7 +174,7 @@ export default () => {
     setClusterConfigState((prevState) => ({
       ...prevState,
       editOpen: true,
-      value: { ...item , configJson: JSON.stringify(item?.configJson ?? {}) }
+      value: { ...item, configJson: JSON.stringify(item?.configJson ?? {}) }
     }));
   };
 

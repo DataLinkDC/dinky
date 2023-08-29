@@ -48,10 +48,8 @@ import {
 import { Badge, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { connect } from 'umi';
-import {ProFormCascader} from "@ant-design/pro-form/lib";
-import {FormListFieldData} from "antd/lib/form/FormList";
 
 const { Text } = Typography;
 
@@ -64,7 +62,7 @@ const JobConfig = (props: any) => {
     env,
     group,
     rightContainer,
-    flinkConfigOptions,
+    flinkConfigOptions
   } = props;
 
   const current = getCurrentData(panes, activeKey);
@@ -81,8 +79,8 @@ const JobConfig = (props: any) => {
 
   useEffect(() => {
     dispatch({
-      type: 'Studio/queryFlinkConfigOptions',
-    })
+      type: 'Studio/queryFlinkConfigOptions'
+    });
     form.setFieldsValue(current);
   }, [current]);
 
@@ -296,7 +294,7 @@ const JobConfig = (props: any) => {
 
           {/*  </>*/}
           {/*}}*/}
-          <ProFormGroup >
+          <ProFormGroup>
             <Space key={'config'} align='baseline'>
               {/* todo: 级联组件会受组件的 name 属性一致的影响,造成相同 name 属性值自动填充一样的值, 待寻找合适解决方案 */}
               {/*<ProFormCascader*/}
@@ -315,13 +313,17 @@ const JobConfig = (props: any) => {
               {/*    ]}*/}
               {/*/>*/}
               <ProFormSelect
-                name='key' width={calculatorWidth(rightContainer.width) + 30}
-                mode={'single'} allowClear showSearch
+                name='key'
+                width={calculatorWidth(rightContainer.width) + 30}
+                mode={'single'}
+                allowClear
+                showSearch
                 placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}
                 options={flinkConfigOptions}
               />
               <ProFormText
-                name={['index','value']}  width={calculatorWidth(rightContainer.width)- 45}
+                name={['index', 'value']}
+                width={calculatorWidth(rightContainer.width) - 45}
                 placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}
               />
             </Space>
