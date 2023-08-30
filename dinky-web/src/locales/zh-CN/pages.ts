@@ -1106,6 +1106,9 @@ export default {
   'pages.datastudio.explain.validate.logic.right': '逻辑正确',
   'pages.datastudio.explain.validate.logic.error': '逻辑有误',
 
+  // print table
+  'pages.datastudio.print.table.inputTableName': '请选择表名',
+
   'pages.datastudio.footer.memDetails': '最大堆大小：{max}\n已使用：   {used}M',
   'pages.datastudio.footer.codeType': '代码类型：',
   'pages.datastudio.footer.lineSeparator': '行分隔符：',

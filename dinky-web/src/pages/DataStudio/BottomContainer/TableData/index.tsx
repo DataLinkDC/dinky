@@ -3,10 +3,11 @@ import { StateType } from '@/pages/DataStudio/model';
 import { getData, getSseData, postAll } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { connect } from '@@/exports';
-import { Modal, Select, Tabs } from 'antd';
+import {Modal, Select, Space, Tabs} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { ReactNode, useEffect, useState } from 'react';
 import * as React from "react";
+import {l} from "@/utils/intl";
 
 export async function getPrintTables(statement: string) {
   return postAll('api/statement/getPrintTables', { statement });
@@ -18,7 +19,7 @@ export function clearConsole() {
 }
 
 const DataPage = (props: any) => {
-  const { height, title } = props;
+  const { style, title } = props;
   const [consoleInfo, setConsoleInfo] = useState<string>('');
   const [eventSource, setEventSource] = useState<EventSource>();
   const [tableName, setTableName] = useState<string>('');
@@ -45,14 +46,12 @@ const DataPage = (props: any) => {
   }, []);
 
   return (
-    <div style={{ width: '100%' }}>
-      <TextArea value={consoleInfo} />
-    </div>
+      <TextArea value={consoleInfo} style={{ width: style.width, height: style.height}}/>
   );
 };
 
 const TableData = (props: any) => {
-  const { statement } = props;
+  const { statement, height } = props;
   const [panes, setPanes] = useState<{ label: string; key: string; children: ReactNode }[]>([]);
 
   function onOk(title: string) {
@@ -60,7 +59,7 @@ const TableData = (props: any) => {
     const newPanes = [...panes];
     newPanes.push({
       label: title,
-      children: <DataPage title={title}/>,
+      children: <DataPage title={title} style={{ width: '100%', height: height - 63 }}/>,
       key: activeKey
     });
     setPanes(newPanes);
@@ -73,14 +72,14 @@ const TableData = (props: any) => {
 
     let title: string;
     Modal.confirm({
-      title: 'Please select table name',
+      title: l('pages.datastudio.print.table.inputTableName'),
       content: (
-        <Select
-          defaultValue=''
-          style={{ width: 120 }}
-          onChange={(e) => (title = e)}
-          options={tables.map((table) => ({ value: table }))}
-        />
+          <Select
+              defaultValue=''
+              style={{width: '90%'}}
+              onChange={(e) => (title = e)}
+              options={tables.map((table) => ({value: table}))}
+          />
       ),
       onOk() {
         onOk(title);
