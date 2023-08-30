@@ -19,7 +19,7 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.service.WatchTableService;
+import org.dinky.service.PrintTableService;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -43,15 +43,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class WatchTableServiceImpl implements WatchTableService {
+public class PrintTableServiceImpl implements PrintTableService {
 
     private final Map<String, Set<Target>> registerTableMap = new ConcurrentHashMap<>();
 
     private static final Pattern FULL_TABLE_NAME_PATTERN = Pattern.compile("^`(\\w+)`\\.`(\\w+)`\\.`(\\w+)`$");
 
-    public WatchTableServiceImpl() {
-        WatchTableListener watcher = new WatchTableListener(this::send);
-        watcher.start();
+    public PrintTableServiceImpl() {
+        PrintTableListener printer = new PrintTableListener(this::send);
+        printer.start();
     }
 
     public void send(String message) {
@@ -159,7 +159,7 @@ public class WatchTableServiceImpl implements WatchTableService {
         }
     }
 
-    public static class WatchTableListener {
+    public static class PrintTableListener {
 
         private final Consumer<String> consumer;
         public static final int PORT = 7125;
@@ -168,7 +168,7 @@ public class WatchTableServiceImpl implements WatchTableService {
 
         private final ExecutorService executor;
 
-        public WatchTableListener(Consumer<String> consumer) {
+        public PrintTableListener(Consumer<String> consumer) {
             this.consumer = consumer;
             this.socket = getDatagramSocket(PORT);
             executor = Executors.newSingleThreadExecutor();
@@ -182,14 +182,14 @@ public class WatchTableServiceImpl implements WatchTableService {
             try {
                 return new DatagramSocket(port);
             } catch (SocketException e) {
-                log.error("WatchTableListener:DatagramSocket init failed, port {}: {}", PORT, e.getMessage());
+                log.error("PrintTableListener:DatagramSocket init failed, port {}: {}", PORT, e.getMessage());
             }
             return null;
         }
 
         public void run() {
             if (socket == null) {
-                log.warn("WatchTableListener:socket is null, try to initial it");
+                log.warn("PrintTableListener:socket is null, try to initial it");
                 socket = getDatagramSocket(PORT);
                 if (socket == null) return;
             }

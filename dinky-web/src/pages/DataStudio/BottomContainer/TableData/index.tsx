@@ -8,8 +8,8 @@ import TextArea from 'antd/es/input/TextArea';
 import { ReactNode, useEffect, useState } from 'react';
 import * as React from "react";
 
-export async function getWatchTables(statement: string) {
-  return postAll('api/statement/getWatchTables', { statement });
+export async function getPrintTables(statement: string) {
+  return postAll('api/statement/getPrintTables', { statement });
 }
 
 /*--- Clear Console ---*/
@@ -65,7 +65,7 @@ const TableData = (props: any) => {
 
   const addTab = async () => {
     if (!statement) return;
-    const result = await getWatchTables(statement);
+    const result = await getPrintTables(statement);
     const tables: [string] = result.datas;
 
     let title: string;

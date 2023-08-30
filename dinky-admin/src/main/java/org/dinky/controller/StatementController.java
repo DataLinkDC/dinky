@@ -88,14 +88,14 @@ public class StatementController {
         return statementService.selectForProTable(para);
     }
 
-    @PostMapping("/getWatchTables")
-    @ApiOperation("Get Watch Tables")
+    @PostMapping("/getPrintTables")
+    @ApiOperation("Get Print Tables")
     @SuppressWarnings("unchecked")
-    public Result<List<String>> getWatchTables(@RequestBody String statement) {
+    public Result<List<String>> getPrintTables(@RequestBody String statement) {
         try {
             Map<String, String> data = objectMapper.readValue(statement, Map.class);
             String ss = data.get("statement");
-            return Result.succeed(statementService.getWatchTables(ss));
+            return Result.succeed(statementService.getPrintTables(ss));
         } catch (Exception e) {
             return Result.failed(e.getMessage());
         }

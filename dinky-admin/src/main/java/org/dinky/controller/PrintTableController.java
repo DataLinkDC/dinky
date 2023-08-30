@@ -20,7 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.result.Result;
-import org.dinky.service.WatchTableService;
+import org.dinky.service.PrintTableService;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,23 +35,23 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 
 @RestController
-@Api(tags = "Watch Table Controller")
+@Api(tags = "Print Table Controller")
 @AllArgsConstructor
 @RequestMapping("/api")
-public class WatchTableController {
+public class PrintTableController {
 
-    private final WatchTableService watchTableService;
+    private final PrintTableService printTableService;
 
-    @GetMapping(value = "/subscribe/watch", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @ApiOperation("Subscribe watch table")
+    @GetMapping(value = "/subscribe/print", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @ApiOperation("Subscribe p table")
     public SseEmitter subscribe(@RequestParam String table) {
-        return watchTableService.registerListenEntry(table);
+        return printTableService.registerListenEntry(table);
     }
 
-    @PutMapping("/unSubscribe/watch")
-    @ApiOperation("UnSubscribe watch table")
+    @PutMapping("/unSubscribe/print")
+    @ApiOperation("UnSubscribe print table")
     public Result<Void> unsubscribe(@RequestParam String table) {
-        watchTableService.unRegisterListenEntry(table);
+        printTableService.unRegisterListenEntry(table);
         return Result.succeed();
     }
 }
