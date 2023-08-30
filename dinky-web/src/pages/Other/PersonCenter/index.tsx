@@ -19,14 +19,17 @@
 
 import Pop from '@/components/Animation/Pop';
 import { LogSvg } from '@/components/Icons/CodeLanguageIcon';
+import { loginOut } from '@/components/RightContent/AvatarDropdown';
 import PasswordForm from '@/pages/AuthCenter/User/components/PasswordModal/PasswordForm';
 import BaseInfo from '@/pages/Other/PersonCenter/BaseInfo';
 import LoginLogRecord from '@/pages/Other/PersonCenter/LoginLogRecord';
 import OperationLogRecord from '@/pages/Other/PersonCenter/OperationLogRecord';
 import { handleOption } from '@/services/BusinessCrud';
+import { RESPONSE_CODE } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
+import { SuccessMessage } from '@/utils/messages';
 import { useModel } from '@@/exports';
 import { SecurityScanTwoTone } from '@ant-design/icons';
 import { PageContainer, PageLoading, ProCard } from '@ant-design/pro-components';
@@ -107,8 +110,15 @@ const PersonCenter = () => {
    * @returns {Promise<void>}
    */
   const handleSubmitPassWord = async (value: UserBaseInfo.ChangePasswordParams) => {
-    await handleOption(API_CONSTANTS.USER_MODIFY_PASSWORD, l('button.changePassword'), value);
-    form.resetFields();
+    const result = await handleOption(
+      API_CONSTANTS.USER_MODIFY_PASSWORD,
+      l('button.changePassword'),
+      value
+    );
+    if (result && result.code === RESPONSE_CODE.SUCCESS) {
+      form.resetFields();
+      (await SuccessMessage(l('user.changePasswordSuccess'))) && (await loginOut());
+    }
   };
 
   /**

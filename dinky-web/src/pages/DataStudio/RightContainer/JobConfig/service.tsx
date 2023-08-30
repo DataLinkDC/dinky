@@ -9,3 +9,7 @@ export function getEnvData() {
 export function getClusterConfigurationData() {
   return queryDataByParams('/api/clusterConfiguration/listEnabledAll');
 }
+
+export function getFlinkConfigs() {
+  return queryDataByParams('/api/flinkConf/configOptions');
+}

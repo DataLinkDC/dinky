@@ -62,7 +62,6 @@ const FlinkChart = (props: FlinkChartProps) => {
     const t1 = charData[charData.length - 1].time;
     const t2 = charData[0].time;
     const duration = Math.abs(differenceDays(t1, t2));
-    console.log(duration);
     if (duration <= 0) {
       return 'HH:mm:ss';
     } else if (duration >= 1 && duration < 7) {
@@ -75,6 +74,7 @@ const FlinkChart = (props: FlinkChartProps) => {
   const config = {
     animation: false,
     data: data,
+    smooth: true,
     xField: 'time',
     yField: 'value',
     xAxis: {
