@@ -5,7 +5,8 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { connect } from '@@/exports';
 import { Modal, Select, Tabs } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { ReactNode, useEffect, useState } from 'react';
+import { Tab } from 'rc-tabs/lib/interface.d';
+import { useEffect, useState } from 'react';
 
 export async function getWatchTables(statement: string) {
   return postAll('api/statement/getWatchTables', { statement });
@@ -49,7 +50,7 @@ const DataPage = (props: any) => {
 
 const TableData = (props: any) => {
   const { statement } = props;
-  const [panes, setPanes] = useState<{ label: string; key: string; children: ReactNode }[]>([]);
+  const [panes, setPanes] = useState<Tab[]>([]);
 
   const addTab = async () => {
     let title: string;

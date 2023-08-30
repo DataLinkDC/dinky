@@ -17,23 +17,22 @@
  *
  */
 
-import { ContextMenuPosition } from '@/types/Public/state.d';
-import { Key } from '@ant-design/pro-components';
-import { MenuItemType } from 'antd/es/menu/hooks/useItems';
+import { InitContextMenuPosition } from '@/types/Public/state.d';
+import { ProjectState } from '@/types/Studio/state.d';
 
-export interface ProjectState {
-  rightActiveKey: string;
-  cutId: number | undefined;
-  contextMenuPosition: ContextMenuPosition;
-  contextMenuOpen: boolean;
-  menuItems: MenuItemType[];
-  selectedKeys: Key[];
-  isLeaf: boolean;
-  rightClickedNode?: any;
-  isCreateSub: boolean;
-  isEdit: boolean;
-  isRename: boolean;
-  isCreateTask: boolean;
-  isCut: boolean;
-  value: any;
-}
+export const InitProjectState: ProjectState = {
+  rightActiveKey: '',
+  cutId: 0,
+  contextMenuPosition: InitContextMenuPosition,
+  contextMenuOpen: false,
+  menuItems: [],
+  selectedKeys: [],
+  isLeaf: false,
+  rightClickedNode: {},
+  isCreateSub: false,
+  isEdit: false,
+  isRename: false,
+  isCreateTask: false,
+  isCut: false,
+  value: {}
+};

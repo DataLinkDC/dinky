@@ -171,11 +171,10 @@ export default () => {
    * @param item
    */
   const editClick = (item: Cluster.Config) => {
-    item.configJson = JSON.parse(item.configJson);
     setClusterConfigState((prevState) => ({
       ...prevState,
       editOpen: true,
-      value: item
+      value: { ...item, configJson: JSON.stringify(item?.configJson ?? {}) }
     }));
   };
 

@@ -19,6 +19,7 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { TagAlignCenter } from '@/components/StyledComponents';
+import { StateType } from '@/pages/DataStudio/model';
 import {
   ExposedTypeOptions,
   versionOptions
@@ -26,6 +27,7 @@ import {
 import { KUBERNETES_CONFIG_LIST } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
 import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { l } from '@/utils/intl';
+import { connect } from '@@/exports';
 import {
   ProCard,
   ProFormGroup,
@@ -43,8 +45,8 @@ const CodeEditProps = {
   language: 'yaml'
 };
 
-const FlinkK8s = (props: { type: string; value: any }) => {
-  const { type, value } = props;
+const FlinkK8s = (props: { type: string; value: any } & connect) => {
+  const { type, value, flinkConfigOptions } = props;
 
   const renderK8sConfig = () => {
     return (
@@ -71,7 +73,7 @@ const FlinkK8s = (props: { type: string; value: any }) => {
         <ProFormItem key='dpe' name={['configJson', 'kubernetesConfig', 'podTemplate']}>
           <CodeEdit
             {...CodeEditProps}
-            code={value.configJson?.kubernetesConfig.podTemplate ?? ''}
+            code={value.configJson?.kubernetesConfig?.podTemplate ?? ''}
           />
         </ProFormItem>
       )
@@ -83,7 +85,7 @@ const FlinkK8s = (props: { type: string; value: any }) => {
         <ProFormItem key='jmdpe' name={['configJson', 'kubernetesConfig', 'jmPodTemplate']}>
           <CodeEdit
             {...CodeEditProps}
-            code={value.configJson?.kubernetesConfig.jmPodTemplate ?? ''}
+            code={value.configJson?.kubernetesConfig?.jmPodTemplate ?? ''}
           />
         </ProFormItem>
       )
@@ -95,7 +97,7 @@ const FlinkK8s = (props: { type: string; value: any }) => {
         <ProFormItem key='tmdpe' name={['configJson', 'kubernetesConfig', 'tmPodTemplate']}>
           <CodeEdit
             {...CodeEditProps}
-            code={value.configJson?.kubernetesConfig.tmPodTemplate ?? ''}
+            code={value.configJson?.kubernetesConfig?.tmPodTemplate ?? ''}
           />
         </ProFormItem>
       )
@@ -145,7 +147,15 @@ const FlinkK8s = (props: { type: string; value: any }) => {
           >
             <ProFormGroup key='flinkGroup'>
               <Space key={'config'} style={{ display: 'flex' }} align='baseline'>
-                <ProFormText width={'md'} name='name' placeholder={l('rc.cc.key')} />
+                <ProFormSelect
+                  name='name'
+                  width={'md'}
+                  mode={'single'}
+                  allowClear
+                  showSearch
+                  placeholder={l('rc.cc.key')}
+                  options={flinkConfigOptions}
+                />
                 <ProFormText width={'sm'} name='value' placeholder={l('rc.cc.value')} />
               </Space>
             </ProFormGroup>
@@ -160,4 +170,6 @@ const FlinkK8s = (props: { type: string; value: any }) => {
   );
 };
 
-export default FlinkK8s;
+export default connect(({ Studio }: { Studio: StateType }) => ({
+  flinkConfigOptions: Studio.flinkConfigOptions
+}))(FlinkK8s);
