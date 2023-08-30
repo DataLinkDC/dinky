@@ -206,6 +206,7 @@ export enum API_CONSTANTS {
   GET_JOBMANAGER_THREAD_DUMP = 'api/jobInstance/getJobManagerThreadDump',
   GET_TASKMANAGER_LIST = 'api/jobInstance/getTaskManagerList',
   GET_TASKMANAGER_LOG = 'api/jobInstance/getTaskManagerLog',
+  GET_JOB_MERTICE_ITEMS = 'api/jobInstance/getJobMetricsItems',
   CANCEL_JOB = '/api/studio/cancel',
   OFFLINE_TASK = '/api/task/offLineTask',
   RESTART_TASK = '/api/task/restartTask',
@@ -228,10 +229,11 @@ export enum API_CONSTANTS {
 
   // monitor
   MONITOR_GET_SYSTEM_DATA = '/api/monitor/getSysData',
+  MONITOR_GET_FLINK_DATA = '/api/monitor/getFlinkData',
   MONITOR_GET_LAST_DATA = '/api/monitor/getLastUpdateData',
+  METRICS_LAYOUT_GET_BY_NAME = '/api/monitor/getMetricsLayoutByName',
   JOB_METRICS = '/api/monitor/jobMetrics',
-
-  SAVE_FLINK_METRICS = '/api/monitor/saveFlinkMetrics',
+  SAVE_FLINK_METRICS = '/api/monitor/saveFlinkMetrics/',
   GET_METRICS_LAYOUT = '/api/monitor/getMetricsLayout',
 
   // flink
@@ -248,7 +250,7 @@ export enum API_CONSTANTS {
 
   // catalog
   DELETE_CATALOGUE_BY_ID_URL = '/api/catalogue/deleteCatalogueById',
-  CREATE_TASK_URL = '/api/catalogue/createTask',
+  SAVE_OR_UPDATE_TASK_URL = '/api/catalogue/saveOrUpdateCatalogueAndTask',
   SAVE_OR_UPDATE_CATALOGUE_URL = '/api/catalogue/saveOrUpdateCatalogue',
   COPY_TASK_URL = '/api/catalogue/copyTask',
   MOVE_CATALOGUE_URL = '/api/catalogue/moveCatalogue'

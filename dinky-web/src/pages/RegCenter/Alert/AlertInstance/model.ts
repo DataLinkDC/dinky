@@ -19,7 +19,7 @@ import { showAlertInstance } from '@/pages/RegCenter/Alert/AlertGroup/service';
 import { Alert } from '@/types/RegCenter/data.d';
 import { Reducer } from 'umi';
 
-import { createModelTypes } from '@/utils/modals';
+import { createModelTypes } from '@/utils/modelUtils';
 import { Effect } from '@@/plugin-dva/types';
 
 export type AlertStateType = {

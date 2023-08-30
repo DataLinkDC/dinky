@@ -129,7 +129,7 @@ public class CatalogueController {
      * @param catalogueTaskDTO {@link CatalogueTaskDTO}
      * @return {@link Result}< {@link Catalogue}>}
      */
-    @PutMapping("/createTask")
+    @PutMapping("/saveOrUpdateCatalogueAndTask")
     @Log(title = "Create Catalogue And Task", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Create Catalogue And Task")
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {

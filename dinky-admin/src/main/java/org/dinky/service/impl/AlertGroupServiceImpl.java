@@ -21,6 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.AlertGroup;
+import org.dinky.data.model.AlertHistory;
 import org.dinky.data.model.AlertInstance;
 import org.dinky.mapper.AlertGroupMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
@@ -92,10 +93,9 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteGroupById(Integer id) {
-        if (removeById(id)) {
-            alertHistoryService.deleteByAlertGroupId(id);
-            return true;
-        }
-        return false;
+        alertHistoryService
+                .list(new LambdaQueryWrapper<AlertHistory>().eq(AlertHistory::getAlertGroupId, id))
+                .forEach(alertHistory -> alertHistoryService.removeById(alertHistory.getId()));
+        return removeById(id);
     }
 }

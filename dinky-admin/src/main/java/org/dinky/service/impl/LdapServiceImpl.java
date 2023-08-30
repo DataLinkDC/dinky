@@ -111,7 +111,7 @@ public class LdapServiceImpl implements LdapService {
     @Override
     public List<User> listUsers() {
         String filter = configuration.getLdapFilter().getValue();
-        Assert.notBlank(filter, Status.LDAP_FILTER_INCORRECT.getMsg());
+        Assert.notBlank(filter, Status.LDAP_FILTER_INCORRECT.getMessage());
 
         LdapTemplate ldapTemplate = new LdapTemplate(LdapContext.getLdapContext());
         List<User> result = ldapTemplate.search(

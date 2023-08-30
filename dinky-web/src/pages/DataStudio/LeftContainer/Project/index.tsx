@@ -194,9 +194,13 @@ const Project: React.FC = (props: connect) => {
         : modalAllVisible.value.parentId
     };
 
-    if (rightActiveKey === 'createTask') {
-      options.url = API_CONSTANTS.CREATE_TASK_URL;
-      options.parentId = modalAllVisible.isCreateTask && modalAllVisible.value.id;
+    if (rightActiveKey === 'createTask' || rightActiveKey === 'edit') {
+      options.url = API_CONSTANTS.SAVE_OR_UPDATE_TASK_URL;
+      options.parentId = modalAllVisible.isCreateTask
+        ? modalAllVisible.value.id
+        : modalAllVisible.isEdit
+        ? modalAllVisible.value.parentId
+        : options.parentId;
     } else {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL;
     }
@@ -217,12 +221,12 @@ const Project: React.FC = (props: connect) => {
           isCreateTask: false,
           isCut: false
         }));
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         if (modalAllVisible.isRename) {
           // todo: 如果是重命名/修改(修改了名字), 则需要 更新 tab 的 label
         }
       }
     );
+    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
   };
 
   /**

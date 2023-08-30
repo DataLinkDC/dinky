@@ -25,7 +25,6 @@ import org.dinky.data.enums.Status;
 import org.dinky.data.model.Tenant;
 import org.dinky.data.result.Result;
 import org.dinky.service.UserService;
-import org.dinky.utils.I18nMsgUtils;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,7 +79,7 @@ public class AdminController {
     @SaIgnore
     public Result<Void> outLogin() {
         userService.outLogin();
-        return Result.succeed(I18nMsgUtils.getMsg(Status.SIGN_OUT_SUCCESS));
+        return Result.succeed(Status.SIGN_OUT_SUCCESS.getMessage());
     }
 
     /**

@@ -33,6 +33,7 @@ public final class FlinkRestAPIConstant {
     public static final String CONFIG = "/config";
 
     public static final String JOBS = "jobs/";
+    public static final String VERTICES = "/vertices/";
 
     public static final String JOBSLIST = "jobs/overview";
 

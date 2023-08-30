@@ -140,6 +140,7 @@ export default {
   'devops.jobinfo.version.versionList': 'Job Version',
   'devops.jobinfo.version.latestVersion': 'Current Version',
   'devops.jobinfo.version.delete': 'Delete Version',
+  'devops.jobinfo.version.rollBack': 'Roll bcak this version',
   'devops.jobinfo.version.delete.sure': 'Are you sure you want to remove this version？V{version}',
 
   'devops.jobinfo.ck.id': 'ID',
@@ -157,6 +158,10 @@ export default {
   'devops.jobinfo.ck.recovery.success': 'Recovery job succeeded',
   'devops.jobinfo.ck.recovery.failed': 'Recovery job failed',
   'devops.jobinfo.ck.recovery.recoveryTo': 'Recovery Here',
+
+  'devops.jobinfo.metrics.configMetrics': 'Metrics Config',
+  'devops.jobinfo.metrics.metricsItems': 'Metrics Items',
+  'devops.jobinfo.metrics.selected': 'Selected',
 
   'devops.baseinfo.taskid': 'Task Id',
   'devops.baseinfo.name': 'Job Name',
@@ -922,9 +927,12 @@ export default {
   'metrics.filter.60seconds': '60 Seconds',
   'metrics.filter.5minutes': '5 Minutes',
   'metrics.filter.10minutes': '10 Minutes',
+  'metrics.filter.real': 'Real Time',
   'metrics.filter.1hour': '1 Hours',
   'metrics.filter.2hours': '2 Hours',
   'metrics.filter.5hours': '5 Hours',
+  'metrics.filter.1day': 'one day',
+  'metrics.filter.1week': 'one week',
   'metrics.filter.custom': 'Custom',
   'metrics.filter.custom.range': 'DateTime Range',
 
@@ -1165,6 +1173,8 @@ export default {
 
   'catalog.name': 'Job Name',
   'catalog.name.placeholder': 'Please enter the job name',
+  'catalog.note': 'Job Description',
+  'catalog.note.placeholder': 'Please enter the job description',
   'catalog.name.tip':
     'This name can be used as the JobName of the FlinkSql task (pipeline.name configuration item)',
   'catalog.type': 'Job Type',

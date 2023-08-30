@@ -155,7 +155,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
   const editClick = (item: Alert.AlertGroup) => {
     setAlertGroupState((prevState) => ({
       ...prevState,
-      editAlertGroupOpen: !prevState.editOpen,
+      editOpen: !prevState.editOpen,
       value: item
     }));
   };
