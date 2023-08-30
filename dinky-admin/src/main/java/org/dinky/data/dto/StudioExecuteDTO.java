@@ -65,7 +65,8 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
 
     public JobConfig getJobConfig() {
 
-        Map<String, String> parsedConfig = this.configJson == null ? new HashMap<>(0) : this.configJson.getCustomConfigMaps();
+        Map<String, String> parsedConfig =
+                this.configJson == null ? new HashMap<>(0) : this.configJson.getCustomConfigMaps();
 
         return new JobConfig(
                 type,

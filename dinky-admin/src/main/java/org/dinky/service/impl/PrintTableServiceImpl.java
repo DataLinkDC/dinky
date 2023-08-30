@@ -19,14 +19,12 @@
 
 package org.dinky.service.impl;
 
-import cn.hutool.core.collection.ConcurrentHashSet;
 import org.dinky.service.PrintTableService;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.text.MessageFormat;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -39,13 +37,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.NotNull;
-import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.socket.TextMessage;
 
 @Slf4j
 @Service
@@ -94,7 +89,9 @@ public class PrintTableServiceImpl implements PrintTableService {
         SseEmitter emitter = new SseEmitter();
         emitter.onCompletion(() -> {
             log.info(MessageFormat.format("SseEmitter {0} complete", emitter));
-            Set<Target> remains = targets.stream().filter(t -> !t.getEmitter().equals(emitter)).collect(Collectors.toSet());
+            Set<Target> remains = targets.stream()
+                    .filter(t -> !t.getEmitter().equals(emitter))
+                    .collect(Collectors.toSet());
             registerTableMap.put(fullName, remains);
         });
 
@@ -160,7 +157,8 @@ public class PrintTableServiceImpl implements PrintTableService {
 
         public void send(String message, String type) {
             try {
-                SseEmitter.SseEventBuilder builder =  SseEmitter.event().data(message).name("pt_" + type);
+                SseEmitter.SseEventBuilder builder =
+                        SseEmitter.event().data(message).name("pt_" + type);
                 emitter.send(builder);
             } catch (Exception e) {
                 log.debug("SseEmitter {}, send message failed: {}", emitter, e.getMessage());

@@ -2,12 +2,12 @@ import { getCurrentData } from '@/pages/DataStudio/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { getData, getSseData, postAll } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
-import {Modal, Select, Space, Tabs} from 'antd';
+import { Modal, Select, Tabs } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import * as React from 'react';
 import { ReactNode, useEffect, useState } from 'react';
-import * as React from "react";
-import {l} from "@/utils/intl";
 
 export async function getPrintTables(statement: string) {
   return postAll('api/statement/getPrintTables', { statement });
@@ -30,10 +30,10 @@ const DataPage = (props: any) => {
     const eventSourceNew = getSseData(API_CONSTANTS.FLINK_TABLE_DATA + '?table=' + value);
     eventSourceNew.onerror = (event: any) => {
       console.log('EventSource failed:', event);
-    }
+    };
 
     eventSourceNew.addEventListener('pt_data', (event: any) => {
-        setConsoleInfo((preConsoleInfo) => preConsoleInfo + '\n' + event.data);
+      setConsoleInfo((preConsoleInfo) => preConsoleInfo + '\n' + event.data);
     });
 
     setEventSource(eventSourceNew);
@@ -45,9 +45,7 @@ const DataPage = (props: any) => {
     return eventSource?.close();
   }, []);
 
-  return (
-      <TextArea value={consoleInfo} style={{ width: style.width, height: style.height}}/>
-  );
+  return <TextArea value={consoleInfo} style={{ width: style.width, height: style.height }} />;
 };
 
 const TableData = (props: any) => {
@@ -59,7 +57,7 @@ const TableData = (props: any) => {
     const newPanes = [...panes];
     newPanes.push({
       label: title,
-      children: <DataPage title={title} style={{ width: '100%', height: height - 63 }}/>,
+      children: <DataPage title={title} style={{ width: '100%', height: height - 63 }} />,
       key: activeKey
     });
     setPanes(newPanes);
@@ -74,12 +72,12 @@ const TableData = (props: any) => {
     Modal.confirm({
       title: l('pages.datastudio.print.table.inputTableName'),
       content: (
-          <Select
-              defaultValue=''
-              style={{width: '90%'}}
-              onChange={(e) => (title = e)}
-              options={tables.map((table) => ({value: table}))}
-          />
+        <Select
+          defaultValue=''
+          style={{ width: '90%' }}
+          onChange={(e) => (title = e)}
+          options={tables.map((table) => ({ value: table }))}
+        />
       ),
       onOk() {
         onOk(title);
@@ -87,7 +85,10 @@ const TableData = (props: any) => {
     });
   };
 
-  const onEdit =  (targetKey: React.MouseEvent | React.KeyboardEvent | string, action: 'add' | 'remove') => {
+  const onEdit = (
+    targetKey: React.MouseEvent | React.KeyboardEvent | string,
+    action: 'add' | 'remove'
+  ) => {
     switch (action) {
       case 'add':
         addTab();
@@ -97,9 +98,9 @@ const TableData = (props: any) => {
         setPanes(newPanes);
         break;
     }
-  }
+  };
 
-  return <Tabs type='editable-card' onEdit={onEdit} items={panes}/>;
+  return <Tabs type='editable-card' onEdit={onEdit} items={panes} />;
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
