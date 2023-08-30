@@ -27,10 +27,13 @@ const DataPage = (props: any) => {
     if (!value) return;
     eventSource?.close();
     const eventSourceNew = getSseData(API_CONSTANTS.FLINK_TABLE_DATA + '?table=' + value);
+    eventSourceNew.onerror = (event: any) => {
+      console.log('EventSource failed:', event);
+    }
 
-    eventSourceNew.onmessage = (event: any) => {
-      setConsoleInfo((preConsoleInfo) => preConsoleInfo + '\n' + event);
-    };
+    eventSourceNew.addEventListener('pt_data', (event: any) => {
+        setConsoleInfo((preConsoleInfo) => preConsoleInfo + '\n' + event.data);
+    });
 
     setEventSource(eventSourceNew);
     setTableName(value);

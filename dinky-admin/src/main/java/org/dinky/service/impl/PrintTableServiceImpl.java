@@ -19,14 +19,17 @@
 
 package org.dinky.service.impl;
 
+import cn.hutool.core.collection.ConcurrentHashSet;
 import org.dinky.service.PrintTableService;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -34,12 +37,15 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.socket.TextMessage;
 
 @Slf4j
 @Service
@@ -59,30 +65,48 @@ public class PrintTableServiceImpl implements PrintTableService {
             String[] data = message.split("\n", 2);
             final Set<Target> targets = registerTableMap.get(data[0]);
             if (targets != null) {
-                targets.forEach(d -> {
-                    if (!d.send(data[1], "data")) {
-                        // maybe closed
-                        targets.remove(d);
-                    }
-                });
+                targets.forEach(d -> d.send(data[1], "data"));
             }
-        } catch (MessagingException e) {
-            log.error(e.toString());
+        } catch (Exception e) {
+            log.error("send message failed: {}", e.getMessage());
         }
     }
 
     @Override
     public SseEmitter registerListenEntry(String table) {
-        SseEmitter emitter = new SseEmitter();
+
         String fullName = getFullTableName(table);
         String destination = getDestinationByFullName(fullName);
-        Target target = Target.of(emitter, destination);
         Set<Target> targets = registerTableMap.get(fullName);
-        if (targets == null) {
-            registerTableMap.put(fullName, new HashSet<>(Collections.singleton(target)));
-        } else {
-            targets.add(target);
+
+        SseEmitter emitter = getSseEmitter(targets, fullName);
+
+        Set<Target> newTargets = new HashSet<>();
+        newTargets.add(Target.of(emitter, destination));
+        if (targets != null) {
+            newTargets.addAll(targets);
         }
+        registerTableMap.put(fullName, newTargets);
+        return emitter;
+    }
+
+    private SseEmitter getSseEmitter(Set<Target> targets, String fullName) {
+        SseEmitter emitter = new SseEmitter();
+        emitter.onCompletion(() -> {
+            log.info(MessageFormat.format("SseEmitter {0} complete", emitter));
+            Set<Target> remains = targets.stream().filter(t -> !t.getEmitter().equals(emitter)).collect(Collectors.toSet());
+            registerTableMap.put(fullName, remains);
+        });
+
+        emitter.onError(e -> {
+            log.error("SseEmitter error: {}", e.getMessage());
+            emitter.complete();
+        });
+
+        emitter.onTimeout(() -> {
+            log.debug("SseEmitter timeout: {}", emitter.getTimeout());
+            emitter.complete();
+        });
         return emitter;
     }
 
@@ -134,15 +158,12 @@ public class PrintTableServiceImpl implements PrintTableService {
             return new Target(destination, emitter);
         }
 
-        public boolean send(String message, String type) {
+        public void send(String message, String type) {
             try {
-                SseEmitter.SseEventBuilder sseEventBuilder = SseEmitter.event();
-                emitter.send(sseEventBuilder.data(message).name("wt_" + type));
-                return true;
+                SseEmitter.SseEventBuilder builder =  SseEmitter.event().data(message).name("pt_" + type);
+                emitter.send(builder);
             } catch (Exception e) {
-                log.error("send message to {} failed: {}", destination, e.getMessage());
-                emitter.complete();
-                return false;
+                log.debug("SseEmitter {}, send message failed: {}", emitter, e.getMessage());
             }
         }
 
@@ -156,6 +177,19 @@ public class PrintTableServiceImpl implements PrintTableService {
 
         public void complete() {
             emitter.complete();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Target target = (Target) o;
+            return Objects.equals(destination, target.destination) && Objects.equals(emitter, target.emitter);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(destination, emitter);
         }
     }
 
@@ -194,13 +228,15 @@ public class PrintTableServiceImpl implements PrintTableService {
                 if (socket == null) return;
             }
 
-            DatagramPacket packet = new DatagramPacket(buf, buf.length);
-            try {
-                socket.receive(packet);
-                String received = new String(packet.getData(), 0, packet.getLength());
-                consumer.accept(received);
-            } catch (Exception e) {
-                log.error(e.getMessage());
+            while (true) {
+                DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                try {
+                    socket.receive(packet);
+                    String received = new String(packet.getData(), 0, packet.getLength());
+                    consumer.accept(received);
+                } catch (Exception e) {
+                    log.error("print table receive data:" + e.getMessage());
+                }
             }
         }
 
