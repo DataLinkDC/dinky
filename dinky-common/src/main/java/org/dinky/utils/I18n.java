@@ -19,6 +19,8 @@
 
 package org.dinky.utils;
 
+import static org.dinky.utils.AppConstant.JDK_ABOVE_1_8;
+
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -27,8 +29,6 @@ import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.dinky.utils.AppConstant.JDK_ABOVE_1_8;
 
 public final class I18n {
     private static final Logger logger = LoggerFactory.getLogger(I18n.class);
