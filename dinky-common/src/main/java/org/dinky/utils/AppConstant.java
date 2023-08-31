@@ -6,6 +6,4 @@ public final class AppConstant {
 
     private AppConstant() {
     }
-
-
 }
