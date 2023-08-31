@@ -129,7 +129,8 @@ public class Explainer {
                     || operationType.equals(SqlType.SELECT)
                     || operationType.equals(SqlType.SHOW)
                     || operationType.equals(SqlType.DESCRIBE)
-                    || operationType.equals(SqlType.DESC)) {
+                    || operationType.equals(SqlType.DESC)
+                    || operationType.equals(SqlType.CTAS)) {
                 trans.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
                 if (!useStatementSet) {
