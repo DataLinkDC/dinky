@@ -205,7 +205,6 @@ public class JobManager {
         StreamExecutionEnvironment env = this.getExecutor().getStreamExecutionEnvironment();
         // Fix the Classloader in the env above Flink1.16 to appClassLoader, causing ckp to fail to compile
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        env.configure(env.getConfiguration(), contextClassLoader);
         ReflectUtil.setFieldValue(env, "userClassloader", contextClassLoader);
         executor.getSqlManager().registerSqlFragment(config.getVariables());
         return executor;
