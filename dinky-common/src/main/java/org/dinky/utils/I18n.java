@@ -19,7 +19,6 @@
 
 package org.dinky.utils;
 
-import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Locale;
@@ -52,7 +51,7 @@ public final class I18n {
     public static String getMessage(String key) {
         bundle = ResourceBundle.getBundle(MESSAGES_BASE);
         String message = bundle.getString(key);
-        message = new String(message.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+        //        message = new String(message.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
         return message;
     }
 
