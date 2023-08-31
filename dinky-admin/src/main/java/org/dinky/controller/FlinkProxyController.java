@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.servlet.ServletUtil;
@@ -93,8 +92,7 @@ public class FlinkProxyController {
         if (StrUtil.isNotBlank(query)) {
             path = HttpUtil.urlWithForm(path, URLUtil.decode(query), StandardCharsets.UTF_8, true);
         }
-        HttpRequest httpRequest =
-                HttpUtil.createRequest(Method.valueOf(request.getMethod()), path);
+        HttpRequest httpRequest = HttpUtil.createRequest(Method.valueOf(request.getMethod()), path);
         try (HttpResponse httpResponse = httpRequest.execute(); ) {
             writeToHttpServletResponse(httpResponse, resp);
         }
