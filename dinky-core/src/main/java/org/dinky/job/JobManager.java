@@ -101,6 +101,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONUtil;
@@ -201,6 +202,10 @@ public class JobManager {
             }
             executor = Executor.buildLocalExecutor(config.getExecutorSetting());
         }
+        StreamExecutionEnvironment env = this.getExecutor().getStreamExecutionEnvironment();
+        // Fix the Classloader in the env above Flink1.16 to appClassLoader, causing ckp to fail to compile
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        ReflectUtil.setFieldValue(env, "userClassloader", contextClassLoader);
         executor.getSqlManager().registerSqlFragment(config.getVariables());
         return executor;
     }
