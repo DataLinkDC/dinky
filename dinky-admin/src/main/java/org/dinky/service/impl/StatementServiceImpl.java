@@ -20,7 +20,7 @@
 package org.dinky.service.impl;
 
 import org.dinky.data.model.Statement;
-import org.dinky.explainer.watchTable.WatchStatementExplainer;
+import org.dinky.explainer.printTable.PrintStatementExplainer;
 import org.dinky.mapper.StatementMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.parser.SqlType;
@@ -48,14 +48,14 @@ public class StatementServiceImpl extends SuperServiceImpl<StatementMapper, Stat
     }
 
     @Override
-    public List<String> getWatchTables(String statement) {
+    public List<String> getPrintTables(String statement) {
         // TODO: 2023/4/7 this function not support variable sql, because, JobManager and executor
         // couple function
         //  and status and task execute.
         final String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement));
         return Arrays.stream(statements)
-                .filter(t -> SqlType.WATCH.equals(Operations.getOperationType(t)))
-                .flatMap(t -> Arrays.stream(WatchStatementExplainer.splitTableNames(t)))
+                .filter(t -> SqlType.PRINT.equals(Operations.getOperationType(t)))
+                .flatMap(t -> Arrays.stream(PrintStatementExplainer.splitTableNames(t)))
                 .collect(Collectors.toList());
     }
 }

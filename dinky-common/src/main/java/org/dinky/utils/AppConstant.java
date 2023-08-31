@@ -17,21 +17,11 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.utils;
 
-import org.dinky.data.model.Statement;
-import org.dinky.mybatis.service.ISuperService;
+public final class AppConstant {
+    public static final String JDK_VERSION = System.getProperty("java.specification.version");
+    public static final boolean JDK_ABOVE_1_8 = JDK_VERSION.compareTo("1.8") > 0;
 
-import java.util.List;
-
-/**
- * StatementService
- *
- * @since 2021/5/28 13:45
- */
-public interface StatementService extends ISuperService<Statement> {
-
-    boolean insert(Statement statement);
-
-    List<String> getPrintTables(String statement);
+    private AppConstant() {}
 }

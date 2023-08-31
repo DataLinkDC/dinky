@@ -17,23 +17,21 @@
  *
  */
 
-package org.dinky.explainer.watchTable;
+package org.dinky.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class WatchStatementExplainerTest {
+class PrintTableServiceImplTest {
 
     @Test
-    void getTableNames() {
-        String sql = "watch VersionT";
-        WatchStatementExplainer watchStatementExplainer = new WatchStatementExplainer(sql);
-        assertArrayEquals(new String[] {"VersionT"}, watchStatementExplainer.getTableNames());
+    void getDestination() {
+        String tableName = "`default_catalog`.`default_database`.`Orders`";
+        String result = PrintTableServiceImpl.getDestination(tableName);
+        assertEquals("/topic/table/`default_catalog`.`default_database`.`print_Orders`", result);
 
-        sql = "watch VersionT, Buyers, r, rr, vvv";
-        WatchStatementExplainer wse = new WatchStatementExplainer(sql);
-
-        assertArrayEquals(new String[] {"VersionT", "Buyers", "r", "rr", "vvv"}, wse.getTableNames());
+        result = PrintTableServiceImpl.getDestination("Orders");
+        assertEquals("/topic/table/`default_catalog`.`default_database`.`print_Orders`", result);
     }
 }

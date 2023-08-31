@@ -1143,6 +1143,9 @@ export default {
   'pages.datastudio.explain.validate.logic.right': 'Logical Right',
   'pages.datastudio.explain.validate.logic.error': 'Logical Error',
 
+  // print table
+  'pages.datastudio.print.table.inputTableName': 'Please select table name',
+
   // footer
   'pages.datastudio.footer.memDetails': 'Maximum heap size: {max}\nUsed:   {used}M',
   'pages.datastudio.footer.codeType': 'Code Type: ',

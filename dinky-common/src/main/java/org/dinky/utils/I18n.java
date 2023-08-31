@@ -19,6 +19,8 @@
 
 package org.dinky.utils;
 
+import static org.dinky.utils.AppConstant.JDK_ABOVE_1_8;
+
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -52,7 +54,9 @@ public final class I18n {
     public static String getMessage(String key) {
         bundle = ResourceBundle.getBundle(MESSAGES_BASE);
         String message = bundle.getString(key);
-        message = new String(message.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+        if (!JDK_ABOVE_1_8) {
+            message = new String(message.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+        }
         return message;
     }
 
