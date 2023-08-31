@@ -93,10 +93,8 @@ public class FlinkProxyController {
         if (StrUtil.isNotBlank(query)) {
             path = HttpUtil.urlWithForm(path, URLUtil.decode(query), StandardCharsets.UTF_8, true);
         }
-        List<String> urls = StrUtil.split(pathSplit.remove(0), ",");
-        pathSplit.add(0, urls.get(RandomUtil.randomInt(urls.size())));
         HttpRequest httpRequest =
-                HttpUtil.createRequest(Method.valueOf(request.getMethod()), StrUtil.join("/", pathSplit));
+                HttpUtil.createRequest(Method.valueOf(request.getMethod()), path);
         try (HttpResponse httpResponse = httpRequest.execute(); ) {
             writeToHttpServletResponse(httpResponse, resp);
         }
