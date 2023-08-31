@@ -238,7 +238,7 @@ export enum API_CONSTANTS {
 
   // flink
   FLINK_PROXY = '/api/flink',
-  FLINK_TABLE_DATA = '/api/subscribe/watch',
+  FLINK_TABLE_DATA = '/api/subscribe/print',
 
   // resource
   RESOURCE_SHOW_TREE = '/api/resource/showByTree',

@@ -29,7 +29,7 @@ import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.Executor;
-import org.dinky.explainer.watchTable.WatchStatementExplainer;
+import org.dinky.explainer.printTable.PrintStatementExplainer;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.interceptor.FlinkInterceptor;
@@ -137,12 +137,12 @@ public class Explainer {
                 }
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
-            } else if (operationType.equals(SqlType.WATCH)) {
-                WatchStatementExplainer watchStatementExplainer = new WatchStatementExplainer(statement);
+            } else if (operationType.equals(SqlType.PRINT)) {
+                PrintStatementExplainer printStatementExplainer = new PrintStatementExplainer(statement);
 
-                String[] tableNames = watchStatementExplainer.getTableNames();
+                String[] tableNames = printStatementExplainer.getTableNames();
                 for (String tableName : tableNames) {
-                    trans.add(new StatementParam(WatchStatementExplainer.getCreateStatement(tableName), SqlType.CTAS));
+                    trans.add(new StatementParam(PrintStatementExplainer.getCreateStatement(tableName), SqlType.CTAS));
                 }
             } else {
                 UDF udf = UDFUtil.toUDF(statement);
@@ -353,7 +353,7 @@ public class Explainer {
                 SqlType operationType = Operations.getOperationType(sql);
                 if (operationType.equals(SqlType.INSERT)) {
                     lineageRelList.addAll(executor.getLineage(sql));
-                } else if (!operationType.equals(SqlType.SELECT) && !operationType.equals(SqlType.WATCH)) {
+                } else if (!operationType.equals(SqlType.SELECT) && !operationType.equals(SqlType.PRINT)) {
                     executor.executeSql(sql);
                 }
             } catch (Exception e) {

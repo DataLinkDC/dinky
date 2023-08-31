@@ -21,7 +21,7 @@ package org.dinky.service;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-public interface WatchTableService {
+public interface PrintTableService {
     SseEmitter registerListenEntry(String table);
 
     void unRegisterListenEntry(String table);

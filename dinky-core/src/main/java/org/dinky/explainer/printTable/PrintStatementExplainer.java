@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.explainer.watchTable;
+package org.dinky.explainer.printTable;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -26,9 +26,9 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WatchStatementExplainer {
+public class PrintStatementExplainer {
 
-    public static final String PATTERN_STR = "WATCH (.+)";
+    public static final String PATTERN_STR = "PRINT (.+)";
     public static final Pattern PATTERN = Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE);
 
     public static final String CREATE_SQL_TEMPLATE = "CREATE TABLE print_{0} WITH (''connector'' = ''printnet'', "
@@ -38,7 +38,7 @@ public class WatchStatementExplainer {
 
     private final String statement;
 
-    public WatchStatementExplainer(String statement) {
+    public PrintStatementExplainer(String statement) {
         this.statement = statement;
     }
 
