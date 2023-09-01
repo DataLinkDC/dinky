@@ -129,11 +129,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     rightContentRender: () => <RightContent />,
     footerRender: () => <Footer />,
     siderWidth: 180,
-    waterMarkProps: {
-      content: initialState?.currentUser?.user.username + ' ' + new Date().toLocaleString(),
-      fontColor:
-        theme === THEME.light || undefined ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)'
-    },
     isChildrenLayout: true,
     onPageChange: () => {
       const { location } = history;
