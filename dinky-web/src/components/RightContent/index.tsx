@@ -24,7 +24,7 @@ import { FullscreenExitOutlined, FullscreenOutlined, GlobalOutlined } from '@ant
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { SelectLang, useModel } from '@umijs/max';
 import { Space, Switch, Tooltip } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import useCookie from 'react-use-cookie';
 import screenfull from 'screenfull';
 import Avatar from './AvatarDropdown';

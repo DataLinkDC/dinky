@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import { getConsoleData } from '@/pages/DataStudio/BottomContainer/Console/service';
@@ -222,6 +223,8 @@ const DataStudio = (props: any) => {
     setIsModalUpdateTabContentOpen(false);
   };
 
+  const access = useAccess();
+
   return (
     <PersistGate loading={null} persistor={persist}>
       <div style={{ marginInline: -10, marginBlock: -5 }}>
@@ -233,7 +236,9 @@ const DataStudio = (props: any) => {
             <Menu
               mode='inline'
               selectedKeys={[leftContainer.selectKey]}
-              items={LeftSide.map((x) => ({
+              items={LeftSide.filter((x) =>
+                AuthorizedObject({ path: x.auth, children: x, access })
+              ).map((x) => ({
                 key: x.key,
                 label: x.label,
                 icon: x.icon
@@ -252,7 +257,9 @@ const DataStudio = (props: any) => {
             <Menu
               mode='inline'
               selectedKeys={[bottomContainer.selectKey]}
-              items={LeftBottomSide.map((x) => ({
+              items={LeftBottomSide.filter((x) =>
+                AuthorizedObject({ path: x.auth, children: x, access })
+              ).map((x) => ({
                 key: x.key,
                 label: x.label,
                 icon: x.icon
@@ -319,20 +326,24 @@ const DataStudio = (props: any) => {
                 borderInlineStart: `1px solid ${themeValue.borderColor}`,
                 borderBlockStart: `1px solid ${themeValue.borderColor}`
               }}
-              items={RightSide.filter((x) => {
-                if (!x.isShow) {
-                  return true;
-                }
-                if (parseInt(tabs.activeKey) < 0) {
-                  return TabsPageType.None;
-                }
-                const v = (tabs.panes as TabsItemType[]).find(
-                  (item) => item.key === tabs.activeKey
-                );
-                return x.isShow(v?.type ?? TabsPageType.None, v?.subType);
-              }).map((x) => {
-                return { key: x.key, label: x.label, icon: x.icon };
-              })}
+              items={RightSide.filter((x) =>
+                AuthorizedObject({ path: x.auth, children: x, access })
+              )
+                .filter((x) => {
+                  if (!x.isShow) {
+                    return true;
+                  }
+                  if (parseInt(tabs.activeKey) < 0) {
+                    return TabsPageType.None;
+                  }
+                  const v = (tabs.panes as TabsItemType[]).find(
+                    (item) => item.key === tabs.activeKey
+                  );
+                  return x.isShow(v?.type ?? TabsPageType.None, v?.subType);
+                })
+                .map((x) => {
+                  return { key: x.key, label: x.label, icon: x.icon };
+                })}
               onClick={(item) =>
                 updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)
               }
