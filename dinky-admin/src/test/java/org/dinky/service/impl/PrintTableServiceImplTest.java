@@ -23,15 +23,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class WatchTableServiceImplTest {
+class PrintTableServiceImplTest {
 
     @Test
     void getDestination() {
         String tableName = "`default_catalog`.`default_database`.`Orders`";
-        String result = WatchTableServiceImpl.getDestination(tableName);
+        String result = PrintTableServiceImpl.getDestination(tableName);
         assertEquals("/topic/table/`default_catalog`.`default_database`.`print_Orders`", result);
 
-        result = WatchTableServiceImpl.getDestination("Orders");
+        result = PrintTableServiceImpl.getDestination("Orders");
         assertEquals("/topic/table/`default_catalog`.`default_database`.`print_Orders`", result);
     }
 }

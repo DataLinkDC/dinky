@@ -159,6 +159,10 @@ export default {
   'devops.jobinfo.ck.recovery.failed': 'Recovery job failed',
   'devops.jobinfo.ck.recovery.recoveryTo': 'Recovery Here',
 
+  'devops.jobinfo.metrics.configMetrics': 'Metrics Config',
+  'devops.jobinfo.metrics.metricsItems': 'Metrics Items',
+  'devops.jobinfo.metrics.selected': 'Selected',
+
   'devops.baseinfo.taskid': 'Task Id',
   'devops.baseinfo.name': 'Job Name',
   'devops.baseinfo.status': 'Status',
@@ -199,6 +203,8 @@ export default {
   'user.newpwdPlaceholder': 'Please enter new password',
   'user.repeatpwdPlaceholder': 'Please enter repeat new password',
   'user.oldNewPwdNoMatch': 'The new passwords do not match',
+  'user.changePasswordSuccess':
+    'Password changed successfully, will jump to the login page to re-login!',
   'user.login.status.code': 'Code',
   'user.login.status.msg': 'Message',
   'user.login.accesstime': 'Login Time',
@@ -923,9 +929,12 @@ export default {
   'metrics.filter.60seconds': '60 Seconds',
   'metrics.filter.5minutes': '5 Minutes',
   'metrics.filter.10minutes': '10 Minutes',
+  'metrics.filter.real': 'Real Time',
   'metrics.filter.1hour': '1 Hours',
   'metrics.filter.2hours': '2 Hours',
   'metrics.filter.5hours': '5 Hours',
+  'metrics.filter.1day': 'one day',
+  'metrics.filter.1week': 'one week',
   'metrics.filter.custom': 'Custom',
   'metrics.filter.custom.range': 'DateTime Range',
 
@@ -1133,6 +1142,9 @@ export default {
   'pages.datastudio.explain.validate.grammar.error': 'Grammar Error',
   'pages.datastudio.explain.validate.logic.right': 'Logical Right',
   'pages.datastudio.explain.validate.logic.error': 'Logical Error',
+
+  // print table
+  'pages.datastudio.print.table.inputTableName': 'Please select table name',
 
   // footer
   'pages.datastudio.footer.memDetails': 'Maximum heap size: {max}\nUsed:   {used}M',

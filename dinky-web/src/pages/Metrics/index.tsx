@@ -17,8 +17,9 @@
  *
  */
 
+import FlinkChart from '@/components/FlinkChart';
+import Job from '@/pages/Metrics/Job';
 import { ChartData, MetricsLayout } from '@/pages/Metrics/Job/data';
-import FlinkChart from '@/pages/Metrics/Job/FlinkChart';
 import Server from '@/pages/Metrics/Server';
 import { FlinkMetricsData, JVMMetric, MetricsDataType } from '@/pages/Metrics/Server/data';
 import { getSubMinTime } from '@/pages/Metrics/Server/function';
@@ -31,7 +32,6 @@ import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
 import { Row } from 'antd';
 import { useEffect, useState } from 'react';
-import Job from './Job';
 
 const commonChartConfig: G2plotConfig = {
   data: [],
@@ -218,6 +218,7 @@ export default () => {
                       }}
                       data={chartDataList[j.taskId + j.vertices + j.metrics]}
                       title={j.metrics}
+                      extraType={'size'}
                     />
                   );
                 })}
@@ -225,7 +226,6 @@ export default () => {
             </ProCard>
           );
         })}
-
       <Job />
     </PageContainer>
   );

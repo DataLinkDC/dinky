@@ -17,12 +17,24 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.data.vo;
 
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import java.io.Serializable;
+import java.util.List;
 
-public interface WatchTableService {
-    SseEmitter registerListenEntry(String table);
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-    void unRegisterListenEntry(String table);
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class CascaderVO implements Serializable {
+    private String value;
+    private String label;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<CascaderVO> children;
 }

@@ -16,3 +16,24 @@
  *   limitations under the License.
  *
  */
+
+import { ContextMenuPosition } from '@/types/Public/state.d';
+import { Key } from '@ant-design/pro-components';
+import { MenuItemType } from 'antd/es/menu/hooks/useItems';
+
+export interface ProjectState {
+  rightActiveKey: string;
+  cutId: number | undefined;
+  contextMenuPosition: ContextMenuPosition;
+  contextMenuOpen: boolean;
+  menuItems: MenuItemType[];
+  selectedKeys: Key[];
+  isLeaf: boolean;
+  rightClickedNode?: any;
+  isCreateSub: boolean;
+  isEdit: boolean;
+  isRename: boolean;
+  isCreateTask: boolean;
+  isCut: boolean;
+  value: any;
+}

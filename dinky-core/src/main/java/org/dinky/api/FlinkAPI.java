@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
+import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
@@ -379,5 +380,18 @@ public class FlinkAPI {
     /** @return JsonNode */
     public JsonNode getTaskManagerThreadDump(String containerId) {
         return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.THREAD_DUMP);
+    }
+
+    public JsonNode getJobMetricesItems(String jobId, String verticeId) {
+        return get(FlinkRestAPIConstant.JOBS
+                + jobId
+                + FlinkRestAPIConstant.VERTICES
+                + verticeId
+                + FlinkRestAPIConstant.METRICS);
+    }
+
+    public JsonNode getJobMetricesData(String jobId, String verticeId, String metrics) {
+        return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.VERTICES + verticeId
+                + FlinkRestAPIConstant.METRICS + "?get=" + URLEncodeUtil.encode(metrics));
     }
 }

@@ -17,23 +17,19 @@
  *
  */
 
-package org.dinky.explainer.watchTable;
+package org.dinky.data.enums;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+public enum MetricsType {
+    LOCAL("local"),
+    FLINK("flink");
 
-import org.junit.jupiter.api.Test;
+    private final String type;
 
-class WatchStatementExplainerTest {
+    public String getType() {
+        return this.type;
+    }
 
-    @Test
-    void getTableNames() {
-        String sql = "watch VersionT";
-        WatchStatementExplainer watchStatementExplainer = new WatchStatementExplainer(sql);
-        assertArrayEquals(new String[] {"VersionT"}, watchStatementExplainer.getTableNames());
-
-        sql = "watch VersionT, Buyers, r, rr, vvv";
-        WatchStatementExplainer wse = new WatchStatementExplainer(sql);
-
-        assertArrayEquals(new String[] {"VersionT", "Buyers", "r", "rr", "vvv"}, wse.getTableNames());
+    MetricsType(String type) {
+        this.type = type;
     }
 }

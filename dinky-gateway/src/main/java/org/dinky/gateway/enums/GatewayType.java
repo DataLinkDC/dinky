@@ -76,6 +76,23 @@ public enum GatewayType {
         return get(type).isDeployCluster();
     }
 
+    /**
+     * 是否在本地构建 job graph , 用于校验是否提交到集群
+     * @return true: 本地构建 jobgraph
+     */
+    public boolean isLocalExecute() {
+        switch (value) {
+            case "l":
+            case "ya":
+            case "ypj":
+            case "ka":
+            case "kao":
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public boolean isDeployCluster() {
         switch (value) {
             case "ya":

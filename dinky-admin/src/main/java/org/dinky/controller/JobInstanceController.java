@@ -154,4 +154,21 @@ public class JobInstanceController {
     public Result<String> getTaskManagerLog(@RequestParam String address, @RequestParam String containerId) {
         return Result.succeed(FlinkAPI.build(address).getTaskManagerLog(containerId), "");
     }
+
+    @GetMapping("/getJobMetricsItems")
+    @ApiOperation(" getJobMetricsItems List")
+    public Result<JsonNode> getJobMetricsItems(
+            @RequestParam String address, @RequestParam String jobId, @RequestParam String verticeId) {
+        return Result.succeed(FlinkAPI.build(address).getJobMetricesItems(jobId, verticeId));
+    }
+
+    @GetMapping("/getJobMetricsData")
+    @ApiOperation(" getJobMetrics Data")
+    public Result<JsonNode> getJobMetricsItems(
+            @RequestParam String address,
+            @RequestParam String jobId,
+            @RequestParam String verticeId,
+            @RequestParam String metrics) {
+        return Result.succeed(FlinkAPI.build(address).getJobMetricesData(jobId, verticeId, metrics));
+    }
 }

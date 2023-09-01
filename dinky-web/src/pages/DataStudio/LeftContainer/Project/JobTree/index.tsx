@@ -24,13 +24,12 @@ import {
 } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { BtnRoute } from '@/pages/DataStudio/route';
-import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { Key } from '@ant-design/pro-components';
 import { Empty, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const { DirectoryTree } = Tree;
 
@@ -38,7 +37,6 @@ const { DirectoryTree } = Tree;
  * props
  */
 type TreeProps = {
-  treeData: Catalogue[];
   onNodeClick: (info: any) => void;
   onRightClick: (info: any) => void;
   style?: React.CSSProperties;
@@ -46,9 +44,13 @@ type TreeProps = {
 };
 
 const JobTree: React.FC<TreeProps & connect> = (props) => {
-  const { treeData, onNodeClick, style, height, onRightClick, selectedKeys } = props;
+  const { projectData, onNodeClick, style, height, onRightClick, selectedKeys } = props;
   const [searchValue, setSearchValueValue] = useState('');
-  const data = buildProjectTree(treeData, searchValue);
+  const [data, setData] = useState<any[]>(buildProjectTree(projectData, searchValue));
+
+  useEffect(() => {
+    setData(buildProjectTree(projectData, searchValue));
+  }, [searchValue, projectData]);
 
   const [expandedKeys, setExpandedKeys] = useState<Key[]>();
   const [autoExpandParent, setAutoExpandParent] = useState(true);
@@ -97,7 +99,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
         allowClear={true}
       />
 
-      {treeData.length > 0 ? (
+      {data.length ? (
         <DirectoryTree
           style={{ ...style, height: height - 40 - 16, overflowY: 'auto' }}
           className={'treeList'}
@@ -120,5 +122,6 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  height: Studio.toolContentHeight
+  height: Studio.toolContentHeight,
+  projectData: Studio.project.data
 }))(JobTree);

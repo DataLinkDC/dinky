@@ -155,6 +155,10 @@ export default {
   'devops.jobinfo.ck.recovery.failed': '恢复作业失败',
   'devops.jobinfo.ck.recovery.recoveryTo': '此处恢复',
 
+  'devops.jobinfo.metrics.configMetrics': '任务监控配置',
+  'devops.jobinfo.metrics.metricsItems': '监控项列表',
+  'devops.jobinfo.metrics.selected': '已选择',
+
   'devops.baseinfo.taskid': '任务ID',
   'devops.baseinfo.name': '任务名称',
   'devops.baseinfo.status': '状态',
@@ -186,6 +190,7 @@ export default {
   'user.isdelete': '该用户已被删除，无法重置密码，请先恢复该用户!',
   'user.reset': '您确定要重置此用户密码吗?',
   'user.resetPassword': '重置密码',
+  'user.changePasswordSuccess': '密码修改成功, 即将跳转至登录页重新登录!',
   'user.resetPasswordSuccess': '用户: {username} 密码重置成功! 新密码为: {password}',
   'user.usernamePlaceholder': '请输入用户名',
   'user.jobnumberPlaceholder': '请输入工号',
@@ -895,9 +900,12 @@ export default {
   'metrics.filter.60seconds': '60秒',
   'metrics.filter.5minutes': '5分钟',
   'metrics.filter.10minutes': '10分钟',
+  'metrics.filter.real': '实时',
   'metrics.filter.1hour': '1小时',
   'metrics.filter.2hours': '2小时',
   'metrics.filter.5hours': '5小时',
+  'metrics.filter.1day': '近一天',
+  'metrics.filter.1week': '近一周',
   'metrics.filter.custom': '自定义',
   'metrics.filter.custom.range': '日期时间范围',
   // flink job
@@ -1098,6 +1106,9 @@ export default {
   'pages.datastudio.explain.validate.grammar.error': '语法有误',
   'pages.datastudio.explain.validate.logic.right': '逻辑正确',
   'pages.datastudio.explain.validate.logic.error': '逻辑有误',
+
+  // print table
+  'pages.datastudio.print.table.inputTableName': '请选择表名',
 
   'pages.datastudio.footer.memDetails': '最大堆大小：{max}\n已使用：   {used}M',
   'pages.datastudio.footer.codeType': '代码类型：',

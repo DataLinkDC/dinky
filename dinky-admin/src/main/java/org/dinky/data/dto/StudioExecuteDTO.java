@@ -22,6 +22,7 @@ package org.dinky.data.dto;
 import org.dinky.data.model.TaskExtConfig;
 import org.dinky.job.JobConfig;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
@@ -64,7 +65,8 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
 
     public JobConfig getJobConfig() {
 
-        Map<String, String> parsedConfig = this.configJson.getCustomConfigMaps();
+        Map<String, String> parsedConfig =
+                this.configJson == null ? new HashMap<>(0) : this.configJson.getCustomConfigMaps();
 
         return new JobConfig(
                 type,

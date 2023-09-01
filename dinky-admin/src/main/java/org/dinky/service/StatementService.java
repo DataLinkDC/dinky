@@ -33,5 +33,5 @@ public interface StatementService extends ISuperService<Statement> {
 
     boolean insert(Statement statement);
 
-    List<String> getWatchTables(String statement);
+    List<String> getPrintTables(String statement);
 }

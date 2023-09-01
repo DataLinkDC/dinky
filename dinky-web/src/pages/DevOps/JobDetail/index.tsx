@@ -1,9 +1,30 @@
+/*
+ *
+ *   Licensed to the Apache Software Foundation (ASF) under one or more
+ *   contributor license agreements.  See the NOTICE file distributed with
+ *   this work for additional information regarding copyright ownership.
+ *   The ASF licenses this file to You under the Apache License, Version 2.0
+ *   (the "License"); you may not use this file except in compliance with
+ *   the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+
 import { TagJobLifeCycle } from '@/pages/DevOps/function';
 import CheckPoints from '@/pages/DevOps/JobDetail/CheckPointsTab';
 import JobLogsTab from '@/pages/DevOps/JobDetail/JobLogs/JobLogsTab';
+import JobMetrics from '@/pages/DevOps/JobDetail/JobMetrics';
 import JobOperator from '@/pages/DevOps/JobDetail/JobOperator/JobOperator';
 import JobConfigTab from '@/pages/DevOps/JobDetail/JobOverview/JobOverview';
 import JobVersionTab from '@/pages/DevOps/JobDetail/JobVersion/JobVersionTab';
+import { DevopsType } from '@/pages/DevOps/JobDetail/model';
 import JobOperatorGraph from '@/pages/Home/JobOverView/JobOperatorGraph';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
@@ -12,9 +33,8 @@ import { ClusterOutlined, FireOutlined, RocketOutlined } from '@ant-design/icons
 import { PageContainer } from '@ant-design/pro-components';
 import { useRequest } from '@umijs/max';
 import { Tag } from 'antd';
-import type { FC } from 'react';
 import { useState } from 'react';
-import { useLocation } from 'umi';
+import { connect, useLocation } from 'umi';
 
 /**
  * Enum defining different operators for the JobDetail component.
@@ -25,7 +45,7 @@ const OperatorEnum = {
   JOB_VERSION: 'job_version',
   JOB_CHECKPOINTS: 'job_checkpoints',
   JOB_ALERT: 'job_alert',
-  JOB_MONITOR: 'job_monitor',
+  JOB_METRICS: 'job_monitor',
   JOB_LINEAGE: 'job_lineage',
   JOB_GRAPH: 'job_graph'
 };
@@ -36,28 +56,13 @@ const OperatorEnum = {
  * @param {any} props - The component props.
  * @returns {JSX.Element} - The rendered JobDetail component.
  */
-const JobDetail: FC = (props: any) => {
-  // Get the URL parameters
+const JobDetail = (props: any) => {
+  const { dispatch, jobInfoDetail } = props;
+
   const params = useLocation();
   const id = params.search.split('=')[1];
 
-  // Set the initial tab key state
   const [tabKey, setTabKey] = useState<string>(OperatorEnum.JOB_BASE_INFO);
-
-  // Fetch the job detail data
-  const { data } = useRequest(
-    {
-      url: API_CONSTANTS.GET_JOB_DETAIL,
-      params: { id: id }
-    },
-    {
-      cacheKey: 'data-detail',
-      pollingInterval: 1000
-    }
-  );
-
-  // Extract the job info detail from the fetched data
-  const jobInfoDetail: Jobs.JobInfoDetail = data;
 
   // Define the components for each job operator
   const JobOperatorItems = {
@@ -65,11 +70,28 @@ const JobDetail: FC = (props: any) => {
     [OperatorEnum.JOB_LOGS]: <JobLogsTab jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_VERSION]: <JobVersionTab jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_CHECKPOINTS]: <CheckPoints jobDetail={jobInfoDetail} />,
-    [OperatorEnum.JOB_MONITOR]: <CheckPoints jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_METRICS]: <JobMetrics />,
     [OperatorEnum.JOB_LINEAGE]: <CheckPoints jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_ALERT]: <CheckPoints jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_GRAPH]: <JobOperatorGraph jobDetail={jobInfoDetail} />
   };
+
+  useRequest(
+    {
+      url: API_CONSTANTS.GET_JOB_DETAIL,
+      params: { id: id }
+    },
+    {
+      cacheKey: 'data-detail',
+      pollingInterval: 3000,
+      onSuccess: (data: Jobs.JobInfoDetail, params) => {
+        dispatch({
+          type: 'Devops/setJobInfoDetail',
+          jobDetail: data
+        });
+      }
+    }
+  );
 
   // Define the tabs config for job operators
   const JobOperatorTabs = [
@@ -88,7 +110,7 @@ const JobDetail: FC = (props: any) => {
     },
     {
       tab: l('devops.jobinfo.config.JobMonitor'),
-      key: OperatorEnum.JOB_MONITOR
+      key: OperatorEnum.JOB_METRICS
     },
     {
       tab: l('devops.jobinfo.config.JobLineage'),
@@ -128,4 +150,6 @@ const JobDetail: FC = (props: any) => {
   );
 };
 
-export default JobDetail;
+export default connect(({ Devops }: { Devops: DevopsType }) => ({
+  jobInfoDetail: Devops.jobInfoDetail
+}))(JobDetail);
