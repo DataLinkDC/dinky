@@ -7,7 +7,8 @@ import { connect } from '@@/exports';
 import { Modal, Select, Tabs } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import * as React from 'react';
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Tab } from 'rc-tabs/lib/interface.d';
 
 export async function getPrintTables(statement: string) {
   return postAll('api/statement/getPrintTables', { statement });
@@ -50,7 +51,7 @@ const DataPage = (props: any) => {
 
 const TableData = (props: any) => {
   const { statement, height } = props;
-  const [panes, setPanes] = useState<{ label: string; key: string; children: ReactNode }[]>([]);
+  const [panes, setPanes] = useState<Tab[]>([]);
 
   function onOk(title: string) {
     const activeKey = `${panes.length + 1}`;

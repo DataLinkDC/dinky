@@ -194,7 +194,6 @@ const CodeShow = (props: CodeShowFormProps) => {
    *  render
    */
   return (
-    <>
       <div className={'monaco-float'}>
         {/* fullScreen button */}
         {fullScreenBtn && (
@@ -260,7 +259,6 @@ const CodeShow = (props: CodeShowFormProps) => {
           </div>
         )}
       </div>
-    </>
   );
 };
 
