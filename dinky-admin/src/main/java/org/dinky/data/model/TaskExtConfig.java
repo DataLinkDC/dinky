@@ -19,6 +19,8 @@
 
 package org.dinky.data.model;
 
+import org.dinky.assertion.Asserts;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +31,6 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.dinky.assertion.Asserts;
 
 @Data
 @AllArgsConstructor
@@ -43,10 +44,10 @@ public class TaskExtConfig implements Serializable {
     // 获取自定义配置的某个key的值
     public String getCustomConfigValue(String key) {
         return customConfig.stream()
-            .filter(item -> item.getKey().equals(key))
-            .findFirst()
-            .orElseGet(() -> new ConfigItem(key, ""))
-            .getValue();
+                .filter(item -> item.getKey().equals(key))
+                .findFirst()
+                .orElseGet(() -> new ConfigItem(key, ""))
+                .getValue();
     }
 
     // 获取自定义配置的所有key
@@ -56,7 +57,9 @@ public class TaskExtConfig implements Serializable {
 
     // 获取自定义配置的所有key-value
     public Map<String, String> getCustomConfigMaps() {
-        return Asserts.isNotNullCollection(customConfig) ? customConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue)) : new HashMap<>();
+        return Asserts.isNotNullCollection(customConfig)
+                ? customConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue))
+                : new HashMap<>();
     }
 
     // 是否包含某个key
