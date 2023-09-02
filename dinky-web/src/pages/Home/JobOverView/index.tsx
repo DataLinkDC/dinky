@@ -23,11 +23,16 @@ import JobRecoveryView from '@/pages/Home/JobOverView/JobRecoveryView';
 import JobRunView from '@/pages/Home/JobOverView/JobRunView';
 import JobStatusPie from '@/pages/Home/JobOverView/JobStatusPie';
 import LoadScoreGauge from '@/pages/Home/JobOverView/LoadScoreGauge';
-import { l } from '@/utils/intl';
-import { ProCard } from '@ant-design/pro-components';
-import { Badge } from 'antd';
+import {l} from '@/utils/intl';
+import {ProCard} from '@ant-design/pro-components';
+import {Badge} from 'antd';
 import RcResizeObserver from 'rc-resize-observer';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
+
+const noPadding = {
+  paddingInline: '0',
+  paddingBlock: '0'
+};
 
 const JobOverView: React.FC = () => {
   const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
@@ -42,7 +47,7 @@ const JobOverView: React.FC = () => {
       <ProCard
         title={
           <>
-            <Badge status='processing' />
+            <Badge status='processing'/>
             {l('home.job.metrics')}
           </>
         }
@@ -50,29 +55,30 @@ const JobOverView: React.FC = () => {
         bordered
         size='small'
         split={split}
+        bodyStyle={noPadding}
       >
-        <ProCard split={split}>
+        <ProCard split={split} bodyStyle={noPadding}>
           <ProCard split='horizontal'>
-            <ProCard bodyStyle={{ padding: '0 12px' }}>
-              <JobRunView />
+            <ProCard bodyStyle={{padding: '0 12px'}}>
+              <JobRunView/>
             </ProCard>
-            <ProCard bodyStyle={{ padding: '0 12px' }}>
-              <JobFinishedView />
+            <ProCard bodyStyle={{padding: '0 12px'}}>
+              <JobFinishedView/>
             </ProCard>
-            <ProCard bodyStyle={{ padding: '0 12px' }}>
-              <JobRecoveryView />
+            <ProCard bodyStyle={{padding: '0 12px'}}>
+              <JobRecoveryView/>
             </ProCard>
           </ProCard>
-          <ProCard title={l('home.job.running.status')}>
-            <JobStatusPie />
+          <ProCard title={l('home.job.running.status')} bodyStyle={noPadding}>
+            <JobStatusPie/>
           </ProCard>
         </ProCard>
-        <ProCard split={split}>
-          <ProCard title={l('home.server.load')}>
-            <LoadScoreGauge />
+        <ProCard split={split} bodyStyle={noPadding}>
+          <ProCard title={l('home.server.load')} bodyStyle={noPadding}>
+            <LoadScoreGauge/>
           </ProCard>
-          <ProCard split='horizontal'>
-            <JobErrorView />
+          <ProCard split='horizontal' bodyStyle={noPadding}>
+            <JobErrorView/>
           </ProCard>
         </ProCard>
       </ProCard>
