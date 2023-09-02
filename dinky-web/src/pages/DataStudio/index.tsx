@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import { getConsoleData } from '@/pages/DataStudio/BottomContainer/Console/service';
@@ -223,56 +224,63 @@ const DataStudio = (props: any) => {
     setIsModalUpdateTabContentOpen(false);
   };
 
-  return (
-    <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
-      <PersistGate loading={null} persistor={persist}>
-        <div style={{ marginInline: -10, marginBlock: -5 }}>
-          {/* 渲染 header */}
-          {renderHeaderContainer()}
-          <Layout hasSider style={{ minHeight: size.contentHeight, paddingInline: 0 }}>
-            {/*渲染左侧侧边栏*/}
-            <Sider collapsed collapsedWidth={40}>
-              <Menu
-                mode='inline'
-                selectedKeys={[leftContainer.selectKey]}
-                items={LeftSide.map((x) => ({
-                  key: x.key,
-                  label: x.label,
-                  icon: x.icon
-                }))}
-                style={{
-                  height: '50%',
-                  borderBlockStart: `1px solid ${themeValue.borderColor}`,
-                  borderInlineEnd: `1px solid ${themeValue.borderColor}`
-                }}
-                onClick={(item) =>
-                  updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
-                }
-              />
+  const access = useAccess();
 
-              {/*底部菜单*/}
-              <Menu
-                mode='inline'
-                selectedKeys={[bottomContainer.selectKey]}
-                items={LeftBottomSide.map((x) => ({
-                  key: x.key,
-                  label: x.label,
-                  icon: x.icon
-                }))}
-                style={{
-                  display: 'flex',
-                  height: '50%',
-                  flexDirection: 'column-reverse',
-                  borderInlineEnd: `1px solid ${themeValue.borderColor}`
-                }}
-                onClick={(item) => {
-                  updateSelectBottomKey(item.key === bottomContainer.selectKey ? '' : item.key);
-                  if (
-                    bottomContainer.selectKey !== '' &&
-                    !bottomContainer.selectSubKey[item.key] &&
-                    LeftBottomMoreTabs[item.key]
-                  ) {
-                    updateSelectBottomSubKey(LeftBottomMoreTabs[item.key][0].key);
+  return (
+
+    <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
+    <PersistGate loading={null} persistor={persist}>
+      <div style={{ marginInline: -10, marginBlock: -5 }}>
+        {/* 渲染 header */}
+        {renderHeaderContainer()}
+        <Layout hasSider style={{ minHeight: size.contentHeight, paddingInline: 0 }}>
+          {/*渲染左侧侧边栏*/}
+          <Sider collapsed collapsedWidth={40}>
+            <Menu
+              mode='inline'
+              selectedKeys={[leftContainer.selectKey]}
+              items={LeftSide.filter((x) =>
+                AuthorizedObject({ path: x.auth, children: x, access })
+              ).map((x) => ({
+                key: x.key,
+                label: x.label,
+                icon: x.icon
+              }))}
+              style={{
+                height: '50%',
+                borderBlockStart: `1px solid ${themeValue.borderColor}`,
+                borderInlineEnd: `1px solid ${themeValue.borderColor}`
+              }}
+              onClick={(item) =>
+                updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
+              }
+            />
+
+            {/*底部菜单*/}
+            <Menu
+              mode='inline'
+              selectedKeys={[bottomContainer.selectKey]}
+              items={LeftBottomSide.filter((x) =>
+                AuthorizedObject({ path: x.auth, children: x, access })
+              ).map((x) => ({
+                key: x.key,
+                label: x.label,
+                icon: x.icon
+              }))}
+              style={{
+                display: 'flex',
+                height: '50%',
+                flexDirection: 'column-reverse',
+                borderInlineEnd: `1px solid ${themeValue.borderColor}`
+              }}
+              onClick={(item) => {
+                updateSelectBottomKey(item.key === bottomContainer.selectKey ? '' : item.key);
+                if (
+                  bottomContainer.selectKey !== '' &&
+                  !bottomContainer.selectSubKey[item.key] &&
+                  LeftBottomMoreTabs[item.key]
+                ) {
+                  updateSelectBottomSubKey(LeftBottomMoreTabs[item.key][0].key);
                   }
                 }}
               />
@@ -306,22 +314,20 @@ const DataStudio = (props: any) => {
                 >
                   <MiddleContainer />
                 </Content>
-
-                {renderRightContainer()}
-              </div>
-            </Content>
-
-            {/* 渲染右侧侧边栏 */}
-            <Sider collapsed collapsedWidth={40}>
-              <Menu
-                selectedKeys={[rightContainer.selectKey]}
-                mode='inline'
-                style={{
-                  height: '100%',
-                  borderInlineStart: `1px solid ${themeValue.borderColor}`,
-                  borderBlockStart: `1px solid ${themeValue.borderColor}`
-                }}
-                items={RightSide.filter((x) => {
+          {/* 渲染右侧侧边栏 */}
+          <Sider collapsed collapsedWidth={40}>
+            <Menu
+              selectedKeys={[rightContainer.selectKey]}
+              mode='inline'
+              style={{
+                height: '100%',
+                borderInlineStart: `1px solid ${themeValue.borderColor}`,
+                borderBlockStart: `1px solid ${themeValue.borderColor}`
+              }}
+              items={RightSide.filter((x) =>
+                AuthorizedObject({ path: x.auth, children: x, access })
+              )
+                .filter((x) => {
                   if (!x.isShow) {
                     return true;
                   }
@@ -332,20 +338,21 @@ const DataStudio = (props: any) => {
                     (item) => item.key === tabs.activeKey
                   );
                   return x.isShow(v?.type ?? TabsPageType.None, v?.subType);
-                }).map((x) => {
+                })
+                .map((x) => {
                   return { key: x.key, label: x.label, icon: x.icon };
                 })}
-                onClick={(item) =>
-                  updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)
-                }
-              />
-            </Sider>
-          </Layout>
-          {/* 页脚 */}
-          {<FooterContainer token={token} />}
-        </div>
-      </PersistGate>
-    </PageContainer>
+              onClick={(item) =>
+                updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)
+              }
+            />
+          </Sider>
+        </Layout>
+        {/* 页脚 */}
+        {<FooterContainer token={token} />}
+      </div>
+    </PersistGate>
+  </PageContainer>
   );
 };
 
