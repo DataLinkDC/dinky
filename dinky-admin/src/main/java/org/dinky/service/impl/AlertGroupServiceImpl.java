@@ -41,9 +41,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
 
 /** AlertGroupServiceImpl */
 @Service
+@RequiredArgsConstructor
 public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup> implements AlertGroupService {
 
     @Lazy

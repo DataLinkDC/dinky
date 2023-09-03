@@ -21,6 +21,7 @@ package org.dinky.data.enums;
 
 import org.dinky.utils.I18n;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -276,5 +277,14 @@ public enum Status {
             }
         }
         return Optional.empty();
+    }
+
+    public static String findMessageByKey(String key) {
+        for (Status status : Status.values()) {
+            if (Objects.equals(key, status.getKey())) {
+                return status.getMessage();
+            }
+        }
+        return key;
     }
 }

@@ -19,11 +19,6 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.alert.Alert;
-import org.dinky.alert.AlertConfig;
-import org.dinky.alert.AlertMsg;
-import org.dinky.alert.AlertResult;
-import org.dinky.alert.ShowType;
 import org.dinky.assertion.Assert;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
@@ -44,8 +39,6 @@ import org.dinky.data.enums.TaskOperatingSavepointSelect;
 import org.dinky.data.enums.TaskOperatingStatus;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.AlertGroup;
-import org.dinky.data.model.AlertHistory;
-import org.dinky.data.model.AlertInstance;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Cluster;
 import org.dinky.data.model.ClusterConfiguration;
@@ -93,7 +86,6 @@ import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.enums.ProcessType;
 import org.dinky.process.model.ProcessEntity;
 import org.dinky.service.AlertGroupService;
-import org.dinky.service.AlertHistoryService;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
@@ -121,15 +113,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -175,7 +163,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final JobInstanceService jobInstanceService;
     private final JobHistoryService jobHistoryService;
     private final AlertGroupService alertGroupService;
-    private final AlertHistoryService alertHistoryService;
     private final HistoryService historyService;
     private final TaskVersionService taskVersionService;
     private final FragmentVariableService fragmentVariableService;
@@ -1349,19 +1336,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return path.toString();
     }
 
-    private String getDuration(long jobStartTimeMills, long jobEndTimeMills) {
-        Instant startTime = Instant.ofEpochMilli(jobStartTimeMills);
-        Instant endTime = Instant.ofEpochMilli(jobEndTimeMills);
-
-        long days = ChronoUnit.DAYS.between(startTime, endTime);
-        long hours = ChronoUnit.HOURS.between(startTime, endTime);
-        long minutes = ChronoUnit.MINUTES.between(startTime, endTime);
-        long seconds = ChronoUnit.SECONDS.between(startTime, endTime);
-        String duration = String.format(
-                "%d天 %d小时 %d分 %d秒", days, hours - (days * 24), minutes - (hours * 60), seconds - (minutes * 60));
-        return duration;
-    }
-
     @Override
     public void handleJobDone(JobInstance jobInstance) {
         if (Asserts.isNull(jobInstance.getTaskId()) || Asserts.isNull(jobInstance.getType())) {
@@ -1396,88 +1370,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return;
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        // 获取任务历史信息的start-time
-        long asLongStartTime = jsonNodes.get("start-time").asLong();
-        // 获取任务历史信息的end-time
-        long asLongEndTime = jsonNodes.get("end-time").asLong();
-
-        if (asLongEndTime < asLongStartTime) {
-            asLongEndTime = System.currentTimeMillis();
-        }
-
-        String startTime = dateFormat.format(asLongStartTime);
-        String endTime = dateFormat.format(asLongEndTime);
-        String duration = getDuration(asLongStartTime, asLongEndTime);
-
-        // 获取任务的 duration 使用的是 start-time 和 end-time 计算
-        // 不采用 duration 字段
-        // 获取任务历史信息的clusterJson 主要获取 jobManagerHost
-        ObjectNode clusterJsonNodes = jobHistory.getCluster();
-        String jobManagerHost = clusterJsonNodes.get("jobManagerHost").asText();
-
-        Task task = getTaskInfoById(jobInstance.getTaskId());
-        if (Asserts.isNotNull(task.getAlertGroupId())) {
-            AlertGroup alertGroup = alertGroupService.getAlertGroupInfo(task.getAlertGroupId());
-            if (Asserts.isNotNull(alertGroup)) {
-
-                // build alert msg of flink job link url
-                String linkUrl = String.format("http://%s/#/job/%s/overview", jobManagerHost, jobInstance.getJid());
-
-                // build alert msg of flink job exception url
-                String exceptionUrl =
-                        String.format("http://%s/#/job/%s/exceptions", jobManagerHost, jobInstance.getJid());
-
-                AlertMsg.AlertMsgBuilder alertMsgBuilder = AlertMsg.builder()
-                        .alertType("Flink 实时监控")
-                        .alertTime(dateFormat.format(new Date()))
-                        .jobID(jobInstance.getJid())
-                        .jobName(task.getName())
-                        .jobType(task.getDialect())
-                        .jobStatus(jobInstance.getStatus())
-                        .jobStartTime(startTime)
-                        .jobEndTime(endTime)
-                        .jobDuration(duration);
-
-                for (AlertInstance alertInstance : alertGroup.getInstances()) {
-                    if (alertInstance == null
-                            || (Asserts.isNotNull(alertInstance.getEnabled()) && !alertInstance.getEnabled())) {
-                        continue;
-                    }
-                    Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
-                    if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
-                        alertMsgBuilder
-                                .linkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")")
-                                .exceptionUrl("[点击查看该任务的异常日志](" + exceptionUrl + ")");
-                    } else {
-                        alertMsgBuilder.linkUrl(linkUrl).exceptionUrl(exceptionUrl);
-                    }
-                    AlertMsg alertMsg = alertMsgBuilder.build();
-
-                    sendAlert(alertInstance, jobInstance, task, alertMsg);
-                }
-            }
-        }
         updateTask.setStep(JobLifeCycle.RELEASE.getValue());
         updateById(updateTask);
-    }
-
-    private void sendAlert(AlertInstance alertInstance, JobInstance jobInstance, Task task, AlertMsg alertMsg) {
-        AlertConfig alertConfig = AlertConfig.build(
-                alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
-        Alert alert = Alert.build(alertConfig);
-        String title = "Task[" + task.getName() + "]: " + jobInstance.getStatus();
-        String content = alertMsg.toString();
-        AlertResult alertResult = alert.send(title, content);
-
-        AlertHistory alertHistory = new AlertHistory();
-        alertHistory.setAlertGroupId(task.getAlertGroupId());
-        alertHistory.setJobInstanceId(jobInstance.getId());
-        alertHistory.setTitle(title);
-        alertHistory.setContent(content);
-        alertHistory.setStatus(alertResult.getSuccessCode());
-        alertHistory.setLog(alertResult.getMessage());
-        alertHistoryService.save(alertHistory);
     }
 
     @Override

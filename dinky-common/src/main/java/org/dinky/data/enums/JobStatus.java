@@ -93,7 +93,11 @@ public enum JobStatus {
     }
 
     public static boolean isDone(String value) {
-        switch (get(value)) {
+        return get(value).isDone();
+    }
+
+    public boolean isDone() {
+        switch (this) {
             case FAILED:
             case CANCELED:
             case FINISHED:
@@ -104,11 +108,11 @@ public enum JobStatus {
         }
     }
 
-    public boolean isDone() {
+    public boolean isError() {
         switch (this) {
             case FAILED:
-            case CANCELED:
-            case FINISHED:
+            case FAILING:
+            case RESTARTING:
             case UNKNOWN:
                 return true;
             default:
