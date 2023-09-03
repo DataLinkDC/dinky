@@ -24,12 +24,26 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * The TimeUtil class provides utility methods for working with date and time operations.
+ */
 public class TimeUtil {
 
+    /**
+     * Returns the current date and time as a formatted string in the "yyyy-MM-dd HH:mm:ss" format.
+     *
+     * @return The current date and time as a formatted string.
+     */
     public static String nowStr() {
         return nowStr("yyyy-MM-dd HH:mm:ss");
     }
 
+    /**
+     * Returns the current date and time as a formatted string based on the provided format.
+     *
+     * @param formate The desired date and time format.
+     * @return The current date and time as a formatted string.
+     */
     public static String nowStr(String formate) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formate);
@@ -37,19 +51,32 @@ public class TimeUtil {
     }
 
     /**
-     * 将Long类型的时间戳转换成String 类型的时间格式
+     * Converts a Long timestamp to a String in the "yyyy-MM-dd HH:mm:ss" format.
+     *
+     * @param time The Long timestamp to convert.
+     * @return A formatted String representation of the timestamp.
      */
     public static String convertTimeToString(Long time) {
         return convertTimeToString(time, "yyyy-MM-dd HH:mm:ss");
     }
 
+    /**
+     * Converts a Long timestamp to a String based on the provided format.
+     *
+     * @param time   The Long timestamp to convert.
+     * @param formate The desired date and time format.
+     * @return A formatted String representation of the timestamp.
+     */
     public static String convertTimeToString(Long time, String formate) {
         DateTimeFormatter dateTimeFormater = DateTimeFormatter.ofPattern(formate);
         return dateTimeFormater.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault()));
     }
 
     /**
-     * 将字符串转日期成Long类型的时间戳
+     * Converts a date and time String to a Long timestamp.
+     *
+     * @param time The date and time String in "yyyy-MM-dd HH:mm:ss" format.
+     * @return A Long timestamp.
      */
     public static Long convertTimeToLong(String time) {
         DateTimeFormatter dateTimeFormater = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -61,24 +88,44 @@ public class TimeUtil {
     }
 
     /**
-     * 将日期转换为字符串
+     * Converts a LocalDateTime object to a formatted String in "yyyy-MM-dd HH:mm:ss" format.
+     *
+     * @param localDateTime The LocalDateTime object to convert.
+     * @return A formatted String representation of the LocalDateTime.
      */
     public static String convertDateToString(LocalDateTime localDateTime) {
         return convertDateToString(localDateTime, "yyyy-MM-dd HH:mm:ss");
     }
 
+    /**
+     * Converts a LocalDateTime object to a formatted String based on the provided format.
+     *
+     * @param localDateTime The LocalDateTime object to convert.
+     * @param formate        The desired date and time format.
+     * @return A formatted String representation of the LocalDateTime.
+     */
     public static String convertDateToString(LocalDateTime localDateTime, String formate) {
         DateTimeFormatter dateTimeFormater = DateTimeFormatter.ofPattern(formate);
         return dateTimeFormater.format(localDateTime);
     }
 
     /**
-     * 将字符串转换为日期
+     * Converts a date and time String to a LocalDateTime object.
+     *
+     * @param time The date and time String in "yyyy-MM-dd HH:mm:ss" format.
+     * @return A LocalDateTime object representing the parsed date and time.
      */
     public static LocalDateTime convertStringToDate(String time) {
         return convertStringToDate(time, "yyyy-MM-dd HH:mm:ss");
     }
 
+    /**
+     * Converts a date and time String to a LocalDateTime object based on the provided format.
+     *
+     * @param time   The date and time String to convert.
+     * @param formate The desired date and time format.
+     * @return A LocalDateTime object representing the parsed date and time.
+     */
     public static LocalDateTime convertStringToDate(String time, String formate) {
         DateTimeFormatter dateTimeFormater = DateTimeFormatter.ofPattern(formate);
         return LocalDateTime.parse(time, dateTimeFormater);

@@ -29,20 +29,49 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
+/**
+ * The FreeMarkerHolder class manages FreeMarker templates and provides methods to interact with them.
+ */
 public class FreeMarkerHolder {
+
+    /**
+     * The FreeMarker configuration.
+     */
     private final Configuration configuration = new Configuration(Configuration.VERSION_2_3_32);
+
+    /**
+     * The StringTemplateLoader to load FreeMarker templates from strings.
+     */
     private final StringTemplateLoader stringLoader = new StringTemplateLoader();
 
+    /**
+     * Initializes the FreeMarkerHolder, setting up the configuration.
+     */
     public FreeMarkerHolder() {
         configuration.setTemplateLoader(stringLoader);
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
     }
 
+    /**
+     * Adds a FreeMarker template to the holder.
+     *
+     * @param name            The name of the template.
+     * @param templateContent The content of the template as a string.
+     */
     public void putTemplate(String name, String templateContent) {
         stringLoader.putTemplate(name, templateContent);
     }
 
+    /**
+     * Builds a FreeMarker template with the provided data model.
+     *
+     * @param name      The name of the template to build.
+     * @param dataModel The data model containing variables to populate the template.
+     * @return A string representation of the template after processing.
+     * @throws IOException       If an I/O error occurs while processing the template.
+     * @throws TemplateException If an error occurs during template processing.
+     */
     public String buildWithData(String name, Map<String, Object> dataModel) throws IOException, TemplateException {
         Template template = configuration.getTemplate(name);
         StringWriter stringWriter = new StringWriter();

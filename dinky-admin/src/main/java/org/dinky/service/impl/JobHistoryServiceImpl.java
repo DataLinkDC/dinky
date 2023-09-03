@@ -19,13 +19,10 @@
 
 package org.dinky.service.impl;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.FlinkRestResultConstant;
 import org.dinky.data.model.JobHistory;
-import org.dinky.data.model.JobInstance;
 import org.dinky.mapper.JobHistoryMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.JobHistoryService;
@@ -33,11 +30,12 @@ import org.dinky.utils.JSONUtil;
 
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobHistoryServiceImpl

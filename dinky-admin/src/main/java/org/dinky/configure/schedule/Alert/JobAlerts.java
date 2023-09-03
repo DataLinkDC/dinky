@@ -55,7 +55,6 @@ import org.jeasy.rules.core.DefaultRulesEngine;
 import org.jeasy.rules.core.RuleBuilder;
 import org.jeasy.rules.spel.SpELCondition;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.stereotype.Component;
 
@@ -63,30 +62,69 @@ import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * This class, JobAlerts, is responsible for scheduling and executing job alerts.
+ * It checks for rule conditions and triggers alerts based on those conditions.
+ */
 @Configurable
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class JobAlerts extends BaseSchedule {
 
+    /**
+     * Service for managing alert history.
+     */
     private final AlertHistoryServiceImpl alertHistoryService;
+
+    /**
+     * Service for managing alert groups.
+     */
     private final AlertGroupServiceImpl alertGroupService;
+
+    /**
+     * Service for managing tasks.
+     */
     private final TaskServiceImpl taskService;
+
+    /**
+     * Service for managing alert rules.
+     */
     private final AlertRuleServiceImpl alertRuleService;
 
-    // TODO 任务刷新逻辑重购后记得修改这里逻辑
+    /**
+     * The pool containing Flink job tasks.
+     * // TODO 任务刷新逻辑重购后记得修改这里逻辑
+     */
     private final FlinkJobTaskPool taskPool = FlinkJobTaskPool.INSTANCE;
+
+    /**
+     * Rules for evaluating alert conditions.
+     */
     private Rules rules;
+
+    /**
+     * Engine for evaluating rules.
+     */
     private RulesEngine rulesEngine;
+
+    /**
+     * Holder for FreeMarker templates.
+     */
     private FreeMarkerHolder freeMarkerHolder;
 
+    /**
+     * Initializes the JobAlerts class by refreshing rules and setting up the scheduler.
+     */
     @PostConstruct
     public void init() {
         RefeshRulesData();
         addSchedule("JobAlert", this::check, new PeriodicTrigger(1000 * 6));
     }
 
-    @Async
+    /**
+     * checks for alert conditions for each job in the task pool.
+     */
     protected void check() {
         TenantContextHolder.set(1);
 
@@ -98,6 +136,9 @@ public class JobAlerts extends BaseSchedule {
         }
     }
 
+    /**
+     * Refreshes the alert rules and related data.
+     */
     private void RefeshRulesData() {
 
         List<AlertRuleDTO> ruleDTOS = alertRuleService.getBaseMapper().selectWithTemplate();
@@ -117,6 +158,13 @@ public class JobAlerts extends BaseSchedule {
         });
     }
 
+    /**
+     * Executes the alert action when an alert condition is met.
+     *
+     * @param facts         The facts representing the job details.
+     * @param templateName  The name of the FreeMarker template.
+     * @param ruleName      The name of the alert rule.
+     */
     private void executeAlertAction(Facts facts, String templateName, String ruleName) {
         JobInfoDetail jobInfoDetail = facts.get("jobDetail");
         JobInstance jobInstance = jobInfoDetail.getInstance();
@@ -150,6 +198,15 @@ public class JobAlerts extends BaseSchedule {
         }
     }
 
+    /**
+     * Sends an alert based on the alert instance's configuration.
+     *
+     * @param alertInstance   The alert instance to use for sending the alert.
+     * @param jobInstanceId   The ID of the job instance triggering the alert.
+     * @param alertGid        The ID of the alert group.
+     * @param title           The title of the alert.
+     * @param alertMsg        The content of the alert message.
+     */
     private void sendAlert(
             AlertInstance alertInstance, int jobInstanceId, int alertGid, String title, String alertMsg) {
         title = Status.findMessageByKey(title);
