@@ -53,7 +53,7 @@ import org.jeasy.rules.api.Rules;
 import org.jeasy.rules.api.RulesEngine;
 import org.jeasy.rules.core.DefaultRulesEngine;
 import org.jeasy.rules.core.RuleBuilder;
-import org.jeasy.rules.mvel.MVELCondition;
+import org.jeasy.rules.spel.SpELCondition;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.support.PeriodicTrigger;
@@ -111,7 +111,7 @@ public class JobAlerts extends BaseSchedule {
                     .name(ruleDto.getName())
                     .description(ruleDto.getDescription())
                     .priority(ruleDto.getPriority())
-                    .when(new MVELCondition(ruleDto.getRule()))
+                    .when(new SpELCondition(ruleDto.getRule()))
                     .then(f -> executeAlertAction(f, ruleDto.getTemplateName(), ruleDto.getName()))
                     .build());
         });

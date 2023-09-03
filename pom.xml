@@ -127,7 +127,7 @@
             </dependency>
             <dependency>
                 <groupId>org.jeasy</groupId>
-                <artifactId>easy-rules-mvel</artifactId>
+                <artifactId>easy-rules-spel</artifactId>
                 <version>${easy.rules.version}</version>
             </dependency>
             <dependency>
