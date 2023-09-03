@@ -125,7 +125,6 @@ const JobModal: React.FC<JobModalProps> = (props) => {
           name='note'
           label={l('catalog.note')}
           placeholder={l('catalog.note.placeholder')}
-          rules={[{ required: true, message: l('catalog.note.placeholder') }]}
         />
         {isUDF(jobType) && (
           <>

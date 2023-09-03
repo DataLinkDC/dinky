@@ -24,7 +24,7 @@ import { FullscreenExitOutlined, FullscreenOutlined, GlobalOutlined } from '@ant
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { SelectLang, useModel } from '@umijs/max';
 import { Space, Switch, Tooltip } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import useCookie from 'react-use-cookie';
 import screenfull from 'screenfull';
 import Avatar from './AvatarDropdown';
@@ -60,44 +60,38 @@ const GlobalHeaderRight: React.FC = () => {
   /**
    * css
    */
-  const actionClassName = useEmotionCss(({ token }) => {
-    return {
-      display: 'flex',
-      float: 'right',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '48px',
-      marginLeft: 'auto',
-      overflow: 'hidden',
-      cursor: 'pointer',
-      padding: '0 9px',
-      color: '#fff',
-      borderRadius: token.borderRadius,
-      '&:hover': {
-        backgroundColor: token.colorBgTextHover
-      }
-    };
-  });
+  const actionClassName = {
+    display: 'flex',
+    float: 'right',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '48px',
+    marginLeft: 'auto',
+    overflow: 'hidden',
+    cursor: 'pointer',
+    padding: '0 9px',
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: '#fff'
+    }
+  };
 
   /**
    * full screen css
    */
-  const fullScreenClassName = useEmotionCss(({ token }) => {
-    return {
-      display: 'flex',
-      float: 'right',
-      height: '48px',
-      marginLeft: 'auto',
-      overflow: 'hidden',
-      cursor: 'pointer',
-      padding: '0 12px',
-      borderRadius: token.borderRadius,
-      color: 'red',
-      '&:hover': {
-        backgroundColor: token.colorPrimary
-      }
-    };
-  });
+  const fullScreenClassName = {
+    display: 'flex',
+    float: 'right',
+    height: '48px',
+    marginLeft: 'auto',
+    overflow: 'hidden',
+    cursor: 'pointer',
+    padding: '0 12px',
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: '#fff'
+    }
+  };
 
   /**
    * full screen or exit full screen
@@ -110,8 +104,7 @@ const GlobalHeaderRight: React.FC = () => {
   };
 
   const fullScreenProps = {
-    style: { color: 'white' },
-    className: fullScreenClassName
+    style: fullScreenClassName
   };
 
   const menuVersion = l('menu.version', '', { version: VERSION });
@@ -129,9 +122,9 @@ const GlobalHeaderRight: React.FC = () => {
       </Tooltip>
       <Avatar />
       <Tooltip placement='bottom' title={<span>{menuVersion}</span>}>
-        <Space className={actionClassName}>{menuVersion}</Space>
+        <Space style={actionClassName}>{menuVersion}</Space>
       </Tooltip>
-      <SelectLang icon={<GlobalOutlined />} className={actionClassName} />
+      <SelectLang icon={<GlobalOutlined />} style={actionClassName} />
       <Switch
         key={'themeSwitch'}
         checked={theme === THEME.dark}

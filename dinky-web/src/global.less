@@ -24,8 +24,8 @@ body,
   overflow-x: auto;
   overflow-y: auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
+  'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+  'Noto Color Emoji';
 }
 
 // .login-form style --- start ----
@@ -48,8 +48,8 @@ body,
 
 .logo {
   position: absolute;
-  top: -5vh;
-  left: -30vw;
+  top: 10vh;
+  left: 20vw;
   display: flex;
   flex: auto;
   flex-flow: column-reverse;
@@ -57,6 +57,8 @@ body,
 }
 
 .desc {
+  font-weight: 600;
+  font-size: 24px;
   margin-top: 2rem;
   margin-bottom: 1rem;
   //color: @text-color-secondary;
@@ -82,6 +84,7 @@ body,
     margin-bottom: -15vh;
     margin-left: 60vw;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
   }
 
   .loginform {
@@ -244,18 +247,12 @@ ol {
     .ant-tree-node-content-wrapper {
       display: flex;
 
-      :hover {
-        color: #1eef07;
-      }
     }
   }
 }
 .ant-tree-node-content-wrapper {
   display: flex;
 
-  :hover {
-    color: #1eef07;
-  }
 }
 .gitCodeTree {
   min-height: 70vh;
@@ -381,7 +378,7 @@ h5 {
   justify-content: space-between;
   line-height: 32px;
   padding-inline: 10px;
-  padding-block: 5px;
+  padding-block: 1px;
   border-block: 1px solid;
 }
 
@@ -421,3 +418,4 @@ h5 {
   display: flex !important;
   align-items: baseline !important;
 }
+

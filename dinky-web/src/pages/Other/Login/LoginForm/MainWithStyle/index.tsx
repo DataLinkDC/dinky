@@ -25,12 +25,9 @@ const MainWithStyle = (props: any) => {
 
   return (
     <div className={style.loginformMain} style={{ backgroundImage: `url('/icons/main-bg.svg')` }}>
-      <Scale>
-        <img className={style.logo} src={Settings.logo} />
-      </Scale>
+      <img className={style.logo} src={Settings.logo} />
       <div className={style.form}>
         <div className={style.top}>
-          <div className={style.header}>Dinky</div>
           <div className={style.desc}>{l('layouts.userLayout.title')}</div>
         </div>
         {children}

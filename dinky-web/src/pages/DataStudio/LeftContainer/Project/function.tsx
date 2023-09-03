@@ -41,7 +41,7 @@ export const buildProjectTree = (
   searchValue: string = '',
   path?: string[]
 ): any =>
-  data.map((item: Catalogue) => {
+  data?data.map((item: Catalogue) => {
     const currentPath = path ? [...path, item.name] : [item.name];
     return {
       // isLeaf: (item.type && item.children.length === 0) ,
@@ -60,7 +60,7 @@ export const buildProjectTree = (
       taskId: item.taskId,
       children: buildProjectTree(item.children, searchValue, currentPath)
     };
-  });
+  }):[];
 
 export const isUDF = (jobType: string) => {
   return jobType === 'Scala' || jobType === 'Python' || jobType === 'Java';

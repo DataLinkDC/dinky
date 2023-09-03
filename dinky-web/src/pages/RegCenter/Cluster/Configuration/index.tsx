@@ -17,16 +17,16 @@
  *
  */
 
-import Pop from '@/components/Animation/Pop';
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 import ConfigurationList from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationList';
 import { PageContainer } from '@ant-design/pro-components';
 
 export default () => {
   return (
-    <Pop>
+    <SlowlyAppear>
       <PageContainer title={false}>
         <ConfigurationList />
       </PageContainer>
-    </Pop>
+    </SlowlyAppear>
   );
 };

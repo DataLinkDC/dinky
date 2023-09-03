@@ -17,16 +17,16 @@
  *
  */
 
-import Scale from '@/components/Animation/Scale';
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 import ResourceOverView from '@/pages/RegCenter/Resource/components/ResourceOverView';
 import { PageContainer } from '@ant-design/pro-components';
 
 export default () => {
   return (
-    <Scale>
+    <SlowlyAppear>
       <PageContainer breadcrumb={{ style: { display: 'none' } }} title={false}>
         <ResourceOverView />
       </PageContainer>
-    </Scale>
+    </SlowlyAppear>
   );
 };
