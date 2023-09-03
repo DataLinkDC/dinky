@@ -28,17 +28,12 @@ public class AlertRuleDTO {
     private String name;
     private Boolean enabled;
     private String rule;
-    private int priority;
+    private int ruleTagetId;
+    private String triggerConditions;
+    private String ruleTaget;
     private int templateId;
     private String templateName;
     private String templateContent;
     private String description;
 
-    public AlertRuleDTO(String name, String rule, int priority, String templateName, String description) {
-        setName(name);
-        this.rule = rule;
-        this.priority = priority;
-        this.templateName = templateName;
-        this.description = description;
-    }
 }

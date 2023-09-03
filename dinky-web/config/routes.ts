@@ -240,6 +240,12 @@ export default [
         name: 'process',
         icon: 'ReconciliationOutlined',
         component: './SettingCenter/Process'
+      },
+      {
+        path: '/settings/alertrulelist',
+        name: 'alertrulelist',
+        icon: 'ReconciliationOutlined',
+        component: './SettingCenter/AlertRule'
       }
     ]
   },

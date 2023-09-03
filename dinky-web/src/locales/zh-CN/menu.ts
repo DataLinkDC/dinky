@@ -90,5 +90,8 @@ export default {
   'menu.datastudio.history': '历史',
   'menu.datastudio.table-data': '表数据',
 
-  'menu.datastudio.tool.text-comparison': '文本比对'
+  'menu.datastudio.tool.text-comparison': '文本比对',
+
+  'menu.settings.alertrulelist' : '告警策略'
+
 };

@@ -19,4 +19,35 @@
 
 package org.dinky.controller;
 
-public class AlertRuleController {}
+import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import org.dinky.data.model.AlertGroup;
+import org.dinky.data.model.AlertRule;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
+import org.dinky.service.AlertRuleService;
+import org.dinky.service.impl.AlertRuleServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/api/alertRule")
+public class AlertRuleController {
+
+    private final AlertRuleService alertRuleService;
+
+    @PostMapping
+    public ProTableResult<AlertRule> listEnabledAllAlertGroups(@RequestBody JsonNode para) {
+        return alertRuleService.selectForProTable(para);
+    }
+
+}

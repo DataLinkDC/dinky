@@ -19,12 +19,14 @@
 
 package org.dinky.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.dinky.data.dto.AlertRuleDTO;
 import org.dinky.data.model.AlertRule;
 import org.dinky.mybatis.mapper.SuperMapper;
 
 import java.util.List;
 
+@Mapper
 public interface AlertRulesMapper extends SuperMapper<AlertRule> {
 
     List<AlertRuleDTO> selectWithTemplate();
