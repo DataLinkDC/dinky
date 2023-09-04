@@ -34,7 +34,9 @@ import lombok.NoArgsConstructor;
 public class AlertRule extends SuperEntity {
 
     String rule;
-    int priority;
     int templateId;
+    int ruleTagetId;
+    String ruleTargetType;
+    String triggerConditions;
     String description;
 }

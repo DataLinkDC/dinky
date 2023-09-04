@@ -41,17 +41,26 @@ export type Process = {
   userId: number;
 };
 
+export type Rule = {
+  ruleKey: clusterStatus,
+  ruleOperator: GT,
+  ruleValue: 34,
+  rulePriority: 1
+}
+
 export type AlertRule = {
-  id: string;
-  name: string;
-  rule: string;
-  priority: string;
-  template_id: string;
-  description: string;
-  enabled: boolean;
-  create_time: Date;
-  update_time: Date;
+  id:number,
+  name: string,
+  templateId: number,
+  description: string,
+  ruleTargetType: string,
+  ruleTagetId: number,
+  triggerConditions: string,
+  rule: any,
+  enabled: boolean
 };
+
+
 
 // ============================  System Settings ============================
 export type Settings = {

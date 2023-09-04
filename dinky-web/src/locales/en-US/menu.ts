@@ -52,6 +52,7 @@ export default {
   'menu.registration.alert': 'Alarm',
   'menu.registration.alert.instance': 'Alert Instance',
   'menu.registration.alert.group': 'Alert Group',
+  'menu.registration.alert.template': 'Alert Template',
   'menu.registration.document': 'Document',
   'menu.registration.fragment': 'Global Variable',
   'menu.registration.gitprojects': 'Git Project(Beta)',
@@ -69,6 +70,7 @@ export default {
   'menu.settings.systemlog': 'System Log',
   'menu.settings.process': 'Process List',
   'menu.settings.services': 'Servers List',
+  'menu.settings.alertrulelist' : 'Alert Rules',
   'menu.metrics': 'Metrics',
   'menu.about': 'About',
   'menu.version': 'Version: {version}',
@@ -93,5 +95,5 @@ export default {
 
   'menu.datastudio.tool.text-comparison': 'Text Comparison',
 
-  'menu.settings.alertrulelist' : 'Alert Rules'
+
 };

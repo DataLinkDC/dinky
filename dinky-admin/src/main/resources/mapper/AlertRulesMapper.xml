@@ -8,8 +8,10 @@
                dar.name,
                dar.enabled,
                dar.rule,
-               dar.priority,
                dar.template_id,
+               dar.rule_taget_id,
+               dar.rule_target_type,
+               dar.trigger_conditions,
                dar.description,
                dat.name as template_name,
                dat.template_content

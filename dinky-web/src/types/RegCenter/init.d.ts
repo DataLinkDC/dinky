@@ -19,7 +19,7 @@
 
 import {
   AlertGroupState,
-  AlertInstanceState,
+  AlertInstanceState, AlertTemplateState,
   BuildStepsState,
   ClusterConfigState,
   ClusterInstanceState,
@@ -48,6 +48,17 @@ export const InitAlertGroupState: AlertGroupState = {
  */
 export const InitAlertInstanceState: AlertInstanceState = {
   alertInstanceList: [],
+  loading: false,
+  addedOpen: false,
+  editOpen: false,
+  value: {}
+};
+
+/**
+ * alert template state init
+ */
+export const InitAlertTemplateState: AlertTemplateState = {
+  alertTemplateList: [],
   loading: false,
   addedOpen: false,
   editOpen: false,

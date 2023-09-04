@@ -19,4 +19,54 @@
 
 package org.dinky.controller;
 
-public class AlertTemplateConteroller {}
+
+import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
+import org.dinky.data.enums.Status;
+import org.dinky.data.model.AlertGroup;
+import org.dinky.data.model.AlertRule;
+import org.dinky.data.model.AlertTemplate;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
+import org.dinky.service.AlertTemplateService;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/api/alertTemplate")
+public class AlertTemplateConteroller {
+
+    private final AlertTemplateService alertTemplateService;
+
+    @GetMapping
+    public Result<List<AlertTemplate>> list() {
+        return Result.succeed(alertTemplateService.list());
+    }
+
+    @DeleteMapping
+    public Result<Boolean> delete(int id) {
+        return Result.succeed(alertTemplateService.removeById(id));
+    }
+
+    @PutMapping
+    @Log(title = "Insert OR Update AlertTemplate ", businessType = BusinessType.INSERT_OR_UPDATE)
+    public Result<Void> put(@RequestBody AlertTemplate alertTemplate) {
+        if (alertTemplateService.saveOrUpdate(alertTemplate)) {
+            return Result.succeed(Status.SAVE_SUCCESS);
+        } else {
+            return Result.failed(Status.SAVE_FAILED);
+        }
+    }
+
+}

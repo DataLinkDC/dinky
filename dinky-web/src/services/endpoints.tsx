@@ -150,6 +150,11 @@ export enum API_CONSTANTS {
   // alert group enable or disable
   ALERT_GROUP_ENABLE = '/api/alertGroup/enable',
 
+  ALERT_RULE_LIST = '/api/alertRule/list',
+  ALERT_RULE = '/api/alertRule',
+  ALERT_TEMPLATE = '/api/alertTemplate',
+
+
   // ---- get git project list----
   GIT_PROJECT = '/api/git/getProjectList',
   // ---- saveOrUpdate ----
@@ -196,7 +201,6 @@ export enum API_CONSTANTS {
   // process list
   PROCESS_LIST = '/api/process/listAllProcess',
 
-  ALERT_RULE_LIST = '/api/alertRule',
   GET_ONLINE_TASK = '/api/task/getOnlineTask',
 
   // ---- devops

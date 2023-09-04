@@ -52,6 +52,7 @@ export default {
   'menu.registration.alert': '告警',
   'menu.registration.alert.instance': '告警实例',
   'menu.registration.alert.group': '告警组',
+  'menu.registration.alert.template': '告警模板',
   'menu.registration.document': '文档',
   'menu.registration.fragment': '全局变量',
   'menu.registration.gitprojects': 'Git 项目(Beta)',
@@ -69,6 +70,7 @@ export default {
   'menu.settings.systemlog': '系统日志',
   'menu.settings.process': '进程列表',
   'menu.settings.services': '服务器列表',
+  'menu.settings.alertrulelist' : '告警策略',
   'menu.metrics': '监控',
   'menu.about': '关于',
   'menu.version': '版本：{version}',
@@ -92,6 +94,5 @@ export default {
 
   'menu.datastudio.tool.text-comparison': '文本比对',
 
-  'menu.settings.alertrulelist' : '告警策略'
 
 };

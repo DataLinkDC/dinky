@@ -30,8 +30,10 @@ import org.dinky.service.AlertRuleService;
 import org.dinky.service.impl.AlertRuleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,9 +47,20 @@ public class AlertRuleController {
 
     private final AlertRuleService alertRuleService;
 
-    @PostMapping
-    public ProTableResult<AlertRule> listEnabledAllAlertGroups(@RequestBody JsonNode para) {
+    @PostMapping("/list")
+    public ProTableResult<AlertRule> list(@RequestBody JsonNode para) {
         return alertRuleService.selectForProTable(para);
     }
+
+    @PutMapping
+    public Result<Boolean> put(@RequestBody AlertRule alertRule) {
+        return Result.succeed(alertRuleService.saveOrUpdate(alertRule));
+    }
+
+    @DeleteMapping
+    public Result<Boolean> delete(int id) {
+        return Result.succeed(alertRuleService.removeById(id));
+    }
+
 
 }

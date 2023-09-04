@@ -20,51 +20,80 @@
 
 import {l} from "@/utils/intl";
 import {
-  ModalForm,
+  DrawerForm,
+  ModalForm, ProCard,
   ProForm,
-  ProFormGroup, ProFormList, ProFormRadio,
+  ProFormGroup, ProFormItem, ProFormList, ProFormRadio,
   ProFormSelect, ProFormSwitch,
   ProFormText, ProFormTextArea,
 } from '@ant-design/pro-components';
-import {Button, Divider, Form, message, Space, Typography} from 'antd';
-import {PlusOutlined} from "@ant-design/icons";
+import {Button, Divider, Form, Space} from 'antd';
 import {getData} from "@/services/api";
 import {API_CONSTANTS} from "@/services/endpoints";
 import {Task} from "@/types/Studio/data";
-const { Text } = Typography;
+import {Alert} from "@/types/RegCenter/data";
+import React, {useState} from "react";
+import {AlertRule} from "@/types/SettingCenter/data";
 
-const RuleEditForm = (props: any) => {
+type AlertRuleFormProps = {
+  onCancel: (flag?: boolean) => void;
+  onSubmit: (values: AlertRule) => void;
+  modalVisible: boolean;
+  values: Partial<AlertRule>;
+};
 
-  const [form] = Form.useForm<{ name: string; company: string }>();
+const RuleEditForm = (props: AlertRuleFormProps) => {
 
-  const getOnlineTask = async () => {
-    const tasks:Task[] =  (await getData(API_CONSTANTS.GET_ONLINE_TASK)).datas;
-    const value:{label:string,value:number}[] = tasks.map(task=>({ label: task.name, value: task.id }))
-    value.splice(0,0,{label: "全部Flink任务", value: -1 })
-    return value;
+  const {
+    onSubmit: handleSubmit,
+    onCancel: handleModalVisible,
+    modalVisible,
+    values
+  } = props;
+
+
+  const [isAllInstance, setIsAllInstance] = useState<boolean>(false);
+
+  const [form] = Form.useForm<AlertRule>();
+  const [formVals, setFormVals] = useState<Partial<AlertRule>>({ ...values });
+
+  const getAlertTemplate = async () => {
+    const template: Alert.AlertTemplate[] = (await getData(API_CONSTANTS.ALERT_TEMPLATE)).datas;
+    return template.map(t => ({label: t.name, value: t.id}))
   }
 
+  const getOnlineTask = async () => {
+    const tasks: Task[] = (await getData(API_CONSTANTS.GET_ONLINE_TASK)).datas;
+    return tasks.map(task => ({label: task.name, value: task.id}))
+  }
+
+  const submit = async () => {
+    const fieldsValue = await form.validateFields();
+    return handleSubmit({...fieldsValue,rule:JSON.stringify(fieldsValue.rule)});
+  }
+
+  const renderFooter = () => {
+    return [
+      <Button key={'RuleCancel'} onClick={() => handleModalVisible(false)}>
+        {l('button.cancel')}
+      </Button>,
+      <Button key={'RuleFinish'} type='primary' onClick={() => submit()}>
+        {l('button.finish')}
+      </Button>
+    ];
+  };
 
   return (
-    <ModalForm
+    <DrawerForm
       layout={"horizontal"}
       form={form}
-      trigger={
-        <Button type="link">
-          <PlusOutlined />
-          配置
-        </Button>
-      }
-      submitTimeout={2000}
-      onFinish={async (values) => {
-        message.success('提交成功');
-        // 不返回不会关闭弹框
-        console.log(values)
-        return true;
-      }}
+      open={modalVisible}
+      submitter={{render: () => [...renderFooter()]}}
+      initialValues={values}
     >
+      <ProFormText name="id" hidden={true}/>
       <ProFormText
-        rules={[{required: true,},]}
+        rules={[{required: true}]}
         name="name"
         width="md"
         label="策略名称"
@@ -75,9 +104,9 @@ const RuleEditForm = (props: any) => {
         label={"告警模板"}
         width="md"
         name="templateId"
-        request={async (params) =>getOnlineTask()}
+        request={async () => getAlertTemplate()}
         placeholder="告警模板"
-        rules={[{ required: true, message: '请选择告警模板' }]}
+        rules={[{required: true, message: '请选择告警模板'}]}
       />
 
       <ProFormTextArea
@@ -95,20 +124,22 @@ const RuleEditForm = (props: any) => {
           width="sm"
           label="告警对象"
           options={[
-            { label: '所有Flink任务', value: 'all' },
-            { label: '指定Flink实例', value: 'flink' },
+            {label: '所有Flink任务', value: 'all'},
+            {label: '指定Flink实例', value: 'flink'},
           ]}
-          rules={[{ required: true, message: '请选择告警对象' }]}
+          onChange={(v) => setIsAllInstance(v == "all")}
+          rules={[{required: true, message: '请选择告警对象'}]}
         />
 
         <ProFormSelect
           label={"选择实例"}
           width="md"
           name="ruleTagetId"
+          disabled={isAllInstance}
           dependencies={['ruleType']}
-          request={async (params) =>getOnlineTask()}
+          request={async () => getOnlineTask()}
           placeholder="选择指定对象"
-          rules={[{ required: true, message: '请选择指定对象' }]}
+          rules={[{required: !isAllInstance, message: '请选择告警对象'}]}
         />
 
       </ProForm.Group>
@@ -121,29 +152,39 @@ const RuleEditForm = (props: any) => {
         options={[
           {label: '任意规则', value: 'any'},
           {label: '所有规则', value: 'all'},
-          {label: '自定义规则', value: 'custom',disabled:true},
+          {label: '自定义规则', value: 'custom', disabled: true},
         ]}
       />
 
-      <Text>触发规则:</Text>
-
       <ProFormList
-        name={"rule"}
-        copyIconProps={false}
+        name="rule"
+        label="触发规则"
         creatorButtonProps={{
-          style: { width: '100%' },
-          creatorButtonText: "添加规则"
+          creatorButtonText: '添加规则',
         }}
+        copyIconProps={false}
+        min={1}
+        itemRender={({listDom, action}, {index}) => (
+          <ProCard
+            bordered
+            style={{marginBlockEnd: 8}}
+            title={`规则${index + 1}`}
+            extra={action}
+            bodyStyle={{paddingBlockEnd: 0}}
+          >
+            {listDom}
+          </ProCard>
+        )}
       >
         <ProFormGroup>
           <Space key={'config'} align='baseline'>
-            <Text>当</Text>
-
+            <ProFormItem>IF:</ProFormItem>
             <ProFormSelect
               name='ruleKey'
               width={"sm"}
               mode={'single'}
               options={[
+                {label: '作业状态', value: 'jobInstance.status',},
                 {label: '集群状态', value: 'clusterStatus',},
                 {label: '任务状态', value: 'taskStatus',},
                 {label: '运行时间', value: 'taskDuration',},
@@ -153,7 +194,6 @@ const RuleEditForm = (props: any) => {
             />
             <ProFormSelect
               name='ruleOperator'
-              // width={calculatorWidth(rightContainer.width) + 30}
               mode={'single'}
               options={[
                 {label: '>', value: 'GT',},
@@ -166,7 +206,6 @@ const RuleEditForm = (props: any) => {
             />
 
             <ProFormText
-              width={"sm"}
               name={'ruleValue'}
               placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}
             />
@@ -178,15 +217,13 @@ const RuleEditForm = (props: any) => {
 
           </Space>
         </ProFormGroup>
-
       </ProFormList>
 
-      <ProFormSwitch name="enabled" label="启用" />
+
+      <ProFormSwitch name="enabled" label="启用"/>
 
 
-
-
-    </ModalForm>
+    </DrawerForm>
   );
 };
 

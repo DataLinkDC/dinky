@@ -29,11 +29,11 @@ public class AlertRuleDTO {
     private Boolean enabled;
     private String rule;
     private int ruleTagetId;
-    private String triggerConditions;
-    private String ruleTaget;
     private int templateId;
+    private String ruleTargetType;
+    private String triggerConditions;
+    private String description;
     private String templateName;
     private String templateContent;
-    private String description;
 
 }
