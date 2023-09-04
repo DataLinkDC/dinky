@@ -56,7 +56,12 @@ const DevOverView: React.FC = () => {
         bodyStyle={noPadding}
       >
         <ProCard split='vertical' bodyStyle={noPadding}>
-          <ProCard title={l('home.job.development')} split='horizontal' colSpan={'40%'} bodyStyle={noPadding}>
+          <ProCard
+            title={l('home.job.development')}
+            split='horizontal'
+            colSpan={'40%'}
+            bodyStyle={noPadding}
+          >
             <ProCard>
               <BatchStreamProportion />
             </ProCard>

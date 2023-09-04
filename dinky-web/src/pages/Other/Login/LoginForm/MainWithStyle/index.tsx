@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import Scale from '@/components/Animation/Scale';
 import { l } from '@/utils/intl';
 import Settings from '../../../../../../config/defaultSettings';
 import style from '../../../../../global.less';

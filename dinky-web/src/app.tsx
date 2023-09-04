@@ -58,23 +58,21 @@ export function patchRoutes({ routes }: any) {
 }
 
 const queryUserInfo = async () => {
-  return getDataByParamsReturnResult(API_CONSTANTS.CURRENT_USER).then(
-    (result) => {
-      const { user, roleList, tenantList, currentTenant, menuList, saTokenInfo } = result.datas;
-      const currentUser: API.CurrentUser = {
-        user: {
-          ...user,
-          avatar: user.avatar ?? '/icons/user_avatar.png'
-        },
-        roleList: roleList,
-        tenantList: tenantList,
-        currentTenant: currentTenant,
-        menuList: menuList,
-        tokenInfo: saTokenInfo
-      };
-      return currentUser;
-    }
-  );
+  return getDataByParamsReturnResult(API_CONSTANTS.CURRENT_USER).then((result) => {
+    const { user, roleList, tenantList, currentTenant, menuList, saTokenInfo } = result.datas;
+    const currentUser: API.CurrentUser = {
+      user: {
+        ...user,
+        avatar: user.avatar ?? '/icons/user_avatar.png'
+      },
+      roleList: roleList,
+      tenantList: tenantList,
+      currentTenant: currentTenant,
+      menuList: menuList,
+      tokenInfo: saTokenInfo
+    };
+    return currentUser;
+  });
 };
 
 /**
@@ -86,7 +84,6 @@ export async function getInitialState(): Promise<{
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
-
   const fetchUserInfo = async () => {
     try {
       return await queryUserInfo();
@@ -220,11 +217,11 @@ export function patchClientRoutes({ routes }: { routes: SysMenu[] }) {
  * 路由切换并只加载首次
  */
 export function onRouteChange({
-                                location,
-                                clientRoutes,
-                                routes,
-                                action
-                              }: {
+  location,
+  clientRoutes,
+  routes,
+  action
+}: {
   location: any;
   clientRoutes: any;
   routes: any;
