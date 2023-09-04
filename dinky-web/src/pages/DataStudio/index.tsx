@@ -45,11 +45,11 @@ import {
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide } from '@/pages/DataStudio/route';
 import { l } from '@/utils/intl';
+import { PageContainer } from '@ant-design/pro-layout';
 import { Layout, Menu, Modal, theme, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
 import { connect, getDvaApp } from 'umi';
-import { PageContainer } from '@ant-design/pro-layout';
 
 const { Text } = Typography;
 
