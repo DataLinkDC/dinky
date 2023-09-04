@@ -24,7 +24,7 @@ export const gotoRedirectUrl = () => {
   if (!history) return;
   setTimeout(() => {
     const urlParams = new URL(window.location.href).searchParams;
-    window.location.href = urlParams.get('redirect') || '/' ;
+    window.location.href = urlParams.get('redirect') || '/';
   }, 10);
 };
 

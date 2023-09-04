@@ -66,7 +66,7 @@ export const AccessContextProvider = ({
 
 export const useAccess = () => useContext(AccessContext);
 
-export function AuthorizedObject({ path, denied = null, children = null,access = {} }: any) {
+export function AuthorizedObject({ path, denied = null, children = null, access = {} }: any) {
   const { isAdmin, blocks = [] } = access;
 
   if (isAdmin) return children;
