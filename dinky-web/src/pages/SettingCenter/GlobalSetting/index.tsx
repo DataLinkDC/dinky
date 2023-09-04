@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 import SettingOverView from '@/pages/SettingCenter/GlobalSetting/SettingOverView';
 import { PageContainer } from '@ant-design/pro-components';
-import SlowlyAppear from "@/components/Animation/SlowlyAppear";
 
 export default () => {
   return (
