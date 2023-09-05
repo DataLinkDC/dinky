@@ -207,7 +207,7 @@ const DataStudio = (props: any) => {
         icon: x.icon
       }))}
       style={{
-        height: '50%',
+        flexGrow: 1,
         borderBlockStart: `1px solid ${themeValue.borderColor}`,
         borderInlineEnd: `1px solid ${themeValue.borderColor}`
       }}
@@ -228,7 +228,6 @@ const DataStudio = (props: any) => {
       }))}
       style={{
         display: 'flex',
-        height: '50%',
         flexDirection: 'column',
         justifyContent: 'flex-end',
         borderInlineEnd: `1px solid ${themeValue.borderColor}`
@@ -283,8 +282,10 @@ const DataStudio = (props: any) => {
           <SecondHeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle}/>
           <Layout hasSider style={{minHeight: size.contentHeight, paddingInline: 0}}>
             <Sider collapsed collapsedWidth={40}>
+              <div style={{display: 'flex', flexDirection: 'column', height: '100%'}}>
               {LeftTopMenu}
               {LeftBottomMenu}
+              </div>
             </Sider>
 
             <Content style={{display: 'flex', flexDirection: 'column'}}>
