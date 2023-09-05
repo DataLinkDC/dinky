@@ -196,113 +196,115 @@ const DataStudio = (props: any) => {
 
   const access = useAccess();
 
+  let LeftTopMenu = <Menu
+      mode='inline'
+      selectedKeys={[leftContainer.selectKey]}
+      items={LeftSide.filter((x) =>
+          AuthorizedObject({ path: x.auth, children: x, access })
+      ).map((x) => ({
+        key: x.key,
+        label: x.label,
+        icon: x.icon
+      }))}
+      style={{
+        height: '50%',
+        borderBlockStart: `1px solid ${themeValue.borderColor}`,
+        borderInlineEnd: `1px solid ${themeValue.borderColor}`
+      }}
+      onClick={(item) =>
+          updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
+      }
+  />;
+  let LeftBottomMenu = <Menu
+      mode='inline'
+      selectedKeys={[bottomContainer.selectKey]}
+      items={LeftBottomSide.filter((x) =>
+          AuthorizedObject({path: x.auth, children: x, access})
+      ).map((x) => ({
+        key: x.key,
+        label: x.label,
+        icon: x.icon
+      }))}
+      style={{
+        display: 'flex',
+        height: '50%',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        borderInlineEnd: `1px solid ${themeValue.borderColor}`
+      }}
+      onClick={(item) => {
+        updateSelectBottomKey(item.key === bottomContainer.selectKey ? '' : item.key);
+        if (
+            bottomContainer.selectKey !== '' &&
+            !bottomContainer.selectSubKey[item.key] &&
+            LeftBottomMoreTabs[item.key]
+        ) {
+          updateSelectBottomSubKey(LeftBottomMoreTabs[item.key][0].key);
+        }
+      }}
+  />;
+  let RightTopMenu = <Menu
+      selectedKeys={[rightContainer.selectKey]}
+      mode='inline'
+      style={{
+        height: '100%',
+        borderInlineStart: `1px solid ${themeValue.borderColor}`,
+        borderBlockStart: `1px solid ${themeValue.borderColor}`
+      }}
+      items={RightSide.filter((x) =>
+          AuthorizedObject({path: x.auth, children: x, access})
+      )
+          .filter((x) => {
+            if (!x.isShow) {
+              return true;
+            }
+            if (parseInt(tabs.activeKey) < 0) {
+              return TabsPageType.None;
+            }
+            const v = (tabs.panes as TabsItemType[]).find(
+                (item) => item.key === tabs.activeKey
+            );
+            return x.isShow(v?.type ?? TabsPageType.None, v?.subType);
+          })
+          .map((x) => {
+            return {key: x.key, label: x.label, icon: x.icon};
+          })}
+      onClick={(item) =>
+          updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)
+      }
+  />;
   return (
-    <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
+    <PageContainer title={false} breadcrumb={{style: {display: 'none'}}}>
       <PersistGate loading={null} persistor={persist}>
-        <div style={{ marginInline: -10, width: size.width }}>
-          <SecondHeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
-          <Layout hasSider style={{ minHeight: size.contentHeight, paddingInline: 0 }}>
-            {/*渲染左侧侧边栏*/}
+        <div style={{marginInline: -10, width: size.width}}>
+          <SecondHeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle}/>
+          <Layout hasSider style={{minHeight: size.contentHeight, paddingInline: 0}}>
             <Sider collapsed collapsedWidth={40}>
-              <Menu
-                mode='inline'
-                selectedKeys={[leftContainer.selectKey]}
-                items={LeftSide.filter((x) =>
-                  AuthorizedObject({ path: x.auth, children: x, access })
-                ).map((x) => ({
-                  key: x.key,
-                  label: x.label,
-                  icon: x.icon
-                }))}
-                style={{
-                  height: '50%',
-                  borderBlockStart: `1px solid ${themeValue.borderColor}`,
-                  borderInlineEnd: `1px solid ${themeValue.borderColor}`
-                }}
-                onClick={(item) =>
-                  updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
-                }
-              />
-              {/*底部菜单*/}
-              <Menu
-                mode='inline'
-                selectedKeys={[bottomContainer.selectKey]}
-                items={LeftBottomSide.filter((x) =>
-                  AuthorizedObject({ path: x.auth, children: x, access })
-                ).map((x) => ({
-                  key: x.key,
-                  label: x.label,
-                  icon: x.icon
-                }))}
-                style={{
-                  display: 'flex',
-                  height: '50%',
-                  flexDirection: 'column-reverse',
-                  borderInlineEnd: `1px solid ${themeValue.borderColor}`
-                }}
-                onClick={(item) => {
-                  updateSelectBottomKey(item.key === bottomContainer.selectKey ? '' : item.key);
-                  if (
-                    bottomContainer.selectKey !== '' &&
-                    !bottomContainer.selectSubKey[item.key] &&
-                    LeftBottomMoreTabs[item.key]
-                  ) {
-                    updateSelectBottomSubKey(LeftBottomMoreTabs[item.key][0].key);
-                  }
-                }}
-              />
+              {LeftTopMenu}
+              {LeftBottomMenu}
             </Sider>
-            <Content style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', width: size.width - VIEW.sideWidth * 2 }}>
-                <LeftContainer size={size} />
+
+            <Content style={{display: 'flex', flexDirection: 'column'}}>
+              <div style={{display: 'flex', width: size.width - VIEW.sideWidth * 2}}>
+                <LeftContainer size={size}/>
                 <Content
-                  style={{
-                    width:
-                      size.width - 2 * VIEW.sideWidth - leftContainer.width - rightContainer.width
-                  }}
+                    style={{
+                      width:
+                          size.width - 2 * VIEW.sideWidth - leftContainer.width - rightContainer.width
+                    }}
                 >
-                  <MiddleContainer />
+                  <MiddleContainer/>
                 </Content>
-                <RightContainer size={size} bottomHeight={bottomHeight} />
+                <RightContainer size={size} bottomHeight={bottomHeight}/>
               </div>
-              {<BottomContainer size={size} />}
+              {<BottomContainer size={size}/>}
             </Content>
 
-            {/* 渲染右侧侧边栏 */}
             <Sider collapsed collapsedWidth={40}>
-              <Menu
-                selectedKeys={[rightContainer.selectKey]}
-                mode='inline'
-                style={{
-                  height: '100%',
-                  borderInlineStart: `1px solid ${themeValue.borderColor}`,
-                  borderBlockStart: `1px solid ${themeValue.borderColor}`
-                }}
-                items={RightSide.filter((x) =>
-                  AuthorizedObject({ path: x.auth, children: x, access })
-                )
-                  .filter((x) => {
-                    if (!x.isShow) {
-                      return true;
-                    }
-                    if (parseInt(tabs.activeKey) < 0) {
-                      return TabsPageType.None;
-                    }
-                    const v = (tabs.panes as TabsItemType[]).find(
-                      (item) => item.key === tabs.activeKey
-                    );
-                    return x.isShow(v?.type ?? TabsPageType.None, v?.subType);
-                  })
-                  .map((x) => {
-                    return { key: x.key, label: x.label, icon: x.icon };
-                  })}
-                onClick={(item) =>
-                  updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)
-                }
-              />
+              {RightTopMenu}
             </Sider>
           </Layout>
-          {<FooterContainer token={token} />}
+          {<FooterContainer token={token}/>}
         </div>
       </PersistGate>
     </PageContainer>
