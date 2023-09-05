@@ -196,7 +196,7 @@ const DataStudio = (props: any) => {
 
   const access = useAccess();
 
-  let LeftTopMenu = <Menu
+  const LeftTopMenu = <Menu
       mode='inline'
       selectedKeys={[leftContainer.selectKey]}
       items={LeftSide.filter((x) =>
@@ -215,7 +215,8 @@ const DataStudio = (props: any) => {
           updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
       }
   />;
-  let LeftBottomMenu = <Menu
+
+  const LeftBottomMenu = <Menu
       mode='inline'
       selectedKeys={[bottomContainer.selectKey]}
       items={LeftBottomSide.filter((x) =>
@@ -243,7 +244,8 @@ const DataStudio = (props: any) => {
         }
       }}
   />;
-  let RightTopMenu = <Menu
+
+  const RightTopMenu = <Menu
       selectedKeys={[rightContainer.selectKey]}
       mode='inline'
       style={{
@@ -273,6 +275,7 @@ const DataStudio = (props: any) => {
           updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)
       }
   />;
+
   return (
     <PageContainer title={false} breadcrumb={{style: {display: 'none'}}}>
       <PersistGate loading={null} persistor={persist}>
