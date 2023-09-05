@@ -282,9 +282,9 @@ const DataStudio = (props: any) => {
           <SecondHeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
           <Layout hasSider style={{ minHeight: size.contentHeight, paddingInline: 0 }}>
             <Sider collapsed collapsedWidth={40}>
-              <div style={{display: 'flex', flexDirection: 'column', height: '100%'}}>
-              {LeftTopMenu}
-              {LeftBottomMenu}
+              <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                {LeftTopMenu}
+                {LeftBottomMenu}
               </div>
             </Sider>
 
