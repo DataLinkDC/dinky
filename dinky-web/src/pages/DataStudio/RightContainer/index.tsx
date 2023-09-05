@@ -65,7 +65,7 @@ const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
       minWidth={300}
       maxWidth={maxWidth}
       enable={{ left: true }}
-      style={{ borderInlineStart: '1px solid ' + themeValue.borderColor }}
+      style={{ borderInlineStart: `1px solid ${themeValue.borderColor}` }}
     >
       {tabs.panes.length > 0 ? (
         <Tabs
