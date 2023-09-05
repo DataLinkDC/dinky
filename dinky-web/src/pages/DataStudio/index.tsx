@@ -228,7 +228,8 @@ const DataStudio = (props: any) => {
                                 style={{
                                     display: 'flex',
                                     height: '50%',
-                                    flexDirection: 'column-reverse',
+                                    flexDirection: 'column',
+                                    justifyContent: 'flex-end',
                                     borderInlineEnd: `1px solid ${themeValue.borderColor}`
                                 }}
                                 onClick={(item) => {
