@@ -39,7 +39,7 @@ export const getParentKey = (key: number | string, tree: any): any => {
 export const buildProjectTree = (
   data: Catalogue[],
   searchValue: string = '',
-  path?: string[]
+  path: string[] = []
 ): any =>
   data
     ? data.map((item: Catalogue) => {

@@ -125,3 +125,20 @@ export type OperateLog = {
   errorMsg: string;
   operateTime: Date;
 };
+
+export interface SysToken extends ExcludeNameAndEnableColumns {
+  tokenValue: string;
+  userId: number;
+  userName: string;
+  tenantId: number;
+  tenantCode: string;
+  roleId: string;
+  roleName: string;
+  expireType: number;
+  expireTimeRange: [Date, Date];
+  expireStartTime: Date;
+  expireEndTime: Date;
+  expireTime: any;
+  creator: number;
+  updator: number;
+}

@@ -244,6 +244,23 @@ export default {
   'tenant.cancel.admin': '取消租户管理员',
   'tenant.user.list': '租户用户列表',
 
+  // token
+  'token.manager': 'Token管理',
+  'token.value': 'Token值',
+  'token.username': '用户',
+  'token.role': '角色',
+  'token.tenant': '租户',
+  'token.expireType': '过期类型',
+  'token.expireType.1': '永不过期',
+  'token.expireType.2': '指定结束时间',
+  'token.expireType.3': '过期时间范围',
+  'token.expireEndTime': '结束时间',
+  'token.expireStartTime': '开始时间',
+  'token.expireTime': '过期时间',
+  'token.deleteConfirm': '您确定要删除此 Token 吗？',
+  'token.create': '创建 Token',
+  'token.update': '修改 Token',
+
   // role
   'role.roleManagement': '角色管理',
   'role.roleCode': '角色编码',

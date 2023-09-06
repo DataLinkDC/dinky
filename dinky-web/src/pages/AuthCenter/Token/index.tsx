@@ -17,13 +17,18 @@
  *
  */
 
-export enum SettingConfigKeyEnum {
-  DINKY = 'Dinky',
-  FLINK = 'Flink',
-  MAVEN = 'Maven',
-  DOLPHIN_SCHEDULER = 'DolphinScheduler',
-  LDAP = 'LDAP',
-  METRIC = 'Metric',
-  RESOURCE = 'Resource',
-  ENV = 'Env'
-}
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import TokenList from '@/pages/AuthCenter/Token/component/TokenList';
+import { PageContainer } from '@ant-design/pro-components';
+
+export default () => {
+  return (
+    <>
+      <SlowlyAppear>
+        <PageContainer title={false}>
+          <TokenList />
+        </PageContainer>
+      </SlowlyAppear>
+    </>
+  );
+};

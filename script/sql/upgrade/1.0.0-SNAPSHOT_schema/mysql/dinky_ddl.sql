@@ -211,7 +211,6 @@ drop table dinky_role_namespace;
 -- ----------------------------
 -- Table structure for dinky_sys_menu
 -- ----------------------------
-drop table if exists `dinky_sys_menu`;
 create table `dinky_sys_menu` (
                                   `id` bigint not null auto_increment comment ' id',
                                   `parent_id` bigint not null comment 'parent menu id',
@@ -233,7 +232,6 @@ create table `dinky_sys_menu` (
 -- ----------------------------
 -- Table structure dinky_sys_role_menu
 -- ----------------------------
-drop table if exists `dinky_sys_role_menu`;
 CREATE TABLE `dinky_sys_role_menu` (
                                        `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
                                        `role_id` bigint NOT NULL COMMENT 'role id',
@@ -245,6 +243,26 @@ CREATE TABLE `dinky_sys_role_menu` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+
+
+-- ----------------------------
+-- Table structure dinky_sys_token
+-- ----------------------------
+CREATE TABLE `dinky_sys_token` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `token_value` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'token value',
+  `user_id` bigint NOT NULL COMMENT 'user id',
+  `role_id` bigint NOT NULL COMMENT 'role id',
+  `tenant_id` bigint NOT NULL COMMENT 'tenant id',
+  `expire_type` tinyint NOT NULL COMMENT '1: never expire, 2: expire after a period of time, 3: expire at a certain time',
+  `expire_start_time` datetime DEFAULT NULL COMMENT 'expire start time ,when expire_type = 3 , it is the start time of the period',
+  `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
+  `create_time` datetime NOT NULL COMMENT 'create time',
+  `update_time` datetime NOT NULL COMMENT 'modify time',
+  `creator` bigint DEFAULT NULL COMMENT '创建人',
+  `updator` bigint DEFAULT NULL COMMENT '修改人',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='token management';
 
 
 

@@ -90,6 +90,23 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
                 .eq(Tenant::getIsDelete, 0));
     }
 
+    /**
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<Tenant> getTenantListByUserId(Integer userId) {
+        List<UserTenant> userTenants = userTenantService
+                .getBaseMapper()
+                .selectList(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getUserId, userId));
+        if (CollectionUtil.isNotEmpty(userTenants)) {
+            List<Integer> tenantIds = new ArrayList<>();
+            userTenants.forEach(userTenant -> tenantIds.add(userTenant.getTenantId()));
+            return getBaseMapper().selectList(new LambdaQueryWrapper<Tenant>().in(Tenant::getId, tenantIds));
+        }
+        return null;
+    }
+
     @Override
     public boolean modifyTenant(Tenant tenant) {
         if (Asserts.isNull(tenant.getId())) {

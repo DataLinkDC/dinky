@@ -17,7 +17,7 @@
  *
  */
 
-import Pop from '@/components/Animation/Pop';
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
 import { Authorized } from '@/hooks/useAccess';
 import AlertGroupForm from '@/pages/RegCenter/Alert/AlertGroup/components/AlertGroupForm';
@@ -237,7 +237,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
   }));
 
   return (
-    <Pop>
+    <SlowlyAppear>
       <PageContainer title={false}>
         {/* alert group list */}
         <ProList<Alert.AlertGroup>
@@ -265,7 +265,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
           />
         )}
       </PageContainer>
-    </Pop>
+    </SlowlyAppear>
   );
 };
 

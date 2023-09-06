@@ -1198,20 +1198,20 @@ INSERT INTO `dinky_sys_menu` VALUES (30, 9, 'cluster-config', '/registration/clu
 INSERT INTO `dinky_sys_menu` VALUES (31, 12, 'instance', '/registration/alert/instance', './RegCenter/Alert/AlertInstance', null, null, 'C', 0, 15, '2023-08-11 14:06:55', '2023-08-18 17:09:39', null);
 INSERT INTO `dinky_sys_menu` VALUES (32, 1, '作业监控', '/home/jobOverView', 'JobOverView', 'show', 'AntCloudOutlined', 'F', 0, 2, '2023-08-15 16:52:59', '2023-08-18 17:09:39', null);
 INSERT INTO `dinky_sys_menu` VALUES (33, 1, '数据开发', '/home/devOverView', 'DevOverView', 'show', 'AimOutlined', 'F', 0, 3, '2023-08-15 16:54:47', '2023-08-18 17:09:39', null);
-INSERT INTO `dinky_sys_menu` VALUES (34, 5, '项目列表', '/datastudio/left/project', NULL, NULL, NULL, 'F', 0, 1, '2023-09-01 18:00:39', '2023-09-02 00:51:06', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (35, 5, '元数据', '/datastudio/left/metadata', NULL, NULL, NULL, 'F', 0, 2, '2023-09-01 18:01:09', '2023-09-02 00:51:12', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (36, 5, '结构', '/datastudio/left/structure', NULL, NULL, NULL, 'F', 0, 3, '2023-09-01 18:01:30', '2023-09-02 00:51:26', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (37, 5, '作业配置', '/datastudio/right/jobConfig', NULL, NULL, NULL, 'F', 0, 4, '2023-09-01 18:02:15', '2023-09-02 00:51:32', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (38, 5, '执行配置', '/datastudio/right/executeConfig', NULL, NULL, NULL, 'F', 0, 5, '2023-09-01 18:03:08', '2023-09-02 00:51:38', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (39, 5, '版本历史', '/datastudio/right/historyVision', NULL, NULL, NULL, 'F', 0, 6, '2023-09-01 18:03:29', '2023-09-02 00:51:56', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (40, 5, '保存点', '/datastudio/right/savePoint', NULL, NULL, NULL, 'F', 0, 7, '2023-09-01 18:03:58', '2023-09-02 00:51:47', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (41, 5, '作业信息', '/datastudio/right/jobInfo', NULL, NULL, NULL, 'F', 0, 8, '2023-09-01 18:04:31', '2023-09-02 00:52:06', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (42, 5, '控制台', '/datastudio/bottom/console', NULL, NULL, NULL, 'F', 0, 9, '2023-09-01 18:04:56', '2023-09-01 18:04:56', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (43, 5, '结果', '/datastudio/bottom/result', NULL, NULL, NULL, 'F', 0, 10, '2023-09-01 18:05:16', '2023-09-01 18:05:16', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (44, 5, 'BI', '/datastudio/bottom/bi', NULL, NULL, NULL, 'F', 0, 11, '2023-09-01 18:05:43', '2023-09-01 18:05:43', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (45, 5, '血缘', '/datastudio/bottom/lineage', NULL, NULL, NULL, 'F', 0, 12, '2023-09-01 18:07:15', '2023-09-02 00:52:12', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (46, 5, '表数据监控', '/datastudio/bottom/process', NULL, NULL, NULL, 'F', 0, 13, '2023-09-01 18:07:55', '2023-09-02 00:52:21', NULL);
-INSERT INTO `dinky_sys_menu` VALUES (47, 5, '小工具', '/datastudio/bottom/tool', NULL, NULL, NULL, 'F', 0, 14, '2023-09-01 18:08:18', '2023-09-01 18:08:18', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (34, 5, '项目列表', '/datastudio/left/project', null, null, 'ConsoleSqlOutlined', 'F', 0, 1, '2023-09-01 18:00:39', '2023-09-03 16:41:26', null);
+INSERT INTO `dinky_sys_menu` VALUES (35, 5, '元数据', '/datastudio/left/metadata', null, null, 'TableOutlined', 'F', 0, 2, '2023-09-01 18:01:09', '2023-09-03 16:42:00', null);
+INSERT INTO `dinky_sys_menu` VALUES (36, 5, '结构', '/datastudio/left/structure', null, null, 'DatabaseOutlined', 'F', 0, 3, '2023-09-01 18:01:30', '2023-09-03 16:42:49', null);
+INSERT INTO `dinky_sys_menu` VALUES (37, 5, '作业配置', '/datastudio/right/jobConfig', null, null, 'SettingOutlined', 'F', 0, 4, '2023-09-01 18:02:15', '2023-09-03 16:43:02', null);
+INSERT INTO `dinky_sys_menu` VALUES (38, 5, '执行配置', '/datastudio/right/executeConfig', null, null, 'ExperimentOutlined', 'F', 0, 5, '2023-09-01 18:03:08', '2023-09-03 16:43:32', null);
+INSERT INTO `dinky_sys_menu` VALUES (39, 5, '版本历史', '/datastudio/right/historyVision', null, null, 'HistoryOutlined', 'F', 0, 6, '2023-09-01 18:03:29', '2023-09-03 16:43:43', null);
+INSERT INTO `dinky_sys_menu` VALUES (40, 5, '保存点', '/datastudio/right/savePoint', null, null, 'FolderOutlined', 'F', 0, 7, '2023-09-01 18:03:58', '2023-09-03 16:44:12', null);
+INSERT INTO `dinky_sys_menu` VALUES (41, 5, '作业信息', '/datastudio/right/jobInfo', null, null, 'InfoCircleOutlined', 'F', 0, 8, '2023-09-01 18:04:31', '2023-09-03 16:44:24', null);
+INSERT INTO `dinky_sys_menu` VALUES (42, 5, '控制台', '/datastudio/bottom/console', null, null, 'ConsoleSqlOutlined', 'F', 0, 9, '2023-09-01 18:04:56', '2023-09-03 16:44:57', null);
+INSERT INTO `dinky_sys_menu` VALUES (43, 5, '结果', '/datastudio/bottom/result', null, null, 'SearchOutlined', 'F', 0, 10, '2023-09-01 18:05:16', '2023-09-03 16:45:47', null);
+INSERT INTO `dinky_sys_menu` VALUES (44, 5, 'BI', '/datastudio/bottom/bi', null, null, 'DashboardOutlined', 'F', 0, 11, '2023-09-01 18:05:43', '2023-09-03 16:49:01', null);
+INSERT INTO `dinky_sys_menu` VALUES (45, 5, '血缘', '/datastudio/bottom/lineage', null, null, 'PushpinOutlined', 'F', 0, 12, '2023-09-01 18:07:15', '2023-09-03 16:47:38', null);
+INSERT INTO `dinky_sys_menu` VALUES (46, 5, '表数据监控', '/datastudio/bottom/process', null, null, 'TableOutlined', 'F', 0, 13, '2023-09-01 18:07:55', '2023-09-03 16:48:14', null);
+INSERT INTO `dinky_sys_menu` VALUES (47, 5, '小工具', '/datastudio/bottom/tool', null, null, 'ToolOutlined', 'F', 0, 14, '2023-09-01 18:08:18', '2023-09-03 16:48:35', null);
 INSERT INTO `dinky_sys_menu` VALUES (48, 28, '新建', '/registration/cluster/instance/new', NULL, NULL, 'PlusOutlined', 'F', 0, 15, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
 INSERT INTO `dinky_sys_menu` VALUES (49, 28, '回收', '/registration/cluster/instance/recovery', NULL, NULL, 'PlusOutlined', 'F', 0, 16, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
 INSERT INTO `dinky_sys_menu` VALUES (50, 28, '编辑', '/registration/cluster/instance/edit', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
@@ -1250,6 +1250,8 @@ INSERT INTO `dinky_sys_menu` VALUES (82, 19, '上传', '/registration/resource/u
 INSERT INTO `dinky_sys_menu` VALUES (83, 19, '重命名', '/registration/resource/rename', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
 INSERT INTO `dinky_sys_menu` VALUES (84, 19, '删除', '/registration/resource/delete', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
 INSERT INTO `dinky_sys_menu` VALUES (85, 19, '创建文件夹', '/registration/resource/folder', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (86, 4, 'Token', '/auth/token', './AuthCenter/Token', null, 'SecurityScanFilled', 'C', 0, 35, '2023-09-05 23:14:23', '2023-09-05 23:14:23', null);
+
 COMMIT;
 
 -- ----------------------------
@@ -1265,6 +1267,27 @@ CREATE TABLE `dinky_sys_role_menu` (
                                        PRIMARY KEY (`id`) USING BTREE,
                                        UNIQUE KEY `un_role_menu_inx` (`role_id`,`menu_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+-- ----------------------------
+-- Table structure dinky_sys_token
+-- ----------------------------
+drop table if exists `dinky_sys_token`;
+CREATE TABLE `dinky_sys_token` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `token_value` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'token value',
+  `user_id` bigint NOT NULL COMMENT 'user id',
+  `role_id` bigint NOT NULL COMMENT 'role id',
+  `tenant_id` bigint NOT NULL COMMENT 'tenant id',
+  `expire_type` tinyint NOT NULL COMMENT '1: never expire, 2: expire after a period of time, 3: expire at a certain time',
+  `expire_start_time` datetime DEFAULT NULL COMMENT 'expire start time ,when expire_type = 3 , it is the start time of the period',
+  `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
+  `create_time` datetime NOT NULL COMMENT 'create time',
+  `update_time` datetime NOT NULL COMMENT 'modify time',
+  `creator` bigint DEFAULT NULL COMMENT '创建人',
+  `updator` bigint DEFAULT NULL COMMENT '修改人',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='token management';
 
 
 

@@ -297,7 +297,7 @@ const JobConfig = (props: any) => {
                 options={flinkConfigOptions}
               />
               <ProFormText
-                name={['index', 'value']}
+                name={'value'}
                 width={calculatorWidth(rightContainer.width) - 45}
                 placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}
               />

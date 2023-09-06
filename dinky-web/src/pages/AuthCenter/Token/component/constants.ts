@@ -17,13 +17,22 @@
  *
  */
 
-export enum SettingConfigKeyEnum {
-  DINKY = 'Dinky',
-  FLINK = 'Flink',
-  MAVEN = 'Maven',
-  DOLPHIN_SCHEDULER = 'DolphinScheduler',
-  LDAP = 'LDAP',
-  METRIC = 'Metric',
-  RESOURCE = 'Resource',
-  ENV = 'Env'
-}
+import { CheckboxOptionType } from 'antd/es/checkbox/Group';
+
+export const TOKEN_EXPIRE_TYPE: CheckboxOptionType[] = [
+  {
+    label: '永不过期',
+    value: 1,
+    title: '永不过期'
+  },
+  {
+    label: '指定过期时间',
+    value: 2,
+    title: '指定过期时间'
+  },
+  {
+    label: '指定过期时间区间',
+    value: 3,
+    title: '指定过期时间区间'
+  }
+];

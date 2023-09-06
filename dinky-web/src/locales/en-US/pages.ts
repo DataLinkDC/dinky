@@ -247,6 +247,22 @@ export default {
   'tenant.cancel.admin': 'Cancel Tenant Admin',
   'tenant.user.list': 'User List',
 
+  'token.manager': 'Token Management',
+  'token.value': 'Token Value',
+  'token.username': 'User',
+  'token.role': 'Role',
+  'token.tenant': 'Tenant',
+  'token.expireType': 'Expire Type',
+  'token.expireType.1': 'Never Expire',
+  'token.expireType.2': 'Expire Time',
+  'token.expireType.3': 'Expire Range Time',
+  'token.expireTime': 'Expire Time',
+  'token.expireEndTime': 'Expire End Time',
+  'token.expireStartTime': 'Expire Start Time',
+  'token.deleteConfirm': 'Are you sure you want to delete this Token？',
+  'token.create': 'Create Token',
+  'token.update': 'Update Token',
+
   // role
   'role.roleManagement': 'Role Management',
   'role.roleCode': 'Role Code',

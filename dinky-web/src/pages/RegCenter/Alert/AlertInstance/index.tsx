@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-import Scale from '@/components/Animation/Scale';
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 import AlertInstanceList from '@/pages/RegCenter/Alert/AlertInstance/components/AlertInstanceList';
 import { PageContainer } from '@ant-design/pro-components';
 export { ALERT_MODEL, ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
 
 export default () => {
   return (
-    <Scale>
+    <SlowlyAppear>
       <PageContainer title={false}>
         <AlertInstanceList />
       </PageContainer>
-    </Scale>
+    </SlowlyAppear>
   );
 };
