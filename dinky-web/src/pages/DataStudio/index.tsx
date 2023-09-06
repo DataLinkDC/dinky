@@ -291,8 +291,8 @@ const DataStudio = (props: any) => {
             <Content style={{ display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex' }}>
                 <LeftContainer size={size} />
-                <Content style={{flexGrow: 1,}}>
-                  <MiddleContainer style={{flexGrow: 1,}} />
+                <Content style={{ flexGrow: 1 }}>
+                  <MiddleContainer style={{ flexGrow: 1 }} />
                 </Content>
                 <RightContainer size={size} bottomHeight={bottomHeight} />
               </div>
