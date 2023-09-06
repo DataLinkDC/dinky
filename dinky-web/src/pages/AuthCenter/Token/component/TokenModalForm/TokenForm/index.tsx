@@ -25,6 +25,7 @@ import {
 } from '@/pages/AuthCenter/Token/component/function';
 import { TokenStateType } from '@/pages/AuthCenter/Token/component/model';
 import { UserBaseInfo } from '@/types/AuthCenter/data';
+import { l } from '@/utils/intl';
 import {
   ProFormDateTimePicker,
   ProFormDateTimeRangePicker,
@@ -35,7 +36,6 @@ import {
 } from '@ant-design/pro-components';
 import { connect } from '@umijs/max';
 import React from 'react';
-import {l} from "@/utils/intl";
 
 type TokenFormProps = {
   users: UserBaseInfo.User[];
@@ -56,7 +56,7 @@ const TokenForm: React.FC<TokenFormProps & connect> = (props) => {
           label={l('token.value')}
           width={'xl'}
           placeholder={l('token.generate.placeholder')}
-          rules={[{ required: true, message:l('token.generate.placeholder') }]}
+          rules={[{ required: true, message: l('token.generate.placeholder') }]}
           fieldProps={{
             suffix: <a onClick={() => buildToken()}>{l('token.generate')}</a>
           }}

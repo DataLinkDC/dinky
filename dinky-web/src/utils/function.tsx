@@ -568,5 +568,5 @@ export const formatDateToYYYYMMDDHHMMSS = (date: Date) => {
 };
 
 export const parseDateStringToDate = (dateString: Date) => {
-  return  dayjs(dateString).toDate();
+  return dayjs(dateString).toDate();
 };

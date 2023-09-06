@@ -17,19 +17,18 @@
  *
  */
 
-import {FormContextValue} from '@/components/Context/FormContext';
-import {mapDispatchToProps, TokenStateType} from '@/pages/AuthCenter/Token/component/model';
+import { FormContextValue } from '@/components/Context/FormContext';
+import { mapDispatchToProps, TokenStateType } from '@/pages/AuthCenter/Token/component/model';
 import TokenForm from '@/pages/AuthCenter/Token/component/TokenModalForm/TokenForm';
-import {DATETIME_FORMAT, MODAL_FORM_STYLE} from '@/services/constants';
-import {SysToken} from '@/types/AuthCenter/data.d';
-import {formatDateToYYYYMMDDHHMMSS, parseDateStringToDate} from '@/utils/function';
-import {l} from '@/utils/intl';
-import {ModalForm} from '@ant-design/pro-components';
-import {ProFormInstance} from '@ant-design/pro-form/lib';
-import {connect} from '@umijs/max';
-import {Button, Form} from 'antd';
-import React, {useEffect, useRef} from 'react';
-import dayjs from "dayjs";
+import { MODAL_FORM_STYLE } from '@/services/constants';
+import { SysToken } from '@/types/AuthCenter/data.d';
+import { formatDateToYYYYMMDDHHMMSS, parseDateStringToDate } from '@/utils/function';
+import { l } from '@/utils/intl';
+import { ModalForm } from '@ant-design/pro-components';
+import { ProFormInstance } from '@ant-design/pro-form/lib';
+import { connect } from '@umijs/max';
+import { Button, Form } from 'antd';
+import React, { useEffect, useRef } from 'react';
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
@@ -88,11 +87,11 @@ const TokenModalForm: React.FC<TokenModalFormProps & connect> = (props) => {
         value.expireType === 2
           ? parseDateStringToDate(value.expireEndTime)
           : value.expireType === 3
-            ? [
+          ? [
               parseDateStringToDate(value.expireStartTime),
               parseDateStringToDate(value.expireEndTime)
             ]
-            : undefined
+          : undefined
     });
   }, [visible, value, form, selectUserId]);
 
@@ -109,24 +108,24 @@ const TokenModalForm: React.FC<TokenModalFormProps & connect> = (props) => {
    */
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    let result = {...value, ...fieldsValue};
+    let result = { ...value, ...fieldsValue };
     // 转化时间
     if (fieldsValue.expireType === 2) {
       // 只有一个时间 设置为结束时间
       result = {
         ...result,
-        expireEndTime: formatDateToYYYYMMDDHHMMSS(fieldsValue.expireTime),
-      }
+        expireEndTime: formatDateToYYYYMMDDHHMMSS(fieldsValue.expireTime)
+      };
     } else if (fieldsValue.expireType === 3) {
       // 两个时间都有 设置开始时间和结束时间
       result = {
         ...result,
         expireEndTime: formatDateToYYYYMMDDHHMMSS(fieldsValue.expireTime[0]),
-        expireStartTime: formatDateToYYYYMMDDHHMMSS(fieldsValue.expireTime[1]),
+        expireStartTime: formatDateToYYYYMMDDHHMMSS(fieldsValue.expireTime[1])
       };
     }
 
-    await handleSubmit({...result});
+    await handleSubmit({ ...result });
     await handleCancel();
   };
 
@@ -161,16 +160,16 @@ const TokenModalForm: React.FC<TokenModalFormProps & connect> = (props) => {
         form={form}
         formRef={formRef}
         onValuesChange={handleValuesChange}
-        submitter={{render: () => [...renderFooter()]}}
-        initialValues={{...value}}
+        submitter={{ render: () => [...renderFooter()] }}
+        initialValues={{ ...value }}
       >
-        <TokenForm expireType={expireType} buildToken={handleBuildToken}/>
+        <TokenForm expireType={expireType} buildToken={handleBuildToken} />
       </ModalForm>
     </>
   );
 };
 export default connect(
-  ({Token}: { Token: TokenStateType }) => ({
+  ({ Token }: { Token: TokenStateType }) => ({
     tokenValue: Token.token
   }),
   mapDispatchToProps
