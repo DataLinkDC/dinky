@@ -114,7 +114,6 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
-
   return {
     headerTitleRender: () => {
       // 重新对 title 的设置进行设置
@@ -147,11 +146,13 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     unAccessible: <UnAccessible />,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      return initialState?.loading ?
-          <PageLoading/> :
-          <AccessContextProvider currentUser={initialState?.currentUser}>
-            {children}
-          </AccessContextProvider>;
+      return initialState?.loading ? (
+        <PageLoading />
+      ) : (
+        <AccessContextProvider currentUser={initialState?.currentUser}>
+          {children}
+        </AccessContextProvider>
+      );
     },
     ...initialState?.settings
   };
