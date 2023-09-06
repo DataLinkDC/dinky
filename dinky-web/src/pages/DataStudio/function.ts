@@ -20,6 +20,7 @@
 import {
   DataStudioTabsItemType,
   EnvType,
+  FooterType,
   JobRunningMsgType,
   MetadataTabsItemType,
   STUDIO_MODEL,
@@ -157,7 +158,7 @@ export const getCurrentData = (
   return undefined;
 };
 
-export const getFooterValue = (panes: any, activeKey: string) => {
+export const getFooterValue = (panes: any, activeKey: string): Partial<FooterType> => {
   const currentTab = getCurrentTab(panes, activeKey);
   if (isDataStudioTabsItemType(currentTab)) {
     return {
