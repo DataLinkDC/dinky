@@ -17,8 +17,8 @@
  *
  */
 
-import {BaseState} from "@/types/Public/state";
-import {AlertRule} from "@/types/SettingCenter/data";
+import { BaseState } from '@/types/Public/state';
+import { AlertRule } from '@/types/SettingCenter/data';
 
 export interface AlertRuleListState extends BaseState {
   value: Partial<AlertRule>;

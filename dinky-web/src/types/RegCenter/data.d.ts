@@ -44,7 +44,6 @@ declare namespace Alert {
     id: number;
     templateContent: string;
   };
-
 }
 
 export type AlertConfig = {

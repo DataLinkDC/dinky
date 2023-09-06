@@ -70,7 +70,7 @@ export default {
   'menu.settings.systemlog': 'System Log',
   'menu.settings.process': 'Process List',
   'menu.settings.services': 'Servers List',
-  'menu.settings.alertrulelist' : 'Alert Rules',
+  'menu.settings.alertrulelist': 'Alert Rules',
   'menu.metrics': 'Metrics',
   'menu.about': 'About',
   'menu.version': 'Version: {version}',
@@ -93,7 +93,5 @@ export default {
   'menu.datastudio.history': 'History',
   'menu.datastudio.table-data': 'Table Data',
 
-  'menu.datastudio.tool.text-comparison': 'Text Comparison',
-
-
+  'menu.datastudio.tool.text-comparison': 'Text Comparison'
 };

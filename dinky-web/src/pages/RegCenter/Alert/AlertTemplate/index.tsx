@@ -16,26 +16,26 @@
  *   limitations under the License.
  *
  */
-import {EditTwoTone, PlusOutlined} from '@ant-design/icons';
-import {Button, Card, List, Modal, Typography} from 'antd';
-import {PageContainer} from '@ant-design/pro-layout';
-import {useRequest} from "@@/exports";
-import {API_CONSTANTS} from "@/services/endpoints";
-import {Alert,} from "@/types/RegCenter/data";
-import {l} from "@/utils/intl";
-import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
-import React, {useState} from "react";
-import {AlertTemplateState} from "@/types/RegCenter/state";
-import { InitAlertTemplateState }  from '@/types/RegCenter/init.d';
-import AlertTemplateForm from "@/pages/RegCenter/Alert/AlertTemplate/components/AlertTemplateForm";
-import {handleAddOrUpdate, handleRemoveById} from "@/services/BusinessCrud";
-const {Paragraph} = Typography;
+import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
+import AlertTemplateForm from '@/pages/RegCenter/Alert/AlertTemplate/components/AlertTemplateForm';
+import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { Alert } from '@/types/RegCenter/data';
+import { InitAlertTemplateState } from '@/types/RegCenter/init.d';
+import { AlertTemplateState } from '@/types/RegCenter/state';
+import { l } from '@/utils/intl';
+import { useRequest } from '@@/exports';
+import { EditTwoTone, PlusOutlined } from '@ant-design/icons';
+import { PageContainer } from '@ant-design/pro-layout';
+import { Button, Card, List, Modal, Typography } from 'antd';
+import { useState } from 'react';
+const { Paragraph } = Typography;
 
 export default () => {
+  const [alertTemplateState, setAlertTemplateState] =
+    useState<AlertTemplateState>(InitAlertTemplateState);
 
-  const [alertTemplateState, setAlertTemplateState] = useState<AlertTemplateState>(InitAlertTemplateState);
-
-  const {data, loading,run} = useRequest({url: API_CONSTANTS.ALERT_TEMPLATE,});
+  const { data, loading, run } = useRequest({ url: API_CONSTANTS.ALERT_TEMPLATE });
   const nullData: Partial<Alert.AlertTemplate> = {};
 
   /**
@@ -60,7 +60,7 @@ export default () => {
       content: l('rc.template.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
-      onOk: async () =>{
+      onOk: async () => {
         await handleRemoveById(API_CONSTANTS.ALERT_TEMPLATE, id);
         run();
       }
@@ -88,7 +88,7 @@ export default () => {
       value,
       () => {},
       () => handleCleanState()
-    )
+    );
     run();
   };
 
@@ -100,14 +100,14 @@ export default () => {
       <Button
         className={'options-button'}
         key={'AlertGroupEdit'}
-        icon={<EditTwoTone/>}
+        icon={<EditTwoTone />}
         title={l('button.edit')}
         onClick={() => editClick(item)}
       />,
       <Button
         className={'options-button'}
         key={'DeleteAlertGroupIcon'}
-        icon={<DangerDeleteIcon/>}
+        icon={<DangerDeleteIcon />}
         onClick={() => handleDeleteSubmit(item.id)}
       />
     ];
@@ -116,22 +116,15 @@ export default () => {
   /**
    * Draw a template Card
    */
-  const renderTemplateCard = (item:Alert.AlertTemplate) =>{
+  const renderTemplateCard = (item: Alert.AlertTemplate) => {
     if (item && item.id) {
       return (
         <List.Item key={item.id}>
-          <Card
-            hoverable
-            actions={renderAlertTemplateActionButton(item)}
-          >
+          <Card hoverable actions={renderAlertTemplateActionButton(item)}>
             <Card.Meta
-              style={{width: '100%',height: '15vh',}}
+              style={{ width: '100%', height: '15vh' }}
               title={<a>{item.name}</a>}
-              description={
-                <Paragraph  ellipsis={{rows: 3}}>
-                  {item.templateContent}
-                </Paragraph>
-              }
+              description={<Paragraph ellipsis={{ rows: 3 }}>{item.templateContent}</Paragraph>}
             />
           </Card>
         </List.Item>
@@ -140,24 +133,26 @@ export default () => {
 
     return (
       <List.Item>
-        <Button type="dashed" style={{height: '25vh',width: '100%',}}
-                onClick={() => setAlertTemplateState((prevState) => ({ ...prevState, addedOpen: true }))}
+        <Button
+          type='dashed'
+          style={{ height: '25vh', width: '100%' }}
+          onClick={() => setAlertTemplateState((prevState) => ({ ...prevState, addedOpen: true }))}
         >
-          <PlusOutlined/> {l('rc.alert.template.new')}
+          <PlusOutlined /> {l('rc.alert.template.new')}
         </Button>
       </List.Item>
     );
-  }
+  };
 
   return (
     <PageContainer>
-        <List<Alert.AlertTemplate>
-          rowKey="id"
-          loading={loading}
-          grid={{gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4,}}
-          dataSource={[nullData, ...data ?? []]}
-          renderItem={(item) => renderTemplateCard(item)}
-        />
+      <List<Alert.AlertTemplate>
+        rowKey='id'
+        loading={loading}
+        grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
+        dataSource={[nullData, ...(data ?? [])]}
+        renderItem={(item) => renderTemplateCard(item)}
+      />
 
       <AlertTemplateForm
         onSubmit={handleSubmit}
@@ -174,8 +169,6 @@ export default () => {
           values={alertTemplateState.value}
         />
       )}
-
     </PageContainer>
   );
 };
-

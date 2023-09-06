@@ -17,8 +17,7 @@
  *
  */
 
-
-import {AlertRuleListState} from "@/types/SettingCenter/state";
+import { AlertRuleListState } from '@/types/SettingCenter/state';
 
 /**
  * alert group state init

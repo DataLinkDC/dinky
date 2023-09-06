@@ -946,7 +946,6 @@ export default {
   'sys.alert.rule.checkpointFailed': 'Checkpoint Failed',
   'sys.alert.rule.jobException': 'Job Exception',
 
-
   // metrics
   // server
   'metrics.filter.60seconds': '60 Seconds',

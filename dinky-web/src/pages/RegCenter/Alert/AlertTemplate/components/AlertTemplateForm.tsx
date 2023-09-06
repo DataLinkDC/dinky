@@ -17,18 +17,14 @@
  *
  */
 
+import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { buildFormData, getFormData } from '@/pages/RegCenter/Alert/AlertGroup/function';
+import { MODAL_FORM_STYLE } from '@/services/constants';
+import { Alert } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import {
-  ModalForm,
-  ProForm,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
 import { Button, Form } from 'antd';
 import React, { useState } from 'react';
-import {Alert} from "@/types/RegCenter/data";
-import {MODAL_FORM_STYLE} from "@/services/constants";
-import CodeEdit from "@/components/CustomEditor/CodeEdit";
 
 /**
  * alert group props
@@ -55,19 +51,13 @@ const AlertTemplateForm: React.FC<AlertTemplateFormProps> = (props) => {
   /**
    * extract props
    */
-  const {
-    onSubmit: handleSubmit,
-    onCancel: handleModalVisible,
-    modalVisible,
-    values
-  } = props;
+  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
   /**
    * state
    */
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<Alert.AlertTemplate>>({ ...values });
   const [codeValue, setCodeValue] = useState<string>(values.templateContent || '');
-
 
   /**
    * submit form
@@ -94,7 +84,7 @@ const AlertTemplateForm: React.FC<AlertTemplateFormProps> = (props) => {
         <ProForm.Item
           name='templateContent'
           label={l('rc.template.templateCodeLabel', '', {
-            language: "markdown"
+            language: 'markdown'
           })}
           rules={[
             {
@@ -107,10 +97,9 @@ const AlertTemplateForm: React.FC<AlertTemplateFormProps> = (props) => {
             {...CodeEditProps}
             code={codeValue}
             onChange={(value) => setCodeValue(value ?? '')}
-            language={"markdown"}
+            language={'markdown'}
           />
         </ProForm.Item>
-
       </>
     );
   };

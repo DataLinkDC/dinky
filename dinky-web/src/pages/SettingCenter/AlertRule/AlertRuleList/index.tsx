@@ -15,26 +15,24 @@
  * limitations under the License.
  */
 
-
-import {queryList} from '@/services/api';
-import {PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING} from '@/services/constants';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {AlertRule} from '@/types/SettingCenter/data';
-import {l} from '@/utils/intl';
-import {ActionType, ProTable} from '@ant-design/pro-components';
-import {ProColumns} from '@ant-design/pro-table';
-import React, {useRef, useState} from 'react';
-import RuleEditForm from "@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm";
-import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
-import {AlertRuleListState} from "@/types/SettingCenter/state";
-import {InitAlertRuleState} from "@/types/SettingCenter/init.d";
-import {handleAddOrUpdate, handleRemoveById} from "@/services/BusinessCrud";
-import {EditBtn} from "@/components/CallBackButton/EditBtn";
-import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
-import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
+import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import RuleEditForm from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm';
+import { queryList } from '@/services/api';
+import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
+import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { AlertRule } from '@/types/SettingCenter/data';
+import { InitAlertRuleState } from '@/types/SettingCenter/init.d';
+import { AlertRuleListState } from '@/types/SettingCenter/state';
+import { l } from '@/utils/intl';
+import { ActionType, ProTable } from '@ant-design/pro-components';
+import { ProColumns } from '@ant-design/pro-table';
+import React, { useRef, useState } from 'react';
 
 const AlertRuleList: React.FC = () => {
-
   const [ruleState, setRuleState] = useState<AlertRuleListState>(InitAlertRuleState);
   const actionRef = useRef<ActionType>(); // table action
 
@@ -56,23 +54,23 @@ const AlertRuleList: React.FC = () => {
   };
 
   async function handleSubmit(rule: AlertRule) {
-    await handleAddOrUpdate(API_CONSTANTS.ALERT_RULE, rule)
+    await handleAddOrUpdate(API_CONSTANTS.ALERT_RULE, rule);
     actionRef.current?.reload?.();
     handleCleanState();
   }
 
-  const initData = async (params:any, sorter:any, filter: any) => {
-    const result = (await queryList(API_CONSTANTS.ALERT_RULE_LIST, {
+  const initData = async (params: any, sorter: any, filter: any) => {
+    const result = await queryList(API_CONSTANTS.ALERT_RULE_LIST, {
       ...params,
       sorter,
       filter
-    }))
-    const data = result.data.map((t:AlertRule)=>{
-      t.rule = JSON.parse(t.rule)
+    });
+    const data = result.data.map((t: AlertRule) => {
+      t.rule = JSON.parse(t.rule);
       return t;
-    })
-    return {data:data}
-  }
+    });
+    return { data: data };
+  };
 
   const columns: ProColumns<AlertRule>[] = [
     {
@@ -85,7 +83,7 @@ const AlertRuleList: React.FC = () => {
     },
     {
       title: l('sys.alert.rule.ruleType'),
-      dataIndex: 'ruleType',
+      dataIndex: 'ruleType'
     },
     {
       title: l('global.table.isEnable'),
@@ -122,13 +120,14 @@ const AlertRuleList: React.FC = () => {
       title: l('global.table.operate'),
       valueType: 'option',
       render: (_text: any, record: AlertRule) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => editClick(record)}/>,
-        record.ruleType != 'SYSTEM' &&
-        <PopconfirmDeleteBtn
-          key={`${record.id}_delete`}
-          onClick={async () => await handleRemoveById(API_CONSTANTS.ALERT_RULE, record.id)}
-          description={l('user.status')}
-        />
+        <EditBtn key={`${record.id}_edit`} onClick={() => editClick(record)} />,
+        record.ruleType != 'SYSTEM' && (
+          <PopconfirmDeleteBtn
+            key={`${record.id}_delete`}
+            onClick={async () => await handleRemoveById(API_CONSTANTS.ALERT_RULE, record.id)}
+            description={l('user.status')}
+          />
+        )
       ]
     }
   ];
@@ -142,7 +141,7 @@ const AlertRuleList: React.FC = () => {
         toolBarRender={() => [
           <CreateBtn
             key={'CreateRule'}
-            onClick={() => setRuleState((prevState) => ({...prevState, addedOpen: true}))}
+            onClick={() => setRuleState((prevState) => ({ ...prevState, addedOpen: true }))}
           />
         ]}
         rowKey='id'

@@ -70,7 +70,7 @@ export default {
   'menu.settings.systemlog': '系统日志',
   'menu.settings.process': '进程列表',
   'menu.settings.services': '服务器列表',
-  'menu.settings.alertrulelist' : '告警策略',
+  'menu.settings.alertrulelist': '告警策略',
   'menu.metrics': '监控',
   'menu.about': '关于',
   'menu.version': '版本：{version}',
@@ -92,7 +92,5 @@ export default {
   'menu.datastudio.history': '历史',
   'menu.datastudio.table-data': '表数据',
 
-  'menu.datastudio.tool.text-comparison': '文本比对',
-
-
+  'menu.datastudio.tool.text-comparison': '文本比对'
 };

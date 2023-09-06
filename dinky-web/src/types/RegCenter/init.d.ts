@@ -19,7 +19,8 @@
 
 import {
   AlertGroupState,
-  AlertInstanceState, AlertTemplateState,
+  AlertInstanceState,
+  AlertTemplateState,
   BuildStepsState,
   ClusterConfigState,
   ClusterInstanceState,

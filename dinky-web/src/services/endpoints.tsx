@@ -154,7 +154,6 @@ export enum API_CONSTANTS {
   ALERT_RULE = '/api/alertRule',
   ALERT_TEMPLATE = '/api/alertTemplate',
 
-
   // ---- get git project list----
   GIT_PROJECT = '/api/git/getProjectList',
   // ---- saveOrUpdate ----
