@@ -35,6 +35,7 @@ import {
 } from '@ant-design/pro-components';
 import { connect } from '@umijs/max';
 import React from 'react';
+import {l} from "@/utils/intl";
 
 type TokenFormProps = {
   users: UserBaseInfo.User[];
@@ -52,11 +53,12 @@ const TokenForm: React.FC<TokenFormProps & connect> = (props) => {
       <ProFormGroup>
         <ProFormText
           name='tokenValue'
-          label='Token'
+          label={l('token.value')}
           width={'xl'}
-          rules={[{ required: true, message: '请生成Token' }]}
+          placeholder={l('token.generate.placeholder')}
+          rules={[{ required: true, message:l('token.generate.placeholder') }]}
           fieldProps={{
-            suffix: <a onClick={() => buildToken()}>生成Token</a>
+            suffix: <a onClick={() => buildToken()}>{l('token.generate')}</a>
           }}
         />
       </ProFormGroup>
@@ -64,40 +66,43 @@ const TokenForm: React.FC<TokenFormProps & connect> = (props) => {
       <ProFormGroup>
         <ProFormSelect
           name='userId'
-          label='用户'
+          label={l('token.username')}
           width='xl'
           allowClear
           showSearch
+          placeholder={l('token.user.choose')}
           options={buildUserOptions(users)}
-          rules={[{ required: true, message: '请选择用户' }]}
+          rules={[{ required: true, message: l('token.user.choose') }]}
         />
         <ProFormSelect
           name='roleId'
-          label='角色'
+          label={l('token.role')}
           width='xl'
           allowClear
           showSearch
+          placeholder={l('token.role.choose')}
           options={buildRoleOptions(roles)}
-          rules={[{ required: true, message: '请选择角色' }]}
+          rules={[{ required: true, message: l('token.role.choose') }]}
         />
         <ProFormSelect
           name='tenantId'
-          label='租户'
+          label={l('token.tenant')}
           width='xl'
           allowClear
           showSearch
+          placeholder={l('token.tenant.choose')}
           options={buildTenantOptions(tenants)}
-          rules={[{ required: true, message: '请选择租户' }]}
+          rules={[{ required: true, message: l('token.tenant.choose') }]}
         />
       </ProFormGroup>
 
       <ProFormGroup>
         <ProFormRadio.Group
           name='expireType'
-          label='过期类型'
+          label={l('token.expireType')}
           initialValue={expireType}
           width='xl'
-          rules={[{ required: true, message: '请选择过期类型' }]}
+          rules={[{ required: true, message: l('token.choose.expireType') }]}
           options={TOKEN_EXPIRE_TYPE}
         />
         {expireType === 2 && (
@@ -105,10 +110,10 @@ const TokenForm: React.FC<TokenFormProps & connect> = (props) => {
             <ProFormDateTimePicker
               allowClear
               name={'expireTime'}
-              label='过期时间'
+              label={l('token.expireTime')}
               width='xl'
-              placeholder={'过期结束时间'}
-              rules={[{ required: true, message: '请选择过期时间' }]}
+              placeholder={l('token.expireEndTime')}
+              rules={[{ required: true, message: l('token.expireTime.placeholder') }]}
             />
           </>
         )}
@@ -116,20 +121,11 @@ const TokenForm: React.FC<TokenFormProps & connect> = (props) => {
           <>
             <ProFormDateTimeRangePicker
               name={'expireTime'}
-              label='过期时间区间'
+              label={l('token.expireType.3')}
               width='xl'
               allowClear
-              // transform={(value: any) => {
-              //   return {
-              //     startTime: value[0],
-              //     endTime: value[1],
-              //   };
-              // }}
-              // convertValue={(value: any) => {
-              //   return [value.startTime, value.endTime];
-              // }}
-              placeholder={['开始时间', '结束时间']}
-              rules={[{ required: true, message: '过期时间区间' }]}
+              placeholder={[l('token.expireStartTime'), l('token.expireEndTime')]}
+              rules={[{ required: true, message: l('token.expireTime.placeholder') }]}
             />
           </>
         )}
