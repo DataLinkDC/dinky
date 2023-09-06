@@ -24,6 +24,7 @@ import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { RunningBtn } from '@/components/CallBackButton/RunningBtn';
 import { ClusterConfigIcon } from '@/components/Icons/HomeIcon';
 import { DataAction } from '@/components/StyledComponents';
+import { Authorized } from '@/hooks/useAccess';
 import { imgStyle } from '@/pages/Home/constants';
 import ConfigurationModal from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal';
 import { CLUSTER_CONFIG_TYPE } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
@@ -194,8 +195,8 @@ export default () => {
    */
   const renderDataActionButton = (item: Cluster.Config) => {
     return [
-      <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />,
-      <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />,
+      <Authorized key={`${item.id}_edit`} path="/registration/cluster/config/edit"><EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} /></Authorized>,
+      <Authorized key={`${item.id}_delete`} path="/registration/cluster/config/delete"><NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} /></Authorized>,
       <RunningBtn
         key={`${item.id}_running`}
         title={l('rc.cc.start')}
@@ -249,10 +250,12 @@ export default () => {
    * tool bar render
    */
   const toolBarRender = () => [
-    <CreateBtn
-      key={'configcreate'}
-      onClick={() => setClusterConfigState((prevState) => ({ ...prevState, addedOpen: true }))}
-    />
+    <Authorized key='new' path='/registration/cluster/config/new'>
+      <CreateBtn
+        key={'configcreate'}
+        onClick={() => setClusterConfigState((prevState) => ({ ...prevState, addedOpen: true }))}
+      />
+    </Authorized>
   ];
 
   /**
