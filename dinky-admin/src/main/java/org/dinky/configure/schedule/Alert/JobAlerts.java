@@ -129,7 +129,7 @@ public class JobAlerts extends BaseSchedule {
     @PostConstruct
     public void init() {
         RefeshRulesData();
-        addSchedule("JobAlert", this::check, new PeriodicTrigger(1000 * 6));
+        addSchedule("JobAlert", this::check, new PeriodicTrigger(1000 * 30));
     }
 
     /**
@@ -199,7 +199,7 @@ public class JobAlerts extends BaseSchedule {
      * @param facts        The facts representing the job details.
      * @param alertRuleDTO Alert Rule Info.
      */
-    private void executeAlertAction(Facts facts,AlertRuleDTO alertRuleDTO) {
+    private void executeAlertAction(Facts facts, AlertRuleDTO alertRuleDTO) {
         JobInfoDetail jobInfoDetail = facts.get("jobDetail");
         JobInstance jobInstance = jobInfoDetail.getInstance();
         Task task = taskService.getById(jobInfoDetail.getInstance().getTaskId());
@@ -224,7 +224,12 @@ public class JobAlerts extends BaseSchedule {
                     if (alertInstance == null || !alertInstance.getEnabled()) {
                         continue;
                     }
-                    sendAlert(alertInstance, jobInstance.getId(), alertGroup.getId(), alertRuleDTO.getName(), alertContent);
+                    sendAlert(
+                            alertInstance,
+                            jobInstance.getId(),
+                            alertGroup.getId(),
+                            alertRuleDTO.getName(),
+                            alertContent);
                 }
             }
         }

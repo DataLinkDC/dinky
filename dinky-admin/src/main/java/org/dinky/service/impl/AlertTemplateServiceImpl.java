@@ -26,6 +26,9 @@ import org.dinky.service.AlertTemplateService;
 
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AlertTemplateServiceImpl extends SuperServiceImpl<AlertTemplateMapper, AlertTemplate>
         implements AlertTemplateService {}

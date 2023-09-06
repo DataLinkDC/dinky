@@ -25,6 +25,9 @@ import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.AlertRuleService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -36,9 +39,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/alertRule")
@@ -49,9 +49,8 @@ public class AlertRuleController {
     @PostMapping("/list")
     public ProTableResult<AlertRule> list(@RequestBody JsonNode para) {
         ProTableResult<AlertRule> result = alertRuleService.selectForProTable(para);
-        //The reason for this is to deal with internationalization
-        List<AlertRule> list = result.getData()
-                .stream()
+        // The reason for this is to deal with internationalization
+        List<AlertRule> list = result.getData().stream()
                 .peek(rule -> rule.setName(Status.findMessageByKey(rule.getName())))
                 .peek(rule -> rule.setDescription(Status.findMessageByKey(rule.getDescription())))
                 .collect(Collectors.toList());

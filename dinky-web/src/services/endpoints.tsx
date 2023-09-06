@@ -201,8 +201,6 @@ export enum API_CONSTANTS {
   // process list
   PROCESS_LIST = '/api/process/listAllProcess',
 
-  GET_ONLINE_TASK = '/api/task/getOnlineTask',
-
   // ---- devops
   GET_JOB_LIST = '/api/jobInstance',
   GET_JOB_BY_ID = '/api/jobInstance/getOneById',
