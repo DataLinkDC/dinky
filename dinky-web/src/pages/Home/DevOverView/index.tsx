@@ -27,6 +27,11 @@ import { Badge } from 'antd';
 import RcResizeObserver from 'rc-resize-observer';
 import React, { useState } from 'react';
 
+const noPadding = {
+  paddingInline: '0',
+  paddingBlock: '0'
+};
+
 const DevOverView: React.FC = () => {
   const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
 
@@ -48,9 +53,15 @@ const DevOverView: React.FC = () => {
         bordered
         size='small'
         split={split}
+        bodyStyle={noPadding}
       >
-        <ProCard split='vertical'>
-          <ProCard split='horizontal' colSpan={'40%'}>
+        <ProCard split='vertical' bodyStyle={noPadding}>
+          <ProCard
+            title={l('home.job.development')}
+            split='horizontal'
+            colSpan={'40%'}
+            bodyStyle={noPadding}
+          >
             <ProCard>
               <BatchStreamProportion />
             </ProCard>
@@ -59,10 +70,10 @@ const DevOverView: React.FC = () => {
             </ProCard>
           </ProCard>
 
-          <ProCard colSpan={'30%'}>
+          <ProCard title={l('home.job.onlineRate')} colSpan={'30%'} bodyStyle={noPadding}>
             <TaskDialectRadar />
           </ProCard>
-          <ProCard>
+          <ProCard title={l('home.develop.re')} bodyStyle={noPadding}>
             <ResourceView />
           </ProCard>
         </ProCard>

@@ -29,6 +29,11 @@ import { Badge } from 'antd';
 import RcResizeObserver from 'rc-resize-observer';
 import React, { useState } from 'react';
 
+const noPadding = {
+  paddingInline: '0',
+  paddingBlock: '0'
+};
+
 const JobOverView: React.FC = () => {
   const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
 
@@ -50,8 +55,9 @@ const JobOverView: React.FC = () => {
         bordered
         size='small'
         split={split}
+        bodyStyle={noPadding}
       >
-        <ProCard split={split}>
+        <ProCard split={split} bodyStyle={noPadding}>
           <ProCard split='horizontal'>
             <ProCard bodyStyle={{ padding: '0 12px' }}>
               <JobRunView />
@@ -63,15 +69,15 @@ const JobOverView: React.FC = () => {
               <JobRecoveryView />
             </ProCard>
           </ProCard>
-          <ProCard title={l('home.job.running.status')}>
+          <ProCard title={l('home.job.running.status')} bodyStyle={noPadding}>
             <JobStatusPie />
           </ProCard>
         </ProCard>
-        <ProCard split={split}>
-          <ProCard title={l('home.server.load')}>
+        <ProCard split={split} bodyStyle={noPadding}>
+          <ProCard title={l('home.server.load')} bodyStyle={noPadding}>
             <LoadScoreGauge />
           </ProCard>
-          <ProCard split='horizontal'>
+          <ProCard split='horizontal' bodyStyle={noPadding}>
             <JobErrorView />
           </ProCard>
         </ProCard>

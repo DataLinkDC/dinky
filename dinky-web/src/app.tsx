@@ -58,32 +58,22 @@ export function patchRoutes({ routes }: any) {
 }
 
 const queryUserInfo = async () => {
-  return getDataByParamsReturnResult(API_CONSTANTS.CURRENT_USER).then(
-    (result) => {
-      const { user, roleList, tenantList, currentTenant, menuList, saTokenInfo } = result.datas;
-      extraRoutes = menuList;
-      const currentUser: API.CurrentUser = {
-        user: {
-          ...user,
-          avatar: user.avatar ?? '/icons/user_avatar.png'
-        },
-        roleList: roleList,
-        tenantList: tenantList,
-        currentTenant: currentTenant,
-        menuList: menuList,
-        tokenInfo: saTokenInfo
-      };
-      return currentUser;
-    },
-    (error) => {
-      history.push(loginPath);
-      console.log(error);
-      return undefined;
-    }
-  );
+  return getDataByParamsReturnResult(API_CONSTANTS.CURRENT_USER).then((result) => {
+    const { user, roleList, tenantList, currentTenant, menuList, saTokenInfo } = result.datas;
+    const currentUser: API.CurrentUser = {
+      user: {
+        ...user,
+        avatar: user.avatar ?? '/icons/user_avatar.png'
+      },
+      roleList: roleList,
+      tenantList: tenantList,
+      currentTenant: currentTenant,
+      menuList: menuList,
+      tokenInfo: saTokenInfo
+    };
+    return currentUser;
+  });
 };
-
-const fetchUserInfo = async () => await queryUserInfo();
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -94,10 +84,20 @@ export async function getInitialState(): Promise<{
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
+  const fetchUserInfo = async () => {
+    try {
+      return await queryUserInfo();
+    } catch (error) {
+      history.push(loginPath);
+    }
+    return undefined;
+  };
+
   // 如果不是登录页面，执行
   const { location } = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
+    extraRoutes = currentUser?.menuList;
     return {
       fetchUserInfo,
       currentUser,
@@ -129,6 +129,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     rightContentRender: () => <RightContent />,
     footerRender: () => <Footer />,
     siderWidth: 180,
+    /*waterMarkProps: {
+      content: initialState?.currentUser?.user.username + ' ' + new Date().toLocaleString(),
+      fontColor:
+        theme === THEME.light || undefined ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)'
+    },*/
     isChildrenLayout: true,
     onPageChange: () => {
       const { location } = history;
@@ -186,7 +191,7 @@ const patch = (oldRoutes: any, routes: SysMenu[]) => {
   oldRoutes[1].routes = oldRoutes[1].routes.map(
     (route: { routes: { path: any; element: JSX.Element }[]; path: string }) => {
       if (route.routes?.length) {
-        const redirect = routes.filter((r) => r.path.startsWith(route.path));
+        const redirect = routes?.filter((r) => r.path.startsWith(route.path));
         if (redirect.length) {
           route.routes.shift();
           route.routes.unshift({
@@ -224,7 +229,7 @@ export function onRouteChange({
 }) {
   if (location.pathname !== loginPath && !rendered) {
     const filterMenus = (menus: SysMenu[]) => {
-      return menus.filter((menu) => menu.type !== 'F');
+      return menus?.filter((menu) => menu.type !== 'F');
     };
     extraRoutes = filterMenus(extraRoutes);
     patchClientRoutes({ routes: clientRoutes });

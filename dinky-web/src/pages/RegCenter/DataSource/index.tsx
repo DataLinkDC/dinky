@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import Pop from '@/components/Animation/Pop';
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 import DataSourceTable from '@/pages/RegCenter/DataSource/components/DataSourceList';
 import { PageContainer } from '@ant-design/pro-components';
 
@@ -24,10 +24,10 @@ import { PageContainer } from '@ant-design/pro-components';
  */
 export default () => {
   return (
-    <Pop>
+    <SlowlyAppear>
       <PageContainer title={false}>
         <DataSourceTable />
       </PageContainer>
-    </Pop>
+    </SlowlyAppear>
   );
 };
