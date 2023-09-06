@@ -307,11 +307,9 @@ const HeaderContainer = (props: any) => {
     }
 
     return (
-      <>
         <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
           <Breadcrumb separator={'>'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
         </FlexCenterDiv>
-      </>
     );
   };
   const renderHotkey = () => {
@@ -372,14 +370,12 @@ const HeaderContainer = (props: any) => {
    * render
    */
   return (
-    <>
       <Descriptions column={2} size={'middle'} layout={'horizontal'} key={'h'} style={headerStyle}>
         <Descriptions.Item>{renderBreadcrumbItems()}</Descriptions.Item>
         <Descriptions.Item contentStyle={{ display: 'flex', flexDirection: 'row-reverse' }}>
           {renderRightButtons()}
         </Descriptions.Item>
       </Descriptions>
-    </>
   );
 };
 

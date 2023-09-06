@@ -77,7 +77,7 @@ jobs:
             ${{ runner.os }}-node-
       - name: Install Dependencies
         if:  steps.filter.outputs.frontend == 'true'
-        run: cd dinky-web && npm install --prefer-offline --no-audit --progress=false --legacy-peer-deps
+        run: cd dinky-web && npm install --omit=dev --prefer-offline --no-audit --progress=false --legacy-peer-deps
       - name: Npm Web Build
         if:  steps.filter.outputs.frontend == 'true'
         run: cd dinky-web && npm run build

@@ -21,7 +21,6 @@ import { AccessContextProvider } from '@/hooks/useAccess';
 import { UnAccessible } from '@/pages/Other/403';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { SysMenu } from '@/types/AuthCenter/data';
-import { THEME } from '@/types/Public/data';
 import { l } from '@/utils/intl';
 import { PageLoading, Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
@@ -97,7 +96,10 @@ export async function getInitialState(): Promise<{
   const { location } = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
-    extraRoutes = currentUser?.menuList;
+    if (currentUser?.menuList) {
+      extraRoutes = currentUser?.menuList;
+    }
+
     return {
       fetchUserInfo,
       currentUser,
@@ -112,7 +114,6 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
-  const theme = localStorage.getItem('navTheme') ?? THEME.light;
 
   return {
     headerTitleRender: () => {
@@ -146,12 +147,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     unAccessible: <UnAccessible />,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      if (initialState?.loading) return <PageLoading />;
-      return (
-        <AccessContextProvider currentUser={initialState?.currentUser}>
-          {children}
-        </AccessContextProvider>
-      );
+      return initialState?.loading ?
+          <PageLoading/> :
+          <AccessContextProvider currentUser={initialState?.currentUser}>
+            {children}
+          </AccessContextProvider>;
     },
     ...initialState?.settings
   };
