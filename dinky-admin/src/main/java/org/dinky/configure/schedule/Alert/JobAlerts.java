@@ -246,7 +246,7 @@ public class JobAlerts extends BaseSchedule {
      */
     private void sendAlert(
             AlertInstance alertInstance, int jobInstanceId, int alertGid, String title, String alertMsg) {
-        Map<String, String> params = JSONUtil.parse(alertInstance.getParams()).toBean(new TypeReference<>() {});
+        Map<String, String> params = org.dinky.utils.JSONUtil.toMap(alertInstance.getParams());
         AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(), params);
         Alert alert = Alert.build(alertConfig);
         AlertResult alertResult = alert.send(title, alertMsg);
