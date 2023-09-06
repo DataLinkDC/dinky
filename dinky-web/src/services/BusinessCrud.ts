@@ -250,8 +250,8 @@ export const handlePutDataJson = async (url: string, fields: any) => {
 
 export const getDataByParams = async (url: string, params?: any) => {
   try {
-    const { datas } = await getDataByRequestBody(url, params);
-    return datas;
+    const { datas, data } = await getDataByRequestBody(url, params);
+    return datas ?? data;
   } catch (error) {
     return false;
   }

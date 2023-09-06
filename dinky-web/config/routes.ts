@@ -209,6 +209,12 @@ export default [
         name: 'tenant',
         icon: 'SecurityScanOutlined',
         component: './AuthCenter/Tenant'
+      },
+      {
+        path: '/auth/token',
+        name: 'token',
+        icon: 'SecurityScanOutlined',
+        component: './AuthCenter/Token'
       }
     ]
   },

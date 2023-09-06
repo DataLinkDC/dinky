@@ -205,8 +205,12 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    */
   const renderDataSourceActionButton = (item: DataSources.DataSource) => {
     return [
-      <Authorized key={`${item.id}_edit`} path="/registration/database/new"><EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} /></Authorized>,
-      <Authorized key={`${item.id}_delete`} path="/registration/database/delete"><NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} /></Authorized>,
+      <Authorized key={`${item.id}_edit`} path='/registration/database/new'>
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
+      </Authorized>,
+      <Authorized key={`${item.id}_delete`} path='/registration/database/delete'>
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
+      </Authorized>,
       <Button
         className={'options-button'}
         key={`${item.id}_heart`}

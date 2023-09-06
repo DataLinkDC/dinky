@@ -28,9 +28,16 @@ import {
   XMLSvg,
   YAMLSvg
 } from '@/components/Icons/CodeLanguageIcon';
-import { DIALECT, LANGUAGE_KEY, LANGUAGE_ZH, TENANT_ID } from '@/services/constants';
+import {
+  DATETIME_FORMAT,
+  DIALECT,
+  LANGUAGE_KEY,
+  LANGUAGE_ZH,
+  TENANT_ID
+} from '@/services/constants';
 import { CODE_EDIT_THEME, THEME } from '@/types/Public/data';
 import { l } from '@/utils/intl';
+import dayjs from 'dayjs';
 import cookies from 'js-cookie';
 import { trim } from 'lodash';
 import { editor } from 'monaco-editor';
@@ -554,4 +561,12 @@ export const transformTableDataToCsv = <T,>(column: string[], data: T[]): string
     csvData += row + delimiter; // 添加换行符号
   }
   return csvData;
+};
+
+export const formatDateToYYYYMMDDHHMMSS = (date: Date) => {
+  return dayjs(date).format(DATETIME_FORMAT);
+};
+
+export const parseDateStringToDate = (dateString: Date) => {
+  return  dayjs(dateString).toDate();
 };

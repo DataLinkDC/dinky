@@ -24,6 +24,8 @@ import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 public interface TenantService extends ISuperService<Tenant> {
@@ -59,6 +61,13 @@ public interface TenantService extends ISuperService<Tenant> {
      * @return Tenant
      */
     Tenant getTenantByTenantCode(String tenantCode);
+
+    /**
+     * query tenant list by user id
+     * @param userId user id
+     * @return tenant list
+     */
+    List<Tenant> getTenantListByUserId(Integer userId);
 
     /**
      * @param tenant tenant info

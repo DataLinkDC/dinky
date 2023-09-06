@@ -17,7 +17,7 @@
  *
  */
 
-import { RowPermissions, SysMenu, UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { RowPermissions, SysMenu, SysToken, UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { BaseState, ContextMenuPosition } from '@/types/Public/state.d';
 import { Key } from '@ant-design/pro-components';
 
@@ -107,4 +107,8 @@ export interface UserListState extends BaseState {
   assignRoleOpen: boolean;
   roleIds: string[];
   editPasswordOpen: boolean;
+}
+
+export interface TokenListState extends BaseState {
+  value: Partial<SysToken>;
 }
