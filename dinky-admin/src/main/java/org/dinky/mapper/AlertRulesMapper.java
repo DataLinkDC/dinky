@@ -19,10 +19,11 @@
 
 package org.dinky.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.dinky.data.dto.AlertRuleDTO;
 import org.dinky.data.model.AlertRule;
 import org.dinky.mybatis.mapper.SuperMapper;
+
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 

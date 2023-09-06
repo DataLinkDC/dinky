@@ -24,7 +24,7 @@ import {l} from '@/utils/intl';
 import {ActionType, ProTable} from '@ant-design/pro-components';
 import {ProColumns} from '@ant-design/pro-table';
 import React, {useRef, useState} from 'react';
-import RuleEditForm from "@/pages/SettingCenter/AlertRule/components/AlertRuleList/RuleEditForm";
+import RuleEditForm from "@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm";
 import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import {AlertRuleListState} from "@/types/SettingCenter/state";
 import {InitAlertRuleState} from "@/types/SettingCenter/init.d";
@@ -80,16 +80,12 @@ const AlertRuleList: React.FC = () => {
       dataIndex: 'id'
     },
     {
-      title: '策略名称',
+      title: l('sys.alert.rule.name'),
       dataIndex: 'name'
     },
     {
-      title: "告警对象",
-      dataIndex: 'ruleTargetType',
-      valueEnum: {
-        all: "全部任务",
-        flink: "指定任务",
-      }
+      title: l('sys.alert.rule.ruleType'),
+      dataIndex: 'ruleType',
     },
     {
       title: l('global.table.isEnable'),
@@ -113,12 +109,12 @@ const AlertRuleList: React.FC = () => {
       valueEnum: STATUS_ENUM()
     },
     {
-      title: "创建时间",
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       valueType: 'dateTime'
     },
     {
-      title: "更新时间",
+      title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       valueType: 'dateTime'
     },
@@ -127,6 +123,7 @@ const AlertRuleList: React.FC = () => {
       valueType: 'option',
       render: (_text: any, record: AlertRule) => [
         <EditBtn key={`${record.id}_edit`} onClick={() => editClick(record)}/>,
+        record.ruleType != 'SYSTEM' &&
         <PopconfirmDeleteBtn
           key={`${record.id}_delete`}
           onClick={async () => await handleRemoveById(API_CONSTANTS.ALERT_RULE, record.id)}

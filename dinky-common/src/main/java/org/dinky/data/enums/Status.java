@@ -234,11 +234,22 @@ public enum Status {
 
     LDAP_LOGIN_FORBID(18007, "ldap.login.forbid"),
 
+
     /**
      * datastudio about
      */
     // 该目录下存在子目录/作业，无法删除
     FOLDER_NOT_EMPTY(19001, "folder.not.empty"),
+
+    /**
+     * Alert About
+     * */
+    ALERT_RULE_JOB_FAIL(20001, "alert.rule.jobFail"),
+    ALERT_RULE_GET_JOB_INFO_FAIL(20002, "alert.rule.getJobInfoFail"),
+    ALERT_RULE_JOB_RESTART(20003, "alert.rule.jobRestart"),
+    ALERT_RULE_CHECKPOINT_FAIL(20004, "alert.rule.checkpointFail"),
+    ALERT_RULE_JOB_RUN_EXCEPTION(20005, "alert.rule.jobRunException"),
+    ALERT_RULE_CHECKPOINT_TIMEOUT(20006, "alert.rule.checkpointTimeout"),
 
     /**
      * global exception

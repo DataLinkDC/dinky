@@ -35,8 +35,7 @@ public class AlertRule extends SuperEntity {
 
     String rule;
     int templateId;
-    int ruleTagetId;
-    String ruleTargetType;
+    String ruleType;
     String triggerConditions;
     String description;
 }

@@ -25,15 +25,13 @@ import lombok.Data;
 public class AlertRuleDTO {
 
     private Integer id;
+    private Integer templateId;
     private String name;
-    private Boolean enabled;
     private String rule;
-    private int ruleTagetId;
-    private int templateId;
-    private String ruleTargetType;
+    private String ruleType;
     private String triggerConditions;
     private String description;
+    private Boolean enabled;
     private String templateName;
     private String templateContent;
-
 }

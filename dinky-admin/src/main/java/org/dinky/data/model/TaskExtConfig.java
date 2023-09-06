@@ -19,8 +19,6 @@
 
 package org.dinky.data.model;
 
-import org.dinky.assertion.Asserts;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,9 +55,7 @@ public class TaskExtConfig implements Serializable {
 
     // 获取自定义配置的所有key-value
     public Map<String, String> getCustomConfigMaps() {
-        return Asserts.isNotNullCollection(customConfig)
-                ? customConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue))
-                : new HashMap<>();
+        return new HashMap<>();
     }
 
     // 是否包含某个key

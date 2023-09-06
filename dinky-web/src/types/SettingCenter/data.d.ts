@@ -42,10 +42,9 @@ export type Process = {
 };
 
 export type Rule = {
-  ruleKey: clusterStatus,
-  ruleOperator: GT,
-  ruleValue: 34,
-  rulePriority: 1
+  ruleKey: string,
+  ruleOperator: string,
+  ruleValue: number,
 }
 
 export type AlertRule = {
@@ -53,8 +52,7 @@ export type AlertRule = {
   name: string,
   templateId: number,
   description: string,
-  ruleTargetType: string,
-  ruleTagetId: number,
+  ruleType: string,
   triggerConditions: string,
   rule: any,
   enabled: boolean

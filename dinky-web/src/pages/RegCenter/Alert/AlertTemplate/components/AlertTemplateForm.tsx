@@ -134,7 +134,7 @@ const AlertTemplateForm: React.FC<AlertTemplateFormProps> = (props) => {
    */
   return (
     <ModalForm<Alert.AlertTemplate>
-      title={formVals.id ? l('rc.ag.modify') : l('rc.ag.create')}
+      title={formVals.id ? l('rc.alert.template.modify') : l('rc.alert.template.create')}
       open={modalVisible}
       {...MODAL_FORM_STYLE}
       submitter={{ render: () => [...renderFooter()] }}

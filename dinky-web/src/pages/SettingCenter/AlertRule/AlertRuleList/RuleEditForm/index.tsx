@@ -21,8 +21,7 @@
 import {l} from "@/utils/intl";
 import {
   DrawerForm,
-  ModalForm, ProCard,
-  ProForm,
+  ProCard,
   ProFormGroup, ProFormItem, ProFormList, ProFormRadio,
   ProFormSelect, ProFormSwitch,
   ProFormText, ProFormTextArea,
@@ -30,9 +29,8 @@ import {
 import {Button, Divider, Form, Space} from 'antd';
 import {getData} from "@/services/api";
 import {API_CONSTANTS} from "@/services/endpoints";
-import {Task} from "@/types/Studio/data";
 import {Alert} from "@/types/RegCenter/data";
-import React, {useState} from "react";
+import React from "react";
 import {AlertRule} from "@/types/SettingCenter/data";
 
 type AlertRuleFormProps = {
@@ -51,20 +49,14 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
     values
   } = props;
 
-
-  const [isAllInstance, setIsAllInstance] = useState<boolean>(false);
+  // if is system rule disable edit
+  const isSystem = values.ruleType == 'SYSTEM';
 
   const [form] = Form.useForm<AlertRule>();
-  const [formVals, setFormVals] = useState<Partial<AlertRule>>({ ...values });
 
   const getAlertTemplate = async () => {
     const template: Alert.AlertTemplate[] = (await getData(API_CONSTANTS.ALERT_TEMPLATE)).datas;
     return template.map(t => ({label: t.name, value: t.id}))
-  }
-
-  const getOnlineTask = async () => {
-    const tasks: Task[] = (await getData(API_CONSTANTS.GET_ONLINE_TASK)).datas;
-    return tasks.map(task => ({label: task.name, value: task.id}))
   }
 
   const submit = async () => {
@@ -85,10 +77,15 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
 
   return (
     <DrawerForm
+      disabled={isSystem}
       layout={"horizontal"}
       form={form}
       open={modalVisible}
       submitter={{render: () => [...renderFooter()]}}
+      drawerProps={{
+        onClose: () => handleModalVisible(false),
+        destroyOnClose: true,
+      }}
       initialValues={values}
     >
       <ProFormText name="id" hidden={true}/>
@@ -96,71 +93,41 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
         rules={[{required: true}]}
         name="name"
         width="md"
-        label="策略名称"
-        placeholder="请输入策略名称"
+        label={l('sys.alert.rule.name')}
+        placeholder={l('sys.alert.rule.name')}
       />
 
       <ProFormSelect
-        label={"告警模板"}
+        label={l('sys.alert.rule.template')}
         width="md"
         name="templateId"
         request={async () => getAlertTemplate()}
-        placeholder="告警模板"
-        rules={[{required: true, message: '请选择告警模板'}]}
+        placeholder={l('sys.alert.rule.template')}
+        rules={[{required: true, message: l('sys.alert.rule.template')}]}
       />
 
       <ProFormTextArea
         width="md"
         name="description"
-        label="备注"
+        label={l('global.table.note')}
       />
 
-      <Divider orientation={"left"}>策略配置</Divider>
-
-      <ProForm.Group
-      >
-        <ProFormSelect
-          name="ruleTargetType"
-          width="sm"
-          label="告警对象"
-          options={[
-            {label: '所有Flink任务', value: 'all'},
-            {label: '指定Flink实例', value: 'flink'},
-          ]}
-          onChange={(v) => setIsAllInstance(v == "all")}
-          rules={[{required: true, message: '请选择告警对象'}]}
-        />
-
-        <ProFormSelect
-          label={"选择实例"}
-          width="md"
-          name="ruleTagetId"
-          disabled={isAllInstance}
-          dependencies={['ruleType']}
-          request={async () => getOnlineTask()}
-          placeholder="选择指定对象"
-          rules={[{required: !isAllInstance, message: '请选择告警对象'}]}
-        />
-
-      </ProForm.Group>
-
-      <Divider orientation={"left"}>触发配置</Divider>
+      <Divider orientation={"left"}>{l('sys.alert.rule.triger')}</Divider>
 
       <ProFormRadio.Group
         name="triggerConditions"
-        label="触发条件"
+        label={l('sys.alert.rule.trigerConditions')}
         options={[
-          {label: '任意规则', value: 'any'},
-          {label: '所有规则', value: 'all'},
-          {label: '自定义规则', value: 'custom', disabled: true},
+          {label: l('sys.alert.rule.anyRule'), value: ' or '},
+          {label: l('sys.alert.rule.allRule'), value: ' and '},
         ]}
       />
 
       <ProFormList
         name="rule"
-        label="触发规则"
+        label={l('sys.alert.rule.trigerRule')}
         creatorButtonProps={{
-          creatorButtonText: '添加规则',
+          creatorButtonText: l('sys.alert.rule.addRule'),
         }}
         copyIconProps={false}
         min={1}
@@ -168,7 +135,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
           <ProCard
             bordered
             style={{marginBlockEnd: 8}}
-            title={`规则${index + 1}`}
+            title={`${l('sys.alert.rule.rule')}${index + 1}`}
             extra={action}
             bodyStyle={{paddingBlockEnd: 0}}
           >
@@ -184,12 +151,10 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
               width={"sm"}
               mode={'single'}
               options={[
-                {label: '作业状态', value: 'jobInstance.status',},
-                {label: '集群状态', value: 'clusterStatus',},
-                {label: '任务状态', value: 'taskStatus',},
-                {label: '运行时间', value: 'taskDuration',},
-                {label: 'Checkpont状态', value: 'CheckpontStatus',},
-                {label: 'Checkpont时间', value: 'CheckpontDuration',},
+                {label: l('sys.alert.rule.jobStatus'), value: 'jobInstance.status',},
+                {label: l('sys.alert.rule.checkpointTime'), value: 'checkPoints.checkpointTime(#key,#checkPoints)',},
+                {label: l('sys.alert.rule.checkpointFailed'), value: 'checkPoints.checkFailed(#key,#checkPoints)',},
+                {label: l('sys.alert.rule.jobException'), value: 'exceptionRule.isException(#key,#exceptions)',},
               ]}
             />
             <ProFormSelect
@@ -210,18 +175,11 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
               placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}
             />
 
-            <ProFormText
-              name={'rulePriority'}
-              placeholder={'权重'}
-            />
-
           </Space>
         </ProFormGroup>
       </ProFormList>
 
-
-      <ProFormSwitch name="enabled" label="启用"/>
-
+      <ProFormSwitch name="enabled" label={l('button.enable')}/>
 
     </DrawerForm>
   );

@@ -19,26 +19,25 @@
 
 package org.dinky.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
-import org.dinky.data.model.AlertGroup;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertRule;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.AlertRuleService;
-import org.dinky.service.impl.AlertRuleServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -49,7 +48,15 @@ public class AlertRuleController {
 
     @PostMapping("/list")
     public ProTableResult<AlertRule> list(@RequestBody JsonNode para) {
-        return alertRuleService.selectForProTable(para);
+        ProTableResult<AlertRule> result = alertRuleService.selectForProTable(para);
+        //The reason for this is to deal with internationalization
+        List<AlertRule> list = result.getData()
+                .stream()
+                .peek(rule -> rule.setName(Status.findMessageByKey(rule.getName())))
+                .peek(rule -> rule.setDescription(Status.findMessageByKey(rule.getDescription())))
+                .collect(Collectors.toList());
+        result.setData(list);
+        return result;
     }
 
     @PutMapping
@@ -61,6 +68,4 @@ public class AlertRuleController {
     public Result<Boolean> delete(int id) {
         return Result.succeed(alertRuleService.removeById(id));
     }
-
-
 }

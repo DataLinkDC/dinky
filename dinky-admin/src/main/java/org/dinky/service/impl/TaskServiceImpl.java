@@ -606,7 +606,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public List<Task> getOnlineTask() {
         QueryWrapper<Task> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(Task::getStep,JobLifeCycle.ONLINE.getValue());
+        queryWrapper.lambda().eq(Task::getStep, JobLifeCycle.ONLINE.getValue());
         return baseMapper.selectList(queryWrapper);
     }
 

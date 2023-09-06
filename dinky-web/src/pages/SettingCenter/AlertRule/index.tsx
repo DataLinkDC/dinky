@@ -17,7 +17,7 @@
 
 import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 import { PageContainer } from '@ant-design/pro-components';
-import AlertRuleList from './components/AlertRuleList';
+import AlertRuleList from './AlertRuleList';
 
 export default () => {
   return (

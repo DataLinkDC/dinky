@@ -19,15 +19,11 @@
 
 package org.dinky.configure.schedule.Alert;
 
-import cn.hutool.core.lang.TypeReference;
-import cn.hutool.core.text.StrFormatter;
-import cn.hutool.json.JSONObject;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import lombok.Data;
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
+import org.dinky.alert.Rules.CheckpointsRule;
+import org.dinky.alert.Rules.ExceptionRule;
 import org.dinky.assertion.Asserts;
 import org.dinky.configure.schedule.BaseSchedule;
 import org.dinky.context.FreeMarkerHolder;
@@ -45,13 +41,12 @@ import org.dinky.service.impl.AlertGroupServiceImpl;
 import org.dinky.service.impl.AlertHistoryServiceImpl;
 import org.dinky.service.impl.AlertRuleServiceImpl;
 import org.dinky.service.impl.TaskServiceImpl;
-import cn.hutool.json.JSONUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -62,14 +57,16 @@ import org.jeasy.rules.api.RulesEngine;
 import org.jeasy.rules.core.DefaultRulesEngine;
 import org.jeasy.rules.core.RuleBuilder;
 import org.jeasy.rules.spel.SpELCondition;
-import org.jeasy.rules.support.composite.CompositeRule;
-import org.jeasy.rules.support.composite.ConditionalRuleGroup;
-import org.jeasy.rules.support.composite.UnitRuleGroup;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.stereotype.Component;
 
+import cn.hutool.core.lang.TypeReference;
+import cn.hutool.core.text.StrFormatter;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import freemarker.template.TemplateException;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -124,6 +121,8 @@ public class JobAlerts extends BaseSchedule {
      */
     private FreeMarkerHolder freeMarkerHolder;
 
+    private final Facts ruleFacts = new Facts();
+
     /**
      * Initializes the JobAlerts class by refreshing rules and setting up the scheduler.
      */
@@ -141,9 +140,15 @@ public class JobAlerts extends BaseSchedule {
 
         for (Map.Entry<String, JobInfoDetail> job : taskPool.entrySet()) {
             JobInfoDetail jobInfoDetail = job.getValue();
-            Facts ruleFacts = new Facts();
+            String key = job.getKey();
+            ruleFacts.put("", jobInfoDetail);
             ruleFacts.put("jobDetail", jobInfoDetail);
+            ruleFacts.put("job", jobInfoDetail.getHistory());
+            ruleFacts.put("key", key);
             ruleFacts.put("jobInstance", jobInfoDetail.getInstance());
+            ruleFacts.put("checkPoints", jobInfoDetail.getJobHistory().getCheckpoints());
+            ruleFacts.put("cluster", jobInfoDetail.getCluster());
+            ruleFacts.put("exceptions", jobInfoDetail.getJobHistory().getExceptions());
             rulesEngine.fire(rules, ruleFacts);
         }
     }
@@ -153,6 +158,9 @@ public class JobAlerts extends BaseSchedule {
      */
     private void RefeshRulesData() {
 
+        ruleFacts.put("exceptionRule", new ExceptionRule());
+        ruleFacts.put("checkpointRule", new CheckpointsRule());
+
         List<AlertRuleDTO> ruleDTOS = alertRuleService.getBaseMapper().selectWithTemplate();
         freeMarkerHolder = new FreeMarkerHolder();
         rulesEngine = new DefaultRulesEngine();
@@ -160,58 +168,50 @@ public class JobAlerts extends BaseSchedule {
 
         ruleDTOS.forEach(ruleDto -> {
             freeMarkerHolder.putTemplate(ruleDto.getTemplateName(), ruleDto.getTemplateContent());
+            ruleDto.setName(Status.findMessageByKey(ruleDto.getName()));
+            ruleDto.setDescription(Status.findMessageByKey(ruleDto.getDescription()));
             rules.register(buildRule(ruleDto));
         });
     }
 
-    private CompositeRule buildRule(AlertRuleDTO alertRuleDTO) {
-        CompositeRule ruleGroup;
+    private Rule buildRule(AlertRuleDTO alertRuleDTO) {
 
-        if (alertRuleDTO.getTriggerConditions().equals("any")) {
-            ruleGroup = new ConditionalRuleGroup(alertRuleDTO.getName(), alertRuleDTO.getDescription());
-        } else {
-            ruleGroup = new UnitRuleGroup(alertRuleDTO.getName(), alertRuleDTO.getDescription());
-        }
+        List<JSONObject> ruleItemList =
+                JSONUtil.parseArray(alertRuleDTO.getRule()).toBean(List.class);
+        List<String> conditionList = ruleItemList.stream()
+                .map(r -> r.toBean(RuleItem.class).toString())
+                .collect(Collectors.toList());
+        String conditionContent = String.join(alertRuleDTO.getTriggerConditions(), conditionList);
+        String condition = StrFormatter.format("#{{}}", conditionContent);
 
-        List<JSONObject> ruleItemList = JSONUtil.parseArray(alertRuleDTO.getRule()).toBean(List.class);
-        for (JSONObject ruleobj : ruleItemList) {
-            RuleItem rule = ruleobj.toBean(RuleItem.class);
-            String condition = StrFormatter.format("#{#{} {} {}}", rule.getRuleKey(), rule.getRuleOperator(), rule.getRuleValue());
-            System.out.println(condition);
-            Rule build = new RuleBuilder().name(alertRuleDTO.getName() + rule.getRuleKey())
-                    .description(alertRuleDTO.getDescription())
-                    .priority(rule.getRulePriority())
-                    .when(new SpELCondition(condition))
-                    .then(f -> executeAlertAction(f, alertRuleDTO.getTemplateName(), alertRuleDTO.getName()))
-                    .build();
-            ruleGroup.addRule(build);
-        }
-
-        return ruleGroup;
+        return new RuleBuilder()
+                .name(alertRuleDTO.getName())
+                .description(alertRuleDTO.getDescription())
+                .priority(1)
+                .when(new SpELCondition(condition))
+                .then(f -> executeAlertAction(f, alertRuleDTO))
+                .build();
     }
 
     /**
      * Executes the alert action when an alert condition is met.
      *
      * @param facts        The facts representing the job details.
-     * @param templateName The name of the FreeMarker template.
-     * @param ruleName     The name of the alert rule.
+     * @param alertRuleDTO Alert Rule Info.
      */
-    private void executeAlertAction(Facts facts, String templateName, String ruleName) {
+    private void executeAlertAction(Facts facts,AlertRuleDTO alertRuleDTO) {
         JobInfoDetail jobInfoDetail = facts.get("jobDetail");
         JobInstance jobInstance = jobInfoDetail.getInstance();
         Task task = taskService.getById(jobInfoDetail.getInstance().getTaskId());
 
-        Map<String, Object> dataModel = new HashMap<>();
+        Map<String, Object> dataModel = new HashMap<>(facts.asMap());
         dataModel.put("task", task);
-        dataModel.put("job", jobInfoDetail.getJobHistory());
-        dataModel.put("instance", jobInstance);
-        dataModel.put("cluster", jobInfoDetail.getCluster());
+        dataModel.put("rule", alertRuleDTO);
 
         String alertContent;
 
         try {
-            alertContent = freeMarkerHolder.buildWithData(templateName, dataModel);
+            alertContent = freeMarkerHolder.buildWithData(alertRuleDTO.getTemplateName(), dataModel);
         } catch (IOException | TemplateException e) {
             log.error("Alert Error: ", e);
             return;
@@ -224,7 +224,7 @@ public class JobAlerts extends BaseSchedule {
                     if (alertInstance == null || !alertInstance.getEnabled()) {
                         continue;
                     }
-                    sendAlert(alertInstance, jobInstance.getId(), alertGroup.getId(), ruleName, alertContent);
+                    sendAlert(alertInstance, jobInstance.getId(), alertGroup.getId(), alertRuleDTO.getName(), alertContent);
                 }
             }
         }
@@ -241,11 +241,8 @@ public class JobAlerts extends BaseSchedule {
      */
     private void sendAlert(
             AlertInstance alertInstance, int jobInstanceId, int alertGid, String title, String alertMsg) {
-        title = Status.findMessageByKey(title);
-
-        Map<String, String> params = JSONUtil.parse(alertInstance.getParams()).toBean(Map.class);
-        AlertConfig alertConfig = AlertConfig.build(
-                alertInstance.getName(), alertInstance.getType(), params);
+        Map<String, String> params = JSONUtil.parse(alertInstance.getParams()).toBean(new TypeReference<>() {});
+        AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(), params);
         Alert alert = Alert.build(alertConfig);
         AlertResult alertResult = alert.send(title, alertMsg);
 
@@ -263,8 +260,12 @@ public class JobAlerts extends BaseSchedule {
     public static class RuleItem {
         private String ruleKey;
         private String ruleOperator;
-        private int rulePriority;
+        //        private int rulePriority;
         private String ruleValue;
 
+        @Override
+        public String toString() {
+            return StrFormatter.format(" #{} {} {} ", getRuleKey(), getRuleOperator(), getRuleValue());
+        }
     }
 }
