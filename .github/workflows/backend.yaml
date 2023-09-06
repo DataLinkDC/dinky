@@ -59,7 +59,7 @@ jobs:
       - uses: actions/setup-node@v3
         if:  steps.filter.outputs.frontend == 'true'
         with:
-          node-version: 16
+          node-version: 18.17.1
       - name: Get npm cache directory
         id: npm-cache-dir
         if:  steps.filter.outputs.frontend == 'true'
