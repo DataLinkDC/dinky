@@ -49,7 +49,7 @@ const ConfigModel: ConfigModelType = {
       const response: BaseConfigProperties[] = yield call(queryDsConfig, payload);
       yield put({
         type: 'saveDsConfig',
-        payload: response
+        payload:  response || []
       });
     }
   },
