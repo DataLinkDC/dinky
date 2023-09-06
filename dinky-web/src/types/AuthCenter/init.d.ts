@@ -25,6 +25,7 @@ import {
   RowPermissionsState,
   TenantListState,
   TenantTransferState,
+  TokenListState,
   UserListState
 } from '@/types/AuthCenter/state.d';
 import { InitContextMenuPosition } from '@/types/Public/state.d';
@@ -135,4 +136,11 @@ export const InitUserListState: UserListState = {
   assignRoleOpen: false,
   roleList: [],
   editPasswordOpen: false
+};
+
+export const InitTokenListState: TokenListState = {
+  loading: false,
+  value: {},
+  addedOpen: false,
+  editOpen: false
 };

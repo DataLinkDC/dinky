@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dinky.mapper.TokenMapper">
+
+    <select id="selectForProTable" resultType="org.dinky.data.model.SysToken">
+        select
+            a.*,
+            b.username,
+            c.role_name,
+            d.tenant_code
+        from
+        dinky_sys_token a
+        join dinky_user b on a.user_id = b.id
+        join dinky_role c on a.role_id = c.id
+        join dinky_tenant d on a.tenant_id = d.id
+        <where>
+            1=1
+            <if test='param.tokenValue!=null and param.tokenValue!=""'>
+                and a.token_value like concat('%',#{param.tokenValue},'%')
+            </if>
+            <if test='param.userName!=null and param.userName!=""'>
+                and b.username like concat('%',#{param.username},'%')
+            </if>
+            <if test='param.roleName!=null and param.roleName!=""'>
+                and c.role_name like concat('%',#{param.roleName},'%')
+            </if>
+            <if test='param.tenantCode!=null and param.tenantCode!=""'>
+                and d.tenant_code like concat('%',#{param.tenantCode},'%')
+            </if>
+            <if test='param.expireType!=null and param.expireType!=""'>
+                and a.expire_type = #{param.expireType}
+            </if>
+
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!="" and !ew.sqlSegment.startsWith(" ORDER BY")'>
+                and
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!=""'>
+                ${ew.sqlSegment}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

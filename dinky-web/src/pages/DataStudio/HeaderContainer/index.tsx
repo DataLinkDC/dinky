@@ -40,7 +40,10 @@ import {
   TaskDataType,
   VIEW
 } from '@/pages/DataStudio/model';
+import { ConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
+import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 import { handlePutDataJson } from '@/services/BusinessCrud';
+import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import { ErrorNotification } from '@/utils/messages';
 import { connect } from '@@/exports';
@@ -52,10 +55,11 @@ import {
   PlayCircleTwoTone,
   SafetyCertificateTwoTone,
   SaveTwoTone,
+  SendOutlined,
   SmileOutlined
 } from '@ant-design/icons';
 import { Breadcrumb, Button, Descriptions, message, Modal, notification, Space } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -82,12 +86,31 @@ const HeaderContainer = (props: any) => {
     activeBreadcrumbTitle,
     tabs: { panes, activeKey },
     saveTabs,
-    updateJobRunningMsg
+    updateJobRunningMsg,
+    queryDsConfig,
+    dsConfig
   } = props;
 
   const [modal, contextHolder] = Modal.useModal();
   const [notificationApi, notificationContextHolder] = notification.useNotification();
   const [messageApi, messageContextHolder] = message.useMessage();
+  const [enableDs, setEnableDs] = useState<boolean>(false);
+
+  useEffect(() => {
+    queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
+  }, []);
+
+  useEffect(() => {
+    // 检查是否开启 ds 配置 & 如果
+    if (!dsConfig) {
+      dsConfig.map((item: BaseConfigProperties) => {
+        if (item.key === 'dolphinscheduler.settings.enable') {
+          setEnableDs(item.value === 'true');
+        }
+      });
+    }
+  }, [dsConfig]);
+
   const handlerStop = () => {
     const current = getCurrentData(panes, activeKey);
     if (!current) {
@@ -259,14 +282,16 @@ const HeaderContainer = (props: any) => {
     //     console.log("ctrl+s")
     //   },
     //   // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-    // }, {
-    //   // 推送海豚, 此处需要将系统设置中的 ds 的配置拿出来做判断 启用才展示
-    //   icon: <SendOutlined/>,
-    //   title: l('button.push'),
-    //   click: () => {
-    //   },
-    //   // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-    // }, {
+    // },
+    {
+      // 推送海豚, 此处需要将系统设置中的 ds 的配置拿出来做判断 启用才展示
+      icon: <SendOutlined className={'blue-icon'} />,
+      title: l('button.push'),
+      click: () => {},
+      hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
+      isShow: () => enableDs
+    },
+    // {
     //   // 发布按钮
     //   icon: <PauseCircleTwoTone/>,
     //   title: l('button.publish'),
@@ -384,8 +409,9 @@ const HeaderContainer = (props: any) => {
 };
 
 export default connect(
-  ({ Studio }: { Studio: StateType }) => ({
-    tabs: Studio.tabs
+  ({ Studio, Config }: { Studio: StateType; Config: ConfigStateType }) => ({
+    tabs: Studio.tabs,
+    dsConfig: Config.dsConfig
   }),
   mapDispatchToProps
 )(HeaderContainer);

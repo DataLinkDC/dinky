@@ -195,8 +195,12 @@ export default () => {
    */
   const renderDataActionButton = (item: Cluster.Config) => {
     return [
-      <Authorized key={`${item.id}_edit`} path="/registration/cluster/config/edit"><EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} /></Authorized>,
-      <Authorized key={`${item.id}_delete`} path="/registration/cluster/config/delete"><NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} /></Authorized>,
+      <Authorized key={`${item.id}_edit`} path='/registration/cluster/config/edit'>
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
+      </Authorized>,
+      <Authorized key={`${item.id}_delete`} path='/registration/cluster/config/delete'>
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
+      </Authorized>,
       <RunningBtn
         key={`${item.id}_running`}
         title={l('rc.cc.start')}

@@ -122,4 +122,10 @@ public class TenantController {
     public Result<List<User>> getUserListByTenantId(@RequestParam("id") Integer id) {
         return Result.succeed(userService.getUserListByTenantId(id));
     }
+
+    @GetMapping("/getTenantListByUserId")
+    @ApiOperation("Get Tenant List By User Id")
+    public Result<List<Tenant>> getTenantListByUserId(@RequestParam("id") Integer userId) {
+        return Result.succeed(tenantService.getTenantListByUserId(userId));
+    }
 }

@@ -17,13 +17,23 @@
  *
  */
 
-export enum SettingConfigKeyEnum {
-  DINKY = 'Dinky',
-  FLINK = 'Flink',
-  MAVEN = 'Maven',
-  DOLPHIN_SCHEDULER = 'DolphinScheduler',
-  LDAP = 'LDAP',
-  METRIC = 'Metric',
-  RESOURCE = 'Resource',
-  ENV = 'Env'
+import { getDataByParams, queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+
+export async function showUserList() {
+  return await getDataByParams(API_CONSTANTS.USER);
+}
+
+export async function showRoleList(userId: number) {
+  return queryDataByParams(API_CONSTANTS.GET_ROLES_BY_USERID, { id: userId }).then(
+    (res) => res.roles
+  );
+}
+
+export async function showTenantList(userId: number) {
+  return await queryDataByParams(API_CONSTANTS.TENANT_USER_LIST, { id: userId });
+}
+
+export async function buildToken() {
+  return await getDataByParams(API_CONSTANTS.TOKEN_BUILD);
 }

@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.hutool.core.lang.Dict;
@@ -83,5 +84,18 @@ public class SysConfigController {
         Map<String, List<Configuration<?>>> map =
                 MapUtil.map(all, (k, v) -> v.stream().map(Configuration::show).collect(Collectors.toList()));
         return Result.succeed(map);
+    }
+
+    @GetMapping("/getConfigByType")
+    @ApiOperation("Query One Type System Config List By Key")
+    public Result<List<Configuration<?>>> getOneTypeByKey(@RequestParam("type") String type) {
+        Map<String, List<Configuration<?>>> all = sysConfigService.getAll();
+        // 过滤出 以 type 开头的配置 返回 list
+        List<Configuration<?>> configList = all.entrySet().stream()
+                .filter(entry -> entry.getKey().startsWith(type))
+                .map(Map.Entry::getValue)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+        return Result.succeed(configList);
     }
 }
