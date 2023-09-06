@@ -613,7 +613,9 @@ const Model: ModelType = {
                 panes: panes.filter((pane) => pane.key !== needCloseKey),
                 activeKey: nextPane.key,
                 activeBreadcrumbTitle:
-                    panes.length < 2 ? '' : [nextPane.type, nextPane.breadcrumbLabel, nextPane.label].join('/')
+                  panes.length < 2
+                    ? ''
+                    : [nextPane.type, nextPane.breadcrumbLabel, nextPane.label].join('/')
               },
               footContainer: {
                 ...state.footContainer,

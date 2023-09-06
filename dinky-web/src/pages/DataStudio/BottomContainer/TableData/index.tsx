@@ -6,9 +6,9 @@ import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { Modal, Select, Tabs } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import { Tab } from 'rc-tabs/lib/interface.d';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { Tab } from 'rc-tabs/lib/interface.d';
 
 export async function getPrintTables(statement: string) {
   return postAll('api/statement/getPrintTables', { statement });

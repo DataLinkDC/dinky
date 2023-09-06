@@ -18,14 +18,15 @@
  */
 
 import {
-    DataStudioTabsItemType,
-    EnvType, FooterType,
-    JobRunningMsgType,
-    MetadataTabsItemType,
-    STUDIO_MODEL,
-    TabsItemType,
-    TabsPageType,
-    TaskDataType
+  DataStudioTabsItemType,
+  EnvType,
+  FooterType,
+  JobRunningMsgType,
+  MetadataTabsItemType,
+  STUDIO_MODEL,
+  TabsItemType,
+  TabsPageType,
+  TaskDataType
 } from '@/pages/DataStudio/model';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { Dispatch } from '@@/plugin-dva/types';
