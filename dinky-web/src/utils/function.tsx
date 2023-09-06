@@ -564,9 +564,9 @@ export const transformTableDataToCsv = <T,>(column: string[], data: T[]): string
 };
 
 export const formatDateToYYYYMMDDHHMMSS = (date: Date) => {
-  return date && dayjs(date).format(DATETIME_FORMAT);
+  return dayjs(date).format(DATETIME_FORMAT);
 };
 
-export const parseDateStringToDate = (dateString: string) => {
-  return dateString && dayjs(dateString).toDate();
+export const parseDateStringToDate = (dateString: Date) => {
+  return  dayjs(dateString).toDate();
 };
