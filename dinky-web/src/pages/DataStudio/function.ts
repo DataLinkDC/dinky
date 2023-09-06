@@ -18,14 +18,14 @@
  */
 
 import {
-  DataStudioTabsItemType,
-  EnvType,
-  JobRunningMsgType,
-  MetadataTabsItemType,
-  STUDIO_MODEL,
-  TabsItemType,
-  TabsPageType,
-  TaskDataType
+    DataStudioTabsItemType,
+    EnvType, FooterType,
+    JobRunningMsgType,
+    MetadataTabsItemType,
+    STUDIO_MODEL,
+    TabsItemType,
+    TabsPageType,
+    TaskDataType
 } from '@/pages/DataStudio/model';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { Dispatch } from '@@/plugin-dva/types';
@@ -157,7 +157,7 @@ export const getCurrentData = (
   return undefined;
 };
 
-export const getFooterValue = (panes: any, activeKey: string) => {
+export const getFooterValue = (panes: any, activeKey: string): Partial<FooterType> => {
   const currentTab = getCurrentTab(panes, activeKey);
   if (isDataStudioTabsItemType(currentTab)) {
     return {
