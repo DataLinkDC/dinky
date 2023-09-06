@@ -1213,6 +1213,64 @@ INSERT INTO `dinky_sys_menu` VALUES (45, 5, '血缘', '/datastudio/bottom/lineag
 INSERT INTO `dinky_sys_menu` VALUES (46, 5, '表数据监控', '/datastudio/bottom/process', NULL, NULL, NULL, 'F', 0, 13, '2023-09-01 18:07:55', '2023-09-02 00:52:21', NULL);
 INSERT INTO `dinky_sys_menu` VALUES (47, 5, '小工具', '/datastudio/bottom/tool', NULL, NULL, NULL, 'F', 0, 14, '2023-09-01 18:08:18', '2023-09-01 18:08:18', NULL);
 
+INSERT INTO `dinky_sys_menu` VALUES (48, 28, '新建', '/registration/cluster/instance/new', NULL, NULL, 'PlusOutlined', 'F', 0, 15, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (49, 28, '回收', '/registration/cluster/instance/recovery', NULL, NULL, 'PlusOutlined', 'F', 0, 16, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (50, 28, '编辑', '/registration/cluster/instance/edit', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (51, 28, '删除', '/registration/cluster/instance/delete', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+
+INSERT INTO `dinky_sys_menu` VALUES (52, 30, '新建', '/registration/cluster/config/new', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 09:00:31', '2023-09-06 09:00:31', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (53, 30, '编辑', '/registration/cluster/config/edit', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (54, 30, '删除', '/registration/cluster/config/delete', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+
+
+
+
+
+INSERT INTO `dinky_sys_menu` VALUES (55, 10, '新建', '/registration/database/new', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (56, 10, '编辑', '/registration/database/edit', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (57, 10, '删除', '/registration/database/delete', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+
+
+INSERT INTO `dinky_sys_menu` VALUES (58, 31, '新建', '/registration/alert/instance/new', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (59, 31, '编辑', '/registration/alert/instance/edit', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (60, 31, '删除', '/registration/alert/instance/delete', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+
+INSERT INTO `dinky_sys_menu` VALUES (61, 29, '新建', '/registration/alert/group/new', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (62, 29, '编辑', '/registration/alert/group/edit', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (63, 29, '删除', '/registration/alert/group/delete', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+
+
+INSERT INTO `dinky_sys_menu` VALUES (64, 13, '新建', '/registration/document/new', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (65, 13, '编辑', '/registration/document/edit', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (66, 13, '删除', '/registration/document/delete', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (67, 13, '启用', '/registration/document/enable', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+
+
+INSERT INTO `dinky_sys_menu` VALUES (68, 14, '新建', '/registration/fragment/new', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (69, 14, '编辑', '/registration/fragment/edit', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (70, 14, '删除', '/registration/fragment/delete', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (71, 14, '启用', '/registration/fragment/enable', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+
+
+INSERT INTO `dinky_sys_menu` VALUES (72, 15, '新建', '/registration/gitprojects/new', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (73, 15, '编辑', '/registration/gitprojects/edit', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (74, 15, '删除', '/registration/gitprojects/delete', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (75, 15, '启用', '/registration/gitprojects/enable', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (76, 15, '构建', '/registration/gitprojects/build', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (77, 15, '查询', '/registration/gitprojects/search', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+
+
+INSERT INTO `dinky_sys_menu` VALUES (78, 16, '新建', '/registration/udf/new', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (79, 16, '编辑', '/registration/udf/edit', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (80, 16, '删除', '/registration/udf/delete', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (81, 16, '启用', '/registration/udf/enable', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+
+
+INSERT INTO `dinky_sys_menu` VALUES (82, 19, '上传', '/registration/resource/upload', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (83, 19, '重命名', '/registration/resource/rename', NULL, NULL, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (84, 19, '删除', '/registration/resource/delete', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (85, 19, '创建文件夹', '/registration/resource/folder', NULL, NULL, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', NULL);
+
 COMMIT;
 
 -- ----------------------------

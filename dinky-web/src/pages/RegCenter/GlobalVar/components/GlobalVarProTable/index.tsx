@@ -22,6 +22,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import CodeShow from '@/components/CustomEditor/CodeShow';
+import { Authorized } from '@/hooks/useAccess';
 import GlobalVarDrawer from '@/pages/RegCenter/GlobalVar/components/GlobalVarDrawer';
 import GlobalVarModal from '@/pages/RegCenter/GlobalVar/components/GlobalVarModal';
 import { queryList } from '@/services/api';
@@ -139,12 +140,14 @@ const GlobalVarProTable = () => {
       width: '15vh',
       render: (_, record) => {
         return (
-          <EnableSwitchBtn
-            key={`${record.id}_enable`}
-            disabled={globalVarState.drawerOpen}
-            record={record}
-            onChange={() => handleChangeEnable(record)}
-          />
+          <Authorized key={record.id} path='/registration/fragment/enable'>
+            <EnableSwitchBtn
+              key={`${record.id}_enable`}
+              disabled={globalVarState.drawerOpen}
+              record={record}
+              onChange={() => handleChangeEnable(record)}
+            />
+          </Authorized>
         );
       },
       filters: STATUS_MAPPING(),
@@ -172,12 +175,16 @@ const GlobalVarProTable = () => {
       width: '10vh',
       valueType: 'option',
       render: (_, record) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />,
-        <PopconfirmDeleteBtn
-          key={`${record.id}_delete`}
-          onClick={() => handleDeleteSubmit(record.id)}
-          description={l('rc.gv.deleteConfirm')}
-        />
+        <Authorized key={`${record.id}_edit`} path='/registration/fragment/edit'>
+          <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />
+        </Authorized>,
+        <Authorized key={`${record.id}_delete`} path='/registration/fragment/delete'>
+          <PopconfirmDeleteBtn
+            key={`${record.id}_delete`}
+            onClick={() => handleDeleteSubmit(record.id)}
+            description={l('rc.gv.deleteConfirm')}
+          />
+        </Authorized>
       ]
     }
   ];
@@ -194,10 +201,12 @@ const GlobalVarProTable = () => {
         loading={globalVarState.loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
-          <CreateBtn
-            key={'vartable'}
-            onClick={() => setGlobalVarState((prevState) => ({ ...prevState, addedOpen: true }))}
-          />
+          <Authorized key='create' path='/registration/fragment/new'>
+            <CreateBtn
+              key={'vartable'}
+              onClick={() => setGlobalVarState((prevState) => ({ ...prevState, addedOpen: true }))}
+            />
+          </Authorized>
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.GLOBAL_VARIABLE, {

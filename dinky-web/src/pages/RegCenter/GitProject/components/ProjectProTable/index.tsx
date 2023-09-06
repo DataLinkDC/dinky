@@ -23,6 +23,7 @@ import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { ShowLogBtn } from '@/components/CallBackButton/ShowLogBtn';
 import { ShowCodeTreeIcon } from '@/components/Icons/CustomIcons';
+import { Authorized } from '@/hooks/useAccess';
 import { BuildSteps } from '@/pages/RegCenter/GitProject/components/BuildSteps';
 import ClassList from '@/pages/RegCenter/GitProject/components/BuildSteps/JarShow/JarList';
 import { CodeTree } from '@/pages/RegCenter/GitProject/components/CodeTree';
@@ -272,11 +273,13 @@ const ProjectProTable: React.FC = () => {
       valueType: 'option',
       width: '10vw',
       render: (text: any, record: GitProject) => [
-        <ShowLogBtn
-          disabled={record.buildStep === 0}
-          key={`${record.id}_showLog`}
-          onClick={() => handleShowLog(record)}
-        />,
+        <Authorized key={`${record.id}_showLog`} path='/registration/gitprojects/search'>
+          <ShowLogBtn
+            disabled={record.buildStep === 0}
+            key={`${record.id}_showLog`}
+            onClick={() => handleShowLog(record)}
+          />
+        </Authorized>,
         <Button
           key={`${record.id}_code`}
           className={'options-button'}
@@ -284,24 +287,34 @@ const ProjectProTable: React.FC = () => {
           icon={<ShowCodeTreeIcon />}
           onClick={() => handleShowCodeTree(record)}
         />,
-        <Popconfirm
-          className={'options-button'}
-          key={`${record.id}_build`}
-          placement='topRight'
-          title={l('button.build')}
-          description={l('rc.gp.buildConfirm')}
-          onConfirm={() => handleBuild(record)}
-          okText={l('button.confirm')}
-          cancelText={l('button.cancel')}
-        >
-          <Button title={l('button.build')} key={`${record.id}_buildbtn`} icon={<BuildTwoTone />} />
-        </Popconfirm>,
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />,
-        <PopconfirmDeleteBtn
-          key={`${record.id}_delete`}
-          onClick={() => handleDeleteSubmit(record.id)}
-          description={l('rc.gp.deleteConfirm')}
-        />
+        <Authorized key={`${record.id}_build`} path='/registration/gitprojects/build'>
+          <Popconfirm
+            className={'options-button'}
+            key={`${record.id}_build`}
+            placement='topRight'
+            title={l('button.build')}
+            description={l('rc.gp.buildConfirm')}
+            onConfirm={() => handleBuild(record)}
+            okText={l('button.confirm')}
+            cancelText={l('button.cancel')}
+          >
+            <Button
+              title={l('button.build')}
+              key={`${record.id}_buildbtn`}
+              icon={<BuildTwoTone />}
+            />
+          </Popconfirm>
+        </Authorized>,
+        <Authorized key={`${record.id}_edit`} path='/registration/gitprojects/edit'>
+          <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />
+        </Authorized>,
+        <Authorized key={`${record.id}_delete`} path='/registration/gitprojects/delete'>
+          <PopconfirmDeleteBtn
+            key={`${record.id}_delete`}
+            onClick={() => handleDeleteSubmit(record.id)}
+            description={l('rc.gp.deleteConfirm')}
+          />
+        </Authorized>
       ]
     }
   ];
@@ -350,10 +363,14 @@ const ProjectProTable: React.FC = () => {
         actionRef={actionRef}
         dragSortKey={'id'}
         toolBarRender={() => [
-          <CreateBtn
-            key={'gittable'}
-            onClick={() => setGitProjectStatus((prevState) => ({ ...prevState, addedOpen: true }))}
-          />
+          <Authorized key='create' path='/registration/gitprojects/new'>
+            <CreateBtn
+              key={'gittable'}
+              onClick={() =>
+                setGitProjectStatus((prevState) => ({ ...prevState, addedOpen: true }))
+              }
+            />
+          </Authorized>
         ]}
         expandable={{
           expandRowByClick: false,

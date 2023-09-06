@@ -17,6 +17,7 @@
 
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
+import { Authorized } from '@/hooks/useAccess';
 import {
   getAlertIcon,
   getJSONData,
@@ -142,19 +143,23 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderAlertInstanceActionButton = (item: Alert.AlertInstance) => {
     return [
-      <Button
-        className={'options-button'}
-        key={'AlertInstanceEdit'}
-        icon={<EditTwoTone />}
-        title={l('button.edit')}
-        onClick={() => editClick(item)}
-      />,
-      <Button
-        className={'options-button'}
-        key={'DeleteAlertInstanceIcon'}
-        icon={<DangerDeleteIcon />}
-        onClick={() => handleDeleteSubmit(item.id)}
-      />
+      <Authorized key={item.id} path='/registration/alert/instance/edit'>
+        <Button
+          className={'options-button'}
+          key={'AlertInstanceEdit'}
+          icon={<EditTwoTone />}
+          title={l('button.edit')}
+          onClick={() => editClick(item)}
+        />
+      </Authorized>,
+      <Authorized key={item.id} path='/registration/alert/instance/delete'>
+        <Button
+          className={'options-button'}
+          key={'DeleteAlertInstanceIcon'}
+          icon={<DangerDeleteIcon />}
+          onClick={() => handleDeleteSubmit(item.id)}
+        />
+      </Authorized>
     ];
   };
 
@@ -199,10 +204,12 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderToolBar = () => {
     return () => [
-      <CreateBtn
-        key={'CreateAlertInstanceBtn'}
-        onClick={() => setAlertInstanceState((prevState) => ({ ...prevState, addedOpen: true }))}
-      />
+      <Authorized key='create' path='/registration/alert/instance/new'>
+        <CreateBtn
+          key={'CreateAlertInstanceBtn'}
+          onClick={() => setAlertInstanceState((prevState) => ({ ...prevState, addedOpen: true }))}
+        />
+      </Authorized>
     ];
   };
 

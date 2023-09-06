@@ -22,6 +22,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import CodeShow from '@/components/CustomEditor/CodeShow';
+import { Authorized } from '@/hooks/useAccess';
 import DocumentDrawer from '@/pages/RegCenter/Document/components/DocumentDrawer';
 import DocumentModalForm from '@/pages/RegCenter/Document/components/DocumentModal';
 import {
@@ -169,12 +170,14 @@ const DocumentTableList: React.FC = () => {
       valueEnum: STATUS_ENUM(),
       render: (_, record) => {
         return (
-          <EnableSwitchBtn
-            key={`${record.id}_enable`}
-            disabled={documentState.drawerOpen}
-            record={record}
-            onChange={() => handleChangeEnable(record)}
-          />
+          <Authorized key={record.id} path='/registration/document/enable'>
+            <EnableSwitchBtn
+              key={`${record.id}_enable`}
+              disabled={documentState.drawerOpen}
+              record={record}
+              onChange={() => handleChangeEnable(record)}
+            />
+          </Authorized>
         );
       }
     },
@@ -199,12 +202,16 @@ const DocumentTableList: React.FC = () => {
       valueType: 'option',
       width: '10vh',
       render: (_, record) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />,
-        <PopconfirmDeleteBtn
-          key={`${record.id}_delete`}
-          onClick={() => handleDeleteSubmit(record.id)}
-          description={l('rc.doc.deleteConfirm')}
-        />
+        <Authorized key={`${record.id}_edit`} path='/registration/document/edit'>
+          <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />
+        </Authorized>,
+        <Authorized key={`${record.id}_delete`} path='/registration/document/delete'>
+          <PopconfirmDeleteBtn
+            key={`${record.id}_delete`}
+            onClick={() => handleDeleteSubmit(record.id)}
+            description={l('rc.doc.deleteConfirm')}
+          />
+        </Authorized>
       ]
     }
   ];
@@ -218,15 +225,17 @@ const DocumentTableList: React.FC = () => {
         headerTitle={l('rc.doc.management')}
         actionRef={actionRef}
         toolBarRender={() => [
-          <CreateBtn
-            key={'doctable'}
-            onClick={() =>
-              setDocumentState((prevState) => ({
-                ...prevState,
-                addedOpen: true
-              }))
-            }
-          />
+          <Authorized key='create' path='/registration/document/new'>
+            <CreateBtn
+              key={'doctable'}
+              onClick={() =>
+                setDocumentState((prevState) => ({
+                  ...prevState,
+                  addedOpen: true
+                }))
+              }
+            />
+          </Authorized>
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.DOCUMENT, { ...params, sorter, filter })
