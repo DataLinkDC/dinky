@@ -129,7 +129,7 @@ const JobErrorView: React.FC = () => {
       />
       <ProTable
         columns={columns}
-        scroll={{ y: 230 }}
+        scroll={{ y: 200 }}
         dataSource={data}
         search={false}
         toolBarRender={false}

@@ -48,8 +48,8 @@ body,
 
 .logo {
   position: absolute;
-  top: -5vh;
-  left: -30vw;
+  top: 10vh;
+  left: 20vw;
   display: flex;
   flex: auto;
   flex-flow: column-reverse;
@@ -59,6 +59,8 @@ body,
 .desc {
   margin-top: 2rem;
   margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 24px;
   //color: @text-color-secondary;
   //font-size: @font-size-base;
 }
@@ -81,6 +83,7 @@ body,
     height: 100 * 100vw / 320;
     margin-bottom: -15vh;
     margin-left: 60vw;
+    border-radius: 10px;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
   }
 
@@ -243,19 +246,11 @@ ol {
 
     .ant-tree-node-content-wrapper {
       display: flex;
-
-      :hover {
-        color: #1eef07;
-      }
     }
   }
 }
 .ant-tree-node-content-wrapper {
   display: flex;
-
-  :hover {
-    color: #1eef07;
-  }
 }
 .gitCodeTree {
   min-height: 70vh;
@@ -381,7 +376,7 @@ h5 {
   justify-content: space-between;
   line-height: 32px;
   padding-inline: 10px;
-  padding-block: 5px;
+  padding-block: 1px;
   border-block: 1px solid;
 }
 

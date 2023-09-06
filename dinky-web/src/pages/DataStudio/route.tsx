@@ -56,18 +56,21 @@ import { ReactNode } from 'react';
 
 export const LeftSide = [
   {
+    auth: '/datastudio/left/project',
     key: 'menu.datastudio.project',
     icon: <ConsoleSqlOutlined />,
     label: l('menu.datastudio.project'),
     children: <Project />
   },
   {
+    auth: '/datastudio/left/structure',
     key: 'menu.datastudio.structure',
     icon: <TableOutlined />,
     label: l('menu.datastudio.structure'),
     children: <div>structure</div>
   },
   {
+    auth: '/datastudio/left/metadata',
     key: 'menu.datastudio.metadata',
     icon: <DatabaseOutlined />,
     label: l('menu.datastudio.metadata'),
@@ -77,6 +80,7 @@ export const LeftSide = [
 
 export const RightSide: TabProp[] = [
   {
+    auth: '/datastudio/right/jobConfig',
     key: 'menu.datastudio.jobConfig',
     icon: <SettingOutlined />,
     label: l('menu.datastudio.jobConfig'),
@@ -84,6 +88,7 @@ export const RightSide: TabProp[] = [
     isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
   },
   {
+    auth: '/datastudio/right/executeConfig',
     key: 'menu.datastudio.executeConfig',
     icon: <PlayCircleOutlined />,
     label: l('menu.datastudio.executeConfig'),
@@ -91,6 +96,7 @@ export const RightSide: TabProp[] = [
     isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
   },
   {
+    auth: '/datastudio/right/savePoint',
     key: 'menu.datastudio.savePoint',
     icon: <FolderOutlined />,
     label: l('menu.datastudio.savePoint'),
@@ -98,6 +104,7 @@ export const RightSide: TabProp[] = [
     isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
   },
   {
+    auth: '/datastudio/right/historyVision',
     key: 'menu.datastudio.historyVision',
     icon: <HistoryOutlined />,
     label: l('menu.datastudio.historyVision'),
@@ -105,6 +112,7 @@ export const RightSide: TabProp[] = [
     isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
   },
   {
+    auth: '/datastudio/right/jobInfo',
     key: 'menu.datastudio.jobInfo',
     icon: <InfoCircleOutlined />,
     label: l('menu.datastudio.jobInfo'),
@@ -115,44 +123,52 @@ export const RightSide: TabProp[] = [
 
 export const LeftBottomSide = [
   {
+    auth: '/datastudio/bottom/console',
     key: 'menu.datastudio.console',
     icon: <RightSquareOutlined />,
     label: l('menu.datastudio.console'),
     children: <Console />
   },
   {
+    auth: '/datastudio/bottom/result',
     key: 'menu.datastudio.result',
     icon: <MonitorOutlined />,
     label: l('menu.datastudio.result'),
     children: <Result />
   },
   {
+    auth: '/datastudio/bottom/bi',
     key: 'menu.datastudio.bi',
     icon: <BarChartOutlined />,
     label: l('menu.datastudio.bi')
   },
   {
+    auth: '/datastudio/bottom/lineage',
     key: 'menu.datastudio.lineage',
     icon: <ApartmentOutlined />,
     label: l('menu.datastudio.lineage')
   },
   {
+    auth: '/datastudio/bottom/process',
     key: 'menu.datastudio.process',
     icon: <DesktopOutlined />,
     label: l('menu.datastudio.process')
   },
   {
+    auth: '/datastudio/bottom/history',
     key: 'menu.datastudio.history',
     icon: <CalendarOutlined />,
     label: l('menu.datastudio.history')
   },
   {
+    auth: '/datastudio/bottom/table-data',
     key: 'menu.datastudio.table-data',
     icon: <TableOutlined />,
     label: l('menu.datastudio.table-data'),
     children: <TableData />
   },
   {
+    auth: '/datastudio/bottom/tool',
     key: 'menu.datastudio.tool',
     icon: <ToolOutlined />,
     label: l('menu.datastudio.tool')
@@ -261,4 +277,5 @@ export type TabProp = {
   label: string;
   children: ReactNode;
   isShow?: (type: TabsPageType, subType?: TabsPageSubType) => boolean;
+  auth?: string;
 };
