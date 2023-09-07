@@ -31,6 +31,7 @@ import { l } from '@/utils/intl';
 import { ActionType, ProTable } from '@ant-design/pro-components';
 import { ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
+import {RuleType} from "@/pages/SettingCenter/AlertRule/constants";
 
 const AlertRuleList: React.FC = () => {
   const [ruleState, setRuleState] = useState<AlertRuleListState>(InitAlertRuleState);
@@ -121,7 +122,7 @@ const AlertRuleList: React.FC = () => {
       valueType: 'option',
       render: (_text: any, record: AlertRule) => [
         <EditBtn key={`${record.id}_edit`} onClick={() => editClick(record)} />,
-        record.ruleType != 'SYSTEM' && (
+        record.ruleType != RuleType.SYSTEM && (
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={async () => await handleRemoveById(API_CONSTANTS.ALERT_RULE, record.id)}

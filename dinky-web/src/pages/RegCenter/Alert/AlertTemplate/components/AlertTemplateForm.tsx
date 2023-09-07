@@ -97,7 +97,6 @@ const AlertTemplateForm: React.FC<AlertTemplateFormProps> = (props) => {
             {...CodeEditProps}
             code={codeValue}
             onChange={(value) => setCodeValue(value ?? '')}
-            language={'markdown'}
           />
         </ProForm.Item>
       </>

@@ -50,6 +50,7 @@ public class AlertTemplateConteroller {
     }
 
     @DeleteMapping
+    @Log(title = "Delete AlertTemplate ", businessType = BusinessType.INSERT_OR_UPDATE)
     public Result<Boolean> delete(int id) {
         return Result.succeed(alertTemplateService.removeById(id));
     }

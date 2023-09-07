@@ -244,7 +244,6 @@ CREATE TABLE `dinky_sys_role_menu` (
 
 
 
-drop table if exists `dinky_alert_template`;
 create table if not exists dinky_alert_template
 (
     id               int auto_increment
@@ -256,7 +255,6 @@ create table if not exists dinky_alert_template
     update_time      datetime          null COMMENT 'update time'
 );
 
-drop table if exists `dinky_alert_rules`;
 create table if not exists dinky_alert_rules
 (
     id                 int auto_increment
