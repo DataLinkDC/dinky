@@ -61,7 +61,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.stereotype.Component;
 
-import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
