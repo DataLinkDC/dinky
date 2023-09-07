@@ -294,7 +294,6 @@ const JobConfig = (props: any) => {
                 name='key'
                 width={calculatorWidth(rightContainer.width) + 30}
                 mode={'single'}
-
                 allowClear
                 showSearch
                 placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}
