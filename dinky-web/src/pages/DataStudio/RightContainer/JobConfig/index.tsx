@@ -90,10 +90,12 @@ const JobConfig = (props: any) => {
     }
 
     Object.keys(change).forEach((key) => {
-      if (change[key] instanceof Object) {
-        pane.params.taskData[key] = { ...pane.params.taskData[key], ...change[key] };
+      if (key === 'configJson') {
+        Object.keys(change[key]).forEach((k) => {
+          pane.params.taskData[key][k] = all[key][k];
+        })
       }else {
-        pane.params.taskData[key] = change[key];
+        pane.params.taskData[key] = all[key];
       }
     });
 
@@ -292,6 +294,7 @@ const JobConfig = (props: any) => {
                 name='key'
                 width={calculatorWidth(rightContainer.width) + 30}
                 mode={'single'}
+
                 allowClear
                 showSearch
                 placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}
