@@ -92,7 +92,7 @@ const JobConfig = (props: any) => {
     Object.keys(change).forEach((key) => {
       if (change[key] instanceof Object) {
         pane.params.taskData[key] = { ...pane.params.taskData[key], ...change[key] };
-      }else {
+      } else {
         pane.params.taskData[key] = change[key];
       }
     });
