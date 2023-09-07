@@ -162,7 +162,7 @@ const DataStudio = (props: any) => {
       return true;
     }
 
-    const info =  res as {[key :string]: any}
+    const info = res as { [key: string]: any };
     const changed = Object.keys(params.taskData).some((key) => {
       // ignore this property
       if (['updateTime', 'createTime', 'jobInstanceId'].includes(key)) {
