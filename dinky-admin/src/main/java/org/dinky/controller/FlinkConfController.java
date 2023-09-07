@@ -41,35 +41,32 @@ public class FlinkConfController {
     @GetMapping("/configOptions")
     public Result<List<CascaderVO>> loadDataByGroup() {
         List<CascaderVO> dataList = new ArrayList<>();
-
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.CoreOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.RestOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.PipelineOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.SecurityOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.YarnConfigOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.WebOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.JobManagerOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.TaskManagerOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.HighAvailabilityOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.KubernetesConfigOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.ClusterOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.StateBackendOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.QueryableStateOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.CheckpointingOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.JMXServerOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.HeartbeatManagerOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.OptimizerOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.AkkaOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.AlgorithmOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.BlobServerOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.ExecutionOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.ExternalResourceOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.ResourceManagerOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.HistoryServerOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.MetricOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions(
-                "org.apache.flink.configuration.NettyShuffleEnvironmentOptions", dataList);
-        CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.RestartStrategyOptions", dataList);
-        return Result.succeed(dataList);
-    }
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.CoreOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.RestOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.PipelineOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.SecurityOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.YarnConfigOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.WebOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.JobManagerOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.TaskManagerOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.HighAvailabilityOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.KubernetesConfigOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.ClusterOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.StateBackendOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.QueryableStateOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.CheckpointingOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.JMXServerOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.HeartbeatManagerOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.OptimizerOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.AkkaOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.AlgorithmOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.BlobServerOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.ExecutionOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.ExternalResourceOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.ResourceManagerOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.HistoryServerOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.MetricOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.NettyShuffleEnvironmentOptions"));
+        dataList.addAll(CascaderOptionsUtils.buildCascadeOptions("org.apache.flink.configuration.RestartStrategyOptions"));
+        return Result.succeed(dataList);    }
 }
