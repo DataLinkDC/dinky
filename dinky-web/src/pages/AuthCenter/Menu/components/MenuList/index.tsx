@@ -70,6 +70,7 @@ const MenuList: React.FC = () => {
       )
     );
     setMenuState((prevState) => ({ ...prevState, contextMenuOpen: false }));
+    queryMenuData();
   };
 
   /**

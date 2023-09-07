@@ -18,6 +18,7 @@
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
+import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import { RIGHT_CONTEXT_MENU } from '@/pages/RegCenter/Resource/components/constants';
 import FileShow from '@/pages/RegCenter/Resource/components/FileShow';
 import FileTree from '@/pages/RegCenter/Resource/components/FileTree';
@@ -288,6 +289,8 @@ const ResourceOverView: React.FC = () => {
     await refreshTreeData(id, path);
   };
 
+  const access = useAccess();
+
   /**
    * render
    */
@@ -316,7 +319,10 @@ const ResourceOverView: React.FC = () => {
               openChange={() =>
                 setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }))
               }
-              items={RIGHT_CONTEXT_MENU()}
+              items={RIGHT_CONTEXT_MENU().filter(
+                (menu) =>
+                  !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+              )}
               onClick={handleMenuClick}
             />
           </ProCard>

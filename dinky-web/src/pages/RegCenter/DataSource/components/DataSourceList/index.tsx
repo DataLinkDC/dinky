@@ -20,6 +20,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { DataAction } from '@/components/StyledComponents';
+import { Authorized } from '@/hooks/useAccess';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import DataSourceDetail from '@/pages/RegCenter/DataSource/components/DataSourceDetail';
 import { renderDBIcon } from '@/pages/RegCenter/DataSource/components/function';
@@ -204,8 +205,12 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    */
   const renderDataSourceActionButton = (item: DataSources.DataSource) => {
     return [
-      <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />,
-      <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />,
+      <Authorized key={`${item.id}_edit`} path='/registration/database/new'>
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
+      </Authorized>,
+      <Authorized key={`${item.id}_delete`} path='/registration/database/delete'>
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
+      </Authorized>,
       <Button
         className={'options-button'}
         key={`${item.id}_heart`}
@@ -278,7 +283,9 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
             actionRef={actionRef}
             headerTitle={l('rc.ds.management')}
             toolBarRender={() => [
-              <CreateBtn key={'CreateBtn'} onClick={() => setModalVisible(true)} />
+              <Authorized key='create' path='/registration/database/new'>
+                <CreateBtn key={'CreateBtn'} onClick={() => setModalVisible(true)} />
+              </Authorized>
             ]}
             dataSource={renderDataSource}
           />

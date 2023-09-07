@@ -118,13 +118,8 @@ public class MybatisPlusConfig {
                 return !IGNORE_TABLE_NAMES.contains(tableName);
             }
         }));
-
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         return interceptor;
-    }
-
-    @Bean
-    public PaginationInnerInterceptor paginationInterceptor() {
-        return new PaginationInnerInterceptor();
     }
 
     @Bean

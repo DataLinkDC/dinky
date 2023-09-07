@@ -2,121 +2,121 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `dinky_alert_group`;
 CREATE TABLE `dinky_alert_group` (
-                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                                   `name` varchar(50) NOT NULL COMMENT 'alert group name',
-                                   `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                   `alert_instance_ids` text NULL COMMENT 'Alert instance IDS',
-                                   `note` varchar(255) NULL DEFAULT NULL COMMENT 'note',
-                                   `enabled` tinyint(4) NULL DEFAULT 1 COMMENT 'is enable',
-                                   `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                   `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                                   `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
+                                   `name` varchar(50) NOT null COMMENT 'alert group name',
+                                   `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                                   `alert_instance_ids` text null COMMENT 'Alert instance IDS',
+                                   `note` varchar(255) null DEFAULT null COMMENT 'note',
+                                   `enabled` tinyint(4) null DEFAULT 1 COMMENT 'is enable',
+                                   `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                   `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_alert_history`;
 CREATE TABLE `dinky_alert_history` (
-                                     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                                     `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                     `alert_group_id` int(11) NULL DEFAULT NULL COMMENT 'Alert group ID',
-                                     `job_instance_id` int(11) NULL DEFAULT NULL COMMENT 'job instance ID',
-                                     `title` varchar(255) NULL DEFAULT NULL COMMENT 'alert title',
-                                     `content` text NULL COMMENT 'content description',
-                                     `status` int(11) NULL DEFAULT NULL COMMENT 'alert status',
-                                     `log` text NULL COMMENT 'log',
-                                     `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                     `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                                     `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
+                                     `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                                     `alert_group_id` int(11) null DEFAULT null COMMENT 'Alert group ID',
+                                     `job_instance_id` int(11) null DEFAULT null COMMENT 'job instance ID',
+                                     `title` varchar(255) null DEFAULT null COMMENT 'alert title',
+                                     `content` text null COMMENT 'content description',
+                                     `status` int(11) null DEFAULT null COMMENT 'alert status',
+                                     `log` text null COMMENT 'log',
+                                     `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                     `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_alert_instance`;
 CREATE TABLE `dinky_alert_instance` (
-                                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                                      `name` varchar(50) NOT NULL COMMENT 'alert instance name',
-                                      `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                      `type` varchar(50) NULL DEFAULT NULL COMMENT 'alert instance type such as: DingTalk,Wechat(Webhook,app) Feishu ,email',
-                                      `params` text NULL COMMENT 'configuration',
-                                      `enabled` tinyint(4) NULL DEFAULT 1 COMMENT 'is enable',
-                                      `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                      `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                                      `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
+                                      `name` varchar(50) NOT null COMMENT 'alert instance name',
+                                      `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                                      `type` varchar(50) null DEFAULT null COMMENT 'alert instance type such as: DingTalk,Wechat(Webhook,app) Feishu ,email',
+                                      `params` text null COMMENT 'configuration',
+                                      `enabled` tinyint(4) null DEFAULT 1 COMMENT 'is enable',
+                                      `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                      `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_catalogue`;
 CREATE TABLE `dinky_catalogue` (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                 `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                 `task_id` int(11) NULL DEFAULT NULL COMMENT 'Job ID',
-                                 `name` varchar(100) NOT NULL COMMENT 'Job Name',
-                                 `type` varchar(50) NULL DEFAULT NULL COMMENT 'Job Type',
-                                 `parent_id` int(11) NOT NULL DEFAULT 0 COMMENT 'parent ID',
-                                 `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                                 `is_leaf` tinyint(1) NOT NULL COMMENT 'is leaf node',
-                                 `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                 `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                                 `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                                 `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                                 `task_id` int(11) null DEFAULT null COMMENT 'Job ID',
+                                 `name` varchar(100) NOT null COMMENT 'Job Name',
+                                 `type` varchar(50) null DEFAULT null COMMENT 'Job Type',
+                                 `parent_id` int(11) NOT null DEFAULT 0 COMMENT 'parent ID',
+                                 `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
+                                 `is_leaf` tinyint(1) NOT null COMMENT 'is leaf node',
+                                 `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                 `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_cluster`;
 CREATE TABLE `dinky_cluster` (
-                               `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                               `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                               `name` varchar(255) NOT NULL COMMENT 'cluster instance name',
-                               `alias` varchar(255) NULL DEFAULT NULL COMMENT 'cluster instance alias',
-                               `type` varchar(50) NULL DEFAULT NULL COMMENT 'cluster types',
-                               `hosts` text NULL COMMENT 'cluster hosts',
-                               `job_manager_host` varchar(255) NULL DEFAULT NULL COMMENT 'Job Manager Host',
-                               `version` varchar(20) NULL DEFAULT NULL COMMENT 'version',
-                               `status` int(11) NULL DEFAULT NULL COMMENT 'cluster status',
-                               `note` varchar(255) NULL DEFAULT NULL COMMENT 'note',
-                               `auto_registers` tinyint(1) NULL DEFAULT 0 COMMENT 'is auto registration',
-                               `cluster_configuration_id` int(11) NULL DEFAULT NULL COMMENT 'cluster configuration id',
-                               `task_id` int(11) NULL DEFAULT NULL COMMENT 'task ID',
-                               `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                               `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                               `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                               `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                               `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                               `name` varchar(255) NOT null COMMENT 'cluster instance name',
+                               `alias` varchar(255) null DEFAULT null COMMENT 'cluster instance alias',
+                               `type` varchar(50) null DEFAULT null COMMENT 'cluster types',
+                               `hosts` text null COMMENT 'cluster hosts',
+                               `job_manager_host` varchar(255) null DEFAULT null COMMENT 'Job Manager Host',
+                               `version` varchar(20) null DEFAULT null COMMENT 'version',
+                               `status` int(11) null DEFAULT null COMMENT 'cluster status',
+                               `note` varchar(255) null DEFAULT null COMMENT 'note',
+                               `auto_registers` tinyint(1) null DEFAULT 0 COMMENT 'is auto registration',
+                               `cluster_configuration_id` int(11) null DEFAULT null COMMENT 'cluster configuration id',
+                               `task_id` int(11) null DEFAULT null COMMENT 'task ID',
+                               `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
+                               `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                               `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_cluster_configuration`;
 CREATE TABLE `dinky_cluster_configuration` (
-                                             `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                             `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                             `name` varchar(255) NOT NULL COMMENT 'cluster configuration name',
-                                             `type` varchar(50) NULL DEFAULT NULL COMMENT 'cluster type',
-                                             `config_json` text NULL COMMENT 'json of configuration',
-                                             `is_available` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is available',
-                                             `note` varchar(255) NULL DEFAULT NULL COMMENT 'note',
-                                             `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                                             `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                             `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                                             `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                                             `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                                             `name` varchar(255) NOT null COMMENT 'cluster configuration name',
+                                             `type` varchar(50) null DEFAULT null COMMENT 'cluster type',
+                                             `config_json` text null COMMENT 'json of configuration',
+                                             `is_available` tinyint(1) NOT null DEFAULT 0 COMMENT 'is available',
+                                             `note` varchar(255) null DEFAULT null COMMENT 'note',
+                                             `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
+                                             `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                             `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_database`;
 CREATE TABLE `dinky_database` (
-                                `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                `name` varchar(30) NOT NULL COMMENT 'database name',
-                                `group_name` varchar(255) NULL DEFAULT 'Default' COMMENT 'database belong group name',
-                                `type` varchar(50) NOT NULL COMMENT 'database type',
-                                `ip` varchar(255) NULL DEFAULT NULL COMMENT 'database ip',
-                                `port` int(11) NULL DEFAULT NULL COMMENT 'database port',
-                                `url` varchar(255) NULL DEFAULT NULL COMMENT 'database url',
-                                `username` varchar(50) NULL DEFAULT NULL COMMENT 'username',
-                                `password` varchar(512) NULL DEFAULT NULL COMMENT 'password',
-                                `note` varchar(255) NULL DEFAULT NULL COMMENT 'note',
-                                `flink_config` text NULL COMMENT 'Flink configuration',
-                                `flink_template` text NULL COMMENT 'Flink template',
-                                `db_version` varchar(255) NULL DEFAULT NULL COMMENT 'version，such as: 11g of oracle ，2.2.3 of hbase',
-                                `status` tinyint(1) NULL DEFAULT NULL COMMENT 'heartbeat status',
-                                `health_time` datetime(0) NULL DEFAULT NULL COMMENT 'last heartbeat time of trigger',
-                                `heartbeat_time` datetime(0) NULL DEFAULT NULL COMMENT 'last heartbeat time',
-                                `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                                `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                                `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                                `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                                `name` varchar(30) NOT null COMMENT 'database name',
+                                `group_name` varchar(255) null DEFAULT 'Default' COMMENT 'database belong group name',
+                                `type` varchar(50) NOT null COMMENT 'database type',
+                                `ip` varchar(255) null DEFAULT null COMMENT 'database ip',
+                                `port` int(11) null DEFAULT null COMMENT 'database port',
+                                `url` varchar(255) null DEFAULT null COMMENT 'database url',
+                                `username` varchar(50) null DEFAULT null COMMENT 'username',
+                                `password` varchar(512) null DEFAULT null COMMENT 'password',
+                                `note` varchar(255) null DEFAULT null COMMENT 'note',
+                                `flink_config` text null COMMENT 'Flink configuration',
+                                `flink_template` text null COMMENT 'Flink template',
+                                `db_version` varchar(255) null DEFAULT null COMMENT 'version，such as: 11g of oracle ，2.2.3 of hbase',
+                                `status` tinyint(1) null DEFAULT null COMMENT 'heartbeat status',
+                                `health_time` datetime(0) null DEFAULT null COMMENT 'last heartbeat time of trigger',
+                                `heartbeat_time` datetime(0) null DEFAULT null COMMENT 'last heartbeat time',
+                                `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
+                                `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_flink_document`;
 CREATE TABLE `dinky_flink_document` (
-                                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                                      `category` varchar(255) NULL DEFAULT NULL COMMENT 'document category',
-                                      `type` varchar(255) NULL DEFAULT NULL COMMENT 'document type',
-                                      `subtype` varchar(255) NULL DEFAULT NULL COMMENT 'document subtype',
-                                      `name` varchar(255) NULL DEFAULT NULL COMMENT 'document name',
-                                      `description` longtext NULL,
-                                      `fill_value` longtext NULL COMMENT 'fill value',
-                                      `version` varchar(255) NULL DEFAULT NULL COMMENT 'document version such as:(flink1.12,flink1.13,flink1.14,flink1.15)',
-                                      `like_num` int(11) NULL DEFAULT 0 COMMENT 'like number',
-                                      `enabled` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is enable',
-                                      `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                      `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update_time'
+                                      `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
+                                      `category` varchar(255) null DEFAULT null COMMENT 'document category',
+                                      `type` varchar(255) null DEFAULT null COMMENT 'document type',
+                                      `subtype` varchar(255) null DEFAULT null COMMENT 'document subtype',
+                                      `name` varchar(255) null DEFAULT null COMMENT 'document name',
+                                      `description` longtext null,
+                                      `fill_value` longtext null COMMENT 'fill value',
+                                      `version` varchar(255) null DEFAULT null COMMENT 'document version such as:(flink1.12,flink1.13,flink1.14,flink1.15)',
+                                      `like_num` int(11) null DEFAULT 0 COMMENT 'like number',
+                                      `enabled` tinyint(1) NOT null DEFAULT 0 COMMENT 'is enable',
+                                      `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                      `update_time` datetime(0) null DEFAULT null COMMENT 'update_time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_flink_document`
 VALUES (1, 'Variable', '优化参数', 'Batch/Streaming', 'set table.exec.async-lookup.buffer-capacity'
@@ -152,8 +152,8 @@ Sets default parallelism for all operators (such as aggregate, join, filter) to 
        , '2022-01-20 15:00:00', '2022-01-20 15:00:00');
 INSERT INTO `dinky_flink_document`
 VALUES (8, 'Variable', '优化参数', 'Batch/Streaming', 'set table.exec.sink.not-null-enforcer'
-       , '对表的NOT NULL列约束强制执行不能将空值插入到表中。Flink支持“error”（默认）和“drop”强制行为
-The NOT NULL column constraint on a table enforces that null values can''t be inserted into the table. Flink supports ''error'' (default) and ''drop'' enforcement behavior. By default, Flink will check values and throw runtime exception when null values writing into NOT NULL columns. Users can change the behavior to ''drop'' to silently drop such records without throwing exception.
+       , '对表的NOT null列约束强制执行不能将空值插入到表中。Flink支持“error”（默认）和“drop”强制行为
+The NOT null column constraint on a table enforces that null values can''t be inserted into the table. Flink supports ''error'' (default) and ''drop'' enforcement behavior. By default, Flink will check values and throw runtime exception when null values writing into NOT null columns. Users can change the behavior to ''drop'' to silently drop such records without throwing exception.
 Possible values:
 "ERROR"
 "DROP"', 'Set ''table.exec.sink.not-null-enforcer''=''ERROR'';', '1.14', 0, 1
@@ -340,39 +340,39 @@ WITH (
        , '2022-01-20 17:56:50', '2022-01-20 17:56:50');
 INSERT INTO `dinky_flink_document`
 VALUES (21, 'Function', '内置函数', '比较函数', 'value1 <> value2'
-       , '如果value1不等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} <> ${2:}', '1.12', 4, 1
+       , '如果value1不等于value2 返回true; 如果value1或value2为null，则返回UNKNOWN 。', '${1:} <> ${2:}', '1.12', 4, 1
        , '2021-02-22 10:05:38', '2021-03-11 09:58:48');
 INSERT INTO `dinky_flink_document`
 VALUES (22, 'Function', '内置函数', '比较函数', 'value1 > value2'
-       , '如果value1大于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} > ${2:}', '1.12', 2, 1
+       , '如果value1大于value2 返回true; 如果value1或value2为null，则返回UNKNOWN 。', '${1:} > ${2:}', '1.12', 2, 1
        , '2021-02-22 14:37:58', '2021-03-10 11:58:06');
 INSERT INTO `dinky_flink_document`
 VALUES (23, 'Function', '内置函数', '比较函数', 'value1 >= value2'
-       , '如果value1大于或等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} >= ${2:}', '1.12', 2, 1
+       , '如果value1大于或等于value2 返回true; 如果value1或value2为null，则返回UNKNOWN 。', '${1:} >= ${2:}', '1.12', 2, 1
        , '2021-02-22 14:38:52', '2022-03-29 19:05:54');
 INSERT INTO `dinky_flink_document`
 VALUES (24, 'Function', '内置函数', '比较函数', 'value1 < value2'
-       , '如果value1小于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} < ${2:}', '1.12', 0, 1
+       , '如果value1小于value2 返回true; 如果value1或value2为null，则返回UNKNOWN 。', '${1:} < ${2:}', '1.12', 0, 1
        , '2021-02-22 14:39:15', '2022-03-29 19:04:58');
 INSERT INTO `dinky_flink_document`
 VALUES (25, 'Function', '内置函数', '比较函数', 'value1 <= value2'
-       , '如果value1小于或等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} <=   ${2:}', '1.12', 0, 1
+       , '如果value1小于或等于value2 返回true; 如果value1或value2为null，则返回UNKNOWN 。', '${1:} <=   ${2:}', '1.12', 0, 1
        , '2021-02-22 14:39:40', '2022-03-29 19:05:17');
 INSERT INTO `dinky_flink_document`
-VALUES (26, 'Function', '内置函数', '比较函数', 'value IS NULL'
-       , '如果value为NULL，则返回TRUE 。', '${1:} IS NULL', '1.12', 2, 1
+VALUES (26, 'Function', '内置函数', '比较函数', 'value IS null'
+       , '如果value为null，则返回TRUE 。', '${1:} IS null', '1.12', 2, 1
        , '2021-02-22 14:40:39', '2021-03-10 11:57:51');
 INSERT INTO `dinky_flink_document`
-VALUES (27, 'Function', '内置函数', '比较函数', 'value IS NOT NULL'
-       , '如果value不为NULL，则返回TRUE 。', '${1:}  IS NOT NULL', '1.12', 0, 1
+VALUES (27, 'Function', '内置函数', '比较函数', 'value IS NOT null'
+       , '如果value不为null，则返回TRUE 。', '${1:}  IS NOT null', '1.12', 0, 1
        , '2021-02-22 14:41:26', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (28, 'Function', '内置函数', '比较函数', 'value1 IS DISTINCT FROM value2'
-       , '如果两个值不相等则返回TRUE。NULL值在这里被视为相同的值。', '${1:} IS DISTINCT FROM ${2:}', '1.12', 0, 1
+       , '如果两个值不相等则返回TRUE。null值在这里被视为相同的值。', '${1:} IS DISTINCT FROM ${2:}', '1.12', 0, 1
        , '2021-02-22 14:42:39', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (29, 'Function', '内置函数', '比较函数', 'value1 IS NOT DISTINCT FROM value2'
-       , '如果两个值相等则返回TRUE。NULL值在这里被视为相同的值。', '${1:} IS NOT DISTINCT FROM ${2:}', '1.12', 0, 1
+       , '如果两个值相等则返回TRUE。null值在这里被视为相同的值。', '${1:} IS NOT DISTINCT FROM ${2:}', '1.12', 0, 1
        , '2021-02-22 14:43:23', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (30, 'Function', '内置函数', '比较函数', 'value1 BETWEEN [ ASYMMETRIC | SYMMETRIC ] value2 AND value3'
@@ -384,35 +384,35 @@ VALUES (31, 'Function', '内置函数', '比较函数', 'value1 NOT BETWEEN [ AS
        , '2021-02-22 14:44:26', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (32, 'Function', '内置函数', '比较函数', 'string1 LIKE string2 [ ESCAPE char ]'
-       , '如果STRING1匹配模式STRING2，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} LIKE ${2:}', '1.12', 0, 1
+       , '如果STRING1匹配模式STRING2，则返回TRUE ；如果STRING1或STRING2为null，则返回UNKNOWN 。', '${1:} LIKE ${2:}', '1.12', 0, 1
        , '2021-02-22 14:44:26', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (33, 'Function', '内置函数', '比较函数', 'string1 NOT LIKE string2 [ ESCAPE char ]'
-       , '如果STRING1不匹配模式STRING2，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} NOT LIKE ${2:}', '1.12', 0, 1
+       , '如果STRING1不匹配模式STRING2，则返回TRUE ；如果STRING1或STRING2为null，则返回UNKNOWN 。', '${1:} NOT LIKE ${2:}', '1.12', 0, 1
        , '2021-02-22 14:44:26', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (34, 'Function', '内置函数', '比较函数', 'string1 SIMILAR TO string2 [ ESCAPE char ]'
-       , '如果STRING1与SQL正则表达式STRING2匹配，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} SIMILAR TO ${2:}', '1.12', 0, 1
+       , '如果STRING1与SQL正则表达式STRING2匹配，则返回TRUE ；如果STRING1或STRING2为null，则返回UNKNOWN 。', '${1:} SIMILAR TO ${2:}', '1.12', 0, 1
        , '2021-02-22 14:44:26', '2021-03-10 11:57:28');
 INSERT INTO `dinky_flink_document`
 VALUES (35, 'Function', '内置函数', '比较函数', 'string1 NOT SIMILAR TO string2 [ ESCAPE char ]'
-       , '如果STRING1与SQL正则表达式STRING2不匹配，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} NOT SIMILAR TO ${2:}', '1.12', 0, 1
+       , '如果STRING1与SQL正则表达式STRING2不匹配，则返回TRUE ；如果STRING1或STRING2为null，则返回UNKNOWN 。', '${1:} NOT SIMILAR TO ${2:}', '1.12', 0, 1
        , '2021-02-22 14:44:26', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (36, 'Function', '内置函数', '比较函数', 'value1 IN (value2 [, value3]* )'
        , '如果value1存在于给定列表（value2，value3，...）中，则返回TRUE 。
 
-当（value2，value3，...）包含NULL，如果可以找到该元素，则返回TRUE，否则返回UNKNOWN。
+当（value2，value3，...）包含null，如果可以找到该元素，则返回TRUE，否则返回UNKNOWN。
 
-如果value1为NULL，则始终返回UNKNOWN 。', '${1:} IN (${2:} )', '1.12', 0, 1
+如果value1为null，则始终返回UNKNOWN 。', '${1:} IN (${2:} )', '1.12', 0, 1
        , '2021-02-22 14:44:26', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (37, 'Function', '内置函数', '比较函数', 'value1 NOT IN (value2 [, value3]* )'
        , '如果value1不存在于给定列表（value2，value3，...）中，则返回TRUE 。
 
-当（value2，value3，...）包含NULL，如果可以找到该元素，则返回TRUE，否则返回UNKNOWN。
+当（value2，value3，...）包含null，如果可以找到该元素，则返回TRUE，否则返回UNKNOWN。
 
-如果value1为NULL，则始终返回UNKNOWN 。', '${1:} NOT IN (${2:})', '1.12', 0, 1
+如果value1为null，则始终返回UNKNOWN 。', '${1:} NOT IN (${2:})', '1.12', 0, 1
        , '2021-02-22 14:44:26', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (38, 'Function', '内置函数', '比较函数', 'EXISTS (sub-query)'
@@ -634,14 +634,14 @@ VALUES (87, 'Function', '内置函数', '算术函数', 'UUID()'
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (88, 'Function', '内置函数', '算术函数', 'BIN(integer)'
-       , '以二进制格式返回INTEGER的字符串表示形式。如果INTEGER为NULL，则返回NULL。
+       , '以二进制格式返回INTEGER的字符串表示形式。如果INTEGER为null，则返回null。
 
 例如，4.bin()返回“ 100”并12.bin()返回“ 1100”。', 'BIN(${1:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (89, 'Function', '内置函数', '算术函数', 'HEX(numeric)
 HEX(string)'
-       , '以十六进制格式返回整数NUMERIC值或STRING的字符串表示形式。如果参数为NULL，则返回NULL。
+       , '以十六进制格式返回整数NUMERIC值或STRING的字符串表示形式。如果参数为null，则返回null。
 
 例如，数字20导致“ 14”，数字100导致“ 64”，字符串“ hello，world”导致“ 68656C6C6F2C776F726C64”。', 'HEX(${1:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
@@ -741,7 +741,7 @@ VALUES (109, 'Function', '内置函数', '字符串函数', 'INITCAP(string)'
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (110, 'Function', '内置函数', '字符串函数', 'CONCAT(string1, string2,...)'
-       , '返回连接STRING1，STRING2，...的字符串。如果任何参数为NULL，则返回NULL。', 'CONCAT(${1:} , ${2:} , ${3:} )', '1.12', 0, 1
+       , '返回连接STRING1，STRING2，...的字符串。如果任何参数为null，则返回null。', 'CONCAT(${1:} , ${2:} , ${3:} )', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (111, 'Function', '内置函数', '字符串函数', 'CONCAT_WS(string1, string2, string3,...)'
@@ -757,19 +757,19 @@ VALUES (113, 'Function', '内置函数', '字符串函数', 'RPAD(string1, integ
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (114, 'Function', '内置函数', '字符串函数', 'FROM_BASE64(string)'
-       , '返回来自STRING的base64解码结果；如果STRING为NULL，则返回null 。', 'FROM_BASE64(${1:})', '1.12', 0, 1
+       , '返回来自STRING的base64解码结果；如果STRING为null，则返回null 。', 'FROM_BASE64(${1:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (115, 'Function', '内置函数', '字符串函数', 'TO_BASE64(string)'
-       , '从STRING返回base64编码的结果；如果STRING为NULL，则返回NULL。', 'TO_BASE64(${1:})', '1.12', 0, 1
+       , '从STRING返回base64编码的结果；如果STRING为null，则返回null。', 'TO_BASE64(${1:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (116, 'Function', '内置函数', '字符串函数', 'ASCII(string)'
-       , '返回字符串的第一个字符的数值。如果字符串为NULL，则返回NULL。仅在blink planner中支持。', 'ASCII(${1:})', '1.12', 0, 1
+       , '返回字符串的第一个字符的数值。如果字符串为null，则返回null。仅在blink planner中支持。', 'ASCII(${1:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (117, 'Function', '内置函数', '字符串函数', 'CHR(integer)'
-       , '返回与integer在二进制上等价的ASCII字符。如果integer大于255，我们将首先得到integer的模数除以255，并返回模数的CHR。如果integer为NULL，则返回NULL。仅在blink planner中支持。', 'CHR(${1:})', '1.12', 0, 1
+       , '返回与integer在二进制上等价的ASCII字符。如果integer大于255，我们将首先得到integer的模数除以255，并返回模数的CHR。如果integer为null，则返回null。仅在blink planner中支持。', 'CHR(${1:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (118, 'Function', '内置函数', '字符串函数', 'DECODE(binary, string)'
@@ -781,35 +781,35 @@ VALUES (119, 'Function', '内置函数', '字符串函数', 'ENCODE(string1, str
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (120, 'Function', '内置函数', '字符串函数', 'INSTR(string1, string2)'
-       , '返回string2在string1中第一次出现的位置。如果任何参数为空，则返回NULL。仅在blink planner中支持。', 'INSTR(${1:}, ${2:})', '1.12', 0, 1
+       , '返回string2在string1中第一次出现的位置。如果任何参数为空，则返回null。仅在blink planner中支持。', 'INSTR(${1:}, ${2:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (121, 'Function', '内置函数', '字符串函数', 'LEFT(string, integer)'
-       , '返回字符串中最左边的整数字符。如果整数为负，则返回空字符串。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'LEFT(${1:}, ${2:})', '1.12', 0, 1
+       , '返回字符串中最左边的整数字符。如果整数为负，则返回空字符串。如果任何参数为null，则返回null。仅在blink planner中支持。', 'LEFT(${1:}, ${2:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (122, 'Function', '内置函数', '字符串函数', 'RIGHT(string, integer)'
-       , '返回字符串中最右边的整数字符。如果整数为负，则返回空字符串。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'RIGHT(${1:}, ${2:})', '1.12', 0, 1
+       , '返回字符串中最右边的整数字符。如果整数为负，则返回空字符串。如果任何参数为null，则返回null。仅在blink planner中支持。', 'RIGHT(${1:}, ${2:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (123, 'Function', '内置函数', '字符串函数', 'LOCATE(string1, string2[, integer])'
-       , '返回string1在string2中的位置整数之后第一次出现的位置。如果没有找到，返回0。如果任何参数为NULL，则返回NULL仅在blink planner中支持。', 'LOCATE(${1:}, ${2:})', '1.12', 0, 1
+       , '返回string1在string2中的位置整数之后第一次出现的位置。如果没有找到，返回0。如果任何参数为null，则返回null仅在blink planner中支持。', 'LOCATE(${1:}, ${2:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (124, 'Function', '内置函数', '字符串函数', 'PARSE_URL(string1, string2[, string3])'
-       , '从URL返回指定的部分。string2的有效值包括''HOST''， ''PATH''， ''QUERY''， ''REF''， ''PROTOCOL''， ''AUTHORITY''， ''FILE''和''USERINFO''。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'PARSE_URL(${1:} , ${2:})', '1.12', 0, 1
+       , '从URL返回指定的部分。string2的有效值包括''HOST''， ''PATH''， ''QUERY''， ''REF''， ''PROTOCOL''， ''AUTHORITY''， ''FILE''和''USERINFO''。如果任何参数为null，则返回null。仅在blink planner中支持。', 'PARSE_URL(${1:} , ${2:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (125, 'Function', '内置函数', '字符串函数', 'REGEXP(string1, string2)'
-       , '如果string1的任何子字符串(可能为空)与Java正则表达式string2匹配，则返回TRUE，否则返回FALSE。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'REGEXP(${1:}, ${2:})', '1.12', 0, 1
+       , '如果string1的任何子字符串(可能为空)与Java正则表达式string2匹配，则返回TRUE，否则返回FALSE。如果任何参数为null，则返回null。仅在blink planner中支持。', 'REGEXP(${1:}, ${2:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (126, 'Function', '内置函数', '字符串函数', 'REVERSE(string)'
-       , '返回反向字符串。如果字符串为NULL，则返回NULL仅在blink planner中支持。', 'REVERSE(${1:})', '1.12', 0, 1
+       , '返回反向字符串。如果字符串为null，则返回null仅在blink planner中支持。', 'REVERSE(${1:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (127, 'Function', '内置函数', '字符串函数', 'SPLIT_INDEX(string1, string2, integer1)'
-       , '通过分隔符string2拆分string1，返回拆分字符串的整数(从零开始)字符串。如果整数为负，返回NULL。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'SPLIT_INDEX(${1:}, ${2:} , ${3:})', '1.12', 0, 1
+       , '通过分隔符string2拆分string1，返回拆分字符串的整数(从零开始)字符串。如果整数为负，返回null。如果任何参数为null，则返回null。仅在blink planner中支持。', 'SPLIT_INDEX(${1:}, ${2:} , ${3:})', '1.12', 0, 1
        , '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dinky_flink_document`
 VALUES (128, 'Function', '内置函数', '字符串函数', 'STR_TO_MAP(string1[, string2, string3]])'
@@ -965,7 +965,7 @@ WHEN value1_1 [, value1_2 ]* THEN result1
 [ WHEN value2_1 [, value2_2 ]* THEN result2 ]*
 [ ELSE resultZ ]
 END'
-       , '当第一个时间值包含在(valueX_1, valueX_2，…)中时，返回resultX。如果没有匹配的值，则返回resultZ，否则返回NULL。', 'CASE ${1:}
+       , '当第一个时间值包含在(valueX_1, valueX_2，…)中时，返回resultX。如果没有匹配的值，则返回resultZ，否则返回null。', 'CASE ${1:}
   WHEN ${2:}  THEN ${3:}
  ELSE ${4:}
 END AS ${5:}', '1.12', 0, 1
@@ -976,13 +976,13 @@ WHEN condition1 THEN result1
 [ WHEN condition2 THEN result2 ]*
 [ ELSE resultZ ]
 END'
-       , '当第一个条件满足时返回resultX。当不满足任何条件时，如果提供了resultZ则返回resultZ，否则返回NULL。', 'CASE WHEN ${1:} THEN ${2:}
+       , '当第一个条件满足时返回resultX。当不满足任何条件时，如果提供了resultZ则返回resultZ，否则返回null。', 'CASE WHEN ${1:} THEN ${2:}
    ELSE ${3:}
 END AS ${4:}', '1.12', 0, 1
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
-VALUES (167, 'Function', '内置函数', '条件函数', 'NULLIF(value1, value2)'
-       , '如果value1等于value2，则返回NULL;否则返回value1。', 'NULLIF(${1:}, ${2:})', '1.12', 0, 1
+VALUES (167, 'Function', '内置函数', '条件函数', 'nullIF(value1, value2)'
+       , '如果value1等于value2，则返回null;否则返回value1。', 'nullIF(${1:}, ${2:})', '1.12', 0, 1
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (168, 'Function', '内置函数', '条件函数', 'COALESCE(value1, value2 [, value3 ]* )'
@@ -1018,7 +1018,7 @@ VALUES (175, 'Function', '内置函数', 'Collection 函数', 'array ‘[’ int
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (176, 'Function', '内置函数', 'Collection 函数', 'ELEMENT(array)'
-       , '返回数组的唯一元素(其基数应为1);如果数组为空，则返回NULL。如果数组有多个元素，则抛出异常。', 'ELEMENT(${1:})', '1.12', 0, 1
+       , '返回数组的唯一元素(其基数应为1);如果数组为空，则返回null。如果数组有多个元素，则抛出异常。', 'ELEMENT(${1:})', '1.12', 0, 1
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (177, 'Function', '内置函数', 'Collection 函数', 'CARDINALITY(map)'
@@ -1065,31 +1065,31 @@ GROUPING_ID(expression1 [, expression2]* )'
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (187, 'Function', '内置函数', 'hash函数', 'MD5(string)'
-       , '以32位十六进制数字的字符串形式返回string的MD5哈希值;如果字符串为NULL，则返回NULL。', 'MD5(${1:})', '1.12', 0, 1
+       , '以32位十六进制数字的字符串形式返回string的MD5哈希值;如果字符串为null，则返回null。', 'MD5(${1:})', '1.12', 0, 1
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (188, 'Function', '内置函数', 'hash函数', 'SHA1(string)'
-       , '返回字符串的SHA-1散列，作为一个由40个十六进制数字组成的字符串;如果字符串为NULL，则返回NULL', 'SHA1(${1:})', '1.12', 0, 1
+       , '返回字符串的SHA-1散列，作为一个由40个十六进制数字组成的字符串;如果字符串为null，则返回null', 'SHA1(${1:})', '1.12', 0, 1
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (189, 'Function', '内置函数', 'hash函数', 'SHA224(string)'
-       , '以56位十六进制数字的字符串形式返回字符串的SHA-224散列;如果字符串为NULL，则返回NULL。', 'SHA224(${1:})', '1.12', 0, 1
+       , '以56位十六进制数字的字符串形式返回字符串的SHA-224散列;如果字符串为null，则返回null。', 'SHA224(${1:})', '1.12', 0, 1
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (190, 'Function', '内置函数', 'hash函数', 'SHA256(string)'
-       , '以64位十六进制数字的字符串形式返回字符串的SHA-256散列;如果字符串为NULL，则返回NULL。', 'SHA256(${1:})', '1.12', 0, 1
+       , '以64位十六进制数字的字符串形式返回字符串的SHA-256散列;如果字符串为null，则返回null。', 'SHA256(${1:})', '1.12', 0, 1
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (191, 'Function', '内置函数', 'hash函数', 'SHA384(string)'
-       , '以96个十六进制数字的字符串形式返回string的SHA-384散列;如果字符串为NULL，则返回NULL。', 'SHA384(${1:})', '1.12', 0, 1
+       , '以96个十六进制数字的字符串形式返回string的SHA-384散列;如果字符串为null，则返回null。', 'SHA384(${1:})', '1.12', 0, 1
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (192, 'Function', '内置函数', 'hash函数', 'SHA512(string)'
-       , '以128位十六进制数字的字符串形式返回字符串的SHA-512散列;如果字符串为NULL，则返回NULL。', 'SHA512(${1:})', '1.12', 0, 1
+       , '以128位十六进制数字的字符串形式返回字符串的SHA-512散列;如果字符串为null，则返回null。', 'SHA512(${1:})', '1.12', 0, 1
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (193, 'Function', '内置函数', 'hash函数', 'SHA2(string, hashLength)'
-       , '使用SHA-2哈希函数族(SHA-224、SHA-256、SHA-384或SHA-512)返回哈希值。第一个参数string是要散列的字符串，第二个参数hashLength是结果的位长度(224、256、384或512)。如果string或hashLength为NULL，则返回NULL。', 'SHA2(${1:}, ${2:})', '1.12', 0, 1
+       , '使用SHA-2哈希函数族(SHA-224、SHA-256、SHA-384或SHA-512)返回哈希值。第一个参数string是要散列的字符串，第二个参数hashLength是结果的位长度(224、256、384或512)。如果string或hashLength为null，则返回null。', 'SHA2(${1:}, ${2:})', '1.12', 0, 1
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (194, 'Function', '内置函数', '聚合函数', 'COUNT([ ALL ] expression | DISTINCT expression1 [, expression2]*)'
@@ -1154,11 +1154,11 @@ VALUES (208, 'Function', '内置函数', '聚合函数', 'ROW_NUMBER()'
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (209, 'Function', '内置函数', '聚合函数', 'LEAD(expression [, offset] [, default] )'
-       , '返回表达式在窗口中当前行之前的偏移行上的值。offset的默认值是1,default的默认值是NULL。仅在blink planner中支持。', 'LEAD(${1:})', '1.12', 0, 1
+       , '返回表达式在窗口中当前行之前的偏移行上的值。offset的默认值是1,default的默认值是null。仅在blink planner中支持。', 'LEAD(${1:})', '1.12', 0, 1
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (210, 'Function', '内置函数', '聚合函数', 'LAG(expression [, offset] [, default])'
-       , '返回表达式的值，该值位于窗口中当前行之后的偏移行。offset的默认值是1,default的默认值是NULL。仅在blink planner中支持。', 'LAG(${1:})', '1.12', 0, 1
+       , '返回表达式的值，该值位于窗口中当前行之后的偏移行。offset的默认值是1,default的默认值是null。仅在blink planner中支持。', 'LAG(${1:})', '1.12', 0, 1
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (211, 'Function', '内置函数', '聚合函数', 'FIRST_VALUE(expression)'
@@ -1182,7 +1182,7 @@ VALUES (215, 'Function', '内置函数', '列函数', 'withoutColumns(…)'
        , '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dinky_flink_document`
 VALUES (216, 'Function', '内置函数', '比较函数', 'value1 = value2'
-       , '如果value1等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} =${2:}', '1.12', 9, 1
+       , '如果value1等于value2 返回true; 如果value1或value2为null，则返回UNKNOWN 。', '${1:} =${2:}', '1.12', 9, 1
        , '2021-02-22 10:06:49', '2021-02-24 09:40:30');
 INSERT INTO `dinky_flink_document`
 VALUES (217, 'Function', 'UDF', '表值聚合函数', 'TO_MAP(string1,object2[, string3])'
@@ -1190,95 +1190,95 @@ VALUES (217, 'Function', 'UDF', '表值聚合函数', 'TO_MAP(string1,object2[, 
        , '2021-05-20 19:59:22', '2021-05-20 20:00:54');
 DROP TABLE IF EXISTS `dinky_fragment`;
 CREATE TABLE `dinky_fragment` (
-                                `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                                `name` varchar(50) NOT NULL COMMENT 'fragment name',
-                                `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                `fragment_value` text NOT NULL COMMENT 'fragment value',
-                                `note` text NULL COMMENT 'note',
-                                `enabled` tinyint(4) NULL DEFAULT 1 COMMENT 'is enable',
-                                `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                                `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
+                                `name` varchar(50) NOT null COMMENT 'fragment name',
+                                `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                                `fragment_value` text NOT null COMMENT 'fragment value',
+                                `note` text null COMMENT 'note',
+                                `enabled` tinyint(4) null DEFAULT 1 COMMENT 'is enable',
+                                `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_history`;
 CREATE TABLE `dinky_history` (
-                               `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                               `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                               `cluster_id` int(11) NOT NULL DEFAULT 0 COMMENT 'cluster ID',
-                               `cluster_configuration_id` int(11) NULL DEFAULT NULL COMMENT 'cluster configuration id',
-                               `session` varchar(255) NULL DEFAULT NULL COMMENT 'session',
-                               `job_id` varchar(50) NULL DEFAULT NULL COMMENT 'Job ID',
-                               `job_name` varchar(255) NULL DEFAULT NULL COMMENT 'Job Name',
-                               `job_manager_address` varchar(255) NULL DEFAULT NULL COMMENT 'JJobManager Address',
-                               `status` int(11) NOT NULL DEFAULT 0 COMMENT 'status',
-                               `type` varchar(50) NULL DEFAULT NULL COMMENT 'job type',
-                               `statement` text NULL COMMENT 'statement set',
-                               `error` text NULL COMMENT 'error message',
-                               `result` text NULL COMMENT 'result set',
-                               `config_json` json NULL COMMENT 'config json',
-                               `start_time` datetime(0) NULL DEFAULT NULL COMMENT 'job start time',
-                               `end_time` datetime(0) NULL DEFAULT NULL COMMENT 'job end time',
-                               `task_id` int(11) NULL DEFAULT NULL COMMENT 'task ID',
+                               `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                               `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                               `cluster_id` int(11) NOT null DEFAULT 0 COMMENT 'cluster ID',
+                               `cluster_configuration_id` int(11) null DEFAULT null COMMENT 'cluster configuration id',
+                               `session` varchar(255) null DEFAULT null COMMENT 'session',
+                               `job_id` varchar(50) null DEFAULT null COMMENT 'Job ID',
+                               `job_name` varchar(255) null DEFAULT null COMMENT 'Job Name',
+                               `job_manager_address` varchar(255) null DEFAULT null COMMENT 'JJobManager Address',
+                               `status` int(11) NOT null DEFAULT 0 COMMENT 'status',
+                               `type` varchar(50) null DEFAULT null COMMENT 'job type',
+                               `statement` text null COMMENT 'statement set',
+                               `error` text null COMMENT 'error message',
+                               `result` text null COMMENT 'result set',
+                               `config_json` json null COMMENT 'config json',
+                               `start_time` datetime(0) null DEFAULT null COMMENT 'job start time',
+                               `end_time` datetime(0) null DEFAULT null COMMENT 'job end time',
+                               `task_id` int(11) null DEFAULT null COMMENT 'task ID',
                                INDEX task_index1(`task_id`),
                                INDEX cluster_index2(`cluster_id`)
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_jar`;
 CREATE TABLE `dinky_jar` (
-                           `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                           `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                           `name` varchar(255) NOT NULL COMMENT 'jar name',
-                           `type` varchar(50) NULL DEFAULT NULL COMMENT 'jar type',
-                           `path` varchar(255) NULL DEFAULT NULL COMMENT 'file path',
-                           `main_class` varchar(255) NULL DEFAULT NULL COMMENT 'application of main class',
-                           `paras` varchar(255) NULL DEFAULT NULL COMMENT 'main class of args',
-                           `note` varchar(255) NULL DEFAULT NULL COMMENT 'note',
-                           `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                           `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                           `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                           `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                           `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                           `name` varchar(255) NOT null COMMENT 'jar name',
+                           `type` varchar(50) null DEFAULT null COMMENT 'jar type',
+                           `path` varchar(255) null DEFAULT null COMMENT 'file path',
+                           `main_class` varchar(255) null DEFAULT null COMMENT 'application of main class',
+                           `paras` varchar(255) null DEFAULT null COMMENT 'main class of args',
+                           `note` varchar(255) null DEFAULT null COMMENT 'note',
+                           `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
+                           `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                           `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_job_history`;
 CREATE TABLE `dinky_job_history` (
-                                   `id` int(11) NOT NULL COMMENT 'id',
-                                   `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                   `job_json` json NULL COMMENT 'Job information json',
-                                   `exceptions_json` json NULL COMMENT 'error message json',
-                                   `checkpoints_json` json NULL COMMENT 'checkpoints json',
-                                   `checkpoints_config_json` json NULL COMMENT 'checkpoints configuration json',
-                                   `config_json` json NULL COMMENT 'configuration',
-                                   `jar_json` json NULL COMMENT 'Jar configuration',
-                                   `cluster_json` json NULL COMMENT 'cluster instance configuration',
-                                   `cluster_configuration_json` json NULL COMMENT 'cluster config',
-                                   `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                                   `id` int(11) NOT null COMMENT 'id',
+                                   `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                                   `job_json` json null COMMENT 'Job information json',
+                                   `exceptions_json` json null COMMENT 'error message json',
+                                   `checkpoints_json` json null COMMENT 'checkpoints json',
+                                   `checkpoints_config_json` json null COMMENT 'checkpoints configuration json',
+                                   `config_json` json null COMMENT 'configuration',
+                                   `jar_json` json null COMMENT 'Jar configuration',
+                                   `cluster_json` json null COMMENT 'cluster instance configuration',
+                                   `cluster_configuration_json` json null COMMENT 'cluster config',
+                                   `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_job_instance`;
 CREATE TABLE `dinky_job_instance` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                                    `name` varchar(255) NULL DEFAULT NULL COMMENT 'job instance name',
-                                    `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                    `task_id` int(11) NULL DEFAULT NULL COMMENT 'task ID',
-                                    `step` int(11) NULL DEFAULT NULL COMMENT 'job lifecycle',
-                                    `cluster_id` int(11) NULL DEFAULT NULL COMMENT 'cluster ID',
-                                    `jid` varchar(50) NULL DEFAULT NULL COMMENT 'Flink JobId',
-                                    `status` varchar(50) NULL DEFAULT NULL COMMENT 'job instance status',
-                                    `history_id` int(11) NULL DEFAULT NULL COMMENT 'execution history ID',
-                                    `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                    `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                                    `finish_time` datetime(0) NULL DEFAULT NULL COMMENT 'finish time',
-                                    `duration` bigint(20) NULL DEFAULT NULL COMMENT 'job duration',
-                                    `error` text NULL COMMENT 'error logs',
-                                    `failed_restart_count` int(11) NULL DEFAULT NULL COMMENT 'failed restart count',
+                                    `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
+                                    `name` varchar(255) null DEFAULT null COMMENT 'job instance name',
+                                    `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                                    `task_id` int(11) null DEFAULT null COMMENT 'task ID',
+                                    `step` int(11) null DEFAULT null COMMENT 'job lifecycle',
+                                    `cluster_id` int(11) null DEFAULT null COMMENT 'cluster ID',
+                                    `jid` varchar(50) null DEFAULT null COMMENT 'Flink JobId',
+                                    `status` varchar(50) null DEFAULT null COMMENT 'job instance status',
+                                    `history_id` int(11) null DEFAULT null COMMENT 'execution history ID',
+                                    `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                    `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                    `finish_time` datetime(0) null DEFAULT null COMMENT 'finish time',
+                                    `duration` bigint(20) null DEFAULT null COMMENT 'job duration',
+                                    `error` text null COMMENT 'error logs',
+                                    `failed_restart_count` int(11) null DEFAULT null COMMENT 'failed restart count',
                                     INDEX job_instance_task_id_idx13(`task_id`)
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 DROP TABLE IF EXISTS `dinky_role`;
 CREATE TABLE `dinky_role` (
-                            `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                            `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
-                            `role_code` varchar(64) NOT NULL COMMENT 'role code',
-                            `role_name` varchar(64) NOT NULL COMMENT 'role name',
-                            `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is delete',
-                            `note` varchar(255) NULL DEFAULT NULL COMMENT 'note',
-                            `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                            `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                            `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                            `tenant_id` int(11) NOT null COMMENT 'tenant id',
+                            `role_code` varchar(64) NOT null COMMENT 'role code',
+                            `role_name` varchar(64) NOT null COMMENT 'role name',
+                            `is_delete` tinyint(1) NOT null DEFAULT 0 COMMENT 'is delete',
+                            `note` varchar(255) null DEFAULT null COMMENT 'note',
+                            `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                            `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_role`
 VALUES (1, 1, 'SuperAdmin', 'SuperAdmin', 0
@@ -1286,126 +1286,126 @@ VALUES (1, 1, 'SuperAdmin', 'SuperAdmin', 0
 
 DROP TABLE IF EXISTS `dinky_savepoints`;
 CREATE TABLE `dinky_savepoints` (
-                                  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                  `task_id` int(11) NOT NULL COMMENT 'task ID',
-                                  `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                  `name` varchar(255) NOT NULL COMMENT 'task name',
-                                  `type` varchar(255) NOT NULL COMMENT 'savepoint type',
-                                  `path` varchar(255) NOT NULL COMMENT 'savepoint path',
-                                  `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time'
+                                  `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                                  `task_id` int(11) NOT null COMMENT 'task ID',
+                                  `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                                  `name` varchar(255) NOT null COMMENT 'task name',
+                                  `type` varchar(255) NOT null COMMENT 'savepoint type',
+                                  `path` varchar(255) NOT null COMMENT 'savepoint path',
+                                  `create_time` datetime(0) null DEFAULT null COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_schema_history`;
 CREATE TABLE `dinky_schema_history` (
-                                      `installed_rank` int(11) NOT NULL,
-                                      `version` varchar(50) NULL DEFAULT NULL,
-                                      `description` varchar(200) NOT NULL,
-                                      `type` varchar(20) NOT NULL,
-                                      `script` varchar(1000) NOT NULL,
-                                      `checksum` int(11) NULL DEFAULT NULL,
-                                      `installed_by` varchar(100) NOT NULL,
-                                      `installed_on` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
-                                      `execution_time` int(11) NOT NULL,
-                                      `success` tinyint(1) NOT NULL,
+                                      `installed_rank` int(11) NOT null,
+                                      `version` varchar(50) null DEFAULT null,
+                                      `description` varchar(200) NOT null,
+                                      `type` varchar(20) NOT null,
+                                      `script` varchar(1000) NOT null,
+                                      `checksum` int(11) null DEFAULT null,
+                                      `installed_by` varchar(100) NOT null,
+                                      `installed_on` timestamp(0) NOT null DEFAULT CURRENT_TIMESTAMP(0),
+                                      `execution_time` int(11) NOT null,
+                                      `success` tinyint(1) NOT null,
                                       INDEX schema_history_idx4(`success`)
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_sys_config`;
 CREATE TABLE `dinky_sys_config` (
-                                  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                  `name` varchar(255) NOT NULL COMMENT 'configuration name',
-                                  `value` text NULL COMMENT 'configuration value',
-                                  `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                  `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                                  `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                                  `name` varchar(255) NOT null COMMENT 'configuration name',
+                                  `value` text null COMMENT 'configuration value',
+                                  `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                  `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_task`;
 CREATE TABLE `dinky_task` (
-                            `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                            `name` varchar(255) NOT NULL COMMENT 'Job name',
-                            `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                            `dialect` varchar(50) NULL DEFAULT NULL COMMENT 'dialect',
-                            `type` varchar(50) NULL DEFAULT NULL COMMENT 'Job type',
-                            `check_point` int(11) NULL DEFAULT NULL COMMENT 'CheckPoint trigger seconds',
-                            `save_point_strategy` int(11) NULL DEFAULT NULL COMMENT 'SavePoint strategy',
-                            `save_point_path` varchar(255) NULL DEFAULT NULL COMMENT 'SavePointPath',
-                            `parallelism` int(11) NULL DEFAULT NULL COMMENT 'parallelism',
-                            `fragment` tinyint(1) NULL DEFAULT 0 COMMENT 'fragment',
-                            `statement_set` tinyint(1) NULL DEFAULT 0 COMMENT 'enable statement set',
-                            `batch_model` tinyint(1) NULL DEFAULT 0 COMMENT 'use batch model',
-                            `cluster_id` int(11) NULL DEFAULT NULL COMMENT 'Flink cluster ID',
-                            `cluster_configuration_id` int(11) NULL DEFAULT NULL COMMENT 'cluster configuration ID',
-                            `database_id` int(11) NULL DEFAULT NULL COMMENT 'database ID',
-                            `jar_id` int(11) NULL DEFAULT NULL COMMENT 'Jar ID',
-                            `env_id` int(11) NULL DEFAULT NULL COMMENT 'env id',
-                            `alert_group_id` bigint(20) NULL DEFAULT NULL COMMENT 'alert group id',
-                            `config_json` text NULL COMMENT 'configuration json',
-                            `note` varchar(255) NULL DEFAULT NULL COMMENT 'Job Note',
-                            `step` int(11) NULL DEFAULT NULL COMMENT 'Job lifecycle',
-                            `job_instance_id` bigint(20) NULL DEFAULT NULL COMMENT 'job instance id',
-                            `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                            `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                            `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                            `version_id` int(11) NULL DEFAULT NULL COMMENT 'version id'
+                            `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                            `name` varchar(255) NOT null COMMENT 'Job name',
+                            `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                            `dialect` varchar(50) null DEFAULT null COMMENT 'dialect',
+                            `type` varchar(50) null DEFAULT null COMMENT 'Job type',
+                            `check_point` int(11) null DEFAULT null COMMENT 'CheckPoint trigger seconds',
+                            `save_point_strategy` int(11) null DEFAULT null COMMENT 'SavePoint strategy',
+                            `save_point_path` varchar(255) null DEFAULT null COMMENT 'SavePointPath',
+                            `parallelism` int(11) null DEFAULT null COMMENT 'parallelism',
+                            `fragment` tinyint(1) null DEFAULT 0 COMMENT 'fragment',
+                            `statement_set` tinyint(1) null DEFAULT 0 COMMENT 'enable statement set',
+                            `batch_model` tinyint(1) null DEFAULT 0 COMMENT 'use batch model',
+                            `cluster_id` int(11) null DEFAULT null COMMENT 'Flink cluster ID',
+                            `cluster_configuration_id` int(11) null DEFAULT null COMMENT 'cluster configuration ID',
+                            `database_id` int(11) null DEFAULT null COMMENT 'database ID',
+                            `jar_id` int(11) null DEFAULT null COMMENT 'Jar ID',
+                            `env_id` int(11) null DEFAULT null COMMENT 'env id',
+                            `alert_group_id` bigint(20) null DEFAULT null COMMENT 'alert group id',
+                            `config_json` text null COMMENT 'configuration json',
+                            `note` varchar(255) null DEFAULT null COMMENT 'Job Note',
+                            `step` int(11) null DEFAULT null COMMENT 'Job lifecycle',
+                            `job_instance_id` bigint(20) null DEFAULT null COMMENT 'job instance id',
+                            `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
+                            `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                            `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                            `version_id` int(11) null DEFAULT null COMMENT 'version id'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_task_statement`;
 CREATE TABLE `dinky_task_statement` (
-                                      `id` int(11) NOT NULL COMMENT 'ID',
-                                      `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                      `statement` longtext NULL COMMENT 'statement set'
+                                      `id` int(11) NOT null COMMENT 'ID',
+                                      `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                                      `statement` longtext null COMMENT 'statement set'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_task_version`;
 CREATE TABLE `dinky_task_version` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                    `task_id` int(11) NOT NULL COMMENT 'task ID ',
-                                    `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                    `version_id` int(11) NOT NULL COMMENT 'version ID ',
-                                    `statement` text NULL COMMENT 'flink sql statement',
-                                    `name` varchar(255) NOT NULL COMMENT 'version name',
-                                    `dialect` varchar(50) NULL DEFAULT NULL COMMENT 'dialect',
-                                    `type` varchar(50) NULL DEFAULT NULL COMMENT 'type',
-                                    `task_configure` text NOT NULL COMMENT 'task configuration',
-                                    `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time'
+                                    `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                                    `task_id` int(11) NOT null COMMENT 'task ID ',
+                                    `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
+                                    `version_id` int(11) NOT null COMMENT 'version ID ',
+                                    `statement` text null COMMENT 'flink sql statement',
+                                    `name` varchar(255) NOT null COMMENT 'version name',
+                                    `dialect` varchar(50) null DEFAULT null COMMENT 'dialect',
+                                    `type` varchar(50) null DEFAULT null COMMENT 'type',
+                                    `task_configure` text NOT null COMMENT 'task configuration',
+                                    `create_time` datetime(0) null DEFAULT null COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_tenant`;
 CREATE TABLE `dinky_tenant` (
-                              `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                              `tenant_code` varchar(64) NOT NULL COMMENT 'tenant code',
-                              `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is delete',
-                              `note` varchar(255) NULL DEFAULT NULL COMMENT 'note',
-                              `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                              `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                              `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                              `tenant_code` varchar(64) NOT null COMMENT 'tenant code',
+                              `is_delete` tinyint(1) NOT null DEFAULT 0 COMMENT 'is delete',
+                              `note` varchar(255) null DEFAULT null COMMENT 'note',
+                              `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                              `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_tenant`
 VALUES (1, 'DefaultTenant', 0, 'DefaultTenant', '2022-12-13 05:27:19'
        , '2022-12-13 05:27:19');
 DROP TABLE IF EXISTS `dinky_udf`;
 CREATE TABLE `dinky_udf` (
-                           `id` int(11) NOT NULL AUTO_INCREMENT,
-                           `name` varchar(200) NULL DEFAULT NULL COMMENT 'udf name',
-                           `class_name` varchar(200) NULL DEFAULT NULL COMMENT 'Complete class name',
-                           `source_code` longtext NULL COMMENT 'source code',
-                           `compiler_code` binary(255) NULL DEFAULT NULL COMMENT 'compiler product',
-                           `version_id` int(11) NULL DEFAULT NULL COMMENT 'version',
-                           `version_description` varchar(50) NULL DEFAULT NULL COMMENT 'version description',
-                           `is_default` tinyint(1) NULL DEFAULT NULL COMMENT 'Is it default',
-                           `document_id` int(11) NULL DEFAULT NULL COMMENT 'corresponding to the document id',
-                           `from_version_id` int(11) NULL DEFAULT NULL COMMENT 'Based on udf version id',
-                           `code_md5` varchar(50) NULL DEFAULT NULL COMMENT 'source code of md5',
-                           `dialect` varchar(50) NULL DEFAULT NULL COMMENT 'dialect',
-                           `type` varchar(50) NULL DEFAULT NULL COMMENT 'type',
-                           `step` int(11) NULL DEFAULT NULL COMMENT 'job lifecycle step',
-                           `enable` tinyint(1) NULL DEFAULT 1 COMMENT 'is enable',
-                           `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                           `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
+                           `id` int(11) NOT null AUTO_INCREMENT,
+                           `name` varchar(200) null DEFAULT null COMMENT 'udf name',
+                           `class_name` varchar(200) null DEFAULT null COMMENT 'Complete class name',
+                           `source_code` longtext null COMMENT 'source code',
+                           `compiler_code` binary(255) null DEFAULT null COMMENT 'compiler product',
+                           `version_id` int(11) null DEFAULT null COMMENT 'version',
+                           `version_description` varchar(50) null DEFAULT null COMMENT 'version description',
+                           `is_default` tinyint(1) null DEFAULT null COMMENT 'Is it default',
+                           `document_id` int(11) null DEFAULT null COMMENT 'corresponding to the document id',
+                           `from_version_id` int(11) null DEFAULT null COMMENT 'Based on udf version id',
+                           `code_md5` varchar(50) null DEFAULT null COMMENT 'source code of md5',
+                           `dialect` varchar(50) null DEFAULT null COMMENT 'dialect',
+                           `type` varchar(50) null DEFAULT null COMMENT 'type',
+                           `step` int(11) null DEFAULT null COMMENT 'job lifecycle step',
+                           `enable` tinyint(1) null DEFAULT 1 COMMENT 'is enable',
+                           `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                           `update_time` datetime DEFAULT null ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_udf_template`;
 CREATE TABLE `dinky_udf_template` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                                    `name` varchar(100) NULL DEFAULT NULL COMMENT 'template name',
-                                    `code_type` varchar(10) NULL DEFAULT NULL COMMENT 'code type',
-                                    `function_type` varchar(10) NULL DEFAULT NULL COMMENT 'function type',
-                                    `template_code` longtext NULL COMMENT 'code',
-                                    `enabled` tinyint(1) NULL DEFAULT 1 COMMENT 'is enable',
-                                    `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                    `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
+                                    `id` int(11) NOT null AUTO_INCREMENT,
+                                    `name` varchar(100) null DEFAULT null COMMENT 'template name',
+                                    `code_type` varchar(10) null DEFAULT null COMMENT 'code type',
+                                    `function_type` varchar(10) null DEFAULT null COMMENT 'function type',
+                                    `template_code` longtext null COMMENT 'code',
+                                    `enabled` tinyint(1) null DEFAULT 1 COMMENT 'is enable',
+                                    `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                    `update_time` datetime DEFAULT null ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_udf_template`
 VALUES (1, 'java_udf', 'Java', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}
@@ -1417,7 +1417,7 @@ public class ${className} extends ScalarFunction {
         return null;
     }
 }'
-       , NULL, '2022-10-19 09:17:37', '2022-10-25 17:45:57');
+       , null, '2022-10-19 09:17:37', '2022-10-25 17:45:57');
 INSERT INTO `dinky_udf_template`
 VALUES (2, 'java_udtf', 'Java', 'UDTF', '${(package=='''')?string('''',''package ''+package+'';'')}
 
@@ -1433,7 +1433,7 @@ public static class ${className} extends TableFunction<Row> {
     }
   }
 }'
-       , NULL, '2022-10-19 09:22:58', '2022-10-25 17:49:30');
+       , null, '2022-10-19 09:22:58', '2022-10-25 17:49:30');
 INSERT INTO `dinky_udf_template`
 VALUES (3, 'scala_udf', 'Scala', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}
 
@@ -1446,7 +1446,7 @@ class ${className} extends ScalarFunction {
     "this is scala"
   }
 }'
-       , NULL, '2022-10-25 09:21:32', '2022-10-25 17:49:46');
+       , null, '2022-10-25 09:21:32', '2022-10-25 17:49:46');
 INSERT INTO `dinky_udf_template`
 VALUES (4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFunction, DataTypes
 from pyflink.table.udf import udf
@@ -1460,7 +1460,7 @@ class ${className}(ScalarFunction):
 
 
 ${attr!''f''} = udf(${className}(), result_type=DataTypes.STRING())'
-       , NULL, '2022-10-25 09:23:07', '2022-10-25 09:34:01');
+       , null, '2022-10-25 09:23:07', '2022-10-25 09:34:01');
 INSERT INTO `dinky_udf_template`
 VALUES (5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes
 from pyflink.table.udf import udf
@@ -1468,117 +1468,117 @@ from pyflink.table.udf import udf
 @udf(result_type=DataTypes.STRING())
 def ${className}(variable1:str):
   return '''''
-       , NULL, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
+       , null, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
 DROP TABLE IF EXISTS `dinky_upload_file_record`;
 CREATE TABLE `dinky_upload_file_record` (
-                                          `id` tinyint(4) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                                          `name` varchar(255) NULL DEFAULT NULL COMMENT 'upload file name',
-                                          `enabled` tinyint(1) NULL DEFAULT NULL COMMENT 'is enable',
-                                          `file_type` tinyint(4) NULL DEFAULT -1 COMMENT 'upload file type ，such as：hadoop-conf(1)、flink-conf(2)、flink-lib(3)、user-jar(4)、dinky-jar(5)，default is -1 ',
-                                          `target` tinyint(4) NOT NULL COMMENT 'upload file of target ，such as：local(1)、hdfs(2)',
-                                          `file_name` varchar(255) NULL DEFAULT NULL COMMENT 'file name',
-                                          `file_parent_path` varchar(255) NULL DEFAULT NULL COMMENT 'file parent path',
-                                          `file_absolute_path` varchar(255) NULL DEFAULT NULL COMMENT 'fila absolute path',
-                                          `is_file` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is file',
-                                          `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                          `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                                          `id` tinyint(4) NOT null AUTO_INCREMENT COMMENT 'id',
+                                          `name` varchar(255) null DEFAULT null COMMENT 'upload file name',
+                                          `enabled` tinyint(1) null DEFAULT null COMMENT 'is enable',
+                                          `file_type` tinyint(4) null DEFAULT -1 COMMENT 'upload file type ，such as：hadoop-conf(1)、flink-conf(2)、flink-lib(3)、user-jar(4)、dinky-jar(5)，default is -1 ',
+                                          `target` tinyint(4) NOT null COMMENT 'upload file of target ，such as：local(1)、hdfs(2)',
+                                          `file_name` varchar(255) null DEFAULT null COMMENT 'file name',
+                                          `file_parent_path` varchar(255) null DEFAULT null COMMENT 'file parent path',
+                                          `file_absolute_path` varchar(255) null DEFAULT null COMMENT 'fila absolute path',
+                                          `is_file` tinyint(1) NOT null DEFAULT 1 COMMENT 'is file',
+                                          `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                          `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `dinky_user`;
 CREATE TABLE `dinky_user` (
-                            `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                            `username` varchar(50) NOT NULL COMMENT 'username',
-                             `user_type`   int    DEFAULT 0 NOT NULL COMMENT 'login type (0:LOCAL,1:LDAP)',
-                            `password` varchar(50) NULL DEFAULT NULL COMMENT 'password',
-                            `nickname` varchar(50) NULL DEFAULT NULL COMMENT 'nickname',
-                            `worknum` varchar(50) NULL DEFAULT NULL COMMENT 'worknum',
-                            `avatar` blob NULL COMMENT 'avatar',
-                            `mobile` varchar(20) NULL DEFAULT NULL COMMENT 'mobile phone',
-                            `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
+                            `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                            `username` varchar(50) NOT null COMMENT 'username',
+                             `user_type`   int    DEFAULT 0 NOT null COMMENT 'login type (0:LOCAL,1:LDAP)',
+                            `password` varchar(50) null DEFAULT null COMMENT 'password',
+                            `nickname` varchar(50) null DEFAULT null COMMENT 'nickname',
+                            `worknum` varchar(50) null DEFAULT null COMMENT 'worknum',
+                            `avatar` blob null COMMENT 'avatar',
+                            `mobile` varchar(20) null DEFAULT null COMMENT 'mobile phone',
+                            `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
                             `super_admin_flag` tinyint(1) DEFAULT '0' COMMENT 'is super admin(0:false,1true)',
-                            `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is delete',
-                            `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                            `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                            `is_delete` tinyint(1) NOT null DEFAULT 0 COMMENT 'is delete',
+                            `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                            `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_user`
 VALUES (1, 'admin', 1,'21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Dinky-001'
-       , NULL, '17777777777', 1,1, 0, '2022-12-13 05:27:19'
+       , null, '17777777777', 1,1, 0, '2022-12-13 05:27:19'
        , '2022-12-13 05:27:19');
 DROP TABLE IF EXISTS `dinky_user_role`;
 CREATE TABLE `dinky_user_role` (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                 `user_id` int(11) NOT NULL COMMENT 'user id',
-                                 `role_id` int(11) NOT NULL COMMENT 'role id',
-                                 `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                 `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                                 `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                                 `user_id` int(11) NOT null COMMENT 'user id',
+                                 `role_id` int(11) NOT null COMMENT 'role id',
+                                 `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                 `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_user_role`
 VALUES (1, 1, 1, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 DROP TABLE IF EXISTS `dinky_user_tenant`;
 CREATE TABLE `dinky_user_tenant` (
-                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                   `user_id` int(11) NOT NULL COMMENT 'user id',
-                                   `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
+                                   `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
+                                   `user_id` int(11) NOT null COMMENT 'user id',
+                                   `tenant_id` int(11) NOT null COMMENT 'tenant id',
                                     `tenant_admin_flag` tinyint DEFAULT '0' COMMENT 'tenant admin flag(0:false,1:true)',
-                                   `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                   `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
+                                   `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                   `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_user_tenant` (`id`, `user_id`, `tenant_id`, `create_time`, `update_time`)
 VALUES (1, 1, 1,1, current_time, current_time);
 DROP TABLE IF EXISTS `metadata_column`;
 CREATE TABLE `metadata_column` (
-                                 `column_name` varchar(255) NOT NULL COMMENT 'column name',
-                                 `column_type` varchar(255) NOT NULL COMMENT 'column type, such as : Physical , Metadata , Computed , WATERMARK',
-                                 `data_type` varchar(255) NOT NULL COMMENT 'data type',
-                                 `expr` varchar(255) NULL DEFAULT NULL COMMENT 'expression',
-                                 `description` varchar(255) NOT NULL COMMENT 'column description',
-                                 `table_id` int(11) NOT NULL COMMENT 'table id',
-                                 `primary` bit(1) NULL DEFAULT NULL COMMENT 'table primary key',
-                                 `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                                 `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
+                                 `column_name` varchar(255) NOT null COMMENT 'column name',
+                                 `column_type` varchar(255) NOT null COMMENT 'column type, such as : Physical , Metadata , Computed , WATERMARK',
+                                 `data_type` varchar(255) NOT null COMMENT 'data type',
+                                 `expr` varchar(255) null DEFAULT null COMMENT 'expression',
+                                 `description` varchar(255) NOT null COMMENT 'column description',
+                                 `table_id` int(11) NOT null COMMENT 'table id',
+                                 `primary` bit(1) null DEFAULT null COMMENT 'table primary key',
+                                 `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                 `create_time` datetime(0) NOT null DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `metadata_database`;
 CREATE TABLE `metadata_database` (
-                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                                   `database_name` varchar(255) NOT NULL COMMENT 'database name',
-                                   `description` varchar(255) NULL DEFAULT NULL COMMENT 'database description',
-                                   `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                                   `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
+                                   `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
+                                   `database_name` varchar(255) NOT null COMMENT 'database name',
+                                   `description` varchar(255) null DEFAULT null COMMENT 'database description',
+                                   `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                   `create_time` datetime(0) null DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `metadata_database_property`;
 CREATE TABLE `metadata_database_property` (
-                                            `key` varchar(255) NOT NULL COMMENT 'key',
-                                            `value` varchar(255) NULL DEFAULT NULL COMMENT 'value',
-                                            `database_id` int(11) NOT NULL COMMENT 'database id',
-                                            `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                                            `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
+                                            `key` varchar(255) NOT null COMMENT 'key',
+                                            `value` varchar(255) null DEFAULT null COMMENT 'value',
+                                            `database_id` int(11) NOT null COMMENT 'database id',
+                                            `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                            `create_time` datetime(0) NOT null DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `metadata_function`;
 CREATE TABLE `metadata_function` (
-                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-                                   `function_name` varchar(255) NOT NULL COMMENT 'function name',
-                                   `class_name` varchar(255) NOT NULL COMMENT 'class name',
-                                   `database_id` int(11) NOT NULL COMMENT 'database id',
-                                   `function_language` varchar(255) NULL DEFAULT NULL COMMENT 'function language',
-                                   `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                                   `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
+                                   `id` int(11) NOT null AUTO_INCREMENT COMMENT '主键',
+                                   `function_name` varchar(255) NOT null COMMENT 'function name',
+                                   `class_name` varchar(255) NOT null COMMENT 'class name',
+                                   `database_id` int(11) NOT null COMMENT 'database id',
+                                   `function_language` varchar(255) null DEFAULT null COMMENT 'function language',
+                                   `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                   `create_time` datetime(0) null DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `metadata_table`;
 CREATE TABLE `metadata_table` (
-                                `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-                                `table_name` varchar(255) NOT NULL COMMENT 'table name',
-                                `table_type` varchar(255) NOT NULL COMMENT 'type，such as：database,table,view',
-                                `database_id` int(11) NOT NULL COMMENT 'database id',
-                                `description` varchar(255) NULL DEFAULT NULL COMMENT 'table description',
-                                `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                                `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
+                                `id` int(11) NOT null AUTO_INCREMENT COMMENT '主键',
+                                `table_name` varchar(255) NOT null COMMENT 'table name',
+                                `table_type` varchar(255) NOT null COMMENT 'type，such as：database,table,view',
+                                `database_id` int(11) NOT null COMMENT 'database id',
+                                `description` varchar(255) null DEFAULT null COMMENT 'table description',
+                                `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                `create_time` datetime(0) null DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 DROP TABLE IF EXISTS `metadata_table_property`;
 CREATE TABLE `metadata_table_property` (
-                                         `key` varchar(255) NOT NULL COMMENT 'key',
-                                         `value` mediumtext NULL COMMENT 'value',
-                                         `table_id` int(11) NOT NULL COMMENT 'table id',
-                                         `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                                         `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create tiime'
+                                         `key` varchar(255) NOT null COMMENT 'key',
+                                         `value` mediumtext null COMMENT 'value',
+                                         `table_id` int(11) NOT null COMMENT 'table id',
+                                         `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                         `create_time` datetime(0) NOT null DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create tiime'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 -- ----------------------------
 -- Records of metadata_table_property
@@ -1589,82 +1589,82 @@ CREATE TABLE `metadata_table_property` (
 DROP TABLE IF EXISTS `dinky_row_permissions`;
 CREATE TABLE dinky_row_permissions (
                                              id int PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
-                                             role_id int NOT NULL COMMENT '角色ID',
-                                             table_name varchar(255) NULL COMMENT '表名',
-                                             expression varchar(255) NULL COMMENT '表达式',
-                                             create_time datetime NULL COMMENT '创建时间',
-                                             update_time datetime NULL COMMENT '更新时间'
+                                             role_id int NOT null COMMENT '角色ID',
+                                             table_name varchar(255) null COMMENT '表名',
+                                             expression varchar(255) null COMMENT '表达式',
+                                             create_time datetime null COMMENT '创建时间',
+                                             update_time datetime null COMMENT '更新时间'
 );
 SET FOREIGN_KEY_CHECKS = 1;
 DROP TABLE IF EXISTS `dinky_git_project`;
 CREATE TABLE `dinky_git_project` (
-                                   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                                   `tenant_id` bigint(20) NOT NULL,
-                                   `name` varchar(255) NOT NULL,
-                                   `url` varchar(1000) NOT NULL,
-                                   `branch` varchar(1000) NOT NULL,
-                                   `username` varchar(255) DEFAULT NULL,
-                                   `password` varchar(255) DEFAULT NULL,
-                                   `private_key` varchar(255) DEFAULT NULL COMMENT 'keypath',
-                                   `pom` varchar(255) DEFAULT NULL,
-                                   `build_args` varchar(255) DEFAULT NULL,
-                                   `code_type` tinyint(4) DEFAULT NULL COMMENT 'code type(1-java,2-python)',
-                                   `type` tinyint(4) NOT NULL COMMENT '1-http ,2-ssh',
-                                   `last_build` datetime DEFAULT NULL,
-                                   `description` varchar(255) DEFAULT NULL,
-                                   `build_state` tinyint(2) NOT NULL DEFAULT '0' COMMENT '0-notStart 1-process 2-failed 3-success',
-                                   `build_step` tinyint(2) NOT NULL DEFAULT '0',
-                                   `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0-disable 1-enable',
+                                   `id` bigint(20) NOT null AUTO_INCREMENT,
+                                   `tenant_id` bigint(20) NOT null,
+                                   `name` varchar(255) NOT null,
+                                   `url` varchar(1000) NOT null,
+                                   `branch` varchar(1000) NOT null,
+                                   `username` varchar(255) DEFAULT null,
+                                   `password` varchar(255) DEFAULT null,
+                                   `private_key` varchar(255) DEFAULT null COMMENT 'keypath',
+                                   `pom` varchar(255) DEFAULT null,
+                                   `build_args` varchar(255) DEFAULT null,
+                                   `code_type` tinyint(4) DEFAULT null COMMENT 'code type(1-java,2-python)',
+                                   `type` tinyint(4) NOT null COMMENT '1-http ,2-ssh',
+                                   `last_build` datetime DEFAULT null,
+                                   `description` varchar(255) DEFAULT null,
+                                   `build_state` tinyint(2) NOT null DEFAULT '0' COMMENT '0-notStart 1-process 2-failed 3-success',
+                                   `build_step` tinyint(2) NOT null DEFAULT '0',
+                                   `enabled` tinyint(1) NOT null DEFAULT '1' COMMENT '0-disable 1-enable',
                                    `udf_class_map_list` text COMMENT 'scan udf class',
-                                   `order_line` int(11) NOT NULL DEFAULT '1' COMMENT 'order',
-                                   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
-                                   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
+                                   `order_line` int(11) NOT null DEFAULT '1' COMMENT 'order',
+                                   `create_time` datetime NOT null DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                   `update_time` datetime NOT null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
 ) ENGINE = InnoDB;
 INSERT INTO `dinky_git_project` (`id`, `tenant_id`, `name`, `url`, `branch`
                                 , `username`, `password`, `private_key`, `pom`, `build_args`
                                 , `code_type`, `type`, `last_build`, `description`, `build_state`
                                 , `build_step`, `enabled`, `udf_class_map_list`, `order_line`)
 VALUES (1, 1, 'java-udf', 'https://github.com/zackyoungh/dinky-quickstart-java.git', 'master'
-       , NULL, NULL, NULL, NULL, '-P flink-1.14'
-       , 1, 1, NULL, NULL, 0
+       , null, null, null, null, '-P flink-1.14'
+       , 1, 1, null, null, 0
        , 0, 1, '[]', 1);
 INSERT INTO `dinky_git_project` (`id`, `tenant_id`, `name`, `url`, `branch`
                                 , `username`, `password`, `private_key`, `pom`, `build_args`
                                 , `code_type`, `type`, `last_build`, `description`, `build_state`
                                 , `build_step`, `enabled`, `udf_class_map_list`, `order_line`)
 VALUES (2, 1, 'python-udf', 'https://github.com/zackyoungh/dinky-quickstart-python.git', 'master'
-       , NULL, NULL, NULL, NULL, ''
-       , 2, 1, NULL, NULL, 0
+       , null, null, null, null, ''
+       , 2, 1, null, null, 0
        , 0, 1, '[]', 2);
 
 DROP TABLE IF EXISTS dinky_metrics;
 CREATE TABLE `dinky_metrics` (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                                 `task_id` int(255) DEFAULT NULL,
-                                 `vertices` varchar(255) DEFAULT NULL,
-                                 `metrics` varchar(255) DEFAULT NULL,
-                                 `position` int(11) DEFAULT NULL,
-                                 `show_type` varchar(255) DEFAULT NULL,
-                                 `show_size` varchar(255) DEFAULT NULL,
-                                 `title` varchar(255) DEFAULT NULL,
-                                 `layout_name` varchar(255) DEFAULT NULL,
-                                 `create_time` datetime DEFAULT NULL,
-                                 `update_time` datetime DEFAULT NULL
+                                 `id` int(11) NOT null AUTO_INCREMENT,
+                                 `task_id` int(255) DEFAULT null,
+                                 `vertices` varchar(255) DEFAULT null,
+                                 `metrics` varchar(255) DEFAULT null,
+                                 `position` int(11) DEFAULT null,
+                                 `show_type` varchar(255) DEFAULT null,
+                                 `show_size` varchar(255) DEFAULT null,
+                                 `title` varchar(255) DEFAULT null,
+                                 `layout_name` varchar(255) DEFAULT null,
+                                 `create_time` datetime DEFAULT null,
+                                 `update_time` datetime DEFAULT null
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS dinky_resources;
 CREATE TABLE `dinky_resources` (
-                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
-                                   `file_name` varchar(64) DEFAULT NULL COMMENT 'file name',
-                                   `description` varchar(255) DEFAULT NULL,
-                                   `user_id` int(11) DEFAULT NULL COMMENT 'user id',
-                                   `type` tinyint(4) DEFAULT NULL COMMENT 'resource type,0:FILE，1:UDF',
-                                   `size` bigint(20) DEFAULT NULL COMMENT 'resource size',
-                                   `pid` int(11) DEFAULT NULL,
-                                   `full_name` varchar(128) DEFAULT NULL,
-                                   `is_directory` tinyint(4) DEFAULT NULL,
-                                   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
-                                   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
+                                   `id` int(11) NOT null AUTO_INCREMENT COMMENT 'key',
+                                   `file_name` varchar(64) DEFAULT null COMMENT 'file name',
+                                   `description` varchar(255) DEFAULT null,
+                                   `user_id` int(11) DEFAULT null COMMENT 'user id',
+                                   `type` tinyint(4) DEFAULT null COMMENT 'resource type,0:FILE，1:UDF',
+                                   `size` bigint(20) DEFAULT null COMMENT 'resource size',
+                                   `pid` int(11) DEFAULT null,
+                                   `full_name` varchar(128) DEFAULT null,
+                                   `is_directory` tinyint(4) DEFAULT null,
+                                   `create_time` datetime NOT null DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                   `update_time` datetime NOT null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
 ) ENGINE = InnoDB;
 INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `type`, `size`, `pid`, `full_name`, `is_directory`) VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '/', 1);
 
@@ -1674,17 +1674,17 @@ INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `typ
 -- ----------------------------
 DROP TABLE IF EXISTS dinky_sys_login_log;
 CREATE TABLE `dinky_sys_login_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
-  `user_id` int(11) NOT NULL COMMENT 'user id',
-  `username` varchar(60) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'username',
-  `login_type` int NOT NULL COMMENT 'login type（0:LOCAL,1:LDAP）',
-  `ip` varchar(40) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ip addr',
-  `status` int NOT NULL COMMENT 'login status',
-  `msg` text COLLATE utf8mb4_general_ci NOT NULL COMMENT 'status msg',
-  `create_time` datetime NOT NULL COMMENT 'create time',
-  `access_time` datetime DEFAULT NULL COMMENT 'access time',
-  `update_time` datetime NOT NULL,
-  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `id` int(11) NOT null AUTO_INCREMENT COMMENT 'key',
+  `user_id` int(11) NOT null COMMENT 'user id',
+  `username` varchar(60) COLLATE utf8mb4_general_ci NOT null COMMENT 'username',
+  `login_type` int NOT null COMMENT 'login type（0:LOCAL,1:LDAP）',
+  `ip` varchar(40) COLLATE utf8mb4_general_ci NOT null COMMENT 'ip addr',
+  `status` int NOT null COMMENT 'login status',
+  `msg` text COLLATE utf8mb4_general_ci NOT null COMMENT 'status msg',
+  `create_time` datetime NOT null COMMENT 'create time',
+  `access_time` datetime DEFAULT null COMMENT 'access time',
+  `update_time` datetime NOT null,
+  `is_deleted` tinyint(1) NOT null DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -1694,21 +1694,21 @@ CREATE TABLE `dinky_sys_login_log` (
 -- ----------------------------
 DROP TABLE IF EXISTS `dinky_sys_operate_log`;
 CREATE TABLE `dinky_sys_operate_log`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `module_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'module name',
-  `business_type` int NULL DEFAULT 0 COMMENT 'business type',
-  `method` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'method name',
-  `request_method` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request method',
-  `operate_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate name',
-  `operate_user_id` int NOT NULL COMMENT 'operate user id',
-  `operate_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate url',
-  `operate_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'ip',
-  `operate_location` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate location',
-  `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request param',
+  `id` bigint NOT null AUTO_INCREMENT COMMENT 'id',
+  `module_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'module name',
+  `business_type` int null DEFAULT 0 COMMENT 'business type',
+  `method` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'method name',
+  `request_method` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'request method',
+  `operate_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'operate name',
+  `operate_user_id` int NOT null COMMENT 'operate user id',
+  `operate_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'operate url',
+  `operate_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'ip',
+  `operate_location` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'operate location',
+  `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'request param',
   `json_result` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT null COMMENT 'return json result',
-  `status` int NULL DEFAULT NULL COMMENT 'operate status',
-  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT NULL COMMENT 'error msg',
-  `operate_time` datetime(0) NULL DEFAULT NULL COMMENT 'operate time',
+  `status` int null DEFAULT null COMMENT 'operate status',
+  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT null COMMENT 'error msg',
+  `operate_time` datetime(0) null DEFAULT null COMMENT 'operate time',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB;
 
@@ -1768,6 +1768,59 @@ INSERT INTO `dinky_sys_menu` VALUES (30, 9, 'cluster-config', '/registration/clu
 INSERT INTO `dinky_sys_menu` VALUES (31, 12, 'instance', '/registration/alert/instance', './RegCenter/Alert/AlertInstance', null, null, 'C', 0, 15, '2023-08-11 14:06:55', '2023-08-18 17:09:39', null);
 INSERT INTO `dinky_sys_menu` VALUES (32, 1, '作业监控', '/home/jobOverView', 'JobOverView', 'show', 'AntCloudOutlined', 'F', 0, 2, '2023-08-15 16:52:59', '2023-08-18 17:09:39', null);
 INSERT INTO `dinky_sys_menu` VALUES (33, 1, '数据开发', '/home/devOverView', 'DevOverView', 'show', 'AimOutlined', 'F', 0, 3, '2023-08-15 16:54:47', '2023-08-18 17:09:39', null);
+INSERT INTO `dinky_sys_menu` VALUES (34, 5, '项目列表', '/datastudio/left/project', null, null, 'ConsoleSqlOutlined', 'F', 0, 1, '2023-09-01 18:00:39', '2023-09-02 00:51:06', null);
+INSERT INTO `dinky_sys_menu` VALUES (35, 5, '元数据', '/datastudio/left/metadata', null, null, 'TableOutlined', 'F', 0, 2, '2023-09-01 18:01:09', '2023-09-02 00:51:12', null);
+INSERT INTO `dinky_sys_menu` VALUES (36, 5, '结构', '/datastudio/left/structure', null, null, 'DatabaseOutlined', 'F', 0, 3, '2023-09-01 18:01:30', '2023-09-02 00:51:26', null);
+INSERT INTO `dinky_sys_menu` VALUES (37, 5, '作业配置', '/datastudio/right/jobConfig', null, null, 'SettingOutlined', 'F', 0, 4, '2023-09-01 18:02:15', '2023-09-02 00:51:32', null);
+INSERT INTO `dinky_sys_menu` VALUES (38, 5, '执行配置', '/datastudio/right/executeConfig', null, null, 'ExperimentOutlined', 'F', 0, 5, '2023-09-01 18:03:08', '2023-09-02 00:51:38', null);
+INSERT INTO `dinky_sys_menu` VALUES (39, 5, '版本历史', '/datastudio/right/historyVision', null, null, 'HistoryOutlined', 'F', 0, 6, '2023-09-01 18:03:29', '2023-09-02 00:51:56', null);
+INSERT INTO `dinky_sys_menu` VALUES (40, 5, '保存点', '/datastudio/right/savePoint', null, null, 'FolderOutlined', 'F', 0, 7, '2023-09-01 18:03:58', '2023-09-02 00:51:47', null);
+INSERT INTO `dinky_sys_menu` VALUES (41, 5, '作业信息', '/datastudio/right/jobInfo', null, null, 'InfoCircleOutlined', 'F', 0, 8, '2023-09-01 18:04:31', '2023-09-02 00:52:06', null);
+INSERT INTO `dinky_sys_menu` VALUES (42, 5, '控制台', '/datastudio/bottom/console', null, null, 'ConsoleSqlOutlined', 'F', 0, 9, '2023-09-01 18:04:56', '2023-09-01 18:04:56', null);
+INSERT INTO `dinky_sys_menu` VALUES (43, 5, '结果', '/datastudio/bottom/result', null, null, 'SearchOutlined', 'F', 0, 10, '2023-09-01 18:05:16', '2023-09-01 18:05:16', null);
+INSERT INTO `dinky_sys_menu` VALUES (44, 5, 'BI', '/datastudio/bottom/bi', null, null, 'DashboardOutlined', 'F', 0, 11, '2023-09-01 18:05:43', '2023-09-01 18:05:43', null);
+INSERT INTO `dinky_sys_menu` VALUES (45, 5, '血缘', '/datastudio/bottom/lineage', null, null, 'PushpinOutlined', 'F', 0, 12, '2023-09-01 18:07:15', '2023-09-02 00:52:12', null);
+INSERT INTO `dinky_sys_menu` VALUES (46, 5, '表数据监控', '/datastudio/bottom/process', null, null, 'TableOutlined', 'F', 0, 13, '2023-09-01 18:07:55', '2023-09-02 00:52:21', null);
+INSERT INTO `dinky_sys_menu` VALUES (47, 5, '小工具', '/datastudio/bottom/tool', null, null, 'ToolOutlined', 'F', 0, 14, '2023-09-01 18:08:18', '2023-09-01 18:08:18', null);
+INSERT INTO `dinky_sys_menu` VALUES (48, 28, '新建', '/registration/cluster/instance/new', null, null, 'PlusOutlined', 'F', 0, 15, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO `dinky_sys_menu` VALUES (49, 28, '回收', '/registration/cluster/instance/recovery', null, null, 'PlusOutlined', 'F', 0, 16, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (50, 28, '编辑', '/registration/cluster/instance/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO `dinky_sys_menu` VALUES (51, 28, '删除', '/registration/cluster/instance/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (52, 30, '新建', '/registration/cluster/config/new', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 09:00:31', '2023-09-06 09:00:31', null);
+INSERT INTO `dinky_sys_menu` VALUES (53, 30, '编辑', '/registration/cluster/config/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO `dinky_sys_menu` VALUES (54, 30, '删除', '/registration/cluster/config/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (55, 10, '新建', '/registration/database/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO `dinky_sys_menu` VALUES (56, 10, '编辑', '/registration/database/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO `dinky_sys_menu` VALUES (57, 10, '删除', '/registration/database/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (58, 31, '新建', '/registration/alert/instance/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO `dinky_sys_menu` VALUES (59, 31, '编辑', '/registration/alert/instance/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO `dinky_sys_menu` VALUES (60, 31, '删除', '/registration/alert/instance/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (61, 29, '新建', '/registration/alert/group/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO `dinky_sys_menu` VALUES (62, 29, '编辑', '/registration/alert/group/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO `dinky_sys_menu` VALUES (63, 29, '删除', '/registration/alert/group/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (64, 13, '新建', '/registration/document/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO `dinky_sys_menu` VALUES (65, 13, '编辑', '/registration/document/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO `dinky_sys_menu` VALUES (66, 13, '删除', '/registration/document/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (67, 13, '启用', '/registration/document/enable', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (68, 14, '新建', '/registration/fragment/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO `dinky_sys_menu` VALUES (69, 14, '编辑', '/registration/fragment/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO `dinky_sys_menu` VALUES (70, 14, '删除', '/registration/fragment/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (71, 14, '启用', '/registration/fragment/enable', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (72, 15, '新建', '/registration/gitprojects/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO `dinky_sys_menu` VALUES (73, 15, '编辑', '/registration/gitprojects/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO `dinky_sys_menu` VALUES (74, 15, '删除', '/registration/gitprojects/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (75, 15, '启用', '/registration/gitprojects/enable', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (76, 15, '构建', '/registration/gitprojects/build', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (77, 15, '查询', '/registration/gitprojects/search', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (78, 16, '新建', '/registration/udf/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO `dinky_sys_menu` VALUES (79, 16, '编辑', '/registration/udf/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO `dinky_sys_menu` VALUES (80, 16, '删除', '/registration/udf/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (81, 16, '启用', '/registration/udf/enable', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (82, 19, '上传', '/registration/resource/upload', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO `dinky_sys_menu` VALUES (83, 19, '重命名', '/registration/resource/rename', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO `dinky_sys_menu` VALUES (84, 19, '删除', '/registration/resource/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (85, 19, '创建文件夹', '/registration/resource/folder', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO `dinky_sys_menu` VALUES (86, 4, 'Token', '/auth/token', './AuthCenter/Token', null, 'SecurityScanFilled', 'C', 0, 35, '2023-09-05 23:14:23', '2023-09-05 23:14:23', null);
 
 
 -- ----------------------------
@@ -1775,9 +1828,9 @@ INSERT INTO `dinky_sys_menu` VALUES (33, 1, '数据开发', '/home/devOverView',
 -- ----------------------------
 drop table if exists `dinky_sys_role_menu`;
 CREATE TABLE `dinky_sys_role_menu` (
-                                       `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
-                                       `role_id` bigint NOT NULL COMMENT 'role id',
-                                       `menu_id` bigint NOT NULL COMMENT 'menu id',
+                                       `id` bigint NOT null AUTO_INCREMENT COMMENT 'id',
+                                       `role_id` bigint NOT null COMMENT 'role id',
+                                       `menu_id` bigint NOT null COMMENT 'menu id',
                                        `create_time` datetime not null default current_timestamp comment 'create time',
                                        `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
                                        PRIMARY KEY (`id`) USING BTREE,

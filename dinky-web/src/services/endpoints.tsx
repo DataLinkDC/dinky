@@ -50,6 +50,16 @@ export enum API_CONSTANTS {
   // QUERY roles by userid
   GET_ROLES_BY_USERID = '/api/role/getRolesAndIdsByUserId',
 
+  // --- token ---
+  // token list
+  TOKEN = '/api/token/list',
+  // token delete
+  TOKEN_DELETE = '/api/token/delete',
+  // token save or update
+  TOKEN_SAVE_OR_UPDATE = '/api/token/saveOrUpdateToken',
+  // token build
+  TOKEN_BUILD = '/api/token/buildToken',
+
   // --- tenant ---
   // tenant list
   TENANT = '/api/tenant',
@@ -62,6 +72,7 @@ export enum API_CONSTANTS {
   //tenant users
   TENANT_USERS = '/api/tenant/getUsersByTenantId',
   USER_SET_TENANT_ADMIN = '/api/user/updateUserToTenantAdmin',
+  TENANT_USER_LIST = '/api/tenant/getTenantListByUserId',
 
   // --- role ---
   // role list
@@ -188,6 +199,7 @@ export enum API_CONSTANTS {
   // system config center
   // global config list
   SYSTEM_GET_ALL_CONFIG = '/api/sysConfig/getAll',
+  SYSTEM_GET_ONE_TYPE_CONFIG = '/api/sysConfig/getConfigByType',
   // update global config by key
   SYSTEM_MODIFY_CONFIG = '/api/sysConfig/modifyConfig',
   //-- system root logs

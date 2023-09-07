@@ -17,8 +17,9 @@
  *
  */
 
-import Pop from '@/components/Animation/Pop';
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
+import { Authorized } from '@/hooks/useAccess';
 import AlertGroupForm from '@/pages/RegCenter/Alert/AlertGroup/components/AlertGroupForm';
 import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
@@ -138,13 +139,15 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const renderToolBar = () => {
     return () => [
-      <Button
-        key={'CreateAlertGroup'}
-        type='primary'
-        onClick={() => setAlertGroupState((prevState) => ({ ...prevState, addedOpen: true }))}
-      >
-        <PlusOutlined /> {l('button.create')}
-      </Button>
+      <Authorized key='create' path='/registration/alert/group/new'>
+        <Button
+          key={'CreateAlertGroup'}
+          type='primary'
+          onClick={() => setAlertGroupState((prevState) => ({ ...prevState, addedOpen: true }))}
+        >
+          <PlusOutlined /> {l('button.create')}
+        </Button>
+      </Authorized>
     ];
   };
 
@@ -166,19 +169,23 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const renderAlertGroupActionButton = (item: Alert.AlertGroup) => {
     return [
-      <Button
-        className={'options-button'}
-        key={'AlertGroupEdit'}
-        icon={<EditTwoTone />}
-        title={l('button.edit')}
-        onClick={() => editClick(item)}
-      />,
-      <Button
-        className={'options-button'}
-        key={'DeleteAlertGroupIcon'}
-        icon={<DangerDeleteIcon />}
-        onClick={() => handleDeleteSubmit(item.id)}
-      />
+      <Authorized key={item.id} path='/registration/alert/group/edit'>
+        <Button
+          className={'options-button'}
+          key={'AlertGroupEdit'}
+          icon={<EditTwoTone />}
+          title={l('button.edit')}
+          onClick={() => editClick(item)}
+        />
+      </Authorized>,
+      <Authorized key={item.id} path='/registration/alert/group/delete'>
+        <Button
+          className={'options-button'}
+          key={'DeleteAlertGroupIcon'}
+          icon={<DangerDeleteIcon />}
+          onClick={() => handleDeleteSubmit(item.id)}
+        />
+      </Authorized>
     ];
   };
 
@@ -230,7 +237,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
   }));
 
   return (
-    <Pop>
+    <SlowlyAppear>
       <PageContainer title={false}>
         {/* alert group list */}
         <ProList<Alert.AlertGroup>
@@ -258,7 +265,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
           />
         )}
       </PageContainer>
-    </Pop>
+    </SlowlyAppear>
   );
 };
 

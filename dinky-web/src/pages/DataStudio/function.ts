@@ -20,6 +20,7 @@
 import {
   DataStudioTabsItemType,
   EnvType,
+  FooterType,
   JobRunningMsgType,
   MetadataTabsItemType,
   STUDIO_MODEL,
@@ -27,6 +28,7 @@ import {
   TabsPageType,
   TaskDataType
 } from '@/pages/DataStudio/model';
+import { CONFIG_MODEL_ASYNC } from '@/pages/SettingCenter/GlobalSetting/model';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { Dispatch } from '@@/plugin-dva/types';
 
@@ -115,6 +117,11 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch({
       type: STUDIO_MODEL.updateJobRunningMsg,
       payload: data
+    }),
+  queryDsConfig: (data: string) =>
+    dispatch({
+      type: CONFIG_MODEL_ASYNC.queryDsConfig,
+      payload: data
     })
 });
 
@@ -157,7 +164,7 @@ export const getCurrentData = (
   return undefined;
 };
 
-export const getFooterValue = (panes: any, activeKey: string) => {
+export const getFooterValue = (panes: any, activeKey: string): Partial<FooterType> => {
   const currentTab = getCurrentTab(panes, activeKey);
   if (isDataStudioTabsItemType(currentTab)) {
     return {

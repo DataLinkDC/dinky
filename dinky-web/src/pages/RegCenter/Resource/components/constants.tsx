@@ -37,25 +37,29 @@ export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
     key: 'createFolder',
     icon: <PlusCircleOutlined />,
     label: l('right.menu.createFolder'),
-    disabled: isDisabled
+    disabled: isDisabled,
+    path: '/registration/resource/folder'
   },
   {
     key: 'upload',
     icon: <UploadOutlined />,
     label: l('button.upload'),
-    disabled: isDisabled
+    disabled: isDisabled,
+    path: '/registration/resource/folder'
   },
   {
     key: 'delete',
     icon: <DeleteOutlined />,
     label: l('right.menu.delete'),
-    disabled: isDisabled
+    disabled: isDisabled,
+    path: '/registration/resource/folder'
   },
   {
     key: 'rename',
     icon: <EditOutlined />,
     label: l('right.menu.rename'),
-    disabled: isDisabled
+    disabled: isDisabled,
+    path: '/registration/resource/folder'
   },
   {
     key: 'refresh',

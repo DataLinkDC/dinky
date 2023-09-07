@@ -42,9 +42,9 @@ CREATE SEQUENCE "public"."dinky_alert_group_seq"
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_alert_group";
 CREATE TABLE "public"."dinky_alert_group" (
-                                              "id" SERIAL NOT NULL,
-                                              "name" varchar(50) COLLATE "pg_catalog"."default" NOT NULL,
-                                              "tenant_id" int4 NOT NULL,
+                                              "id" SERIAL NOT null,
+                                              "name" varchar(50) COLLATE "pg_catalog"."default" NOT null,
+                                              "tenant_id" int4 NOT null,
                                               "alert_instance_ids" text COLLATE "pg_catalog"."default",
                                               "note" varchar(255) COLLATE "pg_catalog"."default",
                                               "enabled" int2,
@@ -71,8 +71,8 @@ COMMENT ON TABLE "public"."dinky_alert_group" IS 'Alert group';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_alert_history";
 CREATE TABLE "public"."dinky_alert_history" (
-                                                "id" SERIAL NOT NULL,
-                                                "tenant_id" int4 NOT NULL,
+                                                "id" SERIAL NOT null,
+                                                "tenant_id" int4 NOT null,
                                                 "alert_group_id" int4,
                                                 "job_instance_id" int4,
                                                 "title" varchar(255) COLLATE "pg_catalog"."default",
@@ -104,9 +104,9 @@ COMMENT ON TABLE "public"."dinky_alert_history" IS 'Alert history';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_alert_instance";
 CREATE TABLE "public"."dinky_alert_instance" (
-                                                 "id" SERIAL NOT NULL,
-                                                 "name" varchar(50) COLLATE "pg_catalog"."default" NOT NULL,
-                                                 "tenant_id" int4 NOT NULL,
+                                                 "id" SERIAL NOT null,
+                                                 "name" varchar(50) COLLATE "pg_catalog"."default" NOT null,
+                                                 "tenant_id" int4 NOT null,
                                                  "type" varchar(50) COLLATE "pg_catalog"."default",
                                                  "params" text COLLATE "pg_catalog"."default",
                                                  "enabled" int2,
@@ -133,14 +133,14 @@ COMMENT ON TABLE "public"."dinky_alert_instance" IS 'Alert instance';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_catalogue";
 CREATE TABLE "public"."dinky_catalogue" (
-                                            "id" SERIAL NOT NULL,
-                                            "tenant_id" int4 NOT NULL,
+                                            "id" SERIAL NOT null,
+                                            "tenant_id" int4 NOT null,
                                             "task_id" int4,
-                                            "name" varchar(100) COLLATE "pg_catalog"."default" NOT NULL,
+                                            "name" varchar(100) COLLATE "pg_catalog"."default" NOT null,
                                             "type" varchar(50) COLLATE "pg_catalog"."default",
-                                            "parent_id" int4 NOT NULL,
-                                            "enabled" int2 NOT NULL,
-                                            "is_leaf" int2 NOT NULL,
+                                            "parent_id" int4 NOT null,
+                                            "enabled" int2 NOT null,
+                                            "is_leaf" int2 NOT null,
                                             "create_time" timestamp(6),
                                             "update_time" timestamp(6)
 )
@@ -166,9 +166,9 @@ COMMENT ON TABLE "public"."dinky_catalogue" IS 'catalogue';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_cluster";
 CREATE TABLE "public"."dinky_cluster" (
-                                          "id" SERIAL NOT NULL,
-                                          "tenant_id" int4 NOT NULL,
-                                          "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+                                          "id" SERIAL NOT null,
+                                          "tenant_id" int4 NOT null,
+                                          "name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
                                           "alias" varchar(255) COLLATE "pg_catalog"."default",
                                           "type" varchar(50) COLLATE "pg_catalog"."default",
                                           "hosts" text COLLATE "pg_catalog"."default",
@@ -179,7 +179,7 @@ CREATE TABLE "public"."dinky_cluster" (
                                           "auto_registers" int2,
                                           "cluster_configuration_id" int4,
                                           "task_id" int4,
-                                          "enabled" int2 NOT NULL,
+                                          "enabled" int2 NOT null,
                                           "create_time" timestamp(6),
                                           "update_time" timestamp(6)
 )
@@ -211,14 +211,14 @@ COMMENT ON TABLE "public"."dinky_cluster" IS 'cluster instance management';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_cluster_configuration";
 CREATE TABLE "public"."dinky_cluster_configuration" (
-                                                        "id" SERIAL NOT NULL,
-                                                        "tenant_id" int4 NOT NULL,
-                                                        "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+                                                        "id" SERIAL NOT null,
+                                                        "tenant_id" int4 NOT null,
+                                                        "name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
                                                         "type" varchar(50) COLLATE "pg_catalog"."default",
                                                         "config_json" text COLLATE "pg_catalog"."default",
-                                                        "is_available" int2 NOT NULL,
+                                                        "is_available" int2 NOT null,
                                                         "note" varchar(255) COLLATE "pg_catalog"."default",
-                                                        "enabled" int2 NOT NULL,
+                                                        "enabled" int2 NOT null,
                                                         "create_time" timestamp(6),
                                                         "update_time" timestamp(6)
 )
@@ -244,11 +244,11 @@ COMMENT ON TABLE "public"."dinky_cluster_configuration" IS 'cluster configuratio
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_database";
 CREATE TABLE "public"."dinky_database" (
-                                           "id" SERIAL NOT NULL,
-                                           "tenant_id" int4 NOT NULL,
-                                           "name" varchar(30) COLLATE "pg_catalog"."default" NOT NULL,
+                                           "id" SERIAL NOT null,
+                                           "tenant_id" int4 NOT null,
+                                           "name" varchar(30) COLLATE "pg_catalog"."default" NOT null,
                                            "group_name" varchar(255) COLLATE "pg_catalog"."default",
-                                           "type" varchar(50) COLLATE "pg_catalog"."default" NOT NULL,
+                                           "type" varchar(50) COLLATE "pg_catalog"."default" NOT null,
                                            "ip" varchar(255) COLLATE "pg_catalog"."default",
                                            "port" int4,
                                            "url" varchar(255) COLLATE "pg_catalog"."default",
@@ -261,7 +261,7 @@ CREATE TABLE "public"."dinky_database" (
                                            "status" int2,
                                            "health_time" timestamp(6),
                                            "heartbeat_time" timestamp(6),
-                                           "enabled" int2 NOT NULL,
+                                           "enabled" int2 NOT null,
                                            "create_time" timestamp(6),
                                            "update_time" timestamp(6)
 )
@@ -297,7 +297,7 @@ COMMENT ON TABLE "public"."dinky_database" IS 'database management';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_flink_document";
 CREATE TABLE "public"."dinky_flink_document" (
-                                                 "id" SERIAL NOT NULL,
+                                                 "id" SERIAL NOT null,
                                                  "category" varchar(255) COLLATE "pg_catalog"."default",
                                                  "type" varchar(255) COLLATE "pg_catalog"."default",
                                                  "subtype" varchar(255) COLLATE "pg_catalog"."default",
@@ -306,7 +306,7 @@ CREATE TABLE "public"."dinky_flink_document" (
                                                  "fill_value" text COLLATE "pg_catalog"."default",
                                                  "version" varchar(255) COLLATE "pg_catalog"."default",
                                                  "like_num" int4,
-                                                 "enabled" int2 NOT NULL,
+                                                 "enabled" int2 NOT null,
                                                  "create_time" timestamp(6),
                                                  "update_time" timestamp(6)
 )
@@ -338,8 +338,8 @@ INSERT INTO "public"."dinky_flink_document" VALUES (5, 'Variable', '优化参数
 INSERT INTO "public"."dinky_flink_document" VALUES (6, 'Variable', '优化参数', 'Streaming', 'set table.exec.mini-batch.size', '可以为MiniBatch缓冲最大输入记录数。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。MiniBatch以允许的等待时间间隔以及达到最大缓冲记录数触发。 注意：MiniBatch当前仅适用于非窗口聚合。如果将table.exec.mini-batch.enabled设置为true，则其值必须为正.', 'Set ''table.exec.mini-batch.size''=''-1'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2022-01-20 15:00:00');
 INSERT INTO "public"."dinky_flink_document" VALUES (7, 'Variable', '优化参数', 'Batch/Streaming', 'set table.exec.resource.default-parallelism', '设置所有Operator的默认并行度。
 Sets default parallelism for all operators (such as aggregate, join, filter) to run with parallel instances. This config has a higher priority than parallelism of StreamExecutionEnvironment (actually, this config overrides the parallelism of StreamExecutionEnvironment). A value of -1 indicates that no default parallelism is set, then it will fallback to use the parallelism of StreamExecutionEnvironment.', 'Set ''table.exec.resource.default-parallelism''=''1'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2022-01-20 15:00:00');
-INSERT INTO "public"."dinky_flink_document" VALUES (8, 'Variable', '优化参数', 'Batch/Streaming', 'set table.exec.sink.not-null-enforcer', '对表的NOT NULL列约束强制执行不能将空值插入到表中。Flink支持“error”（默认）和“drop”强制行为
-The NOT NULL column constraint on a table enforces that null values can''t be inserted into the table. Flink supports ''error'' (default) and ''drop'' enforcement behavior. By default, Flink will check values and throw runtime exception when null values writing into NOT NULL columns. Users can change the behavior to ''drop'' to silently drop such records without throwing exception.
+INSERT INTO "public"."dinky_flink_document" VALUES (8, 'Variable', '优化参数', 'Batch/Streaming', 'set table.exec.sink.not-null-enforcer', '对表的NOT null列约束强制执行不能将空值插入到表中。Flink支持“error”（默认）和“drop”强制行为
+The NOT null column constraint on a table enforces that null values can''t be inserted into the table. Flink supports ''error'' (default) and ''drop'' enforcement behavior. By default, Flink will check values and throw runtime exception when null values writing into NOT null columns. Users can change the behavior to ''drop'' to silently drop such records without throwing exception.
 Possible values:
 "ERROR"
 "DROP"', 'Set ''table.exec.sink.not-null-enforcer''=''ERROR'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2022-01-20 15:00:00');
@@ -494,31 +494,31 @@ WITH (
 ''hive_sync.password'' = ''123456'', -- required, HMS 密码
 ''hive_sync.skip_ro_suffix'' = ''true'' -- 去除ro后缀
 );', '1.14', 0, 1, '2022-01-20 17:56:50', '2022-01-20 17:56:50');
-INSERT INTO "public"."dinky_flink_document" VALUES (21, 'Function', '内置函数', '比较函数', 'value1 <> value2', '如果value1不等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} <> ${2:}', '1.12', 4, 1, '2021-02-22 10:05:38', '2021-03-11 09:58:48');
-INSERT INTO "public"."dinky_flink_document" VALUES (22, 'Function', '内置函数', '比较函数', 'value1 > value2', '如果value1大于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} > ${2:}', '1.12', 2, 1, '2021-02-22 14:37:58', '2021-03-10 11:58:06');
-INSERT INTO "public"."dinky_flink_document" VALUES (23, 'Function', '内置函数', '比较函数', 'value1 >= value2', '如果value1大于或等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} >= ${2:}', '1.12', 2, 1, '2021-02-22 14:38:52', '2022-03-29 19:05:54');
-INSERT INTO "public"."dinky_flink_document" VALUES (24, 'Function', '内置函数', '比较函数', 'value1 < value2', '如果value1小于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} < ${2:}', '1.12', 0, 1, '2021-02-22 14:39:15', '2022-03-29 19:04:58');
-INSERT INTO "public"."dinky_flink_document" VALUES (25, 'Function', '内置函数', '比较函数', 'value1 <= value2', '如果value1小于或等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} <=   ${2:}', '1.12', 0, 1, '2021-02-22 14:39:40', '2022-03-29 19:05:17');
-INSERT INTO "public"."dinky_flink_document" VALUES (26, 'Function', '内置函数', '比较函数', 'value IS NULL', '如果value为NULL，则返回TRUE 。', '${1:} IS NULL', '1.12', 2, 1, '2021-02-22 14:40:39', '2021-03-10 11:57:51');
-INSERT INTO "public"."dinky_flink_document" VALUES (27, 'Function', '内置函数', '比较函数', 'value IS NOT NULL', '如果value不为NULL，则返回TRUE 。', '${1:}  IS NOT NULL', '1.12', 0, 1, '2021-02-22 14:41:26', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (28, 'Function', '内置函数', '比较函数', 'value1 IS DISTINCT FROM value2', '如果两个值不相等则返回TRUE。NULL值在这里被视为相同的值。', '${1:} IS DISTINCT FROM ${2:}', '1.12', 0, 1, '2021-02-22 14:42:39', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (29, 'Function', '内置函数', '比较函数', 'value1 IS NOT DISTINCT FROM value2', '如果两个值相等则返回TRUE。NULL值在这里被视为相同的值。', '${1:} IS NOT DISTINCT FROM ${2:}', '1.12', 0, 1, '2021-02-22 14:43:23', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (21, 'Function', '内置函数', '比较函数', 'value1 <> value2', '如果value1不等于value2 返回true; 如果value1或value2为null，则返回UNKNOWN 。', '${1:} <> ${2:}', '1.12', 4, 1, '2021-02-22 10:05:38', '2021-03-11 09:58:48');
+INSERT INTO "public"."dinky_flink_document" VALUES (22, 'Function', '内置函数', '比较函数', 'value1 > value2', '如果value1大于value2 返回true; 如果value1或value2为null，则返回UNKNOWN 。', '${1:} > ${2:}', '1.12', 2, 1, '2021-02-22 14:37:58', '2021-03-10 11:58:06');
+INSERT INTO "public"."dinky_flink_document" VALUES (23, 'Function', '内置函数', '比较函数', 'value1 >= value2', '如果value1大于或等于value2 返回true; 如果value1或value2为null，则返回UNKNOWN 。', '${1:} >= ${2:}', '1.12', 2, 1, '2021-02-22 14:38:52', '2022-03-29 19:05:54');
+INSERT INTO "public"."dinky_flink_document" VALUES (24, 'Function', '内置函数', '比较函数', 'value1 < value2', '如果value1小于value2 返回true; 如果value1或value2为null，则返回UNKNOWN 。', '${1:} < ${2:}', '1.12', 0, 1, '2021-02-22 14:39:15', '2022-03-29 19:04:58');
+INSERT INTO "public"."dinky_flink_document" VALUES (25, 'Function', '内置函数', '比较函数', 'value1 <= value2', '如果value1小于或等于value2 返回true; 如果value1或value2为null，则返回UNKNOWN 。', '${1:} <=   ${2:}', '1.12', 0, 1, '2021-02-22 14:39:40', '2022-03-29 19:05:17');
+INSERT INTO "public"."dinky_flink_document" VALUES (26, 'Function', '内置函数', '比较函数', 'value IS null', '如果value为null，则返回TRUE 。', '${1:} IS null', '1.12', 2, 1, '2021-02-22 14:40:39', '2021-03-10 11:57:51');
+INSERT INTO "public"."dinky_flink_document" VALUES (27, 'Function', '内置函数', '比较函数', 'value IS NOT null', '如果value不为null，则返回TRUE 。', '${1:}  IS NOT null', '1.12', 0, 1, '2021-02-22 14:41:26', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (28, 'Function', '内置函数', '比较函数', 'value1 IS DISTINCT FROM value2', '如果两个值不相等则返回TRUE。null值在这里被视为相同的值。', '${1:} IS DISTINCT FROM ${2:}', '1.12', 0, 1, '2021-02-22 14:42:39', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (29, 'Function', '内置函数', '比较函数', 'value1 IS NOT DISTINCT FROM value2', '如果两个值相等则返回TRUE。null值在这里被视为相同的值。', '${1:} IS NOT DISTINCT FROM ${2:}', '1.12', 0, 1, '2021-02-22 14:43:23', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (30, 'Function', '内置函数', '比较函数', 'value1 BETWEEN [ ASYMMETRIC | SYMMETRIC ] value2 AND value3', '如果value1大于或等于value2和小于或等于value3 返回true', '${1:} BETWEEN ${2:} AND ${3:}', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (31, 'Function', '内置函数', '比较函数', 'value1 NOT BETWEEN [ ASYMMETRIC | SYMMETRIC ] value2 AND value3', '如果value1小于value2或大于value3 返回true', '${1:} NOT BETWEEN ${2:} AND ${3:}', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (32, 'Function', '内置函数', '比较函数', 'string1 LIKE string2 [ ESCAPE char ]', '如果STRING1匹配模式STRING2，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} LIKE ${2:}', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (33, 'Function', '内置函数', '比较函数', 'string1 NOT LIKE string2 [ ESCAPE char ]', '如果STRING1不匹配模式STRING2，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} NOT LIKE ${2:}', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (34, 'Function', '内置函数', '比较函数', 'string1 SIMILAR TO string2 [ ESCAPE char ]', '如果STRING1与SQL正则表达式STRING2匹配，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} SIMILAR TO ${2:}', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-03-10 11:57:28');
-INSERT INTO "public"."dinky_flink_document" VALUES (35, 'Function', '内置函数', '比较函数', 'string1 NOT SIMILAR TO string2 [ ESCAPE char ]', '如果STRING1与SQL正则表达式STRING2不匹配，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} NOT SIMILAR TO ${2:}', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (32, 'Function', '内置函数', '比较函数', 'string1 LIKE string2 [ ESCAPE char ]', '如果STRING1匹配模式STRING2，则返回TRUE ；如果STRING1或STRING2为null，则返回UNKNOWN 。', '${1:} LIKE ${2:}', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (33, 'Function', '内置函数', '比较函数', 'string1 NOT LIKE string2 [ ESCAPE char ]', '如果STRING1不匹配模式STRING2，则返回TRUE ；如果STRING1或STRING2为null，则返回UNKNOWN 。', '${1:} NOT LIKE ${2:}', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (34, 'Function', '内置函数', '比较函数', 'string1 SIMILAR TO string2 [ ESCAPE char ]', '如果STRING1与SQL正则表达式STRING2匹配，则返回TRUE ；如果STRING1或STRING2为null，则返回UNKNOWN 。', '${1:} SIMILAR TO ${2:}', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-03-10 11:57:28');
+INSERT INTO "public"."dinky_flink_document" VALUES (35, 'Function', '内置函数', '比较函数', 'string1 NOT SIMILAR TO string2 [ ESCAPE char ]', '如果STRING1与SQL正则表达式STRING2不匹配，则返回TRUE ；如果STRING1或STRING2为null，则返回UNKNOWN 。', '${1:} NOT SIMILAR TO ${2:}', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (36, 'Function', '内置函数', '比较函数', 'value1 IN (value2 [, value3]* )', '如果value1存在于给定列表（value2，value3，...）中，则返回TRUE 。
 
-当（value2，value3，...）包含NULL，如果可以找到该元素，则返回TRUE，否则返回UNKNOWN。
+当（value2，value3，...）包含null，如果可以找到该元素，则返回TRUE，否则返回UNKNOWN。
 
-如果value1为NULL，则始终返回UNKNOWN 。', '${1:} IN (${2:} )', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
+如果value1为null，则始终返回UNKNOWN 。', '${1:} IN (${2:} )', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (37, 'Function', '内置函数', '比较函数', 'value1 NOT IN (value2 [, value3]* )', '如果value1不存在于给定列表（value2，value3，...）中，则返回TRUE 。
 
-当（value2，value3，...）包含NULL，如果可以找到该元素，则返回TRUE，否则返回UNKNOWN。
+当（value2，value3，...）包含null，如果可以找到该元素，则返回TRUE，否则返回UNKNOWN。
 
-如果value1为NULL，则始终返回UNKNOWN 。', '${1:} NOT IN (${2:})', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
+如果value1为null，则始终返回UNKNOWN 。', '${1:} NOT IN (${2:})', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (38, 'Function', '内置函数', '比较函数', 'EXISTS (sub-query)', '如果value存在于子查询中，则返回TRUE。', 'EXISTS (${1:})', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (39, 'Function', '内置函数', '比较函数', 'value IN (sub-query)', '如果value存在于子查询中，则返回TRUE。', '${1:} IN (${2:})', '1.12', 0, 1, '2021-02-22 14:44:26', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (43, 'Function', '内置函数', '逻辑函数', 'NOT boolean', '如果BOOLEAN为FALSE，则返回TRUE ；如果BOOLEAN为TRUE，则返回FALSE 。
@@ -580,11 +580,11 @@ INSERT INTO "public"."dinky_flink_document" VALUES (86, 'Function', '内置函�
 INSERT INTO "public"."dinky_flink_document" VALUES (87, 'Function', '内置函数', '算术函数', 'UUID()', '根据RFC 4122 type 4（伪随机生成）UUID返回UUID（通用唯一标识符）字符串
 
 （例如，“ 3d3c68f7-f608-473f-b60c-b0c44ad4cc4e”）。使用加密强度高的伪随机数生成器生成UUID。', 'UUID()', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (88, 'Function', '内置函数', '算术函数', 'BIN(integer)', '以二进制格式返回INTEGER的字符串表示形式。如果INTEGER为NULL，则返回NULL。
+INSERT INTO "public"."dinky_flink_document" VALUES (88, 'Function', '内置函数', '算术函数', 'BIN(integer)', '以二进制格式返回INTEGER的字符串表示形式。如果INTEGER为null，则返回null。
 
 例如，4.bin()返回“ 100”并12.bin()返回“ 1100”。', 'BIN(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (89, 'Function', '内置函数', '算术函数', 'HEX(numeric)
-HEX(string)', '以十六进制格式返回整数NUMERIC值或STRING的字符串表示形式。如果参数为NULL，则返回NULL。
+HEX(string)', '以十六进制格式返回整数NUMERIC值或STRING的字符串表示形式。如果参数为null，则返回null。
 
 例如，数字20导致“ 14”，数字100导致“ 64”，字符串“ hello，world”导致“ 68656C6C6F2C776F726C64”。', 'HEX(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (90, 'Function', '内置函数', '算术函数', 'TRUNCATE(numeric1, integer2)', '返回一个小数点后被截断为integer2位的数字。', 'TRUNCATE(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
@@ -621,24 +621,24 @@ INSERT INTO "public"."dinky_flink_document" VALUES (106, 'Function', '内置函�
 INSERT INTO "public"."dinky_flink_document" VALUES (107, 'Function', '内置函数', '字符串函数', 'REPLACE(string1, string2, string3)', '返回一个新字符串替换其中出现的所有STRING2与STRING3（非重叠）从STRING1。', 'REPLACE(${1:} , ${2:} , ${3:} )', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (108, 'Function', '内置函数', '字符串函数', 'REGEXP_EXTRACT(string1, string2[, integer])', '从STRING1返回一个字符串，该字符串使用指定的正则表达式STRING2和正则表达式匹配组索引INTEGER1提取。', 'REGEXP_EXTRACT(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (109, 'Function', '内置函数', '字符串函数', 'INITCAP(string)', '返回一种新形式的STRING，其中每个单词的第一个字符转换为大写，其余字符转换为小写。', 'INITCAP(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (110, 'Function', '内置函数', '字符串函数', 'CONCAT(string1, string2,...)', '返回连接STRING1，STRING2，...的字符串。如果任何参数为NULL，则返回NULL。', 'CONCAT(${1:} , ${2:} , ${3:} )', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (110, 'Function', '内置函数', '字符串函数', 'CONCAT(string1, string2,...)', '返回连接STRING1，STRING2，...的字符串。如果任何参数为null，则返回null。', 'CONCAT(${1:} , ${2:} , ${3:} )', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (111, 'Function', '内置函数', '字符串函数', 'CONCAT_WS(string1, string2, string3,...)', '返回一个字符串，会连接STRING2，STRING3，......与分离STRING1。', 'CONCAT_WS(${1:} , ${2:} , ${3:} )', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (112, 'Function', '内置函数', '字符串函数', 'LPAD(string1, integer, string2)', '返回一个新字符串，该字符串从STRING1的左侧填充STRING2，长度为INT个字符。', 'LPAD(${1:} , ${2:} , ${3:} )', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (113, 'Function', '内置函数', '字符串函数', 'RPAD(string1, integer, string2)', '返回一个新字符串，该字符串从STRING1右侧填充STRING2，长度为INT个字符。', 'RPAD(${1:} , ${2:} , ${3:} )', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (114, 'Function', '内置函数', '字符串函数', 'FROM_BASE64(string)', '返回来自STRING的base64解码结果；如果STRING为NULL，则返回null 。', 'FROM_BASE64(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (115, 'Function', '内置函数', '字符串函数', 'TO_BASE64(string)', '从STRING返回base64编码的结果；如果STRING为NULL，则返回NULL。', 'TO_BASE64(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (116, 'Function', '内置函数', '字符串函数', 'ASCII(string)', '返回字符串的第一个字符的数值。如果字符串为NULL，则返回NULL。仅在blink planner中支持。', 'ASCII(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (117, 'Function', '内置函数', '字符串函数', 'CHR(integer)', '返回与integer在二进制上等价的ASCII字符。如果integer大于255，我们将首先得到integer的模数除以255，并返回模数的CHR。如果integer为NULL，则返回NULL。仅在blink planner中支持。', 'CHR(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (114, 'Function', '内置函数', '字符串函数', 'FROM_BASE64(string)', '返回来自STRING的base64解码结果；如果STRING为null，则返回null 。', 'FROM_BASE64(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (115, 'Function', '内置函数', '字符串函数', 'TO_BASE64(string)', '从STRING返回base64编码的结果；如果STRING为null，则返回null。', 'TO_BASE64(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (116, 'Function', '内置函数', '字符串函数', 'ASCII(string)', '返回字符串的第一个字符的数值。如果字符串为null，则返回null。仅在blink planner中支持。', 'ASCII(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (117, 'Function', '内置函数', '字符串函数', 'CHR(integer)', '返回与integer在二进制上等价的ASCII字符。如果integer大于255，我们将首先得到integer的模数除以255，并返回模数的CHR。如果integer为null，则返回null。仅在blink planner中支持。', 'CHR(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (118, 'Function', '内置函数', '字符串函数', 'DECODE(binary, string)', '使用提供的字符集(''US-ASCII''， ''ISO-8859-1''， ''UTF-8''， ''UTF-16BE''， ''UTF-16LE''， ''UTF-16''之一)将第一个参数解码为字符串。如果任意一个参数为空，结果也将为空。仅在blink planner中支持。', 'DECODE(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (119, 'Function', '内置函数', '字符串函数', 'ENCODE(string1, string2)', '使用提供的string2字符集(''US-ASCII''， ''ISO-8859-1''， ''UTF-8''， ''UTF-16BE''， ''UTF-16LE''， ''UTF-16''之一)将string1编码为二进制。如果任意一个参数为空，结果也将为空。仅在blink planner中支持。', 'ENCODE(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (120, 'Function', '内置函数', '字符串函数', 'INSTR(string1, string2)', '返回string2在string1中第一次出现的位置。如果任何参数为空，则返回NULL。仅在blink planner中支持。', 'INSTR(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (121, 'Function', '内置函数', '字符串函数', 'LEFT(string, integer)', '返回字符串中最左边的整数字符。如果整数为负，则返回空字符串。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'LEFT(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (122, 'Function', '内置函数', '字符串函数', 'RIGHT(string, integer)', '返回字符串中最右边的整数字符。如果整数为负，则返回空字符串。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'RIGHT(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (123, 'Function', '内置函数', '字符串函数', 'LOCATE(string1, string2[, integer])', '返回string1在string2中的位置整数之后第一次出现的位置。如果没有找到，返回0。如果任何参数为NULL，则返回NULL仅在blink planner中支持。', 'LOCATE(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (124, 'Function', '内置函数', '字符串函数', 'PARSE_URL(string1, string2[, string3])', '从URL返回指定的部分。string2的有效值包括''HOST''， ''PATH''， ''QUERY''， ''REF''， ''PROTOCOL''， ''AUTHORITY''， ''FILE''和''USERINFO''。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'PARSE_URL(${1:} , ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (125, 'Function', '内置函数', '字符串函数', 'REGEXP(string1, string2)', '如果string1的任何子字符串(可能为空)与Java正则表达式string2匹配，则返回TRUE，否则返回FALSE。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'REGEXP(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (126, 'Function', '内置函数', '字符串函数', 'REVERSE(string)', '返回反向字符串。如果字符串为NULL，则返回NULL仅在blink planner中支持。', 'REVERSE(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO "public"."dinky_flink_document" VALUES (127, 'Function', '内置函数', '字符串函数', 'SPLIT_INDEX(string1, string2, integer1)', '通过分隔符string2拆分string1，返回拆分字符串的整数(从零开始)字符串。如果整数为负，返回NULL。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'SPLIT_INDEX(${1:}, ${2:} , ${3:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (120, 'Function', '内置函数', '字符串函数', 'INSTR(string1, string2)', '返回string2在string1中第一次出现的位置。如果任何参数为空，则返回null。仅在blink planner中支持。', 'INSTR(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (121, 'Function', '内置函数', '字符串函数', 'LEFT(string, integer)', '返回字符串中最左边的整数字符。如果整数为负，则返回空字符串。如果任何参数为null，则返回null。仅在blink planner中支持。', 'LEFT(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (122, 'Function', '内置函数', '字符串函数', 'RIGHT(string, integer)', '返回字符串中最右边的整数字符。如果整数为负，则返回空字符串。如果任何参数为null，则返回null。仅在blink planner中支持。', 'RIGHT(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (123, 'Function', '内置函数', '字符串函数', 'LOCATE(string1, string2[, integer])', '返回string1在string2中的位置整数之后第一次出现的位置。如果没有找到，返回0。如果任何参数为null，则返回null仅在blink planner中支持。', 'LOCATE(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (124, 'Function', '内置函数', '字符串函数', 'PARSE_URL(string1, string2[, string3])', '从URL返回指定的部分。string2的有效值包括''HOST''， ''PATH''， ''QUERY''， ''REF''， ''PROTOCOL''， ''AUTHORITY''， ''FILE''和''USERINFO''。如果任何参数为null，则返回null。仅在blink planner中支持。', 'PARSE_URL(${1:} , ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (125, 'Function', '内置函数', '字符串函数', 'REGEXP(string1, string2)', '如果string1的任何子字符串(可能为空)与Java正则表达式string2匹配，则返回TRUE，否则返回FALSE。如果任何参数为null，则返回null。仅在blink planner中支持。', 'REGEXP(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (126, 'Function', '内置函数', '字符串函数', 'REVERSE(string)', '返回反向字符串。如果字符串为null，则返回null仅在blink planner中支持。', 'REVERSE(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO "public"."dinky_flink_document" VALUES (127, 'Function', '内置函数', '字符串函数', 'SPLIT_INDEX(string1, string2, integer1)', '通过分隔符string2拆分string1，返回拆分字符串的整数(从零开始)字符串。如果整数为负，返回null。如果任何参数为null，则返回null。仅在blink planner中支持。', 'SPLIT_INDEX(${1:}, ${2:} , ${3:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (128, 'Function', '内置函数', '字符串函数', 'STR_TO_MAP(string1[, string2, string3]])', '使用分隔符将string1分割成键/值对后返回一个映射。string2是pair分隔符，默认为''，''。string3是键值分隔符，默认为''=''。仅在blink planner中支持。', 'STR_TO_MAP(${1:})', '1.12', 4, 1, '2021-02-22 15:29:35', '2021-05-20 19:59:50');
 INSERT INTO "public"."dinky_flink_document" VALUES (129, 'Function', '内置函数', '字符串函数', 'SUBSTR(string[, integer1[, integer2]])', '返回一个字符串的子字符串，从位置integer1开始，长度为integer2(默认到末尾)。仅在blink planner中支持。', 'SUBSTR(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO "public"."dinky_flink_document" VALUES (130, 'Function', '内置函数', '字符串函数', 'CHAR_LENGTH(string)', '返回STRING中的字符数。', 'CHAR_LENGTH(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
@@ -680,7 +680,7 @@ INSERT INTO "public"."dinky_flink_document" VALUES (165, 'Function', '内置函�
 WHEN value1_1 [, value1_2 ]* THEN result1
 [ WHEN value2_1 [, value2_2 ]* THEN result2 ]*
 [ ELSE resultZ ]
-END', '当第一个时间值包含在(valueX_1, valueX_2，…)中时，返回resultX。如果没有匹配的值，则返回resultZ，否则返回NULL。', 'CASE ${1:}
+END', '当第一个时间值包含在(valueX_1, valueX_2，…)中时，返回resultX。如果没有匹配的值，则返回resultZ，否则返回null。', 'CASE ${1:}
   WHEN ${2:}  THEN ${3:}
  ELSE ${4:}
 END AS ${5:}', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
@@ -688,10 +688,10 @@ INSERT INTO "public"."dinky_flink_document" VALUES (166, 'Function', '内置函�
 WHEN condition1 THEN result1
 [ WHEN condition2 THEN result2 ]*
 [ ELSE resultZ ]
-END', '当第一个条件满足时返回resultX。当不满足任何条件时，如果提供了resultZ则返回resultZ，否则返回NULL。', 'CASE WHEN ${1:} THEN ${2:}
+END', '当第一个条件满足时返回resultX。当不满足任何条件时，如果提供了resultZ则返回resultZ，否则返回null。', 'CASE WHEN ${1:} THEN ${2:}
    ELSE ${3:}
 END AS ${4:}', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
-INSERT INTO "public"."dinky_flink_document" VALUES (167, 'Function', '内置函数', '条件函数', 'NULLIF(value1, value2)', '如果value1等于value2，则返回NULL;否则返回value1。', 'NULLIF(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
+INSERT INTO "public"."dinky_flink_document" VALUES (167, 'Function', '内置函数', '条件函数', 'nullIF(value1, value2)', '如果value1等于value2，则返回null;否则返回value1。', 'nullIF(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (168, 'Function', '内置函数', '条件函数', 'COALESCE(value1, value2 [, value3 ]* )', '返回value1, value2， ....中的第一个非空值', 'COALESCE(${1:} )', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (169, 'Function', '内置函数', '条件函数', 'IF(condition, true_value, false_value)', '如果条件满足则返回true值，否则返回false值。仅在blink planner中支持。', 'IF((${1:}, ${2:}, ${3:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (170, 'Function', '内置函数', '条件函数', 'IS_ALPHA(string)', '如果字符串中所有字符都是字母则返回true，否则返回false。仅在blink planner中支持。', 'IS_ALPHA(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
@@ -700,7 +700,7 @@ INSERT INTO "public"."dinky_flink_document" VALUES (172, 'Function', '内置函�
 INSERT INTO "public"."dinky_flink_document" VALUES (173, 'Function', '内置函数', '类型转换函数功能', 'CAST(value AS type)', '返回一个要转换为type类型的新值。', 'CAST(${1:} AS ${2:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (174, 'Function', '内置函数', 'Collection 函数', 'CARDINALITY(array)', '返回数组中元素的数量。', 'CARDINALITY(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (175, 'Function', '内置函数', 'Collection 函数', 'array ‘[’ integer ‘]’', '返回数组中位于整数位置的元素。索引从1开始。', 'array[${1:}]', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
-INSERT INTO "public"."dinky_flink_document" VALUES (176, 'Function', '内置函数', 'Collection 函数', 'ELEMENT(array)', '返回数组的唯一元素(其基数应为1);如果数组为空，则返回NULL。如果数组有多个元素，则抛出异常。', 'ELEMENT(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
+INSERT INTO "public"."dinky_flink_document" VALUES (176, 'Function', '内置函数', 'Collection 函数', 'ELEMENT(array)', '返回数组的唯一元素(其基数应为1);如果数组为空，则返回null。如果数组有多个元素，则抛出异常。', 'ELEMENT(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (177, 'Function', '内置函数', 'Collection 函数', 'CARDINALITY(map)', '返回map中的条目数。', 'CARDINALITY(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (178, 'Function', '内置函数', 'Collection 函数', 'map ‘[’ value ‘]’', '返回map中key value指定的值。', 'map[${1:}]', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (179, 'Function', '内置函数', 'Value Construction函数', 'ARRAY ‘[’ value1 [, value2 ]* ‘]’', '返回一个由一系列值(value1, value2，…)创建的数组。', 'ARRAY[ ${1:} ]', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
@@ -714,13 +714,13 @@ INSERT INTO "public"."dinky_flink_document" VALUES (184, 'Function', '内置函�
 INSERT INTO "public"."dinky_flink_document" VALUES (185, 'Function', '内置函数', '分组函数', 'GROUP_ID()', '返回唯一标识分组键组合的整数', 'GROUP_ID()', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (186, 'Function', '内置函数', '分组函数', 'GROUPING(expression1 [, expression2]* )
 GROUPING_ID(expression1 [, expression2]* )', '返回给定分组表达式的位向量。', 'GROUPING(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
-INSERT INTO "public"."dinky_flink_document" VALUES (187, 'Function', '内置函数', 'hash函数', 'MD5(string)', '以32位十六进制数字的字符串形式返回string的MD5哈希值;如果字符串为NULL，则返回NULL。', 'MD5(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
-INSERT INTO "public"."dinky_flink_document" VALUES (188, 'Function', '内置函数', 'hash函数', 'SHA1(string)', '返回字符串的SHA-1散列，作为一个由40个十六进制数字组成的字符串;如果字符串为NULL，则返回NULL', 'SHA1(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
-INSERT INTO "public"."dinky_flink_document" VALUES (189, 'Function', '内置函数', 'hash函数', 'SHA224(string)', '以56位十六进制数字的字符串形式返回字符串的SHA-224散列;如果字符串为NULL，则返回NULL。', 'SHA224(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
-INSERT INTO "public"."dinky_flink_document" VALUES (190, 'Function', '内置函数', 'hash函数', 'SHA256(string)', '以64位十六进制数字的字符串形式返回字符串的SHA-256散列;如果字符串为NULL，则返回NULL。', 'SHA256(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
-INSERT INTO "public"."dinky_flink_document" VALUES (191, 'Function', '内置函数', 'hash函数', 'SHA384(string)', '以96个十六进制数字的字符串形式返回string的SHA-384散列;如果字符串为NULL，则返回NULL。', 'SHA384(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
-INSERT INTO "public"."dinky_flink_document" VALUES (192, 'Function', '内置函数', 'hash函数', 'SHA512(string)', '以128位十六进制数字的字符串形式返回字符串的SHA-512散列;如果字符串为NULL，则返回NULL。', 'SHA512(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
-INSERT INTO "public"."dinky_flink_document" VALUES (193, 'Function', '内置函数', 'hash函数', 'SHA2(string, hashLength)', '使用SHA-2哈希函数族(SHA-224、SHA-256、SHA-384或SHA-512)返回哈希值。第一个参数string是要散列的字符串，第二个参数hashLength是结果的位长度(224、256、384或512)。如果string或hashLength为NULL，则返回NULL。', 'SHA2(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
+INSERT INTO "public"."dinky_flink_document" VALUES (187, 'Function', '内置函数', 'hash函数', 'MD5(string)', '以32位十六进制数字的字符串形式返回string的MD5哈希值;如果字符串为null，则返回null。', 'MD5(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
+INSERT INTO "public"."dinky_flink_document" VALUES (188, 'Function', '内置函数', 'hash函数', 'SHA1(string)', '返回字符串的SHA-1散列，作为一个由40个十六进制数字组成的字符串;如果字符串为null，则返回null', 'SHA1(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
+INSERT INTO "public"."dinky_flink_document" VALUES (189, 'Function', '内置函数', 'hash函数', 'SHA224(string)', '以56位十六进制数字的字符串形式返回字符串的SHA-224散列;如果字符串为null，则返回null。', 'SHA224(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
+INSERT INTO "public"."dinky_flink_document" VALUES (190, 'Function', '内置函数', 'hash函数', 'SHA256(string)', '以64位十六进制数字的字符串形式返回字符串的SHA-256散列;如果字符串为null，则返回null。', 'SHA256(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
+INSERT INTO "public"."dinky_flink_document" VALUES (191, 'Function', '内置函数', 'hash函数', 'SHA384(string)', '以96个十六进制数字的字符串形式返回string的SHA-384散列;如果字符串为null，则返回null。', 'SHA384(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
+INSERT INTO "public"."dinky_flink_document" VALUES (192, 'Function', '内置函数', 'hash函数', 'SHA512(string)', '以128位十六进制数字的字符串形式返回字符串的SHA-512散列;如果字符串为null，则返回null。', 'SHA512(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
+INSERT INTO "public"."dinky_flink_document" VALUES (193, 'Function', '内置函数', 'hash函数', 'SHA2(string, hashLength)', '使用SHA-2哈希函数族(SHA-224、SHA-256、SHA-384或SHA-512)返回哈希值。第一个参数string是要散列的字符串，第二个参数hashLength是结果的位长度(224、256、384或512)。如果string或hashLength为null，则返回null。', 'SHA2(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (194, 'Function', '内置函数', '聚合函数', 'COUNT([ ALL ] expression | DISTINCT expression1 [, expression2]*)', '默认情况下或使用ALL时，返回表达式不为空的输入行数。对每个值的唯一实例使用DISTINCT。', 'COUNT( DISTINCT ${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (195, 'Function', '内置函数', '聚合函数', 'COUNT(*)
 COUNT(1)', '返回输入行数。', 'COUNT(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
@@ -737,14 +737,14 @@ INSERT INTO "public"."dinky_flink_document" VALUES (205, 'Function', '内置函�
 INSERT INTO "public"."dinky_flink_document" VALUES (206, 'Function', '内置函数', '聚合函数', 'RANK()', '返回值在一组值中的秩。结果是1加上分区顺序中位于当前行之前或等于当前行的行数。这些值将在序列中产生空白。仅在blink planner中支持。', 'RANK()', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (207, 'Function', '内置函数', '聚合函数', 'DENSE_RANK()', '返回值在一组值中的秩。结果是1加上前面分配的秩值。与函数rank不同，dense_rank不会在排序序列中产生空隙。仅在blink planner中支持。', 'DENSE_RANK()', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (208, 'Function', '内置函数', '聚合函数', 'ROW_NUMBER()', '根据窗口分区中的行顺序，为每一行分配一个惟一的连续数字，从1开始。仅在blink planner中支持。', 'ROW_NUMBER()', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
-INSERT INTO "public"."dinky_flink_document" VALUES (209, 'Function', '内置函数', '聚合函数', 'LEAD(expression [, offset] [, default] )', '返回表达式在窗口中当前行之前的偏移行上的值。offset的默认值是1,default的默认值是NULL。仅在blink planner中支持。', 'LEAD(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
-INSERT INTO "public"."dinky_flink_document" VALUES (210, 'Function', '内置函数', '聚合函数', 'LAG(expression [, offset] [, default])', '返回表达式的值，该值位于窗口中当前行之后的偏移行。offset的默认值是1,default的默认值是NULL。仅在blink planner中支持。', 'LAG(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
+INSERT INTO "public"."dinky_flink_document" VALUES (209, 'Function', '内置函数', '聚合函数', 'LEAD(expression [, offset] [, default] )', '返回表达式在窗口中当前行之前的偏移行上的值。offset的默认值是1,default的默认值是null。仅在blink planner中支持。', 'LEAD(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
+INSERT INTO "public"."dinky_flink_document" VALUES (210, 'Function', '内置函数', '聚合函数', 'LAG(expression [, offset] [, default])', '返回表达式的值，该值位于窗口中当前行之后的偏移行。offset的默认值是1,default的默认值是null。仅在blink planner中支持。', 'LAG(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (211, 'Function', '内置函数', '聚合函数', 'FIRST_VALUE(expression)', '返回一组有序值中的第一个值。仅在blink planner中支持。', 'FIRST_VALUE(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (212, 'Function', '内置函数', '聚合函数', 'LAST_VALUE(expression)', '返回一组有序值中的最后一个值。仅在blink planner中支持。', 'LAST_VALUE(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (213, 'Function', '内置函数', '聚合函数', 'LISTAGG(expression [, separator])', '连接字符串表达式的值，并在它们之间放置分隔符值。分隔符没有添加在字符串的末尾。分隔符的默认值是''，''。仅在blink planner中支持。', 'LISTAGG(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (214, 'Function', '内置函数', '列函数', 'withColumns(…)', '选择的列', 'withColumns(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO "public"."dinky_flink_document" VALUES (215, 'Function', '内置函数', '列函数', 'withoutColumns(…)', '不选择的列', 'withoutColumns(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
-INSERT INTO "public"."dinky_flink_document" VALUES (216, 'Function', '内置函数', '比较函数', 'value1 = value2', '如果value1等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} =${2:}', '1.12', 9, 1, '2021-02-22 10:06:49', '2021-02-24 09:40:30');
+INSERT INTO "public"."dinky_flink_document" VALUES (216, 'Function', '内置函数', '比较函数', 'value1 = value2', '如果value1等于value2 返回true; 如果value1或value2为null，则返回UNKNOWN 。', '${1:} =${2:}', '1.12', 9, 1, '2021-02-22 10:06:49', '2021-02-24 09:40:30');
 INSERT INTO "public"."dinky_flink_document" VALUES (217, 'Function', 'UDF', '表值聚合函数', 'TO_MAP(string1,object2[, string3])', '将非规则一维表转化为规则二维表，string1是key。string2是value。string3为非必填项，表示key的值域（维度），用英文逗号分割。', 'TO_MAP(${1:})', '1.12', 8, 1, '2021-05-20 19:59:22', '2021-05-20 20:00:54');
 
 -- ----------------------------
@@ -752,10 +752,10 @@ INSERT INTO "public"."dinky_flink_document" VALUES (217, 'Function', 'UDF', '表
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_fragment";
 CREATE TABLE "public"."dinky_fragment" (
-                                           "id" SERIAL NOT NULL,
-                                           "name" varchar(50) COLLATE "pg_catalog"."default" NOT NULL,
-                                           "tenant_id" int4 NOT NULL,
-                                           "fragment_value" text COLLATE "pg_catalog"."default" NOT NULL,
+                                           "id" SERIAL NOT null,
+                                           "name" varchar(50) COLLATE "pg_catalog"."default" NOT null,
+                                           "tenant_id" int4 NOT null,
+                                           "fragment_value" text COLLATE "pg_catalog"."default" NOT null,
                                            "note" text COLLATE "pg_catalog"."default",
                                            "enabled" int2,
                                            "create_time" timestamp(6),
@@ -781,27 +781,27 @@ COMMENT ON TABLE "public"."dinky_fragment" IS 'fragment management';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_git_project";
 CREATE TABLE "public"."dinky_git_project" (
-                                              "id" int8 NOT NULL,
-                                              "tenant_id" int8 NOT NULL,
-                                              "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-                                              "url" varchar(1000) COLLATE "pg_catalog"."default" NOT NULL,
-                                              "branch" varchar(1000) COLLATE "pg_catalog"."default" NOT NULL,
+                                              "id" int8 NOT null,
+                                              "tenant_id" int8 NOT null,
+                                              "name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
+                                              "url" varchar(1000) COLLATE "pg_catalog"."default" NOT null,
+                                              "branch" varchar(1000) COLLATE "pg_catalog"."default" NOT null,
                                               "username" varchar(255) COLLATE "pg_catalog"."default",
                                               "password" varchar(255) COLLATE "pg_catalog"."default",
                                               "private_key" varchar(255) COLLATE "pg_catalog"."default",
                                               "pom" varchar(255) COLLATE "pg_catalog"."default",
                                               "build_args" varchar(255) COLLATE "pg_catalog"."default",
                                               "code_type" int2,
-                                              "type" int2 NOT NULL,
+                                              "type" int2 NOT null,
                                               "last_build" timestamp(6),
                                               "description" varchar(255) COLLATE "pg_catalog"."default",
-                                              "build_state" int2 NOT NULL,
-                                              "build_step" int2 NOT NULL,
-                                              "enabled" int2 NOT NULL,
+                                              "build_state" int2 NOT null,
+                                              "build_step" int2 NOT null,
+                                              "enabled" int2 NOT null,
                                               "udf_class_map_list" text COLLATE "pg_catalog"."default",
-                                              "order_line" int4 NOT NULL,
-                                              "create_time" timestamp(6) NOT NULL,
-                                              "update_time" timestamp(6) NOT NULL
+                                              "order_line" int4 NOT null,
+                                              "create_time" timestamp(6) NOT null,
+                                              "update_time" timestamp(6) NOT null
 )
 ;
 COMMENT ON COLUMN "public"."dinky_git_project"."private_key" IS 'keypath';
@@ -817,23 +817,23 @@ COMMENT ON COLUMN "public"."dinky_git_project"."update_time" IS 'update time';
 -- ----------------------------
 -- Records of dinky_git_project
 -- ----------------------------
-INSERT INTO "public"."dinky_git_project" VALUES (1, 1, 'java-udf', 'https://github.com/zackyoungh/dinky-quickstart-java.git', 'master', NULL, NULL, NULL, NULL, '-P flink-1.14', 1, 1, NULL, NULL, 0, 0, 1, '[]', 1, '2023-05-29 21:25:43', '2023-05-29 21:25:43');
-INSERT INTO "public"."dinky_git_project" VALUES (2, 1, 'python-udf', 'https://github.com/zackyoungh/dinky-quickstart-python.git', 'master', NULL, NULL, NULL, NULL, '', 2, 1, NULL, NULL, 0, 0, 1, '[]', 2, '2023-05-29 21:25:43', '2023-05-29 21:25:43');
+INSERT INTO "public"."dinky_git_project" VALUES (1, 1, 'java-udf', 'https://github.com/zackyoungh/dinky-quickstart-java.git', 'master', null, null, null, null, '-P flink-1.14', 1, 1, null, null, 0, 0, 1, '[]', 1, '2023-05-29 21:25:43', '2023-05-29 21:25:43');
+INSERT INTO "public"."dinky_git_project" VALUES (2, 1, 'python-udf', 'https://github.com/zackyoungh/dinky-quickstart-python.git', 'master', null, null, null, null, '', 2, 1, null, null, 0, 0, 1, '[]', 2, '2023-05-29 21:25:43', '2023-05-29 21:25:43');
 
 -- ----------------------------
 -- Table structure for dinky_history
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_history";
 CREATE TABLE "public"."dinky_history" (
-                                          "id" SERIAL NOT NULL,
-                                          "tenant_id" int4 NOT NULL,
-                                          "cluster_id" int4 NOT NULL,
+                                          "id" SERIAL NOT null,
+                                          "tenant_id" int4 NOT null,
+                                          "cluster_id" int4 NOT null,
                                           "cluster_configuration_id" int4,
                                           "session" varchar(255) COLLATE "pg_catalog"."default",
                                           "job_id" varchar(50) COLLATE "pg_catalog"."default",
                                           "job_name" varchar(255) COLLATE "pg_catalog"."default",
                                           "job_manager_address" varchar(255) COLLATE "pg_catalog"."default",
-                                          "status" int4 NOT NULL,
+                                          "status" int4 NOT null,
                                           "type" varchar(50) COLLATE "pg_catalog"."default",
                                           "statement" text COLLATE "pg_catalog"."default",
                                           "error" text COLLATE "pg_catalog"."default",
@@ -872,15 +872,15 @@ COMMENT ON TABLE "public"."dinky_history" IS 'execution history';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_jar";
 CREATE TABLE "public"."dinky_jar" (
-                                      "id" SERIAL NOT NULL,
-                                      "tenant_id" int4 NOT NULL,
-                                      "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+                                      "id" SERIAL NOT null,
+                                      "tenant_id" int4 NOT null,
+                                      "name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
                                       "type" varchar(50) COLLATE "pg_catalog"."default",
                                       "path" varchar(255) COLLATE "pg_catalog"."default",
                                       "main_class" varchar(255) COLLATE "pg_catalog"."default",
                                       "paras" varchar(255) COLLATE "pg_catalog"."default",
                                       "note" varchar(255) COLLATE "pg_catalog"."default",
-                                      "enabled" int2 NOT NULL,
+                                      "enabled" int2 NOT null,
                                       "create_time" timestamp(6),
                                       "update_time" timestamp(6)
 )
@@ -907,8 +907,8 @@ COMMENT ON TABLE "public"."dinky_jar" IS 'jar management';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_job_history";
 CREATE TABLE "public"."dinky_job_history" (
-                                              "id" SERIAL NOT NULL,
-                                              "tenant_id" int4 NOT NULL,
+                                              "id" SERIAL NOT null,
+                                              "tenant_id" int4 NOT null,
                                               "job_json" text COLLATE "pg_catalog"."default",
                                               "exceptions_json" text COLLATE "pg_catalog"."default",
                                               "checkpoints_json" text COLLATE "pg_catalog"."default",
@@ -942,9 +942,9 @@ COMMENT ON TABLE "public"."dinky_job_history" IS 'Job history details';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_job_instance";
 CREATE TABLE "public"."dinky_job_instance" (
-                                               "id" SERIAL NOT NULL,
+                                               "id" SERIAL NOT null,
                                                "name" varchar(255) COLLATE "pg_catalog"."default",
-                                               "tenant_id" int4 NOT NULL,
+                                               "tenant_id" int4 NOT null,
                                                "task_id" int4,
                                                "step" int4,
                                                "cluster_id" int4,
@@ -985,11 +985,11 @@ COMMENT ON TABLE "public"."dinky_job_instance" IS 'job instance';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_role";
 CREATE TABLE "public"."dinky_role" (
-                                       "id" SERIAL NOT NULL,
-                                       "tenant_id" int4 NOT NULL,
-                                       "role_code" varchar(64) COLLATE "pg_catalog"."default" NOT NULL,
-                                       "role_name" varchar(64) COLLATE "pg_catalog"."default" NOT NULL,
-                                       "is_delete" int2 NOT NULL,
+                                       "id" SERIAL NOT null,
+                                       "tenant_id" int4 NOT null,
+                                       "role_code" varchar(64) COLLATE "pg_catalog"."default" NOT null,
+                                       "role_name" varchar(64) COLLATE "pg_catalog"."default" NOT null,
+                                       "is_delete" int2 NOT null,
                                        "note" varchar(255) COLLATE "pg_catalog"."default",
                                        "create_time" timestamp(6),
                                        "update_time" timestamp(6)
@@ -1015,8 +1015,8 @@ INSERT INTO "public"."dinky_role" VALUES (1, 1, 'SuperAdmin', 'SuperAdmin', 0, '
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_row_permissions";
 CREATE TABLE "public"."dinky_row_permissions" (
-                                                  "id" SERIAL NOT NULL,
-                                                  "role_id" int4 NOT NULL,
+                                                  "id" SERIAL NOT null,
+                                                  "role_id" int4 NOT null,
                                                   "table_name" varchar(255) COLLATE "pg_catalog"."default",
                                                   "expression" varchar(255) COLLATE "pg_catalog"."default",
                                                   "create_time" timestamp(6),
@@ -1040,12 +1040,12 @@ COMMENT ON TABLE "public"."dinky_row_permissions" IS '角色数据查询权限';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_savepoints";
 CREATE TABLE "public"."dinky_savepoints" (
-                                             "id" SERIAL NOT NULL,
-                                             "task_id" int4 NOT NULL,
-                                             "tenant_id" int4 NOT NULL,
-                                             "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-                                             "type" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-                                             "path" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+                                             "id" SERIAL NOT null,
+                                             "task_id" int4 NOT null,
+                                             "tenant_id" int4 NOT null,
+                                             "name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
+                                             "type" varchar(255) COLLATE "pg_catalog"."default" NOT null,
+                                             "path" varchar(255) COLLATE "pg_catalog"."default" NOT null,
                                              "create_time" timestamp(6)
 )
 ;
@@ -1067,16 +1067,16 @@ COMMENT ON TABLE "public"."dinky_savepoints" IS 'job savepoint management';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_schema_history";
 CREATE TABLE "public"."dinky_schema_history" (
-                                                 "installed_rank" int4 NOT NULL,
+                                                 "installed_rank" int4 NOT null,
                                                  "version" varchar(50) COLLATE "pg_catalog"."default",
-                                                 "description" varchar(200) COLLATE "pg_catalog"."default" NOT NULL,
-                                                 "type" varchar(20) COLLATE "pg_catalog"."default" NOT NULL,
-                                                 "script" varchar(1000) COLLATE "pg_catalog"."default" NOT NULL,
+                                                 "description" varchar(200) COLLATE "pg_catalog"."default" NOT null,
+                                                 "type" varchar(20) COLLATE "pg_catalog"."default" NOT null,
+                                                 "script" varchar(1000) COLLATE "pg_catalog"."default" NOT null,
                                                  "checksum" int4,
-                                                 "installed_by" varchar(100) COLLATE "pg_catalog"."default" NOT NULL,
-                                                 "installed_on" timestamp(6) NOT NULL,
-                                                 "execution_time" int4 NOT NULL,
-                                                 "success" int2 NOT NULL
+                                                 "installed_by" varchar(100) COLLATE "pg_catalog"."default" NOT null,
+                                                 "installed_on" timestamp(6) NOT null,
+                                                 "execution_time" int4 NOT null,
+                                                 "success" int2 NOT null
 )
 ;
 
@@ -1089,8 +1089,8 @@ CREATE TABLE "public"."dinky_schema_history" (
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_sys_config";
 CREATE TABLE "public"."dinky_sys_config" (
-                                             "id" SERIAL NOT NULL,
-                                             "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+                                             "id" SERIAL NOT null,
+                                             "name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
                                              "value" text COLLATE "pg_catalog"."default",
                                              "create_time" timestamp(6),
                                              "update_time" timestamp(6)
@@ -1112,9 +1112,9 @@ COMMENT ON TABLE "public"."dinky_sys_config" IS 'system configuration';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_task";
 CREATE TABLE "public"."dinky_task" (
-                                       "id" SERIAL NOT NULL,
-                                       "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-                                       "tenant_id" int4 NOT NULL,
+                                       "id" SERIAL NOT null,
+                                       "name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
+                                       "tenant_id" int4 NOT null,
                                        "dialect" varchar(50) COLLATE "pg_catalog"."default",
                                        "type" varchar(50) COLLATE "pg_catalog"."default",
                                        "check_point" int4,
@@ -1134,7 +1134,7 @@ CREATE TABLE "public"."dinky_task" (
                                        "note" varchar(255) COLLATE "pg_catalog"."default",
                                        "step" int4,
                                        "job_instance_id" int8,
-                                       "enabled" int2 NOT NULL,
+                                       "enabled" int2 NOT null,
                                        "create_time" timestamp(6),
                                        "update_time" timestamp(6),
                                        "version_id" int4
@@ -1177,8 +1177,8 @@ COMMENT ON TABLE "public"."dinky_task" IS 'Task';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_task_statement";
 CREATE TABLE "public"."dinky_task_statement" (
-                                                 "id" SERIAL NOT NULL,
-                                                 "tenant_id" int4 NOT NULL,
+                                                 "id" SERIAL NOT null,
+                                                 "tenant_id" int4 NOT null,
                                                  "statement" text COLLATE "pg_catalog"."default"
 )
 ;
@@ -1196,15 +1196,15 @@ COMMENT ON TABLE "public"."dinky_task_statement" IS 'statement';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_task_version";
 CREATE TABLE "public"."dinky_task_version" (
-                                               "id" SERIAL NOT NULL,
-                                               "task_id" int4 NOT NULL,
-                                               "tenant_id" int4 NOT NULL,
-                                               "version_id" int4 NOT NULL,
+                                               "id" SERIAL NOT null,
+                                               "task_id" int4 NOT null,
+                                               "tenant_id" int4 NOT null,
+                                               "version_id" int4 NOT null,
                                                "statement" text COLLATE "pg_catalog"."default",
-                                               "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+                                               "name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
                                                "dialect" varchar(50) COLLATE "pg_catalog"."default",
                                                "type" varchar(50) COLLATE "pg_catalog"."default",
-                                               "task_configure" text COLLATE "pg_catalog"."default" NOT NULL,
+                                               "task_configure" text COLLATE "pg_catalog"."default" NOT null,
                                                "create_time" timestamp(6)
 )
 ;
@@ -1229,9 +1229,9 @@ COMMENT ON TABLE "public"."dinky_task_version" IS 'job history version';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_tenant";
 CREATE TABLE "public"."dinky_tenant" (
-                                         "id" SERIAL NOT NULL,
-                                         "tenant_code" varchar(64) COLLATE "pg_catalog"."default" NOT NULL,
-                                         "is_delete" int2 NOT NULL,
+                                         "id" SERIAL NOT null,
+                                         "tenant_code" varchar(64) COLLATE "pg_catalog"."default" NOT null,
+                                         "is_delete" int2 NOT null,
                                          "note" varchar(255) COLLATE "pg_catalog"."default",
                                          "create_time" timestamp(6),
                                          "update_time" timestamp(6)
@@ -1255,7 +1255,7 @@ INSERT INTO "public"."dinky_tenant" VALUES (1, 'DefaultTenant', 0, 'DefaultTenan
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_udf";
 CREATE TABLE "public"."dinky_udf" (
-                                      "id" SERIAL NOT NULL,
+                                      "id" SERIAL NOT null,
                                       "name" varchar(200) COLLATE "pg_catalog"."default",
                                       "class_name" varchar(200) COLLATE "pg_catalog"."default",
                                       "source_code" text COLLATE "pg_catalog"."default",
@@ -1301,7 +1301,7 @@ COMMENT ON TABLE "public"."dinky_udf" IS 'udf';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_udf_template";
 CREATE TABLE "public"."dinky_udf_template" (
-                                               "id" SERIAL NOT NULL,
+                                               "id" SERIAL NOT null,
                                                "name" varchar(100) COLLATE "pg_catalog"."default",
                                                "code_type" varchar(10) COLLATE "pg_catalog"."default",
                                                "function_type" varchar(10) COLLATE "pg_catalog"."default",
@@ -1331,7 +1331,7 @@ public class ${className} extends ScalarFunction {
     public String eval(String s) {
         return null;
     }
-}', NULL, '2022-10-19 09:17:37', '2022-10-25 17:45:57');
+}', null, '2022-10-19 09:17:37', '2022-10-25 17:45:57');
 INSERT INTO "public"."dinky_udf_template" VALUES (2, 'java_udtf', 'Java', 'UDTF', '${(package=='''')?string('''',''package ''+package+'';'')}
 
 import org.apache.flink.table.functions.ScalarFunction;
@@ -1345,7 +1345,7 @@ public static class ${className} extends TableFunction<Row> {
       collect(Row.of(s, s.length()));
     }
   }
-}', NULL, '2022-10-19 09:22:58', '2022-10-25 17:49:30');
+}', null, '2022-10-19 09:22:58', '2022-10-25 17:49:30');
 INSERT INTO "public"."dinky_udf_template" VALUES (3, 'scala_udf', 'Scala', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}
 
 import org.apache.flink.table.api._
@@ -1356,7 +1356,7 @@ class ${className} extends ScalarFunction {
   def eval(s: String, begin: Integer, end: Integer): String = {
     "this is scala"
   }
-}', NULL, '2022-10-25 09:21:32', '2022-10-25 17:49:46');
+}', null, '2022-10-25 09:21:32', '2022-10-25 17:49:46');
 INSERT INTO "public"."dinky_udf_template" VALUES (4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFunction, DataTypes
 from pyflink.table.udf import udf
 
@@ -1368,28 +1368,28 @@ class ${className}(ScalarFunction):
         return str(variable)
 
 
-${attr!''f''} = udf(${className}(), result_type=DataTypes.STRING())', NULL, '2022-10-25 09:23:07', '2022-10-25 09:34:01');
+${attr!''f''} = udf(${className}(), result_type=DataTypes.STRING())', null, '2022-10-25 09:23:07', '2022-10-25 09:34:01');
 INSERT INTO "public"."dinky_udf_template" VALUES (5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes
 from pyflink.table.udf import udf
 
 @udf(result_type=DataTypes.STRING())
 def ${className}(variable1:str):
-  return ''''', NULL, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
+  return ''''', null, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
 
 -- ----------------------------
 -- Table structure for dinky_upload_file_record
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_upload_file_record";
 CREATE TABLE "public"."dinky_upload_file_record" (
-                                                     "id" int2 NOT NULL,
+                                                     "id" int2 NOT null,
                                                      "name" varchar(255) COLLATE "pg_catalog"."default",
                                                      "enabled" int2,
                                                      "file_type" int2,
-                                                     "target" int2 NOT NULL,
+                                                     "target" int2 NOT null,
                                                      "file_name" varchar(255) COLLATE "pg_catalog"."default",
                                                      "file_parent_path" varchar(255) COLLATE "pg_catalog"."default",
                                                      "file_absolute_path" varchar(255) COLLATE "pg_catalog"."default",
-                                                     "is_file" int2 NOT NULL,
+                                                     "is_file" int2 NOT null,
                                                      "create_time" timestamp(6),
                                                      "update_time" timestamp(6)
 )
@@ -1416,17 +1416,17 @@ COMMENT ON TABLE "public"."dinky_upload_file_record" IS 'file upload history';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_user";
 CREATE TABLE "public"."dinky_user" (
-                                       "id" SERIAL NOT NULL,
-                                       "username" varchar(50) COLLATE "pg_catalog"."default" NOT NULL,
+                                       "id" SERIAL NOT null,
+                                       "username" varchar(50) COLLATE "pg_catalog"."default" NOT null,
                                         "user_type" int2 DEFAULT 1,
                                        "password" varchar(50) COLLATE "pg_catalog"."default",
                                        "nickname" varchar(50) COLLATE "pg_catalog"."default",
                                        "worknum" varchar(50) COLLATE "pg_catalog"."default",
                                        "avatar" bytea,
                                        "mobile" varchar(20) COLLATE "pg_catalog"."default",
-                                       "enabled" int2 NOT NULL,
-                                       "super_admin_flag" int2 NOT NULL,
-                                       "is_delete" int2 NOT NULL,
+                                       "enabled" int2 NOT null,
+                                       "super_admin_flag" int2 NOT null,
+                                       "is_delete" int2 NOT null,
                                        "create_time" timestamp(6),
                                        "update_time" timestamp(6)
 )
@@ -1456,9 +1456,9 @@ INSERT INTO "public"."dinky_user" VALUES (1, 'admin', 1 , '21232f297a57a5a743894
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_user_role";
 CREATE TABLE "public"."dinky_user_role" (
-                                            "id" SERIAL NOT NULL,
-                                            "user_id" int4 NOT NULL,
-                                            "role_id" int4 NOT NULL,
+                                            "id" SERIAL NOT null,
+                                            "user_id" int4 NOT null,
+                                            "role_id" int4 NOT null,
                                             "create_time" timestamp(6),
                                             "update_time" timestamp(6)
 )
@@ -1480,10 +1480,10 @@ INSERT INTO "public"."dinky_user_role" VALUES (1, 1, 1, '2022-12-13 05:27:19', '
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_user_tenant";
 CREATE TABLE "public"."dinky_user_tenant" (
-                                              "id" SERIAL NOT NULL,
-                                              "user_id" int4 NOT NULL,
-                                              "tenant_id" int4 NOT NULL,
-                                              "tenant_admin_flag" int2 NOT NULL,
+                                              "id" SERIAL NOT null,
+                                              "user_id" int4 NOT null,
+                                              "tenant_id" int4 NOT null,
+                                              "tenant_admin_flag" int2 NOT null,
                                               "create_time" timestamp(6),
                                               "update_time" timestamp(6)
 )
@@ -1506,15 +1506,15 @@ INSERT INTO "public"."dinky_user_tenant" VALUES (1, 1, 1,1, '2023-05-29 21:25:42
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."metadata_column";
 CREATE TABLE "public"."metadata_column" (
-                                            "column_name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-                                            "column_type" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-                                            "data_type" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+                                            "column_name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
+                                            "column_type" varchar(255) COLLATE "pg_catalog"."default" NOT null,
+                                            "data_type" varchar(255) COLLATE "pg_catalog"."default" NOT null,
                                             "expr" varchar(255) COLLATE "pg_catalog"."default",
-                                            "description" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-                                            "table_id" int4 NOT NULL,
+                                            "description" varchar(255) COLLATE "pg_catalog"."default" NOT null,
+                                            "table_id" int4 NOT null,
                                             "primary" varchar(1) COLLATE "pg_catalog"."default",
                                             "update_time" timestamp(6),
-                                            "create_time" timestamp(6) NOT NULL
+                                            "create_time" timestamp(6) NOT null
 )
 ;
 COMMENT ON COLUMN "public"."metadata_column"."column_name" IS 'column name';
@@ -1537,8 +1537,8 @@ COMMENT ON TABLE "public"."metadata_column" IS 'column informations';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."metadata_database";
 CREATE TABLE "public"."metadata_database" (
-                                              "id" SERIAL NOT NULL,
-                                              "database_name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+                                              "id" SERIAL NOT null,
+                                              "database_name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
                                               "description" varchar(255) COLLATE "pg_catalog"."default",
                                               "update_time" timestamp(6),
                                               "create_time" timestamp(6)
@@ -1560,11 +1560,11 @@ COMMENT ON TABLE "public"."metadata_database" IS 'metadata of database informati
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."metadata_database_property";
 CREATE TABLE "public"."metadata_database_property" (
-                                                       "key" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+                                                       "key" varchar(255) COLLATE "pg_catalog"."default" NOT null,
                                                        "value" varchar(255) COLLATE "pg_catalog"."default",
-                                                       "database_id" int4 NOT NULL,
+                                                       "database_id" int4 NOT null,
                                                        "update_time" timestamp(6),
-                                                       "create_time" timestamp(6) NOT NULL
+                                                       "create_time" timestamp(6) NOT null
 )
 ;
 COMMENT ON COLUMN "public"."metadata_database_property"."key" IS 'key';
@@ -1583,10 +1583,10 @@ COMMENT ON TABLE "public"."metadata_database_property" IS 'metadata of database 
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."metadata_function";
 CREATE TABLE "public"."metadata_function" (
-                                              "id" SERIAL NOT NULL,
-                                              "function_name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-                                              "class_name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-                                              "database_id" int4 NOT NULL,
+                                              "id" SERIAL NOT null,
+                                              "function_name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
+                                              "class_name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
+                                              "database_id" int4 NOT null,
                                               "function_language" varchar(255) COLLATE "pg_catalog"."default",
                                               "update_time" timestamp(6),
                                               "create_time" timestamp(6)
@@ -1610,10 +1610,10 @@ COMMENT ON TABLE "public"."metadata_function" IS 'UDF informations';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."metadata_table";
 CREATE TABLE "public"."metadata_table" (
-                                           "id" SERIAL NOT NULL,
-                                           "table_name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-                                           "table_type" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-                                           "database_id" int4 NOT NULL,
+                                           "id" SERIAL NOT null,
+                                           "table_name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
+                                           "table_type" varchar(255) COLLATE "pg_catalog"."default" NOT null,
+                                           "database_id" int4 NOT null,
                                            "description" varchar(255) COLLATE "pg_catalog"."default",
                                            "update_time" timestamp(6),
                                            "create_time" timestamp(6)
@@ -1637,11 +1637,11 @@ COMMENT ON TABLE "public"."metadata_table" IS 'metadata of table information';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."metadata_table_property";
 CREATE TABLE "public"."metadata_table_property" (
-                                                    "key" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+                                                    "key" varchar(255) COLLATE "pg_catalog"."default" NOT null,
                                                     "value" text COLLATE "pg_catalog"."default",
-                                                    "table_id" int4 NOT NULL,
+                                                    "table_id" int4 NOT null,
                                                     "update_time" timestamp(6),
-                                                    "create_time" timestamp(6) NOT NULL
+                                                    "create_time" timestamp(6) NOT null
 )
 ;
 COMMENT ON COLUMN "public"."metadata_table_property"."key" IS 'key';
@@ -1664,8 +1664,8 @@ SELECT setval('"public"."dinky_alert_group_seq"', 1, false);
 -- Indexes structure for table dinky_alert_group
 -- ----------------------------
 CREATE UNIQUE INDEX "alert_group_un_idx1" ON "public"."dinky_alert_group" USING btree (
-                                                                                       "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-                                                                                       "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                       "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC nullS LAST,
+                                                                                       "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1682,8 +1682,8 @@ ALTER TABLE "public"."dinky_alert_history" ADD CONSTRAINT "dinky_alert_history_p
 -- Indexes structure for table dinky_alert_instance
 -- ----------------------------
 CREATE UNIQUE INDEX "alert_instance_un_idx1" ON "public"."dinky_alert_instance" USING btree (
-                                                                                             "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-                                                                                             "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                             "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC nullS LAST,
+                                                                                             "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1695,9 +1695,9 @@ ALTER TABLE "public"."dinky_alert_instance" ADD CONSTRAINT "dinky_alert_instance
 -- Indexes structure for table dinky_catalogue
 -- ----------------------------
 CREATE UNIQUE INDEX "catalogue_un_idx1" ON "public"."dinky_catalogue" USING btree (
-                                                                                   "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-                                                                                   "parent_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-                                                                                   "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                   "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC nullS LAST,
+                                                                                   "parent_id" "pg_catalog"."int4_ops" ASC nullS LAST,
+                                                                                   "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1709,8 +1709,8 @@ ALTER TABLE "public"."dinky_catalogue" ADD CONSTRAINT "dinky_catalogue_pkey" PRI
 -- Indexes structure for table dinky_cluster
 -- ----------------------------
 CREATE UNIQUE INDEX "cluster_un_idx1" ON "public"."dinky_cluster" USING btree (
-                                                                               "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-                                                                               "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                               "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC nullS LAST,
+                                                                               "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1722,8 +1722,8 @@ ALTER TABLE "public"."dinky_cluster" ADD CONSTRAINT "dinky_cluster_pkey" PRIMARY
 -- Indexes structure for table dinky_cluster_configuration
 -- ----------------------------
 CREATE UNIQUE INDEX "cluster_configuration_un_idx1" ON "public"."dinky_cluster_configuration" USING btree (
-                                                                                                           "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-                                                                                                           "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                                           "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC nullS LAST,
+                                                                                                           "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1735,8 +1735,8 @@ ALTER TABLE "public"."dinky_cluster_configuration" ADD CONSTRAINT "dinky_cluster
 -- Indexes structure for table dinky_database
 -- ----------------------------
 CREATE UNIQUE INDEX "database_un_idx1" ON "public"."dinky_database" USING btree (
-                                                                                 "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-                                                                                 "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                 "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC nullS LAST,
+                                                                                 "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1753,8 +1753,8 @@ ALTER TABLE "public"."dinky_flink_document" ADD CONSTRAINT "dinky_flink_document
 -- Indexes structure for table dinky_fragment
 -- ----------------------------
 CREATE UNIQUE INDEX "fragment_un_idx1" ON "public"."dinky_fragment" USING btree (
-                                                                                 "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-                                                                                 "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                 "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC nullS LAST,
+                                                                                 "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1766,7 +1766,7 @@ ALTER TABLE "public"."dinky_fragment" ADD CONSTRAINT "dinky_fragment_pkey" PRIMA
 -- Indexes structure for table dinky_git_project
 -- ----------------------------
 CREATE INDEX "tenant_id" ON "public"."dinky_git_project" USING btree (
-                                                                      "tenant_id" "pg_catalog"."int8_ops" ASC NULLS LAST
+                                                                      "tenant_id" "pg_catalog"."int8_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1778,10 +1778,10 @@ ALTER TABLE "public"."dinky_git_project" ADD CONSTRAINT "dinky_git_project_pkey"
 -- Indexes structure for table dinky_history
 -- ----------------------------
 CREATE INDEX "cluster_index" ON "public"."dinky_history" USING btree (
-                                                                      "cluster_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                      "cluster_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 CREATE INDEX "task_index" ON "public"."dinky_history" USING btree (
-                                                                   "task_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                   "task_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1793,8 +1793,8 @@ ALTER TABLE "public"."dinky_history" ADD CONSTRAINT "dinky_history_pkey" PRIMARY
 -- Indexes structure for table dinky_jar
 -- ----------------------------
 CREATE UNIQUE INDEX "jar_un_idx1" ON "public"."dinky_jar" USING btree (
-                                                                       "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-                                                                       "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
+                                                                       "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST,
+                                                                       "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1811,13 +1811,13 @@ ALTER TABLE "public"."dinky_job_history" ADD CONSTRAINT "dinky_job_history_pkey"
 -- Indexes structure for table dinky_job_instance
 -- ----------------------------
 CREATE INDEX "job_instance_task_id_idx1" ON "public"."dinky_job_instance" USING btree (
-                                                                                       "task_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                       "task_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 CREATE UNIQUE INDEX "job_instance_un_idx1" ON "public"."dinky_job_instance" USING btree (
-                                                                                         "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-                                                                                         "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-                                                                                         "task_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-                                                                                         "history_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                         "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST,
+                                                                                         "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC nullS LAST,
+                                                                                         "task_id" "pg_catalog"."int4_ops" ASC nullS LAST,
+                                                                                         "history_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1830,7 +1830,7 @@ ALTER TABLE "public"."dinky_job_instance" ADD CONSTRAINT "dinky_job_instance_pke
 -- Indexes structure for table dinky_role
 -- ----------------------------
 CREATE UNIQUE INDEX "role_un_idx1" ON "public"."dinky_role" USING btree (
-                                                                         "role_code" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
+                                                                         "role_code" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1852,7 +1852,7 @@ ALTER TABLE "public"."dinky_savepoints" ADD CONSTRAINT "dinky_savepoints_pkey" P
 -- Indexes structure for table dinky_schema_history
 -- ----------------------------
 CREATE INDEX "schema_history_idx" ON "public"."dinky_schema_history" USING btree (
-                                                                                  "success" "pg_catalog"."int2_ops" ASC NULLS LAST
+                                                                                  "success" "pg_catalog"."int2_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1869,8 +1869,8 @@ ALTER TABLE "public"."dinky_sys_config" ADD CONSTRAINT "dinky_sys_config_pkey" P
 -- Indexes structure for table dinky_task
 -- ----------------------------
 CREATE UNIQUE INDEX "task_un_idx1" ON "public"."dinky_task" USING btree (
-                                                                         "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-                                                                         "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                         "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC nullS LAST,
+                                                                         "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1882,8 +1882,8 @@ ALTER TABLE "public"."dinky_task" ADD CONSTRAINT "dinky_task_pkey" PRIMARY KEY (
 -- Indexes structure for table dinky_task_statement
 -- ----------------------------
 CREATE UNIQUE INDEX "task_statement_un_idx1" ON "public"."dinky_task_statement" USING btree (
-                                                                                             "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-                                                                                             "id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                             "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST,
+                                                                                             "id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1895,9 +1895,9 @@ ALTER TABLE "public"."dinky_task_statement" ADD CONSTRAINT "dinky_task_statement
 -- Indexes structure for table dinky_task_version
 -- ----------------------------
 CREATE UNIQUE INDEX "task_version_un_idx1" ON "public"."dinky_task_version" USING btree (
-                                                                                         "task_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-                                                                                         "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-                                                                                         "version_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                         "task_id" "pg_catalog"."int4_ops" ASC nullS LAST,
+                                                                                         "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST,
+                                                                                         "version_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1934,8 +1934,8 @@ ALTER TABLE "public"."dinky_user" ADD CONSTRAINT "dinky_user_pkey" PRIMARY KEY (
 -- Indexes structure for table dinky_user_role
 -- ----------------------------
 CREATE UNIQUE INDEX "user_role_un_idx1" ON "public"."dinky_user_role" USING btree (
-       "user_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-       "role_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+       "user_id" "pg_catalog"."int4_ops" ASC nullS LAST,
+       "role_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1947,8 +1947,8 @@ ALTER TABLE "public"."dinky_user_role" ADD CONSTRAINT "dinky_user_role_pkey" PRI
 -- Indexes structure for table dinky_user_tenant
 -- ----------------------------
 CREATE UNIQUE INDEX "user_tenant_un_idx1" ON "public"."dinky_user_tenant" USING btree (
-                                                                                       "user_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-                                                                                       "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                       "user_id" "pg_catalog"."int4_ops" ASC nullS LAST,
+                                                                                       "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -1989,7 +1989,7 @@ ALTER TABLE "public"."metadata_table_property" ADD CONSTRAINT "metadata_table_pr
 
 DROP TABLE IF EXISTS "public"."dinky_metrics";
 CREATE TABLE "public"."dinky_metrics" (
-                                          "id" int4 NOT NULL,
+                                          "id" int4 NOT null,
                                           "task_id" int4,
                                           "vertices" varchar(255) COLLATE "pg_catalog"."default",
                                           "metrics" varchar(255) COLLATE "pg_catalog"."default",
@@ -1998,8 +1998,8 @@ CREATE TABLE "public"."dinky_metrics" (
                                           "show_size" varchar(255) COLLATE "pg_catalog"."default",
                                           "title" varchar(255) COLLATE "pg_catalog"."default",
                                           "layout_name" varchar(255) COLLATE "pg_catalog"."default",
-                                          "create_time" timestamp(6) NOT NULL,
-                                          "update_time" timestamp(6) NOT NULL,
+                                          "create_time" timestamp(6) NOT null,
+                                          "update_time" timestamp(6) NOT null,
                                               CONSTRAINT "dinky_metrics_pkey" PRIMARY KEY ("id")
 )
 ;
@@ -2025,7 +2025,7 @@ comment on column "public"."dinky_metrics"."update_time" is 'update time';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_resources";
 CREATE TABLE "public"."dinky_resources" (
-                                            "id" int4 NOT NULL,
+                                            "id" int4 NOT null,
                                             "file_name" varchar(64) COLLATE "pg_catalog"."default",
                                             "description" varchar(255) COLLATE "pg_catalog"."default",
                                             "user_id" int4,
@@ -2034,8 +2034,8 @@ CREATE TABLE "public"."dinky_resources" (
                                             "pid" int4,
                                             "full_name" varchar(128) COLLATE "pg_catalog"."default",
                                             "is_directory" int2,
-                                            "create_time" timestamp(6) NOT NULL,
-                                            "update_time" timestamp(6) NOT NULL
+                                            "create_time" timestamp(6) NOT null,
+                                            "update_time" timestamp(6) NOT null
 )
 ;
 comment on table "public"."dinky_resources" is 'resources management';
@@ -2056,8 +2056,8 @@ INSERT INTO "public"."dinky_resources" VALUES (1, 'Root', 'main folder', 1, 0, 0
 -- Indexes structure for table dinky_resources
 -- ----------------------------
 CREATE UNIQUE INDEX "dinky_resources_un" ON "public"."dinky_resources" USING btree (
-                                                                                    "full_name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-                                                                                    "type" "pg_catalog"."int2_ops" ASC NULLS LAST
+                                                                                    "full_name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC nullS LAST,
+                                                                                    "type" "pg_catalog"."int2_ops" ASC nullS LAST
     );
 
 -- ----------------------------
@@ -2072,16 +2072,16 @@ ALTER TABLE "public"."dinky_resources" ADD CONSTRAINT "dinky_resources_pkey" PRI
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_sys_login_log";
 CREATE TABLE "public"."dinky_sys_login_log" (
-                                                "id" int4 NOT NULL,
+                                                "id" int4 NOT null,
                                                 "user_id" int8,
                                                 "username" varchar(60) COLLATE "pg_catalog"."default",
                                                 "login_type" int2,
                                                 "ip" varchar(40) COLLATE "pg_catalog"."default",
                                                 "status" int2,
                                                 "msg" text COLLATE "pg_catalog"."default",
-                                                "create_time" timestamp(6) NOT NULL,
-                                                "access_time" timestamp(6) NOT NULL,
-                                                "update_time" timestamp(6) NOT NULL,
+                                                "create_time" timestamp(6) NOT null,
+                                                "access_time" timestamp(6) NOT null,
+                                                "update_time" timestamp(6) NOT null,
                                                 "is_deleted" int2
 );
 COMMENT on table "public"."dinky_sys_login_log" is 'login log';
@@ -2274,3 +2274,93 @@ INSERT INTO "public"."dinky_sys_menu" VALUES (30, 9, 'cluster-config', '/registr
 INSERT INTO "public"."dinky_sys_menu" VALUES (31, 12, 'instance', '/registration/alert/instance', './RegCenter/Alert/AlertInstance', null, null, 'C', 0, 15, '2023-08-11 14:06:55.000000', '2023-08-18 17:09:39.000000', null);
 INSERT INTO "public"."dinky_sys_menu" VALUES (32, 1, '作业监控', '/home/jobOverView', 'JobOverView', 'show', 'AntCloudOutlined', 'F', 0, 2, '2023-08-15 16:52:59.000000', '2023-08-18 17:09:39.000000', null);
 INSERT INTO "public"."dinky_sys_menu" VALUES (33, 1, '数据开发', '/home/devOverView', 'DevOverView', 'show', 'AimOutlined', 'F', 0, 3, '2023-08-15 16:54:47.000000', '2023-08-18 17:09:39.000000', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (34, 5, '项目列表', '/datastudio/left/project', null, null, 'ConsoleSqlOutlined', 'F', 0, 1, '2023-09-01 18:00:39', '2023-09-03 16:41:26', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (35, 5, '元数据', '/datastudio/left/metadata', null, null, 'TableOutlined', 'F', 0, 2, '2023-09-01 18:01:09', '2023-09-03 16:42:00', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (36, 5, '结构', '/datastudio/left/structure', null, null, 'DatabaseOutlined', 'F', 0, 3, '2023-09-01 18:01:30', '2023-09-03 16:42:49', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (37, 5, '作业配置', '/datastudio/right/jobConfig', null, null, 'SettingOutlined', 'F', 0, 4, '2023-09-01 18:02:15', '2023-09-03 16:43:02', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (38, 5, '执行配置', '/datastudio/right/executeConfig', null, null, 'ExperimentOutlined', 'F', 0, 5, '2023-09-01 18:03:08', '2023-09-03 16:43:32', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (39, 5, '版本历史', '/datastudio/right/historyVision', null, null, 'HistoryOutlined', 'F', 0, 6, '2023-09-01 18:03:29', '2023-09-03 16:43:43', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (40, 5, '保存点', '/datastudio/right/savePoint', null, null, 'FolderOutlined', 'F', 0, 7, '2023-09-01 18:03:58', '2023-09-03 16:44:12', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (41, 5, '作业信息', '/datastudio/right/jobInfo', null, null, 'InfoCircleOutlined', 'F', 0, 8, '2023-09-01 18:04:31', '2023-09-03 16:44:24', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (42, 5, '控制台', '/datastudio/bottom/console', null, null, 'ConsoleSqlOutlined', 'F', 0, 9, '2023-09-01 18:04:56', '2023-09-03 16:44:57', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (43, 5, '结果', '/datastudio/bottom/result', null, null, 'SearchOutlined', 'F', 0, 10, '2023-09-01 18:05:16', '2023-09-03 16:45:47', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (44, 5, 'BI', '/datastudio/bottom/bi', null, null, 'DashboardOutlined', 'F', 0, 11, '2023-09-01 18:05:43', '2023-09-03 16:49:01', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (45, 5, '血缘', '/datastudio/bottom/lineage', null, null, 'PushpinOutlined', 'F', 0, 12, '2023-09-01 18:07:15', '2023-09-03 16:47:38', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (46, 5, '表数据监控', '/datastudio/bottom/process', null, null, 'TableOutlined', 'F', 0, 13, '2023-09-01 18:07:55', '2023-09-03 16:48:14', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (47, 5, '小工具', '/datastudio/bottom/tool', null, null, 'ToolOutlined', 'F', 0, 14, '2023-09-01 18:08:18', '2023-09-03 16:48:35', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (48, 28, '新建', '/registration/cluster/instance/new', null, null, 'PlusOutlined', 'F', 0, 15, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (49, 28, '回收', '/registration/cluster/instance/recovery', null, null, 'PlusOutlined', 'F', 0, 16, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (50, 28, '编辑', '/registration/cluster/instance/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (51, 28, '删除', '/registration/cluster/instance/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (52, 30, '新建', '/registration/cluster/config/new', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 09:00:31', '2023-09-06 09:00:31', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (53, 30, '编辑', '/registration/cluster/config/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (54, 30, '删除', '/registration/cluster/config/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (55, 10, '新建', '/registration/database/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (56, 10, '编辑', '/registration/database/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (57, 10, '删除', '/registration/database/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (58, 31, '新建', '/registration/alert/instance/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (59, 31, '编辑', '/registration/alert/instance/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (60, 31, '删除', '/registration/alert/instance/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (61, 29, '新建', '/registration/alert/group/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (62, 29, '编辑', '/registration/alert/group/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (63, 29, '删除', '/registration/alert/group/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (64, 13, '新建', '/registration/document/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (65, 13, '编辑', '/registration/document/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (66, 13, '删除', '/registration/document/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (67, 13, '启用', '/registration/document/enable', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (68, 14, '新建', '/registration/fragment/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (69, 14, '编辑', '/registration/fragment/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (70, 14, '删除', '/registration/fragment/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (71, 14, '启用', '/registration/fragment/enable', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (72, 15, '新建', '/registration/gitprojects/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (73, 15, '编辑', '/registration/gitprojects/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (74, 15, '删除', '/registration/gitprojects/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (75, 15, '启用', '/registration/gitprojects/enable', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (76, 15, '构建', '/registration/gitprojects/build', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (77, 15, '查询', '/registration/gitprojects/search', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (78, 16, '新建', '/registration/udf/new', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (79, 16, '编辑', '/registration/udf/edit', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (80, 16, '删除', '/registration/udf/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (81, 16, '启用', '/registration/udf/enable', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (82, 19, '上传', '/registration/resource/upload', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 09:01:05', '2023-09-06 09:01:05', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (83, 19, '重命名', '/registration/resource/rename', null, null, 'PlusOutlined', 'F', 0, 17, '2023-09-06 08:56:45', '2023-09-06 08:56:45', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (84, 19, '删除', '/registration/resource/delete', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (85, 19, '创建文件夹', '/registration/resource/folder', null, null, 'PlusOutlined', 'F', 0, 18, '2023-09-06 08:57:30', '2023-09-06 08:57:30', null);
+INSERT INTO "public"."dinky_sys_menu" VALUES (86, 4, 'Token', '/auth/token', './AuthCenter/Token', null, 'SecurityScanFilled', 'C', 0, 35, '2023-09-05 23:14:23', '2023-09-05 23:14:23', null);
+
+
+
+
+
+-- ----------------------------
+-- Table structure dinky_sys_token
+-- ----------------------------
+drop table if exists "public"."dinky_sys_token";
+
+create table public.dinky_sys_token (
+  id bigint,
+  token_value character varying(255),
+  user_id bigint,
+  role_id bigint,
+  tenant_id bigint,
+  expire_type smallint,
+  expire_start_time timestamp without time zone,
+  expire_end_time timestamp without time zone,
+  create_time timestamp without time zone,
+  update_time timestamp without time zone,
+  creator bigint,
+  updator bigint
+);
+comment on table public.dinky_sys_token is 'token table';
+comment on column public.dinky_sys_token.id is 'id';
+comment on column public.dinky_sys_token.token_value is 'token value';
+comment on column public.dinky_sys_token.user_id is 'user id';
+comment on column public.dinky_sys_token.role_id is 'role id';
+comment on column public.dinky_sys_token.tenant_id is 'tenant id';
+comment on column public.dinky_sys_token.expire_type is '1: never expire, 2: expire after a period of time, 3: expire at a certain time';
+comment on column public.dinky_sys_token.expire_start_time is 'expire start time ,when expire_type = 3 , it is the start time of the period';
+comment on column public.dinky_sys_token.expire_end_time is 'expire end time ,when expire_type = 2,3 , it is the end time of the period';
+comment on column public.dinky_sys_token.create_time is 'create time';
+comment on column public.dinky_sys_token.update_time is 'modify time';
+comment on column public.dinky_sys_token.creator is 'creat user';
+comment on column public.dinky_sys_token.updator is 'modify user';

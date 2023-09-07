@@ -21,6 +21,7 @@ import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import { Authorized } from '@/hooks/useAccess';
 import { CLUSTER_INSTANCE_STATUS_ENUM } from '@/pages/RegCenter/Cluster/Instance/components/contants';
 import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
@@ -225,12 +226,16 @@ export default () => {
       valueType: 'option',
       width: '8vw',
       render: (_: any, record: Cluster.Instance) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />,
-        <PopconfirmDeleteBtn
-          key={`${record.id}_delete`}
-          onClick={() => handleDelete(record.id)}
-          description={l('rc.ci.deleteConfirm')}
-        />,
+        <Authorized key={`${record.id}_edit`} path='/registration/cluster/instance/edit'>
+          <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />
+        </Authorized>,
+        <Authorized key={`${record.id}_delete`} path='/registration/cluster/instance/delete'>
+          <PopconfirmDeleteBtn
+            key={`${record.id}_delete`}
+            onClick={() => handleDelete(record.id)}
+            description={l('rc.ci.deleteConfirm')}
+          />
+        </Authorized>,
         renderWebUiRedirect(record)
       ]
     }
@@ -240,10 +245,12 @@ export default () => {
    * tool bar render
    */
   const toolBarRender = () => [
-    <CreateBtn
-      key={'instancecreate'}
-      onClick={() => setClusterInstanceStatus((prevState) => ({ ...prevState, addedOpen: true }))}
-    />,
+    <Authorized key='/registration/cluster/instance/new' path='/registration/cluster/instance/new'>
+      <CreateBtn
+        key={'instancecreate'}
+        onClick={() => setClusterInstanceStatus((prevState) => ({ ...prevState, addedOpen: true }))}
+      />
+    </Authorized>,
     <Button
       key={'heartbeat_all'}
       type={'primary'}
@@ -252,16 +259,21 @@ export default () => {
     >
       {l('button.heartbeat')}
     </Button>,
-    <Popconfirm
-      key={'recycle'}
-      title={l('rc.ci.recycle')}
-      description={l('rc.ci.recycleConfirm')}
-      onConfirm={handleRecycle}
+    <Authorized
+      key='/registration/cluster/instance/recovery'
+      path='/registration/cluster/instance/recovery'
     >
-      <Button key={'recycle_btn'} type={'primary'} icon={<ClearOutlined />}>
-        {l('button.recycle')}
-      </Button>
-    </Popconfirm>
+      <Popconfirm
+        key={'recycle'}
+        title={l('rc.ci.recycle')}
+        description={l('rc.ci.recycleConfirm')}
+        onConfirm={handleRecycle}
+      >
+        <Button key={'recycle_btn'} type={'primary'} icon={<ClearOutlined />}>
+          {l('button.recycle')}
+        </Button>
+      </Popconfirm>
+    </Authorized>
   ];
 
   /**

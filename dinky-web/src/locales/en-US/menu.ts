@@ -65,6 +65,7 @@ export default {
   'menu.auth.rowpermissions': 'Row Permissions',
   'menu.auth.namespace': 'NameSpace',
   'menu.auth.tenant': 'Tenant',
+  'menu.auth.token': 'Token',
   'menu.settings': 'Setting Center',
   'menu.settings.globalsetting': 'Global Settings',
   'menu.settings.systemlog': 'System Log',
