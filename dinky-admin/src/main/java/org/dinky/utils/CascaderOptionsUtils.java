@@ -37,7 +37,7 @@ public class CascaderOptionsUtils {
 
     private static final String FLINK_CONFIG_REPLACE_SUFFIX = "Options";
 
-    private static final Map<String,  List<CascaderVO>> cache = new HashMap<>();
+    private static final Map<String, List<CascaderVO>> cache = new HashMap<>();
     /**
      * build flink config cascade options
      * * @param name
