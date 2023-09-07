@@ -256,12 +256,12 @@ export const getDataByParams = async (url: string, params?: any) => {
   }
 };
 
-export const queryDataByParams = async <T> (
+export const queryDataByParams = async <T>(
   url: string,
   params?: any,
   beforeCallBack?: () => void,
   afterCallBack?: () => void
-):Promise<T | undefined> => {
+): Promise<T | undefined> => {
   try {
     beforeCallBack?.();
     const { datas } = await getData(url, params);

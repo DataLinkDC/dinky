@@ -104,29 +104,35 @@ const JobConfig = (props: any) => {
     // showTables(currentSession.session, dispatch);
   };
 
-  const statusElement = currentSession.sessionConfig?.clusterId ?
-      <Space>
-        <Badge status='success'/>
-        <Text type='success'>{currentSession.sessionConfig.clusterName}</Text>
-      </Space> :
-      <Space>
-        <Badge status='error'/>
-        <Text type='danger'>{l('pages.devops.jobinfo.localenv')}</Text>
-      </Space>;
+  const statusElement = currentSession.sessionConfig?.clusterId ? (
+    <Space>
+      <Badge status='success' />
+      <Text type='success'>{currentSession.sessionConfig.clusterName}</Text>
+    </Space>
+  ) : (
+    <Space>
+      <Badge status='error' />
+      <Text type='danger'>{l('pages.devops.jobinfo.localenv')}</Text>
+    </Space>
+  );
 
-  const execMode = currentSession.session ? statusElement : <ProFormSelect
-          style={{ width: '100%' }}
-          placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
-          label={l('pages.datastudio.label.jobConfig.cluster')}
-          tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-            type: current?.type
-          })}
-          name='clusterId'
-          options={buildClusterOptions(sessionCluster)}
-          fieldProps={{
-            onChange: onChangeClusterSession
-          }}
-      />;
+  const execMode = currentSession.session ? (
+    statusElement
+  ) : (
+    <ProFormSelect
+      style={{ width: '100%' }}
+      placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
+      label={l('pages.datastudio.label.jobConfig.cluster')}
+      tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+        type: current?.type
+      })}
+      name='clusterId'
+      options={buildClusterOptions(sessionCluster)}
+      fieldProps={{
+        onChange: onChangeClusterSession
+      }}
+    />
+  );
 
   return (
     <div style={{ maxHeight: rightContainer.height }}>
@@ -154,22 +160,24 @@ const JobConfig = (props: any) => {
           showSearch
         />
 
-        {([RUN_MODE.YARN_SESSION, RUN_MODE.KUBERNETES_SESSION, RUN_MODE.STANDALONE].includes(current?.type))
-            && (<>{execMode}</>)}
-        {([
+        {[RUN_MODE.YARN_SESSION, RUN_MODE.KUBERNETES_SESSION, RUN_MODE.STANDALONE].includes(
+          current?.type
+        ) && <>{execMode}</>}
+        {[
           RUN_MODE.YARN_PER_JOB,
           RUN_MODE.YARN_APPLICATION,
           RUN_MODE.KUBERNETES_APPLICATION,
-          RUN_MODE.KUBERNETES_APPLICATION_OPERATOR].includes(current?.type)) && (
-            <ProFormSelect
-              name='clusterConfigurationId'
-              placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip2')}
-              label={l('pages.datastudio.label.jobConfig.clusterConfig')}
-              tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-                type: current?.type
-              })}
-              options={buildClusterConfigOptions(current, clusterConfiguration)}
-            />
+          RUN_MODE.KUBERNETES_APPLICATION_OPERATOR
+        ].includes(current?.type) && (
+          <ProFormSelect
+            name='clusterConfigurationId'
+            placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip2')}
+            label={l('pages.datastudio.label.jobConfig.clusterConfig')}
+            tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+              type: current?.type
+            })}
+            options={buildClusterConfigOptions(current, clusterConfiguration)}
+          />
         )}
 
         <ProFormSelect
