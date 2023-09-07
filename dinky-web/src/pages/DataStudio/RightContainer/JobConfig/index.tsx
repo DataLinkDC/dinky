@@ -83,14 +83,18 @@ const JobConfig = (props: any) => {
     form.setFieldsValue(current);
   }, [current]);
 
-  const onValuesChange = (change: { [key in string]: string }, all: any) => {
+  const onValuesChange = (change: { [key in string]: any }, all: any) => {
     const pane = getCurrentTab(panes, activeKey);
     if (!isDataStudioTabsItemType(pane)) {
       return;
     }
 
     Object.keys(change).forEach((key) => {
-      pane.params.taskData[key] = all[key];
+      if (change[key] instanceof Object) {
+        pane.params.taskData[key] = { ...pane.params.taskData[key], ...change[key] };
+      }else {
+        pane.params.taskData[key] = change[key];
+      }
     });
 
     dispatch({
