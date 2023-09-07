@@ -166,10 +166,12 @@ public class JobAlerts extends BaseSchedule {
         rules = new Rules();
 
         ruleDTOS.forEach(ruleDto -> {
-            freeMarkerHolder.putTemplate(ruleDto.getTemplateName(), ruleDto.getTemplateContent());
-            ruleDto.setName(Status.findMessageByKey(ruleDto.getName()));
-            ruleDto.setDescription(Status.findMessageByKey(ruleDto.getDescription()));
-            rules.register(buildRule(ruleDto));
+            if (ruleDto.getTemplateName() != null && !ruleDto.getTemplateName().isEmpty()) {
+                freeMarkerHolder.putTemplate(ruleDto.getTemplateName(), ruleDto.getTemplateContent());
+                ruleDto.setName(Status.findMessageByKey(ruleDto.getName()));
+                ruleDto.setDescription(Status.findMessageByKey(ruleDto.getDescription()));
+                rules.register(buildRule(ruleDto));
+            }
         });
     }
 
