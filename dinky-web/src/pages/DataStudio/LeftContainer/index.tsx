@@ -76,7 +76,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
     handlerMaxsize: handleMaxsize,
     visible: leftContainer.selectKey !== '',
     defaultSize: { width: leftContainer.width, height: leftContainer.height },
-    minWidth: 260,
+    minWidth: 160,
     maxWidth: MAX_WIDTH,
     enable: { right: true },
     btnGroup: BtnRoute[leftContainer.selectKey]
@@ -84,7 +84,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
           <CircleBtn title={item.title} icon={item.icon} onClick={item.onClick} key={item.title} />
         ))
       : [],
-    style: { borderInlineEnd: '1px solid ' + themeValue.borderColor }
+    style: { borderInlineEnd: `1px solid ${themeValue.borderColor}` }
   };
 
   const content = (

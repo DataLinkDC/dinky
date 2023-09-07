@@ -62,7 +62,7 @@ const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
         width: rightContainer.width,
         height: rightContainer.height
       }}
-      minWidth={300}
+      minWidth={200}
       maxWidth={maxWidth}
       enable={{ left: true }}
       style={{ borderInlineStart: `1px solid ${themeValue.borderColor}` }}
