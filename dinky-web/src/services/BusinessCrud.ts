@@ -127,6 +127,7 @@ export const handleRemoveById = async (url: string, id: number, afterCallBack?: 
     return false;
   }
 };
+
 /**
  * update enabled status
  * @param url
@@ -180,14 +181,14 @@ export const handleOption = async (
       SuccessMessage(result.msg);
       afterCallBack?.();
       return result;
-    } else {
-      WarningMessage(result.msg);
-      return null;
     }
+    WarningMessage(result.msg);
+    return undefined;
   } catch (error) {
-    return null;
+    return undefined;
   }
 };
+
 export const handleGetOption = async (url: string, title: string, param: any) => {
   await LoadingMessageAsync(l('app.request.running') + title);
   try {
@@ -195,12 +196,11 @@ export const handleGetOption = async (url: string, title: string, param: any) =>
     if (result.code === RESPONSE_CODE.SUCCESS) {
       SuccessMessage(result.msg);
       return result;
-    } else {
-      WarningMessage(result.msg);
-      return null;
     }
+    WarningMessage(result.msg);
+    return undefined;
   } catch (error) {
-    return null;
+    return undefined;
   }
 };
 
@@ -209,11 +209,10 @@ export const handleData = async (url: string, id: any) => {
     const { code, datas } = await getInfoById(url, id);
     if (code === RESPONSE_CODE.SUCCESS) {
       return datas;
-    } else {
-      return false;
     }
+    return undefined;
   } catch (error) {
-    return false;
+    return undefined;
   }
 };
 
@@ -253,23 +252,23 @@ export const getDataByParams = async (url: string, params?: any) => {
     const { datas, data } = await getDataByRequestBody(url, params);
     return datas ?? data;
   } catch (error) {
-    return false;
+    return undefined;
   }
 };
 
-export const queryDataByParams = async (
+export const queryDataByParams = async <T> (
   url: string,
   params?: any,
   beforeCallBack?: () => void,
   afterCallBack?: () => void
-) => {
+):Promise<T | undefined> => {
   try {
     beforeCallBack?.();
     const { datas } = await getData(url, params);
     afterCallBack?.();
     return datas;
   } catch (error) {
-    return false;
+    return undefined;
   }
 };
 
@@ -286,12 +285,11 @@ export const handlePutDataByParams = async (
       await SuccessMessage(result.msg);
       afterCallBack?.();
       return result;
-    } else {
-      await WarningMessage(result.msg);
-      return false;
     }
+    await WarningMessage(result.msg);
+    return undefined;
   } catch (error) {
-    return false;
+    return undefined;
   }
 };
 
@@ -301,12 +299,11 @@ export const getDataByIdReturnResult = async (url: string, id: any) => {
     if (result.code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(result.msg);
       return result;
-    } else {
-      await WarningMessage(result.msg);
-      return false;
     }
+    await WarningMessage(result.msg);
+    return undefined;
   } catch (error) {
-    return false;
+    return undefined;
   }
 };
 
@@ -315,10 +312,9 @@ export const getDataByParamsReturnResult = async (url: string, params?: any) => 
     const result = await getData(url, params);
     if (result.code === RESPONSE_CODE.SUCCESS) {
       return result;
-    } else {
-      return false;
     }
+    return undefined;
   } catch (error) {
-    return false;
+    return undefined;
   }
 };
