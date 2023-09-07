@@ -1230,6 +1230,34 @@ CREATE TABLE `dinky_sys_role_menu` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+drop table if exists `dinky_alert_template`;
+create table if not exists dinky_alert_template
+(
+    id               int auto_increment
+        primary key  COMMENT 'id',
+    name             varchar(20)    unicode    COMMENT 'template name',
+    template_content text              null COMMENT 'template content',
+    enabled          tinyint default 1 null COMMENT 'is enable',
+    create_time      datetime          null COMMENT 'create time',
+    update_time      datetime          null COMMENT 'update time'
+);
+
+drop table if exists `dinky_alert_rules`;
+create table if not exists dinky_alert_rules
+(
+    id                 int auto_increment
+        primary key comment 'id',
+    name               varchar(40)  unique     not null comment 'rule name',
+    rule               text              null comment 'specify rule',
+    template_id        int               null comment 'template id',
+    rule_type          varchar(10)       null comment 'alert rule type',
+    trigger_conditions varchar(20)       null comment 'trigger conditions',
+    description        text              null comment 'description',
+    enabled            tinyint default 1 null comment 'is enable',
+    create_time        datetime          null comment 'create time',
+    update_time        datetime          null comment 'update time'
+);
+
 
 
 SET FOREIGN_KEY_CHECKS = 1;
