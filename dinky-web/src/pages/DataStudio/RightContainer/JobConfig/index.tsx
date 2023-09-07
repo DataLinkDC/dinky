@@ -104,22 +104,15 @@ const JobConfig = (props: any) => {
     // showTables(currentSession.session, dispatch);
   };
 
-  const statusElement = currentSession.sessionConfig?.clusterId ? (
-    <Space>
+  const statusElement = currentSession.sessionConfig?.clusterId ? <Space>
       <Badge status='success' />
       <Text type='success'>{currentSession.sessionConfig.clusterName}</Text>
-    </Space>
-  ) : (
-    <Space>
+    </Space> : <Space>
       <Badge status='error' />
       <Text type='danger'>{l('pages.devops.jobinfo.localenv')}</Text>
-    </Space>
-  );
+    </Space>;
 
-  const execMode = currentSession.session ? (
-    statusElement
-  ) : (
-    <ProFormSelect
+  const execMode = currentSession.session ? statusElement : <ProFormSelect
       style={{ width: '100%' }}
       placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
       label={l('pages.datastudio.label.jobConfig.cluster')}
@@ -131,8 +124,7 @@ const JobConfig = (props: any) => {
       fieldProps={{
         onChange: onChangeClusterSession
       }}
-    />
-  );
+    />;
 
   return (
     <div style={{ maxHeight: rightContainer.height }}>
@@ -163,6 +155,7 @@ const JobConfig = (props: any) => {
         {[RUN_MODE.YARN_SESSION, RUN_MODE.KUBERNETES_SESSION, RUN_MODE.STANDALONE].includes(
           current?.type
         ) && <>{execMode}</>}
+
         {[
           RUN_MODE.YARN_PER_JOB,
           RUN_MODE.YARN_APPLICATION,
@@ -239,16 +232,13 @@ const JobConfig = (props: any) => {
           initialValue={0}
         />
 
-        {current?.savePointStrategy === 3 && (
-          <>
+        {current?.savePointStrategy === 3 &&
             <ProFormText
               label={l('pages.datastudio.label.jobConfig.savePointpath')}
               name='savePointPath'
               tooltip={l('pages.datastudio.label.jobConfig.savePointpath.tip1')}
               placeholder={l('pages.datastudio.label.jobConfig.savePointpath.tip2')}
-            />
-          </>
-        )}
+            />}
 
         <ProFormSelect
           label={l('pages.datastudio.label.jobConfig.alertGroup')}
