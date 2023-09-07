@@ -60,7 +60,7 @@ public class FreeMarkerHolder {
      * @param templateContent The content of the template as a string.
      */
     public void putTemplate(String name, String templateContent) {
-        if (name == null || name.isEmpty()){
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Template name is null or empty.");
         }
         stringLoader.putTemplate(name, templateContent);

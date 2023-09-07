@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.configure.schedule.Alert.JobAlerts;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertRule;
 import org.dinky.data.result.ProTableResult;
@@ -45,6 +46,7 @@ import lombok.RequiredArgsConstructor;
 public class AlertRuleController {
 
     private final AlertRuleService alertRuleService;
+    private final JobAlerts jobAlerts;
 
     @PostMapping("/list")
     public ProTableResult<AlertRule> list(@RequestBody JsonNode para) {
@@ -60,7 +62,11 @@ public class AlertRuleController {
 
     @PutMapping
     public Result<Boolean> put(@RequestBody AlertRule alertRule) {
-        return Result.succeed(alertRuleService.saveOrUpdate(alertRule));
+        boolean saved = alertRuleService.saveOrUpdate(alertRule);
+        if (saved) {
+            jobAlerts.refeshRulesData();
+        }
+        return Result.succeed(saved);
     }
 
     @DeleteMapping

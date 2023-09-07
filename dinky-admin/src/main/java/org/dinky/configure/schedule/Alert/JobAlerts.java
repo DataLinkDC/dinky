@@ -127,7 +127,7 @@ public class JobAlerts extends BaseSchedule {
      */
     @PostConstruct
     public void init() {
-        RefeshRulesData();
+        refeshRulesData();
         addSchedule("JobAlert", this::check, new PeriodicTrigger(1000 * 30));
     }
 
@@ -155,7 +155,7 @@ public class JobAlerts extends BaseSchedule {
     /**
      * Refreshes the alert rules and related data.
      */
-    private void RefeshRulesData() {
+    public void refeshRulesData() {
 
         ruleFacts.put("exceptionRule", new ExceptionRule());
         ruleFacts.put("checkpointRule", new CheckpointsRule());
@@ -171,6 +171,8 @@ public class JobAlerts extends BaseSchedule {
                 ruleDto.setName(Status.findMessageByKey(ruleDto.getName()));
                 ruleDto.setDescription(Status.findMessageByKey(ruleDto.getDescription()));
                 rules.register(buildRule(ruleDto));
+            } else {
+                log.error("Alert Rule: {} has no template", ruleDto.getName());
             }
         });
     }
@@ -184,6 +186,8 @@ public class JobAlerts extends BaseSchedule {
                 .collect(Collectors.toList());
         String conditionContent = String.join(alertRuleDTO.getTriggerConditions(), conditionList);
         String condition = StrFormatter.format("#{{}}", conditionContent);
+
+        log.info("Build Alert Rule: {}", condition);
 
         return new RuleBuilder()
                 .name(alertRuleDTO.getName())
