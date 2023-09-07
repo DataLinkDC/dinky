@@ -66,13 +66,12 @@ const JobConfig = (props: any) => {
   } = props;
 
   const current = getCurrentData(panes, activeKey);
-  if (!current) return;
 
   const currentSession: SessionType = {
     connectors: [],
     sessionConfig: {
-      clusterId: current.clusterId,
-      clusterName: current.clusterName
+      clusterId: current?.clusterId,
+      clusterName: current?.clusterName
     }
   };
   const [form] = useForm();
@@ -105,6 +104,30 @@ const JobConfig = (props: any) => {
     // showTables(currentSession.session, dispatch);
   };
 
+  const statusElement = currentSession.sessionConfig?.clusterId ?
+      <Space>
+        <Badge status='success'/>
+        <Text type='success'>{currentSession.sessionConfig.clusterName}</Text>
+      </Space> :
+      <Space>
+        <Badge status='error'/>
+        <Text type='danger'>{l('pages.devops.jobinfo.localenv')}</Text>
+      </Space>;
+
+  const execMode = currentSession.session ? statusElement : <ProFormSelect
+          style={{ width: '100%' }}
+          placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
+          label={l('pages.datastudio.label.jobConfig.cluster')}
+          tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+            type: current?.type
+          })}
+          name='clusterId'
+          options={buildClusterOptions(sessionCluster)}
+          fieldProps={{
+            onChange: onChangeClusterSession
+          }}
+      />;
+
   return (
     <div style={{ maxHeight: rightContainer.height }}>
       <ProForm
@@ -131,56 +154,22 @@ const JobConfig = (props: any) => {
           showSearch
         />
 
-        {(current.type === RUN_MODE.YARN_SESSION ||
-          current.type === RUN_MODE.KUBERNETES_SESSION ||
-          current.type === RUN_MODE.STANDALONE) && (
-          <>
-            {currentSession.session ? (
-              currentSession.sessionConfig?.clusterId ? (
-                <Space>
-                  <Badge status='success' />
-                  <Text type='success'>{currentSession.sessionConfig.clusterName}</Text>
-                </Space>
-              ) : (
-                <Space>
-                  <Badge status='error' />
-                  <Text type='danger'>{l('pages.devops.jobinfo.localenv')}</Text>
-                </Space>
-              )
-            ) : (
-              <>
-                <ProFormSelect
-                  style={{ width: '100%' }}
-                  placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
-                  label={l('pages.datastudio.label.jobConfig.cluster')}
-                  tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-                    type: current.type
-                  })}
-                  name='clusterId'
-                  options={buildClusterOptions(sessionCluster)}
-                  fieldProps={{
-                    onChange: onChangeClusterSession
-                  }}
-                />
-              </>
-            )}
-          </>
-        )}
-        {(current.type === RUN_MODE.YARN_PER_JOB ||
-          current.type === RUN_MODE.YARN_APPLICATION ||
-          current.type === RUN_MODE.KUBERNETES_APPLICATION ||
-          current.type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR) && (
-          <>
+        {([RUN_MODE.YARN_SESSION, RUN_MODE.KUBERNETES_SESSION, RUN_MODE.STANDALONE].includes(current?.type))
+            && (<>{execMode}</>)}
+        {([
+          RUN_MODE.YARN_PER_JOB,
+          RUN_MODE.YARN_APPLICATION,
+          RUN_MODE.KUBERNETES_APPLICATION,
+          RUN_MODE.KUBERNETES_APPLICATION_OPERATOR].includes(current?.type)) && (
             <ProFormSelect
               name='clusterConfigurationId'
               placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip2')}
               label={l('pages.datastudio.label.jobConfig.clusterConfig')}
               tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-                type: current.type
+                type: current?.type
               })}
               options={buildClusterConfigOptions(current, clusterConfiguration)}
             />
-          </>
         )}
 
         <ProFormSelect
@@ -242,7 +231,7 @@ const JobConfig = (props: any) => {
           initialValue={0}
         />
 
-        {current.savePointStrategy === 3 && (
+        {current?.savePointStrategy === 3 && (
           <>
             <ProFormText
               label={l('pages.datastudio.label.jobConfig.savePointpath')}
@@ -252,6 +241,7 @@ const JobConfig = (props: any) => {
             />
           </>
         )}
+
         <ProFormSelect
           label={l('pages.datastudio.label.jobConfig.alertGroup')}
           name='alertGroupId'
