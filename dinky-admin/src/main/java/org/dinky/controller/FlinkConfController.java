@@ -43,36 +43,35 @@ public class FlinkConfController {
     public Result<List<CascaderVO>> loadDataByGroup() {
         final String[] nameList = {
             "org.apache.flink.configuration.CoreOptions",
-                    "org.apache.flink.configuration.RestOptions",
-                    "org.apache.flink.configuration.PipelineOptions",
-                    "org.apache.flink.configuration.SecurityOptions",
-                    "org.apache.flink.configuration.YarnConfigOptions",
-                    "org.apache.flink.configuration.WebOptions",
-                    "org.apache.flink.configuration.JobManagerOptions",
-                    "org.apache.flink.configuration.TaskManagerOptions",
-                    "org.apache.flink.configuration.HighAvailabilityOptions",
-                    "org.apache.flink.configuration.KubernetesConfigOptions",
-                    "org.apache.flink.configuration.ClusterOptions",
-                    "org.apache.flink.configuration.StateBackendOptions",
-                    "org.apache.flink.configuration.QueryableStateOptions",
-                    "org.apache.flink.configuration.CheckpointingOptions",
-                    "org.apache.flink.configuration.JMXServerOptions",
-                    "org.apache.flink.configuration.HeartbeatManagerOptions",
-                    "org.apache.flink.configuration.OptimizerOptions",
-                    "org.apache.flink.configuration.AkkaOptions",
-                    "org.apache.flink.configuration.AlgorithmOptions",
-                    "org.apache.flink.configuration.BlobServerOptions",
-                    "org.apache.flink.configuration.ExecutionOptions",
-                    "org.apache.flink.configuration.ExternalResourceOptions",
-                    "org.apache.flink.configuration.ResourceManagerOptions",
-                    "org.apache.flink.configuration.HistoryServerOptions",
-                    "org.apache.flink.configuration.MetricOptions",
-                "org.apache.flink.configuration.NettyShuffleEnvironmentOptions",
-                "org.apache.flink.configuration.RestartStrategyOptions"
+            "org.apache.flink.configuration.RestOptions",
+            "org.apache.flink.configuration.PipelineOptions",
+            "org.apache.flink.configuration.SecurityOptions",
+            "org.apache.flink.configuration.YarnConfigOptions",
+            "org.apache.flink.configuration.WebOptions",
+            "org.apache.flink.configuration.JobManagerOptions",
+            "org.apache.flink.configuration.TaskManagerOptions",
+            "org.apache.flink.configuration.HighAvailabilityOptions",
+            "org.apache.flink.configuration.KubernetesConfigOptions",
+            "org.apache.flink.configuration.ClusterOptions",
+            "org.apache.flink.configuration.StateBackendOptions",
+            "org.apache.flink.configuration.QueryableStateOptions",
+            "org.apache.flink.configuration.CheckpointingOptions",
+            "org.apache.flink.configuration.JMXServerOptions",
+            "org.apache.flink.configuration.HeartbeatManagerOptions",
+            "org.apache.flink.configuration.OptimizerOptions",
+            "org.apache.flink.configuration.AkkaOptions",
+            "org.apache.flink.configuration.AlgorithmOptions",
+            "org.apache.flink.configuration.BlobServerOptions",
+            "org.apache.flink.configuration.ExecutionOptions",
+            "org.apache.flink.configuration.ExternalResourceOptions",
+            "org.apache.flink.configuration.ResourceManagerOptions",
+            "org.apache.flink.configuration.HistoryServerOptions",
+            "org.apache.flink.configuration.MetricOptions",
+            "org.apache.flink.configuration.NettyShuffleEnvironmentOptions",
+            "org.apache.flink.configuration.RestartStrategyOptions"
         };
         List<CascaderVO> dataList = new ArrayList<>();
-                Arrays.stream(nameList).map(CascaderOptionsUtils::buildCascadeOptions)
-                        .forEach(dataList::addAll);
+        Arrays.stream(nameList).map(CascaderOptionsUtils::buildCascadeOptions).forEach(dataList::addAll);
 
         return Result.succeed(dataList);
     }
