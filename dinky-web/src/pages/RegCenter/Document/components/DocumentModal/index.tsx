@@ -68,7 +68,6 @@ const DocumentModalForm: React.FC<DocumentModalProps> = (props) => {
   };
 
   return (
-    <>
       <Modal
         {...NORMAL_MODAL_OPTIONS}
         title={values.id ? l('rc.doc.modify') : l('rc.doc.create')}
@@ -78,7 +77,6 @@ const DocumentModalForm: React.FC<DocumentModalProps> = (props) => {
       >
         <DocumentForm values={values} form={form} />
       </Modal>
-    </>
   );
 };
 

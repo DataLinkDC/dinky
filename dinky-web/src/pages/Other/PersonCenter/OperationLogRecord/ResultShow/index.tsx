@@ -38,7 +38,6 @@ const ResultShow: React.FC<ResultShowProps> = (props) => {
   } = props;
 
   return (
-    <>
       <Modal
         title={l('global.result')}
         open={open}
@@ -49,7 +48,6 @@ const ResultShow: React.FC<ResultShowProps> = (props) => {
       >
         <CodeShow language={'json'} height={'60vh'} code={data} />
       </Modal>
-    </>
   );
 };
 

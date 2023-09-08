@@ -175,7 +175,6 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
    * render
    */
   return (
-    <>
       <Modal
         title={title}
         width={'85%'}
@@ -193,6 +192,5 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
           showList={showList}
         />
       </Modal>
-    </>
   );
 };

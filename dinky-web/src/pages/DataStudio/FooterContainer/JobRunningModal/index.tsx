@@ -32,7 +32,6 @@ const JobRunningModal: React.FC<JobRunningModalProps> = (props) => {
   const { visible, onCancel, onOk, value } = props;
 
   return (
-    <>
       <Modal
         title={`Job ${value?.jobName} is running`}
         open={visible}
@@ -59,7 +58,6 @@ const JobRunningModal: React.FC<JobRunningModalProps> = (props) => {
           </Row>
         </Space>
       </Modal>
-    </>
   );
 };
 

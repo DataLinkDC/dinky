@@ -76,7 +76,6 @@ const UserModalForm: React.FC<UserModalFormProps> = (props) => {
   };
 
   return (
-    <>
       <Modal
         {...NORMAL_MODAL_OPTIONS}
         title={values.id ? l('user.update') : l('user.create')}
@@ -86,7 +85,6 @@ const UserModalForm: React.FC<UserModalFormProps> = (props) => {
       >
         <UserForm values={values} form={form} />
       </Modal>
-    </>
   );
 };
 

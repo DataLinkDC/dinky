@@ -59,7 +59,6 @@ const HistoryVersion = (props: any) => {
     let currentValue = current?.statement;
 
     return (
-      <>
         <Modal
           title={l('pages.datastudio.label.version.diff')}
           open={versionDiffVisible}
@@ -99,7 +98,6 @@ const HistoryVersion = (props: any) => {
             />
           </React.StrictMode>
         </Modal>
-      </>
     );
   };
 

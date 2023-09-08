@@ -32,7 +32,6 @@ export const CodeTree: React.FC<CodeTreeProps> = (props) => {
   const { values, modalVisible, onCancel } = props;
 
   return (
-    <>
       <Modal
         title={l('rc.gp.codeTree')}
         width={'95%'}
@@ -44,6 +43,5 @@ export const CodeTree: React.FC<CodeTreeProps> = (props) => {
       >
         <CodeTreeShow values={values} />
       </Modal>
-    </>
   );
 };

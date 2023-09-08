@@ -40,7 +40,6 @@ const ShowLog: React.FC<ShowLogProps> = (props) => {
   const { type, log, visibleViewLog, cancelViewLog } = props;
 
   return (
-    <>
       <Modal
         {...NORMAL_MODAL_OPTIONS}
         title={type}
@@ -50,7 +49,6 @@ const ShowLog: React.FC<ShowLogProps> = (props) => {
       >
         <CodeShow {...CodeEditProps} code={log} showFloatButton />
       </Modal>
-    </>
   );
 };
 

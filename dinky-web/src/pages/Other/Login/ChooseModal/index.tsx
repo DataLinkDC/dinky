@@ -52,7 +52,6 @@ const ChooseModal: React.FC<ChooseModalProps> = (props) => {
   };
 
   return (
-    <>
       <Modal
         title={l('login.chooseTenant')}
         open={tenantVisible}
@@ -67,7 +66,6 @@ const ChooseModal: React.FC<ChooseModalProps> = (props) => {
       >
         <TenantCard tenant={tenant} handleChangeTenant={tenantChange} />
       </Modal>
-    </>
   );
 };
 

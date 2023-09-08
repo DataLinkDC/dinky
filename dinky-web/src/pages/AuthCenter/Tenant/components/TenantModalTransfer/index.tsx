@@ -40,7 +40,7 @@ const TenantModalTransfer: React.FC<TableTransferFromProps> = (props) => {
   };
 
   return (
-    <>
+
       <Modal
         title={l('tenant.AssignUser')}
         open={modalVisible}
@@ -52,7 +52,6 @@ const TenantModalTransfer: React.FC<TableTransferFromProps> = (props) => {
       >
         <TenantTransfer tenant={tenant} onChange={(value) => handleValueChange(value)} />
       </Modal>
-    </>
   );
 };
 export default TenantModalTransfer;

@@ -75,7 +75,6 @@ const GlobalVarModal: React.FC<GlobalVarModalProps> = (props) => {
   };
 
   return (
-    <>
       <Modal
         {...NORMAL_MODAL_OPTIONS}
         title={values.id ? l('rc.gv.modify') : l('rc.gv.create')}
@@ -85,7 +84,6 @@ const GlobalVarModal: React.FC<GlobalVarModalProps> = (props) => {
       >
         <GlobalVarForm form={form} values={values} />
       </Modal>
-    </>
   );
 };
 

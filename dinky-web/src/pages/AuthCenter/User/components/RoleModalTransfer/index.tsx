@@ -44,7 +44,6 @@ const RoleModalTransfer = (props: RoleTransferFromProps) => {
   };
 
   return (
-    <>
       <Modal
         title={l('user.assignRole')}
         open={modalVisible}
@@ -56,7 +55,6 @@ const RoleModalTransfer = (props: RoleTransferFromProps) => {
       >
         <RoleTransfer role={user} onChange={(value) => handleValueChange(value)} />
       </Modal>
-    </>
   );
 };
 export default RoleModalTransfer;
