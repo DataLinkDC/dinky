@@ -19,6 +19,7 @@
 
 package org.dinky.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.dinky.assertion.Asserts;
 
 import java.io.Serializable;
@@ -51,11 +52,13 @@ public class TaskExtConfig implements Serializable {
     }
 
     // 获取自定义配置的所有key
+    @JsonIgnore
     public List<String> getCustomConfigKeys() {
         return customConfig.stream().map(ConfigItem::getKey).collect(Collectors.toList());
     }
 
     // 获取自定义配置的所有key-value
+    @JsonIgnore
     public Map<String, String> getCustomConfigMaps() {
         return Asserts.isNotNullCollection(customConfig)
                 ? customConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue))

@@ -170,6 +170,7 @@ const DataStudio = (props: any) => {
       }
 
       if (JSON.stringify(info[key]) !== JSON.stringify(params.taskData[key])) {
+        console.log('changed', key, info[key], params.taskData[key])
         return true;
       }
     });
