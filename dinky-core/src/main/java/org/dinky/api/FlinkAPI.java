@@ -53,7 +53,7 @@ import cn.hutool.http.Method;
 public class FlinkAPI {
     private static final Logger logger = LoggerFactory.getLogger(FlinkAPI.class);
 
-    public static final String REST_TARGET_DIRECTORY = "state.savepoints.dir";
+    public static final String REST_TARGET_DIRECTORY = "rest.target-directory";
     public static final String ERRORS = "errors";
     public static final String CANCEL_JOB = "cancel-job";
     public static final String DRAIN = "drain";

@@ -6,6 +6,7 @@ import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { Button, Dropdown, message, Modal, Space } from 'antd';
+import {getData, postAll} from "@/services/api";
 
 const operatorType = {
   RESTART_JOB: 'restart',
@@ -26,26 +27,23 @@ const JobOperator = (props: JobProps) => {
       cancelText: l('button.cancel'),
       onOk: async () => {
         if (key == operatorType.CANCEL_JOB) {
-          useRequest({
-            url: API_CONSTANTS.CANCEL_JOB,
-            params: {
-              clusterId: jobDetail?.cluster?.id,
-              jobId: jobDetail?.instance?.jid
-            }
-          });
+          postAll(API_CONSTANTS.CANCEL_JOB,
+              {
+                clusterId: jobDetail?.cluster?.id,
+                jobId: jobDetail?.instance?.jid
+              });
         } else if (key == operatorType.RESTART_JOB) {
-          useRequest({
-            url: API_CONSTANTS.RESTART_TASK,
-            params: {
-              id: jobDetail?.instance?.taskId,
-              isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE
-            }
-          });
+          getData(
+              API_CONSTANTS.RESTART_TASK,
+              {
+                id: jobDetail?.instance?.taskId,
+                isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE
+              }
+          );
         } else {
-          useRequest({
-            url: API_CONSTANTS.OFFLINE_TASK,
-            params: { id: jobDetail?.instance?.taskId, type: key }
-          });
+          getData(API_CONSTANTS.OFFLINE_TASK,
+                {id: jobDetail?.instance?.taskId, type: key}
+              );
         }
         message.success(l('devops.jobinfo.job.key.success', '', { key: key }));
       }

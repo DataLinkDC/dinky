@@ -76,6 +76,7 @@ public class CascaderOptionsUtils {
             cascaderVO.setLabel(parsedBinlogGroup);
             cascaderVO.setValue(parsedBinlogGroup);
             dataList.add(cascaderVO);
+            cache.put(name, dataList);
         } catch (ClassNotFoundException ignored) {
             logger.warning("get config option error, class not found: " + name);
         }
@@ -91,4 +92,5 @@ public class CascaderOptionsUtils {
         }
         return lastName;
     }
+
 }
