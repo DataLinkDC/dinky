@@ -368,14 +368,14 @@ const Model: ModelType = {
     *queryProject({ payload }, { call, put }) {
       const response: [] = yield call(getTaskData, payload);
       yield put({
-        type: "saveProject",
+        type: 'saveProject',
         payload: response
       });
     },
     *queryFlinkConfigOptions({ payload }, { call, put }) {
       const response: [] = yield call(getFlinkConfigs, payload);
       yield put({
-        type: "saveFlinkConfigOptions",
+        type: 'saveFlinkConfigOptions',
         payload: response
       });
     }

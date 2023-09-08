@@ -87,7 +87,7 @@ export default {
   //-------------------------------- devops --------------------------------
   // devops
 
-  'pages.devops.jobinfo.localenv': "本地环境",
+  'pages.devops.jobinfo.localenv': '本地环境',
   'devops.joblist.joblist': '任务列表',
   'devops.joblist.history': '历史',
   'devops.joblist.detail': '详情',
@@ -1179,5 +1179,4 @@ export default {
   'catalog.udf.className.placeholder': '请输入类或方法名',
 
   'button.push': '提交'
-
 };
