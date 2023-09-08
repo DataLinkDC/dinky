@@ -85,15 +85,15 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
    * render
    */
   return (
-      <Modal
-        {...NORMAL_MODAL_OPTIONS}
-        title={l('button.changePassword')}
-        open={modalVisible}
-        onCancel={() => handleCancel()}
-        onOk={() => submitForm()}
-      >
-        <PasswordForm values={values as any} form={form} />
-      </Modal>
+    <Modal
+      {...NORMAL_MODAL_OPTIONS}
+      title={l('button.changePassword')}
+      open={modalVisible}
+      onCancel={() => handleCancel()}
+      onOk={() => submitForm()}
+    >
+      <PasswordForm values={values as any} form={form} />
+    </Modal>
   );
 };
 
