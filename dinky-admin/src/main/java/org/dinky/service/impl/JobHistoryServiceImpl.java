@@ -30,11 +30,12 @@ import org.dinky.utils.JSONUtil;
 
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobHistoryServiceImpl
@@ -42,9 +43,8 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @since 2022/3/2 20:00
  */
 @Service
+@Slf4j
 public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, JobHistory> implements JobHistoryService {
-
-    private static final Logger log = LoggerFactory.getLogger(JobHistoryServiceImpl.class);
 
     @Override
     public JobHistory getByIdWithoutTenant(Integer id) {
@@ -101,18 +101,15 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
         jobHistory.setId(id);
         try {
             JsonNode jobInfo = FlinkAPI.build(jobManagerHost).getJobInfo(jobId);
-            if (Asserts.isNull(jobInfo) || jobInfo.has(FlinkRestResultConstant.ERRORS)) {
-                final JobHistory dbHistory = getById(id);
-                if (Objects.nonNull(dbHistory)) {
-                    jobHistory = dbHistory;
-                }
-                jobHistory.setError(true);
-                return jobHistory;
+            if (jobInfo.has(FlinkRestResultConstant.ERRORS)) {
+                throw new Exception(String.valueOf(jobInfo.get(FlinkRestResultConstant.ERRORS)));
             }
             JsonNode exception = FlinkAPI.build(jobManagerHost).getException(jobId);
             JsonNode checkPoints = FlinkAPI.build(jobManagerHost).getCheckPoints(jobId);
             JsonNode checkPointsConfig = FlinkAPI.build(jobManagerHost).getCheckPointsConfig(jobId);
             JsonNode jobsConfig = FlinkAPI.build(jobManagerHost).getJobsConfig(jobId);
+            jobHistory.setJob((ObjectNode) jobInfo);
+            jobHistory.setCheckpoints((ObjectNode) checkPoints);
             jobHistory.setJobJson(JSONUtil.toJsonString(jobInfo));
             jobHistory.setExceptionsJson(JSONUtil.toJsonString(exception));
             jobHistory.setCheckpointsJson(JSONUtil.toJsonString(checkPoints));
@@ -120,17 +117,14 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
             jobHistory.setConfigJson(JSONUtil.toJsonString(jobsConfig));
             if (needSave) {
                 updateById(jobHistory);
-                /*
-                 * if (Asserts.isNotNull(getById(id))) { updateById(jobHistory); } else { save(jobHistory); }
-                 */
             }
         } catch (Exception e) {
-            log.error(
-                    "Get flink job info failed !! historyId is {}, jobManagerHost is :{}, jobId is" + " :{}",
-                    id,
-                    jobManagerHost,
-                    jobId);
-            e.printStackTrace();
+            final JobHistory dbHistory = getById(id);
+            if (Objects.nonNull(dbHistory)) {
+                jobHistory = dbHistory;
+            }
+            jobHistory.setError(true);
+            log.error("Connect {} failed,{}", jobManagerHost, e.getMessage());
         }
         return jobHistory;
     }

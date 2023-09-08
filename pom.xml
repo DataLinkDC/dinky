@@ -59,6 +59,7 @@
         <dinky.flink.version>1.14</dinky.flink.version>
         <docker.java.version>3.2.14</docker.java.version>
         <druid-starter>1.2.8</druid-starter>
+        <easy.rules.version>4.1.0</easy.rules.version>
         <guava.version>31.1-jre</guava.version>
         <h2database.version>1.4.200</h2database.version>
         <hamcrest.version>1.3</hamcrest.version>
@@ -118,6 +119,17 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--easy-rules 执行引擎-->
+            <dependency>
+                <groupId>org.jeasy</groupId>
+                <artifactId>easy-rules-core</artifactId>
+                <version>${easy.rules.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jeasy</groupId>
+                <artifactId>easy-rules-spel</artifactId>
+                <version>${easy.rules.version}</version>
+            </dependency>
             <dependency>
                 <groupId>cn.dev33</groupId>
                 <artifactId>sa-token-jwt</artifactId>

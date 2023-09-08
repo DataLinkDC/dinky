@@ -36,6 +36,14 @@ declare namespace Alert {
     type: string;
     params: string;
   };
+
+  /**
+   * alert template
+   */
+  export type AlertTemplate = BaseBeanColumns & {
+    id: number;
+    templateContent: string;
+  };
 }
 
 export type AlertConfig = {

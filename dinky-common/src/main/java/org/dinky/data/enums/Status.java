@@ -21,6 +21,7 @@ package org.dinky.data.enums;
 
 import org.dinky.utils.I18n;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -240,6 +241,16 @@ public enum Status {
     FOLDER_NOT_EMPTY(19001, "folder.not.empty"),
 
     /**
+     * Alert About
+     * */
+    ALERT_RULE_JOB_FAIL(20001, "alert.rule.jobFail"),
+    ALERT_RULE_GET_JOB_INFO_FAIL(20002, "alert.rule.getJobInfoFail"),
+    ALERT_RULE_JOB_RESTART(20003, "alert.rule.jobRestart"),
+    ALERT_RULE_CHECKPOINT_FAIL(20004, "alert.rule.checkpointFail"),
+    ALERT_RULE_JOB_RUN_EXCEPTION(20005, "alert.rule.jobRunException"),
+    ALERT_RULE_CHECKPOINT_TIMEOUT(20006, "alert.rule.checkpointTimeout"),
+
+    /**
      * global exception
      */
     GLOBAL_PARAMS_CHECK_ERROR(90001, "global.params.check.error"),
@@ -276,5 +287,14 @@ public enum Status {
             }
         }
         return Optional.empty();
+    }
+
+    public static String findMessageByKey(String key) {
+        for (Status status : Status.values()) {
+            if (Objects.equals(key, status.getKey())) {
+                return status.getMessage();
+            }
+        }
+        return key;
     }
 }

@@ -765,6 +765,11 @@ export default {
   'rc.template.create': '创建 UDF 模板',
   'rc.template.modify': '修改 UDF 模板',
 
+  //alert
+  'rc.alert.template.new': '新建告警模板',
+  'rc.alert.template.create': '创建模板',
+  'rc.alert.template.modify': '修改模板',
+
   // resource
   'rc.resource.click': '点击左侧文件查看详情',
   'rc.resource.noResource': '\t\t暂无资源\n请点击上方按钮上传文件夹/文件',
@@ -920,6 +925,22 @@ export default {
 
   // system info of log
   'sys.info.logList.tips': '点击左侧日志文件查看',
+
+  //
+  'sys.alert.rule.name': '告警策略名称',
+  'sys.alert.rule.ruleType': '规则类型',
+  'sys.alert.rule.rule': '规则',
+  'sys.alert.rule.template': '告警模板',
+  'sys.alert.rule.triger': '触发配置',
+  'sys.alert.rule.trigerConditions': '触发条件',
+  'sys.alert.rule.anyRule': '任意规则',
+  'sys.alert.rule.allRule': '所有规则',
+  'sys.alert.rule.trigerRule': '触发规则',
+  'sys.alert.rule.addRule': '添加规则',
+  'sys.alert.rule.jobStatus': '作业状态',
+  'sys.alert.rule.checkpointTime': 'CheckPoint时间',
+  'sys.alert.rule.checkpointFailed': 'Checkpoint失败',
+  'sys.alert.rule.jobException': '作业产生异常',
 
   // metrics
   // server

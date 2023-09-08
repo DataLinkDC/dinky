@@ -87,13 +87,8 @@ public class FlinkAPI {
     }
 
     private JsonNode get(String route) {
-        try {
-            String res = getResult(route);
-            return parse(res);
-        } catch (Exception e) {
-            logger.error("Unable to connect to Flink JobManager: {}", NetConstant.HTTP + address);
-            return null;
-        }
+        String res = getResult(route);
+        return parse(res);
     }
 
     /**

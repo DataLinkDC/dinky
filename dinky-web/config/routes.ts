@@ -134,6 +134,11 @@ export default [
             path: '/registration/alert/group',
             name: 'group',
             component: './RegCenter/Alert/AlertGroup'
+          },
+          {
+            path: '/registration/alert/template',
+            name: 'template',
+            component: './RegCenter/Alert/AlertTemplate'
           }
         ]
       },
@@ -246,6 +251,12 @@ export default [
         name: 'process',
         icon: 'ReconciliationOutlined',
         component: './SettingCenter/Process'
+      },
+      {
+        path: '/settings/alertrulelist',
+        name: 'alertrulelist',
+        icon: 'ReconciliationOutlined',
+        component: './SettingCenter/AlertRule'
       }
     ]
   },

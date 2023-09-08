@@ -41,6 +41,23 @@ export type Process = {
   userId: number;
 };
 
+export type Rule = {
+  ruleKey: string;
+  ruleOperator: string;
+  ruleValue: number;
+};
+
+export type AlertRule = {
+  id: number;
+  name: string;
+  templateId: number;
+  description: string;
+  ruleType: string;
+  triggerConditions: string;
+  rule: any;
+  enabled: boolean;
+};
+
 // ============================  System Settings ============================
 export type Settings = {
   dolphinscheduler: BaseConfigProperties[];

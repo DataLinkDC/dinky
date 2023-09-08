@@ -46,6 +46,13 @@ export interface AlertInstanceState extends BaseState {
 }
 
 /**
+ * alert template state
+ */
+export interface AlertTemplateState extends BaseState {
+  value: Partial<Alert.AlertTemplate>;
+}
+
+/**
  * cluster configuration state
  */
 export interface ClusterConfigState extends BaseState {

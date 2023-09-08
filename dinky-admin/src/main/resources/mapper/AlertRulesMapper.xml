@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dinky.mapper.AlertRulesMapper">
+
+
+    <select id="selectWithTemplate" resultType="org.dinky.data.dto.AlertRuleDTO">
+        select dar.id,
+               dar.name,
+               dar.enabled,
+               dar.rule,
+               dar.template_id,
+               dar.rule_type,
+               dar.trigger_conditions,
+               dar.description,
+               dat.name as template_name,
+               dat.template_content
+        from dinky_alert_rules dar
+                 left join dinky.dinky_alert_template dat on dar.template_id = dat.id
+        where dar.enabled = 1
+    </select>
+
+
+    <select id="selectForProTable" resultType="org.dinky.data.model.AlertRule">
+        select
+        a.*
+        from
+        dinky_alert_rules a
+        <where>
+            <if test='param.name!=null and param.name!=""'>
+                and a.name like "%${param.name}%"
+            </if>
+            <if test='param.createTime!=null and param.createTime!=""'>
+                and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test='param.updateTime!=null and param.updateTime!=""'>
+                and a.update_time <![CDATA[>=]]> str_to_date( #{param.updateTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!="" and !ew.sqlSegment.startsWith(" ORDER BY")'>
+                and
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!=""'>
+                ${ew.sqlSegment}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -17,9 +17,13 @@
  *
  */
 
-import { BaseState } from '@/types/Public/state';
-import { AlertRule } from '@/types/SettingCenter/data';
+import { AlertRuleListState } from '@/types/SettingCenter/state';
 
-export interface AlertRuleListState extends BaseState {
-  value: Partial<AlertRule>;
-}
+/**
+ * alert group state init
+ */
+export const InitAlertRuleState: AlertRuleListState = {
+  addedOpen: false,
+  editOpen: false,
+  value: {}
+};

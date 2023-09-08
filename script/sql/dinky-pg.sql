@@ -2206,6 +2206,35 @@ COMMENT on column public.dinky_sys_menu.update_time is 'update time';
 COMMENT on column public.dinky_sys_menu.note is 'note';
 
 
+
+DROP TABLE IF EXISTS dinky_alert_template CASCADE;
+CREATE TABLE IF NOT EXISTS dinky_alert_template
+(
+    id               SERIAL PRIMARY KEY, -- id
+    name             VARCHAR(20) COLLATE "pg_catalog"."default" COMMENT 'template name',
+    template_content TEXT NULL COMMENT 'template content',
+    enabled          BOOLEAN DEFAULT TRUE NULL COMMENT 'is enable',
+    create_time      TIMESTAMP NULL COMMENT 'create time',
+    update_time      TIMESTAMP NULL COMMENT 'update time'
+);
+
+DROP TABLE IF EXISTS dinky_alert_rules CASCADE;
+CREATE TABLE IF NOT EXISTS dinky_alert_rules
+(
+    id                 SERIAL PRIMARY KEY, -- id
+    name               VARCHAR(40) COLLATE "pg_catalog"."default" UNIQUE NOT NULL COMMENT 'rule name',
+    rule               TEXT NULL COMMENT 'specify rule',
+    template_id        INT NULL COMMENT 'template id',
+    rule_type          VARCHAR(10) COLLATE "pg_catalog"."default" NULL COMMENT 'alert rule type',
+    trigger_conditions VARCHAR(20) COLLATE "pg_catalog"."default" NULL COMMENT 'trigger conditions',
+    description        TEXT NULL COMMENT 'description',
+    enabled            BOOLEAN DEFAULT TRUE NULL COMMENT 'is enable',
+    create_time        TIMESTAMP NULL COMMENT 'create time',
+    update_time        TIMESTAMP NULL COMMENT 'update time'
+);
+
+
+
 -- ----------------------------
 -- Primary Key structure for table dinky_sys_menu
 -- ----------------------------
