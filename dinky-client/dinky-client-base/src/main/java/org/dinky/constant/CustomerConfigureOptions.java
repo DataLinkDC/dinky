@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.utils;
+package org.dinky.constant;
 
 import static org.apache.flink.configuration.ConfigOptions.key;
 

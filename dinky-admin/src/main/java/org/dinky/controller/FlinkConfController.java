@@ -69,7 +69,7 @@ public class FlinkConfController {
             "org.apache.flink.configuration.MetricOptions",
             "org.apache.flink.configuration.NettyShuffleEnvironmentOptions",
             "org.apache.flink.configuration.RestartStrategyOptions",
-            "org.dinky.utils.CustomerConfigureOptions"
+            "org.dinky.constant.CustomerConfigureOptions"
         };
         List<CascaderVO> dataList = new ArrayList<>();
         Arrays.stream(nameList).map(CascaderOptionsUtils::buildCascadeOptions).forEach(dataList::addAll);
