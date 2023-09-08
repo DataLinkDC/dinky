@@ -125,16 +125,15 @@ export const buildEnvOptions = (env: any[]) => {
       key: 0
     }
   ];
+
   for (const item of env) {
-    const tag = (
-      <>
+    const tag =
         <TagAlignLeft>
-          {item.enabled ? <Badge status='success' /> : <Badge status='error' />}
-          {item.fragment ? <PaperClipOutlined /> : undefined}
+          {item.enabled ? <Badge status='success'/> : <Badge status='error'/>}
+          {item.fragment ? <PaperClipOutlined/> : undefined}
           {item.name}
-        </TagAlignLeft>
-      </>
-    );
+        </TagAlignLeft>;
+
     envList.push({
       label: tag,
       value: item.id,

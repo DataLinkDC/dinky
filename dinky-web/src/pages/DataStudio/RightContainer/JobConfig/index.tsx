@@ -91,6 +91,10 @@ const JobConfig = (props: any) => {
 
     Object.keys(change).forEach((key) => {
       if (key === 'configJson') {
+        if (!pane.params.taskData.configJson) {
+          pane.params.taskData.configJson = {};
+        }
+
         Object.keys(change[key]).forEach((k) => {
           pane.params.taskData[key][k] = all[key][k];
         });
