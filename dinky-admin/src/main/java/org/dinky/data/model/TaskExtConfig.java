@@ -19,7 +19,6 @@
 
 package org.dinky.data.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.dinky.assertion.Asserts;
 
 import java.io.Serializable;
@@ -28,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
