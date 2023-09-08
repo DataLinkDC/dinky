@@ -44,19 +44,17 @@ const RoleModalTransfer = (props: RoleTransferFromProps) => {
   };
 
   return (
-    <>
-      <Modal
-        title={l('user.assignRole')}
-        open={modalVisible}
-        destroyOnClose
-        maskClosable={false}
-        width={'75%'}
-        onCancel={() => handleCancel()}
-        onOk={() => handleSubmit(targetKeys)}
-      >
-        <RoleTransfer role={user} onChange={(value) => handleValueChange(value)} />
-      </Modal>
-    </>
+    <Modal
+      title={l('user.assignRole')}
+      open={modalVisible}
+      destroyOnClose
+      maskClosable={false}
+      width={'75%'}
+      onCancel={() => handleCancel()}
+      onOk={() => handleSubmit(targetKeys)}
+    >
+      <RoleTransfer role={user} onChange={(value) => handleValueChange(value)} />
+    </Modal>
   );
 };
 export default RoleModalTransfer;

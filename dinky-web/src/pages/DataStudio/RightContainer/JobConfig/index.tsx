@@ -193,7 +193,6 @@ const JobConfig = (props: any) => {
           tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
           options={buildEnvOptions(env)}
           showSearch
-          initialValue={0}
         />
 
         <ProFormGroup>
@@ -243,7 +242,6 @@ const JobConfig = (props: any) => {
           name='savePointStrategy'
           tooltip={l('pages.datastudio.label.jobConfig.savePointStrategy.tip')}
           options={SAVE_POINT_TYPE}
-          initialValue={0}
         />
 
         {current?.savePointStrategy === 3 && (

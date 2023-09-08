@@ -68,17 +68,15 @@ const DocumentModalForm: React.FC<DocumentModalProps> = (props) => {
   };
 
   return (
-    <>
-      <Modal
-        {...NORMAL_MODAL_OPTIONS}
-        title={values.id ? l('rc.doc.modify') : l('rc.doc.create')}
-        open={modalVisible}
-        onOk={() => submitForm()}
-        onCancel={() => handleModalVisible()}
-      >
-        <DocumentForm values={values} form={form} />
-      </Modal>
-    </>
+    <Modal
+      {...NORMAL_MODAL_OPTIONS}
+      title={values.id ? l('rc.doc.modify') : l('rc.doc.create')}
+      open={modalVisible}
+      onOk={() => submitForm()}
+      onCancel={() => handleModalVisible()}
+    >
+      <DocumentForm values={values} form={form} />
+    </Modal>
   );
 };
 
