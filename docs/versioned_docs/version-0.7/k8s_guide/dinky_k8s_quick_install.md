@@ -58,7 +58,7 @@ spec:
     spec:
       containers:
       #dinky镜像，如果需要更新请前往【https://hub.docker.com/r/dinkydocker/dinky-standalone-server/tags】选择合适镜像版本
-      #如果需要添加拓展镜像，可通过dinky注册中心添加，或者通过Dockerfile将docker镜像打包上传至私有仓库再替换此处的镜像
+      #如果需要添加拓展jar包，可通过dinky注册中心【jar包管理】处添加，或者通过Dockerfile将其打包进docker镜像，再上传至私有仓库再替换此处的镜像
       - image: dinkydocker/dinky-standalone-server:0.7.3-flink16  #0.7.3版本的镜像
         imagePullPolicy: IfNotPresent
         name: dinky
@@ -80,6 +80,7 @@ metadata:
   name: dinky-config
   namespace: dinky
 data:
+  #配置项均为【conf】目录下的application.yaml文件内容，如果有更新，把下面整段替换即可
   application.yml: |-
     spring:
       datasource:
