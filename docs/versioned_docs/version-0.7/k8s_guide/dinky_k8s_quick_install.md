@@ -1,3 +1,8 @@
+---
+sidebar_position: 2
+id: dinky_k8s_quick_install
+title: K8S快速安装dinky教程
+---
 ## K8S快速安装dinky教程
 
 ### 前置条件:

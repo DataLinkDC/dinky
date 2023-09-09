@@ -109,10 +109,10 @@ function Structure() {
                 <a href={siteConfig.customFields.learningMore} target="_blank" className="action-button">
                     学习更多 →
                 </a>
-                {/*&nbsp;&nbsp;*/}
-                {/*<a href="/blog"   className="action-button">*/}
-                {/*    最新动态*/}
-                {/*</a>*/}
+                &nbsp;&nbsp;
+                <a href={siteConfig.customFields.teaching} target="_blank" className="action-button">
+                    尚硅谷教学 →
+                </a>
             </div>
         </div>
     );
