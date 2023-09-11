@@ -66,18 +66,18 @@ const ResourceOverView: React.FC = () => {
     });
 
   const refreshTreeData = async (pid: number, path: string) => {
-    const data = await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {
+    const data = await queryDataByParams<any[]>(API_CONSTANTS.RESOURCE_SHOW_TREE, {
       pid: pid
     });
     setResourceState((prevState) => ({
       ...prevState,
-      treeData: updateTreeData(prevState.treeData, path, data)
+      treeData: updateTreeData(prevState.treeData, path, data ?? [])
     }));
   };
 
   const refreshTree = async () => {
-    await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, { pid: -1 }).then((res) =>
-      setResourceState((prevState) => ({ ...prevState, treeData: res }))
+    await queryDataByParams<any[]>(API_CONSTANTS.RESOURCE_SHOW_TREE, { pid: -1 }).then((res) =>
+      setResourceState((prevState) => ({ ...prevState, treeData: res ?? []}))
     );
   };
 
@@ -91,9 +91,9 @@ const ResourceOverView: React.FC = () => {
    */
   const queryContent = useCallback(
     async (id: number) => {
-      await queryDataByParams(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {
+      await queryDataByParams<string>(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {
         id
-      }).then((res) => setResourceState((prevState) => ({ ...prevState, content: res })));
+      }).then((res) => setResourceState((prevState) => ({ ...prevState, content: res ?? ''})));
     },
     [resourceState.clickedNode]
   );
