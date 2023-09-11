@@ -117,7 +117,8 @@ public class SystemInit implements ApplicationRunner {
                         systemConfiguration.getResourcesOssAccessKey(),
                         systemConfiguration.getResourcesOssRegion())
                 .forEach(x -> x.addParameterCheck(y -> {
-                    if (Boolean.TRUE.equals(systemConfiguration.getResourcesEnable().getValue())) {
+                    if (Boolean.TRUE.equals(
+                            systemConfiguration.getResourcesEnable().getValue())) {
                         switch (systemConfiguration.getResourcesModel().getValue()) {
                             case OSS:
                                 OssProperties ossProperties = new OssProperties();
@@ -136,8 +137,7 @@ public class SystemInit implements ApplicationRunner {
                                 ossProperties.setRegion(systemConfiguration
                                         .getResourcesOssRegion()
                                         .getValue());
-                                Singleton.get(OssResourceManager.class)
-                                        .setOssTemplate(new OssTemplate(ossProperties));
+                                Singleton.get(OssResourceManager.class).setOssTemplate(new OssTemplate(ossProperties));
                                 break;
                             case HDFS:
                                 final Configuration configuration = new Configuration();
@@ -179,7 +179,8 @@ public class SystemInit implements ApplicationRunner {
                 .getAllConfiguration()
                 .get("dolphinscheduler")
                 .forEach(c -> c.addParameterCheck(v -> {
-                    if (Boolean.TRUE.equals(systemConfiguration.getDolphinschedulerEnable().getValue())) {
+                    if (Boolean.TRUE.equals(
+                            systemConfiguration.getDolphinschedulerEnable().getValue())) {
                         if (StrUtil.isEmpty(Convert.toStr(v))) {
                             sysConfigService.updateSysConfigByKv(
                                     systemConfiguration

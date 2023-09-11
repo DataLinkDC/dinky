@@ -19,7 +19,6 @@
 
 package org.dinky.controller;
 
-import com.google.common.base.Strings;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.SystemConfiguration;
@@ -51,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.base.Strings;
 
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -114,7 +114,7 @@ public class SchedulerController {
             return Result.failed(Status.DS_GET_NODE_LIST_ERROR);
         }
 
-        long projectCode =  SystemInit.getProject().getCode();
+        long projectCode = SystemInit.getProject().getCode();
         String processName = getDinkyNames(catalogue, 0);
         List<TaskMainInfo> taskMainInfos = taskClient.getTaskMainInfos(projectCode, processName, "");
         // 去掉本身
@@ -133,7 +133,8 @@ public class SchedulerController {
             @Valid @RequestBody TaskRequest taskRequest) {
         DinkyTaskParams dinkyTaskParams = new DinkyTaskParams();
         dinkyTaskParams.setTaskId(dinkyTaskId.toString());
-        dinkyTaskParams.setAddress(SystemConfiguration.getInstances().getDinkyAddr().getValue());
+        dinkyTaskParams.setAddress(
+                SystemConfiguration.getInstances().getDinkyAddr().getValue());
         taskRequest.setTaskParams(JSONUtil.parseObj(dinkyTaskParams).toString());
         taskRequest.setTaskType(TASK_TYPE);
 
