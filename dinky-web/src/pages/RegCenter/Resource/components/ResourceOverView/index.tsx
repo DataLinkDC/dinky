@@ -103,7 +103,7 @@ const ResourceOverView: React.FC = () => {
    * @param info
    * @returns {Promise<void>}
    */
-  const handleNodeClick = async (info: any) => {
+  const handleNodeClick = async (info: any): Promise<void> => {
     const {
       node: { id, isLeaf, key },
       node

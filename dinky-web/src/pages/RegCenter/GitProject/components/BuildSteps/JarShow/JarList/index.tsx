@@ -87,7 +87,6 @@ const JarList: React.FC<JarListProps> = (props) => {
    */
   const renderUdf = (record: BuildJarList) => {
     return (
-      <>
         <ProList
           dataSource={record.classList as any[]}
           rowKey='index'
@@ -105,7 +104,6 @@ const JarList: React.FC<JarListProps> = (props) => {
             );
           }}
         />
-      </>
     );
   };
 
@@ -133,7 +131,6 @@ const JarList: React.FC<JarListProps> = (props) => {
    * render
    */
   return (
-    <>
       <DragSortTable<BuildJarList>
         style={{
           overflowY: 'auto',
@@ -161,7 +158,6 @@ const JarList: React.FC<JarListProps> = (props) => {
         dragSortKey={'orderLine'}
         onDragSortEnd={handleDragSortEnd}
       />
-    </>
   );
 };
 

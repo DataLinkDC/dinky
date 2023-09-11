@@ -128,20 +128,20 @@ const ProjectProTable: React.FC = () => {
    * @param {Partial<GitProject>} value
    * @returns {Promise<void>}
    */
-  const handleEdit = async (value: Partial<GitProject>) => {
-    setGitProjectStatus((prevState) => ({ ...prevState, value: value, editOpen: true }));
-  };
+  const handleEdit = async (value: Partial<GitProject>): Promise<void> =>
+      setGitProjectStatus((prevState) => ({...prevState, value: value, editOpen: true}));
 
   /**
    * drag sort call
    * @param {GitProject[]} newDataSource
    * @returns {Promise<void>}
    */
-  const handleDragSortEnd = async (newDataSource: GitProject[]) => {
+  const handleDragSortEnd = async (newDataSource: GitProject[]): Promise<void> => {
     const updatedItems = newDataSource.map((item: GitProject, index: number) => ({
       ...item,
       orderLine: index + 1
     }));
+
     await executeAndCallback(async () =>
       handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_PROJECT, l('rc.gp.ucl.projectOrder'), {
         sortList: updatedItems
