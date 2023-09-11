@@ -173,9 +173,7 @@ public class Configuration<T> implements Serializable {
     }
 
     public void runParameterCheck() {
-        getParameterCheckConsumer().forEach(x -> {
-            x.accept(getValue());
-        });
+        getParameterCheckConsumer().forEach(x -> x.accept(getValue()));
     }
 
     public void runChangeEvent() {

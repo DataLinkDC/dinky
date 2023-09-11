@@ -30,9 +30,11 @@ import org.dinky.scheduler.utils.ParamUtil;
 import org.dinky.scheduler.utils.ReadFileUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,13 +59,10 @@ public class ProcessClient {
      * @return {@link List<ProcessDefinition>}
      */
     public List<ProcessDefinition> getProcessDefinition(Long projectCode, String processName) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("projectCode", projectCode);
-
         String format = StrUtil.format(
                 SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
                         + "/projects/{projectCode}/process-definition",
-                map);
+                Collections.singletonMap("projectCode", projectCode));
 
         String content = HttpRequest.get(format)
                 .header(
@@ -95,14 +94,10 @@ public class ProcessClient {
      * @return {@link ProcessDefinition}
      */
     public ProcessDefinition getProcessDefinitionInfo(Long projectCode, String processName) {
-
         List<ProcessDefinition> lists = getProcessDefinition(projectCode, processName);
-        for (ProcessDefinition list : lists) {
-            if (list.getName().equalsIgnoreCase(processName)) {
-                return list;
-            }
-        }
-        return null;
+        Optional<ProcessDefinition> processDefinition =
+                lists.stream().filter(list -> list.getName().equalsIgnoreCase(processName)).findFirst();
+        return processDefinition.orElse(null);
     }
 
     /**
@@ -143,23 +138,16 @@ public class ProcessClient {
      */
     public ProcessDefinition createProcessDefinition(
             Long projectCode, String processName, Long taskCode, String taskDefinitionJson) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("projectCode", projectCode);
         String format = StrUtil.format(
                 SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
                         + "/projects/{projectCode}/process-definition",
-                map);
-
-        Map<String, Object> taskMap = new HashMap<>();
-        taskMap.put("code", taskCode);
-
-        String taskRelationJson = ReadFileUtil.taskRelation(taskMap);
+                Collections.singletonMap("projectCode", projectCode));
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", processName);
         params.put("description", "系统添加");
         params.put("tenantCode", "default");
-        params.put("taskRelationJson", taskRelationJson);
+        params.put("taskRelationJson", ReadFileUtil.taskRelation(Collections.singletonMap("code", taskCode)));
         params.put("taskDefinitionJson", taskDefinitionJson);
         params.put("executionType", "PARALLEL");
 

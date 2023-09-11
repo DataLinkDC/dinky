@@ -116,52 +116,50 @@ public class SystemInit implements ApplicationRunner {
                         systemConfiguration.getResourcesHdfsDefaultFS(),
                         systemConfiguration.getResourcesOssAccessKey(),
                         systemConfiguration.getResourcesOssRegion())
-                .forEach(x -> {
-                    x.addParameterCheck((y) -> {
-                        if (systemConfiguration.getResourcesEnable().getValue()) {
-                            switch (systemConfiguration.getResourcesModel().getValue()) {
-                                case OSS:
-                                    OssProperties ossProperties = new OssProperties();
-                                    ossProperties.setAccessKey(systemConfiguration
-                                            .getResourcesOssAccessKey()
-                                            .getValue());
-                                    ossProperties.setSecretKey(systemConfiguration
-                                            .getResourcesOssSecretKey()
-                                            .getValue());
-                                    ossProperties.setEndpoint(systemConfiguration
-                                            .getResourcesOssEndpoint()
-                                            .getValue());
-                                    ossProperties.setBucketName(systemConfiguration
-                                            .getResourcesOssBucketName()
-                                            .getValue());
-                                    ossProperties.setRegion(systemConfiguration
-                                            .getResourcesOssRegion()
-                                            .getValue());
-                                    Singleton.get(OssResourceManager.class)
-                                            .setOssTemplate(new OssTemplate(ossProperties));
-                                    break;
-                                case HDFS:
-                                    final Configuration configuration = new Configuration();
-                                    configuration.set(
-                                            "fs.defaultFS",
+                .forEach(x -> x.addParameterCheck(y -> {
+                    if (Boolean.TRUE.equals(systemConfiguration.getResourcesEnable().getValue())) {
+                        switch (systemConfiguration.getResourcesModel().getValue()) {
+                            case OSS:
+                                OssProperties ossProperties = new OssProperties();
+                                ossProperties.setAccessKey(systemConfiguration
+                                        .getResourcesOssAccessKey()
+                                        .getValue());
+                                ossProperties.setSecretKey(systemConfiguration
+                                        .getResourcesOssSecretKey()
+                                        .getValue());
+                                ossProperties.setEndpoint(systemConfiguration
+                                        .getResourcesOssEndpoint()
+                                        .getValue());
+                                ossProperties.setBucketName(systemConfiguration
+                                        .getResourcesOssBucketName()
+                                        .getValue());
+                                ossProperties.setRegion(systemConfiguration
+                                        .getResourcesOssRegion()
+                                        .getValue());
+                                Singleton.get(OssResourceManager.class)
+                                        .setOssTemplate(new OssTemplate(ossProperties));
+                                break;
+                            case HDFS:
+                                final Configuration configuration = new Configuration();
+                                configuration.set(
+                                        "fs.defaultFS",
+                                        systemConfiguration
+                                                .getResourcesHdfsDefaultFS()
+                                                .getValue());
+                                try {
+                                    FileSystem fileSystem = FileSystem.get(
+                                            getDefaultUri(configuration),
+                                            configuration,
                                             systemConfiguration
-                                                    .getResourcesHdfsDefaultFS()
+                                                    .getResourcesHdfsUser()
                                                     .getValue());
-                                    try {
-                                        FileSystem fileSystem = FileSystem.get(
-                                                getDefaultUri(configuration),
-                                                configuration,
-                                                systemConfiguration
-                                                        .getResourcesHdfsUser()
-                                                        .getValue());
-                                        Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
-                                    } catch (Exception e) {
-                                        throw new DinkyException(e);
-                                    }
-                            }
+                                    Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
+                                } catch (Exception e) {
+                                    throw new DinkyException(e);
+                                }
                         }
-                    });
-                });
+                    }
+                }));
     }
 
     /** init task monitor */
@@ -181,7 +179,7 @@ public class SystemInit implements ApplicationRunner {
                 .getAllConfiguration()
                 .get("dolphinscheduler")
                 .forEach(c -> c.addParameterCheck(v -> {
-                    if (systemConfiguration.getDolphinschedulerEnable().getValue()) {
+                    if (Boolean.TRUE.equals(systemConfiguration.getDolphinschedulerEnable().getValue())) {
                         if (StrUtil.isEmpty(Convert.toStr(v))) {
                             sysConfigService.updateSysConfigByKv(
                                     systemConfiguration
