@@ -71,7 +71,7 @@ const SettingOverView = () => {
       API_CONSTANTS.SYSTEM_MODIFY_CONFIG,
       l('sys.setting.modify', '', { key: l(`sys.${dataConfig.key}`) }),
       dataConfig
-    );
+    ) ?? {};
 
     if (code === RESPONSE_CODE.ERROR) {
       await fetchData();
