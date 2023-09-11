@@ -5,7 +5,7 @@ title: K8S快速安装dinky教程
 ---
 ## K8S快速安装dinky教程
 
-### 前置条件:
+### 前置条件
 
 - MySQL5.7+
 - K8S 1.20.1+
@@ -64,7 +64,7 @@ spec:
       containers:
       #dinky镜像，如果需要更新请前往【https://hub.docker.com/r/dinkydocker/dinky-standalone-server/tags】选择合适镜像版本
       #如果需要添加拓展jar包，可通过dinky注册中心【jar包管理】处添加，或者通过Dockerfile将其打包进docker镜像，再上传至私有仓库再替换此处的镜像
-      - image: dinkydocker/dinky-standalone-server:0.7.3-flink16  #0.7.3版本的镜像
+      - image: dinkydocker/dinky-standalone-server:0.7.3-flink16  #此处为 0.7.3版本的镜像，新版本替换此处即可
         imagePullPolicy: IfNotPresent
         name: dinky
         #将下方configMap配置映射到容器内部，修改配置需要重启pod生效
@@ -283,3 +283,36 @@ FROM test1;
 点击查看bi
 
 ![image-20230909110437935](https://ylw-typora-img.oss-cn-chengdu.aliyuncs.com/img/202309091104042.png)
+
+### 注意事项
+
+- 本例中的`Pod`会自动启动`Flink1.16`版本，如若需要指定版本的Flink，有两种方式
+
+  - 方式一：`kubectl exec -it -n 命名空间 pod名称 -- /bin/bash`手动进入Pod，关闭`sh auto.sh stop`再启动对应版本,如1.17`sh auto.sh start 1.17`
+
+  - 方式二：是通过Dokcerfile重新打包，重新指定启动参数，默认镜像是指定了`ENV FLINK_BIG_VERSION=1.16`,重写打包即可，上面的镜像自行替换最新版
+
+    ![image-20230911102325172](https://ylw-typora-img.oss-cn-chengdu.aliyuncs.com/img/202309111023240.png)
+
+    在此基础上添加参数重启即可，用下面例子，或者自行编写，完整参数可见：[docker hub](https://hub.docker.com/layers/dinkydocker/dinky-standalone-server/0.7.3-flink16/images/sha256-b1ac433950a004c899d4fe930d5996acbf9d09dc2eaca5973ff84d1d4c12f5b0?context=explore)
+
+    ```sh
+    FROM dinkydocker/dinky-standalone-server:0.7.3-flink16
+    
+    # 指定启动版本号为 1.17
+    ENV FLINK_BIG_VERSION=1.17
+    
+    # 更改启动命令为新命令
+    ["/bin/sh","-c","./auto.sh restart ${FLINK_BIG_VERSION}"]
+    ```
+
+- 若MySQL是部署在同一个K8S集群中，k8s集群如果重启，dinky可能会无法自动重新启动
+
+  - 原因是：dinky先于MySQL由于连接不上MySQL会内部报错，但是k8s的pod会显示Running状态，并且通过`kubectl logs pod名`也不会出现报错日志，只有进入容器查看`logs`下的`dinky.log`才可以看到报错信息）
+  - 解决方案：需要重新部署一次(元数据存于MySQL)，或者通过`kubectl exec -it -n 命名空间 pod名称 -- /bin/bash`进入`Pod`内部手动`auto.sh start 【对应版本flink】`启动dinky
+
+- 若添加第三方Jar包是通过dinky-web端添加的，如果不是指定存储与`HDFS`的某个位置而是存储于`本地`，那么当重新部署Pod的时候Jar包会丢失
+
+- dinky安装位置在镜像中的：`/opt/dinky`，其相关jar包依赖存放于该目录下的`plugins`下，推荐通过`Dockerfile`方式修改镜像，将常用`Jar`，如`Paimon`、`CDC`等相关依赖，复制进该目录或该目录下的版本目录，再编译打包提交私有仓库，添加于上方配置文件中
+
+  - Dockerfile打包文件进镜像请自行搜索相关教程
