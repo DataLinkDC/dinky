@@ -57,8 +57,10 @@ const SettingOverView = () => {
   });
 
   const fetchData = async () => {
-    await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ALL_CONFIG).then((res) => {
-      setData(res);
+    await queryDataByParams<Settings>(API_CONSTANTS.SYSTEM_GET_ALL_CONFIG).then((res) => {
+      if (res) {
+        setData(res);
+      }
     });
   };
 
