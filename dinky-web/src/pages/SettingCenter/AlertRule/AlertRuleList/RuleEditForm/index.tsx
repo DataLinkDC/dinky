@@ -75,7 +75,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
 
   return (
     <DrawerForm
-      layout={'horizontal'}
+      layout={'vertical'}
       form={form}
       open={modalVisible}
       submitter={{ render: () => [...renderFooter()] }}
@@ -121,7 +121,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
       <ProFormList
         name='rule'
         label={l('sys.alert.rule.trigerRule')}
-        creatorButtonProps={{
+        creatorButtonProps={isSystem?false:{
           creatorButtonText: l('sys.alert.rule.addRule')
         }}
         copyIconProps={false}
