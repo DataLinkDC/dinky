@@ -21,11 +21,8 @@ package org.dinky.service.impl;
 
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
-import org.dinky.alert.AlertMsg;
 import org.dinky.alert.AlertResult;
-import org.dinky.alert.ShowType;
 import org.dinky.data.constant.BaseConstant;
-import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.AlertInstance;
 import org.dinky.data.result.Result;
@@ -47,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -76,53 +72,18 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         AlertConfig alertConfig = AlertConfig.build(
                 alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
-
-        AlertMsg alertMsg = getAlertMsg(alertInstance);
-        String title = Status.TEST_MSG_JOB_NAME_TITLE.getMessage()
-                + "【"
-                + alertMsg.getJobName()
-                + "】："
-                + alertMsg.getJobStatus()
-                + "!";
-        return alert.send(title, alertMsg.toString());
-    }
-
-    private static AlertMsg getAlertMsg(AlertInstance alertInstance) {
         String currentDateTime =
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern(BaseConstant.YYYY_MM_DD_HH_MM_SS));
 
-        String uuid = UUID.randomUUID().toString();
+        String msg = "## Checkpoint Failed\n" +
+                "If the current task fails to check the checkpoint, check the task configuration and status\n" +
+                "> **Task Name :** Test Job\n" +
+                " **Alert Time :** 2023-01-01\n" +
+                " **Job Id :** jhgf1fuf2f3kfjh43jh\n" +
+                " **Job Duration :** 20h\n" +
+                " **Dinky Task :**  [Click to vist task page](http://cdh1:8081/#/job/)";
 
-        AlertMsg.AlertMsgBuilder alertMsgBuilder = AlertMsg.builder()
-                .alertType(Status.TEST_MSG_TITLE.getMessage())
-                .alertTime(currentDateTime)
-                .jobID(uuid)
-                .jobName(Status.TEST_MSG_JOB_NAME.getMessage())
-                .jobType("SQL")
-                .jobStatus("FAILED")
-                .jobStartTime(currentDateTime)
-                .jobEndTime(currentDateTime)
-                .jobDuration("1 Seconds");
-
-        String linkUrl = "http://cdh1:8081/#/job/" + uuid + "/overview";
-        String exceptionUrl = "http://cdh1:8081/#/job/" + uuid + "/exceptions";
-
-        Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
-        if (!alertInstance.getType().equals("Sms")) {
-            if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
-                alertMsgBuilder.linkUrl("[" + Status.TEST_MSG_JOB_URL.getMessage() + " FlinkWeb](" + linkUrl + ")");
-                alertMsgBuilder.exceptionUrl(
-                        "[" + Status.TEST_MSG_JOB_LOG_URL.getMessage() + "](" + exceptionUrl + ")");
-            } else {
-                alertMsgBuilder.linkUrl(linkUrl);
-                alertMsgBuilder.exceptionUrl(exceptionUrl);
-            }
-        } else {
-            alertMsgBuilder.linkUrl(linkUrl);
-            alertMsgBuilder.exceptionUrl(exceptionUrl);
-        }
-        AlertMsg alertMsg = alertMsgBuilder.build();
-        return alertMsg;
+        return alert.send("Fei Shu Alert Test", msg);
     }
 
     /**

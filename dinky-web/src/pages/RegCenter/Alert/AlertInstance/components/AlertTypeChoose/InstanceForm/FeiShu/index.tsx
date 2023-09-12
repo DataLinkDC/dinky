@@ -59,17 +59,17 @@ const FeiShu = (props: any) => {
           placeholder={l('rc.ai.secretPleaseHolder')}
         />
 
-        <ProFormRadio.Group
-          name='msgtype'
-          width={'xs'}
-          label={l('rc.ai.msgtype')}
-          rules={[{ required: true, message: l('rc.ai.msgtypePleaseHolder') }]}
-        >
-          <Radio.Group>
-            <Radio value='post'>{l('rc.ai.post')}</Radio>
-            <Radio value='text'>{l('rc.ai.text')}</Radio>
-          </Radio.Group>
-        </ProFormRadio.Group>
+        {/*<ProFormRadio.Group*/}
+        {/*  name='msgtype'*/}
+        {/*  width={'xs'}*/}
+        {/*  label={l('rc.ai.msgtype')}*/}
+        {/*  rules={[{ required: true, message: l('rc.ai.msgtypePleaseHolder') }]}*/}
+        {/*>*/}
+        {/*  <Radio.Group>*/}
+        {/*    <Radio value='post'>{l('rc.ai.post')}</Radio>*/}
+        {/*    <Radio value='text'>{l('rc.ai.text')}</Radio>*/}
+        {/*  </Radio.Group>*/}
+        {/*</ProFormRadio.Group>*/}
       </ProForm.Group>
 
       {/* advanced columns */}

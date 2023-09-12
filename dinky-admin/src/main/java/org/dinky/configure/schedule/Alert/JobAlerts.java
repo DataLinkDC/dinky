@@ -35,6 +35,7 @@ import org.dinky.data.model.AlertHistory;
 import org.dinky.data.model.AlertInstance;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.job.FlinkJobTaskPool;
 import org.dinky.service.impl.AlertGroupServiceImpl;
@@ -209,8 +210,10 @@ public class JobAlerts extends BaseSchedule {
         JobInstance jobInstance = jobInfoDetail.getInstance();
         Task task = taskService.getById(jobInfoDetail.getInstance().getTaskId());
 
+        String taskUrl = StrFormatter.format("{}/#/devops/job-detail?id={}", SystemConfiguration.getInstances().getDinkyAddr(),task.getId());
         Map<String, Object> dataModel = new HashMap<>(facts.asMap());
         dataModel.put("task", task);
+        dataModel.put("taskUrl", taskUrl);
         dataModel.put("rule", alertRuleDTO);
 
         String alertContent;
