@@ -7,12 +7,20 @@ const JobOperatorGraph = (props: JobProps) => {
     const iframe = document.getElementById('iframe-id') as HTMLIFrameElement;
     if (!iframe) return;
     const innerDoc = iframe.contentWindow?.document;
-
-    const flinkJob = innerDoc?.querySelector('flink-root > nz-layout > nz-layout > nz-content');
+    innerDoc.body.style.visibility = 'hidden';
+    const flinkJob = innerDoc?.querySelector('flink-root > nz-layout > nz-layout');
     if (!flinkJob) return;
     const style = flinkJob.style;
-    style.position = 'relative';
+    style.visibility = 'visible';
+    style.top = '0';
+    style.left = '0';
+    style.zIndex = 999;
+    style.marginLeft = '0px';
+    style.marginTop = '0px';
     style.overflow = 'hidden';
+    style.position = 'absolute';
+    style.width = iframe.offsetWidth + 'px';
+    style.height = iframe.offsetHeight + 'px';
   };
 
   return (
@@ -36,8 +44,8 @@ const JobOperatorGraph = (props: JobProps) => {
           border: '0px none',
           width: '100%',
           height: window.innerHeight,
-          marginLeft: '-260px',
-          marginRight: '-220px'
+          // marginLeft: '-260px',
+          // marginRight: '-220px'
         }}
       />
     </div>
