@@ -1,5 +1,5 @@
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import {API_CONSTANTS} from "@/services/endpoints";
+import { API_CONSTANTS } from '@/services/endpoints';
 
 const JobOperatorGraph = (props: JobProps) => {
   const { jobDetail } = props;
