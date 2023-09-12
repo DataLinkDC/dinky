@@ -1,4 +1,5 @@
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const JobOperatorGraph = (props: JobProps) => {
   const { jobDetail } = props;
@@ -27,8 +28,7 @@ const JobOperatorGraph = (props: JobProps) => {
       <iframe
         id='iframe-id'
         scrolling='no'
-        //       src={`/api/flink/web/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`}
-        src={`http://127.0.0.1:8000/api/flink/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`}
+        src={`http://127.0.0.1:8000${API_CONSTANTS.FLINK_PROXY}/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`}
         onLoad={() => onLoad()}
         sandbox='allow-same-origin allow-scripts allow-popups allow-forms'
         style={{
