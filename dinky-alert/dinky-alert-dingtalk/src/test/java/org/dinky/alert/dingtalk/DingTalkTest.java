@@ -21,13 +21,11 @@ package org.dinky.alert.dingtalk;
 
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
-import org.dinky.alert.AlertMsg;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.ShowType;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,31 +40,21 @@ import org.junit.Test;
 @Ignore
 public class DingTalkTest {
 
-    private static Map<String, String> config = new HashMap<>();
-    private AlertMsg alertMsg = new AlertMsg();
+    private static final Map<String, String> config = new HashMap<>();
+
+    private static final String contentTest = "# Test DingTalk Hook Robot Alert123 \n > test content \n normal";
 
     @Before
     public void initDingTalkConfig() {
-        String uuid = UUID.randomUUID().toString();
-
-        alertMsg.setAlertType("实时告警监控");
-        alertMsg.setAlertTime("2018-08-06 10:31:34.0");
-        alertMsg.setJobID(uuid);
-        alertMsg.setJobName("测试任务");
-        alertMsg.setJobType("SQL");
-        alertMsg.setJobStatus("FAILED");
-        alertMsg.setJobStartTime("2018-08-06 10:31:34.0");
-        alertMsg.setJobEndTime("2018-08-06 10:31:49.0");
-        alertMsg.setJobDuration("23 Seconds");
-        String linkUrl = "[跳转至该任务的FlinkWeb](http://cdh1:8081/#/job/" + uuid + "/overview)";
-        alertMsg.setLinkUrl(linkUrl);
-        String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/" + uuid + "/exceptions)";
-        alertMsg.setExceptionUrl(exceptionUrl);
 
         config.put(DingTalkConstants.KEYWORD, "Dinky-Fink 钉钉告警测试");
-        config.put(DingTalkConstants.WEB_HOOK, "url");
+        config.put(
+                DingTalkConstants.WEB_HOOK,
+                "https://oapi.dingtalk.com/robot/send?access_token=ce2e5e50976de3960ef68cb1a337e7521484bb8721766f6d0ff052db11eaf3ea");
         config.put(DingTalkConstants.MSG_TYPE, ShowType.MARKDOWN.getValue());
-        config.put(DingTalkConstants.AT_ALL, "true");
+        config.put(DingTalkConstants.AT_ALL, "false");
+        config.put(DingTalkConstants.AT_MOBILES, "17741851072");
+        config.put(DingTalkConstants.SECRET, "SEC2e37f1ff01ad69b20b49b74b73884ab76b78a156b66ec2eb31a47a41e9d7b228");
 
         config.put(DingTalkConstants.PROXY_ENABLE, "false");
         config.put(DingTalkConstants.PASSWORD, "password");
@@ -79,17 +67,7 @@ public class DingTalkTest {
     public void sendMarkDownMsgTest() {
         AlertConfig config = AlertConfig.build("MarkDownTest", "DingTalk", DingTalkTest.config);
         Alert alert = Alert.build(config);
-        AlertResult result = alert.send("Dinky钉钉告警测试", alertMsg.toString());
-        Assert.assertEquals(true, result.getSuccess());
-    }
-
-    @Ignore
-    @Test
-    public void sendTextMsgTest() {
-        config.put(DingTalkConstants.MSG_TYPE, ShowType.TEXT.getValue());
-        AlertConfig config = AlertConfig.build("TextMsgTest", "DingTalk", DingTalkTest.config);
-        Alert alert = Alert.build(config);
-        AlertResult result = alert.send("Dinky钉钉告警测试", alertMsg.toString());
+        AlertResult result = alert.send("Dinky钉钉告警测试", contentTest);
         Assert.assertEquals(true, result.getSuccess());
     }
 }
