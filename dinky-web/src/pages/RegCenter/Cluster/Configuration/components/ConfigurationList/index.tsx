@@ -65,7 +65,7 @@ export default () => {
 
   const queryClusterConfigList = async () => {
     queryList(API_CONSTANTS.CLUSTER_CONFIGURATION).then((res) =>
-      setClusterConfigState((prevState) => ({ ...prevState, configList: res.data }))
+      setClusterConfigState(prevState => ({ ...prevState, configList: res.data }))
     );
   };
 
@@ -79,10 +79,10 @@ export default () => {
    * @returns {Promise<void>}
    */
   const executeAndCallbackRefresh = async (callback: () => void) => {
-    setClusterConfigState((prevState) => ({ ...prevState, loading: true }));
+    setClusterConfigState(prevState => ({ ...prevState, loading: true }));
     await callback();
     await queryClusterConfigList();
-    setClusterConfigState((prevState) => ({ ...prevState, loading: false }));
+    setClusterConfigState(prevState => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
@@ -131,7 +131,7 @@ export default () => {
    * cancel
    */
   const handleCancel = async () => {
-    setClusterConfigState((prevState) => ({
+    setClusterConfigState(prevState => ({
       ...prevState,
       addedOpen: false,
       editOpen: false,
@@ -172,7 +172,7 @@ export default () => {
    * @param item
    */
   const editClick = (item: Cluster.Config) => {
-    setClusterConfigState((prevState) => ({
+    setClusterConfigState(prevState => ({
       ...prevState,
       editOpen: true,
       value: { ...item, configJson: JSON.stringify(item?.configJson ?? {}) }
@@ -257,7 +257,7 @@ export default () => {
     <Authorized key='new' path='/registration/cluster/config/new'>
       <CreateBtn
         key={'configcreate'}
-        onClick={() => setClusterConfigState((prevState) => ({ ...prevState, addedOpen: true }))}
+        onClick={() => setClusterConfigState(prevState => ({ ...prevState, addedOpen: true }))}
       />
     </Authorized>
   ];
