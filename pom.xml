@@ -115,10 +115,16 @@
         <spring.ldap.version>3.1.0</spring.ldap.version>
         <target.java.version>8</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>
+        <smily.version>1.12.1</smily.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.mitre.dsmiley.httpproxy</groupId>
+                <artifactId>smiley-http-proxy-servlet</artifactId>
+                <version>${smily.version}</version>
+            </dependency>
             <!--easy-rules 执行引擎-->
             <dependency>
                 <groupId>org.jeasy</groupId>

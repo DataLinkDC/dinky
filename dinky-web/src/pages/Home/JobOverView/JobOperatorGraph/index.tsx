@@ -35,7 +35,8 @@ const JobOperatorGraph = (props: JobProps) => {
       <iframe
         id='iframe-id'
         scrolling='no'
-        src={`http://127.0.0.1:8000${API_CONSTANTS.FLINK_PROXY}/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`}
+        src={`http://127.0.0.1:8888/flink_web/proxy?_subHost=127.0.0.1&_port=8882&_jid=${jobDetail?.instance?.jid}`}
+        // src={`http://127.0.0.1:8000${API_CONSTANTS.FLINK_PROXY}/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`}
         onLoad={() => onLoad()}
         sandbox='allow-same-origin allow-scripts allow-popups allow-forms'
         style={{
