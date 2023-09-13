@@ -6,7 +6,7 @@ const JobOperatorGraph = (props: JobProps) => {
 
   const url = !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ?
       `http://127.0.0.1:8000${API_CONSTANTS.FLINK_PROXY}/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`
-      : `${window.location.origin}/flink_web/proxy?_subHost=127.0.0.1&_port=8882&_jid=${jobDetail?.instance?.jid}`
+      : `${window.location.origin}/flink_web/proxy?_authority=${jobDetail?.history?.jobManagerAddress}&_jid=${jobDetail?.instance?.jid}`
 
   const onLoad = () => {
     const iframe = document.getElementById('iframe-id') as HTMLIFrameElement;

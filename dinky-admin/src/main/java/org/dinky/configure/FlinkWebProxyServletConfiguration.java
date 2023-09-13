@@ -10,7 +10,7 @@ import org.springframework.core.env.Environment;
 
 @Configuration
 public class FlinkWebProxyServletConfiguration implements EnvironmentAware {
-    private static final String TARGET_URL = "http://{_subHost}:{_port}/#/job/running/{_jid}/overview";
+    private static final String TARGET_URL = "http://{_authority}/#/job/running/{_jid}/overview";
 
     @Bean
     public ServletRegistrationBean servletRegistrationBean() {
