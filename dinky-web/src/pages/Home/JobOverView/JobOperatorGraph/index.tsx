@@ -3,6 +3,11 @@ import { API_CONSTANTS } from '@/services/endpoints';
 
 const JobOperatorGraph = (props: JobProps) => {
   const { jobDetail } = props;
+
+  const url = !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ?
+      `http://127.0.0.1:8000${API_CONSTANTS.FLINK_PROXY}/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`
+      : `${window.location.origin}/flink_web/proxy?_subHost=127.0.0.1&_port=8882&_jid=${jobDetail?.instance?.jid}`
+
   const onLoad = () => {
     const iframe = document.getElementById('iframe-id') as HTMLIFrameElement;
     if (!iframe) return;
@@ -35,8 +40,7 @@ const JobOperatorGraph = (props: JobProps) => {
       <iframe
         id='iframe-id'
         scrolling='no'
-        src={`http://127.0.0.1:8888/flink_web/proxy?_subHost=127.0.0.1&_port=8882&_jid=${jobDetail?.instance?.jid}`}
-        // src={`http://127.0.0.1:8000${API_CONSTANTS.FLINK_PROXY}/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`}
+        src={url}
         onLoad={() => onLoad()}
         sandbox='allow-same-origin allow-scripts allow-popups allow-forms'
         style={{
