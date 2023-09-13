@@ -105,6 +105,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -220,17 +221,20 @@ public class JobManager {
         initEnvironmentSetting();
         if (!runMode.equals(GatewayType.LOCAL) && !useGateway && config.isUseRemote()) {
             executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
-            return executor;
         } else {
             if (ArrayUtil.isNotEmpty(config.getJarFiles())) {
                 config.getExecutorSetting().getConfig().put(PipelineOptions.JARS.key(),
                         Stream.of(config.getJarFiles()).map(FileUtil::getAbsolutePath)
                                 .collect(Collectors.joining(",")));
             }
-
             executor = Executor.buildLocalExecutor(config.getExecutorSetting());
-            return executor;
         }
+        StreamExecutionEnvironment env = this.getExecutor().getStreamExecutionEnvironment();
+        // Fix the Classloader in the env above Flink1.16 to appClassLoader, causing ckp to fail to compile
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        ReflectUtil.setFieldValue(env, "userClassloader", contextClassLoader);
+        executor.getSqlManager().registerSqlFragment(config.getVariables());
+        return executor;
     }
 
     private Executor createExecutorWithSession() {
