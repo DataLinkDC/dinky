@@ -47,7 +47,7 @@ const JobOperatorGraph = (props: JobProps) => {
           overflow: 'hidden',
           border: '0px none',
           width: '100%',
-          height: window.innerHeight,
+          height: window.innerHeight
           // marginLeft: '-260px',
           // marginRight: '-220px'
         }}
