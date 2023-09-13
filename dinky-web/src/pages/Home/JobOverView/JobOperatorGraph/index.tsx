@@ -17,7 +17,7 @@ const JobOperatorGraph = (props: JobProps) => {
     style.zIndex = 999;
     style.marginLeft = '0px';
     style.marginTop = '0px';
-    style.overflow = 'hidden';
+    // style.overflow = 'hidden';
     style.position = 'absolute';
     style.width = iframe.offsetWidth + 'px';
     style.height = iframe.offsetHeight + 'px';
@@ -28,7 +28,6 @@ const JobOperatorGraph = (props: JobProps) => {
       style={{
         border: '0px solid',
         overflow: 'hidden',
-        marginLeft: '100px',
         width: '100%',
         height: '100%'
       }}
