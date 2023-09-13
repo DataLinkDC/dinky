@@ -12,6 +12,7 @@ const JobOperatorGraph = (props: JobProps) => {
     const iframe = document.getElementById('iframe-id') as HTMLIFrameElement;
     if (!iframe) return;
     const innerDoc = iframe.contentWindow?.document;
+    if (!innerDoc) return;
     innerDoc.body.style.visibility = 'hidden';
     const flinkJob = innerDoc?.querySelector('flink-root > nz-layout > nz-layout');
     if (!flinkJob) return;
