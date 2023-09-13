@@ -104,7 +104,7 @@ const FlinkTable = (props: JobProps) => {
         <ProTable
           columns={columns}
           style={{ width: '100%' }}
-          dataSource={jobDetail?.jobHistory?.job.vertices}
+          dataSource={jobDetail?.jobHistory?.job?.vertices}
           rowKey='name'
           pagination={{
             defaultPageSize: 10,

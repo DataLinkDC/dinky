@@ -15,9 +15,9 @@ public class FlinkWebProxyServletConfiguration implements EnvironmentAware {
     @Bean
     public ServletRegistrationBean servletRegistrationBean() {
         ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(new FlinkWebURITemplateProxyServlet());
-        servletRegistrationBean.addUrlMappings("/flink_web/proxy/*", "/flink_web/*");
+        servletRegistrationBean.addUrlMappings("/api/flink_web/proxy/*", "/api/flink_web/*");
          servletRegistrationBean.addInitParameter(ProxyServlet.P_TARGET_URI, TARGET_URL);
-        servletRegistrationBean.addInitParameter(ProxyServlet.P_LOG, "true");
+        servletRegistrationBean.addInitParameter(ProxyServlet.P_LOG, "false");
         return servletRegistrationBean;
     }
 

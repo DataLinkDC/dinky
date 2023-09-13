@@ -4,9 +4,7 @@ import { API_CONSTANTS } from '@/services/endpoints';
 const JobOperatorGraph = (props: JobProps) => {
   const { jobDetail } = props;
 
-  const url = !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ?
-      `http://127.0.0.1:8000${API_CONSTANTS.FLINK_PROXY}/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`
-      : `${window.location.origin}/flink_web/proxy?_authority=${jobDetail?.history?.jobManagerAddress}&_jid=${jobDetail?.instance?.jid}`
+  const url = `${window.location.origin}/api/flink_web/proxy?_authority=${jobDetail?.history?.jobManagerAddress}&_jid=${jobDetail?.instance?.jid}`
 
   const onLoad = () => {
     const iframe = document.getElementById('iframe-id') as HTMLIFrameElement;
@@ -16,17 +14,19 @@ const JobOperatorGraph = (props: JobProps) => {
     innerDoc.body.style.visibility = 'hidden';
     const flinkJob = innerDoc?.querySelector('flink-root > nz-layout > nz-layout');
     if (!flinkJob) return;
-    const style = flinkJob.style;
-    style.visibility = 'visible';
-    style.top = '0';
-    style.left = '0';
-    style.zIndex = 999;
-    style.marginLeft = '0px';
-    style.marginTop = '0px';
-    // style.overflow = 'hidden';
-    style.position = 'absolute';
-    style.width = iframe.offsetWidth + 'px';
-    style.height = iframe.offsetHeight + 'px';
+
+    // @ts-ignore
+      const style = flinkJob.style;
+      style.visibility = 'visible';
+      style.top = '0';
+      style.left = '0';
+      style.zIndex = 999;
+      style.marginLeft = '0px';
+      style.marginTop = '0px';
+      // style.overflow = 'hidden';
+      style.position = 'absolute';
+      style.width = iframe.offsetWidth + 'px';
+      style.height = iframe.offsetHeight + 'px';
   };
 
   return (
