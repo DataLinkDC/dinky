@@ -36,7 +36,7 @@ import com.ververica.cdc.connectors.oracle.OracleSource;
 import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 
 /**
- * MysqlCDCBuilder
+ * OracleCDCBuilder
  *
  * @author wenmo
  * @since 2022/4/12 21:29
