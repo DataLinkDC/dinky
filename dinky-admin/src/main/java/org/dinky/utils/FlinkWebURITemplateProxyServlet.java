@@ -170,7 +170,6 @@ public class FlinkWebURITemplateProxyServlet extends ProxyServlet {
         return params;
     }
 
-    @NotNull
     private static String getQueryString(HttpServletRequest servletRequest) {
         String requestQueryString = servletRequest.getQueryString();
         String queryString = "";
