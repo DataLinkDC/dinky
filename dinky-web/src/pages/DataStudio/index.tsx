@@ -293,7 +293,7 @@ const DataStudio = (props: any) => {
               </div>
             </Sider>
 
-            <Content style={{ display: 'flex', flexDirection: 'column' }}>
+            <Content style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div style={{ display: 'flex' }}>
                 <LeftContainer size={size} />
                 <Content
