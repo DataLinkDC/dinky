@@ -24,7 +24,6 @@ import {
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
-import { Form, Radio } from 'antd';
 
 const Email = (props: any) => {
   const { values } = props;
