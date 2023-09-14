@@ -95,8 +95,9 @@ public class ProcessClient {
      */
     public ProcessDefinition getProcessDefinitionInfo(Long projectCode, String processName) {
         List<ProcessDefinition> lists = getProcessDefinition(projectCode, processName);
-        Optional<ProcessDefinition> processDefinition =
-                lists.stream().filter(list -> list.getName().equalsIgnoreCase(processName)).findFirst();
+        Optional<ProcessDefinition> processDefinition = lists.stream()
+                .filter(list -> list.getName().equalsIgnoreCase(processName))
+                .findFirst();
         return processDefinition.orElse(null);
     }
 
