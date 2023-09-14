@@ -62,7 +62,7 @@ public final class EmailSender {
     private final String mailUseStartTLS;
     private final String mailUseSSL;
     private final String sslTrust;
-    private final String showType;
+    //    private final String showType;
     private final String mustNotNull = " must not be null";
     private String xlsFilePath;
 
@@ -104,8 +104,8 @@ public final class EmailSender {
 
         sslTrust = config.get(EmailConstants.NAME_MAIL_SMTP_SSL_TRUST);
 
-        showType = config.get(EmailConstants.MSG_TYPE);
-        requireNonNull(showType, EmailConstants.MSG_TYPE + mustNotNull);
+        //        showType = config.get(EmailConstants.MSG_TYPE);
+        //        requireNonNull(showType, EmailConstants.MSG_TYPE + mustNotNull);
 
         xlsFilePath = config.get(EmailConstants.XLS_FILE_PATH);
         if (StringUtils.isBlank(xlsFilePath)) {

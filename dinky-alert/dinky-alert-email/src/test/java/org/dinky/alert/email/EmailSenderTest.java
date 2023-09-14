@@ -64,5 +64,4 @@ public class EmailSenderTest {
         AlertResult alertResult = emailSender.send(title, alertMsg);
         Assert.assertEquals(true, alertResult.getSuccess()); // 格式需要调整
     }
-
 }

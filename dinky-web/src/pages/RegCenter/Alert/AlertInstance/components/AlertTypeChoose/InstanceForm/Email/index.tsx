@@ -99,19 +99,19 @@ const Email = (props: any) => {
             {...SWITCH_OPTIONS()}
           />
 
-          {/* msgtype */}
-          <Form.Item
-            name='msgtype'
-            label={l('rc.ai.msgtype')}
-            rules={[{ required: true, message: l('rc.ai.msgtypePleaseHolder') }]}
-          >
-            <Radio.Group>
-              <Radio value='text'>{l('rc.ai.text')}</Radio>
-              <Radio value='table'>{l('rc.ai.table')}</Radio>
-              <Radio value='attachment'>{l('rc.ai.attachment')}</Radio>
-              <Radio value='table attachment'>{l('rc.ai.tableAttachment')}</Radio>
-            </Radio.Group>
-          </Form.Item>
+          {/*/!* msgtype *!/*/}
+          {/*<Form.Item*/}
+          {/*  name='msgtype'*/}
+          {/*  label={l('rc.ai.msgtype')}*/}
+          {/*  rules={[{ required: true, message: l('rc.ai.msgtypePleaseHolder') }]}*/}
+          {/*>*/}
+          {/*  <Radio.Group>*/}
+          {/*    <Radio value='text'>{l('rc.ai.text')}</Radio>*/}
+          {/*    <Radio value='table'>{l('rc.ai.table')}</Radio>*/}
+          {/*    <Radio value='attachment'>{l('rc.ai.attachment')}</Radio>*/}
+          {/*    <Radio value='table attachment'>{l('rc.ai.tableAttachment')}</Radio>*/}
+          {/*  </Radio.Group>*/}
+          {/*</Form.Item>*/}
         </ProForm.Group>
 
         {/* proxy */}
