@@ -5,6 +5,8 @@ import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.mitre.dsmiley.httpproxy.ProxyServlet;
 import org.mitre.dsmiley.httpproxy.URITemplateProxyServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FlinkWebURITemplateProxyServlet extends ProxyServlet {
+    protected static final Logger logger = LoggerFactory.getLogger(FlinkWebURITemplateProxyServlet.class);
 
     public static final String FLINK_WEB_PROXY = "/api/flink_web/proxy";
     private static String AUTHORITY;
@@ -115,7 +118,11 @@ public class FlinkWebURITemplateProxyServlet extends ProxyServlet {
         }
         servletRequest.setAttribute(ATTR_QUERY_STRING, newQueryBuf.toString());
 
-        super.service(servletRequest, servletResponse);
+        try {
+            super.service(servletRequest, servletResponse);
+        }catch (Exception ex) {
+            logger.warn(String.format("%s origin url:%s params:%s", ex.getMessage(), servletRequest.getRequestURL(), servletRequest.getQueryString()));
+        }
     }
 
     @Override
