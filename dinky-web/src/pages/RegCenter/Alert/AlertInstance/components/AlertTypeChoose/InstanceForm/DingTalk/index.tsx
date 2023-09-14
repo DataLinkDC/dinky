@@ -53,19 +53,6 @@ const DingTalk = (props: any) => {
           label={l('rc.ai.secret')}
           placeholder={l('rc.ai.secretPleaseHolder')}
         />
-
-        {/*/!* advanced columns *!/*/}
-        {/*<ProFormRadio.Group*/}
-        {/*  name='msgtype'*/}
-        {/*  width={'xs'}*/}
-        {/*  label={l('rc.ai.msgtype')}*/}
-        {/*  rules={[{ required: true, message: l('rc.ai.msgtypePleaseHolder') }]}*/}
-        {/*>*/}
-        {/*  <Radio.Group>*/}
-        {/*    <Radio value='markdown'>{l('rc.ai.markdown')}</Radio>*/}
-        {/*    <Radio value='text'>{l('rc.ai.text')}</Radio>*/}
-        {/*  </Radio.Group>*/}
-        {/*</ProFormRadio.Group>*/}
       </ProForm.Group>
 
       <ProForm.Group>
