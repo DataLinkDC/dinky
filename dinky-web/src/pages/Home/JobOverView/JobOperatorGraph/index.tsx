@@ -41,6 +41,7 @@ const JobOperatorGraph = (props: JobProps) => {
       <iframe
         id='iframe-id'
         scrolling='no'
+        referrerPolicy={'no-referrer'}
         src={url}
         onLoad={() => onLoad()}
         sandbox='allow-same-origin allow-scripts allow-popups allow-forms'

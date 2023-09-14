@@ -3,6 +3,7 @@ package org.dinky.utils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.jetbrains.annotations.NotNull;
 import org.mitre.dsmiley.httpproxy.ProxyServlet;
 import org.mitre.dsmiley.httpproxy.URITemplateProxyServlet;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public class FlinkWebURITemplateProxyServlet extends ProxyServlet {
     protected static final Logger logger = LoggerFactory.getLogger(FlinkWebURITemplateProxyServlet.class);
 
     public static final String FLINK_WEB_PROXY = "/api/flink_web/proxy";
-    private static String AUTHORITY;
+    private static volatile String AUTHORITY;
 
     protected static final Pattern TEMPLATE_PATTERN = Pattern.compile("\\{(.+?)\\}");
     private static final String ATTR_QUERY_STRING =
@@ -44,60 +45,50 @@ public class FlinkWebURITemplateProxyServlet extends ProxyServlet {
     }
 
     @Override
-    protected void service(HttpServletRequest servletRequest, HttpServletResponse servletResponse)
+    protected synchronized void service(HttpServletRequest servletRequest, HttpServletResponse servletResponse)
             throws ServletException, IOException {
 
         if (!servletRequest.getRequestURI().contains(FLINK_WEB_PROXY)) {
             // iframe inner request
+            int i = 0;
+            while (AUTHORITY == null && i++ < 10) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
             if(AUTHORITY != null) {
                 service(servletRequest, servletResponse, AUTHORITY);
+            }else {
+                logger.debug("AUTHORITY is null, skip service");
             }
             return;
         }
 
+        if (Objects.equals(servletRequest.getRequestURI(), FLINK_WEB_PROXY)) {
+            String queryString = getQueryString(servletRequest);
+            Map<String, String> params = getParams(queryString);
+            String newTargetUri = getNewTargetUri(targetUriTemplate, params);
+            try {
+                URI target = new URI(newTargetUri);
+                AUTHORITY =  URIUtils.extractHost(target).toString();
+            } catch (URISyntaxException e) {
+                throw new ServletException("Rewritten targetUri is invalid: " + newTargetUri,e);
+            }
+        }
+        
         service(servletRequest, servletResponse, targetUriTemplate);
 
-        if (Objects.equals(servletRequest.getRequestURI(), FLINK_WEB_PROXY)) {
-            AUTHORITY = servletRequest.getAttribute(ATTR_TARGET_HOST).toString();
-        }
     }
 
     private void service(HttpServletRequest servletRequest, HttpServletResponse servletResponse, String targetUriTemplateCurrent)
             throws ServletException, IOException  {
-        String requestQueryString = servletRequest.getQueryString();
-        String queryString = "";
-        if (requestQueryString != null) {
-            queryString = "?" + requestQueryString;//no "?" but might have "#"
-        }
-        int hash = queryString.indexOf('#');
-        if (hash >= 0) {
-            queryString = queryString.substring(0, hash);
-        }
-        List<NameValuePair> pairs;
-        try {
-            //note: HttpClient 4.2 lets you parse the string without building the URI
-            pairs = URLEncodedUtils.parse(new URI(queryString), "UTF-8");
-        } catch (URISyntaxException e) {
-            throw new ServletException("Unexpected URI parsing error on " + queryString, e);
-        }
-        LinkedHashMap<String, String> params = new LinkedHashMap<String, String>();
-        for (NameValuePair pair : pairs) {
-            params.put(pair.getName(), pair.getValue());
-        }
 
-        //Now rewrite the URL
-        StringBuffer urlBuf = new StringBuffer();//note: StringBuilder isn't supported by Matcher
-        Matcher matcher = TEMPLATE_PATTERN.matcher(targetUriTemplateCurrent);
-        while (matcher.find()) {
-            String arg = matcher.group(1);
-            String replacement = params.remove(arg);//note we remove
-            if (replacement == null) {
-                throw new ServletException("Missing HTTP parameter "+arg+" to fill the template");
-            }
-            matcher.appendReplacement(urlBuf, replacement);
-        }
-        matcher.appendTail(urlBuf);
-        String newTargetUri = urlBuf.toString();
+        String queryString = getQueryString(servletRequest);
+        Map<String, String> params = getParams(queryString);
+        String newTargetUri = getNewTargetUri(targetUriTemplateCurrent, params);
         servletRequest.setAttribute(ATTR_TARGET_URI, newTargetUri);
         URI targetUriObj;
         try {
@@ -123,6 +114,54 @@ public class FlinkWebURITemplateProxyServlet extends ProxyServlet {
         }catch (Exception ex) {
             logger.warn(String.format("%s origin url:%s params:%s", ex.getMessage(), servletRequest.getRequestURL(), servletRequest.getQueryString()));
         }
+    }
+
+    @NotNull
+    private static String getNewTargetUri(String targetUriTemplateCurrent, Map<String, String> params) throws ServletException {
+        //Now rewrite the URL
+        StringBuffer urlBuf = new StringBuffer();//note: StringBuilder isn't supported by Matcher
+        Matcher matcher = TEMPLATE_PATTERN.matcher(targetUriTemplateCurrent);
+        while (matcher.find()) {
+            String arg = matcher.group(1);
+            String replacement = params.remove(arg);//note we remove
+            if (replacement == null) {
+                throw new ServletException("Missing HTTP parameter "+arg+" to fill the template");
+            }
+            matcher.appendReplacement(urlBuf, replacement);
+        }
+        matcher.appendTail(urlBuf);
+        String newTargetUri = urlBuf.toString();
+        return newTargetUri;
+    }
+
+    private Map<String, String> getParams(String queryString) throws ServletException {
+        List<NameValuePair> pairs;
+        try {
+            //note: HttpClient 4.2 lets you parse the string without building the URI
+            pairs = URLEncodedUtils.parse(new URI(queryString), "UTF-8");
+        } catch (URISyntaxException e) {
+            throw new ServletException("Unexpected URI parsing error on " + queryString, e);
+        }
+        LinkedHashMap<String, String> params = new LinkedHashMap<String, String>();
+        for (NameValuePair pair : pairs) {
+            params.put(pair.getName(), pair.getValue());
+        }
+
+        return params;
+    }
+
+    @NotNull
+    private static String getQueryString(HttpServletRequest servletRequest) {
+        String requestQueryString = servletRequest.getQueryString();
+        String queryString = "";
+        if (requestQueryString != null) {
+            queryString = "?" + requestQueryString;//no "?" but might have "#"
+        }
+        int hash = queryString.indexOf('#');
+        if (hash >= 0) {
+            queryString = queryString.substring(0, hash);
+        }
+        return queryString;
     }
 
     @Override
