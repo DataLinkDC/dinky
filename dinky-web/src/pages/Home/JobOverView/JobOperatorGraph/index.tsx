@@ -44,7 +44,7 @@ const JobOperatorGraph = (props: JobProps) => {
         referrerPolicy={'no-referrer'}
         src={url}
         onLoad={() => onLoad()}
-        sandbox='allow-same-origin allow-scripts allow-popups allow-forms'
+        sandbox='allow-same-origin allow-scripts allow-popups allow-forms allow-downloads allow-downloads-without-user-activation allow-modals '
         style={{
           overflow: 'hidden',
           border: '0px none',
