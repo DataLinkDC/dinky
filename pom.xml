@@ -94,6 +94,7 @@
         <mybatis-plus-boot-starter.version>3.5.3.1</mybatis-plus-boot-starter.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
+        <org.commonmark>0.21.0</org.commonmark>
         <oshi.version>6.4.2</oshi.version>
         <poi.version>5.2.3</poi.version>
         <postgresql.version>42.5.1</postgresql.version>
@@ -119,6 +120,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.commonmark</groupId>
+                <artifactId>commonmark</artifactId>
+                <version>${org.commonmark}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.mitre.dsmiley.httpproxy</groupId>
                 <artifactId>smiley-http-proxy-servlet</artifactId>

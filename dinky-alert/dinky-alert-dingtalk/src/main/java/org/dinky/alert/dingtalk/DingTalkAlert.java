@@ -22,6 +22,10 @@ package org.dinky.alert.dingtalk;
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
 
+import java.io.IOException;
+
+import freemarker.template.TemplateException;
+
 /**
  * DingTalkAlert
  *
@@ -37,6 +41,11 @@ public class DingTalkAlert extends AbstractAlert {
     @Override
     public AlertResult send(String title, String content) {
         DingTalkSender sender = new DingTalkSender(getConfig().getParam());
-        return sender.send(title, content);
+        try {
+            String built = buildContent(sender.buildTemplateParams(title, content));
+            return sender.send(built);
+        } catch (TemplateException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

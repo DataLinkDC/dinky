@@ -22,6 +22,12 @@ package org.dinky.alert.wechat;
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
 
+import java.io.IOException;
+
+import cn.hutool.core.io.resource.ResourceUtil;
+import cn.hutool.core.text.StrFormatter;
+import freemarker.template.TemplateException;
+
 /**
  * WeChatAlert
  *
@@ -35,8 +41,20 @@ public class WeChatAlert extends AbstractAlert {
     }
 
     @Override
+    public String getTemplate() {
+        String sendType = getConfig().getParam().get(WeChatConstants.SEND_TYPE);
+        return ResourceUtil.readUtf8Str(
+                StrFormatter.format("{}-{}.ftl", getConfig().getType(), sendType));
+    }
+
+    @Override
     public AlertResult send(String title, String content) {
         WeChatSender sender = new WeChatSender(getConfig().getParam());
-        return sender.send(title, content);
+        try {
+            String built = buildContent(sender.buildTemplateParams(title, content));
+            return sender.send(built);
+        } catch (TemplateException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

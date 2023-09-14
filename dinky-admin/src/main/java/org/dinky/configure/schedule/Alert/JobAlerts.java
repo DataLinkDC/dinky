@@ -35,12 +35,14 @@ import org.dinky.data.model.AlertHistory;
 import org.dinky.data.model.AlertInstance;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.job.FlinkJobTaskPool;
 import org.dinky.service.impl.AlertGroupServiceImpl;
 import org.dinky.service.impl.AlertHistoryServiceImpl;
 import org.dinky.service.impl.AlertRuleServiceImpl;
 import org.dinky.service.impl.TaskServiceImpl;
+import org.dinky.utils.TimeUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -140,11 +142,17 @@ public class JobAlerts extends BaseSchedule {
         for (Map.Entry<String, JobInfoDetail> job : taskPool.entrySet()) {
             JobInfoDetail jobInfoDetail = job.getValue();
             String key = job.getKey();
-            ruleFacts.put("", jobInfoDetail);
+            ruleFacts.put("time", TimeUtil.nowStr());
             ruleFacts.put("jobDetail", jobInfoDetail);
-            ruleFacts.put("job", jobInfoDetail.getHistory());
+            ruleFacts.put("job", jobInfoDetail.getJobHistory().getJob());
             ruleFacts.put("key", key);
             ruleFacts.put("jobInstance", jobInfoDetail.getInstance());
+            ruleFacts.put(
+                    "startTime",
+                    TimeUtil.convertTimeToString(jobInfoDetail.getHistory().getStartTime()));
+            ruleFacts.put(
+                    "endTime",
+                    TimeUtil.convertTimeToString(jobInfoDetail.getHistory().getEndTime()));
             ruleFacts.put("checkPoints", jobInfoDetail.getJobHistory().getCheckpoints());
             ruleFacts.put("cluster", jobInfoDetail.getCluster());
             ruleFacts.put("exceptions", jobInfoDetail.getJobHistory().getExceptions());
@@ -156,7 +164,6 @@ public class JobAlerts extends BaseSchedule {
      * Refreshes the alert rules and related data.
      */
     public void refeshRulesData() {
-
         ruleFacts.put("exceptionRule", new ExceptionRule());
         ruleFacts.put("checkpointRule", new CheckpointsRule());
 
@@ -209,8 +216,13 @@ public class JobAlerts extends BaseSchedule {
         JobInstance jobInstance = jobInfoDetail.getInstance();
         Task task = taskService.getById(jobInfoDetail.getInstance().getTaskId());
 
+        String taskUrl = StrFormatter.format(
+                "{}/#/devops/job-detail?id={}",
+                SystemConfiguration.getInstances().getDinkyAddr(),
+                task.getId());
         Map<String, Object> dataModel = new HashMap<>(facts.asMap());
         dataModel.put("task", task);
+        dataModel.put("taskUrl", taskUrl);
         dataModel.put("rule", alertRuleDTO);
 
         String alertContent;

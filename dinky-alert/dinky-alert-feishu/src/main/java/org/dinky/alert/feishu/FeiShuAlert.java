@@ -22,8 +22,17 @@ package org.dinky.alert.feishu;
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
 
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import freemarker.template.TemplateException;
+
 /** FeiShuAlert */
 public class FeiShuAlert extends AbstractAlert {
+
+    private static final Logger logger = LoggerFactory.getLogger(FeiShuAlert.class);
 
     @Override
     public String getType() {
@@ -33,6 +42,12 @@ public class FeiShuAlert extends AbstractAlert {
     @Override
     public AlertResult send(String title, String content) {
         FeiShuSender sender = new FeiShuSender(getConfig().getParam());
-        return sender.send(title, content);
+        try {
+            String built = buildContent(sender.buildTemplateParams(title, content));
+            logger.info("Send FeiShu alert title: {}", title);
+            return sender.send(built);
+        } catch (TemplateException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

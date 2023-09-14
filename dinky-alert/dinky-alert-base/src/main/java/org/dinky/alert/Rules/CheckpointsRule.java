@@ -50,7 +50,7 @@ public class CheckpointsRule {
      */
     private boolean isExpire(JsonNode latest, String key, String ckKey) {
         JsonNode his = checkpointsCache.getIfPresent(key);
-        if (latest.get(ckKey) == null) {
+        if (latest.get(ckKey) == null || !latest.get(ckKey).has("trigger_timestamp")) {
             return true;
         }
         long latestTime = latest.get(ckKey).get("trigger_timestamp").asLong(-1);
