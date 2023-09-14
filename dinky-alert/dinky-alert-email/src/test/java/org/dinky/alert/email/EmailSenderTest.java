@@ -44,14 +44,14 @@ public class EmailSenderTest {
         emailConfig.put(EmailConstants.NAME_MAIL_PROTOCOL, "smtp");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_HOST, "alertMsg");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_PORT, "465");
-        emailConfig.put(EmailConstants.NAME_MAIL_SENDER, "GaoYan");
-        emailConfig.put(EmailConstants.NAME_MAIL_USER, "17714181072@163.com");
-        emailConfig.put(EmailConstants.NAME_MAIL_PASSWD, "AAJMEFMRKNRROYWD");
+        emailConfig.put(EmailConstants.NAME_MAIL_SENDER, "xxx");
+        emailConfig.put(EmailConstants.NAME_MAIL_USER, "xxxx@163.com");
+        emailConfig.put(EmailConstants.NAME_MAIL_PASSWD, "xxxxx");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_AUTH, "true");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_STARTTLS_ENABLE, "false");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_SSL_ENABLE, "false");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_SSL_TRUST, "smtp.mxhichina.com");
-        emailConfig.put(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS, "ikiler@126.com");
+        emailConfig.put(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS, "xxxxx@126.com");
         emailConfig.put(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERCCS, "user3@qq.com");
         emailConfig.put(EmailConstants.MSG_TYPE, ShowType.TEXT.getValue());
         emailSender = new EmailSender(emailConfig);
