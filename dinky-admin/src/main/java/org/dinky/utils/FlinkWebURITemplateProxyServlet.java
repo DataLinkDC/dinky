@@ -135,7 +135,6 @@ public class FlinkWebURITemplateProxyServlet extends ProxyServlet {
         }
     }
 
-    @NotNull
     private static String getNewTargetUri(String targetUriTemplateCurrent, Map<String, String> params)
             throws ServletException {
         // Now rewrite the URL
