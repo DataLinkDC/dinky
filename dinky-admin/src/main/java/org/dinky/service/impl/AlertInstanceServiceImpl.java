@@ -22,7 +22,6 @@ package org.dinky.service.impl;
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
-import org.dinky.data.constant.BaseConstant;
 import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.AlertInstance;
 import org.dinky.data.result.Result;
@@ -37,7 +36,6 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -73,13 +71,13 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
                 alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
 
-        String msg = "\n- **Job Name :** <font color='gray'>Test Job</font>\n" +
-                "- **Job Status :** <font color='red'>FAILED</font>\n" +
-                "- **Alert Time :** 2023-01-01  12:00:00\n" +
-                "- **Start Time :** 2023-01-01  12:00:00\n" +
-                "- **End Time :** 2023-01-01  12:00:00\n" +
-                "- **<font color='red'>The test exception, your job exception will pass here</font>**\n" +
-                "[Go to Task Web](https://github.com/DataLinkDC/dinky)";
+        String msg = "\n- **Job Name :** <font color='gray'>Test Job</font>\n"
+                + "- **Job Status :** <font color='red'>FAILED</font>\n"
+                + "- **Alert Time :** 2023-01-01  12:00:00\n"
+                + "- **Start Time :** 2023-01-01  12:00:00\n"
+                + "- **End Time :** 2023-01-01  12:00:00\n"
+                + "- **<font color='red'>The test exception, your job exception will pass here</font>**\n"
+                + "[Go to Task Web](https://github.com/DataLinkDC/dinky)";
 
         return alert.send("Fei Shu Alert Test", msg);
     }

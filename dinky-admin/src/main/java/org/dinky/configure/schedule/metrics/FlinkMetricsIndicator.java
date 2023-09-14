@@ -31,6 +31,7 @@ import org.dinky.data.vo.MetricsVO;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
+import org.dinky.utils.HttpUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -47,7 +48,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
-import org.dinky.utils.HttpUtils;
 import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.stereotype.Component;
 

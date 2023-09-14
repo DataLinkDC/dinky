@@ -62,7 +62,8 @@ public class TimeUtil {
     }
 
     public static String convertTimeToString(LocalDateTime time) {
-        return convertTimeToString(time.toInstant(OffsetDateTime.now().getOffset()).toEpochMilli(), "yyyy-MM-dd HH:mm:ss");
+        return convertTimeToString(
+                time.toInstant(OffsetDateTime.now().getOffset()).toEpochMilli(), "yyyy-MM-dd HH:mm:ss");
     }
 
     /**

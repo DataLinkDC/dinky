@@ -23,8 +23,8 @@ package org.dinky.alert;
 public class AlertBaseConstant {
 
     /** base constant */
-
     public static final String ENTER_LINE = "\n";
+
     public static final String CHARSET = "UTF-8";
     public static final String PROXY_ENABLE = "isEnableProxy";
     public static final String WEB_HOOK = "webhook";

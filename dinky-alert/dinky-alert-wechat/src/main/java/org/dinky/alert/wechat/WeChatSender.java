@@ -21,7 +21,6 @@ package org.dinky.alert.wechat;
 
 import static java.util.Objects.requireNonNull;
 
-import cn.hutool.core.text.StrFormatter;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.AlertSendResponse;
 import org.dinky.utils.HttpUtils;
@@ -44,6 +43,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.hutool.core.text.StrFormatter;
+
 /**
  * WeChatSender
  *
@@ -56,7 +57,7 @@ public class WeChatSender {
     private static final String SECRET_REGEX = "{secret}";
     private static final String TOKEN_REGEX = "{token}";
     private final String weChatAgentId;
-    private  String weChatUsers;
+    private String weChatUsers;
     private final String weChatTokenUrlReplace;
     private final String sendType;
     private final String webhookUrl;
@@ -96,7 +97,9 @@ public class WeChatSender {
         params.put("title", title);
         params.put("content", content);
         params.put("agentId", weChatAgentId);
-        List<String> atUsers = Arrays.stream(weChatUsers.split(",")).map(u -> StrFormatter.format("<@{}>", u)).collect(Collectors.toList());
+        List<String> atUsers = Arrays.stream(weChatUsers.split(","))
+                .map(u -> StrFormatter.format("<@{}>", u))
+                .collect(Collectors.toList());
         params.put("atUsers", atUsers);
         return params;
     }

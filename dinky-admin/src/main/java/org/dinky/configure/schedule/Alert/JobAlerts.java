@@ -42,6 +42,7 @@ import org.dinky.service.impl.AlertGroupServiceImpl;
 import org.dinky.service.impl.AlertHistoryServiceImpl;
 import org.dinky.service.impl.AlertRuleServiceImpl;
 import org.dinky.service.impl.TaskServiceImpl;
+import org.dinky.utils.TimeUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -51,7 +52,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
-import org.dinky.utils.TimeUtil;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.api.Rules;
@@ -147,13 +147,16 @@ public class JobAlerts extends BaseSchedule {
             ruleFacts.put("job", jobInfoDetail.getJobHistory().getJob());
             ruleFacts.put("key", key);
             ruleFacts.put("jobInstance", jobInfoDetail.getInstance());
-            ruleFacts.put("startTime", TimeUtil.convertTimeToString(jobInfoDetail.getHistory().getStartTime()));
-            ruleFacts.put("endTime", TimeUtil.convertTimeToString(jobInfoDetail.getHistory().getEndTime()));
+            ruleFacts.put(
+                    "startTime",
+                    TimeUtil.convertTimeToString(jobInfoDetail.getHistory().getStartTime()));
+            ruleFacts.put(
+                    "endTime",
+                    TimeUtil.convertTimeToString(jobInfoDetail.getHistory().getEndTime()));
             ruleFacts.put("checkPoints", jobInfoDetail.getJobHistory().getCheckpoints());
             ruleFacts.put("cluster", jobInfoDetail.getCluster());
             ruleFacts.put("exceptions", jobInfoDetail.getJobHistory().getExceptions());
             rulesEngine.fire(rules, ruleFacts);
-
         }
     }
 
@@ -213,7 +216,10 @@ public class JobAlerts extends BaseSchedule {
         JobInstance jobInstance = jobInfoDetail.getInstance();
         Task task = taskService.getById(jobInfoDetail.getInstance().getTaskId());
 
-        String taskUrl = StrFormatter.format("{}/#/devops/job-detail?id={}", SystemConfiguration.getInstances().getDinkyAddr(),task.getId());
+        String taskUrl = StrFormatter.format(
+                "{}/#/devops/job-detail?id={}",
+                SystemConfiguration.getInstances().getDinkyAddr(),
+                task.getId());
         Map<String, Object> dataModel = new HashMap<>(facts.asMap());
         dataModel.put("task", task);
         dataModel.put("taskUrl", taskUrl);

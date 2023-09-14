@@ -19,10 +19,6 @@
 
 package org.dinky.utils;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.http.HttpUtil;
 import org.dinky.data.model.ProxyConfig;
 
 import org.apache.http.HttpEntity;
@@ -47,6 +43,11 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 
 public class HttpUtils {
 
@@ -128,7 +129,6 @@ public class HttpUtils {
         httpPost.setConfig(rcf);
         return httpClient;
     }
-
 
     /**
      * asyncRequest

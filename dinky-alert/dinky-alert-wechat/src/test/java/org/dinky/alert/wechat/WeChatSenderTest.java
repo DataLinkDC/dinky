@@ -37,15 +37,16 @@ public class WeChatSenderTest {
 
     private static final Map<String, String> weChatConfig = new HashMap<>();
 
-    String contentTest = "> The Dinky platform has detected an abnormality in your task. Please go to the Dinky Task page to check the task status.\n" +
-            "- **Job Name : <font color='#0000FF'>Test Job</font>**\n" +
-            "- **Job Status : <font color='#FF0000'>FAILED</font>**\n" +
-            "- **Alert Time : 2023-01-01  12:00:00**\n" +
-            "- **Start Time : 2023-01-01  12:00:00**\n" +
-            "- **End Time : 2023-01-01  12:00:00**\n" +
-            "> **<font color='#FF0000'>The test exception, your job exception will pass here</font>**\n" +
-            "\n" +
-            "> Dinky Team  [Go toTask Web](https://github.com/DataLinkDC/dinky)";
+    String contentTest =
+            "> The Dinky platform has detected an abnormality in your task. Please go to the Dinky Task page to check the task status.\n"
+                    + "- **Job Name : <font color='#0000FF'>Test Job</font>**\n"
+                    + "- **Job Status : <font color='#FF0000'>FAILED</font>**\n"
+                    + "- **Alert Time : 2023-01-01  12:00:00**\n"
+                    + "- **Start Time : 2023-01-01  12:00:00**\n"
+                    + "- **End Time : 2023-01-01  12:00:00**\n"
+                    + "> **<font color='#FF0000'>The test exception, your job exception will pass here</font>**\n"
+                    + "\n"
+                    + "> Dinky Team  [Go toTask Web](https://github.com/DataLinkDC/dinky)";
 
     /** init WeChatConfig */
     @Before

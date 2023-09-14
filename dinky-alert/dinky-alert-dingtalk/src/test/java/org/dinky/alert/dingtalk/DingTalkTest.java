@@ -42,26 +42,26 @@ public class DingTalkTest {
 
     private static final Map<String, String> config = new HashMap<>();
 
-    String msg = "> The Dinky platform has detected an abnormality in your task. Please go to the Dinky Task page to check the task status.\n" +
-            "- **Job Name : <font color='#0000FF'>Test Job</font>**\n" +
-            "- **Job Status : <font color='#FF0000'>FAILED</font>**\n" +
-            "- **Alert Time : 2023-01-01  12:00:00**\n" +
-            "- **Start Time : 2023-01-01  12:00:00**\n" +
-            "- **End Time : 2023-01-01  12:00:00**\n" +
-            "> **<font color='#FF0000'>The test exception, your job exception will pass here</font>**\n" +
-            "\n" +
-            "> Dinky Team  [Go toTask Web](https://github.com/DataLinkDC/dinky)";
+    String msg =
+            "> The Dinky platform has detected an abnormality in your task. Please go to the Dinky Task page to check the task status.\n"
+                    + "- **Job Name : <font color='#0000FF'>Test Job</font>**\n"
+                    + "- **Job Status : <font color='#FF0000'>FAILED</font>**\n"
+                    + "- **Alert Time : 2023-01-01  12:00:00**\n"
+                    + "- **Start Time : 2023-01-01  12:00:00**\n"
+                    + "- **End Time : 2023-01-01  12:00:00**\n"
+                    + "> **<font color='#FF0000'>The test exception, your job exception will pass here</font>**\n"
+                    + "\n"
+                    + "> Dinky Team  [Go toTask Web](https://github.com/DataLinkDC/dinky)";
+
     @Before
     public void initDingTalkConfig() {
 
         config.put(DingTalkConstants.KEYWORD, "Dinky");
-        config.put(
-                DingTalkConstants.WEB_HOOK,
-                "https://oapi.dingtalk.com/robot/send?access_token=key");
+        config.put(DingTalkConstants.WEB_HOOK, "https://oapi.dingtalk.com/robot/send?access_token=key");
         config.put(DingTalkConstants.MSG_TYPE, ShowType.MARKDOWN.getValue());
         config.put(DingTalkConstants.AT_ALL, "false");
         config.put(DingTalkConstants.AT_MOBILES, "");
-//        config.put(DingTalkConstants.SECRET, "");
+        //        config.put(DingTalkConstants.SECRET, "");
 
         config.put(DingTalkConstants.PROXY_ENABLE, "false");
         config.put(DingTalkConstants.PASSWORD, "password");
