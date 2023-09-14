@@ -283,9 +283,16 @@ const DataStudio = (props: any) => {
   return (
     <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
       <PersistGate loading={null} persistor={persist}>
-        <div style={{ marginInline: -10, marginTop: -6, width: size.width}}>
+        <div style={{ marginInline: -10, marginTop: -6, width: size.width }}>
           <SecondHeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
-          <Layout hasSider style={{ minHeight: size.contentHeight, maxHeight: size.contentHeight, paddingInline: 0 }}>
+          <Layout
+            hasSider
+            style={{
+              minHeight: size.contentHeight,
+              maxHeight: size.contentHeight,
+              paddingInline: 0
+            }}
+          >
             <Sider collapsed collapsedWidth={40}>
               <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                 {LeftTopMenu}
