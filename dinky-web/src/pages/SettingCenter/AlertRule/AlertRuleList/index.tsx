@@ -37,26 +37,27 @@ const AlertRuleList: React.FC = () => {
   const [ruleState, setRuleState] = useState<AlertRuleListState>(InitAlertRuleState);
   const actionRef = useRef<ActionType>(); // table action
 
-  const editClick = (item: AlertRule) => {
-    setRuleState((prevState) => ({
-      ...prevState,
-      editOpen: !prevState.editOpen,
-      value: item
-    }));
+  const executeAndCallbackRefresh = async (callback: () => void) => {
+    setRuleState((prevState) => ({ ...prevState, loading: true }));
+    await callback();
+    setRuleState((prevState) => ({ ...prevState, loading: false }));
+    actionRef.current?.reload?.();
+  };
+  const editClick = async (item: AlertRule) => {
+    await executeAndCallbackRefresh(() =>
+      setRuleState((prevState) => ({
+        ...prevState,
+        editOpen: !prevState.editOpen,
+        value: item
+      }))
+    );
   };
 
   const handleCleanState = () => {
-    setRuleState((prevState) => ({
-      ...prevState,
-      value: {},
-      addedOpen: false,
-      editOpen: false
-    }));
+    setRuleState(InitAlertRuleState);
   };
-
   async function handleSubmit(rule: AlertRule) {
-    await handleAddOrUpdate(API_CONSTANTS.ALERT_RULE, rule);
-    actionRef.current?.reload?.();
+    await executeAndCallbackRefresh(() => handleAddOrUpdate(API_CONSTANTS.ALERT_RULE, rule));
     handleCleanState();
   }
 
@@ -83,6 +84,14 @@ const AlertRuleList: React.FC = () => {
       dataIndex: 'name'
     },
     {
+      title: l('sys.alert.rule.triggerConditions'),
+      dataIndex: 'triggerConditions',
+      valueEnum: {
+        ' or ': l('sys.alert.rule.anyRule'),
+        ' and ': l('sys.alert.rule.allRule')
+      }
+    },
+    {
       title: l('sys.alert.rule.ruleType'),
       dataIndex: 'ruleType'
     },
@@ -95,10 +104,10 @@ const AlertRuleList: React.FC = () => {
           <EnableSwitchBtn
             key={`${record.id}_enable`}
             record={record}
-            onChange={() => {
+            onChange={async () => {
               record.enabled = !record.enabled;
               record.rule = JSON.stringify(record.rule);
-              handleSubmit(record);
+              await handleSubmit(record);
             }}
           />
         );
@@ -126,7 +135,7 @@ const AlertRuleList: React.FC = () => {
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={async () => await handleRemoveById(API_CONSTANTS.ALERT_RULE, record.id)}
-            description={l('user.status')}
+            description={l('sys.alert.rule.delete')}
           />
         )
       ]
@@ -138,6 +147,7 @@ const AlertRuleList: React.FC = () => {
       <ProTable<AlertRule>
         actionRef={actionRef}
         headerTitle={false}
+        loading={ruleState.loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
           <CreateBtn

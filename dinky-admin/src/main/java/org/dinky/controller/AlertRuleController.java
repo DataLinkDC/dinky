@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -61,16 +62,20 @@ public class AlertRuleController {
     }
 
     @PutMapping
-    public Result<Boolean> put(@RequestBody AlertRule alertRule) {
+    public Result<Boolean> saveOrUpdateAlertRule(@RequestBody AlertRule alertRule) {
         boolean saved = alertRuleService.saveOrUpdate(alertRule);
         if (saved) {
             jobAlerts.refeshRulesData();
+            return Result.succeed(Status.MODIFY_SUCCESS);
         }
-        return Result.succeed(saved);
+        return Result.failed(Status.MODIFY_FAILED);
     }
 
     @DeleteMapping
-    public Result<Boolean> delete(int id) {
-        return Result.succeed(alertRuleService.removeById(id));
+    public Result<Boolean> deleteAlertRuleById(@RequestParam Integer id) {
+        if (alertRuleService.removeById(id)) {
+            return Result.succeed(Status.DELETE_SUCCESS);
+        }
+        return Result.failed(Status.DELETE_FAILED);
     }
 }

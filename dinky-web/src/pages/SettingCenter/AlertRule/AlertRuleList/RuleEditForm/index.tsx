@@ -17,8 +17,14 @@
  *
  */
 
-import { RuleType } from '@/pages/SettingCenter/AlertRule/constants';
+import {
+  AlertRules,
+  RuleOperator,
+  RuleType,
+  TriggerType
+} from '@/pages/SettingCenter/AlertRule/constants';
 import { getData } from '@/services/api';
+import { SWITCH_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert } from '@/types/RegCenter/data';
 import { AlertRule } from '@/types/SettingCenter/data';
@@ -85,42 +91,45 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
       }}
       initialValues={values}
     >
-      <ProFormText name='id' hidden={true} />
-      <ProFormText
-        disabled={isSystem}
-        rules={[{ required: true }]}
-        name='name'
-        width='md'
-        label={l('sys.alert.rule.name')}
-        placeholder={l('sys.alert.rule.name')}
-      />
+      <ProFormGroup>
+        <ProFormText name='id' hidden={true} />
+        <ProFormText
+          disabled={isSystem}
+          rules={[{ required: true }]}
+          name='name'
+          width='md'
+          label={l('sys.alert.rule.name')}
+          placeholder={l('sys.alert.rule.name')}
+        />
 
-      <ProFormSelect
-        label={l('sys.alert.rule.template')}
-        width='md'
-        name='templateId'
-        request={async () => getAlertTemplate()}
-        placeholder={l('sys.alert.rule.template')}
-        rules={[{ required: true, message: l('sys.alert.rule.template') }]}
-      />
+        <ProFormSelect
+          label={l('sys.alert.rule.template')}
+          width='md'
+          name='templateId'
+          request={async () => getAlertTemplate()}
+          placeholder={l('sys.alert.rule.template')}
+          rules={[{ required: true, message: l('sys.alert.rule.template') }]}
+        />
+      </ProFormGroup>
 
-      <ProFormTextArea width='md' name='description' label={l('global.table.note')} />
+      <ProFormGroup>
+        <ProFormTextArea width='md' name='description' label={l('global.table.note')} />
+        <ProFormSwitch name='enabled' {...SWITCH_OPTIONS()} label={l('global.table.isEnable')} />
+      </ProFormGroup>
 
-      <Divider orientation={'left'}>{l('sys.alert.rule.triger')}</Divider>
+      <Divider orientation={'left'}>{l('sys.alert.rule.trigger')}</Divider>
 
       <ProFormRadio.Group
         disabled={isSystem}
         name='triggerConditions'
-        label={l('sys.alert.rule.trigerConditions')}
-        options={[
-          { label: l('sys.alert.rule.anyRule'), value: ' or ' },
-          { label: l('sys.alert.rule.allRule'), value: ' and ' }
-        ]}
+        label={l('sys.alert.rule.triggerConditions')}
+        rules={[{ required: true }]}
+        options={TriggerType}
       />
 
       <ProFormList
         name='rule'
-        label={l('sys.alert.rule.trigerRule')}
+        label={l('sys.alert.rule.triggerRule')}
         creatorButtonProps={
           isSystem
             ? false
@@ -150,34 +159,13 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
               name='ruleKey'
               width={'sm'}
               mode={'single'}
-              options={[
-                { label: l('sys.alert.rule.jobStatus'), value: 'jobInstance.status' },
-                {
-                  label: l('sys.alert.rule.checkpointTime'),
-                  value: 'checkPoints.checkpointTime(#key,#checkPoints)'
-                },
-                {
-                  label: l('sys.alert.rule.checkpointFailed'),
-                  value: 'checkPoints.checkFailed(#key,#checkPoints)'
-                },
-                {
-                  label: l('sys.alert.rule.jobException'),
-                  value: 'exceptionRule.isException(#key,#exceptions)'
-                }
-              ]}
+              options={AlertRules}
             />
             <ProFormSelect
               disabled={isSystem}
               name='ruleOperator'
               mode={'single'}
-              options={[
-                { label: '>', value: 'GT' },
-                { label: '<', value: 'LT' },
-                { label: '=', value: 'EQ' },
-                { label: '>=', value: 'GE' },
-                { label: '<=', value: 'LE' },
-                { label: '!=', value: 'NE' }
-              ]}
+              options={RuleOperator}
             />
 
             <ProFormText
@@ -188,8 +176,6 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
           </Space>
         </ProFormGroup>
       </ProFormList>
-
-      <ProFormSwitch name='enabled' label={l('button.enable')} />
     </DrawerForm>
   );
 };
