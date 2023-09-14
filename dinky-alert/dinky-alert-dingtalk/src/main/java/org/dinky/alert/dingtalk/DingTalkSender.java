@@ -83,8 +83,6 @@ public class DingTalkSender {
         params.put("title", title);
         params.put("content", content);
         params.put("keyword", keyword);
-        //        String[] atUsers = Asserts.isNullString(atUserIds) ? new String[]{} : atUserIds.split(",");
-        //        params.put("atUsers", atUsers);
         String[] atMobile = Asserts.isNullString(atMobiles) ? new String[] {} : atMobiles.split(",");
         params.put("atMobile", atMobile);
         params.put("atMobiles", atMobiles);

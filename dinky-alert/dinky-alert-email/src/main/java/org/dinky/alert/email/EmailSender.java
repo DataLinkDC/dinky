@@ -104,9 +104,6 @@ public final class EmailSender {
 
         sslTrust = config.get(EmailConstants.NAME_MAIL_SMTP_SSL_TRUST);
 
-        //        showType = config.get(EmailConstants.MSG_TYPE);
-        //        requireNonNull(showType, EmailConstants.MSG_TYPE + mustNotNull);
-
         xlsFilePath = config.get(EmailConstants.XLS_FILE_PATH);
         if (StringUtils.isBlank(xlsFilePath)) {
             xlsFilePath = EmailConstants.XLS_FILE_DEFAULT_PATH;
