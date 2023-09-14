@@ -826,7 +826,7 @@ export default {
     '地址必须和DolphinScheduler后台配置的地址一致，eg: http://127.0.0.1:12345/dolphinscheduler',
   'sys.dolphinscheduler.settings.token': 'DolphinScheduler Token',
   'sys.dolphinscheduler.settings.token.note':
-    'DolphinScheduler的Token，请在DolphinScheduler的安全中心->Token管理中创建一个token，并填入该配置中',
+    'DolphinScheduler的Token，请在DolphinScheduler的安全中心->令牌管理中创建一个token，并填入该配置中',
   'sys.dolphinscheduler.settings.projectName': 'DolphinScheduler 项目名',
   'sys.dolphinscheduler.settings.projectName.note':
     'DolphinScheduler 中指定的项目名称，不区分大小写',

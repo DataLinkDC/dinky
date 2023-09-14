@@ -74,22 +74,22 @@ public class APIController {
 
     @GetMapping("/submitTask")
     @ApiOperation("Submit Task")
-    @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
+    //    @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
     public Result<JobResult> submitTask(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
         return Result.succeed(taskService.submitTask(id), Status.EXECUTE_SUCCESS);
     }
 
     @PostMapping("/executeSql")
-    @Log(title = "Execute Sql", businessType = BusinessType.EXECUTE)
     @ApiOperation("Execute Sql")
+    //    @Log(title = "Execute Sql", businessType = BusinessType.EXECUTE)
     public Result<APIJobResult> executeSql(@RequestBody APIExecuteSqlDTO apiExecuteSqlDTO) {
         return Result.succeed(apiService.executeSql(apiExecuteSqlDTO), Status.EXECUTE_SUCCESS);
     }
 
     @PostMapping("/explainSql")
-    @Log(title = "Explain Sql", businessType = BusinessType.EXECUTE)
     @ApiOperation("Explain Sql")
+    //    @Log(title = "Explain Sql", businessType = BusinessType.EXECUTE)
     public Result<ExplainResult> explainSql(@RequestBody APIExplainSqlDTO apiExecuteSqlDTO) {
         return Result.succeed(apiService.explainSql(apiExecuteSqlDTO), Status.EXECUTE_SUCCESS);
     }
@@ -127,15 +127,15 @@ public class APIController {
     }
 
     @PostMapping("/executeJar")
-    @Log(title = "Execute Jar", businessType = BusinessType.EXECUTE)
     @ApiOperation("Execute Jar")
+    //    @Log(title = "Execute Jar", businessType = BusinessType.EXECUTE)
     public Result<APIJobResult> executeJar(@RequestBody APIExecuteJarDTO apiExecuteJarDTO) {
         return Result.succeed(apiService.executeJar(apiExecuteJarDTO), Status.EXECUTE_SUCCESS);
     }
 
     @PostMapping("/savepointTask")
-    @Log(title = "Savepoint Task", businessType = BusinessType.TRIGGER)
     @ApiOperation("Savepoint Task")
+    //    @Log(title = "Savepoint Task", businessType = BusinessType.TRIGGER)
     public Result<Boolean> savepointTask(@RequestBody APISavePointTaskDTO apiSavePointTaskDTO) {
         return Result.succeed(
                 taskService.savepointTask(apiSavePointTaskDTO.getTaskId(), apiSavePointTaskDTO.getType()), "执行成功");
@@ -144,7 +144,7 @@ public class APIController {
     /** 重启任务 */
     @GetMapping("/restartTask")
     @ApiOperation("Restart Task")
-    @Log(title = "Restart Task", businessType = BusinessType.EXECUTE)
+    //    @Log(title = "Restart Task", businessType = BusinessType.EXECUTE)
     public Result<JobResult> restartTask(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
         return Result.succeed(taskService.restartTask(id, null), Status.RESTART_SUCCESS);
@@ -153,7 +153,7 @@ public class APIController {
     /** 选择保存点重启任务 */
     @GetMapping("/selectSavePointRestartTask")
     @ApiOperation("Select SavePoint Restart Task")
-    @Log(title = "Select SavePoint Restart Task", businessType = BusinessType.EXECUTE)
+    //    @Log(title = "Select SavePoint Restart Task", businessType = BusinessType.EXECUTE)
     public Result<JobResult> restartTask(@RequestParam Integer id, @RequestParam String savePointPath) {
         taskService.initTenantByTaskId(id);
         return Result.succeed(taskService.restartTask(id, savePointPath), Status.RESTART_SUCCESS);
@@ -162,7 +162,7 @@ public class APIController {
     /** 上线任务 */
     @GetMapping("/onLineTask")
     @ApiOperation("Online Task")
-    @Log(title = "Online Task", businessType = BusinessType.EXECUTE)
+    //    @Log(title = "Online Task", businessType = BusinessType.EXECUTE)
     public Result<JobResult> onLineTask(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
         return taskService.onLineTask(id);
@@ -171,7 +171,7 @@ public class APIController {
     /** 下线任务 */
     @GetMapping("/offLineTask")
     @ApiOperation("Offline Task")
-    @Log(title = "Offline Task", businessType = BusinessType.EXECUTE)
+    //    @Log(title = "Offline Task", businessType = BusinessType.EXECUTE)
     public Result<Void> offLineTask(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
         return taskService.offLineTask(id, null);
@@ -180,7 +180,7 @@ public class APIController {
     /** 重新上线任务 */
     @GetMapping("/reOnLineTask")
     @ApiOperation("ReOnline Task")
-    @Log(title = "ReOnline Task", businessType = BusinessType.EXECUTE)
+    //    @Log(title = "ReOnline Task", businessType = BusinessType.EXECUTE)
     public Result<JobResult> reOnLineTask(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
         return taskService.reOnLineTask(id, null);
@@ -189,7 +189,7 @@ public class APIController {
     /** 选择保存点重新上线任务 */
     @GetMapping("/selectSavePointReOnLineTask")
     @ApiOperation("Select SavePoint ReOnline Task")
-    @Log(title = "Select SavePoint ReOnline Task", businessType = BusinessType.EXECUTE)
+    //    @Log(title = "Select SavePoint ReOnline Task", businessType = BusinessType.EXECUTE)
     public Result<JobResult> selectSavePointReOnLineTask(@RequestParam Integer id, @RequestParam String savePointPath) {
         taskService.initTenantByTaskId(id);
         return taskService.reOnLineTask(id, savePointPath);
@@ -197,8 +197,8 @@ public class APIController {
 
     /** 获取Job实例的信息 */
     @GetMapping("/getJobInstance")
-    @Log(title = "Get Job Instance", businessType = BusinessType.QUERY)
     @ApiOperation("Get Job Instance")
+    //    @Log(title = "Get Job Instance", businessType = BusinessType.QUERY)
     public Result<JobInstance> getJobInstance(@RequestParam Integer id) {
         jobInstanceService.initTenantByJobInstanceId(id);
         return Result.succeed(jobInstanceService.getById(id));
@@ -206,8 +206,8 @@ public class APIController {
 
     /** 通过 taskId 获取 Task 对应的 Job 实例的信息 */
     @GetMapping("/getJobInstanceByTaskId")
-    @Log(title = "Get Job Instance By Task Id", businessType = BusinessType.QUERY)
     @ApiOperation("Get Job Instance By Task Id")
+    //    @Log(title = "Get Job Instance By Task Id", businessType = BusinessType.QUERY)
     public Result<JobInstance> getJobInstanceByTaskId(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
         return Result.succeed(jobInstanceService.getJobInstanceByTaskId(id));
