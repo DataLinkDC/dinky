@@ -23,13 +23,8 @@ package org.dinky.alert;
 public class AlertBaseConstant {
 
     /** base constant */
-    public static final String MARKDOWN_QUOTE_MIDDLE_LINE = "- ";
 
-    public static final String TAB = "\t";
     public static final String ENTER_LINE = "\n";
-    public static final String MARKDOWN_QUOTE_RIGHT_TAG = "> ";
-    public static final String MARKDOWN_QUOTE_RIGHT_TAG_WITH_SPACE = ">";
-    public static final String MARKDOWN_ENTER_BACK_SLASH = "/n";
     public static final String CHARSET = "UTF-8";
     public static final String PROXY_ENABLE = "isEnableProxy";
     public static final String WEB_HOOK = "webhook";

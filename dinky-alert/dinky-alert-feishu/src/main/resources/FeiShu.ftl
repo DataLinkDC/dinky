@@ -7,13 +7,13 @@
                 "elements": [
                     {
                         "tag": "plain_text",
-                        "content": "${keyword?json_string} Your task there is an abnormality, Please troubleshoot <#list atUsers as key><at id=${key}></at></#list>"
+                        "content": "${keyword?json_string} Your task there is an abnormality, Please troubleshoot"
                     }
                 ]
             },
             {
                 "tag": "markdown",
-                "content": "\n${content?json_string}"
+                "content": "\n${content?json_string}<#list atUsers as key><at id=${key}></at></#list>"
             },
             {
                 "tag": "hr"

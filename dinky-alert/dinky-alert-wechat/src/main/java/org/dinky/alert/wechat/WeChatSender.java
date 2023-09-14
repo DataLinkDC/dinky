@@ -21,6 +21,7 @@ package org.dinky.alert.wechat;
 
 import static java.util.Objects.requireNonNull;
 
+import cn.hutool.core.text.StrFormatter;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.AlertSendResponse;
 import org.dinky.utils.HttpUtils;
@@ -34,8 +35,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +56,7 @@ public class WeChatSender {
     private static final String SECRET_REGEX = "{secret}";
     private static final String TOKEN_REGEX = "{token}";
     private final String weChatAgentId;
-    private final String weChatUsers;
+    private  String weChatUsers;
     private final String weChatTokenUrlReplace;
     private final String sendType;
     private final String webhookUrl;
@@ -60,9 +64,10 @@ public class WeChatSender {
     WeChatSender(Map<String, String> config) {
         weChatAgentId = config.getOrDefault(WeChatConstants.AGENT_ID, "");
         weChatUsers = config.getOrDefault(WeChatConstants.AT_USERS, "");
-
-        //        String msgType = config.get(WeChatConstants.MSG_TYPE);
-        //        requireNonNull(msgType, WeChatConstants.MSG_TYPE + " must not null");
+        String isAtAll = config.getOrDefault(WeChatConstants.AT_ALL, "");
+        if (Boolean.parseBoolean(isAtAll)) {
+            weChatUsers = "all";
+        }
 
         webhookUrl = config.get(WeChatConstants.WEB_HOOK);
 
@@ -91,7 +96,7 @@ public class WeChatSender {
         params.put("title", title);
         params.put("content", content);
         params.put("agentId", weChatAgentId);
-        String[] atUsers = weChatUsers.split(",");
+        List<String> atUsers = Arrays.stream(weChatUsers.split(",")).map(u -> StrFormatter.format("<@{}>", u)).collect(Collectors.toList());
         params.put("atUsers", atUsers);
         return params;
     }
