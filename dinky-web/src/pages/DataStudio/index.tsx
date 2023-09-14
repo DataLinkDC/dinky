@@ -158,14 +158,19 @@ const DataStudio = (props: any) => {
 
     const params = currentTab.params;
     const res = await getTaskDetails(params.taskId);
+    if (!res) {
+      return true;
+    }
 
+    const info = res as { [key: string]: any };
     const changed = Object.keys(params.taskData).some((key) => {
       // ignore this property
       if (['updateTime', 'createTime', 'jobInstanceId'].includes(key)) {
         return false;
       }
 
-      if (res && JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])) {
+      if (JSON.stringify(info[key]) !== JSON.stringify(params.taskData[key])) {
+        console.log('changed', key, info[key], params.taskData[key]);
         return true;
       }
     });

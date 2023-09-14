@@ -87,6 +87,7 @@ export default {
   //-------------------------------- devops --------------------------------
   // devops
 
+  'pages.devops.jobinfo.localenv': '本地环境',
   'devops.joblist.joblist': '任务列表',
   'devops.joblist.history': '历史',
   'devops.joblist.detail': '详情',
@@ -1142,7 +1143,7 @@ export default {
   'pages.datastudio.sql.query': 'SQL 查询',
   'pages.datastudio.submit.job': '提交作业',
 
-  'pages.datastudio.help.sqlChangedPrompt': '检测到当前页远程有更改，是否刷新更新数据？',
+  'pages.datastudio.help.sqlChangedPrompt': '检测到当前页与远端不一致，是否刷新更新数据？',
   'pages.datastudio.help.sqlChanged': 'Sql内容或配置变更',
 
   'pages.datastudio.explain.validate.msg': 'FlinkSql 语法和逻辑检查',
@@ -1196,5 +1197,7 @@ export default {
   'catalog.udf.templateId': 'UDF 模板',
   'catalog.udf.templateId.placeholder': '请选择 UDF 模板',
   'catalog.udf.className': '类或方法名',
-  'catalog.udf.className.placeholder': '请输入类或方法名'
+  'catalog.udf.className.placeholder': '请输入类或方法名',
+
+  'button.push': '提交'
 };

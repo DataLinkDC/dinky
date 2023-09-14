@@ -43,7 +43,8 @@ const config = {
         structTitle: 'Dinky',
         structSubTitle: 'Dinky 为 Apache Flink 而生，让 Flink SQL 纵享丝滑',
         // structDescription: custom_fields.structDesc(),
-        learningMore: 'https://space.bilibili.com/366484959/video'
+        learningMore: 'https://space.bilibili.com/366484959/video',
+        teaching: 'https://www.bilibili.com/video/BV1SX4y1Y7CB/?spm_id_from=333.337.search-card.all.click&vd_source=e806cc3d8e01f5e39a97787aca3fa3ae'
     },
     i18n: {
         defaultLocale: 'zh',

@@ -32,18 +32,16 @@ export const CodeTree: React.FC<CodeTreeProps> = (props) => {
   const { values, modalVisible, onCancel } = props;
 
   return (
-    <>
-      <Modal
-        title={l('rc.gp.codeTree')}
-        width={'95%'}
-        open={modalVisible}
-        maskClosable={false}
-        onCancel={() => onCancel()}
-        cancelText={l('button.close')}
-        okButtonProps={{ style: { display: 'none' } }}
-      >
-        <CodeTreeShow values={values} />
-      </Modal>
-    </>
+    <Modal
+      title={l('rc.gp.codeTree')}
+      width={'95%'}
+      open={modalVisible}
+      maskClosable={false}
+      onCancel={() => onCancel()}
+      cancelText={l('button.close')}
+      okButtonProps={{ style: { display: 'none' } }}
+    >
+      <CodeTreeShow values={values} />
+    </Modal>
   );
 };

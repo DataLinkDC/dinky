@@ -17,7 +17,7 @@
  *
  */
 
-import { Dropdown, Menu } from 'antd';
+import { Dropdown } from 'antd';
 import { MenuItemType } from 'antd/es/menu/hooks/useItems';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React from 'react';
@@ -33,21 +33,18 @@ type RightContextMenuProps = {
 const RightContextMenu: React.FC<RightContextMenuProps> = (props) => {
   const { onClick, items, openChange, open, contextMenuPosition } = props;
 
-  const menu = <Menu onClick={onClick} items={items} />;
   return (
-    <>
-      <Dropdown
-        arrow
-        trigger={['contextMenu']}
-        overlayStyle={{ ...contextMenuPosition }}
-        overlay={menu}
-        open={open}
-        onOpenChange={openChange}
-      >
-        {/*占位*/}
-        <div style={{ ...contextMenuPosition }} />
-      </Dropdown>
-    </>
+    <Dropdown
+      arrow
+      trigger={['contextMenu']}
+      overlayStyle={{ ...contextMenuPosition }}
+      menu={{ onClick: onClick, items: items }}
+      open={open}
+      onOpenChange={openChange}
+    >
+      {/*占位*/}
+      <div style={{ ...contextMenuPosition }} />
+    </Dropdown>
   );
 };
 

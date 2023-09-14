@@ -175,24 +175,22 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
    * render
    */
   return (
-    <>
-      <Modal
-        title={title}
-        width={'85%'}
-        open={true}
-        maskClosable={false}
-        onCancel={() => handleCancel()}
-        okButtonProps={{ style: { display: 'none' } }}
-      >
-        <AutoSteps
-          steps={steps}
-          percent={percent}
-          currentStep={currentStep}
-          values={values}
-          log={log}
-          showList={showList}
-        />
-      </Modal>
-    </>
+    <Modal
+      title={title}
+      width={'85%'}
+      open={true}
+      maskClosable={false}
+      onCancel={() => handleCancel()}
+      okButtonProps={{ style: { display: 'none' } }}
+    >
+      <AutoSteps
+        steps={steps}
+        percent={percent}
+        currentStep={currentStep}
+        values={values}
+        log={log}
+        showList={showList}
+      />
+    </Modal>
   );
 };

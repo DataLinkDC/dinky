@@ -24,21 +24,31 @@ import org.dinky.data.vo.CascaderVO;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import cn.hutool.core.util.ClassLoaderUtil;
 import cn.hutool.core.util.ReflectUtil;
 
 public class CascaderOptionsUtils {
+    private static final Logger logger = Logger.getLogger(CascaderOptionsUtils.class.getName());
 
     private static final String FLINK_CONFIG_REPLACE_SUFFIX = "Options";
 
+    private static final Map<String, List<CascaderVO>> cache = new HashMap<>();
     /**
      * build flink config cascade options
      * * @param name
-     * @param dataList
      */
-    public static void buildCascadeOptions(String name, List<CascaderVO> dataList) {
+    public static List<CascaderVO> buildCascadeOptions(String name) {
+
+        if (cache.containsKey(name) && cache.get(name) != null) {
+            return cache.get(name);
+        }
+
+        List<CascaderVO> dataList = new ArrayList<>();
         try {
             Class<?> loadClass = ClassLoaderUtil.getContextClassLoader().loadClass(name);
             Field[] fields = ReflectUtil.getFields(loadClass, f -> {
@@ -53,7 +63,7 @@ public class CascaderOptionsUtils {
             for (Field field : fields) {
                 CascaderVO config = new CascaderVO();
                 Object fieldValue = ReflectUtil.getStaticFieldValue(field);
-                String key = (String) ReflectUtil.invoke(fieldValue, "key");
+                String key = ReflectUtil.invoke(fieldValue, "key");
                 config.setValue(key);
                 config.setLabel(key);
                 configList.add(config);
@@ -66,8 +76,11 @@ public class CascaderOptionsUtils {
             cascaderVO.setLabel(parsedBinlogGroup);
             cascaderVO.setValue(parsedBinlogGroup);
             dataList.add(cascaderVO);
+            cache.put(name, dataList);
         } catch (ClassNotFoundException ignored) {
+            logger.warning("get config option error, class not found: " + name);
         }
+        return dataList;
     }
 
     private static String parsedBinlogGroup(String name) {

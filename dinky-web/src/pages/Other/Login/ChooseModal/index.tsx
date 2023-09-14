@@ -52,22 +52,20 @@ const ChooseModal: React.FC<ChooseModalProps> = (props) => {
   };
 
   return (
-    <>
-      <Modal
-        title={l('login.chooseTenant')}
-        open={tenantVisible}
-        {...NORMAL_MODAL_OPTIONS}
-        onCancel={handleTenantVisible}
-        onOk={() => handleChooseTenant(checkedTenantId)}
-        okText={l('button.confirm')}
-        okButtonProps={{
-          disabled: check,
-          loading: submitting
-        }}
-      >
-        <TenantCard tenant={tenant} handleChangeTenant={tenantChange} />
-      </Modal>
-    </>
+    <Modal
+      title={l('login.chooseTenant')}
+      open={tenantVisible}
+      {...NORMAL_MODAL_OPTIONS}
+      onCancel={handleTenantVisible}
+      onOk={() => handleChooseTenant(checkedTenantId)}
+      okText={l('button.confirm')}
+      okButtonProps={{
+        disabled: check,
+        loading: submitting
+      }}
+    >
+      <TenantCard tenant={tenant} handleChangeTenant={tenantChange} />
+    </Modal>
   );
 };
 

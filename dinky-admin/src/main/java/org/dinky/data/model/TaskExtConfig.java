@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -51,11 +53,13 @@ public class TaskExtConfig implements Serializable {
     }
 
     // 获取自定义配置的所有key
+    @JsonIgnore
     public List<String> getCustomConfigKeys() {
         return customConfig.stream().map(ConfigItem::getKey).collect(Collectors.toList());
     }
 
     // 获取自定义配置的所有key-value
+    @JsonIgnore
     public Map<String, String> getCustomConfigMaps() {
         return Asserts.isNotNullCollection(customConfig)
                 ? customConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue))

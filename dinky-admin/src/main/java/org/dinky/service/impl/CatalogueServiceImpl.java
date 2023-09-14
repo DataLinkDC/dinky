@@ -409,7 +409,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> deleteCatalogueById(Integer catalogueId) {
         List<Catalogue> catalogues = list(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getParentId, catalogueId));
-        if (catalogues.size() > 0) {
+        if (!catalogues.isEmpty()) {
             return Result.failed(Status.FOLDER_NOT_EMPTY);
         }
         // 获取 catalogue 表中的作业
@@ -436,10 +436,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 // 删除 history 表中的作业
                 historyService.removeById(history.getId());
             });
-            jobInstanceList.forEach(jobInstance -> {
-                // 删除 job instance 表中的作业
-                jobInstanceService.removeById(jobInstance.getId());
-            });
+
+            // 删除 job instance 表中的作业
+            jobInstanceList.forEach(jobInstance -> jobInstanceService.removeById(jobInstance.getId()));
             // 删除 task 表中的作业
             if (task != null) {
                 taskService.removeById(task.getId());
