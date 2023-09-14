@@ -16,7 +16,7 @@ const operatorType = {
 };
 const JobOperator = (props: JobProps) => {
   const { jobDetail } = props;
-  const webUri = `/api/flink/${jobDetail?.history?.jobManagerAddress}/#/job/${jobDetail?.instance?.jid}/overview`;
+  const webUri = `/api/flink/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`;
 
   const handleJobOperator = (key: string) => {
     Modal.confirm({

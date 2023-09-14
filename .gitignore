@@ -58,3 +58,4 @@ docs/yarn.lock
 docs/*.log
 tmp/*
 extends/*
+/.run/
