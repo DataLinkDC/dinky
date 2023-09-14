@@ -77,7 +77,7 @@ const ResourceOverView: React.FC = () => {
 
   const refreshTree = async () => {
     await queryDataByParams<any[]>(API_CONSTANTS.RESOURCE_SHOW_TREE, { pid: -1 }).then((res) =>
-      setResourceState((prevState) => ({ ...prevState, treeData: res ?? []}))
+      setResourceState((prevState) => ({ ...prevState, treeData: res ?? [] }))
     );
   };
 
@@ -93,7 +93,7 @@ const ResourceOverView: React.FC = () => {
     async (id: number) => {
       await queryDataByParams<string>(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {
         id
-      }).then((res) => setResourceState((prevState) => ({ ...prevState, content: res ?? ''})));
+      }).then((res) => setResourceState((prevState) => ({ ...prevState, content: res ?? '' })));
     },
     [resourceState.clickedNode]
   );

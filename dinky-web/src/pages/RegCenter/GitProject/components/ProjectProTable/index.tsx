@@ -129,7 +129,7 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleEdit = async (value: Partial<GitProject>): Promise<void> =>
-      setGitProjectStatus((prevState) => ({...prevState, value: value, editOpen: true}));
+    setGitProjectStatus((prevState) => ({ ...prevState, value: value, editOpen: true }));
 
   /**
    * drag sort call

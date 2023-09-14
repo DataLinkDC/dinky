@@ -69,11 +69,12 @@ const SettingOverView = () => {
   }, []);
 
   const handleSaveSubmit = async (dataConfig: BaseConfigProperties) => {
-    const { code } = await handleOption(
-      API_CONSTANTS.SYSTEM_MODIFY_CONFIG,
-      l('sys.setting.modify', '', { key: l(`sys.${dataConfig.key}`) }),
-      dataConfig
-    ) ?? {};
+    const { code } =
+      (await handleOption(
+        API_CONSTANTS.SYSTEM_MODIFY_CONFIG,
+        l('sys.setting.modify', '', { key: l(`sys.${dataConfig.key}`) }),
+        dataConfig
+      )) ?? {};
 
     if (code === RESPONSE_CODE.ERROR) {
       await fetchData();

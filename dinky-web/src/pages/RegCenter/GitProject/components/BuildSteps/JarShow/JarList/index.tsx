@@ -84,26 +84,25 @@ const JarList: React.FC<JarListProps> = (props) => {
    * @param {BuildJarList} record
    * @returns {JSX.Element}
    */
-  const renderUdf = (record: BuildJarList): JSX.Element =>
-      (
-          <ProList
-              dataSource={record.classList as any[]}
-              rowKey='index'
-              size={'small'}
-              pagination={{
-                pageSize: 5,
-                hideOnSinglePage: true,
-                showSizeChanger: false
-              }}
-              renderItem={(item, index) => {
-                return (
-                    <List.Item className={'child-list'} key={index}>
-                      {item}
-                    </List.Item>
-                );
-              }}
-          />
-      );
+  const renderUdf = (record: BuildJarList): JSX.Element => (
+    <ProList
+      dataSource={record.classList as any[]}
+      rowKey='index'
+      size={'small'}
+      pagination={{
+        pageSize: 5,
+        hideOnSinglePage: true,
+        showSizeChanger: false
+      }}
+      renderItem={(item, index) => {
+        return (
+          <List.Item className={'child-list'} key={index}>
+            {item}
+          </List.Item>
+        );
+      }}
+    />
+  );
 
   /**
    * drag sort call
@@ -129,33 +128,33 @@ const JarList: React.FC<JarListProps> = (props) => {
    * render
    */
   return (
-      <DragSortTable<BuildJarList>
-        style={{
-          overflowY: 'auto',
-          msOverflowY: 'hidden',
-          marginLeft: '0.5vw'
-        }}
-        columns={columns}
-        toolBarRender={false}
-        sortDirections={['ascend']}
-        showHeader={false}
-        actionRef={actionRef}
-        loading={loading}
-        dataSource={classes as BuildJarList[]}
-        search={false}
-        rowKey='orderLine'
-        revalidateOnFocus
-        pagination={{
-          defaultPageSize: 5,
-          hideOnSinglePage: true
-        }}
-        expandable={{
-          expandRowByClick: false,
-          expandedRowRender: (record) => renderUdf(record)
-        }}
-        dragSortKey={'orderLine'}
-        onDragSortEnd={handleDragSortEnd}
-      />
+    <DragSortTable<BuildJarList>
+      style={{
+        overflowY: 'auto',
+        msOverflowY: 'hidden',
+        marginLeft: '0.5vw'
+      }}
+      columns={columns}
+      toolBarRender={false}
+      sortDirections={['ascend']}
+      showHeader={false}
+      actionRef={actionRef}
+      loading={loading}
+      dataSource={classes as BuildJarList[]}
+      search={false}
+      rowKey='orderLine'
+      revalidateOnFocus
+      pagination={{
+        defaultPageSize: 5,
+        hideOnSinglePage: true
+      }}
+      expandable={{
+        expandRowByClick: false,
+        expandedRowRender: (record) => renderUdf(record)
+      }}
+      dragSortKey={'orderLine'}
+      onDragSortEnd={handleDragSortEnd}
+    />
   );
 };
 
