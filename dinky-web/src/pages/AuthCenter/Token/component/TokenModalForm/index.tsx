@@ -121,7 +121,7 @@ const TokenModalForm: React.FC<TokenModalFormProps & connect> = (props) => {
       result = {
         ...result,
         expireStartTime: formatDateToYYYYMMDDHHMMSS(fieldsValue.expireTime[0]),
-        expireEndTime: formatDateToYYYYMMDDHHMMSS(fieldsValue.expireTime[1]),
+        expireEndTime: formatDateToYYYYMMDDHHMMSS(fieldsValue.expireTime[1])
       };
     }
 

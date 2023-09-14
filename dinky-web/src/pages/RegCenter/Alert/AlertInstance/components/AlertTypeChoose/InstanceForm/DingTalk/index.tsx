@@ -20,12 +20,10 @@ import { l } from '@/utils/intl';
 import {
   ProForm,
   ProFormDigit,
-  ProFormRadio,
   ProFormSwitch,
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
-import { Radio } from 'antd';
 
 const DingTalk = (props: any) => {
   const { values } = props;

@@ -121,9 +121,13 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
       <ProFormList
         name='rule'
         label={l('sys.alert.rule.trigerRule')}
-        creatorButtonProps={isSystem?false:{
-          creatorButtonText: l('sys.alert.rule.addRule')
-        }}
+        creatorButtonProps={
+          isSystem
+            ? false
+            : {
+                creatorButtonText: l('sys.alert.rule.addRule')
+              }
+        }
         copyIconProps={false}
         min={1}
         itemRender={({ listDom, action }, { index }) => (
