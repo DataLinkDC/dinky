@@ -41,7 +41,6 @@ public class FeiShuAlert extends AbstractAlert {
 
     @Override
     public AlertResult send(String title, String content) {
-
         FeiShuSender sender = new FeiShuSender(getConfig().getParam());
         try {
             String built = buildContent(sender.buildTemplateParams(title, content));

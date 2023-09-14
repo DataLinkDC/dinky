@@ -12,7 +12,7 @@
 "msgtype": "markdown",
 "agentid" : ${agentId},
 "markdown": {
-"content": "${content?json_string}"
+"content": "### Dinky Alert:${title}\n${content?json_string}"
 },
 "enable_duplicate_check": 0,
 "duplicate_check_interval": 1800

@@ -72,16 +72,14 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         AlertConfig alertConfig = AlertConfig.build(
                 alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
-        String currentDateTime =
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(BaseConstant.YYYY_MM_DD_HH_MM_SS));
 
-        String msg = "## Checkpoint Failed\n" +
-                "If the current task fails to check the checkpoint, check the task configuration and status\n" +
-                "> **Task Name :** Test Job\n" +
-                " **Alert Time :** 2023-01-01\n" +
-                " **Job Id :** jhgf1fuf2f3kfjh43jh\n" +
-                " **Job Duration :** 20h\n" +
-                " **Dinky Task :**  [Click to vist task page](http://cdh1:8081/#/job/)";
+        String msg = "\n- **Job Name :** <font color='gray'>Test Job</font>\n" +
+                "- **Job Status :** <font color='red'>FAILED</font>\n" +
+                "- **Alert Time :** 2023-01-01  12:00:00\n" +
+                "- **Start Time :** 2023-01-01  12:00:00\n" +
+                "- **End Time :** 2023-01-01  12:00:00\n" +
+                "- **<font color='red'>The test exception, your job exception will pass here</font>**\n" +
+                "[Go to Task Web](https://github.com/DataLinkDC/dinky)";
 
         return alert.send("Fei Shu Alert Test", msg);
     }

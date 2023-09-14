@@ -51,6 +51,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.dinky.utils.TimeUtil;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.api.Rules;
@@ -141,15 +142,18 @@ public class JobAlerts extends BaseSchedule {
         for (Map.Entry<String, JobInfoDetail> job : taskPool.entrySet()) {
             JobInfoDetail jobInfoDetail = job.getValue();
             String key = job.getKey();
-            ruleFacts.put("", jobInfoDetail);
+            ruleFacts.put("time", TimeUtil.nowStr());
             ruleFacts.put("jobDetail", jobInfoDetail);
-            ruleFacts.put("job", jobInfoDetail.getHistory());
+            ruleFacts.put("job", jobInfoDetail.getJobHistory().getJob());
             ruleFacts.put("key", key);
             ruleFacts.put("jobInstance", jobInfoDetail.getInstance());
+            ruleFacts.put("startTime", TimeUtil.convertTimeToString(jobInfoDetail.getHistory().getStartTime()));
+            ruleFacts.put("endTime", TimeUtil.convertTimeToString(jobInfoDetail.getHistory().getEndTime()));
             ruleFacts.put("checkPoints", jobInfoDetail.getJobHistory().getCheckpoints());
             ruleFacts.put("cluster", jobInfoDetail.getCluster());
             ruleFacts.put("exceptions", jobInfoDetail.getJobHistory().getExceptions());
             rulesEngine.fire(rules, ruleFacts);
+
         }
     }
 
@@ -157,7 +161,6 @@ public class JobAlerts extends BaseSchedule {
      * Refreshes the alert rules and related data.
      */
     public void refeshRulesData() {
-
         ruleFacts.put("exceptionRule", new ExceptionRule());
         ruleFacts.put("checkpointRule", new CheckpointsRule());
 

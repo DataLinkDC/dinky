@@ -48,7 +48,7 @@ public abstract class AbstractAlert implements Alert {
     }
 
     public String getTemplate() {
-        return ResourceUtil.readUtf8Str(StrFormatter.format("{}.ftl", config.getType()));
+        return ResourceUtil.readUtf8Str(StrFormatter.format("{}.ftl", config.getType())).replace("\n","\n\n");
     }
 
     protected String buildContent(Map<String, Object> params) throws TemplateException, IOException {

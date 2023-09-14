@@ -37,22 +37,28 @@ public class WeChatSenderTest {
 
     private static final Map<String, String> weChatConfig = new HashMap<>();
 
-    String contentTest = "# Test Wechat Hook Robot Alert123 \n > test content \n normal";
+    String contentTest = "> The Dinky platform has detected an abnormality in your task. Please go to the Dinky Task page to check the task status.\n" +
+            "- **Job Name : <font color='#0000FF'>Test Job</font>**\n" +
+            "- **Job Status : <font color='#FF0000'>FAILED</font>**\n" +
+            "- **Alert Time : 2023-01-01  12:00:00**\n" +
+            "- **Start Time : 2023-01-01  12:00:00**\n" +
+            "- **End Time : 2023-01-01  12:00:00**\n" +
+            "> **<font color='#FF0000'>The test exception, your job exception will pass here</font>**\n" +
+            "\n" +
+            "> Dinky Team  [Go toTask Web](https://github.com/DataLinkDC/dinky)";
 
     /** init WeChatConfig */
     @Before
     public void initWeChatConfig() {
         // Just for this test, I will delete these configurations before this PR is merged
-        weChatConfig.put(WeChatConstants.AGENT_ID, "1000002");
-        weChatConfig.put(WeChatConstants.SECRET, "V2w-9JDqSrF2wVW0eno6Vnrxbe6WZMHvO1Z1Hwj3JGg");
-        weChatConfig.put(WeChatConstants.CORP_ID, "ww4ae244b25dda07cb");
+        weChatConfig.put(WeChatConstants.AGENT_ID, "");
+        weChatConfig.put(WeChatConstants.SECRET, "");
+        weChatConfig.put(WeChatConstants.CORP_ID, "");
         weChatConfig.put(WeChatConstants.CHARSET, "UTF-8");
-        weChatConfig.put(WeChatConstants.AT_USERS, "MoWuHen");
+        weChatConfig.put(WeChatConstants.AT_USERS, "GaoYan");
         weChatConfig.put(WeChatConstants.TEAM_SEND_MSG, "msg");
         weChatConfig.put(WeChatConstants.MSG_TYPE, ShowType.MARKDOWN.getValue()); // default is "table"
-        weChatConfig.put(
-                WeChatConstants.WEB_HOOK,
-                "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=32858c29-379b-4080-80d6-d7f72f2f1d4d");
+        weChatConfig.put(WeChatConstants.WEB_HOOK, "");
     }
 
     @Ignore

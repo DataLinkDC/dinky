@@ -162,6 +162,27 @@ INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_c
 INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"checkPoints.checkFailed(#key,#checkPoints)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:49:03');
 INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"exceptionRule.isException(#key,#exceptions)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:50:12');
 INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (8, 'alert.rule.checkpointTimeout', '[{"ruleKey":"checkPoints.checkpointTime(#key,#checkPoints)","ruleOperator":"GE","ruleValue":"1000"}]', 1, 'CUSTOM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 22:23:35');
+create table dinky_alert_template
+(
+    id               int auto_increment
+        primary key,
+    name             varchar(20) charset ucs2 not null,
+    template_content text                     null,
+    enabled          tinyint default 1        null comment 'is enable',
+    create_time      datetime                 null comment 'create time',
+    update_time      datetime                 null comment 'update time'
+)
+    comment '告警模板';
+
+INSERT INTO dinky_alert_template (id, name, template_content, enabled, create_time, update_time) VALUES (1, 'Default', '
+- **Job Name :** <font color=''gray''>${task.name}</font>
+- **Job Status :** <font color=''red''>${jobInstance.status}</font>
+- **Alert Time :** ${time}
+- **Start Time :** ${startTime}
+- **End Time :** ${endTime}
+- **<font color=''red''>${exceptions.get("root-exception").toString()?substring(0,20)}</font>**
+[Go toTask Web](http://${taskUrl})
+', 1, null, null);
 
 COMMIT;
 

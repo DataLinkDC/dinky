@@ -40,8 +40,8 @@ public class FeiShuSenderTest {
     public void initFeiShuConfig() {
         feiShuConfig.put(
                 FeiShuConstants.WEB_HOOK,
-                "https://open.feishu.cn/open-apis/bot/v2/hook/f74d558b-5356-4c39-a9bc-a69d645140f4");
-        feiShuConfig.put(FeiShuConstants.KEYWORD, "Dinky 飞书WebHook 告警测试");
+                "https://open.feishu.cn/open-apis/bot/v2/hook/key");
+        feiShuConfig.put(FeiShuConstants.KEYWORD, "Dinky");
         feiShuConfig.put(FeiShuConstants.AT_ALL, "false");
         feiShuConfig.put(FeiShuConstants.AT_USERS, "gaoyan");
     }
@@ -50,7 +50,15 @@ public class FeiShuSenderTest {
     @Test
     public void testSend() {
 
-        String msg = "# Test Feishu Alert123 \n test content";
+        String msg = "> The Dinky platform has detected an abnormality in your task. Please go to the Dinky Task page to check the task status.\n" +
+                "- **Job Name : <font color='#0000FF'>Test Job</font>**\n" +
+                "- **Job Status : <font color='#FF0000'>FAILED</font>**\n" +
+                "- **Alert Time : 2023-01-01  12:00:00**\n" +
+                "- **Start Time : 2023-01-01  12:00:00**\n" +
+                "- **End Time : 2023-01-01  12:00:00**\n" +
+                "> **<font color='#FF0000'>The test exception, your job exception will pass here</font>**\n" +
+                "\n" +
+                "> Dinky Team  [Go toTask Web](https://github.com/DataLinkDC/dinky)";
 
         FeiShuAlert feiShuAlert = new FeiShuAlert();
         AlertConfig alertConfig = new AlertConfig();
