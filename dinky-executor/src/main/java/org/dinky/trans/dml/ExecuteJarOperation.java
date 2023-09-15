@@ -30,6 +30,7 @@ import org.apache.flink.client.StreamGraphTranslator;
 import org.apache.flink.client.program.PackagedProgram;
 import org.apache.flink.client.program.PackagedProgramUtils;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
@@ -64,7 +65,8 @@ public class ExecuteJarOperation extends AbstractOperation implements DmlOperati
         JarSubmitParam submitParam = JarSubmitParam.build(statement);
         SavepointRestoreSettings savepointRestoreSettings = StrUtil.isBlank(submitParam.getSavepointPath())
                 ? SavepointRestoreSettings.none()
-                : SavepointRestoreSettings.forPath(submitParam.getSavepointPath());
+                : SavepointRestoreSettings.forPath(
+                        submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
         PackagedProgram program;
         try {
             Configuration configuration = executor.getTableConfig().getConfiguration();
@@ -102,13 +104,13 @@ public class ExecuteJarOperation extends AbstractOperation implements DmlOperati
     @Getter
     public static class JarSubmitParam {
         protected JarSubmitParam() {}
-        ;
 
         private String uri;
         private String mainClass;
         private String args;
         private String parallelism;
         private String savepointPath;
+        private Boolean allowNonRestoredState = SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE.defaultValue();
 
         public static JarSubmitParam build(String statement) {
             JarSubmitParam submitParam = ExecuteJarParseStrategy.getInfo(statement);
