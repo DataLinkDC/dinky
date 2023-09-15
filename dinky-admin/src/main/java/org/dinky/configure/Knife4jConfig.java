@@ -66,9 +66,6 @@ public class Knife4jConfig {
     @Value("${dinky.version}")
     private String dinkyVersion;
 
-    @Autowired
-    SaTokenConfig saTokenConfigure;
-
     private final OpenApiExtensionResolver openApiExtensionResolver;
 
     @Bean(value = "defaultApi2")
