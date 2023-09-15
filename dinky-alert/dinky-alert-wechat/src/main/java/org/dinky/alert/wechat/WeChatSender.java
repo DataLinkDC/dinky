@@ -94,13 +94,13 @@ public class WeChatSender {
      */
     public Map<String, Object> buildTemplateParams(String title, String content) {
         Map<String, Object> params = new HashMap<>();
-        params.put("title", title);
-        params.put("content", content);
-        params.put("agentId", weChatAgentId);
+        params.put(WeChatConstants.ALERT_TEMPLATE_TITLE, title);
+        params.put(WeChatConstants.ALERT_TEMPLATE_CONTENT, content);
+        params.put(WeChatConstants.ALERT_TEMPLATE_AGENT_ID, weChatAgentId);
         List<String> atUsers = Arrays.stream(weChatUsers.split(","))
                 .map(u -> StrFormatter.format("<@{}>", u))
                 .collect(Collectors.toList());
-        params.put("atUsers", atUsers);
+        params.put(WeChatConstants.ALERT_TEMPLATE_AT_USERS, atUsers);
         return params;
     }
 
@@ -117,7 +117,7 @@ public class WeChatSender {
             }
             return checkWeChatSendMsgResult(HttpUtils.post(url, content));
         } catch (Exception e) {
-            logger.info("send we chat alert msg  exception : {}", e.getMessage());
+            logger.error("send we chat alert msg  exception : {}", e.getMessage());
             alertResult.setMessage("send we chat alert fail");
             alertResult.setSuccess(false);
         }
@@ -142,7 +142,7 @@ public class WeChatSender {
                 }
             }
         } catch (IOException e) {
-            logger.info("we chat alert get token error{}", e.getMessage());
+            logger.error("we chat alert get token error{}", e.getMessage());
         }
         return null;
     }
@@ -152,13 +152,13 @@ public class WeChatSender {
         alertResult.setSuccess(false);
         if (null == result) {
             alertResult.setMessage("we chat send fail");
-            logger.info("send we chat msg error,resp is null");
+            logger.error("send we chat msg error,resp is null");
             return alertResult;
         }
         AlertSendResponse sendMsgResponse = JSONUtil.parseObject(result, AlertSendResponse.class);
         if (null == sendMsgResponse) {
             alertResult.setMessage("we chat send fail");
-            logger.info("send we chat msg error,resp error");
+            logger.error("send we chat msg error,resp error");
             return alertResult;
         }
         if (sendMsgResponse.getErrcode() == 0) {

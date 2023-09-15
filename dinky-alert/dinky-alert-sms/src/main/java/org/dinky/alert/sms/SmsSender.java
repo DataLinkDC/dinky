@@ -21,11 +21,11 @@ package org.dinky.alert.sms;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.List;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.sms.config.SmsConfigLoader;
 import org.dinky.alert.sms.enums.ManuFacturers;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 import org.dromara.sms4j.api.SmsBlend;
@@ -66,7 +66,7 @@ public class SmsSender {
         logger.info("send sms, title: {}, content: {}", title, content);
         // todo: 1. support multi sms manufacturers send
         // 使用自定义模板群发短信 || use custom template mass texting
-        smsSendFactory.massTexting(Arrays.asList("17722226666"), "110", new LinkedHashMap<>());
+        smsSendFactory.massTexting(List.of("17722226666"), "110", new LinkedHashMap<>());
         // todo: 2. validate sms send result
         return alertResult;
     }

@@ -27,6 +27,8 @@ import java.io.IOException;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.text.StrFormatter;
 import freemarker.template.TemplateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * WeChatAlert
@@ -34,6 +36,8 @@ import freemarker.template.TemplateException;
  * @since 2022/2/23 21:09
  */
 public class WeChatAlert extends AbstractAlert {
+
+    private static final Logger logger = LoggerFactory.getLogger(WeChatAlert.class);
 
     @Override
     public String getType() {
@@ -54,6 +58,7 @@ public class WeChatAlert extends AbstractAlert {
             String built = buildContent(sender.buildTemplateParams(title, content));
             return sender.send(built);
         } catch (TemplateException | IOException e) {
+            logger.error("{}'message send error, Reason:{}", getType(), e.getMessage());
             throw new RuntimeException(e);
         }
     }

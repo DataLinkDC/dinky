@@ -47,6 +47,7 @@ public class FeiShuAlert extends AbstractAlert {
             logger.info("Send FeiShu alert title: {}", title);
             return sender.send(built);
         } catch (TemplateException | IOException e) {
+            logger.error("{}'message send error, Reason:{}", getType(), e.getMessage());
             throw new RuntimeException(e);
         }
     }

@@ -36,4 +36,9 @@ public class WeChatConstants extends AlertBaseConstant {
     public static final String AGENT_ID = "agentId";
     public static final String SEND_TYPE = "sendType";
     public static final String ACCESS_TOKEN = "access_token";
+
+    public static final String ALERT_TEMPLATE_TITLE = "title";
+    public static final String ALERT_TEMPLATE_CONTENT = "content";
+    public static final String ALERT_TEMPLATE_AGENT_ID = "agentId";
+    public static final String ALERT_TEMPLATE_AT_USERS = "atUsers";
 }
