@@ -320,27 +320,6 @@ public class DataBaseController {
                         dataTypeClass = String.class,
                         example = "user")
             })
-    @DynamicParameters(
-            properties = {
-                @DynamicParameter(
-                        name = "id",
-                        value = "DataBase Id",
-                        required = true,
-                        dataTypeClass = Integer.class,
-                        example = "1"),
-                @DynamicParameter(
-                        name = "schemaName",
-                        value = "Schema Name",
-                        required = true,
-                        dataTypeClass = String.class,
-                        example = "public"),
-                @DynamicParameter(
-                        name = "tableName",
-                        value = "Table Name",
-                        required = true,
-                        dataTypeClass = String.class,
-                        example = "user")
-            })
     public Result<List<Column>> listColumns(
             @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
         return Result.succeed(databaseService.listColumns(id, schemaName, tableName));
