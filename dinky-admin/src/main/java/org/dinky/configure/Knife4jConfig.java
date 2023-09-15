@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
@@ -45,7 +44,6 @@ import org.springframework.util.StringUtils;
 
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 
-import cn.dev33.satoken.config.SaTokenConfig;
 import lombok.RequiredArgsConstructor;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
