@@ -19,6 +19,8 @@
 
 package org.dinky.data.model;
 
+import org.dinky.data.enums.Status;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,179 +52,199 @@ public class SystemConfiguration {
 
     private final Consumer<Configuration<?>> initMethod = null;
 
-    public static Configuration.OptionBuilder key(String key) {
-        return new Configuration.OptionBuilder(key);
+    public static Configuration.OptionBuilder key(Status status) {
+        return new Configuration.OptionBuilder(status.getKey());
     }
 
     private static final List<Configuration<?>> CONFIGURATION_LIST = Arrays.stream(
                     ReflectUtil.getFields(SystemConfiguration.class, f -> f.getType() == Configuration.class))
             .map(f -> (Configuration<?>) ReflectUtil.getFieldValue(systemConfiguration, f))
             .collect(Collectors.toList());
-    private final Configuration<Boolean> useRestAPI =
-            key("flink.settings.useRestAPI").booleanType().defaultValue(true).note("在运维 Flink 任务时是否使用 RestAPI");
-    private final Configuration<String> sqlSeparator =
-            key("flink.settings.sqlSeparator").stringType().defaultValue(";\\n").note("FlinkSQL语句分割符");
-    private final Configuration<Integer> jobIdWait = key("flink.settings.jobIdWait")
+    private final Configuration<Boolean> useRestAPI = key(Status.SYS_FLINK_SETTINGS_USERESTAPI)
+            .booleanType()
+            .defaultValue(true)
+            .note(Status.SYS_FLINK_SETTINGS_USERESTAPI_NOTE);
+    private final Configuration<String> sqlSeparator = key(Status.SYS_FLINK_SETTINGS_SQLSEPARATOR)
+            .stringType()
+            .defaultValue(";\\n")
+            .note(Status.SYS_FLINK_SETTINGS_SQLSEPARATOR_NOTE);
+    private final Configuration<Integer> jobIdWait = key(Status.SYS_FLINK_SETTINGS_JOBIDWAIT)
             .intType()
             .defaultValue(30)
-            .note("提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）");
+            .note(Status.SYS_FLINK_SETTINGS_JOBIDWAIT_NOTE);
 
-    private final Configuration<String> mavenSettings =
-            key("maven.settings.settingsFilePath").stringType().defaultValue("").note("Maven Settings 文件路径");
-
-    private final Configuration<String> mavenRepository = key("maven.settings.repository")
-            .stringType()
-            .defaultValue("https://maven.aliyun.com/nexus/content/repositories/central")
-            .note("Maven private server address");
-
-    private final Configuration<String> mavenRepositoryUser = key("maven.settings.repositoryUser")
+    private final Configuration<String> mavenSettings = key(Status.SYS_MAVEN_SETTINGS_SETTINGSFILEPATH)
             .stringType()
             .defaultValue("")
-            .note("Maven private server authentication username");
+            .note(Status.SYS_MAVEN_SETTINGS_SETTINGSFILEPATH_NOTE);
 
-    private final Configuration<String> mavenRepositoryPassword = key("maven.settings.repositoryPassword")
+    private final Configuration<String> mavenRepository = key(Status.SYS_MAVEN_SETTINGS_REPOSITORY)
+            .stringType()
+            .defaultValue("https://maven.aliyun.com/nexus/content/repositories/central")
+            .note(Status.SYS_MAVEN_SETTINGS_REPOSITORY_NOTE);
+
+    private final Configuration<String> mavenRepositoryUser = key(Status.SYS_MAVEN_SETTINGS_REPOSITORYUSER)
+            .stringType()
+            .defaultValue("")
+            .note(Status.SYS_MAVEN_SETTINGS_REPOSITORYUSER_NOTE);
+
+    private final Configuration<String> mavenRepositoryPassword = key(Status.SYS_MAVEN_SETTINGS_REPOSITORYPASSWORD)
             .stringType()
             .defaultValue("")
             .desensitizedHandler(DesensitizedUtil::password)
-            .note("Maven Central Repository Auth Password");
+            .note(Status.SYS_MAVEN_SETTINGS_REPOSITORYPASSWORD_NOTE);
 
-    private final Configuration<String> pythonHome =
-            key("env.settings.pythonHome").stringType().defaultValue("python3").note("PYTHON HOME");
+    private final Configuration<String> pythonHome = key(Status.SYS_ENV_SETTINGS_PYTHONHOME)
+            .stringType()
+            .defaultValue("python3")
+            .note(Status.SYS_ENV_SETTINGS_PYTHONHOME_NOTE);
 
-    private final Configuration<String> dinkyAddr = key("env.settings.dinkyAddr")
+    private final Configuration<String> dinkyAddr = key(Status.SYS_ENV_SETTINGS_DINKYADDR)
             .stringType()
             .defaultValue(System.getProperty("dinkyAddr"))
-            .note("the address must be the same as the address configured in the Dinky"
-                    + " Application background url");
+            .note(Status.SYS_ENV_SETTINGS_DINKYADDR_NOTE);
 
-    private final Configuration<Boolean> dolphinschedulerEnable = key("dolphinscheduler.settings.enable")
+    private final Configuration<Boolean> dolphinschedulerEnable = key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE)
             .booleanType()
             .defaultValue(false)
-            .note("Dolphinscheduler ON-OFF");
+            .note(Status.SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE_NOTE);
 
-    private final Configuration<String> dolphinschedulerUrl = key("dolphinscheduler.settings.url")
+    private final Configuration<String> dolphinschedulerUrl = key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_URL)
             .stringType()
             .defaultValue("")
-            .note("The address must be the same as the address configured in the"
-                    + " DolphinScheduler background , eg:"
-                    + " http://127.0.0.1:12345/dolphinscheduler");
-    private final Configuration<String> dolphinschedulerToken = key("dolphinscheduler.settings.token")
+            .note(Status.SYS_DOLPHINSCHEDULER_SETTINGS_URL_NOTE);
+    private final Configuration<String> dolphinschedulerToken = key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_TOKEN)
             .stringType()
             .defaultValue("")
-            .note("DolphinScheduler's Token , Please create a token in"
-                    + " DolphinScheduler's Security Center -> Token Management, and"
-                    + " modify the following configuration");
-    private final Configuration<String> dolphinschedulerProjectName = key("dolphinscheduler.settings.projectName")
-            .stringType()
-            .defaultValue("Dinky")
-            .note("The project name specified in DolphinScheduler, case insensitive");
+            .note(Status.SYS_DOLPHINSCHEDULER_SETTINGS_TOKEN_NOTE);
+    private final Configuration<String> dolphinschedulerProjectName =
+            key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_PROJECTNAME)
+                    .stringType()
+                    .defaultValue("Dinky")
+                    .note(Status.SYS_DOLPHINSCHEDULER_SETTINGS_PROJECTNAME_NOTE);
 
     private final Configuration<String> ldapUrl =
-            key("ldap.settings.url").stringType().defaultValue("").note("ldap server address");
+            key(Status.SYS_LDAP_SETTINGS_URL).stringType().defaultValue("").note(Status.SYS_LDAP_SETTINGS_URL_NOTE);
 
-    private final Configuration<String> ldapUserDn =
-            key("ldap.settings.userDn").stringType().defaultValue("").note("ldap login dn or username");
+    private final Configuration<String> ldapUserDn = key(Status.SYS_LDAP_SETTINGS_USERDN)
+            .stringType()
+            .defaultValue("")
+            .note(Status.SYS_LDAP_SETTINGS_USERDN_NOTE);
 
-    private final Configuration<String> ldapUserPassword =
-            key("ldap.settings.userPassword").stringType().defaultValue("").note("ldap login password");
-    //    private final Configuration<Integer> ldapCountLimit =
-    //            key("ldap.settings.countLimit")
-    //                    .intType()
-    //                    .defaultValue(0)
-    //                    .note("");
-    private final Configuration<Integer> ldapTimeLimit =
-            key("ldap.settings.timeLimit").intType().defaultValue(30).note("ldap connection timeout");
+    private final Configuration<String> ldapUserPassword = key(Status.SYS_LDAP_SETTINGS_USERPASSWORD)
+            .stringType()
+            .defaultValue("")
+            .note(Status.SYS_LDAP_SETTINGS_USERPASSWORD_NOTE);
 
-    private final Configuration<String> ldapBaseDn =
-            key("ldap.settings.baseDn").stringType().defaultValue("").note("ldap user base dn");
+    private final Configuration<Integer> ldapTimeLimit = key(Status.SYS_LDAP_SETTINGS_TIMELIMIT)
+            .intType()
+            .defaultValue(30)
+            .note(Status.SYS_LDAP_SETTINGS_TIMELIMIT_NOTE);
 
-    private final Configuration<String> ldapFilter =
-            key("ldap.settings.filter").stringType().defaultValue("").note("ldap user filter");
+    private final Configuration<String> ldapBaseDn = key(Status.SYS_LDAP_SETTINGS_BASEDN)
+            .stringType()
+            .defaultValue("")
+            .note(Status.SYS_LDAP_SETTINGS_BASEDN_NOTE);
 
-    private final Configuration<Boolean> ldapAutoload = key("ldap.settings.autoload")
+    private final Configuration<String> ldapFilter = key(Status.SYS_LDAP_SETTINGS_FILTER)
+            .stringType()
+            .defaultValue("")
+            .note(Status.SYS_LDAP_SETTINGS_FILTER_NOTE);
+
+    private final Configuration<Boolean> ldapAutoload = key(Status.SYS_LDAP_SETTINGS_AUTOLOAD)
             .booleanType()
             .defaultValue(true)
-            .note("Whether auto-mapping ldap users is enabled");
+            .note(Status.SYS_LDAP_SETTINGS_AUTOLOAD_NOTE);
 
-    private final Configuration<String> ldapDefaultTeant = key("ldap.settings.defaultTeant")
+    private final Configuration<String> ldapDefaultTeant = key(Status.SYS_LDAP_SETTINGS_DEFAULTTEANT)
             .stringType()
             .defaultValue("DefaultTenant")
-            .note("ldap default default teant code");
+            .note(Status.SYS_LDAP_SETTINGS_DEFAULTTEANT_NOTE);
 
-    private final Configuration<String> ldapCastUsername =
-            key("ldap.settings.castUsername").stringType().defaultValue("cn").note("");
+    private final Configuration<String> ldapCastUsername = key(Status.SYS_LDAP_SETTINGS_CASTUSERNAME)
+            .stringType()
+            .defaultValue("cn")
+            .note(Status.SYS_LDAP_SETTINGS_CASTUSERNAME_NOTE);
 
-    private final Configuration<String> ldapCastNickname =
-            key("ldap.settings.castNickname").stringType().defaultValue("sn").note("");
+    private final Configuration<String> ldapCastNickname = key(Status.SYS_LDAP_SETTINGS_CASTNICKNAME)
+            .stringType()
+            .defaultValue("sn")
+            .note(Status.SYS_LDAP_SETTINGS_CASTNICKNAME_NOTE);
 
-    private final Configuration<Boolean> ldapEnable =
-            key("ldap.settings.enable").booleanType().defaultValue(false).note("LDAP ON-OFF");
-
-    private final Configuration<Boolean> metricsSysEnable = key("metrics.settings.sys.enable")
+    private final Configuration<Boolean> ldapEnable = key(Status.SYS_LDAP_SETTINGS_ENABLE)
             .booleanType()
             .defaultValue(false)
-            .note("Is the collection system indicator enabled");
+            .note(Status.SYS_LDAP_SETTINGS_ENABLE_NOTE);
 
-    private final Configuration<Integer> metricsSysGatherTiming = key("metrics.settings.sys.gatherTiming")
+    private final Configuration<Boolean> metricsSysEnable = key(Status.SYS_METRICS_SETTINGS_SYS_ENABLE)
+            .booleanType()
+            .defaultValue(false)
+            .note(Status.SYS_METRICS_SETTINGS_SYS_ENABLE_NOTE);
+
+    private final Configuration<Integer> metricsSysGatherTiming = key(Status.SYS_METRICS_SETTINGS_SYS_GATHERTIMING)
             .intType()
             .defaultValue(3000)
-            .note("System METRICS gather Timing (unit: ms)");
-    private final Configuration<Integer> flinkMetricsGatherTiming = key("metrics.settings.flink.gatherTiming")
+            .note(Status.SYS_METRICS_SETTINGS_SYS_GATHERTIMING_NOTE);
+    private final Configuration<Integer> flinkMetricsGatherTiming = key(Status.SYS_METRICS_SETTINGS_FLINK_GATHERTIMING)
             .intType()
             .defaultValue(3000)
-            .note("FLINK METRICS gather Timing (unit: ms)");
+            .note(Status.SYS_METRICS_SETTINGS_FLINK_GATHERTIMING_NOTE);
 
-    private final Configuration<Integer> flinkMetricsGatherTimeout = key("metrics.settings.flink.gatherTimeout")
-            .intType()
-            .defaultValue(1000)
-            .note("FLINK METRICS gather timeout (unit: ms)");
+    private final Configuration<Integer> flinkMetricsGatherTimeout =
+            key(Status.SYS_METRICS_SETTINGS_FLINK_GATHERTIMEOUT)
+                    .intType()
+                    .defaultValue(1000)
+                    .note(Status.SYS_METRICS_SETTINGS_FLINK_GATHERTIMEOUT_NOTE);
 
-    private final Configuration<Boolean> resourcesEnable =
-            key("resource.settings.enable").booleanType().defaultValue(true).note("是否启用");
+    private final Configuration<Boolean> resourcesEnable = key(Status.SYS_RESOURCE_SETTINGS_ENABLE)
+            .booleanType()
+            .defaultValue(true)
+            .note(Status.SYS_RESOURCE_SETTINGS_ENABLE_NOTE);
 
-    private final Configuration<String> resourcesUploadBasePath = key("resource.settings.upload.base.path")
+    private final Configuration<String> resourcesUploadBasePath = key(Status.SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH)
             .stringType()
             .defaultValue("/dinky")
-            .note("resource store on HDFS/OSS path, resource file will store to this"
-                    + " base path, self configuration, please make sure the directory"
-                    + " exists on hdfs and have read write permissions. \"/dinky\" is"
-                    + " recommended");
-    private final Configuration<ResourcesModelEnum> resourcesModel = key("resource.settings.model")
+            .note(Status.SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH_NOTE);
+    private final Configuration<ResourcesModelEnum> resourcesModel = key(Status.SYS_RESOURCE_SETTINGS_MODEL)
             .enumType(ResourcesModelEnum.class)
             .defaultValue(ResourcesModelEnum.HDFS)
-            .note("存储模式：支持HDFS、OSS");
+            .note(Status.SYS_RESOURCE_SETTINGS_MODEL_NOTE);
 
-    private final Configuration<String> resourcesOssEndpoint = key("resource.settings.oss.endpoint")
+    private final Configuration<String> resourcesOssEndpoint = key(Status.SYS_RESOURCE_SETTINGS_OSS_ENDPOINT)
             .stringType()
             .defaultValue("http://localhost:9000")
-            .note("对象存储服务的URL，例如：https://oss-cn-hangzhou.aliyuncs.com");
+            .note(Status.SYS_RESOURCE_SETTINGS_OSS_ENDPOINT_NOTE);
 
-    private final Configuration<String> resourcesOssAccessKey = key("resource.settings.oss.accessKey")
+    private final Configuration<String> resourcesOssAccessKey = key(Status.SYS_RESOURCE_SETTINGS_OSS_ACCESSKEY)
             .stringType()
             .defaultValue("minioadmin")
-            .note("Access key就像用户ID，可以唯一标识你的账户");
+            .note(Status.SYS_RESOURCE_SETTINGS_OSS_ACCESSKEY_NOTE);
 
-    private final Configuration<String> resourcesOssSecretKey = key("resource.settings.oss.secretKey")
+    private final Configuration<String> resourcesOssSecretKey = key(Status.SYS_RESOURCE_SETTINGS_OSS_SECRETKEY)
             .stringType()
             .defaultValue("minioadmin")
-            .note("Secret key是你账户的密码");
+            .note(Status.SYS_RESOURCE_SETTINGS_OSS_SECRETKEY_NOTE);
 
-    private final Configuration<String> resourcesOssBucketName = key("resource.settings.oss.bucketName")
+    private final Configuration<String> resourcesOssBucketName = key(Status.SYS_RESOURCE_SETTINGS_OSS_BUCKETNAME)
             .stringType()
             .defaultValue("dinky")
-            .note("默认的存储桶名称");
-    private final Configuration<String> resourcesOssRegion =
-            key("resource.settings.oss.region").stringType().defaultValue("").note("区域");
-    private final Configuration<String> resourcesHdfsUser = key("resource.settings.hdfs.root.user")
+            .note(Status.SYS_RESOURCE_SETTINGS_OSS_BUCKETNAME_NOTE);
+    private final Configuration<String> resourcesOssRegion = key(Status.SYS_RESOURCE_SETTINGS_OSS_REGION)
+            .stringType()
+            .defaultValue("")
+            .note(Status.SYS_RESOURCE_SETTINGS_OSS_REGION_NOTE);
+    private final Configuration<String> resourcesHdfsUser = key(Status.SYS_RESOURCE_SETTINGS_HDFS_ROOT_USER)
             .stringType()
             .defaultValue("hdfs")
-            .note("HDFS操作用户名");
-    private final Configuration<String> resourcesHdfsDefaultFS = key("resource.settings.hdfs.fs.defaultFS")
+            .note(Status.SYS_RESOURCE_SETTINGS_HDFS_ROOT_USER_NOTE);
+    private final Configuration<String> resourcesHdfsDefaultFS = key(Status.SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS)
             .stringType()
             .defaultValue("file:///")
-            .note("HDFS defaultFS");
+            .note(Status.SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS_NOTE);
 
-    /** Initialize after spring bean startup */
+    /**
+     * Initialize after spring bean startup
+     */
     public void initAfterBeanStarted() {
         if (StrUtil.isBlank(dinkyAddr.getDefaultValue())) {
             ReflectUtil.setFieldValue(dinkyAddr, "defaultValue", System.getProperty("dinkyAddr"));
@@ -263,9 +285,11 @@ public class SystemConfiguration {
     public Map<String, List<Configuration<?>>> getAllConfiguration() {
         Map<String, List<Configuration<?>>> data = new TreeMap<>();
         for (Configuration<?> item : CONFIGURATION_LIST) {
-            final String name = item.getKey();
-            String k = StrUtil.split(name, ".").get(0);
-            Opt.ofBlankAble(k).ifPresent(key -> {
+            final String key = item.getKey();
+            String k = StrUtil.split(key, ".").get(1);
+            Opt.ofBlankAble(k).ifPresent(name -> {
+                item.setName(Status.findMessageByKey(item.getKey()));
+                item.setNote(Status.findMessageByKey(item.getNoteKey()));
                 data.computeIfAbsent(k, x -> new ArrayList<>());
                 data.get(k).add(item);
             });

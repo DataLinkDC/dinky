@@ -72,7 +72,7 @@ const SettingOverView = () => {
     const { code } =
       (await handleOption(
         API_CONSTANTS.SYSTEM_MODIFY_CONFIG,
-        l('sys.setting.modify', '', { key: l(`sys.${dataConfig.key}`) }),
+        l('sys.setting.modify', '', { key: dataConfig.name }),
         dataConfig
       )) ?? {};
 
@@ -80,7 +80,7 @@ const SettingOverView = () => {
       await fetchData();
     } else {
       // @ts-ignore
-      for (const d of data[dataConfig.key.split('.')[0]]) {
+      for (const d of data[dataConfig.key.split('.')[1]]) {
         if (d.key === dataConfig.key) {
           d.value = dataConfig.value;
           break;

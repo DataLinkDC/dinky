@@ -23,6 +23,9 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
     hdfs: [] as BaseConfigProperties[],
     oss: [] as BaseConfigProperties[]
   });
+
+  const modelKey: string = 'sys.resource.settings.model';
+
   useEffect(() => {
     if (data.length < 1) {
       return;
@@ -30,14 +33,14 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
     const needDeleteIndexes: number[] = [];
     let m;
     data.forEach((datum, index) => {
-      if (datum.key === 'resource.settings.model') {
+      if (datum.key === modelKey) {
         enumCache.base.push(datum);
-        const modelCase = datum.value.toLowerCase();
+        const modelCase = datum.value?.toLowerCase();
         m = modelCase;
         setModel(modelCase);
         return;
       }
-      const v = datum.key.split('.').at(2);
+      const v = datum.key.split('.').at(3);
       if (v === 'hdfs' || v === 'oss') {
         // @ts-ignore
         enumCache[v].push(datum);
@@ -74,9 +77,10 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
   const selectChange = async (value: RadioChangeEvent) => {
     setModel(value.target.value);
     await onSaveHandler({
+      name: '',
       example: [],
       frontType: '',
-      key: 'resource.settings.model',
+      key: modelKey,
       note: '',
       value: value.target.value.toLocaleUpperCase()
     });
@@ -88,7 +92,7 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
         onSave={onSaveHandler}
         tag={<Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>}
         data={baseData}
-        selectChanges={{ 'resource.settings.model': selectChange }}
+        selectChanges={{ modelKey: selectChange }}
       />
     </>
   );
