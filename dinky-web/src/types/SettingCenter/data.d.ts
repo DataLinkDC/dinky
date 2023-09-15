@@ -68,8 +68,10 @@ export type Settings = {
   metrics: BaseConfigProperties[];
   resource: BaseConfigProperties[];
 };
+
 export type BaseConfigProperties = {
   key: string;
+  name: string;
   value: any;
   note: string;
   frontType: string;
