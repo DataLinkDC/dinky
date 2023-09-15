@@ -34,6 +34,9 @@ import org.apache.flink.table.functions.TemporalTableFunction;
 
 import java.util.Optional;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class CreateTemporalTableFunctionOperation extends AbstractOperation implements ExtendOperation {
 
     public CreateTemporalTableFunctionOperation() {}
@@ -58,7 +61,7 @@ public class CreateTemporalTableFunctionOperation extends AbstractOperation impl
                 .from(temporalTable.getTableName())
                 .createTemporalTableFunction(timeColumn, targetColumn);
 
-        if (temporalTable.getFunctionType().toUpperCase().equals("TEMPORARY SYSTEM")) {
+        if ("TEMPORARY SYSTEM".equalsIgnoreCase(temporalTable.getFunctionType())) {
             customTableEnvironmentImpl.createTemporarySystemFunction(temporalTable.getFunctionName(), ttf);
         } else {
             customTableEnvironmentImpl.createTemporaryFunction(temporalTable.getFunctionName(), ttf);
@@ -66,6 +69,8 @@ public class CreateTemporalTableFunctionOperation extends AbstractOperation impl
         return Optional.of(CustomTableResultImpl.TABLE_RESULT_OK);
     }
 
+    @Getter
+    @Setter
     public static class TemporalTable {
         private String statement;
         private String functionType;
@@ -84,7 +89,7 @@ public class CreateTemporalTableFunctionOperation extends AbstractOperation impl
                 String targetColumn,
                 String tableName) {
             this.functionType = functionType;
-            this.exists = exists.trim().toUpperCase().equals("IF NOT EXISTS");
+            this.exists = "IF NOT EXISTS".equalsIgnoreCase(exists.trim());
             this.statement = statement;
             this.functionName = functionName;
             this.tableName = tableName;
@@ -95,62 +100,6 @@ public class CreateTemporalTableFunctionOperation extends AbstractOperation impl
         public static TemporalTable build(String statement) {
             String[] info = CreateTemporalTableFunctionParseStrategy.getInfo(statement);
             return new TemporalTable(statement, info[0], info[1], info[2], info[3], info[4], info[5]);
-        }
-
-        public String getStatement() {
-            return statement;
-        }
-
-        public void setStatement(String statement) {
-            this.statement = statement;
-        }
-
-        public String getFunctionName() {
-            return functionName;
-        }
-
-        public void setFunctionName(String functionName) {
-            this.functionName = functionName;
-        }
-
-        public String getTableName() {
-            return tableName;
-        }
-
-        public void setTableName(String tableName) {
-            this.tableName = tableName;
-        }
-
-        public String getTimeColumn() {
-            return timeColumn;
-        }
-
-        public void setTimeColumn(String timeColumn) {
-            this.timeColumn = timeColumn;
-        }
-
-        public String getTargetColumn() {
-            return targetColumn;
-        }
-
-        public void setTargetColumn(String targetColumn) {
-            this.targetColumn = targetColumn;
-        }
-
-        public String getFunctionType() {
-            return functionType;
-        }
-
-        public void setFunctionType(String functionType) {
-            this.functionType = functionType;
-        }
-
-        public boolean isExists() {
-            return exists;
-        }
-
-        public void setExists(boolean exists) {
-            this.exists = exists;
         }
     }
 }

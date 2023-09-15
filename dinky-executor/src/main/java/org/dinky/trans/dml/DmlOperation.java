@@ -17,42 +17,15 @@
  *
  */
 
-package org.dinky.trans.ddl;
+package org.dinky.trans.dml;
 
-import org.dinky.context.FlinkUdfPathContextHolder;
-import org.dinky.executor.CustomTableResultImpl;
 import org.dinky.executor.Executor;
-import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
-import org.dinky.trans.parse.AddJarParseStrategy;
 
 import org.apache.flink.table.api.TableResult;
 
-import java.io.File;
 import java.util.Optional;
-import java.util.Set;
 
-/** @since 0.7.0 */
-public class AddJarOperation extends AbstractOperation implements ExtendOperation {
-
-    public AddJarOperation(String statement) {
-        super(statement);
-    }
-
-    public void init() {
-        AddJarParseStrategy.getAllFilePath(statement).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
-    }
-
-    @Override
-    public Optional<? extends TableResult> execute(Executor executor) {
-        init();
-        Set<File> allFilePath = AddJarParseStrategy.getAllFilePath(statement);
-        executor.addJar(allFilePath);
-        return Optional.of(CustomTableResultImpl.TABLE_RESULT_OK);
-    }
-
-    @Override
-    public String asSummaryString() {
-        return statement;
-    }
+public interface DmlOperation extends ExtendOperation {
+    Optional<? extends TableResult> explain(Executor executor);
 }

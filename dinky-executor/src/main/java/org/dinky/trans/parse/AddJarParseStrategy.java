@@ -17,9 +17,13 @@
  *
  */
 
-package org.dinky.parser.check;
+package org.dinky.trans.parse;
 
 import org.dinky.process.exception.DinkyException;
+import org.dinky.trans.ddl.AddJarOperation;
+
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.planner.parse.AbstractRegexParseStrategy;
 
 import java.io.File;
 import java.util.HashSet;
@@ -34,22 +38,26 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 
 /** @since 0.7.0 */
-public class AddJarSqlParser {
+public class AddJarParseStrategy extends AbstractRegexParseStrategy {
+    private static final String PATTERN_STR = "(add\\s+customjar)\\s+'(.*.jar)'";
+    private static final Pattern PATTERN = Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+    public static final AddJarParseStrategy INSTANCE = new AddJarParseStrategy();
 
-    private static final String ADD_JAR = "(add\\s+customjar)\\s+'(.*.jar)'";
-    private static final Pattern ADD_JAR_PATTERN = Pattern.compile(ADD_JAR, Pattern.CASE_INSENSITIVE);
+    protected AddJarParseStrategy() {
+        super(PATTERN);
+    }
 
     protected static List<String> patternStatements(String[] statements) {
         return Stream.of(statements)
-                .filter(s -> ReUtil.isMatch(ADD_JAR_PATTERN, s))
-                .map(x -> ReUtil.findAllGroup0(ADD_JAR_PATTERN, x).get(0))
+                .filter(s -> ReUtil.isMatch(PATTERN, s))
+                .map(x -> ReUtil.findAllGroup0(PATTERN, x).get(0))
                 .collect(Collectors.toList());
     }
 
     public static Set<File> getAllFilePath(String[] statements) {
         Set<File> fileSet = new HashSet<>();
         patternStatements(statements).stream()
-                .map(x -> ReUtil.findAll(ADD_JAR_PATTERN, x, 2).get(0))
+                .map(x -> ReUtil.findAll(PATTERN, x, 2).get(0))
                 .distinct()
                 .forEach(path -> {
                     if (!FileUtil.exist(path)) {
@@ -62,5 +70,15 @@ public class AddJarSqlParser {
 
     public static Set<File> getAllFilePath(String statements) {
         return getAllFilePath(new String[] {statements});
+    }
+
+    @Override
+    public Operation convert(String statements) {
+        return new AddJarOperation(statements);
+    }
+
+    @Override
+    public String[] getHints() {
+        return new String[0];
     }
 }
