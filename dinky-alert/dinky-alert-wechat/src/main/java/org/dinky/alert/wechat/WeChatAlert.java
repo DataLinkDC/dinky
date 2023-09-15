@@ -24,11 +24,12 @@ import org.dinky.alert.AlertResult;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.text.StrFormatter;
 import freemarker.template.TemplateException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * WeChatAlert
@@ -36,7 +37,6 @@ import org.slf4j.LoggerFactory;
  * @since 2022/2/23 21:09
  */
 public class WeChatAlert extends AbstractAlert {
-
     private static final Logger logger = LoggerFactory.getLogger(WeChatAlert.class);
 
     @Override

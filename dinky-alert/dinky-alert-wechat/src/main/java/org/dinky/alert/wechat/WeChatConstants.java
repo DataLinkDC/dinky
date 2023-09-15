@@ -30,7 +30,6 @@ public class WeChatConstants extends AlertBaseConstant {
 
     public static final String WECHAT_TOKEN_URL =
             "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={corpId}&corpsecret={secret}";
-
     public static final String CORP_ID = "corpId";
     public static final String TEAM_SEND_MSG = "teamSendMsg";
     public static final String AGENT_ID = "agentId";

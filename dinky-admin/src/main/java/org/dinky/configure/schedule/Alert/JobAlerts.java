@@ -130,7 +130,7 @@ public class JobAlerts extends BaseSchedule {
      */
     @PostConstruct
     public void init() {
-        refeshRulesData();
+        refreshRulesData();
         addSchedule(AlertRuleOptions.JOB_ALERT_SCHEDULE, this::check, new PeriodicTrigger(1000 * 30));
     }
 
@@ -170,7 +170,7 @@ public class JobAlerts extends BaseSchedule {
     /**
      * Refreshes the alert rules and related data.
      */
-    public void refeshRulesData() {
+    public void refreshRulesData() {
         ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_REFRESH_RULES_DATA, new ExceptionRule());
         ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CHECKPOINT_RULES, new CheckpointsRule());
 

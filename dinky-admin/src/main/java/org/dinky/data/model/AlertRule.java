@@ -23,6 +23,8 @@ import org.dinky.mybatis.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -31,11 +33,31 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("dinky_alert_rules")
+@ApiModel(value = "AlertRule", description = "AlertRule")
 public class AlertRule extends SuperEntity {
 
+    @ApiModelProperty(value = "rule", required = true, dataType = "String", example = "rule")
     String rule;
+
+    @ApiModelProperty(value = "templateId", required = true, dataType = "int", example = "1")
     int templateId;
+
+    @ApiModelProperty(
+            value = "ruleType",
+            required = true,
+            dataType = "String",
+            example = "ruleType",
+            allowableValues = "CUSTOM,SYSTEM")
     String ruleType;
+
+    @ApiModelProperty(
+            value = "triggerConditions",
+            required = true,
+            dataType = "String",
+            example = "or",
+            allowableValues = "or,and")
     String triggerConditions;
+
+    @ApiModelProperty(value = "description", required = true, dataType = "String", example = "description")
     String description;
 }

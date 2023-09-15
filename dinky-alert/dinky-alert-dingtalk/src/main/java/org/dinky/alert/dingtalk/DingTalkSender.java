@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class DingTalkSender {
-
     private static final Logger logger = LoggerFactory.getLogger(DingTalkSender.class);
     private final String url;
     private final String keyword;

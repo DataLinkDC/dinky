@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiImplicitParam;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -62,16 +63,31 @@ public class AlertRuleController {
     }
 
     @PutMapping
+    @ApiImplicitParam(
+            name = "alertRule",
+            value = "alertRule",
+            required = true,
+            dataType = "AlertRule",
+            paramType = "body",
+            dataTypeClass = AlertRule.class)
     public Result<Boolean> saveOrUpdateAlertRule(@RequestBody AlertRule alertRule) {
         boolean saved = alertRuleService.saveOrUpdate(alertRule);
         if (saved) {
-            jobAlerts.refeshRulesData();
+            jobAlerts.refreshRulesData();
             return Result.succeed(Status.MODIFY_SUCCESS);
         }
         return Result.failed(Status.MODIFY_FAILED);
     }
 
     @DeleteMapping
+    @ApiImplicitParam(
+            name = "id",
+            value = "id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class,
+            example = "1")
     public Result<Boolean> deleteAlertRuleById(@RequestParam Integer id) {
         if (alertRuleService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);

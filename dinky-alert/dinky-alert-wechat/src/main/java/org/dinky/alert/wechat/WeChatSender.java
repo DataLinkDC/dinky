@@ -51,7 +51,6 @@ import cn.hutool.core.text.StrFormatter;
  * @since 2022/2/23 21:11
  */
 public class WeChatSender {
-
     private static final Logger logger = LoggerFactory.getLogger(WeChatSender.class);
     private static final String CORP_ID_REGEX = "{corpId}";
     private static final String SECRET_REGEX = "{secret}";

@@ -24,10 +24,8 @@ import org.dinky.alert.AlertBaseConstant;
 /** FeiShuConstants */
 public class FeiShuConstants extends AlertBaseConstant {
     public static final String TYPE = "FeiShu";
-
     public static final String SIGN_TMESTAMP = "timestamp";
     public static final String SIGN = "sign";
-
     public static final String ALERT_TEMPLATE_TITLE = "title";
     public static final String ALERT_TEMPLATE_CONTENT = "content";
     public static final String ALERT_TEMPLATE_KEYWORD = "keyword";

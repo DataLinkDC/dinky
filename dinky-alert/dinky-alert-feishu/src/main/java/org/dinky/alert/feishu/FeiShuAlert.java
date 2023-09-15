@@ -31,7 +31,6 @@ import freemarker.template.TemplateException;
 
 /** FeiShuAlert */
 public class FeiShuAlert extends AbstractAlert {
-
     private static final Logger logger = LoggerFactory.getLogger(FeiShuAlert.class);
 
     @Override

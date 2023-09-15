@@ -43,7 +43,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * fei shu sender
  */
 public final class FeiShuSender {
-
     private static final Logger logger = LoggerFactory.getLogger(FeiShuSender.class);
     private final String url;
     private final String secret;

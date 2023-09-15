@@ -29,10 +29,10 @@ import java.util.Map;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
-
-import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import freemarker.template.TemplateException;
 
 /** EmailAlert */
 public class EmailAlert extends AbstractAlert {
