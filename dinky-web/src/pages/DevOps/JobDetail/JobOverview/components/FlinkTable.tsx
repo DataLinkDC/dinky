@@ -12,9 +12,9 @@ export type VerticesTableListItem = {
   status: string;
   metrics: any;
   parallelism: number;
-  startTime: string;
-  duration: number;
-  endTime: string;
+  startTime?: string;
+  duration?: number;
+  endTime?: string;
   tasks: any;
 };
 
@@ -24,7 +24,7 @@ export type VerticesTableListItem = {
  * @param {JobProps} props - The component props containing the job detail.
  * @returns {JSX.Element} - The rendered JobConfigTab component.
  */
-const FlinkTable = (props: JobProps) => {
+const FlinkTable = (props: JobProps): JSX.Element => {
   const { jobDetail } = props;
 
   const columns: ProColumns<VerticesTableListItem>[] = [
@@ -104,7 +104,7 @@ const FlinkTable = (props: JobProps) => {
         <ProTable
           columns={columns}
           style={{ width: '100%' }}
-          dataSource={jobDetail?.jobHistory?.job.vertices}
+          dataSource={jobDetail?.jobHistory?.job?.vertices}
           rowKey='name'
           pagination={{
             defaultPageSize: 10,

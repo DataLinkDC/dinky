@@ -958,16 +958,17 @@ export default {
   'sys.alert.rule.rule': 'Rule',
   'sys.alert.rule.ruleType': 'Rule Type',
   'sys.alert.rule.template': 'Alert Template',
-  'sys.alert.rule.triger': 'Trigger Configuration',
-  'sys.alert.rule.trigerConditions': 'Trigger Conditions',
+  'sys.alert.rule.trigger': 'Trigger Configuration',
+  'sys.alert.rule.triggerConditions': 'Trigger Conditions',
   'sys.alert.rule.anyRule': 'Any Rule',
   'sys.alert.rule.allRule': 'All Rules',
-  'sys.alert.rule.trigerRule': 'Trigger Rule',
+  'sys.alert.rule.triggerRule': 'Trigger Rule',
   'sys.alert.rule.addRule': 'Add Rule',
   'sys.alert.rule.jobStatus': 'Job Status',
   'sys.alert.rule.checkpointTime': 'Checkpoint Time',
   'sys.alert.rule.checkpointFailed': 'Checkpoint Failed',
   'sys.alert.rule.jobException': 'Job Exception',
+  'sys.alert.rule.delete': 'Are you sure you want to delete this alert rule?',
 
   // metrics
   // server

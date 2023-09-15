@@ -5,7 +5,7 @@
   "license": "Apache License 2.0",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 max build",
-    "build": "concurrently max build && npm run build-to-admin --prefix  ../dinky-web-flink",
+    "build": "max build && npm install --prefix  ../dinky-web-flink && npm run build-to-admin --prefix  ../dinky-web-flink",
     "deploy": "npm run build && npm run gh-pages",
     "dev": "npm run build-to-admin --prefix  ../dinky-web-flink && npm run start:dev ",
     "postinstall": "max setup",

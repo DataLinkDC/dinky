@@ -39,14 +39,14 @@ const TokenList = (props: any) => {
   const [tokenState, setTokenState] = useState<TokenListState>(InitTokenListState); // token state
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
-    setTokenState(prevState => ({ ...prevState, loading: true }));
+    setTokenState((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setTokenState(prevState => ({ ...prevState, loading: false }));
+    setTokenState((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
   function handleEditVisible(record: Partial<SysToken>) {
-    setTokenState(prevState => ({ ...prevState, editOpen: true, value: record }));
+    setTokenState((prevState) => ({ ...prevState, editOpen: true, value: record }));
   }
 
   const handleDeleteToken = async (id: number) => {
@@ -128,7 +128,7 @@ const TokenList = (props: any) => {
         API_CONSTANTS.TOKEN_SAVE_OR_UPDATE,
         value,
         () => {},
-        () => setTokenState(prevState => ({ ...prevState, ...InitTokenListState }))
+        () => setTokenState((prevState) => ({ ...prevState, ...InitTokenListState }))
       )
     );
   };
@@ -146,7 +146,7 @@ const TokenList = (props: any) => {
         toolBarRender={() => [
           <CreateBtn
             key={'CreateToken'}
-            onClick={() => setTokenState(prevState => ({ ...prevState, addedOpen: true }))}
+            onClick={() => setTokenState((prevState) => ({ ...prevState, addedOpen: true }))}
           />
         ]}
         request={(params, sorter, filter: any) =>
@@ -162,7 +162,7 @@ const TokenList = (props: any) => {
       <TokenModalForm
         key={'handleSubmitToken'}
         onSubmit={handleSubmitToken}
-        onCancel={() => setTokenState(prevState => ({ ...prevState, addedOpen: false }))}
+        onCancel={() => setTokenState((prevState) => ({ ...prevState, addedOpen: false }))}
         visible={tokenState.addedOpen}
         value={{}}
         loading={tokenState.loading}
@@ -173,7 +173,7 @@ const TokenList = (props: any) => {
             key={'handleUpdateToken'}
             onSubmit={handleSubmitToken}
             onCancel={() =>
-              setTokenState(prevState => ({ ...prevState, editOpen: false, value: {} }))
+              setTokenState((prevState) => ({ ...prevState, editOpen: false, value: {} }))
             }
             visible={tokenState.editOpen}
             value={tokenState.value}

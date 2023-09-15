@@ -826,7 +826,7 @@ export default {
     '地址必须和DolphinScheduler后台配置的地址一致，eg: http://127.0.0.1:12345/dolphinscheduler',
   'sys.dolphinscheduler.settings.token': 'DolphinScheduler Token',
   'sys.dolphinscheduler.settings.token.note':
-    'DolphinScheduler的Token，请在DolphinScheduler的安全中心->Token管理中创建一个token，并填入该配置中',
+    'DolphinScheduler的Token，请在DolphinScheduler的安全中心->令牌管理中创建一个token，并填入该配置中',
   'sys.dolphinscheduler.settings.projectName': 'DolphinScheduler 项目名',
   'sys.dolphinscheduler.settings.projectName.note':
     'DolphinScheduler 中指定的项目名称，不区分大小写',
@@ -932,16 +932,17 @@ export default {
   'sys.alert.rule.ruleType': '规则类型',
   'sys.alert.rule.rule': '规则',
   'sys.alert.rule.template': '告警模板',
-  'sys.alert.rule.triger': '触发配置',
-  'sys.alert.rule.trigerConditions': '触发条件',
+  'sys.alert.rule.trigger': '触发配置',
+  'sys.alert.rule.triggerConditions': '触发条件',
   'sys.alert.rule.anyRule': '任意规则',
   'sys.alert.rule.allRule': '所有规则',
-  'sys.alert.rule.trigerRule': '触发规则',
+  'sys.alert.rule.triggerRule': '触发规则',
   'sys.alert.rule.addRule': '添加规则',
   'sys.alert.rule.jobStatus': '作业状态',
   'sys.alert.rule.checkpointTime': 'CheckPoint时间',
   'sys.alert.rule.checkpointFailed': 'Checkpoint失败',
   'sys.alert.rule.jobException': '作业产生异常',
+  'sys.alert.rule.delete': '你确定要删除该告警策略吗？',
 
   // metrics
   // server

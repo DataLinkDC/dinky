@@ -15,7 +15,7 @@
                dat.name as template_name,
                dat.template_content
         from dinky_alert_rules dar
-                 left join dinky.dinky_alert_template dat on dar.template_id = dat.id
+                 left join dinky_alert_template dat on dar.template_id = dat.id
         where dar.enabled = 1
     </select>
 

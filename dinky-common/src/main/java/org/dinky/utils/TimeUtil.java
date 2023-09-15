@@ -21,6 +21,7 @@ package org.dinky.utils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
@@ -58,6 +59,11 @@ public class TimeUtil {
      */
     public static String convertTimeToString(Long time) {
         return convertTimeToString(time, "yyyy-MM-dd HH:mm:ss");
+    }
+
+    public static String convertTimeToString(LocalDateTime time) {
+        return convertTimeToString(
+                time.toInstant(OffsetDateTime.now().getOffset()).toEpochMilli(), "yyyy-MM-dd HH:mm:ss");
     }
 
     /**

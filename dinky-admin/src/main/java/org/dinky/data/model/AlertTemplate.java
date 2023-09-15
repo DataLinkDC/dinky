@@ -23,12 +23,16 @@ import org.dinky.mybatis.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_alert_template")
+@ApiModel(value = "AlertTemplate", description = "AlertTemplate")
 public class AlertTemplate extends SuperEntity {
+    @ApiModelProperty(value = "name", required = true, dataType = "String", example = "# 11 \n > 11")
     String templateContent;
 }

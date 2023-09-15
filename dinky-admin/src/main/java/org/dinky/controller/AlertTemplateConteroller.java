@@ -33,8 +33,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiImplicitParam;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -50,14 +52,31 @@ public class AlertTemplateConteroller {
     }
 
     @DeleteMapping
-    @Log(title = "Delete AlertTemplate ", businessType = BusinessType.INSERT_OR_UPDATE)
-    public Result<Boolean> delete(int id) {
-        return Result.succeed(alertTemplateService.removeById(id));
+    @Log(title = "Delete AlertTemplate ", businessType = BusinessType.DELETE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "AlertTemplate ID",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            example = "1")
+    public Result<Boolean> deleteAlertTemplateById(@RequestParam Integer id) {
+        if (alertTemplateService.removeById(id)) {
+            return Result.succeed(Status.DELETE_SUCCESS);
+        }
+        return Result.failed(Status.DELETE_FAILED);
     }
 
     @PutMapping
     @Log(title = "Insert OR Update AlertTemplate ", businessType = BusinessType.INSERT_OR_UPDATE)
-    public Result<Void> put(@RequestBody AlertTemplate alertTemplate) {
+    @ApiImplicitParam(
+            name = "alertTemplate",
+            value = "AlertTemplate",
+            required = true,
+            dataType = "AlertTemplate",
+            paramType = "body",
+            dataTypeClass = AlertTemplate.class)
+    public Result<Void> saveOrUpdateAlertTemplate(@RequestBody AlertTemplate alertTemplate) {
         if (alertTemplateService.saveOrUpdate(alertTemplate)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {

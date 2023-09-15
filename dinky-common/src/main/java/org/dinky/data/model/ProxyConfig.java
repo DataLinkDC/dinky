@@ -17,23 +17,22 @@
  *
  */
 
-package org.dinky.alert.email.template;
+package org.dinky.data.model;
 
-import org.dinky.alert.ShowType;
+import lombok.Getter;
 
-/** AlertTemplate */
-public interface AlertTemplate {
+@Getter
+public class ProxyConfig {
 
-    String getMessageFromTemplate(String title, String content, ShowType showType, boolean showAll);
+    private final String hostname;
+    private final Integer port;
+    private final String user;
+    private final String password;
 
-    /**
-     * default showAll is true
-     *
-     * @param content alert message content
-     * @param showType show type
-     * @return a message from a specified alert template
-     */
-    default String getMessageFromTemplate(String title, String content, ShowType showType) {
-        return getMessageFromTemplate(title, content, showType, true);
+    public ProxyConfig(String hostname, Integer port, String user, String password) {
+        this.hostname = hostname;
+        this.port = port;
+        this.user = user;
+        this.password = password;
     }
 }

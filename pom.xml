@@ -85,7 +85,6 @@
         <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
         <maven-help-plugin.version>3.4.0</maven-help-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-shade-plugin.version>3.4.1</maven-shade-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
@@ -95,6 +94,7 @@
         <mybatis-plus-boot-starter.version>3.5.3.1</mybatis-plus-boot-starter.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
+        <org.commonmark>0.21.0</org.commonmark>
         <oshi.version>6.4.2</oshi.version>
         <poi.version>5.2.3</poi.version>
         <postgresql.version>42.5.1</postgresql.version>
@@ -108,6 +108,7 @@
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
+        <smily.version>1.12.1</smily.version>
         <snakeyaml.version>1.33</snakeyaml.version>
         <spotless.ratchetFrom>origin/dev</spotless.ratchetFrom>
         <spotless.version>2.27.1</spotless.version>
@@ -119,6 +120,17 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.commonmark</groupId>
+                <artifactId>commonmark</artifactId>
+                <version>${org.commonmark}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mitre.dsmiley.httpproxy</groupId>
+                <artifactId>smiley-http-proxy-servlet</artifactId>
+                <version>${smily.version}</version>
+            </dependency>
             <!--easy-rules 执行引擎-->
             <dependency>
                 <groupId>org.jeasy</groupId>

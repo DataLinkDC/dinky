@@ -405,7 +405,7 @@ export function parseNumStr(num: number) {
  * @param {number} second_time
  * @returns {any}
  */
-export function parseMilliSecondStr(second_time: number) {
+export function parseMilliSecondStr(second_time: number | undefined) {
   if (second_time == null) {
     return 'None';
   }
