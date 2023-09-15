@@ -17,6 +17,7 @@
  *
  */
 
+import { JOB_STATUS } from '@/pages/DevOps/constants';
 import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
 import MonitorConfigTab from '@/pages/DevOps/JobDetail/JobMetrics/MetricsFilter/MetricsConfigTab';
 import { putMetricsLayout } from '@/pages/DevOps/JobDetail/JobMetrics/service';
@@ -25,7 +26,6 @@ import { l } from '@/utils/intl';
 import { ModalForm } from '@ant-design/pro-components';
 import { Button, Tabs } from 'antd';
 import { connect } from 'umi';
-import {JOB_STATUS} from "@/pages/DevOps/constants";
 
 const MetricsConfigForm = (props: any) => {
   const { dispatch, jobDetail, metricsTarget, layoutName } = props;
@@ -74,11 +74,11 @@ const MetricsConfigForm = (props: any) => {
       width={1000}
       layout={'horizontal'}
       title={l('devops.jobinfo.metrics.configMetrics')}
-      trigger={<Button
-        type='primary'
-        disabled={jobDetail.instance.status != JOB_STATUS.RUNNING}>
-        {l('devops.jobinfo.metrics.configMetrics')}
-    </Button>}
+      trigger={
+        <Button type='primary' disabled={jobDetail.instance.status != JOB_STATUS.RUNNING}>
+          {l('devops.jobinfo.metrics.configMetrics')}
+        </Button>
+      }
       onFinish={async () => await saveJobMetrics()}
     >
       <Tabs items={itemTabs} />
