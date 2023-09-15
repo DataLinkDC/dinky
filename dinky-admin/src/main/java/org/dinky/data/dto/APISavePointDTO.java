@@ -22,6 +22,8 @@ package org.dinky.data.dto;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.job.JobConfig;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,12 +34,37 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "APISavePointDTO", description = "API Save Point Data Transfer Object")
 public class APISavePointDTO {
 
+    @ApiModelProperty(value = "Job ID", dataType = "String", example = "job123", notes = "The ID of the job")
     private String jobId;
+
+    @ApiModelProperty(
+            value = "Save Point Type",
+            dataType = "String",
+            example = "full",
+            notes = "The type of save point (e.g., last)")
     private String savePointType;
+
+    @ApiModelProperty(
+            value = "Save Point",
+            dataType = "String",
+            example = "path/to/savepoint",
+            notes = "The path to the save point")
     private String savePoint;
+
+    @ApiModelProperty(
+            value = "Address",
+            dataType = "String",
+            example = "localhost:8081",
+            notes = "The address of the job manager")
     private String address;
+
+    @ApiModelProperty(
+            value = "Gateway Configuration",
+            dataType = "GatewayConfig",
+            notes = "Gateway configuration details")
     private GatewayConfig gatewayConfig;
 
     public JobConfig getJobConfig() {

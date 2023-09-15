@@ -21,16 +21,31 @@ package org.dinky.data.dto;
 
 import java.util.Map;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * AbstractStatementDTO
  *
  * @since 2021/12/29
  */
+@ApiModel(value = "AbstractStatementDTO", description = "Abstract Statement Data Transfer Object")
 public class AbstractStatementDTO {
 
+    @ApiModelProperty(value = "Statement", dataType = "String", example = "SELECT * FROM table", notes = "SQL语句")
     private String statement;
+
+    @ApiModelProperty(value = "Environment ID", dataType = "Integer", example = "1", notes = "环境ID")
     private Integer envId;
+
+    @ApiModelProperty(value = "Fragment Flag", dataType = "boolean", example = "false", notes = "是否为片段")
     private boolean fragment = false;
+
+    @ApiModelProperty(
+            value = "Variables",
+            dataType = "Map<String, String>",
+            example = "{\"key\": \"value\"}",
+            notes = "变量集合")
     private Map<String, String> variables;
 
     public String getStatement() {

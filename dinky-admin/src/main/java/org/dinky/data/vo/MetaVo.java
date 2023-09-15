@@ -19,11 +19,24 @@
 
 package org.dinky.data.vo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel(value = "MetaVo", description = "Metadata Value Object")
 public class MetaVo {
-    /** 设置该路由在侧边栏和面包屑中展示的名字 */
+
+    @ApiModelProperty(
+            value = "Name to display in sidebar and breadcrumb",
+            dataType = "String",
+            notes = "Name of the route to display in the user interface.",
+            example = "Home")
     private String title;
 
-    /** 设置该路由的图标，对应路径src/icons/svg */
+    @ApiModelProperty(
+            value = "Icon for the route (e.g., 'home')",
+            dataType = "String",
+            notes = "Icon representing the route.",
+            example = "home")
     private String icon;
 
     public MetaVo() {}

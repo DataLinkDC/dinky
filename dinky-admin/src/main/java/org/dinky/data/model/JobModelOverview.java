@@ -19,12 +19,21 @@
 
 package org.dinky.data.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
+@ApiModel(value = "JobModelOverview", description = "Job Model Overview Information")
 public class JobModelOverview {
-    /** BATCH_JOB_COUNT */
+
+    @ApiModelProperty(value = "Batch Job Count", dataType = "Integer", example = "5", notes = "Count of batch jobs")
     private Integer batchJobCount;
-    /** STREAMING_JOB_COUNT */
+
+    @ApiModelProperty(
+            value = "Streaming Job Count",
+            dataType = "Integer",
+            example = "3",
+            notes = "Count of streaming jobs")
     private Integer streamingJobCount;
 }

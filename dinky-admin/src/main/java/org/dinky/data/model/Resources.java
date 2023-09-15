@@ -27,7 +27,14 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,41 +42,78 @@ import lombok.Setter;
 @TableName(value = "dinky_resources")
 @Getter
 @Setter
+@ApiModel(value = "Resources", description = "Resource Information")
 public class Resources extends Model<Resources> {
-    /** key */
+
     @TableId(type = IdType.AUTO)
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the resource")
     private Integer id;
 
-    /** file name */
+    @ApiModelProperty(value = "File Name", dataType = "String", example = "example.txt", notes = "Name of the file")
     private String fileName;
 
-    /** */
+    @ApiModelProperty(value = "Description", dataType = "String", notes = "Description or details about the resource")
     private String description;
 
-    /** user id */
+    @ApiModelProperty(
+            value = "User ID",
+            dataType = "Integer",
+            example = "1001",
+            notes = "ID of the user who owns the resource")
     private Integer userId;
 
-    /** resource type,0:FILE，1:UDF */
+    @ApiModelProperty(
+            value = "Resource Type",
+            dataType = "Integer",
+            example = "0",
+            notes = "Type of the resource (0 for FILE, 1 for UDF)")
     private Integer type;
 
-    /** resource size */
+    @ApiModelProperty(
+            value = "Resource Size",
+            dataType = "Long",
+            example = "1024",
+            notes = "Size of the resource in bytes")
     private Long size;
 
-    /** */
+    @ApiModelProperty(
+            value = "Parent ID",
+            dataType = "Integer",
+            example = "0",
+            notes = "ID of the parent resource (if applicable)")
     private Integer pid;
 
-    /** */
+    @ApiModelProperty(
+            value = "Full Name",
+            dataType = "String",
+            example = "path/to/example.txt",
+            notes = "Full name or path of the resource")
     private String fullName;
 
-    /** */
+    @ApiModelProperty(
+            value = "Is Directory",
+            dataType = "Boolean",
+            notes = "Flag indicating if the resource is a directory")
     private Boolean isDirectory;
 
-    /** create time */
     @TableField(fill = FieldFill.INSERT)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(
+            value = "Create Time",
+            dataType = "String",
+            notes = "Timestamp indicating the creation time of the resource")
     private LocalDateTime createTime;
 
-    /** update time */
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(
+            value = "Update Time",
+            dataType = "String",
+            notes = "Timestamp indicating the last update time of the resource")
     private LocalDateTime updateTime;
 
     @TableField(exist = false)

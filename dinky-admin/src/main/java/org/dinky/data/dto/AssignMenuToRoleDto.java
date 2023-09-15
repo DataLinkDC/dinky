@@ -21,6 +21,8 @@ package org.dinky.data.dto;
 
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +30,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(value = "AssignMenuToRoleDto", description = "DTO for assigning menus to a role")
 public class AssignMenuToRoleDto {
+
+    @ApiModelProperty(value = "Role ID", dataType = "Integer", example = "1", notes = "The ID of the role")
     private Integer roleId;
+
+    @ApiModelProperty(
+            value = "Menu IDs",
+            dataType = "List<Integer>",
+            example = "[1, 2, 3]",
+            notes = "A list of menu IDs to assign to the role")
     private List<Integer> menuIds;
 }

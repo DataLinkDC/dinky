@@ -23,6 +23,8 @@ import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -34,13 +36,21 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_task_statement")
+@ApiModel(value = "Statement", description = "Statement Information")
 public class Statement implements Serializable {
 
     private static final long serialVersionUID = 1646348574144815792L;
 
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the statement")
     private Integer id;
 
+    @ApiModelProperty(
+            value = "Tenant ID",
+            dataType = "Integer",
+            example = "1001",
+            notes = "ID of the tenant associated with the statement")
     private Integer tenantId;
 
+    @ApiModelProperty(value = "SQL Statement", dataType = "String", notes = "SQL statement")
     private String statement;
 }

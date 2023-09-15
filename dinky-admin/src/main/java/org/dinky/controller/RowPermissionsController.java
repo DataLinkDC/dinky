@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
@@ -60,6 +61,13 @@ public class RowPermissionsController {
     @PutMapping
     @ApiOperation("Insert Or Update RowPermissions")
     @Log(title = "Insert Or Update RowPermissions", businessType = BusinessType.INSERT)
+    @ApiImplicitParam(
+            name = "roleSelectPermissions",
+            value = "RowPermissions",
+            dataType = "RowPermissions",
+            paramType = "body",
+            required = true,
+            dataTypeClass = RowPermissions.class)
     public Result saveOrUpdateRowPermissions(@RequestBody RowPermissions roleSelectPermissions) {
         if (roleSelectPermissionsService.saveOrUpdate(roleSelectPermissions)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -77,6 +85,13 @@ public class RowPermissionsController {
     @DeleteMapping("/delete")
     @ApiOperation("Delete RowPermissions By Id")
     @Log(title = "Delete RowPermissions By Id", businessType = BusinessType.DELETE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "RowPermissions Id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true,
+            dataTypeClass = Integer.class)
     public Result delete(@RequestParam("id") Integer id) {
 
         if (roleSelectPermissionsService.removeById(id)) {
@@ -93,6 +108,13 @@ public class RowPermissionsController {
      */
     @PostMapping
     @ApiOperation("Query RowPermissions List")
+    @ApiImplicitParam(
+            name = "para",
+            value = "Query Condition",
+            dataType = "JsonNode",
+            paramType = "body",
+            required = true,
+            dataTypeClass = JsonNode.class)
     public ProTableResult<RowPermissions> listRowPermissions(@RequestBody JsonNode para) {
         return roleSelectPermissionsService.selectForProTable(para);
     }

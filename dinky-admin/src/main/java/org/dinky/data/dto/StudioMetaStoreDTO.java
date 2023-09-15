@@ -22,6 +22,8 @@ package org.dinky.data.dto;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.job.JobConfig;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,12 +34,34 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "StudioMetaStoreDTO", description = "DTO for storing metadata in Studio")
 public class StudioMetaStoreDTO extends AbstractStatementDTO {
 
+    @ApiModelProperty(value = "Catalog", dataType = "String", example = "my_catalog", notes = "The name of the catalog")
     private String catalog;
+
+    @ApiModelProperty(
+            value = "Database",
+            dataType = "String",
+            example = "my_database",
+            notes = "The name of the database")
     private String database;
+
+    @ApiModelProperty(value = "Table", dataType = "String", example = "my_table", notes = "The name of the table")
     private String table;
+
+    @ApiModelProperty(
+            value = "Dialect",
+            dataType = "String",
+            example = "MySQL",
+            notes = "The SQL dialect for the table")
     private String dialect;
+
+    @ApiModelProperty(
+            value = "Database ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "The identifier of the database")
     private Integer databaseId;
 
     public JobConfig getJobConfig() {

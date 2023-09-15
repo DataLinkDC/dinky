@@ -27,6 +27,8 @@ import java.util.Map;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,14 +39,43 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "GatewayConfig", description = "Configuration for executing Flink jobs via a gateway")
 public class GatewayConfig {
 
+    @ApiModelProperty(
+            value = "ID of the task associated with the job",
+            dataType = "Integer",
+            example = "123",
+            notes = "ID of the task")
     private Integer taskId;
+
+    @ApiModelProperty(
+            value = "Paths to the JAR files",
+            dataType = "String[]",
+            example = "[\"/path/to/jar1.jar\",\"/path/to/jar2.jar\"]",
+            notes = "Array of JAR file paths")
     private String[] jarPaths;
+
+    @ApiModelProperty(
+            value = "Type of gateway (e.g., YARN, Kubernetes)",
+            dataType = "GatewayType",
+            example = "YARN",
+            notes = "Type of the gateway")
     private GatewayType type;
+
+    @ApiModelProperty(
+            value = "Cluster configuration for executing the job",
+            dataType = "ClusterConfig",
+            notes = "Cluster configuration")
     private ClusterConfig clusterConfig;
+
+    @ApiModelProperty(value = "Flink job configuration", dataType = "FlinkConfig", notes = "Flink job configuration")
     private FlinkConfig flinkConfig;
+
+    @ApiModelProperty(value = "Application configuration", dataType = "AppConfig", notes = "Application configuration")
     private AppConfig appConfig;
+
+    @ApiModelProperty(value = "Kubernetes configuration", dataType = "K8sConfig", notes = "Kubernetes configuration")
     private K8sConfig kubernetesConfig;
 
     public GatewayConfig() {

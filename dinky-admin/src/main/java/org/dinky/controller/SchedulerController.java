@@ -56,6 +56,8 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -74,6 +76,13 @@ public class SchedulerController {
     /** 获取任务定义 */
     @GetMapping("/task")
     @ApiOperation("Get Task Definition")
+    @ApiImplicitParam(
+            name = "dinkyTaskId",
+            value = "Dinky Task id",
+            required = true,
+            dataType = "Long",
+            paramType = "query",
+            example = "1")
     public Result<TaskDefinition> getTaskDefinition(@ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
         Catalogue catalogue =
                 catalogueService.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
@@ -107,6 +116,13 @@ public class SchedulerController {
     /** 获取前置任务定义集合 */
     @GetMapping("/upstream/tasks")
     @ApiOperation("Get Upstream Task Definition")
+    @ApiImplicitParam(
+            name = "dinkyTaskId",
+            value = "Dinky Task id",
+            required = true,
+            dataType = "Long",
+            paramType = "query",
+            example = "1")
     public Result<List<TaskMainInfo>> getTaskMainInfos(@ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
         Catalogue catalogue =
                 catalogueService.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
@@ -127,6 +143,28 @@ public class SchedulerController {
     /** 创建任务定义 */
     @PostMapping("/task")
     @ApiOperation("Create Task Definition")
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "dinkyTaskId",
+                value = "Dinky Task id",
+                required = true,
+                dataType = "Long",
+                paramType = "query",
+                example = "1"),
+        @ApiImplicitParam(
+                name = "upstreamCodes",
+                value = "Upstream Task Codes",
+                required = false,
+                dataType = "String",
+                paramType = "query",
+                example = "1,2,3"),
+        @ApiImplicitParam(
+                name = "taskRequest",
+                value = "Task Request",
+                required = true,
+                dataType = "TaskRequest",
+                paramType = "body"),
+    })
     public Result<String> createTaskDefinition(
             @ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
             @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId,
@@ -178,6 +216,36 @@ public class SchedulerController {
     /** 更新任务定义 */
     @PutMapping("/task")
     @ApiOperation("Update Task Definition")
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "projectCode",
+                value = "Project Code",
+                required = true,
+                dataType = "Long",
+                paramType = "query",
+                example = "1"),
+        @ApiImplicitParam(
+                name = "processCode",
+                value = "Process Code",
+                required = true,
+                dataType = "Long",
+                paramType = "query",
+                example = "1"),
+        @ApiImplicitParam(
+                name = "taskCode",
+                value = "Task Code",
+                required = true,
+                dataType = "Long",
+                paramType = "query",
+                example = "1"),
+        @ApiImplicitParam(
+                name = "upstreamCodes",
+                value = "Upstream Task Codes",
+                required = false,
+                dataType = "String",
+                paramType = "query",
+                example = "1,2,3")
+    })
     public Result<String> updateTaskDefinition(
             @ApiParam(value = "项目编号") @RequestParam long projectCode,
             @ApiParam(value = "工作流定义编号") @RequestParam long processCode,

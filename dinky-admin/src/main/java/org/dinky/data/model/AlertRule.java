@@ -25,6 +25,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.Extension;
+import io.swagger.annotations.ExtensionProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -47,7 +49,12 @@ public class AlertRule extends SuperEntity {
             required = true,
             dataType = "String",
             example = "ruleType",
-            allowableValues = "CUSTOM,SYSTEM")
+            allowableValues = "CUSTOM,SYSTEM",
+            extensions = {
+                @Extension(
+                        name = "ruleType-enum",
+                        properties = {@ExtensionProperty(name = "values", value = "CUSTOM,SYSTEM")})
+            })
     String ruleType;
 
     @ApiModelProperty(
@@ -55,7 +62,12 @@ public class AlertRule extends SuperEntity {
             required = true,
             dataType = "String",
             example = "or",
-            allowableValues = "or,and")
+            allowableValues = "or,and",
+            extensions = {
+                @Extension(
+                        name = "triggerConditions-enum",
+                        properties = {@ExtensionProperty(name = "values", value = "or,and")})
+            })
     String triggerConditions;
 
     @ApiModelProperty(value = "description", required = true, dataType = "String", example = "description")

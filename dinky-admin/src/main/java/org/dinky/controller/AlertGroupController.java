@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +68,12 @@ public class AlertGroupController {
      */
     @PutMapping
     @Log(title = "Insert OR Update AlertGroup ", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiImplicitParam(
+            name = "alertGroup",
+            value = "AlertGroup",
+            required = true,
+            dataType = "AlertGroup",
+            dataTypeClass = AlertGroup.class)
     @ApiOperation("Insert OR Update AlertGroup")
     public Result<Void> saveOrUpdateAlertGroup(@RequestBody AlertGroup alertGroup) throws Exception {
         if (alertGroupService.saveOrUpdate(alertGroup)) {
@@ -83,6 +90,12 @@ public class AlertGroupController {
      * @return {@link ProTableResult} with {@link AlertGroup}
      */
     @PostMapping
+    @ApiImplicitParam(
+            name = "para",
+            value = "JsonNode",
+            required = true,
+            dataType = "JsonNode",
+            dataTypeClass = JsonNode.class)
     @ApiOperation("Query AlertGroup List")
     public ProTableResult<AlertGroup> listAlertGroups(@RequestBody JsonNode para) {
         return alertGroupService.selectForProTable(para);
@@ -106,8 +119,14 @@ public class AlertGroupController {
      */
     @PutMapping("/enable")
     @ApiOperation("Update AlertGroup Status")
+    @ApiImplicitParam(
+            name = "id",
+            value = "AlertGroup Id",
+            required = true,
+            dataTypeClass = Integer.class,
+            dataType = "Integer")
     @Log(title = "Update AlertGroup Status", businessType = BusinessType.UPDATE)
-    public Result<List<AlertGroup>> modifyAlertGroupStatus(@RequestParam("id") Integer id) {
+    public Result<Void> modifyAlertGroupStatus(@RequestParam("id") Integer id) {
         if (alertGroupService.modifyAlertGroupStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
@@ -123,6 +142,12 @@ public class AlertGroupController {
      */
     @DeleteMapping("/delete")
     @ApiOperation("Delete AlertGroup By Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "AlertGroup Id",
+            required = true,
+            dataTypeClass = Integer.class,
+            dataType = "Integer")
     @Log(title = "Delete AlertGroup By Id", businessType = BusinessType.DELETE)
     public Result<Void> deleteGroupById(@RequestParam("id") Integer id) {
         if (alertGroupService.deleteGroupById(id)) {
@@ -139,6 +164,12 @@ public class AlertGroupController {
      * @return {@link ProTableResult} with {@link AlertHistory}
      */
     @PostMapping("/history")
+    @ApiImplicitParam(
+            name = "para",
+            value = "JsonNode",
+            dataType = "JsonNode",
+            required = true,
+            dataTypeClass = JsonNode.class)
     @ApiOperation("Query AlertHistory List")
     public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {
         return alertHistoryService.selectForProTable(para);

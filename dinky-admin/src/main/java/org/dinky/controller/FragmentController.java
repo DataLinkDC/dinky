@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +63,13 @@ public class FragmentController {
     @PutMapping
     @Log(title = "Insert Or Update Fragment", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Fragment")
+    @ApiImplicitParam(
+            name = "fragmentVariable",
+            value = "FragmentVariable",
+            required = true,
+            dataType = "FragmentVariable",
+            paramType = "body",
+            dataTypeClass = FragmentVariable.class)
     public Result<Void> saveOrUpdateFragment(@RequestBody FragmentVariable fragmentVariable) {
         if (fragmentVariableService.saveOrUpdate(fragmentVariable)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -79,6 +87,13 @@ public class FragmentController {
     @PostMapping
     @Log(title = "FragmentVariable List", businessType = BusinessType.QUERY)
     @ApiOperation("FragmentVariable List")
+    @ApiImplicitParam(
+            name = "para",
+            value = "JsonNode",
+            required = true,
+            dataType = "JsonNode",
+            paramType = "body",
+            dataTypeClass = JsonNode.class)
     public ProTableResult<FragmentVariable> listFragmentVariable(@RequestBody JsonNode para) {
         final ProTableResult<FragmentVariable> result = fragmentVariableService.selectForProTable(para);
         // 敏感值不返回
@@ -101,6 +116,13 @@ public class FragmentController {
     @DeleteMapping("/delete")
     @Log(title = "FragmentVariable Delete", businessType = BusinessType.DELETE)
     @ApiOperation("FragmentVariable Delete")
+    @ApiImplicitParam(
+            name = "id",
+            value = "FragmentVariable Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class)
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (fragmentVariableService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -118,6 +140,13 @@ public class FragmentController {
     @PutMapping("/enable")
     @Log(title = "Update FragmentVariable Status", businessType = BusinessType.UPDATE)
     @ApiOperation("Update FragmentVariable Status")
+    @ApiImplicitParam(
+            name = "id",
+            value = "FragmentVariable Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class)
     public Result<Void> modifyFragmentStatus(@RequestParam Integer id) {
         if (fragmentVariableService.modifyFragmentStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);

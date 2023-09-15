@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,6 +46,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
+@ApiModel(value = "ExecutorSetting", description = "Executor settings for a job")
 public class ExecutorSetting {
 
     private static final Logger log = LoggerFactory.getLogger(ExecutorSetting.class);
@@ -59,13 +62,53 @@ public class ExecutorSetting {
     public static final String CONFIG_CONST = "config";
 
     private static final ObjectMapper mapper = new ObjectMapper();
+
+    @ApiModelProperty(
+            value = "Flag indicating whether to use batch model",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to use batch model")
     private boolean useBatchModel;
+
+    @ApiModelProperty(
+            value = "Checkpoint interval",
+            dataType = "Integer",
+            example = "5000",
+            notes = "Checkpoint interval")
     private Integer checkpoint;
+
+    @ApiModelProperty(value = "Parallelism level", dataType = "Integer", example = "4", notes = "Parallelism level")
     private Integer parallelism;
+
+    @ApiModelProperty(
+            value = "Flag indicating whether to use SQL fragment",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to use SQL fragment")
     private boolean useSqlFragment;
+
+    @ApiModelProperty(
+            value = "Flag indicating whether to use statement set",
+            dataType = "boolean",
+            example = "false",
+            notes = "Flag indicating whether to use statement set")
     private boolean useStatementSet;
+
+    @ApiModelProperty(
+            value = "Save point path",
+            dataType = "String",
+            example = "/savepoints",
+            notes = "Save point path")
     private String savePointPath;
+
+    @ApiModelProperty(value = "Name of the job", dataType = "String", example = "MyJob", notes = "Name of the job")
     private String jobName;
+
+    @ApiModelProperty(
+            value = "Map of configuration properties",
+            dataType = "Map<String, String>",
+            example = "{\"config1\": \"value1\", \"config2\": \"value2\"}",
+            notes = "Map of configuration properties")
     private Map<String, String> config;
 
     public ExecutorSetting(boolean useSqlFragment) {

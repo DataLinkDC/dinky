@@ -21,6 +21,8 @@ package org.dinky.data.model;
 
 import java.util.Map;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -29,13 +31,27 @@ import lombok.Data;
  * @create: 2022-06-27 11:41
  */
 @Data
+@ApiModel(value = "TaskContainerConfigInfo", description = "Task Container Configuration Information")
 public class TaskContainerConfigInfo {
 
+    @ApiModelProperty(
+            value = "Metrics",
+            dataType = "Map<String, String>",
+            notes = "Metrics related to the task container")
     private Map<String, String> metrics;
 
+    @ApiModelProperty(value = "Task Manager Log", dataType = "String", notes = "Log file path for the task manager")
     private String taskManagerLog;
 
+    @ApiModelProperty(
+            value = "Task Manager Stdout",
+            dataType = "String",
+            notes = "Standard output file path for the task manager")
     private String taskManagerStdout;
 
+    @ApiModelProperty(
+            value = "Task Manager Thread Dump",
+            dataType = "String",
+            notes = "Thread dump information for the task manager")
     private String taskManagerThreadDump;
 }

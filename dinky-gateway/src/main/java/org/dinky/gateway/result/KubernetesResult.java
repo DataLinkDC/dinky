@@ -24,15 +24,36 @@ import org.dinky.gateway.enums.GatewayType;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * KubernetesResult
  *
  * @since 2021/12/26 15:06
  */
+@ApiModel(value = "KubernetesResult", description = "Result of Kubernetes operation")
 public class KubernetesResult extends AbstractGatewayResult {
 
+    @ApiModelProperty(
+            value = "Cluster ID",
+            dataType = "String",
+            example = "cluster123",
+            notes = "Unique identifier for the Kubernetes cluster")
     private String clusterId;
+
+    @ApiModelProperty(
+            value = "Web URL",
+            dataType = "String",
+            example = "https://k8s-dashboard.example.com",
+            notes = "URL for accessing the Kubernetes web dashboard")
     private String webURL;
+
+    @ApiModelProperty(
+            value = "Job IDs",
+            dataType = "List<String>",
+            example = "[\"job1\", \"job2\"]",
+            notes = "List of job identifiers associated with the Kubernetes cluster")
     private List<String> jids;
 
     public KubernetesResult(GatewayType type, LocalDateTime startTime) {

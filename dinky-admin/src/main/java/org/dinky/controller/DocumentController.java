@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +66,13 @@ public class DocumentController {
     @PutMapping
     @Log(title = "Insert Or Update Document", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Document")
+    @ApiImplicitParam(
+            name = "document",
+            value = "Document",
+            required = true,
+            dataType = "Document",
+            paramType = "body",
+            dataTypeClass = Document.class)
     public Result<Void> saveOrUpdateDocument(@RequestBody Document document) throws Exception {
         if (documentService.saveOrUpdate(document)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -81,6 +89,13 @@ public class DocumentController {
      */
     @PostMapping
     @ApiOperation("Document Query List")
+    @ApiImplicitParam(
+            name = "para",
+            value = "Query Condition",
+            required = true,
+            dataType = "JsonNode",
+            paramType = "body",
+            dataTypeClass = JsonNode.class)
     public ProTableResult<Document> listDocuments(@RequestBody JsonNode para) {
         return documentService.selectForProTable(para);
     }
@@ -94,6 +109,14 @@ public class DocumentController {
     @DeleteMapping("/delete")
     @Log(title = "Document Delete By id", businessType = BusinessType.DELETE)
     @ApiOperation("Document Delete By id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Document Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class,
+            example = "1")
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (documentService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -111,6 +134,14 @@ public class DocumentController {
     @PutMapping("/enable")
     @Log(title = "Update Document Status", businessType = BusinessType.UPDATE)
     @ApiOperation("Update Document Status")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Document Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class,
+            example = "1")
     public Result<Void> modifyDocumentStatus(@RequestParam Integer id) {
         if (documentService.modifyDocumentStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -128,6 +159,14 @@ public class DocumentController {
      */
     @GetMapping("/getFillAllByVersion")
     @ApiOperation("Get Document By Version")
+    @ApiImplicitParam(
+            name = "version",
+            value = "Document Version",
+            required = true,
+            dataType = "String",
+            paramType = "query",
+            dataTypeClass = String.class,
+            example = "1.0.0")
     public Result<List<Document>> getFillAllByVersion(@RequestParam String version) {
         return Result.succeed(documentService.getFillAllByVersion(version));
     }

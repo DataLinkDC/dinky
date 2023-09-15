@@ -43,4 +43,11 @@
         <module>dinky-metadata-presto</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

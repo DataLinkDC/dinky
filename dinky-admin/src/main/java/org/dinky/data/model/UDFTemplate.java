@@ -23,6 +23,8 @@ import org.dinky.mybatis.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -34,12 +36,15 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_udf_template")
+@ApiModel(value = "UDFTemplate", description = "User-Defined Function Template")
 public class UDFTemplate extends SuperEntity {
 
-    private static final long serialVersionUID = 7027411154789682344L;
-
+    @ApiModelProperty(value = "Code Type", dataType = "String", notes = "Type of the code")
     private String codeType;
 
+    @ApiModelProperty(value = "Function Type", dataType = "String", notes = "Type of the function")
     private String functionType;
+
+    @ApiModelProperty(value = "Template Code", dataType = "String", notes = "Code template")
     private String templateCode;
 }

@@ -19,14 +19,28 @@
 
 package org.dinky.data.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
+@ApiModel(value = "JobTypeOverView", description = "Job Type Overview Information")
 public class JobTypeOverView {
-    /** JOB TYPE eg: FlinkJar Mysql etc. */
+
+    @ApiModelProperty(value = "Job Type", dataType = "String", example = "FlinkJar", notes = "Type of the job")
     private String jobType;
-    /** JOB TYPE COUNT */
+
+    @ApiModelProperty(
+            value = "Job Type Count",
+            dataType = "Integer",
+            example = "5",
+            notes = "Count of jobs with the specified type")
     private Integer jobTypeCount;
-    /** JOB TYPE RATE */
+
+    @ApiModelProperty(
+            value = "Job Type Rate",
+            dataType = "Double",
+            example = "0.75",
+            notes = "Rate or percentage of jobs with the specified type")
     private Double rate;
 }

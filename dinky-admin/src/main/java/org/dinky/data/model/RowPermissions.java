@@ -27,43 +27,87 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_row_permissions")
+@ApiModel(value = "RowPermissions", description = "Row-Level Permissions Information")
 public class RowPermissions implements Serializable {
 
     private static final long serialVersionUID = 8676666963206334660L;
 
-    /** id */
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(
+            value = "ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "Unique identifier for the row-level permissions")
     private Integer id;
 
-    /** role id */
+    @ApiModelProperty(
+            value = "Role ID",
+            dataType = "Integer",
+            example = "1001",
+            notes = "ID of the role associated with the row permissions")
     private Integer roleId;
 
-    /** table_name */
+    @ApiModelProperty(
+            value = "Table Name",
+            dataType = "String",
+            example = "users",
+            notes = "Name of the table to which the row permissions apply")
     private String tableName;
 
-    /** expression */
+    @ApiModelProperty(
+            value = "Expression",
+            dataType = "String",
+            example = "user_id = 1001",
+            notes = "Expression defining the row-level permissions")
     private String expression;
 
-    /** create time */
     @TableField(fill = FieldFill.INSERT)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(
+            value = "Create Time",
+            dataType = "String",
+            notes = "Timestamp indicating the creation time of the row-level permissions")
     private LocalDateTime createTime;
 
-    /** update time */
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(
+            value = "Update Time",
+            dataType = "String",
+            notes = "Timestamp indicating the last update time of the row-level permissions")
     private LocalDateTime updateTime;
 
-    /** role code */
     @TableField(exist = false)
+    @ApiModelProperty(
+            value = "Role Code",
+            dataType = "String",
+            example = "ROLE_ADMIN",
+            notes = "Code representing the associated role")
     private String roleCode;
 
-    /** role name */
     @TableField(exist = false)
+    @ApiModelProperty(
+            value = "Role Name",
+            dataType = "String",
+            example = "Administrator",
+            notes = "Name of the associated role")
     private String roleName;
 }

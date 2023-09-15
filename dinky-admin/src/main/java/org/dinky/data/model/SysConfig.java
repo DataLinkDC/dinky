@@ -31,7 +31,14 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -43,24 +50,46 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_sys_config")
+@ApiModel(value = "SysConfig", description = "System Configuration Information")
 public class SysConfig extends Model<SysConfig> {
 
     private static final long serialVersionUID = 3769276772487490408L;
 
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(
+            value = "ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "Unique identifier for the system configuration")
     private Integer id;
 
     @NotNull(
-            message = "配置名不能为空",
+            message = "Configuration Name cannot be null",
             groups = {Save.class})
+    @ApiModelProperty(value = "Configuration Name", dataType = "String", notes = "Name of the system configuration")
     private String name;
 
     @TableField(value = "`value`")
+    @ApiModelProperty(value = "Configuration Value", dataType = "String", notes = "Value of the system configuration")
     private String value;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(
+            value = "Create Time",
+            dataType = "String",
+            notes = "Timestamp indicating the creation time of the system configuration")
     private LocalDateTime createTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(
+            value = "Update Time",
+            dataType = "String",
+            notes = "Timestamp indicating the last update time of the system configuration")
     private LocalDateTime updateTime;
 }

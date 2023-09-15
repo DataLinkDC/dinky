@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,10 +39,19 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(value = "TaskExtConfig", description = "Extended Configuration for Task")
 public class TaskExtConfig implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    @ApiModelProperty(
+            value = "UDF Config",
+            dataType = "TaskUdfConfig",
+            notes = "UDF (User-Defined Function) configuration for the task")
     private TaskUdfConfig udfConfig;
+
+    @ApiModelProperty(
+            value = "Custom Config",
+            dataType = "List<ConfigItem>",
+            notes = "Custom configuration items for the task")
     private List<ConfigItem> customConfig = new ArrayList<>();
 
     // 获取自定义配置的某个key的值

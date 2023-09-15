@@ -23,6 +23,8 @@ import org.dinky.assertion.Asserts;
 
 import java.util.Map;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,14 +35,56 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "DriverConfig", description = "Configuration for the driver component")
 public class DriverConfig {
 
+    @ApiModelProperty(
+            value = "Name of the driver",
+            dataType = "String",
+            example = "MyDriver",
+            notes = "Name of the driver component")
     private String name;
+
+    @ApiModelProperty(
+            value = "Type of the driver",
+            dataType = "String",
+            example = "Flink",
+            notes = "Type of the driver component")
     private String type;
+
+    @ApiModelProperty(
+            value = "IP address of the driver",
+            dataType = "String",
+            example = "192.168.1.100",
+            notes = "IP address of the driver component")
     private String ip;
+
+    @ApiModelProperty(
+            value = "Port number for communication",
+            dataType = "Integer",
+            example = "8081",
+            notes = "Port number for communication with the driver")
     private Integer port;
+
+    @ApiModelProperty(
+            value = "URL for the driver",
+            dataType = "String",
+            example = "http://192.168.1.100:8081",
+            notes = "URL for accessing the driver component")
     private String url;
+
+    @ApiModelProperty(
+            value = "Username for authentication",
+            dataType = "String",
+            example = "user123",
+            notes = "Username for authentication (if applicable)")
     private String username;
+
+    @ApiModelProperty(
+            value = "Password for authentication",
+            dataType = "String",
+            example = "password123",
+            notes = "Password for authentication (if applicable)")
     private String password;
 
     public DriverConfig() {}

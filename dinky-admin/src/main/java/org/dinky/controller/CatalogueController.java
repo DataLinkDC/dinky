@@ -44,6 +44,8 @@ import org.springframework.web.multipart.MultipartFile;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ZipUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,6 +107,12 @@ public class CatalogueController {
     @PutMapping("saveOrUpdateCatalogue")
     @Log(title = "Insert Or Update Catalogue", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Catalogue")
+    @ApiImplicitParam(
+            name = "catalogue",
+            value = "catalogue",
+            required = true,
+            dataType = "Catalogue",
+            dataTypeClass = Catalogue.class)
     public Result<Void> saveOrUpdateCatalogue(@RequestBody Catalogue catalogue) {
         if (catalogueService.saveOrUpdateOrRename(catalogue)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -132,6 +140,12 @@ public class CatalogueController {
     @PutMapping("/saveOrUpdateCatalogueAndTask")
     @Log(title = "Create Catalogue And Task", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Create Catalogue And Task")
+    @ApiImplicitParam(
+            name = "catalogueTaskDTO",
+            value = "catalogueTaskDTO",
+            required = true,
+            dataType = "CatalogueTaskDTO",
+            dataTypeClass = CatalogueTaskDTO.class)
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
         Catalogue catalogue = catalogueService.saveOrUpdateCatalogueAndTask(catalogueTaskDTO);
         if (catalogue.getId() != null) {
@@ -150,6 +164,20 @@ public class CatalogueController {
     @PutMapping("/moveCatalogue")
     @Log(title = "Move Catalogue", businessType = BusinessType.UPDATE)
     @ApiOperation("Move Catalogue")
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "originCatalogueId",
+                value = "originCatalogueId",
+                required = true,
+                dataType = "Integer",
+                dataTypeClass = Integer.class),
+        @ApiImplicitParam(
+                name = "targetParentId",
+                value = "targetParentId",
+                required = true,
+                dataType = "Integer",
+                dataTypeClass = Integer.class)
+    })
     public Result<Boolean> moveCatalogue(
             @RequestParam("originCatalogueId") Integer originCatalogueId,
             @RequestParam("targetParentId") Integer targetParentId) {
@@ -167,8 +195,14 @@ public class CatalogueController {
      */
     @PostMapping("/copyTask")
     @Log(title = "Copy Task", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiImplicitParam(
+            name = "catalogue",
+            value = "catalogue",
+            required = true,
+            dataType = "Catalogue",
+            dataTypeClass = Catalogue.class)
     @ApiOperation("Copy Task")
-    public Result<Catalogue> copyTask(@RequestBody Catalogue catalogue) {
+    public Result<Void> copyTask(@RequestBody Catalogue catalogue) {
         if (catalogueService.copyTask(catalogue)) {
             return Result.succeed(Status.COPY_SUCCESS);
         } else {
@@ -184,6 +218,7 @@ public class CatalogueController {
     @DeleteMapping("deleteCatalogueById")
     @Log(title = "Delete Catalogue By Id", businessType = BusinessType.DELETE)
     @ApiOperation("Delete Catalogue By Id")
+    @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "Integer", dataTypeClass = Integer.class)
     public Result<Void> deleteCatalogueById(@RequestParam Integer id) {
         return catalogueService.deleteCatalogueById(id);
     }

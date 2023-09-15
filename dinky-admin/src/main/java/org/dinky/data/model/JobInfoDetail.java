@@ -21,21 +21,46 @@ package org.dinky.data.model;
 
 import java.util.Set;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * JobInfoDetail
  *
  * @since 2022/3/1 19:31
  */
+@ApiModel(value = "JobInfoDetail", description = "Job Information Detail")
 public class JobInfoDetail {
 
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the job")
     private Integer id;
+
+    @ApiModelProperty(value = "Job Instance", notes = "Details about the job instance")
     private JobInstance instance;
+
+    @ApiModelProperty(value = "Cluster", notes = "Details about the cluster")
     private Cluster cluster;
+
+    @ApiModelProperty(value = "Cluster Configuration", notes = "Details about the cluster configuration")
     private ClusterConfiguration clusterConfiguration;
+
+    @ApiModelProperty(value = "History", notes = "Details about the history")
     private History history;
+
+    @ApiModelProperty(value = "Job History", notes = "Details about the job history")
     private JobHistory jobHistory;
+
+    @ApiModelProperty(value = "Job Manager Configuration", notes = "Details about the job manager configuration")
     private JobManagerConfiguration jobManagerConfiguration;
+
+    @ApiModelProperty(value = "Task Manager Configurations", notes = "Set of task manager configurations")
     private Set<TaskManagerConfiguration> taskManagerConfiguration;
+
+    @ApiModelProperty(
+            value = "Refresh Count",
+            dataType = "Integer",
+            example = "5",
+            notes = "Count of refresh operations")
     private Integer refreshCount;
 
     public JobInfoDetail(Integer id) {

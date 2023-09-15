@@ -38,6 +38,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +55,13 @@ public class ResourceController {
     @PostMapping("/createFolder")
     @ApiOperation("Create Folder")
     @Log(title = "Create Folder", businessType = BusinessType.INSERT)
+    @ApiImplicitParam(
+            name = "resourcesDTO",
+            value = "ResourcesDTO",
+            required = true,
+            dataType = "ResourcesDTO",
+            paramType = "body",
+            dataTypeClass = ResourcesDTO.class)
     public Result<TreeNodeDTO> createFolder(@RequestBody ResourcesDTO resourcesDTO) {
         return Result.succeed(resourcesService.createFolder(
                 resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription()));
@@ -61,6 +70,13 @@ public class ResourceController {
     @PostMapping("/rename")
     @ApiOperation("Rename Folder/File")
     @Log(title = "Rename Folder/File", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "resourcesDTO",
+            value = "ResourcesDTO",
+            required = true,
+            dataType = "ResourcesDTO",
+            paramType = "body",
+            dataTypeClass = ResourcesDTO.class)
     public Result<Void> rename(@RequestBody ResourcesDTO resourcesDTO) {
         resourcesService.rename(resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription());
         return Result.succeed();
@@ -68,18 +84,53 @@ public class ResourceController {
 
     @GetMapping("/showByTree")
     @ApiOperation("Query Folder/File Tree")
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "pid",
+                value = "Parent ID",
+                required = true,
+                dataType = "Integer",
+                paramType = "query"),
+        @ApiImplicitParam(
+                name = "showFloorNum",
+                value = "Show Floor Number",
+                required = true,
+                dataType = "Integer",
+                paramType = "query")
+    })
     public Result<List<TreeNodeDTO>> showByTree(Integer pid, Integer showFloorNum) {
         return Result.succeed(resourcesService.showByTree(pid, showFloorNum));
     }
 
     @GetMapping("/getContentByResourceId")
     @ApiOperation("Query Resource Content")
+    @ApiImplicitParam(name = "id", value = "Resource ID", required = true, dataType = "Integer", paramType = "query")
     public Result<String> getContentByResourceId(@RequestParam Integer id) {
         return Result.data(resourcesService.getContentByResourceId(id));
     }
 
     @PostMapping("/uploadFile")
     @ApiOperation("Upload File")
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "pid",
+                value = "Parent ID",
+                required = true,
+                dataType = "Integer",
+                paramType = "query"),
+        @ApiImplicitParam(
+                name = "desc",
+                value = "Description",
+                required = true,
+                dataType = "String",
+                paramType = "query"),
+        @ApiImplicitParam(
+                name = "file",
+                value = "File",
+                required = true,
+                dataType = "MultipartFile",
+                paramType = "query")
+    })
     @Log(title = "Upload File To Resource", businessType = BusinessType.UPLOAD)
     public Result<Void> uploadFile(Integer pid, String desc, @RequestParam("file") MultipartFile file) {
         resourcesService.uploadFile(pid, desc, file);
@@ -87,6 +138,9 @@ public class ResourceController {
     }
 
     @DeleteMapping("/remove")
+    @ApiOperation("Remove Folder/File")
+    @Log(title = "Remove Folder/File", businessType = BusinessType.DELETE)
+    @ApiImplicitParam(name = "id", value = "Resource ID", required = true, dataType = "Integer", paramType = "query")
     public Result<Void> remove(Integer id) {
         resourcesService.remove(id);
         return Result.succeed();

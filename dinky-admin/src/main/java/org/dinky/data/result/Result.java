@@ -26,6 +26,8 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 
 import cn.hutool.core.date.DateTime;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,17 +40,53 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(value = "Result", description = "Return Result")
 public class Result<T> implements Serializable {
 
     /** result data */
+    @ApiModelProperty(
+            value = "Result Data",
+            name = "datas",
+            dataType = "T",
+            required = true,
+            allowEmptyValue = true,
+            example = "[]")
     private T datas;
-    /** result code */
+
+    @ApiModelProperty(
+            value = "Result Code",
+            name = "code",
+            dataType = "Integer",
+            required = true,
+            example = "0",
+            notes = "0: success, 1: fail")
     private Integer code;
-    /** result msg */
+
+    @ApiModelProperty(
+            value = "Result Message",
+            name = "msg",
+            dataType = "String",
+            required = true,
+            example = "success",
+            notes = "success: success, fail: fail")
     private String msg;
     /** result time */
+    @ApiModelProperty(
+            value = "Result Time",
+            name = "time",
+            dataType = "DateTime",
+            required = true,
+            example = "2021-05-03 19:56:00",
+            notes = "yyyy-MM-dd HH:mm:ss")
     private String time;
     /** result success */
+    @ApiModelProperty(
+            value = "Result is Success",
+            name = "success",
+            dataType = "Boolean",
+            required = true,
+            example = "true",
+            notes = "true: success, false: fail")
     private boolean success;
 
     public Result(Integer code, String msg) {

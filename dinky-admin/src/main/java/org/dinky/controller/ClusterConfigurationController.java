@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +68,13 @@ public class ClusterConfigurationController {
     @PutMapping
     @Log(title = "Insert Or Update Cluster Config", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Cluster Config")
+    @ApiImplicitParam(
+            name = "clusterConfiguration",
+            value = "Cluster Configuration",
+            dataType = "ClusterConfiguration",
+            paramType = "body",
+            required = true,
+            dataTypeClass = ClusterConfiguration.class)
     public Result<Void> saveOrUpdateClusterConfig(@RequestBody ClusterConfiguration clusterConfiguration) {
         Integer id = clusterConfiguration.getId();
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
@@ -86,6 +94,12 @@ public class ClusterConfigurationController {
      */
     @PostMapping
     @ApiOperation("Cluster Config List")
+    @ApiImplicitParam(
+            name = "para",
+            value = "Cluster Configuration",
+            dataType = "JsonNode",
+            paramType = "body",
+            required = true)
     public ProTableResult<ClusterConfiguration> listClusterConfigList(@RequestBody JsonNode para) {
         return clusterConfigurationService.selectForProTable(para);
     }
@@ -97,6 +111,12 @@ public class ClusterConfigurationController {
      */
     @GetMapping("/listEnabledAll")
     @ApiOperation("Cluster Config List Enabled All")
+    @ApiImplicitParam(
+            name = "para",
+            value = "Cluster Configuration",
+            dataType = "JsonNode",
+            paramType = "body",
+            required = true)
     public Result<List<ClusterConfiguration>> listEnabledAllClusterConfig() {
         return Result.succeed(clusterConfigurationService.listEnabledAllClusterConfig());
     }
@@ -110,6 +130,7 @@ public class ClusterConfigurationController {
     @DeleteMapping("/delete")
     @Log(title = "Cluster Config Delete by id", businessType = BusinessType.DELETE)
     @ApiOperation("Cluster Config Delete by id")
+    @ApiImplicitParam(name = "id", value = "id", dataType = "Integer", paramType = "query", required = true)
     public Result<Void> deleteById(@RequestParam("id") Integer id) {
         boolean removeById = clusterConfigurationService.removeById(id);
         if (removeById) {
@@ -128,6 +149,7 @@ public class ClusterConfigurationController {
     @PutMapping("/enable")
     @Log(title = "Modify Cluster Config Status", businessType = BusinessType.UPDATE)
     @ApiOperation("Modify Cluster Config Status")
+    @ApiImplicitParam(name = "id", value = "id", dataType = "Integer", paramType = "query", required = true)
     public Result<Void> modifyClusterConfigStatus(@RequestParam("id") Integer id) {
         if (clusterConfigurationService.modifyClusterConfigStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -145,6 +167,13 @@ public class ClusterConfigurationController {
     @PostMapping("/testConnect")
     @Log(title = "Test Connection", businessType = BusinessType.TEST)
     @ApiOperation("Test Connection")
+    @ApiImplicitParam(
+            name = "clusterConfiguration",
+            value = "Cluster Configuration",
+            dataType = "ClusterConfiguration",
+            paramType = "body",
+            required = true,
+            dataTypeClass = ClusterConfiguration.class)
     public Result<Void> testConnect(@RequestBody ClusterConfiguration clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
         if (testResult.isAvailable()) {

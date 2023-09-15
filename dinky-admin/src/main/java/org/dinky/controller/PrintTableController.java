@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 
@@ -44,12 +45,14 @@ public class PrintTableController {
 
     @GetMapping(value = "/subscribe/print", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ApiOperation("Subscribe p table")
+    @ApiImplicitParam(name = "table", value = "table name", required = true, dataType = "String", paramType = "query")
     public SseEmitter subscribe(@RequestParam String table) {
         return printTableService.registerListenEntry(table);
     }
 
     @PutMapping("/unSubscribe/print")
     @ApiOperation("UnSubscribe print table")
+    @ApiImplicitParam(name = "table", value = "table name", required = true, dataType = "String", paramType = "query")
     public Result<Void> unsubscribe(@RequestParam String table) {
         printTableService.unRegisterListenEntry(table);
         return Result.succeed();
