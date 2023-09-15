@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class DingTalkSender {
-
     private static final Logger logger = LoggerFactory.getLogger(DingTalkSender.class);
     private final String url;
     private final String keyword;
@@ -80,13 +79,13 @@ public class DingTalkSender {
      */
     public Map<String, Object> buildTemplateParams(String title, String content) {
         Map<String, Object> params = new HashMap<>();
-        params.put("title", title);
-        params.put("content", content);
-        params.put("keyword", keyword);
+        params.put(DingTalkConstants.ALERT_TEMPLATE_TITLE, title);
+        params.put(DingTalkConstants.ALERT_TEMPLATE_CONTENT, content);
+        params.put(DingTalkConstants.ALERT_TEMPLATE_KEYWORD, keyword);
         String[] atMobile = Asserts.isNullString(atMobiles) ? new String[] {} : atMobiles.split(",");
-        params.put("atMobile", atMobile);
-        params.put("atMobiles", atMobiles);
-        params.put("atAll", atAll.toString());
+        params.put(DingTalkConstants.ALERT_TEMPLATE_AT_MOBILE, atMobile);
+        params.put(DingTalkConstants.ALERT_TEMPLATE_AT_MOBILES, atMobiles);
+        params.put(DingTalkConstants.ALERT_TEMPLATE_AT_ALL, atAll.toString());
         return params;
     }
 

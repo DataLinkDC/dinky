@@ -53,4 +53,6 @@ public class EmailConstants extends AlertBaseConstant {
     public static final String XLS_FILE_PATH = "xls.file.path";
     public static final String MAIL_TRANSPORT_PROTOCOL = "mail.transport.protocol";
     public static final String XLS_FILE_DEFAULT_PATH = "/tmp/xls";
+    public static final String ALERT_TEMPLATE_TITLE = "title";
+    public static final String ALERT_TEMPLATE_CONTENT = "content";
 }

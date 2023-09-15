@@ -43,7 +43,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * fei shu sender
  */
 public final class FeiShuSender {
-
     private static final Logger logger = LoggerFactory.getLogger(FeiShuSender.class);
     private final String url;
     private final String secret;
@@ -82,16 +81,16 @@ public final class FeiShuSender {
      */
     public Map<String, Object> buildTemplateParams(String title, String content) {
         Map<String, Object> params = new HashMap<>();
-        params.put("title", title);
-        params.put("content", content);
-        params.put("keyword", keyword);
+        params.put(FeiShuConstants.ALERT_TEMPLATE_TITLE, title);
+        params.put(FeiShuConstants.ALERT_TEMPLATE_CONTENT, content);
+        params.put(FeiShuConstants.ALERT_TEMPLATE_KEYWORD, keyword);
         if (Asserts.isNotNullString(secret)) {
             Integer currentTimeMillis = Math.toIntExact(System.currentTimeMillis() / 1000);
             params.put(FeiShuConstants.SIGN_TMESTAMP, currentTimeMillis);
             params.put(FeiShuConstants.SIGN, getSign(secret, currentTimeMillis));
         }
         String[] atUsers = Asserts.isNullString(atUserIds) ? new String[] {"all"} : atUserIds.split(",");
-        params.put("atUsers", atUsers);
+        params.put(FeiShuConstants.ALERT_TEMPLATE_AT_USERS, atUsers);
         return params;
     }
 

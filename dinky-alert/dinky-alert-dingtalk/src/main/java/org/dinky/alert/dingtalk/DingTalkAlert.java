@@ -24,6 +24,9 @@ import org.dinky.alert.AlertResult;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import freemarker.template.TemplateException;
 
 /**
@@ -32,6 +35,7 @@ import freemarker.template.TemplateException;
  * @since 2022/2/23 19:28
  */
 public class DingTalkAlert extends AbstractAlert {
+    private static final Logger log = LoggerFactory.getLogger(DingTalkAlert.class);
 
     @Override
     public String getType() {
@@ -45,6 +49,7 @@ public class DingTalkAlert extends AbstractAlert {
             String built = buildContent(sender.buildTemplateParams(title, content));
             return sender.send(built);
         } catch (TemplateException | IOException e) {
+            log.error("{}'message send error, Reason:{}", getType(), e.getMessage());
             throw new RuntimeException(e);
         }
     }

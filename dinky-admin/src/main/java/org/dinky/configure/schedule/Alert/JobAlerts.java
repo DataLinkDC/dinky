@@ -37,6 +37,7 @@ import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
+import org.dinky.data.options.AlertRuleOptions;
 import org.dinky.job.FlinkJobTaskPool;
 import org.dinky.service.impl.AlertGroupServiceImpl;
 import org.dinky.service.impl.AlertHistoryServiceImpl;
@@ -129,8 +130,8 @@ public class JobAlerts extends BaseSchedule {
      */
     @PostConstruct
     public void init() {
-        refeshRulesData();
-        addSchedule("JobAlert", this::check, new PeriodicTrigger(1000 * 30));
+        refreshRulesData();
+        addSchedule(AlertRuleOptions.JOB_ALERT_SCHEDULE, this::check, new PeriodicTrigger(1000 * 30));
     }
 
     /**
@@ -142,20 +143,26 @@ public class JobAlerts extends BaseSchedule {
         for (Map.Entry<String, JobInfoDetail> job : taskPool.entrySet()) {
             JobInfoDetail jobInfoDetail = job.getValue();
             String key = job.getKey();
-            ruleFacts.put("time", TimeUtil.nowStr());
-            ruleFacts.put("jobDetail", jobInfoDetail);
-            ruleFacts.put("job", jobInfoDetail.getJobHistory().getJob());
-            ruleFacts.put("key", key);
-            ruleFacts.put("jobInstance", jobInfoDetail.getInstance());
+            ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_TIME, TimeUtil.nowStr());
+            ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_DETAIL, jobInfoDetail);
             ruleFacts.put(
-                    "startTime",
+                    AlertRuleOptions.JOB_ALERT_RULE_JOB_NAME,
+                    jobInfoDetail.getJobHistory().getJob());
+            ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_KEY, key);
+            ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_INSTANCE, jobInfoDetail.getInstance());
+            ruleFacts.put(
+                    AlertRuleOptions.JOB_ALERT_RULE_START_TIME,
                     TimeUtil.convertTimeToString(jobInfoDetail.getHistory().getStartTime()));
             ruleFacts.put(
-                    "endTime",
+                    AlertRuleOptions.JOB_ALERT_RULE_END_TIME,
                     TimeUtil.convertTimeToString(jobInfoDetail.getHistory().getEndTime()));
-            ruleFacts.put("checkPoints", jobInfoDetail.getJobHistory().getCheckpoints());
-            ruleFacts.put("cluster", jobInfoDetail.getCluster());
-            ruleFacts.put("exceptions", jobInfoDetail.getJobHistory().getExceptions());
+            ruleFacts.put(
+                    AlertRuleOptions.JOB_ALERT_RULE_CHECK_POINTS,
+                    jobInfoDetail.getJobHistory().getCheckpoints());
+            ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CLUSTER, jobInfoDetail.getCluster());
+            ruleFacts.put(
+                    AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS,
+                    jobInfoDetail.getJobHistory().getExceptions());
             rulesEngine.fire(rules, ruleFacts);
         }
     }
@@ -163,9 +170,9 @@ public class JobAlerts extends BaseSchedule {
     /**
      * Refreshes the alert rules and related data.
      */
-    public void refeshRulesData() {
-        ruleFacts.put("exceptionRule", new ExceptionRule());
-        ruleFacts.put("checkpointRule", new CheckpointsRule());
+    public void refreshRulesData() {
+        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_REFRESH_RULES_DATA, new ExceptionRule());
+        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CHECKPOINT_RULES, new CheckpointsRule());
 
         List<AlertRuleDTO> ruleDTOS = alertRuleService.getBaseMapper().selectWithTemplate();
         freeMarkerHolder = new FreeMarkerHolder();
@@ -212,7 +219,7 @@ public class JobAlerts extends BaseSchedule {
      * @param alertRuleDTO Alert Rule Info.
      */
     private void executeAlertAction(Facts facts, AlertRuleDTO alertRuleDTO) {
-        JobInfoDetail jobInfoDetail = facts.get("jobDetail");
+        JobInfoDetail jobInfoDetail = facts.get(AlertRuleOptions.JOB_ALERT_RULE_JOB_DETAIL);
         JobInstance jobInstance = jobInfoDetail.getInstance();
         Task task = taskService.getById(jobInfoDetail.getInstance().getTaskId());
 
@@ -221,9 +228,9 @@ public class JobAlerts extends BaseSchedule {
                 SystemConfiguration.getInstances().getDinkyAddr(),
                 task.getId());
         Map<String, Object> dataModel = new HashMap<>(facts.asMap());
-        dataModel.put("task", task);
-        dataModel.put("taskUrl", taskUrl);
-        dataModel.put("rule", alertRuleDTO);
+        dataModel.put(AlertRuleOptions.JOB_ALERT_RULE_TASK, task);
+        dataModel.put(AlertRuleOptions.JOB_ALERT_RULE_TASK_URL, taskUrl);
+        dataModel.put(AlertRuleOptions.JOB_ALERT_RULE, alertRuleDTO);
 
         String alertContent;
 

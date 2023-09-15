@@ -31,7 +31,6 @@ import freemarker.template.TemplateException;
 
 /** FeiShuAlert */
 public class FeiShuAlert extends AbstractAlert {
-
     private static final Logger logger = LoggerFactory.getLogger(FeiShuAlert.class);
 
     @Override
@@ -47,6 +46,7 @@ public class FeiShuAlert extends AbstractAlert {
             logger.info("Send FeiShu alert title: {}", title);
             return sender.send(built);
         } catch (TemplateException | IOException e) {
+            logger.error("{}'message send error, Reason:{}", getType(), e.getMessage());
             throw new RuntimeException(e);
         }
     }
