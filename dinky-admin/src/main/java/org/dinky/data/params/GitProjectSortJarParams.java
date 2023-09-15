@@ -24,10 +24,18 @@ import org.dinky.data.dto.GitAnalysisJarDTO;
 import java.io.Serializable;
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
+@ApiModel(value = "GitProjectSortJarParams", description = "Parameters for Sorting JARs in a Git Project")
 public class GitProjectSortJarParams implements Serializable {
-    Integer projectId;
-    List<GitAnalysisJarDTO> jars;
+    private static final long serialVersionUID = 1L;
+
+    @ApiModelProperty(value = "Project ID", dataType = "Integer", notes = "ID of the Git project")
+    private Integer projectId;
+
+    @ApiModelProperty(value = "JARs", dataType = "List<GitAnalysisJarDTO>", notes = "List of JARs to be sorted")
+    private List<GitAnalysisJarDTO> jars;
 }

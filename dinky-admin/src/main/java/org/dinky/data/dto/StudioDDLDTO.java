@@ -21,6 +21,8 @@ package org.dinky.data.dto;
 
 import org.dinky.job.JobConfig;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,15 +33,55 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "StudioDDLDTO", description = "DTO for Studio DDL operations")
 public class StudioDDLDTO {
 
+    @ApiModelProperty(value = "Type", dataType = "String", example = "FlinkSql", notes = "The type of DDL operation")
     private String type;
+
+    @ApiModelProperty(
+            value = "Use Result",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to use result")
     private boolean useResult;
+
+    @ApiModelProperty(
+            value = "Use Session",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to use a session")
     private boolean useSession;
+
+    @ApiModelProperty(value = "Session", dataType = "String", example = "session_id", notes = "The session identifier")
     private String session;
+
+    @ApiModelProperty(
+            value = "Use Remote",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to use a remote execution")
     private boolean useRemote;
+
+    @ApiModelProperty(
+            value = "Cluster ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "The identifier of the cluster")
     private Integer clusterId;
+
+    @ApiModelProperty(
+            value = "Statement",
+            dataType = "String",
+            example = "CREATE TABLE users (id INT, name VARCHAR(255))",
+            notes = "The DDL statement")
     private String statement;
+
+    @ApiModelProperty(
+            value = "Max Row Number",
+            dataType = "Integer",
+            example = "10000",
+            notes = "The maximum number of rows to return")
     private Integer maxRowNum = 10000;
 
     public JobConfig getJobConfig() {

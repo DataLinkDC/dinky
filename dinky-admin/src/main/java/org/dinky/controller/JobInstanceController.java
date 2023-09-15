@@ -49,6 +49,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.lang.Dict;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +72,13 @@ public class JobInstanceController {
 
     /** 动态查询列表 */
     @PostMapping
+    @ApiImplicitParam(
+            name = "para",
+            value = "Query parameters",
+            dataType = "JsonNode",
+            paramType = "body",
+            required = true,
+            dataTypeClass = JsonNode.class)
     public ProTableResult<JobInstance> listJobInstances(@RequestBody JsonNode para) {
         return jobInstanceService.listJobInstances(para);
     }
@@ -87,6 +96,12 @@ public class JobInstanceController {
     /** 获取Job实例的所有信息 */
     @GetMapping("/getJobInfoDetail")
     @ApiOperation("Get job info detail")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Job instance id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true)
     public Result<JobInfoDetail> getJobInfoDetail(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getJobInfoDetail(id));
     }
@@ -95,6 +110,12 @@ public class JobInstanceController {
     @GetMapping("/refreshJobInfoDetail")
     @ApiOperation("Refresh job info detail")
     @Log(title = "Refresh job info detail", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "Job instance id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true)
     public Result<JobInfoDetail> refreshJobInfoDetail(@RequestParam Integer id) {
         return Result.succeed(taskService.refreshJobInfoDetail(id), Status.RESTART_SUCCESS);
     }
@@ -102,6 +123,12 @@ public class JobInstanceController {
     /** 获取单任务实例的血缘分析 */
     @GetMapping("/getLineage")
     @ApiOperation("Get lineage of a single task instance")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Task instance id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true)
     public Result<LineageResult> getLineage(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getLineage(id), Status.RESTART_SUCCESS);
     }
@@ -109,6 +136,12 @@ public class JobInstanceController {
     /** 获取 JobManager 的信息 */
     @GetMapping("/getJobManagerInfo")
     @ApiOperation("Get job manager info")
+    @ApiImplicitParam(
+            name = "address",
+            value = "JobManager address",
+            dataType = "String",
+            paramType = "query",
+            required = true)
     public Result<JobManagerConfiguration> getJobManagerInfo(@RequestParam String address) {
         JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
         if (Asserts.isNotNullString(address)) {
@@ -119,24 +152,48 @@ public class JobInstanceController {
 
     @GetMapping("/getJobManagerLog")
     @ApiOperation("Get job manager log")
+    @ApiImplicitParam(
+            name = "address",
+            value = "JobManager address",
+            dataType = "String",
+            paramType = "query",
+            required = true)
     public Result<String> getJobManagerLog(@RequestParam String address) {
         return Result.succeed(FlinkAPI.build(address).getJobManagerLog(), "");
     }
 
     @GetMapping("/getJobManagerStdOut")
     @ApiOperation("Get job manager stdout")
+    @ApiImplicitParam(
+            name = "address",
+            value = "JobManager address",
+            dataType = "String",
+            paramType = "query",
+            required = true)
     public Result<String> getJobManagerStdOut(@RequestParam String address) {
         return Result.succeed(FlinkAPI.build(address).getJobManagerStdOut(), "");
     }
 
     @GetMapping("/getJobManagerThreadDump")
     @ApiOperation("Get job manager ThreadDump")
+    @ApiImplicitParam(
+            name = "address",
+            value = "JobManager address",
+            dataType = "String",
+            paramType = "query",
+            required = true)
     public Result<String> getJobManagerThreadDump(@RequestParam String address) {
         return Result.succeed(FlinkAPI.build(address).getJobManagerThreadDump(), "");
     }
 
     @GetMapping("/getTaskManagerList")
     @ApiOperation("Get task manager List")
+    @ApiImplicitParam(
+            name = "address",
+            value = "JobManager address",
+            dataType = "String",
+            paramType = "query",
+            required = true)
     public Result<Set<TaskManagerConfiguration>> getTaskManagerList(@RequestParam String address) {
         Set<TaskManagerConfiguration> taskManagerConfigurationList = new HashSet<>();
         if (Asserts.isNotNullString(address)) {
@@ -151,12 +208,41 @@ public class JobInstanceController {
     /** 获取 TaskManager 的信息 */
     @GetMapping("/getTaskManagerLog")
     @ApiOperation("Get task manager log")
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "address",
+                value = "JobManager address",
+                dataType = "String",
+                paramType = "query",
+                required = true),
+        @ApiImplicitParam(
+                name = "containerId",
+                value = "TaskManager container id",
+                dataType = "String",
+                paramType = "query",
+                required = true)
+    })
     public Result<String> getTaskManagerLog(@RequestParam String address, @RequestParam String containerId) {
         return Result.succeed(FlinkAPI.build(address).getTaskManagerLog(containerId), "");
     }
 
     @GetMapping("/getJobMetricsItems")
     @ApiOperation(" getJobMetricsItems List")
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "address",
+                value = "JobManager address",
+                dataType = "String",
+                paramType = "query",
+                required = true),
+        @ApiImplicitParam(name = "jobId", value = "Job id", dataType = "String", paramType = "query", required = true),
+        @ApiImplicitParam(
+                name = "verticeId",
+                value = "Vertice id",
+                dataType = "String",
+                paramType = "query",
+                required = true)
+    })
     public Result<JsonNode> getJobMetricsItems(
             @RequestParam String address, @RequestParam String jobId, @RequestParam String verticeId) {
         return Result.succeed(FlinkAPI.build(address).getJobMetricesItems(jobId, verticeId));
@@ -164,6 +250,27 @@ public class JobInstanceController {
 
     @GetMapping("/getJobMetricsData")
     @ApiOperation(" getJobMetrics Data")
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "address",
+                value = "JobManager address",
+                dataType = "String",
+                paramType = "query",
+                required = true),
+        @ApiImplicitParam(name = "jobId", value = "Job id", dataType = "String", paramType = "query", required = true),
+        @ApiImplicitParam(
+                name = "verticeId",
+                value = "Vertice id",
+                dataType = "String",
+                paramType = "query",
+                required = true),
+        @ApiImplicitParam(
+                name = "metrics",
+                value = "Metrics",
+                dataType = "String",
+                paramType = "query",
+                required = true)
+    })
     public Result<JsonNode> getJobMetricsItems(
             @RequestParam String address,
             @RequestParam String jobId,

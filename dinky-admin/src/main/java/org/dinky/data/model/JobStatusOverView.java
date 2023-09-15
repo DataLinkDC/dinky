@@ -19,14 +19,41 @@
 
 package org.dinky.data.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
+@ApiModel(value = "JobStatusOverView", description = "Job Status Overview Information")
 public class JobStatusOverView {
+
+    @ApiModelProperty(value = "Job Running Count", dataType = "Integer", example = "5", notes = "Count of running jobs")
     private Integer jobRunningCount;
+
+    @ApiModelProperty(
+            value = "Job Finished Count",
+            dataType = "Integer",
+            example = "3",
+            notes = "Count of finished jobs")
     private Integer jobFinishedCount;
+
+    @ApiModelProperty(
+            value = "Job Recovered Count",
+            dataType = "Integer",
+            example = "2",
+            notes = "Count of recovered jobs")
     private Integer jobRecoveredCount;
+
+    @ApiModelProperty(value = "Job Online Count", dataType = "Integer", example = "8", notes = "Count of online jobs")
     private Integer jobOnlineCount;
+
+    @ApiModelProperty(value = "Job Offline Count", dataType = "Integer", example = "1", notes = "Count of offline jobs")
     private Integer jobOfflineCount;
+
+    @ApiModelProperty(
+            value = "Job Error Count",
+            dataType = "Integer",
+            example = "0",
+            notes = "Count of jobs with errors")
     private Integer jobErrorCount;
 }

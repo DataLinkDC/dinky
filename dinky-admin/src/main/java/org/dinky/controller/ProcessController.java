@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
@@ -60,6 +61,10 @@ public class ProcessController {
      */
     @GetMapping("/listAllProcess")
     @ApiOperation("List all process")
+    @ApiImplicitParam(
+            name = "active",
+            value = "true: list active process, false: list inactive process",
+            dataType = "Boolean")
     public ProTableResult<ProcessEntity> listAllProcess(@RequestParam boolean active) {
         List<ProcessEntity> processEntities = processService.listAllProcess(active);
         return ProTableResult.<ProcessEntity>builder()

@@ -33,6 +33,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
@@ -45,6 +46,7 @@ public class SseController {
 
     @GetMapping(value = "/getLastUpdateData", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ApiOperation("Get Last Update Data")
+    @ApiImplicitParam(name = "lastTime", value = "last time", required = false, dataType = "Long", paramType = "query")
     public SseEmitter getLastUpdateData(Long lastTime) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         return monitorService.sendLatestData(
@@ -55,6 +57,7 @@ public class SseController {
 
     @GetMapping(value = "/getJvmInfo", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ApiOperation("Get JVM Info")
+    @ApiImplicitParam(name = "lastTime", value = "last time", required = false, dataType = "Long", paramType = "query")
     public SseEmitter getJvmInfo(Long lastTime) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         return monitorService.sendJvmInfo(emitter);

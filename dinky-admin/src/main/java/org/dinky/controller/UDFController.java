@@ -49,6 +49,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -119,6 +120,12 @@ public class UDFController {
      */
     @PostMapping("/list")
     @ApiOperation("Get UDF Template List")
+    @ApiImplicitParam(
+            name = "params",
+            value = "ProTable Params",
+            dataType = "JsonNode",
+            paramType = "body",
+            required = true)
     public ProTableResult<UDFTemplate> listUdfTemplates(@RequestBody JsonNode params) {
         return udfTemplateService.selectForProTable(params);
     }
@@ -132,6 +139,12 @@ public class UDFController {
     @PutMapping
     @ApiOperation("Insert or Update UDF Template")
     @Log(title = "Insert or Update UDF Template", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiImplicitParam(
+            name = "udfTemplate",
+            value = "UDF Template",
+            dataType = "UDFTemplate",
+            paramType = "body",
+            required = true)
     public Result<String> saveOrUpdateUDFTemplate(@RequestBody UDFTemplate udfTemplate) {
         return udfTemplateService.saveOrUpdate(udfTemplate)
                 ? Result.succeed(Status.SAVE_SUCCESS)
@@ -147,6 +160,12 @@ public class UDFController {
     @DeleteMapping("/delete")
     @Log(title = "Delete UDF Template By Id", businessType = BusinessType.DELETE)
     @ApiOperation("Delete UDF Template By Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "UDF Template Id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true)
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> delete(@RequestParam Integer id) {
         if (udfTemplateService.removeById(id)) {
@@ -159,6 +178,12 @@ public class UDFController {
     @PutMapping("/enable")
     @ApiOperation("Modify UDF Template Status")
     @Log(title = "Modify UDF Template Status", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "UDF Template Id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true)
     public Result<Void> modifyUDFTemplateStatus(@RequestParam Integer id) {
         if (udfTemplateService.modifyUDFTemplateStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);

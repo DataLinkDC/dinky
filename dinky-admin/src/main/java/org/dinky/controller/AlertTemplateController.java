@@ -36,23 +36,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/alertTemplate")
-public class AlertTemplateConteroller {
+@Api(tags = "Alert Template Controller")
+public class AlertTemplateController {
 
     private final AlertTemplateService alertTemplateService;
 
     @GetMapping
+    @ApiOperation("Query alert templates list")
     public Result<List<AlertTemplate>> list() {
         return Result.succeed(alertTemplateService.list());
     }
 
     @DeleteMapping
     @Log(title = "Delete AlertTemplate ", businessType = BusinessType.DELETE)
+    @ApiOperation("Delete alert template")
     @ApiImplicitParam(
             name = "id",
             value = "AlertTemplate ID",
@@ -69,6 +74,7 @@ public class AlertTemplateConteroller {
 
     @PutMapping
     @Log(title = "Insert OR Update AlertTemplate ", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert OR Update alert template")
     @ApiImplicitParam(
             name = "alertTemplate",
             value = "AlertTemplate",

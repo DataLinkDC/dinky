@@ -27,47 +27,65 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /** @TableName dinky_metrics */
 @TableName(value = "dinky_metrics")
 @Data
+@ApiModel(value = "Metrics", description = "Metrics Information")
 public class Metrics extends Model<Metrics> {
-    /** */
+
     @TableId(type = IdType.AUTO)
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the metrics")
     private Integer id;
 
-    /** */
+    @ApiModelProperty(value = "Task ID", dataType = "Integer", example = "1001", notes = "ID of the associated task")
     private Integer taskId;
 
-    /** */
+    @ApiModelProperty(value = "Vertices", dataType = "String", notes = "Vertices information")
     private String vertices;
 
-    /** */
+    @ApiModelProperty(value = "Metrics Data", dataType = "String", notes = "Metrics data")
     private String metrics;
 
-    /** */
+    @ApiModelProperty(value = "Position", dataType = "Integer", example = "1", notes = "Position of the metrics")
     private Integer position;
 
-    /** */
+    @ApiModelProperty(value = "Show Type", dataType = "String", notes = "Type of display for the metrics")
     private String showType;
 
-    /** */
+    @ApiModelProperty(value = "Show Size", dataType = "String", notes = "Size of display for the metrics")
     private String showSize;
 
-    /** */
+    @ApiModelProperty(value = "Title", dataType = "String", notes = "Title for the metrics")
     private String title;
 
-    /** */
+    @ApiModelProperty(value = "Layout Name", dataType = "String", notes = "Name of the layout")
     private String layoutName;
 
-    /** */
     @TableField(fill = FieldFill.INSERT)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @ApiModelProperty(
+            value = "Create Time",
+            dataType = "String",
+            notes = "Timestamp indicating the creation time of the metrics")
     private LocalDateTime createTime;
 
-    /** */
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @ApiModelProperty(
+            value = "Update Time",
+            dataType = "String",
+            notes = "Timestamp indicating the last update time of the metrics")
     private LocalDateTime updateTime;
 
     @TableField(exist = false)

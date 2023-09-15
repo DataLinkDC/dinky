@@ -25,6 +25,8 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -36,31 +38,78 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_cluster")
+@ApiModel(value = "Cluster", description = "Cluster")
 public class Cluster extends SuperEntity {
 
     private static final long serialVersionUID = 3104721227014487321L;
 
+    @ApiModelProperty(value = "name", required = true, dataType = "String", example = "test")
     private Integer tenantId;
 
     @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty(
+            value = "alias",
+            required = true,
+            dataType = "String",
+            example = "test",
+            notes = "cluster alias, if this is auto register, it will be has value, and can not modify it")
     private String alias;
 
+    @ApiModelProperty(
+            value = "type",
+            required = true,
+            dataType = "String",
+            example = "test",
+            notes = "cluster type, such as: standalone ,yarn-session")
     private String type;
 
+    @ApiModelProperty(value = "hosts", required = true, dataType = "String", example = "test", notes = "cluster hosts")
     private String hosts;
 
+    @ApiModelProperty(
+            value = "jobManagerHost",
+            required = true,
+            dataType = "String",
+            example = "test",
+            notes = "job manager host")
     private String jobManagerHost;
 
+    @ApiModelProperty(
+            value = "version",
+            required = true,
+            dataType = "String",
+            example = "test",
+            notes = "Flink cluster version")
     private String version;
 
+    @ApiModelProperty(
+            value = "status",
+            required = true,
+            dataType = "Integer",
+            example = "test",
+            notes = "0:unavailable, 1:available")
     private Integer status;
 
+    @ApiModelProperty(value = "note", dataType = "String", example = "test")
     private String note;
 
+    @ApiModelProperty(
+            value = "autoRegisters",
+            required = true,
+            dataType = "Boolean",
+            example = "test",
+            notes = "is auto registers, if this record from projob/application mode , it will be true")
     private Boolean autoRegisters;
 
+    @ApiModelProperty(
+            value = "clusterConfigurationId",
+            required = true,
+            dataType = "Integer",
+            example = "test",
+            notes = "cluster configuration id")
     private Integer clusterConfigurationId;
 
+    @ApiModelProperty(value = "taskId", required = true, dataType = "Integer", example = "test", notes = "task id")
     private Integer taskId;
 
     public static Cluster autoRegistersCluster(

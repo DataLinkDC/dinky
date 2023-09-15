@@ -30,6 +30,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_upload_file_record")
+@Deprecated
 public class UploadFileRecord extends SuperEntity {
 
     private static final long serialVersionUID = 3769285632787490408L;

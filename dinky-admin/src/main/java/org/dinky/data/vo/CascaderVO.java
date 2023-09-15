@@ -22,8 +22,8 @@ package org.dinky.data.vo;
 import java.io.Serializable;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -31,10 +31,20 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@ApiModel(value = "CascaderVO", description = "Cascader Value Object")
 public class CascaderVO implements Serializable {
+
+    private static final long serialVersionUID = 1L; // 添加serialVersionUID字段
+
+    @ApiModelProperty(value = "Value of the option", required = true, example = "1", dataType = "String")
     private String value;
+
+    @ApiModelProperty(value = "Label of the option", required = true, example = "Option 1", dataType = "String")
     private String label;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty(
+            value = "Children options",
+            notes = "List of child CascaderVO objects",
+            dataType = "List<CascaderVO>")
     private List<CascaderVO> children;
 }

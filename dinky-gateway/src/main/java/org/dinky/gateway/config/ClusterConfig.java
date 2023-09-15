@@ -19,6 +19,8 @@
 
 package org.dinky.gateway.config;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,11 +31,35 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "ClusterConfig", description = "Configuration for a Flink cluster")
 public class ClusterConfig {
 
+    @ApiModelProperty(
+            value = "Path to Flink configuration file",
+            dataType = "String",
+            example = "/opt/flink/conf/flink-conf.yaml",
+            notes = "Path to the Flink configuration file")
     private String flinkConfigPath;
+
+    @ApiModelProperty(
+            value = "Path to Flink library directory",
+            dataType = "String",
+            example = "/opt/flink/lib",
+            notes = "Path to the Flink library directory")
     private String flinkLibPath;
+
+    @ApiModelProperty(
+            value = "Path to YARN configuration file",
+            dataType = "String",
+            example = "/etc/hadoop/conf/yarn-site.xml",
+            notes = "Path to the YARN configuration file")
     private String yarnConfigPath;
+
+    @ApiModelProperty(
+            value = "YARN application ID",
+            dataType = "String",
+            example = "application_12345_67890",
+            notes = "ID of the YARN application associated with the Flink cluster")
     private String appId;
 
     public ClusterConfig() {}

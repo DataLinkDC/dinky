@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +69,13 @@ public class ClusterInstanceController {
     @PutMapping
     @Log(title = "Insert Or Update Cluster Instance", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Cluster Instance")
+    @ApiImplicitParam(
+            name = "cluster",
+            value = "Cluster Instance",
+            dataType = "Cluster",
+            paramType = "body",
+            required = true,
+            dataTypeClass = Cluster.class)
     public Result<Void> saveOrUpdateClusterInstance(@RequestBody Cluster cluster) throws Exception {
         cluster.setAutoRegisters(false);
         clusterInstanceService.registersCluster(cluster);
@@ -83,6 +91,14 @@ public class ClusterInstanceController {
     @PutMapping("/enable")
     @Log(title = "Update Cluster Instance Status", businessType = BusinessType.UPDATE)
     @ApiOperation("Update Cluster Instance Status")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Cluster Instance Id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true,
+            dataTypeClass = Integer.class,
+            example = "1")
     public Result<Void> modifyClusterInstanceStatus(@RequestParam Integer id) {
         Boolean enabled = clusterInstanceService.modifyClusterInstanceStatus(id);
         if (enabled) {
@@ -102,6 +118,14 @@ public class ClusterInstanceController {
     @Log(title = "Delete Cluster Instance by id", businessType = BusinessType.DELETE)
     @ApiOperation("Delete Cluster Instance by id")
     @Transactional(rollbackFor = Exception.class)
+    @ApiImplicitParam(
+            name = "id",
+            value = "Cluster Instance Id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true,
+            dataTypeClass = Integer.class,
+            example = "1")
     public Result<Void> deleteClusterInstanceById(@RequestParam Integer id) {
         Boolean deleted = clusterInstanceService.deleteClusterInstanceById(id);
         if (deleted) {
@@ -119,6 +143,13 @@ public class ClusterInstanceController {
      */
     @PostMapping
     @ApiOperation("Cluster Instance List")
+    @ApiImplicitParam(
+            name = "para",
+            value = "Query Parameters",
+            dataType = "JsonNode",
+            paramType = "body",
+            required = true,
+            dataTypeClass = JsonNode.class)
     public ProTableResult<Cluster> listClusters(@RequestBody JsonNode para) {
         return clusterInstanceService.selectForProTable(para);
     }
@@ -185,6 +216,14 @@ public class ClusterInstanceController {
     @GetMapping("/killCluster")
     @Log(title = "Cluster Instance Kill", businessType = BusinessType.UPDATE)
     @ApiOperation("Cluster Instance Kill")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Cluster Instance Id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true,
+            dataTypeClass = Integer.class,
+            example = "1")
     public Result<Void> killClusterInstance(@RequestParam("id") Integer id) {
         clusterInstanceService.killCluster(id);
         return Result.succeed("Kill Cluster Succeed.");
@@ -193,6 +232,14 @@ public class ClusterInstanceController {
     @PutMapping("/deploySessionClusterInstance")
     @Log(title = "Deploy Session Cluster Instance", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Deploy Session Cluster Instance")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Cluster Instance Id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true,
+            dataTypeClass = Integer.class,
+            example = "1")
     public Result<Cluster> deploySessionClusterInstance(@RequestParam("id") Integer id) {
         return Result.succeed(clusterInstanceService.deploySessionCluster(id), Status.CLUSTER_INSTANCE_DEPLOY);
     }

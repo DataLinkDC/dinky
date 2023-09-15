@@ -47,7 +47,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 
 @Controller
-@Api(tags = "Flink Proxy Controller", hidden = true)
+@Api(tags = "Flink Proxy Controller", hidden = true, description = "Flink Proxy API")
 @RequestMapping(FlinkProxyController.API)
 public class FlinkProxyController {
     public static final String API = "/api/flink/";

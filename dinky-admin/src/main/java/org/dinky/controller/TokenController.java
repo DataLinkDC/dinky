@@ -41,6 +41,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.lang.UUID;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,7 @@ public class TokenController {
      */
     @PostMapping("/list")
     @ApiOperation("Get Token List")
+    @ApiImplicitParam(name = "params", value = "params", dataType = "JsonNode", paramType = "body", required = true)
     public ProTableResult<SysToken> listToken(@RequestBody JsonNode params) {
         return tokenService.selectForProTable(params);
     }
@@ -76,6 +78,7 @@ public class TokenController {
     @PutMapping("/saveOrUpdateToken")
     @ApiOperation("Insert or Update Token")
     @Log(title = "Insert or Update Token", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiImplicitParam(name = "sysToken", value = "sysToken", dataType = "SysToken", paramType = "body", required = true)
     public Result<Void> saveOrUpdateToken(@RequestBody SysToken sysToken) {
         return tokenService.saveOrUpdate(sysToken)
                 ? Result.succeed(Status.SAVE_SUCCESS)
@@ -91,6 +94,7 @@ public class TokenController {
     @DeleteMapping("/delete")
     @Log(title = "Delete Token By Id", businessType = BusinessType.DELETE)
     @ApiOperation("Delete Token By Id")
+    @ApiImplicitParam(name = "id", value = "id", dataType = "Integer", paramType = "query", required = true)
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> deleteToken(@RequestParam Integer id) {
         if (tokenService.removeTokenById(id)) {

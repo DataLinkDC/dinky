@@ -40,6 +40,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +69,13 @@ public class StatementController {
     @PutMapping
     @ApiOperation("Insert Or Update Statement")
     @Log(title = "Insert Or Update Statement", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiImplicitParam(
+            name = "statement",
+            value = "Statement",
+            dataType = "Statement",
+            paramType = "body",
+            required = true,
+            dataTypeClass = Statement.class)
     public Result<Void> saveOrUpdateStatement(@RequestBody Statement statement) {
         if (statementService.saveOrUpdate(statement)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -84,6 +92,7 @@ public class StatementController {
      */
     @PostMapping
     @ApiOperation("Query Statement List")
+    @ApiImplicitParam(name = "para", value = "Query Params", dataType = "JsonNode", paramType = "body", required = true)
     public ProTableResult<Statement> listStatements(@RequestBody JsonNode para) {
         return statementService.selectForProTable(para);
     }
@@ -91,6 +100,7 @@ public class StatementController {
     @PostMapping("/getPrintTables")
     @ApiOperation("Get Print Tables")
     @SuppressWarnings("unchecked")
+    @ApiImplicitParam(name = "statement", value = "Statement", dataType = "String", paramType = "body", required = true)
     public Result<List<String>> getPrintTables(@RequestBody String statement) {
         try {
             Map<String, String> data = objectMapper.readValue(statement, Map.class);

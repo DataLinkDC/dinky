@@ -21,6 +21,8 @@ package org.dinky.data.model;
 
 import java.io.Serializable;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,9 +30,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(value = "ConfigItem", description = "User custom config item")
 public class ConfigItem implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @ApiModelProperty(value = "key", required = true, dataType = "String", example = "test")
     private String key;
+
+    @ApiModelProperty(value = "value", required = true, dataType = "String", example = "test")
     private String value;
 }

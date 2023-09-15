@@ -19,14 +19,29 @@
 
 package org.dinky.gateway.result;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * TestResult
  *
  * @since 2021/11/27 16:12
  */
+@ApiModel(value = "TestResult", description = "Result of a test operation")
 public class TestResult {
 
+    @ApiModelProperty(
+            value = "Availability status",
+            dataType = "boolean",
+            example = "true",
+            notes = "Indicates whether the test is available")
     private boolean isAvailable;
+
+    @ApiModelProperty(
+            value = "Error message",
+            dataType = "String",
+            example = "An error occurred",
+            notes = "Error message if the test encountered an issue")
     private String error;
 
     public boolean isAvailable() {

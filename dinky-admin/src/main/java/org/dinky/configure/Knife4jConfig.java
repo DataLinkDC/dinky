@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
@@ -44,6 +45,7 @@ import org.springframework.util.StringUtils;
 
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 
+import cn.dev33.satoken.config.SaTokenConfig;
 import lombok.RequiredArgsConstructor;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -63,6 +65,9 @@ public class Knife4jConfig {
 
     @Value("${dinky.version}")
     private String dinkyVersion;
+
+    @Autowired
+    SaTokenConfig saTokenConfigure;
 
     private final OpenApiExtensionResolver openApiExtensionResolver;
 
@@ -99,7 +104,7 @@ public class Knife4jConfig {
             CorsEndpointProperties corsProperties,
             WebEndpointProperties webEndpointProperties,
             Environment environment) {
-        List<ExposableEndpoint<?>> allEndpoints = new ArrayList();
+        List<ExposableEndpoint<?>> allEndpoints = new ArrayList<>();
         Collection<ExposableWebEndpoint> webEndpoints = webEndpointsSupplier.getEndpoints();
         allEndpoints.addAll(webEndpoints);
         allEndpoints.addAll(servletEndpointsSupplier.getEndpoints());

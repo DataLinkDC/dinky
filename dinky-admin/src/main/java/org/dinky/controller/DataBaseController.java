@@ -49,8 +49,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
+import com.github.xiaoymin.knife4j.annotations.DynamicParameters;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,6 +82,13 @@ public class DataBaseController {
     @PutMapping
     @Log(title = "Insert Or Update DataBase", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update DataBase")
+    @ApiImplicitParam(
+            name = "database",
+            value = "DataBase",
+            required = true,
+            dataType = "DataBase",
+            paramType = "body",
+            dataTypeClass = DataBase.class)
     public Result<Void> saveOrUpdateDataBase(@RequestBody DataBase database) {
         if (databaseService.saveOrUpdateDataBase(database)) {
             DriverPool.remove(database.getName());
@@ -95,6 +106,13 @@ public class DataBaseController {
      */
     @PostMapping
     @ApiOperation("DataBase Get All")
+    @ApiImplicitParam(
+            name = "para",
+            value = "JsonNode",
+            required = true,
+            dataType = "JsonNode",
+            paramType = "body",
+            dataTypeClass = JsonNode.class)
     public ProTableResult<DataBase> listDataBases(@RequestBody JsonNode para) {
         final ProTableResult<DataBase> result = databaseService.selectForProTable(para);
         // 密码不返回
@@ -115,6 +133,13 @@ public class DataBaseController {
     @DeleteMapping("/delete")
     @Log(title = "DataBase Delete By Id", businessType = BusinessType.DELETE)
     @ApiOperation("DataBase Delete By Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "DataBase Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
     public Result<Void> deleteDataBaseById(@RequestParam Integer id) {
         if (databaseService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -131,6 +156,13 @@ public class DataBaseController {
     @PutMapping("/enable")
     @Log(title = "DataBase Enable Or Disable By Id", businessType = BusinessType.UPDATE)
     @ApiOperation("DataBase Enable Or Disable By Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "DataBase Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
     public Result<Void> modifyDataSourceStatus(@RequestParam Integer id) {
         if (databaseService.modifyDataSourceStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -159,6 +191,13 @@ public class DataBaseController {
     @PostMapping("/testConnect")
     @Log(title = "DataBase Test Connect", businessType = BusinessType.TEST)
     @ApiOperation("DataBase Test Connect")
+    @ApiImplicitParam(
+            name = "database",
+            value = "DataBase",
+            required = true,
+            dataType = "DataBase",
+            paramType = "body",
+            dataTypeClass = DataBase.class)
     public Result<Void> testConnect(@RequestBody DataBase database) {
         String msg = databaseService.testConnect(database);
         boolean isHealthy = Asserts.isEquals(CommonConstant.HEALTHY, msg);
@@ -178,6 +217,14 @@ public class DataBaseController {
     @PutMapping("/checkHeartBeatByDataSourceId")
     @Log(title = "DataBase Check Heart Beat By Id", businessType = BusinessType.TEST)
     @ApiOperation("DataBase Check Heart Beat By Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "DataBase Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class,
+            example = "1")
     public Result<Void> checkHeartBeatByDataSourceId(@RequestParam Integer id) {
         DataBase dataBase = databaseService.getById(id);
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
@@ -203,6 +250,14 @@ public class DataBaseController {
     @Cacheable(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/getSchemasAndTables")
     @ApiOperation("Get All Schemas And Tables")
+    @ApiImplicitParam(
+            name = "id",
+            value = "DataBase Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class,
+            example = "1")
     public Result<List<Schema>> getSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(databaseService.getSchemasAndTables(id));
     }
@@ -216,6 +271,14 @@ public class DataBaseController {
     @CacheEvict(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/unCacheSchemasAndTables")
     @ApiOperation("Clear Cache Of Schemas And Tables")
+    @ApiImplicitParam(
+            name = "id",
+            value = "DataBase Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class,
+            example = "1")
     public Result<String> unCacheSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(Status.DATASOURCE_CLEAR_CACHE_SUCCESS);
     }
@@ -230,6 +293,54 @@ public class DataBaseController {
      */
     @GetMapping("/listColumns")
     @ApiOperation("Get Columns Of Table")
+    @ApiImplicitParams(
+            value = {
+                @ApiImplicitParam(
+                        name = "id",
+                        value = "DataBase Id",
+                        required = true,
+                        dataType = "Integer",
+                        paramType = "path",
+                        dataTypeClass = Integer.class,
+                        example = "1"),
+                @ApiImplicitParam(
+                        name = "schemaName",
+                        value = "Schema Name",
+                        required = true,
+                        dataType = "String",
+                        paramType = "query",
+                        dataTypeClass = String.class,
+                        example = "public"),
+                @ApiImplicitParam(
+                        name = "tableName",
+                        value = "Table Name",
+                        required = true,
+                        dataType = "String",
+                        paramType = "query",
+                        dataTypeClass = String.class,
+                        example = "user")
+            })
+    @DynamicParameters(
+            properties = {
+                @DynamicParameter(
+                        name = "id",
+                        value = "DataBase Id",
+                        required = true,
+                        dataTypeClass = Integer.class,
+                        example = "1"),
+                @DynamicParameter(
+                        name = "schemaName",
+                        value = "Schema Name",
+                        required = true,
+                        dataTypeClass = String.class,
+                        example = "public"),
+                @DynamicParameter(
+                        name = "tableName",
+                        value = "Table Name",
+                        required = true,
+                        dataTypeClass = String.class,
+                        example = "user")
+            })
     public Result<List<Column>> listColumns(
             @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
         return Result.succeed(databaseService.listColumns(id, schemaName, tableName));
@@ -243,6 +354,13 @@ public class DataBaseController {
      */
     @PostMapping("/queryData")
     @ApiOperation("Query Data Of Table")
+    @ApiImplicitParam(
+            name = "queryData",
+            value = "Query Data",
+            required = true,
+            dataType = "QueryData",
+            paramType = "body",
+            dataTypeClass = QueryData.class)
     public Result<JdbcSelectResult> queryData(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.queryData(queryData);
         if (jdbcSelectResult.isSuccess()) {
@@ -261,6 +379,13 @@ public class DataBaseController {
     @PostMapping("/execSql")
     @Log(title = "Exec Sql", businessType = BusinessType.EXECUTE)
     @ApiOperation("Exec Sql")
+    @ApiImplicitParam(
+            name = "queryData",
+            value = "Query Data",
+            required = true,
+            dataType = "QueryData",
+            paramType = "body",
+            dataTypeClass = QueryData.class)
     public Result<JdbcSelectResult> execSql(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.execSql(queryData);
         if (jdbcSelectResult.isSuccess()) {
@@ -280,6 +405,33 @@ public class DataBaseController {
      */
     @GetMapping("/getSqlGeneration")
     @ApiOperation("Get Sql Generation")
+    @ApiImplicitParams(
+            value = {
+                @ApiImplicitParam(
+                        name = "id",
+                        value = "DataBase Id",
+                        required = true,
+                        dataType = "Integer",
+                        paramType = "path",
+                        dataTypeClass = Integer.class,
+                        example = "1"),
+                @ApiImplicitParam(
+                        name = "schemaName",
+                        value = "Schema Name",
+                        required = true,
+                        dataType = "String",
+                        paramType = "query",
+                        dataTypeClass = String.class,
+                        example = "public"),
+                @ApiImplicitParam(
+                        name = "tableName",
+                        value = "Table Name",
+                        required = true,
+                        dataType = "String",
+                        paramType = "query",
+                        dataTypeClass = String.class,
+                        example = "user")
+            })
     public Result<SqlGeneration> getSqlGeneration(
             @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
         return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName));
