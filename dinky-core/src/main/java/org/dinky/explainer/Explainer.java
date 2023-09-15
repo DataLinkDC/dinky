@@ -21,8 +21,6 @@ package org.dinky.explainer;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
-import org.dinky.context.DinkyClassLoaderContextHolder;
-import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.ExplainResult;
@@ -38,13 +36,11 @@ import org.dinky.job.JobManager;
 import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 import org.dinky.parser.SqlType;
-import org.dinky.parser.check.AddJarSqlParser;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.model.ProcessEntity;
 import org.dinky.trans.Operations;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
-import org.dinky.utils.URLUtils;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.FileSystem;
@@ -72,10 +68,10 @@ import cn.hutool.core.util.StrUtil;
 public class Explainer {
     private static final Logger logger = LoggerFactory.getLogger(Explainer.class);
 
-    private Executor executor;
-    private boolean useStatementSet;
+    private final Executor executor;
+    private final boolean useStatementSet;
     private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public Explainer(Executor executor, boolean useStatementSet) {
         this.executor = executor;
@@ -117,9 +113,11 @@ public class Explainer {
             }
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParser.getAllFilePath(statement).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
-                DinkyClassLoaderContextHolder.get()
-                        .addURL(URLUtils.getURLs(FlinkUdfPathContextHolder.getOtherPluginsFiles()));
+                execute.add(new StatementParam(statement, operationType));
+                //
+                // AddJarSqlParser.getAllFilePath(statement).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
+                //                DinkyClassLoaderContextHolder.get()
+                //                        .addURL(URLUtils.getURLs(FlinkUdfPathContextHolder.getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
                 Configuration combinationConfig = getCombinationConfig();
                 FileSystem.initialize(combinationConfig, null);
@@ -277,7 +275,6 @@ public class Explainer {
                 } else {
                     executor.executeSql(item.getValue());
                 }
-                record.setType("DATASTREAM");
                 record.setParseTrue(true);
             } catch (Exception e) {
                 String error = LogUtil.getError(e);

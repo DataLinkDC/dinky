@@ -569,19 +569,14 @@ public class JobManager {
                 } else {
                     for (StatementParam item : jobParam.getExecute()) {
                         executor.executeSql(item.getValue());
-                        if (!useStatementSet) {
-                            break;
-                        }
+                        //                        if (!useStatementSet) {
+                        //                            break;
+                        //                        }
                     }
                     JobClient jobClient = executor.executeAsync(config.getJobName());
                     if (Asserts.isNotNull(jobClient)) {
                         job.setJobId(jobClient.getJobID().toHexString());
-                        job.setJids(new ArrayList<String>() {
-
-                            {
-                                add(job.getJobId());
-                            }
-                        });
+                        job.setJids(CollUtil.newArrayList(job.getJobId()));
                     }
                     if (config.isUseResult()) {
                         IResult result = ResultBuilder.build(

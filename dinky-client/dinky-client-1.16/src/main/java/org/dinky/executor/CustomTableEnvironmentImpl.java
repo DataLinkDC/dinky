@@ -180,6 +180,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             record.setType("Explain DML");
         } else if (operation instanceof QueryOperation) {
             record.setType("Query DML");
+        } else if (operation instanceof QueryOperation) {
+            record.setType("Query DML");
         } else {
             record.setExplain(operation.asSummaryString());
             record.setType("DDL");

@@ -21,11 +21,15 @@ package org.dinky.interceptor;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.executor.Executor;
+import org.dinky.parser.CustomParserImpl;
 import org.dinky.trans.Operation;
 import org.dinky.trans.Operations;
+import org.dinky.trans.dml.DmlOperation;
 import org.dinky.utils.SqlUtil;
 
 import org.apache.flink.table.api.TableResult;
+
+import java.util.Optional;
 
 /**
  * FlinkInterceptor
@@ -52,6 +56,15 @@ public class FlinkInterceptor {
         if (Asserts.isNotNull(operation)) {
             tableResult = operation.build(executor);
             noExecute = operation.noExecute();
+        } else {
+            Optional<org.apache.flink.table.operations.Operation> parse =
+                    CustomParserImpl.DinkyExtendedParser.INSTANCE.parse(statement);
+            if (parse.isPresent()) {
+                org.apache.flink.table.operations.Operation operation1 = parse.get();
+                if (operation1 instanceof DmlOperation) {
+                    tableResult = ((DmlOperation) operation1).explain(executor).get();
+                }
+            }
         }
         return FlinkInterceptorResult.build(noExecute, tableResult);
     }
