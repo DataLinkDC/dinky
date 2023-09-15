@@ -21,12 +21,12 @@ package org.dinky.alert.sms;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.List;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.sms.config.SmsConfigLoader;
 import org.dinky.alert.sms.enums.ManuFacturers;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.dromara.sms4j.api.SmsBlend;
 import org.dromara.sms4j.api.universal.SupplierConfig;
@@ -39,7 +39,6 @@ import cn.hutool.json.JSONUtil;
 
 /** SmsSender todo: https://wind.kim/doc/start/springboot.html */
 public class SmsSender {
-
     private static final Logger logger = LoggerFactory.getLogger(SmsSender.class);
     private static SupplierConfig configLoader = null;
     private static BaseProviderFactory providerFactory = null;
