@@ -26,7 +26,6 @@ import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.RunTimeUtil;
 
 import org.apache.flink.api.dag.Pipeline;
-import org.apache.flink.client.StreamGraphTranslator;
 import org.apache.flink.client.program.PackagedProgram;
 import org.apache.flink.client.program.PackagedProgramUtils;
 import org.apache.flink.configuration.Configuration;
@@ -80,9 +79,7 @@ public class ExecuteJarOperation extends AbstractOperation implements DmlOperati
                     .build();
             executor.addJar(file);
             Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(program, configuration, 1, true);
-            StreamGraphTranslator streamGraphTranslator = new StreamGraphTranslator(program.getUserCodeClassLoader());
-            boolean canTranslate = streamGraphTranslator.canTranslate(pipeline);
-            Assert.isTrue(canTranslate, "can not translate");
+            Assert.isTrue(pipeline instanceof StreamGraph, "can not translate");
             return (StreamGraph) pipeline;
         } catch (Exception e) {
             throw new RuntimeException(e);
