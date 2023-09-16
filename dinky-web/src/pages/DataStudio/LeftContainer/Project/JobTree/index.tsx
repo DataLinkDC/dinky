@@ -19,7 +19,7 @@
 
 import {
   buildProjectTree,
-  generateList,
+  generateList, getLeafKeyList,
   getParentKey
 } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { StateType } from '@/pages/DataStudio/model';
@@ -80,10 +80,11 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   const onExpand = (expandedKeys: Key[]) => {
     setExpandedKeys(expandedKeys);
   };
+
   const expandAll = () => {
-    const map = data.filter((x: { isLeaf: any }) => !x.isLeaf).map((x: { key: any }) => x.key);
-    setExpandedKeys(map);
+    setExpandedKeys(getLeafKeyList(projectData));
   };
+
   const btn = BtnRoute['menu.datastudio.project'];
 
   btn[1].onClick = expandAll;
