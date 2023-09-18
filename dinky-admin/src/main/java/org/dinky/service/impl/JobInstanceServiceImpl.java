@@ -21,8 +21,13 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
+import org.dinky.daemon.task.DaemonFactory;
+import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.dto.JobDataDto;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.Status;
+import org.dinky.data.model.Cluster;
+import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.History;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
@@ -31,7 +36,8 @@ import org.dinky.data.model.JobInstanceStatus;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.job.FlinkJobTaskPool;
+import org.dinky.job.FlinkJobTask;
+import org.dinky.job.handler.JobRefeshHandler;
 import org.dinky.mapper.JobInstanceMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.mybatis.util.ProTableUtil;
@@ -141,52 +147,34 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
     @Override
     public JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance) {
+        JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
+
         Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
-        String key = jobInstance.getId().toString();
-        FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
-        if (pool.containsKey(key)) {
-            return pool.get(key);
-        } else {
-            JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
-            jobInfoDetail.setInstance(jobInstance);
-            jobInfoDetail.setCluster(clusterInstanceService.getById(jobInstance.getClusterId()));
-            jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
-            History history = historyService.getById(jobInstance.getHistoryId());
-            history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
-            jobInfoDetail.setHistory(history);
-            if (Asserts.isNotNull(history.getClusterConfigurationId())) {
-                jobInfoDetail.setClusterConfiguration(
-                        clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
-            }
-            return jobInfoDetail;
+        jobInfoDetail.setInstance(jobInstance);
+
+        Cluster cluster = clusterInstanceService.getById(jobInstance.getClusterId());
+        jobInfoDetail.setCluster(cluster);
+
+        History history = historyService.getById(jobInstance.getHistoryId());
+        history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
+        jobInfoDetail.setHistory(history);
+        if (Asserts.isNotNull(history.getClusterConfigurationId())) {
+            ClusterConfiguration clusterConfigById =
+                    clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId());
+            jobInfoDetail.setClusterConfiguration(clusterConfigById);
+            jobInfoDetail.getInstance().setType(history.getType());
         }
+
+        JobDataDto jobDataDto = jobHistoryService.getJobHistoryDto(jobInstance.getId());
+        jobInfoDetail.setJobDataDto(jobDataDto);
+        return jobInfoDetail;
     }
 
     @Override
-    public JobInfoDetail refreshJobInfoDetailInfo(JobInstance jobInstance) {
-        Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
-        JobInfoDetail jobInfoDetail;
-        FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
-        String key = jobInstance.getId().toString();
-
-        jobInfoDetail = new JobInfoDetail(jobInstance.getId());
-        jobInfoDetail.setInstance(jobInstance);
-        jobInfoDetail.setCluster(clusterInstanceService.getById(jobInstance.getClusterId()));
-        jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
-        History history = historyService.getById(jobInstance.getHistoryId());
-
-        if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
-            history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
-            jobInfoDetail.setHistory(history);
-
-            jobInfoDetail.setClusterConfiguration(
-                    clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
-        }
-        if (pool.containsKey(key)) {
-            pool.refresh(jobInfoDetail);
-        } else {
-            pool.put(key, jobInfoDetail);
-        }
+    public JobInfoDetail refreshJobInfoDetail(Integer jobInstanceId) {
+        JobInfoDetail jobInfoDetail = getJobInfoDetail(jobInstanceId);
+        JobRefeshHandler.refeshJob(jobInfoDetail, true);
+        DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId));
         return jobInfoDetail;
     }
 
@@ -211,21 +199,6 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         Map<String, Object> param = mapper.convertValue(para, Map.class);
         Page<JobInstance> page = new Page<>(current, pageSize);
         List<JobInstance> list = baseMapper.selectForProTable(page, queryWrapper, param);
-        FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
-        for (JobInstance jobInstance : list) {
-            if (pool.containsKey(jobInstance.getId().toString())) {
-                jobInstance.setStatus(
-                        pool.get(jobInstance.getId().toString()).getInstance().getStatus());
-                jobInstance.setUpdateTime(
-                        pool.get(jobInstance.getId().toString()).getInstance().getUpdateTime());
-                jobInstance.setFinishTime(
-                        pool.get(jobInstance.getId().toString()).getInstance().getFinishTime());
-                jobInstance.setError(
-                        pool.get(jobInstance.getId().toString()).getInstance().getError());
-                jobInstance.setDuration(
-                        pool.get(jobInstance.getId().toString()).getInstance().getDuration());
-            }
-        }
         return ProTableResult.<JobInstance>builder()
                 .success(true)
                 .data(list)

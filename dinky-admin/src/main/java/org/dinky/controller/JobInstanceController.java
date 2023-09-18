@@ -117,7 +117,7 @@ public class JobInstanceController {
             paramType = "query",
             required = true)
     public Result<JobInfoDetail> refreshJobInfoDetail(@RequestParam Integer id) {
-        return Result.succeed(taskService.refreshJobInfoDetail(id), Status.RESTART_SUCCESS);
+        return Result.succeed(jobInstanceService.refreshJobInfoDetail(id), Status.RESTART_SUCCESS);
     }
 
     /** 获取单任务实例的血缘分析 */

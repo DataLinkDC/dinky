@@ -28,7 +28,7 @@ import com.google.common.cache.LoadingCache;
 
 public class ExceptionRule {
 
-    private final LoadingCache<String, Long> hisTime;
+    private final LoadingCache<Integer, Long> hisTime;
 
     public ExceptionRule() {
         hisTime = CacheBuilder.newBuilder()
@@ -44,7 +44,7 @@ public class ExceptionRule {
      * @param exceptions The exceptions object containing relevant data.
      * @return True if the operation should be executed, false otherwise.
      */
-    public Boolean isException(String key, ObjectNode exceptions) {
+    public Boolean isException(Integer key, ObjectNode exceptions) {
 
         // If the exception is the same as the previous one, it will not be reported again
         if (exceptions.get("timestamp") == null) {

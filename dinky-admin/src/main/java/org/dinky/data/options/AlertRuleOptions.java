@@ -31,7 +31,8 @@ public class AlertRuleOptions {
     public static final String JOB_ALERT_RULE_CHECK_POINTS = "checkPoints";
     public static final String JOB_ALERT_RULE_CLUSTER = "cluster";
     public static final String JOB_ALERT_RULE_EXCEPTIONS = "exceptions";
-    public static final String JOB_ALERT_RULE_REFRESH_RULES_DATA = "refreshRulesData";
+    public static final String JOB_ALERT_RULE_EXCEPTIONS_MSG = "exceptions_msg";
+    public static final String JOB_ALERT_RULE_EXCEPTION_CHECK = "exceptionRule";
     public static final String JOB_ALERT_RULE_CHECKPOINT_RULES = "checkpointRule";
     public static final String JOB_ALERT_RULE_TASK = "task";
     public static final String JOB_ALERT_RULE_TASK_URL = "taskUrl";

@@ -21,6 +21,11 @@ package org.dinky.daemon.entity;
 
 import java.util.LinkedList;
 
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
+@Getter
+@Slf4j
 public class TaskQueue<T> {
 
     private final LinkedList<T> tasks = new LinkedList<>();
@@ -30,6 +35,8 @@ public class TaskQueue<T> {
     public void enqueue(T task) {
         synchronized (lock) {
             lock.notifyAll();
+            //prevent duplicate additions
+            tasks.remove(task);
             tasks.addLast(task);
         }
     }
@@ -40,12 +47,10 @@ public class TaskQueue<T> {
                 try {
                     lock.wait();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                 }
             }
-
-            T task = tasks.removeFirst();
-            return task;
+            return tasks.removeFirst();
         }
     }
 

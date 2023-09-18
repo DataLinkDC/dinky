@@ -169,7 +169,7 @@ INSERT INTO dinky_alert_template (id, name, template_content, enabled, create_ti
 - **Alert Time :** ${time}
 - **Start Time :** ${startTime}
 - **End Time :** ${endTime}
-- **<font color=''red''>${exceptions.get("root-exception").toString()?substring(0,20)}</font>**
+- **<font color=''red''><#if exceptions_msg?length gt 100>${exceptions_msg?substring(0,100)}<#else>${exceptions_msg}</#if></font>**
 [Go toTask Web](http://${taskUrl})
 ', 1, null, null);
 
