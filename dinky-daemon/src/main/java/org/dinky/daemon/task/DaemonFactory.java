@@ -19,11 +19,12 @@
 
 package org.dinky.daemon.task;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.daemon.constant.FlinkTaskConstant;
 import org.dinky.daemon.pool.DefaultThreadPool;
 
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DaemonFactory {
@@ -65,7 +66,7 @@ public class DaemonFactory {
                     Thread.sleep(Math.max(
                             FlinkTaskConstant.MAX_POLLING_GAP / (taskSize + 1), FlinkTaskConstant.MIN_POLLING_GAP));
                 } catch (InterruptedException e) {
-                    log.error(e.getMessage(),e);
+                    log.error(e.getMessage(), e);
                 }
 
                 // Calculate the desired number of worker threads, adding one worker for every 100 tasks

@@ -35,7 +35,7 @@ public class TaskQueue<T> {
     public void enqueue(T task) {
         synchronized (lock) {
             lock.notifyAll();
-            //prevent duplicate additions
+            // prevent duplicate additions
             tasks.remove(task);
             tasks.addLast(task);
         }
