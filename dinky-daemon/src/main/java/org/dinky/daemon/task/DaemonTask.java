@@ -41,7 +41,7 @@ public interface DaemonTask {
 
     static DaemonTask build(DaemonTaskConfig config) {
         Optional<DaemonTask> optionalDaemonTask = DaemonTask.get(config);
-        if (optionalDaemonTask.isEmpty()) {
+        if (!optionalDaemonTask.isPresent()) {
             throw new DaemonTaskException(Status.DAEMON_TASK_NOT_SUPPORT.getMessage() + config.getType());
         }
         return optionalDaemonTask.get();
