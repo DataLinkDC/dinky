@@ -61,7 +61,7 @@ const MetricsConfigForm = (props: any) => {
     });
   };
 
-  const itemTabs = jobDetail?.jobHistory?.job?.vertices?.map((item: any) => {
+  const itemTabs = jobDetail?.jobDataDto?.job?.vertices?.map((item: any) => {
     return {
       key: item.id,
       label: item.name,
