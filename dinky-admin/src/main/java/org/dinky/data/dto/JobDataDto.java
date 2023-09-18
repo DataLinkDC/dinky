@@ -121,14 +121,14 @@ public class JobDataDto {
         return JobDataDto.builder()
                 .id(jobHistory.getId())
                 .tenantId(jobHistory.getTenantId())
-                .job(JSONUtil.toJsonNode(jobHistory.getJobJson()))
-                .exceptions(JSONUtil.toJsonNode(jobHistory.getExceptionsJson()))
-                .checkpoints(JSONUtil.toJsonNode(jobHistory.getCheckpointsJson()))
-                .checkpointsConfig(JSONUtil.toJsonNode(jobHistory.getCheckpointsConfigJson()))
-                .config(JSONUtil.toJsonNode(jobHistory.getConfigJson()))
-                .jar(JSONUtil.toJsonNode(jobHistory.getJarJson()))
-                .cluster(JSONUtil.toJsonNode(jobHistory.getClusterJson()))
-                .clusterConfiguration(JSONUtil.toJsonNode(jobHistory.getClusterConfigurationJson()))
+                .job(JSONUtil.parseToJsonNode(jobHistory.getJobJson()))
+                .exceptions(JSONUtil.parseToJsonNode(jobHistory.getExceptionsJson()))
+                .checkpoints(JSONUtil.parseToJsonNode(jobHistory.getCheckpointsJson()))
+                .checkpointsConfig(JSONUtil.parseToJsonNode(jobHistory.getCheckpointsConfigJson()))
+                .config(JSONUtil.parseToJsonNode(jobHistory.getConfigJson()))
+                .jar(JSONUtil.parseToJsonNode(jobHistory.getJarJson()))
+                .cluster(JSONUtil.parseToJsonNode(jobHistory.getClusterJson()))
+                .clusterConfiguration(JSONUtil.parseToJsonNode(jobHistory.getClusterConfigurationJson()))
                 .build();
     }
 }

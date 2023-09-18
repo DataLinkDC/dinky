@@ -172,11 +172,15 @@ public class JSONUtil {
     }
 
     public static ObjectNode parseObject(String text) {
+        return (ObjectNode) parseToJsonNode(text);
+    }
+
+    public static JsonNode parseToJsonNode(String text) {
         try {
-            if (text.isEmpty()) {
-                return parseObject(text, ObjectNode.class);
+            if (TextUtil.isEmpty(text)) {
+                return parseObject(text, JsonNode.class);
             } else {
-                return (ObjectNode) objectMapper.readTree(text);
+                return objectMapper.readTree(text);
             }
         } catch (Exception e) {
             throw new RuntimeException("String json deserialization exception.", e);
