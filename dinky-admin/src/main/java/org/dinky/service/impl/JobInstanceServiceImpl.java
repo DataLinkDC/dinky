@@ -162,7 +162,6 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             ClusterConfiguration clusterConfigById =
                     clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId());
             jobInfoDetail.setClusterConfiguration(clusterConfigById);
-            jobInfoDetail.getInstance().setType(history.getType());
         }
 
         JobDataDto jobDataDto = jobHistoryService.getJobHistoryDto(jobInstance.getId());

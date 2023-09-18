@@ -134,22 +134,4 @@ public class JobInstance implements Serializable {
             example = "2",
             notes = "Count of failed restarts")
     private Integer failedRestartCount;
-
-    @TableField(exist = false)
-    @ApiModelProperty(value = "Type", dataType = "String", notes = "Type of the job instance")
-    private String type;
-
-    @TableField(exist = false)
-    @ApiModelProperty(
-            value = "Cluster Name",
-            dataType = "String",
-            notes = "Name of the cluster associated with the job instance")
-    private String clusterName;
-
-    @TableField(exist = false)
-    @ApiModelProperty(
-            value = "Job Manager Address",
-            dataType = "String",
-            notes = "Job manager address associated with the job instance")
-    private String jobManagerAddress;
 }

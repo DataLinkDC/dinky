@@ -75,7 +75,10 @@ public class JobRefeshHandler {
      * @return True if the job is done, false otherwise.
      */
     public static boolean refeshJob(JobInfoDetail jobInfoDetail, boolean needSave) {
-        log.debug("Start to refresh job: {}->{}", jobInfoDetail.getInstance().getId(), jobInfoDetail.getInstance().getName());
+        log.debug(
+                "Start to refresh job: {}->{}",
+                jobInfoDetail.getInstance().getId(),
+                jobInfoDetail.getInstance().getName());
 
         JobInstance jobInstance = jobInfoDetail.getInstance();
         String oldStatus = jobInstance.getStatus();
@@ -86,7 +89,7 @@ public class JobRefeshHandler {
                 jobInfoDetail.getInstance().getJid());
 
         if (Asserts.isNull(jobDataDto.getJob()) || jobDataDto.isError()) {
-            //If the job fails to get it, the default Finish Time is the current time
+            // If the job fails to get it, the default Finish Time is the current time
             jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
             jobInstance.setFinishTime(LocalDateTime.now());
             jobInstance.setError(jobDataDto.getErrorMsg());
@@ -102,18 +105,19 @@ public class JobRefeshHandler {
             jobInstance.setDuration(
                     job.get(FlinkRestResultConstant.JOB_DURATION).asLong());
             jobInstance.setCreateTime(TimeUtil.longToLocalDateTime(startTime));
-            //if the job is still running the end-time is -1
+            // if the job is still running the end-time is -1
             jobInstance.setFinishTime(TimeUtil.longToLocalDateTime(endTime));
         }
         jobInstance.setUpdateTime(LocalDateTime.now());
 
-        //Set to true if the job status has completed
-        //If the job status is Unknown and the status fails to be updated for 1 minute, set to true and discard the update
+        // Set to true if the job status has completed
+        // If the job status is Unknown and the status fails to be updated for 1 minute, set to true and discard the
+        // update
         boolean isDone = (JobStatus.isDone(jobInstance.getStatus()))
                 || (TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) > 0
-                && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
-                .toMinutes()
-                >= 1);
+                        && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
+                                        .toMinutes()
+                                >= 1);
 
         if (!oldStatus.equals(jobInstance.getStatus()) || isDone || needSave) {
             log.debug("Dump JobInfo to database: {}->{}", jobInstance.getId(), jobInstance.getName());
@@ -158,7 +162,6 @@ public class JobRefeshHandler {
         }
     }
 
-
     /**
      * Gets the job status.
      *
@@ -199,13 +202,14 @@ public class JobRefeshHandler {
     private static void handleJobDone(JobInfoDetail jobInfoDetail) {
         JobInstance jobInstance = jobInfoDetail.getInstance();
         JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
+        String clusterType = jobInfoDetail.getCluster().getType();
 
-        if (GatewayType.isDeployCluster(jobInstance.getType())) {
+        if (GatewayType.isDeployCluster(clusterType)) {
             JobConfig jobConfig = new JobConfig();
             String configJson =
                     jobDataDto.getClusterConfiguration().get("configJson").asText();
             jobConfig.buildGatewayConfig(new JSONObject(configJson).toBean(FlinkClusterConfig.class));
-            jobConfig.getGatewayConfig().setType(GatewayType.get(jobInstance.getType()));
+            jobConfig.getGatewayConfig().setType(GatewayType.get(clusterType));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
             Gateway.build(jobConfig.getGatewayConfig()).onJobFinishCallback(jobInstance.getStatus());
         }
