@@ -56,9 +56,10 @@ public class ExceptionRule {
             return false;
         }
         hisTime.put(key, timestamp);
-        if (exceptions.has("root-exception") && exceptions.get("root-exception") != null) {
-            return true;
+        if (exceptions.has("root-exception")) {
+            return !exceptions.get("root-exception").isNull();
+        } else {
+            return false;
         }
-        return true;
     }
 }
