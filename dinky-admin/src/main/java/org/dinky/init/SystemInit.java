@@ -44,10 +44,12 @@ import org.dinky.service.TaskService;
 import org.dinky.service.TenantService;
 import org.dinky.service.resource.impl.HdfsResourceManager;
 import org.dinky.service.resource.impl.OssResourceManager;
+import org.dinky.url.RsURLStreamHandlerFactory;
 import org.dinky.utils.JSONUtil;
 import org.dinky.utils.OssTemplate;
 import org.dinky.utils.UDFUtils;
 
+import org.apache.catalina.webresources.TomcatURLStreamHandlerFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 
@@ -104,6 +106,11 @@ public class SystemInit implements ApplicationRunner {
         initDolphinScheduler();
         registerUDF();
         updateGitBuildState();
+        registerURL();
+    }
+
+    private void registerURL() {
+        TomcatURLStreamHandlerFactory.getInstance().addUserFactory(new RsURLStreamHandlerFactory());
     }
 
     private void initResources() {
@@ -162,7 +169,9 @@ public class SystemInit implements ApplicationRunner {
                 }));
     }
 
-    /** init task monitor */
+    /**
+     * init task monitor
+     */
     private void initTaskMonitor() {
         List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
         List<DaemonTaskConfig> configList = new ArrayList<>();
@@ -173,7 +182,9 @@ public class SystemInit implements ApplicationRunner {
         DaemonFactory.start(configList);
     }
 
-    /** init DolphinScheduler */
+    /**
+     * init DolphinScheduler
+     */
     private void initDolphinScheduler() {
         systemConfiguration
                 .getAllConfiguration()
