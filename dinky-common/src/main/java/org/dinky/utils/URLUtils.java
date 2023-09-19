@@ -22,12 +22,40 @@ package org.dinky.utils;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
+
 /** @since 0.7.0 */
 public class URLUtils {
+    private static final String TMP_PATH = StrUtil.join(File.separator, System.getProperty("user.dir"), "tmp");
+    /**
+     * url download file to local
+     * @param urlPath urlPath
+     * @return file
+     */
+    public static File toFile(String urlPath) {
+        try {
+            URL url = new URL(urlPath);
+            URLConnection urlConnection = url.openConnection();
+            if ("http".equals(url.getProtocol())
+                    || "https".equals(url.getProtocol())
+                    || "hdfs".equals(url.getProtocol())
+                    || "rs".equals(url.getProtocol())) {
+                String path = StrUtil.join(File.separator, TMP_PATH, "downloadFile", url.getPath());
+                return FileUtil.writeFromStream(urlConnection.getInputStream(), path);
+            } else if ("file".equals(url.getProtocol())) {
+                return new File(url.getPath());
+            }
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * 获得URL，常用于使用绝对路径时的情况
