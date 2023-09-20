@@ -60,7 +60,7 @@ export default () => {
   const dataProcess = (data: MetricsDataType) => {
     switch (data.model) {
       case 'local':
-        const d:JVMMetric = data.content;
+        const d: JVMMetric = data.content;
         d.time = data.heartTime;
         jvmData.push(d);
         break;

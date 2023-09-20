@@ -19,8 +19,6 @@
 
 package org.dinky.data.vo;
 
-import org.dinky.data.metrics.MetricsTotal;
-
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;

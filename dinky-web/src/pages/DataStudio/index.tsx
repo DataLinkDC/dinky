@@ -165,7 +165,17 @@ const DataStudio = (props: any) => {
     const info = res as { [key: string]: any };
     const changed = Object.keys(params.taskData).some((key) => {
       // ignore this property
-      if (['updateTime', 'createTime', 'jobInstanceId', 'useResult', 'maxRowNum', 'useChangeLog', 'useAutoCancel'].includes(key)) {
+      if (
+        [
+          'updateTime',
+          'createTime',
+          'jobInstanceId',
+          'useResult',
+          'maxRowNum',
+          'useChangeLog',
+          'useAutoCancel'
+        ].includes(key)
+      ) {
         return false;
       }
 

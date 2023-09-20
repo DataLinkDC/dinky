@@ -18,16 +18,16 @@
  */
 
 import FlinkChart from '@/components/FlinkChart';
-import {JobMetricsItem} from '@/pages/DevOps/JobDetail/data';
-import {getMetricsData} from '@/pages/DevOps/JobDetail/JobMetrics/service';
-import {DevopsType} from '@/pages/DevOps/JobDetail/model';
-import {ChartData} from '@/pages/Metrics/Job/data';
-import {MetricsDataType} from '@/pages/Metrics/Server/data';
-import {getSseData} from '@/services/api';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {connect} from '@@/exports';
-import {Row, Spin} from 'antd';
-import {useEffect, useState} from 'react';
+import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
+import { getMetricsData } from '@/pages/DevOps/JobDetail/JobMetrics/service';
+import { DevopsType } from '@/pages/DevOps/JobDetail/model';
+import { ChartData } from '@/pages/Metrics/Job/data';
+import { MetricsDataType } from '@/pages/Metrics/Server/data';
+import { getSseData } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { connect } from '@@/exports';
+import { Row, Spin } from 'antd';
+import { useEffect, useState } from 'react';
 
 const JobChart = (props: any) => {
   const { jobDetail, metricsTarget, timeRange } = props;
@@ -36,9 +36,9 @@ const JobChart = (props: any) => {
   const [chartDatas, setChartDatas] = useState<Record<string, ChartData[]>>({});
   const [loading, setLoading] = useState<boolean>(false);
 
-  const sseUrl = `${
-    API_CONSTANTS.MONITOR_GET_LAST_DATA
-  }?lastTime=${new Date().getTime()}&keys=${jobDetail.instance.jid}`;
+  const sseUrl = `${API_CONSTANTS.MONITOR_GET_LAST_DATA}?lastTime=${new Date().getTime()}&keys=${
+    jobDetail.instance.jid
+  }`;
 
   const dataProcess = (chData: Record<string, ChartData[]>, data: MetricsDataType) => {
     if (data.model == 'local') {

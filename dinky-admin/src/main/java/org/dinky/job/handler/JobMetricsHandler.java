@@ -56,12 +56,12 @@ public class JobMetricsHandler {
         String[] jobManagerUrls = jobInfoDetail.getCluster().getJobManagerHost().split(",");
         String jobId = jobInfoDetail.getInstance().getJid();
 
-        //Create a CompletableFuture array for concurrent acquisition of indicator data
+        // Create a CompletableFuture array for concurrent acquisition of indicator data
         CompletableFuture<?>[] array = customMetricsList.entrySet().stream()
                 .map((e) -> CompletableFuture.runAsync(
                         () -> fetchFlinkMetrics(e.getKey(), e.getValue(), jobManagerUrls, jobId)))
                 .toArray(CompletableFuture[]::new);
-        //Wait for all Completable Future executions to finish
+        // Wait for all Completable Future executions to finish
         AsyncUtil.waitAll(array);
 
         MetricsVO metricsVO = new MetricsVO(customMetricsList, jobId, LocalDateTime.now());
@@ -81,7 +81,8 @@ public class JobMetricsHandler {
             return;
         }
         String metricsName = StrUtil.join(",", m.keySet());
-        String urlParam = StrFormatter.format("/jobs/{}/vertices/{}/metrics?get={}", jid, v, URLUtil.encode(metricsName));
+        String urlParam =
+                StrFormatter.format("/jobs/{}/vertices/{}/metrics?get={}", jid, v, URLUtil.encode(metricsName));
         HttpUtils.asyncRequest(Arrays.asList(urlList), urlParam, NetConstant.READ_TIME_OUT, x -> {
             JSONArray array = JSONUtil.parseArray(x.body());
             array.forEach(y -> {
@@ -93,4 +94,3 @@ public class JobMetricsHandler {
         });
     }
 }
-

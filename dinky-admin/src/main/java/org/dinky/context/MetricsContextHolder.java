@@ -50,6 +50,7 @@ public class MetricsContextHolder {
      * when metricsVOS data reaches 1000 or the time exceeds 5 seconds
      */
     private static final List<MetricsVO> metricsVOS = Collections.synchronizedList(new ArrayList<>());
+
     private static final Long lastDumpTime = System.currentTimeMillis();
 
     /**
@@ -176,5 +177,4 @@ public class MetricsContextHolder {
             log.warn("complete sseEmitter failed:{}", e.getMessage());
         }
     }
-
 }
