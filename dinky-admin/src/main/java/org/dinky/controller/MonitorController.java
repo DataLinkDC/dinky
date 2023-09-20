@@ -116,7 +116,8 @@ public class MonitorController {
     public SseEmitter getLastUpdateData(Long lastTime, String keys) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         lastTime = Opt.ofNullable(lastTime).orElse(TimeUtil.nowTimestamp());
-        return monitorService.sendLatestData(emitter, TimeUtil.toLocalDateTime(lastTime), CollUtil.newArrayList(keys.split(",")));
+        return monitorService.sendLatestData(
+                emitter, TimeUtil.toLocalDateTime(lastTime), CollUtil.newArrayList(keys.split(",")));
     }
 
     @PutMapping("/saveFlinkMetrics/{layout}")
