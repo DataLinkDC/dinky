@@ -19,9 +19,8 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.configure.MetricConfig;
+import org.dinky.context.MetricsContextHolder;
 import org.dinky.data.dto.MetricsLayoutDTO;
-import org.dinky.data.enums.MetricsType;
 import org.dinky.data.metrics.Jvm;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
@@ -30,7 +29,6 @@ import org.dinky.process.exception.DinkyException;
 import org.dinky.service.MonitorService;
 import org.dinky.utils.PaimonUtil;
 
-import org.apache.http.util.TextUtils;
 import org.apache.paimon.data.BinaryString;
 import org.apache.paimon.data.Timestamp;
 import org.apache.paimon.predicate.Predicate;
@@ -43,7 +41,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -96,36 +93,8 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
     }
 
     @Override
-    public SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate, String layoutName) {
-        Queue<MetricsVO> metricsQueue = MetricConfig.getMetricsQueue();
-        scheduleRefreshMonitorDataExecutor.execute(() -> {
-            try {
-                LocalDateTime maxDate = DateUtil.toLocalDateTime(lastDate);
-                while (true) {
-                    if (CollUtil.isEmpty(metricsQueue)) {
-                        continue;
-                    }
-                    for (MetricsVO metrics : metricsQueue) {
-                        if (metrics.getHeartTime().isAfter(maxDate)) {
-                            // 过滤非layoutName指定的Flink监控数据，防止数据过多卡顿
-                            if (!TextUtils.isEmpty(layoutName)
-                                    && !metrics.getModel().equals(MetricsType.LOCAL.getType())
-                                    && !metrics.flinkContent().getLayoutNames().contains(layoutName)) {
-                                continue;
-                            }
-                            sseEmitter.send(metrics);
-                            maxDate = metrics.getHeartTime();
-                        }
-                    }
-                    ThreadUtil.sleep(800);
-                }
-            } catch (IOException e) {
-                sseEmitter.complete();
-            } catch (Exception e) {
-                e.printStackTrace();
-                sseEmitter.complete();
-            }
-        });
+    public SseEmitter sendLatestData(SseEmitter sseEmitter, LocalDateTime lastDate, List<String> keys) {
+        MetricsContextHolder.addSse(keys, sseEmitter, lastDate);
         return sseEmitter;
     }
 
@@ -175,6 +144,13 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
     public List<Metrics> getMetricsLayoutByName(String layoutName) {
         QueryWrapper<Metrics> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(Metrics::getLayoutName, layoutName);
+        return this.baseMapper.selectList(wrapper);
+    }
+
+    @Override
+    public List<Metrics> getJobMetrics(Integer taskId) {
+        QueryWrapper<Metrics> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Metrics::getTaskId, taskId);
         return this.baseMapper.selectList(wrapper);
     }
 }

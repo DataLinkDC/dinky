@@ -23,6 +23,7 @@ import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface MonitorService extends IService<Metrics> {
     List<MetricsVO> getData(Date startTime, Date endTime, List<String> jobIds);
 
-    SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate, String layoutName);
+    SseEmitter sendLatestData(SseEmitter sseEmitter, LocalDateTime lastDate, List<String> keys);
 
     SseEmitter sendJvmInfo(SseEmitter sseEmitter);
 
@@ -45,4 +46,6 @@ public interface MonitorService extends IService<Metrics> {
     Map<String, List<Metrics>> getMetricsLayout();
 
     List<Metrics> getMetricsLayoutByName(String layoutName);
+
+    List<Metrics> getJobMetrics(Integer taskId);
 }

@@ -18,19 +18,19 @@
  */
 
 import FlinkChart from '@/components/FlinkChart';
-import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
-import { getMetricsData } from '@/pages/DevOps/JobDetail/JobMetrics/service';
-import { DevopsType } from '@/pages/DevOps/JobDetail/model';
-import { ChartData } from '@/pages/Metrics/Job/data';
-import { FlinkMetricsData, MetricsDataType } from '@/pages/Metrics/Server/data';
-import { getSseData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { connect } from '@@/exports';
-import { Row, Spin } from 'antd';
-import { useEffect, useState } from 'react';
+import {JobMetricsItem} from '@/pages/DevOps/JobDetail/data';
+import {getMetricsData} from '@/pages/DevOps/JobDetail/JobMetrics/service';
+import {DevopsType} from '@/pages/DevOps/JobDetail/model';
+import {ChartData} from '@/pages/Metrics/Job/data';
+import {MetricsDataType} from '@/pages/Metrics/Server/data';
+import {getSseData} from '@/services/api';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {connect} from '@@/exports';
+import {Row, Spin} from 'antd';
+import {useEffect, useState} from 'react';
 
 const JobChart = (props: any) => {
-  const { jobDetail, metricsTarget, layoutName, timeRange } = props;
+  const { jobDetail, metricsTarget, timeRange } = props;
 
   const [eventSource, setEventSource] = useState<EventSource>();
   const [chartDatas, setChartDatas] = useState<Record<string, ChartData[]>>({});
@@ -38,14 +38,13 @@ const JobChart = (props: any) => {
 
   const sseUrl = `${
     API_CONSTANTS.MONITOR_GET_LAST_DATA
-  }?lastTime=${new Date().getTime()}&layoutName=${layoutName}`;
+  }?lastTime=${new Date().getTime()}&keys=${jobDetail.instance.jid}`;
 
   const dataProcess = (chData: Record<string, ChartData[]>, data: MetricsDataType) => {
     if (data.model == 'local') {
       return;
     }
-    const fd = data.content as FlinkMetricsData;
-    const verticesMap = fd.verticesAndMetricsMap;
+    const verticesMap = data.content as Record<string, Record<string, string>>;
     Object.keys(verticesMap).forEach((verticeId) =>
       Object.keys(verticesMap[verticeId]).forEach((mertics) => {
         const key = `${verticeId}-${mertics}`;

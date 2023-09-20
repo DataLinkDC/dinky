@@ -90,4 +90,8 @@ public class Metrics extends Model<Metrics> {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    @ApiModelProperty(value = "Job ID", dataType = "String", notes = "ID of the associated job")
+    @TableField(exist = false)
+    private String jobId;
 }

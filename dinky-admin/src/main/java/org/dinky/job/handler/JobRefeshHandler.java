@@ -104,9 +104,9 @@ public class JobRefeshHandler {
             jobInstance.setStatus(getJobStatus(jobInfoDetail).getValue());
             jobInstance.setDuration(
                     job.get(FlinkRestResultConstant.JOB_DURATION).asLong());
-            jobInstance.setCreateTime(TimeUtil.longToLocalDateTime(startTime));
+            jobInstance.setCreateTime(TimeUtil.toLocalDateTime(startTime));
             // if the job is still running the end-time is -1
-            jobInstance.setFinishTime(TimeUtil.longToLocalDateTime(endTime));
+            jobInstance.setFinishTime(TimeUtil.toLocalDateTime(endTime));
         }
         jobInstance.setUpdateTime(LocalDateTime.now());
 

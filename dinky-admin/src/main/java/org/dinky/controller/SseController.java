@@ -21,6 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.service.MonitorService;
 import org.dinky.sse.SseEmitterUTF8;
+import org.dinky.utils.TimeUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -49,10 +49,8 @@ public class SseController {
     @ApiImplicitParam(name = "lastTime", value = "last time", required = false, dataType = "Long", paramType = "query")
     public SseEmitter getLastUpdateData(Long lastTime) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
-        return monitorService.sendLatestData(
-                emitter,
-                DateUtil.date(Opt.ofNullable(lastTime).orElse(DateUtil.date().getTime())),
-                null);
+        lastTime = Opt.ofNullable(lastTime).orElse(TimeUtil.nowTimestamp());
+        return monitorService.sendLatestData(emitter, TimeUtil.toLocalDateTime(lastTime), null);
     }
 
     @GetMapping(value = "/getJvmInfo", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
