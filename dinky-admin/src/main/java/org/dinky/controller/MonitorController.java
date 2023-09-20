@@ -19,7 +19,6 @@
 
 package org.dinky.controller;
 
-import org.dinky.configure.schedule.metrics.FlinkMetricsIndicator;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.enums.BusinessType;
@@ -32,13 +31,13 @@ import org.dinky.data.vo.MetricsVO;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
 import org.dinky.sse.SseEmitterUTF8;
+import org.dinky.utils.TimeUtil;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,9 +70,6 @@ public class MonitorController {
 
     private final MonitorService monitorService;
     private final JobInstanceService jobInstanceService;
-
-    @Autowired
-    private FlinkMetricsIndicator flinkMetricsIndicator;
 
     @GetMapping("/getSysData")
     @ApiOperation("Get System Data")
@@ -115,14 +111,13 @@ public class MonitorController {
     @ApiOperation("Get Last Update Data")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "lastTime", value = "Last Time", required = false, dataType = "Long"),
-        @ApiImplicitParam(name = "layoutName", value = "Layout Name", required = true, dataType = "String")
+        @ApiImplicitParam(name = "keys", value = "jobids", required = true, dataType = "String")
     })
-    public SseEmitter getLastUpdateData(Long lastTime, String layoutName) {
+    public SseEmitter getLastUpdateData(Long lastTime, String keys) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
+        lastTime = Opt.ofNullable(lastTime).orElse(TimeUtil.nowTimestamp());
         return monitorService.sendLatestData(
-                emitter,
-                DateUtil.date(Opt.ofNullable(lastTime).orElse(DateUtil.date().getTime())),
-                layoutName);
+                emitter, TimeUtil.toLocalDateTime(lastTime), CollUtil.newArrayList(keys.split(",")));
     }
 
     @PutMapping("/saveFlinkMetrics/{layout}")
@@ -139,7 +134,8 @@ public class MonitorController {
     public Result<Void> saveFlinkMetricLayout(
             @PathVariable(value = "layout") String layoutName, @RequestBody List<MetricsLayoutDTO> metricsList) {
         monitorService.saveFlinkMetricLayout(layoutName, metricsList);
-        flinkMetricsIndicator.getAndCheckFlinkUrlAvailable();
+        jobInstanceService.refreshJobByTaskIds(
+                metricsList.stream().map(MetricsLayoutDTO::getTaskId).distinct().toArray(Integer[]::new));
         return Result.succeed();
     }
 

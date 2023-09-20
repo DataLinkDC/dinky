@@ -19,7 +19,8 @@
 
 import {
   buildProjectTree,
-  generateList, getLeafKeyList,
+  generateList,
+  getLeafKeyList,
   getParentKey
 } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { StateType } from '@/pages/DataStudio/model';

@@ -39,6 +39,10 @@ public class TimeUtil {
         return nowStr("yyyy-MM-dd HH:mm:ss");
     }
 
+    public static Long nowTimestamp() {
+        return localDateTimeToLong(LocalDateTime.now());
+    }
+
     /**
      * Returns the current date and time as a formatted string based on the provided format.
      *
@@ -134,7 +138,7 @@ public class TimeUtil {
      *
      * @return A LocalDateTime object representing the parsed date and time.
      */
-    public static LocalDateTime longToLocalDateTime(Long timestamp) {
+    public static LocalDateTime toLocalDateTime(Long timestamp) {
         Instant instant = Instant.ofEpochMilli(timestamp);
         return instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
     }

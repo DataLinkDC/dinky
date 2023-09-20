@@ -37,7 +37,6 @@ public class CheckpointsRule {
     public CheckpointsRule() {
         checkpointsCache = CacheBuilder.newBuilder()
                 .expireAfterAccess(60, TimeUnit.SECONDS)
-                .recordStats()
                 .build(CacheLoader.from(key -> null));
     }
 

@@ -87,7 +87,7 @@ public class DaemonFactory {
      * @param config
      * add task
      * */
-    public static void addTask(DaemonTaskConfig config) {
+    public static void refeshOraddTask(DaemonTaskConfig config) {
         DefaultThreadPool.getInstance().execute(DaemonTask.build(config));
     }
 }
