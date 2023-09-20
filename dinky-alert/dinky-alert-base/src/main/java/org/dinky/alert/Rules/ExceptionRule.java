@@ -33,7 +33,6 @@ public class ExceptionRule {
     public ExceptionRule() {
         hisTime = CacheBuilder.newBuilder()
                 .expireAfterAccess(60, TimeUnit.SECONDS)
-                .recordStats()
                 .build(CacheLoader.from(key -> null));
     }
 
