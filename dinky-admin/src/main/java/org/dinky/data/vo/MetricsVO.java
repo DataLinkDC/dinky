@@ -19,7 +19,6 @@
 
 package org.dinky.data.vo;
 
-import org.dinky.configure.schedule.metrics.FlinkMetricsIndicator;
 import org.dinky.data.metrics.MetricsTotal;
 
 import java.time.LocalDateTime;
@@ -32,18 +31,17 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(value = "MetricsVO", description = "Metrics Value Object")
 public class MetricsVO {
     @ApiModelProperty(value = "Content of metrics", dataType = "Object", notes = "Content of the metrics data.")
     private Object content;
-
-    @ApiModelProperty(value = "Total metrics", dataType = "MetricsTotal", notes = "Total metrics data.")
-    private MetricsTotal metricsTotal;
 
     @ApiModelProperty(value = "Model name", dataType = "String", notes = "Name of the model.")
     private String model;
@@ -57,12 +55,4 @@ public class MetricsVO {
             notes = "Timestamp of the heartbeat data.",
             example = "2023-09-15 14:30:00")
     private LocalDateTime heartTime;
-
-    public FlinkMetricsIndicator.FlinkMetrics flinkContent() {
-        if (content instanceof FlinkMetricsIndicator.FlinkMetrics) {
-            return (FlinkMetricsIndicator.FlinkMetrics) content;
-        } else {
-            return new FlinkMetricsIndicator.FlinkMetrics();
-        }
-    }
 }

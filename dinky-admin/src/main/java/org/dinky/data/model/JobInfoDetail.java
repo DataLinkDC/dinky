@@ -21,7 +21,8 @@ package org.dinky.data.model;
 
 import org.dinky.data.dto.JobDataDto;
 
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -51,14 +52,14 @@ public class JobInfoDetail {
     @ApiModelProperty(value = "History", notes = "Details about the history")
     private History history;
 
-    @ApiModelProperty(value = "Job Manager Configuration", notes = "Details about the job manager configuration")
-    private JobManagerConfiguration jobManagerConfiguration;
-
     @ApiModelProperty(value = "JobDataDto", notes = "Details about the job")
     private JobDataDto jobDataDto;
 
-    @ApiModelProperty(value = "Task Manager Configurations", notes = "Set of task manager configurations")
-    private Set<TaskManagerConfiguration> taskManagerConfiguration;
+    /**
+     * jobId -> metricsId -> metricsValue
+     */
+    @ApiModelProperty(value = "Metrics Map", notes = "Details about the metrics map")
+    private Map<String, Map<String, String>> customMetricsMap = new HashMap<>();
 
     public JobInfoDetail(Integer id) {
         this.id = id;

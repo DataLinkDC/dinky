@@ -71,13 +71,12 @@ public class FlinkJobTask implements DaemonTask {
      */
     @Override
     public boolean dealTask() {
-        // TODO: 目前只是完成作业刷新，告警与监控需要继续完善
         volatilityBalance();
         TenantContextHolder.set(1);
 
         boolean isDone = JobRefeshHandler.refeshJob(jobInfoDetail, isNeedSave());
         JobAlertHandler.getInstance().check(jobInfoDetail);
-
+        JobMetricsHandler.writeFlinkMetrics(jobInfoDetail);
         return isDone;
     }
 

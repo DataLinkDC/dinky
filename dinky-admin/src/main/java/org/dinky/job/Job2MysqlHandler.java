@@ -200,7 +200,7 @@ public class Job2MysqlHandler implements JobHandler {
                 .build();
         jobHistoryService.save(jobHistory);
 
-        DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId()));
+        DaemonFactory.refeshOraddTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId()));
         return true;
     }
 
