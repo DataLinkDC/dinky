@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.configure.schedule.Alert;
+package org.dinky.job.handler;
 
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
@@ -25,9 +25,10 @@ import org.dinky.alert.AlertResult;
 import org.dinky.alert.Rules.CheckpointsRule;
 import org.dinky.alert.Rules.ExceptionRule;
 import org.dinky.assertion.Asserts;
-import org.dinky.configure.schedule.BaseSchedule;
 import org.dinky.context.FreeMarkerHolder;
-import org.dinky.context.TenantContextHolder;
+import org.dinky.context.SpringContextUtils;
+import org.dinky.daemon.pool.DefaultThreadPool;
+import org.dinky.data.constant.FlinkRestResultConstant;
 import org.dinky.data.dto.AlertRuleDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
@@ -38,11 +39,10 @@ import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.data.options.AlertRuleOptions;
-import org.dinky.job.FlinkJobTaskPool;
-import org.dinky.service.impl.AlertGroupServiceImpl;
-import org.dinky.service.impl.AlertHistoryServiceImpl;
+import org.dinky.service.AlertGroupService;
+import org.dinky.service.AlertHistoryService;
+import org.dinky.service.TaskService;
 import org.dinky.service.impl.AlertRuleServiceImpl;
-import org.dinky.service.impl.TaskServiceImpl;
 import org.dinky.utils.TimeUtil;
 
 import java.io.IOException;
@@ -51,8 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.api.Rules;
@@ -60,53 +58,23 @@ import org.jeasy.rules.api.RulesEngine;
 import org.jeasy.rules.core.DefaultRulesEngine;
 import org.jeasy.rules.core.RuleBuilder;
 import org.jeasy.rules.spel.SpELCondition;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.scheduling.support.PeriodicTrigger;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.DependsOn;
 
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import freemarker.template.TemplateException;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * This class, JobAlerts, is responsible for scheduling and executing job alerts.
- * It checks for rule conditions and triggers alerts based on those conditions.
- */
-@Configurable
-@Component
-@RequiredArgsConstructor
 @Slf4j
-public class JobAlerts extends BaseSchedule {
+@DependsOn("springContextUtils")
+public class JobAlertHandler {
 
-    /**
-     * Service for managing alert history.
-     */
-    private final AlertHistoryServiceImpl alertHistoryService;
-
-    /**
-     * Service for managing alert groups.
-     */
-    private final AlertGroupServiceImpl alertGroupService;
-
-    /**
-     * Service for managing tasks.
-     */
-    private final TaskServiceImpl taskService;
-
-    /**
-     * Service for managing alert rules.
-     */
-    private final AlertRuleServiceImpl alertRuleService;
-
-    /**
-     * The pool containing Flink job tasks.
-     * // TODO 任务刷新逻辑重购后记得修改这里逻辑
-     */
-    private final FlinkJobTaskPool taskPool = FlinkJobTaskPool.INSTANCE;
+    private static final AlertHistoryService alertHistoryService;
+    private static final AlertGroupService alertGroupService;
+    private static final TaskService taskService;
+    private static final AlertRuleServiceImpl alertRuleService;
 
     /**
      * Rules for evaluating alert conditions.
@@ -125,53 +93,80 @@ public class JobAlerts extends BaseSchedule {
 
     private final Facts ruleFacts = new Facts();
 
+    private static JobAlertHandler defaultJobAlertHandler;
+
+    static {
+        taskService = SpringContextUtils.getBean("taskServiceImpl", TaskService.class);
+        alertHistoryService = SpringContextUtils.getBean("alertHistoryServiceImpl", AlertHistoryService.class);
+        alertGroupService = SpringContextUtils.getBean("alertGroupServiceImpl", AlertGroupService.class);
+        alertRuleService = SpringContextUtils.getBean("alertRuleServiceImpl", AlertRuleServiceImpl.class);
+    }
+
+    public static JobAlertHandler getInstance() {
+        if (defaultJobAlertHandler == null) {
+            synchronized (DefaultThreadPool.class) {
+                if (defaultJobAlertHandler == null) {
+                    defaultJobAlertHandler = new JobAlertHandler();
+                }
+            }
+        }
+        return defaultJobAlertHandler;
+    }
+
     /**
      * Initializes the JobAlerts class by refreshing rules and setting up the scheduler.
      */
-    @PostConstruct
-    public void init() {
+    public JobAlertHandler() {
         refreshRulesData();
-        addSchedule(AlertRuleOptions.JOB_ALERT_SCHEDULE, this::check, new PeriodicTrigger(1000 * 30));
     }
 
     /**
      * checks for alert conditions for each job in the task pool.
      */
-    protected void check() {
-        TenantContextHolder.set(1);
-
-        for (Map.Entry<String, JobInfoDetail> job : taskPool.entrySet()) {
-            JobInfoDetail jobInfoDetail = job.getValue();
-            String key = job.getKey();
-            ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_TIME, TimeUtil.nowStr());
-            ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_DETAIL, jobInfoDetail);
+    public void check(JobInfoDetail jobInfoDetail) {
+        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_TIME, TimeUtil.nowStr());
+        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_DETAIL, jobInfoDetail);
+        ruleFacts.put(
+                AlertRuleOptions.JOB_ALERT_RULE_JOB_NAME,
+                jobInfoDetail.getJobDataDto().getJob());
+        ruleFacts.put(
+                AlertRuleOptions.JOB_ALERT_RULE_KEY, jobInfoDetail.getInstance().getId());
+        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_INSTANCE, jobInfoDetail.getInstance());
+        ruleFacts.put(
+                AlertRuleOptions.JOB_ALERT_RULE_START_TIME,
+                TimeUtil.convertTimeToString(jobInfoDetail.getInstance().getCreateTime()));
+        ruleFacts.put(
+                AlertRuleOptions.JOB_ALERT_RULE_END_TIME,
+                TimeUtil.convertTimeToString(jobInfoDetail.getInstance().getFinishTime()));
+        ruleFacts.put(
+                AlertRuleOptions.JOB_ALERT_RULE_CHECK_POINTS,
+                jobInfoDetail.getJobDataDto().getCheckpoints());
+        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CLUSTER, jobInfoDetail.getCluster());
+        ruleFacts.put(
+                AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS,
+                jobInfoDetail.getJobDataDto().getExceptions());
+        if (jobInfoDetail.getJobDataDto().isError()) {
             ruleFacts.put(
-                    AlertRuleOptions.JOB_ALERT_RULE_JOB_NAME,
-                    jobInfoDetail.getJobHistory().getJob());
-            ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_KEY, key);
-            ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_INSTANCE, jobInfoDetail.getInstance());
+                    AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS_MSG,
+                    jobInfoDetail.getJobDataDto().getErrorMsg());
+        } else {
             ruleFacts.put(
-                    AlertRuleOptions.JOB_ALERT_RULE_START_TIME,
-                    TimeUtil.convertTimeToString(jobInfoDetail.getHistory().getStartTime()));
-            ruleFacts.put(
-                    AlertRuleOptions.JOB_ALERT_RULE_END_TIME,
-                    TimeUtil.convertTimeToString(jobInfoDetail.getHistory().getEndTime()));
-            ruleFacts.put(
-                    AlertRuleOptions.JOB_ALERT_RULE_CHECK_POINTS,
-                    jobInfoDetail.getJobHistory().getCheckpoints());
-            ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CLUSTER, jobInfoDetail.getCluster());
-            ruleFacts.put(
-                    AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS,
-                    jobInfoDetail.getJobHistory().getExceptions());
-            rulesEngine.fire(rules, ruleFacts);
+                    AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS_MSG,
+                    jobInfoDetail
+                            .getJobDataDto()
+                            .getExceptions()
+                            .get(FlinkRestResultConstant.ROOT_EXCEPTION)
+                            .toString());
         }
+
+        rulesEngine.fire(rules, ruleFacts);
     }
 
     /**
      * Refreshes the alert rules and related data.
      */
     public void refreshRulesData() {
-        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_REFRESH_RULES_DATA, new ExceptionRule());
+        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_EXCEPTION_CHECK, new ExceptionRule());
         ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CHECKPOINT_RULES, new CheckpointsRule());
 
         List<AlertRuleDTO> ruleDTOS = alertRuleService.getBaseMapper().selectWithTemplate();
@@ -286,7 +281,7 @@ public class JobAlerts extends BaseSchedule {
     }
 
     @Data
-    public static class RuleItem {
+    private static class RuleItem {
         private String ruleKey;
         private String ruleOperator;
         //        private int rulePriority;

@@ -49,7 +49,7 @@ const CheckpointTable = (props: JobProps) => {
 
   const actionRef = useRef<ActionType>();
 
-  const checkpoints = jobDetail?.jobHistory?.checkpoints;
+  const checkpoints = jobDetail?.jobDataDto?.checkpoints;
 
   // const restartFromCheckpoint = useRequest((id: number, isOnLine: boolean, savePointPath: string) => (
   //     {
@@ -178,7 +178,7 @@ const CheckpointTable = (props: JobProps) => {
       columns={columns}
       style={{ width: '100%' }}
       dataSource={checkpoints?.history}
-      onDataSourceChange={(_) => actionRef.current?.reload()}
+      onDataSourceChange={() => actionRef.current?.reload()}
       actionRef={actionRef}
       rowKey='id'
       pagination={{

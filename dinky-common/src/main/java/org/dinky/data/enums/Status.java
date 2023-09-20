@@ -257,6 +257,13 @@ public enum Status {
     GLOBAL_PARAMS_CHECK_ERROR_VALUE(90002, "global.params.check.error.value"),
 
     /**
+     *
+     * Daemon About
+     * */
+    DAEMON_TASK_CONFIG_NOT_EXIST(100001, "daemon.task.config.not.exist"),
+    DAEMON_TASK_NOT_SUPPORT(100002, "daemon.task.not.support"),
+
+    /**
      * system config
      */
     SYS_FLINK_SETTINGS_USERESTAPI(100, "sys.flink.settings.useRestAPI"),

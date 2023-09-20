@@ -30,9 +30,9 @@ import { Descriptions, Tag } from 'antd';
 const CkDesc = (props: JobProps) => {
   const { jobDetail } = props;
 
-  let counts = jobDetail?.jobHistory?.checkpoints.counts;
-  let latest = jobDetail?.jobHistory?.checkpoints.latest;
-  let checkpointsConfigInfo = jobDetail?.jobHistory?.checkpointsConfig;
+  let counts = jobDetail?.jobDataDto?.checkpoints.counts;
+  let latest = jobDetail?.jobDataDto?.checkpoints.latest;
+  let checkpointsConfigInfo = jobDetail?.jobDataDto?.checkpointsConfig;
   return (
     <>
       <Descriptions bordered size='small' column={3}>

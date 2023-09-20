@@ -17,22 +17,15 @@
  *
  */
 
-package org.dinky.job;
+package org.dinky.gateway.exception;
 
-import org.dinky.data.model.JobInfoDetail;
-import org.dinky.pool.AbstractPool;
+public class NotSupportGetStatusException extends RuntimeException {
 
-/**
- * FlinkJobTaskPool
- *
- * @since 2022/5/28 16:39
- */
-public class FlinkJobTaskPool extends AbstractPool<String, JobInfoDetail> {
+    public NotSupportGetStatusException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    public static final FlinkJobTaskPool INSTANCE = new FlinkJobTaskPool();
-
-    @Override
-    public void refresh(JobInfoDetail entity) {
-        entity.refresh();
+    public NotSupportGetStatusException(String message) {
+        super(message);
     }
 }

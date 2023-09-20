@@ -183,21 +183,21 @@ public class Job2MysqlHandler implements JobHandler {
         task.setJobInstanceId(jobInstance.getId());
         taskService.updateById(task);
 
-        JobHistory jobHistory = new JobHistory();
-        jobHistory.setId(jobInstance.getId());
-        jobHistory.setClusterJson(JSONUtil.toJsonString(cluster));
-
-        jobHistory.setJarJson(
-                Asserts.isNotNull(job.getJobConfig().getJarId())
-                        ? JSONUtil.toJsonString(
-                                jarService.getById(job.getJobConfig().getJarId()))
-                        : null);
-
-        jobHistory.setClusterConfigurationJson(
-                Asserts.isNotNull(clusterConfigurationId)
-                        ? JSONUtil.toJsonString(
-                                clusterConfigurationService.getClusterConfigById(clusterConfigurationId))
-                        : null);
+        JobHistory.JobHistoryBuilder jobHistoryBuilder = JobHistory.builder();
+        JobHistory jobHistory = jobHistoryBuilder
+                .id(jobInstance.getId())
+                .clusterJson(JSONUtil.toJsonString(cluster))
+                .jarJson(
+                        Asserts.isNotNull(job.getJobConfig().getJarId())
+                                ? JSONUtil.toJsonString(
+                                        jarService.getById(job.getJobConfig().getJarId()))
+                                : null)
+                .clusterConfigurationJson(
+                        Asserts.isNotNull(clusterConfigurationId)
+                                ? JSONUtil.toJsonString(
+                                        clusterConfigurationService.getClusterConfigById(clusterConfigurationId))
+                                : null)
+                .build();
         jobHistoryService.save(jobHistory);
 
         DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId()));
