@@ -16,6 +16,7 @@
  *  limitations under the License.
  *
  */
+
 package org.dinky.gateway.exception;
 
 public class NotSupportGetStatusException extends RuntimeException {
