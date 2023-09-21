@@ -145,7 +145,6 @@ export default () => {
    */
   const handleSubmit = async (value: Partial<Cluster.Config>) => {
     await executeAndCallbackRefresh(async () => {
-      value.configJson = JSON.stringify(value.configJson);
       await handleAddOrUpdate(API_CONSTANTS.CLUSTER_CONFIGURATION, value);
       await handleCancel();
     });
@@ -175,7 +174,7 @@ export default () => {
     setClusterConfigState((prevState) => ({
       ...prevState,
       editOpen: true,
-      value: { ...item, configJson: JSON.stringify(item?.configJson ?? {}) }
+      value: { ...item}
     }));
   };
 
