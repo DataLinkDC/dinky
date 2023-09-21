@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.kubernetes;
 
-import cn.hutool.core.text.StrFormatter;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.Status;
 import org.dinky.gateway.AbstractGateway;
@@ -31,9 +30,7 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.utils.TextUtil;
 
 import org.apache.flink.configuration.ConfigOption;
-import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.DeploymentOptions;
-import org.apache.flink.configuration.DeploymentOptionsInternal;
 import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.kubernetes.KubernetesClusterClientFactory;
@@ -46,9 +43,9 @@ import org.apache.flink.kubernetes.kubeclient.FlinkKubeClientFactory;
 import java.lang.reflect.Method;
 import java.util.Collections;
 
-import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ReflectUtil;
 
 /**
@@ -72,7 +69,8 @@ public abstract class KubernetesGateway extends AbstractGateway {
         K8sConfig k8sConfig = config.getKubernetesConfig();
 
         try {
-            addConfigParas(GlobalConfiguration.loadConfiguration(flinkConfigPath).toMap());
+            addConfigParas(
+                    GlobalConfiguration.loadConfiguration(flinkConfigPath).toMap());
         } catch (Exception e) {
             logger.warn("load locale config yaml failed：{},Skip config it", e.getMessage());
         }
@@ -82,7 +80,9 @@ public abstract class KubernetesGateway extends AbstractGateway {
         addConfigParas(k8sConfig.getConfiguration());
         addConfigParas(DeploymentOptions.TARGET, getType().getLongValue());
         addConfigParas(KubernetesConfigOptions.CLUSTER_ID, flinkConfig.getJobName());
-        addConfigParas(PipelineOptions.JARS, Collections.singletonList(config.getAppConfig().getUserJarPath()));
+        addConfigParas(
+                PipelineOptions.JARS,
+                Collections.singletonList(config.getAppConfig().getUserJarPath()));
 
         preparPodTemplate(k8sConfig.getPodTemplate(), KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE);
         preparPodTemplate(k8sConfig.getJmPodTemplate(), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE);
@@ -107,7 +107,6 @@ public abstract class KubernetesGateway extends AbstractGateway {
         addConfigParas(option, filePath);
     }
 
-
     private void initKubeClient() {
         client = FlinkKubeClientFactory.getInstance().fromConfiguration(configuration, "client");
     }
@@ -118,7 +117,8 @@ public abstract class KubernetesGateway extends AbstractGateway {
         }
 
         KubernetesClusterClientFactory clusterClientFactory = new KubernetesClusterClientFactory();
-        addConfigParas(KubernetesConfigOptions.CLUSTER_ID, config.getClusterConfig().getAppId());
+        addConfigParas(
+                KubernetesConfigOptions.CLUSTER_ID, config.getClusterConfig().getAppId());
         String clusterId = clusterClientFactory.getClusterId(configuration);
         if (Asserts.isNull(clusterId)) {
             throw new GatewayException(
@@ -139,7 +139,8 @@ public abstract class KubernetesGateway extends AbstractGateway {
                     "No job id was specified. Please specify a job to which you would like to" + " savepont.");
         }
 
-        addConfigParas(KubernetesConfigOptions.CLUSTER_ID, config.getClusterConfig().getAppId());
+        addConfigParas(
+                KubernetesConfigOptions.CLUSTER_ID, config.getClusterConfig().getAppId());
         KubernetesClusterClientFactory clusterClientFactory = new KubernetesClusterClientFactory();
         String clusterId = clusterClientFactory.getClusterId(configuration);
         if (Asserts.isNull(clusterId)) {
@@ -167,7 +168,8 @@ public abstract class KubernetesGateway extends AbstractGateway {
             return TestResult.success();
         } catch (Exception e) {
             logger.error(Status.GAETWAY_KUBERNETS_TEST_FAILED.getMessage(), e);
-            return TestResult.fail(StrFormatter.format("{}:{}",Status.GAETWAY_KUBERNETS_TEST_FAILED.getMessage(), e.getMessage()));
+            return TestResult.fail(
+                    StrFormatter.format("{}:{}", Status.GAETWAY_KUBERNETS_TEST_FAILED.getMessage(), e.getMessage()));
         }
     }
 
@@ -189,7 +191,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
         try {
             clusterDescriptor.killCluster(clusterId);
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
         }
     }
 }

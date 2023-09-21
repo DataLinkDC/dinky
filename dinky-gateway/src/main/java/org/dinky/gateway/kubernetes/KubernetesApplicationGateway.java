@@ -45,7 +45,6 @@ import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * KubernetesApplicationGateway

@@ -19,7 +19,6 @@
 
 package org.dinky.gateway;
 
-import org.apache.flink.configuration.ConfigOption;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.config.GatewayConfig;
@@ -37,6 +36,7 @@ import org.apache.flink.client.deployment.ClusterDescriptor;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.CheckpointingOptions;
+import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.JobManagerOptions;
 import org.apache.flink.configuration.TaskManagerOptions;
@@ -97,7 +97,7 @@ public abstract class AbstractGateway implements Gateway {
     protected <T> void addConfigParas(ConfigOption<T> key, T value) {
         if (Asserts.isNotNull(key) && Asserts.isNotNull(value)) {
             this.configuration.set(key, value);
-        }else {
+        } else {
             logger.warn("Gateway config key or value is null, key: {}, value: {}", key, value);
         }
     }
