@@ -48,7 +48,6 @@ public class KubernetesSessionGateway extends KubernetesGateway {
             init();
         }
 
-        combineFlinkConfig();
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
                 createClusterSpecificationBuilder();
 

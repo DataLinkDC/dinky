@@ -137,6 +137,11 @@ public class TaskController {
         }
     }
 
+    @GetMapping(value = "/submitTest")
+    public void test() {
+        taskService.submitTask(3);
+    }
+
     /** 获取指定ID的信息 */
     @GetMapping
     @ApiOperation("Get Task Info By Id")
