@@ -174,17 +174,18 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public Cluster deploySessionCluster(Integer id) {
-        ClusterConfiguration clusterConfiguration = clusterConfigurationService.getClusterConfigById(id);
-        if (Asserts.isNull(clusterConfiguration)) {
+        ClusterConfiguration clusterCfg = clusterConfigurationService.getClusterConfigById(id);
+        if (Asserts.isNull(clusterCfg)) {
             throw new GatewayException("The cluster configuration does not exist.");
         }
-        GatewayConfig gatewayConfig = GatewayConfig.build(clusterConfiguration.getFlinkClusterCfg());
+        GatewayConfig gatewayConfig =
+                GatewayConfig.build(FlinkClusterConfig.create(clusterCfg.getType(), clusterCfg.getConfigJson()));
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
         return registersCluster(Cluster.autoRegistersCluster(
                 gatewayResult.getWebURL().replace("http://", ""),
                 gatewayResult.getId(),
-                clusterConfiguration.getName() + "_" + LocalDateTime.now(),
-                clusterConfiguration.getName() + LocalDateTime.now(),
+                clusterCfg.getName() + "_" + LocalDateTime.now(),
+                clusterCfg.getName() + LocalDateTime.now(),
                 id,
                 null));
     }

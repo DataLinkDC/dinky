@@ -23,9 +23,9 @@ import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.data.constant.FlinkRestResultConstant;
+import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.dto.JobDataDto;
 import org.dinky.data.enums.JobStatus;
-import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
 import org.dinky.gateway.Gateway;
@@ -170,13 +170,13 @@ public class JobRefeshHandler {
      */
     private static JobStatus getJobStatus(JobInfoDetail jobInfoDetail) {
 
-        ClusterConfiguration clusterCfg = jobInfoDetail.getClusterConfiguration();
+        ClusterConfigurationDTO clusterCfg = jobInfoDetail.getClusterConfiguration();
 
         if (!Asserts.isNull(clusterCfg)) {
             try {
                 String appId = jobInfoDetail.getCluster().getName();
 
-                GatewayConfig gatewayConfig = GatewayConfig.build(clusterCfg.getFlinkClusterCfg());
+                GatewayConfig gatewayConfig = GatewayConfig.build(clusterCfg.getConfig());
                 gatewayConfig.getClusterConfig().setAppId(appId);
                 gatewayConfig
                         .getFlinkConfig()
