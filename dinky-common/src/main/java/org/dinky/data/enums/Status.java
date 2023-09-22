@@ -342,6 +342,12 @@ public enum Status {
     SYS_RESOURCE_SETTINGS_HDFS_ROOT_USER_NOTE(173, "sys.resource.settings.hdfs.root.user.note"),
     SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS(174, "sys.resource.settings.hdfs.fs.defaultFS"),
     SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS_NOTE(175, "sys.resource.settings.hdfs.fs.defaultFS.note"),
+
+    /**
+     * gateway config
+     */
+    GAETWAY_KUBERNETS_TEST_FAILED(180, "gateway.kubernetes.test.failed"),
+    GAETWAY_KUBERNETS_TEST_SUCCESS(180, "gateway.kubernetes.test.success"),
     ;
 
     private final int code;
