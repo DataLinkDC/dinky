@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.ClusterConfiguration;
@@ -29,6 +30,7 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.service.ClusterConfigurationService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,11 +77,10 @@ public class ClusterConfigurationController {
             paramType = "body",
             required = true,
             dataTypeClass = ClusterConfiguration.class)
-    public Result<Void> saveOrUpdateClusterConfig(@RequestBody ClusterConfiguration clusterConfiguration) {
-        Integer id = clusterConfiguration.getId();
+    public Result<Void> saveOrUpdateClusterConfig(@RequestBody ClusterConfigurationDTO clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
         clusterConfiguration.setIsAvailable(testResult.isAvailable());
-        if (clusterConfigurationService.saveOrUpdate(clusterConfiguration)) {
+        if (clusterConfigurationService.saveOrUpdate(clusterConfiguration.toBean())) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
@@ -100,8 +101,17 @@ public class ClusterConfigurationController {
             dataType = "JsonNode",
             paramType = "body",
             required = true)
-    public ProTableResult<ClusterConfiguration> listClusterConfigList(@RequestBody JsonNode para) {
-        return clusterConfigurationService.selectForProTable(para);
+    public ProTableResult<ClusterConfigurationDTO> listClusterConfigList(@RequestBody JsonNode para) {
+        ProTableResult<ClusterConfiguration> result = clusterConfigurationService.selectForProTable(para);
+        List<ClusterConfigurationDTO> dtoList =
+                result.getData().stream().map(ClusterConfigurationDTO::fromBean).collect(Collectors.toList());
+        return ProTableResult.<ClusterConfigurationDTO>builder()
+                .success(true)
+                .data(dtoList)
+                .total(result.getTotal())
+                .current(result.getCurrent())
+                .pageSize(result.getPageSize())
+                .build();
     }
 
     /**
@@ -174,7 +184,7 @@ public class ClusterConfigurationController {
             paramType = "body",
             required = true,
             dataTypeClass = ClusterConfiguration.class)
-    public Result<Void> testConnect(@RequestBody ClusterConfiguration clusterConfiguration) {
+    public Result<Void> testConnect(@RequestBody ClusterConfigurationDTO clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
         if (testResult.isAvailable()) {
             return Result.succeed(Status.TEST_CONNECTION_SUCCESS);

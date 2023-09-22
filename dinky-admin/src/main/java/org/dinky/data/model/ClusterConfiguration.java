@@ -19,13 +19,10 @@
 
 package org.dinky.data.model;
 
-import org.dinky.gateway.enums.GatewayType;
-import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.mybatis.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import cn.hutool.json.JSONObject;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -73,11 +70,4 @@ public class ClusterConfiguration extends SuperEntity {
 
     @ApiModelProperty(value = "note", required = true, dataType = "String", example = "test", notes = "cluster note")
     private String note;
-
-    public FlinkClusterConfig getFlinkClusterCfg() {
-        JSONObject json = new JSONObject(getConfigJson());
-        FlinkClusterConfig flinkClusterConfig = json.toBean(FlinkClusterConfig.class);
-        flinkClusterConfig.setType(GatewayType.get(type));
-        return flinkClusterConfig;
-    }
 }

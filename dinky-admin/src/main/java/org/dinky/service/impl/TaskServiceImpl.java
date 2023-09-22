@@ -22,7 +22,6 @@ package org.dinky.service.impl;
 import org.dinky.assertion.Assert;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
-import org.dinky.config.Docker;
 import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.data.constant.CommonConstant;
@@ -95,7 +94,6 @@ import org.dinky.service.TaskService;
 import org.dinky.service.TaskVersionService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
-import org.dinky.utils.DockerClientUtils;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.UDFUtils;
 
@@ -246,31 +244,31 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     private void loadDocker(Integer taskId, Integer clusterConfigurationId, GatewayConfig gatewayConfig) {
-        Map<String, Object> dockerConfig = clusterCfgService
-                .getClusterConfigById(clusterConfigurationId)
-                .getFlinkClusterCfg()
-                .getKubernetesConfig()
-                .getDockerConfig();
-
-        if (dockerConfig == null) {
-            return;
-        }
-
-        String[] params = buildParas(
-                taskId, dockerConfig.getOrDefault("dinky.remote.addr", "").toString());
-
-        gatewayConfig.getAppConfig().setUserJarParas(params);
-
-        Docker docker = Docker.build(dockerConfig);
-        if (docker == null || StringUtils.isBlank(docker.getInstance())) {
-            return;
-        }
-
-        DockerClientUtils dockerClientUtils = new DockerClientUtils(docker);
-        String tag = dockerClientUtils.getDocker().getTag();
-        if (StrUtil.isNotBlank(tag)) {
-            gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", tag);
-        }
+        //        Map<String, Object> dockerConfig = clusterCfgService
+        //                .getClusterConfigById(clusterConfigurationId)
+        //                .getFlinkClusterCfg()
+        //                .getKubernetesConfig()
+        //                .getDockerConfig();
+        //
+        //        if (dockerConfig == null) {
+        //            return;
+        //        }
+        //
+        //        String[] params = buildParas(
+        //                taskId, dockerConfig.getOrDefault("dinky.remote.addr", "").toString());
+        //
+        //        gatewayConfig.getAppConfig().setUserJarParas(params);
+        //
+        //        Docker docker = Docker.build(dockerConfig);
+        //        if (docker == null || StringUtils.isBlank(docker.getInstance())) {
+        //            return;
+        //        }
+        //
+        //        DockerClientUtils dockerClientUtils = new DockerClientUtils(docker);
+        //        String tag = dockerClientUtils.getDocker().getTag();
+        //        if (StrUtil.isNotBlank(tag)) {
+        //            gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", tag);
+        //        }
     }
 
     @Override

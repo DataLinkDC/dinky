@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.task.DaemonFactory;
 import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.dto.JobDataDto;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.Status;
@@ -162,9 +163,9 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
         jobInfoDetail.setHistory(history);
         if (Asserts.isNotNull(history.getClusterConfigurationId())) {
-            ClusterConfiguration clusterConfigById =
+            ClusterConfiguration clusterConfig =
                     clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId());
-            jobInfoDetail.setClusterConfiguration(clusterConfigById);
+            jobInfoDetail.setClusterConfiguration(ClusterConfigurationDTO.fromBean(clusterConfig));
         }
 
         JobDataDto jobDataDto = jobHistoryService.getJobHistoryDto(jobInstance.getId());

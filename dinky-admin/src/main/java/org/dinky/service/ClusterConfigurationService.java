@@ -19,6 +19,7 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.TestResult;
@@ -39,7 +40,7 @@ public interface ClusterConfigurationService extends ISuperService<ClusterConfig
 
     FlinkClusterConfig getFlinkClusterCfg(Integer id);
 
-    TestResult testGateway(ClusterConfiguration clusterConfiguration);
+    TestResult testGateway(ClusterConfigurationDTO clusterConfiguration);
 
     Boolean modifyClusterConfigStatus(Integer id);
 }
