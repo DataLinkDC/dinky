@@ -97,7 +97,7 @@ declare namespace Jobs {
     'status-counts': {};
     plan: {};
   };
-  export type JobHistoryItem = {
+  export type JobDataDtoItem = {
     id: number;
     job: Job;
     exceptions: any;
@@ -116,7 +116,7 @@ declare namespace Jobs {
     cluster: any;
     clusterConfiguration: any;
     history: History;
-    jobHistory: JobHistoryItem;
+    jobDataDto: JobDataDtoItem;
     jobManagerConfiguration: any;
     taskManagerConfiguration: any;
   };

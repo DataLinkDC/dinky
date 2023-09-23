@@ -19,8 +19,8 @@
 
 package org.dinky.gateway.config;
 
-import org.dinky.data.constant.CommonConstant;
-
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -29,9 +29,27 @@ import lombok.Data;
  * @since 2021/11/3 21:55
  */
 @Data
+@ApiModel(value = "AppConfig", description = "Configuration for the Flink application")
 public class AppConfig {
 
+    @ApiModelProperty(
+            value = "Path to user JAR file",
+            dataType = "String",
+            example = "/path/to/user/app.jar",
+            notes = "Path to the user's application JAR file")
     private String userJarPath;
+
+    @ApiModelProperty(
+            value = "User JAR file parameters",
+            dataType = "String[]",
+            example = "[]",
+            notes = "Parameters to be passed to the user's application JAR file")
     private String[] userJarParas;
-    private String userJarMainAppClass = CommonConstant.DINKY_APP_MAIN_CLASS;
+
+    @ApiModelProperty(
+            value = "Main application class in the JAR file",
+            dataType = "String",
+            example = "com.example.MyAppMainClass",
+            notes = "Fully qualified class name of the main application class in the JAR file")
+    private String userJarMainAppClass;
 }

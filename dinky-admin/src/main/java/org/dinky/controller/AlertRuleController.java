@@ -19,11 +19,13 @@
 
 package org.dinky.controller;
 
-import org.dinky.configure.schedule.Alert.JobAlerts;
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertRule;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
+import org.dinky.job.handler.JobAlertHandler;
 import org.dinky.service.AlertRuleService;
 
 import java.util.List;
@@ -34,21 +36,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/alertRule")
+@Api(tags = "Alert Rule Controller")
 public class AlertRuleController {
 
     private final AlertRuleService alertRuleService;
-    private final JobAlerts jobAlerts;
 
     @PostMapping("/list")
+    @ApiOperation("Query alert rules list")
     public ProTableResult<AlertRule> list(@RequestBody JsonNode para) {
         ProTableResult<AlertRule> result = alertRuleService.selectForProTable(para);
         // The reason for this is to deal with internationalization
@@ -61,16 +68,39 @@ public class AlertRuleController {
     }
 
     @PutMapping
-    public Result<Boolean> put(@RequestBody AlertRule alertRule) {
+    @ApiImplicitParam(
+            name = "alertRule",
+            value = "alertRule",
+            required = true,
+            dataType = "AlertRule",
+            paramType = "body",
+            dataTypeClass = AlertRule.class)
+    @ApiOperation("Save or update alert rule")
+    @Log(title = "Save or update alert rule", businessType = BusinessType.INSERT_OR_UPDATE)
+    public Result<Boolean> saveOrUpdateAlertRule(@RequestBody AlertRule alertRule) {
         boolean saved = alertRuleService.saveOrUpdate(alertRule);
         if (saved) {
-            jobAlerts.refeshRulesData();
+            JobAlertHandler.getInstance().refreshRulesData();
+            return Result.succeed(Status.MODIFY_SUCCESS);
         }
-        return Result.succeed(saved);
+        return Result.failed(Status.MODIFY_FAILED);
     }
 
     @DeleteMapping
-    public Result<Boolean> delete(int id) {
-        return Result.succeed(alertRuleService.removeById(id));
+    @ApiImplicitParam(
+            name = "id",
+            value = "id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class,
+            example = "1")
+    @ApiOperation("Delete alert rule")
+    @Log(title = "Delete alert rule", businessType = BusinessType.DELETE)
+    public Result<Boolean> deleteAlertRuleById(@RequestParam Integer id) {
+        if (alertRuleService.removeById(id)) {
+            return Result.succeed(Status.DELETE_SUCCESS);
+        }
+        return Result.failed(Status.DELETE_FAILED);
     }
 }

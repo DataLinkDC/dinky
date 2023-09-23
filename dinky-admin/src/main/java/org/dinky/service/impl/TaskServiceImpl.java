@@ -22,13 +22,10 @@ package org.dinky.service.impl;
 import org.dinky.assertion.Assert;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
-import org.dinky.config.Docker;
 import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
-import org.dinky.daemon.task.DaemonFactory;
-import org.dinky.daemon.task.DaemonTaskConfig;
 import org.dinky.data.constant.CommonConstant;
-import org.dinky.data.constant.FlinkRestResultConstant;
+import org.dinky.data.dto.JobDataDto;
 import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.dto.TaskVersionConfigureDTO;
@@ -43,9 +40,7 @@ import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Cluster;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.DataBase;
-import org.dinky.data.model.History;
 import org.dinky.data.model.Jar;
-import org.dinky.data.model.JobHistory;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.JobModelOverview;
@@ -72,8 +67,6 @@ import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.SavePointResult;
-import org.dinky.job.FlinkJobTask;
-import org.dinky.job.FlinkJobTaskPool;
 import org.dinky.job.Job;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
@@ -101,9 +94,7 @@ import org.dinky.service.TaskService;
 import org.dinky.service.TaskVersionService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
-import org.dinky.utils.DockerClientUtils;
 import org.dinky.utils.FragmentVariableUtils;
-import org.dinky.utils.JSONUtil;
 import org.dinky.utils.UDFUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -113,7 +104,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -146,10 +136,11 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 
-/** TaskServiceImpl */
+/**
+ * TaskServiceImpl
+ */
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implements TaskService {
@@ -253,31 +244,31 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     private void loadDocker(Integer taskId, Integer clusterConfigurationId, GatewayConfig gatewayConfig) {
-        Map<String, Object> dockerConfig = clusterCfgService
-                .getClusterConfigById(clusterConfigurationId)
-                .getFlinkClusterCfg()
-                .getKubernetesConfig()
-                .getDockerConfig();
-
-        if (dockerConfig == null) {
-            return;
-        }
-
-        String[] params = buildParas(
-                taskId, dockerConfig.getOrDefault("dinky.remote.addr", "").toString());
-
-        gatewayConfig.getAppConfig().setUserJarParas(params);
-
-        Docker docker = Docker.build(dockerConfig);
-        if (docker == null || StringUtils.isBlank(docker.getInstance())) {
-            return;
-        }
-
-        DockerClientUtils dockerClientUtils = new DockerClientUtils(docker);
-        String tag = dockerClientUtils.getDocker().getTag();
-        if (StrUtil.isNotBlank(tag)) {
-            gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", tag);
-        }
+        //        Map<String, Object> dockerConfig = clusterCfgService
+        //                .getClusterConfigById(clusterConfigurationId)
+        //                .getFlinkClusterCfg()
+        //                .getKubernetesConfig()
+        //                .getDockerConfig();
+        //
+        //        if (dockerConfig == null) {
+        //            return;
+        //        }
+        //
+        //        String[] params = buildParas(
+        //                taskId, dockerConfig.getOrDefault("dinky.remote.addr", "").toString());
+        //
+        //        gatewayConfig.getAppConfig().setUserJarParas(params);
+        //
+        //        Docker docker = Docker.build(dockerConfig);
+        //        if (docker == null || StringUtils.isBlank(docker.getInstance())) {
+        //            return;
+        //        }
+        //
+        //        DockerClientUtils dockerClientUtils = new DockerClientUtils(docker);
+        //        String tag = dockerClientUtils.getDocker().getTag();
+        //        if (StrUtil.isNotBlank(tag)) {
+        //            gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", tag);
+        //        }
     }
 
     @Override
@@ -1014,112 +1005,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public JobInstance refreshJobInstance(Integer id, boolean isCoercive) {
-        JobInfoDetail jobInfoDetail;
-        FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
-        String key = id.toString();
-
-        if (pool.containsKey(key)) {
-            jobInfoDetail = pool.get(key);
-        } else {
-            jobInfoDetail = new JobInfoDetail(id);
-            JobInstance jobInstance = jobInstanceService.getByIdWithoutTenant(id);
-            Asserts.checkNull(jobInstance, "the task instance not exist.");
-            TenantContextHolder.set(jobInstance.getTenantId());
-            jobInfoDetail.setInstance(jobInstance);
-            Cluster cluster = clusterInstanceService.getById(jobInstance.getClusterId());
-            jobInfoDetail.setCluster(cluster);
-            History history = historyService.getById(jobInstance.getHistoryId());
-            history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
-            if (Asserts.isNotNull(history.getClusterConfigurationId())) {
-                ClusterConfiguration clusterConfigById =
-                        clusterCfgService.getClusterConfigById(history.getClusterConfigurationId());
-                jobInfoDetail.setClusterConfiguration(clusterConfigById);
-                jobInfoDetail.getInstance().setType(history.getType());
-            }
-            jobInfoDetail.setHistory(history);
-            jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(id));
-            pool.put(key, jobInfoDetail);
-        }
-
-        if (!isCoercive && !inRefreshPlan(jobInfoDetail.getInstance())) {
-            return jobInfoDetail.getInstance();
-        }
-
-        JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(
-                id,
-                jobInfoDetail.getCluster().getJobManagerHost(),
-                jobInfoDetail.getInstance().getJid(),
-                jobInfoDetail.isNeedSave());
-        JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
-        jobInfoDetail.setJobHistory(jobHistory);
-        JobStatus checkStatus = null;
-        if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus())
-                && (Asserts.isNull(jobHistory.getJob()) || jobHistory.isError())) {
-            checkStatus = checkJobStatus(jobInfoDetail);
-            if (checkStatus.isDone()) {
-                jobInfoDetail.getInstance().setStatus(checkStatus.getValue());
-                jobInstanceService.updateById(jobInfoDetail.getInstance());
-                return jobInfoDetail.getInstance();
-            }
-        }
-
-        String status = jobInfoDetail.getInstance().getStatus();
-        boolean jobStatusChanged = false;
-        if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob())
-                || jobInfoDetail.getJobHistory().isError()) {
-            if (Asserts.isNotNull(checkStatus)) {
-                jobInfoDetail.getInstance().setStatus(checkStatus.getValue());
-            } else {
-                jobInfoDetail.getInstance().setStatus(JobStatus.UNKNOWN.getValue());
-            }
-        } else {
-            jobInfoDetail
-                    .getInstance()
-                    .setDuration(jobInfoDetail
-                                    .getJobHistory()
-                                    .getJob()
-                                    .get(FlinkRestResultConstant.JOB_DURATION)
-                                    .asLong()
-                            / 1000);
-            jobInfoDetail
-                    .getInstance()
-                    .setStatus(jobInfoDetail
-                            .getJobHistory()
-                            .getJob()
-                            .get(FlinkRestResultConstant.JOB_STATE)
-                            .asText());
-        }
-        if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus())
-                && !status.equals(jobInfoDetail.getInstance().getStatus())) {
-            jobStatusChanged = true;
-            jobInfoDetail.getInstance().setFinishTime(LocalDateTime.now());
-        }
-        if (isCoercive) {
-            DaemonFactory.addTask(DaemonTaskConfig.build(
-                    FlinkJobTask.TYPE, jobInfoDetail.getInstance().getId()));
-        }
-        if (jobStatusChanged || jobInfoDetail.isNeedSave()) {
-            jobInstanceService.updateById(jobInfoDetail.getInstance());
-        }
-        pool.refresh(jobInfoDetail);
-        return jobInfoDetail.getInstance();
-    }
-
-    private boolean inRefreshPlan(JobInstance jobInstance) {
-        return !JobStatus.isDone(jobInstance.getStatus())
-                || (Asserts.isNotNull(jobInstance.getFinishTime())
-                        && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
-                                        .toMinutes()
-                                < 1);
-    }
-
-    @Override
-    public JobInfoDetail refreshJobInfoDetail(Integer id) {
-        return jobInstanceService.refreshJobInfoDetailInfo(refreshJobInstance(id, true));
-    }
-
-    @Override
     public String getTaskAPIAddress() {
         return SystemConfiguration.getInstances().getDinkyAddr().getValue();
     }
@@ -1337,44 +1222,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public void handleJobDone(JobInstance jobInstance) {
-        if (Asserts.isNull(jobInstance.getTaskId()) || Asserts.isNull(jobInstance.getType())) {
-            return;
-        }
-
-        Task updateTask = new Task();
-        updateTask.setId(jobInstance.getTaskId());
-        updateTask.setJobInstanceId(jobInstance.getId());
-
-        Integer jobInstanceId = jobInstance.getId();
-        // 获取任务历史信息
-        JobHistory jobHistory = jobHistoryService.getJobHistory(jobInstanceId);
-        // some job need do something on Done, example flink-kubernets-operator
-        if (GatewayType.isDeployCluster(jobInstance.getType())) {
-            JobConfig jobConfig = new JobConfig();
-            String configJson =
-                    jobHistory.getClusterConfiguration().get("configJson").asText();
-            jobConfig.buildGatewayConfig(new JSONObject(configJson).toBean(FlinkClusterConfig.class));
-            jobConfig.getGatewayConfig().setType(GatewayType.get(jobInstance.getType()));
-            jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
-            Gateway.build(jobConfig.getGatewayConfig()).onJobFinishCallback(jobInstance.getStatus());
-        }
-
-        if (!JobLifeCycle.ONLINE.equalsValue(jobInstance.getStep())) {
-            updateById(updateTask);
-            return;
-        }
-
-        ObjectNode jsonNodes = jobHistory.getJob();
-        if (jsonNodes.has("errors")) {
-            return;
-        }
-
-        updateTask.setStep(JobLifeCycle.RELEASE.getValue());
-        updateById(updateTask);
-    }
-
-    @Override
     public Result<Tree<Integer>> queryAllCatalogue() {
         final LambdaQueryWrapper<Catalogue> queryWrapper = new LambdaQueryWrapper<Catalogue>()
                 .select(Catalogue::getId, Catalogue::getName, Catalogue::getParentId)
@@ -1468,9 +1315,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private void findTheConditionSavePointToOnline(
             TaskOperatingResult taskOperatingResult, JobInstance jobInstanceByTaskId) {
-        final JobHistory jobHistory = jobHistoryService.getJobHistory(jobInstanceByTaskId.getId());
+        final JobDataDto jobHistory = jobHistoryService.getJobHistoryDto(jobInstanceByTaskId.getId());
         if (jobHistory != null) {
-            final ObjectNode jsonNodes = jobHistory.getCheckpoints();
+            final JsonNode jsonNodes = jobHistory.getCheckpoints();
             final ArrayNode history = jsonNodes.withArray("history");
             if (!history.isEmpty()) {
                 startGoingLiveTask(taskOperatingResult, findTheConditionSavePoint(history));

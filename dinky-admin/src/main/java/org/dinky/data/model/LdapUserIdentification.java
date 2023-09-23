@@ -21,6 +21,8 @@ package org.dinky.data.model;
 
 import javax.naming.directory.Attributes;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,9 +30,23 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(value = "LdapUserIdentification", description = "LDAP User Identification Information")
 public class LdapUserIdentification {
 
+    @ApiModelProperty(
+            value = "Absolute DN",
+            dataType = "String",
+            example = "cn=user,ou=people,dc=example,dc=com",
+            notes = "Absolute Distinguished Name (DN) of the LDAP user")
     private String absoluteDn;
+
+    @ApiModelProperty(
+            value = "Relative DN",
+            dataType = "String",
+            example = "cn=user",
+            notes = "Relative Distinguished Name (DN) of the LDAP user")
     private String relativeDn;
+
+    @ApiModelProperty(value = "Attributes", notes = "Attributes associated with the LDAP user")
     private Attributes attributes;
 }

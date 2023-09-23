@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +56,12 @@ public class RoleMenuController {
     @PostMapping("assignMenuToRole")
     @Log(title = "Assign Menus to Role ", businessType = BusinessType.GRANT)
     @ApiOperation("Assign Menus to Role")
+    @ApiImplicitParam(
+            name = "assignMenuToRoleDto",
+            value = "Assign Menu To Role Dto",
+            required = true,
+            dataType = "AssignMenuToRoleDto",
+            paramType = "body")
     public Result<Void> assignMenuToRole(@RequestBody AssignMenuToRoleDto assignMenuToRoleDto) {
         return roleMenuService.assignMenuToRole(assignMenuToRoleDto);
     }

@@ -23,6 +23,8 @@ import org.dinky.mybatis.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -34,19 +36,38 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_jar")
+@ApiModel(value = "Jar", description = "Jar Information")
 public class Jar extends SuperEntity {
 
     private static final long serialVersionUID = 3769276772487490408L;
 
+    @ApiModelProperty(value = "Tenant ID", dataType = "Integer", example = "1", notes = "Tenant ID of the Jar")
     private Integer tenantId;
 
+    @ApiModelProperty(value = "Type", dataType = "String", example = "type", notes = "Type of the Jar")
     private String type;
 
+    @ApiModelProperty(value = "Path", dataType = "String", example = "/path/to/jar.jar", notes = "Path to the Jar file")
     private String path;
 
+    @ApiModelProperty(
+            value = "Main Class",
+            dataType = "String",
+            example = "com.example.Main",
+            notes = "Main class of the Jar")
     private String mainClass;
 
+    @ApiModelProperty(
+            value = "Parameters",
+            dataType = "String",
+            example = "--param1 value1 --param2 value2",
+            notes = "Parameters for running the Jar")
     private String paras;
 
+    @ApiModelProperty(
+            value = "Note",
+            dataType = "String",
+            example = "This is a note about the Jar",
+            notes = "Additional notes or description")
     private String note;
 }

@@ -23,7 +23,6 @@ import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.JobInfoDetail;
-import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
 import org.dinky.data.model.Task;
@@ -88,10 +87,6 @@ public interface TaskService extends ISuperService<Task> {
 
     boolean savepointTask(Integer taskId, String savePointType);
 
-    JobInstance refreshJobInstance(Integer id, boolean isCoercive);
-
-    JobInfoDetail refreshJobInfoDetail(Integer id);
-
     String getTaskAPIAddress();
 
     Result<Void> rollbackTask(TaskRollbackVersionDTO dto);
@@ -103,8 +98,6 @@ public interface TaskService extends ISuperService<Task> {
     String exportJsonByTaskIds(JsonNode para);
 
     Result<Void> uploadTaskJson(MultipartFile file) throws Exception;
-
-    void handleJobDone(JobInstance jobInstance);
 
     Result<Tree<Integer>> queryAllCatalogue();
 

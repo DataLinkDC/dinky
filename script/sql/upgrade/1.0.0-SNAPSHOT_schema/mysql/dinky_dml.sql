@@ -163,6 +163,16 @@ INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_c
 INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"exceptionRule.isException(#key,#exceptions)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:50:12');
 INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (8, 'alert.rule.checkpointTimeout', '[{"ruleKey":"checkPoints.checkpointTime(#key,#checkPoints)","ruleOperator":"GE","ruleValue":"1000"}]', 1, 'CUSTOM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 22:23:35');
 
+INSERT INTO dinky_alert_template (id, name, template_content, enabled, create_time, update_time) VALUES (1, 'Default', '
+- **Job Name :** <font color=''gray''>${task.name}</font>
+- **Job Status :** <font color=''red''>${jobInstance.status}</font>
+- **Alert Time :** ${time}
+- **Start Time :** ${startTime}
+- **End Time :** ${endTime}
+- **<font color=''red''><#if exceptions_msg?length gt 100>${exceptions_msg?substring(0,100)}<#else>${exceptions_msg}</#if></font>**
+[Go toTask Web](http://${taskUrl})
+', 1, null, null);
+
 COMMIT;
 
 

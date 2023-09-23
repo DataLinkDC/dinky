@@ -57,8 +57,10 @@ const SettingOverView = () => {
   });
 
   const fetchData = async () => {
-    await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ALL_CONFIG).then((res) => {
-      setData(res);
+    await queryDataByParams<Settings>(API_CONSTANTS.SYSTEM_GET_ALL_CONFIG).then((res) => {
+      if (res) {
+        setData(res);
+      }
     });
   };
 
@@ -67,17 +69,18 @@ const SettingOverView = () => {
   }, []);
 
   const handleSaveSubmit = async (dataConfig: BaseConfigProperties) => {
-    const { code } = await handleOption(
-      API_CONSTANTS.SYSTEM_MODIFY_CONFIG,
-      l('sys.setting.modify', '', { key: l(`sys.${dataConfig.key}`) }),
-      dataConfig
-    );
+    const { code } =
+      (await handleOption(
+        API_CONSTANTS.SYSTEM_MODIFY_CONFIG,
+        l('sys.setting.modify', '', { key: dataConfig.name }),
+        dataConfig
+      )) ?? {};
 
     if (code === RESPONSE_CODE.ERROR) {
       await fetchData();
     } else {
       // @ts-ignore
-      for (const d of data[dataConfig.key.split('.')[0]]) {
+      for (const d of data[dataConfig.key.split('.')[1]]) {
         if (d.key === dataConfig.key) {
           d.value = dataConfig.value;
           break;

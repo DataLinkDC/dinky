@@ -17,6 +17,7 @@
  *
  */
 
+import { JOB_STATUS } from '@/pages/DevOps/constants';
 import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
 import MonitorConfigTab from '@/pages/DevOps/JobDetail/JobMetrics/MetricsFilter/MetricsConfigTab';
 import { putMetricsLayout } from '@/pages/DevOps/JobDetail/JobMetrics/service';
@@ -60,7 +61,7 @@ const MetricsConfigForm = (props: any) => {
     });
   };
 
-  const itemTabs = jobDetail?.jobHistory?.job?.vertices?.map((item: any) => {
+  const itemTabs = jobDetail?.jobDataDto?.job?.vertices?.map((item: any) => {
     return {
       key: item.id,
       label: item.name,
@@ -73,7 +74,11 @@ const MetricsConfigForm = (props: any) => {
       width={1000}
       layout={'horizontal'}
       title={l('devops.jobinfo.metrics.configMetrics')}
-      trigger={<Button type='primary'>{l('devops.jobinfo.metrics.configMetrics')}</Button>}
+      trigger={
+        <Button type='primary' disabled={jobDetail.instance.status != JOB_STATUS.RUNNING}>
+          {l('devops.jobinfo.metrics.configMetrics')}
+        </Button>
+      }
       onFinish={async () => await saveJobMetrics()}
     >
       <Tabs items={itemTabs} />

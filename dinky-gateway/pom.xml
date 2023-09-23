@@ -31,6 +31,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-client</artifactId>
             <version>5.12.4</version>

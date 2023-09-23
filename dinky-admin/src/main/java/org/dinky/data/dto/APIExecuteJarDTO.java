@@ -23,6 +23,8 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.job.JobConfig;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,11 +35,34 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "APIExecuteJarDTO", description = "API Execute JAR Data Transfer Object")
 public class APIExecuteJarDTO {
 
+    @ApiModelProperty(
+            value = "Type",
+            dataType = "String",
+            example = "Flink",
+            notes = "The type of the JAR execution (e.g., 'Flink')")
     private String type;
+
+    @ApiModelProperty(
+            value = "Job Name",
+            dataType = "String",
+            example = "MyJob",
+            notes = "The name of the job to execute")
     private String jobName;
+
+    @ApiModelProperty(
+            value = "Savepoint Path",
+            dataType = "String",
+            example = "/path/to/savepoint",
+            notes = "The path to the savepoint to restore from (if applicable)")
     private String savePointPath;
+
+    @ApiModelProperty(
+            value = "Gateway Configuration",
+            dataType = "GatewayConfig",
+            notes = "The configuration for the gateway")
     private GatewayConfig gatewayConfig;
 
     public JobConfig getJobConfig() {

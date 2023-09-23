@@ -52,7 +52,6 @@ const JarList: React.FC<JarListProps> = (props) => {
 
   /**
    * columns
-   * @type {({copyable: boolean, dataIndex: string, tooltip: any, title: any, render: (dom: any, record: BuildJarList) => JSX.Element} | {dataIndex: string, valueType: string} | {copyable: boolean, dataIndex: string, title: any})[]}
    */
   const columns: ProColumns<BuildJarList>[] = [
     {
@@ -85,36 +84,32 @@ const JarList: React.FC<JarListProps> = (props) => {
    * @param {BuildJarList} record
    * @returns {JSX.Element}
    */
-  const renderUdf = (record: BuildJarList) => {
-    return (
-      <>
-        <ProList
-          dataSource={record.classList as any[]}
-          rowKey='index'
-          size={'small'}
-          pagination={{
-            pageSize: 5,
-            hideOnSinglePage: true,
-            showSizeChanger: false
-          }}
-          renderItem={(item, index) => {
-            return (
-              <List.Item className={'child-list'} key={index}>
-                {item}
-              </List.Item>
-            );
-          }}
-        />
-      </>
-    );
-  };
+  const renderUdf = (record: BuildJarList): JSX.Element => (
+    <ProList
+      dataSource={record.classList as any[]}
+      rowKey='index'
+      size={'small'}
+      pagination={{
+        pageSize: 5,
+        hideOnSinglePage: true,
+        showSizeChanger: false
+      }}
+      renderItem={(item, index) => {
+        return (
+          <List.Item className={'child-list'} key={index}>
+            {item}
+          </List.Item>
+        );
+      }}
+    />
+  );
 
   /**
    * drag sort call
    * @param {BuildJarList[]} newDataSource
    * @returns {Promise<void>}
    */
-  const handleDragSortEnd = async (newDataSource: BuildJarList[]) => {
+  const handleDragSortEnd = async (newDataSource: BuildJarList[]): Promise<void> => {
     setLoading(true);
     const updatedItems = newDataSource.map((item: BuildJarList, index: number) => ({
       ...item,
@@ -133,35 +128,33 @@ const JarList: React.FC<JarListProps> = (props) => {
    * render
    */
   return (
-    <>
-      <DragSortTable<BuildJarList>
-        style={{
-          overflowY: 'auto',
-          msOverflowY: 'hidden',
-          marginLeft: '0.5vw'
-        }}
-        columns={columns}
-        toolBarRender={false}
-        sortDirections={['ascend']}
-        showHeader={false}
-        actionRef={actionRef}
-        loading={loading}
-        dataSource={classes as BuildJarList[]}
-        search={false}
-        rowKey='orderLine'
-        revalidateOnFocus
-        pagination={{
-          defaultPageSize: 5,
-          hideOnSinglePage: true
-        }}
-        expandable={{
-          expandRowByClick: false,
-          expandedRowRender: (record) => renderUdf(record)
-        }}
-        dragSortKey={'orderLine'}
-        onDragSortEnd={handleDragSortEnd}
-      />
-    </>
+    <DragSortTable<BuildJarList>
+      style={{
+        overflowY: 'auto',
+        msOverflowY: 'hidden',
+        marginLeft: '0.5vw'
+      }}
+      columns={columns}
+      toolBarRender={false}
+      sortDirections={['ascend']}
+      showHeader={false}
+      actionRef={actionRef}
+      loading={loading}
+      dataSource={classes as BuildJarList[]}
+      search={false}
+      rowKey='orderLine'
+      revalidateOnFocus
+      pagination={{
+        defaultPageSize: 5,
+        hideOnSinglePage: true
+      }}
+      expandable={{
+        expandRowByClick: false,
+        expandedRowRender: (record) => renderUdf(record)
+      }}
+      dragSortKey={'orderLine'}
+      onDragSortEnd={handleDragSortEnd}
+    />
   );
 };
 

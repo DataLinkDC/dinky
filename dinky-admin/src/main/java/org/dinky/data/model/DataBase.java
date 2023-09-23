@@ -28,6 +28,8 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -39,32 +41,49 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName(value = "dinky_database", autoResultMap = true)
+@ApiModel(value = "DataBase", description = "DataBase Register")
 public class DataBase extends SuperEntity {
 
     private static final long serialVersionUID = -5002272138861566408L;
 
+    @ApiModelProperty(value = "tenantId", required = true, dataType = "Integer", example = "1")
     private Integer tenantId;
 
+    @ApiModelProperty(value = "groupName", required = true, dataType = "String", example = "source")
     private String groupName;
+
+    @ApiModelProperty(value = "type", required = true, dataType = "String", example = "MySQL")
     private String type;
+
+    @ApiModelProperty(value = "url", required = true, dataType = "String", example = "jdbc:mysql://localhost:3306/test")
     private String url;
+
+    @ApiModelProperty(value = "username", required = true, dataType = "String", example = "root")
     private String username;
 
     @TableField(typeHandler = CryptoTypeHandler.class)
+    @ApiModelProperty(value = "password", required = true, dataType = "String", example = "123456")
     private String password;
 
+    @ApiModelProperty(value = "note", dataType = "String", example = "note")
     private String note;
 
+    @ApiModelProperty(value = "flinkConfig", dataType = "String", example = "flinkConfig")
     private String flinkConfig;
 
+    @ApiModelProperty(value = "flinkTemplate", dataType = "String", example = "flinkTemplate")
     private String flinkTemplate;
 
+    @ApiModelProperty(value = "dbVersion", dataType = "String", example = "dbVersion")
     private String dbVersion;
 
+    @ApiModelProperty(value = "status", dataType = "Boolean", example = "true")
     private Boolean status;
 
+    @ApiModelProperty(value = "healthTime", dataType = "LocalDateTime", example = "2021-07-20 20:53:00")
     private LocalDateTime healthTime;
 
+    @ApiModelProperty(value = "heartbeatTime", dataType = "LocalDateTime", example = "2021-07-20 20:53:00")
     private LocalDateTime heartbeatTime;
 
     public DriverConfig getDriverConfig() {

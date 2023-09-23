@@ -27,6 +27,9 @@ package org.dinky.data.constant;
 public final class FlinkRestResultConstant {
 
     public static final String ERRORS = "errors";
+    public static final String ROOT_EXCEPTION = "root-exception";
     public static final String JOB_DURATION = "duration";
+    public static final String JOB_CREATE_TIME = "start-time";
+    public static final String JOB_FINISH_TIME = "end-time";
     public static final String JOB_STATE = "state";
 }

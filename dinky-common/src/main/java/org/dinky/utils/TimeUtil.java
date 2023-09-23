@@ -21,6 +21,7 @@ package org.dinky.utils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
@@ -36,6 +37,10 @@ public class TimeUtil {
      */
     public static String nowStr() {
         return nowStr("yyyy-MM-dd HH:mm:ss");
+    }
+
+    public static Long nowTimestamp() {
+        return localDateTimeToLong(LocalDateTime.now());
     }
 
     /**
@@ -60,10 +65,15 @@ public class TimeUtil {
         return convertTimeToString(time, "yyyy-MM-dd HH:mm:ss");
     }
 
+    public static String convertTimeToString(LocalDateTime time) {
+        return convertTimeToString(
+                time.toInstant(OffsetDateTime.now().getOffset()).toEpochMilli(), "yyyy-MM-dd HH:mm:ss");
+    }
+
     /**
      * Converts a Long timestamp to a String based on the provided format.
      *
-     * @param time   The Long timestamp to convert.
+     * @param time    The Long timestamp to convert.
      * @param formate The desired date and time format.
      * @return A formatted String representation of the timestamp.
      */
@@ -87,6 +97,10 @@ public class TimeUtil {
                 .toEpochMilli();
     }
 
+    public static Long localDateTimeToLong(LocalDateTime time) {
+        return time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
+
     /**
      * Converts a LocalDateTime object to a formatted String in "yyyy-MM-dd HH:mm:ss" format.
      *
@@ -101,7 +115,7 @@ public class TimeUtil {
      * Converts a LocalDateTime object to a formatted String based on the provided format.
      *
      * @param localDateTime The LocalDateTime object to convert.
-     * @param formate        The desired date and time format.
+     * @param formate       The desired date and time format.
      * @return A formatted String representation of the LocalDateTime.
      */
     public static String convertDateToString(LocalDateTime localDateTime, String formate) {
@@ -120,9 +134,19 @@ public class TimeUtil {
     }
 
     /**
+     * Converts a date and time String to a LocalDateTime object.
+     *
+     * @return A LocalDateTime object representing the parsed date and time.
+     */
+    public static LocalDateTime toLocalDateTime(Long timestamp) {
+        Instant instant = Instant.ofEpochMilli(timestamp);
+        return instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    /**
      * Converts a date and time String to a LocalDateTime object based on the provided format.
      *
-     * @param time   The date and time String to convert.
+     * @param time    The date and time String to convert.
      * @param formate The desired date and time format.
      * @return A LocalDateTime object representing the parsed date and time.
      */

@@ -21,63 +21,126 @@ package org.dinky.data.dto;
 
 import java.io.Serializable;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /** @description: 版本信息配置 */
 @Data
+@ApiModel(value = "TaskVersionConfigureDTO", description = "DTO for task version configuration")
 public class TaskVersionConfigureDTO implements Serializable {
 
-    /** CheckPoint */
+    @ApiModelProperty(value = "CheckPoint", dataType = "Integer", example = "1", notes = "The CheckPoint configuration")
     private Integer checkPoint;
 
-    /** SavePoint策略 */
+    @ApiModelProperty(
+            value = "SavePoint strategy",
+            dataType = "Integer",
+            example = "2",
+            notes = "The SavePoint strategy configuration")
     private Integer savePointStrategy;
 
-    /** SavePointPath */
+    @ApiModelProperty(
+            value = "SavePoint path",
+            dataType = "String",
+            example = "/path/to/savepoint",
+            notes = "The SavePoint path configuration")
     private String savePointPath;
 
-    /** parallelism */
+    @ApiModelProperty(
+            value = "Parallelism",
+            dataType = "Integer",
+            example = "4",
+            notes = "The parallelism configuration")
     private Integer parallelism;
 
-    /** fragment */
+    @ApiModelProperty(
+            value = "Fragment",
+            dataType = "Boolean",
+            example = "false",
+            notes = "Whether to enable fragment mode")
     private Boolean fragment;
 
-    /** 启用语句集 */
+    @ApiModelProperty(
+            value = "Statement Set",
+            dataType = "Boolean",
+            example = "true",
+            notes = "Whether to enable statement set")
     private Boolean statementSet;
 
-    /** 使用批模式 */
+    @ApiModelProperty(
+            value = "Batch Model",
+            dataType = "Boolean",
+            example = "false",
+            notes = "Whether to use batch mode")
     private Boolean batchModel;
 
-    /** Flink集群ID */
+    @ApiModelProperty(
+            value = "Flink Cluster ID",
+            dataType = "Integer",
+            example = "3",
+            notes = "The ID of the Flink cluster")
     private Integer clusterId;
 
-    /** 集群配置ID */
+    @ApiModelProperty(
+            value = "Cluster Configuration ID",
+            dataType = "Integer",
+            example = "4",
+            notes = "The ID of the cluster configuration")
     private Integer clusterConfigurationId;
 
-    /** 数据源ID */
+    @ApiModelProperty(
+            value = "Database ID",
+            dataType = "Integer",
+            example = "5",
+            notes = "The ID of the database source")
     private Integer databaseId;
 
-    /** jarID */
+    @ApiModelProperty(value = "Jar ID", dataType = "Integer", example = "6", notes = "The ID of the JAR file")
     private Integer jarId;
 
-    /** 环境ID */
+    @ApiModelProperty(
+            value = "Environment ID",
+            dataType = "Integer",
+            example = "7",
+            notes = "The ID of the environment")
     private Integer envId;
 
-    /** 报警组ID */
+    @ApiModelProperty(
+            value = "Alert Group ID",
+            dataType = "Integer",
+            example = "8",
+            notes = "The ID of the alert group")
     private Integer alertGroupId;
 
-    /** 配置JSON */
+    @ApiModelProperty(
+            value = "Configuration JSON",
+            dataType = "String",
+            example = "{\"key\":\"value\"}",
+            notes = "The configuration JSON")
     private String configJson;
 
-    /** 注释 */
+    @ApiModelProperty(
+            value = "Note",
+            dataType = "String",
+            example = "Task configuration notes",
+            notes = "Additional notes")
     private String note;
 
-    /** 作业生命周期 */
+    @ApiModelProperty(value = "Step", dataType = "Integer", example = "1", notes = "The task lifecycle step")
     private Integer step;
 
-    /** 作业实例ID */
+    @ApiModelProperty(
+            value = "Job Instance ID",
+            dataType = "Integer",
+            example = "9",
+            notes = "The ID of the job instance")
     private Integer jobInstanceId;
 
-    /** 是否启用 */
+    @ApiModelProperty(
+            value = "Enabled",
+            dataType = "Boolean",
+            example = "true",
+            notes = "Whether the configuration is enabled")
     private Boolean enabled;
 }

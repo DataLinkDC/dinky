@@ -13,6 +13,7 @@ export const generateList = (data: any, list: any[]) => {
   }
   return list;
 };
+
 export const getParentKey = (key: number | string, tree: any): any => {
   let parentKey;
   for (const element of tree) {
@@ -28,6 +29,19 @@ export const getParentKey = (key: number | string, tree: any): any => {
   return parentKey;
 };
 
+export const getLeafKeyList = (tree: any): any => {
+  let leafKeyList = [];
+  for (const node of tree) {
+    if (node.isLeaf) {
+      leafKeyList.push(node.id);
+      continue;
+    }
+    if (node.children) {
+      leafKeyList = leafKeyList.concat(getLeafKeyList(node.children));
+    }
+  }
+  return leafKeyList;
+};
 /**
  * build Catalogue tree
  * @param {Catalogue[]} data

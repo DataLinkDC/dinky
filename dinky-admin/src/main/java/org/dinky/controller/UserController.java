@@ -46,6 +46,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.lang.Dict;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +75,13 @@ public class UserController {
     @PutMapping
     @ApiOperation("Insert Or Update User")
     @Log(title = "Insert Or Update User", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiImplicitParam(
+            name = "user",
+            value = "user",
+            required = true,
+            dataType = "User",
+            paramType = "body",
+            dataTypeClass = User.class)
     public Result<Void> saveOrUpdateUser(@RequestBody User user) {
         if (Asserts.isNull(user.getId())) {
             return userService.registerUser(user);
@@ -91,6 +100,13 @@ public class UserController {
     @PutMapping("/enable")
     @ApiOperation("Modify User Status")
     @Log(title = "Modify User Status", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "user id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
     public Result<Void> modifyUserStatus(@RequestParam("id") Integer id) {
         if (userService.checkSuperAdmin(id)) {
             return Result.failed(Status.USER_SUPERADMIN_CANNOT_DISABLE);
@@ -111,6 +127,13 @@ public class UserController {
      */
     @PostMapping
     @ApiOperation("Get User List")
+    @ApiImplicitParam(
+            name = "para",
+            value = "para",
+            required = true,
+            dataType = "JsonNode",
+            paramType = "body",
+            dataTypeClass = JsonNode.class)
     public ProTableResult<User> listUser(@RequestBody JsonNode para) {
         return userService.selectForProTable(para);
     }
@@ -124,6 +147,13 @@ public class UserController {
     @DeleteMapping("/delete")
     @ApiOperation("Delete User By Id")
     @Log(title = "Delete User By Id", businessType = BusinessType.DELETE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "user id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
     public Result<Void> deleteUserById(@RequestParam("id") Integer id) {
         if (userService.removeUser(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -141,6 +171,13 @@ public class UserController {
     @PostMapping("/modifyPassword")
     @ApiOperation("Modify Password")
     @Log(title = "Modify Password", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "modifyPasswordDTO",
+            value = "modifyPasswordDTO",
+            required = true,
+            dataType = "ModifyPasswordDTO",
+            paramType = "body",
+            dataTypeClass = ModifyPasswordDTO.class)
     public Result<Void> modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
         return userService.modifyPassword(modifyPasswordDTO);
     }
@@ -152,6 +189,15 @@ public class UserController {
      * @return {@link Result} with {@link Void}
      */
     @PostMapping(value = "/assignRole")
+    @ApiOperation("Assign Role")
+    @Log(title = "Assign Role", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "assignRoleParams",
+            value = "assignRoleParams",
+            required = true,
+            dataType = "AssignRoleParams",
+            paramType = "body",
+            dataTypeClass = AssignRoleParams.class)
     public Result<Void> assignRole(@RequestBody AssignRoleParams assignRoleParams) {
         return userService.assignRole(assignRoleParams);
     }
@@ -164,6 +210,13 @@ public class UserController {
      */
     @GetMapping("/getUserListByTenantId")
     @ApiOperation("Get User List By Tenant Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "tenant id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
     public Result<Dict> getUserListByTenantId(@RequestParam("id") Integer id) {
         List<User> userList = userService.list();
         List<Integer> userIds = userService.getUserIdsByTenantId(id);
@@ -174,6 +227,29 @@ public class UserController {
     @PutMapping("/updateUserToTenantAdmin")
     @ApiOperation("Update User To Tenant Admin")
     @Log(title = "Update User To Tenant Admin", businessType = BusinessType.UPDATE)
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "userId",
+                value = "user id",
+                required = true,
+                dataType = "Integer",
+                paramType = "path",
+                dataTypeClass = Integer.class),
+        @ApiImplicitParam(
+                name = "tenantId",
+                value = "tenant id",
+                required = true,
+                dataType = "Integer",
+                paramType = "path",
+                dataTypeClass = Integer.class),
+        @ApiImplicitParam(
+                name = "tenantAdminFlag",
+                value = "tenant admin flag",
+                required = true,
+                dataType = "Boolean",
+                paramType = "path",
+                dataTypeClass = Boolean.class)
+    })
     public Result<Void> modifyUserToTenantAdmin(
             @RequestParam Integer userId, @RequestParam Integer tenantId, @RequestParam Boolean tenantAdminFlag) {
         return userService.modifyUserToTenantAdmin(userId, tenantId, tenantAdminFlag);
@@ -182,6 +258,13 @@ public class UserController {
     @PutMapping("/recovery")
     @ApiOperation("Recovery User")
     @Log(title = "Recovery User", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "user id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
     public Result<Void> recoveryUser(@RequestParam("id") Integer userId) {
         return userService.recoveryUser(userId);
     }
@@ -189,6 +272,13 @@ public class UserController {
     @PutMapping("/resetPassword")
     @ApiOperation("Reset Password")
     @Log(title = "Reset Password", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "user id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
     public Result<UserVo> resetPassword(@RequestParam("id") Integer userId) {
         return userService.resetPassword(userId);
     }

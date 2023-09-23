@@ -19,36 +19,30 @@
 
 package org.dinky.data.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * JobInstanceCount
  *
  * @since 2022/2/28 22:20
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ApiModel(value = "JobInstanceCount", description = "Job Instance Count Information")
 public class JobInstanceCount {
 
+    @ApiModelProperty(value = "Status", dataType = "String", example = "RUNNING", notes = "Status of the job instances")
     private String status;
+
+    @ApiModelProperty(
+            value = "Counts",
+            dataType = "Integer",
+            example = "5",
+            notes = "Number of job instances with the specified status")
     private Integer counts;
-
-    public JobInstanceCount() {}
-
-    public JobInstanceCount(String status, Integer counts) {
-        this.status = status;
-        this.counts = counts;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Integer getCounts() {
-        return counts;
-    }
-
-    public void setCounts(Integer counts) {
-        this.counts = counts;
-    }
 }

@@ -33,6 +33,8 @@ import org.apache.flink.configuration.RestOptions;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,37 +45,167 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "JobConfig", description = "Configuration details of a job")
 public class JobConfig {
 
-    // flink run mode
+    @ApiModelProperty(value = "Flink run mode", dataType = "String", example = "batch", notes = "Flink run mode")
     private String type;
-    // task JobLifeCycle
+
+    @ApiModelProperty(value = "Task JobLifeCycle", dataType = "Integer", example = "2", notes = "Task JobLifeCycle")
     private Integer step;
+
+    @ApiModelProperty(
+            value = "Flag indicating whether to use the result",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to use the result")
     private boolean useResult;
+
+    @ApiModelProperty(
+            value = "Flag indicating whether to use change log",
+            dataType = "boolean",
+            example = "false",
+            notes = "Flag indicating whether to use change log")
     private boolean useChangeLog;
+
+    @ApiModelProperty(
+            value = "Flag indicating whether to use auto-cancel",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to use auto-cancel")
     private boolean useAutoCancel;
+
+    @ApiModelProperty(
+            value = "Flag indicating whether to use session",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to use session")
     private boolean useSession;
+
+    @ApiModelProperty(
+            value = "Session information",
+            dataType = "String",
+            example = "session-123",
+            notes = "Session information")
     private String session;
+
+    @ApiModelProperty(
+            value = "Flag indicating whether to use remote execution",
+            dataType = "boolean",
+            example = "false",
+            notes = "Flag indicating whether to use remote execution")
     private boolean useRemote;
+
+    @ApiModelProperty(value = "Cluster ID", dataType = "Integer", example = "456", notes = "Cluster ID")
     private Integer clusterId;
+
+    @ApiModelProperty(
+            value = "Cluster configuration ID",
+            dataType = "Integer",
+            example = "789",
+            notes = "Cluster configuration ID")
     private Integer clusterConfigurationId;
+
+    @ApiModelProperty(value = "JAR file ID", dataType = "Integer", example = "101", notes = "JAR file ID")
     private Integer jarId;
-    private boolean isJarTask = false;
+
+    @ApiModelProperty(
+            value = "Flag indicating whether it's a JAR task",
+            dataType = "boolean",
+            example = "false",
+            notes = "Flag indicating whether it's a JAR task")
+    private boolean isJarTask;
+
+    @ApiModelProperty(
+            value = "Job manager address",
+            dataType = "String",
+            example = "localhost:8081",
+            notes = "Job manager address")
     private String address;
+
+    @ApiModelProperty(value = "Task ID", dataType = "Integer", example = "123", notes = "Task ID")
     private Integer taskId;
+
+    @ApiModelProperty(
+            value = "List of JAR files",
+            dataType = "String[]",
+            example = "[\"file1.jar\", \"file2.jar\"]",
+            notes = "List of JAR files")
     private String[] jarFiles;
+
+    @ApiModelProperty(
+            value = "List of Python files",
+            dataType = "String[]",
+            example = "[\"script1.py\", \"script2.py\"]",
+            notes = "List of Python files")
     private String[] pyFiles;
+
+    @ApiModelProperty(value = "Name of the job", dataType = "String", example = "MyJob", notes = "Name of the job")
     private String jobName;
+
+    @ApiModelProperty(
+            value = "Flag indicating whether to use SQL fragment",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to use SQL fragment")
     private boolean useSqlFragment;
+
+    @ApiModelProperty(
+            value = "Flag indicating whether to use statement set",
+            dataType = "boolean",
+            example = "false",
+            notes = "Flag indicating whether to use statement set")
     private boolean useStatementSet;
+
+    @ApiModelProperty(
+            value = "Flag indicating whether to use batch model",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to use batch model")
     private boolean useBatchModel;
+
+    @ApiModelProperty(
+            value = "Maximum number of rows",
+            dataType = "Integer",
+            example = "1000",
+            notes = "Maximum number of rows")
     private Integer maxRowNum;
+
+    @ApiModelProperty(
+            value = "Checkpoint interval",
+            dataType = "Integer",
+            example = "5000",
+            notes = "Checkpoint interval")
     private Integer checkpoint;
+
+    @ApiModelProperty(value = "Parallelism level", dataType = "Integer", example = "4", notes = "Parallelism level")
     private Integer parallelism;
+
+    @ApiModelProperty(value = "Save point strategy", dataType = "SavePointStrategy", notes = "Save point strategy")
     private SavePointStrategy savePointStrategy;
+
+    @ApiModelProperty(
+            value = "Path for save points",
+            dataType = "String",
+            example = "/savepoints",
+            notes = "Path for save points")
     private String savePointPath;
+
+    @ApiModelProperty(value = "Gateway configuration", dataType = "GatewayConfig", notes = "Gateway configuration")
     private GatewayConfig gatewayConfig;
+
+    @ApiModelProperty(
+            value = "Map of variables",
+            dataType = "Map<String, String>",
+            example = "{\"var1\": \"value1\", \"var2\": \"value2\"}",
+            notes = "Map of variables")
     private Map<String, String> variables;
+
+    @ApiModelProperty(
+            value = "JSON configuration",
+            dataType = "Map<String, String>",
+            example = "{\"config1\": \"value1\", \"config2\": \"value2\"}",
+            notes = "JSON configuration")
     private Map<String, String> configJson;
 
     public JobConfig() {

@@ -28,6 +28,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -39,30 +41,49 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_alert_history")
+@ApiModel(value = "AlertHistory", description = "Alert History Record")
 public class AlertHistory implements Serializable {
 
     private static final long serialVersionUID = -7904869940473678282L;
 
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(value = "ID", example = "1", required = true, dataType = "Integer")
     private Integer id;
 
+    @ApiModelProperty(value = "Tenant ID", example = "1", required = true, dataType = "Integer")
     private Integer tenantId;
 
+    @ApiModelProperty(value = "Alert Group ID", example = "1", required = true, dataType = "Integer")
     private Integer alertGroupId;
 
+    @ApiModelProperty(value = "Alert Instance ID", example = "1", required = true, dataType = "Integer")
     private Integer jobInstanceId;
 
+    @ApiModelProperty(value = "Alert title", example = "Alert title", required = true, dataType = "String")
     private String title;
 
+    @ApiModelProperty(value = "Alert content", example = "Alert content", required = true, dataType = "String")
     private String content;
 
+    @ApiModelProperty(value = "Alert status", example = "1", required = true, dataType = "Integer")
     private Integer status;
 
+    @ApiModelProperty(value = "Alert log", example = "Alert log", required = true, dataType = "String")
     private String log;
 
     @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty(
+            value = "Create Time",
+            example = "2022-02-24 20:12:00",
+            required = false,
+            dataType = "LocalDateTime")
     private LocalDateTime createTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty(
+            value = "Update Time",
+            example = "2022-02-24 20:12:00",
+            required = false,
+            dataType = "LocalDateTime")
     private LocalDateTime updateTime;
 }

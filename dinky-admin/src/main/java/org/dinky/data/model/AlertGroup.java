@@ -26,6 +26,8 @@ import java.util.List;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -37,16 +39,21 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_alert_group")
+@ApiModel(value = "AlertGroup", description = "Alert Group")
 public class AlertGroup extends SuperEntity {
 
     private static final long serialVersionUID = 7027411164191682344L;
 
+    @ApiModelProperty(value = "Tenant ID", required = true, dataType = "Integer", example = "1")
     private Integer tenantId;
 
+    @ApiModelProperty(value = "Alert Instance Ids", required = true, dataType = "String", example = "1,2,3")
     private String alertInstanceIds;
 
+    @ApiModelProperty(value = "Alert Group Note", required = true, dataType = "String", example = "Alert Group Note")
     private String note;
 
     @TableField(exist = false)
+    @ApiModelProperty(value = "Alert Instances", required = true, dataType = "List<AlertInstance>")
     private List<AlertInstance> instances;
 }

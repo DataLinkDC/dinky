@@ -29,6 +29,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -37,65 +39,75 @@ import lombok.Data;
  */
 @TableName(value = "dinky_git_project")
 @Data
+@ApiModel(value = "GitProject", description = "Git Project Information")
 public class GitProject extends SuperEntity<GitProject> {
 
     /** */
+    @ApiModelProperty(value = "Tenant ID", example = "1", dataType = "Long")
     @TableField(value = "tenant_id")
     private Long tenantId;
 
-    /** */
+    @ApiModelProperty(
+            value = "URL",
+            example = "https://github.com/example/project.git",
+            dataType = "String",
+            required = true)
     @TableField(value = "url")
     private String url;
 
-    /** */
+    @ApiModelProperty(value = "Branch", example = "main", dataType = "String")
     @TableField(value = "branch")
     private String branch;
 
-    /** */
+    @ApiModelProperty(value = "Username", example = "john_doe", dataType = "String")
     @TableField(value = "username")
     private String username;
 
-    /** */
+    @ApiModelProperty(value = "Password", example = "********", dataType = "String")
     @TableField(value = "password")
     private String password;
 
+    @ApiModelProperty(value = "Private Key", dataType = "String")
     private String privateKey;
 
-    /** */
+    @ApiModelProperty(value = "POM", example = "pom.xml", dataType = "String")
     @TableField(value = "pom")
     private String pom;
 
-    /** */
+    @ApiModelProperty(value = "Build Arguments", dataType = "String")
     @TableField(value = "build_args")
     private String buildArgs;
 
-    /** */
+    @ApiModelProperty(value = "Code Type", example = "1", dataType = "Integer")
     @TableField(value = "code_type")
     private Integer codeType;
-    /** */
+
+    @ApiModelProperty(value = "Type", example = "1", dataType = "Integer")
     @TableField(value = "type")
     private Integer type;
 
-    /** */
+    @ApiModelProperty(value = "Last Build Date", dataType = "Date")
     @TableField(value = "last_build")
     private Date lastBuild;
 
-    /** */
+    @ApiModelProperty(value = "Description", dataType = "String")
     @TableField(value = "description")
     private String description;
 
-    /** */
+    @ApiModelProperty(value = "Build State", example = "1", dataType = "Integer")
     @TableField(value = "build_state")
     private Integer buildState;
 
+    @ApiModelProperty(value = "Build Step", dataType = "Integer")
     @TableField(value = "build_step")
     private Integer buildStep;
 
-    /** scan udf class */
+    @ApiModelProperty(value = "UDF Class Map List", dataType = "String")
     @TableField(value = "udf_class_map_list")
     @JsonDeserialize(using = JsonObjectDeserializer.class)
     private String udfClassMapList;
 
+    @ApiModelProperty(value = "Order Line", dataType = "Integer")
     @TableField(value = "order_line")
     private Integer orderLine;
 

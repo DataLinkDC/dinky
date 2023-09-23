@@ -24,6 +24,8 @@ import java.util.Date;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,15 +41,38 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ApiModel(value = "StepResult", description = "Result of a Step in a Process")
 public class StepResult implements Serializable {
 
+    @ApiModelProperty(value = "Current Step", dataType = "Integer", example = "1", notes = "The current step number")
     private Integer currentStep;
-    // 0.stepInfo 1.log 2.data 3.finish_info
+
+    @ApiModelProperty(
+            value = "Type",
+            dataType = "Integer",
+            example = "0",
+            notes = "0 for stepInfo, 1 for log, 2 for data, 3 for finish_info")
     private Integer type;
+
+    @ApiModelProperty(
+            value = "Data",
+            dataType = "Object",
+            example = "Step data goes here",
+            notes = "The data associated with the step")
     private Object data;
-    /** 2-success 1-process 0-failed */
+
+    @ApiModelProperty(
+            value = "Status",
+            dataType = "Integer",
+            example = "2",
+            notes = "2 for success, 1 for process, 0 for failed")
     private Integer status;
 
+    @ApiModelProperty(
+            value = "History Flag",
+            dataType = "Boolean",
+            example = "false",
+            notes = "Indicates whether this is a historical step result")
     private Boolean history;
 
     public static StepResult genHistoryLog(Integer currentStep, Integer status, String log) {

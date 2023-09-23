@@ -19,6 +19,7 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.JobDataDto;
 import org.dinky.data.model.JobHistory;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -33,7 +34,5 @@ public interface JobHistoryService extends ISuperService<JobHistory> {
 
     JobHistory getJobHistory(Integer id);
 
-    JobHistory getJobHistoryInfo(JobHistory jobHistory);
-
-    JobHistory refreshJobHistory(Integer id, String jobManagerHost, String jobId, boolean needSave);
+    JobDataDto getJobHistoryDto(Integer id);
 }

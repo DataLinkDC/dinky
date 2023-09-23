@@ -52,6 +52,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +76,12 @@ public class StudioController {
     @PostMapping("/executeSql")
     @ApiOperation("Execute Sql")
     @Log(title = "Execute Sql", businessType = BusinessType.EXECUTE)
+    @ApiImplicitParam(
+            name = "studioExecuteDTO",
+            value = "Execute Sql",
+            required = true,
+            dataType = "StudioExecuteDTO",
+            paramType = "body")
     public Result<JobResult> executeSql(@RequestBody StudioExecuteDTO studioExecuteDTO) {
         try {
             JobResult jobResult = studioService.executeSql(studioExecuteDTO);
@@ -91,6 +99,12 @@ public class StudioController {
     /** 解释Sql */
     @PostMapping("/explainSql")
     @ApiOperation("Explain Sql")
+    @ApiImplicitParam(
+            name = "studioExecuteDTO",
+            value = "Explain Sql",
+            required = true,
+            dataType = "StudioExecuteDTO",
+            paramType = "body")
     public Result<List<SqlExplainResult>> explainSql(@RequestBody StudioExecuteDTO studioExecuteDTO) {
         return Result.succeed(studioService.explainSql(studioExecuteDTO), "解释成功");
     }
@@ -98,6 +112,12 @@ public class StudioController {
     /** 获取执行图 */
     @PostMapping("/getStreamGraph")
     @ApiOperation("Get Stream Graph")
+    @ApiImplicitParam(
+            name = "studioExecuteDTO",
+            value = "Get Stream Graph",
+            required = true,
+            dataType = "StudioExecuteDTO",
+            paramType = "body")
     public Result<ObjectNode> getStreamGraph(@RequestBody StudioExecuteDTO studioExecuteDTO) {
         return Result.succeed(studioService.getStreamGraph(studioExecuteDTO));
     }
@@ -105,6 +125,12 @@ public class StudioController {
     /** 获取sql的jobplan */
     @PostMapping("/getJobPlan")
     @ApiOperation("Get Job Execute Plan")
+    @ApiImplicitParam(
+            name = "studioExecuteDTO",
+            value = "Get Job Execute Plan",
+            required = true,
+            dataType = "StudioExecuteDTO",
+            paramType = "body")
     public Result<ObjectNode> getJobPlan(@RequestBody StudioExecuteDTO studioExecuteDTO) {
         try {
             return Result.succeed(studioService.getJobPlan(studioExecuteDTO));
@@ -118,6 +144,12 @@ public class StudioController {
     @PostMapping("/executeDDL")
     @ApiOperation("Execute SQL DDL")
     @Log(title = "Execute SQL DDL", businessType = BusinessType.EXECUTE)
+    @ApiImplicitParam(
+            name = "studioDDLDTO",
+            value = "Execute SQL DDL",
+            required = true,
+            dataType = "StudioDDLDTO",
+            paramType = "body")
     public Result<IResult> executeDDL(@RequestBody StudioDDLDTO studioDDLDTO) {
         IResult result = studioService.executeDDL(studioDDLDTO);
         return Result.succeed(result, Status.EXECUTE_SUCCESS);
@@ -126,11 +158,19 @@ public class StudioController {
     /** 根据jobId获取数据 */
     @GetMapping("/getJobData")
     @ApiOperation("Get Job Plan")
+    @ApiImplicitParam(name = "jobId", value = "Get Job Plan", required = true, dataType = "String", paramType = "query")
     public Result<SelectResult> getJobData(@RequestParam String jobId) {
         return Result.succeed(studioService.getJobData(jobId));
     }
     /** 根据jobId获取数据 */
     @GetMapping("/getCommonSqlData")
+    @ApiOperation("Get Common Sql Data")
+    @ApiImplicitParam(
+            name = "taskId",
+            value = "Get Common Sql Data",
+            required = true,
+            dataType = "Integer",
+            paramType = "query")
     public Result<JdbcSelectResult> getJobData(@RequestParam Integer taskId) {
         return Result.succeed(studioService.getCommonSqlData(taskId));
     }
@@ -138,6 +178,12 @@ public class StudioController {
     /** 获取单任务实例的血缘分析 */
     @PostMapping("/getLineage")
     @ApiOperation("Get Job Lineage")
+    @ApiImplicitParam(
+            name = "studioCADTO",
+            value = "Get Job Lineage",
+            required = true,
+            dataType = "StudioCADTO",
+            paramType = "body")
     public Result<LineageResult> getLineage(@RequestBody StudioCADTO studioCADTO) {
         LineageResult lineage = studioService.getLineage(studioCADTO);
         return Asserts.isNull(lineage) ? Result.failed("血缘分析异常") : Result.succeed(lineage, "血缘分析成功");
@@ -146,6 +192,12 @@ public class StudioController {
     /** 获取flinkJobs列表 */
     @GetMapping("/listJobs")
     @ApiOperation("List Flink Jobs")
+    @ApiImplicitParam(
+            name = "clusterId",
+            value = "List Flink Jobs",
+            required = true,
+            dataType = "Integer",
+            paramType = "query")
     public Result<JsonNode[]> listFlinkJobs(@RequestParam Integer clusterId) {
         List<JsonNode> jobs = studioService.listFlinkJobs(clusterId);
         return Result.succeed(jobs.toArray(new JsonNode[0]));
@@ -155,6 +207,15 @@ public class StudioController {
     @GetMapping("/cancel")
     @ApiOperation("Cancel Flink Job")
     @Log(title = "Cancel Flink Job", businessType = BusinessType.REMOTE_OPERATION)
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "clusterId",
+                value = "clusterId",
+                required = true,
+                dataType = "Integer",
+                paramType = "query"),
+        @ApiImplicitParam(name = "jobId", value = "jobId", required = true, dataType = "String", paramType = "query")
+    })
     public Result<Boolean> cancelFlinkJob(@RequestParam Integer clusterId, @RequestParam String jobId) {
         return Result.succeed(studioService.cancelFlinkJob(clusterId, jobId), Status.STOP_SUCCESS);
     }
@@ -163,6 +224,23 @@ public class StudioController {
     @GetMapping("/savepoint")
     @ApiOperation("Savepoint Trigger")
     @Log(title = "Savepoint Trigger", businessType = BusinessType.REMOTE_OPERATION)
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "clusterId",
+                value = "clusterId",
+                required = true,
+                dataType = "Integer",
+                paramType = "query"),
+        @ApiImplicitParam(name = "jobId", value = "jobId", required = true, dataType = "String", paramType = "query"),
+        @ApiImplicitParam(
+                name = "savePointType",
+                value = "savePointType",
+                required = true,
+                dataType = "String",
+                paramType = "query"),
+        @ApiImplicitParam(name = "name", value = "name", required = true, dataType = "String", paramType = "query"),
+        @ApiImplicitParam(name = "taskId", value = "taskId", required = true, dataType = "Integer", paramType = "query")
+    })
     public Result<Boolean> savepointTrigger(
             @RequestParam Integer clusterId,
             @RequestParam String jobId,
@@ -176,6 +254,12 @@ public class StudioController {
     /** 获取 Meta Store Catalog 和 Database */
     @PostMapping("/getMSCatalogs")
     @ApiOperation("Get Catalog List")
+    @ApiImplicitParam(
+            name = "studioMetaStoreDTO",
+            value = "Get Catalog List",
+            required = true,
+            dataType = "StudioMetaStoreDTO",
+            paramType = "body")
     public Result<List<Catalog>> getMSCatalogs(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
         return Result.succeed(studioService.getMSCatalogs(studioMetaStoreDTO));
     }
@@ -183,6 +267,12 @@ public class StudioController {
     /** 获取 Meta Store Schema/Database 信息 */
     @PostMapping("/getMSSchemaInfo")
     @ApiOperation("Get Schema Info")
+    @ApiImplicitParam(
+            name = "studioMetaStoreDTO",
+            value = "Get Schema Info",
+            required = true,
+            dataType = "StudioMetaStoreDTO",
+            paramType = "body")
     public Result<Schema> getMSSchemaInfo(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
         return Result.succeed(studioService.getMSSchemaInfo(studioMetaStoreDTO));
     }
@@ -190,6 +280,22 @@ public class StudioController {
     /** 获取 Meta Store Flink Column 信息 */
     @GetMapping("/getMSFlinkColumns")
     @ApiOperation("Get Flink Column List")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "envId", value = "envId", required = true, dataType = "Integer", paramType = "query"),
+        @ApiImplicitParam(
+                name = "catalog",
+                value = "catalog",
+                required = true,
+                dataType = "String",
+                paramType = "query"),
+        @ApiImplicitParam(
+                name = "database",
+                value = "database",
+                required = true,
+                dataType = "String",
+                paramType = "query"),
+        @ApiImplicitParam(name = "table", value = "table", required = true, dataType = "String", paramType = "query")
+    })
     public Result<List<FlinkColumn>> getMSFlinkColumns(
             @RequestParam Integer envId,
             @RequestParam String catalog,

@@ -17,22 +17,26 @@
  *
  */
 
-package org.dinky.job;
+package org.dinky.url;
 
-import org.dinky.data.model.JobInfoDetail;
-import org.dinky.pool.AbstractPool;
+import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
 
-/**
- * FlinkJobTaskPool
- *
- * @since 2022/5/28 16:39
- */
-public class FlinkJobTaskPool extends AbstractPool<String, JobInfoDetail> {
+import java.net.URLStreamHandler;
+import java.net.URLStreamHandlerFactory;
 
-    public static final FlinkJobTaskPool INSTANCE = new FlinkJobTaskPool();
+import cn.hutool.core.lang.Singleton;
 
+public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
     @Override
-    public void refresh(JobInfoDetail entity) {
-        entity.refresh();
+    public URLStreamHandler createURLStreamHandler(String protocol) {
+        if ("rs".equals(protocol)) {
+            return new RsURLStreamHandler();
+        }
+        try {
+            Class.forName("org.apache.hadoop.fs.FsUrlStreamHandlerFactory");
+        } catch (Exception e) {
+            return null;
+        }
+        return Singleton.get(FsUrlStreamHandlerFactory.class).createURLStreamHandler(protocol);
     }
 }

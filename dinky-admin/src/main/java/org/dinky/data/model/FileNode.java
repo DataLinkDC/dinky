@@ -19,54 +19,40 @@
 
 package org.dinky.data.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * FileNode
  *
  * @since 2022/10/15 18:41
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ApiModel(value = "FileNode", description = "File Node Information")
 public class FileNode {
 
+    @ApiModelProperty(
+            value = "Name of the file or directory",
+            required = true,
+            example = "example.txt",
+            dataType = "String")
     private String name;
+
+    @ApiModelProperty(value = "Indicates if it is a directory", required = true, example = "true", dataType = "boolean")
     private boolean isDir;
+
+    @ApiModelProperty(value = "Size of the file in bytes", required = true, example = "1024", dataType = "long")
     private long size;
+
+    @ApiModelProperty(
+            value = "Path to the file or directory",
+            required = true,
+            example = "/path/to/file",
+            dataType = "String")
     private String path;
-
-    public FileNode(String name, boolean isDir, long size, String path) {
-        this.name = name;
-        this.isDir = isDir;
-        this.size = size;
-        this.path = path;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isDir() {
-        return isDir;
-    }
-
-    public void setDir(boolean dir) {
-        isDir = dir;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
 }

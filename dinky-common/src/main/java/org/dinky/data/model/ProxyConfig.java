@@ -17,22 +17,22 @@
  *
  */
 
-package org.dinky.data.dto;
+package org.dinky.data.model;
 
 import lombok.Getter;
-import lombok.Setter;
 
-/**
- * SessionDTO
- *
- * @since 2021/7/6 22:10
- */
 @Getter
-@Setter
-public class SessionDTO {
+public class ProxyConfig {
 
-    private String session;
-    private String type;
-    private boolean useRemote;
-    private Integer clusterId;
+    private final String hostname;
+    private final Integer port;
+    private final String user;
+    private final String password;
+
+    public ProxyConfig(String hostname, Integer port, String user, String password) {
+        this.hostname = hostname;
+        this.port = port;
+        this.user = user;
+        this.password = password;
+    }
 }

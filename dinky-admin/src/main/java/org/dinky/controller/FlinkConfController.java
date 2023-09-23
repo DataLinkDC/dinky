@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -40,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/flinkConf")
 public class FlinkConfController {
     @GetMapping("/configOptions")
+    @ApiOperation("Query Flink Configuration Options")
     public Result<List<CascaderVO>> loadDataByGroup() {
         final String[] nameList = {
             "org.apache.flink.configuration.CoreOptions",

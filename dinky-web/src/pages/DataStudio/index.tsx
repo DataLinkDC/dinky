@@ -165,7 +165,17 @@ const DataStudio = (props: any) => {
     const info = res as { [key: string]: any };
     const changed = Object.keys(params.taskData).some((key) => {
       // ignore this property
-      if (['updateTime', 'createTime', 'jobInstanceId'].includes(key)) {
+      if (
+        [
+          'updateTime',
+          'createTime',
+          'jobInstanceId',
+          'useResult',
+          'maxRowNum',
+          'useChangeLog',
+          'useAutoCancel'
+        ].includes(key)
+      ) {
         return false;
       }
 
@@ -285,7 +295,14 @@ const DataStudio = (props: any) => {
       <PersistGate loading={null} persistor={persist}>
         <div style={{ marginInline: -10, marginTop: -6, width: size.width }}>
           <SecondHeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
-          <Layout hasSider style={{ minHeight: size.contentHeight, paddingInline: 0 }}>
+          <Layout
+            hasSider
+            style={{
+              minHeight: size.contentHeight,
+              maxHeight: size.contentHeight,
+              paddingInline: 0
+            }}
+          >
             <Sider collapsed collapsedWidth={40}>
               <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                 {LeftTopMenu}
@@ -293,7 +310,7 @@ const DataStudio = (props: any) => {
               </div>
             </Sider>
 
-            <Content style={{ display: 'flex', flexDirection: 'column' }}>
+            <Content style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div style={{ display: 'flex' }}>
                 <LeftContainer size={size} />
                 <Content

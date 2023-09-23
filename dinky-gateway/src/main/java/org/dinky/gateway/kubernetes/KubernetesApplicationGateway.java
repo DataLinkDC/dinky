@@ -41,6 +41,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
@@ -63,7 +64,6 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
             init();
         }
 
-        combineFlinkConfig();
         AppConfig appConfig = config.getAppConfig();
         String[] userJarParas =
                 Asserts.isNotNull(appConfig.getUserJarParas()) ? appConfig.getUserJarParas() : new String[0];
@@ -84,51 +84,52 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
                     clusterClient.listJobs().get();
 
             int counts = SystemConfiguration.getInstances().getJobIdWait();
-            while (jobStatusMessages.size() == 0 && counts > 0) {
+            while (jobStatusMessages.isEmpty() && counts > 0) {
                 Thread.sleep(1000);
                 counts--;
                 try {
                     jobStatusMessages = clusterClient.listJobs().get();
+                    logger.info("Get K8s Job list: {}", jobStatusMessages);
                 } catch (ExecutionException e) {
+                    logger.error("Get Job list Error: {}", e.getMessage());
                     if (StrUtil.contains(e.getMessage(), "Number of retries has been exhausted.")) {
                         // refresh the job manager ip address
                         clusterClient.close();
                         clusterClient = clusterClientProvider.getClusterClient();
                     } else {
-                        LogUtil.getError(e);
                         throw e;
                     }
                 }
-
-                if (jobStatusMessages.size() > 0) {
+                if (!jobStatusMessages.isEmpty()) {
                     break;
                 }
             }
 
-            if (jobStatusMessages.size() > 0) {
+            // application mode only have one job, so we can get any one to be jobId
+            String jobId = "";
+            if (!jobStatusMessages.isEmpty()) {
                 List<String> jids = new ArrayList<>();
                 for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
-                    jids.add(jobStatusMessage.getJobId().toHexString());
+                    jobId = jobStatusMessage.getJobId().toHexString();
+                    jids.add(jobId);
                 }
                 result.setJids(jids);
             }
 
-            String jobId = "";
-            // application mode only have one job, so we can get any one to be jobId
-            for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
-                jobId = jobStatusMessage.getJobId().toHexString();
-            }
             // if JobStatusMessage not have job id,  it`s maybe wrong with submit,throw exception
             if (TextUtils.isEmpty(jobId)) {
                 int cost = SystemConfiguration.getInstances().getJobIdWait() - counts;
                 String clusterId = clusterClient.getClusterId();
-                throw new Exception("无法获得jobId请联系管理排查问题,等待时长：" + cost + ",job name:" + clusterId);
+                throw new Exception(
+                        StrFormatter.format("Unable to get JobID,wait time:{}, Job name:{}", cost, clusterId));
             }
+
             result.setId(jobId);
             result.setWebURL(clusterClient.getWebInterfaceURL());
             waitForTaskManagerToBeReady(result.getWebURL(), jobId);
             result.success();
         } catch (Exception e) {
+            logger.error("submit K8s Application error", e);
             result.fail(LogUtil.getError(e));
         }
         return result;

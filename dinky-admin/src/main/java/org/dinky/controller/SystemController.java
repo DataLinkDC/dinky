@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
@@ -74,6 +75,7 @@ public class SystemController {
      */
     @GetMapping("/readFile")
     @ApiOperation("Read File By File Path")
+    @ApiImplicitParam(name = "path", value = "File Path", required = true, dataType = "String")
     public Result<String> readFile(@RequestParam String path) {
         return Result.data(systemService.readFile(path));
     }

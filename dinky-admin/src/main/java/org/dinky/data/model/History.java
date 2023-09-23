@@ -26,6 +26,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -37,52 +39,75 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_history")
+@ApiModel(value = "History", description = "History Information")
 public class History implements Serializable {
 
     private static final long serialVersionUID = 4058280957630503072L;
 
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "1")
     private Integer id;
 
+    @ApiModelProperty(value = "Tenant ID", dataType = "Integer", example = "1", required = true)
     private Integer tenantId;
 
+    @ApiModelProperty(value = "Cluster ID", dataType = "Integer")
     private Integer clusterId;
 
+    @ApiModelProperty(value = "Cluster Configuration ID", dataType = "Integer")
     private Integer clusterConfigurationId;
 
+    @ApiModelProperty(value = "Session", dataType = "String")
     private String session;
 
+    @ApiModelProperty(value = "Job ID", dataType = "String")
     private String jobId;
+
+    @ApiModelProperty(value = "Job Name", dataType = "String")
     private String jobName;
 
+    @ApiModelProperty(value = "Job Manager Address", dataType = "String")
     private String jobManagerAddress;
 
+    @ApiModelProperty(value = "Status", dataType = "Integer")
     private Integer status;
 
+    @ApiModelProperty(value = "Statement", dataType = "String")
     private String statement;
 
+    @ApiModelProperty(value = "Type", dataType = "String")
     private String type;
 
+    @ApiModelProperty(value = "Error", dataType = "String")
     private String error;
 
+    @ApiModelProperty(value = "Result", dataType = "String")
     private String result;
 
     @TableField(exist = false)
+    @ApiModelProperty(hidden = true)
     private ObjectNode config;
 
+    @ApiModelProperty(value = "JSON Configuration", dataType = "String")
     private String configJson;
 
+    @ApiModelProperty(value = "Start Time", dataType = "LocalDateTime")
     private LocalDateTime startTime;
 
+    @ApiModelProperty(value = "End Time", dataType = "LocalDateTime")
     private LocalDateTime endTime;
 
+    @ApiModelProperty(value = "Task ID", dataType = "Integer")
     private Integer taskId;
 
     @TableField(exist = false)
+    @ApiModelProperty(hidden = true)
     private String statusText;
 
     @TableField(exist = false)
+    @ApiModelProperty(hidden = true)
     private String clusterName;
 
+    @ApiModelProperty(hidden = true)
     public JobInstance buildJobInstance() {
         JobInstance jobInstance = new JobInstance();
         jobInstance.setHistoryId(id);

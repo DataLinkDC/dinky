@@ -17,23 +17,17 @@
  *
  */
 
-package org.dinky.alert.email.template;
+package org.dinky.url;
 
-import org.dinky.alert.ShowType;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 
-/** AlertTemplate */
-public interface AlertTemplate {
+public class RsURLStreamHandler extends URLStreamHandler {
 
-    String getMessageFromTemplate(String title, String content, ShowType showType, boolean showAll);
-
-    /**
-     * default showAll is true
-     *
-     * @param content alert message content
-     * @param showType show type
-     * @return a message from a specified alert template
-     */
-    default String getMessageFromTemplate(String title, String content, ShowType showType) {
-        return getMessageFromTemplate(title, content, showType, true);
+    @Override
+    protected URLConnection openConnection(URL u) throws IOException {
+        return new RsURLConnection(u);
     }
 }

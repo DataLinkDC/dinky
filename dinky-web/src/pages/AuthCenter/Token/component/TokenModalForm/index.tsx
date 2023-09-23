@@ -120,8 +120,8 @@ const TokenModalForm: React.FC<TokenModalFormProps & connect> = (props) => {
       // 两个时间都有 设置开始时间和结束时间
       result = {
         ...result,
-        expireEndTime: formatDateToYYYYMMDDHHMMSS(fieldsValue.expireTime[0]),
-        expireStartTime: formatDateToYYYYMMDDHHMMSS(fieldsValue.expireTime[1])
+        expireStartTime: formatDateToYYYYMMDDHHMMSS(fieldsValue.expireTime[0]),
+        expireEndTime: formatDateToYYYYMMDDHHMMSS(fieldsValue.expireTime[1])
       };
     }
 

@@ -51,6 +51,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.tree.Tree;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +74,13 @@ public class TaskController {
     @PutMapping
     @ApiOperation("Insert Or Update Task")
     @Log(title = "Insert Or Update Task", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiImplicitParam(
+            name = "task",
+            value = "Task",
+            required = true,
+            dataType = "Task",
+            paramType = "body",
+            dataTypeClass = Task.class)
     public Result<Void> saveOrUpdateTask(@RequestBody Task task) {
         if (taskService.saveOrUpdateTask(task)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -84,6 +92,13 @@ public class TaskController {
     /** 动态查询列表 */
     @PostMapping
     @ApiOperation("Query Task List")
+    @ApiImplicitParam(
+            name = "para",
+            value = "Query Condition",
+            required = true,
+            dataType = "JsonNode",
+            paramType = "body",
+            dataTypeClass = JsonNode.class)
     public ProTableResult<Task> listTasks(@RequestBody JsonNode para) {
         return taskService.selectForProTable(para);
     }
@@ -91,7 +106,16 @@ public class TaskController {
     /** 批量执行 */
     @PostMapping(value = "/submit")
     @ApiOperation("Batch Execute Task")
+    @Log(title = "Batch Execute Task", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "para",
+            value = "Task Id List",
+            required = true,
+            dataType = "JsonNode",
+            paramType = "body",
+            dataTypeClass = JsonNode.class)
     public Result<List<JobResult>> submit(@RequestBody JsonNode para) {
+        // todo: 没有批量提交 此处需要重构
         if (para.size() > 0) {
             List<JobResult> results = new ArrayList<>();
             List<Integer> error = new ArrayList<>();
@@ -116,6 +140,13 @@ public class TaskController {
     /** 获取指定ID的信息 */
     @GetMapping
     @ApiOperation("Get Task Info By Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Task Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class)
     public Result<Task> getOneById(@RequestParam Integer id) {
         Task task = taskService.getTaskInfoById(id);
         return Result.succeed(task);
@@ -132,6 +163,13 @@ public class TaskController {
     @GetMapping(value = "/exportSql")
     @ApiOperation("Export Sql")
     @Log(title = "Export Sql", businessType = BusinessType.EXPORT)
+    @ApiImplicitParam(
+            name = "id",
+            value = "Task Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class)
     public Result<String> exportSql(@RequestParam Integer id) {
         return Result.succeed(taskService.exportSql(id));
     }

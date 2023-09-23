@@ -23,6 +23,8 @@ import org.dinky.data.result.IResult;
 
 import java.time.LocalDateTime;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,19 +35,78 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "JobResult", description = "Result of a job execution")
 public class JobResult {
 
+    @ApiModelProperty(value = "Unique identifier for the job result", dataType = "Integer", example = "123")
     private Integer id;
+
+    @ApiModelProperty(
+            value = "Configuration details of the job",
+            dataType = "JobConfig",
+            notes = "Configuration details of the job")
     private JobConfig jobConfig;
+
+    @ApiModelProperty(
+            value = "Address of the job manager",
+            dataType = "String",
+            example = "localhost:8081",
+            notes = "Address of the job manager")
     private String jobManagerAddress;
+
+    @ApiModelProperty(value = "Status of the job", dataType = "Job.JobStatus", notes = "Status of the job")
     private Job.JobStatus status;
+
+    @ApiModelProperty(
+            value = "Flag indicating whether the job was successful",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether the job was successful")
     private boolean success;
+
+    @ApiModelProperty(
+            value = "SQL statement executed by the job",
+            dataType = "String",
+            example = "SELECT * FROM table_name",
+            notes = "SQL statement executed by the job")
     private String statement;
+
+    @ApiModelProperty(
+            value = "Unique identifier for the job",
+            dataType = "String",
+            example = "job_123",
+            notes = "Unique identifier for the job")
     private String jobId;
+
+    @ApiModelProperty(
+            value = "Unique identifier for the job instance",
+            dataType = "Integer",
+            example = "456",
+            notes = "Unique identifier for the job instance")
     private Integer jobInstanceId;
+
+    @ApiModelProperty(
+            value = "Error message in case of job failure",
+            dataType = "String",
+            example = "Job failed due to a timeout",
+            notes = "Error message in case of job failure")
     private String error;
+
+    @ApiModelProperty(value = "Result data of the job", dataType = "IResult", notes = "Result data of the job")
     private IResult result;
+
+    @ApiModelProperty(
+            value = "Start time of job execution",
+            dataType = "LocalDateTime",
+            example = "2023-09-15T10:30:00",
+            notes = "Start time of job execution")
     private LocalDateTime startTime;
+
+    @ApiModelProperty(
+            value = "End time of job execution",
+            dataType = "LocalDateTime",
+            example = "2023-09-15T11:15:00",
+            notes = "End time of job execution")
     private LocalDateTime endTime;
 
     public JobResult() {}

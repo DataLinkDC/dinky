@@ -20,12 +20,10 @@ import { l } from '@/utils/intl';
 import {
   ProForm,
   ProFormDigit,
-  ProFormRadio,
   ProFormSwitch,
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
-import { Radio } from 'antd';
 
 const FeiShu = (props: any) => {
   const { values } = props;
@@ -58,18 +56,6 @@ const FeiShu = (props: any) => {
           label={l('rc.ai.secret')}
           placeholder={l('rc.ai.secretPleaseHolder')}
         />
-
-        <ProFormRadio.Group
-          name='msgtype'
-          width={'xs'}
-          label={l('rc.ai.msgtype')}
-          rules={[{ required: true, message: l('rc.ai.msgtypePleaseHolder') }]}
-        >
-          <Radio.Group>
-            <Radio value='post'>{l('rc.ai.post')}</Radio>
-            <Radio value='text'>{l('rc.ai.text')}</Radio>
-          </Radio.Group>
-        </ProFormRadio.Group>
       </ProForm.Group>
 
       {/* advanced columns */}

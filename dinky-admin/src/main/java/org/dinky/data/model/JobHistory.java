@@ -25,8 +25,10 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -36,59 +38,88 @@ import lombok.EqualsAndHashCode;
  * @since 2022/3/2 19:48
  */
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_job_history")
+@ApiModel(value = "JobHistory", description = "Job History Information")
 public class JobHistory implements Serializable {
 
     private static final long serialVersionUID = 4984787372340047250L;
 
+    @ApiModelProperty(
+            value = "ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "Unique identifier for the job history")
     private Integer id;
 
+    @ApiModelProperty(
+            value = "Tenant ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "Tenant ID associated with the job history")
     private Integer tenantId;
 
-    @TableField(exist = false)
-    private ObjectNode job;
-
+    @ApiModelProperty(
+            value = "Job JSON",
+            dataType = "String",
+            example = "{\"jobName\": \"Example Job\"}",
+            notes = "JSON representation of the job")
     private String jobJson;
 
-    @TableField(exist = false)
-    private ObjectNode exceptions;
-
+    @ApiModelProperty(
+            value = "Exceptions JSON",
+            dataType = "String",
+            example = "{\"exceptionType\": \"RuntimeException\"}",
+            notes = "JSON representation of exceptions")
     private String exceptionsJson;
 
-    @TableField(exist = false)
-    private ObjectNode checkpoints;
-
+    @ApiModelProperty(
+            value = "Checkpoints JSON",
+            dataType = "String",
+            example = "{\"checkpointId\": 123}",
+            notes = "JSON representation of checkpoints")
     private String checkpointsJson;
 
-    @TableField(exist = false)
-    private ObjectNode checkpointsConfig;
-
+    @ApiModelProperty(
+            value = "Checkpoints Config JSON",
+            dataType = "String",
+            example = "{\"configParam\": \"value\"}",
+            notes = "JSON representation of checkpoints config")
     private String checkpointsConfigJson;
 
-    @TableField(exist = false)
-    private ObjectNode config;
-
+    @ApiModelProperty(
+            value = "Config JSON",
+            dataType = "String",
+            example = "{\"configParam\": \"value\"}",
+            notes = "JSON representation of config")
     private String configJson;
 
-    @TableField(exist = false)
-    private ObjectNode jar;
-
+    @ApiModelProperty(
+            value = "Jar JSON",
+            dataType = "String",
+            example = "{\"jarName\": \"example.jar\"}",
+            notes = "JSON representation of the JAR")
     private String jarJson;
 
-    @TableField(exist = false)
-    private ObjectNode cluster;
-
+    @ApiModelProperty(
+            value = "Cluster JSON",
+            dataType = "String",
+            example = "{\"clusterName\": \"exampleCluster\"}",
+            notes = "JSON representation of the cluster")
     private String clusterJson;
 
-    @TableField(exist = false)
-    private ObjectNode clusterConfiguration;
-
+    @ApiModelProperty(
+            value = "Cluster Configuration JSON",
+            dataType = "String",
+            example = "{\"configParam\": \"value\"}",
+            notes = "JSON representation of cluster configuration")
     private String clusterConfigurationJson;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty(
+            value = "Update Time",
+            dataType = "LocalDateTime",
+            notes = "Timestamp indicating the last update time")
     private LocalDateTime updateTime;
-
-    @TableField(exist = false)
-    private boolean error;
 }

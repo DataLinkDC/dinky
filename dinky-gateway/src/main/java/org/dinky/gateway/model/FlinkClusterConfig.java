@@ -24,17 +24,55 @@ import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.K8sConfig;
 import org.dinky.gateway.enums.GatewayType;
+import org.dinky.utils.JSONUtil;
 
+import java.util.Optional;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 /** @since */
 @Getter
 @Setter
+@ApiModel(value = "FlinkClusterConfig", description = "Configuration for a Flink cluster")
 public class FlinkClusterConfig {
+
+    @ApiModelProperty(
+            value = "Gateway Type",
+            dataType = "GatewayType",
+            example = "REST",
+            notes = "The type of gateway for the Flink cluster")
     private GatewayType type;
+
+    @ApiModelProperty(
+            value = "Cluster Configuration",
+            dataType = "ClusterConfig",
+            notes = "Configuration settings for the Flink cluster")
     private ClusterConfig clusterConfig;
+
+    @ApiModelProperty(
+            value = "Flink Configuration",
+            dataType = "FlinkConfig",
+            notes = "Configuration settings specific to Flink")
     private FlinkConfig flinkConfig;
+
+    @ApiModelProperty(
+            value = "Application Configuration",
+            dataType = "AppConfig",
+            notes = "Configuration settings for the application")
     private AppConfig appConfig;
+
+    @ApiModelProperty(
+            value = "Kubernetes Configuration",
+            dataType = "K8sConfig",
+            notes = "Configuration settings for Kubernetes (if applicable)")
     private K8sConfig kubernetesConfig;
+
+    public static FlinkClusterConfig create(String type, String json) {
+        FlinkClusterConfig flinkClusterConfig = JSONUtil.parseObject(json, FlinkClusterConfig.class);
+        Optional.ofNullable(flinkClusterConfig).ifPresent(config -> config.setType(GatewayType.get(type)));
+        return flinkClusterConfig;
+    }
 }

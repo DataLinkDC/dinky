@@ -130,7 +130,7 @@ const RoleProTable: React.FC = () => {
     queryDataByParams(API_CONSTANTS.ROLE_USER_LIST, { roleId: record.id }).then((res) =>
       setRoleListState((prevState) => ({
         ...prevState,
-        roleUserList: res,
+        roleUserList: res as UserBaseInfo.User[],
         value: record,
         viewUsersOpen: true
       }))
@@ -216,7 +216,7 @@ const RoleProTable: React.FC = () => {
         toolBarRender={() => [
           <CreateBtn
             key={'toolBarRender'}
-            onClick={() => setRoleListState((prevState) => ({ ...prevState, addedRoleOpen: true }))}
+            onClick={() => setRoleListState((prevState) => ({ ...prevState, addedOpen: true }))}
           />
         ]}
         request={(params, sorter, filter: any) =>

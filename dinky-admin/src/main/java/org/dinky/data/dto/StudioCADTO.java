@@ -19,6 +19,8 @@
 
 package org.dinky.data.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,11 +31,26 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "StudioCADTO", description = "DTO for Studio SQL query")
 public class StudioCADTO extends AbstractStatementDTO {
 
-    // It's useless for the time being
+    @ApiModelProperty(
+            value = "Use Statement Set",
+            dataType = "Boolean",
+            example = "true",
+            notes = "Flag indicating whether to use Statement Set")
     private Boolean statementSet;
+
+    @ApiModelProperty(value = "Type", dataType = "Integer", example = "1", notes = "The type of the SQL query")
     private Integer type;
+
+    @ApiModelProperty(value = "Dialect", dataType = "String", example = "MySQL", notes = "The SQL dialect")
     private String dialect;
+
+    @ApiModelProperty(
+            value = "Database ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "The identifier of the target database")
     private Integer databaseId;
 }

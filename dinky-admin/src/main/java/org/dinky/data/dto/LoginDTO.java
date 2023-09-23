@@ -19,6 +19,8 @@
 
 package org.dinky.data.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,11 +31,21 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "LoginDTO", description = "Login DTO")
 public class LoginDTO {
 
+    @ApiModelProperty(value = "username", required = true, example = "admin", dataType = "String")
     private String username;
+
+    @ApiModelProperty(value = "password", required = true, example = "admin", dataType = "String")
     private String password;
+
+    @ApiModelProperty(value = "tenantId", required = true, example = "1", dataType = "Integer")
     private Integer tenantId;
+
+    @ApiModelProperty(value = "autoLogin", required = true, example = "true", dataType = "Boolean")
     private boolean autoLogin;
+
+    @ApiModelProperty(value = "ldapLogin", required = true, example = "false", dataType = "Boolean")
     private boolean ldapLogin;
 }
