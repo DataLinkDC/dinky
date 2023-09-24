@@ -174,7 +174,7 @@ export default () => {
     setClusterConfigState((prevState) => ({
       ...prevState,
       editOpen: true,
-      value: { ...item}
+      value: { ...item }
     }));
   };
 
