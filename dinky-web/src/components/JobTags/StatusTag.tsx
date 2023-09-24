@@ -16,14 +16,16 @@
  *
  */
 
+import { JOB_STATUS } from '@/pages/DevOps/constants';
 import {
   CheckCircleOutlined,
-  ClockCircleOutlined, CloseCircleOutlined,
-  MinusCircleOutlined, QuestionCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  MinusCircleOutlined,
+  QuestionCircleOutlined,
   SyncOutlined
 } from '@ant-design/icons';
-import {Tag} from 'antd';
-import {JOB_STATUS} from "@/pages/DevOps/constants";
+import { Tag } from 'antd';
 
 export interface StatusTagProps {
   status: string;
@@ -32,69 +34,65 @@ export interface StatusTagProps {
 }
 
 const StatusTag = (props: StatusTagProps) => {
-  const {
-    status,
-    animation = true,
-    bordered = true,
-  } = props;
+  const { status, animation = true, bordered = true } = props;
 
   const buildParam = () => {
     switch (status) {
       case JOB_STATUS.RUNNING:
         return {
-          icon:<SyncOutlined spin/>,
-          color:"success",
-          text:"RUNNING"
-        }
+          icon: <SyncOutlined spin />,
+          color: 'success',
+          text: 'RUNNING'
+        };
       case JOB_STATUS.FINISHED:
         return {
-          icon:<CheckCircleOutlined/>,
-          color:"blue",
-          text:"FINISHED"
-        }
+          icon: <CheckCircleOutlined />,
+          color: 'blue',
+          text: 'FINISHED'
+        };
 
       case JOB_STATUS.CANCELED:
         return {
-          icon:<MinusCircleOutlined/>,
-          color:"orange",
-          text:"CANCELED"
-        }
+          icon: <MinusCircleOutlined />,
+          color: 'orange',
+          text: 'CANCELED'
+        };
       case JOB_STATUS.INITIALIZING:
         return {
-          icon:<ClockCircleOutlined/>,
-          color:"default",
-          text:"INITIALIZING"
-        }
+          icon: <ClockCircleOutlined />,
+          color: 'default',
+          text: 'INITIALIZING'
+        };
       case JOB_STATUS.RESTARTING:
         return {
-          icon:<ClockCircleOutlined/>,
-          color:"default",
-          text:"RESTARTING"
-        }
+          icon: <ClockCircleOutlined />,
+          color: 'default',
+          text: 'RESTARTING'
+        };
       case JOB_STATUS.CREATED:
         return {
-          icon:<ClockCircleOutlined/>,
-          color:"default",
-          text:"CREATED"
-        }
+          icon: <ClockCircleOutlined />,
+          color: 'default',
+          text: 'CREATED'
+        };
       case JOB_STATUS.UNKNOWN:
         return {
-          icon:<QuestionCircleOutlined/>,
-          color:"default",
-          text:"UNKNOWN"
-        }
+          icon: <QuestionCircleOutlined />,
+          color: 'default',
+          text: 'UNKNOWN'
+        };
       default:
         return {
-          icon:<CloseCircleOutlined/>,
-          color:"error",
-          text:"FAILED"
-        }
+          icon: <CloseCircleOutlined />,
+          color: 'error',
+          text: 'FAILED'
+        };
     }
   };
 
   const param = buildParam();
   return (
-    <Tag icon={animation?param.icon:undefined} color={param.color} bordered={bordered}>
+    <Tag icon={animation ? param.icon : undefined} color={param.color} bordered={bordered}>
       {param.text}
     </Tag>
   );

@@ -17,6 +17,7 @@
  *
  */
 
+import Lineage from '@/components/FlinkDag';
 import { TagJobLifeCycle } from '@/pages/DevOps/function';
 import CheckPoints from '@/pages/DevOps/JobDetail/CheckPointsTab';
 import JobLogsTab from '@/pages/DevOps/JobDetail/JobLogs/JobLogsTab';
@@ -35,7 +36,6 @@ import { useRequest } from '@umijs/max';
 import { Tag } from 'antd';
 import { useState } from 'react';
 import { connect, useLocation } from 'umi';
-import Lineage from "@/components/FlinkDag";
 
 /**
  * Enum defining different operators for the JobDetail component.

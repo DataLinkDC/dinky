@@ -72,14 +72,14 @@ declare namespace Jobs {
   };
 
   export type VetricsMetrics = {
-    "read-bytes": number,
-    "read-bytes-complete": boolean,
-    "write-bytes": number,
-    "write-bytes-complete": boolean,
-    "read-records": number,
-    "read-records-complete": boolean,
-    "write-records": number,
-    "write-records-complete": boolean
+    'read-bytes': number;
+    'read-bytes-complete': boolean;
+    'write-bytes': number;
+    'write-bytes-complete': boolean;
+    'read-records': number;
+    'read-records-complete': boolean;
+    'write-records': number;
+    'write-records-complete': boolean;
   };
 
   export type JobVertices = {

@@ -17,11 +17,11 @@
  *
  */
 
+import FlinkDag from '@/components/FlinkDag';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import FlinkTable from '@/pages/DevOps/JobDetail/JobOverview/components/FlinkTable';
 import JobDesc from '@/pages/DevOps/JobDetail/JobOverview/components/JobDesc';
-import FlinkDag from "@/components/FlinkDag";
-import {ProCard} from "@ant-design/pro-components";
+import { ProCard } from '@ant-design/pro-components';
 
 const JobConfigTab = (props: JobProps) => {
   const { jobDetail } = props;
@@ -30,9 +30,11 @@ const JobConfigTab = (props: JobProps) => {
     <>
       <JobDesc jobDetail={jobDetail} />
 
-      <ProCard style={{
-        height: '40vh',
-      }}>
+      <ProCard
+        style={{
+          height: '40vh'
+        }}
+      >
         <FlinkDag jobDetail={jobDetail} />
       </ProCard>
 

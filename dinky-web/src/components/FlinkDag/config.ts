@@ -17,9 +17,9 @@
  *
  */
 
-import {Platform} from "@antv/x6";
-import {DagreLayoutOptions} from "@antv/layout/lib/layout/types";
-import {Options} from "@antv/x6/lib/graph/options";
+import { DagreLayoutOptions } from '@antv/layout/lib/layout/types';
+import { Platform } from '@antv/x6';
+import { Options } from '@antv/x6/lib/graph/options';
 import Connecting = Options.Connecting;
 import Manual = Options.Manual;
 
@@ -32,24 +32,24 @@ export const edgeConfig = {
         fill: 'none',
         cursor: 'pointer',
         stroke: 'transparent',
-        strokeLinecap: 'round',
-      },
+        strokeLinecap: 'round'
+      }
     },
     {
       tagName: 'path',
       selector: 'line',
       attrs: {
         fill: 'none',
-        pointerEvents: 'none',
-      },
-    },
+        pointerEvents: 'none'
+      }
+    }
   ],
-  connector: {name: 'curveConnector'},
+  connector: { name: 'curveConnector' },
   attrs: {
     wrap: {
       connection: true,
       strokeWidth: 1,
-      strokeLinejoin: 'round',
+      strokeLinejoin: 'round'
     },
     line: {
       connection: true,
@@ -57,18 +57,17 @@ export const edgeConfig = {
       strokeWidth: 1,
       targetMarker: {
         name: 'classic',
-        size: 6,
-      },
+        size: 6
+      }
     },
     text: {
-      fontSize: 12,
+      fontSize: 12
     },
     rect: {
       // fill: 'transparent',
-    },
-  },
+    }
+  }
 };
-
 
 export const portConfig = {
   groups: {
@@ -80,17 +79,17 @@ export const portConfig = {
           magnet: true,
           stroke: 'transparent',
           strokeWidth: 1,
-          fill: 'transparent',
-        },
-      },
+          fill: 'transparent'
+        }
+      }
     },
 
     out: {
       position: {
         name: 'right',
         args: {
-          dx: -32,
-        },
+          dx: -32
+        }
       },
 
       attrs: {
@@ -99,11 +98,11 @@ export const portConfig = {
           magnet: true,
           stroke: 'transparent',
           strokeWidth: 1,
-          fill: 'transparent',
-        },
-      },
-    },
-  },
+          fill: 'transparent'
+        }
+      }
+    }
+  }
 };
 
 export const graphConnectConfig: Partial<Connecting> = {
@@ -114,39 +113,39 @@ export const graphConnectConfig: Partial<Connecting> = {
   sourceAnchor: {
     name: 'left',
     args: {
-      dx: Platform.IS_SAFARI ? 4 : 8,
-    },
+      dx: Platform.IS_SAFARI ? 4 : 8
+    }
   },
   targetAnchor: {
     name: 'right',
     args: {
-      dx: Platform.IS_SAFARI ? 4 : -8,
-    },
+      dx: Platform.IS_SAFARI ? 4 : -8
+    }
   },
   // Connection pile verification
-  validateConnection({sourceMagnet, targetMagnet}) {
+  validateConnection({ sourceMagnet, targetMagnet }) {
     // Connections can only be created from output link stubs
     if (!sourceMagnet || sourceMagnet.getAttribute('port-group') === 'in') {
-      return false
+      return false;
     }
     // You can only connect to input link stubs
     return !(!targetMagnet || targetMagnet.getAttribute('port-group') !== 'in');
-  },
+  }
 };
 
 export const graphConfig: Partial<Manual> = {
   // The canvas can be moved using the mouse
   panning: {
     enabled: true,
-    eventTypes: ['leftMouseDown', 'mouseWheel'],
+    eventTypes: ['leftMouseDown', 'mouseWheel']
   },
   // Moving nodes beyond the canvas is prohibited
   translating: {
-    restrict: true,
+    restrict: true
   },
   // Prohibit moving nodes
   interacting: {
-    nodeMovable: false,
+    nodeMovable: false
   },
   // Control scaling via CTRL
   mousewheel: {
@@ -154,10 +153,10 @@ export const graphConfig: Partial<Manual> = {
     modifiers: 'ctrl',
     factor: 1.1,
     maxScale: 1.5,
-    minScale: 0.5,
+    minScale: 0.5
   },
-  connecting: graphConnectConfig,
-}
+  connecting: graphConnectConfig
+};
 
 export const layoutConfig: DagreLayoutOptions = {
   type: 'dagre',
@@ -165,5 +164,5 @@ export const layoutConfig: DagreLayoutOptions = {
   align: 'UL',
   ranksep: 120,
   nodesep: 40,
-  controlPoints: true,
+  controlPoints: true
 };

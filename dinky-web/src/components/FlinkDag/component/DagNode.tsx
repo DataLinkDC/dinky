@@ -17,48 +17,47 @@
  *
  */
 
-import React from "react";
-import {Jobs} from "@/types/DevOps/data";
-import {Card, Col, Row, Tag, Typography} from "antd";
-import StatusTag from "@/components/JobTags/StatusTag";
+import StatusTag from '@/components/JobTags/StatusTag';
+import { Jobs } from '@/types/DevOps/data';
+import { Card, Col, Row, Tag, Typography } from 'antd';
 
 const { Text } = Typography;
 
 const DagNode = (props: any) => {
-  const {node} = props
-  const vertices:Jobs.JobVertices = node?.getData()
+  const { node } = props;
+  const vertices: Jobs.JobVertices = node?.getData();
 
   return (
     <Card
-      style={{width: "250px"}}
+      style={{ width: '250px' }}
       bordered={false}
-      size={"small"}
-      type={"inner"}
+      size={'small'}
+      type={'inner'}
       hoverable={true}
       title={vertices.name}
       extra={<Text keyboard>{vertices.parallelism}</Text>}
     >
       <Row>
         <Col span={15}>
-          <Text type="secondary">BackPressure：</Text>
-          <Tag bordered={false} color="success">
+          <Text type='secondary'>BackPressure：</Text>
+          <Tag bordered={false} color='success'>
             OK
           </Tag>
         </Col>
         <Col span={8}>
-          <Text type="secondary">Busy：97%</Text>
+          <Text type='secondary'>Busy：97%</Text>
         </Col>
       </Row>
       <Row>
         <Col span={15}>
-          <Text type="secondary">Status：</Text>
-          <StatusTag  status={vertices.status} bordered={false} animation={false}/>
+          <Text type='secondary'>Status：</Text>
+          <StatusTag status={vertices.status} bordered={false} animation={false} />
         </Col>
         <Col span={8}>
-          <Text type="secondary">Idle：50%</Text>
+          <Text type='secondary'>Idle：50%</Text>
         </Col>
       </Row>
     </Card>
-  )
+  );
 };
 export default DagNode;

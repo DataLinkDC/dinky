@@ -17,11 +17,11 @@
  *
  */
 
-import {Graph, Path} from "@antv/x6";
-import {Jobs} from "@/types/DevOps/data";
+import { Jobs } from '@/types/DevOps/data';
+import { Graph, Path } from '@antv/x6';
 
 export const buildEdge = (job: Jobs.Job) => {
-  const edges: any = []
+  const edges: any = [];
 
   for (let node of job.plan.nodes) {
     if (node.inputs) {
@@ -37,8 +37,8 @@ export const buildEdge = (job: Jobs.Job) => {
                 animation: 'running-line 30s infinite linear'
               }
             },
-            label:{
-              text: plan_node.ship_strategy,
+            label: {
+              text: plan_node.ship_strategy
             }
           },
           label: plan_node.ship_strategy,
@@ -54,15 +54,15 @@ export const buildEdge = (job: Jobs.Job) => {
             port: `${node.id}-in`
           },
           data: node
-        })
+        });
       }
     }
   }
-  return edges
-}
+  return edges;
+};
 
 export const buildNode = (job: Jobs.Job) => {
-  const nodes: any = {}
+  const nodes: any = {};
 
   for (let vertice of job.vertices) {
     nodes[vertice.id] = {
@@ -71,91 +71,80 @@ export const buildNode = (job: Jobs.Job) => {
       ports: [
         {
           id: `${vertice.id}-in`,
-          group: 'in',
+          group: 'in'
         },
         {
           id: `${vertice.id}-out`,
-          group: 'out',
-        },
+          group: 'out'
+        }
       ],
-      data: vertice,
-    }
+      data: vertice
+    };
   }
-  return nodes
-}
+  return nodes;
+};
 
 export const buildData = (job: Jobs.Job) => {
   const nodes = Object.values(buildNode(job));
-  return {nodes:nodes,edges:buildEdge(job)}
-}
+  return { nodes: nodes, edges: buildEdge(job) };
+};
 
 export const updateEdge = (job: Jobs.Job, graph?: Graph) => {
-  if (graph){
+  if (graph) {
     const nodes = buildNode(job);
 
     graph.getCells().forEach((node) => {
-      const data = node.getData()
-      if (nodes[data.id]){
-        console.log(nodes[data.id])
-        node.setData(nodes[data.id].data)
+      const data = node.getData();
+      if (nodes[data.id]) {
+        console.log(nodes[data.id]);
+        node.setData(nodes[data.id].data);
       }
     });
 
     graph.getEdges().forEach((edge) => {
       const node = edge.getSourceNode()?.getData();
 
-      if (node.status == "RUNNING") {
-        edge.attr({line: {stroke: '#3471F9',}})
-        edge.attr('line/strokeDasharray', 5)
-        edge.attr('line/strokeWidth', 2)
-        edge.attr('line/style/animation', 'running-line 30s infinite linear')
-      }else {
-        edge.attr('line/strokeDasharray', 0)
-        edge.attr('line/style/animation', '')
-        edge.attr('line/strokeWidth', 1)
-        if (node.status == "FINISHED") {
-          edge.attr('line/stroke', '#52c41a')
-        } else if (node.status == "CANCELED") {
-          edge.attr('line/stroke', '#ffe7ba')
-        } else if (node.status == "FAILED")  {
-          edge.attr('line/stroke', '#ff4d4f')
-        }else {
-          edge.attr('line/stroke', '#bfbfbf')
+      if (node.status == 'RUNNING') {
+        edge.attr({ line: { stroke: '#3471F9' } });
+        edge.attr('line/strokeDasharray', 5);
+        edge.attr('line/strokeWidth', 2);
+        edge.attr('line/style/animation', 'running-line 30s infinite linear');
+      } else {
+        edge.attr('line/strokeDasharray', 0);
+        edge.attr('line/style/animation', '');
+        edge.attr('line/strokeWidth', 1);
+        if (node.status == 'FINISHED') {
+          edge.attr('line/stroke', '#52c41a');
+        } else if (node.status == 'CANCELED') {
+          edge.attr('line/stroke', '#ffe7ba');
+        } else if (node.status == 'FAILED') {
+          edge.attr('line/stroke', '#ff4d4f');
+        } else {
+          edge.attr('line/stroke', '#bfbfbf');
         }
       }
     });
-
   }
-}
+};
 
 export const regConnect = (sourcePoint: any, targetPoint: any) => {
-  const hgap = Math.abs(targetPoint.x - sourcePoint.x)
-  const path = new Path()
-  path.appendSegment(
-    Path.createSegment('M', sourcePoint.x - 4, sourcePoint.y),
-  )
-  path.appendSegment(
-    Path.createSegment('L', sourcePoint.x + 12, sourcePoint.y),
-  )
+  const hgap = Math.abs(targetPoint.x - sourcePoint.x);
+  const path = new Path();
+  path.appendSegment(Path.createSegment('M', sourcePoint.x - 4, sourcePoint.y));
+  path.appendSegment(Path.createSegment('L', sourcePoint.x + 12, sourcePoint.y));
   // 水平三阶贝塞尔曲线
   path.appendSegment(
     Path.createSegment(
       'C',
-      sourcePoint.x < targetPoint.x
-        ? sourcePoint.x + hgap / 2
-        : sourcePoint.x - hgap / 2,
+      sourcePoint.x < targetPoint.x ? sourcePoint.x + hgap / 2 : sourcePoint.x - hgap / 2,
       sourcePoint.y,
-      sourcePoint.x < targetPoint.x
-        ? targetPoint.x - hgap / 2
-        : targetPoint.x + hgap / 2,
+      sourcePoint.x < targetPoint.x ? targetPoint.x - hgap / 2 : targetPoint.x + hgap / 2,
       targetPoint.y,
       targetPoint.x - 6,
-      targetPoint.y,
-    ),
-  )
-  path.appendSegment(
-    Path.createSegment('L', targetPoint.x + 2, targetPoint.y),
-  )
+      targetPoint.y
+    )
+  );
+  path.appendSegment(Path.createSegment('L', targetPoint.x + 2, targetPoint.y));
 
-  return path.serialize()
+  return path.serialize();
 };

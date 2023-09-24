@@ -17,33 +17,27 @@
  *
  */
 
-import React, {useEffect, useRef, useState} from 'react'
-import {Graph, Edge} from '@antv/x6'
-import {register} from "@antv/x6-react-shape";
-import {DagreLayout} from "@antv/layout";
-import DagNode from "@/components/FlinkDag/component/DagNode";
-import {
-  edgeConfig,
-  graphConfig,
-  layoutConfig,
-  portConfig
-} from "@/components/FlinkDag/config";
-import {buildData, regConnect, updateEdge} from "@/components/FlinkDag/functions";
-import {Jobs} from "@/types/DevOps/data";
-import "./index.css"
+import DagNode from '@/components/FlinkDag/component/DagNode';
+import { edgeConfig, graphConfig, layoutConfig, portConfig } from '@/components/FlinkDag/config';
+import { buildData, regConnect, updateEdge } from '@/components/FlinkDag/functions';
+import { Jobs } from '@/types/DevOps/data';
+import { DagreLayout } from '@antv/layout';
+import { Edge, Graph } from '@antv/x6';
+import { register } from '@antv/x6-react-shape';
+import { useEffect, useRef, useState } from 'react';
+import './index.css';
 
-const  FlinkDag = (props:{jobDetail:Jobs.JobInfoDetail}) => {
-
+const FlinkDag = (props: { jobDetail: Jobs.JobInfoDetail }) => {
   const container = useRef(null);
   const job = props.jobDetail.jobDataDto.job;
-  const [graph,setGraph] = useState<Graph>();
-  const [curentJob,setCurentJob] = useState<string>();
+  const [graph, setGraph] = useState<Graph>();
+  const [curentJob, setCurentJob] = useState<string>();
 
-  const initGraph = (flinkData:any) =>{
-
+  const initGraph = (flinkData: any) => {
     register({
       shape: 'data-processing-dag-node',
-      width: 212, height: 48,
+      width: 212,
+      height: 48,
       component: DagNode,
       ports: portConfig
     });
@@ -69,17 +63,17 @@ const  FlinkDag = (props:{jobDetail:Jobs.JobInfoDetail}) => {
         left: 50,
         right: 50,
         bottom: 100
-      },
-    }
-    graph.zoomToFit(zoomOptions)
+      }
+    };
+    graph.zoomToFit(zoomOptions);
     graph.centerContent();
     return graph;
-  }
+  };
 
   useEffect(() => {
     const flinkData = buildData(job);
     // Clean up old data
-    if (graph){
+    if (graph) {
       graph.clearCells();
     }
     setGraph(initGraph(flinkData));
@@ -87,18 +81,20 @@ const  FlinkDag = (props:{jobDetail:Jobs.JobInfoDetail}) => {
 
   useEffect(() => {
     updateEdge(job, graph);
-    if (curentJob != job.jid){
-      setCurentJob(job.jid)
+    if (curentJob != job.jid) {
+      setCurentJob(job.jid);
     }
   }, [job]);
 
-
   return (
-    <div style={{
-      'height': '100%',
-      'width': '100%',
-    }} ref={container}/>
-  )
+    <div
+      style={{
+        height: '100%',
+        width: '100%'
+      }}
+      ref={container}
+    />
+  );
 };
 
 export default FlinkDag;
