@@ -35,6 +35,7 @@ import { useRequest } from '@umijs/max';
 import { Tag } from 'antd';
 import { useState } from 'react';
 import { connect, useLocation } from 'umi';
+import Lineage from "@/components/FlinkDag";
 
 /**
  * Enum defining different operators for the JobDetail component.
@@ -71,7 +72,7 @@ const JobDetail = (props: any) => {
     [OperatorEnum.JOB_VERSION]: <JobVersionTab jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_CHECKPOINTS]: <CheckPoints jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_METRICS]: <JobMetrics />,
-    [OperatorEnum.JOB_LINEAGE]: <CheckPoints jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_LINEAGE]: <Lineage jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_ALERT]: <CheckPoints jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_GRAPH]: <JobOperatorGraph jobDetail={jobInfoDetail} />
   };

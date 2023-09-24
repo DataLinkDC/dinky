@@ -20,6 +20,8 @@
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import FlinkTable from '@/pages/DevOps/JobDetail/JobOverview/components/FlinkTable';
 import JobDesc from '@/pages/DevOps/JobDetail/JobOverview/components/JobDesc';
+import FlinkDag from "@/components/FlinkDag";
+import {ProCard} from "@ant-design/pro-components";
 
 const JobConfigTab = (props: JobProps) => {
   const { jobDetail } = props;
@@ -27,6 +29,13 @@ const JobConfigTab = (props: JobProps) => {
   return (
     <>
       <JobDesc jobDetail={jobDetail} />
+
+      <ProCard style={{
+        height: '40vh',
+      }}>
+        <FlinkDag jobDetail={jobDetail} />
+      </ProCard>
+
       <FlinkTable jobDetail={jobDetail} />
     </>
   );
