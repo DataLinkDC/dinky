@@ -55,7 +55,7 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
           <ProFormText
             tooltip={item.tooltip}
             key={item.name}
-            name={['configJson', 'kubernetesConfig', 'configuration', item.name]}
+            name={['config', 'kubernetesConfig', 'configuration', item.name]}
             label={item.label}
             width={260}
             placeholder={item.placeholder}
@@ -70,10 +70,10 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
       key: 'defaultPodTemplate',
       label: <TagAlignCenter>Default Pod Template</TagAlignCenter>,
       children: (
-        <ProFormItem key='dpe' name={['configJson', 'kubernetesConfig', 'podTemplate']}>
+        <ProFormItem key='dpe' name={['config', 'kubernetesConfig', 'podTemplate']}>
           <CodeEdit
             {...CodeEditProps}
-            code={value.configJson?.kubernetesConfig?.podTemplate ?? ''}
+            code={value.config?.kubernetesConfig?.podTemplate ?? ''}
           />
         </ProFormItem>
       )
@@ -82,10 +82,10 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
       key: 'JMPodTemplate',
       label: <TagAlignCenter>JM Pod Template</TagAlignCenter>,
       children: (
-        <ProFormItem key='jmdpe' name={['configJson', 'kubernetesConfig', 'jmPodTemplate']}>
+        <ProFormItem key='jmdpe' name={['config', 'kubernetesConfig', 'jmPodTemplate']}>
           <CodeEdit
             {...CodeEditProps}
-            code={value.configJson?.kubernetesConfig?.jmPodTemplate ?? ''}
+            code={value.config?.kubernetesConfig?.jmPodTemplate ?? ''}
           />
         </ProFormItem>
       )
@@ -94,10 +94,10 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
       key: 'TMPodTemplate',
       label: <TagAlignCenter>TM Pod Template</TagAlignCenter>,
       children: (
-        <ProFormItem key='tmdpe' name={['configJson', 'kubernetesConfig', 'tmPodTemplate']}>
+        <ProFormItem key='tmdpe' name={['config', 'kubernetesConfig', 'tmPodTemplate']}>
           <CodeEdit
             {...CodeEditProps}
-            code={value.configJson?.kubernetesConfig?.tmPodTemplate ?? ''}
+            code={value.config?.kubernetesConfig?.tmPodTemplate ?? ''}
           />
         </ProFormItem>
       )
@@ -113,7 +113,7 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
             {type && type === ClusterType.KUBERNETES_NATIVE && (
               <ProFormSelect
                 name={[
-                  'configJson',
+                  'config',
                   'kubernetesConfig',
                   'configuration',
                   'kubernetes.rest-service.exposed.type'
@@ -127,7 +127,7 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
             )}
             {type && type === ClusterType.KUBERNETES_OPERATOR && (
               <ProFormSelect
-                name={['configJson', 'flinkConfig', 'flinkVersion']}
+                name={['config', 'flinkConfig', 'flinkVersion']}
                 label={l('rc.cc.k8sOp.version')}
                 width={250}
                 placeholder={l('rc.cc.k8sOp.versionHelp')}
@@ -137,7 +137,7 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
             {renderK8sConfig()}
           </ProFormGroup>
           <ProFormList
-            name={['configJson', 'flinkConfig', 'flinkConfigList']}
+            name={['config', 'flinkConfig', 'flinkConfigList']}
             copyIconProps={false}
             deleteIconProps={{ tooltipText: l('rc.cc.deleteConfig') }}
             creatorButtonProps={{

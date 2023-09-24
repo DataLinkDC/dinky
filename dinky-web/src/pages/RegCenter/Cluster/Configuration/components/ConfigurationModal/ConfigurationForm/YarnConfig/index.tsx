@@ -39,7 +39,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
           <Divider>{l('rc.cc.hadoopConfig')}</Divider>
           <ProFormGroup>
             <ProFormText
-              name={['configJson', 'hadoopConfigPath']}
+              name={['config', 'hadoopConfigPath']}
               label={l('rc.cc.hadoopConfigPath')}
               width='md'
               rules={[
@@ -54,7 +54,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
           </ProFormGroup>
           <Divider>{l('rc.cc.hadoop.defineConfig')}</Divider>
           <ProFormList
-            name={['configJson', 'hadoopConfigList']}
+            name={['config', 'hadoopConfigList']}
             copyIconProps={false}
             deleteIconProps={{
               tooltipText: l('rc.cc.deleteConfig')
@@ -79,7 +79,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
           <Divider>{l('rc.cc.flinkConfig')}</Divider>
           <ProFormGroup>
             <ProFormText
-              name={['configJson', 'flinkLibPath']}
+              name={['config', 'flinkLibPath']}
               label={l('rc.cc.libPath')}
               width='md'
               rules={[{ required: true, message: l('rc.cc.libPathPlaceholder') }]}
@@ -88,7 +88,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
             />
 
             <ProFormText
-              name={['configJson', 'flinkConfigPath']}
+              name={['config', 'flinkConfigPath']}
               label={l('rc.cc.flinkConfigPath')}
               width='md'
               rules={[
@@ -104,7 +104,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
 
           <Divider>{l('rc.cc.flink.defineConfig')}</Divider>
           <ProFormList
-            name={['configJson', 'flinkConfigList']}
+            name={['config', 'flinkConfigList']}
             copyIconProps={false}
             deleteIconProps={{
               tooltipText: l('rc.cc.deleteConfig')

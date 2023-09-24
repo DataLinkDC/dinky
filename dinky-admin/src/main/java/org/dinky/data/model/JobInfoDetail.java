@@ -19,6 +19,7 @@
 
 package org.dinky.data.model;
 
+import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.dto.JobDataDto;
 
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class JobInfoDetail {
     private Cluster cluster;
 
     @ApiModelProperty(value = "Cluster Configuration", notes = "Details about the cluster configuration")
-    private ClusterConfiguration clusterConfiguration;
+    private ClusterConfigurationDTO clusterConfiguration;
 
     @ApiModelProperty(value = "History", notes = "Details about the history")
     private History history;
