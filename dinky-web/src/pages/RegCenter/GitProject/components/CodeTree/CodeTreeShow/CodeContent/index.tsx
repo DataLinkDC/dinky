@@ -21,6 +21,7 @@ import { renderLanguage, unSupportView } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { Empty } from 'antd';
 import React from 'react';
+import {EditorLanguage} from "monaco-editor/esm/metadata";
 
 /**
  * CodeContentProps
@@ -50,7 +51,7 @@ export const CodeContent: React.FC<CodeContentProps> = (props) => {
    * @returns {string}
    */
   const getLanguage = () => {
-    return renderLanguage(current.name, '.');
+    return renderLanguage(current.name, '.') as EditorLanguage;
   };
 
   /**

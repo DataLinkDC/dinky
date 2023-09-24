@@ -52,6 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.base.Strings;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -66,6 +67,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/scheduler")
 @Api(tags = "DolphinScheduler Controller")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class SchedulerController {
 
     public static final String TASK_TYPE = "DINKY";

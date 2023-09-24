@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.enums.BusinessType;
@@ -59,6 +60,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Cluster Config Controller")
 @RequestMapping("/api/clusterConfiguration")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class ClusterConfigurationController {
 
     private final ClusterConfigurationService clusterConfigurationService;

@@ -42,6 +42,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -54,6 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Alert Group Controller")
 @RequestMapping("/api/alertGroup")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class AlertGroupController {
 
     private final AlertGroupService alertGroupService;
@@ -67,6 +71,9 @@ public class AlertGroupController {
      * @throws Exception {@link Exception}
      */
     @PutMapping
+    @SaCheckPermission(
+            value = {"/registration/alert/group/add", "/registration/alert/group/edit"},
+            mode = SaMode.OR)
     @Log(title = "Insert OR Update AlertGroup ", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiImplicitParam(
             name = "alertGroup",
@@ -126,6 +133,7 @@ public class AlertGroupController {
             dataTypeClass = Integer.class,
             dataType = "Integer")
     @Log(title = "Update AlertGroup Status", businessType = BusinessType.UPDATE)
+    @SaCheckPermission(value = {"/registration/alert/group/edit"})
     public Result<Void> modifyAlertGroupStatus(@RequestParam("id") Integer id) {
         if (alertGroupService.modifyAlertGroupStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -149,6 +157,7 @@ public class AlertGroupController {
             dataTypeClass = Integer.class,
             dataType = "Integer")
     @Log(title = "Delete AlertGroup By Id", businessType = BusinessType.DELETE)
+    @SaCheckPermission(value = {"/registration/alert/group/delete"})
     public Result<Void> deleteGroupById(@RequestParam("id") Integer id) {
         if (alertGroupService.deleteGroupById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);

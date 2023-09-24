@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.lang.Dict;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -55,6 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Tenant Controller")
 @RequestMapping("/api/tenant")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class TenantController {
 
     private final TenantService tenantService;

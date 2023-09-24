@@ -37,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import io.swagger.annotations.Api;
@@ -55,6 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "System Config Controller")
 @RequestMapping("/api/sysConfig")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class SysConfigController {
 
     private final SysConfigService sysConfigService;
@@ -81,6 +84,7 @@ public class SysConfigController {
      */
     @GetMapping("/getAll")
     @ApiOperation("Query All System Config List")
+    @SaIgnore
     public Result<Map<String, List<Configuration<?>>>> getAll() {
         Map<String, List<Configuration<?>>> all = sysConfigService.getAll();
         Map<String, List<Configuration<?>>> map =

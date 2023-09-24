@@ -20,6 +20,7 @@ import { AssignBtn } from '@/components/CallBackButton/AssignBtn';
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import { Authorized } from '@/hooks/useAccess';
 import TenantForm from '@/pages/AuthCenter/Tenant/components/TenantModalForm';
 import TenantModalTransfer from '@/pages/AuthCenter/Tenant/components/TenantModalTransfer';
 import TenantUserList from '@/pages/AuthCenter/Tenant/components/TenantUserList';
@@ -48,7 +49,7 @@ const TenantProTable: React.FC = () => {
 
   const queryUserListByTenantId = async (id: number) => {
     queryDataByParams(API_CONSTANTS.TENANT_USERS, { id }).then((res) =>
-      setTenantState((prevState) => ({ ...prevState, tenantUserList: res }))
+      setTenantState((prevState) => ({ ...prevState, tenantUserList: res as UserBaseInfo.User[] }))
     );
   };
 
@@ -149,7 +150,16 @@ const TenantProTable: React.FC = () => {
     {
       title: l('tenant.TenantCode'),
       dataIndex: 'tenantCode',
-      render: (text, record) => <a onClick={() => handleShowUser(record)}> {text} </a>
+      render: (text, record) => {
+        // todo: 实现该链接的 权限控制该按钮是否处于禁用状态 , 如果有 查看用户列表 权限则该按钮可以正常点击, 否则不允许(此链接禁用/正文状态)
+        return (
+          <>
+            <Authorized key={`${record.id}_viewUser_auth`} path='/auth/tenant/viewUser'>
+              <a onClick={() => handleShowUser(record)}> {text} </a>
+            </Authorized>
+          </>
+        );
+      }
     },
     {
       title: l('global.table.note'),
@@ -173,21 +183,27 @@ const TenantProTable: React.FC = () => {
       valueType: 'option',
       width: '10vh',
       render: (_: any, record: UserBaseInfo.Tenant) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />,
-        <AssignBtn
-          key={`${record.id}_ass`}
-          onClick={() => handleAssignVisible(record)}
-          title={l('tenant.AssignUser')}
-        />,
-        <>
-          {record.id !== 1 && (
-            <PopconfirmDeleteBtn
-              key={`${record.id}_delete`}
-              onClick={() => handleDeleteSubmit(record.id)}
-              description={l('tenant.deleteConfirm')}
-            />
-          )}
-        </>
+        <Authorized key={`${record.id}_edit_auth`} path='/auth/tenant/edit'>
+          <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
+        </Authorized>,
+        <Authorized key={`${record.id}_ass_auth`} path='/auth/tenant/assignUser'>
+          <AssignBtn
+            key={`${record.id}_ass`}
+            onClick={() => handleAssignVisible(record)}
+            title={l('tenant.AssignUser')}
+          />
+        </Authorized>,
+        <Authorized key={`${record.id}_delete_auth`} path='/auth/tenant/delete'>
+          <>
+            {record.id !== 1 && (
+              <PopconfirmDeleteBtn
+                key={`${record.id}_delete`}
+                onClick={() => handleDeleteSubmit(record.id)}
+                description={l('tenant.deleteConfirm')}
+              />
+            )}
+          </>
+        </Authorized>
       ]
     }
   ];
@@ -204,10 +220,12 @@ const TenantProTable: React.FC = () => {
         headerTitle={l('tenant.TenantManager')}
         actionRef={actionRef}
         toolBarRender={() => [
-          <CreateBtn
-            key={'tenantTable'}
-            onClick={() => setTenantState((prevState) => ({ ...prevState, addedOpen: true }))}
-          />
+          <Authorized key={`CreateTenant_auth`} path='/auth/tenant/add'>
+            <CreateBtn
+              key={'tenantTable'}
+              onClick={() => setTenantState((prevState) => ({ ...prevState, addedOpen: true }))}
+            />
+          </Authorized>
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.TENANT, { ...params, sorter, filter })

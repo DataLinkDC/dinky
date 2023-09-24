@@ -1,5 +1,5 @@
-import { API } from '@/services/data';
-import { SysMenu } from '@/types/RegCenter/data';
+import { API } from '@/services/data.d';
+import { SysMenu } from '@/types/AuthCenter/data.d';
 import React, { createContext, ReactElement, useContext } from 'react';
 
 /***
@@ -73,7 +73,7 @@ export function AuthorizedObject({ path, denied = null, children = null, access 
 
   if (!blocks.length) return denied;
 
-  const authority = blocks.some((block) => block.path === path);
+  const authority = blocks.some((block: { path: string }) => block.path === path);
 
   return authority ? children : denied;
 }

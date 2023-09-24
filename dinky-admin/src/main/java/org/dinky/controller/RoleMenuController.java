@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -41,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Role Menu Controller")
 @RequestMapping("/api/roleMenu")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class RoleMenuController {
 
     private final RoleMenuService roleMenuService;

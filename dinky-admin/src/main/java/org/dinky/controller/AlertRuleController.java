@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
@@ -50,6 +51,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/alertRule")
 @Api(tags = "Alert Rule Controller")
+@SaCheckLogin
 public class AlertRuleController {
 
     private final AlertRuleService alertRuleService;

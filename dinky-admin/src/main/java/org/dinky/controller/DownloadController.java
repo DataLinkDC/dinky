@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
@@ -55,6 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Api(tags = "UDF & App Jar Controller")
 @RequestMapping("/download")
+@SaCheckLogin
 public class DownloadController {
 
     @GetMapping("downloadDepJar/{taskId}")

@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -46,6 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/history")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class HistoryController {
 
     private final HistoryService historyService;

@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -49,6 +50,7 @@ import lombok.RequiredArgsConstructor;
 @Api(tags = "Process Controller")
 @RequestMapping("/api/process")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class ProcessController {
 
     private final ProcessService processService;

@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.enums.BusinessType;
@@ -66,6 +67,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Monitor Controller")
 @RequestMapping("/api/monitor")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class MonitorController {
 
     private final MonitorService monitorService;

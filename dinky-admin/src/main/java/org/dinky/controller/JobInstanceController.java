@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotation.Log;
@@ -65,6 +66,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Job Instance Controller")
 @RequestMapping("/api/jobInstance")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class JobInstanceController {
 
     private final JobInstanceService jobInstanceService;

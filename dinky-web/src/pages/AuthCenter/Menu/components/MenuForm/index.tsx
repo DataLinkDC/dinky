@@ -115,9 +115,13 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
   const submitForm = async (formData: any) => {
     await form.validateFields();
     // 获取 parentId 的值
-    const parentId: number[] = formData.parentId;
-    const middleResult: SysMenu = { ...formData, parentId: parentId.pop() }; // 转换 parentId 的值
-    (await handleSubmit({ ...values, ...middleResult })) && handleCancel();
+    const parentId = formData.parentId;
+    const middleResult: SysMenu = {
+      ...formData,
+      parentId: parentId.length ? parentId.pop() : parentId
+    }; // 转换 parentId 的值
+    await handleSubmit({ ...values, ...middleResult });
+    handleCancel();
   };
 
   /**

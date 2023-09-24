@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import org.dinky.service.MonitorService;
 import org.dinky.sse.SseEmitterUTF8;
 import org.dinky.utils.TimeUtil;
@@ -41,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 @Api(tags = "SSE Controller")
 @RequestMapping("/api/sse")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class SseController {
     private final MonitorService monitorService;
 

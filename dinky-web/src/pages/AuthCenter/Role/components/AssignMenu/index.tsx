@@ -20,7 +20,7 @@
 import { buildMenuTree, sortTreeData } from '@/pages/AuthCenter/Menu/function';
 import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
-import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { SysMenu, UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { InitRoleAssignMenuState } from '@/types/AuthCenter/init.d';
 import { RoleAssignMenuState } from '@/types/AuthCenter/state.d';
 import { l } from '@/utils/intl';
@@ -44,13 +44,22 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
     useState<RoleAssignMenuState>(InitRoleAssignMenuState);
 
   useEffect(() => {
-    open &&
+    if (open) {
       queryDataByParams(
         API_CONSTANTS.ROLE_MENU_LIST,
         { id: values.id },
         () => setRoleAssignMenu((prevState) => ({ ...prevState, loading: true })),
         () => setRoleAssignMenu((prevState) => ({ ...prevState, loading: false }))
-      ).then((res) => setRoleAssignMenu((prevState) => ({ ...prevState, menuTreeData: res })));
+      ).then((res) =>
+        setRoleAssignMenu((prevState) => ({
+          ...prevState,
+          menuTreeData: res as {
+            menus: SysMenu[];
+            selectedMenuIds: number[];
+          }
+        }))
+      );
+    }
   }, [values, open]);
 
   /**
@@ -69,8 +78,8 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
    */
   const handleSubmit = async () => {
     setRoleAssignMenu((prevState) => ({ ...prevState, loading: true }));
-    onSubmit(roleAssignMenu.selectValue);
-    setRoleAssignMenu((prevState) => ({
+    await onSubmit(roleAssignMenu.selectValue);
+    await setRoleAssignMenu((prevState) => ({
       ...prevState,
       loading: false,
       menuTreeData: InitRoleAssignMenuState.menuTreeData

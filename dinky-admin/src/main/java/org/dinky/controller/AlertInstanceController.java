@@ -44,6 +44,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -56,6 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Alert Instance Controller")
 @RequestMapping("/api/alertInstance")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class AlertInstanceController {
 
     private final AlertInstanceService alertInstanceService;

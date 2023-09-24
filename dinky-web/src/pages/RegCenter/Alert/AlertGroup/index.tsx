@@ -139,7 +139,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const renderToolBar = () => {
     return () => [
-      <Authorized key='create' path='/registration/alert/group/new'>
+      <Authorized key='create' path='/registration/alert/group/add'>
         <Button
           key={'CreateAlertGroup'}
           type='primary'

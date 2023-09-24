@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaIgnore;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -54,6 +55,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "LDAP Controller")
 @RequestMapping("/api/ldap")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class LdapController {
 
     @Autowired

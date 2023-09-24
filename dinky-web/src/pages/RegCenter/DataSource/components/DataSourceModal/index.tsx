@@ -129,7 +129,7 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
   return (
     <>
       <ModalForm<DataSources.DataSource>
-        {...MODAL_FORM_OPTIONS}
+        width={'50%'}
         open={visible}
         modalProps={{ onCancel: handleCancel }}
         title={values.id ? l('rc.ds.modify') : l('rc.ds.create')}
