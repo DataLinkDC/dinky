@@ -93,6 +93,30 @@ declare namespace Jobs {
     metrics: VetricsMetrics;
   };
 
+  export type JobNodeInput = {
+    num: number;
+    id: string;
+    ship_strategy: string;
+    exchange: string;
+  };
+
+  export type JobNode = {
+    id: string;
+    parallelism: number;
+    operator: string;
+    operator_strategy: string;
+    description: string;
+    inputs: JobNodeInput[];
+    optimizer_properties: any;
+  };
+
+  export type JobPlan = {
+    jid: string;
+    name: string;
+    type: string;
+    nodes: JobNode[];
+  };
+
   export type Job = {
     jid: string;
     name: string;
@@ -106,8 +130,9 @@ declare namespace Jobs {
     timestamps: any;
     vertices: JobVertices[];
     'status-counts': any;
-    plan: any;
+    plan: JobPlan;
   };
+
   export type JobDataDtoItem = {
     id: number;
     job: Job;

@@ -85,8 +85,8 @@ const StatusTag = (props: StatusTagProps) => {
       default:
         return {
           icon: <CloseCircleOutlined />,
-          color: 'error',
-          text: 'FAILED'
+          color: 'default',
+          text: 'UNKNOWN Status'
         };
     }
   };

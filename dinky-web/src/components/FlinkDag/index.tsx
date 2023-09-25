@@ -17,9 +17,10 @@
  *
  */
 
-import DagNode from '@/components/FlinkDag/component/DagNode';
+import DagDataNode from '@/components/FlinkDag/component/DagDataNode';
+import DagPlanNode from '@/components/FlinkDag/component/DagPlanNode';
 import { edgeConfig, graphConfig, layoutConfig, portConfig } from '@/components/FlinkDag/config';
-import { buildData, regConnect, updateEdge } from '@/components/FlinkDag/functions';
+import { buildDag, regConnect, updateDag } from '@/components/FlinkDag/functions';
 import { Jobs } from '@/types/DevOps/data';
 import { DagreLayout } from '@antv/layout';
 import { Edge, Graph } from '@antv/x6';
@@ -27,9 +28,16 @@ import { register } from '@antv/x6-react-shape';
 import { useEffect, useRef, useState } from 'react';
 import './index.css';
 
-const FlinkDag = (props: { jobDetail: Jobs.JobInfoDetail }) => {
+export type DagProps = {
+  job: Jobs.Job;
+  onlyPlan?: boolean;
+};
+
+const FlinkDag = (props: DagProps) => {
   const container = useRef(null);
-  const job = props.jobDetail.jobDataDto.job;
+
+  const { job, onlyPlan = false } = props;
+
   const [graph, setGraph] = useState<Graph>();
   const [curentJob, setCurentJob] = useState<string>();
 
@@ -38,7 +46,7 @@ const FlinkDag = (props: { jobDetail: Jobs.JobInfoDetail }) => {
       shape: 'data-processing-dag-node',
       width: 212,
       height: 48,
-      component: DagNode,
+      component: onlyPlan ? DagPlanNode : DagDataNode,
       ports: portConfig
     });
 
@@ -67,11 +75,12 @@ const FlinkDag = (props: { jobDetail: Jobs.JobInfoDetail }) => {
     };
     graph.zoomToFit(zoomOptions);
     graph.centerContent();
+    updateDag(job.vertices, graph);
     return graph;
   };
 
   useEffect(() => {
-    const flinkData = buildData(job);
+    const flinkData = buildDag(job.plan);
     // Clean up old data
     if (graph) {
       graph.clearCells();
@@ -80,7 +89,7 @@ const FlinkDag = (props: { jobDetail: Jobs.JobInfoDetail }) => {
   }, [curentJob]);
 
   useEffect(() => {
-    updateEdge(job, graph);
+    updateDag(job.vertices, graph);
     if (curentJob != job.jid) {
       setCurentJob(job.jid);
     }

@@ -1,85 +1,27 @@
-import { FlowAnalysisGraph } from '@ant-design/charts';
-import { FlowAnalysisGraphConfig } from '@ant-design/graphs/es/components/flow-analysis-graph';
+import FlinkDag from '@/components/FlinkDag';
+import { Jobs } from '@/types/DevOps/data';
 import { Empty } from 'antd';
 import { StateType } from 'rmc-input-number';
 import { connect } from 'umi';
 
-const FlinkGraph = (props: any) => {
+const FlinkGraph = (props: { data: Jobs.JobPlan }) => {
   const { data } = props;
 
-  const config: FlowAnalysisGraphConfig = {
-    data,
-    height: 350,
-    nodeCfg: {
-      size: [160, 65],
-      items: {
-        autoEllipsis: false,
-        padding: [10],
-        containerStyle: {
-          fill: '#fff',
-          width: '100px'
-        },
-        style: (cfg, group, type) => {
-          const styles = {
-            value: {
-              fill: '#000'
-            },
-            text: {
-              fill: '#222',
-              width: '100px'
-            }
-          };
-          return styles[type];
-        }
-      },
-      nodeStateStyles: {
-        hover: {
-          stroke: '#1890ff',
-          lineWidth: 2
-        }
-      },
-      style: {
-        fill: '#40a9ff',
-        stroke: '#1890ff'
-      }
-    },
-    edgeCfg: {
-      type: 'polyline',
-      label: {
-        style: {
-          fill: '#666',
-          fontSize: 12,
-          fillOpacity: 1
-        }
-      },
-      endArrow: {
-        fill: '#333'
-      },
-      edgeStateStyles: {
-        hover: {
-          stroke: '#1890ff',
-          lineWidth: 2
-        }
-      }
-    },
-    markerCfg: (cfg) => {
-      const { edges } = data;
-      return {
-        position: 'right',
-        show: edges.find((item) => item.source === cfg.id),
-        collapsed: !edges.find((item) => item.source === cfg.id)
-      };
-    },
-    behaviors: ['drag-canvas', 'zoom-canvas', 'drag-node']
-    /*layout: {
-      rankdir: 'TB',
-      ranksepFunc: () => 20,
-    },*/
-  };
+  const job = {
+    plan: data
+  } as Jobs.Job;
 
   return (
-    <>{data ? <FlowAnalysisGraph {...config} /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}</>
+    <>
+      {data ? (
+        <div style={{ width: '50wh', height: '50vh' }}>
+          <FlinkDag job={job} onlyPlan={true} />
+        </div>
+      ) : (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      )}
+    </>
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({}))(FlinkGraph);
+export default connect(({}: { Studio: StateType }) => ({}))(FlinkGraph);
