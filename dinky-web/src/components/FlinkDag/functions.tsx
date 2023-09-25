@@ -96,7 +96,6 @@ export const updateEdge = (job: Jobs.Job, graph?: Graph) => {
     graph.getCells().forEach((node) => {
       const data = node.getData();
       if (nodes[data.id]) {
-        console.log(nodes[data.id]);
         node.setData(nodes[data.id].data);
       }
     });
