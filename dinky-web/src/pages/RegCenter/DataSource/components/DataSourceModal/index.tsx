@@ -17,7 +17,6 @@
 
 import { FormContextValue } from '@/components/Context/FormContext';
 import DataSourceProForm from '@/pages/RegCenter/DataSource/components/DataSourceModal/DataSourceProForm';
-import { MODAL_FORM_OPTIONS } from '@/services/constants';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { ModalForm } from '@ant-design/pro-components';

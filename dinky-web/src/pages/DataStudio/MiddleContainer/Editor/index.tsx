@@ -2,9 +2,9 @@ import { getCurrentData } from '@/pages/DataStudio/function';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import { connect } from '@@/exports';
 import { Editor } from '@monaco-editor/react';
+import { never } from '@umijs/utils/compiled/zod';
 import { editor } from 'monaco-editor';
 import React from 'react';
-import {never} from "@umijs/utils/compiled/zod";
 
 export type EditorProps = {
   statement: string;
@@ -69,7 +69,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
             return;
           }
 
-            typeof v === "string" ? current.statement = v :never;
+          typeof v === 'string' ? (current.statement = v) : never;
           dispatch({
             type: STUDIO_MODEL.saveTabs,
             payload: { ...props.tabs }

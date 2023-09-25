@@ -267,8 +267,8 @@ const MiddleContainer = (props: any) => {
   const renderMiddleContent = () => {
     if (tabItems?.length === 0) {
       return (
-          // 这里必需设置高度，否则会导致下册内容无法正常拉动
-        <div style={{height:0}}>
+        // 这里必需设置高度，否则会导致下册内容无法正常拉动
+        <div style={{ height: 0 }}>
           <KeyBoard />
           <Divider />
           <br />

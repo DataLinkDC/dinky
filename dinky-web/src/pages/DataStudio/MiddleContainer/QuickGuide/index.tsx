@@ -21,7 +21,7 @@ import { QUICK_GUIDE } from '@/pages/DataStudio/MiddleContainer/QuickGuide/const
 import { l } from '@/utils/intl';
 import { Link } from '@umijs/max';
 import { Divider, Typography } from 'antd';
-import {Fragment} from "react";
+import { Fragment } from 'react';
 
 const { Title, Paragraph } = Typography;
 
