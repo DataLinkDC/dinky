@@ -185,6 +185,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
         <ProFormText
           name='perms'
           label={l('menu.perms')}
+          disabled
           placeholder={l('menu.permsPlaceholder')}
         />
 

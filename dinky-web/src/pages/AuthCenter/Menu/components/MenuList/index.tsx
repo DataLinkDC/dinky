@@ -335,7 +335,7 @@ const MenuList: React.FC = () => {
           title={l('menu.management')}
           ghost
           hoverable
-          colSpan={'30%'}
+          colSpan={'40%'}
           className={'siderTree schemaTree'}
         >
           <MenuTree

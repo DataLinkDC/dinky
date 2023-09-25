@@ -72,7 +72,7 @@ public class MenuController {
             required = true,
             dataTypeClass = Menu.class)
     public Result<Void> saveOrUpdateMenu(@RequestBody Menu menu) {
-        if (menuService.saveOrUpdate(menu)) {
+        if (menuService.saveOrUpdateMenu(menu)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);

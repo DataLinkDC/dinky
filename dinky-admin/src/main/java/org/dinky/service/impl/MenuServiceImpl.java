@@ -52,6 +52,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implements MenuService {
@@ -283,6 +284,23 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
             }
         }
         return permsSet;
+    }
+
+    /**
+     * save or update menu
+     *
+     * @param menu
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean saveOrUpdateMenu(Menu menu) {
+        if (StrUtil.isNotEmpty(menu.getPath())) {
+            // replace first / and replace other / to : for router
+            String replacedPerms = menu.getPath().replaceFirst("/", "").replaceAll("/", ":");
+            menu.setPerms(replacedPerms);
+        }
+        return this.saveOrUpdate(menu);
     }
 
     /**
