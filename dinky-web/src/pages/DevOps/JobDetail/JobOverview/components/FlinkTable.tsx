@@ -1,4 +1,4 @@
-import { TagJobStatus } from '@/pages/DevOps/function';
+import StatusTag from '@/components/JobTags/StatusTag';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { parseByteStr, parseMilliSecondStr, parseNumStr } from '@/utils/function';
 import { l } from '@/utils/intl';
@@ -42,7 +42,7 @@ const FlinkTable = (props: JobProps): JSX.Element => {
       dataIndex: 'status',
       sorter: true,
       render: (dom, entity) => {
-        return <>{TagJobStatus(entity.status)}</>;
+        return <StatusTag status={entity.status} />;
       }
     },
     {

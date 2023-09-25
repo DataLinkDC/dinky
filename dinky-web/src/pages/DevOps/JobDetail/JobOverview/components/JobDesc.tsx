@@ -1,4 +1,4 @@
-import { TagJobStatus } from '@/pages/DevOps/function';
+import StatusTag from '@/components/JobTags/StatusTag';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { parseSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
@@ -58,7 +58,7 @@ const JobDesc = (props: JobProps) => {
       <ProCard>
         <Descriptions title={l('devops.jobinfo.config.JobBaseInfo')} bordered size='small'>
           <Descriptions.Item label={l('global.table.status')}>
-            {TagJobStatus(jobDetail?.instance?.status)}
+            <StatusTag status={jobDetail?.instance?.status} />
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.submitType')}>

@@ -17,94 +17,69 @@
  *
  */
 
+import { JOB_STATUS } from '@/pages/DevOps/constants';
 import { Jobs } from '@/types/DevOps/data';
 import { Graph, Path } from '@antv/x6';
 
-export const buildEdge = (job: Jobs.Job) => {
+export const buildDag = (job: Jobs.JobPlan) => {
   const edges: any = [];
+  const nodes: any = [];
 
-  for (let node of job.plan.nodes) {
-    if (node.inputs) {
-      const sources = node.inputs;
-      for (let i = 0; i < sources.length; i++) {
-        const plan_node = sources[i];
-        edges.push({
-          attrs: {
-            line: {
-              strokeDasharray: '5',
-              stroke: '#3471F9',
-              style: {
-                animation: 'running-line 30s infinite linear'
-              }
-            },
-            label: {
-              text: plan_node.ship_strategy
-            }
-          },
-          label: plan_node.ship_strategy,
-          id: `${plan_node.id}-${i}`,
-          shape: 'data-processing-curve',
-          zIndex: -1,
-          source: {
-            cell: `${plan_node.id}`,
-            port: `${plan_node.id}-out`
-          },
-          target: {
-            cell: `${node.id}`,
-            port: `${node.id}-in`
-          },
-          data: node
-        });
-      }
-    }
-  }
-  return edges;
-};
+  if (!job) return { nodes: nodes, edges: edges };
 
-export const buildNode = (job: Jobs.Job) => {
-  const nodes: any = {};
-
-  for (let vertice of job.vertices) {
-    nodes[vertice.id] = {
-      id: vertice.id,
+  job.nodes.forEach((node) => {
+    nodes.push({
+      id: node.id,
       shape: 'data-processing-dag-node',
       ports: [
         {
-          id: `${vertice.id}-in`,
+          id: `${node.id}-in`,
           group: 'in'
         },
         {
-          id: `${vertice.id}-out`,
+          id: `${node.id}-out`,
           group: 'out'
         }
       ],
-      data: vertice
-    };
-  }
-  return nodes;
+      data: node
+    });
+
+    node.inputs?.forEach((plan_node) => {
+      edges.push({
+        label: plan_node.ship_strategy,
+        id: `${node.id}-${plan_node.num}`,
+        shape: 'data-processing-curve',
+        zIndex: -1,
+        source: {
+          cell: `${plan_node.id}`,
+          port: `${plan_node.id}-out`
+        },
+        target: {
+          cell: `${node.id}`,
+          port: `${node.id}-in`
+        },
+        data: node
+      });
+    });
+  });
+
+  return { nodes: nodes, edges: edges };
 };
 
-export const buildData = (job: Jobs.Job) => {
-  const nodes = Object.values(buildNode(job));
-  return { nodes: nodes, edges: buildEdge(job) };
-};
+export const updateDag = (job: Jobs.JobVertices[], graph?: Graph) => {
+  if (!job || !graph) return;
 
-export const updateEdge = (job: Jobs.Job, graph?: Graph) => {
-  if (graph) {
-    const nodes = buildNode(job);
-
-    graph.getCells().forEach((node) => {
-      const data = node.getData();
-      if (nodes[data.id]) {
-        console.log(nodes[data.id]);
-        node.setData(nodes[data.id].data);
+  if (job && graph) {
+    job.forEach((vertice) => {
+      const node = graph.getCellById(vertice.id);
+      if (node) {
+        node.setData({ ...node.getData(), ...vertice });
       }
     });
 
     graph.getEdges().forEach((edge) => {
-      const node = edge.getSourceNode()?.getData();
-
-      if (node.status == 'RUNNING') {
+      const nodeData = edge.getSourceNode()?.getData();
+      if (nodeData.status == JOB_STATUS.RUNNING) {
         edge.attr({ line: { stroke: '#3471F9' } });
         edge.attr('line/strokeDasharray', 5);
         edge.attr('line/strokeWidth', 2);
@@ -113,11 +88,11 @@ export const updateEdge = (job: Jobs.Job, graph?: Graph) => {
         edge.attr('line/strokeDasharray', 0);
         edge.attr('line/style/animation', '');
         edge.attr('line/strokeWidth', 1);
-        if (node.status == 'FINISHED') {
+        if (nodeData.status == JOB_STATUS.FINISHED) {
           edge.attr('line/stroke', '#52c41a');
-        } else if (node.status == 'CANCELED') {
+        } else if (nodeData.status == JOB_STATUS.CANCELED) {
           edge.attr('line/stroke', '#ffe7ba');
-        } else if (node.status == 'FAILED') {
+        } else if (nodeData.status == JOB_STATUS.FAILED) {
           edge.attr('line/stroke', '#ff4d4f');
         } else {
           edge.attr('line/stroke', '#bfbfbf');

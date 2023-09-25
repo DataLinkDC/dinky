@@ -17,8 +17,7 @@
  *
  */
 
-import Lineage from '@/components/FlinkDag';
-import { TagJobLifeCycle } from '@/pages/DevOps/function';
+import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
 import CheckPoints from '@/pages/DevOps/JobDetail/CheckPointsTab';
 import JobLogsTab from '@/pages/DevOps/JobDetail/JobLogs/JobLogsTab';
 import JobMetrics from '@/pages/DevOps/JobDetail/JobMetrics';
@@ -72,14 +71,14 @@ const JobDetail = (props: any) => {
     [OperatorEnum.JOB_VERSION]: <JobVersionTab jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_CHECKPOINTS]: <CheckPoints jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_METRICS]: <JobMetrics />,
-    [OperatorEnum.JOB_LINEAGE]: <Lineage jobDetail={jobInfoDetail} />,
+    // [OperatorEnum.JOB_LINEAGE]: <Lineage jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_ALERT]: <CheckPoints jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_GRAPH]: <JobOperatorGraph jobDetail={jobInfoDetail} />
   };
 
   useRequest(
     {
-      url: API_CONSTANTS.GET_JOB_DETAIL,
+      url: API_CONSTANTS.REFESH_JOB_DETAIL,
       params: { id: id }
     },
     {
@@ -127,7 +126,7 @@ const JobDetail = (props: any) => {
   return (
     <PageContainer
       title={jobInfoDetail?.instance?.name}
-      subTitle={TagJobLifeCycle(jobInfoDetail?.instance?.step)}
+      subTitle={<JobLifeCycleTag status={jobInfoDetail?.instance?.step} />}
       ghost={false}
       extra={<JobOperator jobDetail={jobInfoDetail} />}
       onBack={() => window.history.back()}

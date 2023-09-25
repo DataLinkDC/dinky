@@ -35,7 +35,7 @@ const JobConfigTab = (props: JobProps) => {
           height: '40vh'
         }}
       >
-        <FlinkDag jobDetail={jobDetail} />
+        <FlinkDag job={jobDetail?.jobDataDto?.job} />
       </ProCard>
 
       <FlinkTable jobDetail={jobDetail} />

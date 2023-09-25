@@ -18,25 +18,30 @@
  */
 
 import StatusTag from '@/components/JobTags/StatusTag';
-import { Jobs } from '@/types/DevOps/data';
 import { Card, Col, Row, Tag, Typography } from 'antd';
 
-const { Text } = Typography;
+const { Text, Paragraph } = Typography;
 
-const DagNode = (props: any) => {
+const DagDataNode = (props: any) => {
   const { node } = props;
-  const vertices: Jobs.JobVertices = node?.getData();
+  const data: any = node?.getData();
 
   return (
     <Card
-      style={{ width: '250px' }}
+      style={{ width: '250px', padding: 0 }}
       bordered={false}
       size={'small'}
       type={'inner'}
       hoverable={true}
-      title={vertices.name}
-      extra={<Text keyboard>{vertices.parallelism}</Text>}
+      title={data.name}
+      extra={<Text keyboard>{data.parallelism}</Text>}
     >
+      <Paragraph ellipsis={{ tooltip: data.description }}>
+        <blockquote style={{ margin: 0 }}>
+          <Text type='secondary'>{data.description}</Text>
+        </blockquote>
+      </Paragraph>
+
       <Row>
         <Col span={15}>
           <Text type='secondary'>BackPressure：</Text>
@@ -51,7 +56,7 @@ const DagNode = (props: any) => {
       <Row>
         <Col span={15}>
           <Text type='secondary'>Status：</Text>
-          <StatusTag status={vertices.status} bordered={false} animation={false} />
+          <StatusTag status={data.status} bordered={false} animation={false} />
         </Col>
         <Col span={8}>
           <Text type='secondary'>Idle：50%</Text>
@@ -60,4 +65,4 @@ const DagNode = (props: any) => {
     </Card>
   );
 };
-export default DagNode;
+export default DagDataNode;
