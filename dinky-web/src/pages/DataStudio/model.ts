@@ -16,7 +16,7 @@ import ICodeEditor = editor.ICodeEditor;
  */
 export const VIEW = {
   headerHeight: 32,
-  headerNavHeight: 55,
+  headerNavHeight: 56,
   footerHeight: 25,
   sideWidth: 40,
   leftToolWidth: 180,
@@ -26,7 +26,7 @@ export const VIEW = {
   rightMargin: 32,
   leftMargin: 36,
   midMargin: 44,
-  otherHeight: 1,
+  otherHeight: 0,
   paddingInline: 50
 };
 

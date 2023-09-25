@@ -4,11 +4,11 @@ import { connect } from '@@/exports';
 import { Editor } from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 import React from 'react';
+import {never} from "@umijs/utils/compiled/zod";
 
 export type EditorProps = {
   statement: string;
 };
-const { ScrollType } = editor;
 
 const CodeEditor: React.FC<EditorProps & any> = (props) => {
   const {
@@ -64,12 +64,12 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
             });
           });
         }}
-        onChange={(v, d) => {
+        onChange={(v) => {
           if (!current) {
             return;
           }
 
-          current.statement = v;
+            typeof v === "string" ? current.statement = v :never;
           dispatch({
             type: STUDIO_MODEL.saveTabs,
             payload: { ...props.tabs }

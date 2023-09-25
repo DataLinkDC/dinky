@@ -20,6 +20,7 @@ export type MovableSidebarProps = {
   handlerMaxsize?: () => void;
   btnGroup?: React.ReactNode[];
   onResize?: ResizeCallback;
+  onResizeStop?: ResizeCallback;
   style?: React.CSSProperties;
   tagList?: TabPaneProps[];
 };
@@ -32,6 +33,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
     style,
     visible,
     onResize,
+    onResizeStop,
     defaultSize,
     minWidth,
     maxWidth,
@@ -57,6 +59,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
           borderRadius: 5
         }}
         onResize={onResize}
+        onResizeStop={onResizeStop}
         defaultSize={defaultSize}
         minWidth={minWidth}
         maxWidth={maxWidth}
@@ -64,27 +67,6 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
         maxHeight={maxHeight}
         enable={enable}
       >
-        {/*<PageContainer*/}
-        {/*    title={title}*/}
-        {/*    tabProps={{*/}
-        {/*        type: "editable-card",*/}
-        {/*        hideAdd: true,*/}
-        {/*        size: "small",*/}
-        {/*        animated: true,*/}
-        {/*        tabBarStyle: {margin: 0, padding: 0},*/}
-        {/*    }}*/}
-        {/*    tabList={tagList}*/}
-        {/*    extra={[*/}
-        {/*      <Button title={l('global.mini')} key={"minimize"} icon={<MinusOutlined/>} block type={"text"} shape={"circle"}*/}
-        {/*              onClick={props.handlerMinimize}/>*/}
-        {/*        // <MinusSquareOutlined size={15}  title={l('global.mini')} key={"minimize"} onClick={handlerMinimize}/>,*/}
-        {/*        // <MinusOutlined size={35}  title={l('global.mini')} key={"minimize"} onClick={handlerMinimize}/>,*/}
-        {/*        // <PlusSquareOutlined size={15} title={l('global.max')} key={"maximize"} onClick={handlerMaxsize}/>*/}
-        {/*    ]}*/}
-        {/*    fixedHeader*/}
-        {/*>*/}
-        {/*    <div style={{height: contentHeight,marginBlock:-5,marginInline:-10}}>{children}</div>*/}
-        {/*</PageContainer>*/}
         <>
           <div
             style={{
@@ -95,7 +77,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
           >
             <div>{title}</div>
             <div className={showBtn ? 'show' : 'hide'}>
-              <Space size={5}>
+              <Space size={1}>
                 {props.btnGroup}
                 <CircleBtn onClick={props.handlerMinimize} icon={<MinusOutlined />} />
               </Space>
