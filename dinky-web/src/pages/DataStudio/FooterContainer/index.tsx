@@ -144,7 +144,11 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
           height: VIEW.footerHeight,
           width: '100%',
           display: 'flex',
-          paddingInline: 10
+          paddingInline: 10,
+          position: 'fixed',
+          bottom: 0,
+          right: 0,
+          left: 0,
         }}
       >
         <Space style={{ direction: 'ltr', width: '30%%' }}>

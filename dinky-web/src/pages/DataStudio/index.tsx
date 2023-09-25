@@ -91,8 +91,8 @@ const DataStudio = (props: any) => {
     height: document.documentElement.clientHeight,
     contentHeight:
       document.documentElement.clientHeight -
+        VIEW.headerNavHeight -
       VIEW.headerHeight -
-      VIEW.headerNavHeight -
       VIEW.footerHeight -
       VIEW.otherHeight
   });
@@ -103,7 +103,7 @@ const DataStudio = (props: any) => {
     setSize(getClientSize());
     const centerContentHeight = getClientSize().contentHeight - bottomHeight;
     updateCenterContentHeight(centerContentHeight);
-    updateToolContentHeight(centerContentHeight - VIEW.midMargin);
+    updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
   };
 
   useEffect(() => {
