@@ -20,7 +20,6 @@ import { FlexCenterDiv } from '@/components/StyledComponents';
 import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
-import { buildGraphData } from '@/pages/DataStudio/HeaderContainer/FlinkGraph/function';
 import {
   buildBreadcrumbItems,
   projectCommonShow
@@ -245,7 +244,7 @@ const HeaderContainer = (props: any) => {
               title: l('pages.datastudio.editor.explan.tip'),
               width: '100%',
               icon: null,
-              content: <FlinkGraph data={buildGraphData(result.datas)} />,
+              content: <FlinkGraph data={result.datas} />,
               cancelButtonProps: { style: { display: 'none' } }
             });
           }

@@ -71,6 +71,17 @@ declare namespace Jobs {
     clusterName: string;
   };
 
+  export type VetricsMetrics = {
+    'read-bytes': number;
+    'read-bytes-complete': boolean;
+    'write-bytes': number;
+    'write-bytes-complete': boolean;
+    'read-records': number;
+    'read-records-complete': boolean;
+    'write-records': number;
+    'write-records-complete': boolean;
+  };
+
   export type JobVertices = {
     id: string;
     name: string;
@@ -79,7 +90,31 @@ declare namespace Jobs {
     status: string;
     duration: number;
     tasks: any;
-    metrics: any;
+    metrics: VetricsMetrics;
+  };
+
+  export type JobNodeInput = {
+    num: number;
+    id: string;
+    ship_strategy: string;
+    exchange: string;
+  };
+
+  export type JobNode = {
+    id: string;
+    parallelism: number;
+    operator: string;
+    operator_strategy: string;
+    description: string;
+    inputs: JobNodeInput[];
+    optimizer_properties: any;
+  };
+
+  export type JobPlan = {
+    jid: string;
+    name: string;
+    type: string;
+    nodes: JobNode[];
   };
 
   export type Job = {
@@ -94,9 +129,10 @@ declare namespace Jobs {
     now: number;
     timestamps: any;
     vertices: JobVertices[];
-    'status-counts': {};
-    plan: {};
+    'status-counts': any;
+    plan: JobPlan;
   };
+
   export type JobDataDtoItem = {
     id: number;
     job: Job;

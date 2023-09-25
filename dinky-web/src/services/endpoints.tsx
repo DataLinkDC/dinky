@@ -216,6 +216,7 @@ export enum API_CONSTANTS {
   GET_JOB_LIST = '/api/jobInstance',
   GET_JOB_BY_ID = '/api/jobInstance/getOneById',
   GET_JOB_DETAIL = '/api/jobInstance/getJobInfoDetail',
+  REFESH_JOB_DETAIL = '/api/jobInstance/refreshJobInfoDetail',
   GET_JOB_VERSION = '/api/task/version',
   GET_JOBMANAGER_LOG = 'api/jobInstance/getJobManagerLog',
   GET_JOBMANAGER_STDOUT = 'api/jobInstance/getJobManagerStdOut',

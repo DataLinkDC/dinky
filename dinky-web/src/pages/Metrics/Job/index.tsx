@@ -85,7 +85,7 @@ const Job = () => {
    * @returns {Promise<any>}
    */
   const getFlinkTaskDetail = async (id: number) => {
-    return await getData(API_CONSTANTS.GET_JOB_DETAIL, { id: id });
+    return await getData(API_CONSTANTS.REFESH_JOB_DETAIL, { id: id });
   };
 
   /**
