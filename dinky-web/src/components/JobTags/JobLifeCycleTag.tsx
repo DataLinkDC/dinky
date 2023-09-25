@@ -17,76 +17,51 @@
  */
 
 import { StatusTagProps } from '@/components/JobTags/data';
-import { JOB_STATUS } from '@/pages/DevOps/constants';
+import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
+import { l } from '@/utils/intl';
 import {
-  CheckCircleOutlined,
-  ClockCircleOutlined,
+  CameraOutlined,
+  CarryOutOutlined,
   CloseCircleOutlined,
-  MinusCircleOutlined,
-  QuestionCircleOutlined,
-  SyncOutlined
+  EditOutlined
 } from '@ant-design/icons';
 import { Tag } from 'antd';
 
 /**
- * Renders a tag for the job status based on the provided status.
+ * Renders a tag for the job life cycle based on the provided step.
  *
- * @returns {JSX.Element} - The tag representing the job status.
+ * @returns {JSX.Element} - The tag representing the job life cycle.
  * @param props
  */
-const StatusTag = (props: StatusTagProps) => {
+const JobLifeCycleTag = (props: StatusTagProps) => {
   const { status, animation = true, bordered = true } = props;
 
   const buildParam = () => {
     switch (status) {
-      case JOB_STATUS.RUNNING:
+      case JOB_LIFE_CYCLE.DEVELOP:
         return {
-          icon: <SyncOutlined spin />,
-          color: 'success',
-          text: 'RUNNING'
+          icon: <EditOutlined />,
+          color: 'default',
+          text: l('global.table.lifecycle.dev')
         };
-      case JOB_STATUS.FINISHED:
+      case JOB_LIFE_CYCLE.RELEASE:
         return {
-          icon: <CheckCircleOutlined />,
-          color: 'blue',
-          text: 'FINISHED'
+          icon: <CameraOutlined />,
+          color: 'green',
+          text: l('global.table.lifecycle.publish')
         };
 
-      case JOB_STATUS.CANCELED:
+      case JOB_LIFE_CYCLE.ONLINE:
         return {
-          icon: <MinusCircleOutlined />,
-          color: 'orange',
-          text: 'CANCELED'
-        };
-      case JOB_STATUS.INITIALIZING:
-        return {
-          icon: <ClockCircleOutlined />,
-          color: 'default',
-          text: 'INITIALIZING'
-        };
-      case JOB_STATUS.RESTARTING:
-        return {
-          icon: <ClockCircleOutlined />,
-          color: 'default',
-          text: 'RESTARTING'
-        };
-      case JOB_STATUS.CREATED:
-        return {
-          icon: <ClockCircleOutlined />,
-          color: 'default',
-          text: 'CREATED'
-        };
-      case JOB_STATUS.UNKNOWN:
-        return {
-          icon: <QuestionCircleOutlined />,
-          color: 'default',
-          text: 'UNKNOWN'
+          icon: <CarryOutOutlined />,
+          color: 'blue',
+          text: l('global.table.lifecycle.online')
         };
       default:
         return {
           icon: <CloseCircleOutlined />,
-          color: 'error',
-          text: 'FAILED'
+          color: 'default',
+          text: status
         };
     }
   };
@@ -99,4 +74,4 @@ const StatusTag = (props: StatusTagProps) => {
   );
 };
 
-export default StatusTag;
+export default JobLifeCycleTag;

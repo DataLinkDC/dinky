@@ -1,9 +1,6 @@
-import {
-  JOB_STATUS_FILTER,
-  LIFECYCLE_FILTER,
-  TagJobLifeCycle,
-  TagJobStatus
-} from '@/pages/DevOps/function';
+import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
+import StatusTag from '@/components/JobTags/StatusTag';
+import { JOB_STATUS_FILTER, LIFECYCLE_FILTER } from '@/pages/DevOps/function';
 import JobHistoryList from '@/pages/DevOps/JobList/components/JobHistoryList';
 import { queryList } from '@/services/api';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
@@ -36,7 +33,7 @@ const JobList = () => {
       hideInSearch: true,
       filterMultiple: false,
       dataIndex: 'step',
-      render: (_: any, row: { step: number }) => TagJobLifeCycle(row.step)
+      render: (_: any, row: { step: number }) => <JobLifeCycleTag status={row.step} />
     },
     {
       title: l('global.table.runmode'),
@@ -64,7 +61,7 @@ const JobList = () => {
       filterMultiple: false,
       hideInSearch: true,
       dataIndex: 'status',
-      render: (_: any, row: Jobs.JobInstance) => TagJobStatus(row.status)
+      render: (_: any, row: Jobs.JobInstance) => <StatusTag status={row.status} />
     },
     Table.EXPAND_COLUMN,
     {
