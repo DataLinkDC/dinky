@@ -19,6 +19,17 @@
 
 package org.dinky.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpRequest;
@@ -28,15 +39,6 @@ import cn.hutool.http.Method;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 
 @Controller
 @Api(tags = "Flink Proxy Controller", hidden = true, description = "Flink Proxy API")
@@ -47,7 +49,7 @@ public class FlinkProxyController {
 
     @RequestMapping("/**")
     @ApiOperation("Flink Proxy API")
-    public void proxyUba(HttpServletRequest request, HttpServletResponse resp) throws IOException, URISyntaxException {
+    public void proxyUba(HttpServletRequest request, HttpServletResponse resp) throws URISyntaxException {
         // String url = URLDecoder.decode(request.getRequestURL().toString(), "UTF-8");
         URI uri = new URI(request.getRequestURI());
         String path = uri.getPath();
