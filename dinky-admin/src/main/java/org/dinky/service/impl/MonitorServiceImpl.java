@@ -34,7 +34,6 @@ import org.apache.paimon.data.Timestamp;
 import org.apache.paimon.predicate.Predicate;
 import org.apache.paimon.predicate.PredicateBuilder;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -106,8 +105,6 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
                     sseEmitter.send(JSONUtil.toJsonStr(Jvm.of()));
                     ThreadUtil.sleep(10000);
                 }
-            } catch (IOException e) {
-                sseEmitter.complete();
             } catch (Exception e) {
                 e.printStackTrace();
                 sseEmitter.complete();
