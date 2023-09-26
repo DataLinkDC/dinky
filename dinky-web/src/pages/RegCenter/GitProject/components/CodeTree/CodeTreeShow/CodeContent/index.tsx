@@ -20,8 +20,8 @@ import { GitProjectTreeNode } from '@/types/RegCenter/data';
 import { renderLanguage, unSupportView } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { Empty } from 'antd';
+import { EditorLanguage } from 'monaco-editor/esm/metadata';
 import React from 'react';
-import {EditorLanguage} from "monaco-editor/esm/metadata";
 
 /**
  * CodeContentProps
