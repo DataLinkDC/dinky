@@ -148,7 +148,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
           position: 'fixed',
           bottom: 0,
           right: 0,
-          left: 0,
+          left: 0
         }}
       >
         <Space style={{ direction: 'ltr', width: '30%%' }}>

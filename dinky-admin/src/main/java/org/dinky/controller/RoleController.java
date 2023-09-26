@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.Role;
 import org.dinky.data.model.User;
@@ -43,6 +44,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.lang.Dict;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -76,6 +79,9 @@ public class RoleController {
             dataType = "Role",
             paramType = "body",
             dataTypeClass = Role.class)
+    @SaCheckPermission(
+            value = {PermissionConstants.AUTH_ROLE_ADD, PermissionConstants.AUTH_ROLE_EDIT},
+            mode = SaMode.OR)
     public Result<Void> addedOrUpdateRole(@RequestBody Role role) {
         return roleService.addedOrUpdateRole(role);
     }
@@ -95,6 +101,7 @@ public class RoleController {
             dataType = "Integer",
             paramType = "query",
             dataTypeClass = Integer.class)
+    @SaCheckPermission(value = PermissionConstants.AUTH_ROLE_DELETE)
     public Result<Void> deleteRoleById(@RequestParam Integer id) {
         return roleService.deleteRoleById(id);
     }
@@ -154,6 +161,7 @@ public class RoleController {
             dataType = "Integer",
             paramType = "query",
             dataTypeClass = Integer.class)
+    @SaCheckPermission(value = PermissionConstants.AUTH_ROLE_VIEW_USER_LIST)
     public Result<List<User>> getUserListByRoleId(@RequestParam Integer roleId) {
         List<User> userRoleList = roleService.getUserListByRoleId(roleId);
         return Result.succeed(userRoleList);

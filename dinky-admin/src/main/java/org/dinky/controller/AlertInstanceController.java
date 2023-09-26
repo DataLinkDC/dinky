@@ -22,6 +22,7 @@ package org.dinky.controller;
 import org.dinky.alert.AlertPool;
 import org.dinky.alert.AlertResult;
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertInstance;
@@ -44,6 +45,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -77,6 +80,12 @@ public class AlertInstanceController {
             paramType = "body",
             required = true,
             dataTypeClass = AlertInstance.class)
+    @SaCheckPermission(
+            value = {
+                PermissionConstants.REGISTRATION_ALERT_INSTANCE_ADD,
+                PermissionConstants.REGISTRATION_ALERT_INSTANCE_EDIT
+            },
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdate(@RequestBody AlertInstance alertInstance) throws Exception {
         if (alertInstanceService.saveOrUpdate(alertInstance)) {
             AlertPool.remove(alertInstance.getName());
@@ -121,6 +130,7 @@ public class AlertInstanceController {
             paramType = "query",
             required = true,
             dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_ALERT_INSTANCE_DELETE)
     public Result<Void> deleteAlertInstanceById(@RequestParam("id") Integer id) {
         if (alertInstanceService.deleteAlertInstance(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -145,6 +155,7 @@ public class AlertInstanceController {
             paramType = "query",
             required = true,
             dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_ALERT_INSTANCE_EDIT)
     public Result<Void> modifyAlertInstanceStatus(@RequestParam("id") Integer id) {
         if (alertInstanceService.modifyAlertInstanceStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);

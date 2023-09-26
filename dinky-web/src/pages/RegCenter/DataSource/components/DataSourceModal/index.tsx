@@ -17,7 +17,6 @@
 
 import { FormContextValue } from '@/components/Context/FormContext';
 import DataSourceProForm from '@/pages/RegCenter/DataSource/components/DataSourceModal/DataSourceProForm';
-import { MODAL_FORM_OPTIONS } from '@/services/constants';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { ModalForm } from '@ant-design/pro-components';
@@ -129,7 +128,7 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
   return (
     <>
       <ModalForm<DataSources.DataSource>
-        {...MODAL_FORM_OPTIONS}
+        width={'50%'}
         open={visible}
         modalProps={{ onCancel: handleCancel }}
         title={values.id ? l('rc.ds.modify') : l('rc.ds.create')}

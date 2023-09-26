@@ -38,28 +38,28 @@ export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
     icon: <PlusCircleOutlined />,
     label: l('right.menu.createFolder'),
     disabled: isDisabled,
-    path: '/registration/resource/folder'
+    path: '/registration/resource/addFolder'
   },
   {
     key: 'upload',
     icon: <UploadOutlined />,
     label: l('button.upload'),
     disabled: isDisabled,
-    path: '/registration/resource/folder'
+    path: '/registration/resource/upload'
   },
   {
     key: 'delete',
     icon: <DeleteOutlined />,
     label: l('right.menu.delete'),
     disabled: isDisabled,
-    path: '/registration/resource/folder'
+    path: '/registration/resource/delete'
   },
   {
     key: 'rename',
     icon: <EditOutlined />,
     label: l('right.menu.rename'),
     disabled: isDisabled,
-    path: '/registration/resource/folder'
+    path: '/registration/resource/rename'
   },
   {
     key: 'refresh',

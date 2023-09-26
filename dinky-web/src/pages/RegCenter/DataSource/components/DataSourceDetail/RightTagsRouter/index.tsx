@@ -50,7 +50,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
         API_CONSTANTS.DATASOURCE_GET_COLUMNS_BY_TABLE,
         queryParams
       );
-      setTableColumns(result);
+      setTableColumns(result as DataSources.Column[]);
     };
     if (queryParams.id !== 0) {
       fetchData();

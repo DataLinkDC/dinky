@@ -21,7 +21,7 @@ import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import { Authorized } from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import { CLUSTER_INSTANCE_STATUS_ENUM } from '@/pages/RegCenter/Cluster/Instance/components/contants';
 import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
@@ -202,6 +202,7 @@ export default () => {
         return (
           <EnableSwitchBtn
             key={`${record.id}_enable`}
+            disabled={!HasAuthority('/registration/cluster/instance/edit')}
             record={record}
             onChange={() => handleChangeEnable(record)}
           />
@@ -245,20 +246,25 @@ export default () => {
    * tool bar render
    */
   const toolBarRender = () => [
-    <Authorized key='/registration/cluster/instance/new' path='/registration/cluster/instance/new'>
+    <Authorized key='/registration/cluster/instance/add' path='/registration/cluster/instance/add'>
       <CreateBtn
         key={'instancecreate'}
         onClick={() => setClusterInstanceStatus((prevState) => ({ ...prevState, addedOpen: true }))}
       />
     </Authorized>,
-    <Button
-      key={'heartbeat_all'}
-      type={'primary'}
-      icon={<HeartTwoTone />}
-      onClick={() => handleHeartBeat()}
+    <Authorized
+      key='/registration/cluster/instance/heartbeat'
+      path='/registration/cluster/instance/heartbeat'
     >
-      {l('button.heartbeat')}
-    </Button>,
+      <Button
+        key={'heartbeat_all'}
+        type={'primary'}
+        icon={<HeartTwoTone />}
+        onClick={() => handleHeartBeat()}
+      >
+        {l('button.heartbeat')}
+      </Button>
+    </Authorized>,
     <Authorized
       key='/registration/cluster/instance/recovery'
       path='/registration/cluster/instance/recovery'

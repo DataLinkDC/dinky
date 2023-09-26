@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Document;
@@ -40,6 +41,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -73,6 +76,9 @@ public class DocumentController {
             dataType = "Document",
             paramType = "body",
             dataTypeClass = Document.class)
+    @SaCheckPermission(
+            value = {PermissionConstants.REGISTRATION_DOCUMENT_ADD, PermissionConstants.REGISTRATION_DOCUMENT_EDIT},
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdateDocument(@RequestBody Document document) throws Exception {
         if (documentService.saveOrUpdate(document)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -117,6 +123,7 @@ public class DocumentController {
             paramType = "query",
             dataTypeClass = Integer.class,
             example = "1")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DOCUMENT_DELETE)
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (documentService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -142,6 +149,7 @@ public class DocumentController {
             paramType = "query",
             dataTypeClass = Integer.class,
             example = "1")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DOCUMENT_EDIT)
     public Result<Void> modifyDocumentStatus(@RequestParam Integer id) {
         if (documentService.modifyDocumentStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);

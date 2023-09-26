@@ -20,7 +20,7 @@
 import { KEY_BOARD_MIDDLE } from '@/pages/DataStudio/MiddleContainer/KeyBoard/constant';
 import { l } from '@/utils/intl';
 import { Divider, Typography } from 'antd';
-import {Fragment} from "react";
+import { Fragment } from 'react';
 
 const { Title, Paragraph, Text } = Typography;
 

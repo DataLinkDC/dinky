@@ -20,6 +20,7 @@
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import { Authorized } from '@/hooks/useAccess';
 import { PermissionsModal } from '@/pages/AuthCenter/RowPermissions/components/PermissionsModal';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
@@ -142,12 +143,16 @@ const PermissionsProTable: React.FC = () => {
       valueType: 'option',
       width: '10vh',
       render: (_: any, record: RowPermissions) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />,
-        <PopconfirmDeleteBtn
-          key={`${record.id}_delete`}
-          onClick={() => handleDeleteSubmit(record.id)}
-          description={l('rowPermissions.deleteConfirm')}
-        />
+        <Authorized key={`${record.id}_edit_auth`} path='/auth/rowPermissions/edit'>
+          <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
+        </Authorized>,
+        <Authorized key={`${record.id}_delete_auth`} path='/auth/rowPermissions/delete'>
+          <PopconfirmDeleteBtn
+            key={`${record.id}_delete`}
+            onClick={() => handleDeleteSubmit(record.id)}
+            description={l('rowPermissions.deleteConfirm')}
+          />
+        </Authorized>
       ]
     }
   ];
@@ -163,10 +168,12 @@ const PermissionsProTable: React.FC = () => {
         actionRef={actionRef}
         loading={rowPermissions.loading}
         toolBarRender={() => [
-          <CreateBtn
-            key='createBtn'
-            onClick={() => setRowPermissions((prevState) => ({ ...prevState, addedOpen: true }))}
-          />
+          <Authorized key={`createBtn_auth`} path='/auth/rowPermissions/add'>
+            <CreateBtn
+              key='createBtn'
+              onClick={() => setRowPermissions((prevState) => ({ ...prevState, addedOpen: true }))}
+            />
+          </Authorized>
         ]}
         request={(params: any, sorter: any, filter: any) =>
           queryList(API_CONSTANTS.ROW_PERMISSIONS, {

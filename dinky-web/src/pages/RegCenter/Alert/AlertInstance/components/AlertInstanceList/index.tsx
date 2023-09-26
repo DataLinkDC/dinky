@@ -16,8 +16,9 @@
  */
 
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
-import { Authorized } from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import {
   getAlertIcon,
   getJSONData,
@@ -29,11 +30,7 @@ import {
 } from '@/pages/RegCenter/Alert/AlertInstance/service';
 import { queryList } from '@/services/api';
 import { handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
-import {
-  PROTABLE_OPTIONS_PUBLIC,
-  PRO_LIST_CARD_OPTIONS,
-  SWITCH_OPTIONS
-} from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert } from '@/types/RegCenter/data.d';
 import { InitAlertInstanceState } from '@/types/RegCenter/init.d';
@@ -42,7 +39,7 @@ import { l } from '@/utils/intl';
 import { EditTwoTone } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { ActionType } from '@ant-design/pro-table';
-import { Button, Descriptions, Modal, Space, Switch, Tag, Tooltip } from 'antd';
+import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
@@ -179,10 +176,10 @@ const AlertInstanceList: React.FC = () => {
         <Tag color='#5BD8A6'>
           {item.type} {renderSubType(item)}
         </Tag>
-        <Switch
-          key={item.id}
-          {...SWITCH_OPTIONS()}
-          checked={item.enabled}
+        <EnableSwitchBtn
+          key={`${item.id}_enable`}
+          disabled={!HasAuthority('/registration/alert/instance/edit')}
+          record={item}
           onChange={() => handleEnable(item)}
         />
       </Space>
@@ -204,7 +201,7 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderToolBar = () => {
     return () => [
-      <Authorized key='create' path='/registration/alert/instance/new'>
+      <Authorized key='create' path='/registration/alert/instance/add'>
         <CreateBtn
           key={'CreateAlertInstanceBtn'}
           onClick={() => setAlertInstanceState((prevState) => ({ ...prevState, addedOpen: true }))}

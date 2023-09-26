@@ -20,7 +20,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { DataAction } from '@/components/StyledComponents';
-import { Authorized } from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import DataSourceDetail from '@/pages/RegCenter/DataSource/components/DataSourceDetail';
 import { renderDBIcon } from '@/pages/RegCenter/DataSource/components/function';
@@ -190,8 +190,8 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
         payload: item.id
       });
       setFormValues(item);
-      navigate(`/registration/database/detail/${item.id}`, {
-        state: { from: '/registration/database' }
+      navigate(`/registration/datasource/detail/${item.id}`, {
+        state: { from: '/registration/datasource' }
       });
       setDetailPage(!detailPage);
     } else {
@@ -205,26 +205,30 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    */
   const renderDataSourceActionButton = (item: DataSources.DataSource) => {
     return [
-      <Authorized key={`${item.id}_edit`} path='/registration/database/new'>
+      <Authorized key={`${item.id}_edit`} path='/registration/datasource/add'>
         <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={`${item.id}_delete`} path='/registration/database/delete'>
+      <Authorized key={`${item.id}_delete`} path='/registration/datasource/delete'>
         <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>,
-      <Button
-        className={'options-button'}
-        key={`${item.id}_heart`}
-        onClick={() => handleCheckHeartBeat(item)}
-        title={l('button.heartbeat')}
-        icon={<HeartTwoTone twoToneColor={item.status ? '#1ac431' : '#e10d0d'} />}
-      />,
-      <Button
-        className={'options-button'}
-        key={`${item.id}_copy`}
-        onClick={() => onCopyDataBase(item)}
-        title={l('button.copy')}
-        icon={<CopyTwoTone />}
-      />
+      <Authorized key={`${item.id}_detail`} path='/registration/datasource/heartbeat'>
+        <Button
+          className={'options-button'}
+          key={`${item.id}_heart`}
+          onClick={() => handleCheckHeartBeat(item)}
+          title={l('button.heartbeat')}
+          icon={<HeartTwoTone twoToneColor={item.status ? '#1ac431' : '#e10d0d'} />}
+        />
+      </Authorized>,
+      <Authorized key={`${item.id}_test`} path='/registration/datasource/copy'>
+        <Button
+          className={'options-button'}
+          key={`${item.id}_copy`}
+          onClick={() => onCopyDataBase(item)}
+          title={l('button.copy')}
+          icon={<CopyTwoTone />}
+        />
+      </Authorized>
     ];
   };
   /**
@@ -235,7 +239,11 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
     return (
       <Space className={'hidden-overflow'}>
         <Tag color='cyan'>{item.type}</Tag>
-        <EnableSwitchBtn record={item} onChange={() => handleEnable(item)} />
+        <EnableSwitchBtn
+          record={item}
+          onChange={() => handleEnable(item)}
+          disabled={!HasAuthority('/registration/datasource/edit')}
+        />
         <Tag
           icon={item.status ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
           color={item.status ? 'success' : 'warning'}
@@ -283,7 +291,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
             actionRef={actionRef}
             headerTitle={l('rc.ds.management')}
             toolBarRender={() => [
-              <Authorized key='create' path='/registration/database/new'>
+              <Authorized key='create' path='/registration/datasource/add'>
                 <CreateBtn key={'CreateBtn'} onClick={() => setModalVisible(true)} />
               </Authorized>
             ]}

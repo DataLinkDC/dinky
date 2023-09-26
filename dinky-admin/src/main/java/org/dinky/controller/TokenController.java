@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.SysToken;
@@ -39,6 +40,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.lang.UUID;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -79,6 +82,9 @@ public class TokenController {
     @ApiOperation("Insert or Update Token")
     @Log(title = "Insert or Update Token", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiImplicitParam(name = "sysToken", value = "sysToken", dataType = "SysToken", paramType = "body", required = true)
+    @SaCheckPermission(
+            value = {PermissionConstants.AUTH_TOKEN_ADD, PermissionConstants.AUTH_TOKEN_EDIT},
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdateToken(@RequestBody SysToken sysToken) {
         return tokenService.saveOrUpdate(sysToken)
                 ? Result.succeed(Status.SAVE_SUCCESS)
@@ -96,6 +102,7 @@ public class TokenController {
     @ApiOperation("Delete Token By Id")
     @ApiImplicitParam(name = "id", value = "id", dataType = "Integer", paramType = "query", required = true)
     @Transactional(rollbackFor = Exception.class)
+    @SaCheckPermission(value = PermissionConstants.AUTH_TOKEN_DELETE)
     public Result<Void> deleteToken(@RequestParam Integer id) {
         if (tokenService.removeTokenById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);

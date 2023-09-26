@@ -24,7 +24,7 @@ import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { RunningBtn } from '@/components/CallBackButton/RunningBtn';
 import { ClusterConfigIcon } from '@/components/Icons/HomeIcon';
 import { DataAction } from '@/components/StyledComponents';
-import { Authorized } from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import { imgStyle } from '@/pages/Home/constants';
 import ConfigurationModal from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal';
 import { CLUSTER_CONFIG_TYPE } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
@@ -200,18 +200,22 @@ export default () => {
       <Authorized key={`${item.id}_delete`} path='/registration/cluster/config/delete'>
         <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>,
-      <RunningBtn
-        key={`${item.id}_running`}
-        title={l('rc.cc.start')}
-        onClick={() => handleStartCluster(item)}
-      />,
-      <Button
-        className={'options-button'}
-        key={`${item.id}_heart`}
-        onClick={() => handleCheckHeartBeat(item)}
-        title={l('button.heartbeat')}
-        icon={<HeartTwoTone twoToneColor={item.isAvailable ? '#1ac431' : '#e10d0d'} />}
-      />
+      <Authorized key={`${item.id}_delete`} path='/registration/cluster/config/deploy'>
+        <RunningBtn
+          key={`${item.id}_running`}
+          title={l('rc.cc.start')}
+          onClick={() => handleStartCluster(item)}
+        />
+      </Authorized>,
+      <Authorized key={`${item.id}_heart`} path='/registration/cluster/config/heartbeat'>
+        <Button
+          className={'options-button'}
+          key={`${item.id}_heart`}
+          onClick={() => handleCheckHeartBeat(item)}
+          title={l('button.heartbeat')}
+          icon={<HeartTwoTone twoToneColor={item.isAvailable ? '#1ac431' : '#e10d0d'} />}
+        />
+      </Authorized>
     ];
   };
   /**
@@ -221,7 +225,11 @@ export default () => {
   const renderDataContent = (item: Cluster.Config) => {
     return (
       <Space size={4} align={'baseline'} className={'hidden-overflow'}>
-        <EnableSwitchBtn record={item} onChange={() => handleEnable(item)} />
+        <EnableSwitchBtn
+          record={item}
+          onChange={() => handleEnable(item)}
+          disabled={!HasAuthority('/registration/cluster/config/edit')}
+        />
         <Tag color='cyan'>
           {CLUSTER_CONFIG_TYPE.find((record) => item.type === record.value)?.label}
         </Tag>
@@ -253,7 +261,7 @@ export default () => {
    * tool bar render
    */
   const toolBarRender = () => [
-    <Authorized key='new' path='/registration/cluster/config/new'>
+    <Authorized key='new' path='/registration/cluster/config/add'>
       <CreateBtn
         key={'configcreate'}
         onClick={() => setClusterConfigState((prevState) => ({ ...prevState, addedOpen: true }))}

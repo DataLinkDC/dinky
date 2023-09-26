@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
@@ -43,6 +44,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -77,6 +80,12 @@ public class ClusterConfigurationController {
             paramType = "body",
             required = true,
             dataTypeClass = ClusterConfiguration.class)
+    @SaCheckPermission(
+            value = {
+                PermissionConstants.REGISTRATION_CLUSTER_CONFIG_ADD,
+                PermissionConstants.REGISTRATION_CLUSTER_CONFIG_EDIT
+            },
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdateClusterConfig(@RequestBody ClusterConfigurationDTO clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
         clusterConfiguration.setIsAvailable(testResult.isAvailable());
@@ -141,6 +150,7 @@ public class ClusterConfigurationController {
     @Log(title = "Cluster Config Delete by id", businessType = BusinessType.DELETE)
     @ApiOperation("Cluster Config Delete by id")
     @ApiImplicitParam(name = "id", value = "id", dataType = "Integer", paramType = "query", required = true)
+    @SaCheckPermission(value = PermissionConstants.REGISTRATION_CLUSTER_CONFIG_DELETE)
     public Result<Void> deleteById(@RequestParam("id") Integer id) {
         boolean removeById = clusterConfigurationService.removeById(id);
         if (removeById) {
@@ -160,6 +170,7 @@ public class ClusterConfigurationController {
     @Log(title = "Modify Cluster Config Status", businessType = BusinessType.UPDATE)
     @ApiOperation("Modify Cluster Config Status")
     @ApiImplicitParam(name = "id", value = "id", dataType = "Integer", paramType = "query", required = true)
+    @SaCheckPermission(value = PermissionConstants.REGISTRATION_CLUSTER_CONFIG_EDIT)
     public Result<Void> modifyClusterConfigStatus(@RequestParam("id") Integer id) {
         if (clusterConfigurationService.modifyClusterConfigStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -184,6 +195,7 @@ public class ClusterConfigurationController {
             paramType = "body",
             required = true,
             dataTypeClass = ClusterConfiguration.class)
+    @SaCheckPermission(value = PermissionConstants.REGISTRATION_CLUSTER_CONFIG_HEARTBEATS)
     public Result<Void> testConnect(@RequestBody ClusterConfigurationDTO clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
         if (testResult.isAvailable()) {

@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.UDFTemplate;
@@ -45,6 +46,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
@@ -54,13 +57,13 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** UDFController */
+/** UDFTemplateController */
 @Slf4j
 @Api(tags = "UDF Controller")
 @RestController
 @RequestMapping("/api/udf/template")
 @RequiredArgsConstructor
-public class UDFController {
+public class UDFTemplateController {
 
     private final UDFTemplateService udfTemplateService;
 
@@ -145,6 +148,12 @@ public class UDFController {
             dataType = "UDFTemplate",
             paramType = "body",
             required = true)
+    @SaCheckPermission(
+            value = {
+                PermissionConstants.REGISTRATION_UDF_TEMPLATE_ADD,
+                PermissionConstants.REGISTRATION_UDF_TEMPLATE_EDIT
+            },
+            mode = SaMode.OR)
     public Result<String> saveOrUpdateUDFTemplate(@RequestBody UDFTemplate udfTemplate) {
         return udfTemplateService.saveOrUpdate(udfTemplate)
                 ? Result.succeed(Status.SAVE_SUCCESS)
@@ -166,8 +175,9 @@ public class UDFController {
             dataType = "Integer",
             paramType = "query",
             required = true)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_UDF_TEMPLATE_DELETE)
     @Transactional(rollbackFor = Exception.class)
-    public Result<Void> delete(@RequestParam Integer id) {
+    public Result<Void> deleteUDFTemplate(@RequestParam Integer id) {
         if (udfTemplateService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
         } else {
@@ -184,6 +194,7 @@ public class UDFController {
             dataType = "Integer",
             paramType = "query",
             required = true)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_UDF_TEMPLATE_EDIT)
     public Result<Void> modifyUDFTemplateStatus(@RequestParam Integer id) {
         if (udfTemplateService.modifyUDFTemplateStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
