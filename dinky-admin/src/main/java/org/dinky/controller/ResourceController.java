@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.ResourcesDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
@@ -37,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -50,7 +51,6 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Resource Controller")
 @RequestMapping("/api/resource")
 @RequiredArgsConstructor
-@SaCheckLogin
 public class ResourceController {
     private final ResourcesService resourcesService;
 
@@ -64,6 +64,7 @@ public class ResourceController {
             dataType = "ResourcesDTO",
             paramType = "body",
             dataTypeClass = ResourcesDTO.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_RESOURCE_ADD_FOLDER)
     public Result<TreeNodeDTO> createFolder(@RequestBody ResourcesDTO resourcesDTO) {
         return Result.succeed(resourcesService.createFolder(
                 resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription()));
@@ -79,6 +80,7 @@ public class ResourceController {
             dataType = "ResourcesDTO",
             paramType = "body",
             dataTypeClass = ResourcesDTO.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_RESOURCE_RENAME)
     public Result<Void> rename(@RequestBody ResourcesDTO resourcesDTO) {
         resourcesService.rename(resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription());
         return Result.succeed();
@@ -134,6 +136,7 @@ public class ResourceController {
                 paramType = "query")
     })
     @Log(title = "Upload File To Resource", businessType = BusinessType.UPLOAD)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_RESOURCE_UPLOAD)
     public Result<Void> uploadFile(Integer pid, String desc, @RequestParam("file") MultipartFile file) {
         resourcesService.uploadFile(pid, desc, file);
         return Result.succeed();
@@ -143,6 +146,7 @@ public class ResourceController {
     @ApiOperation("Remove Folder/File")
     @Log(title = "Remove Folder/File", businessType = BusinessType.DELETE)
     @ApiImplicitParam(name = "id", value = "Resource ID", required = true, dataType = "Integer", paramType = "query")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_RESOURCE_DELETE)
     public Result<Void> remove(Integer id) {
         resourcesService.remove(id);
         return Result.succeed();

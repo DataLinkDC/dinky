@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.GitProjectDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
@@ -52,7 +53,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
@@ -69,7 +71,6 @@ import lombok.AllArgsConstructor;
 @Api(tags = "Git Project Controller")
 @RequestMapping("/api/git")
 @AllArgsConstructor
-@SaCheckLogin
 public class GitController {
     final GitProjectService gitProjectService;
 
@@ -89,6 +90,10 @@ public class GitController {
             dataType = "GitProject",
             paramType = "body",
             dataTypeClass = GitProject.class)
+    @SaCheckPermission(
+            value = {PermissionConstants.REGISTRATION_GIT_PROJECT_ADD, PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT
+            },
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdateGitProject(@Validated @RequestBody GitProjectDTO gitProject) {
         gitProjectService.saveOrUpdate(gitProject);
         GitRepository gitRepository = new GitRepository(BeanUtil.copyProperties(gitProject, GitProjectDTO.class));
@@ -112,6 +117,7 @@ public class GitController {
             dataType = "Map",
             paramType = "body",
             dataTypeClass = Map.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT)
     public Result<Void> dragendSortProject(@RequestBody Map sortList) {
         if (sortList == null) {
             return Result.failed(Status.GIT_PROJECT_NOT_FOUND);
@@ -136,6 +142,7 @@ public class GitController {
             dataType = "GitProjectSortJarParams",
             paramType = "body",
             dataTypeClass = GitProjectSortJarParams.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT)
     public Result<Void> dragendSortJar(@RequestBody GitProjectSortJarParams gitProjectSortJarParams) {
         GitProject gitProjectServiceById = gitProjectService.getById(gitProjectSortJarParams.getProjectId());
         if (gitProjectServiceById == null) {
@@ -185,6 +192,7 @@ public class GitController {
             dataType = "Integer",
             paramType = "path",
             dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_DELETE)
     public Result<Void> deleteProject(@RequestParam("id") Integer id) {
         gitProjectService.removeProjectAndCodeCascade(id);
         return Result.succeed();
@@ -206,6 +214,7 @@ public class GitController {
             dataType = "Integer",
             paramType = "path",
             dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT)
     public Result<Void> modifyGitProjectStatus(@RequestParam("id") Integer id) {
         if (gitProjectService.modifyGitProjectStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -267,6 +276,7 @@ public class GitController {
             dataType = "Integer",
             paramType = "path",
             dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_BUILD)
     public Result<Void> buildGitProject(@RequestParam("id") Integer id) {
 
         GitProject gitProject = gitProjectService.getById(id);
@@ -298,6 +308,7 @@ public class GitController {
             dataType = "Integer",
             paramType = "path",
             dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_SHOW_LOG)
     public SseEmitter buildStepLogs(@RequestParam("id") Integer id) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         GitProject gitProject = gitProjectService.getById(id);

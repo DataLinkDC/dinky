@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Cluster;
@@ -42,7 +43,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -55,7 +57,6 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Cluster Instance Controller")
 @RequestMapping("/api/cluster")
 @RequiredArgsConstructor
-@SaCheckLogin
 public class ClusterInstanceController {
 
     private final ClusterInstanceService clusterInstanceService;
@@ -78,6 +79,12 @@ public class ClusterInstanceController {
             paramType = "body",
             required = true,
             dataTypeClass = Cluster.class)
+    @SaCheckPermission(
+            value = {
+                PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT,
+                PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD
+            },
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdateClusterInstance(@RequestBody Cluster cluster) throws Exception {
         cluster.setAutoRegisters(false);
         clusterInstanceService.registersCluster(cluster);
@@ -101,6 +108,7 @@ public class ClusterInstanceController {
             required = true,
             dataTypeClass = Integer.class,
             example = "1")
+    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT})
     public Result<Void> modifyClusterInstanceStatus(@RequestParam Integer id) {
         Boolean enabled = clusterInstanceService.modifyClusterInstanceStatus(id);
         if (enabled) {
@@ -128,6 +136,7 @@ public class ClusterInstanceController {
             required = true,
             dataTypeClass = Integer.class,
             example = "1")
+    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_DELETE})
     public Result<Void> deleteClusterInstanceById(@RequestParam Integer id) {
         Boolean deleted = clusterInstanceService.deleteClusterInstanceById(id);
         if (deleted) {
@@ -188,6 +197,7 @@ public class ClusterInstanceController {
     @PostMapping("/heartbeats")
     @Log(title = "Cluster Instance Heartbeat", businessType = BusinessType.UPDATE)
     @ApiOperation("Cluster Instance Heartbeat")
+    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_HEARTBEATS})
     public Result<Void> heartbeat() {
         List<Cluster> clusters = clusterInstanceService.list();
         for (Cluster cluster : clusters) {
@@ -205,6 +215,7 @@ public class ClusterInstanceController {
     @Log(title = "Cluster Instance Recycle", businessType = BusinessType.DELETE)
     @ApiOperation("Cluster Instance Recycle")
     @Transactional(rollbackFor = Exception.class)
+    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_RECYCLE})
     public Result<Integer> recycleCluster() {
         return Result.succeed(clusterInstanceService.recycleCluster(), Status.CLUSTER_INSTANCE_RECYCLE_SUCCESS);
     }
@@ -226,6 +237,7 @@ public class ClusterInstanceController {
             required = true,
             dataTypeClass = Integer.class,
             example = "1")
+    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_KILL})
     public Result<Void> killClusterInstance(@RequestParam("id") Integer id) {
         clusterInstanceService.killCluster(id);
         return Result.succeed("Kill Cluster Succeed.");
@@ -242,6 +254,7 @@ public class ClusterInstanceController {
             required = true,
             dataTypeClass = Integer.class,
             example = "1")
+    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_CONFIG_DEPLOY})
     public Result<Cluster> deploySessionClusterInstance(@RequestParam("id") Integer id) {
         return Result.succeed(clusterInstanceService.deploySessionCluster(id), Status.CLUSTER_INSTANCE_DEPLOY);
     }

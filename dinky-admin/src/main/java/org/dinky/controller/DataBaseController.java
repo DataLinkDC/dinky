@@ -22,6 +22,7 @@ package org.dinky.controller;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Column;
@@ -50,7 +51,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -68,7 +70,6 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "DataBase Controller")
 @RequestMapping("/api/database")
 @RequiredArgsConstructor
-@SaCheckLogin
 public class DataBaseController {
 
     private final DataBaseService databaseService;
@@ -89,6 +90,10 @@ public class DataBaseController {
             dataType = "DataBase",
             paramType = "body",
             dataTypeClass = DataBase.class)
+    @SaCheckPermission(
+            value = {PermissionConstants.REGISTRATION_DATA_SOURCE_ADD, PermissionConstants.REGISTRATION_DATA_SOURCE_EDIT
+            },
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdateDataBase(@RequestBody DataBase database) {
         if (databaseService.saveOrUpdateDataBase(database)) {
             DriverPool.remove(database.getName());
@@ -140,6 +145,7 @@ public class DataBaseController {
             dataType = "Integer",
             paramType = "path",
             dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_DELETE)
     public Result<Void> deleteDataBaseById(@RequestParam Integer id) {
         if (databaseService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -163,6 +169,7 @@ public class DataBaseController {
             dataType = "Integer",
             paramType = "path",
             dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_EDIT)
     public Result<Void> modifyDataSourceStatus(@RequestParam Integer id) {
         if (databaseService.modifyDataSourceStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -225,6 +232,7 @@ public class DataBaseController {
             paramType = "path",
             dataTypeClass = Integer.class,
             example = "1")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_CHECK_HEARTBEAT)
     public Result<Void> checkHeartBeatByDataSourceId(@RequestParam Integer id) {
         DataBase dataBase = databaseService.getById(id);
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
@@ -365,6 +373,7 @@ public class DataBaseController {
             dataType = "QueryData",
             paramType = "body",
             dataTypeClass = QueryData.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_EXEC_SQL)
     public Result<JdbcSelectResult> execSql(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.execSql(queryData);
         if (jdbcSelectResult.isSuccess()) {
@@ -425,6 +434,7 @@ public class DataBaseController {
     @PostMapping("/copyDatabase")
     @Log(title = "Copy Database", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Copy Database")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_COPY)
     public Result<Void> copyDatabase(@RequestBody DataBase database) {
         if (databaseService.copyDatabase(database)) {
             return Result.succeed(Status.COPY_SUCCESS);

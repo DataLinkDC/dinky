@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Home Controller")
 @RequestMapping("/api/home")
 @RequiredArgsConstructor
-@SaCheckLogin
 public class HomeController {
 
     private final HomeService homeService;

@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +45,6 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "File Upload Controller")
 @RequestMapping("/api/fileUpload")
 @RequiredArgsConstructor
-@SaCheckLogin
 public class FileUploadController {
 
     private final FileUploadService fileUploadService;

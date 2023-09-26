@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.lang.Opt;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -42,7 +41,6 @@ import lombok.RequiredArgsConstructor;
 @Api(tags = "SSE Controller")
 @RequestMapping("/api/sse")
 @RequiredArgsConstructor
-@SaCheckLogin
 public class SseController {
     private final MonitorService monitorService;
 

@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
@@ -42,7 +43,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
@@ -57,7 +57,6 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Alert Group Controller")
 @RequestMapping("/api/alertGroup")
 @RequiredArgsConstructor
-@SaCheckLogin
 public class AlertGroupController {
 
     private final AlertGroupService alertGroupService;
@@ -68,11 +67,11 @@ public class AlertGroupController {
      *
      * @param alertGroup {@link AlertGroup}
      * @return {@link Result} with {@link Void}
-     * @throws Exception {@link Exception}
      */
     @PutMapping
     @SaCheckPermission(
-            value = {"/registration/alert/group/add", "/registration/alert/group/edit"},
+            value = {PermissionConstants.REGISTRATION_ALERT_GROUP_ADD, PermissionConstants.REGISTRATION_ALERT_GROUP_EDIT
+            },
             mode = SaMode.OR)
     @Log(title = "Insert OR Update AlertGroup ", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiImplicitParam(
@@ -82,7 +81,7 @@ public class AlertGroupController {
             dataType = "AlertGroup",
             dataTypeClass = AlertGroup.class)
     @ApiOperation("Insert OR Update AlertGroup")
-    public Result<Void> saveOrUpdateAlertGroup(@RequestBody AlertGroup alertGroup) throws Exception {
+    public Result<Void> saveOrUpdateAlertGroup(@RequestBody AlertGroup alertGroup) {
         if (alertGroupService.saveOrUpdate(alertGroup)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
@@ -133,7 +132,7 @@ public class AlertGroupController {
             dataTypeClass = Integer.class,
             dataType = "Integer")
     @Log(title = "Update AlertGroup Status", businessType = BusinessType.UPDATE)
-    @SaCheckPermission(value = {"/registration/alert/group/edit"})
+    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_ALERT_GROUP_EDIT})
     public Result<Void> modifyAlertGroupStatus(@RequestParam("id") Integer id) {
         if (alertGroupService.modifyAlertGroupStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -157,7 +156,7 @@ public class AlertGroupController {
             dataTypeClass = Integer.class,
             dataType = "Integer")
     @Log(title = "Delete AlertGroup By Id", businessType = BusinessType.DELETE)
-    @SaCheckPermission(value = {"/registration/alert/group/delete"})
+    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_ALERT_GROUP_DELETE})
     public Result<Void> deleteGroupById(@RequestParam("id") Integer id) {
         if (alertGroupService.deleteGroupById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);

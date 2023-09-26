@@ -21,7 +21,7 @@ import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import { Authorized } from '@/hooks/useAccess';
+import {Authorized, HasAuthority} from '@/hooks/useAccess';
 import { CLUSTER_INSTANCE_STATUS_ENUM } from '@/pages/RegCenter/Cluster/Instance/components/contants';
 import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
@@ -43,7 +43,7 @@ import { ClearOutlined, HeartTwoTone } from '@ant-design/icons';
 import { ActionType, ProTable } from '@ant-design/pro-components';
 import { ProColumns } from '@ant-design/pro-table';
 import { Button, Popconfirm } from 'antd';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 export default () => {
   /**
@@ -202,6 +202,7 @@ export default () => {
         return (
           <EnableSwitchBtn
             key={`${record.id}_enable`}
+            disabled={!HasAuthority('/registration/cluster/instance/edit')}
             record={record}
             onChange={() => handleChangeEnable(record)}
           />
@@ -245,12 +246,13 @@ export default () => {
    * tool bar render
    */
   const toolBarRender = () => [
-    <Authorized key='/registration/cluster/instance/new' path='/registration/cluster/instance/new'>
+    <Authorized key='/registration/cluster/instance/add' path='/registration/cluster/instance/add'>
       <CreateBtn
         key={'instancecreate'}
         onClick={() => setClusterInstanceStatus((prevState) => ({ ...prevState, addedOpen: true }))}
       />
     </Authorized>,
+    <Authorized key='/registration/cluster/instance/heartbeat' path='/registration/cluster/instance/heartbeat'>
     <Button
       key={'heartbeat_all'}
       type={'primary'}
@@ -258,7 +260,8 @@ export default () => {
       onClick={() => handleHeartBeat()}
     >
       {l('button.heartbeat')}
-    </Button>,
+    </Button>
+      </Authorized>,
     <Authorized
       key='/registration/cluster/instance/recovery'
       path='/registration/cluster/instance/recovery'

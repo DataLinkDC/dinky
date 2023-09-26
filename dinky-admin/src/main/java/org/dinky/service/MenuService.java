@@ -134,5 +134,4 @@ public interface MenuService extends ISuperService<Menu> {
      * @return
      */
     boolean saveOrUpdateMenu(Menu menu);
-
 }

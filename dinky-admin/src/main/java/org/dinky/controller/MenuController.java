@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.RoleMenuDto;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
@@ -38,7 +39,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -50,7 +52,6 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Menu Controller")
 @RequestMapping("/api/menu")
 @RequiredArgsConstructor
-@SaCheckLogin
 public class MenuController {
 
     private final MenuService menuService;
@@ -71,6 +72,13 @@ public class MenuController {
             paramType = "body",
             required = true,
             dataTypeClass = Menu.class)
+    @SaCheckPermission(
+            value = {
+                PermissionConstants.AUTH_MENU_ADD_ROOT,
+                PermissionConstants.AUTH_MENU_EDIT,
+                PermissionConstants.AUTH_MENU_ADD_SUB
+            },
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdateMenu(@RequestBody Menu menu) {
         if (menuService.saveOrUpdateMenu(menu)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -101,6 +109,7 @@ public class MenuController {
     @ApiOperation("Delete Menu By Id")
     @Log(title = "Delete Menu By Id", businessType = BusinessType.DELETE)
     @ApiImplicitParam(name = "id", value = "Menu Id", dataType = "Integer", paramType = "query", required = true)
+    @SaCheckPermission(value = PermissionConstants.AUTH_MENU_DELETE)
     public Result<Void> deleteMenuById(@RequestParam("id") Integer id) {
         return menuService.deleteMenuById(id);
     }

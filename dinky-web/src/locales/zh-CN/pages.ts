@@ -375,7 +375,7 @@ export default {
    *
    * */
 
-  'rc.ag.alertCount': '告警实例数',
+  'rc.ag.alertCount': '告警实例数: {count}',
   'rc.ag.alertInstanceIds': '告警实例',
   'rc.ag.chooseAlertInstanceIds': '请选择告警组实例',
   'rc.ag.create': '创建告警组',

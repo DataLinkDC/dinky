@@ -17,7 +17,7 @@
 
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
-import { Authorized } from '@/hooks/useAccess';
+import {Authorized, HasAuthority} from '@/hooks/useAccess';
 import {
   getAlertIcon,
   getJSONData,
@@ -46,6 +46,7 @@ import { Button, Descriptions, Modal, Space, Switch, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
+import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
 
 const AlertInstanceList: React.FC = () => {
   /**
@@ -179,10 +180,10 @@ const AlertInstanceList: React.FC = () => {
         <Tag color='#5BD8A6'>
           {item.type} {renderSubType(item)}
         </Tag>
-        <Switch
-          key={item.id}
-          {...SWITCH_OPTIONS()}
-          checked={item.enabled}
+        <EnableSwitchBtn
+          key={`${item.id}_enable`}
+          disabled={!HasAuthority('/registration/alert/instance/edit')}
+          record={item}
           onChange={() => handleEnable(item)}
         />
       </Space>
@@ -204,7 +205,7 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderToolBar = () => {
     return () => [
-      <Authorized key='create' path='/registration/alert/instance/new'>
+      <Authorized key='create' path='/registration/alert/instance/add'>
         <CreateBtn
           key={'CreateAlertInstanceBtn'}
           onClick={() => setAlertInstanceState((prevState) => ({ ...prevState, addedOpen: true }))}

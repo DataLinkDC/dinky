@@ -208,7 +208,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
 
         <ProFormDigit
           name='orderNum'
-          disabled
+          // disabled
           label={l('menu.orderNum')}
           initialValue={getMaxOrderNumToNextOrderNum(sortTreeData(treeData)) + 1}
         />

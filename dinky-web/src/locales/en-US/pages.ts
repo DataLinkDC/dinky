@@ -388,7 +388,7 @@ export default {
    *
    * */
 
-  'rc.ag.alertCount': 'Alert Count',
+  'rc.ag.alertCount': 'Alert Instance Count: {count}',
   'rc.ag.alertInstanceIds': 'Alert instance',
   'rc.ag.chooseAlertInstanceIds': 'please choose Alert Instance',
   'rc.ag.create': 'Create Alert Group',

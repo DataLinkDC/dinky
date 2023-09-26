@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Api(tags = "Flink Conf Controller", hidden = true)
 @RequestMapping("/api/flinkConf")
-@SaCheckLogin
 public class FlinkConfController {
     @GetMapping("/configOptions")
     @ApiOperation("Query Flink Configuration Options")

@@ -21,7 +21,7 @@ import { AssignBtn } from '@/components/CallBackButton/AssignBtn';
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import { Authorized } from '@/hooks/useAccess';
+import {Authorized, HasAuthority} from '@/hooks/useAccess';
 import AssignMenu from '@/pages/AuthCenter/Role/components/AssignMenu';
 import RoleUserList from '@/pages/AuthCenter/Role/components/RoleUserList';
 import { queryList } from '@/services/api';
@@ -42,6 +42,7 @@ import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Tag } from 'antd';
 import React, { Key, useRef, useState } from 'react';
 import RoleModalForm from '../RoleModalForm';
+import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
 
 const RoleProTable: React.FC = () => {
   /**
@@ -146,13 +147,9 @@ const RoleProTable: React.FC = () => {
       title: l('role.roleCode'),
       dataIndex: 'roleCode',
       render: (_, record: UserBaseInfo.Role) => {
-        // todo: 实现该链接的 权限控制该按钮是否处于禁用状态 , 如果有 查看用户列表 权限则该按钮可以正常点击, 否则不允许(此链接禁用/正文状态)
         return (
-          <>
-            <Authorized key={`${record.id}_add_auth`} path='/auth/role/viewUser'>
-              <a onClick={() => handleClickViewUserList(record)}> {record.roleCode} </a>
-            </Authorized>
-          </>
+          HasAuthority('/auth/role/viewUser') ? <a onClick={() => handleClickViewUserList(record)}> {record.roleCode} </a>
+            : <span> {record.roleCode} </span>
         );
       }
     },

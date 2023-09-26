@@ -19,7 +19,7 @@
 
 import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
-import { Authorized } from '@/hooks/useAccess';
+import {Authorized, HasAuthority} from '@/hooks/useAccess';
 import AlertGroupForm from '@/pages/RegCenter/Alert/AlertGroup/components/AlertGroupForm';
 import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
@@ -43,6 +43,7 @@ import { connect, Dispatch } from '@umijs/max';
 import { Button, Descriptions, Modal, Space, Switch, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
+import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
 
 const AlertGroupTableList: React.FC = (props: any) => {
   /**
@@ -194,14 +195,14 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * @param item
    */
   const renderAlertGroupContent = (item: Alert.AlertGroup) => {
-    const instanceCnt = item.alertInstanceIds.split(',').length || 0;
+    const instanceCnt = item.alertInstanceIds.split(',').length ?? 0;
     return (
       <>
         <Space className={'hidden-overflow'}>
-          <Switch
-            key={item.id}
-            {...SWITCH_OPTIONS()}
-            checked={item.enabled}
+          <EnableSwitchBtn
+            key={`${item.id}_enable`}
+            disabled={!HasAuthority('/registration/alert/group/edit')}
+            record={item}
             onChange={() => handleEnable(item)}
           />
           <Tag color='warning'>{l('rc.ag.alertCount', '', { count: instanceCnt })}</Tag>

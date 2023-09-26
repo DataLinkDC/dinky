@@ -17,18 +17,18 @@
  *
  */
 
-import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
-import { EditBtn } from '@/components/CallBackButton/EditBtn';
-import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
-import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
-import { RunningBtn } from '@/components/CallBackButton/RunningBtn';
-import { ClusterConfigIcon } from '@/components/Icons/HomeIcon';
-import { DataAction } from '@/components/StyledComponents';
-import { Authorized } from '@/hooks/useAccess';
-import { imgStyle } from '@/pages/Home/constants';
+import {CreateBtn} from '@/components/CallBackButton/CreateBtn';
+import {EditBtn} from '@/components/CallBackButton/EditBtn';
+import {EnableSwitchBtn} from '@/components/CallBackButton/EnableSwitchBtn';
+import {NormalDeleteBtn} from '@/components/CallBackButton/NormalDeleteBtn';
+import {RunningBtn} from '@/components/CallBackButton/RunningBtn';
+import {ClusterConfigIcon} from '@/components/Icons/HomeIcon';
+import {DataAction} from '@/components/StyledComponents';
+import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import {imgStyle} from '@/pages/Home/constants';
 import ConfigurationModal from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal';
-import { CLUSTER_CONFIG_TYPE } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
-import { queryList } from '@/services/api';
+import {CLUSTER_CONFIG_TYPE} from '@/pages/RegCenter/Cluster/Configuration/components/contants';
+import {queryList} from '@/services/api';
 import {
   handleAddOrUpdate,
   handleOption,
@@ -36,17 +36,17 @@ import {
   handleRemoveById,
   updateDataByParam
 } from '@/services/BusinessCrud';
-import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { Cluster } from '@/types/RegCenter/data';
-import { InitClusterConfigState } from '@/types/RegCenter/init.d';
-import { ClusterConfigState } from '@/types/RegCenter/state.d';
-import { l } from '@/utils/intl';
-import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
-import { ActionType, ProList } from '@ant-design/pro-components';
-import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
+import {PRO_LIST_CARD_OPTIONS, PROTABLE_OPTIONS_PUBLIC} from '@/services/constants';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {Cluster} from '@/types/RegCenter/data';
+import {InitClusterConfigState} from '@/types/RegCenter/init.d';
+import {ClusterConfigState} from '@/types/RegCenter/state.d';
+import {l} from '@/utils/intl';
+import {CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone} from '@ant-design/icons';
+import {ActionType, ProList} from '@ant-design/pro-components';
+import {Button, Descriptions, Modal, Space, Tag, Tooltip} from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 export default () => {
   /**
@@ -65,7 +65,7 @@ export default () => {
 
   const queryClusterConfigList = async () => {
     queryList(API_CONSTANTS.CLUSTER_CONFIGURATION).then((res) =>
-      setClusterConfigState((prevState) => ({ ...prevState, configList: res.data }))
+      setClusterConfigState((prevState) => ({...prevState, configList: res.data}))
     );
   };
 
@@ -79,10 +79,10 @@ export default () => {
    * @returns {Promise<void>}
    */
   const executeAndCallbackRefresh = async (callback: () => void) => {
-    setClusterConfigState((prevState) => ({ ...prevState, loading: true }));
+    setClusterConfigState((prevState) => ({...prevState, loading: true}));
     await callback();
     await queryClusterConfigList();
-    setClusterConfigState((prevState) => ({ ...prevState, loading: false }));
+    setClusterConfigState((prevState) => ({...prevState, loading: false}));
     actionRef.current?.reload?.();
   };
 
@@ -174,7 +174,7 @@ export default () => {
     setClusterConfigState((prevState) => ({
       ...prevState,
       editOpen: true,
-      value: { ...item }
+      value: {...item}
     }));
   };
 
@@ -195,23 +195,27 @@ export default () => {
   const renderDataActionButton = (item: Cluster.Config) => {
     return [
       <Authorized key={`${item.id}_edit`} path='/registration/cluster/config/edit'>
-        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)}/>
       </Authorized>,
       <Authorized key={`${item.id}_delete`} path='/registration/cluster/config/delete'>
-        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)}/>
       </Authorized>,
-      <RunningBtn
-        key={`${item.id}_running`}
-        title={l('rc.cc.start')}
-        onClick={() => handleStartCluster(item)}
-      />,
-      <Button
-        className={'options-button'}
-        key={`${item.id}_heart`}
-        onClick={() => handleCheckHeartBeat(item)}
-        title={l('button.heartbeat')}
-        icon={<HeartTwoTone twoToneColor={item.isAvailable ? '#1ac431' : '#e10d0d'} />}
-      />
+      <Authorized key={`${item.id}_delete`} path='/registration/cluster/config/deploy'>
+        <RunningBtn
+          key={`${item.id}_running`}
+          title={l('rc.cc.start')}
+          onClick={() => handleStartCluster(item)}
+        />
+      </Authorized>,
+      <Authorized key={`${item.id}_heart`} path='/registration/cluster/config/heartbeat'>
+        <Button
+          className={'options-button'}
+          key={`${item.id}_heart`}
+          onClick={() => handleCheckHeartBeat(item)}
+          title={l('button.heartbeat')}
+          icon={<HeartTwoTone twoToneColor={item.isAvailable ? '#1ac431' : '#e10d0d'}/>}
+        />
+      </Authorized>
     ];
   };
   /**
@@ -221,12 +225,13 @@ export default () => {
   const renderDataContent = (item: Cluster.Config) => {
     return (
       <Space size={4} align={'baseline'} className={'hidden-overflow'}>
-        <EnableSwitchBtn record={item} onChange={() => handleEnable(item)} />
+        <EnableSwitchBtn record={item} onChange={() => handleEnable(item)}
+                         disabled={!HasAuthority("/registration/cluster/config/edit")}/>
         <Tag color='cyan'>
           {CLUSTER_CONFIG_TYPE.find((record) => item.type === record.value)?.label}
         </Tag>
         <Tag
-          icon={item.isAvailable ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
+          icon={item.isAvailable ? <CheckCircleOutlined/> : <ExclamationCircleOutlined/>}
           color={item.isAvailable ? 'success' : 'warning'}
         >
           {item.isAvailable ? l('global.table.status.normal') : l('global.table.status.abnormal')}
@@ -243,7 +248,7 @@ export default () => {
       return {
         subTitle: renderDataSubTitle(item),
         actions: <DataAction>{renderDataActionButton(item)}</DataAction>,
-        avatar: <ClusterConfigIcon style={imgStyle} />,
+        avatar: <ClusterConfigIcon style={imgStyle}/>,
         content: renderDataContent(item),
         key: item.id
       };
@@ -253,10 +258,10 @@ export default () => {
    * tool bar render
    */
   const toolBarRender = () => [
-    <Authorized key='new' path='/registration/cluster/config/new'>
+    <Authorized key='new' path='/registration/cluster/config/add'>
       <CreateBtn
         key={'configcreate'}
-        onClick={() => setClusterConfigState((prevState) => ({ ...prevState, addedOpen: true }))}
+        onClick={() => setClusterConfigState((prevState) => ({...prevState, addedOpen: true}))}
       />
     </Authorized>
   ];

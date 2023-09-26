@@ -44,7 +44,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -61,7 +60,6 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Jar Controller")
 @RequestMapping("/api/jar")
 @RequiredArgsConstructor
-@SaCheckLogin
 public class JarController {
 
     private final JarService jarService;
