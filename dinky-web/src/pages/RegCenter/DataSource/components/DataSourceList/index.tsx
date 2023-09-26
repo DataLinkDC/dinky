@@ -20,7 +20,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { DataAction } from '@/components/StyledComponents';
-import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import DataSourceDetail from '@/pages/RegCenter/DataSource/components/DataSourceDetail';
 import { renderDBIcon } from '@/pages/RegCenter/DataSource/components/function';
@@ -212,23 +212,23 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
         <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>,
       <Authorized key={`${item.id}_detail`} path='/registration/datasource/heartbeat'>
-      <Button
-        className={'options-button'}
-        key={`${item.id}_heart`}
-        onClick={() => handleCheckHeartBeat(item)}
-        title={l('button.heartbeat')}
-        icon={<HeartTwoTone twoToneColor={item.status ? '#1ac431' : '#e10d0d'} />}
-      />
-        </Authorized>,
+        <Button
+          className={'options-button'}
+          key={`${item.id}_heart`}
+          onClick={() => handleCheckHeartBeat(item)}
+          title={l('button.heartbeat')}
+          icon={<HeartTwoTone twoToneColor={item.status ? '#1ac431' : '#e10d0d'} />}
+        />
+      </Authorized>,
       <Authorized key={`${item.id}_test`} path='/registration/datasource/copy'>
-      <Button
-        className={'options-button'}
-        key={`${item.id}_copy`}
-        onClick={() => onCopyDataBase(item)}
-        title={l('button.copy')}
-        icon={<CopyTwoTone />}
-      />
-        </Authorized>,
+        <Button
+          className={'options-button'}
+          key={`${item.id}_copy`}
+          onClick={() => onCopyDataBase(item)}
+          title={l('button.copy')}
+          icon={<CopyTwoTone />}
+        />
+      </Authorized>
     ];
   };
   /**
@@ -239,7 +239,11 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
     return (
       <Space className={'hidden-overflow'}>
         <Tag color='cyan'>{item.type}</Tag>
-        <EnableSwitchBtn record={item} onChange={() => handleEnable(item)} disabled={!HasAuthority('/registration/datasource/edit')} />
+        <EnableSwitchBtn
+          record={item}
+          onChange={() => handleEnable(item)}
+          disabled={!HasAuthority('/registration/datasource/edit')}
+        />
         <Tag
           icon={item.status ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
           color={item.status ? 'success' : 'warning'}

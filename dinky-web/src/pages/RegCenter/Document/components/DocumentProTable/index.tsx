@@ -22,7 +22,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import CodeShow from '@/components/CustomEditor/CodeShow';
-import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import DocumentDrawer from '@/pages/RegCenter/Document/components/DocumentDrawer';
 import DocumentModalForm from '@/pages/RegCenter/Document/components/DocumentModal';
 import {
@@ -171,12 +171,12 @@ const DocumentTableList: React.FC = () => {
       valueEnum: STATUS_ENUM(),
       render: (_, record) => {
         return (
-            <EnableSwitchBtn
-              key={`${record.id}_enable`}
-              disabled={!HasAuthority('/registration/document/edit')}
-              record={record}
-              onChange={() => handleChangeEnable(record)}
-            />
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            disabled={!HasAuthority('/registration/document/edit')}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
         );
       }
     },

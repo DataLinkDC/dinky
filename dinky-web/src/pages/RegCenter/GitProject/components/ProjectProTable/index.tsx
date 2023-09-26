@@ -23,7 +23,7 @@ import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { ShowLogBtn } from '@/components/CallBackButton/ShowLogBtn';
 import { ShowCodeTreeIcon } from '@/components/Icons/CustomIcons';
-import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import { BuildSteps } from '@/pages/RegCenter/GitProject/components/BuildSteps';
 import ClassList from '@/pages/RegCenter/GitProject/components/BuildSteps/JarShow/JarList';
 import { CodeTree } from '@/pages/RegCenter/GitProject/components/CodeTree';

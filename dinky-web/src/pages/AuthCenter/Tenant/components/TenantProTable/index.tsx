@@ -20,7 +20,7 @@ import { AssignBtn } from '@/components/CallBackButton/AssignBtn';
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import TenantForm from '@/pages/AuthCenter/Tenant/components/TenantModalForm';
 import TenantModalTransfer from '@/pages/AuthCenter/Tenant/components/TenantModalTransfer';
 import TenantUserList from '@/pages/AuthCenter/Tenant/components/TenantUserList';
@@ -151,9 +151,10 @@ const TenantProTable: React.FC = () => {
       title: l('tenant.TenantCode'),
       dataIndex: 'tenantCode',
       render: (text, record) => {
-        return (
-          HasAuthority('/auth/tenant/viewUser') ? <a onClick={() => handleShowUser(record)}> {text} </a>
-            : <span> {text} </span>
+        return HasAuthority('/auth/tenant/viewUser') ? (
+          <a onClick={() => handleShowUser(record)}> {text} </a>
+        ) : (
+          <span> {text} </span>
         );
       }
     },

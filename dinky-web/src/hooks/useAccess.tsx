@@ -1,7 +1,6 @@
 import { API } from '@/services/data.d';
 import { SysMenu } from '@/types/AuthCenter/data.d';
 import React, { createContext, ReactElement, useContext } from 'react';
-import path from "path";
 
 /***
  * 按钮的path和name
@@ -32,12 +31,11 @@ type AuthorizedProps = {
  * @param path
  * @constructor
  */
-export const HasAuthority = (path: string) : boolean => {
+export const HasAuthority = (path: string): boolean => {
   const { isAdmin, blocks = [] } = useContext(AccessContext);
   if (isAdmin) return true;
   return blocks.some((block) => block.path === path);
 };
-
 
 export function Authorized({ path, denied = null, children = null }: AuthorizedProps) {
   const { isAdmin, blocks = [] } = useContext(AccessContext);

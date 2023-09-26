@@ -20,7 +20,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import CodeShow from '@/components/CustomEditor/CodeShow';
-import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import TemplateModal from '@/pages/RegCenter/UDF/components/TemplateModal';
 import {
   CODE_TYPE_ENUM,
@@ -166,12 +166,12 @@ const TemplateTable: React.FC = () => {
       hideInDescriptions: true,
       render: (_: any, record: UDFTemplate) => {
         return (
-            <EnableSwitchBtn
-              key={`${record.id}_enable`}
-              disabled={!HasAuthority('/registration/udf/template/edit')}
-              record={record}
-              onChange={() => handleChangeEnable(record)}
-            />
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            disabled={!HasAuthority('/registration/udf/template/edit')}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
         );
       }
     },

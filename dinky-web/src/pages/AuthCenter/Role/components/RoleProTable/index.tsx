@@ -21,7 +21,7 @@ import { AssignBtn } from '@/components/CallBackButton/AssignBtn';
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import AssignMenu from '@/pages/AuthCenter/Role/components/AssignMenu';
 import RoleUserList from '@/pages/AuthCenter/Role/components/RoleUserList';
 import { queryList } from '@/services/api';
@@ -42,7 +42,6 @@ import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Tag } from 'antd';
 import React, { Key, useRef, useState } from 'react';
 import RoleModalForm from '../RoleModalForm';
-import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
 
 const RoleProTable: React.FC = () => {
   /**
@@ -147,9 +146,10 @@ const RoleProTable: React.FC = () => {
       title: l('role.roleCode'),
       dataIndex: 'roleCode',
       render: (_, record: UserBaseInfo.Role) => {
-        return (
-          HasAuthority('/auth/role/viewUser') ? <a onClick={() => handleClickViewUserList(record)}> {record.roleCode} </a>
-            : <span> {record.roleCode} </span>
+        return HasAuthority('/auth/role/viewUser') ? (
+          <a onClick={() => handleClickViewUserList(record)}> {record.roleCode} </a>
+        ) : (
+          <span> {record.roleCode} </span>
         );
       }
     },

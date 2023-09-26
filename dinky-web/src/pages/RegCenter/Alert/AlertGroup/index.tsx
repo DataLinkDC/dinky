@@ -18,18 +18,15 @@
  */
 
 import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
-import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import AlertGroupForm from '@/pages/RegCenter/Alert/AlertGroup/components/AlertGroupForm';
 import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
-import {
-  PROTABLE_OPTIONS_PUBLIC,
-  PRO_LIST_CARD_OPTIONS,
-  SWITCH_OPTIONS
-} from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 import { InitAlertGroupState } from '@/types/RegCenter/init.d';
@@ -40,10 +37,9 @@ import { ProList } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ActionType } from '@ant-design/pro-table';
 import { connect, Dispatch } from '@umijs/max';
-import { Button, Descriptions, Modal, Space, Switch, Tag, Tooltip } from 'antd';
+import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
-import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
 
 const AlertGroupTableList: React.FC = (props: any) => {
   /**

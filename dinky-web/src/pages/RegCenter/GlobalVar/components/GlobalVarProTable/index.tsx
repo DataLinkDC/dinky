@@ -22,7 +22,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import CodeShow from '@/components/CustomEditor/CodeShow';
-import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import GlobalVarDrawer from '@/pages/RegCenter/GlobalVar/components/GlobalVarDrawer';
 import GlobalVarModal from '@/pages/RegCenter/GlobalVar/components/GlobalVarModal';
 import { queryList } from '@/services/api';
@@ -141,12 +141,12 @@ const GlobalVarProTable = () => {
       hideInDescriptions: true,
       render: (_, record) => {
         return (
-            <EnableSwitchBtn
-              key={`${record.id}_enable`}
-              disabled={!HasAuthority('/registration/fragment/edit')}
-              record={record}
-              onChange={() => handleChangeEnable(record)}
-            />
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            disabled={!HasAuthority('/registration/fragment/edit')}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
         );
       },
       filters: STATUS_MAPPING(),

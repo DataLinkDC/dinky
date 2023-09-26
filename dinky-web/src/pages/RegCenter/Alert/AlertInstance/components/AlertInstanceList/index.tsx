@@ -16,8 +16,9 @@
  */
 
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
-import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import {
   getAlertIcon,
   getJSONData,
@@ -29,11 +30,7 @@ import {
 } from '@/pages/RegCenter/Alert/AlertInstance/service';
 import { queryList } from '@/services/api';
 import { handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
-import {
-  PROTABLE_OPTIONS_PUBLIC,
-  PRO_LIST_CARD_OPTIONS,
-  SWITCH_OPTIONS
-} from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert } from '@/types/RegCenter/data.d';
 import { InitAlertInstanceState } from '@/types/RegCenter/init.d';
@@ -42,11 +39,10 @@ import { l } from '@/utils/intl';
 import { EditTwoTone } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { ActionType } from '@ant-design/pro-table';
-import { Button, Descriptions, Modal, Space, Switch, Tag, Tooltip } from 'antd';
+import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
-import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
 
 const AlertInstanceList: React.FC = () => {
   /**
