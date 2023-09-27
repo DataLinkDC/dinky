@@ -18,6 +18,7 @@
  */
 
 import { BaseBeanColumns } from '@/types/Public/data';
+import { Alert } from '@/types/RegCenter/data.d';
 
 /**
  * about flink job
@@ -156,4 +157,18 @@ declare namespace Jobs {
     jobManagerConfiguration: any;
     taskManagerConfiguration: any;
   };
+}
+
+export interface AlertHistory {
+  id: number;
+  tenantId: number;
+  alertGroupId: number;
+  alertGroup: Alert.AlertGroup;
+  jobInstanceId: number;
+  title: string;
+  content: string;
+  status: number;
+  log: string;
+  createTime: Date;
+  updateTime: Date;
 }

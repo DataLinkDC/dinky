@@ -18,8 +18,10 @@
  */
 
 import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
-import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
+import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
+import { DataAction } from '@/components/StyledComponents';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import AlertGroupForm from '@/pages/RegCenter/Alert/AlertGroup/components/AlertGroupForm';
 import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
@@ -32,13 +34,12 @@ import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 import { InitAlertGroupState } from '@/types/RegCenter/init.d';
 import { AlertGroupState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
-import { EditTwoTone, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ActionType } from '@ant-design/pro-table';
 import { connect, Dispatch } from '@umijs/max';
 import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
-import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
 
 const AlertGroupTableList: React.FC = (props: any) => {
@@ -166,22 +167,11 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const renderAlertGroupActionButton = (item: Alert.AlertGroup) => {
     return [
-      <Authorized key={item.id} path='/registration/alert/group/edit'>
-        <Button
-          className={'options-button'}
-          key={'AlertGroupEdit'}
-          icon={<EditTwoTone />}
-          title={l('button.edit')}
-          onClick={() => editClick(item)}
-        />
+      <Authorized key={`${item.id}_auth_edit`} path='/registration/alert/group/edit'>
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={item.id} path='/registration/alert/group/delete'>
-        <Button
-          className={'options-button'}
-          key={'DeleteAlertGroupIcon'}
-          icon={<DangerDeleteIcon />}
-          onClick={() => handleDeleteSubmit(item.id)}
-        />
+      <Authorized key={`${item.id}_auth_delete`} path='/registration/alert/group/delete'>
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>
     ];
   };
@@ -214,11 +204,11 @@ const AlertGroupTableList: React.FC = (props: any) => {
   const renderAlertGroupSubTitle = (item: Alert.AlertGroup) => {
     return (
       <Descriptions size={'small'} layout={'vertical'} column={1}>
-        <DescriptionsItem className={'hidden-overflow'} key={item.id}>
+        <Descriptions.Item className={'hidden-overflow'} key={item.id}>
           <Tooltip key={item.id} title={item.name}>
             <Tag color='success'>{item.name}</Tag>
           </Tooltip>
-        </DescriptionsItem>
+        </Descriptions.Item>
       </Descriptions>
     );
   };
@@ -228,7 +218,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const renderDataSource = alertGroupState.alertGroupList.map((item: Alert.AlertGroup) => ({
     subTitle: renderAlertGroupSubTitle(item),
-    actions: renderAlertGroupActionButton(item),
+    actions: <DataAction>{renderAlertGroupActionButton(item)}</DataAction>,
     avatar: getAlertIcon(ALERT_TYPE.GROUP, 60),
     content: renderAlertGroupContent(item)
   }));
