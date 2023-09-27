@@ -22,6 +22,8 @@ package org.dinky.service;
 import org.dinky.data.model.AlertHistory;
 import org.dinky.mybatis.service.ISuperService;
 
+import java.util.List;
+
 /** AlertHistoryService */
 public interface AlertHistoryService extends ISuperService<AlertHistory> {
 
@@ -32,4 +34,6 @@ public interface AlertHistoryService extends ISuperService<AlertHistory> {
      * @return {@link Boolean}
      */
     Boolean deleteByAlertGroupId(Integer alertGroupId);
+
+    List<AlertHistory> queryAlertHistoryRecordByJobInstanceId(Integer jobInstanceId);
 }

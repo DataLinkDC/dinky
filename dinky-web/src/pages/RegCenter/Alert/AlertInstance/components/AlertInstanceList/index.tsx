@@ -16,8 +16,10 @@
  */
 
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
-import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
+import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
+import { DataAction } from '@/components/StyledComponents';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import {
   getAlertIcon,
@@ -36,10 +38,9 @@ import { Alert } from '@/types/RegCenter/data.d';
 import { InitAlertInstanceState } from '@/types/RegCenter/init.d';
 import { AlertInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
-import { EditTwoTone } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { ActionType } from '@ant-design/pro-table';
-import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
+import { Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
@@ -140,22 +141,11 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderAlertInstanceActionButton = (item: Alert.AlertInstance) => {
     return [
-      <Authorized key={item.id} path='/registration/alert/instance/edit'>
-        <Button
-          className={'options-button'}
-          key={'AlertInstanceEdit'}
-          icon={<EditTwoTone />}
-          title={l('button.edit')}
-          onClick={() => editClick(item)}
-        />
+      <Authorized key={`${item.id}_auth_edit`} path='/registration/alert/instance/edit'>
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={item.id} path='/registration/alert/instance/delete'>
-        <Button
-          className={'options-button'}
-          key={'DeleteAlertInstanceIcon'}
-          icon={<DangerDeleteIcon />}
-          onClick={() => handleDeleteSubmit(item.id)}
-        />
+      <Authorized key={`${item.id}_auth_delete`} path='/registration/alert/instance/delete'>
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>
     ];
   };
@@ -191,7 +181,7 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderDataSource = alertInstanceState.alertInstanceList.map((item) => ({
     subTitle: renderAlertInstanceSubTitle(item),
-    actions: renderAlertInstanceActionButton(item),
+    actions: <DataAction>{renderAlertInstanceActionButton(item)}</DataAction>,
     avatar: getAlertIcon(item.type, 60),
     content: renderAlertInstanceContent(item)
   }));

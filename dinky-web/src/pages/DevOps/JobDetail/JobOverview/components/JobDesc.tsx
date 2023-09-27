@@ -56,7 +56,12 @@ const JobDesc = (props: JobProps) => {
   return (
     <>
       <ProCard>
-        <Descriptions title={l('devops.jobinfo.config.JobBaseInfo')} bordered size='small'>
+        <Descriptions
+          title={l('devops.jobinfo.config.JobBaseInfo')}
+          bordered
+          size='small'
+          column={5}
+        >
           <Descriptions.Item label={l('global.table.status')}>
             <StatusTag status={jobDetail?.instance?.status} />
           </Descriptions.Item>

@@ -17,10 +17,9 @@
  *
  */
 
-import { AlertHistory } from '@/types/DevOps/data';
-import { BaseState } from '@/types/Public/state';
+import { AlertHistoryState } from '@/types/DevOps/state.d';
 
-export interface AlertHistoryState extends BaseState {
-  alertHistory: AlertHistory[];
-  showContent: boolean;
-}
+export const InitAlertHistoryState: AlertHistoryState = {
+  loading: false,
+  alertHistory: []
+};
