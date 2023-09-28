@@ -39,14 +39,16 @@ public class SseEmitterUTF8 extends SseEmitter {
     @Override
     protected void extendResponse(ServerHttpResponse outputMessage) {
         super.extendResponse(outputMessage);
-
         HttpHeaders headers = outputMessage.getHeaders();
         headers.setContentType(new MediaType(MediaType.TEXT_EVENT_STREAM, StandardCharsets.UTF_8));
     }
 
     @Override
-    public void send(Object object, MediaType mediaType) throws IOException {
+    public synchronized void complete() {
         Boolean complete = (Boolean) ReflectUtil.getFieldValue(this, "complete");
-        super.send(object, mediaType);
+        if (complete) {
+            return;
+        }
+        super.complete();
     }
 }
