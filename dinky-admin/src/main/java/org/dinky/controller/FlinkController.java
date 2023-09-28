@@ -19,13 +19,16 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.model.CheckPointReadTable;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.CascaderVO;
+import org.dinky.flink.checkpoint.CheckpointRead;
 import org.dinky.utils.CascaderOptionsUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +42,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Api(tags = "Flink Conf Controller", hidden = true)
 @RequestMapping("/api/flinkConf")
-public class FlinkConfController {
+public class FlinkController {
+    protected static final CheckpointRead INSTANCE = new CheckpointRead();
+
+    @GetMapping("/readCheckPoint")
+    @ApiOperation("Read Checkpoint")
+    public Result<Map<String, Map<String, CheckPointReadTable>>> readCheckPoint(String path, String operatorId) {
+        return Result.data(INSTANCE.readCheckpoint(path, operatorId));
+    }
+
     @GetMapping("/configOptions")
     @ApiOperation("Query Flink Configuration Options")
     public Result<List<CascaderVO>> loadDataByGroup() {
@@ -71,6 +82,8 @@ public class FlinkConfController {
             "org.apache.flink.configuration.MetricOptions",
             "org.apache.flink.configuration.NettyShuffleEnvironmentOptions",
             "org.apache.flink.configuration.RestartStrategyOptions",
+            "org.apache.flink.yarn.configuration.YarnConfigOptions",
+            "org.apache.flink.kubernetes.configuration.KubernetesConfigOptions",
             "org.dinky.constant.CustomerConfigureOptions"
         };
         List<CascaderVO> dataList = new ArrayList<>();

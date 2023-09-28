@@ -47,10 +47,6 @@ public class SseEmitterUTF8 extends SseEmitter {
     @Override
     public void send(Object object, MediaType mediaType) throws IOException {
         Boolean complete = (Boolean) ReflectUtil.getFieldValue(this, "complete");
-        if (complete) {
-            log.warn("SseEmitter is complete, cannot send message: {}", object);
-            return;
-        }
         super.send(object, mediaType);
     }
 }

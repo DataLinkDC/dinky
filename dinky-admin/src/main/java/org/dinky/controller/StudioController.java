@@ -92,7 +92,7 @@ public class StudioController {
             jobResult.setSuccess(false);
             jobResult.setStatement(studioExecuteDTO.getStatement());
             jobResult.setError(ex.toString());
-            return Result.failed(jobResult, Status.EXECUTE_FAILED);
+            return Result.failed(jobResult, ex.toString());
         }
     }
 
