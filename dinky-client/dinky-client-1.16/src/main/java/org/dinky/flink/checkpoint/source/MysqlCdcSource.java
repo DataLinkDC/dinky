@@ -22,25 +22,67 @@ package org.dinky.flink.checkpoint.source;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ververica.cdc.connectors.mysql.source.split.MySqlBinlogSplit;
+import com.ververica.cdc.connectors.mysql.source.split.MySqlSnapshotSplit;
 import com.ververica.cdc.connectors.mysql.source.split.MySqlSplit;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 
 public class MysqlCdcSource extends BaseCheckpointSource<MySqlSplit> {
 
+    /**
+     * MySqlSnapshotSplit{tableId=cdc-test.user, splitId='cdc-test.user:28', splitKeyType=[`id` INT NOT NULL], splitStart=[227165], splitEnd=[235278], highWatermark=null}
+     */
     public MysqlCdcSource(List<MySqlSplit> splits) {
         super(splits);
     }
 
     public List<String> headers() {
-        return CollUtil.newArrayList("partition", "starting-offset", "stopping-offset");
+        MySqlSplit mySqlSplit = splits.get(0);
+        if (mySqlSplit.isBinlogSplit()) {
+            return CollUtil.newArrayList(
+                    "split-id", "starting-offset", "ending-offset", "table-schemas", "finished-snapshot-split-infos");
+        } else if (mySqlSplit.isSnapshotSplit()) {
+            return CollUtil.newArrayList(
+                    "table-id", "split-id", "split-key-type", "split-start", "split-end", "high-watermark");
+        }
+        return null;
     }
 
     public List<?> datas() {
         return splits.stream()
                 .map(d -> {
                     JSONObject jsonObject = new JSONObject();
+                    if (d.isBinlogSplit()) {
+                        MySqlBinlogSplit split = d.asBinlogSplit();
+                        jsonObject.set("starting-offset", split.splitId());
+                        jsonObject.set(
+                                "starting-offset", split.getStartingOffset().toString());
+                        jsonObject.set(
+                                "ending-offset-id", split.getEndingOffset().toString());
+                        String tableSchemas = split.getTableSchemas().entrySet().stream()
+                                .map(e -> {
+                                    JSONObject tableSchema = new JSONObject();
+                                    tableSchema.set("table-id", e.getKey().identifier());
+                                    tableSchema.set("table-schema", e.getValue().toString());
+                                    return tableSchema;
+                                })
+                                .collect(Collectors.toCollection(JSONArray::new))
+                                .toString();
+                        jsonObject.set("table-schemas", tableSchemas);
+                        jsonObject.set("finished-snapshot-split-infos", split.getFinishedSnapshotSplitInfos());
+                    } else if (d.isSnapshotSplit()) {
+                        MySqlSnapshotSplit split = d.asSnapshotSplit();
+                        jsonObject.set("table-id", split.getTableId());
+                        jsonObject.set("split-id", split.splitId());
+                        jsonObject.set("split-key-type", split.getSplitKeyType());
+                        jsonObject.set("split-start", split.getSplitStart());
+                        jsonObject.set("split-end", split.getSplitEnd());
+                        jsonObject.set("high-watermark", split.getHighWatermark());
+                    }
+
                     return jsonObject;
                 })
                 .collect(Collectors.toList());
