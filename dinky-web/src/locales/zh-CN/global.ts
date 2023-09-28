@@ -132,6 +132,8 @@ export default {
   'global.table.isEnable': '是否启用',
   'global.table.note': '备注',
   'global.table.notePlaceholder': '请输入描述/备注!',
+  'global.table.jobid': '作业 ID',
+
   'global.table.status': '状态',
   'global.table.status.normal': '正常',
   'global.table.status.abnormal': '异常',

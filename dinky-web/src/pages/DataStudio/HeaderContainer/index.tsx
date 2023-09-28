@@ -181,23 +181,7 @@ const HeaderContainer = (props: any) => {
           (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId =
             res.datas.jobInstanceId;
           saveTabs({ ...props.tabs });
-        } else {
-          ErrorNotification(
-            res.datas.error,
-            l('pages.datastudio.editor.exec.error', '', { jobName: param.name }),
-            null
-          );
         }
-
-        // let newTabs = tabs;
-        // for (const element of newTabs.panes) {
-        //   if (element.key == key) {
-        //     element.console.result = res.datas;
-        //     break;
-        //   }
-        // }
-        // props.saveTabs(newTabs);
-        // useSession && showTables(currentSession.session, dispatch);
       }
     );
   };
