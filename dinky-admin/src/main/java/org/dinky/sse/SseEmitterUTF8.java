@@ -19,7 +19,6 @@
 
 package org.dinky.sse;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.http.HttpHeaders;
