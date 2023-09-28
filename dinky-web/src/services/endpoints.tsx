@@ -229,6 +229,8 @@ export enum API_CONSTANTS {
   RESTART_TASK = '/api/task/restartTask',
   RESTART_TASK_FROM_CHECKPOINT = '/api/task/selectSavePointRestartTask',
   GET_SAVEPOINTS = '/api/savepoints',
+  ALERT_HISTORY_LIST = '/api/alertHistory/list',
+  ALERT_HISTORY_DELETE = '/api/alertHistory/delete',
 
   // -- LDAP
   GET_LDAP_ENABLE = '/api/ldap/ldapEnableStatus',

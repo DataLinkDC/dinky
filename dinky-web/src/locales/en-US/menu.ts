@@ -31,6 +31,7 @@ export default {
   'menu.account.tenant': 'Tenant: {tenantCode}',
   'menu.account.center': 'Account Center',
   'menu.account.logout': 'Logout',
+  'menu.account.clearPageCache': 'Clear Page Cache',
   'menu.account.changePassword': 'Change Password',
   'menu.account.checkTenant': 'Switch Tenant',
   'menu.account.checkTenantConfirm': 'Are you sure to switch  tenant [ {tenantCode} ] ?',

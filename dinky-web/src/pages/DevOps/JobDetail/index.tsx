@@ -18,6 +18,7 @@
  */
 
 import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
+import AlertHistory from '@/pages/DevOps/JobDetail/AlertHistory';
 import CheckPoints from '@/pages/DevOps/JobDetail/CheckPointsTab';
 import JobLogsTab from '@/pages/DevOps/JobDetail/JobLogs/JobLogsTab';
 import JobMetrics from '@/pages/DevOps/JobDetail/JobMetrics';
@@ -72,7 +73,7 @@ const JobDetail = (props: any) => {
     [OperatorEnum.JOB_CHECKPOINTS]: <CheckPoints jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_METRICS]: <JobMetrics />,
     // [OperatorEnum.JOB_LINEAGE]: <Lineage jobDetail={jobInfoDetail} />,
-    [OperatorEnum.JOB_ALERT]: <CheckPoints jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_ALERT]: <AlertHistory jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_GRAPH]: <JobOperatorGraph jobDetail={jobInfoDetail} />
   };
 

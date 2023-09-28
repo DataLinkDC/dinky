@@ -45,7 +45,6 @@ import { l } from '@/utils/intl';
 import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
 import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
-import DescriptionsItem from 'antd/es/descriptions/Item';
 import { useEffect, useRef, useState } from 'react';
 
 export default () => {
@@ -157,11 +156,11 @@ export default () => {
   const renderDataSubTitle = (item: Cluster.Config) => {
     return (
       <Descriptions size={'small'} layout={'vertical'} column={1}>
-        <DescriptionsItem className={'hidden-overflow'} key={item.id}>
+        <Descriptions.Item className={'hidden-overflow'} key={item.id}>
           <Tooltip key={item.name} title={item.name}>
             {item.name}
           </Tooltip>
-        </DescriptionsItem>
+        </Descriptions.Item>
       </Descriptions>
     );
   };

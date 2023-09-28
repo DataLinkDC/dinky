@@ -31,6 +31,7 @@ export default {
   'menu.account.tenant': '租户: {tenantCode}',
   'menu.account.settings': '个人设置',
   'menu.account.logout': '退出登录',
+  'menu.account.clearPageCache': '清除页面缓存',
   'menu.account.changePassword': '修改密码',
   'menu.account.checkTenant': '切换租户',
   'menu.account.checkTenantConfirm': '你确定切换租户【{tenantCode}】吗？',

@@ -24,7 +24,6 @@ import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
-import org.dinky.data.model.AlertHistory;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.AlertGroupService;
@@ -163,23 +162,5 @@ public class AlertGroupController {
         } else {
             return Result.failed(Status.DELETE_FAILED);
         }
-    }
-
-    /**
-     * list alert history
-     *
-     * @param para {@link JsonNode}
-     * @return {@link ProTableResult} with {@link AlertHistory}
-     */
-    @PostMapping("/history")
-    @ApiImplicitParam(
-            name = "para",
-            value = "JsonNode",
-            dataType = "JsonNode",
-            required = true,
-            dataTypeClass = JsonNode.class)
-    @ApiOperation("Query AlertHistory List")
-    public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {
-        return alertHistoryService.selectForProTable(para);
     }
 }
