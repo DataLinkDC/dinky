@@ -44,7 +44,6 @@ import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/Settin
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
-import { ErrorNotification } from '@/utils/messages';
 import { connect } from '@@/exports';
 import {
   EnvironmentOutlined,
