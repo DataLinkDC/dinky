@@ -133,7 +133,6 @@ const FlinkDag = (props: DagProps) => {
       />
       <Drawer
         title={curentSelect?.name}
-        onClose={() => setOpen(false)}
         open={open}
         getContainer={false}
         size={'large'}
