@@ -19,103 +19,130 @@
 
 import DagDataNode from '@/components/FlinkDag/component/DagDataNode';
 import DagPlanNode from '@/components/FlinkDag/component/DagPlanNode';
-import {edgeConfig, graphConfig, layoutConfig, portConfig} from '@/components/FlinkDag/config';
-import {buildDag, regConnect, updateDag} from '@/components/FlinkDag/functions';
-import {Jobs} from '@/types/DevOps/data';
-import {DagreLayout} from '@antv/layout';
-import {Edge, Graph} from '@antv/x6';
-import {register} from '@antv/x6-react-shape';
-import {useEffect, useRef, useState} from 'react';
+import {
+  edgeConfig,
+  graphConfig,
+  layoutConfig,
+  portConfig,
+  zoomOptions
+} from '@/components/FlinkDag/config';
+import { buildDag, regConnect, updateDag } from '@/components/FlinkDag/functions';
+import { Jobs } from '@/types/DevOps/data';
+import { DagreLayout } from '@antv/layout';
+import { Edge, Graph } from '@antv/x6';
+import { Selection } from '@antv/x6-plugin-selection';
+import { register } from '@antv/x6-react-shape';
+import { Drawer } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 import './index.css';
-import {Slider} from "antd";
-import {z} from "@umijs/utils/compiled/zod";
 
 export type DagProps = {
-    job: Jobs.Job;
-    onlyPlan?: boolean;
+  job: Jobs.Job;
+  onlyPlan?: boolean;
 };
 
 const FlinkDag = (props: DagProps) => {
-    const container = useRef(null);
+  const container = useRef(null);
 
-    const {job, onlyPlan = false} = props;
+  const { job, onlyPlan = false } = props;
 
-    const [graph, setGraph] = useState<Graph>();
-    const [zoom, setZoom] = useState<number>(1);
-    const [currentJob, setCurrentJob] = useState<string>();
+  const [graph, setGraph] = useState<Graph>();
+  const [curentJob, setCurentJob] = useState<string>();
+  const [curentSelect, setCurentSelect] = useState<any>();
+  const [open, setOpen] = useState(false);
 
-    const initGraph = (flinkData: any) => {
-        register({
-            shape: 'data-processing-dag-node',
-            width: 212,
-            height: 48,
-            component: onlyPlan ? DagPlanNode : DagDataNode,
-            ports: portConfig
-        });
+  const initListen = (graph: Graph) => {
+    graph.on('node:selected', ({ cell }) => {
+      setOpen(true);
+      setCurentSelect(cell);
+      graph.positionCell(cell, 'center');
+    });
 
-        Edge.config(edgeConfig);
-        Graph.registerConnector('curveConnector', regConnect, true);
-        Graph.registerEdge('data-processing-curve', Edge, true);
+    graph.on('node:unselected', ({ cell }) => {
+      setOpen(false);
+      setCurentSelect(undefined);
+      graph.zoomToFit(zoomOptions);
+      graph.centerContent();
+    });
+  };
 
-        const graph: Graph = new Graph({
-            // @ts-ignore
-            container: container.current,
-            ...graphConfig
-        });
+  const initGraph = (flinkData: any) => {
+    register({
+      shape: 'data-processing-dag-node',
+      width: 250,
+      height: 140,
+      component: onlyPlan ? DagPlanNode : DagDataNode,
+      ports: portConfig
+    });
 
-        // Adaptive layout
-        const dagreLayout = new DagreLayout(layoutConfig);
-        const model = dagreLayout.layout(flinkData);
-        graph.fromJSON(model);
+    Edge.config(edgeConfig);
+    Graph.registerConnector('curveConnector', regConnect, true);
+    Graph.registerEdge('data-processing-curve', Edge, true);
 
-        // Automatically zoom to fit
-        const zoomOptions = {
-            padding: {
-                left: 50,
-                right: 50,
-                bottom: 100
-            },
-        };
-        graph.zoomToFit(zoomOptions);
-        graph.centerContent();
-        graph.on('scale', ({ sx }) => setZoom(sx))
-        updateDag(job.vertices, graph);
-        return graph;
-    };
+    const graph: Graph = new Graph({
+      // @ts-ignore
+      container: container.current,
+      ...graphConfig
+    });
 
-    useEffect(() => {
-        const flinkData = buildDag(job.plan);
-        // Clean up old data
-        if (graph) {
-            graph.clearCells();
-        }
-        setGraph(initGraph(flinkData));
-    }, [currentJob]);
-    useEffect(() => {
-        graph?.zoomTo(zoom)
-    }, [zoom]);
-
-    useEffect(() => {
-        updateDag(job.vertices, graph);
-        if (currentJob != job.jid) {
-            setCurrentJob(job.jid);
-        }
-    }, [job]);
-
-    return (
-        <span>
-            <div style={{height: 200, position: "absolute", top: "50%", right: 12, marginTop: -100,zIndex:999999999}}>
-                <Slider vertical value={zoom} min={0.5} max={1.5} tooltip={{open:false}} step={0.01} onChange={setZoom}/>
-            </div>
-            <div
-                style={{
-                    height: '100%',
-                    width: '100%'
-                }}
-                ref={container}
-            />
-        </span>
+    graph.use(
+      new Selection({
+        enabled: true,
+        multiple: false,
+        rubberband: false,
+        showNodeSelectionBox: true
+      })
     );
+
+    // Adaptive layout
+    const model = new DagreLayout(layoutConfig).layout(flinkData);
+    graph.fromJSON(model);
+
+    // Automatically zoom to fit
+    graph.zoomToFit(zoomOptions);
+    graph.centerContent();
+    updateDag(job.vertices, graph);
+    initListen(graph);
+    return graph;
+  };
+
+  useEffect(() => {
+    const flinkData = buildDag(job.plan);
+    // Clean up old data
+    if (graph) {
+      graph.clearCells();
+    }
+    setGraph(initGraph(flinkData));
+  }, [curentJob]);
+
+  useEffect(() => {
+    updateDag(job.vertices, graph);
+    if (curentJob != job.jid) {
+      setCurentJob(job.jid);
+    }
+  }, [job]);
+
+  return (
+    <>
+      <div
+        style={{
+          height: '100%',
+          width: '100%'
+        }}
+        ref={container}
+      />
+      <Drawer
+        title={curentSelect?.name}
+        onClose={() => setOpen(false)}
+        open={open}
+        getContainer={false}
+        size={'large'}
+        mask={false}
+      >
+        <p>{curentSelect?.getData().description}</p>
+      </Drawer>
+    </>
+  );
 };
 
 export default FlinkDag;
