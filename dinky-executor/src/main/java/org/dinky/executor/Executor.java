@@ -27,6 +27,7 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.parser.CustomParserImpl;
+import org.dinky.utils.KerberosUtil;
 
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
@@ -44,11 +45,7 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
-import org.apache.hadoop.security.UserGroupInformation;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,70 +57,38 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import lombok.extern.slf4j.Slf4j;
+import cn.hutool.core.util.ReflectUtil;
 
 /**
  * Executor
  *
  * @since 2021/11/17
  */
-@Slf4j
 public abstract class Executor {
 
     private static final Logger logger = LoggerFactory.getLogger(Executor.class);
 
+    // Flink stream execution environment, batch model also use it.
     protected StreamExecutionEnvironment environment;
+
+    // Dinky table environment.
     protected CustomTableEnvironment tableEnvironment;
-    protected EnvironmentSetting environmentSetting;
-    protected ExecutorSetting executorSetting;
+
+    // The config of Dinky executor.
+    protected ExecutorConfig executorConfig;
+
+    // Flink configuration, such as set rest.port = 8086
     protected Map<String, Object> setConfig = new HashMap<>();
 
-    protected SqlManager sqlManager = new SqlManager();
-    protected boolean useSqlFragment = true;
+    // Dinky variable manager
+    protected VariableManager variableManager = new VariableManager();
 
-    public static Executor build() {
-        return new LocalStreamExecutor(ExecutorSetting.DEFAULT);
-    }
-
-    public static Executor build(EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
-        if (environmentSetting.isUseRemote()) {
-            return buildRemoteExecutor(environmentSetting, executorSetting);
-        } else {
-            return buildLocalExecutor(executorSetting);
-        }
-    }
-
-    public static Executor buildLocalExecutor(ExecutorSetting executorSetting) {
-        if (executorSetting.isUseBatchModel()) {
-            return new LocalBatchExecutor(executorSetting);
-        } else {
-            return new LocalStreamExecutor(executorSetting);
-        }
-    }
-
-    public static Executor buildAppStreamExecutor(ExecutorSetting executorSetting) {
-        if (executorSetting.isUseBatchModel()) {
-            return new AppBatchExecutor(executorSetting);
-        } else {
-            return new AppStreamExecutor(executorSetting);
-        }
-    }
-
-    public static Executor buildRemoteExecutor(EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
-        environmentSetting.setUseRemote(true);
-        if (executorSetting.isUseBatchModel()) {
-            return new RemoteBatchExecutor(environmentSetting, executorSetting);
-        } else {
-            return new RemoteStreamExecutor(environmentSetting, executorSetting);
-        }
-    }
-
-    public SqlManager getSqlManager() {
-        return sqlManager;
+    public VariableManager getVariableManager() {
+        return variableManager;
     }
 
     public boolean isUseSqlFragment() {
-        return useSqlFragment;
+        return executorConfig.isUseSqlFragment();
     }
 
     public ExecutionConfig getExecutionConfig() {
@@ -138,20 +103,12 @@ public abstract class Executor {
         return tableEnvironment;
     }
 
-    public ExecutorSetting getExecutorSetting() {
-        return executorSetting;
-    }
-
-    public EnvironmentSetting getEnvironmentSetting() {
-        return environmentSetting;
+    public ExecutorConfig getExecutorConfig() {
+        return executorConfig;
     }
 
     public Map<String, Object> getSetConfig() {
         return setConfig;
-    }
-
-    public void setSetConfig(Map<String, Object> setConfig) {
-        this.setConfig = setConfig;
     }
 
     public TableConfig getTableConfig() {
@@ -163,39 +120,36 @@ public abstract class Executor {
     }
 
     protected void init() {
-        initEnvironment();
-        initExecutionEnvironment();
-    }
 
-    public void initEnvironment() {
-        if (executorSetting.isValidParallelism()) {
-            environment.setParallelism(executorSetting.getParallelism());
+        if (executorConfig.isValidParallelism()) {
+            environment.setParallelism(executorConfig.getParallelism());
         }
-        if (executorSetting.isValidConfig()) {
-            environment.getConfig().configure(Configuration.fromMap(executorSetting.getConfig()), null);
-        }
-    }
 
-    abstract CustomTableEnvironment createCustomTableEnvironment();
-
-    private void initExecutionEnvironment() {
-        useSqlFragment = executorSetting.isUseSqlFragment();
         tableEnvironment = createCustomTableEnvironment();
         CustomTableEnvironmentContext.set(tableEnvironment);
         tableEnvironment.injectParser(
                 new CustomParserImpl(tableEnvironment.getPlanner().getParser()));
         tableEnvironment.injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
+
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
-        if (executorSetting.isValidJobName()) {
-            configuration.setString(PipelineOptions.NAME.key(), executorSetting.getJobName());
-            setConfig.put(PipelineOptions.NAME.key(), executorSetting.getJobName());
+        if (executorConfig.isValidJobName()) {
+            configuration.setString(PipelineOptions.NAME.key(), executorConfig.getJobName());
+            setConfig.put(PipelineOptions.NAME.key(), executorConfig.getJobName());
         }
-        if (executorSetting.isValidConfig()) {
-            for (Map.Entry<String, String> entry : executorSetting.getConfig().entrySet()) {
+        if (executorConfig.isValidConfig()) {
+            for (Map.Entry<String, String> entry : executorConfig.getConfig().entrySet()) {
                 configuration.setString(entry.getKey(), entry.getValue());
             }
         }
+        if (executorConfig.isValidVariables()) {
+            variableManager.registerVariable(executorConfig.getVariables());
+        }
+        // Fix the Classloader in the env above Flink1.16 to appClassLoader, causing ckp to fail to compile
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        ReflectUtil.setFieldValue(environment, "userClassloader", contextClassLoader);
     }
+
+    abstract CustomTableEnvironment createCustomTableEnvironment();
 
     public String pretreatStatement(String statement) {
         return FlinkInterceptor.pretreatStatement(this, statement);
@@ -220,74 +174,13 @@ public abstract class Executor {
             return flinkInterceptorResult.getTableResult();
         }
         if (!flinkInterceptorResult.isNoExecute()) {
-            this.loginFromKeytabIfNeed();
+            KerberosUtil.authenticate(setConfig);
             return tableEnvironment.executeSql(statement);
         } else {
             return CustomTableResultImpl.TABLE_RESULT_OK;
         }
     }
 
-    private void reset() {
-        try {
-            if (UserGroupInformation.isLoginKeytabBased()) {
-                Method reset = UserGroupInformation.class.getDeclaredMethod("reset");
-                reset.invoke(UserGroupInformation.class);
-                log.info("Reset kerberos authentication...");
-            }
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException e) {
-            logger.error("Reset kerberos authentication error.", e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void loginFromKeytabIfNeed() {
-        setConfig.forEach((k, v) -> log.debug("setConfig key: [{}], value: [{}]", k, v));
-        String krb5ConfPath = (String) setConfig.getOrDefault("java.security.krb5.conf", "");
-        String keytabPath = (String) setConfig.getOrDefault("security.kerberos.login.keytab", "");
-        String principal = (String) setConfig.getOrDefault("security.kerberos.login.principal", "");
-
-        if (Asserts.isAllNullString(krb5ConfPath, keytabPath, principal)) {
-            log.info("Simple authentication mode");
-            return;
-        }
-        log.info("Kerberos authentication mode");
-        if (Asserts.isNullString(krb5ConfPath)) {
-            log.error("Parameter [java.security.krb5.conf] is null or empty.");
-            return;
-        }
-
-        if (Asserts.isNullString(keytabPath)) {
-            log.error("Parameter [security.kerberos.login.keytab] is null or empty.");
-            return;
-        }
-
-        if (Asserts.isNullString(principal)) {
-            log.error("Parameter [security.kerberos.login.principal] is null or empty.");
-            return;
-        }
-
-        this.reset();
-
-        System.setProperty("java.security.krb5.conf", krb5ConfPath);
-        org.apache.hadoop.conf.Configuration config = new org.apache.hadoop.conf.Configuration();
-        config.set("hadoop.security.authentication", "Kerberos");
-        config.setBoolean("hadoop.security.authorization", true);
-        UserGroupInformation.setConfiguration(config);
-        try {
-            UserGroupInformation.loginUserFromKeytab(principal, keytabPath);
-            log.error(
-                    "Kerberos [{}] authentication success.",
-                    UserGroupInformation.getLoginUser().getUserName());
-        } catch (IOException e) {
-            log.error("Kerberos authentication failed. ", e);
-        }
-    }
-
-    /**
-     * init udf
-     *
-     * @param udfFilePath udf文件路径
-     */
     public void initUDF(String... udfFilePath) {
         DinkyClassLoaderContextHolder.get().addURL(udfFilePath);
     }
@@ -302,21 +195,11 @@ public abstract class Executor {
         configuration.setString(PythonOptions.PYTHON_CLIENT_EXECUTABLE, executable);
     }
 
-    public String explainSql(String statement, ExplainDetail... extraDetails) {
-        statement = pretreatStatement(statement);
-        if (pretreatExecute(statement).isNoExecute()) {
-            return "";
-        }
-
-        return tableEnvironment.explainSql(statement, extraDetails);
-    }
-
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         statement = pretreatStatement(statement);
         if (Asserts.isNotNullString(statement) && !pretreatExecute(statement).isNoExecute()) {
             return tableEnvironment.explainSqlRecord(statement, extraDetails);
         }
-
         return null;
     }
 
@@ -372,14 +255,6 @@ public abstract class Executor {
         StatementSet statementSet = tableEnvironment.createStatementSet();
         statements.forEach(statementSet::addInsertSql);
         return statementSet.explain();
-    }
-
-    public void submitSql(String statements) {
-        executeSql(statements);
-    }
-
-    public void submitStatementSet(List<String> statements) {
-        executeStatementSet(statements);
     }
 
     public boolean parseAndLoadConfiguration(String statement) {

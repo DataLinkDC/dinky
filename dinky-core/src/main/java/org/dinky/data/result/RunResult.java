@@ -19,7 +19,7 @@
 
 package org.dinky.data.result;
 
-import org.dinky.executor.ExecutorSetting;
+import org.dinky.executor.ExecutorConfig;
 
 import java.time.LocalDateTime;
 
@@ -42,7 +42,7 @@ public class RunResult {
     private String msg;
     private String error;
     private IResult result;
-    private ExecutorSetting setting;
+    private ExecutorConfig setting;
 
     public RunResult() {}
 
@@ -51,7 +51,7 @@ public class RunResult {
             String statement,
             String flinkHost,
             Integer flinkPort,
-            ExecutorSetting setting,
+            ExecutorConfig setting,
             String jobName) {
         this.sessionId = sessionId;
         this.statement = statement;
@@ -77,11 +77,11 @@ public class RunResult {
         this.jobId = jobId;
     }
 
-    public ExecutorSetting getSetting() {
+    public ExecutorConfig getSetting() {
         return setting;
     }
 
-    public void setSetting(ExecutorSetting setting) {
+    public void setSetting(ExecutorConfig setting) {
         this.setting = setting;
     }
 

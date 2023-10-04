@@ -19,6 +19,8 @@
 
 package org.dinky.data.result;
 
+import org.dinky.assertion.Asserts;
+
 import org.apache.flink.table.api.TableResult;
 
 /**
@@ -34,7 +36,7 @@ public class SelectResultBuilder implements ResultBuilder {
     private final String timeZone;
 
     public SelectResultBuilder(Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone) {
-        this.maxRowNum = maxRowNum;
+        this.maxRowNum = Asserts.isNotNull(maxRowNum) ? maxRowNum : 100;
         this.isChangeLog = isChangeLog;
         this.isAutoCancel = isAutoCancel;
         this.timeZone = timeZone;

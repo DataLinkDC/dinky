@@ -24,7 +24,8 @@ import org.dinky.app.db.DBUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.executor.Executor;
-import org.dinky.executor.ExecutorSetting;
+import org.dinky.executor.ExecutorConfig;
+import org.dinky.executor.ExecutorFactory;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
@@ -170,13 +171,13 @@ public class Submitter {
         // 添加自定义全局变量信息
         sb.append(getFlinkSQLStatement(id, dbConfig));
         List<String> statements = Submitter.getStatements(sb.toString());
-        ExecutorSetting executorSetting = ExecutorSetting.build(taskConfig);
+        ExecutorConfig executorConfig = ExecutorConfig.buildFromMap(taskConfig);
 
         // 加载第三方jar
-        loadDep(taskConfig.get("type"), id, dinkyAddr, executorSetting);
+        loadDep(taskConfig.get("type"), id, dinkyAddr, executorConfig);
 
-        logger.info("作业配置如下： {}", executorSetting);
-        Executor executor = Executor.buildAppStreamExecutor(executorSetting);
+        logger.info("作业配置如下： {}", executorConfig);
+        Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig);
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
         List<StatementParam> execute = new ArrayList<>();
@@ -188,12 +189,12 @@ public class Submitter {
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
                 trans.add(new StatementParam(statement, operationType));
-                if (!executorSetting.isUseStatementSet()) {
+                if (!executorConfig.isUseStatementSet()) {
                     break;
                 }
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
-                if (!executorSetting.isUseStatementSet()) {
+                if (!executorConfig.isUseStatementSet()) {
                     break;
                 }
             } else {
@@ -202,11 +203,11 @@ public class Submitter {
         }
         for (StatementParam item : ddl) {
             logger.info("正在执行 FlinkSQL： " + item.getValue());
-            executor.submitSql(item.getValue());
+            executor.executeSql(item.getValue());
             logger.info("执行成功");
         }
         if (trans.size() > 0) {
-            if (executorSetting.isUseStatementSet()) {
+            if (executorConfig.isUseStatementSet()) {
                 List<String> inserts = new ArrayList<>();
                 for (StatementParam item : trans) {
                     if (item.getType().equals(SqlType.INSERT)) {
@@ -214,12 +215,12 @@ public class Submitter {
                     }
                 }
                 logger.info("正在执行 FlinkSQL 语句集： " + String.join(FlinkSQLConstant.SEPARATOR, inserts));
-                executor.submitStatementSet(inserts);
+                executor.executeStatementSet(inserts);
                 logger.info("执行成功");
             } else {
                 for (StatementParam item : trans) {
                     logger.info("正在执行 FlinkSQL： " + item.getValue());
-                    executor.submitSql(item.getValue());
+                    executor.executeSql(item.getValue());
                     logger.info("执行成功");
                     break;
                 }
@@ -230,13 +231,13 @@ public class Submitter {
             for (StatementParam item : execute) {
                 executes.add(item.getValue());
                 executor.executeSql(item.getValue());
-                if (!executorSetting.isUseStatementSet()) {
+                if (!executorConfig.isUseStatementSet()) {
                     break;
                 }
             }
             logger.info("正在执行 FlinkSQL 语句集： " + String.join(FlinkSQLConstant.SEPARATOR, executes));
             try {
-                executor.execute(executorSetting.getJobName());
+                executor.execute(executorConfig.getJobName());
                 logger.info("执行成功");
             } catch (Exception e) {
                 logger.error("执行失败, {}", e.getMessage(), e);
@@ -245,7 +246,7 @@ public class Submitter {
         logger.info("{}任务提交成功", LocalDateTime.now());
     }
 
-    private static void loadDep(String type, Integer taskId, String dinkyAddr, ExecutorSetting executorSetting) {
+    private static void loadDep(String type, Integer taskId, String dinkyAddr, ExecutorConfig executorConfig) {
         if (StringUtils.isBlank(dinkyAddr)) {
             return;
         }
@@ -275,13 +276,13 @@ public class Submitter {
                             .toArray(URL[]::new);
 
                     addURLs(jarUrls);
-                    executorSetting
+                    executorConfig
                             .getConfig()
                             .put(
                                     PipelineOptions.JARS.key(),
                                     Arrays.stream(jarUrls).map(URL::toString).collect(Collectors.joining(";")));
                     if (ArrayUtil.isNotEmpty(pyUrls)) {
-                        executorSetting
+                        executorConfig
                                 .getConfig()
                                 .put(
                                         PythonOptions.PYTHON_FILES.key(),
@@ -295,7 +296,7 @@ public class Submitter {
                 throw new RuntimeException(e);
             }
         }
-        executorSetting.getConfig().put("python.files", "./python_udf.zip");
+        executorConfig.getConfig().put("python.files", "./python_udf.zip");
     }
 
     private static void addURLs(URL[] jarUrls) {

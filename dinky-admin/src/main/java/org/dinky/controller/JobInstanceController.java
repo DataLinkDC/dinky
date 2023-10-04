@@ -24,6 +24,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
+import org.dinky.data.model.ID;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.JobManagerConfiguration;
@@ -104,6 +105,18 @@ public class JobInstanceController {
             required = true)
     public Result<JobInfoDetail> getJobInfoDetail(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getJobInfoDetail(id));
+    }
+
+    @PostMapping("/getOneById")
+    @ApiOperation("Get job instance info by job instance id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Job instance id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true)
+    public Result getOneById(@RequestBody ID id) {
+        return Result.succeed(jobInstanceService.getById(id.getId()), "获取成功");
     }
 
     /** 刷新Job实例的所有信息 */
