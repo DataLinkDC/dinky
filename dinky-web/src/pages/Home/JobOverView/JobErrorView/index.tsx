@@ -47,43 +47,43 @@ const JobErrorView: React.FC = () => {
       rank: 2,
       name: '任务2',
       value: 20000,
-        key: '任务2'
+      key: '任务2'
     },
     {
       rank: 3,
       name: '任务3',
       value: 30000,
-        key: '任务3'
+      key: '任务3'
     },
     {
       rank: 4,
       name: '任务4',
       value: 40000,
-        key: '任务4'
+      key: '任务4'
     },
     {
       rank: 5,
       name: '任务5',
       value: 50000,
-        key: '任务5'
+      key: '任务5'
     },
     {
       rank: 6,
       name: '任务6',
       value: 60000,
-        key: '任务6'
+      key: '任务6'
     },
     {
       rank: 7,
       name: '任务7',
       value: 70000,
-        key: '任务7'
+      key: '任务7'
     },
     {
       rank: 8,
       name: '任务8',
       value: 80000,
-        key: '任务8'
+      key: '任务8'
     }
   ]);
 

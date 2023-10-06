@@ -19,7 +19,13 @@ import { chooseTenantSubmit, outLogin } from '@/services/BusinessCrud';
 import { setTenantStorageAndCookie } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ErrorNotification, SuccessNotification } from '@/utils/messages';
-import {ClearOutlined, LogoutOutlined, TeamOutlined, UserOutlined, UserSwitchOutlined} from '@ant-design/icons';
+import {
+  ClearOutlined,
+  LogoutOutlined,
+  TeamOutlined,
+  UserOutlined,
+  UserSwitchOutlined
+} from '@ant-design/icons';
 import { setAlpha } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useModel } from '@umijs/max';
@@ -216,7 +222,7 @@ const AvatarDropdown = () => {
       key: 'clearPageCache',
       icon: <ClearOutlined />,
       label: l('menu.account.clearPageCache'),
-      onClick: ()=>{
+      onClick: () => {
         window.localStorage.removeItem('persist:root');
         window.location.reload();
       }
