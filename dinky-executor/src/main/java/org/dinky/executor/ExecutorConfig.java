@@ -46,7 +46,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-@ApiModel(value = "ExecutorSetting", description = "Executor settings for a job")
+@ApiModel(value = "ExecutorConfig", description = "Executor config for a job")
 public class ExecutorConfig {
 
     private static final Logger log = LoggerFactory.getLogger(ExecutorConfig.class);

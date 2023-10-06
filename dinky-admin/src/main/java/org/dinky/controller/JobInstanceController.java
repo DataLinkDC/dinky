@@ -116,7 +116,7 @@ public class JobInstanceController {
             paramType = "query",
             required = true)
     public Result getOneById(@RequestBody ID id) {
-        return Result.succeed(jobInstanceService.getById(id.getId()), "获取成功");
+        return Result.succeed(jobInstanceService.getById(id.getId()));
     }
 
     /** 刷新Job实例的所有信息 */

@@ -176,7 +176,7 @@ public class Submitter {
         // 加载第三方jar
         loadDep(taskConfig.get("type"), id, dinkyAddr, executorConfig);
 
-        logger.info("作业配置如下： {}", executorConfig);
+        logger.info("The job configuration is as follows: {}", executorConfig);
         Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig);
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
@@ -202,9 +202,9 @@ public class Submitter {
             }
         }
         for (StatementParam item : ddl) {
-            logger.info("正在执行 FlinkSQL： " + item.getValue());
+            logger.info("Executing FlinkSQL: " + item.getValue());
             executor.executeSql(item.getValue());
-            logger.info("执行成功");
+            logger.info("Execution succeeded.");
         }
         if (trans.size() > 0) {
             if (executorConfig.isUseStatementSet()) {
@@ -214,14 +214,14 @@ public class Submitter {
                         inserts.add(item.getValue());
                     }
                 }
-                logger.info("正在执行 FlinkSQL 语句集： " + String.join(FlinkSQLConstant.SEPARATOR, inserts));
+                logger.info("Executing FlinkSQL statement set: " + String.join(FlinkSQLConstant.SEPARATOR, inserts));
                 executor.executeStatementSet(inserts);
-                logger.info("执行成功");
+                logger.info("Execution succeeded.");
             } else {
                 for (StatementParam item : trans) {
-                    logger.info("正在执行 FlinkSQL： " + item.getValue());
+                    logger.info("Executing FlinkSQL: " + item.getValue());
                     executor.executeSql(item.getValue());
-                    logger.info("执行成功");
+                    logger.info("Execution succeeded.");
                     break;
                 }
             }
