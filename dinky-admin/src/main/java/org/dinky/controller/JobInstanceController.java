@@ -19,10 +19,21 @@
 
 package org.dinky.controller;
 
+import cn.hutool.core.lang.Dict;
+import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import java.util.HashSet;
+import java.util.Set;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.enums.BusinessType;
+import org.dinky.data.model.ID;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.JobManagerConfiguration;
@@ -33,26 +44,12 @@ import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.BuildConfiguration;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import cn.hutool.core.lang.Dict;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobInstanceController
@@ -103,6 +100,18 @@ public class JobInstanceController {
             required = true)
     public Result<JobInfoDetail> getJobInfoDetail(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getJobInfoDetail(id));
+    }
+
+    @PostMapping("/getOneById")
+    @ApiOperation("Get job instance info by job instance id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Job instance id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true)
+    public Result getOneById(@RequestBody ID id) {
+        return Result.succeed(jobInstanceService.getById(id.getId()));
     }
 
     /** 刷新Job实例的所有信息 */

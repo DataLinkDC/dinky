@@ -109,7 +109,6 @@ const Result = (props: any) => {
     }
 
     const params = currentTabs.params;
-
     if (params.resultData && !isRefresh) {
       setData(params.resultData);
     } else {
@@ -120,7 +119,6 @@ const Result = (props: any) => {
         });
         if (res.datas) {
           params.resultData = res.datas;
-          saveTabs({ ...props.tabs });
           setData(res.datas);
         }
       } else {
@@ -139,7 +137,10 @@ const Result = (props: any) => {
             datas.jid = jid;
             if (datas.success) {
               params.resultData = datas;
-              saveTabs({ ...props.tabs });
+              setData(datas);
+            }else {
+              params.resultData = {};
+              setData({});
             }
           }
         }
@@ -218,7 +219,7 @@ const Result = (props: any) => {
       {data.columns ? (
         <Table
           columns={getColumns(data.columns)}
-          dataSource={data.rowData!.map((item: any, index: number) => {
+          dataSource={data.rowData?.map((item: any, index: number) => {
             return { ...item, key: index };
           })}
           loading={loading}

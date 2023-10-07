@@ -20,8 +20,8 @@
 package org.dinky.interceptor;
 
 import org.dinky.executor.Executor;
-import org.dinky.executor.ExecutorSetting;
-import org.dinky.executor.LocalStreamExecutor;
+import org.dinky.executor.ExecutorConfig;
+import org.dinky.executor.ExecutorFactory;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -48,8 +48,8 @@ public class CdcSourceTests {
                 .append(")")
                 .toString();
 
-        ExecutorSetting executorSetting = ExecutorSetting.DEFAULT;
-        Executor executor = LocalStreamExecutor.buildLocalExecutor(executorSetting);
+        ExecutorConfig executorConfig = ExecutorConfig.DEFAULT;
+        Executor executor = ExecutorFactory.buildLocalExecutor(executorConfig);
         executor.executeSql(statement);
         executor.execute("");
     }

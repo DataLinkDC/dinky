@@ -46,11 +46,11 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-@ApiModel(value = "ExecutorSetting", description = "Executor settings for a job")
-public class ExecutorSetting {
+@ApiModel(value = "ExecutorConfig", description = "Executor config for a job")
+public class ExecutorConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(ExecutorSetting.class);
-    public static final ExecutorSetting DEFAULT = new ExecutorSetting(0, 1, true);
+    private static final Logger log = LoggerFactory.getLogger(ExecutorConfig.class);
+    public static final ExecutorConfig DEFAULT = new ExecutorConfig(0, 1, true);
 
     public static final String CHECKPOINT_CONST = "checkpoint";
     public static final String PARALLELISM_CONST = "parallelism";
@@ -62,6 +62,20 @@ public class ExecutorSetting {
     public static final String CONFIG_CONST = "config";
 
     private static final ObjectMapper mapper = new ObjectMapper();
+
+    @ApiModelProperty(
+            value = "Job manager rest host",
+            dataType = "String",
+            example = "127.0.0.1",
+            notes = "Remote environment need a job manager rest host")
+    private String host;
+
+    @ApiModelProperty(
+            value = "Job manager rest port",
+            dataType = "Integer",
+            example = "8081",
+            notes = "Remote environment need a job manager rest port")
+    private Integer port;
 
     @ApiModelProperty(
             value = "Flag indicating whether to use batch model",
@@ -111,42 +125,58 @@ public class ExecutorSetting {
             notes = "Map of configuration properties")
     private Map<String, String> config;
 
-    public ExecutorSetting(boolean useSqlFragment) {
+    @ApiModelProperty(
+            value = "Map of variables",
+            dataType = "Map<String, String>",
+            example = "{\"var1\": \"value1\", \"var2\": \"value2\"}",
+            notes = "Map of variables")
+    private Map<String, String> variables;
+
+    @ApiModelProperty(
+            value = "List of JAR files",
+            dataType = "String[]",
+            example = "[\"file1.jar\", \"file2.jar\"]",
+            notes = "List of JAR files")
+    private String[] jarFiles;
+
+    public ExecutorConfig(boolean useSqlFragment) {
         this(null, useSqlFragment);
     }
 
-    public ExecutorSetting(Integer checkpoint) {
+    public ExecutorConfig(Integer checkpoint) {
         this(checkpoint, false);
     }
 
-    public ExecutorSetting(Integer checkpoint, boolean useSqlFragment) {
+    public ExecutorConfig(Integer checkpoint, boolean useSqlFragment) {
         this(checkpoint, null, useSqlFragment, null, null);
     }
 
-    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment) {
+    public ExecutorConfig(Integer checkpoint, Integer parallelism, boolean useSqlFragment) {
         this(checkpoint, parallelism, useSqlFragment, null, null);
     }
 
-    public ExecutorSetting(
+    public ExecutorConfig(
             Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath, String jobName) {
         this(checkpoint, parallelism, useSqlFragment, savePointPath, jobName, null);
     }
 
-    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath) {
+    public ExecutorConfig(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath) {
         this(checkpoint, parallelism, useSqlFragment, savePointPath, null, null);
     }
 
-    public ExecutorSetting(
+    public ExecutorConfig(
             Integer checkpoint,
             Integer parallelism,
             boolean useSqlFragment,
             String savePointPath,
             String jobName,
             Map<String, String> config) {
-        this(checkpoint, parallelism, useSqlFragment, false, false, savePointPath, jobName, config);
+        this(null, null, checkpoint, parallelism, useSqlFragment, false, false, savePointPath, jobName, config, null);
     }
 
-    public ExecutorSetting(
+    private ExecutorConfig(
+            String host,
+            Integer port,
             Integer checkpoint,
             Integer parallelism,
             boolean useSqlFragment,
@@ -154,7 +184,10 @@ public class ExecutorSetting {
             boolean useBatchModel,
             String savePointPath,
             String jobName,
-            Map<String, String> config) {
+            Map<String, String> config,
+            Map<String, String> variables) {
+        this.host = host;
+        this.port = port;
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.useSqlFragment = useSqlFragment;
@@ -163,9 +196,49 @@ public class ExecutorSetting {
         this.savePointPath = savePointPath;
         this.jobName = jobName;
         this.config = config;
+        this.variables = variables;
     }
 
-    public static ExecutorSetting build(
+    public static ExecutorConfig build(
+            String address,
+            Integer checkpoint,
+            Integer parallelism,
+            boolean useSqlFragment,
+            boolean useStatementSet,
+            boolean useBatchModel,
+            String savePointPath,
+            String jobName,
+            Map<String, String> config,
+            Map<String, String> variables) {
+
+        String host = null;
+        Integer port = null;
+        if (Asserts.isNotNullString(address)) {
+            String[] strings = address.split(":");
+            if (strings.length > 1) {
+                host = strings[0];
+                port = Integer.parseInt(strings[1]);
+            } else {
+                host = strings[0];
+                port = 8081;
+            }
+        }
+
+        return new ExecutorConfig(
+                host,
+                port,
+                checkpoint,
+                parallelism,
+                useSqlFragment,
+                useStatementSet,
+                useBatchModel,
+                savePointPath,
+                jobName,
+                config,
+                variables);
+    }
+
+    public static ExecutorConfig build(
             Integer checkpoint,
             Integer parallelism,
             boolean useSqlFragment,
@@ -189,7 +262,9 @@ public class ExecutorSetting {
                 config.put(item.get("key"), item.get("value"));
             }
         }
-        return new ExecutorSetting(
+        return new ExecutorConfig(
+                null,
+                null,
                 checkpoint,
                 parallelism,
                 useSqlFragment,
@@ -197,10 +272,11 @@ public class ExecutorSetting {
                 useBatchModel,
                 savePointPath,
                 jobName,
-                config);
+                config,
+                null);
     }
 
-    public static ExecutorSetting build(Map<String, String> settingMap) {
+    public static ExecutorConfig buildFromMap(Map<String, String> settingMap) {
         Integer checkpoint = NumberUtils.createInteger(settingMap.get(CHECKPOINT_CONST));
         Integer parallelism = NumberUtils.createInteger(settingMap.get(PARALLELISM_CONST));
         return build(
@@ -214,6 +290,14 @@ public class ExecutorSetting {
                 settingMap.get(CONFIG_CONST));
     }
 
+    public String getJobManagerAddress() {
+        return host + ":" + port;
+    }
+
+    public boolean isRemote() {
+        return Asserts.isNotNullString(this.getHost());
+    }
+
     public boolean isValidParallelism() {
         return Asserts.isNotNull(this.getParallelism()) && this.getParallelism() > 0;
     }
@@ -222,8 +306,24 @@ public class ExecutorSetting {
         return Asserts.isNotNullString(this.getJobName());
     }
 
+    public boolean isValidHost() {
+        return Asserts.isNotNullString(this.getHost());
+    }
+
+    public boolean isValidPort() {
+        return Asserts.isNotNull(this.getPort());
+    }
+
     public boolean isValidConfig() {
         return Asserts.isNotNullMap(this.getConfig());
+    }
+
+    public boolean isValidVariables() {
+        return Asserts.isNotNullMap(this.getVariables());
+    }
+
+    public boolean isValidJarFiles() {
+        return Asserts.isNotNull(this.getJarFiles());
     }
 
     @Override

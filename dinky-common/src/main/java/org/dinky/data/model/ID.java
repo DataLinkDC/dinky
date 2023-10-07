@@ -17,30 +17,13 @@
  *
  */
 
-package org.dinky.constant;
+package org.dinky.data.model;
 
-/**
- * FlinkSQLConstant
- *
- * @since 2021/5/25 15:51
- */
-public interface FlinkSQLConstant {
+import io.swagger.annotations.ApiModel;
+import lombok.Data;
 
-    /** 分隔符 */
-    String SEPARATOR = ";\n";
-    /** DDL 类型 */
-    String DDL = "DDL";
-    /** DML 类型 */
-    String DML = "DML";
-    /** DATASTREAM 类型 */
-    String DATASTREAM = "DATASTREAM";
-
-    /** The define identifier of FlinkSQL Variable */
-    String VARIABLES = ":=";
-
-    /** The define identifier of FlinkSQL Date Variable */
-    String INNER_DATE_KEY = "_CURRENT_DATE_";
-
-    /** 内置日期变量格式 确定后不能修改 */
-    String INNER_DATE_FORMAT = "yyyy-MM-dd";
+@Data
+@ApiModel(value = "ID", description = "The ID of a object")
+public class ID {
+    private Integer id;
 }

@@ -19,8 +19,8 @@
 
 package org.dinky.executor;
 
-import static org.dinky.executor.ExecutorSetting.CHECKPOINT_CONST;
-import static org.dinky.executor.ExecutorSetting.PARALLELISM_CONST;
+import static org.dinky.executor.ExecutorConfig.CHECKPOINT_CONST;
+import static org.dinky.executor.ExecutorConfig.PARALLELISM_CONST;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
@@ -30,7 +30,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /** */
-class ExecutorSettingTest {
+class ExecutorConfigTest {
 
     @Test
     void build() {
@@ -38,11 +38,11 @@ class ExecutorSettingTest {
         maps.put(CHECKPOINT_CONST, "123");
         maps.put(PARALLELISM_CONST, "456");
 
-        ExecutorSetting es = ExecutorSetting.build(maps);
+        ExecutorConfig es = ExecutorConfig.buildFromMap(maps);
         assertEquals(123, es.getCheckpoint());
         assertEquals(456, es.getParallelism());
 
-        ExecutorSetting esNull = ExecutorSetting.build(Collections.emptyMap());
+        ExecutorConfig esNull = ExecutorConfig.buildFromMap(Collections.emptyMap());
         assertNull(esNull.getCheckpoint());
         assertNull(esNull.getParallelism());
     }
