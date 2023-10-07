@@ -78,7 +78,7 @@ const DagDataNode = (props: any) => {
 
   return (
     <Card
-      style={{ width: '250px', padding: 0 , margin: 0, height: 140 }}
+      style={{ width: '250px', padding: 0, margin: 0, height: 140 }}
       bordered={false}
       size={'small'}
       type={'inner'}
