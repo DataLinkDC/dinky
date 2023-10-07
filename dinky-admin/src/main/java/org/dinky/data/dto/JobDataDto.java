@@ -20,13 +20,17 @@
 package org.dinky.data.dto;
 
 import org.dinky.data.model.JobHistory;
-import org.dinky.utils.JSONUtil;
+import org.dinky.data.model.flink.config.FlinkJobConfigInfo;
+import org.dinky.data.model.flink.exceptions.FlinkJobExceptionsDetail;
+import org.dinky.data.model.flink.job.FlinkJobDetailInfo;
+import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,13 +57,11 @@ public class JobDataDto {
             notes = "Tenant ID associated with the job history")
     private Integer tenantId;
 
-    @TableField(exist = false)
-    @ApiModelProperty(value = "Job Object", notes = "Object representing job details")
-    private JsonNode job;
+    @ApiModelProperty(value = "FlinkJobDetailInfo", notes = "FlinkJobDetailInfo representing job details")
+    private FlinkJobDetailInfo job;
 
-    @TableField(exist = false)
-    @ApiModelProperty(value = "Exceptions Object", notes = "Object representing job exceptions")
-    private JsonNode exceptions;
+    @ApiModelProperty(value = "Exceptions Detail Object", notes = "Object representing job exceptions details")
+    private FlinkJobExceptionsDetail exceptions;
 
     @TableField(exist = false)
     @ApiModelProperty(value = "Checkpoints Object", notes = "Object representing job checkpoints")
@@ -69,9 +71,8 @@ public class JobDataDto {
     @ApiModelProperty(value = "Checkpoints Config Object", notes = "Object representing checkpoints configuration")
     private JsonNode checkpointsConfig;
 
-    @TableField(exist = false)
-    @ApiModelProperty(value = "Config Object", notes = "Object representing job configuration")
-    private JsonNode config;
+    @ApiModelProperty(value = "FlinkJobConfigInfo", notes = "FlinkJobConfigInfo representing job configuration")
+    private FlinkJobConfigInfo config;
 
     @TableField(exist = false)
     @ApiModelProperty(value = "Jar Object", notes = "Object representing the JAR used in the job")
@@ -105,14 +106,14 @@ public class JobDataDto {
         return JobHistory.builder()
                 .id(this.id)
                 .tenantId(this.tenantId)
-                .jobJson(JSONUtil.toJsonString(getJob()))
-                .exceptionsJson(JSONUtil.toJsonString(getExceptions()))
-                .checkpointsJson(JSONUtil.toJsonString(getCheckpoints()))
-                .checkpointsConfigJson(JSONUtil.toJsonString(getCheckpointsConfig()))
-                .configJson(JSONUtil.toJsonString(getConfig()))
-                .jarJson(JSONUtil.toJsonString(getJar()))
-                .clusterJson(JSONUtil.toJsonString(getCluster()))
-                .clusterConfigurationJson(JSONUtil.toJsonString(getClusterConfiguration()))
+                .jobJson(JSONUtil.toJsonStr(getJob()))
+                .exceptionsJson(JSONUtil.toJsonStr(getExceptions()))
+                .checkpointsJson(JSONUtil.toJsonStr(getCheckpoints()))
+                .checkpointsConfigJson(JSONUtil.toJsonStr(getCheckpointsConfig()))
+                .configJson(JSONUtil.toJsonStr(getConfig()))
+                .jarJson(JSONUtil.toJsonStr(getJar()))
+                .clusterJson(JSONUtil.toJsonStr(getCluster()))
+                .clusterConfigurationJson(JSONUtil.toJsonStr(getClusterConfiguration()))
                 .updateTime(LocalDateTime.now())
                 .build();
     }
@@ -121,14 +122,14 @@ public class JobDataDto {
         return JobDataDto.builder()
                 .id(jobHistory.getId())
                 .tenantId(jobHistory.getTenantId())
-                .job(JSONUtil.parseToJsonNode(jobHistory.getJobJson()))
-                .exceptions(JSONUtil.parseToJsonNode(jobHistory.getExceptionsJson()))
-                .checkpoints(JSONUtil.parseToJsonNode(jobHistory.getCheckpointsJson()))
-                .checkpointsConfig(JSONUtil.parseToJsonNode(jobHistory.getCheckpointsConfigJson()))
-                .config(JSONUtil.parseToJsonNode(jobHistory.getConfigJson()))
-                .jar(JSONUtil.parseToJsonNode(jobHistory.getJarJson()))
-                .cluster(JSONUtil.parseToJsonNode(jobHistory.getClusterJson()))
-                .clusterConfiguration(JSONUtil.parseToJsonNode(jobHistory.getClusterConfigurationJson()))
+                .job(JsonUtils.toJavaBean(jobHistory.getJobJson(), FlinkJobDetailInfo.class))
+                .exceptions(JsonUtils.toJavaBean(jobHistory.getExceptionsJson(), FlinkJobExceptionsDetail.class))
+                .checkpoints(JsonUtils.parseToJsonNode(jobHistory.getCheckpointsJson()))
+                .checkpointsConfig(JsonUtils.parseToJsonNode(jobHistory.getCheckpointsConfigJson()))
+                .config(JsonUtils.toJavaBean(jobHistory.getConfigJson(), FlinkJobConfigInfo.class))
+                .jar(JsonUtils.parseToJsonNode(jobHistory.getJarJson()))
+                .cluster(JsonUtils.parseToJsonNode(jobHistory.getClusterJson()))
+                .clusterConfiguration(JsonUtils.parseToJsonNode(jobHistory.getClusterConfigurationJson()))
                 .build();
     }
 }

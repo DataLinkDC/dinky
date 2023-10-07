@@ -27,7 +27,7 @@ import org.dinky.daemon.task.DaemonTaskConfig;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.job.handler.JobAlertHandler;
 import org.dinky.job.handler.JobMetricsHandler;
-import org.dinky.job.handler.JobRefeshHandler;
+import org.dinky.job.handler.JobRefreshHandler;
 import org.dinky.service.JobInstanceService;
 
 import java.util.Objects;
@@ -75,7 +75,7 @@ public class FlinkJobTask implements DaemonTask {
         volatilityBalance();
         TenantContextHolder.set(1);
 
-        boolean isDone = JobRefeshHandler.refeshJob(jobInfoDetail, isNeedSave());
+        boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, isNeedSave());
         JobAlertHandler.getInstance().check(jobInfoDetail);
         JobMetricsHandler.writeFlinkMetrics(jobInfoDetail);
         return isDone;

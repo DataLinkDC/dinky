@@ -24,7 +24,7 @@ import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.K8sConfig;
 import org.dinky.gateway.enums.GatewayType;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import java.util.Optional;
 
@@ -71,7 +71,7 @@ public class FlinkClusterConfig {
     private K8sConfig kubernetesConfig;
 
     public static FlinkClusterConfig create(String type, String json) {
-        FlinkClusterConfig flinkClusterConfig = JSONUtil.parseObject(json, FlinkClusterConfig.class);
+        FlinkClusterConfig flinkClusterConfig = JsonUtils.parseObject(json, FlinkClusterConfig.class);
         Optional.ofNullable(flinkClusterConfig).ifPresent(config -> config.setType(GatewayType.get(type)));
         return flinkClusterConfig;
     }

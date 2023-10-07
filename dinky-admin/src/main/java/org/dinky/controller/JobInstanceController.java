@@ -23,7 +23,6 @@ import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.enums.BusinessType;
-import org.dinky.data.enums.Status;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.JobManagerConfiguration;
@@ -117,7 +116,7 @@ public class JobInstanceController {
             paramType = "query",
             required = true)
     public Result<JobInfoDetail> refreshJobInfoDetail(@RequestParam Integer id) {
-        return Result.succeed(jobInstanceService.refreshJobInfoDetail(id), Status.RESTART_SUCCESS);
+        return Result.succeed(jobInstanceService.refreshJobInfoDetail(id));
     }
 
     /** 获取单任务实例的血缘分析 */
@@ -130,7 +129,7 @@ public class JobInstanceController {
             paramType = "query",
             required = true)
     public Result<LineageResult> getLineage(@RequestParam Integer id) {
-        return Result.succeed(jobInstanceService.getLineage(id), Status.RESTART_SUCCESS);
+        return Result.succeed(jobInstanceService.getLineage(id));
     }
 
     /** 获取 JobManager 的信息 */
@@ -245,7 +244,7 @@ public class JobInstanceController {
     })
     public Result<JsonNode> getJobMetricsItems(
             @RequestParam String address, @RequestParam String jobId, @RequestParam String verticeId) {
-        return Result.succeed(FlinkAPI.build(address).getJobMetricesItems(jobId, verticeId));
+        return Result.succeed(FlinkAPI.build(address).getJobMetricsItems(jobId, verticeId));
     }
 
     @GetMapping("/getJobMetricsData")
@@ -276,6 +275,6 @@ public class JobInstanceController {
             @RequestParam String jobId,
             @RequestParam String verticeId,
             @RequestParam String metrics) {
-        return Result.succeed(FlinkAPI.build(address).getJobMetricesData(jobId, verticeId, metrics));
+        return Result.succeed(FlinkAPI.build(address).getJobMetricsData(jobId, verticeId, metrics));
     }
 }

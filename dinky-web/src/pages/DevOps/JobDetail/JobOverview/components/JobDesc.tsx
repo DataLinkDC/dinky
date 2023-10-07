@@ -1,6 +1,6 @@
 import StatusTag from '@/components/JobTags/StatusTag';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import { parseSecondStr } from '@/utils/function';
+import { parseMilliSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { Link } from '@@/exports';
 import { RocketOutlined } from '@ant-design/icons';
@@ -53,15 +53,11 @@ const JobDesc = (props: JobProps) => {
     return formList;
   };
 
+  console.log(jobDetail?.jobDataDto?.config, '11111');
   return (
     <>
       <ProCard>
-        <Descriptions
-          title={l('devops.jobinfo.config.JobBaseInfo')}
-          bordered
-          size='small'
-          column={5}
-        >
+        <Descriptions bordered size='small' column={5}>
           <Descriptions.Item label={l('global.table.status')}>
             <StatusTag status={jobDetail?.instance?.status} />
           </Descriptions.Item>
@@ -74,7 +70,7 @@ const JobDesc = (props: JobProps) => {
 
           <Descriptions.Item label={l('devops.jobinfo.config.RestartStrategy')}>
             <Tag color='blue' title={'Restart Strategy'}>
-              {jobDetail?.jobDataDto?.config?.['execution-config']?.['restart-strategy']}
+              {jobDetail?.jobDataDto?.config?.executionConfig?.restartStrategy}
             </Tag>
           </Descriptions.Item>
 
@@ -121,11 +117,11 @@ const JobDesc = (props: JobProps) => {
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.JobParallelism')}>
-            {jobDetail?.jobDataDto?.config?.['execution-config']?.['job-parallelism']}
+            {jobDetail?.jobDataDto?.config?.executionConfig?.jobParallelism}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('global.table.useTime')}>
-            {parseSecondStr(jobDetail?.instance?.duration)}
+            {parseMilliSecondStr(jobDetail?.instance?.duration)}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.startFromSavePoint')}>

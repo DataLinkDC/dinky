@@ -12,9 +12,9 @@ export type VerticesTableListItem = {
   status: string;
   metrics: any;
   parallelism: number;
-  startTime?: string;
+  startTime?: number;
   duration?: number;
-  endTime?: string;
+  endTime?: number;
   tasks: any;
 };
 
@@ -82,13 +82,16 @@ const FlinkTable = (props: JobProps): JSX.Element => {
     },
     {
       title: l('global.table.startTime'),
-      dataIndex: 'start-time',
+      dataIndex: 'startTime',
       valueType: 'dateTime'
     },
     {
       title: l('global.table.endTime'),
-      dataIndex: 'end-time',
-      valueType: 'dateTime'
+      dataIndex: 'endTime',
+      valueType: 'dateTime',
+      render: (dom, entity) => {
+        return entity.endTime === -1 ? '-' : entity.endTime;
+      }
     },
     {
       title: l('global.table.useTime'),

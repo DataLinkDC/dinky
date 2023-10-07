@@ -965,7 +965,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         //        if (config.isJarTask()) {
         //            JSONObject clusterObj = new JSONObject(flinkClusterCfg);
         //            JSONObject taskObj = new JSONObject(task.getStatement());
-        //            return JSONUtil.merge(clusterObj,taskObj).toBean(FlinkClusterConfig.class);
+        //            return JsonUtils.merge(clusterObj,taskObj).toBean(FlinkClusterConfig.class);
         //        }
         return flinkClusterCfg;
     }

@@ -18,8 +18,8 @@
  */
 
 import StatusTag from '@/components/JobTags/StatusTag';
-import { Card, Col, Row, Tag, Typography } from 'antd';
-import {l} from "@/utils/intl";
+import { l } from '@/utils/intl';
+import { Card, Col, Row, Statistic, Typography } from 'antd';
 
 const { Text, Paragraph } = Typography;
 
@@ -27,9 +27,58 @@ const DagDataNode = (props: any) => {
   const { node } = props;
   const data: any = node?.getData();
 
+  // 渲染 ratio
+  function renderRatio(ratio: number, reverse: boolean) {
+    if (ratio === undefined || ratio === null || isNaN(ratio)) ratio = 0;
+    if (!reverse) {
+      return (
+        <>
+          <Statistic
+            value={ratio * 100}
+            suffix={'%'}
+            prefix={' '}
+            precision={0}
+            valueStyle={{
+              color:
+                ratio > 0.75
+                  ? '#cf1322'
+                  : ratio > 0.5
+                  ? '#d46b08'
+                  : ratio > 0.25
+                  ? '#d4b106'
+                  : '#3f8600',
+              fontSize: 10
+            }}
+          />
+        </>
+      );
+    }
+    return (
+      <>
+        <Statistic
+          value={ratio * 100}
+          suffix={'%'}
+          prefix={' '}
+          precision={0}
+          valueStyle={{
+            color:
+              ratio > 0.75
+                ? '#3f8600'
+                : ratio > 0.5
+                ? '#d4b106'
+                : ratio > 0.25
+                ? '#d46b08'
+                : '#cf1322',
+            fontSize: 10
+          }}
+        />
+      </>
+    );
+  }
+
   return (
     <Card
-      style={{ width: '250px', padding: 0 , margin: 0, height: 140 }}
+      style={{ width: 270, padding: 0, margin: 0, height: 140 }}
       bordered={false}
       size={'small'}
       type={'inner'}
@@ -44,23 +93,33 @@ const DagDataNode = (props: any) => {
       </Paragraph>
 
       <Row>
-        <Col span={16}>
-          <Text type='secondary'>
-            {l('devops.baseinfo.backpressure')}:<Tag bordered={false} color='success'>OK</Tag>
+        <Col flex='35%'>
+          <Text style={{ display: 'inline-flex', alignItems: 'center' }} type='secondary'>
+            {' '}
+            {l('devops.baseinfo.busy')}:
+            {renderRatio(data.backpressure.subtasks[0]?.busyRatio, false)}
           </Text>
         </Col>
-        <Col span={8}>
-          <Text type='secondary'> {l('devops.baseinfo.busy')}:97%</Text>
+        <Col flex='auto'>
+          <Text type='secondary' ellipsis>
+            {l('devops.baseinfo.backpressure')}:
+            <StatusTag status={data.backpressure.status} bordered={false} animation={false} />
+          </Text>
         </Col>
       </Row>
+
       <Row>
-        <Col span={16}>
-          <Text type='secondary'>
-            {l('devops.baseinfo.status')}:<StatusTag status={data.status} bordered={false} animation={false} />
+        <Col flex='35%'>
+          <Text style={{ display: 'inline-flex', alignItems: 'center' }} type='secondary'>
+            {l('devops.baseinfo.idle')}:
+            {renderRatio(data.backpressure.subtasks[0]?.idleRatio, true)}
           </Text>
         </Col>
-        <Col span={8}>
-          <Text type='secondary'>{l('devops.baseinfo.idle')}:50%</Text>
+        <Col flex='auto'>
+          <Text type='secondary'>
+            {l('devops.baseinfo.status')}:
+            <StatusTag status={data.status} bordered={false} animation={false} />
+          </Text>
         </Col>
       </Row>
     </Card>
