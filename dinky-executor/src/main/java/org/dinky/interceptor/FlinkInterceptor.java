@@ -39,7 +39,7 @@ public class FlinkInterceptor {
     public static String pretreatStatement(Executor executor, String statement) {
         statement = SqlUtil.removeNote(statement);
         if (executor.isUseSqlFragment()) {
-            statement = executor.getSqlManager().parseVariable(statement);
+            statement = executor.getVariableManager().parseVariable(statement);
         }
         return statement.trim();
     }

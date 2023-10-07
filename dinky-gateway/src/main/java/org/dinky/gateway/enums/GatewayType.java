@@ -94,11 +94,11 @@ public enum GatewayType {
     }
 
     public boolean isDeployCluster() {
-        switch (value) {
-            case "ya":
-            case "ypj":
-            case "ka":
-            case "kao":
+        switch (this) {
+            case YARN_APPLICATION:
+            case YARN_PER_JOB:
+            case KUBERNETES_APPLICATION:
+            case KUBERNETES_APPLICATION_OPERATOR:
                 return true;
             default:
                 return false;
@@ -106,10 +106,10 @@ public enum GatewayType {
     }
 
     public boolean isApplicationMode() {
-        switch (value) {
-            case "ya":
-            case "ka":
-            case "kao":
+        switch (this) {
+            case YARN_APPLICATION:
+            case KUBERNETES_APPLICATION:
+            case KUBERNETES_APPLICATION_OPERATOR:
                 return true;
             default:
                 return false;

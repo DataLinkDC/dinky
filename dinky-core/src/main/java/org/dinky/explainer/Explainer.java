@@ -42,6 +42,7 @@ import org.dinky.parser.check.AddJarSqlParser;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.model.ProcessEntity;
 import org.dinky.trans.Operations;
+import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
@@ -98,7 +99,7 @@ public class Explainer {
     }
 
     public Explainer initialize(JobManager jobManager, JobConfig config, String statement) {
-        jobManager.initClassLoader(config);
+        DinkyClassLoaderUtil.initClassLoader(config);
         String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement), sqlSeparator);
         jobManager.initUDF(parseUDFFromStatements(statements));
         return this;

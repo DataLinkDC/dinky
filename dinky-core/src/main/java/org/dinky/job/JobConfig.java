@@ -21,7 +21,7 @@ package org.dinky.job;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.NetConstant;
-import org.dinky.executor.ExecutorSetting;
+import org.dinky.executor.ExecutorConfig;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointStrategy;
@@ -387,8 +387,9 @@ public class JobConfig {
         this.isJarTask = isJarTask;
     }
 
-    public ExecutorSetting getExecutorSetting() {
-        return new ExecutorSetting(
+    public ExecutorConfig getExecutorSetting() {
+        return ExecutorConfig.build(
+                address,
                 checkpoint,
                 parallelism,
                 useSqlFragment,
@@ -396,7 +397,8 @@ public class JobConfig {
                 useBatchModel,
                 savePointPath,
                 jobName,
-                configJson);
+                configJson,
+                variables);
     }
 
     public void buildGatewayConfig(FlinkClusterConfig config) {
