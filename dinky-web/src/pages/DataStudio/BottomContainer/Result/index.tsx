@@ -138,7 +138,7 @@ const Result = (props: any) => {
             if (datas.success) {
               params.resultData = datas;
               setData(datas);
-            }else {
+            } else {
               params.resultData = {};
               setData({});
             }
