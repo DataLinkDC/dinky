@@ -220,7 +220,7 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T> implements Checkp
         // JSONObject jsonObject = JSONObject.parseObject(strValue);
         // JSONObject jsonObject = JSONUtil.parseObject(strValue);
         // String key = jsonObject.getString("key");
-        ObjectNode jsonNodes = JSONUtil.parseObject(strValue);
+        ObjectNode jsonNodes = JsonUtils.parseObject(strValue);
         String key = String.valueOf(jsonNodes.get("key"));
         return key == null ? "" : key;
     }
