@@ -53,7 +53,6 @@ const JobDesc = (props: JobProps) => {
     return formList;
   };
 
-  console.log(jobDetail?.jobDataDto?.config, '11111');
   return (
     <>
       <ProCard>
