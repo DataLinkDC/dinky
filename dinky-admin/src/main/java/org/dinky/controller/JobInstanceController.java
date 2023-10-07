@@ -19,16 +19,6 @@
 
 package org.dinky.controller;
 
-import cn.hutool.core.lang.Dict;
-import com.fasterxml.jackson.databind.JsonNode;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import java.util.HashSet;
-import java.util.Set;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotation.Log;
@@ -44,12 +34,26 @@ import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.BuildConfiguration;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import cn.hutool.core.lang.Dict;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobInstanceController
@@ -66,7 +70,9 @@ public class JobInstanceController {
     private final JobInstanceService jobInstanceService;
     private final TaskService taskService;
 
-    /** 动态查询列表 */
+    /**
+     * 动态查询列表
+     */
     @PostMapping
     @ApiImplicitParam(
             name = "para",
@@ -79,7 +85,9 @@ public class JobInstanceController {
         return jobInstanceService.listJobInstances(para);
     }
 
-    /** 获取状态统计信息 */
+    /**
+     * 获取状态统计信息
+     */
     @GetMapping("/getStatusCount")
     @ApiOperation("Get status count")
     public Result<Dict> getStatusCount() {
@@ -89,7 +97,9 @@ public class JobInstanceController {
         return Result.succeed(result);
     }
 
-    /** 获取Job实例的所有信息 */
+    /**
+     * 获取Job实例的所有信息
+     */
     @GetMapping("/getJobInfoDetail")
     @ApiOperation("Get job info detail")
     @ApiImplicitParam(
@@ -114,7 +124,9 @@ public class JobInstanceController {
         return Result.succeed(jobInstanceService.getById(id.getId()));
     }
 
-    /** 刷新Job实例的所有信息 */
+    /**
+     * 刷新Job实例的所有信息
+     */
     @GetMapping("/refreshJobInfoDetail")
     @ApiOperation("Refresh job info detail")
     @Log(title = "Refresh job info detail", businessType = BusinessType.UPDATE)
@@ -128,7 +140,9 @@ public class JobInstanceController {
         return Result.succeed(jobInstanceService.refreshJobInfoDetail(id));
     }
 
-    /** 获取单任务实例的血缘分析 */
+    /**
+     * 获取单任务实例的血缘分析
+     */
     @GetMapping("/getLineage")
     @ApiOperation("Get lineage of a single task instance")
     @ApiImplicitParam(
@@ -141,7 +155,9 @@ public class JobInstanceController {
         return Result.succeed(jobInstanceService.getLineage(id));
     }
 
-    /** 获取 JobManager 的信息 */
+    /**
+     * 获取 JobManager 的信息
+     */
     @GetMapping("/getJobManagerInfo")
     @ApiOperation("Get job manager info")
     @ApiImplicitParam(
@@ -213,7 +229,9 @@ public class JobInstanceController {
         return Result.succeed(taskManagerConfigurationList);
     }
 
-    /** 获取 TaskManager 的信息 */
+    /**
+     * 获取 TaskManager 的信息
+     */
     @GetMapping("/getTaskManagerLog")
     @ApiOperation("Get task manager log")
     @ApiImplicitParams({
