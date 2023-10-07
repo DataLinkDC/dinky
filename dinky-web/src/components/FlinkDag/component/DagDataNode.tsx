@@ -18,8 +18,8 @@
  */
 
 import StatusTag from '@/components/JobTags/StatusTag';
+import { l } from '@/utils/intl';
 import { Card, Col, Row, Tag, Typography } from 'antd';
-import {l} from "@/utils/intl";
 
 const { Text, Paragraph } = Typography;
 
@@ -29,7 +29,7 @@ const DagDataNode = (props: any) => {
 
   return (
     <Card
-      style={{ width: '250px', padding: 0 , margin: 0, height: 140 }}
+      style={{ width: '250px', padding: 0, margin: 0, height: 140 }}
       bordered={false}
       size={'small'}
       type={'inner'}
@@ -46,7 +46,10 @@ const DagDataNode = (props: any) => {
       <Row>
         <Col span={16}>
           <Text type='secondary'>
-            {l('devops.baseinfo.backpressure')}:<Tag bordered={false} color='success'>OK</Tag>
+            {l('devops.baseinfo.backpressure')}:
+            <Tag bordered={false} color='success'>
+              OK
+            </Tag>
           </Text>
         </Col>
         <Col span={8}>
@@ -56,7 +59,8 @@ const DagDataNode = (props: any) => {
       <Row>
         <Col span={16}>
           <Text type='secondary'>
-            {l('devops.baseinfo.status')}:<StatusTag status={data.status} bordered={false} animation={false} />
+            {l('devops.baseinfo.status')}:
+            <StatusTag status={data.status} bordered={false} animation={false} />
           </Text>
         </Col>
         <Col span={8}>

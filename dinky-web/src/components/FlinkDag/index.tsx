@@ -51,14 +51,12 @@ const FlinkDag = (props: DagProps) => {
   const [currentSelect, setCurrentSelect] = useState<any>();
   const [open, setOpen] = useState(false);
 
-
   const handleClose = () => {
     setOpen(false);
     setCurrentSelect(undefined);
     graph?.zoomToFit(zoomOptions);
     graph?.centerContent();
-  }
-
+  };
 
   const initListen = (graph: Graph) => {
     graph.on('node:selected', ({ cell }) => {
@@ -67,7 +65,7 @@ const FlinkDag = (props: DagProps) => {
       graph.positionCell(cell, 'center');
     });
 
-    graph.on('node:unselected', ({ cell }) =>  handleClose());
+    graph.on('node:unselected', ({ cell }) => handleClose());
   };
 
   const initGraph = (flinkData: any) => {
@@ -128,7 +126,7 @@ const FlinkDag = (props: DagProps) => {
 
   return (
     <>
-      <div style={{height: '100%', width: '100%'}} ref={container}/>
+      <div style={{ height: '100%', width: '100%' }} ref={container} />
       <Drawer
         title={currentSelect?.data?.id}
         open={open}
