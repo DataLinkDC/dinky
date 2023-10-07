@@ -21,7 +21,7 @@ package org.dinky.connector.pulsar;
 
 import org.dinky.connector.pulsar.util.PulsarConnectionHolder;
 import org.dinky.connector.pulsar.util.PulsarProducerHolder;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.functions.RuntimeContext;
