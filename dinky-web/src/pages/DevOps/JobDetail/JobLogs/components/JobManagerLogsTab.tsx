@@ -23,7 +23,7 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { useRequest } from '@@/exports';
 import { ProCard } from '@ant-design/pro-components';
 import { Spin, Tabs, Typography } from 'antd';
-import {EditorLanguage} from "monaco-editor/esm/metadata";
+import { EditorLanguage } from 'monaco-editor/esm/metadata';
 
 const { Text, Paragraph } = Typography;
 
@@ -46,7 +46,7 @@ const JobManagerLogsTab = (props: JobProps) => {
     params: { address: jmaddr }
   });
 
-  const getLog = (ur: any,language?:EditorLanguage) => {
+  const getLog = (ur: any, language?: EditorLanguage) => {
     return (
       <Spin spinning={ur.loading}>
         <CodeShow language={language} code={ur.data ? ur.data : 'No Log'} height={600} />
@@ -56,7 +56,17 @@ const JobManagerLogsTab = (props: JobProps) => {
   const getDump = (ur: any) => {
     return (
       <Spin spinning={ur.loading}>
-        <CodeShow language={"kotlin"} code={ur.data ? (JSON.parse(ur.data)['threadInfos'] as any[]).map(x=>x['stringifiedThreadInfo']).join("") : 'No Log'} height={600} />
+        <CodeShow
+          language={'kotlin'}
+          code={
+            ur.data
+              ? (JSON.parse(ur.data)['threadInfos'] as any[])
+                  .map((x) => x['stringifiedThreadInfo'])
+                  .join('')
+              : 'No Log'
+          }
+          height={600}
+        />
       </Spin>
     );
   };
@@ -66,7 +76,7 @@ const JobManagerLogsTab = (props: JobProps) => {
       <Tabs
         size={'small'}
         items={[
-          { label: 'Log', key: 'LOG', children: getLog(log,"java") },
+          { label: 'Log', key: 'LOG', children: getLog(log, 'java') },
           { label: 'Std Out', key: 'STDOUT', children: getLog(stdout) },
           { label: 'Thread Dump', key: 'DUMP', children: getDump(dump) }
         ]}
