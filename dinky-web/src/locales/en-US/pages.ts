@@ -144,7 +144,6 @@ export default {
   'devops.jobinfo.config.JobParallelism': 'JobParallelism',
   'devops.jobinfo.config.JobType': 'Job Type',
   'devops.jobinfo.config.JobVersion': 'History Info',
-  'devops.jobinfo.config.OperatorGraph': 'Operator Graph',
   'devops.jobinfo.config.RestartStrategy': 'RestartStrategy',
   'devops.jobinfo.config.UserCustomConf': 'Custom Config',
   'devops.jobinfo.config.execmode': 'Exec Mode',
