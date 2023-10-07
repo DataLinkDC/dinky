@@ -47,23 +47,27 @@ const FlinkDag = (props: DagProps) => {
   const { job, onlyPlan = false } = props;
 
   const [graph, setGraph] = useState<Graph>();
-  const [curentJob, setCurentJob] = useState<string>();
-  const [curentSelect, setCurentSelect] = useState<any>();
+  const [currentJob, setCurrentJob] = useState<string>();
+  const [currentSelect, setCurrentSelect] = useState<any>();
   const [open, setOpen] = useState(false);
+
+
+  const handleClose = () => {
+    setOpen(false);
+    setCurrentSelect(undefined);
+    graph?.zoomToFit(zoomOptions);
+    graph?.centerContent();
+  }
+
 
   const initListen = (graph: Graph) => {
     graph.on('node:selected', ({ cell }) => {
       setOpen(true);
-      setCurentSelect(cell);
+      setCurrentSelect(cell);
       graph.positionCell(cell, 'center');
     });
 
-    graph.on('node:unselected', ({ cell }) => {
-      setOpen(false);
-      setCurentSelect(undefined);
-      graph.zoomToFit(zoomOptions);
-      graph.centerContent();
-    });
+    graph.on('node:unselected', ({ cell }) =>  handleClose());
   };
 
   const initGraph = (flinkData: any) => {
@@ -101,44 +105,40 @@ const FlinkDag = (props: DagProps) => {
     // Automatically zoom to fit
     graph.zoomToFit(zoomOptions);
     graph.centerContent();
-    updateDag(job.vertices, graph);
+    updateDag(job?.vertices, graph);
     initListen(graph);
     return graph;
   };
 
   useEffect(() => {
-    const flinkData = buildDag(job.plan);
+    const flinkData = buildDag(job?.plan);
     // Clean up old data
     if (graph) {
       graph.clearCells();
     }
     setGraph(initGraph(flinkData));
-  }, [curentJob]);
+  }, [currentJob]);
 
   useEffect(() => {
-    updateDag(job.vertices, graph);
-    if (curentJob != job.jid) {
-      setCurentJob(job.jid);
+    updateDag(job?.vertices, graph);
+    if (currentJob != job?.jid) {
+      setCurrentJob(job?.jid);
     }
   }, [job]);
 
   return (
     <>
-      <div
-        style={{
-          height: '100%',
-          width: '100%'
-        }}
-        ref={container}
-      />
+      <div style={{height: '100%', width: '100%'}} ref={container}/>
       <Drawer
-        title={curentSelect?.name}
+        title={currentSelect?.data?.id}
         open={open}
         getContainer={false}
-        size={'large'}
+        width={'35%'}
         mask={false}
+        onClose={() => handleClose()}
+        destroyOnClose={true}
       >
-        <p>{curentSelect?.getData().description}</p>
+        <p>{currentSelect?.getData().description}</p>
       </Drawer>
     </>
   );

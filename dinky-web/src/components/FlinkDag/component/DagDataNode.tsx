@@ -19,6 +19,7 @@
 
 import StatusTag from '@/components/JobTags/StatusTag';
 import { Card, Col, Row, Tag, Typography } from 'antd';
+import {l} from "@/utils/intl";
 
 const { Text, Paragraph } = Typography;
 
@@ -28,7 +29,7 @@ const DagDataNode = (props: any) => {
 
   return (
     <Card
-      style={{ width: '250px', padding: 0 }}
+      style={{ width: '250px', padding: 0 , margin: 0, height: 140 }}
       bordered={false}
       size={'small'}
       type={'inner'}
@@ -43,23 +44,23 @@ const DagDataNode = (props: any) => {
       </Paragraph>
 
       <Row>
-        <Col span={15}>
-          <Text type='secondary'>BackPressure：</Text>
-          <Tag bordered={false} color='success'>
-            OK
-          </Tag>
+        <Col span={16}>
+          <Text type='secondary'>
+            {l('devops.baseinfo.backpressure')}:<Tag bordered={false} color='success'>OK</Tag>
+          </Text>
         </Col>
         <Col span={8}>
-          <Text type='secondary'>Busy：97%</Text>
+          <Text type='secondary'> {l('devops.baseinfo.busy')}:97%</Text>
         </Col>
       </Row>
       <Row>
-        <Col span={15}>
-          <Text type='secondary'>Status：</Text>
-          <StatusTag status={data.status} bordered={false} animation={false} />
+        <Col span={16}>
+          <Text type='secondary'>
+            {l('devops.baseinfo.status')}:<StatusTag status={data.status} bordered={false} animation={false} />
+          </Text>
         </Col>
         <Col span={8}>
-          <Text type='secondary'>Idle：50%</Text>
+          <Text type='secondary'>{l('devops.baseinfo.idle')}:50%</Text>
         </Col>
       </Row>
     </Card>
