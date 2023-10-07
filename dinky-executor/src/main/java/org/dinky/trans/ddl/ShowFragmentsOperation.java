@@ -52,6 +52,6 @@ public class ShowFragmentsOperation extends AbstractOperation implements Operati
 
     @Override
     public TableResult build(Executor executor) {
-        return executor.getSqlManager().getSqlFragments();
+        return executor.getVariableManager().getVariables();
     }
 }

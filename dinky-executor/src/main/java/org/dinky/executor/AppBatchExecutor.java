@@ -19,8 +19,6 @@
 
 package org.dinky.executor;
 
-import org.dinky.assertion.Asserts;
-
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -31,10 +29,10 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class AppBatchExecutor extends Executor {
 
-    public AppBatchExecutor(ExecutorSetting executorSetting) {
-        this.executorSetting = executorSetting;
-        if (Asserts.isNotNull(executorSetting.getConfig())) {
-            Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
+    public AppBatchExecutor(ExecutorConfig executorConfig) {
+        this.executorConfig = executorConfig;
+        if (executorConfig.isValidConfig()) {
+            Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
             this.environment = StreamExecutionEnvironment.getExecutionEnvironment(configuration);
         } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();
