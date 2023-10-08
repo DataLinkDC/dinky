@@ -34,7 +34,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
-@SupportSplitSerializer(clazz = MySqlSplitSerializer.class)
+@SupportSplitSerializer(clazz = MySqlSplitSerializer.class, order = -1)
 public class MysqlCdcSource extends BaseCheckpointSource<MySqlSplit> {
 
     /**
