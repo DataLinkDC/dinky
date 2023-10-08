@@ -44,13 +44,13 @@ import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/Settin
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
-import { connect } from '@@/exports';
+import {connect, history} from '@@/exports';
 import {
   EnvironmentOutlined,
   FlagTwoTone,
   MoreOutlined,
   PauseCircleTwoTone,
-  PlayCircleTwoTone,
+  PlayCircleTwoTone, RotateRightOutlined,
   SafetyCertificateTwoTone,
   SaveTwoTone,
   SendOutlined,
@@ -256,6 +256,14 @@ const HeaderContainer = (props: any) => {
       // hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       // hotKeyDesc: "Shift+F10"
     },
+    {
+      // flink jobdetail跳转
+      icon: <RotateRightOutlined />,
+      title: l('pages.datastudio.to.jobDetail'),
+      click: ()=>history.push(`/devops/job-detail?id=${getCurrentData(panes, activeKey)?.id}`),
+      isShow: (type?: TabsPageType, subType?: string, data?: any) =>
+        type === TabsPageType.project && data?.jobInstanceId && subType==="flinksql"
+    },
     // {
     //   // 异步提交按钮
     //   icon: <RocketTwoTone/>,
@@ -321,12 +329,14 @@ const HeaderContainer = (props: any) => {
   };
   const renderHotkey = () => {
     document.onkeydown = (e) => {
-      routes
-        .filter((r) => r.hotKey?.(e))
-        .forEach((r) => {
-          r.click();
-          e.preventDefault();
-        });
+      if (getCurrentTab(panes, activeKey)){
+        routes
+            .filter((r) => r.hotKey?.(e))
+            .forEach((r) => {
+              r.click();
+              e.preventDefault();
+            });
+      }
     };
   };
   renderHotkey();

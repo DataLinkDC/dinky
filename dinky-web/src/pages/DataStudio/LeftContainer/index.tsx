@@ -17,7 +17,7 @@
  *
  */
 
-import { CircleBtn, CircleButtonProps } from '@/components/CallBackButton/CircleBtn';
+import {CircleBtn, CircleButtonProps, CircleDataStudioButtonProps} from '@/components/CallBackButton/CircleBtn';
 import MovableSidebar, { MovableSidebarProps } from '@/components/Sidebar/MovableSidebar';
 import useThemeValue from '@/hooks/useThemeValue';
 import ProjectTitle from '@/pages/DataStudio/LeftContainer/Project/ProjectTitle';
@@ -31,7 +31,7 @@ export type LeftContainerProps = {
   size: number;
 };
 const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
-  const { dispatch, size, toolContentHeight, leftContainer, rightContainer } = props;
+  const { dispatch, size, toolContentHeight, leftContainer, rightContainer , tabs: { panes, activeKey }} = props;
   const themeValue = useThemeValue();
 
   const MAX_WIDTH = size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700;
@@ -80,8 +80,8 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
     maxWidth: MAX_WIDTH,
     enable: { right: true },
     btnGroup: BtnRoute[leftContainer.selectKey]
-      ? BtnRoute[leftContainer.selectKey].map((item: CircleButtonProps) => (
-          <CircleBtn title={item.title} icon={item.icon} onClick={item.onClick} key={item.title} />
+      ? BtnRoute[leftContainer.selectKey].map((item: CircleDataStudioButtonProps) => (
+          <CircleBtn title={item.title} icon={item.icon} onClick={()=>item.onClick?.(panes,activeKey)} key={item.title} />
         ))
       : [],
     style: { borderInlineEnd: `1px solid ${themeValue.borderColor}` }
@@ -102,5 +102,6 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   leftContainer: Studio.leftContainer,
   rightContainer: Studio.rightContainer,
-  toolContentHeight: Studio.toolContentHeight
+  toolContentHeight: Studio.toolContentHeight,
+  tabs: Studio.tabs
 }))(LeftContainer);
