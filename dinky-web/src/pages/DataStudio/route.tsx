@@ -37,7 +37,7 @@ import {
   CalendarOutlined,
   ConsoleSqlOutlined,
   DatabaseOutlined,
-  DesktopOutlined,
+  DesktopOutlined, EnvironmentOutlined,
   FolderOutlined,
   HistoryOutlined, HolderOutlined,
   InfoCircleOutlined,
@@ -269,7 +269,7 @@ export const BtnRoute: { [c: string]: CircleDataStudioButtonProps[] } = {
       onClick: () => {}
     },
     {
-      icon: <HolderOutlined />,
+      icon: <EnvironmentOutlined />,
       title:l('button.position'),
       key: 'button.position',
       onClick: () => {}
