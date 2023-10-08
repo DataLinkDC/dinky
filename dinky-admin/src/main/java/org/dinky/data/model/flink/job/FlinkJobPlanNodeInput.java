@@ -21,7 +21,7 @@ package org.dinky.data.model.flink.job;
 
 import java.io.Serializable;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -31,6 +31,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ *  <p>
  *  {
  *  *                         "num": 0,
  *  *                         "id": "cbc357ccb763df2852fee8c4fc7d55f2",

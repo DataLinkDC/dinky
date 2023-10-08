@@ -25,7 +25,7 @@ import org.dinky.data.model.flink.watermark.FlinkJobNodeWaterMark;
 import java.io.Serializable;
 import java.util.List;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -35,6 +35,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * <p>
  * {
  * *                 "id": "c27dcf7b54ef6bfd6cff02ca8870b681",
  * *                 "parallelism": 1,

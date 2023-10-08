@@ -21,7 +21,7 @@ package org.dinky.data.model.flink.watermark;
 
 import java.io.Serializable;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
