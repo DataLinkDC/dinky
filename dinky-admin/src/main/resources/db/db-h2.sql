@@ -1523,7 +1523,7 @@ CREATE TABLE `dinky_user_tenant` (
                                    `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_user_tenant` (`id`, `user_id`, `tenant_id`, `create_time`, `update_time`)
-VALUES (1, 1, 1,1, current_time, current_time);
+VALUES (1, 1, 1, current_time, current_time);
 DROP TABLE IF EXISTS `metadata_column`;
 CREATE TABLE `metadata_column` (
                                  `column_name` varchar(255) NOT null COMMENT 'column name',
@@ -1676,11 +1676,11 @@ DROP TABLE IF EXISTS dinky_sys_login_log;
 CREATE TABLE `dinky_sys_login_log` (
   `id` int(11) NOT null AUTO_INCREMENT COMMENT 'key',
   `user_id` int(11) NOT null COMMENT 'user id',
-  `username` varchar(60) COLLATE utf8mb4_general_ci NOT null COMMENT 'username',
+  `username` varchar(60)  NOT null COMMENT 'username',
   `login_type` int NOT null COMMENT 'login type（0:LOCAL,1:LDAP）',
-  `ip` varchar(40) COLLATE utf8mb4_general_ci NOT null COMMENT 'ip addr',
+  `ip` varchar(40)  NOT null COMMENT 'ip addr',
   `status` int NOT null COMMENT 'login status',
-  `msg` text COLLATE utf8mb4_general_ci NOT null COMMENT 'status msg',
+  `msg` text  NOT null COMMENT 'status msg',
   `create_time` datetime NOT null COMMENT 'create time',
   `access_time` datetime DEFAULT null COMMENT 'access time',
   `update_time` datetime NOT null,
@@ -1695,21 +1695,21 @@ CREATE TABLE `dinky_sys_login_log` (
 DROP TABLE IF EXISTS `dinky_sys_operate_log`;
 CREATE TABLE `dinky_sys_operate_log`  (
   `id` bigint NOT null AUTO_INCREMENT COMMENT 'id',
-  `module_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'module name',
+  `module_name` varchar(50) DEFAULT '' COMMENT 'module name',
   `business_type` int null DEFAULT 0 COMMENT 'business type',
-  `method` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'method name',
-  `request_method` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'request method',
-  `operate_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'operate name',
+  `method` varchar(100) null DEFAULT '' COMMENT 'method name',
+  `request_method` varchar(10) null DEFAULT '' COMMENT 'request method',
+  `operate_name` varchar(50) DEFAULT '' COMMENT 'operate name',
   `operate_user_id` int NOT null COMMENT 'operate user id',
-  `operate_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'operate url',
-  `operate_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'ip',
-  `operate_location` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'operate location',
-  `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci null DEFAULT '' COMMENT 'request param',
-  `json_result` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT null COMMENT 'return json result',
+  `operate_url` varchar(255) DEFAULT '' COMMENT 'operate url',
+  `operate_ip` varchar(50) DEFAULT '' COMMENT 'ip',
+  `operate_location` varchar(255) DEFAULT '' COMMENT 'operate location',
+  `operate_param` longtext DEFAULT '' COMMENT 'request param',
+  `json_result` longtext DEFAULT null COMMENT 'return json result',
   `status` int null DEFAULT null COMMENT 'operate status',
-  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT null COMMENT 'error msg',
-  `operate_time` datetime(0) null DEFAULT null COMMENT 'operate time',
-  PRIMARY KEY (`id`) USING BTREE
+  `error_msg` longtext DEFAULT null COMMENT 'error msg',
+  `operate_time` datetime(0) DEFAULT null COMMENT 'operate time',
+  PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
 
@@ -1721,18 +1721,18 @@ drop table if exists `dinky_sys_menu`;
 create table `dinky_sys_menu` (
                                   `id` bigint not null auto_increment comment ' id',
                                   `parent_id` bigint not null comment 'parent menu id',
-                                  `name` varchar(64) collate utf8mb4_general_ci not null comment 'menu button name',
-                                  `path` varchar(64) collate utf8mb4_general_ci default null comment 'routing path',
-                                  `component` varchar(64) collate utf8mb4_general_ci default null comment 'routing component component',
-                                  `perms` varchar(64) collate utf8mb4_general_ci default null comment 'authority id',
-                                  `icon` varchar(64) collate utf8mb4_general_ci default null comment 'icon',
-                                  `type` char(1) collate utf8mb4_general_ci default null comment 'type(M:directory C:menu F:button)',
-                                  `display` tinyint collate utf8mb4_general_ci not null default 1 comment 'whether the menu is displayed',
+                                  `name` varchar(64) not null comment 'menu button name',
+                                  `path` varchar(64) default null comment 'routing path',
+                                  `component` varchar(64) default null comment 'routing component component',
+                                  `perms` varchar(64) default null comment 'authority id',
+                                  `icon` varchar(64) default null comment 'icon',
+                                  `type` char(1) default null comment 'type(M:directory C:menu F:button)',
+                                  `display` tinyint default 1 comment 'whether the menu is displayed',
                                   `order_num` int default null comment 'sort',
                                   `create_time` datetime not null default current_timestamp comment 'create time',
                                   `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
-                                  `note` varchar(255) collate utf8mb4_general_ci default null comment 'note',
-                                  primary key (`id`) using btree
+                                  `note` varchar(255) default null comment 'note',
+                                  primary key (`id`)
 ) engine=innodb ;
 
 INSERT INTO `dinky_sys_menu` VALUES (1, -1, '首页', '/home', './Home', 'home', 'HomeOutlined', 'C', 0, 1, '2023-08-11 14:06:52', '2023-09-25 18:26:45', null);
@@ -1888,8 +1888,8 @@ CREATE TABLE `dinky_sys_role_menu` (
                                        `menu_id` bigint NOT null COMMENT 'menu id',
                                        `create_time` datetime not null default current_timestamp comment 'create time',
                                        `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
-                                       PRIMARY KEY (`id`) USING BTREE,
-                                       UNIQUE KEY `un_role_menu_inx` (`role_id`,`menu_id`) USING BTREE
+                                       PRIMARY KEY (`id`),
+                                       UNIQUE KEY `un_role_menu_inx` (`role_id`,`menu_id`)
 ) ENGINE=InnoDB ;
 
 
@@ -1900,7 +1900,7 @@ CREATE TABLE `dinky_sys_role_menu` (
 drop table if exists `dinky_sys_token`;
 CREATE TABLE `dinky_sys_token` (
                                    `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
-                                   `token_value` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'token value',
+                                   `token_value` varchar(255) NOT NULL COMMENT 'token value',
                                    `user_id` bigint NOT NULL COMMENT 'user id',
                                    `role_id` bigint NOT NULL COMMENT 'role id',
                                    `tenant_id` bigint NOT NULL COMMENT 'tenant id',
@@ -1912,7 +1912,7 @@ CREATE TABLE `dinky_sys_token` (
                                    `creator` bigint DEFAULT NULL COMMENT '创建人',
                                    `updator` bigint DEFAULT NULL COMMENT '修改人',
                                    PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='token management';
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='token management';
 
 
 
@@ -1924,7 +1924,7 @@ create table if not exists dinky_alert_template
 (
     id               int auto_increment
         primary key  COMMENT 'id',
-    name             varchar(20)    unicode    COMMENT 'template name',
+    name             varchar(20)            COMMENT 'template name',
     template_content text              null COMMENT 'template content',
     enabled          tinyint default 1 null COMMENT 'is enable',
     create_time      datetime          null COMMENT 'create time',
@@ -1952,9 +1952,9 @@ create table if not exists dinky_alert_rules
 -- ----------------------------
 -- Records of dinky_alert_rule
 -- ----------------------------
-INSERT INTO dinky_alert_rules  VALUES (3, 'alert.rule.jobFail', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'FAILED\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-04 23:03:02');
-INSERT INTO dinky_alert_rules  VALUES (4, 'alert.rule.getJobInfoFail', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'UNKNOWN\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-05 18:03:43');
-INSERT INTO dinky_alert_rules  VALUES (5, 'alert.rule.jobRestart', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'RESTARTING\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:35:12');
+-- INSERT INTO dinky_alert_rules  VALUES (3, 'alert.rule.jobFail', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'FAILED\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-04 23:03:02');
+-- INSERT INTO dinky_alert_rules  VALUES (4, 'alert.rule.getJobInfoFail', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'UNKNOWN\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-05 18:03:43');
+-- INSERT INTO dinky_alert_rules  VALUES (5, 'alert.rule.jobRestart', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'RESTARTING\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:35:12');
 INSERT INTO dinky_alert_rules  VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"checkPoints.checkFailed(#key,#checkPoints)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:49:03');
 INSERT INTO dinky_alert_rules  VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"exceptionRule.isException(#key,#exceptions)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:50:12');
 INSERT INTO dinky_alert_rules  VALUES (8, 'alert.rule.checkpointTimeout', '[{"ruleKey":"checkPoints.checkpointTime(#key,#checkPoints)","ruleOperator":"GE","ruleValue":"1000"}]', 1, 'CUSTOM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 22:23:35');
