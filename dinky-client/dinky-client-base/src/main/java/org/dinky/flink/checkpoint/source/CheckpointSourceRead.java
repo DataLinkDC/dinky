@@ -21,24 +21,24 @@ package org.dinky.flink.checkpoint.source;
 
 import org.dinky.data.model.CheckPointReadTable;
 import org.dinky.flink.checkpoint.BaseCheckpointRead;
+import org.dinky.flink.checkpoint.SupportSplitSerializer;
 
 import org.apache.flink.api.common.typeutils.base.array.BytePrimitiveArraySerializer;
-import org.apache.flink.connector.kafka.source.split.KafkaPartitionSplitSerializer;
 import org.apache.flink.core.io.SimpleVersionedSerializer;
 import org.apache.flink.runtime.state.PartitionableListState;
 import org.apache.flink.streaming.api.operators.util.SimpleVersionedListState;
 import org.apache.flink.util.CollectionUtil;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.ververica.cdc.connectors.mysql.source.split.MySqlSplitSerializer;
-
 import cn.hutool.core.lang.Singleton;
+import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.ReflectUtil;
 
 public class CheckpointSourceRead extends BaseCheckpointRead {
     public static final String STATE_NAME = "SourceReaderState";
@@ -46,11 +46,23 @@ public class CheckpointSourceRead extends BaseCheckpointRead {
     private static final Map<
                     Supplier<Class<? extends SimpleVersionedSerializer<?>>>,
                     Function<List, ? extends BaseCheckpointSource<?>>>
-            MAPPING = new HashMap<>();
+            MAPPING = new LinkedHashMap<>();
 
     static {
-        MAPPING.put(() -> MySqlSplitSerializer.class, MysqlCdcSource::new);
-        MAPPING.put(() -> KafkaPartitionSplitSerializer.class, KafkaSource::new);
+        ClassUtil.scanPackageBySuper("org.dinky.flink.checkpoint.source", BaseCheckpointSource.class).stream()
+                .filter(x -> x.getAnnotation(SupportSplitSerializer.class) != null)
+                .sorted((x, y) -> {
+                    SupportSplitSerializer x1 = x.getAnnotation(SupportSplitSerializer.class);
+                    SupportSplitSerializer y1 = y.getAnnotation(SupportSplitSerializer.class);
+                    return x1.order() - y1.order();
+                })
+                .forEach(x -> {
+                    SupportSplitSerializer supportSplitSerializer = x.getAnnotation(SupportSplitSerializer.class);
+                    if (supportSplitSerializer != null) {
+                        MAPPING.put(supportSplitSerializer::clazz, d ->
+                                (BaseCheckpointSource<?>) ReflectUtil.newInstance(x, d));
+                    }
+                });
     }
 
     public Optional<CheckPointReadTable> create(PartitionableListState<?> partitionableListState) {
@@ -75,8 +87,7 @@ public class CheckpointSourceRead extends BaseCheckpointRead {
 
     public boolean isSourceCkp(PartitionableListState<?> partitionableListState) {
         return partitionableListState.getStateMetaInfo().getName().equals(STATE_NAME)
-                && partitionableListState
-                        .getInternalListCopySerializer()
+                && getArrayListSerializer(partitionableListState)
                         .getElementSerializer()
                         .getClass()
                         .equals(SERIALIZER_CLASS);

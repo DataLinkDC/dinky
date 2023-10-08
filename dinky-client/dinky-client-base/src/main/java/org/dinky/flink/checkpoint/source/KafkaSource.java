@@ -19,7 +19,10 @@
 
 package org.dinky.flink.checkpoint.source;
 
+import org.dinky.flink.checkpoint.SupportSplitSerializer;
+
 import org.apache.flink.connector.kafka.source.split.KafkaPartitionSplit;
+import org.apache.flink.connector.kafka.source.split.KafkaPartitionSplitSerializer;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +30,7 @@ import java.util.stream.Collectors;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONObject;
 
+@SupportSplitSerializer(clazz = KafkaPartitionSplitSerializer.class)
 public class KafkaSource extends BaseCheckpointSource<KafkaPartitionSplit> {
 
     public KafkaSource(List<KafkaPartitionSplit> splits) {

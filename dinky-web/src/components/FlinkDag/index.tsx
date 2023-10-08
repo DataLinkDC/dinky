@@ -20,53 +20,74 @@
 import DagDataNode from '@/components/FlinkDag/component/DagDataNode';
 import DagPlanNode from '@/components/FlinkDag/component/DagPlanNode';
 import {
-  edgeConfig,
-  graphConfig,
-  layoutConfig,
-  portConfig,
-  zoomOptions
+    edgeConfig,
+    graphConfig,
+    layoutConfig,
+    portConfig,
+    zoomOptions
 } from '@/components/FlinkDag/config';
-import { buildDag, regConnect, updateDag } from '@/components/FlinkDag/functions';
-import { Jobs } from '@/types/DevOps/data';
-import { DagreLayout } from '@antv/layout';
-import { Edge, Graph } from '@antv/x6';
-import { Selection } from '@antv/x6-plugin-selection';
-import { register } from '@antv/x6-react-shape';
-import { Drawer } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import {buildDag, regConnect, updateDag} from '@/components/FlinkDag/functions';
+import {Jobs} from '@/types/DevOps/data';
+import {DagreLayout} from '@antv/layout';
+import {Edge, Graph} from '@antv/x6';
+import {Selection} from '@antv/x6-plugin-selection';
+import {register} from '@antv/x6-react-shape';
+import {Drawer, Select, Slider, Table, Tabs, TabsProps, Typography} from 'antd';
+import {useEffect, useRef, useState} from 'react';
 import './index.css';
+import {getData} from "@/services/api";
+import {API_CONSTANTS} from "@/services/endpoints";
+import {Rectangle} from "@antv/x6-geometry";
+import {Options as GraphOptions} from "@antv/x6/src/graph/options";
+import path from "path";
 
 export type DagProps = {
-  job: Jobs.Job;
-  onlyPlan?: boolean;
+    job: Jobs.Job;
+    onlyPlan?: boolean;
+    checkPoints?: any;
 };
+const {Paragraph} = Typography;
 
 const FlinkDag = (props: DagProps) => {
-  const container = useRef(null);
+    const container = useRef(null);
 
-  const { job, onlyPlan = false } = props;
+    const {job, onlyPlan = false, checkPoints = {}} = props;
 
-  const [graph, setGraph] = useState<Graph>();
-  const [currentJob, setCurrentJob] = useState<string>();
-  const [currentSelect, setCurrentSelect] = useState<any>();
-  const [open, setOpen] = useState(false);
+    const [graph, setGraph] = useState<Graph>();
+    const [currentJob, setCurrentJob] = useState<string>();
+    const [currentSelect, setCurrentSelect] = useState<any>();
+    const [open, setOpen] = useState(false);
+    const [zoom, setZoom] = useState<number>(1);
+    let originPosition = {
+        zoom: 1
+    };
 
-  const handleClose = () => {
-    setOpen(false);
-    setCurrentSelect(undefined);
-    graph?.zoomToFit(zoomOptions);
-    graph?.centerContent();
-  };
+    const handleClose = () => {
+        setOpen(false);
+        setCurrentSelect(undefined);
+        graph?.zoomToFit(zoomOptions);
+        graph?.centerContent();
+    };
 
-  const initListen = (graph: Graph) => {
-    graph.on('node:selected', ({ cell }) => {
-      setOpen(true);
-      setCurrentSelect(cell);
-      graph.positionCell(cell, 'center');
-    });
+    const initListen = (graph: Graph) => {
+        graph.on('node:selected', ({cell}) => {
+            if (!onlyPlan) {
+                setOpen(true);
+                setZoom(oldValue => {
+                    originPosition = {zoom: oldValue}
+                    return 1;
+                })
+                graph.zoomTo(1)
+                setCurrentSelect(cell);
+                graph.positionPoint(Rectangle.create(cell.getBBox()).getLeftMiddle(), '10%', '50%');
+            }
+        });
 
-    graph.on('node:unselected', ({ cell }) => handleClose());
-  };
+        graph.on('node:unselected', ({cell}) => {
+            setZoom(originPosition.zoom)
+            handleClose();
+        });
+    };
 
   const initGraph = (flinkData: any) => {
     register({
@@ -77,69 +98,156 @@ const FlinkDag = (props: DagProps) => {
       ports: portConfig
     });
 
-    Edge.config(edgeConfig);
-    Graph.registerConnector('curveConnector', regConnect, true);
-    Graph.registerEdge('data-processing-curve', Edge, true);
+        Edge.config(edgeConfig);
+        Graph.registerConnector('curveConnector', regConnect, true);
+        Graph.registerEdge('data-processing-curve', Edge, true);
 
-    const graph: Graph = new Graph({
-      // @ts-ignore
-      container: container.current,
-      ...graphConfig
-    });
+        const graph: Graph = new Graph({
+            // @ts-ignore
+            container: container.current,
+            ...graphConfig
+        });
 
-    graph.use(
-      new Selection({
-        enabled: true,
-        multiple: false,
-        rubberband: false,
-        showNodeSelectionBox: true
-      })
+        graph.use(
+            new Selection({
+                enabled: true,
+                multiple: false,
+                rubberband: false,
+                showNodeSelectionBox: true
+            })
+        );
+
+        // Adaptive layout
+        const model = new DagreLayout(layoutConfig).layout(flinkData);
+        graph.fromJSON(model);
+
+        // Automatically zoom to fit
+        graph.zoomToFit(zoomOptions);
+        graph.on('scale', ({sx}) => setZoom(sx));
+        graph.centerContent();
+        graph?.zoomTo(zoom)
+        updateDag(job?.vertices, graph);
+        initListen(graph);
+        return graph;
+    };
+
+    useEffect(() => {
+        const flinkData = buildDag(job?.plan);
+        // Clean up old data
+        if (graph) {
+            graph.clearCells();
+        }
+        setGraph(initGraph(flinkData));
+        setZoom(1 / flinkData.nodes.length + 0.5)
+    }, [currentJob]);
+
+    useEffect(() => {
+        updateDag(job?.vertices, graph);
+        if (currentJob != job?.jid) {
+            setCurrentJob(job?.jid);
+        }
+    }, [job]);
+
+    useEffect(() => {
+        graph?.zoomTo(zoom)
+    }, [zoom]);
+
+    const renderCheckpoint = (id: string) => {
+        const [selectPath, setSelectPath] = useState<string>('');
+        const key = id + selectPath;
+        const [itemChildren, setItemChildren] = useState({[key]: [] as TabsProps['items']});
+        const checkpointArray = (checkPoints.history as any[]).filter(x => x.status === "COMPLETED").map(x => {
+            return {checkpointType: x.checkpoint_type, path: x.external_path, id: x.id}
+        });
+        useEffect(() => {
+            if (selectPath && id) {
+                if (!itemChildren[key]) {
+                    getData(API_CONSTANTS.READ_CHECKPOINT, {path: selectPath, operatorId: id}).then(res => {
+                        const genData = Object.keys(res.datas).map(x => {
+                            const datum = res.datas[x];
+                            return {
+                                key: x,
+                                label: x,
+                                children:
+                                    <Tabs items={
+                                        Object.keys(datum).map(y => {
+                                            return {
+                                                key: y,
+                                                label: y,
+                                                children: <Table dataSource={datum[y].datas}
+                                                                 columns={(datum[y].headers as string[]).map(z => {
+                                                                     return {
+                                                                         title: z,
+                                                                         dataIndex: z,
+                                                                         key: z,
+                                                                         render: (text) => <Paragraph copyable
+                                                                                                      ellipsis={{rows: 3}}>{text}</Paragraph>,
+                                                                     }
+                                                                 })}/>
+                                            }
+                                        })
+                                    } tabBarStyle={{marginBlock: 0}} tabBarGutter={10}/>
+                            }
+                        })
+                        setItemChildren({...itemChildren, [key]: genData})
+                    })
+                }
+            }
+        }, [selectPath, id])
+
+        return <>
+            <Select
+                defaultValue={selectPath}
+                style={{width: "100%"}}
+                placeholder="Select a person"
+                optionFilterProp="children"
+                options={
+                    checkpointArray.map(x => {
+                        return {label: x.id, value: x.path}
+                    })
+                }
+                onChange={path => {
+                    setSelectPath(path)
+                }}
+            />
+
+            <Tabs items={itemChildren[key]} tabBarStyle={{marginBlock: 0}} tabBarGutter={10}/>
+
+        </>
+    }
+    return (
+        <span>
+            <div style={{height: 200, position: "absolute", top: "50%", right: 12, marginTop: -100, zIndex: 2}}>
+                <Slider vertical value={zoom} min={0.5} max={1.5} tooltip={{open: false}} step={0.01}
+                        onChange={setZoom}/>
+            </div>
+          <div style={{height: '100%', width: '100%'}} ref={container}/>
+            <Drawer
+                headerStyle={{paddingBlock: 5}}
+                bodyStyle={{paddingBlock: 5}}
+                open={open}
+                getContainer={false}
+                width={'65%'}
+                mask={false}
+                onClose={handleClose}
+                destroyOnClose={true}
+                closable={false}
+            >
+                {onlyPlan ? <></> : <Tabs defaultActiveKey="1" items={[
+                    {
+                        key: '1',
+                        label: 'Detail',
+                        children: <p>{currentSelect?.getData().description}</p>,
+                    },
+                    {
+                        key: '2',
+                        label: 'CheckPoint Read',
+                        children: renderCheckpoint(currentSelect?.id),
+                    },
+                ]} tabBarGutter={10}/>}
+            </Drawer>
+        </span>
     );
-
-    // Adaptive layout
-    const model = new DagreLayout(layoutConfig).layout(flinkData);
-    graph.fromJSON(model);
-
-    // Automatically zoom to fit
-    graph.zoomToFit(zoomOptions);
-    graph.centerContent();
-    updateDag(job?.vertices, graph);
-    initListen(graph);
-    return graph;
-  };
-
-  useEffect(() => {
-    const flinkData = buildDag(job?.plan);
-    // Clean up old data
-    if (graph) {
-      graph.clearCells();
-    }
-    setGraph(initGraph(flinkData));
-  }, [currentJob]);
-
-  useEffect(() => {
-    updateDag(job?.vertices, graph);
-    if (currentJob != job?.jid) {
-      setCurrentJob(job?.jid);
-    }
-  }, [job]);
-
-  return (
-    <>
-      <div style={{ height: '100%', width: '100%' }} ref={container} />
-      <Drawer
-        title={currentSelect?.data?.id}
-        open={open}
-        getContainer={false}
-        width={'35%'}
-        mask={false}
-        onClose={() => handleClose()}
-        destroyOnClose={true}
-      >
-        <p>{currentSelect?.getData().description}</p>
-      </Drawer>
-    </>
-  );
 };
 
 export default FlinkDag;

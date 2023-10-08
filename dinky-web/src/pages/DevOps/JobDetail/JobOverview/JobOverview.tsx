@@ -36,7 +36,7 @@ const JobConfigTab = (props: JobProps) => {
           height: '40vh'
         }}
       >
-        {job ? <FlinkDag job={job} /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+        {job ? <FlinkDag job={job} checkPoints={jobDetail.jobDataDto.checkpoints} /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
       </ProCard>
 
       <FlinkTable jobDetail={jobDetail} />

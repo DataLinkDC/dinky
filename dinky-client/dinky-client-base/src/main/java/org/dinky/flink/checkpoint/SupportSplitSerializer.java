@@ -19,16 +19,17 @@
 
 package org.dinky.flink.checkpoint;
 
-import org.dinky.data.model.CheckPointReadTable;
+import org.apache.flink.core.io.SimpleVersionedSerializer;
 
-import org.apache.flink.runtime.state.PartitionableListState;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.util.Optional;
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SupportSplitSerializer {
+    Class<? extends SimpleVersionedSerializer<?>> clazz();
 
-public abstract class BaseCheckpointRead {
-    protected BaseCheckpointRead() {}
-
-    public abstract boolean isSourceCkp(PartitionableListState<?> partitionableListState);
-
-    public abstract Optional<CheckPointReadTable> create(PartitionableListState<?> partitionableListState);
+    int order() default 1;
 }

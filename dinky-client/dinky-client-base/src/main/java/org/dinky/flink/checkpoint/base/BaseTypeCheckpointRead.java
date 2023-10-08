@@ -17,17 +17,17 @@
  *
  */
 
-package org.dinky.flink.checkpoint.pojo;
+package org.dinky.flink.checkpoint.base;
 
 import org.dinky.data.model.CheckPointReadTable;
 import org.dinky.flink.checkpoint.BaseCheckpointRead;
 
-import org.apache.flink.api.java.typeutils.runtime.PojoSerializer;
+import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
+import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.runtime.state.PartitionableListState;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,29 +35,41 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.json.JSONObject;
 
-public class PojoTypeCheckpointRead extends BaseCheckpointRead {
-    public static final Class<?> SERIALIZER_CLASS = PojoSerializer.class;
+public class BaseTypeCheckpointRead extends BaseCheckpointRead {
 
     public Optional<CheckPointReadTable> create(PartitionableListState<?> partitionableListState) {
-        PojoSerializer<?> typeSerializer = (PojoSerializer<?>)
-                partitionableListState.getInternalListCopySerializer().getElementSerializer();
-        Field[] fields = (Field[]) ReflectUtil.getFieldValue(typeSerializer, "fields");
-
-        List<String> headers =
-                Arrays.stream(fields).map(ReflectUtil::getFieldName).collect(Collectors.toList());
         List<JSONObject> data = CollUtil.newArrayList(partitionableListState.get()).stream()
-                .map(JSONObject::new)
+                .map(x -> {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.set("data", x);
+                    return jsonObject;
+                })
                 .collect(Collectors.toList());
-        CheckPointReadTable tableVO =
-                CheckPointReadTable.builder().headers(headers).datas(data).build();
+        CheckPointReadTable tableVO = CheckPointReadTable.builder()
+                .datas(data)
+                .headers(CollUtil.newArrayList("data"))
+                .build();
         return Optional.of(tableVO);
     }
 
+    private static TypeSerializer<?> getTypeSerializer(PartitionableListState<?> partitionableListState) {
+        Map<Class<?>, BasicTypeInfo<?>> types = (Map<Class<?>, BasicTypeInfo<?>>)
+                ReflectUtil.getStaticFieldValue(ReflectUtil.getField(BasicTypeInfo.class, "TYPES"));
+        for (Map.Entry<Class<?>, BasicTypeInfo<?>> entry : types.entrySet()) {
+            TypeSerializer<?> serializer = entry.getValue().createSerializer(null);
+            boolean equals = getArrayListSerializer(partitionableListState)
+                    .getElementSerializer()
+                    .getClass()
+                    .equals(serializer.getClass());
+            if (equals) {
+                return serializer;
+            }
+        }
+        return null;
+    }
+
     public boolean isSourceCkp(PartitionableListState<?> partitionableListState) {
-        return partitionableListState
-                .getInternalListCopySerializer()
-                .getElementSerializer()
-                .getClass()
-                .equals(SERIALIZER_CLASS);
+        TypeSerializer<?> typeSerializer = getTypeSerializer(partitionableListState);
+        return typeSerializer != null;
     }
 }

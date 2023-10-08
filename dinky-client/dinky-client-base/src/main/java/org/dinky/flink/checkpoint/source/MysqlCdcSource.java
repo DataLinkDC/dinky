@@ -19,17 +19,22 @@
 
 package org.dinky.flink.checkpoint.source;
 
+import org.dinky.flink.checkpoint.SupportSplitSerializer;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ververica.cdc.connectors.mysql.source.split.MySqlBinlogSplit;
 import com.ververica.cdc.connectors.mysql.source.split.MySqlSnapshotSplit;
 import com.ververica.cdc.connectors.mysql.source.split.MySqlSplit;
+import com.ververica.cdc.connectors.mysql.source.split.MySqlSplitSerializer;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 
+@SupportSplitSerializer(clazz = MySqlSplitSerializer.class)
 public class MysqlCdcSource extends BaseCheckpointSource<MySqlSplit> {
 
     /**
@@ -57,7 +62,7 @@ public class MysqlCdcSource extends BaseCheckpointSource<MySqlSplit> {
                     JSONObject jsonObject = new JSONObject();
                     if (d.isBinlogSplit()) {
                         MySqlBinlogSplit split = d.asBinlogSplit();
-                        jsonObject.set("starting-offset", split.splitId());
+                        jsonObject.set("split-id", split.splitId());
                         jsonObject.set(
                                 "starting-offset", split.getStartingOffset().toString());
                         jsonObject.set(
@@ -72,7 +77,9 @@ public class MysqlCdcSource extends BaseCheckpointSource<MySqlSplit> {
                                 .collect(Collectors.toCollection(JSONArray::new))
                                 .toString();
                         jsonObject.set("table-schemas", tableSchemas);
-                        jsonObject.set("finished-snapshot-split-infos", split.getFinishedSnapshotSplitInfos());
+                        jsonObject.set(
+                                "finished-snapshot-split-infos",
+                                JSONUtil.toJsonPrettyStr(split.getFinishedSnapshotSplitInfos()));
                     } else if (d.isSnapshotSplit()) {
                         MySqlSnapshotSplit split = d.asSnapshotSplit();
                         jsonObject.set("table-id", split.getTableId());

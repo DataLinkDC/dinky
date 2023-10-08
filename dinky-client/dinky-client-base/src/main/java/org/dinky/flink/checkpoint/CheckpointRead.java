@@ -36,6 +36,7 @@ import org.apache.flink.runtime.state.OperatorBackendSerializationProxy;
 import org.apache.flink.runtime.state.OperatorStateHandle;
 import org.apache.flink.runtime.state.PartitionableListState;
 import org.apache.flink.runtime.state.RegisteredOperatorStateBackendMetaInfo;
+import org.apache.flink.runtime.state.hashmap.HashMapStateBackend;
 import org.apache.flink.runtime.state.metainfo.StateMetaInfoSnapshot;
 import org.apache.flink.state.api.ExistingSavepoint;
 import org.apache.flink.state.api.Savepoint;
@@ -55,7 +56,8 @@ public class CheckpointRead implements CheckpointReadInterface {
         ClassLoader restoreClassLoader = Thread.currentThread().getContextClassLoader();
         Map<String, Map<String, CheckPointReadTable>> result = new LinkedHashMap<>();
         try {
-            ExistingSavepoint savepoint = Savepoint.load(ExecutionEnvironment.getExecutionEnvironment(), path);
+            ExistingSavepoint savepoint =
+                    Savepoint.load(ExecutionEnvironment.getExecutionEnvironment(), path, new HashMapStateBackend());
             List<OperatorState> operatorStateList =
                     ((SavepointMetadata) ReflectUtil.getFieldValue(savepoint, "metadata")).getExistingOperators();
             OperatorState existingOperator = operatorStateList.stream()
