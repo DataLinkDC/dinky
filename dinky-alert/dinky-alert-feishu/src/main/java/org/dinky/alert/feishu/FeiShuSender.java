@@ -23,7 +23,7 @@ import org.dinky.alert.AlertResult;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.ProxyConfig;
 import org.dinky.utils.HttpUtils;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -149,7 +149,7 @@ public final class FeiShuSender {
             logger.info("send fei shu msg error,fei shu server resp is null");
             return alertResult;
         }
-        FeiShuSendMsgResponse sendMsgResponse = JSONUtil.parseObject(result, FeiShuSendMsgResponse.class);
+        FeiShuSendMsgResponse sendMsgResponse = JsonUtils.parseObject(result, FeiShuSendMsgResponse.class);
 
         if (null == sendMsgResponse) {
             alertResult.setMessage("send fei shu msg fail");

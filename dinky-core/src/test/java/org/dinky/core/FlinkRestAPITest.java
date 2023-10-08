@@ -42,7 +42,7 @@ public class FlinkRestAPITest {
     private static final Logger LOGGER = LoggerFactory.getLogger(FlinkRestAPITest.class);
 
     // private String address = "192.168.123.157:8081";
-    private String address = "cdh1:8081";
+    private String address = "124.221.249.188:8286";
 
     @Test
     public void savepointTest() {
@@ -78,9 +78,9 @@ public class FlinkRestAPITest {
     }
 
     @Test
-    public void getExectionsInfoTest() {
-        JsonNode exectionsDetailInfo = FlinkAPI.build(address).getException("9b0910c865874430b98d3817a248eb24");
-        LOGGER.info(exectionsDetailInfo.toString());
+    public void getExecutionsInfoTest() {
+        JsonNode executionsDetailInfo = FlinkAPI.build(address).getException("9b0910c865874430b98d3817a248eb24");
+        LOGGER.info(executionsDetailInfo.toString());
     }
 
     @Test
@@ -164,5 +164,25 @@ public class FlinkRestAPITest {
         JsonNode taskManagerThreadDump =
                 FlinkAPI.build(address).getTaskManagerThreadDump("container_e46_1655948912029_0061_01_000002");
         LOGGER.info(taskManagerThreadDump.toString());
+    }
+
+    @Test
+    public void getBackPressureTest() {
+        String backpressure = FlinkAPI.build(address)
+                .getBackPressure("62254c597e60e3b978e1663f29b333cd", "c27dcf7b54ef6bfd6cff02ca8870b681");
+        LOGGER.info(backpressure);
+    }
+
+    @Test
+    public void getWaterMarkTest() {
+        String watermark = FlinkAPI.build(address)
+                .getWatermark("62254c597e60e3b978e1663f29b333cd", "c27dcf7b54ef6bfd6cff02ca8870b681");
+        LOGGER.info(watermark);
+    }
+
+    @Test
+    public void getVerticesTest() {
+        List<String> vertices = FlinkAPI.build(address).getVertices("62254c597e60e3b978e1663f29b333cd");
+        LOGGER.info(vertices.toString());
     }
 }

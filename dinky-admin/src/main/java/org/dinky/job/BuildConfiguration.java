@@ -24,7 +24,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.JobManagerConfiguration;
 import org.dinky.data.model.TaskContainerConfigInfo;
 import org.dinky.data.model.TaskManagerConfiguration;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -42,7 +42,7 @@ public class BuildConfiguration {
         // 获取jobManager metrics
         Map<String, String> jobManagerMetricsMap = new HashMap<>(8);
         List<LinkedHashMap> jobManagerMetricsItemsList =
-                JSONUtil.toList(JSONUtil.toJsonString(flinkAPI.getJobManagerMetrics()), LinkedHashMap.class);
+                JsonUtils.toList(JsonUtils.toJsonString(flinkAPI.getJobManagerMetrics()), LinkedHashMap.class);
         jobManagerMetricsItemsList.forEach(mapItems -> {
             String configKey = (String) mapItems.get("id");
             String configValue = (String) mapItems.get("value");
@@ -53,7 +53,7 @@ public class BuildConfiguration {
         // 获取jobManager配置信息
         Map<String, String> jobManagerConfigMap = new HashMap<>(8);
         List<LinkedHashMap> jobManagerConfigMapItemsList =
-                JSONUtil.toList(JSONUtil.toJsonString(flinkAPI.getJobManagerConfig()), LinkedHashMap.class);
+                JsonUtils.toList(JsonUtils.toJsonString(flinkAPI.getJobManagerConfig()), LinkedHashMap.class);
         jobManagerConfigMapItemsList.forEach(mapItems -> {
             String configKey = (String) mapItems.get("key");
             String configValue = (String) mapItems.get("value");
@@ -100,15 +100,15 @@ public class BuildConfiguration {
                 // 获取container freeSlots
                 Integer freeSlots = taskManagers.get("freeSlots").asInt();
                 // 获取container
-                String totalResource = JSONUtil.toJsonString(taskManagers.get("totalResource"));
+                String totalResource = JsonUtils.toJsonString(taskManagers.get("totalResource"));
                 // totalResource
                 // 获取container
-                String freeResource = JSONUtil.toJsonString(taskManagers.get("freeResource"));
+                String freeResource = JsonUtils.toJsonString(taskManagers.get("freeResource"));
                 // freeResource
                 // 获取container hardware
-                String hardware = JSONUtil.toJsonString(taskManagers.get("hardware"));
+                String hardware = JsonUtils.toJsonString(taskManagers.get("hardware"));
                 // 获取container
-                String memoryConfiguration = JSONUtil.toJsonString(taskManagers.get("memoryConfiguration"));
+                String memoryConfiguration = JsonUtils.toJsonString(taskManagers.get("memoryConfiguration"));
                 // memoryConfiguration
                 Asserts.checkNull(containerId, "获取不到 containerId , containerId不能为空");
 

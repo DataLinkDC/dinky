@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.AlertSendResponse;
 import org.dinky.utils.HttpUtils;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -133,7 +133,7 @@ public class WeChatSender {
                     resp = EntityUtils.toString(entity, WeChatConstants.CHARSET);
                     EntityUtils.consume(entity);
                 }
-                HashMap<String, Object> map = JSONUtil.parseObject(resp, HashMap.class);
+                HashMap<String, Object> map = JsonUtils.parseObject(resp, HashMap.class);
                 if (map != null && null != map.get(WeChatConstants.ACCESS_TOKEN)) {
                     return map.get(WeChatConstants.ACCESS_TOKEN).toString();
                 } else {
@@ -154,7 +154,7 @@ public class WeChatSender {
             logger.error("send we chat msg error,resp is null");
             return alertResult;
         }
-        AlertSendResponse sendMsgResponse = JSONUtil.parseObject(result, AlertSendResponse.class);
+        AlertSendResponse sendMsgResponse = JsonUtils.parseObject(result, AlertSendResponse.class);
         if (null == sendMsgResponse) {
             alertResult.setMessage("we chat send fail");
             logger.error("send we chat msg error,resp error");

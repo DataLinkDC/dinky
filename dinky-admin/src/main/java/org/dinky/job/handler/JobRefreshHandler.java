@@ -28,6 +28,11 @@ import org.dinky.data.dto.JobDataDto;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.flink.backpressure.FlinkJobNodeBackPressure;
+import org.dinky.data.model.flink.config.FlinkJobConfigInfo;
+import org.dinky.data.model.flink.exceptions.FlinkJobExceptionsDetail;
+import org.dinky.data.model.flink.job.FlinkJobDetailInfo;
+import org.dinky.data.model.flink.watermark.FlinkJobNodeWaterMark;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.GatewayType;
@@ -36,6 +41,7 @@ import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.job.JobConfig;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.TimeUtil;
 
 import java.time.Duration;
@@ -44,9 +50,11 @@ import java.time.LocalDateTime;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,7 +62,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Component
 @DependsOn("springContextUtils")
-public class JobRefeshHandler {
+public class JobRefreshHandler {
 
     private static final JobInstanceService jobInstanceService;
     private static final JobHistoryService jobHistoryService;
@@ -74,7 +82,7 @@ public class JobRefeshHandler {
      * @param needSave      Indicates if the job needs to be saved.
      * @return True if the job is done, false otherwise.
      */
-    public static boolean refeshJob(JobInfoDetail jobInfoDetail, boolean needSave) {
+    public static boolean refreshJob(JobInfoDetail jobInfoDetail, boolean needSave) {
         log.debug(
                 "Start to refresh job: {}->{}",
                 jobInfoDetail.getInstance().getId(),
@@ -97,16 +105,13 @@ public class JobRefeshHandler {
             jobInfoDetail.getJobDataDto().setErrorMsg(jobDataDto.getErrorMsg());
         } else {
             jobInfoDetail.setJobDataDto(jobDataDto);
-            JsonNode job = jobDataDto.getJob();
-            Long startTime = job.get(FlinkRestResultConstant.JOB_CREATE_TIME).asLong();
-            Long endTime = job.get(FlinkRestResultConstant.JOB_FINISH_TIME).asLong();
+            FlinkJobDetailInfo flinkJobDetailInfo = jobDataDto.getJob();
 
             jobInstance.setStatus(getJobStatus(jobInfoDetail).getValue());
-            jobInstance.setDuration(
-                    job.get(FlinkRestResultConstant.JOB_DURATION).asLong());
-            jobInstance.setCreateTime(TimeUtil.toLocalDateTime(startTime));
+            jobInstance.setDuration(flinkJobDetailInfo.getDuration());
+            jobInstance.setCreateTime(TimeUtil.toLocalDateTime(flinkJobDetailInfo.getStartTime()));
             // if the job is still running the end-time is -1
-            jobInstance.setFinishTime(TimeUtil.toLocalDateTime(endTime));
+            jobInstance.setFinishTime(TimeUtil.toLocalDateTime(flinkJobDetailInfo.getEndTime()));
         }
         jobInstance.setUpdateTime(LocalDateTime.now());
 
@@ -149,12 +154,31 @@ public class JobRefeshHandler {
             if (jobInfo.has(FlinkRestResultConstant.ERRORS)) {
                 throw new Exception(String.valueOf(jobInfo.get(FlinkRestResultConstant.ERRORS)));
             }
+
+            FlinkJobConfigInfo jobConfigInfo =
+                    JSON.parseObject(api.getJobsConfig(jobId).toString()).toJavaObject(FlinkJobConfigInfo.class);
+
+            FlinkJobDetailInfo flinkJobDetailInfo =
+                    JSON.parseObject(jobInfo.toString()).toJavaObject(FlinkJobDetailInfo.class);
+            // 获取 WATERMARK  & BACKPRESSURE 信息
+            api.getVertices(jobId).forEach(vertex -> {
+                flinkJobDetailInfo.getPlan().getNodes().forEach(planNode -> {
+                    if (planNode.getId().equals(vertex)) {
+                        planNode.setWatermark(
+                                JSONUtil.toList(api.getWatermark(jobId, vertex), FlinkJobNodeWaterMark.class));
+                        planNode.setBackpressure(JsonUtils.toJavaBean(
+                                api.getBackPressure(jobId, vertex), FlinkJobNodeBackPressure.class));
+                    }
+                });
+            });
+
             return builder.id(id)
                     .checkpoints(api.getCheckPoints(jobId))
                     .checkpointsConfig(api.getCheckPointsConfig(jobId))
-                    .exceptions(api.getException(jobId))
-                    .job(jobInfo)
-                    .config(api.getJobsConfig(jobId))
+                    .exceptions(
+                            JsonUtils.toJavaBean(api.getException(jobId).toString(), FlinkJobExceptionsDetail.class))
+                    .job(flinkJobDetailInfo)
+                    .config(jobConfigInfo)
                     .build();
         } catch (Exception e) {
             log.error("Connect {} failed,{}", jobManagerHost, e.getMessage());
@@ -189,8 +213,7 @@ public class JobRefeshHandler {
         }
 
         JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
-        String status =
-                jobDataDto.getJob().get(FlinkRestResultConstant.JOB_STATE).asText();
+        String status = jobDataDto.getJob().getState();
         return JobStatus.get(status);
     }
 

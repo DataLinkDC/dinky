@@ -52,17 +52,21 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 
 /**
- * JSONUtil
+ * JsonUtils
  *
  * @since 2022/2/23 19:57
  */
-public class JSONUtil {
+public class JsonUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(JSONUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(JsonUtils.class);
 
     private static final ObjectMapper objectMapper = new ObjectMapper()
             .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -224,5 +228,19 @@ public class JSONUtil {
             }
         }
         return mergeTo;
+    }
+
+    /**
+     * 此方法为解决 dd-dd 这种命名转  java bean
+     * @param jsonStr
+     * @param clazz
+     * @return
+     * @param <T>
+     */
+    public static <T> T toJavaBean(String jsonStr, Class<T> clazz) {
+        return BeanUtil.toBean(
+                JSONUtil.parseObj(jsonStr),
+                clazz,
+                CopyOptions.create().setFieldNameEditor(x -> StrUtil.toCamelCase(x, '-')));
     }
 }

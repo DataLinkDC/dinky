@@ -50,6 +50,9 @@ class CustomListCondition implements Condition {
         String requiredValue = (String) metadata.getAnnotationAttributes(ConditionalOnListProperty.class.getName())
                 .get("havingValue");
         String[] propertyValues = context.getEnvironment().getProperty(propertyName, String[].class);
-        return Arrays.asList(propertyValues).contains(requiredValue);
+        if (propertyValues != null) {
+            return Arrays.asList(propertyValues).contains(requiredValue);
+        }
+        return false;
     }
 }

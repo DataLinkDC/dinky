@@ -26,7 +26,7 @@ import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
@@ -182,7 +182,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 logger.error(
                         "SchemaTable: {} - Row: {} - Exception: {}",
                         schemaTableName,
-                        JSONUtil.toJsonString(value),
+                        JsonUtils.toJsonString(value),
                         e.toString());
                 throw e;
             }

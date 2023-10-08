@@ -29,7 +29,7 @@ import org.dinky.mapper.AlertInstanceMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertInstanceService;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -68,7 +68,7 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
     @Override
     public AlertResult testAlert(AlertInstance alertInstance) {
         AlertConfig alertConfig = AlertConfig.build(
-                alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
+                alertInstance.getName(), alertInstance.getType(), JsonUtils.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
 
         String msg = "\n- **Job Name :** <font color='gray'>Test Job</font>\n"

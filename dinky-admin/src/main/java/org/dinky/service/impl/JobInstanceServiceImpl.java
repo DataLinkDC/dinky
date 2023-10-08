@@ -38,7 +38,7 @@ import org.dinky.data.result.ProTableResult;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.FlinkJobTask;
-import org.dinky.job.handler.JobRefeshHandler;
+import org.dinky.job.handler.JobRefreshHandler;
 import org.dinky.mapper.JobInstanceMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.mybatis.util.ProTableUtil;
@@ -48,7 +48,7 @@ import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -160,7 +160,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         jobInfoDetail.setCluster(cluster);
 
         History history = historyService.getById(jobInstance.getHistoryId());
-        history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
+        history.setConfig(JsonUtils.parseObject(history.getConfigJson()));
         jobInfoDetail.setHistory(history);
         if (Asserts.isNotNull(history.getClusterConfigurationId())) {
             ClusterConfiguration clusterConfig =
@@ -184,7 +184,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public JobInfoDetail refreshJobInfoDetail(Integer jobInstanceId) {
         JobInfoDetail jobInfoDetail = getJobInfoDetail(jobInstanceId);
-        JobRefeshHandler.refeshJob(jobInfoDetail, true);
+        JobRefreshHandler.refreshJob(jobInfoDetail, true);
         DaemonFactory.refeshOraddTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId));
         return jobInfoDetail;
     }

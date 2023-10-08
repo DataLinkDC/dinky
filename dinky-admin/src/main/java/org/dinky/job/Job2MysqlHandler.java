@@ -37,7 +37,7 @@ import org.dinky.service.JarService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
 
@@ -87,7 +87,7 @@ public class Job2MysqlHandler implements JobHandler {
         history.setStatement(job.getStatement());
         history.setStartTime(job.getStartTime());
         history.setTaskId(job.getJobConfig().getTaskId());
-        history.setConfigJson(JSONUtil.toJsonString(job.getJobConfig()));
+        history.setConfigJson(JsonUtils.toJsonString(job.getJobConfig()));
         historyService.save(history);
 
         job.setId(history.getId());
@@ -186,15 +186,15 @@ public class Job2MysqlHandler implements JobHandler {
         JobHistory.JobHistoryBuilder jobHistoryBuilder = JobHistory.builder();
         JobHistory jobHistory = jobHistoryBuilder
                 .id(jobInstance.getId())
-                .clusterJson(JSONUtil.toJsonString(cluster))
+                .clusterJson(JsonUtils.toJsonString(cluster))
                 .jarJson(
                         Asserts.isNotNull(job.getJobConfig().getJarId())
-                                ? JSONUtil.toJsonString(
+                                ? JsonUtils.toJsonString(
                                         jarService.getById(job.getJobConfig().getJarId()))
                                 : null)
                 .clusterConfigurationJson(
                         Asserts.isNotNull(clusterConfigurationId)
-                                ? JSONUtil.toJsonString(
+                                ? JsonUtils.toJsonString(
                                         clusterConfigurationService.getClusterConfigById(clusterConfigurationId))
                                 : null)
                 .build();

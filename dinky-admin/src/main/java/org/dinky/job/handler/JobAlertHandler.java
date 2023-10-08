@@ -28,7 +28,6 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.FreeMarkerHolder;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.pool.DefaultThreadPool;
-import org.dinky.data.constant.FlinkRestResultConstant;
 import org.dinky.data.dto.AlertRuleDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
@@ -43,6 +42,7 @@ import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
 import org.dinky.service.TaskService;
 import org.dinky.service.impl.AlertRuleServiceImpl;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.TimeUtil;
 
 import java.io.IOException;
@@ -93,7 +93,7 @@ public class JobAlertHandler {
 
     private final Facts ruleFacts = new Facts();
 
-    private static JobAlertHandler defaultJobAlertHandler;
+    private static volatile JobAlertHandler defaultJobAlertHandler;
 
     static {
         taskService = SpringContextUtils.getBean("taskServiceImpl", TaskService.class);
@@ -152,11 +152,7 @@ public class JobAlertHandler {
         } else {
             ruleFacts.put(
                     AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS_MSG,
-                    jobInfoDetail
-                            .getJobDataDto()
-                            .getExceptions()
-                            .get(FlinkRestResultConstant.ROOT_EXCEPTION)
-                            .toString());
+                    jobInfoDetail.getJobDataDto().getExceptions().getRootException());
         }
 
         rulesEngine.fire(rules, ruleFacts);
@@ -265,7 +261,7 @@ public class JobAlertHandler {
      */
     private void sendAlert(
             AlertInstance alertInstance, int jobInstanceId, int alertGid, String title, String alertMsg) {
-        Map<String, String> params = org.dinky.utils.JSONUtil.toMap(alertInstance.getParams());
+        Map<String, String> params = JsonUtils.toMap(alertInstance.getParams());
         AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(), params);
         Alert alert = Alert.build(alertConfig);
         AlertResult alertResult = alert.send(title, alertMsg);

@@ -71,7 +71,7 @@ const FlinkDag = (props: DagProps) => {
   const initGraph = (flinkData: any) => {
     register({
       shape: 'data-processing-dag-node',
-      width: 250,
+      width: 270,
       height: 140,
       component: onlyPlan ? DagPlanNode : DagDataNode,
       ports: portConfig

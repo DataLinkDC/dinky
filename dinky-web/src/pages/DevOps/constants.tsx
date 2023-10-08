@@ -38,3 +38,8 @@ export enum JOB_STATUS {
   CANCELLING = 'CANCELLING',
   UNKNOWN = 'UNKNOWN'
 }
+
+export enum BackPressureStatus {
+  OK = 'ok',
+  HIGH = 'high'
+}
