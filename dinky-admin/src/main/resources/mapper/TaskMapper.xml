@@ -98,12 +98,18 @@
     </select>
 
     <select id="getTaskOnlineRate" resultType="org.dinky.data.model.JobTypeOverView">
-        select dialect jobType,
-        round(coalesce(sum(case when step = 5 then 1 else 0 end) /
-        sum(case when step <![CDATA[ < ]]> 5 then 1 else 0 end) * 100, 0), 2) rate
-        from dinky_task
-        where enabled = 1
-        group by dialect
+        SELECT dialect  jobType,
+        round(coalesce(sum(CASE WHEN step = 5 THEN 1 ELSE 0 END) /
+        CASE
+        WHEN sum(CASE WHEN step <![CDATA[ < ]]> 5 THEN 1 ELSE 0 END) = 0 then 1
+        else sum(CASE WHEN step <![CDATA[ < ]]> 5 THEN 1 ELSE 0 END) end
+        *
+        100, 0),
+        2) rate
+        FROM dinky_task
+        WHERE enabled = 1
+        AND tenant_id = 1
+        GROUP BY dialect
     </select>
 
 
