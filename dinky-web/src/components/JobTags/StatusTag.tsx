@@ -17,11 +17,11 @@
  */
 
 import { StatusTagProps } from '@/components/JobTags/data';
-import { JOB_STATUS } from '@/pages/DevOps/constants';
+import { BackPressureStatus, JOB_STATUS } from '@/pages/DevOps/constants';
 import {
   CheckCircleOutlined,
   ClockCircleOutlined,
-  CloseCircleOutlined,
+  InfoCircleOutlined,
   MinusCircleOutlined,
   QuestionCircleOutlined,
   SyncOutlined
@@ -82,9 +82,21 @@ const StatusTag = (props: StatusTagProps) => {
           color: 'default',
           text: 'UNKNOWN'
         };
+      case BackPressureStatus.OK:
+        return {
+          icon: <QuestionCircleOutlined />,
+          color: 'success',
+          text: 'OK'
+        };
+      case BackPressureStatus.HIGH:
+        return {
+          icon: <InfoCircleOutlined twoToneColor={'red'} />,
+          color: 'error',
+          text: 'HIGH'
+        };
       default:
         return {
-          icon: <CloseCircleOutlined />,
+          icon: <SyncOutlined spin />,
           color: 'default',
           text: 'UNKNOWN Status'
         };

@@ -45,7 +45,7 @@ import org.dinky.service.TenantService;
 import org.dinky.service.resource.impl.HdfsResourceManager;
 import org.dinky.service.resource.impl.OssResourceManager;
 import org.dinky.url.RsURLStreamHandlerFactory;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.OssTemplate;
 import org.dinky.utils.UDFUtils;
 
@@ -242,7 +242,7 @@ public class SystemInit implements ApplicationRunner {
     public void updateGitBuildState() {
         String path = PathConstant.TMP_PATH + "/build.list";
         if (FileUtil.exist(path)) {
-            List<Integer> runningList = JSONUtil.toList(FileUtil.readUtf8String(path), Integer.class);
+            List<Integer> runningList = JsonUtils.toList(FileUtil.readUtf8String(path), Integer.class);
             gitProjectService.list().stream()
                     .filter(x -> x.getBuildState().equals(1))
                     .filter(x -> runningList.contains(x.getId()))

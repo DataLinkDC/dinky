@@ -22,7 +22,7 @@ package org.dinky.data.dto;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.mybatis.annotation.Save;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import javax.validation.constraints.NotNull;
 
@@ -89,7 +89,7 @@ public class ClusterConfigurationDTO {
     public ClusterConfiguration toBean() {
         ClusterConfiguration clusterConfiguration = new ClusterConfiguration();
         BeanUtil.copyProperties(this, clusterConfiguration);
-        clusterConfiguration.setConfigJson(JSONUtil.toJsonString(this.getConfig()));
+        clusterConfiguration.setConfigJson(JsonUtils.toJsonString(this.getConfig()));
         return clusterConfiguration;
     }
 }

@@ -137,7 +137,6 @@ export default {
   'devops.jobinfo.config.JobParallelism': '作业并行度',
   'devops.jobinfo.config.JobType': '任务类型',
   'devops.jobinfo.config.JobVersion': '版本信息',
-  'devops.jobinfo.config.OperatorGraph': '算子图',
   'devops.jobinfo.config.RestartStrategy': '重启策略',
   'devops.jobinfo.config.UserCustomConf': '用户自定义配置',
   'devops.jobinfo.config.execmode': '执行模式',

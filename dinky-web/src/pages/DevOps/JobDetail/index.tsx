@@ -26,7 +26,6 @@ import JobOperator from '@/pages/DevOps/JobDetail/JobOperator/JobOperator';
 import JobConfigTab from '@/pages/DevOps/JobDetail/JobOverview/JobOverview';
 import JobVersionTab from '@/pages/DevOps/JobDetail/JobVersion/JobVersionTab';
 import { DevopsType } from '@/pages/DevOps/JobDetail/model';
-import JobOperatorGraph from '@/pages/Home/JobOverView/JobOperatorGraph';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
@@ -47,8 +46,7 @@ const OperatorEnum = {
   JOB_CHECKPOINTS: 'job_checkpoints',
   JOB_ALERT: 'job_alert',
   JOB_METRICS: 'job_monitor',
-  JOB_LINEAGE: 'job_lineage',
-  JOB_GRAPH: 'job_graph'
+  JOB_LINEAGE: 'job_lineage'
 };
 
 /**
@@ -73,8 +71,7 @@ const JobDetail = (props: any) => {
     [OperatorEnum.JOB_CHECKPOINTS]: <CheckPoints jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_METRICS]: <JobMetrics />,
     // [OperatorEnum.JOB_LINEAGE]: <Lineage jobDetail={jobInfoDetail} />,
-    [OperatorEnum.JOB_ALERT]: <AlertHistory jobDetail={jobInfoDetail} />,
-    [OperatorEnum.JOB_GRAPH]: <JobOperatorGraph jobDetail={jobInfoDetail} />
+    [OperatorEnum.JOB_ALERT]: <AlertHistory jobDetail={jobInfoDetail} />
   };
 
   useRequest(
@@ -117,11 +114,7 @@ const JobDetail = (props: any) => {
       tab: l('devops.jobinfo.config.JobLineage'),
       key: OperatorEnum.JOB_LINEAGE
     },
-    { tab: l('devops.jobinfo.config.JobAlert'), key: OperatorEnum.JOB_ALERT },
-    {
-      tab: l('devops.jobinfo.config.OperatorGraph'),
-      key: OperatorEnum.JOB_GRAPH
-    }
+    { tab: l('devops.jobinfo.config.JobAlert'), key: OperatorEnum.JOB_ALERT }
   ];
 
   return (

@@ -63,7 +63,7 @@ public final class ExcelUtils {
             throw new AlertException("Create xlsx directory error");
         }
 
-        List<LinkedHashMap> itemsList = JSONUtil.toList(content, LinkedHashMap.class);
+        List<LinkedHashMap> itemsList = JsonUtils.toList(content, LinkedHashMap.class);
 
         if (CollectionUtils.isEmpty(itemsList)) {
             logger.error("itemsList is null");

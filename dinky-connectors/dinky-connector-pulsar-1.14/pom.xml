@@ -42,7 +42,7 @@
             <groupId>org.dinky</groupId>
             <artifactId>dinky-common</artifactId>
             <version>1.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
 
         <dependency>
