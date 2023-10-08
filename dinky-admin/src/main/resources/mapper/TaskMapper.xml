@@ -108,7 +108,6 @@
         2) rate
         FROM dinky_task
         WHERE enabled = 1
-        AND tenant_id = 1
         GROUP BY dialect
     </select>
 
