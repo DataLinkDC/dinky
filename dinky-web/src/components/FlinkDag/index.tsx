@@ -156,7 +156,7 @@ const FlinkDag = (props: DagProps) => {
         const [selectPath, setSelectPath] = useState<string>('');
         const key = id + selectPath;
         const [itemChildren, setItemChildren] = useState({[key]: [] as TabsProps['items']});
-        const checkpointArray = (checkPoints.history as any[]).filter(x => x.status === "COMPLETED").map(x => {
+        const checkpointArray = ((checkPoints.history?? []) as any[]).filter(x => x.status === "COMPLETED").map(x => {
             return {checkpointType: x.checkpoint_type, path: x.external_path, id: x.id}
         });
         useEffect(() => {
@@ -241,7 +241,7 @@ const FlinkDag = (props: DagProps) => {
                     },
                     {
                         key: '2',
-                        label: 'CheckPoint Read',
+                        label: 'CheckPointRead',
                         children: renderCheckpoint(currentSelect?.id),
                     },
                 ]} tabBarGutter={10}/>}
