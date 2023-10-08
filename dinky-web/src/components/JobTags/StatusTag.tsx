@@ -98,7 +98,7 @@ const StatusTag = (props: StatusTagProps) => {
         return {
           icon: <SyncOutlined spin />,
           color: 'default',
-          text: 'UNKNOWN Status'
+          text: 'UNKNOWN'
         };
     }
   };
