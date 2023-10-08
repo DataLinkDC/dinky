@@ -18,19 +18,21 @@
  */
 
 
-import {Descriptions, Typography} from 'antd';
+import {Button, Descriptions, Result, Typography} from 'antd';
 import StatusCounts from "@/components/Common/StatusCounts";
 import ProTable, {ProColumns} from '@ant-design/pro-table';
 import {VerticesTableListItem} from "@/pages/DevOps/data";
-import JobStatus from "@/components/Common/JobStatus";
+import JobStatus, {isStatusDone} from "@/components/Common/JobStatus";
 import {parseByteStr, parseMilliSecondStr, parseNumStr, parseSecondStr} from "@/components/Common/function";
 import {l} from "@/utils/intl";
+import {useState} from "react";
 
 const {Text} = Typography;
 
 const BaseInfo = (props: any) => {
 
   const {job} = props;
+  const [showHistory, setShowHistory] = useState<boolean>(false);
 
   const columns: ProColumns<VerticesTableListItem>[] = [
     {
@@ -113,7 +115,18 @@ const BaseInfo = (props: any) => {
       <Descriptions.Item label={l('global.table.updateTime')}>{job?.instance?.updateTime}</Descriptions.Item>
       <Descriptions.Item label={l('global.table.finishTime')}>{job?.instance?.finishTime}</Descriptions.Item>
     </Descriptions>
-    {job?.jobHistory?.job ?
+    {
+      isStatusDone(job?.instance?.status as string) && !showHistory ? <Result
+        status="warning"
+        title="无法连接到 Flink 集群获取最新作业状态信息"
+        extra={
+          <Button type="primary" key="console" onClick={()=>{setShowHistory(true)}}>
+            查看最近保存的作业状态信息
+          </Button>
+        }
+      /> : undefined
+    }
+    {job?.jobHistory?.job && (showHistory || !isStatusDone(job?.instance?.status as string)) ?
       <ProTable
         columns={columns}
         style={{width: '100%'}}

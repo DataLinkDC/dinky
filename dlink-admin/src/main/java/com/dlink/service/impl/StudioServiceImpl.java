@@ -22,6 +22,7 @@ package com.dlink.service.impl;
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
+import com.dlink.constant.MsgConstant;
 import com.dlink.context.RowLevelPermissionsContext;
 import com.dlink.dto.AbstractStatementDTO;
 import com.dlink.dto.SessionDTO;
@@ -409,11 +410,11 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public List<JsonNode> listJobs(Integer clusterId) {
         Cluster cluster = clusterService.getById(clusterId);
-        Asserts.checkNotNull(cluster, "该集群不存在");
+        Asserts.checkNotNull(cluster, MsgConstant.FLINK_CLUSTER_NOT_FOUND);
         try {
             return FlinkAPI.build(cluster.getJobManagerHost()).listJobs();
         } catch (Exception e) {
-            logger.info("查询作业时集群不存在");
+            logger.info("查询作业时无法连接到 Flink 集群");
         }
         return new ArrayList<>();
     }
@@ -421,7 +422,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public boolean cancel(Integer clusterId, String jobId) {
         Cluster cluster = clusterService.getById(clusterId);
-        Asserts.checkNotNull(cluster, "该集群不存在");
+        Asserts.checkNotNull(cluster, MsgConstant.FLINK_CLUSTER_NOT_FOUND);
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
@@ -436,8 +437,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public boolean savepoint(Integer taskId, Integer clusterId, String jobId, String savePointType, String name) {
         Cluster cluster = clusterService.getById(clusterId);
-
-        Asserts.checkNotNull(cluster, "该集群不存在");
+        Asserts.checkNotNull(cluster, MsgConstant.FLINK_CLUSTER_NOT_FOUND);
         boolean useGateway = false;
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());

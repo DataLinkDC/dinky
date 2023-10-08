@@ -31,6 +31,7 @@ import com.dlink.common.result.Result;
 import com.dlink.config.Dialect;
 import com.dlink.config.Docker;
 import com.dlink.constant.FlinkRestResultConstant;
+import com.dlink.constant.MsgConstant;
 import com.dlink.constant.NetConstant;
 import com.dlink.context.RowLevelPermissionsContext;
 import com.dlink.context.TenantContextHolder;
@@ -847,7 +848,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return true;
         }
         Cluster cluster = clusterService.getById(jobInstance.getClusterId());
-        Asserts.checkNotNull(cluster, "该集群不存在");
+        Asserts.checkNotNull(cluster, MsgConstant.FLINK_CLUSTER_NOT_FOUND);
         String jobId = jobInstance.getJid();
         boolean useGateway = false;
 
