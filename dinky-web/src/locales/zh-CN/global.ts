@@ -55,6 +55,7 @@ export default {
   'button.refresh': '刷新',
   'button.expand-all': '全部展开',
   'button.collapse-all': '全部折叠',
+  'button.position': '定位',
   'button.test': '测试',
   'button.clear': '清除',
   'button.copy': '复制',
