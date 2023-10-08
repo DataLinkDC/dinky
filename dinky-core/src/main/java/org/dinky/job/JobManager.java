@@ -325,7 +325,7 @@ public class JobManager {
                 currentSql = item.getValue();
                 executor.executeSql(item.getValue());
             }
-            if (jobParam.getTrans().size() > 0) {
+            if (!jobParam.getTrans().isEmpty()) {
                 // Use statement set or gateway only submit inserts.
                 if (useStatementSet && useGateway) {
                     List<String> inserts = new ArrayList<>();
@@ -355,7 +355,7 @@ public class JobManager {
                             inserts.add(item.getValue());
                         }
                     }
-                    if (inserts.size() > 0) {
+                    if (!inserts.isEmpty()) {
                         currentSql = String.join(sqlSeparator, inserts);
                         // Remote mode can get the table result.
                         TableResult tableResult = executor.executeStatementSet(inserts);
@@ -449,7 +449,7 @@ public class JobManager {
                     }
                 }
             }
-            if (jobParam.getExecute().size() > 0) {
+            if (!jobParam.getExecute().isEmpty()) {
                 if (useGateway) {
                     for (StatementParam item : jobParam.getExecute()) {
                         executor.executeSql(item.getValue());

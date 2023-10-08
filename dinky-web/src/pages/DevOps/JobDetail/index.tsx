@@ -76,7 +76,7 @@ const JobDetail = (props: any) => {
 
   useRequest(
     {
-      url: API_CONSTANTS.REFESH_JOB_DETAIL,
+      url: API_CONSTANTS.REFRESH_JOB_DETAIL,
       params: { id: id }
     },
     {

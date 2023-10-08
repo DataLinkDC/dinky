@@ -52,11 +52,15 @@ public class AddJarSqlParser {
                 .map(x -> ReUtil.findAll(ADD_JAR_PATTERN, x, 2).get(0))
                 .distinct()
                 .forEach(urlPath -> {
-                    File file = URLUtils.toFile(urlPath);
-                    if (file == null || !file.exists()) {
-                        throw new DinkyException(StrUtil.format("file : {} not exists!", urlPath));
+                    try {
+                        File file = URLUtils.toFile(urlPath);
+                        if (file == null || !file.exists()) {
+                            throw new DinkyException(StrUtil.format("file : {} not exists!", urlPath));
+                        }
+                        fileSet.add(file);
+                    } catch (Exception e) {
+                        throw new DinkyException(StrUtil.format("url:{} request failed!", urlPath), e);
                     }
-                    fileSet.add(file);
                 });
         return fileSet;
     }
