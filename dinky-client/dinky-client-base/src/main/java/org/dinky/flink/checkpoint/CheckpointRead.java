@@ -112,7 +112,6 @@ public class CheckpointRead implements CheckpointReadInterface {
                                     new RegisteredOperatorStateBackendMetaInfo<>(stateMetaInfoSnapshot));
                             ;
                             deserializeOperatorStateValues(partitionableListState, in, value);
-                            partitionableListState.get().forEach(System.out::println);
                             // get checkpoint data
                             CheckpointReadFactory.getTable(partitionableListState)
                                     .ifPresent(tableVO -> map.put(key, tableVO));

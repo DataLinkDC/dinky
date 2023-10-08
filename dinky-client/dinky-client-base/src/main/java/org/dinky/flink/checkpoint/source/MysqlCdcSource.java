@@ -30,6 +30,7 @@ import com.ververica.cdc.connectors.mysql.source.split.MySqlSplit;
 import com.ververica.cdc.connectors.mysql.source.split.MySqlSplitSerializer;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -82,12 +83,12 @@ public class MysqlCdcSource extends BaseCheckpointSource<MySqlSplit> {
                                 JSONUtil.toJsonPrettyStr(split.getFinishedSnapshotSplitInfos()));
                     } else if (d.isSnapshotSplit()) {
                         MySqlSnapshotSplit split = d.asSnapshotSplit();
-                        jsonObject.set("table-id", split.getTableId());
+                        jsonObject.set("table-id", split.getTableId().identifier());
                         jsonObject.set("split-id", split.splitId());
-                        jsonObject.set("split-key-type", split.getSplitKeyType());
-                        jsonObject.set("split-start", split.getSplitStart());
-                        jsonObject.set("split-end", split.getSplitEnd());
-                        jsonObject.set("high-watermark", split.getHighWatermark());
+                        jsonObject.set("split-key-type", split.getSplitKeyType().toString());
+                        jsonObject.set("split-start", JSONUtil.toJsonStr(split.getSplitStart()));
+                        jsonObject.set("split-end", JSONUtil.toJsonStr(split.getSplitEnd()));
+                        jsonObject.set("high-watermark", StrUtil.toString(split.getHighWatermark()));
                     }
 
                     return jsonObject;
