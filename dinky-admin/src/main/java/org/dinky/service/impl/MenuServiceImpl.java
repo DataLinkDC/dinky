@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
@@ -283,6 +284,23 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
             }
         }
         return permsSet;
+    }
+
+    /**
+     * save or update menu
+     *
+     * @param menu
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean saveOrUpdateMenu(Menu menu) {
+        if (StrUtil.isNotEmpty(menu.getPath())) {
+            // replace first / and replace other / to : for router
+            String replacedPerms = menu.getPath().replaceFirst("/", "").replaceAll("/", ":");
+            menu.setPerms(replacedPerms);
+        }
+        return this.saveOrUpdate(menu);
     }
 
     /**

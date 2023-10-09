@@ -18,6 +18,7 @@
  */
 
 import { BaseBeanColumns } from '@/types/Public/data';
+import { Alert } from '@/types/RegCenter/data.d';
 
 /**
  * about flink job
@@ -110,11 +111,42 @@ declare namespace Jobs {
     optimizer_properties: any;
   };
 
+  export type Subtasks = {
+    subtask: number;
+    backpressureLevel: string;
+    ratio: number;
+    idleRatio: number;
+    busyRatio: number;
+  };
+
+  export type JobNodeBackPressure = {
+    status: string;
+    backpressureLevel: string;
+    endTimestamp: number;
+    subtasks: Subtasks[];
+  };
+  export type JobNodeWaterMark = {
+    id: string;
+    value: string;
+  };
+
+  export type JobPlanNode = {
+    id: string;
+    parallelism: number;
+    operator: string;
+    operator_strategy: string;
+    description: string;
+    inputs: JobNodeInput[];
+    optimizer_properties: any;
+    backpressure: JobNodeBackPressure;
+    watermark: JobNodeWaterMark[];
+  };
+
   export type JobPlan = {
     jid: string;
     name: string;
     type: string;
-    nodes: JobNode[];
+    nodes: JobPlanNode[];
   };
 
   export type Job = {
@@ -133,13 +165,26 @@ declare namespace Jobs {
     plan: JobPlan;
   };
 
+  export type JobConfigInfo = {
+    jid: string;
+    name: string;
+    executionConfig: ExecutionConfig;
+  };
+  export type ExecutionConfig = {
+    executionMode: string;
+    restartStrategy: string;
+    jobParallelism: number;
+    objectReuse: boolean;
+    userConfig: any;
+  };
+
   export type JobDataDtoItem = {
     id: number;
     job: Job;
     exceptions: any;
     checkpoints: any;
     checkpointsConfig: any;
-    config: any;
+    config: JobConfigInfo;
     jar: string;
     cluster: string;
     clusterConfiguration: string;
@@ -156,4 +201,18 @@ declare namespace Jobs {
     jobManagerConfiguration: any;
     taskManagerConfiguration: any;
   };
+}
+
+export interface AlertHistory {
+  id: number;
+  tenantId: number;
+  alertGroupId: number;
+  alertGroup: Alert.AlertGroup;
+  jobInstanceId: number;
+  title: string;
+  content: string;
+  status: number;
+  log: string;
+  createTime: Date;
+  updateTime: Date;
 }

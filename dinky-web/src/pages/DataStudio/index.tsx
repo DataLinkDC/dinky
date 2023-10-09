@@ -91,7 +91,7 @@ const DataStudio = (props: any) => {
     height: document.documentElement.clientHeight,
     contentHeight:
       document.documentElement.clientHeight -
-        VIEW.headerNavHeight -
+      VIEW.headerNavHeight -
       VIEW.headerHeight -
       VIEW.footerHeight -
       VIEW.otherHeight

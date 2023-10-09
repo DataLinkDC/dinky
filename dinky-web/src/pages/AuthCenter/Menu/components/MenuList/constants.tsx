@@ -24,7 +24,6 @@ import { l } from '@/utils/intl';
 import * as Icons from '@ant-design/icons';
 import { DeleteTwoTone, PlusCircleTwoTone } from '@ant-design/icons';
 import { Space } from 'antd';
-import { MenuItemType } from 'antd/es/menu/hooks/useItems';
 import { DefaultOptionType } from 'antd/es/select';
 
 /**
@@ -58,17 +57,19 @@ export const MENU_ICON_OPTIONS = (): DefaultOptionType[] => {
  * @returns {[{icon: JSX.Element, disabled: boolean, label: string, key: string}, {icon: JSX.Element, disabled: boolean, label: string, key: string}, {icon: JSX.Element, disabled: boolean, label: string, key: string}]}
  * @constructor
  */
-export const RIGHT_CONTEXT_MENU = (isDisabled = false): MenuItemType[] => [
+export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
   {
     key: 'addSub',
     icon: <PlusCircleTwoTone />,
     label: l('right.menu.addSub'),
-    disabled: isDisabled
+    disabled: isDisabled,
+    path: '/auth/menu/addSub'
   },
   {
     key: 'delete',
     icon: <DeleteTwoTone twoToneColor={'red'} />,
-    label: l('button.delete')
+    label: l('button.delete'),
+    path: '/auth/menu/delete'
   },
   {
     key: 'cancel',

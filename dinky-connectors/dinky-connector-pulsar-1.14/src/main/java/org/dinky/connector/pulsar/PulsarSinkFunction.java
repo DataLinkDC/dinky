@@ -21,7 +21,7 @@ package org.dinky.connector.pulsar;
 
 import org.dinky.connector.pulsar.util.PulsarConnectionHolder;
 import org.dinky.connector.pulsar.util.PulsarProducerHolder;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.functions.RuntimeContext;
@@ -220,7 +220,7 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T> implements Checkp
         // JSONObject jsonObject = JSONObject.parseObject(strValue);
         // JSONObject jsonObject = JSONUtil.parseObject(strValue);
         // String key = jsonObject.getString("key");
-        ObjectNode jsonNodes = JSONUtil.parseObject(strValue);
+        ObjectNode jsonNodes = JsonUtils.parseObject(strValue);
         String key = String.valueOf(jsonNodes.get("key"));
         return key == null ? "" : key;
     }

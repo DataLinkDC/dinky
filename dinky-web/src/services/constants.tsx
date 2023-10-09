@@ -107,6 +107,7 @@ export const PRO_LIST_CARD_META = {
   type: {},
   avatar: {},
   content: {},
+  description: {},
   actions: {
     cardActionProps: 'actions'
   }

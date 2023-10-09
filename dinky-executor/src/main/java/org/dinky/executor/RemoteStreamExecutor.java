@@ -19,10 +19,8 @@
 
 package org.dinky.executor;
 
-import org.dinky.assertion.Asserts;
-
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.streaming.api.environment.RemoteStreamEnvironment;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 /**
  * RemoteStreamExecutor
@@ -31,15 +29,16 @@ import org.apache.flink.streaming.api.environment.RemoteStreamEnvironment;
  */
 public class RemoteStreamExecutor extends Executor {
 
-    public RemoteStreamExecutor(EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
-        this.environmentSetting = environmentSetting;
-        this.executorSetting = executorSetting;
-
-        Configuration configuration = Asserts.isNotNull(executorSetting.getConfig())
-                ? Configuration.fromMap(executorSetting.getConfig())
-                : null;
-        this.environment =
-                new RemoteStreamEnvironment(environmentSetting.getHost(), environmentSetting.getPort(), configuration);
+    public RemoteStreamExecutor(ExecutorConfig executorConfig) {
+        this.executorConfig = executorConfig;
+        if (executorConfig.isValidConfig()) {
+            Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
+            this.environment = StreamExecutionEnvironment.createRemoteEnvironment(
+                    executorConfig.getHost(), executorConfig.getPort(), configuration, executorConfig.getJarFiles());
+        } else {
+            this.environment = StreamExecutionEnvironment.createRemoteEnvironment(
+                    executorConfig.getHost(), executorConfig.getPort(), executorConfig.getJarFiles());
+        }
         init();
     }
 

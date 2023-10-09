@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.AssignMenuToRoleDto;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.result.Result;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -62,6 +64,7 @@ public class RoleMenuController {
             required = true,
             dataType = "AssignMenuToRoleDto",
             paramType = "body")
+    @SaCheckPermission(PermissionConstants.AUTH_ROLE_ASSIGN_MENU)
     public Result<Void> assignMenuToRole(@RequestBody AssignMenuToRoleDto assignMenuToRoleDto) {
         return roleMenuService.assignMenuToRole(assignMenuToRoleDto);
     }

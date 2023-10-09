@@ -6,7 +6,7 @@ import { queryList } from '@/services/api';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
-import { parseSecondStr } from '@/utils/function';
+import { parseMilliSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ClockCircleTwoTone, EyeTwoTone } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
@@ -53,7 +53,7 @@ const JobList = () => {
     {
       title: l('global.table.useTime'),
       hideInSearch: true,
-      render: (_: any, row: Jobs.JobInstance) => parseSecondStr(row.duration)
+      render: (_: any, row: Jobs.JobInstance) => parseMilliSecondStr(row.duration)
     },
     {
       title: l('global.table.status'),

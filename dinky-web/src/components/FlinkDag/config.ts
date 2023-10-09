@@ -166,3 +166,12 @@ export const layoutConfig: DagreLayoutOptions = {
   nodesep: 40,
   controlPoints: true
 };
+
+export const zoomOptions = {
+  padding: {
+    left: 50,
+    right: 50,
+    top: 50,
+    bottom: 50
+  }
+};

@@ -366,10 +366,10 @@ h5 {
 }
 
 .title {
+  overflow: visible;
   font-weight: 500;
   font-size: 15px;
   font-family: 'SimHei', serif;
-  overflow: visible;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -418,4 +418,11 @@ h5 {
 .ant-pro-form-list-item {
   display: flex !important;
   align-items: baseline !important;
+}
+
+.ant-pro-checkcard {
+  overflow: hidden;
+  .ant-pro-checkcard-body {
+    width: 100vw;
+  }
 }

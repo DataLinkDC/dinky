@@ -19,7 +19,6 @@
 
 package org.dinky.sse;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.http.HttpHeaders;
@@ -39,18 +38,16 @@ public class SseEmitterUTF8 extends SseEmitter {
     @Override
     protected void extendResponse(ServerHttpResponse outputMessage) {
         super.extendResponse(outputMessage);
-
         HttpHeaders headers = outputMessage.getHeaders();
         headers.setContentType(new MediaType(MediaType.TEXT_EVENT_STREAM, StandardCharsets.UTF_8));
     }
 
     @Override
-    public void send(Object object, MediaType mediaType) throws IOException {
+    public synchronized void complete() {
         Boolean complete = (Boolean) ReflectUtil.getFieldValue(this, "complete");
         if (complete) {
-            log.warn("SseEmitter is complete, cannot send message: {}", object);
             return;
         }
-        super.send(object, mediaType);
+        super.complete();
     }
 }

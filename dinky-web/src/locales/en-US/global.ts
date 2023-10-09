@@ -53,6 +53,7 @@ export default {
   'button.refresh': 'Refresh',
   'button.expand-all': 'Expand All',
   'button.collapse-all': 'Collapse All',
+  'button.position': 'Position',
   'button.test': 'Test',
   'button.clear': 'Clear',
   'button.copy': 'Copy',
@@ -134,6 +135,7 @@ export default {
   'global.table.isEnable': 'Is Enable',
   'global.table.note': 'Note',
   'global.table.status': 'Status',
+  'global.table.jobid': 'Job ID',
 
   'global.table.notePlaceholder': 'please input Note',
   'global.table.status.normal': 'Normal',

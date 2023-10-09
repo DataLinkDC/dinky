@@ -25,7 +25,7 @@ import {
   RocketOutlined,
   SyncOutlined
 } from '@ant-design/icons';
-import { Descriptions, Tag } from 'antd';
+import { Descriptions, Space, Tag } from 'antd';
 
 const CkDesc = (props: JobProps) => {
   const { jobDetail } = props;
@@ -35,9 +35,9 @@ const CkDesc = (props: JobProps) => {
   let checkpointsConfigInfo = jobDetail?.jobDataDto?.checkpointsConfig;
   return (
     <>
-      <Descriptions bordered size='small' column={3}>
-        <Descriptions.Item label='Checkpointing Mode'>
-          <Tag color='blue' title={'Checkpointing Mode'}>
+      <Descriptions bordered size='small' column={4}>
+        <Descriptions.Item label='Checkpoint Mode'>
+          <Tag color='blue' title={'Checkpoint Mode'}>
             {checkpointsConfigInfo.mode.toUpperCase()}
           </Tag>
         </Descriptions.Item>
@@ -60,27 +60,9 @@ const CkDesc = (props: JobProps) => {
           </Tag>
         </Descriptions.Item>
 
-        <Descriptions.Item label='Persist Checkpoints Externally Enabled'>
-          <Tag color='blue' title={'Persist Checkpoints Externally Enabled'}>
-            {checkpointsConfigInfo.externalization.enabled ? 'Enabled' : 'Disabled'}
-          </Tag>
-        </Descriptions.Item>
-
-        <Descriptions.Item label='CheckPoint Counts'>
-          <Tag color='blue' title={'Total'}>
-            <RocketOutlined /> Total: {counts.total}
-          </Tag>
-          <Tag color='red' title={'Failed'}>
-            <CloseCircleOutlined /> Failed: {counts.failed}
-          </Tag>
-          <Tag color='cyan' title={'Restored'}>
-            <ExclamationCircleOutlined /> Restored: {counts.restored}
-          </Tag>
-          <Tag color='green' title={'Completed'}>
-            <CheckCircleOutlined /> Completed: {counts.completed}
-          </Tag>
-          <Tag color='orange' title={'In Progress'}>
-            <SyncOutlined spin /> In Progress: {counts.in_progress}
+        <Descriptions.Item label='Latest Restored'>
+          <Tag color='cyan' title={'Latest Restored'}>
+            {latest.restored === null ? 'None' : latest.restored.external_path}
           </Tag>
         </Descriptions.Item>
 
@@ -101,22 +83,41 @@ const CkDesc = (props: JobProps) => {
           )}
         </Descriptions.Item>
 
-        <Descriptions.Item label='Latest Restored'>
-          <Tag color='cyan' title={'Latest Restored'}>
-            {latest.restored === null ? 'None' : latest.restored.external_path}
+        <Descriptions.Item label='Latest Completed CheckPoint'>
+          <Tag color='green' title={'Latest Completed CheckPoint'}>
+            {latest.completed === null ? 'None' : latest.completed.external_path}
           </Tag>
         </Descriptions.Item>
 
+        <Descriptions.Item label='Persist Checkpoints Externally Enabled'>
+          <Tag color='blue' title={'Persist Checkpoints Externally Enabled'}>
+            {checkpointsConfigInfo.externalization.enabled ? 'Enabled' : 'Disabled'}
+          </Tag>
+        </Descriptions.Item>
         <Descriptions.Item label='Latest Savepoint'>
           <Tag color='purple' title={'Latest Savepoint'}>
             {latest.savepoint === null ? 'None' : latest.savepoint.external_path}
           </Tag>
         </Descriptions.Item>
 
-        <Descriptions.Item label='Latest Completed CheckPoint'>
-          <Tag color='green' title={'Latest Completed CheckPoint'}>
-            {latest.completed === null ? 'None' : latest.completed.external_path}
-          </Tag>
+        <Descriptions.Item label='CheckPoint Counts'>
+          <Space direction={'horizontal'}>
+            <Tag color='blue' title={'Total'}>
+              <RocketOutlined /> Total: {counts.total}
+            </Tag>
+            <Tag color='red' title={'Failed'}>
+              <CloseCircleOutlined /> Failed: {counts.failed}
+            </Tag>
+            <Tag color='cyan' title={'Restored'}>
+              <ExclamationCircleOutlined /> Restored: {counts.restored}
+            </Tag>
+            <Tag color='green' title={'Completed'}>
+              <CheckCircleOutlined /> Completed: {counts.completed}
+            </Tag>
+            <Tag color='orange' title={'In Progress'}>
+              <SyncOutlined spin /> In Progress: {counts.in_progress}
+            </Tag>
+          </Space>
         </Descriptions.Item>
       </Descriptions>
     </>

@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,6 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Api(tags = "File Upload Controller")
 @RestController
+@SaCheckLogin
 @RequestMapping("/api/uploadFileRecord")
 public class UploadFileRecordController {
 

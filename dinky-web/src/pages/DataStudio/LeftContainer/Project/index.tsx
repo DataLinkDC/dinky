@@ -42,6 +42,7 @@ import { Modal, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import {BtnRoute} from "@/pages/DataStudio/route";
 
 const { Text } = Typography;
 
@@ -115,6 +116,7 @@ const Project: React.FC = (props: connect) => {
         payload: {
           icon: type,
           id: parentId + name,
+          treeKey: key,
           breadcrumbLabel: path.join('/'),
           label: name,
           params: {

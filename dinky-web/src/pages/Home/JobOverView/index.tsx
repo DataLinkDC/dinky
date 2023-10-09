@@ -38,51 +38,53 @@ const JobOverView: React.FC = () => {
   const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
 
   return (
-    <RcResizeObserver
-      key='resize-observer'
-      onResize={(offset) => {
-        setSplit(offset.width < 596 ? 'horizontal' : 'vertical');
-      }}
-    >
-      <ProCard
-        title={
-          <>
-            <Badge status='processing' />
-            {l('home.job.metrics')}
-          </>
-        }
-        headerBordered
-        bordered
-        size='small'
-        split={split}
-        bodyStyle={noPadding}
+    <RcResizeObserver.Collection>
+      <RcResizeObserver
+        key='resize-observer'
+        onResize={(offset) => {
+          setSplit(offset.width < 596 ? 'horizontal' : 'vertical');
+        }}
       >
-        <ProCard split={split} bodyStyle={noPadding}>
-          <ProCard split='horizontal'>
-            <ProCard bodyStyle={{ padding: '0 12px' }}>
-              <JobRunView />
+        <ProCard
+          title={
+            <>
+              <Badge status='processing' />
+              {l('home.job.metrics')}
+            </>
+          }
+          headerBordered
+          bordered
+          size='small'
+          split={split}
+          bodyStyle={noPadding}
+        >
+          <ProCard split={split} bodyStyle={noPadding}>
+            <ProCard split='horizontal'>
+              <ProCard bodyStyle={{ padding: '0 12px' }}>
+                <JobRunView />
+              </ProCard>
+              <ProCard bodyStyle={{ padding: '0 12px' }}>
+                <JobFinishedView />
+              </ProCard>
+              <ProCard bodyStyle={{ padding: '0 12px' }}>
+                <JobRecoveryView />
+              </ProCard>
             </ProCard>
-            <ProCard bodyStyle={{ padding: '0 12px' }}>
-              <JobFinishedView />
-            </ProCard>
-            <ProCard bodyStyle={{ padding: '0 12px' }}>
-              <JobRecoveryView />
+            <ProCard title={l('home.job.running.status')} bodyStyle={noPadding}>
+              <JobStatusPie />
             </ProCard>
           </ProCard>
-          <ProCard title={l('home.job.running.status')} bodyStyle={noPadding}>
-            <JobStatusPie />
+          <ProCard split={split} bodyStyle={noPadding}>
+            <ProCard title={l('home.server.load')} bodyStyle={noPadding}>
+              <LoadScoreGauge />
+            </ProCard>
+            <ProCard split='horizontal' bodyStyle={noPadding}>
+              <JobErrorView />
+            </ProCard>
           </ProCard>
         </ProCard>
-        <ProCard split={split} bodyStyle={noPadding}>
-          <ProCard title={l('home.server.load')} bodyStyle={noPadding}>
-            <LoadScoreGauge />
-          </ProCard>
-          <ProCard split='horizontal' bodyStyle={noPadding}>
-            <JobErrorView />
-          </ProCard>
-        </ProCard>
-      </ProCard>
-    </RcResizeObserver>
+      </RcResizeObserver>
+    </RcResizeObserver.Collection>
   );
 };
 

@@ -20,6 +20,7 @@
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import { Authorized } from '@/hooks/useAccess';
 import { mapDispatchToProps } from '@/pages/AuthCenter/Token/component/model';
 import TokenModalForm from '@/pages/AuthCenter/Token/component/TokenModalForm';
 import { queryList } from '@/services/api';
@@ -112,12 +113,16 @@ const TokenList = (props: any) => {
       width: '5vw',
       fixed: 'right',
       render: (_, record: SysToken) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />,
-        <PopconfirmDeleteBtn
-          key={`${record.id}_delete`}
-          onClick={() => handleDeleteToken(record?.id)}
-          description={l('token.deleteConfirm')}
-        />
+        <Authorized key={`${record.id}_edit_auth`} path='/auth/token/edit'>
+          <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
+        </Authorized>,
+        <Authorized key={`${record.id}_delete_auth`} path='/auth/token/delete'>
+          <PopconfirmDeleteBtn
+            key={`${record.id}_delete`}
+            onClick={() => handleDeleteToken(record?.id)}
+            description={l('token.deleteConfirm')}
+          />
+        </Authorized>
       ]
     }
   ];
@@ -144,10 +149,12 @@ const TokenList = (props: any) => {
         actionRef={actionRef}
         loading={tokenState.loading}
         toolBarRender={() => [
-          <CreateBtn
-            key={'CreateToken'}
-            onClick={() => setTokenState((prevState) => ({ ...prevState, addedOpen: true }))}
-          />
+          <Authorized key={`CreateToken_auth`} path='/auth/token/add'>
+            <CreateBtn
+              key={'CreateToken'}
+              onClick={() => setTokenState((prevState) => ({ ...prevState, addedOpen: true }))}
+            />
+          </Authorized>
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.TOKEN, {

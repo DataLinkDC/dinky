@@ -247,6 +247,14 @@ const HeaderContainer = (props: any) => {
       // hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       // hotKeyDesc: "Shift+F10"
     },
+    {
+      // flink jobdetail跳转
+      icon: <RotateRightOutlined />,
+      title: l('pages.datastudio.to.jobDetail'),
+      click: ()=>history.push(`/devops/job-detail?id=${getCurrentData(panes, activeKey)?.id}`),
+      isShow: (type?: TabsPageType, subType?: string, data?: any) =>
+        type === TabsPageType.project && data?.jobInstanceId && subType==="flinksql"
+    },
     // {
     //   // 异步提交按钮
     //   icon: <RocketTwoTone/>,

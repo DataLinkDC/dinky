@@ -36,5 +36,11 @@ export enum JOB_STATUS {
   FAILING = 'FAILING',
   SUSPENDED = 'SUSPENDED',
   CANCELLING = 'CANCELLING',
+  RECONNECTING = 'RECONNECTING',
   UNKNOWN = 'UNKNOWN'
+}
+
+export enum BackPressureStatus {
+  OK = 'ok',
+  HIGH = 'high'
 }

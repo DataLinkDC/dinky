@@ -21,7 +21,6 @@ import Sms from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoos
 import WeChat from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/WeChat';
 import { ALERT_TYPE_LIST_OPTIONS } from '@/pages/RegCenter/Alert/AlertInstance/constans';
 import { getJSONData } from '@/pages/RegCenter/Alert/AlertInstance/function';
-import { MODAL_FORM_OPTIONS } from '@/services/constants';
 import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
@@ -90,7 +89,6 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
   return (
     <>
       <ProForm
-        {...MODAL_FORM_OPTIONS}
         form={form}
         submitter={false}
         initialValues={getJSONData(values)}

@@ -17,33 +17,20 @@
  *
  */
 
-package org.dinky.executor;
+package org.dinky.flink.checkpoint;
 
-import static org.dinky.executor.ExecutorSetting.CHECKPOINT_CONST;
-import static org.dinky.executor.ExecutorSetting.PARALLELISM_CONST;
-import static org.junit.jupiter.api.Assertions.*;
+import org.dinky.data.model.CheckPointReadTable;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-
-/** */
-class ExecutorSettingTest {
-
-    @Test
-    void build() {
-        Map<String, String> maps = new HashMap<>();
-        maps.put(CHECKPOINT_CONST, "123");
-        maps.put(PARALLELISM_CONST, "456");
-
-        ExecutorSetting es = ExecutorSetting.build(maps);
-        assertEquals(123, es.getCheckpoint());
-        assertEquals(456, es.getParallelism());
-
-        ExecutorSetting esNull = ExecutorSetting.build(Collections.emptyMap());
-        assertNull(esNull.getCheckpoint());
-        assertNull(esNull.getParallelism());
+public interface CheckpointReadInterface {
+    /**
+     * 读取checkpoint
+     * @param path Checkpoint路径
+     * @param operatorId 执行id
+     * @return stateType -> (stateName -> CheckPointReadTable)
+     */
+    default Map<String, Map<String, CheckPointReadTable>> readCheckpoint(String path, String operatorId) {
+        throw new UnsupportedOperationException("readCheckpoint not implemented");
     }
 }

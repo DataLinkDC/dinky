@@ -216,7 +216,8 @@ export enum API_CONSTANTS {
   GET_JOB_LIST = '/api/jobInstance',
   GET_JOB_BY_ID = '/api/jobInstance/getOneById',
   GET_JOB_DETAIL = '/api/jobInstance/getJobInfoDetail',
-  REFESH_JOB_DETAIL = '/api/jobInstance/refreshJobInfoDetail',
+  REFRESH_JOB_DETAIL = '/api/jobInstance/refreshJobInfoDetail',
+  READ_CHECKPOINT = '/api/flinkConf/readCheckPoint',
   GET_JOB_VERSION = '/api/task/version',
   GET_JOBMANAGER_LOG = 'api/jobInstance/getJobManagerLog',
   GET_JOBMANAGER_STDOUT = 'api/jobInstance/getJobManagerStdOut',
@@ -229,6 +230,8 @@ export enum API_CONSTANTS {
   RESTART_TASK = '/api/task/restartTask',
   RESTART_TASK_FROM_CHECKPOINT = '/api/task/selectSavePointRestartTask',
   GET_SAVEPOINTS = '/api/savepoints',
+  ALERT_HISTORY_LIST = '/api/alertHistory/list',
+  ALERT_HISTORY_DELETE = '/api/alertHistory/delete',
 
   // -- LDAP
   GET_LDAP_ENABLE = '/api/ldap/ldapEnableStatus',

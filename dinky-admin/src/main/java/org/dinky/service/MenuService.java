@@ -127,4 +127,11 @@ public interface MenuService extends ISuperService<Menu> {
      * @return permission List
      */
     Set<String> selectMenuPermsByRoleId(Integer roleId);
+
+    /**
+     * save or update menu
+     * @param menu
+     * @return
+     */
+    boolean saveOrUpdateMenu(Menu menu);
 }
