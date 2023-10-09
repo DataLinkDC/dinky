@@ -21,12 +21,6 @@ package org.dinky.data.result;
 
 import org.dinky.metadata.result.JdbcSelectResult;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-
-import cn.hutool.cache.Cache;
-import cn.hutool.cache.impl.TimedCache;
 import java.util.concurrent.TimeUnit;
 
 import cn.hutool.cache.Cache;

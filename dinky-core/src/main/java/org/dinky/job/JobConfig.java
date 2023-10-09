@@ -21,9 +21,8 @@ package org.dinky.job;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.NetConstant;
-import org.dinky.executor.ExecutorSetting;
-import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.executor.ExecutorConfig;
+import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointStrategy;
@@ -228,9 +227,9 @@ public class JobConfig {
                 address,
                 checkpoint,
                 parallelism,
-                useSqlFragment,
-                useStatementSet,
-                useBatchModel,
+                fragment,
+                statementSet,
+                batchModel,
                 savePointPath,
                 jobName,
                 configJson,

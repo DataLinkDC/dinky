@@ -86,7 +86,7 @@ import org.dinky.service.TaskVersionService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
 import org.dinky.utils.FragmentVariableUtils;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.RunTimeUtil;
 import org.dinky.utils.UDFUtils;
 
@@ -357,7 +357,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public ObjectNode getJobPlan(TaskDTO task) {
         JobManager jobManager = JobManager.buildPlanMode(buildJobConfig(task));
         String planJson = jobManager.getJobPlanJson(task.getStatement());
-        return JSONUtil.parseObject(planJson);
+        return JsonUtils.parseObject(planJson);
     }
 
     @Override
@@ -588,7 +588,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
 
         // path
-        ObjectNode jsonNode = (ObjectNode) JSONUtil.toJsonNode(task);
+        ObjectNode jsonNode = (ObjectNode) JsonUtils.toJsonNode(task);
         jsonNode.put("path", getTaskPathByTaskId(taskId));
 
         // clusterConfigurationName
