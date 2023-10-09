@@ -50,9 +50,6 @@ import org.dinky.utils.URLUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-import org.apache.flink.table.operations.CreateTableASOperation;
-import org.apache.flink.table.operations.SinkModifyOperation;
-import org.apache.flink.table.operations.ddl.CreateTableOperation;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -220,12 +217,13 @@ public class Explainer {
         }
         if (correct && !jobParam.getTrans().isEmpty()) {
             if (useStatementSet) {
-                SqlExplainResult record = new SqlExplainResult();
                 List<String> inserts = new ArrayList<>();
                 for (StatementParam item : jobParam.getTrans()) {
                     if (item.getType().equals(SqlType.INSERT)) {
                         inserts.add(item.getValue());
                     } else if (item.getType().equals(SqlType.CTAS)) {
+                        SqlExplainResult record = new SqlExplainResult();
+
                         try {
                             record.setParseTrue(true);
                             record.setExplainTrue(true);
@@ -234,19 +232,7 @@ public class Explainer {
                                     .getParser()
                                     .parse(item.getValue())
                                     .forEach(x -> {
-                                        if (x instanceof CreateTableASOperation) {
-                                            CreateTableASOperation createTableASOperation = (CreateTableASOperation) x;
-                                            CreateTableOperation createTableOperation =
-                                                    createTableASOperation.getCreateTableOperation();
-                                            executor.getCustomTableEnvironment().executeInternal(createTableOperation);
-                                            SinkModifyOperation sinkModifyOperation =
-                                                    createTableASOperation.toSinkModifyOperation(
-                                                            executor.getCustomTableEnvironment()
-                                                                    .getCatalogManager());
-                                            executor.getCustomTableEnvironment()
-                                                    .getPlanner()
-                                                    .translate(CollUtil.newArrayList(sinkModifyOperation));
-                                        }
+                                        executor.getCustomTableEnvironment().executeCTAS(x);
                                     });
                         } catch (Exception e) {
                             String error = LogUtil.getError(e);
@@ -265,6 +251,7 @@ public class Explainer {
                     }
                 }
                 if (!inserts.isEmpty()) {
+                    SqlExplainResult record = new SqlExplainResult();
                     String sqlSet = String.join(";\r\n ", inserts);
                     try {
                         record.setExplain(executor.explainStatementSet(inserts));
