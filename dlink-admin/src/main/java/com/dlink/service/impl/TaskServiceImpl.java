@@ -506,7 +506,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public List<Task> listFlinkSQLEnv() {
-        return this.list(new QueryWrapper<Task>().eq("dialect", Dialect.FLINKSQLENV).eq("enabled", 1));
+        return this.list(new QueryWrapper<Task>().eq("dialect", Dialect.FLINKSQLENV.getValue()).eq("enabled", 1));
     }
 
     @Override
@@ -620,7 +620,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public Task getUDFByClassName(String className) {
         Task task = getOne(
-                new QueryWrapper<Task>().in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON).eq("enabled", 1)
+                new QueryWrapper<Task>().in("dialect", Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue()).eq("enabled", 1)
                         .eq("save_point_path", className));
         Asserts.checkNull(task, StrUtil.format("class: {} ,not exists!", className));
         task.setStatement(statementService.getById(task.getId()).getStatement());
@@ -629,7 +629,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public List<Task> getAllUDF() {
-        List<Task> tasks = list(new QueryWrapper<Task>().in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON)
+        List<Task> tasks = list(new QueryWrapper<Task>().in("dialect", Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
                 .eq("enabled", 1).isNotNull("save_point_path"));
         return tasks.stream().peek(task -> {
             Assert.check(task);
