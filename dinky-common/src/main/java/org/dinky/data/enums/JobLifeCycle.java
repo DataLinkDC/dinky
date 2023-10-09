@@ -28,8 +28,8 @@ import java.util.Arrays;
  */
 public enum JobLifeCycle {
     UNKNOWN(0, "未知"),
-    DEVELOP(2, "开发"),
-    ONLINE(5, "上线");
+    DEVELOP(1, "开发"),
+    ONLINE(2, "上线");
 
     private Integer value;
     private String label;
