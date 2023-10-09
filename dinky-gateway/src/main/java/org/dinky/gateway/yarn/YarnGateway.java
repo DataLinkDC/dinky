@@ -65,11 +65,6 @@ import java.util.stream.Collectors;
 
 import cn.hutool.core.io.FileUtil;
 
-/**
- * YarnSubmiter
- *
- * @since 2021/10/29
- */
 public abstract class YarnGateway extends AbstractGateway {
 
     public static final String HADOOP_CONFIG = "fs.hdfs.hadoopconf";
@@ -254,14 +249,17 @@ public abstract class YarnGateway extends AbstractGateway {
                 case KILLED:
                     return JobStatus.CANCELED;
                 case SUBMITTED:
+                case ACCEPTED:
+                case NEW:
+                case NEW_SAVING:
                     return JobStatus.CREATED;
                 default:
-                    return JobStatus.INITIALIZING;
+                    return JobStatus.UNKNOWN;
             }
         } catch (YarnException | IOException e) {
             logger.error(e.getMessage());
+            return JobStatus.UNKNOWN;
         }
-        return JobStatus.UNKNOWN;
     }
 
     @Override

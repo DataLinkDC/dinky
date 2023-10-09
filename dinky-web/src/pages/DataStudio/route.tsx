@@ -17,7 +17,7 @@
  *
  */
 
-import { CircleButtonProps } from '@/components/CallBackButton/CircleBtn';
+import {CircleButtonProps, CircleDataStudioButtonProps} from '@/components/CallBackButton/CircleBtn';
 import Console from '@/pages/DataStudio/BottomContainer/Console';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
@@ -37,9 +37,9 @@ import {
   CalendarOutlined,
   ConsoleSqlOutlined,
   DatabaseOutlined,
-  DesktopOutlined,
+  DesktopOutlined, EnvironmentOutlined,
   FolderOutlined,
-  HistoryOutlined,
+  HistoryOutlined, HolderOutlined,
   InfoCircleOutlined,
   MonitorOutlined,
   PlayCircleOutlined,
@@ -241,7 +241,7 @@ export const LeftBottomMoreTabs: { [c: string]: TabProp[] } = {
 };
 
 // btn route
-export const BtnRoute: { [c: string]: CircleButtonProps[] } = {
+export const BtnRoute: { [c: string]: CircleDataStudioButtonProps[] } = {
   'menu.datastudio.metadata': [
     {
       icon: <ReloadOutlined />,
@@ -266,6 +266,12 @@ export const BtnRoute: { [c: string]: CircleButtonProps[] } = {
       icon: <ShrinkOutlined />,
       title: l('button.collapse-all'),
       key: 'button.collapse-all',
+      onClick: () => {}
+    },
+    {
+      icon: <EnvironmentOutlined />,
+      title:l('button.position'),
+      key: 'button.position',
       onClick: () => {}
     }
   ]

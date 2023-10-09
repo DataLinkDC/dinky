@@ -302,6 +302,7 @@ export default {
   'pages.datastudio.editor.stop.job': '停止作业',
   'pages.datastudio.editor.stop.jobConfirm': '确定停止作业【{jobName}】吗？',
   'pages.datastudio.editor.submitting': '新任务【{jobName}】正在执行',
+  'pages.datastudio.to.jobDetail': '跳转到作业详情',
   'pages.datastudio.explain.validate': '正在校验中...',
   'pages.datastudio.explain.validate.allright': '全部正确',
   'pages.datastudio.explain.validate.error': '存在错误，共计{errorCount}个',

@@ -115,9 +115,26 @@ public class JobRefreshHandler {
         }
         jobInstance.setUpdateTime(LocalDateTime.now());
 
-        // Set to true if the job status has completed
-        // If the job status is Unknown and the status fails to be updated for 1 minute, set to true and discard the
+        // The transition status include failed and reconnecting ( Dinky custom )
+        // The done status include failed and canceled and finished and unknown ( Dinky custom )
+        // The task status of batch job which network unstable: run -> transition -> run -> transition -> done
+        // The task status of stream job which automatically restart after failure: run -> transition -> run ->
+        // transition -> run
+        // Set to true if the job status which is done has completed
+        // If the job status is transition and the status fails to be updated for 1 minute, set to true and discard the
         // update
+
+        boolean isTransition = JobStatus.isTransition(jobInstance.getStatus())
+                && (TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) > 0
+                        && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
+                                        .toMinutes()
+                                < 1);
+
+        if (isTransition) {
+            log.debug("Job is transition: {}->{}", jobInstance.getId(), jobInstance.getName());
+            return false;
+        }
+
         boolean isDone = (JobStatus.isDone(jobInstance.getStatus()))
                 || (TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) > 0
                         && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())

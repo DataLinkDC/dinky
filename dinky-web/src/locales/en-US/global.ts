@@ -53,6 +53,7 @@ export default {
   'button.refresh': 'Refresh',
   'button.expand-all': 'Expand All',
   'button.collapse-all': 'Collapse All',
+  'button.position': 'Position',
   'button.test': 'Test',
   'button.clear': 'Clear',
   'button.copy': 'Copy',

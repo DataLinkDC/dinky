@@ -150,9 +150,11 @@ public class JobAlertHandler {
                     AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS_MSG,
                     jobInfoDetail.getJobDataDto().getErrorMsg());
         } else {
-            ruleFacts.put(
-                    AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS_MSG,
-                    jobInfoDetail.getJobDataDto().getExceptions().getRootException());
+            if (Asserts.isNotNull(jobInfoDetail.getJobDataDto().getExceptions().getRootException())) {
+                ruleFacts.put(
+                        AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS_MSG,
+                        jobInfoDetail.getJobDataDto().getExceptions().getRootException());
+            }
         }
 
         rulesEngine.fire(rules, ruleFacts);
