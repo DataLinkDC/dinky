@@ -19,6 +19,7 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.job.JobConfig;
 
 import java.util.Map;
@@ -55,6 +56,14 @@ public class APIExplainSqlDTO extends AbstractStatementDTO {
     private Map<String, String> configuration;
 
     public JobConfig getJobConfig() {
-        return new JobConfig("local", false, false, isFragment(), useStatementSet, parallelism, configuration);
+        return JobConfig.builder()
+                .type(GatewayType.LOCAL.getLongValue())
+                .useSession(false)
+                .useRemote(false)
+                .fragment(isFragment())
+                .statementSet(useStatementSet)
+                .parallelism(parallelism)
+                .configJson(configuration)
+                .build();
     }
 }

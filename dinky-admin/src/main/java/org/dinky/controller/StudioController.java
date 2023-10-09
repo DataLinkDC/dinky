@@ -23,7 +23,6 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
-import org.dinky.data.dto.StudioExecuteDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
@@ -33,9 +32,7 @@ import org.dinky.data.model.Schema;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SelectResult;
-import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.job.JobResult;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.service.StudioService;
 
@@ -49,7 +46,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -72,75 +68,6 @@ public class StudioController {
 
     private final StudioService studioService;
 
-    /** 执行Sql */
-    @PostMapping("/executeSql")
-    @ApiOperation("Execute Sql")
-    @Log(title = "Execute Sql", businessType = BusinessType.EXECUTE)
-    @ApiImplicitParam(
-            name = "studioExecuteDTO",
-            value = "Execute Sql",
-            required = true,
-            dataType = "StudioExecuteDTO",
-            paramType = "body")
-    public Result<JobResult> executeSql(@RequestBody StudioExecuteDTO studioExecuteDTO) {
-        try {
-            JobResult jobResult = studioService.executeSql(studioExecuteDTO);
-            return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
-        } catch (Exception ex) {
-            JobResult jobResult = new JobResult();
-            jobResult.setJobConfig(studioExecuteDTO.getJobConfig());
-            jobResult.setSuccess(false);
-            jobResult.setStatement(studioExecuteDTO.getStatement());
-            jobResult.setError(ex.toString());
-            return Result.failed(jobResult, Status.EXECUTE_FAILED);
-        }
-    }
-
-    /** 解释Sql */
-    @PostMapping("/explainSql")
-    @ApiOperation("Explain Sql")
-    @ApiImplicitParam(
-            name = "studioExecuteDTO",
-            value = "Explain Sql",
-            required = true,
-            dataType = "StudioExecuteDTO",
-            paramType = "body")
-    public Result<List<SqlExplainResult>> explainSql(@RequestBody StudioExecuteDTO studioExecuteDTO) {
-        return Result.succeed(studioService.explainSql(studioExecuteDTO), "解释成功");
-    }
-
-    /** 获取执行图 */
-    @PostMapping("/getStreamGraph")
-    @ApiOperation("Get Stream Graph")
-    @ApiImplicitParam(
-            name = "studioExecuteDTO",
-            value = "Get Stream Graph",
-            required = true,
-            dataType = "StudioExecuteDTO",
-            paramType = "body")
-    public Result<ObjectNode> getStreamGraph(@RequestBody StudioExecuteDTO studioExecuteDTO) {
-        return Result.succeed(studioService.getStreamGraph(studioExecuteDTO));
-    }
-
-    /** 获取sql的jobplan */
-    @PostMapping("/getJobPlan")
-    @ApiOperation("Get Job Execute Plan")
-    @ApiImplicitParam(
-            name = "studioExecuteDTO",
-            value = "Get Job Execute Plan",
-            required = true,
-            dataType = "StudioExecuteDTO",
-            paramType = "body")
-    public Result<ObjectNode> getJobPlan(@RequestBody StudioExecuteDTO studioExecuteDTO) {
-        try {
-            return Result.succeed(studioService.getJobPlan(studioExecuteDTO));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failed(e.getMessage());
-        }
-    }
-
-    /** 进行DDL操作 */
     @PostMapping("/executeDDL")
     @ApiOperation("Execute SQL DDL")
     @Log(title = "Execute SQL DDL", businessType = BusinessType.EXECUTE)
@@ -162,6 +89,7 @@ public class StudioController {
     public Result<SelectResult> getJobData(@RequestParam String jobId) {
         return Result.succeed(studioService.getJobData(jobId));
     }
+
     /** 根据jobId获取数据 */
     @GetMapping("/getCommonSqlData")
     @ApiOperation("Get Common Sql Data")
@@ -201,54 +129,6 @@ public class StudioController {
     public Result<JsonNode[]> listFlinkJobs(@RequestParam Integer clusterId) {
         List<JsonNode> jobs = studioService.listFlinkJobs(clusterId);
         return Result.succeed(jobs.toArray(new JsonNode[0]));
-    }
-
-    /** 停止任务 */
-    @GetMapping("/cancel")
-    @ApiOperation("Cancel Flink Job")
-    @Log(title = "Cancel Flink Job", businessType = BusinessType.REMOTE_OPERATION)
-    @ApiImplicitParams({
-        @ApiImplicitParam(
-                name = "clusterId",
-                value = "clusterId",
-                required = true,
-                dataType = "Integer",
-                paramType = "query"),
-        @ApiImplicitParam(name = "jobId", value = "jobId", required = true, dataType = "String", paramType = "query")
-    })
-    public Result<Boolean> cancelFlinkJob(@RequestParam Integer clusterId, @RequestParam String jobId) {
-        return Result.succeed(studioService.cancelFlinkJob(clusterId, jobId), Status.STOP_SUCCESS);
-    }
-
-    /** savepoint */
-    @GetMapping("/savepoint")
-    @ApiOperation("Savepoint Trigger")
-    @Log(title = "Savepoint Trigger", businessType = BusinessType.REMOTE_OPERATION)
-    @ApiImplicitParams({
-        @ApiImplicitParam(
-                name = "clusterId",
-                value = "clusterId",
-                required = true,
-                dataType = "Integer",
-                paramType = "query"),
-        @ApiImplicitParam(name = "jobId", value = "jobId", required = true, dataType = "String", paramType = "query"),
-        @ApiImplicitParam(
-                name = "savePointType",
-                value = "savePointType",
-                required = true,
-                dataType = "String",
-                paramType = "query"),
-        @ApiImplicitParam(name = "name", value = "name", required = true, dataType = "String", paramType = "query"),
-        @ApiImplicitParam(name = "taskId", value = "taskId", required = true, dataType = "Integer", paramType = "query")
-    })
-    public Result<Boolean> savepointTrigger(
-            @RequestParam Integer clusterId,
-            @RequestParam String jobId,
-            @RequestParam String savePointType,
-            @RequestParam String name,
-            @RequestParam Integer taskId) {
-        return Result.succeed(
-                studioService.savepointTrigger(taskId, clusterId, jobId, savePointType, name), "savepoint 成功");
     }
 
     /** 获取 Meta Store Catalog 和 Database */

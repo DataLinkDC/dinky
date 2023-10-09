@@ -30,6 +30,7 @@ import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.pool.DefaultThreadPool;
 import org.dinky.data.constant.FlinkRestResultConstant;
 import org.dinky.data.dto.AlertRuleDTO;
+import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.AlertHistory;
@@ -37,7 +38,6 @@ import org.dinky.data.model.AlertInstance;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.SystemConfiguration;
-import org.dinky.data.model.Task;
 import org.dinky.data.options.AlertRuleOptions;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
@@ -216,7 +216,7 @@ public class JobAlertHandler {
     private void executeAlertAction(Facts facts, AlertRuleDTO alertRuleDTO) {
         JobInfoDetail jobInfoDetail = facts.get(AlertRuleOptions.JOB_ALERT_RULE_JOB_DETAIL);
         JobInstance jobInstance = jobInfoDetail.getInstance();
-        Task task = taskService.getById(jobInfoDetail.getInstance().getTaskId());
+        TaskDTO task = taskService.getTaskInfoById(jobInfoDetail.getInstance().getTaskId());
 
         String taskUrl = StrFormatter.format(
                 "{}/#/devops/job-detail?id={}",

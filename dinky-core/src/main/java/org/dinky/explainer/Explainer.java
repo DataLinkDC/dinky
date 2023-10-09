@@ -32,6 +32,7 @@ import org.dinky.executor.Executor;
 import org.dinky.explainer.printTable.PrintStatementExplainer;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
@@ -334,14 +335,15 @@ public class Explainer {
     }
 
     public List<LineageRel> getLineage(String statement) {
-        JobConfig jobConfig = new JobConfig(
-                "local",
-                false,
-                false,
-                true,
-                useStatementSet,
-                1,
-                executor.getTableConfig().getConfiguration().toMap());
+        JobConfig jobConfig = JobConfig.builder()
+                .type(GatewayType.LOCAL.getLongValue())
+                .useSession(false)
+                .useRemote(false)
+                .fragment(true)
+                .statementSet(useStatementSet)
+                .parallelism(1)
+                .configJson(executor.getTableConfig().getConfiguration().toMap())
+                .build();
         this.initialize(JobManager.buildPlanMode(jobConfig), jobConfig, statement);
 
         List<LineageRel> lineageRelList = new ArrayList<>();

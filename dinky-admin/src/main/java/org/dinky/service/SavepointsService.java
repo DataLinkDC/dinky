@@ -19,6 +19,7 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.model.Savepoints;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -36,4 +37,6 @@ public interface SavepointsService extends ISuperService<Savepoints> {
     Savepoints getLatestSavepointByTaskId(Integer taskId);
 
     Savepoints getEarliestSavepointByTaskId(Integer taskId);
+
+    Savepoints getSavePointWithStrategy(TaskDTO task);
 }

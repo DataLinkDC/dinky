@@ -19,16 +19,24 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.assertion.Asserts;
+import org.dinky.data.dto.TaskDTO;
+import org.dinky.data.dto.TaskVersionConfigureDTO;
 import org.dinky.data.model.TaskVersion;
 import org.dinky.mapper.TaskVersionMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.TaskVersionService;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
+import cn.hutool.core.bean.BeanUtil;
 
 @Service
 public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, TaskVersion>
@@ -40,5 +48,40 @@ public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, 
         return baseMapper.selectList(new LambdaQueryWrapper<TaskVersion>()
                 .eq(TaskVersion::getTaskId, taskId)
                 .orderByDesc(true, TaskVersion::getVersionId));
+    }
+
+    @Override
+    public void createTaskVersionSnapshot(TaskDTO task) {
+        List<TaskVersion> taskVersions = getTaskVersionByTaskId(task.getId());
+        List<Integer> versionIds =
+                taskVersions.stream().map(TaskVersion::getVersionId).collect(Collectors.toList());
+        Map<Integer, TaskVersion> versionMap =
+                taskVersions.stream().collect(Collectors.toMap(TaskVersion::getVersionId, t -> t));
+
+        TaskVersion taskVersion = new TaskVersion();
+        BeanUtil.copyProperties(task, taskVersion);
+
+        TaskVersionConfigureDTO taskVersionConfigureDTO = new TaskVersionConfigureDTO();
+        BeanUtil.copyProperties(task, taskVersionConfigureDTO);
+
+        taskVersion.setTaskConfigure(taskVersionConfigureDTO);
+        taskVersion.setTaskId(taskVersion.getId());
+        taskVersion.setId(null);
+
+        if (Asserts.isNull(task.getVersionId())) {
+            // FIRST RELEASE, ADD NEW VERSION
+            taskVersion.setVersionId(1);
+            task.setVersionId(1);
+            save(taskVersion);
+        } else {
+            // Explain that there is a version, you need to determine whether it is an old version after fallback
+            TaskVersion version = versionMap.get(task.getVersionId());
+            version.setId(null);
+            if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)) {
+                taskVersion.setVersionId(Collections.max(versionIds) + 1);
+                task.setVersionId(Collections.max(versionIds) + 1);
+                save(taskVersion);
+            }
+        }
     }
 }

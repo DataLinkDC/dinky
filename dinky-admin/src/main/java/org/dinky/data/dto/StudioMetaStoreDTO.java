@@ -65,27 +65,15 @@ public class StudioMetaStoreDTO extends AbstractStatementDTO {
     private Integer databaseId;
 
     public JobConfig getJobConfig() {
-        return new JobConfig(
-                GatewayType.LOCAL.getLongValue(),
-                true,
-                false,
-                false,
-                false,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                isFragment(),
-                false,
-                false,
-                0,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
+        return JobConfig.builder()
+                .type(GatewayType.LOCAL.getLongValue())
+                .useResult(true)
+                .useChangeLog(false)
+                .useAutoCancel(false)
+                .fragment(isFragment())
+                .statementSet(false)
+                .batchModel(false)
+                .maxRowNum(0)
+                .build();
     }
 }

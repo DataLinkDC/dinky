@@ -21,6 +21,7 @@ package org.dinky.data.dto;
 
 import org.dinky.job.JobConfig;
 
+import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -85,6 +86,8 @@ public class StudioDDLDTO {
     private Integer maxRowNum = 10000;
 
     public JobConfig getJobConfig() {
-        return new JobConfig(type, useResult, useSession, session, useRemote, clusterId, maxRowNum);
+        JobConfig jobConfig = new JobConfig();
+        BeanUtil.copyProperties(this, jobConfig);
+        return jobConfig;
     }
 }

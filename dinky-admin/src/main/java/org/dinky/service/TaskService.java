@@ -19,24 +19,26 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.AbstractStatementDTO;
+import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
-import org.dinky.data.enums.JobLifeCycle;
-import org.dinky.data.enums.JobStatus;
-import org.dinky.data.model.JobInfoDetail;
+import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.data.result.TaskOperatingResult;
+import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
 import org.dinky.mybatis.service.ISuperService;
+import org.dinky.process.exception.ExcuteException;
 
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.lang.tree.Tree;
 
@@ -47,15 +49,25 @@ import cn.hutool.core.lang.tree.Tree;
  */
 public interface TaskService extends ISuperService<Task> {
 
-    JobResult submitTask(Integer id);
+    String buildEnvSql(AbstractStatementDTO task);
 
-    JobResult submitTaskToOnline(Task dtoTask, Integer id);
+    JobResult submitTask(Integer id, String savePointPath) throws ExcuteException;
 
-    JobResult restartTask(Integer id, String savePointPath);
+    JobResult restartTask(Integer id, String savePointPath) throws ExcuteException;
 
-    List<SqlExplainResult> explainTask(Integer id);
+    SavePointResult savepointTaskJob(TaskDTO task, String savePointType);
 
-    Task getTaskInfoById(Integer id);
+    List<SqlExplainResult> explainTask(TaskDTO task) throws NotSupportExplainExcepition;
+
+    boolean cancelTaskJob(TaskDTO task);
+
+    ObjectNode getStreamGraph(TaskDTO taskDTO);
+
+    String exportSql(Integer id);
+
+    ObjectNode getJobPlan(TaskDTO task);
+
+    TaskDTO getTaskInfoById(Integer id);
 
     void initTenantByTaskId(Integer id);
 
@@ -65,27 +77,7 @@ public interface TaskService extends ISuperService<Task> {
 
     Task initDefaultFlinkSQLEnv(Integer tenantId);
 
-    String exportSql(Integer id);
-
-    Task getUDFByClassName(String className);
-
     List<Task> getAllUDF();
-
-    Result<Void> releaseTask(Integer id);
-
-    boolean developTask(Integer id);
-
-    Result<JobResult> onLineTask(Integer id);
-
-    Result<JobResult> reOnLineTask(Integer id, String savePointPath);
-
-    Result<Void> offLineTask(Integer id, String type);
-
-    Result<Void> cancelTask(Integer id);
-
-    boolean recoveryTask(Integer id);
-
-    boolean savepointTask(Integer taskId, String savePointType);
 
     String getTaskAPIAddress();
 
@@ -101,16 +93,7 @@ public interface TaskService extends ISuperService<Task> {
 
     Result<Tree<Integer>> queryAllCatalogue();
 
-    Result<List<Task>> queryOnLineTaskByDoneStatus(
-            List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses, boolean includeNull, Integer catalogueId);
-
-    void selectSavepointOnLineTask(TaskOperatingResult taskOperatingResult);
-
-    void selectSavepointOffLineTask(TaskOperatingResult taskOperatingResult);
-
     Task getTaskByNameAndTenantId(String name, Integer tenantId);
-
-    JobStatus checkJobStatus(JobInfoDetail jobInfoDetail);
 
     List<JobTypeOverView> getTaskOnlineRate();
 

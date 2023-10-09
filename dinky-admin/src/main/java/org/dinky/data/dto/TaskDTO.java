@@ -1,0 +1,272 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+package org.dinky.data.dto;
+
+import org.dinky.config.Dialect;
+import org.dinky.data.model.Task;
+import org.dinky.data.model.TaskExtConfig;
+import org.dinky.data.typehandler.TaskExtConfigTypeHandler;
+import org.dinky.job.JobConfig;
+
+import org.apache.ibatis.type.JdbcType;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.bean.BeanUtil;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * StudioExecuteDTO
+ *
+ */
+@Getter
+@Setter
+@Slf4j
+@ApiModel(value = "StudioExecuteDTO", description = "DTO for executing SQL queries")
+public class TaskDTO extends AbstractStatementDTO {
+
+    @ApiModelProperty(value = "Name", required = true, dataType = "String", example = "Name")
+    private String name;
+
+    @ApiModelProperty(value = "Dialect", dataType = "String", notes = "Dialect for the task")
+    private String dialect;
+
+    @ApiModelProperty(
+            value = "Run Mode",
+            dataType = "String",
+            example = "BATCH",
+            notes = "The execution mode for the SQL query")
+    private String type;
+
+    @ApiModelProperty(value = "Check Point", dataType = "Integer", example = "1", notes = "Check point for the task")
+    private Integer checkPoint;
+
+    @ApiModelProperty(
+            value = "Save Point Strategy",
+            dataType = "Integer",
+            example = "1",
+            notes = "The save point strategy")
+    private Integer savePointStrategy;
+
+    @ApiModelProperty(
+            value = "Save Point Path",
+            dataType = "String",
+            example = "/savepoints",
+            notes = "The path for save points")
+    private String savePointPath;
+
+    @ApiModelProperty(value = "Parallelism", dataType = "Integer", example = "4", notes = "The parallelism level")
+    private Integer parallelism;
+
+    @ApiModelProperty(
+            value = "Fragment",
+            dataType = "Boolean",
+            example = "true",
+            notes = "Fragment option for the task")
+    private Boolean fragment;
+
+    @ApiModelProperty(
+            value = "Use Statement Set",
+            dataType = "boolean",
+            example = "false",
+            notes = "Flag indicating whether to use a statement set")
+    private boolean statementSet;
+
+    @ApiModelProperty(
+            value = "Batch Model",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to use batch processing")
+    private boolean batchModel;
+
+    @ApiModelProperty(
+            value = "Cluster ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "The identifier of the cluster")
+    private Integer clusterId;
+
+    @ApiModelProperty(
+            value = "Cluster Configuration ID",
+            dataType = "Integer",
+            example = "2",
+            notes = "The identifier of the cluster configuration")
+    private Integer clusterConfigurationId;
+
+    @ApiModelProperty(
+            value = "Database ID",
+            dataType = "Integer",
+            example = "3",
+            notes = "The identifier of the database")
+    private Integer databaseId;
+
+    @ApiModelProperty(value = "JAR ID", dataType = "Integer", example = "4", notes = "The identifier of the JAR")
+    private Integer jarId;
+
+    @ApiModelProperty(
+            value = "Alert Group ID",
+            dataType = "Integer",
+            example = "7001",
+            notes = "ID of the alert group associated with the task")
+    private Integer alertGroupId;
+
+    @ApiModelProperty(value = "Note", dataType = "String", notes = "Additional notes for the task")
+    private String note;
+
+    @ApiModelProperty(value = "Step", dataType = "Integer", example = "1", notes = "Step for the task")
+    private Integer step;
+
+    @ApiModelProperty(
+            value = "Job Instance ID",
+            dataType = "Integer",
+            example = "8001",
+            notes = "ID of the job instance associated with the task")
+    private Integer jobInstanceId;
+
+    @ApiModelProperty(
+            value = "Version ID",
+            dataType = "Integer",
+            example = "9001",
+            notes = "ID of the version associated with the task")
+    private Integer versionId;
+
+    @ApiModelProperty(value = "Enabled", required = true, dataType = "Boolean", example = "true")
+    private Boolean enabled;
+
+    @ApiModelProperty(value = "Statement", dataType = "String", notes = "SQL statement for the task")
+    private String statement;
+
+    @ApiModelProperty(value = "Cluster Name", dataType = "String", notes = "Name of the associated cluster")
+    @TableField(exist = false)
+    private String clusterName;
+
+    @ApiModelProperty(
+            value = "Configuration JSON",
+            dataType = "TaskExtConfig",
+            notes = "Extended configuration in JSON format for the task")
+    @TableField(typeHandler = TaskExtConfigTypeHandler.class, jdbcType = JdbcType.VARCHAR)
+    private TaskExtConfig configJson;
+
+    @ApiModelProperty(value = "Path", dataType = "String", notes = "Path associated with the task")
+    @TableField(exist = false)
+    private String path;
+
+    @ApiModelProperty(value = "JAR Name", dataType = "String", notes = "Name of the associated JAR")
+    @TableField(exist = false)
+    private String jarName;
+
+    @ApiModelProperty(
+            value = "Cluster Configuration Name",
+            dataType = "String",
+            notes = "Name of the associated cluster configuration")
+    @TableField(exist = false)
+    private String clusterConfigurationName;
+
+    @ApiModelProperty(value = "Database Name", dataType = "String", notes = "Name of the associated database")
+    @TableField(exist = false)
+    private String databaseName;
+
+    @ApiModelProperty(value = "Environment Name", dataType = "String", notes = "Name of the associated environment")
+    @TableField(exist = false)
+    private String envName;
+
+    @ApiModelProperty(value = "Alert Group Name", dataType = "String", notes = "Name of the associated alert group")
+    @TableField(exist = false)
+    private String alertGroupName;
+
+    @ApiModelProperty(
+            value = "UseResult",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flagindicatingwhethertousethequeryresult")
+    private boolean useResult;
+
+    @ApiModelProperty(
+            value = "UseChangeLog",
+            dataType = "boolean",
+            example = "false",
+            notes = "Flagindicatingwhethertousechangelogs")
+    private boolean useChangeLog;
+
+    @ApiModelProperty(
+            value = "Use Auto Cancel",
+            dataType = "boolean",
+            example = "false",
+            notes = "Flag indicating whether to use auto-canceling")
+    private boolean useAutoCancel;
+
+    @ApiModelProperty(
+            value = "Use Session",
+            dataType = "boolean",
+            example = "false",
+            notes = "Flag indicating whether to use a session")
+    private boolean useSession;
+
+    @ApiModelProperty(value = "Session", dataType = "String", example = "session_id", notes = "The session identifier")
+    private String session;
+
+    @ApiModelProperty(value = "Job Name", dataType = "String", example = "MyJob", notes = "The name of the job")
+    private String jobName;
+
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "6", notes = "The identifier of the execution")
+    private Integer id;
+
+    @ApiModelProperty(
+            value = "Max Row Number",
+            dataType = "Integer",
+            example = "100",
+            notes = "The maximum number of rows to return")
+    private Integer maxRowNum;
+
+    public JobConfig getJobConfig() {
+
+        Map<String, String> parsedConfig =
+                this.configJson == null ? new HashMap<>(0) : this.configJson.getCustomConfigMaps();
+
+        JobConfig jobConfig = new JobConfig();
+        BeanUtil.copyProperties(this, jobConfig);
+        jobConfig.setConfigJson(parsedConfig);
+        jobConfig.setJarTask(isJarTask());
+        jobConfig.setTaskId(id);
+        jobConfig.setJobName(name);
+
+        return jobConfig;
+    }
+
+    public Task buildTask() {
+        Task task = new Task();
+        BeanUtil.copyProperties(this, task);
+        return task;
+    }
+
+    public boolean isJarTask() {
+        return Dialect.isJarDialect(dialect);
+    }
+}

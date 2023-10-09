@@ -21,12 +21,13 @@ import DagDataNode from '@/components/FlinkDag/component/DagDataNode';
 import DagPlanNode from '@/components/FlinkDag/component/DagPlanNode';
 import { edgeConfig, graphConfig, layoutConfig, portConfig } from '@/components/FlinkDag/config';
 import { buildDag, regConnect, updateDag } from '@/components/FlinkDag/functions';
-import { Jobs } from '@/types/DevOps/data';
+import { Jobs} from '@/types/DevOps/data';
 import { DagreLayout } from '@antv/layout';
 import { Edge, Graph } from '@antv/x6';
 import { register } from '@antv/x6-react-shape';
 import { useEffect, useRef, useState } from 'react';
 import './index.css';
+import {Drawer} from "antd";
 
 export type DagProps = {
   job: Jobs.Job;
@@ -40,6 +41,8 @@ const FlinkDag = (props: DagProps) => {
 
   const [graph, setGraph] = useState<Graph>();
   const [curentJob, setCurentJob] = useState<string>();
+  const [curentSelect, setCurentSelect] = useState<any>();
+  const [open, setOpen] = useState(false);
 
   const initGraph = (flinkData: any) => {
     register({
@@ -57,8 +60,15 @@ const FlinkDag = (props: DagProps) => {
     const graph: Graph = new Graph({
       // @ts-ignore
       container: container.current,
+      selecting: true,
       ...graphConfig
     });
+
+    graph.on('node:click', ({ cell }) => {
+      setOpen(true)
+      setCurentSelect(cell.getData())
+      graph.positionCell(cell, "center", { animation: { duration: 1000, type: 'easeInOut' }})
+    })
 
     // Adaptive layout
     const dagreLayout = new DagreLayout(layoutConfig);
@@ -68,13 +78,13 @@ const FlinkDag = (props: DagProps) => {
     // Automatically zoom to fit
     const zoomOptions = {
       padding: {
-        left: 50,
-        right: 50,
-        bottom: 100
+        // left: 50,
+        // right: 50,
+        // bottom: 100
       }
     };
     graph.zoomToFit(zoomOptions);
-    graph.centerContent();
+    // graph.centerContent();
     updateDag(job.vertices, graph);
     return graph;
   };
@@ -96,13 +106,22 @@ const FlinkDag = (props: DagProps) => {
   }, [job]);
 
   return (
-    <div
-      style={{
-        height: '100%',
-        width: '100%'
-      }}
-      ref={container}
-    />
+    <>
+      <div
+        style={{
+          height: '100%',
+          width: '100%'
+        }}
+        ref={container}
+      />
+      <Drawer title={curentSelect?.name} placement="right" onClose={()=>setOpen(false)} open={open}
+              getContainer={false}
+              size={"large"}
+              mask={false}
+      >
+        <p>{curentSelect?.description}</p>
+      </Drawer></>
+
   );
 };
 

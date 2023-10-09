@@ -103,17 +103,6 @@ public enum JobStatus {
         }
     }
 
-    public boolean isDone() {
-        switch (this) {
-            case FAILED:
-            case CANCELED:
-            case FINISHED:
-                return true;
-            default:
-                return false;
-        }
-    }
-
     public static List<JobStatus> getAllDoneStatus() {
         return Lists.newArrayList(FAILED, CANCELED, FINISHED, UNKNOWN);
     }

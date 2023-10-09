@@ -171,7 +171,9 @@ public enum Status {
     TASK_NOT_EXIST(12003, "task.not.exist"),
     JOB_INSTANCE_NOT_EXIST(12004, "job.instance.not.exist"),
     SAVEPOINT_IS_NULL(12005, "savepoint.is.null"),
-
+    TASK_STATUS_IS_NOT_DONE(12006, "task.status.is.not.done"),
+    TASK_SQL_EXPLAN_FAILED(12007, "task.sql.explain.failed"),
+    TASK_UPDATE_FAILED(12008, "task.update.failed"),
     /**
      * alert instance
      */
@@ -195,6 +197,7 @@ public enum Status {
     CLUSTER_INSTANCE_RECYCLE_SUCCESS(15002, "cluster.instance.recycle.success"),
     CLUSTER_INSTANCE_KILL(15003, "cluster.instance.kill"),
     CLUSTER_INSTANCE_DEPLOY(15004, "cluster.instance.deploy"),
+    CLUSTER_NOT_EXIST(15004, "cluster.not.exist"),
 
     /**
      * git

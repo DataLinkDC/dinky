@@ -21,6 +21,7 @@ package org.dinky.data.dto;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.job.JobConfig;
 
 import java.util.Map;
@@ -119,25 +120,24 @@ public class APIExecuteSqlDTO extends AbstractStatementDTO {
 
     public JobConfig getJobConfig() {
         int savePointStrategy = Asserts.isNotNullString(savePointPath) ? 3 : 0;
-
-        return new JobConfig(
-                type,
-                useResult,
-                useChangeLog,
-                useAutoCancel,
-                false,
-                null,
-                true,
-                address,
-                jobName,
-                isFragment(),
-                useStatementSet,
-                maxRowNum,
-                checkPoint,
-                parallelism,
-                savePointStrategy,
-                savePointPath,
-                configuration,
-                gatewayConfig);
+        return JobConfig.builder()
+                .type(type)
+                .useResult(useResult)
+                .useChangeLog(useChangeLog)
+                .useAutoCancel(useAutoCancel)
+                .useSession(false)
+                .useRemote(true)
+                .address(address)
+                .jobName(jobName)
+                .fragment(isFragment())
+                .statementSet(useStatementSet)
+                .maxRowNum(maxRowNum)
+                .checkpoint(checkPoint)
+                .parallelism(parallelism)
+                .savePointStrategy(SavePointStrategy.get(savePointStrategy))
+                .savePointPath(savePointPath)
+                .configJson(configuration)
+                .gatewayConfig(gatewayConfig)
+                .build();
     }
 }

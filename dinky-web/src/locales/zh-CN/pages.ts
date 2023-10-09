@@ -281,8 +281,8 @@ export default {
    *
    * */
 
-  'pages.datastudio.editor.check': '检查当前的 FlinkSql',
-  'pages.datastudio.editor.exec': '执行',
+  'pages.datastudio.editor.check': '检查',
+  'pages.datastudio.editor.exec': '发布',
   'pages.datastudio.editor.exec.error': '任务【{jobName}】执行失败',
   'pages.datastudio.editor.exec.success': '执行成功',
   'pages.datastudio.editor.execute.warn':
