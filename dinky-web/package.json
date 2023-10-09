@@ -47,6 +47,7 @@
     "@monaco-editor/react": "^4.5.2",
     "@umijs/route-utils": "^4.0.1",
     "antd": "^5.9.3",
+    "butterfly-dag": "^4.3.28",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.10",
     "js-cookie": "^3.0.5",
