@@ -150,6 +150,7 @@ const TokenModalForm: React.FC<TokenModalFormProps & connect> = (props) => {
     form.setFieldValue('tokenValue', tokenValue);
   };
 
+
   return (
     <>
       <ModalForm<SysToken>
@@ -162,6 +163,10 @@ const TokenModalForm: React.FC<TokenModalFormProps & connect> = (props) => {
         onValuesChange={handleValuesChange}
         submitter={{ render: () => [...renderFooter()] }}
         initialValues={{ ...value }}
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => handleCancel(),
+        }}
       >
         <TokenForm expireType={expireType} buildToken={handleBuildToken} />
       </ModalForm>
