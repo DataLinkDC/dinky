@@ -38,6 +38,7 @@ import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
 import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
+import org.dinky.executor.CustomTableResultImpl;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
@@ -357,29 +358,42 @@ public class JobManager {
                     }
                     if (!inserts.isEmpty()) {
                         currentSql = String.join(sqlSeparator, inserts);
-                        // Remote mode can get the table result.
-                        TableResult tableResult = executor.executeStatementSet(inserts);
-                        if (tableResult.getJobClient().isPresent()) {
-                            job.setJobId(
-                                    tableResult.getJobClient().get().getJobID().toHexString());
-                            job.setJids(new ArrayList<String>() {
+                        StreamGraph streamGraph =
+                                executor.getCustomTableEnvironment().getStreamGraphFromInserts(inserts);
+                        JobClient jobClient =
+                                executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
+                        try {
+                            String jobId = jobClient.getJobID().toHexString();
+                            job.setJobId(jobId);
+                            job.setJids(Collections.singletonList(job.getJobId()));
+                            if (config.isUseResult()) {
+                                // Build insert result.
+                                IResult result = ResultBuilder.build(
+                                                SqlType.INSERT,
+                                                config.getMaxRowNum(),
+                                                config.isUseChangeLog(),
+                                                config.isUseAutoCancel(),
+                                                executor.getTimeZone())
+                                        .getResult(CustomTableResultImpl.TABLE_RESULT_OK);
+                                job.setResult(result);
+                            }
+                        } catch (Exception ignored) {
 
-                                {
-                                    add(job.getJobId());
-                                }
-                            });
                         }
-                        if (config.isUseResult()) {
-                            // Build insert result.
-                            IResult result = ResultBuilder.build(
-                                            SqlType.INSERT,
-                                            config.getMaxRowNum(),
-                                            config.isUseChangeLog(),
-                                            config.isUseAutoCancel(),
-                                            executor.getTimeZone())
-                                    .getResult(tableResult);
-                            job.setResult(result);
-                        }
+                        // Remote mode can get the table result.
+                        //                        TableResult tableResult = executor.executeStatementSet(inserts);
+                        //                        if (tableResult.getJobClient().isPresent()) {
+                        //                            job.setJobId(
+                        //
+                        // tableResult.getJobClient().get().getJobID().toHexString());
+                        //                            job.setJids(new ArrayList<String>() {
+                        //
+                        //                                {
+                        //                                    add(job.getJobId());
+                        //                                }
+                        //                            });
+                        //                        }
+
                     }
                 } else if (!useStatementSet && useGateway) {
                     List<String> inserts = new ArrayList<>();
