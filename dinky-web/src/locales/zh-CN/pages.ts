@@ -965,5 +965,16 @@ export default {
   'user.type': '注册类型',
   'user.update': '修改用户',
   'user.username': '用户名',
-  'user.usernamePlaceholder': '请输入用户名'
+  'user.usernamePlaceholder': '请输入用户名',
+
+  'lineage.getError': '无法获取血缘',
+  'lineage.expandField': '展开字段',
+  'lineage.collapseField': '收缩字段',
+  'lineage.expandDownstream': '展开下游',
+  'lineage.collapseDownstream': '收起下游',
+  'lineage.expandUpstream': '展开上游',
+  'lineage.collapseUpstream': '收起上游',
+  'lineage.showMap': '显示小地图',
+  'lineage.hideMap': '隐藏小地图',
+  'lineage.refresh': '刷新血缘'
 };

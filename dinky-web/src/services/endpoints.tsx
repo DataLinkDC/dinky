@@ -226,6 +226,10 @@ export enum API_CONSTANTS {
   GET_TASKMANAGER_LOG = 'api/jobInstance/getTaskManagerLog',
   GET_JOB_MERTICE_ITEMS = 'api/jobInstance/getJobMetricsItems',
   CANCEL_JOB = '/api/studio/cancel',
+  // /api/studio/getLineage
+  STUDIO_GET_LINEAGE = '/api/studio/getLineage',
+  // /api/jobInstance/getLineage
+  JOB_INSTANCE_GET_LINEAGE = '/api/jobInstance/getLineage',
   OFFLINE_TASK = '/api/task/offLineTask',
   RESTART_TASK = '/api/task/restartTask',
   RESTART_TASK_FROM_CHECKPOINT = '/api/task/selectSavePointRestartTask',

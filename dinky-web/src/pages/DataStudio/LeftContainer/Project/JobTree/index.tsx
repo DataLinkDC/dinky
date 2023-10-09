@@ -17,13 +17,14 @@
  *
  */
 
+import { getCurrentTab } from '@/pages/DataStudio/function';
 import {
   buildProjectTree,
   generateList,
   getLeafKeyList,
   getParentKey
 } from '@/pages/DataStudio/LeftContainer/Project/function';
-import {StateType, TabsItemType} from '@/pages/DataStudio/model';
+import { StateType, TabsItemType } from '@/pages/DataStudio/model';
 import { BtnRoute } from '@/pages/DataStudio/route';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
@@ -31,7 +32,6 @@ import { Key } from '@ant-design/pro-components';
 import { Empty, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
 import React, { useEffect, useState } from 'react';
-import {getCurrentData, getCurrentTab} from "@/pages/DataStudio/function";
 
 const { DirectoryTree } = Tree;
 
@@ -46,8 +46,7 @@ type TreeProps = {
 };
 
 const JobTree: React.FC<TreeProps & connect> = (props) => {
-
-  const { projectData, onNodeClick, style, height, onRightClick} = props;
+  const { projectData, onNodeClick, style, height, onRightClick } = props;
   const [searchValue, setSearchValueValue] = useState('');
   const [data, setData] = useState<any[]>(buildProjectTree(projectData, searchValue));
 
@@ -89,25 +88,24 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     setExpandedKeys(getLeafKeyList(projectData));
   };
 
-
   const btn = BtnRoute['menu.datastudio.project'];
-  const positionKey = (panes:TabsItemType[],activeKey:string) => {
-    const treeKey = getCurrentTab(panes,activeKey)?.treeKey;
-    if (treeKey){
+  const positionKey = (panes: TabsItemType[], activeKey: string) => {
+    const treeKey = getCurrentTab(panes, activeKey)?.treeKey;
+    if (treeKey) {
       const expandList: any[] = generateList(data, []);
       let expandedKeys: any = expandList
-          .map((item: any) => {
-            if (item?.key==treeKey) {
-              return getParentKey(item.key, data);
-            }
-            return null;
-          })
-          .filter((item: any, i: number, self: any) => item && self.indexOf(item) === i);
+        .map((item: any) => {
+          if (item?.key == treeKey) {
+            return getParentKey(item.key, data);
+          }
+          return null;
+        })
+        .filter((item: any, i: number, self: any) => item && self.indexOf(item) === i);
       setExpandedKeys(expandedKeys);
       setAutoExpandParent(true);
-      setSelectedKeys([treeKey])
+      setSelectedKeys([treeKey]);
     }
-  }
+  };
 
   btn[1].onClick = expandAll;
 
@@ -147,5 +145,5 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   height: Studio.toolContentHeight,
-  projectData: Studio.project.data,
+  projectData: Studio.project.data
 }))(JobTree);
