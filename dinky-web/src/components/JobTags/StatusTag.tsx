@@ -76,6 +76,12 @@ const StatusTag = (props: StatusTagProps) => {
           color: 'default',
           text: 'CREATED'
         };
+      case JOB_STATUS.RECONNECTING:
+        return {
+          icon: <ClockCircleOutlined />,
+          color: 'default',
+          text: 'RECONNECTING'
+        };
       case JOB_STATUS.UNKNOWN:
         return {
           icon: <QuestionCircleOutlined />,
