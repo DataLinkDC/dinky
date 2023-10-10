@@ -217,14 +217,41 @@ public class Explainer {
         }
         if (correct && !jobParam.getTrans().isEmpty()) {
             if (useStatementSet) {
-                SqlExplainResult record = new SqlExplainResult();
                 List<String> inserts = new ArrayList<>();
                 for (StatementParam item : jobParam.getTrans()) {
                     if (item.getType().equals(SqlType.INSERT)) {
                         inserts.add(item.getValue());
+                    } else if (item.getType().equals(SqlType.CTAS)) {
+                        SqlExplainResult record = new SqlExplainResult();
+
+                        try {
+                            record.setParseTrue(true);
+                            record.setExplainTrue(true);
+                            record.setSql(item.getValue());
+                            executor.getCustomTableEnvironment()
+                                    .getParser()
+                                    .parse(item.getValue())
+                                    .forEach(x -> {
+                                        executor.getCustomTableEnvironment().executeCTAS(x);
+                                    });
+                        } catch (Exception e) {
+                            String error = LogUtil.getError(e);
+                            record.setError(error);
+                            record.setParseTrue(false);
+                            record.setExplainTrue(false);
+                            correct = false;
+                            process.error(error);
+                            break;
+                        } finally {
+                            record.setType("Modify DML");
+                            record.setExplainTime(LocalDateTime.now());
+                            record.setIndex(index);
+                            sqlExplainRecords.add(record);
+                        }
                     }
                 }
                 if (!inserts.isEmpty()) {
+                    SqlExplainResult record = new SqlExplainResult();
                     String sqlSet = String.join(";\r\n ", inserts);
                     try {
                         record.setExplain(executor.explainStatementSet(inserts));

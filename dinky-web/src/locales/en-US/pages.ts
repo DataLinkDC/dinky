@@ -1003,5 +1003,16 @@ export default {
   'user.type': 'User Type',
   'user.update': 'Modify User',
   'user.username': 'User Name',
-  'user.usernamePlaceholder': 'Please enter user name'
+  'user.usernamePlaceholder': 'Please enter user name',
+
+  'lineage.getError': 'Cannot Get Lineage',
+  'lineage.expandField': 'Expand Field',
+  'lineage.collapseField': 'Collapse Field',
+  'lineage.expandDownstream': 'Expand Downstream',
+  'lineage.collapseDownstream': 'Collapse Downstream',
+  'lineage.expandUpstream': 'Expand Upstream',
+  'lineage.collapseUpstream': 'Collapse Upstream',
+  'lineage.showMap': 'Show Map',
+  'lineage.hideMap': 'Hide Map',
+  'lineage.refresh': 'Refresh'
 };

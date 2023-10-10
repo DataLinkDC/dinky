@@ -41,12 +41,15 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
+import org.apache.flink.table.operations.CreateTableASOperation;
 import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
+import org.apache.flink.table.operations.SinkModifyOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
+import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.types.Row;
 
@@ -63,6 +66,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.collection.CollUtil;
 
 /**
  * CustomTableEnvironmentImpl
@@ -149,7 +154,14 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 throw new TableException("Only single statement is supported.");
             }
             Operation operation = operations.get(0);
-            if (operation instanceof ModifyOperation) {
+            if (operation instanceof CreateTableASOperation) {
+                CreateTableASOperation createTableAsOperation = (CreateTableASOperation) operation;
+                CreateTableOperation createTableOperation = createTableAsOperation.getCreateTableOperation();
+                executeInternal(createTableOperation);
+                SinkModifyOperation sinkModifyOperation =
+                        createTableAsOperation.toSinkModifyOperation(getCatalogManager());
+                getPlanner().translate(CollUtil.newArrayList(sinkModifyOperation));
+            } else if (operation instanceof ModifyOperation) {
                 modifyOperations.add((ModifyOperation) operation);
             } else {
                 throw new TableException("Only insert statement is supported now.");
@@ -256,5 +268,16 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     @Override
     public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
         createTemporaryView(s, fromChangelogStream(dataStream));
+    }
+
+    @Override
+    public void executeCTAS(Operation operation) {
+        if (operation instanceof CreateTableASOperation) {
+            CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
+            CreateTableOperation createTableOperation = createTableASOperation.getCreateTableOperation();
+            executeInternal(createTableOperation);
+            SinkModifyOperation sinkModifyOperation = createTableASOperation.toSinkModifyOperation(getCatalogManager());
+            getPlanner().translate(CollUtil.newArrayList(sinkModifyOperation));
+        }
     }
 }

@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.data.model.flink.job;
+package org.dinky.data.flink.job;
 
 import java.io.Serializable;
 import java.util.List;

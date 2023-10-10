@@ -1132,7 +1132,7 @@ CREATE TABLE "public"."dinky_task" (
                                        "alert_group_id" int8,
                                        "config_json" text COLLATE "pg_catalog"."default",
                                        "note" varchar(255) COLLATE "pg_catalog"."default",
-                                       "step" int4,
+                                       "step" int4 default 1,
                                        "job_instance_id" int8,
                                        "enabled" int2 NOT null,
                                        "create_time" timestamp(6),

@@ -1338,7 +1338,7 @@ CREATE TABLE `dinky_task` (
                             `alert_group_id` bigint(20) null DEFAULT null COMMENT 'alert group id',
                             `config_json` text null COMMENT 'configuration json',
                             `note` varchar(255) null DEFAULT null COMMENT 'Job Note',
-                            `step` int(11) null DEFAULT null COMMENT 'Job lifecycle',
+                            `step` int(11) null DEFAULT 1 COMMENT 'Job lifecycle',
                             `job_instance_id` bigint(20) null DEFAULT null COMMENT 'job instance id',
                             `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
                             `create_time` datetime(0) null DEFAULT null COMMENT 'create time',

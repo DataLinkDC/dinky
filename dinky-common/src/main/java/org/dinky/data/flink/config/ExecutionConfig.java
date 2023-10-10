@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.data.model.flink.config;
+package org.dinky.data.flink.config;
 
 import java.io.Serializable;
 

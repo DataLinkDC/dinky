@@ -350,9 +350,15 @@ public class JobManager {
                 } else if (useStatementSet && !useGateway) {
                     List<String> inserts = new ArrayList<>();
                     for (StatementParam item : jobParam.getTrans()) {
-                        if (item.getType().equals(SqlType.INSERT)
-                                || item.getType().equals(SqlType.CTAS)) {
+                        if (item.getType().equals(SqlType.INSERT)) {
                             inserts.add(item.getValue());
+                        } else if (item.getType().equals(SqlType.CTAS)) {
+                            executor.getCustomTableEnvironment()
+                                    .getParser()
+                                    .parse(item.getValue())
+                                    .forEach(x -> {
+                                        executor.getCustomTableEnvironment().executeCTAS(x);
+                                    });
                         }
                     }
                     if (!inserts.isEmpty()) {
