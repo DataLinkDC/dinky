@@ -276,8 +276,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
             process.info("Job Submit success");
-            taskVersionService.createTaskVersionSnapshot(task);
-            task.setStep(JobLifeCycle.ONLINE.getValue());
             task.setJobInstanceId(jobResult.getJobInstanceId());
             if (!this.updateById(task.buildTask())) {
                 throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
@@ -431,6 +429,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) {
         TaskDTO taskInfoById = getTaskInfoById(taskId);
         taskInfoById.setStep(lifeCycle.getValue());
+        if (lifeCycle == JobLifeCycle.ONLINE){
+            taskVersionService.createTaskVersionSnapshot(taskInfoById);
+        }
         return saveOrUpdate(taskInfoById.buildTask());
     }
 
