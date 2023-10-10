@@ -69,9 +69,9 @@ public class APIController {
     @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
     public Result<JobResult> submitTask(@RequestBody TaskDTO taskDTO) throws ExcuteException {
         JobResult jobResult = taskService.submitTask(taskDTO.getId(), null);
-        if (jobResult.isSuccess()){
+        if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
-        }else {
+        } else {
             return Result.failed(jobResult, jobResult.getError());
         }
     }

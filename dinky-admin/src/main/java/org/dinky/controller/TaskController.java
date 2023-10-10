@@ -70,9 +70,9 @@ public class TaskController {
     @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
     public Result<JobResult> submitTask(@RequestParam Integer id) throws ExcuteException {
         JobResult jobResult = taskService.submitTask(id, null);
-        if (jobResult.isSuccess()){
+        if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
-        }else {
+        } else {
             return Result.failed(jobResult, jobResult.getError());
         }
     }

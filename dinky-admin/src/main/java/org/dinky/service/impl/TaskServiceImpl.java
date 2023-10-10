@@ -150,6 +150,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final UDFTemplateService udfTemplateService;
     private final DataSourceProperties dsProperties;
     private final UserService userService;
+
     @Resource
     @Lazy
     private CatalogueService catalogueService;
@@ -427,7 +428,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle){
+    public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) {
         TaskDTO taskInfoById = getTaskInfoById(taskId);
         taskInfoById.setStep(lifeCycle.getValue());
         return saveOrUpdate(taskInfoById.buildTask());
@@ -436,7 +437,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public boolean saveOrUpdateTask(Task task) {
 
-        if (JobLifeCycle.ONLINE.equalsValue(task.getStep())){
+        if (JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
             throw new BusException(Status.TASK_IS_ONLINE.getMessage());
         }
 
