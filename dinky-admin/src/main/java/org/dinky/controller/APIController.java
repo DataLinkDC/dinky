@@ -68,8 +68,12 @@ public class APIController {
     @ApiOperation("Submit Task")
     @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
     public Result<JobResult> submitTask(@RequestBody TaskDTO taskDTO) throws ExcuteException {
-        taskService.initTenantByTaskId(taskDTO.getId());
-        return Result.succeed(taskService.submitTask(taskDTO.getId(), null), Status.EXECUTE_SUCCESS);
+        JobResult jobResult = taskService.submitTask(taskDTO.getId(), null);
+        if (jobResult.isSuccess()){
+            return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
+        }else {
+            return Result.failed(jobResult, jobResult.getError());
+        }
     }
 
     @GetMapping("/cancel")

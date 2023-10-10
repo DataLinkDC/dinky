@@ -16,46 +16,55 @@
  *   limitations under the License.
  *
  */
-import {FlexCenterDiv} from '@/components/StyledComponents';
-import {getCurrentData, getCurrentTab, mapDispatchToProps} from '@/pages/DataStudio/function';
+import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
+import { FlexCenterDiv } from '@/components/StyledComponents';
+import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
 import {
   buildBreadcrumbItems,
+  isOnline,
+  isRunning,
   projectCommonShow
 } from '@/pages/DataStudio/HeaderContainer/function';
 import {
   cancelTask,
   executeSql,
   getJobPlan,
-  offLineTask
+  offLinelTask,
+  onLineTask
 } from '@/pages/DataStudio/HeaderContainer/service';
 import {
-  DataStudioParams,
   DataStudioTabsItemType,
+  MetadataTabsItemType,
   StateType,
   TabsPageType,
   TaskDataType,
   VIEW
 } from '@/pages/DataStudio/model';
-import {ConfigStateType} from '@/pages/SettingCenter/GlobalSetting/model';
-import {SettingConfigKeyEnum} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
-import {handlePutDataJson} from '@/services/BusinessCrud';
-import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import {l} from '@/utils/intl';
-import {ErrorNotification} from '@/utils/messages';
-import {connect} from '@@/exports';
+import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
+import { ConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
+import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
+import { handlePutDataJson } from '@/services/BusinessCrud';
+import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import { l } from '@/utils/intl';
+import { connect } from '@@/exports';
 import {
   ApartmentOutlined,
   CaretRightFilled,
   EnvironmentOutlined,
-  MoreOutlined, PauseOutlined, SaveOutlined, ScheduleOutlined,
+  FundOutlined,
+  MergeCellsOutlined,
+  MoreOutlined,
+  PauseOutlined,
+  RotateRightOutlined,
+  SaveOutlined,
+  ScheduleOutlined,
   SendOutlined
 } from '@ant-design/icons';
-import {Breadcrumb,  Descriptions, message, Modal,  Space} from 'antd';
-import React, {CSSProperties, useEffect, useState} from 'react';
-import {ButtonType} from "antd/es/button/buttonHelpers";
-import {LoadingBtn} from "@/components/CallBackButton/LoadingBtn";
+import { Breadcrumb, Descriptions, message, Modal, Space } from 'antd';
+import { ButtonProps } from 'antd/es/button/button';
+import React, { useEffect, useState } from 'react';
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -68,22 +77,20 @@ const headerStyle: React.CSSProperties = {
 };
 
 type ButtonRoute = {
-  style?: CSSProperties | undefined;
-  type?: ButtonType;
-  isDanger?: boolean;
-  icon: React.ReactNode;
-  title: string;
-  click: () => void;
+  icon?: React.ReactNode;
+  title?: string;
+  click?: () => void;
   hotKey?: (e: KeyboardEvent) => boolean;
   hotKeyDesc?: string;
-  isShow?: (type?: TabsPageType, subType?: string, data?: any) => boolean;
+  isShow: boolean;
+  props?: ButtonProps;
 };
 
 const HeaderContainer = (props: any) => {
   const {
     size,
     activeBreadcrumbTitle,
-    tabs: {panes, activeKey},
+    tabs: { panes, activeKey },
     saveTabs,
     updateJobRunningMsg,
     queryDsConfig,
@@ -91,18 +98,26 @@ const HeaderContainer = (props: any) => {
   } = props;
 
   const [modal, contextHolder] = Modal.useModal();
-  // const [notificationApi, notificationContextHolder] = notification.useNotification();
   const [messageApi, messageContextHolder] = message.useMessage();
   const [enableDs, setEnableDs] = useState<boolean>(false);
+  const [currentData, setCurrentData] = useState<TaskDataType | undefined>(undefined);
+  const [currentTab, setCurrentTab] = useState<
+    DataStudioTabsItemType | MetadataTabsItemType | undefined
+  >(undefined);
 
   useEffect(() => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
   }, []);
 
   useEffect(() => {
+    setCurrentTab(getCurrentTab(panes, activeKey));
+    setCurrentData(getCurrentData(panes, activeKey));
+  }, [panes, activeKey]);
+
+  useEffect(() => {
     // 检查是否开启 ds 配置 & 如果
     if (!dsConfig) {
-      dsConfig.map((item: BaseConfigProperties) => {
+      dsConfig.foreach((item: BaseConfigProperties) => {
         if (item.key === 'dolphinscheduler.settings.enable') {
           setEnableDs(item.value === 'true');
         }
@@ -110,192 +125,171 @@ const HeaderContainer = (props: any) => {
     }
   }, [dsConfig]);
 
+  const handleSave = async () => {
+    await handlePutDataJson('/api/task', currentData);
+    saveTabs({ ...props.tabs });
+  };
+
   const handlerStop = () => {
-    const current = getCurrentData(panes, activeKey);
-    if (!current) {
-      return;
-    }
+    if (!currentData) return;
 
     modal.confirm({
       title: l('pages.datastudio.editor.stop.job'),
       content: l('pages.datastudio.editor.stop.jobConfirm', '', {
-        jobName: current.name
+        jobName: currentData.name
       }),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
-        cancelTask(l('pages.datastudio.editor.stop.job'), current.id).then(
-          () => {
-            (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId = 0;
-            saveTabs({...props.tabs});
-          }
-        );
+        cancelTask(l('pages.datastudio.editor.stop.job'), currentData.id).then(() => {
+          currentData.status = JOB_STATUS.CANCELED;
+          saveTabs({ ...props.tabs });
+        });
       }
     });
   };
 
-  const handlerExec = async () => {
-    const current = getCurrentData(panes, activeKey);
-    if (!current) {
-      return;
-    }
+  const handlerSubmit = async () => {
+    if (!currentData) return;
 
-    const param: TaskDataType = {
-      ...current,
-      jobName: current.name,
-      taskId: current.id
-    };
+    const res = await executeSql(
+      l('pages.datastudio.editor.submitting', '', { jobName: currentData.name }),
+      currentData.id
+    );
+    if (!res) return;
 
-    const res = await executeSql(l('pages.datastudio.editor.submitting', '', {jobName: param.name}), param);
-
-    if (!res) {
-      return;
-    }
     updateJobRunningMsg({
-      taskId: current.id,
-      jobName: current.name,
+      taskId: currentData.id,
+      jobName: currentData.name,
       jobState: res.datas.status,
       runningLog: res.msg
     });
-    if (res.datas.success) {
-      messageApi.success(l('pages.datastudio.editor.exec.success'));
-      (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId =
-        res.datas.jobInstanceId;
-      saveTabs({...props.tabs});
-    } else {
-      ErrorNotification(
-        res.datas.error,
-        l('pages.datastudio.editor.exec.error', '', {jobName: param.name}),
-        null
-      );
-    }
 
+    messageApi.success(l('pages.datastudio.editor.exec.success'));
+    currentData.status = JOB_STATUS.RUNNING;
+    saveTabs({ ...props.tabs });
+  };
+
+  const handleChangeJobLife = async () => {
+    if (!currentData) return;
+    if (isOnline(currentData)) {
+      await offLinelTask(currentData.id);
+      currentData.step = JOB_LIFE_CYCLE.DEVELOP;
+    } else {
+      await onLineTask(currentData.id);
+      currentData.step = JOB_LIFE_CYCLE.ONLINE;
+    }
+    saveTabs({ ...props.tabs });
+  };
+
+  const showDagGraph = async () => {
+    const result = await getJobPlan(l('pages.datastudio.editor.explan.tip'), currentData);
+    if (result) {
+      modal.confirm({
+        title: l('pages.datastudio.editor.explan.tip'),
+        width: '100%',
+        icon: null,
+        content: <FlinkGraph data={result.datas} />,
+        cancelButtonProps: { style: { display: 'none' } }
+      });
+    }
+  };
+
+  const showExplain = async () => {
+    modal.confirm({
+      title: l('pages.datastudio.explain.validate.msg'),
+      width: '100%',
+      icon: null,
+      content: <Explain />,
+      cancelButtonProps: { style: { display: 'none' } }
+    });
   };
 
   const routes: ButtonRoute[] = [
     // 保存按钮 icon
     {
-      icon: <SaveOutlined />,
-      title: l('button.save'),
-      click: async () => {
-        const current = getCurrentData(panes, activeKey);
-        await handlePutDataJson('/api/task', current);
-        saveTabs({...props.tabs});
-      },
       hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
       hotKeyDesc: 'Ctrl+S',
-      isShow: projectCommonShow
+      isShow: projectCommonShow(currentTab?.type),
+      icon: <SaveOutlined />,
+      title: l('button.save'),
+      click: () => handleSave(),
+      props: {
+        disabled: isOnline(currentData)
+      }
     },
     {
       // 执行图按钮
       icon: <ApartmentOutlined />,
       title: l('button.graph'),
-      click: async () => {
-        const currentData = getCurrentData(panes, activeKey);
-        const result = await getJobPlan(l('pages.datastudio.editor.explan.tip'), currentData);
-        if (result) {
-          modal.confirm({
-            title: l('pages.datastudio.editor.explan.tip'),
-            width: '100%',
-            icon: null,
-            content: <FlinkGraph data={result.datas}/>,
-            cancelButtonProps: {style: {display: 'none'}}
-          });
-        }
-      },
-      // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-      isShow: projectCommonShow
+      isShow: projectCommonShow(currentTab?.type),
+      click: async () => showDagGraph()
     },
     {
       // 检查 sql按钮
       icon: <ScheduleOutlined />,
       title: l('pages.datastudio.editor.check'),
-      click: () => {
-        modal.confirm({
-          title: l('pages.datastudio.explain.validate.msg'),
-          width: '100%',
-          icon: null,
-          content: <Explain/>,
-          cancelButtonProps: {style: {display: 'none'}}
-        });
-      },
-      isShow: projectCommonShow
-      // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
+      click: () => showExplain(),
+      isShow: projectCommonShow(currentTab?.type)
     },
     {
-      // 执行按钮
-      style: {background: "#52c41a"},
-      type: 'primary',
-      isDanger: false,
-      icon: <CaretRightFilled />,
-      title: l('pages.datastudio.editor.exec'),
-      click: handlerExec,
-      hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
-      hotKeyDesc: 'Shift+F10',
-      isShow: (type?: TabsPageType, subType?: string, data?: any) =>
-        type === TabsPageType.project && !data?.jobInstanceId
+      // 推送海豚, 此处需要将系统设置中的 ds 的配置拿出来做判断 启用才展示
+      icon: <SendOutlined className={'blue-icon'} />,
+      title: l('button.push'),
+      hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
+      isShow: enableDs
     },
     {
-      // 停止按钮
-      type: 'primary',
-      isDanger: true,
-      icon: <PauseOutlined />,
-      title: l('pages.datastudio.editor.stop'),
-      click: handlerStop,
-      isShow: (type?: TabsPageType, subType?: string, data?: any) =>
-        type === TabsPageType.project && data?.jobInstanceId
-      // hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
-      // hotKeyDesc: "Shift+F10"
+      // 发布按钮
+      icon: isOnline(currentData) ? <MergeCellsOutlined /> : <FundOutlined />,
+      title: isOnline(currentData) ? l('button.offline') : l('button.publish'),
+      isShow: currentTab?.type == TabsPageType.project,
+      click: () => handleChangeJobLife()
     },
     {
       // flink jobdetail跳转
       icon: <RotateRightOutlined />,
       title: l('pages.datastudio.to.jobDetail'),
-      click: ()=>history.push(`/devops/job-detail?id=${getCurrentData(panes, activeKey)?.id}`),
-      isShow: (type?: TabsPageType, subType?: string, data?: any) =>
-        type === TabsPageType.project && data?.jobInstanceId && subType==="flinksql"
+      isShow:
+        currentTab?.type == TabsPageType.project &&
+        currentData?.jobInstanceId &&
+        currentTab.subType == 'flinksql',
+      props: {
+        href: `/#/devops/job-detail?id=${currentData?.jobInstanceId}`,
+        target: '_blank'
+      }
     },
-    // {
-    //   // 异步提交按钮
-    //   icon: <RocketTwoTone/>,
-    //   title: l('button.async'),
-    //   click: () => {
-    //     console.log("ctrl+s")
-    //   },
-    //   // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-    // },
     {
-      // 推送海豚, 此处需要将系统设置中的 ds 的配置拿出来做判断 启用才展示
-      icon: <SendOutlined className={'blue-icon'}/>,
-      title: l('button.push'),
-      click: () => {
-      },
-      hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
-      isShow: () => enableDs
+      // 执行按钮
+      icon: <CaretRightFilled />,
+      title: l('pages.datastudio.editor.exec'),
+      click: handlerSubmit,
+      hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
+      hotKeyDesc: 'Shift+F10',
+      isShow: currentTab?.type == TabsPageType.project && !isRunning(currentData),
+      props: {
+        style: { background: '#52c41a' },
+        type: 'primary'
+      }
     },
-    // {
-    //   // 发布按钮
-    //   icon: <PauseCircleTwoTone/>,
-    //   title: l('button.publish'),
-    //   click: () => {
-    //     console.log("ctrl+s")
-    //   },
-    //   // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-    // }, {
-    //   // api 按钮
-    //   icon: <ApiTwoTone/>,
-    //   title: l('button.api'),
-    //   click: () => {
-    //     console.log("ctrl+s")
-    //   },
-    //   // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-    // },
     {
-      icon: <MoreOutlined/>,
+      // 停止按钮
+      icon: <PauseOutlined />,
+      title: l('pages.datastudio.editor.stop'),
+      click: handlerStop,
+      isShow: currentTab?.type == TabsPageType.project && isRunning(currentData),
+      hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
+      hotKeyDesc: 'Shift+F10',
+      props: {
+        type: 'primary',
+        danger: true
+      }
+    },
+    {
+      icon: <MoreOutlined />,
       title: '',
-      click: () => {
-      },
-      isShow: () => true
+      click: () => {},
+      isShow: true
       // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
     }
   ];
@@ -307,70 +301,54 @@ const HeaderContainer = (props: any) => {
     if (!activeBreadcrumbTitle) {
       return (
         <Space>
-          <EnvironmentOutlined/>
+          <EnvironmentOutlined />
           <span>Guide Page</span>
         </Space>
       );
     }
 
     return (
-      <FlexCenterDiv style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>
-        <Breadcrumb separator={'>'} items={buildBreadcrumbItems(activeBreadcrumbTitle)}/>
+      <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
+        <Breadcrumb separator={'>'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
       </FlexCenterDiv>
     );
   };
-  const renderHotkey = () => {
-    document.onkeydown = (e) => {
-      routes
-        .filter((r) => r.hotKey?.(e))
-        .forEach((r) => {
-          r.click();
-          e.preventDefault();
-        });
-    };
+
+  document.onkeydown = (e) => {
+    routes
+      .filter((r) => r.hotKey?.(e))
+      .forEach((r) => {
+        r.click?.();
+        e.preventDefault();
+      });
   };
-  renderHotkey();
 
   /**
    * @description: 渲染右侧按钮
    */
   const renderRightButtons = () => {
-    const currentTab = getCurrentTab(panes, activeKey);
-    const taskData = (currentTab as DataStudioTabsItemType)?.params.taskData;
     return (
-      <div style={{padding: '4px'}}>
+      <div style={{ padding: '4px' }}>
         <Space size={'small'} align={'center'} direction={'horizontal'} wrap>
           {routes
-            .filter((x) => {
-              if (x.isShow) {
-                if (currentTab) {
-                  return x.isShow(
-                    currentTab?.type,
-                    currentTab?.subType,
-                    taskData
-                  );
-                }
-              }
-              return false;
-            })
+            .filter((x) => x.isShow)
             .map((route) => {
-              const {style, icon, title, click, hotKeyDesc, isDanger, type} = route;
               return (
                 <LoadingBtn
-                  style={style}
-                  key={title}
+                  key={route.title}
                   size={'small'}
-                  type={type || "text"}
-                  icon={icon}
-                  danger={isDanger || false}
-                  title={title + (hotKeyDesc ? ' ' + hotKeyDesc : '')}
-                  onClick={click}
-                >{title}</LoadingBtn>
+                  type={'text'}
+                  icon={route.icon}
+                  onClick={route.click}
+                  title={route.hotKeyDesc}
+                  {...route.props}
+                >
+                  {route.title}
+                </LoadingBtn>
               );
             })}
         </Space>
         {contextHolder}
-        {/*{notificationContextHolder}*/}
         {messageContextHolder}
       </div>
     );
@@ -382,7 +360,7 @@ const HeaderContainer = (props: any) => {
   return (
     <Descriptions column={2} size={'middle'} layout={'horizontal'} key={'h'} style={headerStyle}>
       <Descriptions.Item>{renderBreadcrumbItems()}</Descriptions.Item>
-      <Descriptions.Item contentStyle={{display: 'flex', flexDirection: 'row-reverse'}}>
+      <Descriptions.Item contentStyle={{ display: 'flex', flexDirection: 'row-reverse' }}>
         {renderRightButtons()}
       </Descriptions.Item>
     </Descriptions>
@@ -390,7 +368,7 @@ const HeaderContainer = (props: any) => {
 };
 
 export default connect(
-  ({Studio, Config}: { Studio: StateType; Config: ConfigStateType }) => ({
+  ({ Studio, Config }: { Studio: StateType; Config: ConfigStateType }) => ({
     tabs: Studio.tabs,
     dsConfig: Config.dsConfig
   }),

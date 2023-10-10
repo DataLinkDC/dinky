@@ -148,6 +148,13 @@ public class TaskDTO extends AbstractStatementDTO {
     private Integer jobInstanceId;
 
     @ApiModelProperty(
+            value = "Job status",
+            dataType = "String",
+            example = "RUNNING",
+            notes = "THE_RUNNING_STATUS_OF_THE_CURRENT_TASK")
+    private String status;
+
+    @ApiModelProperty(
             value = "Version ID",
             dataType = "Integer",
             example = "9001",

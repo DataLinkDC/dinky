@@ -174,6 +174,9 @@ public enum Status {
     TASK_STATUS_IS_NOT_DONE(12006, "task.status.is.not.done"),
     TASK_SQL_EXPLAN_FAILED(12007, "task.sql.explain.failed"),
     TASK_UPDATE_FAILED(12008, "task.update.failed"),
+    TASK_IS_ONLINE(12009, "task.is.online"),
+
+
     /**
      * alert instance
      */

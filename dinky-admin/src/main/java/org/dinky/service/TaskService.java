@@ -22,6 +22,7 @@ package org.dinky.service;
 import org.dinky.data.dto.AbstractStatementDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
+import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
@@ -70,6 +71,8 @@ public interface TaskService extends ISuperService<Task> {
     TaskDTO getTaskInfoById(Integer id);
 
     void initTenantByTaskId(Integer id);
+
+    boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle);
 
     boolean saveOrUpdateTask(Task task);
 

@@ -40,6 +40,7 @@ import org.dinky.data.model.Cluster;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.Jar;
+import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
@@ -149,12 +150,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final UDFTemplateService udfTemplateService;
     private final DataSourceProperties dsProperties;
     private final UserService userService;
-
     @Resource
     @Lazy
     private CatalogueService catalogueService;
-
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     private String[] buildParams(int id) {
         return String.format(
@@ -256,6 +254,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public JobResult submitTask(Integer id, String savePointPath) throws ExcuteException {
+        initTenantByTaskId(id);
         ProcessEntity process = StpUtil.isLogin()
                 ? ProcessContextHolder.registerProcess(
                         ProcessEntity.init(ProcessType.FLINK_SUBMIT, StpUtil.getLoginIdAsInt()))
@@ -311,7 +310,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Assert.notNull(cluster, Status.CLUSTER_NOT_EXIST.getMessage());
 
         JobManager jobManager = JobManager.build(buildJobConfig(task));
-        return jobManager.cancel(jobInstance.getJid());
+        boolean cancelled = jobManager.cancel(jobInstance.getJid());
+        JobInfoDetail jobInfoDetail = jobInstanceService.refreshJobInfoDetail(jobInstance.getId());
+        return cancelled;
     }
 
     @Override
@@ -402,10 +403,17 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Assert.notNull(mTask, Status.TASK_NOT_EXIST.getMessage());
         TaskDTO taskDTO = new TaskDTO();
         BeanUtil.copyProperties(mTask, taskDTO);
+
         if (taskDTO.getClusterId() != null) {
             Cluster cluster = clusterInstanceService.getById(taskDTO.getClusterId());
             if (cluster != null) {
                 taskDTO.setClusterName(cluster.getAlias());
+            }
+        }
+        if (taskDTO.getJobInstanceId() != null) {
+            JobInstance jobInstance = jobInstanceService.getById(taskDTO.getJobInstanceId());
+            if (jobInstance != null) {
+                taskDTO.setStatus(jobInstance.getStatus());
             }
         }
         return taskDTO;
@@ -419,7 +427,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
+    public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle){
+        TaskDTO taskInfoById = getTaskInfoById(taskId);
+        taskInfoById.setStep(lifeCycle.getValue());
+        return saveOrUpdate(taskInfoById.buildTask());
+    }
+
+    @Override
     public boolean saveOrUpdateTask(Task task) {
+
+        if (JobLifeCycle.ONLINE.equalsValue(task.getStep())){
+            throw new BusException(Status.TASK_IS_ONLINE.getMessage());
+        }
+
         if (Dialect.isUDF(task.getDialect())) {
 
             TaskExtConfig taskConfigJson = task.getConfigJson();
@@ -452,24 +472,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task));
         }
 
-        // if modify task else create task
-        if (task.getId() != null) {
-            Task taskInfo = getById(task.getId());
-            Assert.notNull(taskInfo, Status.TASK_NOT_EXIST.getMessage());
-            this.updateById(task);
-        } else {
-            if (task.getCheckPoint() == null) {
-                task.setCheckPoint(0);
-            }
-            if (task.getParallelism() == null) {
-                task.setParallelism(1);
-            }
-            if (task.getClusterId() == null) {
-                task.setClusterId(0);
-            }
-            this.save(task);
-        }
-        return true;
+        return this.saveOrUpdate(task);
     }
 
     @Override
@@ -648,7 +651,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (file.isEmpty() || file.getSize() <= 0 || fileName == null || "".equals(fileName)) {
             return Result.failed("传入的文件数据为空");
         }
-
+        ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readTree(getStrByJsonFile(file));
         return buildTaskByJsonNode(jsonNode, mapper);
     }

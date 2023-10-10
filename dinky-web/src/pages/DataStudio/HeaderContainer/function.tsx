@@ -17,7 +17,8 @@
  *
  */
 
-import { TabsPageType } from '@/pages/DataStudio/model';
+import { TabsPageType, TaskDataType } from '@/pages/DataStudio/model';
+import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { HomeOutlined } from '@ant-design/icons';
 
 /**
@@ -35,6 +36,20 @@ export const buildBreadcrumbItems = (breadcrumb: string) => {
   return items;
 };
 
-export const projectCommonShow = (type?: TabsPageType, subType?: string, data?: any) => {
+export const projectCommonShow = (type?: TabsPageType) => {
   return type === TabsPageType.project;
+};
+
+export const isOnline = (data: TaskDataType | undefined) => {
+  if (data) {
+    return JOB_LIFE_CYCLE.ONLINE == data.step;
+  }
+  return false;
+};
+
+export const isRunning = (data: TaskDataType | undefined) => {
+  if (data) {
+    return JOB_STATUS.RUNNING == data.status;
+  }
+  return false;
 };

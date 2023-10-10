@@ -17,7 +17,7 @@
  *
  */
 
-import {CircleButtonProps, CircleDataStudioButtonProps} from '@/components/CallBackButton/CircleBtn';
+import { CircleDataStudioButtonProps } from '@/components/CallBackButton/CircleBtn';
 import Console from '@/pages/DataStudio/BottomContainer/Console';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
@@ -37,9 +37,10 @@ import {
   CalendarOutlined,
   ConsoleSqlOutlined,
   DatabaseOutlined,
-  DesktopOutlined, EnvironmentOutlined,
+  DesktopOutlined,
+  EnvironmentOutlined,
   FolderOutlined,
-  HistoryOutlined, HolderOutlined,
+  HistoryOutlined,
   InfoCircleOutlined,
   MonitorOutlined,
   PlayCircleOutlined,
@@ -270,7 +271,7 @@ export const BtnRoute: { [c: string]: CircleDataStudioButtonProps[] } = {
     },
     {
       icon: <EnvironmentOutlined />,
-      title:l('button.position'),
+      title: l('button.position'),
       key: 'button.position',
       onClick: () => {}
     }

@@ -23,6 +23,7 @@ import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.BusinessType;
+import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.model.Task;
@@ -64,13 +65,16 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @PostMapping("/submitTask")
+    @GetMapping("/submitTask")
     @ApiOperation("Submit Task")
     @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
-    public Result<JobResult> submitTask(@RequestBody TaskDTO taskDTO) throws ExcuteException {
-        taskService.initTenantByTaskId(taskDTO.getId());
-        saveOrUpdateTask(taskDTO.buildTask());
-        return Result.succeed(taskService.submitTask(taskDTO.getId(), null), Status.EXECUTE_SUCCESS);
+    public Result<JobResult> submitTask(@RequestParam Integer id) throws ExcuteException {
+        JobResult jobResult = taskService.submitTask(id, null);
+        if (jobResult.isSuccess()){
+            return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
+        }else {
+            return Result.failed(jobResult, jobResult.getError());
+        }
     }
 
     @GetMapping("/cancel")
@@ -89,13 +93,27 @@ public class TaskController {
         return Result.succeed(taskService.restartTask(id, savePointPath));
     }
 
-    @PostMapping("/savepoint")
+    @GetMapping("/savepoint")
     @Log(title = "Savepoint Trigger", businessType = BusinessType.TRIGGER)
     @ApiOperation("Savepoint Trigger")
     public Result<SavePointResult> savepoint(@RequestParam Integer taskId, @RequestParam String savePointType) {
         return Result.succeed(
                 taskService.savepointTaskJob(taskService.getTaskInfoById(taskId), savePointType),
                 Status.EXECUTE_SUCCESS);
+    }
+
+    @GetMapping("/onLineTask")
+    @Log(title = "onLineTask", businessType = BusinessType.TRIGGER)
+    @ApiOperation("onLineTask")
+    public Result<Boolean> onLineTask(@RequestParam Integer taskId) {
+        return Result.succeed(taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.ONLINE));
+    }
+
+    @GetMapping("/offLineTask")
+    @Log(title = "offLineTask", businessType = BusinessType.TRIGGER)
+    @ApiOperation("offLineTask")
+    public Result<Boolean> offLineTask(@RequestParam Integer taskId) {
+        return Result.succeed(taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.DEVELOP));
     }
 
     @PostMapping("/explainSql")
@@ -150,8 +168,8 @@ public class TaskController {
             dataType = "Integer",
             paramType = "query",
             dataTypeClass = Integer.class)
-    public Result<Task> getOneById(@RequestParam Integer id) {
-        return Result.succeed(taskService.getTaskInfoById(id).buildTask());
+    public Result<TaskDTO> getOneById(@RequestParam Integer id) {
+        return Result.succeed(taskService.getTaskInfoById(id));
     }
 
     @GetMapping(value = "/listFlinkSQLEnv")
