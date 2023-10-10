@@ -46,7 +46,15 @@ type TreeProps = {
 };
 
 const JobTree: React.FC<TreeProps & connect> = (props) => {
-  const { projectData, onNodeClick, style, height, onRightClick } = props;
+  const {
+    projectData,
+    onNodeClick,
+    style,
+    height,
+    onRightClick,
+    selectedKeys: selectedKey
+  } = props;
+
   const [searchValue, setSearchValueValue] = useState('');
   const [data, setData] = useState<any[]>(buildProjectTree(projectData, searchValue));
 
@@ -56,8 +64,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
   const [expandedKeys, setExpandedKeys] = useState<Key[]>();
   const [autoExpandParent, setAutoExpandParent] = useState(true);
-  const [selectedKeys, setSelectedKeys] = useState(props.selectedKeys);
-
+  const [selectedKeys, setSelectedKeys] = useState(selectedKey);
   const onChangeSearch = (e: any) => {
     let { value } = e.target;
     if (!value) {
@@ -95,7 +102,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
       const expandList: any[] = generateList(data, []);
       let expandedKeys: any = expandList
         .map((item: any) => {
-          if (item?.key == treeKey) {
+          if (item?.key === treeKey) {
             return getParentKey(item.key, data);
           }
           return null;
