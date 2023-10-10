@@ -668,7 +668,7 @@ CREATE TABLE `dinky_task`  (
                              `alert_group_id` bigint(20) NULL DEFAULT NULL COMMENT 'alert group id',
                              `config_json` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'configuration json',
                              `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Job Note',
-                             `step` int(11) NULL DEFAULT NULL COMMENT 'Job lifecycle',
+                             `step` int(11) NULL DEFAULT 1 COMMENT 'Job lifecycle,',
                              `job_instance_id` bigint(20) NULL DEFAULT NULL COMMENT 'job instance id',
                              `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
                              `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',

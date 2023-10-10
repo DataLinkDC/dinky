@@ -235,3 +235,5 @@ COMMIT;
 
 
 update dinky_user set super_admin_flag =1  where id =1;
+
+alter table dinky_task alter column `step` set default 1;

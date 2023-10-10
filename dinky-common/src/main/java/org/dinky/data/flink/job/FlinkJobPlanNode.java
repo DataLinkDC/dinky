@@ -17,10 +17,10 @@
  *
  */
 
-package org.dinky.data.model.flink.job;
+package org.dinky.data.flink.job;
 
-import org.dinky.data.model.flink.backpressure.FlinkJobNodeBackPressure;
-import org.dinky.data.model.flink.watermark.FlinkJobNodeWaterMark;
+import org.dinky.data.flink.backpressure.FlinkJobNodeBackPressure;
+import org.dinky.data.flink.watermark.FlinkJobNodeWaterMark;
 
 import java.io.Serializable;
 import java.util.List;

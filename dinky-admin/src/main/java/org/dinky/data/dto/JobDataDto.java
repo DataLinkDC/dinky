@@ -19,10 +19,10 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.flink.config.FlinkJobConfigInfo;
+import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
+import org.dinky.data.flink.job.FlinkJobDetailInfo;
 import org.dinky.data.model.JobHistory;
-import org.dinky.data.model.flink.config.FlinkJobConfigInfo;
-import org.dinky.data.model.flink.exceptions.FlinkJobExceptionsDetail;
-import org.dinky.data.model.flink.job.FlinkJobDetailInfo;
 import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;

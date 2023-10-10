@@ -44,13 +44,14 @@ import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/Settin
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
-import {connect, history} from '@@/exports';
+import { connect, history } from '@@/exports';
 import {
   EnvironmentOutlined,
   FlagTwoTone,
   MoreOutlined,
   PauseCircleTwoTone,
-  PlayCircleTwoTone, RotateRightOutlined,
+  PlayCircleTwoTone,
+  RotateRightOutlined,
   SafetyCertificateTwoTone,
   SaveTwoTone,
   SendOutlined,
@@ -260,9 +261,9 @@ const HeaderContainer = (props: any) => {
       // flink jobdetail跳转
       icon: <RotateRightOutlined />,
       title: l('pages.datastudio.to.jobDetail'),
-      click: ()=>history.push(`/devops/job-detail?id=${getCurrentData(panes, activeKey)?.id}`),
+      click: () => history.push(`/devops/job-detail?id=${getCurrentData(panes, activeKey)?.id}`),
       isShow: (type?: TabsPageType, subType?: string, data?: any) =>
-        type === TabsPageType.project && data?.jobInstanceId && subType==="flinksql"
+        type === TabsPageType.project && data?.jobInstanceId && subType === 'flinksql'
     },
     // {
     //   // 异步提交按钮
@@ -329,13 +330,13 @@ const HeaderContainer = (props: any) => {
   };
   const renderHotkey = () => {
     document.onkeydown = (e) => {
-      if (getCurrentTab(panes, activeKey)){
+      if (getCurrentTab(panes, activeKey)) {
         routes
-            .filter((r) => r.hotKey?.(e))
-            .forEach((r) => {
-              r.click();
-              e.preventDefault();
-            });
+          .filter((r) => r.hotKey?.(e))
+          .forEach((r) => {
+            r.click();
+            e.preventDefault();
+          });
       }
     };
   };

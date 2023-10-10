@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.data.model.flink.watermark;
+package org.dinky.data.flink.watermark;
 
 import java.io.Serializable;
 

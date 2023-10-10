@@ -17,8 +17,9 @@
  *
  */
 
-import {CircleButtonProps, CircleDataStudioButtonProps} from '@/components/CallBackButton/CircleBtn';
+import { CircleDataStudioButtonProps } from '@/components/CallBackButton/CircleBtn';
 import Console from '@/pages/DataStudio/BottomContainer/Console';
+import Lineage from '@/pages/DataStudio/BottomContainer/Lineage';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
 import MetaData from '@/pages/DataStudio/LeftContainer/MetaData';
@@ -37,9 +38,10 @@ import {
   CalendarOutlined,
   ConsoleSqlOutlined,
   DatabaseOutlined,
-  DesktopOutlined, EnvironmentOutlined,
+  DesktopOutlined,
+  EnvironmentOutlined,
   FolderOutlined,
-  HistoryOutlined, HolderOutlined,
+  HistoryOutlined,
   InfoCircleOutlined,
   MonitorOutlined,
   PlayCircleOutlined,
@@ -146,7 +148,8 @@ export const LeftBottomSide = [
     auth: '/datastudio/bottom/lineage',
     key: 'menu.datastudio.lineage',
     icon: <ApartmentOutlined />,
-    label: l('menu.datastudio.lineage')
+    label: l('menu.datastudio.lineage'),
+    children: <Lineage />
   },
   {
     auth: '/datastudio/bottom/process',
@@ -270,7 +273,7 @@ export const BtnRoute: { [c: string]: CircleDataStudioButtonProps[] } = {
     },
     {
       icon: <EnvironmentOutlined />,
-      title:l('button.position'),
+      title: l('button.position'),
       key: 'button.position',
       onClick: () => {}
     }
