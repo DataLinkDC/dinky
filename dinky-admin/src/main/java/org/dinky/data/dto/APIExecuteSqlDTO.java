@@ -125,7 +125,6 @@ public class APIExecuteSqlDTO extends AbstractStatementDTO {
                 .useResult(useResult)
                 .useChangeLog(useChangeLog)
                 .useAutoCancel(useAutoCancel)
-                .useSession(false)
                 .useRemote(true)
                 .address(address)
                 .jobName(jobName)

@@ -226,13 +226,6 @@ public class TaskDTO extends AbstractStatementDTO {
             notes = "Flag indicating whether to use auto-canceling")
     private boolean useAutoCancel;
 
-    @ApiModelProperty(
-            value = "Use Session",
-            dataType = "boolean",
-            example = "false",
-            notes = "Flag indicating whether to use a session")
-    private boolean useSession;
-
     @ApiModelProperty(value = "Session", dataType = "String", example = "session_id", notes = "The session identifier")
     private String session;
 

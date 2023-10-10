@@ -91,10 +91,6 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
-        if (!config.isUseSession()) {
-            config.setAddress(
-                    clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), studioDDLDTO.getClusterId()));
-        }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeDDL(studioDDLDTO.getStatement());
     }

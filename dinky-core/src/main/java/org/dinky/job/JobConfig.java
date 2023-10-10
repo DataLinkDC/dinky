@@ -111,13 +111,6 @@ public class JobConfig {
     private boolean useAutoCancel;
 
     @ApiModelProperty(
-            value = "Flag indicating whether to use session",
-            dataType = "boolean",
-            example = "true",
-            notes = "Flag indicating whether to use session")
-    private boolean useSession;
-
-    @ApiModelProperty(
             value = "Session information",
             dataType = "String",
             example = "session-123",

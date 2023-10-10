@@ -365,7 +365,6 @@ public class Explainer {
     public List<LineageRel> getLineage(String statement) {
         JobConfig jobConfig = JobConfig.builder()
                 .type(GatewayType.LOCAL.getLongValue())
-                .useSession(false)
                 .useRemote(false)
                 .fragment(true)
                 .statementSet(useStatementSet)
