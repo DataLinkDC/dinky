@@ -27,6 +27,7 @@ import org.dinky.mapper.TaskVersionMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.TaskVersionService;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,7 @@ public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, 
             // FIRST RELEASE, ADD NEW VERSION
             taskVersion.setVersionId(1);
             task.setVersionId(1);
+            taskVersion.setCreateTime(LocalDateTime.now());
             save(taskVersion);
         } else {
             // Explain that there is a version, you need to determine whether it is an old version after fallback
@@ -80,6 +82,7 @@ public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, 
             if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)) {
                 taskVersion.setVersionId(Collections.max(versionIds) + 1);
                 task.setVersionId(Collections.max(versionIds) + 1);
+                taskVersion.setCreateTime(LocalDateTime.now());
                 save(taskVersion);
             }
         }

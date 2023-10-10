@@ -22,7 +22,7 @@ package org.dinky.data.model;
 import org.dinky.data.dto.TaskVersionConfigureDTO;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -83,5 +83,5 @@ public class TaskVersion implements Serializable {
 
     @ApiModelProperty(value = "Create Time", dataType = "Date", notes = "Timestamp when the version was created")
     @TableField(value = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 }
