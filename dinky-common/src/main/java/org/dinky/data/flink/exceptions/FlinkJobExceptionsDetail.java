@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.data.model.flink.exceptions;
+package org.dinky.data.flink.exceptions;
 
 import java.io.Serializable;
 import java.util.List;

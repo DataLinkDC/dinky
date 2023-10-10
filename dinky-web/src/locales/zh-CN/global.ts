@@ -146,6 +146,7 @@ export default {
   'global.table.lifecycle.all': '全部',
   'global.table.lifecycle.dev': '开发中',
   'global.table.lifecycle.publish': '已发布',
+  'global.table.lifecycle.stopped': '已停止',
   'global.table.lifecycle.online': '已上线',
   'global.table.lifecycle.unknown': '未知',
   'global.table.execmode': '执行模式',

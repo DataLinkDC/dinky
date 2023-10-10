@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.data.model.flink.backpressure;
+package org.dinky.data.flink.backpressure;
 
 import java.io.Serializable;
 import java.util.List;

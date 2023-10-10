@@ -150,6 +150,7 @@ export default {
   'global.table.execmode.batch': 'Batch Mode',
   'global.table.execmode.streaming': 'Stream Mode',
   'global.table.lifecycle.publish': 'Publish',
+  'global.table.lifecycle.stopped': 'Stopped',
   'global.table.lifecycle.online': 'Online',
   'global.table.lifecycle.unknown': 'Unknown',
   'global.table.execmode': 'Execution mode',

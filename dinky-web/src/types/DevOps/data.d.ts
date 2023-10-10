@@ -216,3 +216,28 @@ export interface AlertHistory {
   createTime: Date;
   updateTime: Date;
 }
+
+export interface LineageTableColumn {
+  name: string;
+  title: string;
+}
+
+export interface LineageTable {
+  id: string;
+  name: string;
+  isCollapse: boolean;
+  columns: LineageTableColumn[];
+}
+
+export interface LineageRelations {
+  id: string;
+  srcTableId: string;
+  tgtTableId: string;
+  srcTableColName: string;
+  tgtTableColName: string;
+}
+
+export interface LineageDetailInfo {
+  tables: LineageTable[];
+  relations: LineageRelations[];
+}
