@@ -42,7 +42,6 @@ import { Modal, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import {BtnRoute} from "@/pages/DataStudio/route";
 
 const { Text } = Typography;
 
