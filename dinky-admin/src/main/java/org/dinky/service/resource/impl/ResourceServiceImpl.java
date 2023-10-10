@@ -22,12 +22,16 @@ package org.dinky.service.resource.impl;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Resources;
+import org.dinky.data.result.Result;
 import org.dinky.mapper.ResourcesMapper;
 import org.dinky.service.resource.BaseResourceManager;
 import org.dinky.service.resource.ResourcesService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +42,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
@@ -229,7 +234,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
      * 递归获取所有的资源，从pid到0
      *
      * @param resourcesList data
-     * @param pid pid
+     * @param pid           pid
      * @return data
      */
     @Override
@@ -246,7 +251,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
      * 递归获取所有的资源，从id往下穿
      *
      * @param resourcesList data
-     * @param pid pid
+     * @param pid           pid
      * @return data
      */
     @Override
@@ -262,6 +267,94 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
             }
         }
         return resourcesList;
+    }
+
+    /**
+     * query Resources tree data
+     *
+     * @return {@link Result}< {@link List}< {@link Resources}>>}
+     */
+    @Override
+    public List<Resources> getResourcesTree() {
+        return buildResourcesTree(this.list());
+    }
+
+    /**
+     * build resources tree
+     *
+     * @param resourcesList resources list
+     * @return Resources tree
+     */
+    private List<Resources> buildResourcesTree(List<Resources> resourcesList) {
+        // sort
+        if (CollectionUtil.isNotEmpty(resourcesList)) {
+            resourcesList = resourcesList.stream()
+                    .sorted(Comparator.comparing(Resources::getId))
+                    .collect(Collectors.toList());
+        }
+
+        List<Resources> returnList = new ArrayList<>();
+
+        for (Iterator<Resources> iterator = resourcesList.iterator(); iterator.hasNext(); ) {
+            Resources resources = iterator.next();
+            //  get all child catalogue of parent catalogue id , the -1 is root catalogue
+            if (resources.getPid() == -1) {
+                recursionBuildResourcesAndChildren(resourcesList, resources);
+                returnList.add(resources);
+            }
+        }
+        if (returnList.isEmpty()) {
+            returnList = resourcesList;
+        }
+        return returnList;
+    }
+
+    /**
+     * recursion build resources and children
+     *
+     * @param resourcesList
+     * @param resources
+     */
+    private void recursionBuildResourcesAndChildren(List<Resources> resourcesList, Resources resources) {
+        // obtain a list of child nodes
+        List<Resources> childList = getChildList(resourcesList, resources);
+        resources.setChildren(childList);
+        for (Resources tChild : childList) {
+            if (hasChild(resourcesList, tChild)) {
+                // Determine whether there are child nodes
+                recursionBuildResourcesAndChildren(resourcesList, tChild);
+            } else {
+                tChild.setLeaf(true);
+            }
+        }
+    }
+
+    /**
+     * get child list
+     *
+     * @param list
+     * @param resources
+     * @return
+     */
+    private List<Resources> getChildList(List<Resources> list, Resources resources) {
+        List<Resources> childList = new ArrayList<>();
+        for (Resources n : list) {
+            if (n.getPid().longValue() == resources.getId().longValue()) {
+                childList.add(n);
+            }
+        }
+        return childList;
+    }
+
+    /**
+     * Determine whether there are child nodes
+     *
+     * @param resourcesList
+     * @param resources
+     * @return
+     */
+    private boolean hasChild(List<Resources> resourcesList, Resources resources) {
+        return getChildList(resourcesList, resources).size() > 0;
     }
 
     private BaseResourceManager getBaseResourceManager() {

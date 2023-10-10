@@ -24,6 +24,7 @@ import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.ResourcesDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
+import org.dinky.data.model.Resources;
 import org.dinky.data.result.Result;
 import org.dinky.service.resource.ResourcesService;
 
@@ -86,24 +87,15 @@ public class ResourceController {
         return Result.succeed();
     }
 
-    @GetMapping("/showByTree")
-    @ApiOperation("Query Folder/File Tree")
-    @ApiImplicitParams({
-        @ApiImplicitParam(
-                name = "pid",
-                value = "Parent ID",
-                required = true,
-                dataType = "Integer",
-                paramType = "query"),
-        @ApiImplicitParam(
-                name = "showFloorNum",
-                value = "Show Floor Number",
-                required = true,
-                dataType = "Integer",
-                paramType = "query")
-    })
-    public Result<List<TreeNodeDTO>> showByTree(Integer pid, Integer showFloorNum) {
-        return Result.succeed(resourcesService.showByTree(pid, showFloorNum));
+    /**
+     * query Resources tree data
+     * @return {@link Result}< {@link List}< {@link Resources}>>}
+     */
+    @GetMapping("/getResourcesTreeData")
+    @ApiOperation("Get Resources Tree Data")
+    public Result<List<Resources>> getResourcesTree() {
+        List<Resources> resources = resourcesService.getResourcesTree();
+        return Result.succeed(resources);
     }
 
     @GetMapping("/getContentByResourceId")
