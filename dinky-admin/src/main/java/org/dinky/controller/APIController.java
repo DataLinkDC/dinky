@@ -66,7 +66,7 @@ public class APIController {
 
     @PostMapping("/submitTask")
     @ApiOperation("Submit Task")
-    @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
+    //    @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
     public Result<JobResult> submitTask(@RequestBody TaskDTO taskDTO) throws ExcuteException {
         JobResult jobResult = taskService.submitTask(taskDTO.getId(), null);
         if (jobResult.isSuccess()) {
@@ -77,7 +77,7 @@ public class APIController {
     }
 
     @GetMapping("/cancel")
-    @Log(title = "Cancel Flink Job", businessType = BusinessType.TRIGGER)
+    //    @Log(title = "Cancel Flink Job", businessType = BusinessType.TRIGGER)
     @ApiOperation("Cancel Flink Job")
     public Result<Boolean> cancel(@RequestParam Integer id) {
         return Result.succeed(taskService.cancelTaskJob(taskService.getTaskInfoById(id)), Status.EXECUTE_SUCCESS);
@@ -88,14 +88,14 @@ public class APIController {
      */
     @GetMapping(value = "/restartTask")
     @ApiOperation("Restart Task")
-    @Log(title = "Restart Task", businessType = BusinessType.REMOTE_OPERATION)
+    //    @Log(title = "Restart Task", businessType = BusinessType.REMOTE_OPERATION)
     public Result<JobResult> restartTask(@RequestParam Integer id, @RequestParam String savePointPath)
             throws ExcuteException {
         return Result.succeed(taskService.restartTask(id, savePointPath));
     }
 
     @PostMapping("/savepoint")
-    @Log(title = "Savepoint Trigger", businessType = BusinessType.TRIGGER)
+    //    @Log(title = "Savepoint Trigger", businessType = BusinessType.TRIGGER)
     @ApiOperation("Savepoint Trigger")
     public Result<SavePointResult> savepoint(@RequestParam Integer taskId, @RequestParam String savePointType) {
         return Result.succeed(
