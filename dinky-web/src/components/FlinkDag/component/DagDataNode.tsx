@@ -98,13 +98,20 @@ const DagDataNode = (props: any) => {
           <Text style={{ display: 'inline-flex', alignItems: 'center' }} type='secondary'>
             {' '}
             {l('devops.baseinfo.busy')}:
-            {renderRatio((backpressure && backpressure.subtasks)?backpressure.subtasks[0]?.busyRatio:0, false)}
+            {renderRatio(
+              backpressure && backpressure.subtasks ? backpressure.subtasks[0]?.busyRatio : 0,
+              false
+            )}
           </Text>
         </Col>
         <Col flex='auto'>
           <Text type='secondary' ellipsis>
             {l('devops.baseinfo.backpressure')}:
-            <StatusTag status={backpressure?backpressure.status:0} bordered={false} animation={false} />
+            <StatusTag
+              status={backpressure ? backpressure.status : 0}
+              bordered={false}
+              animation={false}
+            />
           </Text>
         </Col>
       </Row>
@@ -113,7 +120,10 @@ const DagDataNode = (props: any) => {
         <Col flex='35%'>
           <Text style={{ display: 'inline-flex', alignItems: 'center' }} type='secondary'>
             {l('devops.baseinfo.idle')}:
-            {renderRatio((backpressure && backpressure.subtasks)?backpressure.subtasks[0]?.idleRatio:0, true)}
+            {renderRatio(
+              backpressure && backpressure.subtasks ? backpressure.subtasks[0]?.idleRatio : 0,
+              true
+            )}
           </Text>
         </Col>
         <Col flex='auto'>
