@@ -429,7 +429,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) {
         TaskDTO taskInfoById = getTaskInfoById(taskId);
         taskInfoById.setStep(lifeCycle.getValue());
-        if (lifeCycle == JobLifeCycle.ONLINE){
+        if (lifeCycle == JobLifeCycle.ONLINE) {
             taskVersionService.createTaskVersionSnapshot(taskInfoById);
         }
         return saveOrUpdate(taskInfoById.buildTask());
