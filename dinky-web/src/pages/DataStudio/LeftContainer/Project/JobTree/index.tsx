@@ -54,6 +54,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     onRightClick,
     selectedKeys: selectedKey
   } = props;
+
   const [searchValue, setSearchValueValue] = useState('');
   const [data, setData] = useState<any[]>(buildProjectTree(projectData, searchValue));
 

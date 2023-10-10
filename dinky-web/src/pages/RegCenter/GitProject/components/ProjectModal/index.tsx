@@ -109,6 +109,10 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
         form={form}
         submitter={{ render: () => [...renderFooter()] }}
         initialValues={values}
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => handleCancel(),
+        }}
       >
         <ProjectForm values={values} form={form} />
       </ModalForm>

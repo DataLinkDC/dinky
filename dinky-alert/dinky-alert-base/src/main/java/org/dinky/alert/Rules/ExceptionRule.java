@@ -19,9 +19,10 @@
 
 package org.dinky.alert.Rules;
 
+import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
+
 import java.util.concurrent.TimeUnit;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -43,20 +44,20 @@ public class ExceptionRule {
      * @param exceptions The exceptions object containing relevant data.
      * @return True if the operation should be executed, false otherwise.
      */
-    public Boolean isException(Integer key, ObjectNode exceptions) {
+    public Boolean isException(Integer key, FlinkJobExceptionsDetail exceptions) {
 
         // If the exception is the same as the previous one, it will not be reported again
-        if (exceptions.get("timestamp") == null) {
+        if (exceptions.getTimestamp() == null) {
             return false;
         }
-        long timestamp = exceptions.get("timestamp").asLong(0);
+        long timestamp = exceptions.getTimestamp();
         Long hisTimeIfPresent = hisTime.getIfPresent(key);
         if (hisTimeIfPresent != null && hisTimeIfPresent == timestamp) {
             return false;
         }
         hisTime.put(key, timestamp);
-        if (exceptions.has("root-exception")) {
-            return !exceptions.get("root-exception").isNull();
+        if (exceptions.getRootException() != null) {
+            return !exceptions.getRootException().isEmpty();
         } else {
             return false;
         }
