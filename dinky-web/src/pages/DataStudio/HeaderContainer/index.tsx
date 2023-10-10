@@ -56,7 +56,7 @@ import {
   FundOutlined,
   MergeCellsOutlined,
   MoreOutlined,
-  PauseOutlined,
+  PauseOutlined, PlayCircleTwoTone,
   RotateRightOutlined,
   SaveOutlined,
   ScheduleOutlined,
@@ -261,13 +261,16 @@ const HeaderContainer = (props: any) => {
     },
     {
       // 执行按钮
-      icon: <PlayCircleTwoTone />,
+      icon: <CaretRightFilled/>,
       title: l('pages.datastudio.editor.exec'),
-      click: handlerExec,
+      click: handlerSubmit,
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       hotKeyDesc: 'Shift+F10',
-      isShow: (type?: TabsPageType, subType?: string, data?: any) =>
-        type === TabsPageType.project && !data?.jobInstanceId
+      isShow: currentTab?.type == TabsPageType.project && !isRunning(currentData),
+      props: {
+        style: {background: "#52c41a"},
+        type: 'primary',
+      }
     },
     {
       // 停止按钮
