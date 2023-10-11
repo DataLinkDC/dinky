@@ -111,7 +111,7 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
         initialValues={values}
         modalProps={{
           destroyOnClose: true,
-          onCancel: () => handleCancel(),
+          onCancel: () => handleCancel()
         }}
       >
         <ProjectForm values={values} form={form} />

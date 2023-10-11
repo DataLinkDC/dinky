@@ -149,7 +149,7 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
       submitter={{ render: () => [...renderFooter()] }}
       modalProps={{
         destroyOnClose: true,
-        onCancel: () => handleModalVisible(false),
+        onCancel: () => handleModalVisible(false)
       }}
     >
       {renderAlertGroupForm()}
