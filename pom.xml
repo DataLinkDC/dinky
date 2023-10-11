@@ -23,7 +23,7 @@
 
     <groupId>org.dinky</groupId>
     <artifactId>dinky</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <name>Dinky : Real-time Computing Platform</name>
@@ -51,6 +51,7 @@
     </modules>
 
     <properties>
+        <revision>1.0.0-SNAPSHOT</revision>
         <assertj.version>3.21.0</assertj.version>
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
         <clickhouse.version>0.2.6</clickhouse.version>
