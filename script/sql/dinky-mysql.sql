@@ -674,30 +674,11 @@ CREATE TABLE `dinky_task`  (
                              `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
                              `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
                              `version_id` int(11) NULL DEFAULT NULL COMMENT 'version id',
+                             statement                text                 null,
                              PRIMARY KEY (`id`) USING BTREE,
                              UNIQUE INDEX `task_un_idx1`(`name`, `tenant_id`) USING BTREE,
                              UNIQUE INDEX `task_un_idx2`(`save_point_path`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Task' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of dinky_task
--- ----------------------------
-
--- ----------------------------
--- Table structure for dinky_task_statement
--- ----------------------------
-DROP TABLE IF EXISTS `dinky_task_statement`;
-CREATE TABLE `dinky_task_statement`  (
-                                       `id` int(11) NOT NULL COMMENT 'ID',
-                                       `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
-                                       `statement` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'statement set',
-                                       PRIMARY KEY (`id`) USING BTREE,
-                                       UNIQUE INDEX `task_statement_un_idx1`(`tenant_id`, `id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'statement' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of dinky_task_statement
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for dinky_task_version
