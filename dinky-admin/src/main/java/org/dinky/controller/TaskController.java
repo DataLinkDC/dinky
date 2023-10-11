@@ -38,6 +38,7 @@ import org.dinky.service.TaskService;
 import java.util.List;
 import java.util.Map;
 
+import org.dinky.utils.JsonUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -179,9 +180,8 @@ public class TaskController {
     @SuppressWarnings("unchecked")
     @ApiImplicitParam(name = "statement", value = "Statement", dataType = "String", paramType = "body", required = true)
     public Result<List<String>> getPrintTables(@RequestBody String statement) {
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Map<String, String> data = objectMapper.readValue(statement, Map.class);
+            Map<String, String> data = JsonUtils.toMap(statement);
             String ss = data.get("statement");
             return Result.succeed(taskService.getPrintTables(ss));
         } catch (Exception e) {
