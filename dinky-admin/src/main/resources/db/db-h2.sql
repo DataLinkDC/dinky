@@ -1343,14 +1343,10 @@ CREATE TABLE `dinky_task` (
                             `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
                             `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                             `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
-                            `version_id` int(11) null DEFAULT null COMMENT 'version id'
+                            `version_id` int(11) null DEFAULT null COMMENT 'version id',
+                            `statement` text null DEFAULT null COMMENT 'statement'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_task_statement`;
-CREATE TABLE `dinky_task_statement` (
-                                      `id` int(11) NOT null COMMENT 'ID',
-                                      `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
-                                      `statement` longtext null COMMENT 'statement set'
-) ENGINE = InnoDB ROW_FORMAT = Dynamic;
+
 DROP TABLE IF EXISTS `dinky_task_version`;
 CREATE TABLE `dinky_task_version` (
                                     `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',

@@ -22,7 +22,6 @@ package org.dinky.assertion;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Cluster;
 import org.dinky.data.model.Jar;
-import org.dinky.data.model.Statement;
 import org.dinky.data.model.Task;
 
 /**
@@ -41,12 +40,6 @@ public interface Assert {
     static void check(Task task) {
         if (task == null) {
             throw new BusException("作业不存在");
-        }
-    }
-
-    static void check(Statement statement) {
-        if (statement == null) {
-            throw new BusException("FlinkSql语句不存在");
         }
     }
 

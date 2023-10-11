@@ -1137,7 +1137,8 @@ CREATE TABLE "public"."dinky_task" (
                                        "enabled" int2 NOT null,
                                        "create_time" timestamp(6),
                                        "update_time" timestamp(6),
-                                       "version_id" int4
+                                       "version_id" int4,
+                                       statement  text
 )
 ;
 COMMENT ON COLUMN "public"."dinky_task"."id" IS 'ID';
@@ -1166,30 +1167,8 @@ COMMENT ON COLUMN "public"."dinky_task"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_task"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_task"."update_time" IS 'update time';
 COMMENT ON COLUMN "public"."dinky_task"."version_id" IS 'version id';
+COMMENT ON COLUMN "public"."dinky_task"."statement" IS 'statement';
 COMMENT ON TABLE "public"."dinky_task" IS 'Task';
-
--- ----------------------------
--- Records of dinky_task
--- ----------------------------
-
--- ----------------------------
--- Table structure for dinky_task_statement
--- ----------------------------
-DROP TABLE IF EXISTS "public"."dinky_task_statement";
-CREATE TABLE "public"."dinky_task_statement" (
-                                                 "id" SERIAL NOT null,
-                                                 "tenant_id" int4 NOT null,
-                                                 "statement" text COLLATE "pg_catalog"."default"
-)
-;
-COMMENT ON COLUMN "public"."dinky_task_statement"."id" IS 'ID';
-COMMENT ON COLUMN "public"."dinky_task_statement"."tenant_id" IS 'tenant id';
-COMMENT ON COLUMN "public"."dinky_task_statement"."statement" IS 'statement set';
-COMMENT ON TABLE "public"."dinky_task_statement" IS 'statement';
-
--- ----------------------------
--- Records of dinky_task_statement
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for dinky_task_version
