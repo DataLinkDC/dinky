@@ -36,6 +36,8 @@ export default {
   'button.edit': 'Edit',
   'button.start': 'Start',
   'button.stop': 'Stop',
+  'button.publish': 'Publish',
+  'button.offline': 'OffLine',
   'button.assignUser': 'Assign Users',
   'button.assignRole': 'Assign Role',
   'button.changePassword': 'Change Password',

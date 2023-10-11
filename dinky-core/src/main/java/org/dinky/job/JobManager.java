@@ -176,7 +176,7 @@ public class JobManager {
             useGateway = GatewayType.isDeployCluster(config.getType());
             handler = JobHandler.build();
         }
-        useStatementSet = config.isUseStatementSet();
+        useStatementSet = config.isStatementSet();
         useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
         executorConfig = config.getExecutorSetting();

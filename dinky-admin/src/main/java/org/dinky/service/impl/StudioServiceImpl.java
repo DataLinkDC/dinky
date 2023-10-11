@@ -22,179 +22,60 @@ package org.dinky.service.impl;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
-import org.dinky.context.RowLevelPermissionsContext;
-import org.dinky.data.dto.AbstractStatementDTO;
-import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
-import org.dinky.data.dto.StudioExecuteDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.Cluster;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.FlinkColumn;
-import org.dinky.data.model.RowPermissions;
-import org.dinky.data.model.Savepoints;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
-import org.dinky.data.model.Task;
 import org.dinky.data.result.DDLResult;
 import org.dinky.data.result.IResult;
+import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
-import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.gateway.model.FlinkClusterConfig;
-import org.dinky.gateway.model.JobInfo;
-import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
-import org.dinky.job.JobResult;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.enums.ProcessType;
 import org.dinky.process.model.ProcessEntity;
-import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
-import org.dinky.service.FragmentVariableService;
-import org.dinky.service.SavepointsService;
 import org.dinky.service.StudioService;
 import org.dinky.service.TaskService;
-import org.dinky.service.UserService;
 import org.dinky.sql.FlinkQuery;
 import org.dinky.utils.RunTimeUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.cache.Cache;
-import cn.hutool.cache.impl.TimedCache;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /** StudioServiceImpl */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StudioServiceImpl implements StudioService {
 
-    private static final Logger logger = LoggerFactory.getLogger(StudioServiceImpl.class);
-    /** Common sql query result cache */
-    private static final Cache<Integer, JdbcSelectResult> COMMON_SQL_SEARCH_CACHE =
-            new TimedCache<>(TimeUnit.MINUTES.toMillis(10));
-
     private final ClusterInstanceService clusterInstanceService;
-    private final ClusterConfigurationService clusterConfigurationService;
-    private final SavepointsService savepointsService;
     private final DataBaseService dataBaseService;
     private final TaskService taskService;
-    private final FragmentVariableService fragmentVariableService;
-    private final UserService userService;
-
-    private void addFlinkSQLEnv(AbstractStatementDTO statementDTO) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
-        process.info("Start initialize FlinkSQLEnv:");
-        if (statementDTO.isFragment()) {
-            process.config("Variable opened.");
-
-            // initialize global variables
-            process.info("Initializing global variables...");
-            statementDTO.setVariables(fragmentVariableService.listEnabledVariables());
-            process.infoSuccess();
-
-            // initialize database variables
-            process.info("Initializing database variables...");
-            String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
-            if (Asserts.isNotNullString(flinkWithSql)) {
-                statementDTO.setStatement(flinkWithSql + "\n" + statementDTO.getStatement());
-                process.infoSuccess();
-            } else {
-                process.info("No variables are loaded.");
-            }
-        }
-
-        // initialize flinksql environment, such as flink catalog
-        if (Asserts.isNotNull(statementDTO.getEnvId())
-                && !statementDTO.getEnvId().equals(0)) {
-            process.config("FlinkSQLEnv opened.");
-            process.info("Initializing FlinkSQLEnv...");
-            Task task = taskService.getTaskInfoById(statementDTO.getEnvId());
-            if (Asserts.isNotNull(task) && Asserts.isNotNullString(task.getStatement())) {
-                statementDTO.setStatement(task.getStatement() + "\n" + statementDTO.getStatement());
-                process.infoSuccess();
-            } else {
-                process.info("No FlinkSQLEnv are loaded.");
-            }
-        }
-
-        process.info("Initializing data permissions...");
-        List<RowPermissions> currentRoleSelectPermissions = userService.getCurrentRoleSelectPermissions();
-        if (Asserts.isNotNullCollection(currentRoleSelectPermissions)) {
-            ConcurrentHashMap<String, String> permission = new ConcurrentHashMap<>();
-            for (RowPermissions roleSelectPermissions : currentRoleSelectPermissions) {
-                if (Asserts.isAllNotNullString(
-                        roleSelectPermissions.getTableName(), roleSelectPermissions.getExpression())) {
-                    permission.put(roleSelectPermissions.getTableName(), roleSelectPermissions.getExpression());
-                }
-            }
-            RowLevelPermissionsContext.set(permission);
-        }
-        process.info("Finish initialize FlinkSQLEnv.");
-    }
-
-    private void buildSession(JobConfig config) {
-        // If you are using a shared session, configure the current jobManager address
-        if (!config.isUseSession()) {
-            config.setAddress(
-                    clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), config.getClusterId()));
-        }
-    }
-
-    @Override
-    public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
-        if (Dialect.notFlinkSql(studioExecuteDTO.getDialect())) {
-            JobResult jobResult = executeCommonSql(SqlDTO.build(
-                    studioExecuteDTO.getStatement(),
-                    studioExecuteDTO.getDatabaseId(),
-                    studioExecuteDTO.getMaxRowNum()));
-            COMMON_SQL_SEARCH_CACHE.put(studioExecuteDTO.getTaskId(), (JdbcSelectResult) jobResult.getResult());
-            return jobResult;
-        } else {
-            return executeFlinkSql(studioExecuteDTO);
-        }
-    }
-
-    private JobResult executeFlinkSql(StudioExecuteDTO studioExecuteDTO) {
-        ProcessEntity process = ProcessContextHolder.registerProcess(
-                ProcessEntity.init(ProcessType.FLINK_EXECUTE, StpUtil.getLoginIdAsInt()));
-        addFlinkSQLEnv(studioExecuteDTO);
-        process.info("Initializing Flink job config...");
-        JobConfig config = studioExecuteDTO.getJobConfig();
-        buildSession(config);
-        JobManager jobManager = JobManager.build(config);
-        process.start();
-        JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
-        process.finish("Execute Flink SQL succeed.");
-        RunTimeUtil.recovery(jobManager);
-        return jobResult;
-    }
 
     private IResult executeMSFlinkSql(StudioMetaStoreDTO studioMetaStoreDTO) {
-        addFlinkSQLEnv(studioMetaStoreDTO);
+        String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
+        studioMetaStoreDTO.setStatement(studioMetaStoreDTO.getStatement() + envSql);
         JobConfig config = studioMetaStoreDTO.getJobConfig();
         JobManager jobManager = JobManager.build(config);
         IResult jobResult = jobManager.executeDDL(studioMetaStoreDTO.getStatement());
@@ -203,146 +84,15 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public JobResult executeCommonSql(SqlDTO sqlDTO) {
-        ProcessEntity process = ProcessContextHolder.registerProcess(
-                ProcessEntity.init(ProcessType.SQL_EXECUTE, StpUtil.getLoginIdAsInt()));
-        JobResult result = new JobResult();
-        result.setStatement(sqlDTO.getStatement());
-        result.setStartTimeNow();
-        process.info("Initializing database connection...");
-        if (Asserts.isNull(sqlDTO.getDatabaseId())) {
-            result.setSuccess(false);
-            result.setError("please select a database.");
-            result.setEndTimeNow();
-            return result;
-        }
-        DataBase dataBase = dataBaseService.getById(sqlDTO.getDatabaseId());
-        if (Asserts.isNull(dataBase)) {
-            process.error("The database does not exist.");
-            result.setSuccess(false);
-            result.setError("The database does not exist.");
-            result.setEndTimeNow();
-            return result;
-        }
-        JdbcSelectResult selectResult;
-        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
-            process.infoSuccess();
-            process.start();
-            selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
-        }
-        process.finish("Execute sql succeed.");
-        result.setResult(selectResult);
-        if (selectResult.isSuccess()) {
-            result.setSuccess(true);
-        } else {
-            result.setSuccess(false);
-            result.setError(selectResult.getError());
-        }
-        result.setEndTimeNow();
-        return result;
+    public JdbcSelectResult getCommonSqlData(Integer taskId) {
+        return ResultPool.getCommonSqlCache(taskId);
     }
 
     @Override
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
-        if (!config.isUseSession()) {
-            config.setAddress(
-                    clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), studioDDLDTO.getClusterId()));
-        }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeDDL(studioDDLDTO.getStatement());
-    }
-
-    @Override
-    public List<SqlExplainResult> explainSql(StudioExecuteDTO studioExecuteDTO) {
-        if (Dialect.notFlinkSql(studioExecuteDTO.getDialect())) {
-            return explainCommonSql(studioExecuteDTO);
-        } else {
-            return explainFlinkSql(studioExecuteDTO);
-        }
-    }
-
-    private List<SqlExplainResult> explainFlinkSql(StudioExecuteDTO studioExecuteDTO) {
-        ProcessEntity process = ProcessContextHolder.registerProcess(
-                ProcessEntity.init(ProcessType.FLINK_EXPLAIN, StpUtil.getLoginIdAsInt()));
-        addFlinkSQLEnv(studioExecuteDTO);
-        process.info("Initializing Flink job config...");
-        JobConfig config = studioExecuteDTO.getJobConfig();
-        // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to
-        // local.
-        config.buildLocal();
-        buildSession(config);
-        JobManager jobManager = JobManager.build(config);
-        process.start();
-        List<SqlExplainResult> sqlExplainResults =
-                jobManager.explainSql(studioExecuteDTO.getStatement()).getSqlExplainResults();
-        process.finish();
-        return sqlExplainResults;
-    }
-
-    private List<SqlExplainResult> explainCommonSql(StudioExecuteDTO studioExecuteDTO) {
-        ProcessEntity process = ProcessContextHolder.registerProcess(
-                ProcessEntity.init(ProcessType.SQL_EXPLAIN, StpUtil.getLoginIdAsInt()));
-        process.info("Initializing database connection...");
-        if (Asserts.isNull(studioExecuteDTO.getDatabaseId())) {
-            process.error("The database does not exist.");
-            return Collections.singletonList(
-                    SqlExplainResult.fail(studioExecuteDTO.getStatement(), "Please specify the database."));
-        }
-
-        DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
-        if (Asserts.isNull(dataBase)) {
-            process.error("The database does not exist.");
-            return Collections.singletonList(
-                    SqlExplainResult.fail(studioExecuteDTO.getStatement(), "The database does not exist."));
-        }
-        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
-            process.infoSuccess();
-            process.start();
-            List<SqlExplainResult> explain = driver.explain(studioExecuteDTO.getStatement());
-            process.finish();
-            return explain;
-        }
-    }
-
-    @Override
-    public ObjectNode getStreamGraph(StudioExecuteDTO studioExecuteDTO) {
-        addFlinkSQLEnv(studioExecuteDTO);
-        JobConfig config = studioExecuteDTO.getJobConfig();
-        // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to
-        // local.
-        config.buildLocal();
-        buildSession(config);
-        JobManager jobManager = JobManager.buildPlanMode(config);
-        return jobManager.getStreamGraph(studioExecuteDTO.getStatement());
-    }
-
-    @Override
-    public ObjectNode getJobPlan(StudioExecuteDTO studioExecuteDTO) {
-        addFlinkSQLEnv(studioExecuteDTO);
-        JobConfig config = studioExecuteDTO.getJobConfig();
-        // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to
-        // local.
-        config.buildLocal();
-        buildSession(config);
-
-        JobManager jobManager = JobManager.build(config);
-
-        String planJson = jobManager.getJobPlanJson(studioExecuteDTO.getStatement());
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode objectNode = mapper.createObjectNode();
-        try {
-            objectNode = (ObjectNode) mapper.readTree(planJson);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        } finally {
-            return objectNode;
-        }
-    }
-
-    @Override
-    public JdbcSelectResult getCommonSqlData(Integer taskId) {
-        return COMMON_SQL_SEARCH_CACHE.get(taskId);
     }
 
     @Override
@@ -373,7 +123,8 @@ public class StudioServiceImpl implements StudioService {
                         studioCADTO.getStatement(), studioCADTO.getDialect().toLowerCase(), dataBase.getDriverConfig());
             }
         } else {
-            addFlinkSQLEnv(studioCADTO);
+            String envSql = taskService.buildEnvSql(studioCADTO);
+            studioCADTO.setStatement(studioCADTO.getStatement() + envSql);
             return LineageBuilder.getColumnLineageByLogicalPlan(studioCADTO.getStatement());
         }
     }
@@ -385,73 +136,15 @@ public class StudioServiceImpl implements StudioService {
         try {
             return FlinkAPI.build(cluster.getJobManagerHost()).listJobs();
         } catch (Exception e) {
-            logger.info("查询作业时集群不存在");
+            log.info("查询作业时集群不存在");
         }
         return new ArrayList<>();
     }
 
     @Override
-    public boolean cancelFlinkJob(Integer clusterId, String jobId) {
-        Cluster cluster = clusterInstanceService.getById(clusterId);
-        Asserts.checkNotNull(cluster, "该集群不存在");
-        JobConfig jobConfig = new JobConfig();
-        jobConfig.setAddress(cluster.getJobManagerHost());
-        if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
-            FlinkClusterConfig gatewayConfig =
-                    clusterConfigurationService.getFlinkClusterCfg(cluster.getClusterConfigurationId());
-            jobConfig.buildGatewayConfig(gatewayConfig);
-        }
-        JobManager jobManager = JobManager.build(jobConfig);
-        return jobManager.cancel(jobId);
-    }
-
-    @Override
-    public boolean savepointTrigger(
-            Integer taskId, Integer clusterId, String jobId, String savePointType, String name) {
-        Cluster cluster = clusterInstanceService.getById(clusterId);
-
-        Asserts.checkNotNull(cluster, "该集群不存在");
-        JobConfig jobConfig = new JobConfig();
-        jobConfig.setAddress(cluster.getJobManagerHost());
-        jobConfig.setType(cluster.getType());
-        if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
-            // 如果用户选择用dinky平台来托管集群信息 说明任务一定是从dinky发起提交的
-            FlinkClusterConfig gatewayConfig =
-                    clusterConfigurationService.getFlinkClusterCfg(cluster.getClusterConfigurationId());
-            jobConfig.buildGatewayConfig(gatewayConfig);
-            jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
-            jobConfig.setTaskId(cluster.getTaskId());
-        } else {
-            // 用户选择外部的平台来托管集群信息，但是集群上的任务不一定是通过dinky提交的
-            jobConfig.setTaskId(taskId);
-        }
-        JobManager jobManager = JobManager.build(jobConfig);
-
-        SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
-        if (Asserts.isNotNull(savePointResult)) {
-            if (jobConfig.getTaskId().equals(0)) {
-                return true;
-            }
-
-            for (JobInfo item : savePointResult.getJobInfos()) {
-                if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId()) && Asserts.isNotNull(jobConfig.getTaskId())) {
-                    Savepoints savepoints = new Savepoints();
-                    savepoints.setName(name);
-                    savepoints.setType(savePointType);
-                    savepoints.setPath(item.getSavePoint());
-                    savepoints.setTaskId(jobConfig.getTaskId());
-                    savepointsService.save(savepoints);
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public List<Catalog> getMSCatalogs(StudioMetaStoreDTO studioMetaStoreDTO) {
         List<Catalog> catalogs = new ArrayList<>();
-        if (Dialect.notFlinkSql(studioMetaStoreDTO.getDialect())) {
+        if (Dialect.isCommonSql(studioMetaStoreDTO.getDialect())) {
             DataBase dataBase = dataBaseService.getById(studioMetaStoreDTO.getDatabaseId());
             if (!Asserts.isNull(dataBase)) {
                 Catalog defaultCatalog = Catalog.build(FlinkQuery.defaultCatalog());
@@ -496,7 +189,7 @@ public class StudioServiceImpl implements StudioService {
     public Schema getMSSchemaInfo(StudioMetaStoreDTO studioMetaStoreDTO) {
         Schema schema = Schema.build(studioMetaStoreDTO.getDatabase());
         List<Table> tables = new ArrayList<>();
-        if (Dialect.notFlinkSql(studioMetaStoreDTO.getDialect())) {
+        if (Dialect.isCommonSql(studioMetaStoreDTO.getDialect())) {
             DataBase dataBase = dataBaseService.getById(studioMetaStoreDTO.getDatabaseId());
             if (Asserts.isNotNull(dataBase)) {
                 Driver driver = Driver.build(dataBase.getDriverConfig());
@@ -539,7 +232,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public List<FlinkColumn> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO) {
         List<FlinkColumn> columns = new ArrayList<>();
-        if (!Dialect.notFlinkSql(studioMetaStoreDTO.getDialect())) {
+        if (!Dialect.isCommonSql(studioMetaStoreDTO.getDialect())) {
             String baseStatement = FlinkQuery.useCatalog(studioMetaStoreDTO.getCatalog())
                     + FlinkQuery.separator()
                     + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase())

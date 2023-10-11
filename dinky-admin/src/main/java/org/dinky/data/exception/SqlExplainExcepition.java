@@ -17,22 +17,12 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.data.exception;
 
-import org.dinky.data.dto.TaskDTO;
-import org.dinky.data.model.TaskVersion;
-import org.dinky.mybatis.service.ISuperService;
+import org.dinky.process.exception.ExcuteException;
 
-import java.util.List;
-
-public interface TaskVersionService extends ISuperService<TaskVersion> {
-
-    /**
-     * @description 通过作业Id查询版本数据
-     * @param taskId
-     * @return java.util.List<org.dinky.data.model.TaskVersion>
-     */
-    List<TaskVersion> getTaskVersionByTaskId(Integer taskId);
-
-    void createTaskVersionSnapshot(TaskDTO task);
+public class SqlExplainExcepition extends ExcuteException {
+    public SqlExplainExcepition(String message) {
+        super(message);
+    }
 }

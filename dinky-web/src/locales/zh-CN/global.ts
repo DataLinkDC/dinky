@@ -19,7 +19,7 @@
 
 export default {
   'button.check': '检查',
-  'button.graph': '图',
+  'button.graph': 'DAG',
   'button.create': '新建',
   'button.recovery': '恢复',
   'button.close': '关闭',
@@ -38,6 +38,8 @@ export default {
   'button.edit': '编辑',
   'button.start': '启动',
   'button.stop': '停止',
+  'button.publish': '发布',
+  'button.offline': '下线',
   'button.assignUser': '分配用户',
   'button.assignRole': '分配角色',
   'button.changePassword': '修改密码',

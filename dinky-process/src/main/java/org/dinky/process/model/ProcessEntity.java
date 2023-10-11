@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.text.StrFormatter;
 
 /**
  * Process
@@ -163,6 +164,10 @@ public class ProcessEntity {
         ConsolePool.write(message, userId);
     }
 
+    public void info(String strPattern, Object... argArray) {
+        info(StrFormatter.format(strPattern, argArray));
+    }
+
     public void infoSuccess() {
         if (isNullProcess()) {
             return;
@@ -187,6 +192,10 @@ public class ProcessEntity {
         steps.get(stepIndex - 1).appendInfo(message);
         steps.get(stepIndex - 1).appendError(message);
         ConsolePool.write(message, userId);
+    }
+
+    public void error(String strPattern, Object... argArray) {
+        error(StrFormatter.format(strPattern, argArray));
     }
 
     public void nextStep() {

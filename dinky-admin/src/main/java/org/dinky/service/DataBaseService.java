@@ -19,11 +19,15 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.SqlDTO;
+import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
+import org.dinky.data.result.SqlExplainResult;
+import org.dinky.job.JobResult;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -136,4 +140,8 @@ public interface DataBaseService extends ISuperService<DataBase> {
      * @return {@link Boolean}
      */
     Boolean copyDatabase(DataBase database);
+
+    List<SqlExplainResult> explainCommonSql(TaskDTO task);
+
+    JobResult executeCommonSql(SqlDTO sqlDTO);
 }

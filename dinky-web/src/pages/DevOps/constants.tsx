@@ -17,12 +17,8 @@
 
 export enum JOB_LIFE_CYCLE {
   UNKNOWN = 0,
-  CREATE = 1,
-  DEVELOP = 2,
-  DEBUG = 3,
-  RELEASE = 4,
-  ONLINE = 5,
-  CANCEL = 6
+  DEVELOP = 1,
+  ONLINE = 2
 }
 
 export enum JOB_STATUS {

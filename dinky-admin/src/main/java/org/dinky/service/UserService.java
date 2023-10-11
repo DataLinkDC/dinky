@@ -149,6 +149,8 @@ public interface UserService extends ISuperService<User> {
      */
     List<RowPermissions> getCurrentRoleSelectPermissions();
 
+    void buildRowPermission();
+
     /** user loginout */
     void outLogin();
 

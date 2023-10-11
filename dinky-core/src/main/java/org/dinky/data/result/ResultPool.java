@@ -19,6 +19,8 @@
 
 package org.dinky.data.result;
 
+import org.dinky.metadata.result.JdbcSelectResult;
+
 import java.util.concurrent.TimeUnit;
 
 import cn.hutool.cache.Cache;
@@ -33,6 +35,8 @@ public final class ResultPool {
 
     private ResultPool() {}
 
+    private static final Cache<Integer, JdbcSelectResult> COMMON_SQL_SEARCH_CACHE =
+            new TimedCache<>(TimeUnit.MINUTES.toMillis(10));
     private static final Cache<String, SelectResult> results = new TimedCache<>(TimeUnit.MINUTES.toMillis(10));
 
     public static boolean containsKey(String key) {
@@ -41,6 +45,14 @@ public final class ResultPool {
 
     public static void put(SelectResult result) {
         results.put(result.getJobId(), result);
+    }
+
+    public static void putCommonSqlCache(Integer taskId, JdbcSelectResult result) {
+        COMMON_SQL_SEARCH_CACHE.put(taskId, result);
+    }
+
+    public static JdbcSelectResult getCommonSqlCache(Integer taskId) {
+        return COMMON_SQL_SEARCH_CACHE.get(taskId);
     }
 
     public static SelectResult get(String key) {

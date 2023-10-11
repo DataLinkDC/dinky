@@ -21,6 +21,8 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.dto.SqlDTO;
+import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
@@ -28,6 +30,8 @@ import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
 import org.dinky.data.model.Table;
+import org.dinky.data.result.SqlExplainResult;
+import org.dinky.job.JobResult;
 import org.dinky.mapper.DataBaseMapper;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -38,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -239,5 +244,60 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
                 + name);
         database.setCreateTime(null);
         return this.save(database);
+    }
+
+    @Override
+    public List<SqlExplainResult> explainCommonSql(TaskDTO task) {
+        if (Asserts.isNull(task.getDatabaseId())) {
+            return Collections.singletonList(SqlExplainResult.fail(task.getStatement(), "please assign data source."));
+        }
+
+        DataBase dataBase = getById(task.getDatabaseId());
+        if (Asserts.isNull(dataBase)) {
+            return Collections.singletonList(SqlExplainResult.fail(task.getStatement(), "data source not exist."));
+        }
+
+        List<SqlExplainResult> sqlExplainResults;
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            sqlExplainResults = driver.explain(task.getStatement());
+        }
+        return sqlExplainResults;
+    }
+
+    @Override
+    public JobResult executeCommonSql(SqlDTO sqlDTO) {
+        JobResult result = new JobResult();
+        result.setStatement(sqlDTO.getStatement());
+        result.setStartTime(LocalDateTime.now());
+
+        if (Asserts.isNull(sqlDTO.getDatabaseId())) {
+            result.setSuccess(false);
+            result.setError("please assign data source");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
+
+        DataBase dataBase = getById(sqlDTO.getDatabaseId());
+        if (Asserts.isNull(dataBase)) {
+            result.setSuccess(false);
+            result.setError("data source not exist.");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
+
+        JdbcSelectResult selectResult;
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
+        }
+
+        result.setResult(selectResult);
+        if (selectResult.isSuccess()) {
+            result.setSuccess(true);
+        } else {
+            result.setSuccess(false);
+            result.setError(selectResult.getError());
+        }
+        result.setEndTime(LocalDateTime.now());
+        return result;
     }
 }
