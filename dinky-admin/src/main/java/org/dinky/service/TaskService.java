@@ -101,4 +101,7 @@ public interface TaskService extends ISuperService<Task> {
     List<JobTypeOverView> getTaskOnlineRate();
 
     JobModelOverview getJobStreamingOrBatchModelOverview();
+
+    List<String> getPrintTables(String statement);
+
 }

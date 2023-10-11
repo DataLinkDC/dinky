@@ -11,7 +11,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 
 export async function getPrintTables(statement: string) {
-  return postAll('api/statement/getPrintTables', { statement });
+  return postAll('api/task/getPrintTables', { statement });
 }
 
 /*--- Clear Console ---*/
