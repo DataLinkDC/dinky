@@ -815,7 +815,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return treeNodes;
     }
 
-
     @Override
     public List<String> getPrintTables(String statement) {
         // TODO: 2023/4/7 this function not support variable sql, because, JobManager and executor
