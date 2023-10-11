@@ -183,6 +183,7 @@ const DataStudio = (props: any) => {
         console.log('changed', key, info[key], params.taskData[key]);
         return true;
       }
+      return false;
     });
 
     if (changed) {
