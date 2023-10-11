@@ -65,10 +65,8 @@ const ResourceOverView: React.FC = () => {
       return node;
     });
 
-  const refreshTreeData = async (pid: number, path: string) => {
-    const data = await queryDataByParams<any[]>(API_CONSTANTS.RESOURCE_SHOW_TREE, {
-      pid: pid
-    });
+  const refreshTreeData = async (path: string) => {
+    const data = await queryDataByParams<any[]>(API_CONSTANTS.RESOURCE_SHOW_TREE);
     setResourceState((prevState) => ({
       ...prevState,
       treeData: updateTreeData(prevState.treeData, path, data ?? [])
@@ -76,7 +74,7 @@ const ResourceOverView: React.FC = () => {
   };
 
   const refreshTree = async () => {
-    await queryDataByParams<any[]>(API_CONSTANTS.RESOURCE_SHOW_TREE, { pid: -1 }).then((res) =>
+    await queryDataByParams<any[]>(API_CONSTANTS.RESOURCE_SHOW_TREE).then((res) =>
       setResourceState((prevState) => ({ ...prevState, treeData: res ?? [] }))
     );
   };
@@ -286,7 +284,7 @@ const ResourceOverView: React.FC = () => {
     if (children.length > 0) {
       return;
     }
-    await refreshTreeData(id, path);
+    await refreshTreeData(path);
   };
 
   const access = useAccess();

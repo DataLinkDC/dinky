@@ -265,7 +265,7 @@ export enum API_CONSTANTS {
   FLINK_TABLE_DATA = '/api/subscribe/print',
 
   // resource
-  RESOURCE_SHOW_TREE = '/api/resource/showByTree',
+  RESOURCE_SHOW_TREE = '/api/resource/getResourcesTreeData',
   RESOURCE_GET_CONTENT_BY_ID = '/api/resource/getContentByResourceId',
   RESOURCE_REMOVE = '/api/resource/remove',
   RESOURCE_CREATE_FOLDER = '/api/resource/createFolder',

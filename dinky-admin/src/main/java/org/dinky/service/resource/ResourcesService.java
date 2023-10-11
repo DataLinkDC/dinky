@@ -21,6 +21,7 @@ package org.dinky.service.resource;
 
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.Resources;
+import org.dinky.data.result.Result;
 
 import java.util.List;
 
@@ -61,4 +62,10 @@ public interface ResourcesService extends IService<Resources> {
      * @return data
      */
     List<Resources> getResourceByPidToChildren(List<Resources> resourcesList, Integer pid);
+
+    /**
+     * query Resources tree data
+     * @return {@link Result}< {@link List}< {@link Resources}>>}
+     */
+    List<Resources> getResourcesTree();
 }

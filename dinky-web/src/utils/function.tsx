@@ -444,12 +444,12 @@ export function differenceDays(startDateString: any, endDateString: any): number
 export const buildTreeData = (data: any): any =>
   data?.map((item: any) => {
     // build key
-    let buildKey = item.path + folderSeparator() + item.name;
+    let buildKey = item.path + folderSeparator() + item.fileName;
 
     const buildTitleLabel = () => {
       return (
         <>
-          {item.name}
+          {item.fileName}
           <span style={{ color: 'gray' }}>
             {' '}
             &nbsp;&nbsp;{l('global.size', '', { size: item.size })}
@@ -461,13 +461,13 @@ export const buildTreeData = (data: any): any =>
     // if has children , recursive build
     if (item.children) {
       return {
-        isLeaf: !item.leaf,
+        isLeaf: item.leaf,
         id: item?.id,
-        name: item.name,
-        parentId: item.path ?? item.parentId,
-        icon: renderIcon(item.name, '.', item.leaf),
+        fileName: item.fileName,
+        parentId: item.path ?? item.pid,
+        icon: renderIcon(item.fileName, '.', item.leaf),
         content: item.content,
-        path: item.path,
+        path: item.fullName,
         fullName: item?.fullName,
         title: buildTitleLabel(),
         desc: item?.desc ?? item?.description,
