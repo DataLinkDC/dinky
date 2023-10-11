@@ -23,17 +23,14 @@ import { HomeOutlined } from '@ant-design/icons';
 
 /**
  * @description: 生成面包屑
- * @type {({title: JSX.Element} | {title: string})[]}
  */
 export const buildBreadcrumbItems = (breadcrumb: string) => {
-  const items = [{ title: <HomeOutlined /> }];
-
   // 如果有 activeBreadcrumbTitle, 则切割 activeBreadcrumbTitle, 生成面包屑数组, 并映射
   const activeBreadcrumbTitleList = Array.from(breadcrumb.split('/')).map((title) => ({
     title: <>{title}</>
   }));
-  items.push(...activeBreadcrumbTitleList);
-  return items;
+
+  return [{ title: <HomeOutlined /> }, ...activeBreadcrumbTitleList];
 };
 
 export const projectCommonShow = (type?: TabsPageType) => {
@@ -41,15 +38,9 @@ export const projectCommonShow = (type?: TabsPageType) => {
 };
 
 export const isOnline = (data: TaskDataType | undefined) => {
-  if (data) {
-    return JOB_LIFE_CYCLE.ONLINE == data.step;
-  }
-  return false;
+  return data ? JOB_LIFE_CYCLE.ONLINE == data.step : false;
 };
 
 export const isRunning = (data: TaskDataType | undefined) => {
-  if (data) {
-    return JOB_STATUS.RUNNING == data.status;
-  }
-  return false;
+  return data ? JOB_STATUS.RUNNING == data.status : false;
 };

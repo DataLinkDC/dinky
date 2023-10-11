@@ -30,7 +30,7 @@ const MetricsConfigTab = (props: any) => {
   const jobId = jobDetail.jobDataDto.job?.jid;
 
   const { data } = useRequest({
-    url: API_CONSTANTS.GET_JOB_MERTICE_ITEMS,
+    url: API_CONSTANTS.GET_JOB_METRICS_ITEMS,
     params: { address: jobManagerUrl, jobId: jobId, verticeId: vertice.id }
   });
 

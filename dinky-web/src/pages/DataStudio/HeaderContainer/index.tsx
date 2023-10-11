@@ -56,7 +56,7 @@ import {
   FundOutlined,
   MergeCellsOutlined,
   MoreOutlined,
-  PauseOutlined, PlayCircleTwoTone,
+  PauseOutlined,
   RotateRightOutlined,
   SaveOutlined,
   ScheduleOutlined,
