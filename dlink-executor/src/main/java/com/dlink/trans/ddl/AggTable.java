@@ -33,6 +33,7 @@ import java.util.Map;
  * @since 2021/6/13 20:32
  */
 public class AggTable {
+
     private String statement;
     private String name;
     private String columns;
@@ -41,7 +42,8 @@ public class AggTable {
     private String groupBy;
     private String aggBy;
 
-    public AggTable(String statement, String name, String columns, String table, List<String> wheres, String groupBy, String aggBy) {
+    public AggTable(String statement, String name, String columns, String table, List<String> wheres, String groupBy,
+            String aggBy) {
         this.statement = statement;
         this.name = name;
         this.columns = columns;
@@ -64,6 +66,18 @@ public class AggTable {
 
     private static String getString(Map<String, List<String>> map, String key) {
         return StringUtils.join(map.get(key), ",");
+    }
+
+    public String getAggByFunction() {
+        return aggBy.substring(0, aggBy.indexOf("(")).trim();
+    }
+
+    public String getAggByFunctionParam() {
+        return aggBy.substring(aggBy.indexOf("(") + 1, aggBy.indexOf(")")).trim();
+    }
+
+    public String getAggByFunctionASField() {
+        return aggBy.substring(aggBy.lastIndexOf("(") + 1, aggBy.lastIndexOf(")")).trim();
     }
 
     public String getStatement() {

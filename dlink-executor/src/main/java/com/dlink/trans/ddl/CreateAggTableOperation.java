@@ -20,11 +20,14 @@
 package com.dlink.trans.ddl;
 
 import static org.apache.flink.table.api.Expressions.$;
+import static org.apache.flink.table.api.Expressions.call;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.executor.Executor;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
 
+import org.apache.flink.table.api.ApiExpression;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;
 
@@ -62,15 +65,51 @@ public class CreateAggTableOperation extends AbstractOperation implements Operat
         AggTable aggTable = AggTable.build(statement);
         Table source = executor.getCustomTableEnvironment().sqlQuery("select * from " + aggTable.getTable());
         List<String> wheres = aggTable.getWheres();
-        if (wheres != null && wheres.size() > 0) {
-            for (String s : wheres) {
-                source = source.filter($(s));
+        if (Asserts.isNotNullCollection(wheres)) {
+            for (String where : wheres) {
+                source = source.filter($(where));
             }
         }
-        Table sink = source.groupBy($(aggTable.getGroupBy()))
-                .flatAggregate($(aggTable.getAggBy()))
-                .select($(aggTable.getColumns()));
-        executor.getCustomTableEnvironment().registerTable(aggTable.getName(), sink);
+        // Table API: call("Top2", $("score")).as("score", "rank");
+        // Flink SQL: AGG BY TOP2(score) AS (score,rank)
+        ApiExpression udtafExpression = call(aggTable.getAggByFunction());
+        ApiExpression[] params = translateApiExpressionArray(aggTable.getAggByFunctionParam());
+        if (params.length > 0) {
+            udtafExpression = call(aggTable.getAggByFunction(), params);
+        }
+
+        ApiExpression[] columns = translateApiExpressionArray(aggTable.getColumns());
+        String[] names = aggTable.getAggByFunctionASField().split(",");
+        if (names.length == 1) {
+            source = source.groupBy($(aggTable.getGroupBy())).flatAggregate(udtafExpression.as(names[0]))
+                    .select(columns);
+        } else if (names.length > 1) {
+            String[] extraNames = new String[names.length - 1];
+            System.arraycopy(names, 1, extraNames, 0, extraNames.length);
+            source = source.groupBy($(aggTable.getGroupBy())).flatAggregate(udtafExpression.as(names[0], extraNames))
+                    .select(columns);
+        } else {
+            source = source.groupBy($(aggTable.getGroupBy())).flatAggregate(udtafExpression).select(columns);
+        }
+
+        if (columns.length > 0) {
+            executor.getCustomTableEnvironment().registerTable(aggTable.getName(), source);
+        }
+
         return null;
+    }
+
+    private static ApiExpression[] translateApiExpressionArray(String str) {
+        String[] strs = str.split(",");
+        ApiExpression[] apiExpressions = new ApiExpression[strs.length];
+        for (int i = 0; i < strs.length; i++) {
+            String item = strs[i].trim();
+            apiExpressions[i] = $(item);
+            // Flink 1.11 not supports callSql
+            /*
+             * if (item.contains("'")) { apiExpressions[i] = callSql(item); } else { apiExpressions[i] = $(item); }
+             */
+        }
+        return apiExpressions;
     }
 }

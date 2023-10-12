@@ -55,6 +55,11 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
+            <artifactId>dlink-function</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
             <artifactId>dlink-metadata-mysql</artifactId>
             <scope>test</scope>
         </dependency>
