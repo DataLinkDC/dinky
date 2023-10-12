@@ -29,5 +29,12 @@ import org.dinky.mybatis.service.ISuperService;
  */
 public interface HistoryService extends ISuperService<History> {
 
+    /**
+     * Remove the history of a Git project based on its ID.
+     *
+     * @param id The ID of the Git project to remove the history for.
+     * @return A boolean value indicating whether the removal was successful.
+     */
+    @Deprecated
     boolean removeHistoryById(Integer id);
 }

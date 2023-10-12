@@ -38,5 +38,6 @@ public interface TokenService extends ISuperService<SysToken> {
      * @param token token
      * @return add or update code
      */
+    @Deprecated
     boolean saveOrUpdateSysToken(SysToken token);
 }

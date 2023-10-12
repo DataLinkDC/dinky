@@ -41,7 +41,7 @@ import java.util.List;
 public interface UserService extends ISuperService<User> {
 
     /**
-     * registerUser
+     * register user
      *
      * @param user user
      * @return {@link Result}<{@link Void}>
@@ -49,7 +49,7 @@ public interface UserService extends ISuperService<User> {
     Result<Void> registerUser(User user);
 
     /**
-     * modifyUser
+     * modify user
      *
      * @param user user
      * @return {@link Boolean}
@@ -57,7 +57,7 @@ public interface UserService extends ISuperService<User> {
     Boolean modifyUser(User user);
 
     /**
-     * modifyPassword
+     * modify password
      *
      * @param modifyPasswordDTO {@link ModifyPasswordDTO}
      * @return {@link Result}<{@link Void}>
@@ -65,7 +65,7 @@ public interface UserService extends ISuperService<User> {
     Result<Void> modifyPassword(ModifyPasswordDTO modifyPasswordDTO);
 
     /**
-     * removeUser
+     * remove user
      *
      * @param id id
      * @return {@link Boolean}
@@ -73,7 +73,7 @@ public interface UserService extends ISuperService<User> {
     Boolean removeUser(Integer id);
 
     /**
-     * loginUser
+     * login user
      *
      * @param loginDTO basic information for user login
      * @return {@link Result}{@link UserDTO} obtain the user's UserDTO
@@ -81,7 +81,7 @@ public interface UserService extends ISuperService<User> {
     Result<UserDTO> loginUser(LoginDTO loginDTO);
 
     /**
-     * getUserByUsername
+     * get user by username
      *
      * @param username username
      * @return {@link User}
@@ -89,7 +89,7 @@ public interface UserService extends ISuperService<User> {
     User getUserByUsername(String username);
 
     /**
-     * grantRole
+     * grant role
      *
      * @param assignRoleParams {@link AssignRoleParams}
      * @return {@link Result}<{@link Void}>
@@ -133,6 +133,7 @@ public interface UserService extends ISuperService<User> {
      * @param id
      * @return {@link Boolean}
      */
+    @Deprecated
     Boolean checkTenantAdmin(Integer id);
 
     /**
@@ -149,9 +150,16 @@ public interface UserService extends ISuperService<User> {
      */
     List<RowPermissions> getCurrentRoleSelectPermissions();
 
+    /**
+     * Builds row-level permissions.
+     *
+     */
     void buildRowPermission();
 
-    /** user loginout */
+    /**
+     * User logout function.
+     *
+     */
     void outLogin();
 
     /**
@@ -162,15 +170,36 @@ public interface UserService extends ISuperService<User> {
     List<Integer> getUserIdsByTenantId(int id);
 
     /**
-     * get user list by tenant id
+     * Returns a list of users based on the provided tenant id.
      *
-     * @return role select permissions list
+     * @param id The id of the tenant.
+     * @return A list of users that belong to the tenant with the provided id.
      */
     List<User> getUserListByTenantId(int id);
 
+    /**
+     * Modifies the user's role permissions based on the provided parameters.
+     *
+     * @param userId The id of the user to modify.
+     * @param tenantId The id of the tenant to modify.
+     * @param tenantAdminFlag Whether the user should be a tenant admin.
+     * @return A result object indicating the success or failure of the operation.
+     */
     Result<Void> modifyUserToTenantAdmin(Integer userId, Integer tenantId, Boolean tenantAdminFlag);
 
+    /**
+     * Restores a user's account to its original status after it has been disabled or locked.
+     *
+     * @param userId The id of the user to restore.
+     * @return A result object indicating the success or failure of the operation.
+     */
     Result<Void> recoveryUser(Integer userId);
 
+    /**
+     * Resets a user's password to a new value.
+     *
+     * @param userId The id of the user to reset password.
+     * @return A result object containing the user's new password.
+     */
     Result<UserVo> resetPassword(Integer userId);
 }

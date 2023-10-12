@@ -50,10 +50,8 @@ public class RoleMenuController {
     /**
      * assign menus to role
      *
-     * @param roleId
-     * @param menus
+     * @param assignMenuToRoleDto
      * @return {@link Result} with {@link Void}
-     * @throws Exception {@link Exception}
      */
     @PostMapping("assignMenuToRole")
     @Log(title = "Assign Menus to Role ", businessType = BusinessType.GRANT)
