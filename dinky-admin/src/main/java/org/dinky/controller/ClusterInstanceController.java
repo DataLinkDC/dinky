@@ -27,7 +27,6 @@ import org.dinky.data.model.Cluster;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.ClusterInstanceService;
-import org.dinky.service.JobInstanceService;
 
 import java.util.List;
 
@@ -60,7 +59,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ClusterInstanceController {
 
     private final ClusterInstanceService clusterInstanceService;
-    private final JobInstanceService jobInstanceService;
 
     /**
      * added or updated cluster instance

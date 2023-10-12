@@ -49,6 +49,7 @@ public interface UserRoleService extends ISuperService<UserRole> {
      * @param userRoleList
      * @return
      */
+    @Deprecated
     int deleteBathRelation(List<UserRole> userRoleList);
 
     /**
@@ -57,6 +58,7 @@ public interface UserRoleService extends ISuperService<UserRole> {
      * @param roleIds role id
      * @return
      */
+    @Deprecated
     boolean deleteByRoleIds(List<Integer> roleIds);
 
     /**
