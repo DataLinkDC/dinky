@@ -1,10 +1,12 @@
-import { getCurrentData } from '@/pages/DataStudio/function';
+import {getCurrentData, getCurrentTab} from '@/pages/DataStudio/function';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import { connect } from '@@/exports';
 import { Editor } from '@monaco-editor/react';
 import { never } from '@umijs/utils/compiled/zod';
 import { editor } from 'monaco-editor';
 import React from 'react';
+import {JOB_LIFE_CYCLE} from "@/pages/DevOps/constants";
+import {l} from "@/utils/intl";
 
 export type EditorProps = {
   statement: string;
@@ -17,6 +19,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
     dispatch
   } = props;
   const current = getCurrentData(panes, activeKey);
+  const currentTab = getCurrentTab(panes, activeKey);
 
   return (
     <>
@@ -26,6 +29,8 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
         value={statement}
         language={'sql'}
         options={{
+          readOnlyMessage:{value:l('pages.datastudio.editor.onlyread')},
+          readOnly: current?.step == JOB_LIFE_CYCLE.ONLINE,
           scrollBeyondLastLine: false,
           wordWrap: 'on',
           autoDetectHighContrast: true,
@@ -65,11 +70,13 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
           });
         }}
         onChange={(v) => {
-          if (!current) {
+          if (!current || !currentTab) {
             return;
           }
 
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
           typeof v === 'string' ? (current.statement = v) : never;
+          currentTab.isModified = true;
           dispatch({
             type: STUDIO_MODEL.saveTabs,
             payload: { ...props.tabs }
@@ -78,16 +85,6 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
         theme={'vs-dark'}
       />
 
-      {/*<CodeEdit code={statement} language={"sql"}*/}
-      {/*          onChange={(v,d) => {*/}
-      {/*            current.statement = v;*/}
-      {/*            dispatch({*/}
-      {/*              type: STUDIO_MODEL.saveTabs,*/}
-      {/*              payload: {...props.tabs},*/}
-      {/*            });*/}
-
-      {/*          }}*/}
-      {/*/>*/}
     </>
   );
 };
