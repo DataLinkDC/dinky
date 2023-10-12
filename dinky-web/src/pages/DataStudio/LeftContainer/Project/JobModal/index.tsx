@@ -70,7 +70,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
   };
 
   useEffect(() => {
-    isUDF(jobType) && queryUdfTemplate();
+    if(isUDF(jobType)) queryUdfTemplate();
   }, [jobType, form]);
 
   /**
@@ -102,7 +102,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     onSubmit({ ...values, ...formData } as Catalogue);
   };
 
-  const renderForm = () => {
+  const RenderForm = () => {
     return (
       <>
         <ProFormSelect
@@ -110,6 +110,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
           label={l('catalog.type')}
           tooltip={l('catalog.type.tip')}
           options={JOB_TYPE}
+          initialValue={JOB_TYPE[0]['options'][0]['value']}
           disabled={!!values.id}
           placeholder={l('catalog.type.placeholder')}
           rules={[{ required: true, message: l('catalog.type.placeholder') }]}
@@ -163,7 +164,6 @@ const JobModal: React.FC<JobModalProps> = (props) => {
   };
 
   return (
-    <>
       <ModalForm<Catalogue>
         title={title}
         form={form}
@@ -180,9 +180,8 @@ const JobModal: React.FC<JobModalProps> = (props) => {
         }}
         onFinish={async (values) => submitForm(values)}
       >
-        {renderForm()}
+        {RenderForm()}
       </ModalForm>
-    </>
   );
 };
 
