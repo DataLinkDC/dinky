@@ -21,7 +21,6 @@ package com.dlink.trans.ddl;
 
 import static org.apache.flink.table.api.Expressions.$;
 import static org.apache.flink.table.api.Expressions.call;
-import static org.apache.flink.table.api.Expressions.callSql;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.executor.Executor;
@@ -105,11 +104,11 @@ public class CreateAggTableOperation extends AbstractOperation implements Operat
         ApiExpression[] apiExpressions = new ApiExpression[strs.length];
         for (int i = 0; i < strs.length; i++) {
             String item = strs[i].trim();
-            if (item.contains("'")) {
-                apiExpressions[i] = callSql(strs[i].trim());
-            } else {
-                apiExpressions[i] = $(strs[i].trim());
-            }
+            apiExpressions[i] = $(item);
+            // Flink 1.11 not supports callSql
+            /*
+             * if (item.contains("'")) { apiExpressions[i] = callSql(item); } else { apiExpressions[i] = $(item); }
+             */
         }
         return apiExpressions;
     }
