@@ -103,6 +103,7 @@ export type TaskDataBaseType = {
   id: number;
   name: string;
   statement: string;
+  step: number;
 };
 
 export type TaskDataType = TaskDataBaseType & Record<string, any>;
