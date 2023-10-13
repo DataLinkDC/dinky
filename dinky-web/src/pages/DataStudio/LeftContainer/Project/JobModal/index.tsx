@@ -70,7 +70,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
   };
 
   useEffect(() => {
-    if(isUDF(jobType)) queryUdfTemplate();
+    if (isUDF(jobType)) queryUdfTemplate();
   }, [jobType, form]);
 
   /**
@@ -164,24 +164,24 @@ const JobModal: React.FC<JobModalProps> = (props) => {
   };
 
   return (
-      <ModalForm<Catalogue>
-        title={title}
-        form={form}
-        width={'30%'}
-        initialValues={{ ...values }}
-        open={modalVisible}
-        layout={'horizontal'}
-        autoFocusFirstInput
-        onValuesChange={onValuesChange}
-        modalProps={{
-          destroyOnClose: true,
-          maskClosable: false,
-          onCancel: handleCancel
-        }}
-        onFinish={async (values) => submitForm(values)}
-      >
-        {RenderForm()}
-      </ModalForm>
+    <ModalForm<Catalogue>
+      title={title}
+      form={form}
+      width={'30%'}
+      initialValues={{ ...values }}
+      open={modalVisible}
+      layout={'horizontal'}
+      autoFocusFirstInput
+      onValuesChange={onValuesChange}
+      modalProps={{
+        destroyOnClose: true,
+        maskClosable: false,
+        onCancel: handleCancel
+      }}
+      onFinish={async (values) => submitForm(values)}
+    >
+      {RenderForm()}
+    </ModalForm>
   );
 };
 

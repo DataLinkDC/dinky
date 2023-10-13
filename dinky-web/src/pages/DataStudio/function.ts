@@ -162,8 +162,10 @@ export const getCurrentData = (
 
 export const getFooterValue = (panes: any, activeKey: string): Partial<FooterType> => {
   const currentTab = getCurrentTab(panes, activeKey);
-  return isDataStudioTabsItemType(currentTab) ? {
-    codePosition: [1, 1],
-    codeType: currentTab.params.taskData.dialect
-  } : {};
+  return isDataStudioTabsItemType(currentTab)
+    ? {
+        codePosition: [1, 1],
+        codeType: currentTab.params.taskData.dialect
+      }
+    : {};
 };

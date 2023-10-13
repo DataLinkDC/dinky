@@ -52,8 +52,8 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
   const [itemChildren, setItemChildren] = useState({ [key]: [] as TabsProps['items'] });
 
   const checkpointArray = ((checkPoints.history ?? []) as any[])
-    .filter(x => x.status === 'COMPLETED')
-    .map(x => {
+    .filter((x) => x.status === 'COMPLETED')
+    .map((x) => {
       return { checkpointType: x.checkpoint_type, path: x.external_path, id: x.id };
     });
 
@@ -66,43 +66,45 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
       return;
     }
 
-    getData(API_CONSTANTS.READ_CHECKPOINT, {path: selectPath, operatorId: id}).then(
-      res => {
-        const genData = Object.keys(res.datas).map(x => {
-          const datum = res.datas[x];
-          return {
-            key: x,
-            label: x,
-            children: <Tabs
-                items={Object.keys(datum).map((y) => {
-                  return {
-                    key: y,
-                    label: y,
-                    children: <Table
-                        dataSource={datum[y].datas}
-                        columns={(datum[y].headers as string[]).map((z) => {
-                          return {
-                            title: z,
-                            dataIndex: z,
-                            key: z,
-                            render: text => (
-                              <Paragraph copyable ellipsis={{rows: 3}}>
-                                {text}
-                              </Paragraph>
-                            )
-                          };
-                        })}
-                      />
-                  };
-                })}
-                tabBarStyle={{marginBlock: 0}}
-                tabBarGutter={10}
-              />
-          };
-        });
-        setItemChildren({...itemChildren, [key]: genData});
-      }
-    );
+    getData(API_CONSTANTS.READ_CHECKPOINT, { path: selectPath, operatorId: id }).then((res) => {
+      const genData = Object.keys(res.datas).map((x) => {
+        const datum = res.datas[x];
+        return {
+          key: x,
+          label: x,
+          children: (
+            <Tabs
+              items={Object.keys(datum).map((y) => {
+                return {
+                  key: y,
+                  label: y,
+                  children: (
+                    <Table
+                      dataSource={datum[y].datas}
+                      columns={(datum[y].headers as string[]).map((z) => {
+                        return {
+                          title: z,
+                          dataIndex: z,
+                          key: z,
+                          render: (text) => (
+                            <Paragraph copyable ellipsis={{ rows: 3 }}>
+                              {text}
+                            </Paragraph>
+                          )
+                        };
+                      })}
+                    />
+                  )
+                };
+              })}
+              tabBarStyle={{ marginBlock: 0 }}
+              tabBarGutter={10}
+            />
+          )
+        };
+      });
+      setItemChildren({ ...itemChildren, [key]: genData });
+    });
   }, [selectPath, id]);
 
   return (
@@ -154,7 +156,7 @@ const FlinkDag = (props: DagProps) => {
 
       setOpen(true);
       setZoom((oldValue) => {
-        originPosition = {zoom: oldValue};
+        originPosition = { zoom: oldValue };
         return 1;
       });
       graph.zoomTo(1);
@@ -230,7 +232,6 @@ const FlinkDag = (props: DagProps) => {
   useEffect(() => {
     graph?.zoomTo(zoom);
   }, [zoom]);
-
 
   return (
     <span>

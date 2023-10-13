@@ -72,7 +72,7 @@ export const updateDag = (job: Jobs.JobVertices[], graph?: Graph) => {
   job.forEach((vertices) => {
     const node = graph.getCellById(vertices.id);
     if (node) {
-      node.setData({...node.getData(), ...vertices});
+      node.setData({ ...node.getData(), ...vertices });
     }
   });
 
@@ -100,13 +100,12 @@ export const updateDag = (job: Jobs.JobVertices[], graph?: Graph) => {
       case JOB_STATUS.FAILED:
         stroke = '#ff4d4f';
         break;
-     }
+    }
 
-    edge.attr({line: {strokeDasharray: strokeDasharray}});
-    edge.attr({line: {strokeWidth: strokeWidth}});
-    edge.attr({line: {animation: animation}});
-    edge.attr({line: {stroke: stroke}});
-
+    edge.attr({ line: { strokeDasharray: strokeDasharray } });
+    edge.attr({ line: { strokeWidth: strokeWidth } });
+    edge.attr({ line: { animation: animation } });
+    edge.attr({ line: { stroke: stroke } });
   });
 };
 

@@ -261,15 +261,15 @@ const HeaderContainer = (props: any) => {
     },
     {
       // 执行按钮
-      icon: <CaretRightFilled/>,
+      icon: <CaretRightFilled />,
       title: l('pages.datastudio.editor.exec'),
       click: handlerSubmit,
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       hotKeyDesc: 'Shift+F10',
       isShow: currentTab?.type == TabsPageType.project && !isRunning(currentData),
       props: {
-        style: {background: "#52c41a"},
-        type: 'primary',
+        style: { background: '#52c41a' },
+        type: 'primary'
       }
     },
     {
