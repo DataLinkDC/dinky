@@ -78,7 +78,7 @@ export default {
   'menu.version': 'Version: {version}',
 
   'menu.datastudio.project': 'Project',
-  'menu.datastudio.structure': 'Structure',
+  'menu.datastudio.catalog': 'Catalog',
   'menu.datastudio.metadata': 'Metadata',
   'menu.datastudio.console': 'Console',
   'menu.datastudio.jobConfig': 'Job Config',

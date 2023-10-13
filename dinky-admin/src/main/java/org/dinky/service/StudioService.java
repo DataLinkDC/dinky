@@ -23,7 +23,7 @@ import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
 import org.dinky.data.model.Catalog;
-import org.dinky.data.model.FlinkColumn;
+import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.SelectResult;
@@ -55,5 +55,5 @@ public interface StudioService {
 
     Schema getMSSchemaInfo(StudioMetaStoreDTO studioMetaStoreDTO);
 
-    List<FlinkColumn> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO);
+    List<Column> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO);
 }

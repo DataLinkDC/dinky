@@ -19,14 +19,23 @@
 
 package org.dinky.service.impl;
 
+import cn.hutool.cache.Cache;
+import cn.hutool.cache.CacheUtil;
+import org.apache.flink.table.catalog.ObjectIdentifier;
+import org.apache.flink.table.types.logical.DecimalType;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.VarCharType;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
+import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.Cluster;
+import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.FlinkColumn;
 import org.dinky.data.model.Schema;
@@ -35,6 +44,7 @@ import org.dinky.data.result.DDLResult;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
+import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.JobConfig;
@@ -52,8 +62,10 @@ import org.dinky.sql.FlinkQuery;
 import org.dinky.utils.RunTimeUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.springframework.stereotype.Service;
 
@@ -63,7 +75,9 @@ import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** StudioServiceImpl */
+/**
+ * StudioServiceImpl
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -73,9 +87,11 @@ public class StudioServiceImpl implements StudioService {
     private final DataBaseService dataBaseService;
     private final TaskService taskService;
 
+    private final Cache<String, JobManager> jobManagerCache = CacheUtil.newTimedCache(1000 * 60 * 2);
+
     private IResult executeMSFlinkSql(StudioMetaStoreDTO studioMetaStoreDTO) {
         String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
-        studioMetaStoreDTO.setStatement(studioMetaStoreDTO.getStatement() + envSql);
+        studioMetaStoreDTO.setStatement(envSql + studioMetaStoreDTO.getStatement());
         JobConfig config = studioMetaStoreDTO.getJobConfig();
         JobManager jobManager = JobManager.build(config);
         IResult jobResult = jobManager.executeDDL(studioMetaStoreDTO.getStatement());
@@ -153,33 +169,19 @@ public class StudioServiceImpl implements StudioService {
                 catalogs.add(defaultCatalog);
             }
         } else {
-            studioMetaStoreDTO.setStatement(FlinkQuery.showCatalogs());
-            IResult result = executeMSFlinkSql(studioMetaStoreDTO);
-
-            if (result instanceof DDLResult) {
-                DDLResult ddlResult = (DDLResult) result;
-                ddlResult.getColumns().stream().findFirst().ifPresent(key -> {
-                    for (Map<String, Object> item : ddlResult.getRowData()) {
-                        catalogs.add(Catalog.build(item.get(key).toString()));
-                    }
-                });
-
-                for (Catalog catalog : catalogs) {
-                    String statement = FlinkQuery.useCatalog(catalog.getName())
-                            + FlinkQuery.separator()
-                            + FlinkQuery.showDatabases();
-                    studioMetaStoreDTO.setStatement(statement);
-                    IResult tableResult = executeMSFlinkSql(studioMetaStoreDTO);
-                    DDLResult tableDDLResult = (DDLResult) tableResult;
-                    tableDDLResult.getColumns().stream().findFirst().ifPresent(key -> {
-                        List<Map<String, Object>> rowData = tableDDLResult.getRowData();
-                        List<Schema> schemas = new ArrayList<>();
-                        for (Map<String, Object> item : rowData) {
-                            schemas.add(Schema.build(item.get(key).toString()));
-                        }
-                        catalog.setSchemas(schemas);
-                    });
+            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
+            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
+            CustomTableEnvironment customTableEnvironment = jobManager.getExecutor().getCustomTableEnvironment();
+            for (String catalogName : customTableEnvironment.listCatalogs()) {
+                Catalog catalog = Catalog.build(catalogName);
+                List<Schema> schemas = new ArrayList<>();
+                customTableEnvironment.useCatalog(catalogName);
+                for (String database : customTableEnvironment.listDatabases()) {
+                    Schema schema = Schema.build(database);
+                    schemas.add(schema);
                 }
+                catalog.setSchemas(schemas);
+                catalogs.add(catalog);
             }
         }
         return catalogs;
@@ -187,80 +189,99 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public Schema getMSSchemaInfo(StudioMetaStoreDTO studioMetaStoreDTO) {
-        Schema schema = Schema.build(studioMetaStoreDTO.getDatabase());
+        String database = studioMetaStoreDTO.getDatabase();
+        Schema schema = Schema.build(database);
         List<Table> tables = new ArrayList<>();
         if (Dialect.isCommonSql(studioMetaStoreDTO.getDialect())) {
             DataBase dataBase = dataBaseService.getById(studioMetaStoreDTO.getDatabaseId());
             if (Asserts.isNotNull(dataBase)) {
                 Driver driver = Driver.build(dataBase.getDriverConfig());
-                tables.addAll(driver.listTables(studioMetaStoreDTO.getDatabase()));
+                tables.addAll(driver.listTables(database));
             }
         } else {
-            String baseStatement = FlinkQuery.useCatalog(studioMetaStoreDTO.getCatalog())
-                    + FlinkQuery.separator()
-                    + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase())
-                    + FlinkQuery.separator();
-
-            // show tables
-            String tableStatement = baseStatement + FlinkQuery.showTables();
-            studioMetaStoreDTO.setStatement(tableStatement);
-            IResult result = executeMSFlinkSql(studioMetaStoreDTO);
-            if (result instanceof DDLResult) {
-                DDLResult ddlResult = (DDLResult) result;
-                ddlResult.getColumns().stream().findFirst().ifPresent(key -> {
-                    List<Map<String, Object>> rowData = ddlResult.getRowData();
-                    for (Map<String, Object> item : rowData) {
-                        Table table = Table.build(item.get(key).toString(), studioMetaStoreDTO.getDatabase());
-                        table.setCatalog(studioMetaStoreDTO.getCatalog());
-                        tables.add(table);
-                    }
-                });
+            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
+            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
+            CustomTableEnvironment customTableEnvironment = jobManager.getExecutor().getCustomTableEnvironment();
+            String catalogName = studioMetaStoreDTO.getCatalog();
+            customTableEnvironment.useCatalog(catalogName);
+            customTableEnvironment.useDatabase(database);
+            for (String tableName : customTableEnvironment.listTables(catalogName, database)) {
+                Table table = Table.build(tableName, catalogName);
+                tables.add(table);
             }
+            schema.setTables(tables);
+
             // show views
-            schema.setViews(showInfo(studioMetaStoreDTO, baseStatement, FlinkQuery.showViews()));
+            schema.setViews(Arrays.asList(customTableEnvironment.listViews()));
             // show functions
-            schema.setFunctions(showInfo(studioMetaStoreDTO, baseStatement, FlinkQuery.showFunctions()));
+            schema.setFunctions(Arrays.asList(customTableEnvironment.listFunctions()));
             // show user functions
-            schema.setUserFunctions(showInfo(studioMetaStoreDTO, baseStatement, FlinkQuery.showUserFunctions()));
+            schema.setUserFunctions(Arrays.asList(customTableEnvironment.listUserDefinedFunctions()));
             // show modules
-            schema.setModules(showInfo(studioMetaStoreDTO, baseStatement, FlinkQuery.showModules()));
+            schema.setModules(Arrays.asList(customTableEnvironment.listModules()));
         }
         schema.setTables(tables);
         return schema;
     }
 
     @Override
-    public List<FlinkColumn> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO) {
-        List<FlinkColumn> columns = new ArrayList<>();
+    public List<Column> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO) {
+        List<Column> columns = new ArrayList<>();
         if (!Dialect.isCommonSql(studioMetaStoreDTO.getDialect())) {
-            String baseStatement = FlinkQuery.useCatalog(studioMetaStoreDTO.getCatalog())
-                    + FlinkQuery.separator()
-                    + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase())
-                    + FlinkQuery.separator();
+            String catalogName = studioMetaStoreDTO.getCatalog();
+            String database = studioMetaStoreDTO.getDatabase();
+            String tableName = studioMetaStoreDTO.getTable();
+            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
+            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
+            CustomTableEnvironment customTableEnvironment = jobManager.getExecutor().getCustomTableEnvironment();
 
-            // desc tables
-            String tableStatement = baseStatement + FlinkQuery.descTable(studioMetaStoreDTO.getTable());
-            studioMetaStoreDTO.setStatement(tableStatement);
-            IResult result = executeMSFlinkSql(studioMetaStoreDTO);
-            if (result instanceof DDLResult) {
-                DDLResult ddlResult = (DDLResult) result;
-                List<Map<String, Object>> rowData = ddlResult.getRowData();
-                int i = 1;
-                for (Map<String, Object> item : rowData) {
-                    FlinkColumn column = FlinkColumn.build(
-                            i,
-                            item.get(FlinkQuery.columnName()).toString(),
-                            item.get(FlinkQuery.columnType()).toString(),
-                            item.get(FlinkQuery.columnKey()).toString(),
-                            item.get(FlinkQuery.columnNull()).toString(),
-                            item.get(FlinkQuery.columnExtras()).toString(),
-                            item.get(FlinkQuery.columnWatermark()).toString());
-                    columns.add(column);
-                    i++;
-                }
-            }
+            customTableEnvironment.getCatalogManager().getTable(ObjectIdentifier.of(catalogName, database, tableName))
+                    .ifPresent(t -> {
+                        for (int i = 0; i < t.getResolvedSchema().getColumns().size(); i++) {
+                            org.apache.flink.table.catalog.Column flinkColumn = t.getResolvedSchema().getColumns().get(i);
+                            AtomicBoolean isPrimaryKey = new AtomicBoolean(false);
+                            t.getResolvedSchema().getPrimaryKey().ifPresent(k -> {
+                                isPrimaryKey.set(k.getColumns().contains(flinkColumn.getName()));
+                            });
+                            LogicalType logicalType = flinkColumn.getDataType().getLogicalType();
+                            Column column = Column.builder().name(flinkColumn.getName()).type(logicalType.getTypeRoot().name())
+                                    .comment(flinkColumn.getComment().orElse("")).keyFlag(isPrimaryKey.get())
+                                    .isNullable(logicalType.isNullable())
+                                    .position(i)
+                                    .build();
+                            if (logicalType instanceof VarCharType) {
+                                column.setLength(((VarCharType) logicalType).getLength());
+                            } else if (logicalType instanceof TimestampType) {
+                                column.setLength(((TimestampType) logicalType).getPrecision());
+                            } else if (logicalType instanceof DecimalType) {
+                                column.setLength(((DecimalType) logicalType).getPrecision());
+                                column.setScale(((DecimalType) logicalType).getScale());
+                            }
+
+                            for (ColumnType columnType : ColumnType.values()) {
+                                if (columnType.getJavaType().equals(flinkColumn.getDataType().getConversionClass().getName())) {
+                                    column.setJavaType(columnType);
+                                    break;
+                                }
+                            }
+//                            FlinkColumn flinkColumn = FlinkColumn.build(i, column.getName(), column.getDataType().getConversionClass().getName(), isPrimaryKey.get(), column.getDataType().getLogicalType().isNullable(), column.explainExtras().orElse(""), "", column.getComment().orElse(""));
+
+
+                            columns.add(column);
+                        }
+                    });
         }
         return columns;
+    }
+
+    private JobManager getJobManager(StudioMetaStoreDTO studioMetaStoreDTO, String envSql) {
+        JobManager jobManager = jobManagerCache.get(envSql, () -> {
+            JobConfig config = studioMetaStoreDTO.getJobConfig();
+            JobManager jobManagerTmp = JobManager.build(config);
+            jobManagerTmp.executeDDL(envSql);
+            return jobManagerTmp;
+        });
+        return jobManager;
     }
 
     private List<String> showInfo(StudioMetaStoreDTO studioMetaStoreDTO, String baseStatement, String statement) {

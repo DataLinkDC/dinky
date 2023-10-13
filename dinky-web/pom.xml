@@ -31,6 +31,15 @@
 
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
+        <resources>
+            <resource>
+                <directory>/src/services/</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>constants.tsx</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <!-- 调用npm命令插件 -->
             <plugin>
