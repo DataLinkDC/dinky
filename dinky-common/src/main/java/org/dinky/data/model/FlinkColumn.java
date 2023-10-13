@@ -47,7 +47,14 @@ public class FlinkColumn implements Serializable {
     public FlinkColumn() {}
 
     public FlinkColumn(
-            int position, String name, String type, boolean key, boolean nullable, String extras, String watermark,String comment) {
+            int position,
+            String name,
+            String type,
+            boolean key,
+            boolean nullable,
+            String extras,
+            String watermark,
+            String comment) {
         this.position = position;
         this.name = name;
         this.type = type;
@@ -59,7 +66,14 @@ public class FlinkColumn implements Serializable {
     }
 
     public static FlinkColumn build(
-            int position, String name, String type, boolean key, boolean nullable, String extras, String watermark,String comment) {
-        return new FlinkColumn(position, name, type, key, nullable, extras, watermark,comment);
+            int position,
+            String name,
+            String type,
+            boolean key,
+            boolean nullable,
+            String extras,
+            String watermark,
+            String comment) {
+        return new FlinkColumn(position, name, type, key, nullable, extras, watermark, comment);
     }
 }

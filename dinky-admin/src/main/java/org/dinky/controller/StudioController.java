@@ -28,7 +28,6 @@ import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.Column;
-import org.dinky.data.model.FlinkColumn;
 import org.dinky.data.model.Schema;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.Result;

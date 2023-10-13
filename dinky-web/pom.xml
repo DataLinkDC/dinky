@@ -33,8 +33,8 @@
         <finalName>${project.artifactId}-${project.version}</finalName>
         <resources>
             <resource>
-                <directory>/src/services/</directory>
                 <filtering>true</filtering>
+                <directory>/src/services/</directory>
                 <includes>
                     <include>constants.tsx</include>
                 </includes>

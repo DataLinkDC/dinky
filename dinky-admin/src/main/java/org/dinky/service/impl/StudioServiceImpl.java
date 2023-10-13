@@ -19,13 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.hutool.cache.Cache;
-import cn.hutool.cache.CacheUtil;
-import org.apache.flink.table.catalog.ObjectIdentifier;
-import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.TimestampType;
-import org.apache.flink.table.types.logical.VarCharType;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
@@ -37,7 +30,6 @@ import org.dinky.data.model.Catalog;
 import org.dinky.data.model.Cluster;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
-import org.dinky.data.model.FlinkColumn;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.DDLResult;
@@ -61,6 +53,12 @@ import org.dinky.service.TaskService;
 import org.dinky.sql.FlinkQuery;
 import org.dinky.utils.RunTimeUtil;
 
+import org.apache.flink.table.catalog.ObjectIdentifier;
+import org.apache.flink.table.types.logical.DecimalType;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.VarCharType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -72,6 +70,8 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.cache.Cache;
+import cn.hutool.cache.CacheUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -153,6 +153,7 @@ public class StudioServiceImpl implements StudioService {
         }
         return new ArrayList<>();
     }
+
     @Override
     public List<Catalog> getMSCatalogs(StudioMetaStoreDTO studioMetaStoreDTO) {
         List<Catalog> catalogs = new ArrayList<>();
@@ -167,7 +168,8 @@ public class StudioServiceImpl implements StudioService {
         } else {
             String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
-            CustomTableEnvironment customTableEnvironment = jobManager.getExecutor().getCustomTableEnvironment();
+            CustomTableEnvironment customTableEnvironment =
+                    jobManager.getExecutor().getCustomTableEnvironment();
             for (String catalogName : customTableEnvironment.listCatalogs()) {
                 Catalog catalog = Catalog.build(catalogName);
                 List<Schema> schemas = new ArrayList<>();
@@ -197,7 +199,8 @@ public class StudioServiceImpl implements StudioService {
         } else {
             String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
-            CustomTableEnvironment customTableEnvironment = jobManager.getExecutor().getCustomTableEnvironment();
+            CustomTableEnvironment customTableEnvironment =
+                    jobManager.getExecutor().getCustomTableEnvironment();
             String catalogName = studioMetaStoreDTO.getCatalog();
             customTableEnvironment.useCatalog(catalogName);
             customTableEnvironment.useDatabase(database);
@@ -229,19 +232,26 @@ public class StudioServiceImpl implements StudioService {
             String tableName = studioMetaStoreDTO.getTable();
             String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
-            CustomTableEnvironment customTableEnvironment = jobManager.getExecutor().getCustomTableEnvironment();
+            CustomTableEnvironment customTableEnvironment =
+                    jobManager.getExecutor().getCustomTableEnvironment();
 
-            customTableEnvironment.getCatalogManager().getTable(ObjectIdentifier.of(catalogName, database, tableName))
+            customTableEnvironment
+                    .getCatalogManager()
+                    .getTable(ObjectIdentifier.of(catalogName, database, tableName))
                     .ifPresent(t -> {
                         for (int i = 0; i < t.getResolvedSchema().getColumns().size(); i++) {
-                            org.apache.flink.table.catalog.Column flinkColumn = t.getResolvedSchema().getColumns().get(i);
+                            org.apache.flink.table.catalog.Column flinkColumn =
+                                    t.getResolvedSchema().getColumns().get(i);
                             AtomicBoolean isPrimaryKey = new AtomicBoolean(false);
                             t.getResolvedSchema().getPrimaryKey().ifPresent(k -> {
                                 isPrimaryKey.set(k.getColumns().contains(flinkColumn.getName()));
                             });
                             LogicalType logicalType = flinkColumn.getDataType().getLogicalType();
-                            Column column = Column.builder().name(flinkColumn.getName()).type(logicalType.getTypeRoot().name())
-                                    .comment(flinkColumn.getComment().orElse("")).keyFlag(isPrimaryKey.get())
+                            Column column = Column.builder()
+                                    .name(flinkColumn.getName())
+                                    .type(logicalType.getTypeRoot().name())
+                                    .comment(flinkColumn.getComment().orElse(""))
+                                    .keyFlag(isPrimaryKey.get())
                                     .isNullable(logicalType.isNullable())
                                     .position(i)
                                     .build();
@@ -255,13 +265,20 @@ public class StudioServiceImpl implements StudioService {
                             }
 
                             for (ColumnType columnType : ColumnType.values()) {
-                                if (columnType.getJavaType().equals(flinkColumn.getDataType().getConversionClass().getName())) {
+                                if (columnType
+                                        .getJavaType()
+                                        .equals(flinkColumn
+                                                .getDataType()
+                                                .getConversionClass()
+                                                .getName())) {
                                     column.setJavaType(columnType);
                                     break;
                                 }
                             }
-//                            FlinkColumn flinkColumn = FlinkColumn.build(i, column.getName(), column.getDataType().getConversionClass().getName(), isPrimaryKey.get(), column.getDataType().getLogicalType().isNullable(), column.explainExtras().orElse(""), "", column.getComment().orElse(""));
-
+                            //                            FlinkColumn flinkColumn = FlinkColumn.build(i,
+                            // column.getName(), column.getDataType().getConversionClass().getName(),
+                            // isPrimaryKey.get(), column.getDataType().getLogicalType().isNullable(),
+                            // column.explainExtras().orElse(""), "", column.getComment().orElse(""));
 
                             columns.add(column);
                         }
