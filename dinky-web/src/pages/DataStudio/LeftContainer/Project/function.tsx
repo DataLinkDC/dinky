@@ -131,7 +131,7 @@ export const buildProjectTree = (
       })
     : [];
 
-export const isUDF = (jobType: string) => {
+export const isUDF = (jobType: string): boolean => {
   return jobType === 'Scala' || jobType === 'Python' || jobType === 'Java';
 };
 

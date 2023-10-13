@@ -46,6 +46,87 @@ export type DagProps = {
 };
 const { Paragraph } = Typography;
 
+const RenderCheckpoint = (id: string, checkPoints: any) => {
+  const [selectPath, setSelectPath] = useState<string>('');
+  const key = id + selectPath;
+  const [itemChildren, setItemChildren] = useState({ [key]: [] as TabsProps['items'] });
+
+  const checkpointArray = ((checkPoints.history ?? []) as any[])
+    .filter((x) => x.status === 'COMPLETED')
+    .map((x) => {
+      return { checkpointType: x.checkpoint_type, path: x.external_path, id: x.id };
+    });
+
+  useEffect(() => {
+    if (!(selectPath && id)) {
+      return;
+    }
+
+    if (itemChildren[key]) {
+      return;
+    }
+
+    getData(API_CONSTANTS.READ_CHECKPOINT, { path: selectPath, operatorId: id }).then((res) => {
+      const genData = Object.keys(res.datas).map((x) => {
+        const datum = res.datas[x];
+        return {
+          key: x,
+          label: x,
+          children: (
+            <Tabs
+              items={Object.keys(datum).map((y) => {
+                return {
+                  key: y,
+                  label: y,
+                  children: (
+                    <Table
+                      dataSource={datum[y].datas}
+                      columns={(datum[y].headers as string[]).map((z) => {
+                        return {
+                          title: z,
+                          dataIndex: z,
+                          key: z,
+                          render: (text) => (
+                            <Paragraph copyable ellipsis={{ rows: 3 }}>
+                              {text}
+                            </Paragraph>
+                          )
+                        };
+                      })}
+                    />
+                  )
+                };
+              })}
+              tabBarStyle={{ marginBlock: 0 }}
+              tabBarGutter={10}
+            />
+          )
+        };
+      });
+      setItemChildren({ ...itemChildren, [key]: genData });
+    });
+  }, [selectPath, id]);
+
+  return (
+    <>
+      <Select
+        defaultValue={selectPath}
+        style={{ width: '100%' }}
+        placeholder='Select a person'
+        optionFilterProp='children'
+        options={checkpointArray.map((x) => {
+          return { label: x.id, value: x.path };
+        })}
+        onChange={(path) => {
+          setSelectPath(path);
+        }}
+      />
+
+      <Tabs items={itemChildren[key]} tabBarStyle={{ marginBlock: 0 }} tabBarGutter={10} />
+    </>
+  );
+};
+
 const FlinkDag = (props: DagProps) => {
   const container = useRef(null);
 
@@ -69,19 +150,21 @@ const FlinkDag = (props: DagProps) => {
 
   const initListen = (graph: Graph) => {
     graph.on('node:selected', ({ cell }) => {
-      if (!onlyPlan) {
-        setOpen(true);
-        setZoom((oldValue) => {
-          originPosition = { zoom: oldValue };
-          return 1;
-        });
-        graph.zoomTo(1);
-        setCurrentSelect(cell);
-        graph.positionPoint(Rectangle.create(cell.getBBox()).getLeftMiddle(), '10%', '50%');
+      if (onlyPlan) {
+        return;
       }
+
+      setOpen(true);
+      setZoom((oldValue) => {
+        originPosition = { zoom: oldValue };
+        return 1;
+      });
+      graph.zoomTo(1);
+      setCurrentSelect(cell);
+      graph.positionPoint(Rectangle.create(cell.getBBox()).getLeftMiddle(), '10%', '50%');
     });
 
-    graph.on('node:unselected', ({ cell }) => {
+    graph.on('node:unselected', () => {
       setZoom(originPosition.zoom);
       handleClose();
     });
@@ -150,82 +233,6 @@ const FlinkDag = (props: DagProps) => {
     graph?.zoomTo(zoom);
   }, [zoom]);
 
-  const renderCheckpoint = (id: string) => {
-    const [selectPath, setSelectPath] = useState<string>('');
-    const key = id + selectPath;
-    const [itemChildren, setItemChildren] = useState({ [key]: [] as TabsProps['items'] });
-    const checkpointArray = ((checkPoints.history ?? []) as any[])
-      .filter((x) => x.status === 'COMPLETED')
-      .map((x) => {
-        return { checkpointType: x.checkpoint_type, path: x.external_path, id: x.id };
-      });
-    useEffect(() => {
-      if (selectPath && id) {
-        if (!itemChildren[key]) {
-          getData(API_CONSTANTS.READ_CHECKPOINT, { path: selectPath, operatorId: id }).then(
-            (res) => {
-              const genData = Object.keys(res.datas).map((x) => {
-                const datum = res.datas[x];
-                return {
-                  key: x,
-                  label: x,
-                  children: (
-                    <Tabs
-                      items={Object.keys(datum).map((y) => {
-                        return {
-                          key: y,
-                          label: y,
-                          children: (
-                            <Table
-                              dataSource={datum[y].datas}
-                              columns={(datum[y].headers as string[]).map((z) => {
-                                return {
-                                  title: z,
-                                  dataIndex: z,
-                                  key: z,
-                                  render: (text) => (
-                                    <Paragraph copyable ellipsis={{ rows: 3 }}>
-                                      {text}
-                                    </Paragraph>
-                                  )
-                                };
-                              })}
-                            />
-                          )
-                        };
-                      })}
-                      tabBarStyle={{ marginBlock: 0 }}
-                      tabBarGutter={10}
-                    />
-                  )
-                };
-              });
-              setItemChildren({ ...itemChildren, [key]: genData });
-            }
-          );
-        }
-      }
-    }, [selectPath, id]);
-
-    return (
-      <>
-        <Select
-          defaultValue={selectPath}
-          style={{ width: '100%' }}
-          placeholder='Select a person'
-          optionFilterProp='children'
-          options={checkpointArray.map((x) => {
-            return { label: x.id, value: x.path };
-          })}
-          onChange={(path) => {
-            setSelectPath(path);
-          }}
-        />
-
-        <Tabs items={itemChildren[key]} tabBarStyle={{ marginBlock: 0 }} tabBarGutter={10} />
-      </>
-    );
-  };
   return (
     <span>
       <div
@@ -274,7 +281,7 @@ const FlinkDag = (props: DagProps) => {
               {
                 key: '2',
                 label: 'CheckPointRead',
-                children: renderCheckpoint(currentSelect?.id)
+                children: RenderCheckpoint(currentSelect?.id, checkPoints)
               }
             ]}
             tabBarGutter={10}
