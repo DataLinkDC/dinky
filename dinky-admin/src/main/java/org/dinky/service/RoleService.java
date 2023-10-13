@@ -75,5 +75,11 @@ public interface RoleService extends ISuperService<Role> {
      */
     List<Integer> selectRoleListByUserId(Integer userId);
 
+    /**
+     * Get a list of users with the specified role ID.
+     *
+     * @param roleId The ID of the role to filter the users by.
+     * @return A list of {@link User} objects representing the users with the specified role ID.
+     */
     List<User> getUserListByRoleId(Integer roleId);
 }

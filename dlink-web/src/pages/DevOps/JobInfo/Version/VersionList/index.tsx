@@ -18,8 +18,9 @@
  */
 
 
-import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import {TaskVersion} from "@/pages/DevOps/data";
+import type {ActionType, ProColumns} from "@ant-design/pro-table";
+import ProTable from "@ant-design/pro-table";
+import type {TaskVersion} from "@/pages/DevOps/data";
 import {useRef, useState,} from "react";
 import {queryData} from "@/components/Common/crud";
 import {getIcon} from "@/components/Studio/icon";
@@ -83,11 +84,9 @@ const VersionList = (props: any) => {
       render: (dom, entity) => {
         return <>
           {getIcon(entity.dialect)}
-          {
             <Tag color="blue">
               {entity.dialect}
             </Tag>
-          }
         </>;
       },
     },
@@ -95,13 +94,11 @@ const VersionList = (props: any) => {
       title: l('pages.devops.jobinfo.version.type'),
       align: 'center',
       render: (dom, entity) => {
-        return <>
-          {
+        return (
             <Tag color="blue">
               {entity.type}
-            </Tag>
-          }
-        </>;
+            </Tag>);
+
       },
     },
     {
@@ -117,7 +114,6 @@ const VersionList = (props: any) => {
       hideInSearch: true,
       render: (dom, entity) => {
         return <>
-          {<>
             <a onClick={() => {
               setRow(entity)
               setModalVisible(true);
@@ -126,11 +122,7 @@ const VersionList = (props: any) => {
                 <FullscreenOutlined title={l('pages.devops.jobinfo.version.sql.showdetail')}/>
               </Tag> {l('pages.devops.jobinfo.version.sql.showdetail')}
             </a>
-
-          </>
-          }
-        </>
-          ;
+          </>;
       },
     },
     {

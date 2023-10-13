@@ -27,7 +27,6 @@ import org.dinky.data.model.AlertGroup;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.AlertGroupService;
-import org.dinky.service.AlertHistoryService;
 
 import java.util.List;
 
@@ -59,7 +58,6 @@ import lombok.extern.slf4j.Slf4j;
 public class AlertGroupController {
 
     private final AlertGroupService alertGroupService;
-    private final AlertHistoryService alertHistoryService;
 
     /**
      * save or update alert Group

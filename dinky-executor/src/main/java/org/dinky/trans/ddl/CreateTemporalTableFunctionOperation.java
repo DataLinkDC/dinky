@@ -58,7 +58,7 @@ public class CreateTemporalTableFunctionOperation extends AbstractOperation impl
                 .from(temporalTable.getTableName())
                 .createTemporalTableFunction(timeColumn, targetColumn);
 
-        if (temporalTable.getFunctionType().toUpperCase().equals("TEMPORARY SYSTEM")) {
+        if (temporalTable.getFunctionType().equalsIgnoreCase("TEMPORARY SYSTEM")) {
             customTableEnvironmentImpl.createTemporarySystemFunction(temporalTable.getFunctionName(), ttf);
         } else {
             customTableEnvironmentImpl.createTemporaryFunction(temporalTable.getFunctionName(), ttf);

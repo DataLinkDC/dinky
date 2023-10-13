@@ -6,6 +6,7 @@
         <groupId>org.dinky</groupId>
         <artifactId>dinky-cdc</artifactId>
         <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>dinky-cdc-core</artifactId>
