@@ -32,6 +32,7 @@ public interface RowPermissionsService extends ISuperService<RowPermissions> {
      * @param roleIds role id
      * @return delete status
      */
+    @Deprecated
     boolean deleteByRoleIds(List<Integer> roleIds);
 
     /**
@@ -40,6 +41,7 @@ public interface RowPermissionsService extends ISuperService<RowPermissions> {
      * @param roleId role id
      * @return List<RowPermissions>
      */
+    @Deprecated
     List<RowPermissions> listAllByRoleId(Integer roleId);
 
     /**

@@ -22,7 +22,17 @@ package org.dinky.service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface PrintTableService {
+    /**
+     * Register a listen entry for a specified table.
+     *
+     * @param table The name of the table to register the listen entry for.
+     */
     SseEmitter registerListenEntry(String table);
 
+    /**
+     * Unregister a listen entry for a specified table.
+     *
+     * @param table The name of the table to unregister the listen entry for.
+     */
     void unRegisterListenEntry(String table);
 }

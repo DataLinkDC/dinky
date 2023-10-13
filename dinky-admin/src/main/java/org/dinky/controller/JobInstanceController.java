@@ -33,7 +33,6 @@ import org.dinky.data.result.Result;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.BuildConfiguration;
 import org.dinky.service.JobInstanceService;
-import org.dinky.service.TaskService;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -66,9 +65,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/jobInstance")
 @RequiredArgsConstructor
 public class JobInstanceController {
-
     private final JobInstanceService jobInstanceService;
-    private final TaskService taskService;
 
     /**
      * 动态查询列表

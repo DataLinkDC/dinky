@@ -100,7 +100,7 @@ public class SysConfigController {
             example = "sys")
     public Result<List<Configuration<?>>> getOneTypeByKey(@RequestParam("type") String type) {
         Map<String, List<Configuration<?>>> all = sysConfigService.getAll();
-        // 过滤出 以 type 开头的配置 返回 list
+        // Filter out configurations starting with type and return a list
         List<Configuration<?>> configList = all.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(type))
                 .map(Map.Entry::getValue)
