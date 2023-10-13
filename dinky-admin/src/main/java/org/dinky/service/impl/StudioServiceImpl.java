@@ -75,9 +75,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * StudioServiceImpl
- */
+/** StudioServiceImpl */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -86,12 +84,11 @@ public class StudioServiceImpl implements StudioService {
     private final ClusterInstanceService clusterInstanceService;
     private final DataBaseService dataBaseService;
     private final TaskService taskService;
-
     private final Cache<String, JobManager> jobManagerCache = CacheUtil.newTimedCache(1000 * 60 * 2);
 
     private IResult executeMSFlinkSql(StudioMetaStoreDTO studioMetaStoreDTO) {
         String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
-        studioMetaStoreDTO.setStatement(envSql + studioMetaStoreDTO.getStatement());
+        studioMetaStoreDTO.setStatement(studioMetaStoreDTO.getStatement() + envSql);
         JobConfig config = studioMetaStoreDTO.getJobConfig();
         JobManager jobManager = JobManager.build(config);
         IResult jobResult = jobManager.executeDDL(studioMetaStoreDTO.getStatement());
@@ -156,7 +153,6 @@ public class StudioServiceImpl implements StudioService {
         }
         return new ArrayList<>();
     }
-
     @Override
     public List<Catalog> getMSCatalogs(StudioMetaStoreDTO studioMetaStoreDTO) {
         List<Catalog> catalogs = new ArrayList<>();
