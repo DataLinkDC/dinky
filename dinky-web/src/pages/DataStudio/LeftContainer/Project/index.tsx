@@ -25,7 +25,6 @@ import {
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
-import { getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
 import { StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import {
   handleAddOrUpdate,
@@ -108,24 +107,21 @@ const Project: React.FC = (props: connect) => {
       return;
     }
 
-    getTaskDetails(taskId).then((res) => {
-      path.pop();
-      dispatch({
-        type: STUDIO_MODEL.addTab,
-        payload: {
-          icon: type,
-          id: parentId + name,
-          treeKey: key,
-          breadcrumbLabel: path.join('/'),
-          label: name,
-          params: {
-            taskId: taskId,
-            taskData: { ...res, useResult: true, maxRowNum: 100 }
-          },
-          type: 'project',
-          subType: type.toLowerCase()
-        }
-      });
+    path.pop();
+    dispatch({
+      type: STUDIO_MODEL.addTab,
+      payload: {
+        icon: type,
+        id: parentId + name,
+        treeKey: key,
+        breadcrumbLabel: path.join('/'),
+        label: name,
+        params: {
+          taskId: taskId
+        },
+        type: 'project',
+        subType: type
+      }
     });
   };
 

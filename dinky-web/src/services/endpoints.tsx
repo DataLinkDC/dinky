@@ -277,5 +277,8 @@ export enum API_CONSTANTS {
   SAVE_OR_UPDATE_TASK_URL = '/api/catalogue/saveOrUpdateCatalogueAndTask',
   SAVE_OR_UPDATE_CATALOGUE_URL = '/api/catalogue/saveOrUpdateCatalogue',
   COPY_TASK_URL = '/api/catalogue/copyTask',
-  MOVE_CATALOGUE_URL = '/api/catalogue/moveCatalogue'
+  MOVE_CATALOGUE_URL = '/api/catalogue/moveCatalogue',
+
+  //task
+  TASK = '/api/task'
 }

@@ -169,7 +169,7 @@ export const getFooterValue = (panes: any, activeKey: string): Partial<FooterTyp
   if (isDataStudioTabsItemType(currentTab)) {
     return {
       codePosition: [1, 1],
-      codeType: currentTab.params.taskData.dialect
+      codeType: currentTab.subType
     };
   }
   return {};

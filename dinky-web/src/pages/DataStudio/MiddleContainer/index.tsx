@@ -17,30 +17,34 @@
 
 import ContentScroll from '@/components/Scroll/ContentScroll';
 import useThemeValue from '@/hooks/useThemeValue';
-import {STUDIO_TAG_RIGHT_CONTEXT_MENU} from '@/pages/DataStudio/constants';
-import {getCurrentTab, isDataStudioTabsItemType, isMetadataTabsItemType} from '@/pages/DataStudio/function';
+import { STUDIO_TAG_RIGHT_CONTEXT_MENU } from '@/pages/DataStudio/constants';
+import {
+  getCurrentTab,
+  isDataStudioTabsItemType,
+  isMetadataTabsItemType
+} from '@/pages/DataStudio/function';
 import Editor from '@/pages/DataStudio/MiddleContainer/Editor';
-import {getTabIcon} from '@/pages/DataStudio/MiddleContainer/function';
+import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
-import {StateType, STUDIO_MODEL, TabsItemType, TabsPageType} from '@/pages/DataStudio/model';
-import {RightSide} from '@/pages/DataStudio/route';
+import { StateType, STUDIO_MODEL, TabsItemType, TabsPageType } from '@/pages/DataStudio/model';
+import { RightSide } from '@/pages/DataStudio/route';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
-import {connect} from '@@/exports';
-import {ConfigProvider, Divider, Dropdown, Modal, Space, Tabs, Typography} from 'antd';
-import {MenuInfo} from 'rc-menu/es/interface';
-import React, {useState} from 'react';
-import {ExclamationCircleFilled} from "@ant-design/icons";
-import {l} from "@/utils/intl";
+import { l } from '@/utils/intl';
+import { connect } from '@@/exports';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { ConfigProvider, Divider, Dropdown, Modal, Space, Tabs, Typography } from 'antd';
+import { MenuInfo } from 'rc-menu/es/interface';
+import React, { useState } from 'react';
 
-const {Text} = Typography;
+const { Text } = Typography;
 const { confirm } = Modal;
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const MiddleContainer = (props: any) => {
   const {
-    tabs: {panes, activeKey},
+    tabs: { panes, activeKey },
     rightKey,
     dispatch
   } = props;
@@ -191,7 +195,7 @@ const MiddleContainer = (props: any) => {
       <Dropdown
         arrow
         trigger={['contextMenu']}
-        overlayStyle={{...contextMenuPosition}}
+        overlayStyle={{ ...contextMenuPosition }}
         menu={{
           items: STUDIO_TAG_RIGHT_CONTEXT_MENU,
           onClick: handleMenuClick
@@ -200,7 +204,7 @@ const MiddleContainer = (props: any) => {
         onOpenChange={setContextMenuVisible}
       >
         {/*占位*/}
-        <div style={{...contextMenuPosition}}/>
+        <div style={{ ...contextMenuPosition }} />
       </Dropdown>
     );
   };
@@ -216,12 +220,12 @@ const MiddleContainer = (props: any) => {
         }
 
         const v = item.params;
-        return <Editor statement={v.taskData.statement}/>;
+        return <Editor taskId={v.taskId} />;
       }
 
       if (isMetadataTabsItemType(item)) {
         const params = item.params;
-        return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams}/>;
+        return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams} />;
       }
 
       return <></>;
@@ -237,11 +241,10 @@ const MiddleContainer = (props: any) => {
           key={item.key}
         >
           {getTabIcon(item.icon, 16)}
-          <Text
-            type={item.isModified ? 'success' : undefined}>
-            {item.label}{item.isModified ? '*' : ''}
+          <Text type={item.isModified ? 'success' : undefined}>
+            {item.label}
+            {item.isModified ? '*' : ''}
           </Text>
-
         </Space>
       ),
       children: (
@@ -256,7 +259,7 @@ const MiddleContainer = (props: any) => {
    * 关闭tab
    * @param {TargetKey} targetKey
    */
-  const handleCloseTab = (targetKey:string) => {
+  const handleCloseTab = (targetKey: string) => {
     if (panes.length === 1) {
       dispatch({
         type: STUDIO_MODEL.updateSelectRightKey,
@@ -268,11 +271,11 @@ const MiddleContainer = (props: any) => {
       type: STUDIO_MODEL.closeTab,
       payload: targetKey
     });
-  }
+  };
   const closeTab = (targetKey: TargetKey) => {
-    if (typeof targetKey == "string") {
-      const tab = getCurrentTab(panes, targetKey)
-      if (tab?.isModified){
+    if (typeof targetKey == 'string') {
+      const tab = getCurrentTab(panes, targetKey);
+      if (tab?.isModified) {
         confirm({
           title: l('pages.datastudio.editor.notsave'),
           icon: <ExclamationCircleFilled />,
@@ -281,7 +284,7 @@ const MiddleContainer = (props: any) => {
             handleCloseTab(targetKey);
           }
         });
-      }else {
+      } else {
         handleCloseTab(targetKey);
       }
     }
@@ -294,13 +297,13 @@ const MiddleContainer = (props: any) => {
     if (tabItems?.length === 0) {
       return (
         // 这里必需设置高度，否则会导致下册内容无法正常拉动
-        <div style={{height: 0}}>
-          <KeyBoard/>
-          <Divider/>
-          <br/>
-          <br/>
-          <br/>
-          <QuickGuide/>
+        <div style={{ height: 0 }}>
+          <KeyBoard />
+          <Divider />
+          <br />
+          <br />
+          <br />
+          <QuickGuide />
         </div>
       );
     }
@@ -318,7 +321,7 @@ const MiddleContainer = (props: any) => {
       >
         <Tabs
           className={'data-studio-tabs'}
-          tabBarStyle={{borderBlock: `1px solid ${themeValue.borderColor}`}}
+          tabBarStyle={{ borderBlock: `1px solid ${themeValue.borderColor}` }}
           hideAdd
           // onTabClick={(active, e) => {updateActiveKey(active, tabItems[active].label)}}
           activeKey={activeKey}
@@ -334,7 +337,7 @@ const MiddleContainer = (props: any) => {
   return <>{renderMiddleContent()}</>;
 };
 
-export default connect(({Studio}: { Studio: StateType }) => ({
+export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   centerContentHeight: Studio.centerContentHeight,
   rightKey: Studio.rightContainer.selectKey

@@ -319,8 +319,21 @@ export default {
   'pages.datastudio.footer.codeType': '代码类型：',
   'pages.datastudio.footer.lineSeparator': '行分隔符：',
   'pages.datastudio.footer.memDetails': '最大堆大小：{max}\n已使用：   {used}M',
-  'pages.datastudio.help.sqlChanged': 'Sql内容或配置变更',
-  'pages.datastudio.help.sqlChangedPrompt': '检测到当前页与远端不一致，是否刷新更新数据？',
+
+  'pages.datastudio.sql.sqlChanged': '代码恢复',
+  'pages.datastudio.sql.sqlChangedPrompt':
+    '您修改的代码未保存，与服务端不一致，我们为您缓存了上次修改，请选择版本',
+  'pages.datastudio.sql.sqldiff.title': '代码对比',
+  'pages.datastudio.sql.paramdiff.title': '配置对比',
+  'pages.datastudio.sql.nochange': '作业内容无变化',
+  'pages.datastudio.sql.useCache': '使用缓存版本',
+  'pages.datastudio.sql.useServer': '使用服务器版本',
+  'pages.datastudio.sql.cacheVersion': '本地缓存代码',
+  'pages.datastudio.sql.serverVersion': '服务端代码',
+  'pages.datastudio.sql.configItem': '配置项',
+  'pages.datastudio.sql.cacheConfigItem': '本地缓存配置',
+  'pages.datastudio.sql.serverConfigItem': '服务端配置',
+
   'pages.datastudio.label.execConfig': '执行配置',
   'pages.datastudio.label.execConfig.autostop': '自动停止',
   'pages.datastudio.label.execConfig.autostop.tip':
