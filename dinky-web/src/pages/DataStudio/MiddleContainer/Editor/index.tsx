@@ -12,7 +12,6 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { connect, useRequest } from '@@/exports';
 import { Editor } from '@monaco-editor/react';
-import { never } from '@umijs/utils/compiled/zod';
 import { Spin } from 'antd';
 import { editor } from 'monaco-editor';
 import React, { useState } from 'react';

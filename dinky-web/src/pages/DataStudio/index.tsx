@@ -35,7 +35,7 @@ import {
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide } from '@/pages/DataStudio/route';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Layout, Menu, theme, Typography } from 'antd';
+import { Layout, Menu, theme } from 'antd';
 import { useEffect, useState } from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
 import { connect, getDvaApp } from 'umi';
