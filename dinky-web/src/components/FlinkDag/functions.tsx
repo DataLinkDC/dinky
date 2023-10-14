@@ -69,37 +69,44 @@ export const buildDag = (job: Jobs.JobPlan) => {
 export const updateDag = (job: Jobs.JobVertices[], graph?: Graph) => {
   if (!job || !graph) return;
 
-  if (job && graph) {
-    job.forEach((vertice) => {
-      const node = graph.getCellById(vertice.id);
-      if (node) {
-        node.setData({ ...node.getData(), ...vertice });
-      }
-    });
+  job.forEach((vertices) => {
+    const node = graph.getCellById(vertices.id);
+    if (node) {
+      node.setData({ ...node.getData(), ...vertices });
+    }
+  });
 
-    graph.getEdges().forEach((edge) => {
-      const nodeData = edge.getSourceNode()?.getData();
-      if (nodeData.status == JOB_STATUS.RUNNING) {
-        edge.attr({ line: { stroke: '#3471F9' } });
-        edge.attr('line/strokeDasharray', 5);
-        edge.attr('line/strokeWidth', 2);
-        edge.attr('line/style/animation', 'running-line 30s infinite linear');
-      } else {
-        edge.attr('line/strokeDasharray', 0);
-        edge.attr('line/style/animation', '');
-        edge.attr('line/strokeWidth', 1);
-        if (nodeData.status == JOB_STATUS.FINISHED) {
-          edge.attr('line/stroke', '#52c41a');
-        } else if (nodeData.status == JOB_STATUS.CANCELED) {
-          edge.attr('line/stroke', '#ffe7ba');
-        } else if (nodeData.status == JOB_STATUS.FAILED) {
-          edge.attr('line/stroke', '#ff4d4f');
-        } else {
-          edge.attr('line/stroke', '#bfbfbf');
-        }
+  graph.getEdges().forEach((edge) => {
+    const nodeData = edge.getSourceNode()?.getData();
+    let stroke = '#bfbfbf';
+    let strokeDasharray = 0;
+    let strokeWidth = 1;
+    let animation = '';
+
+    switch (nodeData.status) {
+      case JOB_STATUS.RUNNING: {
+        stroke = '#3471F9';
+        strokeDasharray = 5;
+        strokeWidth = 2;
+        animation = 'running-line 30s infinite linear';
+        break;
       }
-    });
-  }
+      case JOB_STATUS.FINISHED:
+        stroke = '#52c41a';
+        break;
+      case JOB_STATUS.CANCELED:
+        stroke = '#ffe7ba';
+        break;
+      case JOB_STATUS.FAILED:
+        stroke = '#ff4d4f';
+        break;
+    }
+
+    edge.attr({ line: { strokeDasharray: strokeDasharray } });
+    edge.attr({ line: { strokeWidth: strokeWidth } });
+    edge.attr({ line: { animation: animation } });
+    edge.attr({ line: { stroke: stroke } });
+  });
 };
 
 export const regConnect = (sourcePoint: any, targetPoint: any) => {

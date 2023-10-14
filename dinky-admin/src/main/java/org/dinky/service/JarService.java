@@ -31,5 +31,10 @@ import java.util.List;
  */
 public interface JarService extends ISuperService<Jar> {
 
+    /**
+     * List all enabled jar files.
+     *
+     * @return A list of {@link Jar} objects representing all enabled jar files.
+     */
     List<Jar> listEnabledAll();
 }

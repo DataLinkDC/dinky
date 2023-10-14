@@ -29,9 +29,8 @@ public interface RoleMenuService extends ISuperService<RoleMenu> {
     /**
      * Assign menu to role
      *
-     * @param roleId role id
-     * @param menuId menu id
-     * @return boolean {@code true} if success, {@code false} if failed
+     * @param assignMenuToRoleDto
+     * @return
      */
     Result<Void> assignMenuToRole(AssignMenuToRoleDto assignMenuToRoleDto);
 }

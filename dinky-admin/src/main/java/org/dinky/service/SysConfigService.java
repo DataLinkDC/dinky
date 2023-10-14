@@ -33,9 +33,23 @@ import java.util.Map;
  */
 public interface SysConfigService extends ISuperService<SysConfig> {
 
+    /**
+     * Get all configurations.
+     *
+     * @return A map of string keys to lists of {@link Configuration} objects.
+     */
     Map<String, List<Configuration<?>>> getAll();
 
+    /**
+     * Initialize system configurations.
+     */
     void initSysConfig();
 
+    /**
+     * Update system configurations by key-value pairs.
+     *
+     * @param key The key of the configuration to update.
+     * @param value The new value of the configuration.
+     */
     void updateSysConfigByKv(String key, String value);
 }

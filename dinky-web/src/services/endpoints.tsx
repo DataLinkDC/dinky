@@ -224,7 +224,7 @@ export enum API_CONSTANTS {
   GET_JOBMANAGER_THREAD_DUMP = 'api/jobInstance/getJobManagerThreadDump',
   GET_TASKMANAGER_LIST = 'api/jobInstance/getTaskManagerList',
   GET_TASKMANAGER_LOG = 'api/jobInstance/getTaskManagerLog',
-  GET_JOB_MERTICE_ITEMS = 'api/jobInstance/getJobMetricsItems',
+  GET_JOB_METRICS_ITEMS = 'api/jobInstance/getJobMetricsItems',
   CANCEL_JOB = '/api/studio/cancel',
   // /api/studio/getLineage
   STUDIO_GET_LINEAGE = '/api/studio/getLineage',

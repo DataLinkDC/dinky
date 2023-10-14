@@ -113,8 +113,10 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
           if (!currentData || !currentTab) {
             return;
           }
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          typeof v === 'string' ? (currentData.statement = v) : never;
+
+          if (typeof v === 'string') {
+            currentData.statement = v;
+          }
           currentTab.isModified = true;
           dispatch({
             type: STUDIO_MODEL.saveTabs,
