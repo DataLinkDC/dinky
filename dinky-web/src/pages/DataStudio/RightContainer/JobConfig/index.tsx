@@ -102,7 +102,7 @@ const JobConfig = (props: any) => {
         pane.params.taskData[key] = all[key];
       }
     });
-
+    pane.isModified = true;
     dispatch({
       type: STUDIO_MODEL.saveTabs,
       payload: { ...props.tabs }

@@ -38,6 +38,7 @@ import {
   DataStudioTabsItemType,
   MetadataTabsItemType,
   StateType,
+  TabsPageSubType,
   TabsPageType,
   TaskDataType,
   VIEW
@@ -126,8 +127,10 @@ const HeaderContainer = (props: any) => {
   }, [dsConfig]);
 
   const handleSave = async () => {
-    await handlePutDataJson('/api/task', currentData);
+    const saved = await handlePutDataJson('/api/task', currentData);
     saveTabs({ ...props.tabs });
+    if (currentTab) currentTab.isModified = false;
+    return saved;
   };
 
   const handlerStop = () => {
@@ -151,23 +154,24 @@ const HeaderContainer = (props: any) => {
 
   const handlerSubmit = async () => {
     if (!currentData) return;
+    const saved = currentData.step == JOB_LIFE_CYCLE.ONLINE ? true : await handleSave();
+    if (saved) {
+      const res = await executeSql(
+        l('pages.datastudio.editor.submitting', '', { jobName: currentData.name }),
+        currentData.id
+      );
+      if (!res) return;
 
-    const res = await executeSql(
-      l('pages.datastudio.editor.submitting', '', { jobName: currentData.name }),
-      currentData.id
-    );
-    if (!res) return;
-
-    updateJobRunningMsg({
-      taskId: currentData.id,
-      jobName: currentData.name,
-      jobState: res.datas.status,
-      runningLog: res.msg
-    });
-
-    messageApi.success(l('pages.datastudio.editor.exec.success'));
-    currentData.status = JOB_STATUS.RUNNING;
-    saveTabs({ ...props.tabs });
+      updateJobRunningMsg({
+        taskId: currentData.id,
+        jobName: currentData.name,
+        jobState: res.datas.status,
+        runningLog: res.msg
+      });
+      messageApi.success(l('pages.datastudio.editor.exec.success'));
+      currentData.status = JOB_STATUS.RUNNING;
+      saveTabs({ ...props.tabs });
+    }
   };
 
   const handleChangeJobLife = async () => {
@@ -176,8 +180,11 @@ const HeaderContainer = (props: any) => {
       await offLinelTask(currentData.id);
       currentData.step = JOB_LIFE_CYCLE.DEVELOP;
     } else {
-      await onLineTask(currentData.id);
-      currentData.step = JOB_LIFE_CYCLE.ONLINE;
+      const saved = await handleSave();
+      if (saved) {
+        await onLineTask(currentData.id);
+        currentData.step = JOB_LIFE_CYCLE.ONLINE;
+      }
     }
     saveTabs({ ...props.tabs });
   };
@@ -253,7 +260,7 @@ const HeaderContainer = (props: any) => {
       isShow:
         currentTab?.type == TabsPageType.project &&
         currentData?.jobInstanceId &&
-        currentTab.subType == 'flinksql',
+        currentTab.subType == TabsPageSubType.flinkSql,
       props: {
         href: `/#/devops/job-detail?id=${currentData?.jobInstanceId}`,
         target: '_blank'

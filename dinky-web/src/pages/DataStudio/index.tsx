@@ -20,23 +20,13 @@ import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import { getConsoleData } from '@/pages/DataStudio/BottomContainer/Console/service';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import {
-  getCurrentTab,
-  isDataStudioTabsItemType,
-  mapDispatchToProps
-} from '@/pages/DataStudio/function';
+import { mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataBase } from '@/pages/DataStudio/LeftContainer/MetaData/service';
-import { getTaskData, getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
+import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import {
-  StateType,
-  TabsItemType,
-  TabsPageType,
-  TaskDataType,
-  VIEW
-} from '@/pages/DataStudio/model';
+import { StateType, TabsItemType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
   getClusterConfigurationData,
@@ -44,14 +34,11 @@ import {
   getSessionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide } from '@/pages/DataStudio/route';
-import { l } from '@/utils/intl';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Layout, Menu, Modal, theme, Typography } from 'antd';
+import { Layout, Menu, theme } from 'antd';
 import { useEffect, useState } from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
 import { connect, getDvaApp } from 'umi';
-
-const { Text } = Typography;
 
 const { Sider, Content } = Layout;
 
@@ -68,7 +55,6 @@ const DataStudio = (props: any) => {
     updateBottomConsole,
     saveSession,
     saveEnv,
-    saveTabs,
     updateCenterContentHeight,
     updateSelectLeftKey,
     updateSelectRightKey,
@@ -80,8 +66,6 @@ const DataStudio = (props: any) => {
   } = props;
   const { token } = useToken();
   const themeValue = useThemeValue();
-  const [isModalUpdateTabContentOpen, setIsModalUpdateTabContentOpen] = useState(false);
-  const [newTabData, setNewTabData] = useState<TaskDataType>();
   const app = getDvaApp(); // 获取dva的实例
   const persist = app._store.persist;
   const bottomHeight = bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
@@ -112,23 +96,6 @@ const DataStudio = (props: any) => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  useEffect(() => {
-    if (isModalUpdateTabContentOpen) {
-      Modal.confirm({
-        title: l('pages.datastudio.help.sqlChanged'),
-        keyboard: true,
-        content: (
-          <>
-            {' '}
-            <Text type={'danger'}>{l('pages.datastudio.help.sqlChangedPrompt')}</Text>
-          </>
-        ),
-        onOk: updateTabContent,
-        onCancel: () => setIsModalUpdateTabContentOpen(false)
-      });
-    }
-  }, [isModalUpdateTabContentOpen]);
-
   const loadData = async () => {
     Promise.all([
       getDataBase(),
@@ -145,70 +112,12 @@ const DataStudio = (props: any) => {
       saveEnv(res[4]);
       saveClusterConfiguration(res[5]);
     });
-
-    // 判断是否需要更新tab内容
-    if (!tabs.activeKey) {
-      return;
-    }
-
-    const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
-    if (!isDataStudioTabsItemType(currentTab)) {
-      return;
-    }
-
-    const params = currentTab.params;
-    const res = await getTaskDetails(params.taskId);
-    if (!res) {
-      return true;
-    }
-
-    const info = res as { [key: string]: any };
-    const changed = Object.keys(params.taskData).some((key) => {
-      // ignore this property
-      if (
-        [
-          'updateTime',
-          'createTime',
-          'jobInstanceId',
-          'useResult',
-          'maxRowNum',
-          'useChangeLog',
-          'useAutoCancel'
-        ].includes(key)
-      ) {
-        return false;
-      }
-
-      if (JSON.stringify(info[key]) !== JSON.stringify(params.taskData[key])) {
-        console.log('changed', key, info[key], params.taskData[key]);
-        return true;
-      }
-      return false;
-    });
-
-    if (changed) {
-      setIsModalUpdateTabContentOpen(true);
-      setNewTabData(res);
-    }
   };
 
   useEffect(() => {
     loadData();
     onResize();
   }, []);
-
-  const updateTabContent = () => {
-    const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
-    if (!isDataStudioTabsItemType(currentTab)) {
-      return;
-    }
-
-    if (!newTabData) return;
-
-    currentTab.params.taskData = newTabData;
-    saveTabs({ ...tabs });
-    setIsModalUpdateTabContentOpen(false);
-  };
 
   const access = useAccess();
 

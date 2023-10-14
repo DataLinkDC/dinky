@@ -165,7 +165,7 @@ export const getFooterValue = (panes: any, activeKey: string): Partial<FooterTyp
   return isDataStudioTabsItemType(currentTab)
     ? {
         codePosition: [1, 1],
-        codeType: currentTab.params.taskData.dialect
+        codeType: currentTab.subType
       }
     : {};
 };

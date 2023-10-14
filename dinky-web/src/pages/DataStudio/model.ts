@@ -103,6 +103,7 @@ export type TaskDataBaseType = {
   id: number;
   name: string;
   statement: string;
+  step: number;
 };
 
 export type TaskDataType = TaskDataBaseType & Record<string, any>;
@@ -120,7 +121,7 @@ export enum TabsPageType {
 }
 
 export enum TabsPageSubType {
-  flinkSql = 'flinksql'
+  flinkSql = 'FlinkSql'
 }
 
 export interface TabsItemType {

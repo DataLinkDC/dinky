@@ -18,7 +18,11 @@
 import ContentScroll from '@/components/Scroll/ContentScroll';
 import useThemeValue from '@/hooks/useThemeValue';
 import { STUDIO_TAG_RIGHT_CONTEXT_MENU } from '@/pages/DataStudio/constants';
-import { isDataStudioTabsItemType, isMetadataTabsItemType } from '@/pages/DataStudio/function';
+import {
+  getCurrentTab,
+  isDataStudioTabsItemType,
+  isMetadataTabsItemType
+} from '@/pages/DataStudio/function';
 import Editor from '@/pages/DataStudio/MiddleContainer/Editor';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
@@ -26,10 +30,15 @@ import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
 import { StateType, STUDIO_MODEL, TabsItemType, TabsPageType } from '@/pages/DataStudio/model';
 import { RightSide } from '@/pages/DataStudio/route';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
+import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
-import { ConfigProvider, Divider, Dropdown, Space, Tabs } from 'antd';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { ConfigProvider, Divider, Dropdown, Modal, Space, Tabs, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useState } from 'react';
+
+const { Text } = Typography;
+const { confirm } = Modal;
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
@@ -211,7 +220,7 @@ const MiddleContainer = (props: any) => {
         }
 
         const v = item.params;
-        return <Editor statement={v.taskData.statement} />;
+        return <Editor taskId={v.taskId} />;
       }
 
       if (isMetadataTabsItemType(item)) {
@@ -232,7 +241,10 @@ const MiddleContainer = (props: any) => {
           key={item.key}
         >
           {getTabIcon(item.icon, 16)}
-          {item.label}
+          <Text type={item.isModified ? 'success' : undefined}>
+            {item.label}
+            {item.isModified ? '*' : ''}
+          </Text>
         </Space>
       ),
       children: (
@@ -247,7 +259,7 @@ const MiddleContainer = (props: any) => {
    * 关闭tab
    * @param {TargetKey} targetKey
    */
-  const closeTab = (targetKey: TargetKey) => {
+  const handleCloseTab = (targetKey: string) => {
     if (panes.length === 1) {
       dispatch({
         type: STUDIO_MODEL.updateSelectRightKey,
@@ -259,6 +271,23 @@ const MiddleContainer = (props: any) => {
       type: STUDIO_MODEL.closeTab,
       payload: targetKey
     });
+  };
+  const closeTab = (targetKey: TargetKey) => {
+    if (typeof targetKey == 'string') {
+      const tab = getCurrentTab(panes, targetKey);
+      if (tab?.isModified) {
+        confirm({
+          title: l('pages.datastudio.editor.notsave'),
+          icon: <ExclamationCircleFilled />,
+          content: l('pages.datastudio.editor.notsave.note'),
+          onOk() {
+            handleCloseTab(targetKey);
+          }
+        });
+      } else {
+        handleCloseTab(targetKey);
+      }
+    }
   };
 
   /**
