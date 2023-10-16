@@ -52,7 +52,6 @@ public class FlinkColumnUtil {
                         Column column = Column.builder()
                                 .name(flinkColumn.getName())
                                 .type(logicalType.getTypeRoot().name())
-                                .comment(flinkColumn.getComment().orElse(""))
                                 .keyFlag(isPrimaryKey.get())
                                 .isNullable(logicalType.isNullable())
                                 .position(i)
