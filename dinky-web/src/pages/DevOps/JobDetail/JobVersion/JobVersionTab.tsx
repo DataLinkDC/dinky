@@ -72,7 +72,7 @@ const JobVersionTab = (props: JobProps) => {
         </Col>
         <Col span={21}>
           <Card
-            title={'V' + currentVersion?.versionId}
+            title={'V-' + currentVersion?.versionId}
             bordered={false}
             extra={
               <>
