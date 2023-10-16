@@ -22,7 +22,6 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
-import { CLUSTER_CONFIG_TYPE } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
 import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
 import {
@@ -62,6 +61,7 @@ import {
   Typography
 } from 'antd';
 import { useEffect, useRef, useState } from 'react';
+import {CLUSTER_INSTANCE_TYPE} from "@/pages/RegCenter/Cluster/Instance/components/contants";
 const { Text, Paragraph, Link } = Typography;
 
 export default () => {
@@ -222,7 +222,7 @@ export default () => {
                 disabled={!HasAuthority('/registration/cluster/instance/edit')}
               />
               <Tag color='cyan'>
-                {CLUSTER_CONFIG_TYPE.find((record) => item.type === record.value)?.label}
+                {CLUSTER_INSTANCE_TYPE.find((record) => item.type === record.value)?.label}
               </Tag>
               <Tag
                 icon={item.status === 1 ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}

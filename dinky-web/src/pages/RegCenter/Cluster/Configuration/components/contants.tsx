@@ -38,21 +38,6 @@ export const CLUSTER_CONFIG_TYPE: DefaultOptionType[] = [
     value: ClusterType.KUBERNETES_OPERATOR,
     label: 'Kubernetes Operator',
     key: ClusterType.KUBERNETES_OPERATOR
-  },
-  {
-    value: ClusterType.STANDALONE,
-    label: 'Standalone',
-    key: ClusterType.STANDALONE
-  },
-  {
-    value: ClusterType.YARN_SESSION,
-    label: 'Yarn Session',
-    key: ClusterType.YARN_SESSION
-  },
-  {
-    value: ClusterType.KUBERNETES_SESSION,
-    label: 'Kubernetes Session',
-    key: ClusterType.KUBERNETES_SESSION
   }
 ];
 

@@ -22,15 +22,10 @@ package org.dinky.data.dto;
 import org.dinky.config.Dialect;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.TaskExtConfig;
-import org.dinky.data.typehandler.TaskExtConfigTypeHandler;
 import org.dinky.job.JobConfig;
-
-import org.apache.ibatis.type.JdbcType;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import com.baomidou.mybatisplus.annotation.TableField;
 
 import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;
@@ -174,7 +169,6 @@ public class TaskDTO extends AbstractStatementDTO {
             value = "Configuration JSON",
             dataType = "TaskExtConfig",
             notes = "Extended configuration in JSON format for the task")
-    @TableField(typeHandler = TaskExtConfigTypeHandler.class, jdbcType = JdbcType.VARCHAR)
     private TaskExtConfig configJson;
 
     @ApiModelProperty(value = "Path", dataType = "String", notes = "Path associated with the task")

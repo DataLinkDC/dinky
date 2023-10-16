@@ -24,8 +24,10 @@ import org.dinky.data.flink.config.CheckpointConfigInfo;
 import org.dinky.data.flink.config.FlinkJobConfigInfo;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.flink.job.FlinkJobDetailInfo;
+import org.dinky.data.model.TaskExtConfig;
 import org.dinky.data.model.handler.ClusterConfigurationHandler;
 import org.dinky.data.model.handler.ClusterInstanceHandler;
+import org.dinky.gateway.model.FlinkClusterConfig;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
@@ -45,7 +47,9 @@ import lombok.extern.slf4j.Slf4j;
     CheckpointConfigInfo.class,
     FlinkJobConfigInfo.class,
     ClusterInstanceHandler.class,
-    ClusterConfigurationHandler.class
+    ClusterConfigurationHandler.class,
+    FlinkClusterConfig.class,
+    TaskExtConfig.class
 })
 public class JSONObjectHandler<T> extends AbstractJsonTypeHandler<T> {
 
