@@ -104,7 +104,7 @@ public class TaskDTO extends AbstractStatementDTO {
     private boolean batchModel;
 
     @ApiModelProperty(
-            value = "Cluster ID",
+            value = "ClusterInstance ID",
             dataType = "Integer",
             example = "1",
             notes = "The identifier of the cluster")
@@ -167,8 +167,7 @@ public class TaskDTO extends AbstractStatementDTO {
     @ApiModelProperty(value = "Statement", dataType = "String", notes = "SQL statement for the task")
     private String statement;
 
-    @ApiModelProperty(value = "Cluster Name", dataType = "String", notes = "Name of the associated cluster")
-    @TableField(exist = false)
+    @ApiModelProperty(value = "ClusterInstance Name", dataType = "String", notes = "Name of the associated cluster")
     private String clusterName;
 
     @ApiModelProperty(
@@ -179,30 +178,24 @@ public class TaskDTO extends AbstractStatementDTO {
     private TaskExtConfig configJson;
 
     @ApiModelProperty(value = "Path", dataType = "String", notes = "Path associated with the task")
-    @TableField(exist = false)
     private String path;
 
     @ApiModelProperty(value = "JAR Name", dataType = "String", notes = "Name of the associated JAR")
-    @TableField(exist = false)
     private String jarName;
 
     @ApiModelProperty(
             value = "Cluster Configuration Name",
             dataType = "String",
             notes = "Name of the associated cluster configuration")
-    @TableField(exist = false)
     private String clusterConfigurationName;
 
     @ApiModelProperty(value = "Database Name", dataType = "String", notes = "Name of the associated database")
-    @TableField(exist = false)
     private String databaseName;
 
     @ApiModelProperty(value = "Environment Name", dataType = "String", notes = "Name of the associated environment")
-    @TableField(exist = false)
     private String envName;
 
     @ApiModelProperty(value = "Alert Group Name", dataType = "String", notes = "Name of the associated alert group")
-    @TableField(exist = false)
     private String alertGroupName;
 
     @ApiModelProperty(

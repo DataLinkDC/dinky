@@ -110,7 +110,7 @@ const TokenList = (props: any) => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      width: '5vw',
+      width: '10%',
       fixed: 'right',
       render: (_, record: SysToken) => [
         <Authorized key={`${record.id}_edit_auth`} path='/auth/token/edit'>

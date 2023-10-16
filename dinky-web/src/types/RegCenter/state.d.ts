@@ -65,6 +65,7 @@ export interface ClusterConfigState extends BaseState {
  */
 export interface ClusterInstanceState extends BaseState {
   value: Partial<Cluster.Instance>;
+  instanceList: Cluster.Instance[];
 }
 
 /**

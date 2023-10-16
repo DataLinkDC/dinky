@@ -86,7 +86,8 @@ export const InitClusterInstanceState: ClusterInstanceState = {
   loading: false,
   addedOpen: false,
   editOpen: false,
-  value: {}
+  value: {},
+  instanceList: []
 };
 
 /**

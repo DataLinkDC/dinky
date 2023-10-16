@@ -44,8 +44,8 @@ public class JobInfoDetail {
     @ApiModelProperty(value = "Job Instance", notes = "Details about the job instance")
     private JobInstance instance;
 
-    @ApiModelProperty(value = "Cluster", notes = "Details about the cluster")
-    private Cluster cluster;
+    @ApiModelProperty(value = "ClusterInstance", notes = "Details about the cluster Instance")
+    private ClusterInstance clusterInstance;
 
     @ApiModelProperty(value = "Cluster Configuration", notes = "Details about the cluster configuration")
     private ClusterConfigurationDTO clusterConfiguration;

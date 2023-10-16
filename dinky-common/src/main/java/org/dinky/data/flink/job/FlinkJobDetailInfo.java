@@ -23,11 +23,11 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -177,56 +177,83 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "FlinkJobDetailInfo", description = "Flink Job Detail Info")
 @Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class FlinkJobDetailInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "jid", notes = "jid", dataType = "String", example = "1")
-    @JSONField(name = "jid")
+    @JsonProperty(value = "jid")
     private String jid;
 
     @ApiModelProperty(value = "name", notes = "name", dataType = "String", example = "1")
-    @JSONField(name = "name")
+    @JsonProperty(value = "name")
     private String name;
 
     @ApiModelProperty(value = "state", notes = "state", dataType = "String", example = "1")
-    @JSONField(name = "state")
+    @JsonProperty(value = "state")
     private String state;
 
     @ApiModelProperty(value = "start-time", notes = "start-time", dataType = "long", example = "1")
-    @JSONField(name = "start-time")
+    @JsonProperty(value = "start-time")
     private Long startTime;
 
     @ApiModelProperty(value = "end-time", notes = "end-time", dataType = "long", example = "1")
-    @JSONField(name = "end-time")
+    @JsonProperty(value = "end-time")
     private Long endTime;
 
     @ApiModelProperty(value = "duration", notes = "duration", dataType = "long", example = "1")
-    @JSONField(name = "duration")
+    @JsonProperty(value = "duration")
     private Long duration;
 
     @ApiModelProperty(value = "maxParallelism", notes = "maxParallelism", dataType = "long", example = "1")
-    @JSONField(name = "maxParallelism")
+    @JsonProperty(value = "maxParallelism")
     private Long maxParallelism;
 
     @ApiModelProperty(value = "now", notes = "now", dataType = "long", example = "1")
-    @JSONField(name = "now")
+    @JsonProperty(value = "now")
     private Long now;
 
     @ApiModelProperty(value = "timestamps", notes = "timestamps", dataType = "long", example = "1")
-    @JSONField(name = "timestamps")
+    @JsonProperty(value = "timestamps")
     private Map<String, Long> timestamps;
 
     @ApiModelProperty(value = "vertices", notes = "vertices", dataType = "List", example = "1")
-    @JSONField(name = "vertices")
+    @JsonProperty(value = "vertices")
     private List<FlinkJobVertex> vertices;
 
     @ApiModelProperty(value = "status-counts", notes = "status-counts", dataType = "Map", example = "1")
-    @JSONField(name = "status-counts")
+    @JsonProperty(value = "status-counts")
     private Map<String, Integer> statusCounts;
 
     @ApiModelProperty(value = "plan", notes = "plan", dataType = "FlinkJobPlan", example = "1")
-    @JSONField(name = "plan")
+    @JsonProperty(value = "plan")
     private FlinkJobPlan plan;
+
+    @JsonCreator
+    public FlinkJobDetailInfo(
+            @JsonProperty(value = "jid") String jid,
+            @JsonProperty(value = "name") String name,
+            @JsonProperty(value = "state") String state,
+            @JsonProperty(value = "start-time") Long startTime,
+            @JsonProperty(value = "end-time") Long endTime,
+            @JsonProperty(value = "duration") Long duration,
+            @JsonProperty(value = "maxParallelism") Long maxParallelism,
+            @JsonProperty(value = "now") Long now,
+            @JsonProperty(value = "timestamps") Map<String, Long> timestamps,
+            @JsonProperty(value = "vertices") List<FlinkJobVertex> vertices,
+            @JsonProperty(value = "status-counts") Map<String, Integer> statusCounts,
+            @JsonProperty(value = "plan") FlinkJobPlan plan) {
+        this.jid = jid;
+        this.name = name;
+        this.state = state;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.duration = duration;
+        this.maxParallelism = maxParallelism;
+        this.now = now;
+        this.timestamps = timestamps;
+        this.vertices = vertices;
+        this.statusCounts = statusCounts;
+        this.plan = plan;
+    }
 }

@@ -202,8 +202,7 @@ alter table dinky_user
 
 alter table dinky_user_tenant add tenant_admin_flag tinyint default 0  comment 'tenant admin flag(0:false,1:true)' after tenant_id;
 
-alter table dinky_task
-    add statement text null;
+alter table dinky_task add column `statement` longtext DEFAULT NULL COMMENT 'job statement';
 
 drop table dinky_namespace;
 drop table dinky_role_namespace;

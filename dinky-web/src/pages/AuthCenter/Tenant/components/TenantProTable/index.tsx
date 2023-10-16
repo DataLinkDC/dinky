@@ -178,7 +178,8 @@ const TenantProTable: React.FC = () => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      width: '10vh',
+      width: '10%',
+      fixed: 'right',
       render: (_: any, record: UserBaseInfo.Tenant) => [
         <Authorized key={`${record.id}_edit_auth`} path='/auth/tenant/edit'>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />

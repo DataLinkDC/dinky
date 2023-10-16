@@ -21,11 +21,11 @@ package org.dinky.data.flink.config;
 
 import java.io.Serializable;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -44,7 +44,6 @@ import lombok.NoArgsConstructor;
  */
 @ApiModel(value = "FlinkJobConfigInfo", description = "Flink Job Config Info")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class FlinkJobConfigInfo implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -55,14 +54,24 @@ public class FlinkJobConfigInfo implements Serializable {
             notes = "Job ID",
             dataType = "String",
             example = "62254c597e60e3b978e1663f29b333cd")
-    @JSONField(name = "jid")
+    @JsonProperty("jid")
     private String jid;
 
     @ApiModelProperty(value = "Job Name", required = true, notes = "Job Name", dataType = "String", example = "test")
-    @JSONField(name = "name")
+    @JsonProperty("name")
     private String name;
 
     @ApiModelProperty(value = "Execution Config", required = true, notes = "Execution Config", dataType = "ObjectNode")
-    @JSONField(name = "execution-config")
+    @JsonProperty("execution-config")
     private ExecutionConfig executionConfig;
+
+    @JsonCreator
+    public FlinkJobConfigInfo(
+            @JsonProperty("jid") String jid,
+            @JsonProperty("name") String name,
+            @JsonProperty("execution-config") ExecutionConfig executionConfig) {
+        this.jid = jid;
+        this.name = name;
+        this.executionConfig = executionConfig;
+    }
 }

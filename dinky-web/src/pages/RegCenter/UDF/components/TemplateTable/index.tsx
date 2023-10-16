@@ -191,7 +191,8 @@ const TemplateTable: React.FC = () => {
     },
     {
       title: l('global.table.operate'),
-      width: '10vh',
+      width: '8%',
+      fixed: 'right',
       hideInSearch: true,
       hideInDescriptions: true,
       render: (text: any, record: UDFTemplate) => [
@@ -230,7 +231,7 @@ const TemplateTable: React.FC = () => {
         columns={columns}
       />
       {/* added */}
-      {templateState.editOpen && (
+      {templateState.addedOpen && (
         <TemplateModal
           values={templateState.value}
           visible={templateState.addedOpen}

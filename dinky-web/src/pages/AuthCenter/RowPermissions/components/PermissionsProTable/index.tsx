@@ -141,7 +141,8 @@ const PermissionsProTable: React.FC = () => {
       title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
-      width: '10vh',
+      width: '10%',
+      fixed: 'right',
       render: (_: any, record: RowPermissions) => [
         <Authorized key={`${record.id}_edit_auth`} path='/auth/rowPermissions/edit'>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />

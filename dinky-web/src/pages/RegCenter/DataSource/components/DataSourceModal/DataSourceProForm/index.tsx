@@ -128,7 +128,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             </ProForm.Item>
           </AutoComplete>
         </ProForm.Group>
-
+        <br />
         {!excludeFormItem && (
           <ProFormGroup>
             <ProForm.Item

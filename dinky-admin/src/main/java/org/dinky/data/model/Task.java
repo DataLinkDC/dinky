@@ -94,7 +94,7 @@ public class Task extends SuperEntity<Task> {
     private Boolean batchModel;
 
     @ApiModelProperty(
-            value = "Cluster ID",
+            value = "ClusterInstance ID",
             dataType = "Integer",
             example = "2001",
             notes = "ID of the cluster associated with the task")

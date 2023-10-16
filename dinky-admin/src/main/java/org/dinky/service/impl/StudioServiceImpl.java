@@ -26,7 +26,7 @@ import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
 import org.dinky.data.model.Catalog;
-import org.dinky.data.model.Cluster;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.FlinkColumn;
 import org.dinky.data.model.Schema;
@@ -131,10 +131,10 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public List<JsonNode> listFlinkJobs(Integer clusterId) {
-        Cluster cluster = clusterInstanceService.getById(clusterId);
-        Asserts.checkNotNull(cluster, "该集群不存在");
+        ClusterInstance clusterInstance = clusterInstanceService.getById(clusterId);
+        Asserts.checkNotNull(clusterInstance, "该集群不存在");
         try {
-            return FlinkAPI.build(cluster.getJobManagerHost()).listJobs();
+            return FlinkAPI.build(clusterInstance.getJobManagerHost()).listJobs();
         } catch (Exception e) {
             log.info("查询作业时集群不存在");
         }

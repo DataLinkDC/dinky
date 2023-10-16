@@ -75,7 +75,7 @@ const TenantUserList: React.FC<TenantUserListProps> = (props) => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      width: '12vh',
+      width: '10%',
       fixed: 'right',
       render: (_: any, record: UserBaseInfo.User) => [
         <Authorized key={`${record.id}_set_tenant_m_auth`} path='/auth/tenant/modifyTenantManager'>

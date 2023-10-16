@@ -50,7 +50,7 @@ public class History implements Serializable {
     @ApiModelProperty(value = "Tenant ID", dataType = "Integer", example = "1", required = true)
     private Integer tenantId;
 
-    @ApiModelProperty(value = "Cluster ID", dataType = "Integer")
+    @ApiModelProperty(value = "ClusterInstance ID", dataType = "Integer")
     private Integer clusterId;
 
     @ApiModelProperty(value = "Cluster Configuration ID", dataType = "Integer")

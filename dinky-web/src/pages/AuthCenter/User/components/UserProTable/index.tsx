@@ -245,7 +245,7 @@ const UserProTable = () => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      width: '10vw',
+      width: '12%',
       fixed: 'right',
       render: (_: any, record: UserBaseInfo.User) => [
         <Authorized key={`${record.id}_enable_auth`} path='/auth/user/edit'>
