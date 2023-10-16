@@ -24,21 +24,18 @@ import org.dinky.data.flink.config.CheckpointConfigInfo;
 import org.dinky.data.flink.config.FlinkJobConfigInfo;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.flink.job.FlinkJobDetailInfo;
+import org.dinky.data.model.handler.ClusterConfigurationHandler;
+import org.dinky.data.model.handler.ClusterInstanceHandler;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 
-import com.alibaba.fastjson.JSONValidator;
+import com.alibaba.fastjson2.JSONValidator;
 
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @author ZackYoung
- * @version 1.0
- * @date 2022/1/12
- */
 @Slf4j
 @MappedJdbcTypes(value = JdbcType.VARCHAR, includeNullJdbcType = true)
 @MappedTypes({
@@ -47,6 +44,8 @@ import lombok.extern.slf4j.Slf4j;
     CheckPointOverView.class,
     CheckpointConfigInfo.class,
     FlinkJobConfigInfo.class,
+    ClusterInstanceHandler.class,
+    ClusterConfigurationHandler.class
 })
 public class JSONObjectHandler<T> extends AbstractJsonTypeHandler<T> {
 

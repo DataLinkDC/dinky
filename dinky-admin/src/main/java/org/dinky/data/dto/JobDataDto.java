@@ -25,6 +25,8 @@ import org.dinky.data.flink.config.FlinkJobConfigInfo;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.flink.job.FlinkJobDetailInfo;
 import org.dinky.data.model.JobHistory;
+import org.dinky.data.model.handler.ClusterConfigurationHandler;
+import org.dinky.data.model.handler.ClusterInstanceHandler;
 import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
@@ -77,10 +79,10 @@ public class JobDataDto {
     private JsonNode jar;
 
     @ApiModelProperty(value = "ClusterInstance Object", notes = "Object representing the cluster")
-    private JsonNode cluster;
+    private ClusterInstanceHandler cluster;
 
     @ApiModelProperty(value = "Cluster Configuration Object", notes = "Object representing cluster configuration")
-    private JsonNode clusterConfiguration;
+    private ClusterConfigurationHandler clusterConfiguration;
 
     @ApiModelProperty(
             value = "Error Flag",
@@ -106,8 +108,8 @@ public class JobDataDto {
                 .checkpointsConfigJson(this.checkpointsConfig)
                 .configJson(this.config)
                 .jarJson(JSONUtil.toJsonStr(getJar()))
-                .clusterJson(JSONUtil.toJsonStr(getCluster()))
-                .clusterConfigurationJson(JSONUtil.toJsonStr(getClusterConfiguration()))
+                .clusterJson(this.cluster)
+                .clusterConfigurationJson(this.clusterConfiguration)
                 .updateTime(LocalDateTime.now())
                 .build();
     }
@@ -122,8 +124,8 @@ public class JobDataDto {
                 .checkpointsConfig(jobHistory.getCheckpointsConfigJson())
                 .config(jobHistory.getConfigJson())
                 .jar(JsonUtils.parseToJsonNode(jobHistory.getJarJson()))
-                .cluster(JsonUtils.parseToJsonNode(jobHistory.getClusterJson()))
-                .clusterConfiguration(JsonUtils.parseToJsonNode(jobHistory.getClusterConfigurationJson()))
+                .cluster(jobHistory.getClusterJson())
+                .clusterConfiguration(jobHistory.getClusterConfigurationJson())
                 .build();
     }
 }

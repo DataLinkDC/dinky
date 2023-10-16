@@ -24,6 +24,8 @@ import org.dinky.data.flink.config.CheckpointConfigInfo;
 import org.dinky.data.flink.config.FlinkJobConfigInfo;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.flink.job.FlinkJobDetailInfo;
+import org.dinky.data.model.handler.ClusterConfigurationHandler;
+import org.dinky.data.model.handler.ClusterInstanceHandler;
 import org.dinky.data.typehandler.JSONObjectHandler;
 
 import java.io.Serializable;
@@ -119,14 +121,16 @@ public class JobHistory implements Serializable {
             dataType = "String",
             example = "{\"clusterName\": \"exampleCluster\"}",
             notes = "JSON representation of the cluster")
-    private String clusterJson;
+    @TableField(typeHandler = JSONObjectHandler.class)
+    private ClusterInstanceHandler clusterJson;
 
     @ApiModelProperty(
             value = "Cluster Configuration JSON",
             dataType = "String",
             example = "{\"configParam\": \"value\"}",
             notes = "JSON representation of cluster configuration")
-    private String clusterConfigurationJson;
+    @TableField(typeHandler = JSONObjectHandler.class)
+    private ClusterConfigurationHandler clusterConfigurationJson;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(
