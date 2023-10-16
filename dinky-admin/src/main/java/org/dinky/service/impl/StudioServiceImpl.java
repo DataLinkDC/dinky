@@ -197,7 +197,7 @@ public class StudioServiceImpl implements StudioService {
             String catalogName = studioMetaStoreDTO.getCatalog();
             customTableEnvironment.useCatalog(catalogName);
             customTableEnvironment.useDatabase(database);
-            for (String tableName : customTableEnvironment.listTables(catalogName, database)) {
+            for (String tableName : customTableEnvironment.getCatalogManager().listTables(catalogName, database)) {
                 Table table = Table.build(tableName, catalogName);
                 tables.add(table);
             }
