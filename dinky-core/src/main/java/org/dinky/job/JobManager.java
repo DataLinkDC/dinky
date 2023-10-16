@@ -56,8 +56,6 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.parser.SqlType;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.model.ProcessEntity;
 import org.dinky.trans.Operations;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.LogUtil;
@@ -90,9 +88,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
@@ -102,11 +97,10 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class JobManager {
-
-    private static final Logger logger = LoggerFactory.getLogger(JobManager.class);
-
     private JobHandler handler;
     private ExecutorConfig executorConfig;
     private JobConfig config;
@@ -166,7 +160,7 @@ public class JobManager {
         JobManager manager = new JobManager(config);
         manager.setPlanMode(true);
         manager.init();
-        ProcessContextHolder.getProcess().info("Build Flink plan mode success.");
+        log.info("Build Flink plan mode success.");
         return manager;
     }
 
@@ -217,7 +211,7 @@ public class JobManager {
         if (taskId == null) {
             taskId = -RandomUtil.randomInt(0, 1000);
         }
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        // TODO 改为ProcessStep注释
 
         // 这里要分开
         // 1. 得到jar包路径，注入remote环境
@@ -267,12 +261,12 @@ public class JobManager {
 
             addConfigurationClsAndJars(jarList, CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
         } catch (Exception e) {
-            logger.error("add configuration failed;reason:{}", LogUtil.getError(e));
+            log.error("add configuration failed;reason:{}", LogUtil.getError(e));
             throw new RuntimeException(e);
         }
 
-        process.info(StrUtil.format("A total of {} UDF have been Init.", udfList.size() + pyUdfFile.size()));
-        process.info("Initializing Flink UDF...Finish");
+        log.info(StrUtil.format("A total of {} UDF have been Init.", udfList.size() + pyUdfFile.size()));
+        log.info("Initializing Flink UDF...Finish");
     }
 
     private void writeManifest(Integer taskId, List<URL> jarPaths) {
@@ -307,7 +301,7 @@ public class JobManager {
     }
 
     public JobResult executeSql(String statement) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        // TODO 改为ProcessStep注释
         Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);
         if (!useGateway) {
             job.setJobManagerAddress(executorConfig.getJobManagerAddress());
@@ -529,7 +523,7 @@ public class JobManager {
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
-            process.error(error);
+            log.error(error);
             failed();
         } finally {
             close();
@@ -637,7 +631,7 @@ public class JobManager {
             try {
                 return FlinkAPI.build(config.getAddress()).stop(jobId);
             } catch (Exception e) {
-                logger.error("停止作业时集群不存在: " + e);
+                log.error("停止作业时集群不存在: " + e);
             }
             return false;
         }
@@ -663,7 +657,7 @@ public class JobManager {
     }
 
     public JobResult executeJar() {
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        // TODO 改为ProcessStep注释
         Job job = Job.init(runMode, config, executorConfig, executor, null, useGateway);
         JobContextHolder.setJob(job);
         ready();
@@ -693,7 +687,7 @@ public class JobManager {
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
             failed();
-            process.error(error);
+            log.error(error);
         } finally {
             close();
         }

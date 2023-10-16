@@ -40,8 +40,6 @@ import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 import org.dinky.parser.SqlType;
 import org.dinky.parser.check.AddJarSqlParser;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.model.ProcessEntity;
 import org.dinky.trans.Operations;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.LogUtil;
@@ -57,22 +55,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Explainer
  *
  * @since 2021/6/22
  */
+@Slf4j
 public class Explainer {
-    private static final Logger logger = LoggerFactory.getLogger(Explainer.class);
 
     private Executor executor;
     private boolean useStatementSet;
@@ -184,8 +180,7 @@ public class Explainer {
     }
 
     public ExplainResult explainSql(String statement) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
-        process.info("Start explain FlinkSQL...");
+        log.info("Start explain FlinkSQL...");
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
         int index = 1;
@@ -207,7 +202,7 @@ public class Explainer {
                 record.setIndex(index);
                 sqlExplainRecords.add(record);
                 correct = false;
-                process.error(error);
+                log.error(error);
                 break;
             }
             record.setExplainTrue(true);
@@ -241,7 +236,7 @@ public class Explainer {
                             record.setParseTrue(false);
                             record.setExplainTrue(false);
                             correct = false;
-                            process.error(error);
+                            log.error(error);
                             break;
                         } finally {
                             record.setType("Modify DML");
@@ -264,7 +259,7 @@ public class Explainer {
                         record.setParseTrue(false);
                         record.setExplainTrue(false);
                         correct = false;
-                        process.error(error);
+                        log.error(error);
                     } finally {
                         record.setType("Modify DML");
                         record.setExplainTime(LocalDateTime.now());
@@ -286,7 +281,7 @@ public class Explainer {
                         record.setParseTrue(false);
                         record.setExplainTrue(false);
                         correct = false;
-                        process.error(error);
+                        log.error(error);
                     } finally {
                         record.setType("Modify DML");
                         record.setExplainTime(LocalDateTime.now());
@@ -317,7 +312,7 @@ public class Explainer {
                 record.setIndex(index);
                 sqlExplainRecords.add(record);
                 correct = false;
-                process.error(error);
+                log.error(error);
                 break;
             }
             record.setExplainTrue(true);
@@ -326,7 +321,7 @@ public class Explainer {
             record.setIndex(index++);
             sqlExplainRecords.add(record);
         }
-        process.info(StrUtil.format("A total of {} FlinkSQL have been Explained.", sqlExplainRecords.size()));
+        log.info(StrUtil.format("A total of {} FlinkSQL have been Explained.", sqlExplainRecords.size()));
         return new ExplainResult(correct, sqlExplainRecords.size(), sqlExplainRecords);
     }
 
@@ -387,7 +382,7 @@ public class Explainer {
                     executor.executeSql(sql);
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage());
+                log.error(e.getMessage());
                 return lineageRelList;
             }
         }

@@ -17,20 +17,19 @@
  *
  */
 
-package org.dinky.process.pool;
+package org.dinky.process.annotations;
 
-import org.dinky.pool.AbstractPool;
-import org.dinky.process.model.ProcessEntity;
+import org.dinky.process.enums.ProcessStepType;
 
-/**
- * ProcessPool
- *
- * @since 2022/10/16 17:00
- */
-public class ProcessPool extends AbstractPool<String, ProcessEntity> {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    public static final ProcessPool INSTANCE = new ProcessPool();
-
-    @Override
-    public void refresh(ProcessEntity entity) {}
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface ProcessStep {
+    ProcessStepType type();
 }

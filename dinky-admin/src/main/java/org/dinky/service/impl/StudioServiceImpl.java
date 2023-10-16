@@ -41,9 +41,6 @@ import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.enums.ProcessType;
-import org.dinky.process.model.ProcessEntity;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.StudioService;
@@ -59,7 +56,6 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -102,17 +98,16 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public LineageResult getLineage(StudioCADTO studioCADTO) {
-        ProcessEntity process = ProcessContextHolder.registerProcess(
-                ProcessEntity.init(ProcessType.LINEAGE, StpUtil.getLoginIdAsInt()));
+        // TODO 添加ProcessStep
         if (Asserts.isNotNullString(studioCADTO.getDialect())
                 && !Dialect.FLINK_SQL.equalsVal(studioCADTO.getDialect())) {
             if (Asserts.isNull(studioCADTO.getDatabaseId())) {
-                process.error("Job's data source not selected!");
+                log.error("Job's data source not selected!");
                 return null;
             }
             DataBase dataBase = dataBaseService.getById(studioCADTO.getDatabaseId());
             if (Asserts.isNull(dataBase)) {
-                process.error("Job's data source does not exist!");
+                log.error("Job's data source does not exist!");
                 return null;
             }
             if (Dialect.DORIS.equalsVal(studioCADTO.getDialect())) {

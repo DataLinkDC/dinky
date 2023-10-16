@@ -70,10 +70,9 @@ import org.dinky.mapper.TaskMapper;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.parser.SqlType;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.enums.ProcessType;
+import org.dinky.process.annotations.ProcessStep;
+import org.dinky.process.enums.ProcessStepType;
 import org.dinky.process.exception.ExcuteException;
-import org.dinky.process.model.ProcessEntity;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.ClusterConfigurationService;
@@ -112,6 +111,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -123,7 +123,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.tree.Tree;
@@ -153,6 +152,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final UDFTemplateService udfTemplateService;
     private final DataSourceProperties dsProperties;
     private final UserService userService;
+    private final ApplicationContext applicationContext;
 
     @Resource
     @Lazy
@@ -170,7 +170,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 .split(" ");
     }
 
-    private void preCheckTask(TaskDTO task) throws TaskNotDoneException, SqlExplainExcepition {
+    @ProcessStep(type = ProcessStepType.SUBMIT_PRECHECK)
+    public void preCheckTask(TaskDTO task) throws TaskNotDoneException, SqlExplainExcepition {
+        log.info("Start check and config task, task:{}", task.getName());
 
         Assert.notNull(task, Status.TASK_NOT_EXIST.getMessage());
 
@@ -183,6 +185,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
         }
 
+        log.info("Start explain Sql,task: {},Dialect:{}", task.getName(), task.getDialect());
+
         List<SqlExplainResult> sqlExplainResults = explainTask(task);
         for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
             if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
@@ -193,38 +197,46 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                         sqlExplainResult.getError()));
             }
         }
+
+        log.info("Explain Sql finish");
     }
 
+    @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJob(TaskDTO task) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        JobResult jobResult;
         if (Dialect.isCommonSql(task.getDialect())) {
-            process.info("Preparing to execute common sql...");
-            JobResult jobResult =
-                    dataBaseService.executeCommonSql(SqlDTO.build(task.getStatement(), task.getDatabaseId(), null));
+            log.info("Preparing to execute common sql...");
+            SqlDTO sqlDTO = SqlDTO.build(task.getStatement(), task.getDatabaseId(), null);
+            jobResult = dataBaseService.executeCommonSql(sqlDTO);
             ResultPool.putCommonSqlCache(task.getId(), (JdbcSelectResult) jobResult.getResult());
-            return jobResult;
         } else {
-            process.info("Initializing Flink job config...");
-            JobManager jobManager = JobManager.build(buildJobConfig(task));
-            return jobManager.executeSql(task.getStatement());
+            log.info("Initializing Flink job config...");
+            JobManager jobManager = JobManager.build(
+                    applicationContext.getBean(TaskServiceImpl.class).buildJobConfig(task));
+            jobResult = jobManager.executeSql(task.getStatement());
         }
+        log.info("execute job finished,status is {}", jobResult.getStatus());
+        return jobResult;
     }
 
-    private JobConfig buildJobConfig(TaskDTO task) {
+    @ProcessStep(type = ProcessStepType.SUBMIT_BUILD_CONFIG)
+    public JobConfig buildJobConfig(TaskDTO task) {
         task.setStatement(buildEnvSql(task) + task.getStatement());
         JobConfig config = task.getJobConfig();
-
         Savepoints savepoints = savepointsService.getSavePointWithStrategy(task);
         if (Asserts.isNotNull(savepoints)) {
+            log.info("Init savePoint");
             config.setSavePointPath(savepoints.getPath());
             config.getConfigJson().put("execution.savepoint.path", savepoints.getPath()); // todo: 写工具类处理相关配置
         }
         if (GatewayType.get(task.getType()).isDeployCluster()) {
+            log.info("Init gateway config, type:{}", task.getType());
             FlinkClusterConfig flinkClusterCfg =
                     clusterCfgService.getFlinkClusterCfg(config.getClusterConfigurationId());
             flinkClusterCfg.getAppConfig().setUserJarParas(buildParams(config.getTaskId()));
             config.buildGatewayConfig(flinkClusterCfg);
         } else {
+            log.info("Init remote cluster");
             String address = clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId());
             config.setAddress(address);
         }
@@ -233,8 +245,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public String buildEnvSql(AbstractStatementDTO task) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
-        process.info("Start initialize FlinkSQLEnv:");
+        log.info("Start initialize FlinkSQLEnv:");
         String sql = CommonConstant.LineSep;
         if (task.isFragment()) {
             String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
@@ -250,20 +261,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 sql += envTask.getStatement() + CommonConstant.LineSep;
             }
         }
-        process.info("Initializing data permissions...");
+        log.info("Initializing data permissions...");
         userService.buildRowPermission();
-        process.info("Finish initialize FlinkSQLEnv.");
+        log.info("Finish initialize FlinkSQLEnv.");
         return sql;
     }
 
     @Override
+    @ProcessStep(type = ProcessStepType.SUBMIT_TASK)
     public JobResult submitTask(Integer id, String savePointPath) throws ExcuteException {
         initTenantByTaskId(id);
-        ProcessEntity process = StpUtil.isLogin()
-                ? ProcessContextHolder.registerProcess(
-                        ProcessEntity.init(ProcessType.FLINK_SUBMIT, StpUtil.getLoginIdAsInt()))
-                : ProcessEntity.NULL_PROCESS;
-        process.start();
 
         TaskDTO task = this.getTaskInfoById(id);
 
@@ -271,23 +278,21 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             task.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
             task.setSavePointPath(savePointPath);
         }
+        // 注解自调用会失效，这里通过获取对象方法绕过此限制
+        TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
+        taskServiceBean.preCheckTask(task);
 
-        preCheckTask(task);
-
-        JobResult jobResult = executeJob(task);
-        process.info("execute job finished,status is ", jobResult.getStatus());
+        JobResult jobResult = taskServiceBean.executeJob(task);
 
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
-            process.info("Job Submit success");
+            log.info("Job Submit success");
             task.setJobInstanceId(jobResult.getJobInstanceId());
             if (!this.updateById(task.buildTask())) {
                 throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
             }
         } else {
-            process.error("Job Submit failed, error: " + jobResult.getError());
+            log.error("Job Submit failed, error: " + jobResult.getError());
         }
-
-        process.finish();
         return jobResult;
     }
 
@@ -342,6 +347,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public List<SqlExplainResult> explainTask(TaskDTO task) throws NotSupportExplainExcepition {
+
         if (Dialect.isCommonSql(task.getDialect())) {
             return dataBaseService.explainCommonSql(task);
         } else if (task.getDialect().equals(Dialect.FLINK_SQL.getValue())) {
