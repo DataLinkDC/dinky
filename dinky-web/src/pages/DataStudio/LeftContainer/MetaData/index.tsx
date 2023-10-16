@@ -158,7 +158,7 @@ const MetaData = (props: any) => {
         submitter={false}
       >
         <ProFormSelect
-          style={{ paddingInline: 10 }}
+          style={{ paddingInline: 6 }}
           // width={leftContainer.width  }
           width={'xl'}
           // addonAfter={<ReloadOutlined spin={isLoadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}

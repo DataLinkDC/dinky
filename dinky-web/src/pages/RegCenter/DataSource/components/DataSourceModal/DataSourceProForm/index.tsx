@@ -23,8 +23,14 @@ import {
 } from '@/pages/RegCenter/DataSource/components/constants';
 import { DataSources } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
-import { ProForm, ProFormGroup, ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { AutoComplete, Input } from 'antd';
+import {
+  ProForm,
+  ProFormGroup,
+  ProFormSelect,
+  ProFormText,
+  ProFormTextArea
+} from '@ant-design/pro-components';
+import { AutoComplete } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React, { useState } from 'react';
@@ -116,19 +122,29 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
 
         <ProForm.Group>
           <AutoComplete
+            virtual
+            size={'small'}
+            placement={'topLeft'}
+            autoClearSearchValue
             options={AUTO_COMPLETE_TYPE}
-            onSelect={(value) => form.setFieldsValue({ url: value })}
+            style={{
+              width: parent.innerWidth / 2 - 80,
+              minHeight: parent.innerHeight / 4 - 110,
+              marginBottom: 0
+            }}
+            filterOption
+            onSelect={(value) => form && form.setFieldsValue({ url: value })}
           >
-            <ProForm.Item
+            <ProFormTextArea
               name='url'
+              width={parent.innerWidth / 2 - 80}
               label={l('rc.ds.url')}
               rules={[{ required: true, message: l('rc.ds.urlPlaceholder') }]}
-            >
-              <Input.TextArea rows={3} cols={130} placeholder={l('rc.ds.urlPlaceholder')} />
-            </ProForm.Item>
+              placeholder={l('rc.ds.urlPlaceholder')}
+            />
           </AutoComplete>
         </ProForm.Group>
-        <br />
+
         {!excludeFormItem && (
           <ProFormGroup>
             <ProForm.Item
