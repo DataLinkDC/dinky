@@ -20,7 +20,10 @@
 package org.dinky.utils;
 
 import org.dinky.data.enums.ColumnType;
+import org.dinky.data.model.Catalog;
 import org.dinky.data.model.Column;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
 import org.dinky.executor.CustomTableEnvironment;
 
 import org.apache.flink.table.catalog.ObjectIdentifier;
@@ -30,10 +33,52 @@ import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.VarCharType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class FlinkColumnUtil {
+public class FlinkTableMetadataUtil {
+
+    public static List<Catalog> getCatalog(CustomTableEnvironment customTableEnvironment) {
+        List<Catalog> catalogs = new ArrayList<>();
+        for (String catalogName : customTableEnvironment.listCatalogs()) {
+            Catalog catalog = Catalog.build(catalogName);
+            List<Schema> schemas = new ArrayList<>();
+            customTableEnvironment.useCatalog(catalogName);
+            for (String database : customTableEnvironment.listDatabases()) {
+                Schema schema = Schema.build(database);
+                schemas.add(schema);
+            }
+            catalog.setSchemas(schemas);
+            catalogs.add(catalog);
+        }
+        return catalogs;
+    }
+
+    public static void setSchemaInfo(
+            CustomTableEnvironment customTableEnvironment,
+            String catalogName,
+            String database,
+            Schema schema,
+            List<Table> tables) {
+        customTableEnvironment.useCatalog(catalogName);
+        customTableEnvironment.useDatabase(database);
+        for (String tableName : customTableEnvironment.getCatalogManager().listTables(catalogName, database)) {
+            Table table = Table.build(tableName, catalogName);
+            tables.add(table);
+        }
+        schema.setTables(tables);
+
+        // show views
+        schema.setViews(Arrays.asList(customTableEnvironment.listViews()));
+        // show functions
+        schema.setFunctions(Arrays.asList(customTableEnvironment.listFunctions()));
+        // show user functions
+        schema.setUserFunctions(Arrays.asList(customTableEnvironment.listUserDefinedFunctions()));
+        // show modules
+        schema.setModules(Arrays.asList(customTableEnvironment.listModules()));
+    }
+
     public static List<Column> getColumnList(
             CustomTableEnvironment customTableEnvironment, String catalogName, String database, String tableName) {
         List<Column> columns = new ArrayList<>();

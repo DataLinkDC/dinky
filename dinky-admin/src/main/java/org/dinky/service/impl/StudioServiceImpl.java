@@ -50,11 +50,10 @@ import org.dinky.service.DataBaseService;
 import org.dinky.service.StudioService;
 import org.dinky.service.TaskService;
 import org.dinky.sql.FlinkQuery;
-import org.dinky.utils.FlinkColumnUtil;
+import org.dinky.utils.FlinkTableMetadataUtil;
 import org.dinky.utils.RunTimeUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +67,9 @@ import cn.hutool.cache.CacheUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** StudioServiceImpl */
+/**
+ * StudioServiceImpl
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -163,17 +164,7 @@ public class StudioServiceImpl implements StudioService {
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
             CustomTableEnvironment customTableEnvironment =
                     jobManager.getExecutor().getCustomTableEnvironment();
-            for (String catalogName : customTableEnvironment.listCatalogs()) {
-                Catalog catalog = Catalog.build(catalogName);
-                List<Schema> schemas = new ArrayList<>();
-                customTableEnvironment.useCatalog(catalogName);
-                for (String database : customTableEnvironment.listDatabases()) {
-                    Schema schema = Schema.build(database);
-                    schemas.add(schema);
-                }
-                catalog.setSchemas(schemas);
-                catalogs.add(catalog);
-            }
+            catalogs.addAll(FlinkTableMetadataUtil.getCatalog(customTableEnvironment));
         }
         return catalogs;
     }
@@ -194,23 +185,8 @@ public class StudioServiceImpl implements StudioService {
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
             CustomTableEnvironment customTableEnvironment =
                     jobManager.getExecutor().getCustomTableEnvironment();
-            String catalogName = studioMetaStoreDTO.getCatalog();
-            customTableEnvironment.useCatalog(catalogName);
-            customTableEnvironment.useDatabase(database);
-            for (String tableName : customTableEnvironment.getCatalogManager().listTables(catalogName, database)) {
-                Table table = Table.build(tableName, catalogName);
-                tables.add(table);
-            }
-            schema.setTables(tables);
-
-            // show views
-            schema.setViews(Arrays.asList(customTableEnvironment.listViews()));
-            // show functions
-            schema.setFunctions(Arrays.asList(customTableEnvironment.listFunctions()));
-            // show user functions
-            schema.setUserFunctions(Arrays.asList(customTableEnvironment.listUserDefinedFunctions()));
-            // show modules
-            schema.setModules(Arrays.asList(customTableEnvironment.listModules()));
+            FlinkTableMetadataUtil.setSchemaInfo(
+                    customTableEnvironment, studioMetaStoreDTO.getCatalog(), database, schema, tables);
         }
         schema.setTables(tables);
         return schema;
@@ -227,7 +203,8 @@ public class StudioServiceImpl implements StudioService {
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
             CustomTableEnvironment customTableEnvironment =
                     jobManager.getExecutor().getCustomTableEnvironment();
-            columns.addAll(FlinkColumnUtil.getColumnList(customTableEnvironment, catalogName, database, tableName));
+            columns.addAll(
+                    FlinkTableMetadataUtil.getColumnList(customTableEnvironment, catalogName, database, tableName));
         }
         return columns;
     }
