@@ -42,6 +42,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ProcessStep {
 
+    private String name;
     private ProcessStatus stepStatus;
     private ProcessStepType type;
     private LocalDateTime startTime;

@@ -56,6 +56,8 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.parser.SqlType;
+import org.dinky.process.annotations.ProcessStep;
+import org.dinky.process.enums.ProcessStepType;
 import org.dinky.trans.Operations;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.LogUtil;
@@ -300,6 +302,7 @@ public class JobManager {
         return true;
     }
 
+    @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeSql(String statement) {
         // TODO 改为ProcessStep注释
         Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);

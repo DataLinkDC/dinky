@@ -352,9 +352,18 @@ public enum Status {
      * gateway config
      */
     GAETWAY_KUBERNETS_TEST_FAILED(180, "gateway.kubernetes.test.failed"),
-    GAETWAY_KUBERNETS_TEST_SUCCESS(180, "gateway.kubernetes.test.success"),
-    ;
+    GAETWAY_KUBERNETS_TEST_SUCCESS(181, "gateway.kubernetes.test.success"),
 
+    /**
+     * process
+     * */
+    PROCESS_SUBMIT_SUBMITTASK(190, "process.submit.submitTask"),
+    PROCESS_SUBMIT_CHECKSQL(191, "process.submit.checkSql"),
+    PROCESS_SUBMIT_EXECUTE(192, "process.submit.execute"),
+    PROCESS_SUBMIT_BUILDCONFIG(193, "process.submit.buildConfig"),
+    PROCESS_SUBMIT_EXECUTECOMMSQL(194, "process.submit.execute.commSql"),
+    PROCESS_SUBMIT_EXECUTEFLINKSQL(195, "process.submit.execute.flinkSql"),
+    ;
     private final int code;
     private final String key;
 

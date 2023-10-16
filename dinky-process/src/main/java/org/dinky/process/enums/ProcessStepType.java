@@ -20,23 +20,29 @@
 package org.dinky.process.enums;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.enums.Status;
 
 import lombok.Getter;
 
 @Getter
 public enum ProcessStepType {
-    SUBMIT_TASK("SUBMIT_TASK", null),
-    SUBMIT_PRECHECK("SUBMIT_PRECHECK", SUBMIT_TASK),
-    SUBMIT_EXECUTE("SUBMIT_EXECUTE", SUBMIT_TASK),
-    SUBMIT_BUILD_CONFIG("SUBMIT_BUILD_CONFIG", SUBMIT_EXECUTE),
-    UNKNOWN("Unknown", null);
+    SUBMIT_TASK("SUBMIT_TASK", null, Status.PROCESS_SUBMIT_SUBMITTASK),
+    SUBMIT_PRECHECK("SUBMIT_PRECHECK", SUBMIT_TASK, Status.PROCESS_SUBMIT_CHECKSQL),
+    SUBMIT_EXECUTE("SUBMIT_EXECUTE", SUBMIT_TASK, Status.PROCESS_SUBMIT_EXECUTE),
+    SUBMIT_BUILD_CONFIG("SUBMIT_BUILD_CONFIG", SUBMIT_EXECUTE, Status.PROCESS_SUBMIT_BUILDCONFIG),
+    SUBMIT_EXECUTE_COMMON_SQL("SUBMIT_EXECUTE_COMMON_SQL", SUBMIT_BUILD_CONFIG, Status.PROCESS_SUBMIT_EXECUTECOMMSQL),
+    SUBMIT_EXECUTE_FLINK_SQL("SUBMIT_EXECUTE_FLINK_SQL", SUBMIT_BUILD_CONFIG, Status.PROCESS_SUBMIT_EXECUTEFLINKSQL),
+    UNKNOWN("UNKNOWN", null, Status.UNKNOWN_ERROR),
+    ;
 
     private final String value;
     private final ProcessStepType parentStep;
+    private final Status desc;
 
-    ProcessStepType(String type, ProcessStepType parentStep) {
+    ProcessStepType(String type, ProcessStepType parentStep, Status desc) {
         this.value = type;
         this.parentStep = parentStep;
+        this.desc = desc;
     }
 
     public static ProcessStepType get(String value) {

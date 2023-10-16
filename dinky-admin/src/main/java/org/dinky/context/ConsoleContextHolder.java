@@ -34,7 +34,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -64,7 +63,7 @@ public class ConsoleContextHolder extends BaseSseContext<String, ProcessEntity> 
     /**
      * Get a list of all processes
      * */
-    public List<ProcessEntity> list(){
+    public List<ProcessEntity> list() {
         return new ArrayList<>(logPross.values());
     }
 
@@ -158,6 +157,7 @@ public class ConsoleContextHolder extends BaseSseContext<String, ProcessEntity> 
                 .stepStatus(ProcessStatus.RUNNING)
                 .startTime(LocalDateTime.now())
                 .type(type)
+                .name(type.getDesc().getMessage())
                 .log(new StringBuilder())
                 .errLog(new StringBuilder())
                 .childStepsMap(new LinkedHashMap<>())
