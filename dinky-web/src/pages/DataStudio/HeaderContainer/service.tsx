@@ -23,7 +23,7 @@ export function onLineTask(id: number) {
 }
 
 export function offLinelTask(id: number) {
-  return handleGetOption('api/task/offLineTask', '', { taskId: id });
+  return handleGetOption('api/task/cancel', '', { taskId: id });
 }
 
 export const isSql = (dialect: string) => {

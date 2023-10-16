@@ -20,6 +20,7 @@
 package org.dinky.core;
 
 import org.dinky.api.FlinkAPI;
+import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class FlinkRestAPITest {
         // JsonNode savepointInfo =
         // FlinkAPI.build(address).getSavepointInfo("602ad9d03b872dba44267432d1a2a3b2","04044589477a973a32e7dd53e1eb20fd");
         SavePointResult savepoints =
-                FlinkAPI.build(address).savepoints("243b97597448edbd2e635fc3d25b1064", "trigger", null);
+                FlinkAPI.build(address).savepoints("243b97597448edbd2e635fc3d25b1064", SavePointType.TRIGGER, null);
         LOGGER.info(savepoints.toString());
     }
 

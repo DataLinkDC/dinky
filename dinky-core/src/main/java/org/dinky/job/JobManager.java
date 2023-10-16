@@ -50,6 +50,7 @@ import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.GatewayType;
+import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
@@ -633,6 +634,14 @@ public class JobManager {
                     .setFlinkConfig(FlinkConfig.build(jobId, ActionType.CANCEL.getValue(), null, null));
             Gateway.build(config.getGatewayConfig()).savepointJob();
             return true;
+        } else if (useRestAPI) {
+            try {
+                // Try to savepoint, if it fails, it will stop normally(尝试进行savepoint，如果失败，即普通停止)
+                savepoint(jobId, SavePointType.CANCEL, null);
+                return true;
+            } catch (Exception e) {
+                return FlinkAPI.build(config.getAddress()).stop(jobId);
+            }
         } else {
             try {
                 return FlinkAPI.build(config.getAddress()).stop(jobId);
@@ -643,10 +652,11 @@ public class JobManager {
         }
     }
 
-    public SavePointResult savepoint(String jobId, String savePointType, String savePoint) {
+    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) {
         if (useGateway && !useRestAPI) {
             config.getGatewayConfig()
-                    .setFlinkConfig(FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(), savePointType, null));
+                    .setFlinkConfig(
+                            FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(), savePointType.getValue(), null));
             return Gateway.build(config.getGatewayConfig()).savepointJob(savePoint);
         } else {
             return FlinkAPI.build(config.getAddress()).savepoints(jobId, savePointType, config.getConfigJson());
