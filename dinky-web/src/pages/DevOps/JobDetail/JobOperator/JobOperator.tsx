@@ -1,3 +1,4 @@
+import { cancelTask } from '@/pages/DataStudio/HeaderContainer/service';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { isStatusDone } from '@/pages/DevOps/function';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
@@ -6,7 +7,6 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { Button, Dropdown, message, Modal, Space } from 'antd';
-import {cancelTask} from "@/pages/DataStudio/HeaderContainer/service";
 
 const operatorType = {
   RESTART_JOB: 'restart',
@@ -37,7 +37,7 @@ const JobOperator = (props: JobProps) => {
             isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE
           });
         } else {
-          cancelTask("",jobDetail?.instance?.taskId)
+          cancelTask('', jobDetail?.instance?.taskId);
         }
         message.success(l('devops.jobinfo.job.key.success', '', { key: key }));
       }
