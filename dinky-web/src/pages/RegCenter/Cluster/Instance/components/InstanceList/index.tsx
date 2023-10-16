@@ -22,6 +22,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
+import { CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/Instance/components/contants';
 import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
 import {
@@ -61,7 +62,6 @@ import {
   Typography
 } from 'antd';
 import { useEffect, useRef, useState } from 'react';
-import {CLUSTER_INSTANCE_TYPE} from "@/pages/RegCenter/Cluster/Instance/components/contants";
 const { Text, Paragraph, Link } = Typography;
 
 export default () => {

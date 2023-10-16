@@ -18,7 +18,7 @@
 import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { l } from '@/utils/intl';
 import { Tag } from 'antd';
-import {DefaultOptionType} from "rc-select/es/Select";
+import { DefaultOptionType } from 'rc-select/es/Select';
 
 /**
  * Cluster instance type
@@ -40,7 +40,6 @@ export const CLUSTER_INSTANCE_TYPE: DefaultOptionType[] = [
     key: ClusterType.KUBERNETES_SESSION
   }
 ];
-
 
 /**
  * Cluster instance status enum
