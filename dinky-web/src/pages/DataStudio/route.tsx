@@ -55,6 +55,7 @@ import {
 } from '@ant-design/icons';
 import { DiffEditor } from '@monaco-editor/react';
 import { ReactNode } from 'react';
+import {Catalog} from "@/pages/DataStudio/LeftContainer/Catalog";
 
 export const LeftSide = [
   {
@@ -65,11 +66,11 @@ export const LeftSide = [
     children: <Project />
   },
   {
-    auth: '/datastudio/left/structure',
-    key: 'menu.datastudio.structure',
+    auth: '/datastudio/left/catalog',
+    key: 'menu.datastudio.catalog',
     icon: <TableOutlined />,
-    label: l('menu.datastudio.structure'),
-    children: <div>structure</div>
+    label: l('menu.datastudio.catalog'),
+    children: <Catalog />
   },
   {
     auth: '/datastudio/left/metadata',
@@ -246,6 +247,13 @@ export const LeftBottomMoreTabs: { [c: string]: TabProp[] } = {
 // btn route
 export const BtnRoute: { [c: string]: CircleDataStudioButtonProps[] } = {
   'menu.datastudio.metadata': [
+    {
+      icon: <ReloadOutlined />,
+      title: l('button.refresh'),
+      onClick: () => {}
+    }
+  ],
+  'menu.datastudio.catalog': [
     {
       icon: <ReloadOutlined />,
       title: l('button.refresh'),
