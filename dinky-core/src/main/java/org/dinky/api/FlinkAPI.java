@@ -130,12 +130,11 @@ public class FlinkAPI {
     }
 
     @SuppressWarnings("checkstyle:Indentation")
-    public SavePointResult savepoints(String jobId, String savePointType, Map<String, String> taskConfig) {
-        SavePointType type = SavePointType.get(savePointType);
+    public SavePointResult savepoints(String jobId, SavePointType savePointType, Map<String, String> taskConfig) {
         JobInfo jobInfo = new JobInfo(jobId);
         Map<String, Object> paramMap = new HashMap<>(8);
         String paramType = null;
-        switch (type) {
+        switch (savePointType) {
             case CANCEL:
                 paramMap.put(CANCEL_JOB, true);
                 paramType = FlinkRestAPIConstant.SAVEPOINTS;
