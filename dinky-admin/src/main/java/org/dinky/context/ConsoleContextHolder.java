@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -59,6 +60,13 @@ public class ConsoleContextHolder extends BaseSseContext<String, ProcessEntity> 
     }
 
     private final Map<String, ProcessEntity> logPross = new ConcurrentHashMap<>();
+
+    /**
+     * Get a list of all processes
+     * */
+    public List<ProcessEntity> list(){
+        return new ArrayList<>(logPross.values());
+    }
 
     /**
      * Add the SseEmitter object to the context.
