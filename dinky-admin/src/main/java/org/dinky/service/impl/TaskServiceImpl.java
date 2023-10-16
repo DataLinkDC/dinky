@@ -40,7 +40,6 @@ import org.dinky.data.model.Cluster;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.Jar;
-import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
@@ -59,6 +58,7 @@ import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointStrategy;
+import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.SavePointResult;
@@ -312,13 +312,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Assert.notNull(cluster, Status.CLUSTER_NOT_EXIST.getMessage());
 
         JobManager jobManager = JobManager.build(buildJobConfig(task));
-        boolean cancelled = jobManager.cancel(jobInstance.getJid());
-        JobInfoDetail jobInfoDetail = jobInstanceService.refreshJobInfoDetail(jobInstance.getId());
-        return cancelled;
+        return jobManager.cancel(jobInstance.getJid());
     }
 
     @Override
-    public SavePointResult savepointTaskJob(TaskDTO task, String savePointType) {
+    public SavePointResult savepointTaskJob(TaskDTO task, SavePointType savePointType) {
         JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
         Assert.notNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
 
@@ -330,8 +328,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         for (JobInfo item : savePointResult.getJobInfos()) {
             if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId()) && Asserts.isNotNull(jobInstance.getTaskId())) {
                 Savepoints savepoints = new Savepoints();
-                savepoints.setName(savePointType);
-                savepoints.setType(savePointType);
+                savepoints.setName(savePointType.getValue());
+                savepoints.setType(savePointType.getValue());
                 savepoints.setPath(item.getSavePoint());
                 savepoints.setTaskId(task.getId());
                 savepointsService.save(savepoints);

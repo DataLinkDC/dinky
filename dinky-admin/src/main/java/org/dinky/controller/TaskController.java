@@ -30,6 +30,7 @@ import org.dinky.data.model.Task;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
 import org.dinky.process.exception.ExcuteException;
@@ -90,8 +91,7 @@ public class TaskController {
     @GetMapping(value = "/restartTask")
     @ApiOperation("Restart Task")
     @Log(title = "Restart Task", businessType = BusinessType.REMOTE_OPERATION)
-    public Result<JobResult> restartTask(@RequestParam Integer id, @RequestParam String savePointPath)
-            throws ExcuteException {
+    public Result<JobResult> restartTask(@RequestParam Integer id, String savePointPath) throws ExcuteException {
         return Result.succeed(taskService.restartTask(id, savePointPath));
     }
 
@@ -100,7 +100,8 @@ public class TaskController {
     @ApiOperation("Savepoint Trigger")
     public Result<SavePointResult> savepoint(@RequestParam Integer taskId, @RequestParam String savePointType) {
         return Result.succeed(
-                taskService.savepointTaskJob(taskService.getTaskInfoById(taskId), savePointType),
+                taskService.savepointTaskJob(
+                        taskService.getTaskInfoById(taskId), SavePointType.valueOf(savePointType.toUpperCase())),
                 Status.EXECUTE_SUCCESS);
     }
 
@@ -109,13 +110,6 @@ public class TaskController {
     @ApiOperation("onLineTask")
     public Result<Boolean> onLineTask(@RequestParam Integer taskId) {
         return Result.succeed(taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.ONLINE));
-    }
-
-    @GetMapping("/offLineTask")
-    @Log(title = "offLineTask", businessType = BusinessType.TRIGGER)
-    @ApiOperation("offLineTask")
-    public Result<Boolean> offLineTask(@RequestParam Integer taskId) {
-        return Result.succeed(taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.DEVELOP));
     }
 
     @PostMapping("/explainSql")

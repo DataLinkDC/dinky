@@ -6,6 +6,7 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { Button, Dropdown, message, Modal, Space } from 'antd';
+import {cancelTask} from "@/pages/DataStudio/HeaderContainer/service";
 
 const operatorType = {
   RESTART_JOB: 'restart',
@@ -36,7 +37,7 @@ const JobOperator = (props: JobProps) => {
             isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE
           });
         } else {
-          getData(API_CONSTANTS.OFFLINE_TASK, { id: jobDetail?.instance?.taskId, type: key });
+          cancelTask("",jobDetail?.instance?.taskId)
         }
         message.success(l('devops.jobinfo.job.key.success', '', { key: key }));
       }
@@ -90,10 +91,6 @@ const JobOperator = (props: JobProps) => {
                 {
                   key: operatorType.SAVEPOINT_CANCEL,
                   label: l('devops.jobinfo.savepoint.cancel')
-                },
-                {
-                  key: operatorType.CANCEL_JOB,
-                  label: l('devops.jobinfo.savepoint.canceljob')
                 }
               ]
             }}
