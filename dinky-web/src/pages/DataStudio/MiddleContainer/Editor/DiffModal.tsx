@@ -94,7 +94,7 @@ const DiffModal: React.FC<DiffModalProps> = (props) => {
           {l('pages.datastudio.sql.sqlChanged')}-{fileName}
         </div>
       }
-      onCancel={()=>onUse(false)}
+      onCancel={() => onUse(false)}
       open={open}
       footer={null}
       width={'60%'}
