@@ -25,7 +25,6 @@ import org.dinky.config.Dialect;
 import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
-import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.Cluster;
 import org.dinky.data.model.Column;
@@ -51,19 +50,13 @@ import org.dinky.service.DataBaseService;
 import org.dinky.service.StudioService;
 import org.dinky.service.TaskService;
 import org.dinky.sql.FlinkQuery;
+import org.dinky.utils.FlinkColumnUtil;
 import org.dinky.utils.RunTimeUtil;
-
-import org.apache.flink.table.catalog.ObjectIdentifier;
-import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.TimestampType;
-import org.apache.flink.table.types.logical.VarCharType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.springframework.stereotype.Service;
 
@@ -234,55 +227,7 @@ public class StudioServiceImpl implements StudioService {
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
             CustomTableEnvironment customTableEnvironment =
                     jobManager.getExecutor().getCustomTableEnvironment();
-
-            customTableEnvironment
-                    .getCatalogManager()
-                    .getTable(ObjectIdentifier.of(catalogName, database, tableName))
-                    .ifPresent(t -> {
-                        for (int i = 0; i < t.getResolvedSchema().getColumns().size(); i++) {
-                            org.apache.flink.table.catalog.Column flinkColumn =
-                                    t.getResolvedSchema().getColumns().get(i);
-                            AtomicBoolean isPrimaryKey = new AtomicBoolean(false);
-                            t.getResolvedSchema().getPrimaryKey().ifPresent(k -> {
-                                isPrimaryKey.set(k.getColumns().contains(flinkColumn.getName()));
-                            });
-                            LogicalType logicalType = flinkColumn.getDataType().getLogicalType();
-                            Column column = Column.builder()
-                                    .name(flinkColumn.getName())
-                                    .type(logicalType.getTypeRoot().name())
-                                    .comment(flinkColumn.getComment().orElse(""))
-                                    .keyFlag(isPrimaryKey.get())
-                                    .isNullable(logicalType.isNullable())
-                                    .position(i)
-                                    .build();
-                            if (logicalType instanceof VarCharType) {
-                                column.setLength(((VarCharType) logicalType).getLength());
-                            } else if (logicalType instanceof TimestampType) {
-                                column.setLength(((TimestampType) logicalType).getPrecision());
-                            } else if (logicalType instanceof DecimalType) {
-                                column.setLength(((DecimalType) logicalType).getPrecision());
-                                column.setScale(((DecimalType) logicalType).getScale());
-                            }
-
-                            for (ColumnType columnType : ColumnType.values()) {
-                                if (columnType
-                                        .getJavaType()
-                                        .equals(flinkColumn
-                                                .getDataType()
-                                                .getConversionClass()
-                                                .getName())) {
-                                    column.setJavaType(columnType);
-                                    break;
-                                }
-                            }
-                            //                            FlinkColumn flinkColumn = FlinkColumn.build(i,
-                            // column.getName(), column.getDataType().getConversionClass().getName(),
-                            // isPrimaryKey.get(), column.getDataType().getLogicalType().isNullable(),
-                            // column.explainExtras().orElse(""), "", column.getComment().orElse(""));
-
-                            columns.add(column);
-                        }
-                    });
+            columns.addAll(FlinkColumnUtil.getColumnList(customTableEnvironment, catalogName, database, tableName));
         }
         return columns;
     }
