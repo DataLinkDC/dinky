@@ -17,14 +17,13 @@
  *
  */
 
-import {WebIcon} from '@/components/Icons/CustomIcons';
-import {RUN_MODE} from '@/services/constants';
-import {Cluster} from '@/types/RegCenter/data';
-import {l} from '@/utils/intl';
-import {Button, Typography} from 'antd';
-import {RuleObject} from 'rc-field-form/es/interface';
+import { RUN_MODE } from '@/services/constants';
+import { Cluster } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { Typography } from 'antd';
+import { RuleObject } from 'rc-field-form/es/interface';
 
-const {Text, Paragraph, Link} = Typography;
+const { Text, Paragraph, Link } = Typography;
 
 /**
  * validatorJMHAAdderess
@@ -32,21 +31,21 @@ const {Text, Paragraph, Link} = Typography;
  * @param value
  */
 export const validatorJMHAAdderess = (rule: RuleObject, value = '') => {
-    let hostArray = [];
-    if (value.trim().length === 0) {
-        return Promise.reject(new Error(l('rc.ci.jmhaPlaceholder')));
-    } else {
-        hostArray = value.split(',');
-        for (let i = 0; i < hostArray.length; i++) {
-            if (hostArray[i].includes('/')) {
-                return Promise.reject(new Error(l('rc.ci.jmha.validate.slash')));
-            }
-            if (parseInt(hostArray[i].split(':')[1]) >= 65535) {
-                return Promise.reject(new Error(l('rc.ci.jmha.validate.port')));
-            }
-        }
-        return Promise.resolve();
+  let hostArray = [];
+  if (value.trim().length === 0) {
+    return Promise.reject(new Error(l('rc.ci.jmhaPlaceholder')));
+  } else {
+    hostArray = value.split(',');
+    for (let i = 0; i < hostArray.length; i++) {
+      if (hostArray[i].includes('/')) {
+        return Promise.reject(new Error(l('rc.ci.jmha.validate.slash')));
+      }
+      if (parseInt(hostArray[i].split(':')[1]) >= 65535) {
+        return Promise.reject(new Error(l('rc.ci.jmha.validate.port')));
+      }
     }
+    return Promise.resolve();
+  }
 };
 
 /**
@@ -54,20 +53,22 @@ export const validatorJMHAAdderess = (rule: RuleObject, value = '') => {
  * @param record
  */
 export const renderWebUiRedirect = (record: Cluster.Instance) => {
-    if (
-        record.status &&
-        (record.type === RUN_MODE.YARN_SESSION ||
-            record.type === RUN_MODE.STANDALONE ||
-            record.type === RUN_MODE.YARN_APPLICATION ||
-            record.type === RUN_MODE.YARN_PER_JOB)
-    ) {
-        return (
-            <Link
-                href={`/api/flink/${record.jobManagerHost}/#/overview`}
-                key={`${record.id}_webui`}
-                target='_blank'
-            >{record.jobManagerHost}</Link>
-        );
-    }
-    return <Link>{record.hosts}</Link>;
+  if (
+    record.status &&
+    (record.type === RUN_MODE.YARN_SESSION ||
+      record.type === RUN_MODE.STANDALONE ||
+      record.type === RUN_MODE.YARN_APPLICATION ||
+      record.type === RUN_MODE.YARN_PER_JOB)
+  ) {
+    return (
+      <Link
+        href={`/api/flink/${record.jobManagerHost}/#/overview`}
+        key={`${record.id}_webui`}
+        target='_blank'
+      >
+        {record.jobManagerHost}
+      </Link>
+    );
+  }
+  return <Link>{record.hosts}</Link>;
 };

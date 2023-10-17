@@ -24,9 +24,9 @@ import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import DataSourceDetail from '@/pages/RegCenter/DataSource/components/DataSourceDetail';
 import { renderDBIcon } from '@/pages/RegCenter/DataSource/components/function';
+import { handleTest, saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
 import { queryList } from '@/services/api';
 import {
-  handleAddOrUpdate,
   handleOption,
   handlePutDataByParams,
   handleRemoveById,
@@ -37,7 +37,7 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { DataSources } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import { WarningMessage } from '@/utils/messages';
-import {useNavigate} from '@@/exports';
+import { useNavigate } from '@@/exports';
 import {
   CheckCircleOutlined,
   CopyTwoTone,
@@ -50,7 +50,6 @@ import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DataSourceModal from '../DataSourceModal';
-import {handleTest, saveOrUpdateHandle} from "@/pages/RegCenter/DataSource/service";
 
 const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const { dispatch } = props;
@@ -118,8 +117,6 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
     );
   };
 
-
-
   /**
    * handle check heart
    * @param item
@@ -137,8 +134,6 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
       handleOption(API_CONSTANTS.DATASOURCE_COPY, l('button.copy'), item)
     );
   };
-
-
 
   /**
    * render sub title
@@ -290,7 +285,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
             visible={modalVisible}
             onCancel={cancelAll}
             onTest={(value) => handleTest(value)}
-            onSubmit={(value) => executeAndCallbackRefresh(async ()=>saveOrUpdateHandle(value))}
+            onSubmit={(value) => executeAndCallbackRefresh(async () => saveOrUpdateHandle(value))}
           />
         </>
       ) : (

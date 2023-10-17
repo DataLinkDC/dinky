@@ -305,7 +305,13 @@ export default () => {
         <Badge.Ribbon
           className={'card-list-item-wrapper'}
           color={item.autoRegisters ? 'green' : 'yellow'}
-          text={item.autoRegisters ? l('rc.ci.ar') : <span style={{color:"crimson"}}>{l('rc.ci.mr')}</span>}
+          text={
+            item.autoRegisters ? (
+              l('rc.ci.ar')
+            ) : (
+              <span style={{ color: 'crimson' }}>{l('rc.ci.mr')}</span>
+            )
+          }
         >
           <Card
             headStyle={{ minHeight: '10px' }}
