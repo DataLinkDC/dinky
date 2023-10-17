@@ -1961,6 +1961,6 @@ INSERT INTO dinky_alert_template VALUES (1, 'Default', '
 - **Alert Time :** ${time}
 - **Start Time :** ${startTime}
 - **End Time :** ${endTime}
-- **<font color=''red''>${exceptions.rootException.substring(0,20)}</font>**
+- **<font color=''red''>${(exceptions.rootException)?substring(0,20)}</font>**
 [Go toTask Web](http://${taskUrl})
 ', 1, null, null);

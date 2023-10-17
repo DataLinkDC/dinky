@@ -77,3 +77,15 @@ export type BaseConfigProperties = {
   frontType: string;
   example: string[];
 };
+
+export interface LogInfo {
+  id: number;
+  name: string;
+  path: string;
+  content: string;
+  parentId: number;
+  size: number;
+  desc: string;
+  children: LogInfo[];
+  leaf: boolean;
+}

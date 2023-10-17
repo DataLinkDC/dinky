@@ -26,19 +26,13 @@ import ResourceModal from '@/pages/RegCenter/Resource/components/ResourceModal';
 import ResourcesUploadModal from '@/pages/RegCenter/Resource/components/ResourcesUploadModal';
 import { handleOption, handleRemoveById, queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { Resource } from '@/types/RegCenter/data';
 import { InitResourceState } from '@/types/RegCenter/init.d';
 import { ResourceState } from '@/types/RegCenter/state.d';
 import { ProCard } from '@ant-design/pro-components';
 import { MenuInfo } from 'rc-menu/es/interface';
 import { Resizable } from 're-resizable';
 import React, { useCallback, useEffect, useState } from 'react';
-
-export type Resource = {
-  id: number;
-  fileName: string;
-  description: string;
-  type?: string;
-};
 
 const ResourceOverView: React.FC = () => {
   const [resourceState, setResourceState] = useState<ResourceState>(InitResourceState);
@@ -66,7 +60,7 @@ const ResourceOverView: React.FC = () => {
     });
 
   const refreshTreeData = async (path: string) => {
-    const data = await queryDataByParams<any[]>(API_CONSTANTS.RESOURCE_SHOW_TREE);
+    const data = await queryDataByParams<Resource[]>(API_CONSTANTS.RESOURCE_SHOW_TREE);
     setResourceState((prevState) => ({
       ...prevState,
       treeData: updateTreeData(prevState.treeData, path, data ?? [])
@@ -74,7 +68,7 @@ const ResourceOverView: React.FC = () => {
   };
 
   const refreshTree = async () => {
-    await queryDataByParams<any[]>(API_CONSTANTS.RESOURCE_SHOW_TREE).then((res) =>
+    await queryDataByParams<Resource[]>(API_CONSTANTS.RESOURCE_SHOW_TREE).then((res) =>
       setResourceState((prevState) => ({ ...prevState, treeData: res ?? [] }))
     );
   };

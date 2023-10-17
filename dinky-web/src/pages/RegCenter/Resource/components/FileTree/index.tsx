@@ -17,7 +17,8 @@
  *
  */
 
-import { buildTreeData } from '@/utils/function';
+import { buildResourceTreeData } from '@/pages/RegCenter/Resource/components/FileTree/function';
+import { Resource } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Tree, Typography, Upload } from 'antd';
@@ -27,7 +28,7 @@ const { DirectoryTree } = Tree;
 const { Text } = Typography;
 
 type FileTreeProps = {
-  treeData: Partial<any>[];
+  treeData: Resource[];
   onNodeClick: (info: any) => void;
   onRightClick: (info: any) => void;
   selectedKeys: string[];
@@ -45,7 +46,7 @@ const FileTree: React.FC<FileTreeProps> = (props) => {
           selectedKeys={selectedKeys}
           onSelect={(_, info) => onNodeClick(info)}
           onRightClick={(info) => onRightClick(info)}
-          treeData={buildTreeData(treeData)}
+          treeData={buildResourceTreeData(treeData)}
         />
       ) : (
         <>

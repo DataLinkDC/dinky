@@ -21,7 +21,10 @@ const JobList = () => {
   const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
     {
       title: l('devops.jobinfo.config.taskId'),
-      dataIndex: 'taskId'
+      dataIndex: 'taskId',
+      width: '6%',
+      valueType: 'indexBorder',
+      fixed: 'left'
     },
     {
       title: l('global.table.jobname'),
@@ -43,7 +46,8 @@ const JobList = () => {
     {
       title: l('devops.jobinfo.config.JobId'),
       dataIndex: 'jid',
-      width: '15%'
+      width: '20%',
+      copyable: true
     },
     {
       title: l('global.table.createTime'),
@@ -67,6 +71,8 @@ const JobList = () => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
+      width: '5%',
+      fixed: 'right',
       render: (text: any, record: Jobs.JobInstance) => [
         <Button
           className={'options-button'}
