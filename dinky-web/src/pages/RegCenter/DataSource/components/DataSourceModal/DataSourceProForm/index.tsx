@@ -17,176 +17,168 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import {
-  AUTO_COMPLETE_TYPE,
-  DATA_SOURCE_TYPE_OPTIONS,
-  GROUP_TYPE
+    AUTO_COMPLETE_TYPE,
+    DATA_SOURCE_TYPE_OPTIONS,
+    GROUP_TYPE
 } from '@/pages/RegCenter/DataSource/components/constants';
-import { DataSources } from '@/types/RegCenter/data.d';
-import { l } from '@/utils/intl';
+import {DataSources} from '@/types/RegCenter/data.d';
+import {l} from '@/utils/intl';
 import {
-  ProForm,
-  ProFormGroup,
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea
+    ProForm,
+    ProFormGroup,
+    ProFormSelect,
+    ProFormText
 } from '@ant-design/pro-components';
-import { AutoComplete } from 'antd';
-import { FormInstance } from 'antd/es/form/hooks/useForm';
-import { Values } from 'async-validator';
-import React, { useState } from 'react';
+import {AutoComplete, Form} from 'antd';
+import {FormInstance} from 'antd/es/form/hooks/useForm';
+import {Values} from 'async-validator';
+import React, {useState} from 'react';
+import TextArea from "antd/es/input/TextArea";
 
 type DataSourceProFormProps = {
-  values: Partial<DataSources.DataSource>;
-  form: FormInstance<Values>;
-  flinkConfigChange: (value: string) => void;
-  flinkTemplateChange: (value: string) => void;
+    values: Partial<DataSources.DataSource>;
+    form: FormInstance<Values>;
+    flinkConfigChange: (value: string) => void;
+    flinkTemplateChange: (value: string) => void;
 };
 
 const CodeEditProps = {
-  height: '30vh',
-  width: '22vw',
-  lineNumbers: 'off',
-  language: 'sql'
+    height: '30vh',
+    width: '22vw',
+    lineNumbers: 'off',
+    language: 'sql'
 };
 
 const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
-  const { values, form, flinkTemplateChange, flinkConfigChange } = props;
-  const [excludeFormItem, setExcludeFormItem] = useState<boolean>(false);
+    const {values, form, flinkTemplateChange, flinkConfigChange} = props;
+    const [excludeFormItem, setExcludeFormItem] = useState<boolean>(false);
 
-  const [dbType, setDbType] = useState<string>(values.type ?? 'MySQL');
+    const [dbType, setDbType] = useState<string>(values.type ?? 'MySQL');
 
-  const handleTypeChange = (value: any) => {
-    if (value.type) setDbType(value.type);
-    if (value.type === 'Hive' || value.type === 'Presto') {
-      setExcludeFormItem(true);
-    } else {
-      setExcludeFormItem(false);
-    }
-  };
+    const handleTypeChange = (value: any) => {
+        if (value.type) setDbType(value.type);
+        if (value.type === 'Hive' || value.type === 'Presto') {
+            setExcludeFormItem(true);
+        } else {
+            setExcludeFormItem(false);
+        }
+    };
 
-  const renderDataSourceForm = () => {
-    return (
-      <>
-        <ProForm.Group>
-          <ProFormText
-            name='name'
-            width={'md'}
-            label={l('rc.ds.name')}
-            rules={[{ required: true, message: l('rc.ds.namePlaceholder') }]}
-            placeholder={l('rc.ds.namePlaceholder')}
-          />
-          <ProFormSelect
-            name='groupName'
-            width={'sm'}
-            label={l('rc.ds.groupName')}
-            options={GROUP_TYPE}
-            placeholder={l('rc.ds.groupNamePlaceholder')}
-          />
-          <ProFormSelect
-            name='type'
-            width={'sm'}
-            label={l('rc.ds.type')}
-            showSearch
-            initialValue={dbType}
-            options={DATA_SOURCE_TYPE_OPTIONS}
-            rules={[{ required: true, message: l('rc.ds.typePlaceholder') }]}
-            placeholder={l('rc.ds.typePlaceholder')}
-          />
+    const renderDataSourceForm = () => {
+        return (
+            <>
+                <ProForm.Group>
+                    <ProFormText
+                        name='name'
+                        width={'md'}
+                        label={l('rc.ds.name')}
+                        rules={[{required: true, message: l('rc.ds.namePlaceholder')}]}
+                        placeholder={l('rc.ds.namePlaceholder')}
+                    />
+                    <ProFormSelect
+                        name='groupName'
+                        width={'sm'}
+                        label={l('rc.ds.groupName')}
+                        options={GROUP_TYPE}
+                        placeholder={l('rc.ds.groupNamePlaceholder')}
+                    />
+                    <ProFormSelect
+                        name='type'
+                        width={'sm'}
+                        label={l('rc.ds.type')}
+                        showSearch
+                        initialValue={dbType}
+                        options={DATA_SOURCE_TYPE_OPTIONS}
+                        rules={[{required: true, message: l('rc.ds.typePlaceholder')}]}
+                        placeholder={l('rc.ds.typePlaceholder')}
+                    />
 
-          <ProFormText
-            name='username'
-            width={'sm'}
-            label={l('rc.ds.username')}
-            rules={[{ required: true, message: l('rc.ds.usernamePlaceholder') }]}
-            placeholder={l('rc.ds.usernamePlaceholder')}
-          />
-          <ProFormText.Password
-            name='password'
-            width={'sm'}
-            label={l('rc.ds.password')}
-            rules={[
-              {
-                required: dbType !== 'Doris',
-                message: l('rc.ds.passwordPlaceholder')
-              }
-            ]}
-            placeholder={l('rc.ds.passwordPlaceholder')}
-          />
-          <ProFormText
-            name='note'
-            width={'md'}
-            label={l('global.table.note')}
-            placeholder={l('global.table.notePlaceholder')}
-          />
-        </ProForm.Group>
+                    <ProFormText
+                        name='username'
+                        width={'sm'}
+                        label={l('rc.ds.username')}
+                        rules={[{required: true, message: l('rc.ds.usernamePlaceholder')}]}
+                        placeholder={l('rc.ds.usernamePlaceholder')}
+                    />
+                    <ProFormText.Password
+                        name='password'
+                        width={'sm'}
+                        label={l('rc.ds.password')}
+                        rules={[
+                            {
+                                required: dbType !== 'Doris',
+                                message: l('rc.ds.passwordPlaceholder')
+                            }
+                        ]}
+                        placeholder={l('rc.ds.passwordPlaceholder')}
+                    />
+                    <ProFormText
+                        name='note'
+                        width={'md'}
+                        label={l('global.table.note')}
+                        placeholder={l('global.table.notePlaceholder')}
+                    />
+                </ProForm.Group>
 
-        <ProForm.Group>
-          <AutoComplete
-            virtual
-            size={'small'}
-            placement={'topLeft'}
-            autoClearSearchValue
-            options={AUTO_COMPLETE_TYPE}
-            style={{
-              width: parent.innerWidth / 2 - 80,
-              minHeight: parent.innerHeight / 4 - 110,
-              marginBottom: 0
-            }}
-            filterOption
-            onSelect={(value) => form && form.setFieldsValue({ url: value })}
-          >
-            <ProFormTextArea
-              name='url'
-              width={parent.innerWidth / 2 - 80}
-              label={l('rc.ds.url')}
-              rules={[{ required: true, message: l('rc.ds.urlPlaceholder') }]}
-              placeholder={l('rc.ds.urlPlaceholder')}
-            />
-          </AutoComplete>
-        </ProForm.Group>
+                <ProForm.Group>
+                    <Form.Item name="url" label={l('rc.ds.url')}
+                               rules={[{required: true, message: l('rc.ds.urlPlaceholder')}]}>
 
-        {!excludeFormItem && (
-          <ProFormGroup>
-            <ProForm.Item
-              name='flinkConfig'
-              label={l('rc.ds.flinkConfig')}
-              tooltip={l('rc.ds.flinkConfigTooltip')}
-            >
-              <CodeEdit
-                {...CodeEditProps}
-                onChange={(value) => flinkConfigChange(value ?? '')}
-                code={values.flinkConfig || ''}
-              />
-            </ProForm.Item>
+                        <AutoComplete
+                            virtual
+                            placement={'topLeft'}
+                            autoClearSearchValue
+                            options={AUTO_COMPLETE_TYPE}
+                            style={{
+                                width: parent.innerWidth / 2 - 80
+                            }}
+                            filterOption
+                            onSelect={(value) => form && form.setFieldsValue({url: value})}
+                        >
+                            <TextArea placeholder={l('rc.ds.urlPlaceholder')}/>
+                            {/*<ProFormTextArea*/}
+                            {/*  name='url'*/}
+                            {/*  width={parent.innerWidth / 2 - 80}*/}
+                            {/*  label={l('rc.ds.url')}*/}
+                            {/*  rules={[{ required: true, message: l('rc.ds.urlPlaceholder') }]}*/}
+                            {/*  placeholder={l('rc.ds.urlPlaceholder')}*/}
+                            {/*/>*/}
+                        </AutoComplete>
+                    </Form.Item>
 
-            <ProForm.Item
-              name='flinkTemplate'
-              label={l('rc.ds.flinkTemplate')}
-              tooltip={l('rc.ds.flinkTemplateTooltip')}
-            >
-              <CodeEdit
-                {...CodeEditProps}
-                onChange={(value) => flinkTemplateChange(value ?? '')}
-                code={values.flinkTemplate || ''}
-              />
-            </ProForm.Item>
-          </ProFormGroup>
-        )}
-      </>
-    );
-  };
+                </ProForm.Group>
 
-  return (
-    <>
-      <ProForm
-        initialValues={values}
-        form={form}
-        onValuesChange={(changedValues, values) => handleTypeChange(values)}
-        submitter={false}
-      >
-        {renderDataSourceForm()}
-      </ProForm>
-    </>
-  );
+                {!excludeFormItem && (
+                    <ProFormGroup>
+                        <ProForm.Item
+                            name='flinkConfig'
+                            label={l('rc.ds.flinkConfig')}
+                            tooltip={l('rc.ds.flinkConfigTooltip')}
+                        >
+                            <CodeEdit
+                                {...CodeEditProps}
+                                onChange={(value) => flinkConfigChange(value ?? '')}
+                                code={values.flinkConfig || ''}
+                            />
+                        </ProForm.Item>
+
+                        <ProForm.Item
+                            name='flinkTemplate'
+                            label={l('rc.ds.flinkTemplate')}
+                            tooltip={l('rc.ds.flinkTemplateTooltip')}
+                        >
+                            <CodeEdit
+                                {...CodeEditProps}
+                                onChange={(value) => flinkTemplateChange(value ?? '')}
+                                code={values.flinkTemplate || ''}
+                            />
+                        </ProForm.Item>
+                    </ProFormGroup>
+                )}
+            </>
+        );
+    };
+
+    return renderDataSourceForm();
 };
 export default DataSourceProForm;
