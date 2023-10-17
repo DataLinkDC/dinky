@@ -30,7 +30,6 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
-import org.dinky.process.exception.ExcuteException;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
 
