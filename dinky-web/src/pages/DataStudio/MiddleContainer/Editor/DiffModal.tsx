@@ -94,9 +94,11 @@ const DiffModal: React.FC<DiffModalProps> = (props) => {
           {l('pages.datastudio.sql.sqlChanged')}-{fileName}
         </div>
       }
+      maskClosable={false}
+      onCancel={() => onUse(false)}
       open={open}
       footer={null}
-      width={'60%'}
+      width={'75%'}
     >
       <div style={{ margin: '10px 0' }}>
         <Text>{l('pages.datastudio.sql.sqlChangedPrompt')}</Text>
@@ -104,8 +106,8 @@ const DiffModal: React.FC<DiffModalProps> = (props) => {
       <Tabs
         tabBarExtraContent={
           <Space>
-            <Link onClick={() => onUse(false)}>{l('pages.datastudio.sql.useCache')}</Link>
             <Link onClick={() => onUse(true)}>{l('pages.datastudio.sql.useServer')}</Link>
+            <Link onClick={() => onUse(false)}>{l('pages.datastudio.sql.useCache')}</Link>
           </Space>
         }
         items={[

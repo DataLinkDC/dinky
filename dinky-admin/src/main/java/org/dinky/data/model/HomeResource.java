@@ -27,7 +27,7 @@ import lombok.Data;
 @ApiModel(value = "HomeResource", description = "Home Resource Information")
 public class HomeResource {
 
-    @ApiModelProperty(value = "Flink Cluster Count", dataType = "Integer")
+    @ApiModelProperty(value = "Flink ClusterInstance Count", dataType = "Integer")
     private Integer flinkClusterCount;
 
     @ApiModelProperty(value = "Flink Config Count", dataType = "Integer")

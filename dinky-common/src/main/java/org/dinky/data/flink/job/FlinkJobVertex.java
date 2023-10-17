@@ -22,11 +22,11 @@ package org.dinky.data.flink.job;
 import java.io.Serializable;
 import java.util.Map;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,48 +34,71 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "FlinkJobVertex", description = "Flink Job Vertex Info")
 @Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class FlinkJobVertex implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "Vertex ID", notes = "Vertex ID")
-    @JSONField(name = "id")
+    @JsonProperty(value = "id")
     private String id;
 
     @ApiModelProperty(value = "Vertex Name", notes = "Vertex Name")
-    @JSONField(name = "name")
+    @JsonProperty(value = "name")
     private String name;
 
     @ApiModelProperty(value = "Vertex Max Parallelism", notes = "Vertex Max Parallelism")
-    @JSONField(name = "maxParallelism")
+    @JsonProperty(value = "maxParallelism")
     private Integer maxParallelism;
 
     @ApiModelProperty(value = "Vertex Parallelism", notes = "Vertex Parallelism")
-    @JSONField(name = "parallelism")
+    @JsonProperty(value = "parallelism")
     private Integer parallelism;
 
     @ApiModelProperty(value = "Vertex Status", notes = "Vertex Status")
-    @JSONField(name = "status")
+    @JsonProperty(value = "status")
     private String status;
 
     @ApiModelProperty(value = "Vertex Start Time", notes = "Vertex Start Time")
-    @JSONField(name = "start-time")
+    @JsonProperty(value = "start-time")
     private Long startTime;
 
     @ApiModelProperty(value = "Vertex End Time", notes = "Vertex End Time")
-    @JSONField(name = "end-time")
+    @JsonProperty(value = "end-time")
     private Long endTime;
 
     @ApiModelProperty(value = "Vertex Duration", notes = "Vertex Duration")
-    @JSONField(name = "duration")
+    @JsonProperty(value = "duration")
     private Long duration;
 
     @ApiModelProperty(value = "Vertex Tasks", notes = "Vertex Tasks")
-    @JSONField(name = "tasks")
+    @JsonProperty(value = "tasks")
     private Map<String, Long> tasks;
 
     @ApiModelProperty(value = "Vertex Metrics", notes = "Vertex Metrics")
-    @JSONField(name = "metrics")
+    @JsonProperty(value = "metrics")
     private Map<String, Object> metrics;
+
+    @JsonCreator
+    public FlinkJobVertex(
+            @JsonProperty(value = "id") String id,
+            @JsonProperty(value = "name") String name,
+            @JsonProperty(value = "maxParallelism") Integer maxParallelism,
+            @JsonProperty(value = "parallelism") Integer parallelism,
+            @JsonProperty(value = "status") String status,
+            @JsonProperty(value = "start-time") Long startTime,
+            @JsonProperty(value = "end-time") Long endTime,
+            @JsonProperty(value = "duration") Long duration,
+            @JsonProperty(value = "tasks") Map<String, Long> tasks,
+            @JsonProperty(value = "metrics") Map<String, Object> metrics) {
+        this.id = id;
+        this.name = name;
+        this.maxParallelism = maxParallelism;
+        this.parallelism = parallelism;
+        this.status = status;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.duration = duration;
+        this.tasks = tasks;
+        this.metrics = metrics;
+    }
 }

@@ -100,7 +100,7 @@ INSERT INTO `dinky_sys_menu` VALUES (32, 1, '作业监控', '/home/jobOverView',
 INSERT INTO `dinky_sys_menu` VALUES (33, 1, '数据开发', '/home/devOverView', 'DevOverView', 'home:devOverView', 'AimOutlined', 'F', 0, 3, '2023-08-15 16:54:47', '2023-09-26 14:49:00', null);
 INSERT INTO `dinky_sys_menu` VALUES (34, 5, '项目列表', '/datastudio/left/project', null, 'datastudio:left:project', 'ConsoleSqlOutlined', 'F', 0, 5, '2023-09-01 18:00:39', '2023-09-26 14:49:31', null);
 INSERT INTO `dinky_sys_menu` VALUES (35, 5, '元数据', '/datastudio/left/metadata', null, 'datastudio:left:metadata', 'TableOutlined', 'F', 0, 7, '2023-09-01 18:01:09', '2023-09-26 14:49:42', null);
-INSERT INTO `dinky_sys_menu` VALUES (36, 5, '结构', '/datastudio/left/structure', null, 'datastudio:left:structure', 'DatabaseOutlined', 'F', 0, 6, '2023-09-01 18:01:30', '2023-09-26 14:49:54', null);
+INSERT INTO `dinky_sys_menu` VALUES (36, 5, 'catalog', '/datastudio/left/catalog', null, 'datastudio:left:structure', 'DatabaseOutlined', 'F', 0, 6, '2023-09-01 18:01:30', '2023-09-26 14:49:54', null);
 INSERT INTO `dinky_sys_menu` VALUES (37, 5, '作业配置', '/datastudio/right/jobConfig', null, 'datastudio:right:jobConfig', 'SettingOutlined', 'F', 0, 8, '2023-09-01 18:02:15', '2023-09-26 14:50:24', null);
 INSERT INTO `dinky_sys_menu` VALUES (38, 5, '执行配置', '/datastudio/right/executeConfig', null, 'datastudio:right:executeConfig', 'ExperimentOutlined', 'F', 0, 9, '2023-09-01 18:03:08', '2023-09-26 14:50:54', null);
 INSERT INTO `dinky_sys_menu` VALUES (39, 5, '版本历史', '/datastudio/right/historyVision', null, 'datastudio:right:historyVision', 'HistoryOutlined', 'F', 0, 10, '2023-09-01 18:03:29', '2023-09-26 14:51:03', null);
@@ -212,12 +212,12 @@ INSERT INTO `dinky_sys_menu` VALUES (146, 10, ' 拷贝', '/registration/datasour
 -- ----------------------------
 -- Records of dinky_alert_rule
 -- ----------------------------
-INSERT INTO dinky_alert_rules VALUES (3, 'alert.rule.jobFail', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'FAILED\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-04 23:03:02');
-INSERT INTO dinky_alert_rules VALUES (4, 'alert.rule.getJobInfoFail', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'UNKNOWN\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-05 18:03:43');
-INSERT INTO dinky_alert_rules VALUES (5, 'alert.rule.jobRestart', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'RESTARTING\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:35:12');
-INSERT INTO dinky_alert_rules VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"checkPoints.checkFailed(#key,#checkPoints)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:49:03');
-INSERT INTO dinky_alert_rules VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"exceptionRule.isException(#key,#exceptions)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:50:12');
-INSERT INTO dinky_alert_rules VALUES (8, 'alert.rule.checkpointTimeout', '[{"ruleKey":"checkPoints.checkpointTime(#key,#checkPoints)","ruleOperator":"GE","ruleValue":"1000"}]', 1, 'CUSTOM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 22:23:35');
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (3, 'alert.rule.jobFail', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'FAILED\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-04 23:03:02');
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (4, 'alert.rule.getJobInfoFail', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'UNKNOWN\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-05 18:03:43');
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (5, 'alert.rule.jobRestart', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'RESTARTING\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:35:12');
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"checkpointRule.checkFailed(#key,#checkPoints)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:49:03');
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"exceptionRule.isException(#key,#exceptions)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:50:12');
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (8, 'alert.rule.checkpointTimeout', '[{"ruleKey":"checkpointRule.checkpointTime(#key,#checkPoints)","ruleOperator":"GE","ruleValue":"1000"}]', 1, 'CUSTOM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 22:23:35');
 
 INSERT INTO dinky_alert_template VALUES (1, 'Default', '
 - **Job Name :** <font color=''gray''>${task.name}</font>
@@ -225,7 +225,7 @@ INSERT INTO dinky_alert_template VALUES (1, 'Default', '
 - **Alert Time :** ${time}
 - **Start Time :** ${startTime}
 - **End Time :** ${endTime}
-- **<font color=''red''><#if exceptions_msg?length gt 100>${exceptions_msg?substring(0,100)}<#else>${exceptions_msg}</#if></font>**
+- **<font color=''red''>${exceptions.rootException.substring(0,20)}</font>**
 [Go toTask Web](http://${taskUrl})
 ', 1, null, null);
 
@@ -237,3 +237,41 @@ COMMIT;
 update dinky_user set super_admin_flag =1  where id =1;
 
 alter table dinky_task alter column `step` set default 1;
+-- todo: 需要修改历史作业的默认值 , 过滤条件待定
+
+
+replace  INTO dinky_task SELECT
+                             t.id,
+                             t.`name`,
+                             t.tenant_id,
+                             t.dialect,
+                             t.type,
+                             t.check_point,
+                             t.save_point_strategy,
+                             t.save_point_path,
+                             t.parallelism,
+                             t.fragment,
+                             t.statement_set,
+                             t.batch_model,
+                             t.cluster_id,
+                             t.cluster_configuration_id,
+                             t.database_id,
+                             t.jar_id,
+                             t.env_id,
+                             t.alert_group_id,
+                             t.config_json,
+                             t.note,
+                             t.step,
+                             t.job_instance_id,
+                             t.enabled,
+                             t.create_time,
+                             t.update_time,
+                             t.version_id,
+                             s.statement
+FROM
+    dinky_task AS t
+LEFT JOIN
+    dinky_task_statement AS s ON t.id = s.id;
+
+
+drop table if exists dinky_task_statement;

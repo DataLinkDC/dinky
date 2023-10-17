@@ -20,7 +20,7 @@
 package org.dinky.assertion;
 
 import org.dinky.data.exception.BusException;
-import org.dinky.data.model.Cluster;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Jar;
 import org.dinky.data.model.Task;
 
@@ -31,9 +31,9 @@ import org.dinky.data.model.Task;
  */
 public interface Assert {
 
-    static void check(Cluster cluster) {
-        if (cluster.getId() == null) {
-            throw new BusException("Flink 集群【" + cluster.getId() + "】不存在");
+    static void check(ClusterInstance clusterInstance) {
+        if (clusterInstance.getId() == null) {
+            throw new BusException("Flink 集群【" + clusterInstance.getId() + "】不存在");
         }
     }
 

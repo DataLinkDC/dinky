@@ -78,7 +78,7 @@ export default {
   'menu.version': '版本：{version}',
 
   'menu.datastudio.project': '项目',
-  'menu.datastudio.structure': '结构',
+  'menu.datastudio.catalog': 'Catalog',
   'menu.datastudio.metadata': '元数据',
   'menu.datastudio.console': '控制台',
   'menu.datastudio.jobConfig': '作业配置',

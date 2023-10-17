@@ -29,6 +29,7 @@ import org.dinky.data.model.JobTypeOverView;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
 import org.dinky.mybatis.service.ISuperService;
@@ -85,7 +86,7 @@ public interface TaskService extends ISuperService<Task> {
      * @param savePointType The type of savepoint to create.
      * @return A {@link SavePointResult} object representing the savepoint result.
      */
-    SavePointResult savepointTaskJob(TaskDTO task, String savePointType);
+    SavePointResult savepointTaskJob(TaskDTO task, SavePointType savePointType);
 
     /**
      * Explain the given task and return a list of SQL explain results.

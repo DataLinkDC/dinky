@@ -52,7 +52,7 @@ const VersionList = (props: VersionListProps) => {
             title={
               <a>
                 {!item.isLatest ? (
-                  `V${item.versionId}`
+                  `V-${item.versionId}`
                 ) : (
                   <Tag key={'v-latest'} color='green'>
                     {l('devops.jobinfo.version.latestVersion')}

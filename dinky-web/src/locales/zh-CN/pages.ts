@@ -390,6 +390,12 @@ export default {
   'pages.datastudio.label.version.rollback.flinksql': '回滚Flink SQL版本',
   'pages.datastudio.label.version.rollback.flinksqlConfirm':
     '确定回滚Flink SQL版本至【{versionId}】吗？',
+
+  'pages.datastudio.catalog.flinkSqlEnvSelect': '请选择 FlinkSqlEnv',
+  'pages.datastudio.catalog.catalogSelect': '请选择 catalog & database',
+  'pages.datastudio.catalog.tableInfo': '表信息',
+  'pages.datastudio.catalog.fieldInformation': '字段信息',
+
   'pages.datastudio.print.table.inputTableName': '请选择表名',
   'pages.devops.jobinfo.localenv': '本地环境',
   'pages.metadata.DataSearch': '数据查询',
@@ -613,6 +619,7 @@ export default {
   'rc.ci.alias': '实例别名',
   'rc.ci.aliasPlaceholder': '请输入别名!',
   'rc.ci.ar': '自动注册',
+  'rc.ci.mr': '手动注册',
   'rc.ci.create': '创建集群',
   'rc.ci.deleteConfirm': '确定删除该 Flink 实例吗？',
   'rc.ci.heartbeat': '心跳检测',
@@ -633,6 +640,8 @@ export default {
   'rc.ci.type': '类型',
   'rc.ci.typePlaceholder': '请选择集群类型!',
   'rc.ci.version': '版本',
+  'rc.ci.desc': '描述',
+  'rc.ci.search': '搜索 名称/别名/备注',
   'rc.doc.category': '文档类型',
   'rc.doc.categoryPlaceholder': '请选择该文档所属类型!',
   'rc.doc.create': '创建文档',
@@ -792,7 +801,7 @@ export default {
   'role.EnterRoleCode': '请输入角色编码!',
   'role.EnterRoleName': '请输入角色名称!',
   'role.assign': '分配权限',
-  'role.assignMenu': '角色',
+  'role.assignMenu': '角色: {roleName} 分配菜单',
   'role.belongTenant': '所属租户',
   'role.create': '创建角色',
   'role.delete': '删除角色',

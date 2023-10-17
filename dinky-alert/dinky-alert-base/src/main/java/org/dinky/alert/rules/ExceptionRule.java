@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.alert.Rules;
+package org.dinky.alert.rules;
 
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 

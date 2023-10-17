@@ -22,15 +22,10 @@ package org.dinky.data.dto;
 import org.dinky.config.Dialect;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.TaskExtConfig;
-import org.dinky.data.typehandler.TaskExtConfigTypeHandler;
 import org.dinky.job.JobConfig;
-
-import org.apache.ibatis.type.JdbcType;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import com.baomidou.mybatisplus.annotation.TableField;
 
 import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;
@@ -104,7 +99,7 @@ public class TaskDTO extends AbstractStatementDTO {
     private boolean batchModel;
 
     @ApiModelProperty(
-            value = "Cluster ID",
+            value = "ClusterInstance ID",
             dataType = "Integer",
             example = "1",
             notes = "The identifier of the cluster")
@@ -167,42 +162,34 @@ public class TaskDTO extends AbstractStatementDTO {
     @ApiModelProperty(value = "Statement", dataType = "String", notes = "SQL statement for the task")
     private String statement;
 
-    @ApiModelProperty(value = "Cluster Name", dataType = "String", notes = "Name of the associated cluster")
-    @TableField(exist = false)
+    @ApiModelProperty(value = "ClusterInstance Name", dataType = "String", notes = "Name of the associated cluster")
     private String clusterName;
 
     @ApiModelProperty(
             value = "Configuration JSON",
             dataType = "TaskExtConfig",
             notes = "Extended configuration in JSON format for the task")
-    @TableField(typeHandler = TaskExtConfigTypeHandler.class, jdbcType = JdbcType.VARCHAR)
     private TaskExtConfig configJson;
 
     @ApiModelProperty(value = "Path", dataType = "String", notes = "Path associated with the task")
-    @TableField(exist = false)
     private String path;
 
     @ApiModelProperty(value = "JAR Name", dataType = "String", notes = "Name of the associated JAR")
-    @TableField(exist = false)
     private String jarName;
 
     @ApiModelProperty(
             value = "Cluster Configuration Name",
             dataType = "String",
             notes = "Name of the associated cluster configuration")
-    @TableField(exist = false)
     private String clusterConfigurationName;
 
     @ApiModelProperty(value = "Database Name", dataType = "String", notes = "Name of the associated database")
-    @TableField(exist = false)
     private String databaseName;
 
     @ApiModelProperty(value = "Environment Name", dataType = "String", notes = "Name of the associated environment")
-    @TableField(exist = false)
     private String envName;
 
     @ApiModelProperty(value = "Alert Group Name", dataType = "String", notes = "Name of the associated alert group")
-    @TableField(exist = false)
     private String alertGroupName;
 
     @ApiModelProperty(

@@ -108,6 +108,7 @@ export enum API_CONSTANTS {
   // ----cluster instance
   // cluster instance list
   CLUSTER_INSTANCE = '/api/cluster',
+  CLUSTER_INSTANCE_LIST = '/api/cluster/list',
   CLUSTER_INSTANCE_ENABLE = '/api/cluster/enable',
   CLUSTER_INSTANCE_DELETE = '/api/cluster/delete',
   CLUSTER_INSTANCE_HEARTBEATS = '/api/cluster/heartbeats',
@@ -230,7 +231,6 @@ export enum API_CONSTANTS {
   STUDIO_GET_LINEAGE = '/api/studio/getLineage',
   // /api/jobInstance/getLineage
   JOB_INSTANCE_GET_LINEAGE = '/api/jobInstance/getLineage',
-  OFFLINE_TASK = '/api/task/offLineTask',
   RESTART_TASK = '/api/task/restartTask',
   RESTART_TASK_FROM_CHECKPOINT = '/api/task/selectSavePointRestartTask',
   GET_SAVEPOINTS = '/api/savepoints',

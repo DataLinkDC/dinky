@@ -16,12 +16,12 @@
  */
 
 import { Height80VHDiv } from '@/components/StyledComponents';
+import ColumnInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/ColumnInfo';
 import TableInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/TableInfo';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { Empty } from 'antd';
 import React from 'react';
-import ColumnInfo from './ColumnInfo/Index';
 
 type SchemaDescProps = {
   tableInfo: Partial<DataSources.Table>;

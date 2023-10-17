@@ -21,11 +21,11 @@ package org.dinky.data.flink.config;
 
 import java.io.Serializable;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,7 +33,6 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "ExecutionConfig", description = "Execution Config")
 @Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class ExecutionConfig implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -44,7 +43,7 @@ public class ExecutionConfig implements Serializable {
             notes = "Execution Mode",
             dataType = "String",
             example = "PIPELINED")
-    @JSONField(name = "execution-mode")
+    @JsonProperty("execution-mode")
     private String executionMode;
 
     @ApiModelProperty(
@@ -53,7 +52,7 @@ public class ExecutionConfig implements Serializable {
             notes = "Restart Strategy",
             dataType = "String",
             example = "Cluster level default restart strategy")
-    @JSONField(name = "restart-strategy")
+    @JsonProperty("restart-strategy")
     private String restartStrategy;
 
     @ApiModelProperty(
@@ -62,7 +61,7 @@ public class ExecutionConfig implements Serializable {
             notes = "Job Parallelism",
             dataType = "Integer",
             example = "1")
-    @JSONField(name = "job-parallelism")
+    @JsonProperty("job-parallelism")
     private Integer jobParallelism;
 
     @ApiModelProperty(
@@ -71,10 +70,24 @@ public class ExecutionConfig implements Serializable {
             notes = "Object Reuse Mode",
             dataType = "Boolean",
             example = "false")
-    @JSONField(name = "object-reuse-mode")
+    @JsonProperty("object-reuse-mode")
     private Boolean objectReuseMode;
 
     @ApiModelProperty(value = "User Config", required = true, notes = "User Config", dataType = "ObjectNode")
-    @JSONField(name = "user-config")
+    @JsonProperty("user-config")
     private Object userConfig;
+
+    @JsonCreator
+    public ExecutionConfig(
+            @JsonProperty("execution-mode") String executionMode,
+            @JsonProperty("restart-strategy") String restartStrategy,
+            @JsonProperty("job-parallelism") Integer jobParallelism,
+            @JsonProperty("object-reuse-mode") Boolean objectReuseMode,
+            @JsonProperty("user-config") Object userConfig) {
+        this.executionMode = executionMode;
+        this.restartStrategy = restartStrategy;
+        this.jobParallelism = jobParallelism;
+        this.objectReuseMode = objectReuseMode;
+        this.userConfig = userConfig;
+    }
 }

@@ -27,8 +27,8 @@ import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.dto.JobDataDto;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.Cluster;
 import org.dinky.data.model.ClusterConfiguration;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.History;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
@@ -156,8 +156,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
         jobInfoDetail.setInstance(jobInstance);
 
-        Cluster cluster = clusterInstanceService.getById(jobInstance.getClusterId());
-        jobInfoDetail.setCluster(cluster);
+        ClusterInstance clusterInstance = clusterInstanceService.getById(jobInstance.getClusterId());
+        jobInfoDetail.setClusterInstance(clusterInstance);
 
         History history = historyService.getById(jobInstance.getHistoryId());
         history.setConfig(JsonUtils.parseObject(history.getConfigJson()));

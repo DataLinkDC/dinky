@@ -22,11 +22,11 @@ package org.dinky.data.flink.backpressure;
 import java.io.Serializable;
 import java.util.List;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -53,13 +53,12 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "FlinkJobNodeBackPressure", description = "Flink Job Node BackPressure Info")
 @Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class FlinkJobNodeBackPressure implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "Status", required = true, notes = "Status", dataType = "String", example = "ok")
-    @JSONField(name = "status")
+    @JsonProperty("status")
     private String status;
 
     @ApiModelProperty(
@@ -68,7 +67,7 @@ public class FlinkJobNodeBackPressure implements Serializable {
             notes = "BackpressureLevel",
             dataType = "String",
             example = "ok")
-    @JSONField(name = "backpressureLevel")
+    @JsonProperty("backpressureLevel")
     private String backpressureLevel;
 
     @ApiModelProperty(
@@ -77,12 +76,24 @@ public class FlinkJobNodeBackPressure implements Serializable {
             notes = "EndTimestamp",
             dataType = "Long",
             example = "1696647436365")
-    @JSONField(name = "end-timestamp")
+    @JsonProperty("end-timestamp")
     private Long endTimestamp;
 
     @ApiModelProperty(value = "Subtasks", required = true, notes = "Subtasks", dataType = "List", example = "Subtasks")
-    @JSONField(name = "subtasks")
+    @JsonProperty("subtasks")
     private List<Subtasks> subtasks;
+
+    @JsonCreator
+    public FlinkJobNodeBackPressure(
+            @JsonProperty("status") String status,
+            @JsonProperty("backpressureLevel") String backpressureLevel,
+            @JsonProperty("end-timestamp") Long endTimestamp,
+            @JsonProperty("subtasks") List<Subtasks> subtasks) {
+        this.status = status;
+        this.backpressureLevel = backpressureLevel;
+        this.endTimestamp = endTimestamp;
+        this.subtasks = subtasks;
+    }
 
     // double
     //    @ApiModelProperty(value = "BackpressureLevel", required = true, notes = "BackpressureLevel", dataType =
@@ -92,13 +103,12 @@ public class FlinkJobNodeBackPressure implements Serializable {
 
     @Data
     @Builder
-    @AllArgsConstructor
     @NoArgsConstructor
     @ApiModel(value = "FlinkJobNodeBackPressure-Subtasks", description = "Flink Job Node BackPressure Subtasks Info")
     public static class Subtasks {
 
         @ApiModelProperty(value = "Subtask", required = true, notes = "Subtask", dataType = "Integer", example = "0")
-        @JSONField(name = "subtask")
+        @JsonProperty("subtask")
         private Integer subtask;
 
         @ApiModelProperty(
@@ -107,19 +117,19 @@ public class FlinkJobNodeBackPressure implements Serializable {
                 notes = "BackpressureLevel",
                 dataType = "String",
                 example = "ok")
-        @JSONField(name = "backpressureLevel")
+        @JsonProperty("backpressureLevel")
         private String backpressureLevel;
 
         @ApiModelProperty(value = "Ratio", required = true, notes = "Ratio", dataType = "Double", example = "0")
-        @JSONField(name = "ratio")
+        @JsonProperty("ratio")
         private Double ratio;
 
         @ApiModelProperty(value = "IdleRatio", required = true, notes = "IdleRatio", dataType = "Double", example = "1")
-        @JSONField(name = "idleRatio")
+        @JsonProperty("idleRatio")
         private Double idleRatio;
 
         @ApiModelProperty(value = "BusyRatio", required = true, notes = "BusyRatio", dataType = "Double", example = "0")
-        @JSONField(name = "busyRatio")
+        @JsonProperty("busyRatio")
         private Double busyRatio;
         //
         // double
@@ -127,5 +137,19 @@ public class FlinkJobNodeBackPressure implements Serializable {
         // = "String", example = "ok")
         //        @JsonProperty("backpressure-level")
         //        private String backpressureLevel;
+
+        @JsonCreator
+        public Subtasks(
+                @JsonProperty("subtask") Integer subtask,
+                @JsonProperty("backpressureLevel") String backpressureLevel,
+                @JsonProperty("ratio") Double ratio,
+                @JsonProperty("idleRatio") Double idleRatio,
+                @JsonProperty("busyRatio") Double busyRatio) {
+            this.subtask = subtask;
+            this.backpressureLevel = backpressureLevel;
+            this.ratio = ratio;
+            this.idleRatio = idleRatio;
+            this.busyRatio = busyRatio;
+        }
     }
 }

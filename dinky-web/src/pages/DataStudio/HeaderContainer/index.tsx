@@ -31,7 +31,6 @@ import {
   cancelTask,
   executeSql,
   getJobPlan,
-  offLinelTask,
   onLineTask
 } from '@/pages/DataStudio/HeaderContainer/service';
 import {
@@ -177,7 +176,7 @@ const HeaderContainer = (props: any) => {
   const handleChangeJobLife = async () => {
     if (!currentData) return;
     if (isOnline(currentData)) {
-      await offLinelTask(currentData.id);
+      await cancelTask('', currentData.id);
       currentData.step = JOB_LIFE_CYCLE.DEVELOP;
     } else {
       const saved = await handleSave();

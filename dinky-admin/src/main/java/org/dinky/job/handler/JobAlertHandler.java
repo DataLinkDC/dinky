@@ -22,8 +22,8 @@ package org.dinky.job.handler;
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
-import org.dinky.alert.Rules.CheckpointsRule;
-import org.dinky.alert.Rules.ExceptionRule;
+import org.dinky.alert.rules.CheckpointsRule;
+import org.dinky.alert.rules.ExceptionRule;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FreeMarkerHolder;
 import org.dinky.context.SpringContextUtils;
@@ -126,9 +126,12 @@ public class JobAlertHandler {
     public void check(JobInfoDetail jobInfoDetail) {
         ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_TIME, TimeUtil.nowStr());
         ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_DETAIL, jobInfoDetail);
-        ruleFacts.put(
-                AlertRuleOptions.JOB_ALERT_RULE_JOB_NAME,
-                jobInfoDetail.getJobDataDto().getJob());
+        if (Asserts.isNotNull(jobInfoDetail.getJobDataDto().getJob())) {
+            ruleFacts.put(
+                    AlertRuleOptions.JOB_ALERT_RULE_JOB_NAME,
+                    jobInfoDetail.getJobDataDto().getJob());
+        }
+
         ruleFacts.put(
                 AlertRuleOptions.JOB_ALERT_RULE_KEY, jobInfoDetail.getInstance().getId());
         ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_INSTANCE, jobInfoDetail.getInstance());
@@ -138,10 +141,13 @@ public class JobAlertHandler {
         ruleFacts.put(
                 AlertRuleOptions.JOB_ALERT_RULE_END_TIME,
                 TimeUtil.convertTimeToString(jobInfoDetail.getInstance().getFinishTime()));
-        ruleFacts.put(
-                AlertRuleOptions.JOB_ALERT_RULE_CHECK_POINTS,
-                jobInfoDetail.getJobDataDto().getCheckpoints());
-        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CLUSTER, jobInfoDetail.getCluster());
+        if (Asserts.isNotNull(jobInfoDetail.getJobDataDto().getCheckpoints())) {
+            ruleFacts.put(
+                    AlertRuleOptions.JOB_ALERT_RULE_CHECK_POINTS,
+                    jobInfoDetail.getJobDataDto().getCheckpoints());
+        }
+
+        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CLUSTER, jobInfoDetail.getClusterInstance());
         ruleFacts.put(
                 AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS,
                 jobInfoDetail.getJobDataDto().getExceptions());

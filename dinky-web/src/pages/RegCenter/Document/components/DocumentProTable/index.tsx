@@ -199,7 +199,8 @@ const DocumentTableList: React.FC = () => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      width: '10vh',
+      width: '10%',
+      fixed: 'right',
       hideInDescriptions: true,
       render: (_, record) => [
         <Authorized key={`${record.id}_edit`} path='/registration/document/edit'>

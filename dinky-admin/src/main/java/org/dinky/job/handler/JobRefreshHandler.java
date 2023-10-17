@@ -27,6 +27,8 @@ import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.dto.JobDataDto;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.flink.backpressure.FlinkJobNodeBackPressure;
+import org.dinky.data.flink.checkpoint.CheckPointOverView;
+import org.dinky.data.flink.config.CheckpointConfigInfo;
 import org.dinky.data.flink.config.FlinkJobConfigInfo;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.flink.job.FlinkJobDetailInfo;
@@ -93,7 +95,7 @@ public class JobRefreshHandler {
 
         JobDataDto jobDataDto = getJobHistory(
                 jobInstance.getId(),
-                jobInfoDetail.getCluster().getJobManagerHost(),
+                jobInfoDetail.getClusterInstance().getJobManagerHost(),
                 jobInfoDetail.getInstance().getJid());
 
         if (Asserts.isNull(jobDataDto.getJob()) || jobDataDto.isError()) {
@@ -190,10 +192,10 @@ public class JobRefreshHandler {
             });
 
             return builder.id(id)
-                    .checkpoints(api.getCheckPoints(jobId))
-                    .checkpointsConfig(api.getCheckPointsConfig(jobId))
-                    .exceptions(
-                            JsonUtils.toJavaBean(api.getException(jobId).toString(), FlinkJobExceptionsDetail.class))
+                    .checkpoints(JSONUtil.toBean(api.getCheckPoints(jobId).toString(), CheckPointOverView.class))
+                    .checkpointsConfig(
+                            JSONUtil.toBean(api.getCheckPointsConfig(jobId).toString(), CheckpointConfigInfo.class))
+                    .exceptions(JSONUtil.toBean(api.getException(jobId).toString(), FlinkJobExceptionsDetail.class))
                     .job(flinkJobDetailInfo)
                     .config(jobConfigInfo)
                     .build();
@@ -215,7 +217,7 @@ public class JobRefreshHandler {
 
         if (!Asserts.isNull(clusterCfg)) {
             try {
-                String appId = jobInfoDetail.getCluster().getName();
+                String appId = jobInfoDetail.getClusterInstance().getName();
 
                 GatewayConfig gatewayConfig = GatewayConfig.build(clusterCfg.getConfig());
                 gatewayConfig.getClusterConfig().setAppId(appId);
@@ -242,12 +244,11 @@ public class JobRefreshHandler {
     private static void handleJobDone(JobInfoDetail jobInfoDetail) {
         JobInstance jobInstance = jobInfoDetail.getInstance();
         JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
-        String clusterType = jobInfoDetail.getCluster().getType();
+        String clusterType = jobInfoDetail.getClusterInstance().getType();
 
         if (GatewayType.isDeployCluster(clusterType)) {
             JobConfig jobConfig = new JobConfig();
-            String configJson =
-                    jobDataDto.getClusterConfiguration().get("configJson").asText();
+            String configJson = jobDataDto.getClusterConfiguration().getConfigJson();
             jobConfig.buildGatewayConfig(new JSONObject(configJson).toBean(FlinkClusterConfig.class));
             jobConfig.getGatewayConfig().setType(GatewayType.get(clusterType));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());

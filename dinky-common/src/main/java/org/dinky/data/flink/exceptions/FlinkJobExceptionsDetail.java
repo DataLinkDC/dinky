@@ -22,11 +22,11 @@ package org.dinky.data.flink.exceptions;
 import java.io.Serializable;
 import java.util.List;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -46,7 +46,6 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "FlinkJobExceptionsDetail", description = "Flink Job Exceptions Detail Info")
 @Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class FlinkJobExceptionsDetail implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -57,7 +56,7 @@ public class FlinkJobExceptionsDetail implements Serializable {
             notes = "All Exceptions",
             dataType = "List",
             example = "All Exceptions")
-    @JSONField(name = "all-exceptions")
+    @JsonProperty("all-exceptions")
     private List<Object> allExceptions;
 
     @ApiModelProperty(
@@ -66,7 +65,7 @@ public class FlinkJobExceptionsDetail implements Serializable {
             notes = "Root Exception",
             dataType = "String",
             example = "Root Exception")
-    @JSONField(name = "root-exception")
+    @JsonProperty("root-exception")
     private String rootException = "";
 
     @ApiModelProperty(
@@ -75,7 +74,7 @@ public class FlinkJobExceptionsDetail implements Serializable {
             notes = "Timestamp",
             dataType = "Object",
             example = "Timestamp")
-    @JSONField(name = "timestamp")
+    @JsonProperty("timestamp")
     private Long timestamp;
 
     @ApiModelProperty(
@@ -84,7 +83,7 @@ public class FlinkJobExceptionsDetail implements Serializable {
             notes = "Truncated",
             dataType = "Boolean",
             example = "Truncated")
-    @JSONField(name = "truncated")
+    @JsonProperty("truncated")
     private Boolean truncated;
 
     @ApiModelProperty(
@@ -93,18 +92,31 @@ public class FlinkJobExceptionsDetail implements Serializable {
             notes = "Exception History",
             dataType = "Object",
             example = "Exception History")
-    @JSONField(name = "exceptionHistory")
+    @JsonProperty("exceptionHistory")
     private ExceptionHistory exceptionHistory;
+
+    @JsonCreator
+    public FlinkJobExceptionsDetail(
+            @JsonProperty("all-exceptions") List<Object> allExceptions,
+            @JsonProperty("root-exception") String rootException,
+            @JsonProperty("timestamp") Long timestamp,
+            @JsonProperty("truncated") Boolean truncated,
+            @JsonProperty("exceptionHistory") ExceptionHistory exceptionHistory) {
+        this.allExceptions = allExceptions;
+        this.rootException = rootException;
+        this.timestamp = timestamp;
+        this.truncated = truncated;
+        this.exceptionHistory = exceptionHistory;
+    }
 
     @ApiModel(value = "ExceptionHistory", description = "Exception History Info")
     @Builder
     @Data
-    @AllArgsConstructor
     @NoArgsConstructor
     public static class ExceptionHistory {
 
         @ApiModelProperty(value = "Entries", required = true, notes = "Entries", dataType = "List", example = "Entries")
-        @JSONField(name = "entries")
+        @JsonProperty("entries")
         private List<Object> entries;
 
         @ApiModelProperty(
@@ -113,7 +125,14 @@ public class FlinkJobExceptionsDetail implements Serializable {
                 notes = "Truncated",
                 dataType = "Boolean",
                 example = "Truncated")
-        @JSONField(name = "truncated")
+        @JsonProperty("truncated")
         private Boolean truncated;
+
+        @JsonCreator
+        public ExceptionHistory(
+                @JsonProperty("entries") List<Object> entries, @JsonProperty("truncated") Boolean truncated) {
+            this.entries = entries;
+            this.truncated = truncated;
+        }
     }
 }

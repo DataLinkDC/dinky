@@ -21,7 +21,7 @@ package org.dinky.data.flink.job;
 
 import java.io.Serializable;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -48,18 +48,18 @@ public class FlinkJobPlanNodeInput implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "num", notes = "num", dataType = "Integer", example = "1")
-    @JSONField(name = "num")
+    @JsonProperty(value = "num")
     private Integer num;
 
     @ApiModelProperty(value = "id", notes = "id", dataType = "String", example = "1")
-    @JSONField(name = "id")
+    @JsonProperty(value = "id")
     private String id;
 
     @ApiModelProperty(value = "ship_strategy", notes = "ship_strategy", dataType = "String", example = "1")
-    @JSONField(name = "ship_strategy")
+    @JsonProperty(value = "ship_strategy")
     private String shipStrategy;
 
     @ApiModelProperty(value = "exchange", notes = "exchange", dataType = "String", example = "1")
-    @JSONField(name = "exchange")
+    @JsonProperty(value = "exchange")
     private String exchange;
 }

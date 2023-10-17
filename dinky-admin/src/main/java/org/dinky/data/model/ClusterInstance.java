@@ -31,15 +31,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * Cluster
+ * ClusterInstance
  *
  * @since 2021/5/28 13:53
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_cluster")
-@ApiModel(value = "Cluster", description = "Cluster")
-public class Cluster extends SuperEntity {
+@ApiModel(value = "ClusterInstance", description = "ClusterInstance")
+public class ClusterInstance extends SuperEntity {
 
     private static final long serialVersionUID = 3104721227014487321L;
 
@@ -112,17 +112,17 @@ public class Cluster extends SuperEntity {
     @ApiModelProperty(value = "taskId", required = true, dataType = "Integer", example = "test", notes = "task id")
     private Integer taskId;
 
-    public static Cluster autoRegistersCluster(
+    public static ClusterInstance autoRegistersCluster(
             String hosts, String name, String alias, String type, Integer clusterConfigurationId, Integer taskId) {
-        Cluster cluster = new Cluster();
-        cluster.setName(name);
-        cluster.setAlias(alias);
-        cluster.setHosts(hosts);
-        cluster.setType(type);
-        cluster.setClusterConfigurationId(clusterConfigurationId);
-        cluster.setTaskId(taskId);
-        cluster.setAutoRegisters(true);
-        cluster.setEnabled(true);
-        return cluster;
+        ClusterInstance clusterInstance = new ClusterInstance();
+        clusterInstance.setName(name);
+        clusterInstance.setAlias(alias);
+        clusterInstance.setHosts(hosts);
+        clusterInstance.setType(type);
+        clusterInstance.setClusterConfigurationId(clusterConfigurationId);
+        clusterInstance.setTaskId(taskId);
+        clusterInstance.setAutoRegisters(true);
+        clusterInstance.setEnabled(true);
+        return clusterInstance;
     }
 }

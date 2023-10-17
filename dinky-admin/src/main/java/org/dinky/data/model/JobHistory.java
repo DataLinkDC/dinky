@@ -19,6 +19,15 @@
 
 package org.dinky.data.model;
 
+import org.dinky.data.flink.checkpoint.CheckPointOverView;
+import org.dinky.data.flink.config.CheckpointConfigInfo;
+import org.dinky.data.flink.config.FlinkJobConfigInfo;
+import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
+import org.dinky.data.flink.job.FlinkJobDetailInfo;
+import org.dinky.data.model.mapping.ClusterConfigurationMapping;
+import org.dinky.data.model.mapping.ClusterInstanceMapping;
+import org.dinky.data.typehandler.JSONObjectHandler;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -65,35 +74,40 @@ public class JobHistory implements Serializable {
             dataType = "String",
             example = "{\"jobName\": \"Example Job\"}",
             notes = "JSON representation of the job")
-    private String jobJson;
+    @TableField(typeHandler = JSONObjectHandler.class)
+    private FlinkJobDetailInfo jobJson;
 
     @ApiModelProperty(
             value = "Exceptions JSON",
             dataType = "String",
             example = "{\"exceptionType\": \"RuntimeException\"}",
             notes = "JSON representation of exceptions")
-    private String exceptionsJson;
+    @TableField(typeHandler = JSONObjectHandler.class)
+    private FlinkJobExceptionsDetail exceptionsJson;
 
     @ApiModelProperty(
             value = "Checkpoints JSON",
             dataType = "String",
             example = "{\"checkpointId\": 123}",
             notes = "JSON representation of checkpoints")
-    private String checkpointsJson;
+    @TableField(typeHandler = JSONObjectHandler.class)
+    private CheckPointOverView checkpointsJson;
 
     @ApiModelProperty(
             value = "Checkpoints Config JSON",
             dataType = "String",
             example = "{\"configParam\": \"value\"}",
             notes = "JSON representation of checkpoints config")
-    private String checkpointsConfigJson;
+    @TableField(typeHandler = JSONObjectHandler.class)
+    private CheckpointConfigInfo checkpointsConfigJson;
 
     @ApiModelProperty(
             value = "Config JSON",
             dataType = "String",
             example = "{\"configParam\": \"value\"}",
             notes = "JSON representation of config")
-    private String configJson;
+    @TableField(typeHandler = JSONObjectHandler.class)
+    private FlinkJobConfigInfo configJson;
 
     @ApiModelProperty(
             value = "Jar JSON",
@@ -103,18 +117,20 @@ public class JobHistory implements Serializable {
     private String jarJson;
 
     @ApiModelProperty(
-            value = "Cluster JSON",
+            value = "ClusterInstance JSON",
             dataType = "String",
             example = "{\"clusterName\": \"exampleCluster\"}",
             notes = "JSON representation of the cluster")
-    private String clusterJson;
+    @TableField(typeHandler = JSONObjectHandler.class)
+    private ClusterInstanceMapping clusterJson;
 
     @ApiModelProperty(
             value = "Cluster Configuration JSON",
             dataType = "String",
             example = "{\"configParam\": \"value\"}",
             notes = "JSON representation of cluster configuration")
-    private String clusterConfigurationJson;
+    @TableField(typeHandler = JSONObjectHandler.class)
+    private ClusterConfigurationMapping clusterConfigurationJson;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(
