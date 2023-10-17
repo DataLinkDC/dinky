@@ -304,8 +304,7 @@ public class JobManager {
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
-    public JobResult executeSql(String statement) {
-        // TODO 改为ProcessStep注释
+    public JobResult executeSql(String statement) throws Exception {
         Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);
         if (!useGateway) {
             job.setJobManagerAddress(executorConfig.getJobManagerAddress());
@@ -527,8 +526,8 @@ public class JobManager {
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
-            log.error(error);
             failed();
+            throw e;
         } finally {
             close();
         }

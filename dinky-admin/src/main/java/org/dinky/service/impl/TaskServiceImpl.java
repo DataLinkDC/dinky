@@ -72,7 +72,6 @@ import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.parser.SqlType;
 import org.dinky.process.annotations.ProcessStep;
 import org.dinky.process.enums.ProcessStepType;
-import org.dinky.process.exception.ExcuteException;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.ClusterConfigurationService;
@@ -202,7 +201,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
-    public JobResult executeJob(TaskDTO task) {
+    public JobResult executeJob(TaskDTO task) throws Exception {
         JobResult jobResult;
         if (Dialect.isCommonSql(task.getDialect())) {
             log.info("Preparing to execute common sql...");
@@ -269,7 +268,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     @ProcessStep(type = ProcessStepType.SUBMIT_TASK)
-    public JobResult submitTask(Integer id, String savePointPath) throws ExcuteException {
+    public JobResult submitTask(Integer id, String savePointPath) throws Exception {
         initTenantByTaskId(id);
 
         TaskDTO task = this.getTaskInfoById(id);
@@ -297,7 +296,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public JobResult restartTask(Integer id, String savePointPath) throws ExcuteException {
+    public JobResult restartTask(Integer id, String savePointPath) throws Exception {
         TaskDTO task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMessage());
         if (!Dialect.isCommonSql(task.getDialect()) && Asserts.isNotNull(task.getJobInstanceId())) {

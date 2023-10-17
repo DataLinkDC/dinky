@@ -43,7 +43,7 @@ public class JobManagerTest {
 
     @Ignore
     @Test
-    public void cancelJobSelect() {
+    public void cancelJobSelect() throws Exception {
         JobConfig config = JobConfig.builder()
                 .type(GatewayType.YARN_SESSION.getLongValue())
                 .useResult(true)

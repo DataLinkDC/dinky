@@ -67,7 +67,7 @@ public interface TaskService extends ISuperService<Task> {
      * @return A {@link JobResult} object representing the result of the submitted task.
      * @throws ExcuteException If there is an error executing the task.
      */
-    JobResult submitTask(Integer id, String savePointPath) throws ExcuteException;
+    JobResult submitTask(Integer id, String savePointPath) throws Exception;
 
     /**
      * Restart the given task and return the job result.
@@ -77,7 +77,7 @@ public interface TaskService extends ISuperService<Task> {
      * @return A {@link JobResult} object representing the result of the restarted task.
      * @throws ExcuteException If there is an error restarting the task.
      */
-    JobResult restartTask(Integer id, String savePointPath) throws ExcuteException;
+    JobResult restartTask(Integer id, String savePointPath) throws Exception;
 
     /**
      * Savepoint the given task job and return the savepoint result.
