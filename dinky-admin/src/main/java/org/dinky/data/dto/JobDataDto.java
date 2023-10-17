@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.core.lang.Opt;
 import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -115,17 +116,19 @@ public class JobDataDto {
     }
 
     public static JobDataDto fromJobHistory(JobHistory jobHistory) {
-        return JobDataDto.builder()
-                .id(jobHistory.getId())
-                .tenantId(jobHistory.getTenantId())
-                .job(jobHistory.getJobJson())
-                .exceptions(jobHistory.getExceptionsJson())
-                .checkpoints(jobHistory.getCheckpointsJson())
-                .checkpointsConfig(jobHistory.getCheckpointsConfigJson())
-                .config(jobHistory.getConfigJson())
-                .jar(JsonUtils.parseToJsonNode(jobHistory.getJarJson()))
-                .cluster(jobHistory.getClusterJson())
-                .clusterConfiguration(jobHistory.getClusterConfigurationJson())
-                .build();
+        return Opt.ofNullable(jobHistory)
+                .map(x -> JobDataDto.builder()
+                        .id(jobHistory.getId())
+                        .tenantId(jobHistory.getTenantId())
+                        .job(jobHistory.getJobJson())
+                        .exceptions(jobHistory.getExceptionsJson())
+                        .checkpoints(jobHistory.getCheckpointsJson())
+                        .checkpointsConfig(jobHistory.getCheckpointsConfigJson())
+                        .config(jobHistory.getConfigJson())
+                        .jar(JsonUtils.parseToJsonNode(jobHistory.getJarJson()))
+                        .cluster(jobHistory.getClusterJson())
+                        .clusterConfiguration(jobHistory.getClusterConfigurationJson())
+                        .build())
+                .orElse(null);
     }
 }

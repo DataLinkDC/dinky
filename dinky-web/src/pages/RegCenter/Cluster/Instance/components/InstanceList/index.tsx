@@ -186,7 +186,6 @@ export default () => {
           description={l('rc.ci.deleteConfirm')}
         />
       </Authorized>
-      {renderWebUiRedirect(record)}
     </Space>
   );
 
@@ -201,7 +200,7 @@ export default () => {
           <Col flex='85%'>
             <Paragraph>
               <blockquote>
-                {l('rc.ci.jma')}: <Link>{item.jobManagerHost}</Link>
+                {l('rc.ci.jma')}: {renderWebUiRedirect(item)}
               </blockquote>
               <blockquote>
                 {l('rc.ci.version')}: <Link>{item.version}</Link>
@@ -306,7 +305,7 @@ export default () => {
         <Badge.Ribbon
           className={'card-list-item-wrapper'}
           color={item.autoRegisters ? 'green' : 'yellow'}
-          text={item.autoRegisters ? l('rc.ci.ar') : l('rc.ci.mr')}
+          text={item.autoRegisters ? l('rc.ci.ar') : <span style={{color:"crimson"}}>{l('rc.ci.mr')}</span>}
         >
           <Card
             headStyle={{ minHeight: '10px' }}
