@@ -67,7 +67,7 @@ const CkDesc = (props: JobProps) => {
 
         <Descriptions.Item label='Latest Failed CheckPoint'>
           <Tag color='red' title={'Latest Failed CheckPoint'}>
-            id: {latest?.failed.id ?? 'None'}
+            id: {latest?.failed?.id ?? 'None'}
           </Tag>
           {/*<Tag color='red' title={'Latest Failed CheckPoint'}>*/}
           {/*  {'Cause： ' + latest?.failed?.failure_message ?? 'None'}*/}

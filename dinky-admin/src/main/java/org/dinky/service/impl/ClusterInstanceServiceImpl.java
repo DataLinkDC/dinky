@@ -24,8 +24,8 @@ import org.dinky.assertion.Asserts;
 import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.constant.FlinkConstant;
-import org.dinky.data.model.Cluster;
 import org.dinky.data.model.ClusterConfiguration;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.model.FlinkClusterConfig;
@@ -42,9 +42,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -54,7 +56,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstanceMapper, Cluster>
+public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstanceMapper, ClusterInstance>
         implements ClusterInstanceService {
 
     private final ClusterConfigurationService clusterConfigurationService;
@@ -65,17 +67,18 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     }
 
     @Override
-    public String getJobManagerAddress(Cluster cluster) {
-        Assert.check(cluster);
-        FlinkClusterInfo info = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
+    public String getJobManagerAddress(ClusterInstance clusterInstance) {
+        Assert.check(clusterInstance);
+        FlinkClusterInfo info =
+                FlinkCluster.testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
         String host = null;
         if (info.isEffective()) {
             host = info.getJobManagerAddress();
         }
         Assert.checkHost(host);
-        if (!host.equals(cluster.getJobManagerHost())) {
-            cluster.setJobManagerHost(host);
-            updateById(cluster);
+        if (!host.equals(clusterInstance.getJobManagerHost())) {
+            clusterInstance.setJobManagerHost(host);
+            updateById(clusterInstance);
         }
         return host;
     }
@@ -108,25 +111,29 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     }
 
     @Override
-    public List<Cluster> listEnabledAllClusterInstance() {
-        return this.list(new QueryWrapper<Cluster>().eq("enabled", 1));
+    public List<ClusterInstance> listEnabledAllClusterInstance() {
+        return this.list(new QueryWrapper<ClusterInstance>().eq("enabled", 1));
     }
 
     @Override
-    public List<Cluster> listSessionEnable() {
+    public List<ClusterInstance> listSessionEnable() {
         return baseMapper.listSessionEnable();
     }
 
     @Override
-    public List<Cluster> listAutoEnable() {
-        return list(new QueryWrapper<Cluster>().eq("enabled", 1).eq("auto_registers", 1));
+    public List<ClusterInstance> listAutoEnable() {
+        return list(new QueryWrapper<ClusterInstance>().eq("enabled", 1).eq("auto_registers", 1));
     }
 
     @Override
-    public Cluster registersCluster(Cluster cluster) {
-        checkHealth(cluster);
-        saveOrUpdate(cluster);
-        return cluster;
+    @Transactional(rollbackFor = Exception.class)
+    public ClusterInstance registersCluster(ClusterInstance clusterInstance) {
+        checkHealth(clusterInstance);
+        if (StrUtil.isEmpty(clusterInstance.getAlias())) {
+            clusterInstance.setAlias(clusterInstance.getName());
+        }
+        saveOrUpdate(clusterInstance);
+        return clusterInstance;
     }
 
     /**
@@ -140,17 +147,17 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public Boolean modifyClusterInstanceStatus(Integer id) {
-        Cluster clusterInfo = getById(id);
-        clusterInfo.setEnabled(!clusterInfo.getEnabled());
-        checkHealth(clusterInfo);
-        return updateById(clusterInfo);
+        ClusterInstance clusterInstanceInfo = getById(id);
+        clusterInstanceInfo.setEnabled(!clusterInstanceInfo.getEnabled());
+        checkHealth(clusterInstanceInfo);
+        return updateById(clusterInstanceInfo);
     }
 
     @Override
     public Integer recycleCluster() {
-        List<Cluster> clusters = listAutoEnable();
+        List<ClusterInstance> clusterInstances = listAutoEnable();
         int count = 0;
-        for (Cluster item : clusters) {
+        for (ClusterInstance item : clusterInstances) {
             if ((!checkHealth(item)) && removeById(item)) {
                 count++;
             }
@@ -160,20 +167,20 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public void killCluster(Integer id) {
-        Cluster cluster = getById(id);
-        if (Asserts.isNull(cluster)) {
-            throw new GatewayException("The cluster does not exist.");
-        } else if (!checkHealth(cluster)) {
-            throw new GatewayException("The cluster has been killed.");
+        ClusterInstance clusterInstance = getById(id);
+        if (Asserts.isNull(clusterInstance)) {
+            throw new GatewayException("The clusterInstance does not exist.");
+        } else if (!checkHealth(clusterInstance)) {
+            throw new GatewayException("The clusterInstance has been killed.");
         }
-        Integer clusterConfigurationId = cluster.getClusterConfigurationId();
+        Integer clusterConfigurationId = clusterInstance.getClusterConfigurationId();
         FlinkClusterConfig flinkClusterConfig = clusterConfigurationService.getFlinkClusterCfg(clusterConfigurationId);
         GatewayConfig gatewayConfig = GatewayConfig.build(flinkClusterConfig);
-        JobManager.killCluster(gatewayConfig, cluster.getName());
+        JobManager.killCluster(gatewayConfig, clusterInstance.getName());
     }
 
     @Override
-    public Cluster deploySessionCluster(Integer id) {
+    public ClusterInstance deploySessionCluster(Integer id) {
         ClusterConfiguration clusterCfg = clusterConfigurationService.getClusterConfigById(id);
         if (Asserts.isNull(clusterCfg)) {
             throw new GatewayException("The cluster configuration does not exist.");
@@ -181,7 +188,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         GatewayConfig gatewayConfig =
                 GatewayConfig.build(FlinkClusterConfig.create(clusterCfg.getType(), clusterCfg.getConfigJson()));
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
-        return registersCluster(Cluster.autoRegistersCluster(
+        return registersCluster(ClusterInstance.autoRegistersCluster(
                 gatewayResult.getWebURL().replace("http://", ""),
                 gatewayResult.getId(),
                 clusterCfg.getName() + "_" + LocalDateTime.now(),
@@ -190,16 +197,16 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                 null));
     }
 
-    private boolean checkHealth(Cluster cluster) {
-        FlinkClusterInfo info = checkHeartBeat(cluster.getHosts(), cluster.getJobManagerHost());
+    private boolean checkHealth(ClusterInstance clusterInstance) {
+        FlinkClusterInfo info = checkHeartBeat(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
         if (!info.isEffective()) {
-            cluster.setJobManagerHost("");
-            cluster.setStatus(0);
+            clusterInstance.setJobManagerHost("");
+            clusterInstance.setStatus(0);
             return false;
         } else {
-            cluster.setJobManagerHost(info.getJobManagerAddress());
-            cluster.setStatus(1);
-            cluster.setVersion(info.getVersion());
+            clusterInstance.setJobManagerHost(info.getJobManagerAddress());
+            clusterInstance.setStatus(1);
+            clusterInstance.setVersion(info.getVersion());
             return true;
         }
     }

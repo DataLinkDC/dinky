@@ -25,11 +25,11 @@ import org.dinky.data.flink.watermark.FlinkJobNodeWaterMark;
 import java.io.Serializable;
 import java.util.List;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -56,47 +56,68 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "FlinkJobPlanNode", description = "Flink Job Plan Node Info")
 @Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class FlinkJobPlanNode implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "id", notes = "id", dataType = "String", example = "1")
-    @JSONField(name = "id")
+    @JsonProperty(value = "id")
     private String id;
 
     @ApiModelProperty(value = "parallelism", notes = "parallelism", dataType = "Integer", example = "1")
-    @JSONField(name = "parallelism")
+    @JsonProperty(value = "parallelism")
     private Integer parallelism;
 
     @ApiModelProperty(value = "operator", notes = "operator", dataType = "String", example = "1")
-    @JSONField(name = "operator")
+    @JsonProperty(value = "operator")
     private String operator;
 
     @ApiModelProperty(value = "operator_strategy", notes = "operator_strategy", dataType = "String", example = "1")
-    @JSONField(name = "operator_strategy")
+    @JsonProperty(value = "operator_strategy")
     private String operatorStrategy;
 
     @ApiModelProperty(value = "description", notes = "description", dataType = "String", example = "1")
-    @JSONField(name = "description")
+    @JsonProperty(value = "description")
     private String description;
 
     @ApiModelProperty(value = "inputs", notes = "inputs", dataType = "List")
-    @JSONField(name = "inputs")
+    @JsonProperty(value = "inputs")
     private List<FlinkJobPlanNodeInput> inputs;
 
     @ApiModelProperty(value = "optimizer_properties", notes = "optimizer_properties", dataType = "Object")
-    @JSONField(name = "optimizer_properties")
+    @JsonProperty(value = "optimizer_properties")
     private Object optimizerProperties;
 
     /**
      * extend field
      */
     @ApiModelProperty(value = "backpressure", notes = "backpressure", dataType = "String", example = "1")
-    @JSONField(name = "backpressure")
+    @JsonProperty(value = "backpressure")
     private FlinkJobNodeBackPressure backpressure;
 
     @ApiModelProperty(value = "watermark", notes = "watermark", dataType = "String", example = "1")
-    @JSONField(name = "watermark")
+    @JsonProperty(value = "watermark")
     private List<FlinkJobNodeWaterMark> watermark;
+
+    @JsonCreator
+    public FlinkJobPlanNode(
+            @JsonProperty(value = "id") String id,
+            @JsonProperty(value = "parallelism") Integer parallelism,
+            @JsonProperty(value = "operator") String operator,
+            @JsonProperty(value = "operator_strategy") String operatorStrategy,
+            @JsonProperty(value = "description") String description,
+            @JsonProperty(value = "inputs") List<FlinkJobPlanNodeInput> inputs,
+            @JsonProperty(value = "optimizer_properties") Object optimizerProperties,
+            @JsonProperty(value = "backpressure") FlinkJobNodeBackPressure backpressure,
+            @JsonProperty(value = "watermark") List<FlinkJobNodeWaterMark> watermark) {
+        this.id = id;
+        this.parallelism = parallelism;
+        this.operator = operator;
+        this.operatorStrategy = operatorStrategy;
+        this.description = description;
+        this.inputs = inputs;
+        this.optimizerProperties = optimizerProperties;
+        this.backpressure = backpressure;
+        this.watermark = watermark;
+    }
 }

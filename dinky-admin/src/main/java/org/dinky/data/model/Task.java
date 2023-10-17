@@ -19,7 +19,7 @@
 
 package org.dinky.data.model;
 
-import org.dinky.data.typehandler.TaskExtConfigTypeHandler;
+import org.dinky.data.typehandler.JSONObjectHandler;
 import org.dinky.mybatis.model.SuperEntity;
 
 import org.apache.ibatis.type.JdbcType;
@@ -94,7 +94,7 @@ public class Task extends SuperEntity<Task> {
     private Boolean batchModel;
 
     @ApiModelProperty(
-            value = "Cluster ID",
+            value = "ClusterInstance ID",
             dataType = "Integer",
             example = "2001",
             notes = "ID of the cluster associated with the task")
@@ -139,7 +139,7 @@ public class Task extends SuperEntity<Task> {
             value = "Configuration JSON",
             dataType = "TaskExtConfig",
             notes = "Extended configuration in JSON format for the task")
-    @TableField(typeHandler = TaskExtConfigTypeHandler.class, jdbcType = JdbcType.VARCHAR)
+    @TableField(typeHandler = JSONObjectHandler.class, jdbcType = JdbcType.VARCHAR)
     private TaskExtConfig configJson;
 
     @ApiModelProperty(value = "Note", dataType = "String", notes = "Additional notes for the task")

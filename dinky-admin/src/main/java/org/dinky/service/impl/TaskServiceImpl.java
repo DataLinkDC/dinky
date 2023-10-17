@@ -36,8 +36,8 @@ import org.dinky.data.exception.SqlExplainExcepition;
 import org.dinky.data.exception.TaskNotDoneException;
 import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.Catalogue;
-import org.dinky.data.model.Cluster;
 import org.dinky.data.model.ClusterConfiguration;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.Jar;
 import org.dinky.data.model.JobInstance;
@@ -308,8 +308,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public boolean cancelTaskJob(TaskDTO task) {
         JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
         Assert.notNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
-        Cluster cluster = clusterInstanceService.getById(jobInstance.getClusterId());
-        Assert.notNull(cluster, Status.CLUSTER_NOT_EXIST.getMessage());
+        ClusterInstance clusterInstance = clusterInstanceService.getById(jobInstance.getClusterId());
+        Assert.notNull(clusterInstance, Status.CLUSTER_NOT_EXIST.getMessage());
 
         JobManager jobManager = JobManager.build(buildJobConfig(task));
         return jobManager.cancel(jobInstance.getJid());
@@ -405,9 +405,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         BeanUtil.copyProperties(mTask, taskDTO);
 
         if (taskDTO.getClusterId() != null) {
-            Cluster cluster = clusterInstanceService.getById(taskDTO.getClusterId());
-            if (cluster != null) {
-                taskDTO.setClusterName(cluster.getAlias());
+            ClusterInstance clusterInstance = clusterInstanceService.getById(taskDTO.getClusterId());
+            if (clusterInstance != null) {
+                taskDTO.setClusterName(clusterInstance.getAlias());
             }
         }
         if (taskDTO.getJobInstanceId() != null) {
@@ -586,9 +586,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public String exportJsonByTaskId(Integer taskId) {
         TaskDTO task = getTaskInfoById(taskId);
         if (Asserts.isNotNull(task.getClusterId())) {
-            Cluster cluster = clusterInstanceService.getById(task.getClusterId());
-            if (Asserts.isNotNull(cluster)) {
-                task.setClusterName(cluster.getName());
+            ClusterInstance clusterInstance = clusterInstanceService.getById(task.getClusterId());
+            if (Asserts.isNotNull(clusterInstance)) {
+                task.setClusterName(clusterInstance.getName());
             }
         }
 
@@ -673,10 +673,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         for (JsonNode json : jsonNodes) {
             TaskDTO task = mapper.treeToValue(json, TaskDTO.class);
             if (Asserts.isNotNull(task.getClusterName())) {
-                Cluster cluster =
-                        clusterInstanceService.getOne(new QueryWrapper<Cluster>().eq("name", task.getClusterName()));
-                if (Asserts.isNotNull(cluster)) {
-                    task.setClusterId(cluster.getId());
+                ClusterInstance clusterInstance = clusterInstanceService.getOne(
+                        new QueryWrapper<ClusterInstance>().eq("name", task.getClusterName()));
+                if (Asserts.isNotNull(clusterInstance)) {
+                    task.setClusterId(clusterInstance.getId());
                 }
             }
 

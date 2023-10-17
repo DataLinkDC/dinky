@@ -65,7 +65,7 @@ public class StudioDDLDTO {
     private boolean useRemote;
 
     @ApiModelProperty(
-            value = "Cluster ID",
+            value = "ClusterInstance ID",
             dataType = "Integer",
             example = "1",
             notes = "The identifier of the cluster")

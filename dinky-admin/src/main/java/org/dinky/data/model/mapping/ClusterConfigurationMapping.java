@@ -17,32 +17,46 @@
  *
  */
 
-package org.dinky.data.model;
+package org.dinky.data.model.mapping;
 
-import org.dinky.data.typehandler.JSONObjectHandler;
-import org.dinky.gateway.model.FlinkClusterConfig;
-import org.dinky.mybatis.model.SuperEntity;
+import org.dinky.data.model.ClusterConfiguration;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import java.time.LocalDateTime;
 
-import io.swagger.annotations.ApiModel;
+import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-/**
- * ClusterConfig
- *
- * @since 2021/11/6
- */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@TableName("dinky_cluster_configuration")
-@ApiModel(value = "ClusterConfiguration", description = "if your cluster type is yarn ,the record is there")
-public class ClusterConfiguration extends SuperEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ClusterConfigurationMapping {
 
-    private static final long serialVersionUID = 5830130188542066241L;
+    /** 主键ID */
+    @ApiModelProperty(value = "ID", required = true, dataType = "Integer", example = "1", notes = "Primary Key")
+    private Integer id;
+
+    @ApiModelProperty(value = "Name", required = true, dataType = "String", example = "Name")
+    private String name;
+
+    @ApiModelProperty(value = "Enabled", required = true, dataType = "Boolean", example = "true")
+    private Boolean enabled;
+
+    @ApiModelProperty(
+            value = "Create Time",
+            required = true,
+            dataType = "LocalDateTime",
+            example = "2021-05-28 00:00:00")
+    private LocalDateTime createTime;
+
+    @ApiModelProperty(
+            value = "Update Time",
+            required = true,
+            dataType = "LocalDateTime",
+            example = "2021-05-28 00:00:00")
+    private LocalDateTime updateTime;
 
     @ApiModelProperty(value = "tenantId", required = true, dataType = "String", example = "1", notes = "the Tenant Id")
     private Integer tenantId;
@@ -61,8 +75,7 @@ public class ClusterConfiguration extends SuperEntity {
             dataType = "String",
             example = "test",
             notes = "cluster config json")
-    @TableField(typeHandler = JSONObjectHandler.class)
-    private FlinkClusterConfig configJson;
+    private String configJson;
 
     @ApiModelProperty(
             value = "isAvailable",
@@ -74,4 +87,10 @@ public class ClusterConfiguration extends SuperEntity {
 
     @ApiModelProperty(value = "note", required = true, dataType = "String", example = "test", notes = "cluster note")
     private String note;
+
+    public static ClusterConfigurationMapping getClusterConfigurationMapping(ClusterConfiguration configuration) {
+        ClusterConfigurationMapping clusterConfigurationMapping = new ClusterConfigurationMapping();
+        BeanUtil.copyProperties(configuration, clusterConfigurationMapping);
+        return clusterConfigurationMapping;
+    }
 }

@@ -272,7 +272,8 @@ const ProjectProTable: React.FC = () => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      width: '10vw',
+      width: '10%',
+      fixed: 'right',
       render: (text: any, record: GitProject) => [
         <Authorized key={`${record.id}_showLog`} path='/registration/gitproject/showLog'>
           <ShowLogBtn

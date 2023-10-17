@@ -21,11 +21,11 @@ package org.dinky.data.flink.watermark;
 
 import java.io.Serializable;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,16 +42,21 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "FlinkJobNodeWaterMark", description = "Flink Job Node WaterMark Info")
 @Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class FlinkJobNodeWaterMark implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "Id", required = true, notes = "Id", dataType = "String", example = "1")
-    @JSONField(name = "id")
+    @JsonProperty(value = "id")
     private String id;
 
     @ApiModelProperty(value = "Value", required = true, notes = "Value", dataType = "String", example = "1")
-    @JSONField(name = "value")
+    @JsonProperty(value = "value")
     private String value;
+
+    @JsonCreator
+    public FlinkJobNodeWaterMark(@JsonProperty(value = "id") String id, @JsonProperty(value = "value") String value) {
+        this.id = id;
+        this.value = value;
+    }
 }

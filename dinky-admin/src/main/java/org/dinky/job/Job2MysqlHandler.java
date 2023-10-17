@@ -24,11 +24,13 @@ import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.task.DaemonFactory;
 import org.dinky.daemon.task.DaemonTaskConfig;
 import org.dinky.data.enums.JobStatus;
-import org.dinky.data.model.Cluster;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.History;
 import org.dinky.data.model.JobHistory;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.Task;
+import org.dinky.data.model.mapping.ClusterConfigurationMapping;
+import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
@@ -128,33 +130,33 @@ public class Job2MysqlHandler implements JobHandler {
         history.setJobManagerAddress(job.isUseGateway() ? job.getJobManagerAddress() : null);
 
         Integer clusterId = job.getJobConfig().getClusterId();
-        Cluster cluster;
+        ClusterInstance clusterInstance;
         final Integer clusterConfigurationId = job.getJobConfig().getClusterConfigurationId();
         if (job.isUseGateway()) {
-            cluster = clusterInstanceService.registersCluster(Cluster.autoRegistersCluster(
+            clusterInstance = clusterInstanceService.registersCluster(ClusterInstance.autoRegistersCluster(
                     job.getJobManagerAddress(),
                     job.getJobId(),
                     job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
                     job.getType().getLongValue(),
                     clusterConfigurationId,
                     taskId));
-            if (Asserts.isNotNull(cluster)) {
-                clusterId = cluster.getId();
+            if (Asserts.isNotNull(clusterInstance)) {
+                clusterId = clusterInstance.getId();
             }
         } else if (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
                 && Asserts.isNotNullString(job.getJobManagerAddress())) {
-            cluster = clusterInstanceService.registersCluster(Cluster.autoRegistersCluster(
+            clusterInstance = clusterInstanceService.registersCluster(ClusterInstance.autoRegistersCluster(
                     job.getJobManagerAddress(),
                     job.getJobId(),
                     job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
                     job.getType().getLongValue(),
                     null,
                     taskId));
-            if (Asserts.isNotNull(cluster)) {
-                clusterId = cluster.getId();
+            if (Asserts.isNotNull(clusterInstance)) {
+                clusterId = clusterInstance.getId();
             }
         } else {
-            cluster = clusterInstanceService.getById(clusterId);
+            clusterInstance = clusterInstanceService.getById(clusterId);
         }
 
         history.setClusterId(clusterId);
@@ -186,7 +188,7 @@ public class Job2MysqlHandler implements JobHandler {
         JobHistory.JobHistoryBuilder jobHistoryBuilder = JobHistory.builder();
         JobHistory jobHistory = jobHistoryBuilder
                 .id(jobInstance.getId())
-                .clusterJson(JsonUtils.toJsonString(cluster))
+                .clusterJson(ClusterInstanceMapping.getClusterInstanceMapping(clusterInstance))
                 .jarJson(
                         Asserts.isNotNull(job.getJobConfig().getJarId())
                                 ? JsonUtils.toJsonString(
@@ -194,7 +196,7 @@ public class Job2MysqlHandler implements JobHandler {
                                 : null)
                 .clusterConfigurationJson(
                         Asserts.isNotNull(clusterConfigurationId)
-                                ? JsonUtils.toJsonString(
+                                ? ClusterConfigurationMapping.getClusterConfigurationMapping(
                                         clusterConfigurationService.getClusterConfigById(clusterConfigurationId))
                                 : null)
                 .build();

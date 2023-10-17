@@ -22,11 +22,11 @@ package org.dinky.data.flink.job;
 import java.io.Serializable;
 import java.util.List;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,24 +34,35 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "FlinkJobPlan", description = "Flink Job Plan Info")
 @Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class FlinkJobPlan implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "jid", notes = "jid", dataType = "String", example = "1")
-    @JSONField(name = "jid")
+    @JsonProperty(value = "jid")
     private String jid;
 
     @ApiModelProperty(value = "name", notes = "name", dataType = "String", example = "1")
-    @JSONField(name = "name")
+    @JsonProperty(value = "name")
     private String name;
 
     @ApiModelProperty(value = "type", notes = "type", dataType = "String", example = "1")
-    @JSONField(name = "type")
+    @JsonProperty(value = "type")
     private String type;
 
     @ApiModelProperty(value = "nodes", notes = "nodes", dataType = "List")
-    @JSONField(name = "nodes")
+    @JsonProperty(value = "nodes")
     private List<FlinkJobPlanNode> nodes;
+
+    @JsonCreator
+    public FlinkJobPlan(
+            @JsonProperty(value = "jid") String jid,
+            @JsonProperty(value = "name") String name,
+            @JsonProperty(value = "type") String type,
+            @JsonProperty(value = "nodes") List<FlinkJobPlanNode> nodes) {
+        this.jid = jid;
+        this.name = name;
+        this.type = type;
+        this.nodes = nodes;
+    }
 }

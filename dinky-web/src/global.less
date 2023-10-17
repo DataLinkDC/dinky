@@ -280,6 +280,7 @@ ol {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 100%;
 
   .float-button {
     position: absolute;
@@ -396,10 +397,6 @@ h5 {
   direction: ltr;
   scrollbar-color: #d4aa70 #e4e4e4;
   scrollbar-width: thin;
-}
-
-.monaco-float {
-  height: 100%;
 }
 
 .data-studio-tabs {
@@ -581,3 +578,26 @@ h5 {
   background: #0366d6;
 }
 // ====================  lineage style end ====================
+
+.card-list-item-wrapper {
+  display: flex;
+}
+.card-list-item {
+  width: 100%;
+  margin: 0;
+}
+.card-list-item {
+  transition: 0.3s;
+}
+
+.card-button-list {
+  display: none;
+}
+
+.card-list-item:hover .card-button-list {
+  display: block;
+}
+
+.card-list-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

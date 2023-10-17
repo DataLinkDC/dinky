@@ -20,13 +20,13 @@
 package org.dinky.service;
 
 import org.dinky.cluster.FlinkClusterInfo;
-import org.dinky.data.model.Cluster;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 
 /** ClusterInstanceService */
-public interface ClusterInstanceService extends ISuperService<Cluster> {
+public interface ClusterInstanceService extends ISuperService<ClusterInstance> {
 
     /**
      * check cluster heartbeat status
@@ -40,10 +40,10 @@ public interface ClusterInstanceService extends ISuperService<Cluster> {
     /**
      * get job manager address
      *
-     * @param cluster {@link Cluster} cluster instance
+     * @param clusterInstance {@link ClusterInstance} clusterInstance instance
      * @return {@link String} eg: host1:8081
      */
-    String getJobManagerAddress(Cluster cluster);
+    String getJobManagerAddress(ClusterInstance clusterInstance);
 
     /**
      * build environment address
@@ -72,31 +72,31 @@ public interface ClusterInstanceService extends ISuperService<Cluster> {
     /**
      * list enabled cluster instances
      *
-     * @return {@link List<Cluster>}
+     * @return {@link List< ClusterInstance >}
      */
-    List<Cluster> listEnabledAllClusterInstance();
+    List<ClusterInstance> listEnabledAllClusterInstance();
 
     /**
      * list session enable cluster instances
      *
-     * @return {@link List<Cluster>}
+     * @return {@link List< ClusterInstance >}
      */
-    List<Cluster> listSessionEnable();
+    List<ClusterInstance> listSessionEnable();
 
     /**
      * list auto enable cluster instances
      *
-     * @return {@link List<Cluster>}
+     * @return {@link List< ClusterInstance >}
      */
-    List<Cluster> listAutoEnable();
+    List<ClusterInstance> listAutoEnable();
 
     /**
-     * register cluster instance
+     * register clusterInstance instance
      *
-     * @param cluster {@link Cluster} cluster instance
-     * @return {@link Cluster}
+     * @param clusterInstance {@link ClusterInstance} clusterInstance instance
+     * @return {@link ClusterInstance}
      */
-    Cluster registersCluster(Cluster cluster);
+    ClusterInstance registersCluster(ClusterInstance clusterInstance);
 
     /**
      * delete cluster instance by id
@@ -132,7 +132,7 @@ public interface ClusterInstanceService extends ISuperService<Cluster> {
      * deploy session cluster
      *
      * @param id {@link Integer} cluster id
-     * @return {@link Cluster}
+     * @return {@link ClusterInstance}
      */
-    Cluster deploySessionCluster(Integer id);
+    ClusterInstance deploySessionCluster(Integer id);
 }

@@ -187,7 +187,8 @@ const RoleProTable: React.FC = () => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      width: '10vh',
+      width: '10%',
+      fixed: 'right',
       render: (_: any, record: UserBaseInfo.Role) => [
         <Authorized key={`${record.id}_add_auth`} path='/auth/role/edit'>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />

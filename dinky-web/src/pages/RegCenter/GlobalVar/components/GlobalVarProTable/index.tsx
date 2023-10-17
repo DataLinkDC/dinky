@@ -171,7 +171,8 @@ const GlobalVarProTable = () => {
     },
     {
       title: l('global.table.operate'),
-      width: '10vh',
+      width: '8%',
+      fixed: 'right',
       valueType: 'option',
       hideInDescriptions: true,
       render: (_, record) => [
