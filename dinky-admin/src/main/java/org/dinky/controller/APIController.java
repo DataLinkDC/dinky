@@ -68,7 +68,7 @@ public class APIController {
     @PostMapping("/submitTask")
     @ApiOperation("Submit Task")
     //    @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
-    public Result<JobResult> submitTask(@RequestBody TaskDTO taskDTO) throws ExcuteException {
+    public Result<JobResult> submitTask(@RequestBody TaskDTO taskDTO) throws Exception {
         JobResult jobResult = taskService.submitTask(taskDTO.getId(), null);
         if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
