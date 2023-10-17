@@ -19,9 +19,6 @@
 
 package org.dinky.process.exception;
 
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.utils.LogUtil;
-
 /** @since 0.7.0 */
 public class DinkyException extends RuntimeException {
 
@@ -29,21 +26,17 @@ public class DinkyException extends RuntimeException {
 
     public DinkyException(String message) {
         super(message);
-        ProcessContextHolder.getProcess().error(message);
     }
 
     public DinkyException(String message, Throwable cause) {
         super(message, cause);
-        ProcessContextHolder.getProcess().error(LogUtil.getError(cause));
     }
 
     public DinkyException(Throwable cause) {
         super(cause);
-        ProcessContextHolder.getProcess().error(cause.toString());
     }
 
     public DinkyException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
-        ProcessContextHolder.getProcess().error(LogUtil.getError(cause));
     }
 }

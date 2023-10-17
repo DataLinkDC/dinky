@@ -24,7 +24,6 @@ import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.kubernetes.operator.api.FlinkDeployment;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
-import org.dinky.process.model.ProcessEntity;
 import org.dinky.utils.LogUtil;
 
 import java.util.Collections;
@@ -52,8 +51,7 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
 
     @Override
     public GatewayResult submitJar() {
-        ProcessEntity process = getProcess();
-        process.info(String.format("start submit flink jar use %s", getType()));
+        // TODO 改为ProcessStep注释
         logger.info("start submit flink jar use {}", getType());
 
         KubernetesResult result = KubernetesResult.build(getType());
@@ -64,12 +62,8 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
             KubernetesClient kubernetesClient = getKubernetesClient();
             FlinkDeployment flinkDeployment = getFlinkDeployment();
 
-            process.info("start delete old cluster ");
             kubernetesClient.resource(flinkDeployment).delete();
             kubernetesClient.resource(flinkDeployment).waitUntilCondition(Objects::isNull, 1, TimeUnit.MINUTES);
-
-            process.info("start create cluster ");
-
             kubernetesClient.resource(flinkDeployment).createOrReplace();
 
             FlinkDeployment flinkDeploymentResult = kubernetesClient
@@ -82,17 +76,14 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
                                 String status = String.valueOf(
                                         flinkDeployment1.getStatus().getJobManagerDeploymentStatus());
                                 logger.info("deploy kubernetes , status is : {}", status);
-                                process.info(String.format("deploy kubernetes , status is : %s", status));
 
                                 String error = flinkDeployment1.getStatus().getError();
                                 if (Asserts.isNotNullString(error)) {
                                     logger.info("deploy kubernetes error :{}", error);
-                                    process.info(String.format("deploy kubernetes error :%s", error));
                                     throw new RuntimeException(error);
                                 }
                                 if (status.equals("READY")) {
                                     logger.info("deploy kubernetes success ");
-                                    process.info("deploy kubernetes success ");
                                     String jobId = flinkDeployment1
                                             .getStatus()
                                             .getJobStatus()
@@ -133,14 +124,10 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
         } catch (KubernetesClientException e) {
             // some error while connecting to kube cluster
             result.fail(LogUtil.getError(e));
-            process.error(LogUtil.getError(e));
             e.printStackTrace();
         }
         logger.info(
                 "submit {} job finish, web url is {}, jobid is {}", getType(), result.getWebURL(), result.getJids());
-        process.info(String.format(
-                "submit %s job finish, web url is %s, jobid is %s", getType(), result.getWebURL(), result.getJids()));
-
         return result;
     }
 }

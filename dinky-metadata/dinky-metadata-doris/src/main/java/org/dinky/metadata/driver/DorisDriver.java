@@ -24,8 +24,6 @@ import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.query.DorisQuery;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.model.ProcessEntity;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 
@@ -35,7 +33,9 @@ import java.util.List;
 import java.util.Map;
 
 import cn.hutool.core.text.CharSequenceUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class DorisDriver extends AbstractJdbcDriver {
 
     @Override
@@ -65,21 +65,21 @@ public class DorisDriver extends AbstractJdbcDriver {
 
     @Override
     public JdbcSelectResult executeSql(String sql, Integer limit) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
-        process.info("Start parse sql...");
+        // TODO 改为ProcessStep注释
+        log.info("Start parse sql...");
         String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(sql));
-        process.info(CharSequenceUtil.format("A total of {} statement have been Parsed.", statements.length));
+        log.info(CharSequenceUtil.format("A total of {} statement have been Parsed.", statements.length));
         List<Object> resList = new ArrayList<>();
         JdbcSelectResult result = JdbcSelectResult.buildResult();
-        process.info("Start execute sql...");
+        log.info("Start execute sql...");
         for (String item : statements) {
             String type = item.toUpperCase();
             if (type.startsWith("SELECT") || type.startsWith("SHOW") || type.startsWith("DESC")) {
-                process.info("Execute query.");
+                log.info("Execute query.");
                 result = query(item, limit);
             } else if (type.startsWith("INSERT") || type.startsWith("UPDATE") || type.startsWith("DELETE")) {
                 try {
-                    process.info("Execute update.");
+                    log.info("Execute update.");
                     resList.add(executeUpdate(item));
                     result.setStatusList(resList);
                     result.success();
@@ -87,12 +87,12 @@ public class DorisDriver extends AbstractJdbcDriver {
                     resList.add(0);
                     result.setStatusList(resList);
                     result.error(LogUtil.getError(e));
-                    process.error(e.getMessage());
+                    log.error(e.getMessage());
                     return result;
                 }
             } else {
                 try {
-                    process.info("Execute DDL.");
+                    log.info("Execute DDL.");
                     execute(item);
                     resList.add(1);
                     result.setStatusList(resList);
@@ -101,7 +101,7 @@ public class DorisDriver extends AbstractJdbcDriver {
                     resList.add(0);
                     result.setStatusList(resList);
                     result.error(LogUtil.getError(e));
-                    process.error(e.getMessage());
+                    log.error(e.getMessage());
                     return result;
                 }
             }

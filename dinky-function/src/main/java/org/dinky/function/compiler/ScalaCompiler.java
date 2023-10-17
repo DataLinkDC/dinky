@@ -20,29 +20,30 @@
 package org.dinky.function.compiler;
 
 import org.dinky.function.data.model.UDF;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.model.ProcessEntity;
 
 import org.apache.flink.configuration.ReadableConfig;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * scala编译
  *
  * @since 0.6.8
  */
+@Slf4j
 public class ScalaCompiler implements FunctionCompiler {
 
     @Override
     public boolean compiler(UDF udf, ReadableConfig conf, Integer missionId) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        // TODO 改为ProcessStep注释
 
         String className = udf.getClassName();
-        process.info("正在编译 scala 代码 , class: " + className);
+        log.info("正在编译 scala 代码 , class: " + className);
         if (CustomStringScalaCompiler.getInterpreter(missionId).compileString(udf.getCode())) {
-            process.info("scala class编译成功:" + className);
+            log.info("scala class编译成功:" + className);
             return true;
         } else {
-            process.error("scala class编译失败:" + className);
+            log.error("scala class编译失败:" + className);
             return false;
         }
     }

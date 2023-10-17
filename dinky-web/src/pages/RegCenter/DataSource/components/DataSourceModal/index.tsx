@@ -57,8 +57,12 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
    * when modalVisible or values changed, set form values
    */
   useEffect(() => {
-    form.setFieldsValue(values);
-  }, [visible, values, form]);
+    if (!visible) {
+      form.resetFields();
+    } else {
+      form.setFieldsValue(values);
+    }
+  }, [visible, values]);
 
   /**
    * handle cancel

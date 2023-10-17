@@ -24,9 +24,9 @@ import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import DataSourceDetail from '@/pages/RegCenter/DataSource/components/DataSourceDetail';
 import { renderDBIcon } from '@/pages/RegCenter/DataSource/components/function';
+import { handleTest, saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
 import { queryList } from '@/services/api';
 import {
-  handleAddOrUpdate,
   handleOption,
   handlePutDataByParams,
   handleRemoveById,
@@ -52,20 +52,25 @@ import { connect } from 'umi';
 import DataSourceModal from '../DataSourceModal';
 
 const DataSourceTable: React.FC<connect & StateType> = (props) => {
-  const navigate = useNavigate();
-
   const { dispatch } = props;
+  const navigate = useNavigate();
 
   /**
    * state
    */
-  const actionRef = React.useRef<ActionType>();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [detailPage, setDetailPage] = useState<boolean>(false);
-  const [updateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState<DataSources.DataSource[]>([]);
   const [formValues, setFormValues] = useState<Partial<DataSources.DataSource>>({});
+  const actionRef = React.useRef<ActionType>();
+
+  /**
+   * query  list
+   */
+  useEffect(() => {
+    queryDataSourceList();
+  }, []);
 
   /**
    * execute query  list
@@ -80,19 +85,11 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * extra callback
    * @param callback
    */
-  const executeAndCallbackRefresh = async (callback: () => void) => {
+  const executeAndCallbackRefresh = async (callback: () => Promise<any>) => {
     setLoading(true);
     await callback();
     await queryDataSourceList();
     setLoading(false);
-  };
-
-  /**
-   * handle add or update
-   * @param item
-   */
-  const saveOrUpdateHandle = async (item: Partial<DataSources.DataSource>) => {
-    await executeAndCallbackRefresh(async () => handleAddOrUpdate(API_CONSTANTS.DATASOURCE, item));
   };
 
   /**
@@ -121,14 +118,6 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   };
 
   /**
-   * handle test
-   * @param item
-   */
-  const handleTest = async (item: Partial<DataSources.DataSource>) => {
-    await handleOption(API_CONSTANTS.DATASOURCE_TEST, l('button.test'), item);
-  };
-
-  /**
    * handle check heart
    * @param item
    */
@@ -145,13 +134,6 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
       handleOption(API_CONSTANTS.DATASOURCE_COPY, l('button.copy'), item)
     );
   };
-
-  /**
-   * query  list
-   */
-  useEffect(() => {
-    queryDataSourceList();
-  }, []);
 
   /**
    * render sub title
@@ -175,7 +157,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    */
   const editClick = (item: DataSources.DataSource) => {
     setFormValues(item);
-    setUpdateModalVisible(!modalVisible);
+    setModalVisible(!modalVisible);
   };
 
   /**
@@ -272,7 +254,6 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    */
   const cancelAll = () => {
     setModalVisible(false);
-    setUpdateModalVisible(false);
     setFormValues({});
   };
 
@@ -300,20 +281,11 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
 
           {/* added */}
           <DataSourceModal
-            values={{}}
+            values={formValues}
             visible={modalVisible}
             onCancel={cancelAll}
             onTest={(value) => handleTest(value)}
-            onSubmit={(value) => saveOrUpdateHandle(value)}
-          />
-
-          {/* modify*/}
-          <DataSourceModal
-            values={formValues}
-            visible={updateModalVisible}
-            onCancel={cancelAll}
-            onTest={(value) => handleTest(value)}
-            onSubmit={(value) => saveOrUpdateHandle(value)}
+            onSubmit={(value) => executeAndCallbackRefresh(async () => saveOrUpdateHandle(value))}
           />
         </>
       ) : (

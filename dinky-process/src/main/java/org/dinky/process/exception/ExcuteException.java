@@ -19,30 +19,23 @@
 
 package org.dinky.process.exception;
 
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.utils.LogUtil;
-
 public class ExcuteException extends Exception {
 
     public ExcuteException() {}
 
     public ExcuteException(String message) {
         super(message);
-        ProcessContextHolder.getProcess().error(message);
     }
 
     public ExcuteException(String message, Throwable cause) {
         super(message, cause);
-        ProcessContextHolder.getProcess().error(LogUtil.getError(cause));
     }
 
     public ExcuteException(Throwable cause) {
         super(cause);
-        ProcessContextHolder.getProcess().error(cause.toString());
     }
 
     public ExcuteException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
-        ProcessContextHolder.getProcess().error(LogUtil.getError(cause));
     }
 }

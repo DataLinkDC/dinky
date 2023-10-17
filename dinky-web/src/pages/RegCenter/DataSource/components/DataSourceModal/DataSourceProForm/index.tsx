@@ -23,15 +23,10 @@ import {
 } from '@/pages/RegCenter/DataSource/components/constants';
 import { DataSources } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
-import {
-  ProForm,
-  ProFormGroup,
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea
-} from '@ant-design/pro-components';
-import { AutoComplete } from 'antd';
+import { ProForm, ProFormGroup, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { AutoComplete, Form } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
+import TextArea from 'antd/es/input/TextArea';
 import { Values } from 'async-validator';
 import React, { useState } from 'react';
 
@@ -121,28 +116,32 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
         </ProForm.Group>
 
         <ProForm.Group>
-          <AutoComplete
-            virtual
-            size={'small'}
-            placement={'topLeft'}
-            autoClearSearchValue
-            options={AUTO_COMPLETE_TYPE}
-            style={{
-              width: parent.innerWidth / 2 - 80,
-              minHeight: parent.innerHeight / 4 - 110,
-              marginBottom: 0
-            }}
-            filterOption
-            onSelect={(value) => form && form.setFieldsValue({ url: value })}
+          <Form.Item
+            name='url'
+            label={l('rc.ds.url')}
+            rules={[{ required: true, message: l('rc.ds.urlPlaceholder') }]}
           >
-            <ProFormTextArea
-              name='url'
-              width={parent.innerWidth / 2 - 80}
-              label={l('rc.ds.url')}
-              rules={[{ required: true, message: l('rc.ds.urlPlaceholder') }]}
-              placeholder={l('rc.ds.urlPlaceholder')}
-            />
-          </AutoComplete>
+            <AutoComplete
+              virtual
+              placement={'topLeft'}
+              autoClearSearchValue
+              options={AUTO_COMPLETE_TYPE}
+              style={{
+                width: parent.innerWidth / 2 - 80
+              }}
+              filterOption
+              onSelect={(value) => form && form.setFieldsValue({ url: value })}
+            >
+              <TextArea placeholder={l('rc.ds.urlPlaceholder')} />
+              {/*<ProFormTextArea*/}
+              {/*  name='url'*/}
+              {/*  width={parent.innerWidth / 2 - 80}*/}
+              {/*  label={l('rc.ds.url')}*/}
+              {/*  rules={[{ required: true, message: l('rc.ds.urlPlaceholder') }]}*/}
+              {/*  placeholder={l('rc.ds.urlPlaceholder')}*/}
+              {/*/>*/}
+            </AutoComplete>
+          </Form.Item>
         </ProForm.Group>
 
         {!excludeFormItem && (
@@ -176,17 +175,6 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
     );
   };
 
-  return (
-    <>
-      <ProForm
-        initialValues={values}
-        form={form}
-        onValuesChange={(changedValues, values) => handleTypeChange(values)}
-        submitter={false}
-      >
-        {renderDataSourceForm()}
-      </ProForm>
-    </>
-  );
+  return renderDataSourceForm();
 };
 export default DataSourceProForm;

@@ -47,6 +47,7 @@ import {
   MonitorOutlined,
   PlayCircleOutlined,
   PlusCircleOutlined,
+  PlusOutlined,
   ReloadOutlined,
   RightSquareOutlined,
   SettingOutlined,
@@ -247,6 +248,11 @@ export const LeftBottomMoreTabs: { [c: string]: TabProp[] } = {
 // btn route
 export const BtnRoute: { [c: string]: CircleDataStudioButtonProps[] } = {
   'menu.datastudio.metadata': [
+    {
+      icon: <PlusOutlined />,
+      title: l('button.create'),
+      onClick: () => {}
+    },
     {
       icon: <ReloadOutlined />,
       title: l('button.refresh'),

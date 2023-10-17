@@ -66,7 +66,7 @@ public class JobMetricsHandler {
         AsyncUtil.waitAll(array);
 
         MetricsVO metricsVO = new MetricsVO(customMetricsList, jobId, LocalDateTime.now());
-        MetricsContextHolder.sendAsync(metricsVO);
+        MetricsContextHolder.getInstances().sendAsync(metricsVO.getModel(), metricsVO);
     }
 
     /**
