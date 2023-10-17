@@ -36,6 +36,8 @@ import org.dinky.mapper.DataBaseMapper;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
+import org.dinky.process.annotations.ProcessStep;
+import org.dinky.process.enums.ProcessStepType;
 import org.dinky.service.DataBaseService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -265,6 +267,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
+    @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE_COMMON_SQL)
     public JobResult executeCommonSql(SqlDTO sqlDTO) {
         JobResult result = new JobResult();
         result.setStatement(sqlDTO.getStatement());

@@ -17,35 +17,20 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.process.annotations;
 
-import org.dinky.process.model.ProcessEntity;
+import org.dinky.process.enums.ProcessType;
 
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/** ProcessService */
-public interface ProcessService {
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface ExecuteProcess {
 
-    /**
-     * List all process
-     *
-     * @param active true: list active process, false: list inactive process {@link Boolean}
-     * @return {@link List}<{@link ProcessEntity}>
-     */
-    List<ProcessEntity> listAllProcess(boolean active);
-
-    /**
-     * get log by user id
-     *
-     * @param userId user id {@link Integer}
-     * @return {@link String}
-     */
-    String getConsoleByUserId(Integer userId);
-
-    /**
-     * clear log by user id
-     *
-     * @param userId user id {@link Integer}
-     */
-    void clearConsoleByUserId(Integer userId);
+    ProcessType type();
 }

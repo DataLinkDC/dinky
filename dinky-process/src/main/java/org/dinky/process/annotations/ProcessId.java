@@ -17,27 +17,15 @@
  *
  */
 
-package org.dinky.process.pool;
+package org.dinky.process.annotations;
 
-import org.dinky.pool.AbstractPool;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * ConsolePool
- *
- * @since 2022/10/18 22:51
- */
-public class ConsolePool extends AbstractPool<String, StringBuilder> {
-
-    public static final ConsolePool INSTANCE = new ConsolePool();
-
-    public static void write(String str, Integer userId) {
-        String user = String.valueOf(userId);
-        INSTANCE.computeIfAbsent(user, k -> new StringBuilder("Dinky User Console:"))
-                .append(str);
-    }
-
-    public static void clear(Integer userId) {
-        String user = String.valueOf(userId);
-        INSTANCE.put(user, new StringBuilder("Dinky User Console:"));
-    }
-}
+@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface ProcessId {}

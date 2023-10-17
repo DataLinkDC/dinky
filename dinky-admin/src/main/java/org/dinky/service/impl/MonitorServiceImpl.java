@@ -93,7 +93,7 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
 
     @Override
     public SseEmitter sendLatestData(SseEmitter sseEmitter, LocalDateTime lastDate, List<String> keys) {
-        MetricsContextHolder.addSse(keys, sseEmitter, lastDate);
+        MetricsContextHolder.getInstances().addSse(keys, sseEmitter, lastDate);
         return sseEmitter;
     }
 

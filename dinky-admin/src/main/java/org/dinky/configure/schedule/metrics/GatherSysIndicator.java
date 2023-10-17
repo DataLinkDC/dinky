@@ -93,7 +93,7 @@ public class GatherSysIndicator extends BaseSchedule {
         metrics.setContent(metricsTotal);
         metrics.setHeartTime(now);
         metrics.setModel(MetricsType.LOCAL.getType());
-        MetricsContextHolder.sendAsync(metrics);
+        MetricsContextHolder.getInstances().sendAsync(metrics.getModel(), metrics);
 
         log.debug("Collecting jvm information ends.");
     }

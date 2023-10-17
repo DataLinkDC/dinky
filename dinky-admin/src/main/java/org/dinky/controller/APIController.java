@@ -30,7 +30,6 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
-import org.dinky.process.exception.ExcuteException;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
 
@@ -68,7 +67,7 @@ public class APIController {
     @PostMapping("/submitTask")
     @ApiOperation("Submit Task")
     //    @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
-    public Result<JobResult> submitTask(@RequestBody TaskDTO taskDTO) throws ExcuteException {
+    public Result<JobResult> submitTask(@RequestBody TaskDTO taskDTO) throws Exception {
         JobResult jobResult = taskService.submitTask(taskDTO.getId(), null);
         if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
@@ -90,7 +89,7 @@ public class APIController {
     @GetMapping(value = "/restartTask")
     @ApiOperation("Restart Task")
     //    @Log(title = "Restart Task", businessType = BusinessType.REMOTE_OPERATION)
-    public Result<JobResult> restartTask(@RequestParam Integer id, String savePointPath) throws ExcuteException {
+    public Result<JobResult> restartTask(@RequestParam Integer id, String savePointPath) throws Exception {
         return Result.succeed(taskService.restartTask(id, savePointPath));
     }
 
