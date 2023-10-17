@@ -24,6 +24,6 @@ export const enum ClusterType {
   KUBERNETES_SESSION = 'kubernetes-session',
   KUBERNETES_NATIVE = 'kubernetes-application',
   KUBERNETES_OPERATOR = 'kubernetes-application-operator',
-  YARN_APPLICATION  = 'yarn-application',
-  LOACL= 'local',
+  YARN_APPLICATION = 'yarn-application',
+  LOACL = 'local'
 }

@@ -110,7 +110,7 @@ export interface GlobalVarState extends BaseState {
  * resource state
  */
 export interface ResourceState {
-  treeData: any[];
+  treeData: Resource[];
   content: string;
   clickedNode: any;
   rightClickedNode: any;

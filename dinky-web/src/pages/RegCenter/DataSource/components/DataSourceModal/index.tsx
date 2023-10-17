@@ -59,7 +59,7 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
   useEffect(() => {
     if (!visible) {
       form.resetFields();
-    }else {
+    } else {
       form.setFieldsValue(values);
     }
   }, [visible, values]);

@@ -41,7 +41,7 @@ import lombok.ToString;
 public class TreeNodeDTO {
 
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "The ID of the tree node")
-    private Integer id;
+    private Object id;
 
     @ApiModelProperty(value = "Name", dataType = "String", example = "Node 1", notes = "The name of the tree node")
     private String name;
@@ -61,7 +61,7 @@ public class TreeNodeDTO {
             dataType = "Integer",
             example = "0",
             notes = "The ID of the parent tree node (0 for root)")
-    private Integer parentId;
+    private Object parentId;
 
     @ApiModelProperty(value = "Size", dataType = "Long", example = "1024", notes = "The size of the tree node")
     private Long size;
@@ -93,6 +93,16 @@ public class TreeNodeDTO {
 
     public TreeNodeDTO(
             Integer id, String name, String path, Integer parentId, String desc, List<TreeNodeDTO> children) {
+        this.id = id;
+        this.name = name;
+        this.path = path;
+        this.parentId = parentId;
+        this.desc = desc;
+        this.children = children;
+        this.isLeaf = (children == null || children.size() == 0);
+    }
+
+    public TreeNodeDTO(String id, String name, String path, String parentId, String desc, List<TreeNodeDTO> children) {
         this.id = id;
         this.name = name;
         this.path = path;
