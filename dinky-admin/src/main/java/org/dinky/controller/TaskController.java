@@ -75,7 +75,7 @@ public class TaskController {
     @ApiOperation("Submit Task")
     @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
     @ExecuteProcess(type = ProcessType.FLINK_SUBMIT)
-    public Result<JobResult> submitTask(@ProcessId @RequestParam Integer id) throws ExcuteException {
+    public Result<JobResult> submitTask(@ProcessId @RequestParam Integer id) throws Exception {
         JobResult jobResult = taskService.submitTask(id, null);
         if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
@@ -97,7 +97,7 @@ public class TaskController {
     @GetMapping(value = "/restartTask")
     @ApiOperation("Restart Task")
     @Log(title = "Restart Task", businessType = BusinessType.REMOTE_OPERATION)
-    public Result<JobResult> restartTask(@RequestParam Integer id, String savePointPath) throws ExcuteException {
+    public Result<JobResult> restartTask(@RequestParam Integer id, String savePointPath) throws Exception {
         return Result.succeed(taskService.restartTask(id, savePointPath));
     }
 
