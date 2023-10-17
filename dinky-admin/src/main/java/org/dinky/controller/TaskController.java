@@ -43,7 +43,6 @@ import org.dinky.utils.JsonUtils;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -76,7 +75,7 @@ public class TaskController {
     @ApiOperation("Submit Task")
     @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
     @ExecuteProcess(type = ProcessType.FLINK_SUBMIT)
-    public Result<JobResult> submitTask(@ProcessId @RequestParam @NotNull Integer id) throws ExcuteException {
+    public Result<JobResult> submitTask(@ProcessId @RequestParam Integer id) throws ExcuteException {
         JobResult jobResult = taskService.submitTask(id, null);
         if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
@@ -92,7 +91,9 @@ public class TaskController {
         return Result.succeed(taskService.cancelTaskJob(taskService.getTaskInfoById(id)), Status.EXECUTE_SUCCESS);
     }
 
-    /** 重启任务 */
+    /**
+     * 重启任务
+     */
     @GetMapping(value = "/restartTask")
     @ApiOperation("Restart Task")
     @Log(title = "Restart Task", businessType = BusinessType.REMOTE_OPERATION)
