@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.data.model.handler;
+package org.dinky.data.model.mapping;
 
 import org.dinky.data.model.ClusterInstance;
 
@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClusterInstanceHandler {
+public class ClusterInstanceMapping {
     @ApiModelProperty(value = "name", required = true, dataType = "String", example = "test")
     private Integer tenantId;
 
@@ -124,9 +124,9 @@ public class ClusterInstanceHandler {
             example = "2021-05-28 00:00:00")
     private LocalDateTime updateTime;
 
-    public static ClusterInstanceHandler getClusterInstanceHandler(ClusterInstance instance) {
-        ClusterInstanceHandler clusterInstanceHandler = new ClusterInstanceHandler();
-        BeanUtil.copyProperties(instance, clusterInstanceHandler);
-        return clusterInstanceHandler;
+    public static ClusterInstanceMapping getClusterInstanceMapping(ClusterInstance instance) {
+        ClusterInstanceMapping clusterInstanceMapping = new ClusterInstanceMapping();
+        BeanUtil.copyProperties(instance, clusterInstanceMapping);
+        return clusterInstanceMapping;
     }
 }

@@ -29,8 +29,8 @@ import org.dinky.data.model.History;
 import org.dinky.data.model.JobHistory;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.Task;
-import org.dinky.data.model.handler.ClusterConfigurationHandler;
-import org.dinky.data.model.handler.ClusterInstanceHandler;
+import org.dinky.data.model.mapping.ClusterConfigurationMapping;
+import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
@@ -188,7 +188,7 @@ public class Job2MysqlHandler implements JobHandler {
         JobHistory.JobHistoryBuilder jobHistoryBuilder = JobHistory.builder();
         JobHistory jobHistory = jobHistoryBuilder
                 .id(jobInstance.getId())
-                .clusterJson(ClusterInstanceHandler.getClusterInstanceHandler(clusterInstance))
+                .clusterJson(ClusterInstanceMapping.getClusterInstanceMapping(clusterInstance))
                 .jarJson(
                         Asserts.isNotNull(job.getJobConfig().getJarId())
                                 ? JsonUtils.toJsonString(
@@ -196,7 +196,7 @@ public class Job2MysqlHandler implements JobHandler {
                                 : null)
                 .clusterConfigurationJson(
                         Asserts.isNotNull(clusterConfigurationId)
-                                ? ClusterConfigurationHandler.getClusterConfigurationHandler(
+                                ? ClusterConfigurationMapping.getClusterConfigurationMapping(
                                         clusterConfigurationService.getClusterConfigById(clusterConfigurationId))
                                 : null)
                 .build();

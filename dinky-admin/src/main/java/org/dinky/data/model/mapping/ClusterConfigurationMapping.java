@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.data.model.handler;
+package org.dinky.data.model.mapping;
 
 import org.dinky.data.model.ClusterConfiguration;
 
@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClusterConfigurationHandler {
+public class ClusterConfigurationMapping {
 
     /** 主键ID */
     @ApiModelProperty(value = "ID", required = true, dataType = "Integer", example = "1", notes = "Primary Key")
@@ -88,9 +88,9 @@ public class ClusterConfigurationHandler {
     @ApiModelProperty(value = "note", required = true, dataType = "String", example = "test", notes = "cluster note")
     private String note;
 
-    public static ClusterConfigurationHandler getClusterConfigurationHandler(ClusterConfiguration configuration) {
-        ClusterConfigurationHandler clusterConfigurationHandler = new ClusterConfigurationHandler();
-        BeanUtil.copyProperties(configuration, clusterConfigurationHandler);
-        return clusterConfigurationHandler;
+    public static ClusterConfigurationMapping getClusterConfigurationMapping(ClusterConfiguration configuration) {
+        ClusterConfigurationMapping clusterConfigurationMapping = new ClusterConfigurationMapping();
+        BeanUtil.copyProperties(configuration, clusterConfigurationMapping);
+        return clusterConfigurationMapping;
     }
 }

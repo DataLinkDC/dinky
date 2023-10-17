@@ -25,8 +25,8 @@ import org.dinky.data.flink.config.FlinkJobConfigInfo;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.flink.job.FlinkJobDetailInfo;
 import org.dinky.data.model.JobHistory;
-import org.dinky.data.model.handler.ClusterConfigurationHandler;
-import org.dinky.data.model.handler.ClusterInstanceHandler;
+import org.dinky.data.model.mapping.ClusterConfigurationMapping;
+import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
@@ -79,10 +79,10 @@ public class JobDataDto {
     private JsonNode jar;
 
     @ApiModelProperty(value = "ClusterInstance Object", notes = "Object representing the cluster")
-    private ClusterInstanceHandler cluster;
+    private ClusterInstanceMapping cluster;
 
     @ApiModelProperty(value = "Cluster Configuration Object", notes = "Object representing cluster configuration")
-    private ClusterConfigurationHandler clusterConfiguration;
+    private ClusterConfigurationMapping clusterConfiguration;
 
     @ApiModelProperty(
             value = "Error Flag",

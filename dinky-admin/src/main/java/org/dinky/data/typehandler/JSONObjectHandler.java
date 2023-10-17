@@ -25,8 +25,8 @@ import org.dinky.data.flink.config.FlinkJobConfigInfo;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.flink.job.FlinkJobDetailInfo;
 import org.dinky.data.model.TaskExtConfig;
-import org.dinky.data.model.handler.ClusterConfigurationHandler;
-import org.dinky.data.model.handler.ClusterInstanceHandler;
+import org.dinky.data.model.mapping.ClusterConfigurationMapping;
+import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.gateway.model.FlinkClusterConfig;
 
 import org.apache.ibatis.type.JdbcType;
@@ -46,8 +46,8 @@ import lombok.extern.slf4j.Slf4j;
     CheckPointOverView.class,
     CheckpointConfigInfo.class,
     FlinkJobConfigInfo.class,
-    ClusterInstanceHandler.class,
-    ClusterConfigurationHandler.class,
+    ClusterInstanceMapping.class,
+    ClusterConfigurationMapping.class,
     FlinkClusterConfig.class,
     TaskExtConfig.class
 })
