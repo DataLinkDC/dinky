@@ -179,8 +179,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (!Dialect.isCommonSql(task.getDialect())
                 && Asserts.isNotNull(task.getJobInstanceId())
                 && task.getJobInstanceId() > 0) {
-            String status = jobInstanceService.getById(task.getJobInstanceId()).getStatus();
-            if (!JobStatus.isDone(status)) {
+            JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
+            if (jobInstance != null && !JobStatus.isDone(jobInstance.getStatus())) {
                 throw new TaskNotDoneException(Status.TASK_STATUS_IS_NOT_DONE.getMessage());
             }
         }
