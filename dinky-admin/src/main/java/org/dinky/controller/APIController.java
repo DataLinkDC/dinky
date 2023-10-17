@@ -90,7 +90,7 @@ public class APIController {
     @GetMapping(value = "/restartTask")
     @ApiOperation("Restart Task")
     //    @Log(title = "Restart Task", businessType = BusinessType.REMOTE_OPERATION)
-    public Result<JobResult> restartTask(@RequestParam Integer id, String savePointPath) throws ExcuteException {
+    public Result<JobResult> restartTask(@RequestParam Integer id, String savePointPath) throws Exception {
         return Result.succeed(taskService.restartTask(id, savePointPath));
     }
 
