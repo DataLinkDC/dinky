@@ -38,6 +38,16 @@ export const CLUSTER_INSTANCE_TYPE: DefaultOptionType[] = [
     value: ClusterType.KUBERNETES_SESSION,
     label: 'Kubernetes Session',
     key: ClusterType.KUBERNETES_SESSION
+  },
+  {
+    value: ClusterType.YARN_APPLICATION,
+    label: 'Yarn Application',
+    key: ClusterType.YARN_APPLICATION
+  },
+  {
+    value: ClusterType.LOACL,
+    label: 'Local',
+    key: ClusterType.LOACL
   }
 ];
 
