@@ -153,8 +153,6 @@ public interface Driver extends AutoCloseable {
 
     List<Column> listColumns(String schemaName, String tableName);
 
-    List<Column> listColumnsSortByPK(String schemaName, String tableName);
-
     List<Schema> getSchemasAndTables();
 
     List<Table> getTablesAndColumns(String schemaName);
