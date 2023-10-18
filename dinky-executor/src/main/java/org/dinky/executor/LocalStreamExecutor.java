@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 import cn.hutool.core.io.FileUtil;
 
 /**
- * LocalStreamExecuter
+ * LocalStreamExecutor
  *
  * @since 2021/5/25 13:48
  */

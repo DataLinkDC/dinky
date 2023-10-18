@@ -19,6 +19,8 @@
 
 package org.dinky.executor;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.dinky.assertion.Asserts;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -46,11 +48,16 @@ import lombok.Setter;
  */
 @Setter
 @Getter
+@Builder
+@AllArgsConstructor
 @ApiModel(value = "ExecutorConfig", description = "Executor config for a job")
 public class ExecutorConfig {
 
     private static final Logger log = LoggerFactory.getLogger(ExecutorConfig.class);
-    public static final ExecutorConfig DEFAULT = new ExecutorConfig(0, 1, true);
+    private static final ObjectMapper mapper = new ObjectMapper();
+
+    public static final ExecutorConfig DEFAULT = ExecutorConfig.builder()
+            .checkpoint(0).parallelism(1).useSqlFragment(true).build();
 
     public static final String CHECKPOINT_CONST = "checkpoint";
     public static final String PARALLELISM_CONST = "parallelism";
@@ -61,7 +68,6 @@ public class ExecutorConfig {
     public static final String JOB_NAME = "jobName";
     public static final String CONFIG_CONST = "config";
 
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     @ApiModelProperty(
             value = "Job manager rest host",
@@ -139,66 +145,6 @@ public class ExecutorConfig {
             notes = "List of JAR files")
     private String[] jarFiles;
 
-    public ExecutorConfig(boolean useSqlFragment) {
-        this(null, useSqlFragment);
-    }
-
-    public ExecutorConfig(Integer checkpoint) {
-        this(checkpoint, false);
-    }
-
-    public ExecutorConfig(Integer checkpoint, boolean useSqlFragment) {
-        this(checkpoint, null, useSqlFragment, null, null);
-    }
-
-    public ExecutorConfig(Integer checkpoint, Integer parallelism, boolean useSqlFragment) {
-        this(checkpoint, parallelism, useSqlFragment, null, null);
-    }
-
-    public ExecutorConfig(
-            Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath, String jobName) {
-        this(checkpoint, parallelism, useSqlFragment, savePointPath, jobName, null);
-    }
-
-    public ExecutorConfig(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath) {
-        this(checkpoint, parallelism, useSqlFragment, savePointPath, null, null);
-    }
-
-    public ExecutorConfig(
-            Integer checkpoint,
-            Integer parallelism,
-            boolean useSqlFragment,
-            String savePointPath,
-            String jobName,
-            Map<String, String> config) {
-        this(null, null, checkpoint, parallelism, useSqlFragment, false, false, savePointPath, jobName, config, null);
-    }
-
-    private ExecutorConfig(
-            String host,
-            Integer port,
-            Integer checkpoint,
-            Integer parallelism,
-            boolean useSqlFragment,
-            boolean useStatementSet,
-            boolean useBatchModel,
-            String savePointPath,
-            String jobName,
-            Map<String, String> config,
-            Map<String, String> variables) {
-        this.host = host;
-        this.port = port;
-        this.checkpoint = checkpoint;
-        this.parallelism = parallelism;
-        this.useSqlFragment = useSqlFragment;
-        this.useStatementSet = useStatementSet;
-        this.useBatchModel = useBatchModel;
-        this.savePointPath = savePointPath;
-        this.jobName = jobName;
-        this.config = config;
-        this.variables = variables;
-    }
-
     public static ExecutorConfig build(
             String address,
             Integer checkpoint,
@@ -224,18 +170,19 @@ public class ExecutorConfig {
             }
         }
 
-        return new ExecutorConfig(
-                host,
-                port,
-                checkpoint,
-                parallelism,
-                useSqlFragment,
-                useStatementSet,
-                useBatchModel,
-                savePointPath,
-                jobName,
-                config,
-                variables);
+        return ExecutorConfig.builder()
+                .host(host)
+                .port(port)
+                .checkpoint(checkpoint)
+                .parallelism(parallelism)
+                .useSqlFragment(useSqlFragment)
+                .useStatementSet(useStatementSet)
+                .useBatchModel(useBatchModel)
+                .savePointPath(savePointPath)
+                .jobName(jobName)
+                .config(config)
+                .variables(variables)
+                .build();
     }
 
     public static ExecutorConfig build(
@@ -262,8 +209,8 @@ public class ExecutorConfig {
                 config.put(item.get("key"), item.get("value"));
             }
         }
-        return new ExecutorConfig(
-                null,
+
+        return build(
                 null,
                 checkpoint,
                 parallelism,
