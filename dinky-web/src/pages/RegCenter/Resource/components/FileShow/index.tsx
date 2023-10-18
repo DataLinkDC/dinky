@@ -49,7 +49,7 @@ const FileShow: React.FC<FileShowProps> = (props) => {
    * code show props
    * @type {{code: string, onChange: (val: string) => void, language: string, showFloatButton: boolean, refreshLogCallback: () => void}}
    */
-  const restCodeShowProps :any = {
+  const restCodeShowProps: any = {
     showFloatButton: true,
     code,
     onChange: onChange,

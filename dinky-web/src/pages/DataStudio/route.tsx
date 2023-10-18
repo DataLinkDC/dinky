@@ -22,6 +22,7 @@ import Console from '@/pages/DataStudio/BottomContainer/Console';
 import Lineage from '@/pages/DataStudio/BottomContainer/Lineage';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { Catalog } from '@/pages/DataStudio/LeftContainer/Catalog';
 import MetaData from '@/pages/DataStudio/LeftContainer/MetaData';
 import Project from '@/pages/DataStudio/LeftContainer/Project';
@@ -57,7 +58,6 @@ import {
 } from '@ant-design/icons';
 import { DiffEditor } from '@monaco-editor/react';
 import { ReactNode } from 'react';
-import {isSql} from "@/pages/DataStudio/HeaderContainer/service";
 
 export const LeftSide = [
   {
@@ -98,7 +98,9 @@ export const RightSide: TabProp[] = [
     icon: <PlayCircleOutlined />,
     label: l('menu.datastudio.executeConfig'),
     children: <ExecuteConfig />,
-    isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType || isSql(subType ?? "")
+    isShow: (type, subType) =>
+      (type === TabsPageType.project && TabsPageSubType.flinkSql === subType) ||
+      isSql(subType ?? '')
   },
   {
     auth: '/datastudio/right/savePoint',

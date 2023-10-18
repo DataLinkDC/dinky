@@ -21,7 +21,7 @@ import RightContextMenu from '@/components/RightContextMenu';
 import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import {
   RIGHT_CONTEXT_FILE_MENU,
-  RIGHT_CONTEXT_FOLDER_MENU,
+  RIGHT_CONTEXT_FOLDER_MENU
 } from '@/pages/RegCenter/Resource/components/constants';
 import FileShow from '@/pages/RegCenter/Resource/components/FileShow';
 import FileTree from '@/pages/RegCenter/Resource/components/FileTree';
@@ -185,7 +185,7 @@ const ResourceOverView: React.FC = () => {
    */
   const handleModalCancel = () => {
     setResourceState((prevState) => ({ ...prevState, editOpen: false }));
-     refreshTree();
+    refreshTree();
   };
 
   /**
@@ -202,7 +202,6 @@ const ResourceOverView: React.FC = () => {
     } else if (editModal === 'rename') {
       await handleOption(API_CONSTANTS.RESOURCE_RENAME, l('right.menu.rename'), { ...value, pid });
     }
-
   };
   const handleUploadCancel = async () => {
     setResourceState((prevState) => ({ ...prevState, uploadOpen: false }));
@@ -220,19 +219,16 @@ const ResourceOverView: React.FC = () => {
 
   const access = useAccess();
 
-
   const renderRightMenu = () => {
-    if (!resourceState.rightClickedNode.isLeaf){
+    if (!resourceState.rightClickedNode.isLeaf) {
       return RIGHT_CONTEXT_FOLDER_MENU.filter(
-        (menu) =>
-          !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
-      )
+        (menu) => !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+      );
     }
     return RIGHT_CONTEXT_FILE_MENU.filter(
-        (menu) =>
-          !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
-      )
-  }
+      (menu) => !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+    );
+  };
 
   /**
    * render

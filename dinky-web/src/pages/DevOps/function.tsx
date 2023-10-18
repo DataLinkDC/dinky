@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {JOB_LIFE_CYCLE, JOB_STATUS} from '@/pages/DevOps/constants';
-import {l} from '@/utils/intl';
+import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
+import { l } from '@/utils/intl';
 
 /**
  * Generates an array of options for the life cycle filter.
@@ -24,11 +24,11 @@ import {l} from '@/utils/intl';
  * @returns {Array} - An array of objects representing the life cycle filter options.
  */
 export const LIFECYCLE_FILTER = () => {
-    return [
-        {text: l('global.table.lifecycle.dev'), value: JOB_LIFE_CYCLE.DEVELOP},
-        {text: l('global.table.lifecycle.online'), value: JOB_LIFE_CYCLE.ONLINE},
-        {text: l('global.table.lifecycle.unknown'), value: JOB_LIFE_CYCLE.UNKNOWN}
-    ];
+  return [
+    { text: l('global.table.lifecycle.dev'), value: JOB_LIFE_CYCLE.DEVELOP },
+    { text: l('global.table.lifecycle.online'), value: JOB_LIFE_CYCLE.ONLINE },
+    { text: l('global.table.lifecycle.unknown'), value: JOB_LIFE_CYCLE.UNKNOWN }
+  ];
 };
 
 /**
@@ -37,19 +37,19 @@ export const LIFECYCLE_FILTER = () => {
  * @returns {Array} - An array of objects representing the job status filter options.
  */
 export const JOB_STATUS_FILTER = () => {
-    return [
-        {text: JOB_STATUS.FINISHED, value: JOB_STATUS.FINISHED},
-        {text: JOB_STATUS.RUNNING, value: JOB_STATUS.RUNNING},
-        {text: JOB_STATUS.FAILED, value: JOB_STATUS.FAILED},
-        {text: JOB_STATUS.CANCELED, value: JOB_STATUS.CANCELED},
-        {text: JOB_STATUS.INITIALIZING, value: JOB_STATUS.INITIALIZING},
-        {text: JOB_STATUS.RESTARTING, value: JOB_STATUS.RESTARTING},
-        {text: JOB_STATUS.CREATED, value: JOB_STATUS.CREATED},
-        {text: JOB_STATUS.FAILING, value: JOB_STATUS.FAILING},
-        {text: JOB_STATUS.SUSPENDED, value: JOB_STATUS.SUSPENDED},
-        {text: JOB_STATUS.CANCELLING, value: JOB_STATUS.CANCELLING},
-        {text: JOB_STATUS.UNKNOWN, value: JOB_STATUS.UNKNOWN}
-    ];
+  return [
+    { text: JOB_STATUS.FINISHED, value: JOB_STATUS.FINISHED },
+    { text: JOB_STATUS.RUNNING, value: JOB_STATUS.RUNNING },
+    { text: JOB_STATUS.FAILED, value: JOB_STATUS.FAILED },
+    { text: JOB_STATUS.CANCELED, value: JOB_STATUS.CANCELED },
+    { text: JOB_STATUS.INITIALIZING, value: JOB_STATUS.INITIALIZING },
+    { text: JOB_STATUS.RESTARTING, value: JOB_STATUS.RESTARTING },
+    { text: JOB_STATUS.CREATED, value: JOB_STATUS.CREATED },
+    { text: JOB_STATUS.FAILING, value: JOB_STATUS.FAILING },
+    { text: JOB_STATUS.SUSPENDED, value: JOB_STATUS.SUSPENDED },
+    { text: JOB_STATUS.CANCELLING, value: JOB_STATUS.CANCELLING },
+    { text: JOB_STATUS.UNKNOWN, value: JOB_STATUS.UNKNOWN }
+  ];
 };
 
 /**
@@ -59,16 +59,16 @@ export const JOB_STATUS_FILTER = () => {
  * @returns {boolean} - True if the job status indicates that the job is done, false otherwise.
  */
 export function isStatusDone(type: string) {
-    if (!type) {
-        return true;
-    }
-    switch (type) {
-        case JOB_STATUS.FAILED:
-        case JOB_STATUS.CANCELED:
-        case JOB_STATUS.FINISHED:
-        case JOB_STATUS.UNKNOWN:
-            return true;
-        default:
-            return false;
-    }
+  if (!type) {
+    return true;
+  }
+  switch (type) {
+    case JOB_STATUS.FAILED:
+    case JOB_STATUS.CANCELED:
+    case JOB_STATUS.FINISHED:
+    case JOB_STATUS.UNKNOWN:
+      return true;
+    default:
+      return false;
+  }
 }

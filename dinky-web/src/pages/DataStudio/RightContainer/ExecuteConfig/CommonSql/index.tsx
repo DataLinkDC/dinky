@@ -17,95 +17,99 @@
  *
  */
 
-import {getCurrentData} from '@/pages/DataStudio/function';
-import {StateType, STUDIO_MODEL} from '@/pages/DataStudio/model';
-import {SWITCH_OPTIONS} from '@/services/constants';
-import {l} from '@/utils/intl';
-import {InfoCircleOutlined} from '@ant-design/icons';
-import {ProForm, ProFormDigit, ProFormGroup, ProFormSelect, ProFormSwitch} from '@ant-design/pro-components';
-import {useForm} from 'antd/es/form/Form';
-import {connect} from 'umi';
-import {DataSources} from "@/types/RegCenter/data";
-import {TagAlignLeft} from "@/components/StyledComponents";
-import {Tag} from "antd";
-import React from "react";
+import { TagAlignLeft } from '@/components/StyledComponents';
+import { getCurrentData } from '@/pages/DataStudio/function';
+import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
+import { DataSources } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { ProForm, ProFormDigit, ProFormGroup, ProFormSelect } from '@ant-design/pro-components';
+import { Tag } from 'antd';
+import { useForm } from 'antd/es/form/Form';
+import React from 'react';
+import { connect } from 'umi';
 
 const ExecuteConfigCommonSql = (props: any) => {
-    const {
-        dispatch,
-        tabs: {panes, activeKey},
-        databaseData
-    } = props;
-    const [form] = useForm();
-    const current = getCurrentData(panes, activeKey);
-    const data: Record<number, React.ReactNode> = {};
-    const databaseDataList = databaseData as DataSources.DataSource[];
-    databaseDataList.filter(x => x.type.toLowerCase() === current?.dialect.toLowerCase()).forEach((item: DataSources.DataSource) => {
-        data[item.id] = (
-            <TagAlignLeft><Tag key={item.id} color={item.enabled ? 'processing' : 'error'}>{item.type}</Tag>{item.name}
-            </TagAlignLeft>
-        )
+  const {
+    dispatch,
+    tabs: { panes, activeKey },
+    databaseData
+  } = props;
+  const [form] = useForm();
+  const current = getCurrentData(panes, activeKey);
+  const data: Record<number, React.ReactNode> = {};
+  const databaseDataList = databaseData as DataSources.DataSource[];
+  databaseDataList
+    .filter((x) => x.type.toLowerCase() === current?.dialect.toLowerCase())
+    .forEach((item: DataSources.DataSource) => {
+      data[item.id] = (
+        <TagAlignLeft>
+          <Tag key={item.id} color={item.enabled ? 'processing' : 'error'}>
+            {item.type}
+          </Tag>
+          {item.name}
+        </TagAlignLeft>
+      );
     });
 
-    form.setFieldsValue({...current, databaseId: String(current?.databaseId ?? "")});
-    const onValuesChange = (change: any, all: any) => {
-        for (let i = 0; i < panes.length; i++) {
-            if (panes[i].key === activeKey) {
-                for (const key in change) {
-                    if (key === 'databaseId') {
-                        panes[i].params.taskData[key] = Number(all[key]);
-                        continue;
-                    }
-                    panes[i].params.taskData[key] = all[key];
-                }
-                break;
-            }
+  form.setFieldsValue({ ...current, databaseId: String(current?.databaseId ?? '') });
+  const onValuesChange = (change: any, all: any) => {
+    for (let i = 0; i < panes.length; i++) {
+      if (panes[i].key === activeKey) {
+        for (const key in change) {
+          if (key === 'databaseId') {
+            panes[i].params.taskData[key] = Number(all[key]);
+            continue;
+          }
+          panes[i].params.taskData[key] = all[key];
         }
-        dispatch({
-            type: STUDIO_MODEL.saveTabs,
-            payload: {...props.tabs}
-        });
-    };
+        break;
+      }
+    }
+    dispatch({
+      type: STUDIO_MODEL.saveTabs,
+      payload: { ...props.tabs }
+    });
+  };
 
-    return (
-        <>
-            <ProForm
-                initialValues={{
-                    maxRowNum: 100
-                }}
-                style={{padding: '10px'}}
-                form={form}
-                submitter={false}
-                layout='vertical'
-                onValuesChange={onValuesChange}
-            >
-                <ProFormGroup>
-                    <ProFormSelect
-                        width={'lg'}
-                        name={'databaseId'}
-                        label={l('pages.datastudio.label.execConfig.selectDatabase')}
-                        valueEnum={data}
-                        initialValue={1}
-                        placeholder="Please select a country"
-                        rules={[{required: true, message: 'Please select your country!'}]}
-                    />
-                </ProFormGroup>
-                <ProFormGroup>
-                    <ProFormDigit
-                        width={'xs'}
-                        label={l('pages.datastudio.label.execConfig.maxrow')}
-                        name='maxRowNum'
-                        tooltip={l('pages.datastudio.label.execConfig.maxrow.tip')}
-                        min={1}
-                        max={9999}
-                    />
-                </ProFormGroup>
-            </ProForm>
-        </>
-    );
+  return (
+    <>
+      <ProForm
+        initialValues={{
+          maxRowNum: 100
+        }}
+        style={{ padding: '10px' }}
+        form={form}
+        submitter={false}
+        layout='vertical'
+        onValuesChange={onValuesChange}
+      >
+        <ProFormGroup>
+          <ProFormSelect
+            width={'lg'}
+            name={'databaseId'}
+            label={l('pages.datastudio.label.execConfig.selectDatabase')}
+            valueEnum={data}
+            initialValue={1}
+            placeholder='Please select a country'
+            rules={[{ required: true, message: 'Please select your country!' }]}
+          />
+        </ProFormGroup>
+        <ProFormGroup>
+          <ProFormDigit
+            width={'xs'}
+            label={l('pages.datastudio.label.execConfig.maxrow')}
+            name='maxRowNum'
+            tooltip={l('pages.datastudio.label.execConfig.maxrow.tip')}
+            min={1}
+            max={9999}
+          />
+        </ProFormGroup>
+      </ProForm>
+    </>
+  );
 };
 
-export default connect(({Studio}: { Studio: StateType }) => ({
-    tabs: Studio.tabs,
-    databaseData: Studio.database.dbData
+export default connect(({ Studio }: { Studio: StateType }) => ({
+  tabs: Studio.tabs,
+  databaseData: Studio.database.dbData
 }))(ExecuteConfigCommonSql);
