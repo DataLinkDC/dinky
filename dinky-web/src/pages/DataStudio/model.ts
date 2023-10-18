@@ -103,7 +103,10 @@ export type TaskDataBaseType = {
   id: number;
   name: string;
   statement: string;
+  dialect: string;
   step: number;
+  // Only common sql has(只有普通sql才有)
+  databaseId?: number;
 };
 
 export type TaskDataType = TaskDataBaseType & Record<string, any>;
