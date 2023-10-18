@@ -257,7 +257,8 @@ public enum Status {
     /**
      * Resource
      */
-    ROOT_DIR_NOT_ALLOW_DELETE(9031, "root.dir.not.allow.delete"),
+    ROOT_DIR_NOT_ALLOW_DELETE(9031, "resource.root.dir.not.allow.delete"),
+    RESOURCE_DIR_OR_FILE_NOT_EXIST(9032, "resource.dir.or.file.not.exist"),
 
     /**
      * global exception

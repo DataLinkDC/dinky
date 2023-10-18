@@ -204,32 +204,36 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result<Void> remove(Integer id) {
-        if (id == -1) {
-            return Result.failed(Status.ROOT_DIR_NOT_ALLOW_DELETE);
+    public boolean remove(Integer id) {
+        Assert.isFalse(
+                Opt.ofNullable(getById(id))
+                                .orElseThrow(() -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST))
+                                .getPid()
+                        == -1,
+                () -> new BusException(Status.ROOT_DIR_NOT_ALLOW_DELETE));
+        try {
+            if (id < 1) {
+                getBaseResourceManager().remove("/");
+                // todo 删除主目录，实际是清空
+                remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId, 0));
+            }
+            Resources byId = getById(id);
+            if (!isExistsChildren(id)) {
+                removeById(id);
+            }
+            getBaseResourceManager().remove(byId.getFullName());
+            if (byId.getIsDirectory()) {
+                List<Resources> resourceByPidToChildren = getResourceByPidToChildren(new ArrayList<>(), byId.getId());
+                removeBatchByIds(resourceByPidToChildren);
+            }
+            List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), byId.getPid());
+            resourceByPidToParent.forEach(x -> x.setSize(x.getSize() - byId.getSize()));
+            updateBatchById(resourceByPidToParent);
+        } catch (Exception e) {
+            throw new BusException(Status.DELETE_FAILED);
         }
-        if (id < 1) {
-            getBaseResourceManager().remove("/");
-            // todo 删除主目录，实际是清空
-            return remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId, 0))
-                    ? Result.succeed(Status.DELETE_SUCCESS)
-                    : Result.failed(Status.DELETE_FAILED);
-        }
-        Resources byId = getById(id);
-        if (!isExistsChildren(id)) {
-            return removeById(id) ? Result.succeed(Status.DELETE_SUCCESS) : Result.failed(Status.DELETE_FAILED);
-        }
-        getBaseResourceManager().remove(byId.getFullName());
-        if (byId.getIsDirectory()) {
-            List<Resources> resourceByPidToChildren = getResourceByPidToChildren(new ArrayList<>(), byId.getId());
-            return removeBatchByIds(resourceByPidToChildren)
-                    ? Result.succeed(Status.DELETE_SUCCESS)
-                    : Result.failed(Status.DELETE_FAILED);
-        }
-        List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), byId.getPid());
-        resourceByPidToParent.forEach(x -> x.setSize(x.getSize() - byId.getSize()));
-        updateBatchById(resourceByPidToParent);
-        return removeById(id) ? Result.succeed(Status.DELETE_SUCCESS) : Result.failed(Status.DELETE_FAILED);
+
+        return removeById(id);
     }
 
     private boolean isExistsChildren(Integer id) {

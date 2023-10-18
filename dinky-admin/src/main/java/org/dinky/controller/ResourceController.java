@@ -140,6 +140,6 @@ public class ResourceController {
     @ApiImplicitParam(name = "id", value = "Resource ID", required = true, dataType = "Integer", paramType = "query")
     @SaCheckPermission(PermissionConstants.REGISTRATION_RESOURCE_DELETE)
     public Result<Void> remove(Integer id) {
-        return resourcesService.remove(id);
+        return resourcesService.remove(id) ? Result.succeed() : Result.failed();
     }
 }
