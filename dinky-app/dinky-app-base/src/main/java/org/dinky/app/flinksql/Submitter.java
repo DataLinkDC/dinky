@@ -141,11 +141,7 @@ public class Submitter {
             }
         } catch (IOException | SQLException e) {
             logger.error(
-                    "{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}",
-                    LocalDateTime.now(),
-                    dbConfig,
-                    e.getMessage(),
-                    e);
+                    "{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}", LocalDateTime.now(), dbConfig, e.getMessage(), e);
         }
 
         return "";

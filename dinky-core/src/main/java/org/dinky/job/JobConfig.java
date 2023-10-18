@@ -51,7 +51,11 @@ import lombok.Data;
 @ApiModel(value = "JobConfig", description = "Configuration details of a job")
 public class JobConfig {
 
-    @ApiModelProperty(value = "Flink run mode", dataType = "String", example = "local standalone", notes = "Flink run mode")
+    @ApiModelProperty(
+            value = "Flink run mode",
+            dataType = "String",
+            example = "local standalone",
+            notes = "Flink run mode")
     private String type;
 
     @ApiModelProperty(value = "Check Point", dataType = "Integer", example = "1", notes = "Check point for the task")

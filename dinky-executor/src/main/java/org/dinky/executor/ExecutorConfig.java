@@ -19,9 +19,8 @@
 
 package org.dinky.executor;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import org.dinky.assertion.Asserts;
+import org.dinky.gateway.enums.GatewayType;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -30,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dinky.gateway.enums.GatewayType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +37,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -58,7 +58,10 @@ public class ExecutorConfig {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static final ExecutorConfig DEFAULT = ExecutorConfig.builder()
-            .checkpoint(0).parallelism(1).useSqlFragment(true).build();
+            .checkpoint(0)
+            .parallelism(1)
+            .useSqlFragment(true)
+            .build();
 
     public static final String TYPE_CONST = "type";
     public static final String CHECKPOINT_CONST = "checkpoint";
@@ -71,7 +74,11 @@ public class ExecutorConfig {
     public static final String CONFIG_CONST = "config";
 
     // after unique all run model to remote, this field could discard
-    @ApiModelProperty(value = "Flink run mode", dataType = "String", example = "local standalone", notes = "Flink run mode")
+    @ApiModelProperty(
+            value = "Flink run mode",
+            dataType = "String",
+            example = "local standalone",
+            notes = "Flink run mode")
     private String type;
 
     @ApiModelProperty(

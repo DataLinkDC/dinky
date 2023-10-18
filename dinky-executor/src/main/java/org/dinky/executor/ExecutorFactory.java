@@ -27,8 +27,7 @@ package org.dinky.executor;
  **/
 public final class ExecutorFactory {
 
-    private ExecutorFactory() {
-    }
+    private ExecutorFactory() {}
 
     public static Executor getDefaultExecutor() {
         return new LocalStreamExecutor(ExecutorConfig.DEFAULT);
