@@ -30,7 +30,7 @@ public final class ExecutorFactory {
     private ExecutorFactory() {
     }
 
-    public static Executor getLocalStreamExecutor() {
+    public static Executor getDefaultExecutor() {
         return new LocalStreamExecutor(ExecutorConfig.DEFAULT);
     }
 

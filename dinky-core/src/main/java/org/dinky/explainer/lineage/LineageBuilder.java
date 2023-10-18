@@ -36,7 +36,7 @@ import java.util.Map;
 public class LineageBuilder {
 
     public static LineageResult getColumnLineageByLogicalPlan(String statement) {
-        Explainer explainer = new Explainer(ExecutorFactory.getLocalStreamExecutor(), false);
+        Explainer explainer = new Explainer(ExecutorFactory.getDefaultExecutor(), false);
         List<LineageRel> lineageRelList = explainer.getLineage(statement);
         List<LineageRelation> relations = new ArrayList<>();
         Map<String, LineageTable> tableMap = new HashMap<>();

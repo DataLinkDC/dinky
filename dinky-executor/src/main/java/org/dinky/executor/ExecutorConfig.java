@@ -253,7 +253,7 @@ public class ExecutorConfig {
     }
 
     public boolean isRemote() {
-        return !GatewayType.LOCAL.equalsValue(type);
+        return !GatewayType.get(type).isLocalExecute();
     }
 
     public boolean isValidParallelism() {
