@@ -86,7 +86,7 @@ public interface ResourcesService extends IService<Resources> {
      */
     void uploadFile(Integer pid, String desc, MultipartFile file);
 
-    void remove(Integer id);
+    boolean remove(Integer id);
 
     /**
      * 递归获取所有的资源，从pid到0

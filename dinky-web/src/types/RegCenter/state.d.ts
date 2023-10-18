@@ -18,7 +18,6 @@
  */
 
 import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
-import { Resource } from '@/pages/RegCenter/Resource/components/ResourceOverView';
 import { BaseState, ContextMenuPosition } from '@/types/Public/state.d';
 import {
   Alert,
@@ -26,6 +25,7 @@ import {
   Document,
   GitProject,
   GlobalVar,
+  ResourceInfo,
   UDFTemplate
 } from '@/types/RegCenter/data.d';
 
@@ -110,7 +110,7 @@ export interface GlobalVarState extends BaseState {
  * resource state
  */
 export interface ResourceState {
-  treeData: Resource[];
+  treeData: ResourceInfo[];
   content: string;
   clickedNode: any;
   rightClickedNode: any;
@@ -119,7 +119,7 @@ export interface ResourceState {
   selectedKeys: string[];
   editOpen: boolean;
   uploadOpen: boolean;
-  value: Partial<Resource>;
+  value: Partial<ResourceInfo>;
 }
 
 /**

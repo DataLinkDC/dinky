@@ -77,7 +77,6 @@ public enum Status {
     EXECUTE_FAILED(9020, "execute.failed"),
     RESTART_SUCCESS(9021, "restart.success"),
     RESTART_FAILED(9022, "restart.failed"),
-    // 已成功停止
     STOP_SUCCESS(9023, "stop.success"),
     STOP_FAILED(9024, "stop.failed"),
     RENAME_SUCCESS(9025, "rename.success"),
@@ -256,6 +255,12 @@ public enum Status {
     ALERT_RULE_CHECKPOINT_TIMEOUT(20006, "alert.rule.checkpointTimeout"),
 
     /**
+     * Resource
+     */
+    ROOT_DIR_NOT_ALLOW_DELETE(9031, "resource.root.dir.not.allow.delete"),
+    RESOURCE_DIR_OR_FILE_NOT_EXIST(9032, "resource.dir.or.file.not.exist"),
+
+    /**
      * global exception
      */
     GLOBAL_PARAMS_CHECK_ERROR(90001, "global.params.check.error"),
@@ -327,12 +332,12 @@ public enum Status {
     SYS_METRICS_SETTINGS_FLINK_GATHERTIMING_NOTE(153, "sys.metrics.settings.flink.gatherTiming.note"),
     SYS_METRICS_SETTINGS_FLINK_GATHERTIMEOUT(154, "sys.metrics.settings.flink.gatherTimeout"),
     SYS_METRICS_SETTINGS_FLINK_GATHERTIMEOUT_NOTE(155, "sys.metrics.settings.flink.gatherTimeout.note"),
-    SYS_RESOURCE_SETTINGS_ENABLE(156, "sys.resource.settings.enable"),
-    SYS_RESOURCE_SETTINGS_ENABLE_NOTE(157, "sys.resource.settings.enable.note"),
-    SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH(158, "sys.resource.settings.upload.base.path"),
-    SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH_NOTE(159, "sys.resource.settings.upload.base.path.note"),
-    SYS_RESOURCE_SETTINGS_MODEL(160, "sys.resource.settings.model"),
-    SYS_RESOURCE_SETTINGS_MODEL_NOTE(161, "sys.resource.settings.model.note"),
+    SYS_RESOURCE_SETTINGS_ENABLE(156, "sys.resource.settings.base.enable"),
+    SYS_RESOURCE_SETTINGS_ENABLE_NOTE(157, "sys.resource.settings.base.enable.note"),
+    SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH(158, "sys.resource.settings.base.upload.base.path"),
+    SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH_NOTE(159, "sys.resource.settings.base.upload.base.path.note"),
+    SYS_RESOURCE_SETTINGS_MODEL(160, "sys.resource.settings.base.model"),
+    SYS_RESOURCE_SETTINGS_MODEL_NOTE(161, "sys.resource.settings.base.model.note"),
     SYS_RESOURCE_SETTINGS_OSS_ENDPOINT(162, "sys.resource.settings.oss.endpoint"),
     SYS_RESOURCE_SETTINGS_OSS_ENDPOINT_NOTE(163, "sys.resource.settings.oss.endpoint.note"),
     SYS_RESOURCE_SETTINGS_OSS_ACCESSKEY(164, "sys.resource.settings.oss.accessKey"),

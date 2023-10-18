@@ -22,7 +22,6 @@ import {
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
-  UndoOutlined,
   UploadOutlined
 } from '@ant-design/icons';
 
@@ -60,11 +59,5 @@ export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
     label: l('right.menu.rename'),
     disabled: isDisabled,
     path: '/registration/resource/rename'
-  },
-  {
-    key: 'refresh',
-    icon: <UndoOutlined />,
-    label: l('right.menu.refresh'),
-    disabled: isDisabled
   }
 ];

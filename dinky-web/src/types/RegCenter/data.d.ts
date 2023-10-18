@@ -221,7 +221,7 @@ export type UDFTemplate = BaseBeanColumns & {
   templateCode: string;
 };
 
-interface Resource {
+export interface ResourceInfo {
   id: number;
   fileName: string;
   description: string;
@@ -233,6 +233,6 @@ interface Resource {
   isDirectory: boolean;
   createTime: string;
   updateTime: string;
-  children: Resource[];
+  children: ResourceInfo[];
   leaf: boolean;
 }

@@ -19,6 +19,8 @@
 
 package org.dinky.data.exception;
 
+import org.dinky.data.enums.Status;
+
 import cn.hutool.core.exceptions.ExceptionUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,6 +50,12 @@ public class BusException extends RuntimeException {
     public BusException(String message) {
         super(message);
         setMsg(message);
+    }
+
+    public BusException(Status status) {
+        super(status.getMessage());
+        setCode(String.valueOf(status.getCode()));
+        setMsg(status.getMessage());
     }
 
     public BusException(String message, Object... args) {
