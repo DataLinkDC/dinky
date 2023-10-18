@@ -29,6 +29,7 @@ import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,6 +113,8 @@ public class StarRocksDriver extends AbstractJdbcDriver {
     @Override
     public List<Column> listColumns(String schemaName, String tableName) {
         // StarRocks 中声明为 Key 的列（可能是多个）必须顺序声明在建表语句头部，因此按 Key 对列重新排序
-        return listColumnsSortByPK(schemaName, tableName);
+        List<Column> columnList = super.listColumns(schemaName, tableName);
+        columnList.sort(Comparator.comparing(Column::isKeyFlag).reversed());
+        return columnList;
     }
 }
