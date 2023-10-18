@@ -72,9 +72,9 @@ public final class VariableManager {
      * Registers a variable of sql under the given name. The sql variable name must be unique.
      *
      * @param variableName name under which to register the given sql variable
-     * @param variable a variable of sql to register
+     * @param variable     a variable of sql to register
      * @throws CatalogException if the registration of the sql variable under the given name failed.
-     *     But at the moment, with CatalogException, not SqlException
+     *                          But at the moment, with CatalogException, not SqlException
      */
     public void registerVariable(String variableName, String variable) {
         checkArgument(!StringUtils.isNullOrWhitespaceOnly(variableName), "sql variable name cannot be null or empty.");
@@ -92,7 +92,7 @@ public final class VariableManager {
      *
      * @param variableMap a variable map of sql to register
      * @throws CatalogException if the registration of the sql variable under the given name failed.
-     *     But at the moment, with CatalogException, not SqlException
+     *                          But at the moment, with CatalogException, not SqlException
      */
     public void registerVariable(Map<String, String> variableMap) {
         if (Asserts.isNotNull(variableMap)) {
@@ -103,11 +103,11 @@ public final class VariableManager {
     /**
      * Unregisters a variable of sql under the given name. The sql variable name must be existed.
      *
-     * @param variableName name under which to unregister the given sql variable.
+     * @param variableName      name under which to unregister the given sql variable.
      * @param ignoreIfNotExists If false exception will be thrown if the variable of sql to be
-     *     altered does not exist.
+     *                          altered does not exist.
      * @throws CatalogException if the unregistration of the sql variable under the given name
-     *     failed. But at the moment, with CatalogException, not SqlException
+     *                          failed. But at the moment, with CatalogException, not SqlException
      */
     public void unregisterVariable(String variableName, boolean ignoreIfNotExists) {
         checkArgument(
@@ -125,7 +125,7 @@ public final class VariableManager {
      *
      * @param variableName name under which to unregister the given sql variable.
      * @throws CatalogException if the unregistration of the sql variable under the given name
-     *     failed. But at the moment, with CatalogException, not SqlException
+     *                          failed. But at the moment, with CatalogException, not SqlException
      */
     public String getVariable(String variableName) {
         checkArgument(
@@ -137,6 +137,8 @@ public final class VariableManager {
 
         if (isInnerDateVariable(variableName)) {
             return parseDateVariable(variableName);
+        } else if (isInnerTimestampVariable(variableName)) {
+            return parseTimestampVar(variableName);
         }
 
         throw new CatalogException(format("The variable of sql %s does not exist.", variableName));
@@ -162,7 +164,7 @@ public final class VariableManager {
      * Get a variable of sql under the given name. The sql variable name must be existed.
      *
      * @throws CatalogException if the unregistration of the sql variable under the given name
-     *     failed. But at the moment, with CatalogException, not SqlException
+     *                          failed. But at the moment, with CatalogException, not SqlException
      */
     public Map<String, String> getVariable() {
         return variables;
@@ -231,8 +233,12 @@ public final class VariableManager {
             m.appendReplacement(sb, "");
 
             // if value is null, parse inner date variable
-            if (value == null && isInnerDateVariable(key)) {
-                value = parseDateVariable(key);
+            if (value == null) {
+                if (isInnerDateVariable(key)) {
+                    value = parseDateVariable(key);
+                } else if (isInnerTimestampVariable(key)) {
+                    value = parseTimestampVar(key);
+                }
             }
 
             sb.append(value == null ? "" : value);
@@ -249,6 +255,16 @@ public final class VariableManager {
      */
     private boolean isInnerDateVariable(String key) {
         return key.startsWith(FlinkSQLConstant.INNER_DATE_KEY);
+    }
+
+    /**
+     * verify if key is inner variable, such as _CURRENT_TIMESTAMP_ - 100
+     *
+     * @param key
+     * @return
+     */
+    private boolean isInnerTimestampVariable(String key) {
+        return key.startsWith(FlinkSQLConstant.INNER_TIMESTAMP_KEY);
     }
 
     /**
@@ -277,5 +293,31 @@ public final class VariableManager {
         Date startDate = calendar.getTime();
 
         return dtf.format(startDate);
+    }
+
+    /**
+     * parse timestamp variable
+     *
+     * @param key
+     * @return
+     */
+    private String parseTimestampVar(String key) {
+        long millisecond = 0;
+        try {
+            if (key.contains("+")) {
+                int s = key.indexOf("+") + 1;
+                String num = key.substring(s).trim();
+                millisecond = Long.parseLong(num);
+            } else if (key.contains("-")) {
+                int s = key.indexOf("-") + 1;
+                String num = key.substring(s).trim();
+                millisecond = Long.parseLong(num) * -1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return String.valueOf(System.currentTimeMillis() + millisecond);
     }
 }

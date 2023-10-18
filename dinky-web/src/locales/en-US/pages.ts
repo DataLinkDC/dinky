@@ -353,6 +353,8 @@ export default {
   'pages.datastudio.label.execConfig.changelog': 'Print ChangeLog',
   'pages.datastudio.label.execConfig.changelog.tip':
     'Open the print stream, it will run synchronously and return the ChangeLog containing op information, it is not enabled by default and returns the final result Table',
+  'pages.datastudio.label.execConfig.selectDatabase': 'Select Database',
+  'pages.datastudio.label.execConfig.selectDatabase.tip': 'Select the database to be used',
   'pages.datastudio.label.execConfig.maxrow': 'Maximum number of rows',
   'pages.datastudio.label.execConfig.maxrow.tip': 'The maximum number of rows of preview data',
   'pages.datastudio.label.execConfig.preview.result': 'Preview Result',

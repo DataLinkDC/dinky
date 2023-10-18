@@ -271,22 +271,22 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public JobResult submitTask(Integer id, String savePointPath) throws Exception {
         initTenantByTaskId(id);
 
-        TaskDTO task = this.getTaskInfoById(id);
+        TaskDTO taskDTO = this.getTaskInfoById(id);
 
         if (StringUtils.isNotBlank(savePointPath)) {
-            task.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
-            task.setSavePointPath(savePointPath);
+            taskDTO.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
+            taskDTO.setSavePointPath(savePointPath);
         }
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
-        taskServiceBean.preCheckTask(task);
+        taskServiceBean.preCheckTask(taskDTO);
 
-        JobResult jobResult = taskServiceBean.executeJob(task);
+        JobResult jobResult = taskServiceBean.executeJob(taskDTO);
 
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
             log.info("Job Submit success");
-            task.setJobInstanceId(jobResult.getJobInstanceId());
-            if (!this.updateById(task.buildTask())) {
+            Task task = new Task(id, jobResult.getJobInstanceId());
+            if (!this.updateById(task)) {
                 throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
             }
         } else {

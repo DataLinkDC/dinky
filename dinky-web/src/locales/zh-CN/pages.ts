@@ -341,6 +341,8 @@ export default {
   'pages.datastudio.label.execConfig.changelog': '打印流',
   'pages.datastudio.label.execConfig.changelog.tip':
     '开启打印流，将同步运行并返回含有 op 信息的 ChangeLog，默认不开启且返回最终结果 Table',
+  'pages.datastudio.label.execConfig.selectDatabase': '选择数据源',
+  'pages.datastudio.label.execConfig.selectDatabase.tip': '选择 Sql 语句执行的数据源',
   'pages.datastudio.label.execConfig.maxrow': '最大行数',
   'pages.datastudio.label.execConfig.maxrow.tip': '预览数据的最大行数',
   'pages.datastudio.label.execConfig.preview.result': '预览结果',

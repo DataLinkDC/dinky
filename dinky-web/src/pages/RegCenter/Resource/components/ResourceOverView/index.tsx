@@ -57,7 +57,7 @@ const ResourceOverView: React.FC = () => {
 
   useEffect(() => {
     refreshTree();
-  }, []);
+  }, [resourceState]);
 
   /**
    * query content by id
