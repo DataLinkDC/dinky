@@ -148,6 +148,7 @@ export default {
   'global.table.lifecycle.publish': '已发布',
   'global.table.lifecycle.stopped': '已停止',
   'global.table.lifecycle.online': '已上线',
+  'global.table.lifecycle.offline': '已下线',
   'global.table.lifecycle.unknown': '未知',
   'global.table.execmode': '执行模式',
   'global.table.execmode.batch': '批模式',

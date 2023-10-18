@@ -20,6 +20,7 @@
 package org.dinky.service.resource.impl;
 
 import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Resources;
 import org.dinky.data.result.Result;
@@ -203,27 +204,32 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void remove(Integer id) {
+    public Result<Void> remove(Integer id) {
+        if (id == -1) {
+            return Result.failed(Status.ROOT_DIR_NOT_ALLOW_DELETE);
+        }
         if (id < 1) {
             getBaseResourceManager().remove("/");
             // todo 删除主目录，实际是清空
-            remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId, 0));
-            return;
+            return remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId, 0))
+                    ? Result.succeed(Status.DELETE_SUCCESS)
+                    : Result.failed(Status.DELETE_FAILED);
         }
         Resources byId = getById(id);
         if (!isExistsChildren(id)) {
-            removeById(id);
-            return;
+            return removeById(id) ? Result.succeed(Status.DELETE_SUCCESS) : Result.failed(Status.DELETE_FAILED);
         }
         getBaseResourceManager().remove(byId.getFullName());
         if (byId.getIsDirectory()) {
             List<Resources> resourceByPidToChildren = getResourceByPidToChildren(new ArrayList<>(), byId.getId());
-            removeBatchByIds(resourceByPidToChildren);
+            return removeBatchByIds(resourceByPidToChildren)
+                    ? Result.succeed(Status.DELETE_SUCCESS)
+                    : Result.failed(Status.DELETE_FAILED);
         }
         List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), byId.getPid());
         resourceByPidToParent.forEach(x -> x.setSize(x.getSize() - byId.getSize()));
         updateBatchById(resourceByPidToParent);
-        removeById(id);
+        return removeById(id) ? Result.succeed(Status.DELETE_SUCCESS) : Result.failed(Status.DELETE_FAILED);
     }
 
     private boolean isExistsChildren(Integer id) {

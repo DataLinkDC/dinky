@@ -46,6 +46,13 @@ public class ResourcesDTO implements Serializable {
     private String fileName;
 
     @ApiModelProperty(
+            value = "Parent ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "The unique identifier of the parent resource")
+    private Integer pid;
+
+    @ApiModelProperty(
             value = "Description",
             dataType = "String",
             example = "A sample resource file",

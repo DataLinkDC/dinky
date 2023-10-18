@@ -807,9 +807,17 @@ export default {
   'rc.gv.value': 'Value',
   'rc.gv.valuePlaceholder': 'Please enter the Global Variable value',
   'rc.resource.click': 'Click left file to view details',
-  'rc.resource.noResource':
-    '\t\tNo resources\nPlease Click the button above to upload folders/files',
+  'rc.resource.click.tip1':
+    'please make sure the resource configuration is correct, otherwise it will cause resource upload failure!',
+  'rc.resource.click.tip2':
+    'If the resource configuration of your configuration center does not configure the resource upload path or use the default resource upload path (/dinky)',
+  'rc.resource.click.tip3': 'You can click the link on the right to configure ->',
   'rc.resource.upload': 'Upload Files/Folders',
+  'rc.resource.upload.success': 'File [{fileName}] Upload successfully',
+  'rc.resource.upload.fail': 'File [{fileName}] Upload failed',
+  'rc.resource.upload.tip1': 'Click or drag file to this area to upload',
+  'rc.resource.upload.tip2':
+    'Support for a single or bulk upload. Strictly prohibited from uploading company data or\n          other banned files.',
   'rc.template.codeType': 'Code Type',
   'rc.template.codeTypePlaceholder': 'Please select code type! ',
   'rc.template.create': 'Create UDF Template',
