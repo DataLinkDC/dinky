@@ -24,6 +24,7 @@ import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.ResourcesDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Resources;
 import org.dinky.data.result.Result;
 import org.dinky.service.resource.ResourcesService;
@@ -140,6 +141,8 @@ public class ResourceController {
     @ApiImplicitParam(name = "id", value = "Resource ID", required = true, dataType = "Integer", paramType = "query")
     @SaCheckPermission(PermissionConstants.REGISTRATION_RESOURCE_DELETE)
     public Result<Void> remove(Integer id) {
-        return resourcesService.remove(id) ? Result.succeed() : Result.failed();
+        return resourcesService.remove(id)
+                ? Result.succeed(Status.DELETE_SUCCESS)
+                : Result.failed(Status.DELETE_FAILED);
     }
 }
