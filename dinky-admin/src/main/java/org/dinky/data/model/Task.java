@@ -31,7 +31,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
+import lombok.NoArgsConstructor;
 
 /**
  * 任务
@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_task")
-@Slf4j
+@NoArgsConstructor
 @ApiModel(value = "Task", description = "Task Information")
 public class Task extends SuperEntity<Task> {
 
@@ -164,4 +164,9 @@ public class Task extends SuperEntity<Task> {
 
     @ApiModelProperty(value = "Statement", dataType = "String", notes = "SQL statement for the task")
     private String statement;
+
+    public Task(Integer id, Integer jobInstanceId) {
+        this.jobInstanceId = jobInstanceId;
+        this.setId(id);
+    }
 }
