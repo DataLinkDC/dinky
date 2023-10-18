@@ -17,28 +17,26 @@
  *
  */
 
-import {getCurrentTab} from '@/pages/DataStudio/function';
-import {StateType, TabsPageSubType} from '@/pages/DataStudio/model';
-import {connect} from 'umi';
-import ExecuteConfigFlinkSql from "@/pages/DataStudio/RightContainer/ExecuteConfig/FlinkSql";
-import ExecuteConfigCommonSql from "@/pages/DataStudio/RightContainer/ExecuteConfig/CommonSql";
+import { getCurrentTab } from '@/pages/DataStudio/function';
+import { StateType, TabsPageSubType } from '@/pages/DataStudio/model';
+import ExecuteConfigCommonSql from '@/pages/DataStudio/RightContainer/ExecuteConfig/CommonSql';
+import ExecuteConfigFlinkSql from '@/pages/DataStudio/RightContainer/ExecuteConfig/FlinkSql';
+import { connect } from 'umi';
 
 const ExecuteConfig = (props: any) => {
-    const {
-        tabs: {panes, activeKey}
-    } = props;
-    const current = getCurrentTab(panes, activeKey);
-    {
-        if (current?.subType === TabsPageSubType.flinkSql) {
-            return <ExecuteConfigFlinkSql/>;
-        } else {
-            return <ExecuteConfigCommonSql/>;
-        }
+  const {
+    tabs: { panes, activeKey }
+  } = props;
+  const current = getCurrentTab(panes, activeKey);
+  {
+    if (current?.subType === TabsPageSubType.flinkSql) {
+      return <ExecuteConfigFlinkSql />;
+    } else {
+      return <ExecuteConfigCommonSql />;
     }
-}
+  }
+};
 
-export default connect(({Studio}: {
-    Studio: StateType
-}) => ({
-    tabs: Studio.tabs
+export default connect(({ Studio }: { Studio: StateType }) => ({
+  tabs: Studio.tabs
 }))(ExecuteConfig);

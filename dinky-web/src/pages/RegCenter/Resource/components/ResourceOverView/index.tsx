@@ -19,7 +19,10 @@
 
 import RightContextMenu from '@/components/RightContextMenu';
 import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
-import { RIGHT_CONTEXT_MENU } from '@/pages/RegCenter/Resource/components/constants';
+import {
+  RIGHT_CONTEXT_FILE_MENU,
+  RIGHT_CONTEXT_FOLDER_MENU
+} from '@/pages/RegCenter/Resource/components/constants';
 import FileShow from '@/pages/RegCenter/Resource/components/FileShow';
 import FileTree from '@/pages/RegCenter/Resource/components/FileTree';
 import ResourceModal from '@/pages/RegCenter/Resource/components/ResourceModal';
@@ -117,6 +120,7 @@ const ResourceOverView: React.FC = () => {
     if (resourceState.rightClickedNode) {
       setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }));
       await handleRemoveById(API_CONSTANTS.RESOURCE_REMOVE, resourceState.rightClickedNode.id);
+      await refreshTree();
     }
   };
 
@@ -162,6 +166,7 @@ const ResourceOverView: React.FC = () => {
   const handleRightClick = (info: any) => {
     // 获取右键点击的节点信息
     const { node, event } = info;
+    console.log('node', node);
     setResourceState((prevState) => ({
       ...prevState,
       selectedKeys: [node.key],
@@ -180,6 +185,7 @@ const ResourceOverView: React.FC = () => {
    */
   const handleModalCancel = () => {
     setResourceState((prevState) => ({ ...prevState, editOpen: false }));
+    refreshTree();
   };
 
   /**
@@ -197,8 +203,9 @@ const ResourceOverView: React.FC = () => {
       await handleOption(API_CONSTANTS.RESOURCE_RENAME, l('right.menu.rename'), { ...value, pid });
     }
   };
-  const handleUploadCancel = () => {
+  const handleUploadCancel = async () => {
     setResourceState((prevState) => ({ ...prevState, uploadOpen: false }));
+    await refreshTree();
   };
 
   /**
@@ -211,6 +218,17 @@ const ResourceOverView: React.FC = () => {
   };
 
   const access = useAccess();
+
+  const renderRightMenu = () => {
+    if (!resourceState.rightClickedNode.isLeaf) {
+      return RIGHT_CONTEXT_FOLDER_MENU.filter(
+        (menu) => !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+      );
+    }
+    return RIGHT_CONTEXT_FILE_MENU.filter(
+      (menu) => !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+    );
+  };
 
   /**
    * render
@@ -239,10 +257,7 @@ const ResourceOverView: React.FC = () => {
               openChange={() =>
                 setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }))
               }
-              items={RIGHT_CONTEXT_MENU().filter(
-                (menu) =>
-                  !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
-              )}
+              items={renderRightMenu()}
               onClick={handleMenuClick}
             />
           </ProCard>
