@@ -99,7 +99,7 @@ public class Submitter {
                     "{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ",
                     LocalDateTime.now(),
                     id,
-                    config.toString(),
+                    config,
                     e.getMessage(),
                     e);
         }
@@ -115,7 +115,7 @@ public class Submitter {
                     "{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ",
                     LocalDateTime.now(),
                     id,
-                    config.toString(),
+                    config,
                     e.getMessage(),
                     e);
         }
@@ -136,14 +136,14 @@ public class Submitter {
                 return DBUtil.getDbSourceSQLStatement(sql, dbConfig);
             } else {
                 // 全局变量未开启，返回空字符串
-                logger.info("任务 {} 未开启全局变量，不进行变量加载。");
+                logger.info("任务 {} 未开启全局变量，不进行变量加载。", id);
                 return "";
             }
         } catch (IOException | SQLException e) {
             logger.error(
                     "{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}",
                     LocalDateTime.now(),
-                    dbConfig.toString(),
+                    dbConfig,
                     e.getMessage(),
                     e);
         }
@@ -152,7 +152,7 @@ public class Submitter {
     }
 
     public static void submit(Integer id, DBConfig dbConfig, String dinkyAddr) {
-        logger.info(LocalDateTime.now() + "开始提交作业 -- " + id);
+        logger.info("{}开始提交作业 -- {}", LocalDateTime.now(), id);
         if (NULL.equals(dinkyAddr)) {
             dinkyAddr = "";
         }
@@ -202,11 +202,11 @@ public class Submitter {
             }
         }
         for (StatementParam item : ddl) {
-            logger.info("Executing FlinkSQL: " + item.getValue());
+            logger.info("Executing FlinkSQL: {}", item.getValue());
             executor.executeSql(item.getValue());
             logger.info("Execution succeeded.");
         }
-        if (trans.size() > 0) {
+        if (!trans.isEmpty()) {
             if (executorConfig.isUseStatementSet()) {
                 List<String> inserts = new ArrayList<>();
                 for (StatementParam item : trans) {
@@ -214,19 +214,19 @@ public class Submitter {
                         inserts.add(item.getValue());
                     }
                 }
-                logger.info("Executing FlinkSQL statement set: " + String.join(FlinkSQLConstant.SEPARATOR, inserts));
+                logger.info("Executing FlinkSQL statement set: {}", String.join(FlinkSQLConstant.SEPARATOR, inserts));
                 executor.executeStatementSet(inserts);
                 logger.info("Execution succeeded.");
             } else {
                 for (StatementParam item : trans) {
-                    logger.info("Executing FlinkSQL: " + item.getValue());
+                    logger.info("Executing FlinkSQL: %s", item.getValue());
                     executor.executeSql(item.getValue());
                     logger.info("Execution succeeded.");
                     break;
                 }
             }
         }
-        if (execute.size() > 0) {
+        if (!execute.isEmpty()) {
             List<String> executes = new ArrayList<>();
             for (StatementParam item : execute) {
                 executes.add(item.getValue());
@@ -235,7 +235,7 @@ public class Submitter {
                     break;
                 }
             }
-            logger.info("正在执行 FlinkSQL 语句集： " + String.join(FlinkSQLConstant.SEPARATOR, executes));
+            logger.info("正在执行 FlinkSQL 语句集： {}", String.join(FlinkSQLConstant.SEPARATOR, executes));
             try {
                 executor.execute(executorConfig.getJobName());
                 logger.info("执行成功");

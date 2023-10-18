@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dinky.gateway.enums.GatewayType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +60,7 @@ public class ExecutorConfig {
     public static final ExecutorConfig DEFAULT = ExecutorConfig.builder()
             .checkpoint(0).parallelism(1).useSqlFragment(true).build();
 
+    public static final String TYPE_CONST = "type";
     public static final String CHECKPOINT_CONST = "checkpoint";
     public static final String PARALLELISM_CONST = "parallelism";
     public static final String USE_SQL_FRAGMENT = "useSqlFragment";
@@ -68,6 +70,9 @@ public class ExecutorConfig {
     public static final String JOB_NAME = "jobName";
     public static final String CONFIG_CONST = "config";
 
+    // after unique all run model to remote, this field could discard
+    @ApiModelProperty(value = "Flink run mode", dataType = "String", example = "local standalone", notes = "Flink run mode")
+    private String type;
 
     @ApiModelProperty(
             value = "Job manager rest host",
@@ -146,6 +151,7 @@ public class ExecutorConfig {
     private String[] jarFiles;
 
     public static ExecutorConfig build(
+            String type,
             String address,
             Integer checkpoint,
             Integer parallelism,
@@ -171,6 +177,7 @@ public class ExecutorConfig {
         }
 
         return ExecutorConfig.builder()
+                .type(type)
                 .host(host)
                 .port(port)
                 .checkpoint(checkpoint)
@@ -186,6 +193,7 @@ public class ExecutorConfig {
     }
 
     public static ExecutorConfig build(
+            String type,
             Integer checkpoint,
             Integer parallelism,
             boolean useSqlFragment,
@@ -211,6 +219,7 @@ public class ExecutorConfig {
         }
 
         return build(
+                type,
                 null,
                 checkpoint,
                 parallelism,
@@ -226,7 +235,9 @@ public class ExecutorConfig {
     public static ExecutorConfig buildFromMap(Map<String, String> settingMap) {
         Integer checkpoint = NumberUtils.createInteger(settingMap.get(CHECKPOINT_CONST));
         Integer parallelism = NumberUtils.createInteger(settingMap.get(PARALLELISM_CONST));
+        String type = settingMap.get(TYPE_CONST);
         return build(
+                type,
                 checkpoint,
                 parallelism,
                 "1".equals(settingMap.get(USE_SQL_FRAGMENT)),
@@ -242,7 +253,7 @@ public class ExecutorConfig {
     }
 
     public boolean isRemote() {
-        return Asserts.isNotNullString(this.getHost());
+        return !GatewayType.LOCAL.equalsValue(type);
     }
 
     public boolean isValidParallelism() {

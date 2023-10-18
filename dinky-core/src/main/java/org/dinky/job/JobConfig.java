@@ -217,6 +217,7 @@ public class JobConfig {
 
     public ExecutorConfig getExecutorSetting() {
         return ExecutorConfig.build(
+                type,
                 address,
                 checkpoint,
                 parallelism,
