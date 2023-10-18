@@ -57,6 +57,7 @@ import {
 } from '@ant-design/icons';
 import { DiffEditor } from '@monaco-editor/react';
 import { ReactNode } from 'react';
+import {isSql} from "@/pages/DataStudio/HeaderContainer/service";
 
 export const LeftSide = [
   {
@@ -97,7 +98,7 @@ export const RightSide: TabProp[] = [
     icon: <PlayCircleOutlined />,
     label: l('menu.datastudio.executeConfig'),
     children: <ExecuteConfig />,
-    isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
+    isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType || isSql(subType ?? "")
   },
   {
     auth: '/datastudio/right/savePoint',
