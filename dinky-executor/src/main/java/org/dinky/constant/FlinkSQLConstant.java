@@ -25,7 +25,6 @@ package org.dinky.constant;
  * @since 2021/5/25 15:51
  */
 public interface FlinkSQLConstant {
-
     /** 分隔符 */
     String SEPARATOR = ";\n";
     /** DDL 类型 */

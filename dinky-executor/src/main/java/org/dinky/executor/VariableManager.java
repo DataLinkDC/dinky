@@ -110,7 +110,8 @@ public final class VariableManager {
      *                          failed. But at the moment, with CatalogException, not SqlException
      */
     public void unregisterVariable(String variableName, boolean ignoreIfNotExists) {
-        checkArgument(!StringUtils.isNullOrWhitespaceOnly(variableName), "sql variableName name cannot be null or empty.");
+        checkArgument(
+                !StringUtils.isNullOrWhitespaceOnly(variableName), "sql variableName name cannot be null or empty.");
 
         if (variables.containsKey(variableName)) {
             variables.remove(variableName);
@@ -127,7 +128,8 @@ public final class VariableManager {
      *                          failed. But at the moment, with CatalogException, not SqlException
      */
     public String getVariable(String variableName) {
-        checkArgument(!StringUtils.isNullOrWhitespaceOnly(variableName), "sql variableName name cannot be null or empty.");
+        checkArgument(
+                !StringUtils.isNullOrWhitespaceOnly(variableName), "sql variableName name cannot be null or empty.");
 
         if (variables.containsKey(variableName)) {
             return variables.get(variableName);
@@ -149,10 +151,13 @@ public final class VariableManager {
      */
     public TableResult getVariableResult(String variableName) {
         if (Asserts.isNullString(variableName)) {
-            return CustomTableResultImpl.buildTableResult(Collections.singletonList(new TableSchemaField(VARIABLE, DataTypes.STRING())), new ArrayList<>());
+            return CustomTableResultImpl.buildTableResult(
+                    Collections.singletonList(new TableSchemaField(VARIABLE, DataTypes.STRING())), new ArrayList<>());
         }
 
-        return CustomTableResultImpl.buildTableResult(Collections.singletonList(new TableSchemaField(VARIABLE, DataTypes.STRING())), Collections.singletonList(Row.of(getVariable(variableName))));
+        return CustomTableResultImpl.buildTableResult(
+                Collections.singletonList(new TableSchemaField(VARIABLE, DataTypes.STRING())),
+                Collections.singletonList(Row.of(getVariable(variableName))));
     }
 
     /**
@@ -173,7 +178,8 @@ public final class VariableManager {
         for (String key : variables.keySet()) {
             rows.add(Row.of(key));
         }
-        return CustomTableResultImpl.buildTableResult(Collections.singletonList(new TableSchemaField("variableName", DataTypes.STRING())), rows);
+        return CustomTableResultImpl.buildTableResult(
+                Collections.singletonList(new TableSchemaField("variableName", DataTypes.STRING())), rows);
     }
 
     public Table getVariablesTable(CustomTableEnvironmentImpl environment) {
@@ -314,5 +320,4 @@ public final class VariableManager {
 
         return String.valueOf(System.currentTimeMillis() + millisecond);
     }
-
 }
