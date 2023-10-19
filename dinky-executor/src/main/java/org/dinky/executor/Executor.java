@@ -19,6 +19,9 @@
 
 package org.dinky.executor;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.URLUtil;
+import org.apache.flink.configuration.ConfigOption;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.DinkyClassLoaderContextHolder;
@@ -46,9 +49,14 @@ import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,6 +202,34 @@ public abstract class Executor {
         configuration.setString(PythonOptions.PYTHON_FILES, String.join(",", udfPyFilePath));
         configuration.setString(PythonOptions.PYTHON_CLIENT_EXECUTABLE, executable);
     }
+    private void addJar(String... jarPath) {
+        Configuration configuration = tableEnvironment.getRootConfiguration();
+        List<String> jars = configuration.get(PipelineOptions.JARS);
+        if (jars == null) {
+            configuration.set(PipelineOptions.JARS, CollUtil.newArrayList(jarPath));
+        } else {
+            CollUtil.addAll(jars, jarPath);
+        }
+    }
+
+    public void addJar(File... jarPath) {
+        addJar(Arrays.stream(jarPath).map(URLUtil::getURL).map(URL::toString).toArray(String[]::new));
+    }
+
+    public void addJar(Collection<File> jarPath) {
+        addJar(jarPath.stream().map(URLUtil::getURL).map(URL::toString).toArray(String[]::new));
+    }
+
+    public <T> void updateConfiguration(ConfigOption<T> configOption, T value) {
+        Configuration configuration = tableEnvironment.getConfig().getConfiguration();
+        configuration.set(configOption, value);
+    }
+
+    public <T> void updateConfiguration(Consumer<Configuration> configurationConsumer) {
+        Configuration configuration = tableEnvironment.getConfig().getConfiguration();
+        configurationConsumer.accept(configuration);
+    }
+
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         statement = pretreatStatement(statement);

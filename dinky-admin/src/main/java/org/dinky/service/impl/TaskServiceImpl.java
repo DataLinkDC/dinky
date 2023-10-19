@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import lombok.SneakyThrows;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.context.TenantContextHolder;
@@ -70,8 +71,10 @@ import org.dinky.mapper.TaskMapper;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.parser.SqlType;
+import org.dinky.process.annotations.ExecuteProcess;
 import org.dinky.process.annotations.ProcessStep;
 import org.dinky.process.enums.ProcessStepType;
+import org.dinky.process.enums.ProcessType;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.ClusterConfigurationService;
@@ -85,6 +88,7 @@ import org.dinky.service.TaskService;
 import org.dinky.service.TaskVersionService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
+import org.dinky.service.task.BaseTask;
 import org.dinky.trans.Operations;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
@@ -203,17 +207,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJob(TaskDTO task) throws Exception {
         JobResult jobResult;
-        if (Dialect.isCommonSql(task.getDialect())) {
-            log.info("Preparing to execute common sql...");
-            SqlDTO sqlDTO = SqlDTO.build(task.getStatement(), task.getDatabaseId(), null);
-            jobResult = dataBaseService.executeCommonSql(sqlDTO);
-            ResultPool.putCommonSqlCache(task.getId(), (JdbcSelectResult) jobResult.getResult());
-        } else {
-            log.info("Initializing Flink job config...");
-            JobManager jobManager = JobManager.build(
-                    applicationContext.getBean(TaskServiceImpl.class).buildJobConfig(task));
-            jobResult = jobManager.executeSql(task.getStatement());
-        }
+        jobResult = BaseTask.getTask(task).execute();
         log.info("execute job finished,status is {}", jobResult.getStatus());
         return jobResult;
     }
@@ -344,26 +338,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public List<SqlExplainResult> explainTask(TaskDTO task) throws NotSupportExplainExcepition {
-
-        if (Dialect.isCommonSql(task.getDialect())) {
-            return dataBaseService.explainCommonSql(task);
-        } else if (task.getDialect().equals(Dialect.FLINK_SQL.getValue())) {
-            JobConfig config = buildJobConfig(task);
-            config.buildLocal();
-            JobManager jobManager = JobManager.buildPlanMode(config);
-            return jobManager.explainSql(task.getStatement()).getSqlExplainResults();
-        }
-        throw new NotSupportExplainExcepition(StrFormatter.format(
-                "task [{}] dialect [{}] is can not explain, skip sqlExplain verify",
-                task.getName(),
-                task.getDialect()));
+        return BaseTask.getTask(task).explain();
     }
 
+    @SneakyThrows
     @Override
     public ObjectNode getJobPlan(TaskDTO task) {
-        JobManager jobManager = JobManager.buildPlanMode(buildJobConfig(task));
-        String planJson = jobManager.getJobPlanJson(task.getStatement());
-        return JsonUtils.parseObject(planJson);
+        BaseTask baseTask = BaseTask.getTask(task);
+        return baseTask.getJobPlan();
     }
 
     @Override

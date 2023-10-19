@@ -19,7 +19,9 @@
 
 package org.dinky.aop;
 
+import cn.hutool.crypto.digest.MD5;
 import org.dinky.context.ConsoleContextHolder;
+import org.dinky.data.dto.TaskDTO;
 import org.dinky.process.annotations.ExecuteProcess;
 import org.dinky.process.annotations.ProcessId;
 import org.dinky.process.annotations.ProcessStep;
@@ -56,8 +58,8 @@ public class ProcessAspect {
     public Object processAround(ProceedingJoinPoint joinPoint, ExecuteProcess executeProcess) throws Throwable {
 
         Object result;
-        Object processId = getProcessId(joinPoint);
-        String name = executeProcess.type() + String.valueOf(processId);
+        String processId = getProcessId(joinPoint);
+        String name = executeProcess.type() + processId;
         ProcessType type = executeProcess.type();
         contextHolder.registerProcess(type, name);
         MDC.put(PROCESS_NAME, name);
@@ -104,7 +106,7 @@ public class ProcessAspect {
         return result;
     }
 
-    private Object getProcessId(ProceedingJoinPoint joinPoint) {
+    private String getProcessId(ProceedingJoinPoint joinPoint) {
         Object[] params = joinPoint.getArgs();
         if (params.length == 0) {
             throw new IllegalArgumentException("Must have ProcessId params");
@@ -120,7 +122,11 @@ public class ProcessAspect {
             Annotation[] paramAnn = annotations[i];
             for (Annotation annotation : paramAnn) {
                 if (annotation instanceof ProcessId) {
-                    return param;
+                    if(param instanceof TaskDTO){
+                        TaskDTO taskDTO = (TaskDTO) param;
+                        return taskDTO.getId()+ MD5.create().digestHex16(taskDTO.getStatement());
+                    }
+                    return String.valueOf(param);
                 }
             }
         }

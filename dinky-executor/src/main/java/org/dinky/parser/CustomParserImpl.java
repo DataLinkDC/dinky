@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import cn.hutool.core.util.ReflectUtil;
+import org.dinky.trans.ExecuteJarParseStrategy;
 
 public class CustomParserImpl implements CustomParser {
 
@@ -81,7 +82,7 @@ public class CustomParserImpl implements CustomParser {
         public static final DinkyExtendedParser INSTANCE = new DinkyExtendedParser();
 
         private static final List<ExtendedParseStrategy> PARSE_STRATEGIES =
-                Arrays.asList(CreateTemporalTableFunctionParseStrategy.INSTANCE);
+                Arrays.asList(CreateTemporalTableFunctionParseStrategy.INSTANCE, ExecuteJarParseStrategy.INSTANCE);
 
         @Override
         public Optional<Operation> parse(String statement) {
