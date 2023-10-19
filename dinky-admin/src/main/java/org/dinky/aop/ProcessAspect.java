@@ -87,7 +87,7 @@ public class ProcessAspect {
         String parentStep = MDC.get(PROCESS_STEP);
         ProcessStepType processStepType = processStep.type();
         MDC.put(PROCESS_STEP, processStepType.getValue());
-        contextHolder.registerProcessStep(processStepType, MDC.get(PROCESS_NAME));
+        contextHolder.registerProcessStep(processStepType, MDC.get(PROCESS_NAME), parentStep);
 
         try {
             result = joinPoint.proceed();
