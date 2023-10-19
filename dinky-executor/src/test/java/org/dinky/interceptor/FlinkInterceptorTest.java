@@ -38,7 +38,7 @@ public class FlinkInterceptorTest {
         String statement = "nullif1:=NULLIF(1, 0) as val;\n"
                 + "nullif2:=NULLIF(0, 0) as val$null;\n"
                 + "select ${nullif1},${nullif2}";
-        String pretreatStatement = FlinkInterceptor.pretreatStatement(ExecutorFactory.getExecutor(), statement);
+        String pretreatStatement = FlinkInterceptor.pretreatStatement(ExecutorFactory.getDefaultExecutor(), statement);
         Assert.assertEquals("select NULLIF(1, 0) as val,NULLIF(0, 0) as val$null", pretreatStatement);
     }
 }

@@ -99,7 +99,7 @@ public class Submitter {
                     "{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ",
                     LocalDateTime.now(),
                     id,
-                    config.toString(),
+                    config,
                     e.getMessage(),
                     e);
         }
@@ -115,7 +115,7 @@ public class Submitter {
                     "{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ",
                     LocalDateTime.now(),
                     id,
-                    config.toString(),
+                    config,
                     e.getMessage(),
                     e);
         }
@@ -134,25 +134,20 @@ public class Submitter {
             String fragment = DBUtil.getOneByID(sqlCheck, dbConfig);
             if ("1".equals(fragment)) {
                 return DBUtil.getDbSourceSQLStatement(sql, dbConfig);
-            } else {
-                // 全局变量未开启，返回空字符串
-                logger.info("任务 {} 未开启全局变量，不进行变量加载。");
-                return "";
             }
+
+            // 全局变量未开启，返回空字符串
+            logger.info("任务 {} 未开启全局变量，不进行变量加载。", id);
         } catch (IOException | SQLException e) {
             logger.error(
-                    "{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}",
-                    LocalDateTime.now(),
-                    dbConfig.toString(),
-                    e.getMessage(),
-                    e);
+                    "{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}", LocalDateTime.now(), dbConfig, e.getMessage(), e);
         }
 
         return "";
     }
 
     public static void submit(Integer id, DBConfig dbConfig, String dinkyAddr) {
-        logger.info(LocalDateTime.now() + "开始提交作业 -- " + id);
+        logger.info("{}开始提交作业 -- {}", LocalDateTime.now(), id);
         if (NULL.equals(dinkyAddr)) {
             dinkyAddr = "";
         }
@@ -166,13 +161,13 @@ public class Submitter {
             }
             sb.append("\n");
         }
+
         // 添加数据源全局变量
         sb.append(getDbSourceSqlStatements(dbConfig, id));
         // 添加自定义全局变量信息
         sb.append(getFlinkSQLStatement(id, dbConfig));
-        List<String> statements = Submitter.getStatements(sb.toString());
-        ExecutorConfig executorConfig = ExecutorConfig.buildFromMap(taskConfig);
 
+        ExecutorConfig executorConfig = ExecutorConfig.buildFromMap(taskConfig);
         // 加载第三方jar
         loadDep(taskConfig.get("type"), id, dinkyAddr, executorConfig);
 
@@ -181,11 +176,14 @@ public class Submitter {
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
         List<StatementParam> execute = new ArrayList<>();
+
+        List<String> statements = Submitter.getStatements(sb.toString());
         for (String item : statements) {
             String statement = FlinkInterceptor.pretreatStatement(executor, item);
             if (statement.isEmpty()) {
                 continue;
             }
+
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
                 trans.add(new StatementParam(statement, operationType));
@@ -201,12 +199,14 @@ public class Submitter {
                 ddl.add(new StatementParam(statement, operationType));
             }
         }
+
         for (StatementParam item : ddl) {
-            logger.info("Executing FlinkSQL: " + item.getValue());
+            logger.info("Executing FlinkSQL: {}", item.getValue());
             executor.executeSql(item.getValue());
             logger.info("Execution succeeded.");
         }
-        if (trans.size() > 0) {
+
+        if (!trans.isEmpty()) {
             if (executorConfig.isUseStatementSet()) {
                 List<String> inserts = new ArrayList<>();
                 for (StatementParam item : trans) {
@@ -214,19 +214,18 @@ public class Submitter {
                         inserts.add(item.getValue());
                     }
                 }
-                logger.info("Executing FlinkSQL statement set: " + String.join(FlinkSQLConstant.SEPARATOR, inserts));
+                logger.info("Executing FlinkSQL statement set: {}", String.join(FlinkSQLConstant.SEPARATOR, inserts));
                 executor.executeStatementSet(inserts);
                 logger.info("Execution succeeded.");
             } else {
-                for (StatementParam item : trans) {
-                    logger.info("Executing FlinkSQL: " + item.getValue());
-                    executor.executeSql(item.getValue());
-                    logger.info("Execution succeeded.");
-                    break;
-                }
+                StatementParam item = trans.get(0);
+                logger.info("Executing FlinkSQL: {}", item.getValue());
+                executor.executeSql(item.getValue());
+                logger.info("Execution succeeded.");
             }
         }
-        if (execute.size() > 0) {
+
+        if (!execute.isEmpty()) {
             List<String> executes = new ArrayList<>();
             for (StatementParam item : execute) {
                 executes.add(item.getValue());
@@ -235,7 +234,8 @@ public class Submitter {
                     break;
                 }
             }
-            logger.info("正在执行 FlinkSQL 语句集： " + String.join(FlinkSQLConstant.SEPARATOR, executes));
+
+            logger.info("正在执行 FlinkSQL 语句集： {}", String.join(FlinkSQLConstant.SEPARATOR, executes));
             try {
                 executor.execute(executorConfig.getJobName());
                 logger.info("执行成功");
@@ -250,6 +250,7 @@ public class Submitter {
         if (StringUtils.isBlank(dinkyAddr)) {
             return;
         }
+
         if ("kubernetes-application".equals(type)) {
             try {
                 String httpJar = "http://" + dinkyAddr + "/download/downloadDepJar/" + taskId;
@@ -301,9 +302,8 @@ public class Submitter {
 
     private static void addURLs(URL[] jarUrls) {
         URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-        Method add = null;
         try {
-            add = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+            Method add = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
             add.setAccessible(true);
             for (URL jarUrl : jarUrls) {
                 add.invoke(urlClassLoader, jarUrl);
@@ -319,18 +319,18 @@ public class Submitter {
             // 设置超时间为3秒
             conn.setConnectTimeout(3 * 1000);
             // 获取输入流
-            InputStream inputStream = conn.getInputStream();
-            // 获取输出流
-            FileOutputStream outputStream = new FileOutputStream(path);
-            // 每次下载1024位
-            byte[] b = new byte[1024];
-            int len = -1;
-            while ((len = inputStream.read(b)) != -1) {
-                outputStream.write(b, 0, len);
+            try (InputStream inputStream = conn.getInputStream()) {
+                // 获取输出流
+                try (FileOutputStream outputStream = new FileOutputStream(path)) {
+                    // 每次下载1024位
+                    byte[] b = new byte[1024];
+                    int len = -1;
+                    while ((len = inputStream.read(b)) != -1) {
+                        outputStream.write(b, 0, len);
+                    }
+                    return true;
+                }
             }
-            inputStream.close();
-            outputStream.close();
-            return true;
         } catch (Exception e) {
             return false;
         }
