@@ -18,10 +18,9 @@ import {
 } from '@ant-design/icons';
 import _ from 'lodash';
 import React, { useEffect } from 'react';
-import LineageDag from 'react-lineage-dag';
 import 'react-lineage-dag/dist/index.css';
+import LineageDagExt from "@/components/LineageGraph/lineage-dag-ext";
 
-const { Text } = Typography;
 
 interface LineageState {
   lineageData: LineageDetailInfo;
@@ -41,6 +40,20 @@ interface LineageState {
   expandUpstream: boolean;
   collapseUpstream: boolean;
 }
+
+type JobLineageProps = {
+  lineageData: LineageDetailInfo;
+  refreshCallBack: () => void;
+};
+
+type ITable = {
+  id: string;
+  name: string;
+  isCollapse: boolean;
+  fields: LineageTableColumn[];
+};
+
+const { Text } = Typography;
 
 const InitLineageState: LineageState = {
   lineageData: {
@@ -64,33 +77,10 @@ const InitLineageState: LineageState = {
   collapseUpstream: false
 };
 
-type JobLineageProps = {
-  lineageData: LineageDetailInfo;
-  refreshCallBack: () => void;
-};
-
-type ITable = {
-  id: string;
-  name: string;
-  isCollapse: boolean;
-  fields: LineageTableColumn[];
-};
 
 const LineageGraph: React.FC<JobLineageProps> = (props) => {
   const { lineageData, refreshCallBack } = props;
-
   const [lineageState, setLineageState] = React.useState<LineageState>(InitLineageState);
-
-  useEffect(() => {
-    if (lineageData) {
-      setLineageState((prevState) => ({
-        ...prevState,
-        lineageData: lineageData,
-        tables: buildLineageTables(lineageData.tables),
-        relations: buildLineageRelations(lineageData.relations)
-      }));
-    }
-  }, [lineageData, lineageState.refresh]);
 
   const buildLineageColumns = (data: LineageDetailInfo) => {
     return [
@@ -99,13 +89,11 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
         width: '100',
         render: (text: any, record: any, index: number) => {
           return (
-            <>
-              <Badge
-                count={index + 1}
-                size={'small'}
-                color={index < 10 ? 'red' : index < 20 ? 'blue' : index < 30 ? 'gold' : 'cyan'}
-              />
-            </>
+            <Badge
+              count={index + 1}
+              size={'small'}
+              color={index < 10 ? 'red' : index < 20 ? 'blue' : index < 30 ? 'gold' : 'cyan'}
+            />
           );
         }
       },
@@ -133,6 +121,7 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
     }));
   };
 
+
   const buildLineageRelations = (relations: LineageRelations[]) => {
     return relations.map((relation: LineageRelations) => ({
       id: relation?.id,
@@ -143,35 +132,26 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
     }));
   };
 
-  function findTableById(id: string) {
-    const { tables } = lineageState;
-    return tables.find((item) => {
-      return String(item.id) === String(id);
-    });
-  }
 
   const handleExpandField = (nodeData: any, tables: ITable[]) => {
     const { isCollapse, id } = nodeData;
-    console.log(id, findTableById(id), tables);
-    const iTable = findTableById(id);
-    if (iTable) {
-      iTable.isCollapse = isCollapse;
-    }
+    lineageState.tables.filter((item) => item.id === id)
+      .forEach((item) => item.isCollapse = isCollapse);
+
     // todo: 待实现 展开字段
     setLineageState((prevState) => ({ ...prevState, expandField: !prevState.expandField }));
     SuccessNotification(
       lineageState.expandField ? l('lineage.expandField') : l('lineage.expandField')
     );
   };
+
   const buildActionMenu = (data: ITable[]) => {
     return [
       {
         id: 'expandField',
         name: lineageState.expandField ? l('lineage.expandField') : l('lineage.expandField'),
         icon: (
-          <Tooltip
-            title={lineageState.expandField ? l('lineage.expandField') : l('lineage.expandField')}
-          >
+          <Tooltip title={lineageState.expandField ? l('lineage.expandField') : l('lineage.expandField')}>
             <FullscreenExitOutlined width={300} />
           </Tooltip>
         ),
@@ -273,7 +253,7 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
     ];
   };
 
-  const renderTitle = (title: string) => {
+  const RenderTitle = (title: string) => {
     return (
       <Text
         title={title}
@@ -291,10 +271,19 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
     );
   };
 
+  useEffect(() => {
+    if (lineageData) {
+      setLineageState((prevState) => ({
+        ...prevState,
+        lineageData: lineageData,
+        tables: buildLineageTables(lineageData.tables),
+        relations: buildLineageRelations(lineageData.relations)
+      }));
+    }
+  }, [lineageData, lineageState.refresh]);
+
   return (
-    <>
-      <LineageDag
-        delayDraw={2000}
+      <LineageDagExt
         tables={buildLineageTables(lineageState.lineageData.tables)}
         relations={buildLineageRelations(lineageState.lineageData.relations)}
         columns={buildLineageColumns(lineageState.lineageData)}
@@ -305,7 +294,7 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
           setLineageState((prevState) => ({ ...prevState, centerId: data.id }))
         }
         config={{
-          titleRender: (title: string) => renderTitle(title),
+          titleRender: (title: string) => RenderTitle(title),
           minimap: { enable: lineageState.showMinimap },
           enableHoverChain: true,
           showActionIcon: true,
@@ -346,7 +335,6 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
         }}
         actionMenu={renderExtActionButton()}
       />
-    </>
   );
 };
 
