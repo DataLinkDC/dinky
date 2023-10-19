@@ -139,8 +139,8 @@ public class Submitter {
             // 全局变量未开启，返回空字符串
             logger.info("任务 {} 未开启全局变量，不进行变量加载。", id);
         } catch (IOException | SQLException e) {
-            logger.error("{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}",
-                    LocalDateTime.now(), dbConfig, e.getMessage(), e);
+            logger.error(
+                    "{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}", LocalDateTime.now(), dbConfig, e.getMessage(), e);
         }
 
         return "";
@@ -319,7 +319,7 @@ public class Submitter {
             // 设置超时间为3秒
             conn.setConnectTimeout(3 * 1000);
             // 获取输入流
-            try(InputStream inputStream = conn.getInputStream()) {
+            try (InputStream inputStream = conn.getInputStream()) {
                 // 获取输出流
                 try (FileOutputStream outputStream = new FileOutputStream(path)) {
                     // 每次下载1024位
