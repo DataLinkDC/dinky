@@ -1,5 +1,6 @@
 import { Badge, Tooltip, Typography } from 'antd';
 
+import LineageDagExt from '@/components/LineageGraph/lineage-dag-ext';
 import {
   LineageDetailInfo,
   LineageRelations,
@@ -19,8 +20,6 @@ import {
 import _ from 'lodash';
 import React, { useEffect } from 'react';
 import 'react-lineage-dag/dist/index.css';
-import LineageDagExt from "@/components/LineageGraph/lineage-dag-ext";
-
 
 interface LineageState {
   lineageData: LineageDetailInfo;
@@ -77,7 +76,6 @@ const InitLineageState: LineageState = {
   collapseUpstream: false
 };
 
-
 const LineageGraph: React.FC<JobLineageProps> = (props) => {
   const { lineageData, refreshCallBack } = props;
   const [lineageState, setLineageState] = React.useState<LineageState>(InitLineageState);
@@ -121,7 +119,6 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
     }));
   };
 
-
   const buildLineageRelations = (relations: LineageRelations[]) => {
     return relations.map((relation: LineageRelations) => ({
       id: relation?.id,
@@ -132,11 +129,11 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
     }));
   };
 
-
   const handleExpandField = (nodeData: any, tables: ITable[]) => {
     const { isCollapse, id } = nodeData;
-    lineageState.tables.filter((item) => item.id === id)
-      .forEach((item) => item.isCollapse = isCollapse);
+    lineageState.tables
+      .filter((item) => item.id === id)
+      .forEach((item) => (item.isCollapse = isCollapse));
 
     // todo: 待实现 展开字段
     setLineageState((prevState) => ({ ...prevState, expandField: !prevState.expandField }));
@@ -151,7 +148,9 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
         id: 'expandField',
         name: lineageState.expandField ? l('lineage.expandField') : l('lineage.expandField'),
         icon: (
-          <Tooltip title={lineageState.expandField ? l('lineage.expandField') : l('lineage.expandField')}>
+          <Tooltip
+            title={lineageState.expandField ? l('lineage.expandField') : l('lineage.expandField')}
+          >
             <FullscreenExitOutlined width={300} />
           </Tooltip>
         ),
@@ -283,58 +282,58 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
   }, [lineageData, lineageState.refresh]);
 
   return (
-      <LineageDagExt
-        tables={buildLineageTables(lineageState.lineageData.tables)}
-        relations={buildLineageRelations(lineageState.lineageData.relations)}
-        columns={buildLineageColumns(lineageState.lineageData)}
-        operator={buildActionMenu(lineageState.tables)}
-        centerId={lineageState.centerId}
-        onLoaded={(canvas: any) => setLineageState((prevState) => ({ ...prevState, canvas }))}
-        onChange={(data: any) =>
-          setLineageState((prevState) => ({ ...prevState, centerId: data.id }))
-        }
-        config={{
-          titleRender: (title: string) => RenderTitle(title),
-          minimap: { enable: lineageState.showMinimap },
-          enableHoverChain: true,
-          showActionIcon: true,
-          gridMode: {
-            isAdsorb: true,
-            theme: {
-              shapeType: 'line',
-              gap: 20,
-              lineWidth: 1,
-              lineColor: '#e8e8e8',
-              circleRadiu: 5,
-              circleColor: '#e8e8e8'
-            }
+    <LineageDagExt
+      tables={buildLineageTables(lineageState.lineageData.tables)}
+      relations={buildLineageRelations(lineageState.lineageData.relations)}
+      columns={buildLineageColumns(lineageState.lineageData)}
+      operator={buildActionMenu(lineageState.tables)}
+      centerId={lineageState.centerId}
+      onLoaded={(canvas: any) => setLineageState((prevState) => ({ ...prevState, canvas }))}
+      onChange={(data: any) =>
+        setLineageState((prevState) => ({ ...prevState, centerId: data.id }))
+      }
+      config={{
+        titleRender: (title: string) => RenderTitle(title),
+        minimap: { enable: lineageState.showMinimap },
+        enableHoverChain: true,
+        showActionIcon: true,
+        gridMode: {
+          isAdsorb: true,
+          theme: {
+            shapeType: 'line',
+            gap: 20,
+            lineWidth: 1,
+            lineColor: '#e8e8e8',
+            circleRadiu: 5,
+            circleColor: '#e8e8e8'
           }
-          // theme: {
-          //   isMouseMoveStopPropagation: true,
-          //   autoFixCanvas: {
-          //     enable: true,
-          //     autoMovePadding: [40, 40, 40, 40],
-          //   },
-          //   edge: {
-          //     type: 'endpoint',
-          //     shapeType: 'AdvancedBezier',
-          //     hasRadius: true,
-          //     isExpandWidth: true,
-          //     label: '111',
-          //     defaultAnimate: true,
-          //     arrowPosition: 1,
-          //     arrowOffset: -5
-          //   },
-          // }
-        }}
-        butterfly={{
-          zoomable: true,
-          draggable: true,
-          movable: true,
-          linkable: true
-        }}
-        actionMenu={renderExtActionButton()}
-      />
+        }
+        // theme: {
+        //   isMouseMoveStopPropagation: true,
+        //   autoFixCanvas: {
+        //     enable: true,
+        //     autoMovePadding: [40, 40, 40, 40],
+        //   },
+        //   edge: {
+        //     type: 'endpoint',
+        //     shapeType: 'AdvancedBezier',
+        //     hasRadius: true,
+        //     isExpandWidth: true,
+        //     label: '111',
+        //     defaultAnimate: true,
+        //     arrowPosition: 1,
+        //     arrowOffset: -5
+        //   },
+        // }
+      }}
+      butterfly={{
+        zoomable: true,
+        draggable: true,
+        movable: true,
+        linkable: true
+      }}
+      actionMenu={renderExtActionButton()}
+    />
   );
 };
 
