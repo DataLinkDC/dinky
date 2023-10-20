@@ -23,7 +23,6 @@ import static org.dinky.function.util.UDFUtil.GATEWAY_TYPE_MAP;
 import static org.dinky.function.util.UDFUtil.SESSION;
 import static org.dinky.function.util.UDFUtil.YARN;
 
-import cn.hutool.core.lang.Assert;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
@@ -66,6 +65,7 @@ import org.dinky.trans.ExecuteJarParseStrategy;
 import org.dinky.trans.Operations;
 import org.dinky.trans.dml.ExecuteJarOperation;
 import org.dinky.utils.DinkyClassLoaderUtil;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
@@ -78,6 +78,7 @@ import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
@@ -100,6 +101,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -120,8 +122,7 @@ public class JobManager {
     private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
     private GatewayType runMode = GatewayType.LOCAL;
 
-    public JobManager() {
-    }
+    public JobManager() {}
 
     public void setPlanMode(boolean planMode) {
         isPlanMode = planMode;
@@ -310,6 +311,11 @@ public class JobManager {
         return true;
     }
 
+    public ObjectNode getJarStreamGraphJson(String statement) throws Exception {
+        StreamGraph streamGraph = getJarStreamGraph(statement);
+        return JsonUtils.parseObject(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
+    }
+
     public StreamGraph getJarStreamGraph(String statement) throws Exception {
         String currentSql = "";
         DinkyClassLoaderUtil.initClassLoader(config);
@@ -330,6 +336,7 @@ public class JobManager {
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));
         return executeJarOperation.explain(executor);
     }
+
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
         Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);
@@ -339,9 +346,9 @@ public class JobManager {
         JobContextHolder.setJob(job);
         StreamGraph streamGraph = getJarStreamGraph(statement);
         try {
-            if (useRestAPI){
-                executor.getStreamExecutionEnvironment().execute(streamGraph);
-            }else {
+            if (!useGateway) {
+                executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
+            } else {
                 GatewayResult gatewayResult = null;
                 config.addGatewayConfig(executor.getSetConfig());
                 if (runMode.isApplicationMode()) {
@@ -376,11 +383,10 @@ public class JobManager {
             job.setError(error);
             failed();
             throw e;
-        }finally {
+        } finally {
             close();
         }
         return job.getJobResult();
-
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
@@ -832,12 +838,12 @@ public class JobManager {
                             + YarnConfigOptions.PROVIDED_LIB_DIRS.key()
                             + " = "
                             + Collections.singletonList(
-                            config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
+                                    config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
                             + ";\r\n");
                 }
                 if (Asserts.isNotNull(config.getGatewayConfig())
                         && Asserts.isNotNullString(
-                        config.getGatewayConfig().getFlinkConfig().getJobName())) {
+                                config.getGatewayConfig().getFlinkConfig().getJobName())) {
                     sb.append("set "
                             + YarnConfigOptions.APPLICATION_NAME.key()
                             + " = "

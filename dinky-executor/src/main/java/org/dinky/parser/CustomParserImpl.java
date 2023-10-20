@@ -21,6 +21,7 @@ package org.dinky.parser;
 
 import org.dinky.executor.CustomParser;
 import org.dinky.trans.CreateTemporalTableFunctionParseStrategy;
+import org.dinky.trans.ExecuteJarParseStrategy;
 
 import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.table.delegation.Parser;
@@ -37,7 +38,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import cn.hutool.core.util.ReflectUtil;
-import org.dinky.trans.ExecuteJarParseStrategy;
 
 public class CustomParserImpl implements CustomParser {
 

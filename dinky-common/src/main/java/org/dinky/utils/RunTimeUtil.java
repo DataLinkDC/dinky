@@ -19,14 +19,14 @@
 
 package org.dinky.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharUtil;
 import cn.hutool.core.util.StrUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
 
 /**
  * RunTimeUtil

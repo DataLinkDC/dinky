@@ -19,9 +19,6 @@
 
 package org.dinky.executor;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.URLUtil;
-import org.apache.flink.configuration.ConfigOption;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.DinkyClassLoaderContextHolder;
@@ -34,6 +31,7 @@ import org.dinky.utils.KerberosUtil;
 
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
+import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.core.execution.JobClient;
@@ -65,7 +63,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.URLUtil;
 
 /**
  * Executor
@@ -202,6 +202,7 @@ public abstract class Executor {
         configuration.setString(PythonOptions.PYTHON_FILES, String.join(",", udfPyFilePath));
         configuration.setString(PythonOptions.PYTHON_CLIENT_EXECUTABLE, executable);
     }
+
     private void addJar(String... jarPath) {
         Configuration configuration = tableEnvironment.getRootConfiguration();
         List<String> jars = configuration.get(PipelineOptions.JARS);
@@ -229,7 +230,6 @@ public abstract class Executor {
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
         configurationConsumer.accept(configuration);
     }
-
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         statement = pretreatStatement(statement);

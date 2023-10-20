@@ -22,26 +22,42 @@ package org.dinky.service.task;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotation.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
-import org.dinky.data.model.Task;
+import org.dinky.data.result.SqlExplainResult;
 import org.dinky.job.JobResult;
-import org.dinky.utils.UDFUtils;
 
-import cn.hutool.core.bean.BeanUtil;
+import java.util.ArrayList;
+import java.util.List;
 
-@SupportDialect({Dialect.JAVA, Dialect.PYTHON, Dialect.SCALA})
-public class UdfTask extends BaseTask {
-    public UdfTask(TaskDTO task) {
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+@SupportDialect(Dialect.FLINK_JAR)
+public class FlinkJarSqlTask extends FlinkSqlTask {
+    public FlinkJarSqlTask(TaskDTO task) {
         super(task);
     }
 
     @Override
+    public List<SqlExplainResult> explain() {
+        return new ArrayList<>();
+    }
+
+    @Override
     public JobResult execute() throws Exception {
-        UDFUtils.taskToUDF(BeanUtil.toBean(task, Task.class));
-        return null;
+
+        return jobManager.executeJarSql(task.getStatement());
     }
 
     @Override
     public boolean stop() {
         return false;
+    }
+
+    @Override
+    public ObjectNode getJobPlan() {
+        try {
+            return jobManager.getJarStreamGraphJson(task.getStatement());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

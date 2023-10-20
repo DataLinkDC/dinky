@@ -1,9 +1,24 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.dinky.service.task;
 
-import cn.hutool.cache.Cache;
-import cn.hutool.cache.impl.TimedCache;
-import cn.hutool.extra.spring.SpringUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotation.SupportDialect;
 import org.dinky.data.dto.SqlDTO;
@@ -15,8 +30,25 @@ import org.dinky.service.DataBaseService;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import cn.hutool.cache.Cache;
+import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.extra.spring.SpringUtil;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
-@SupportDialect({Dialect.SQL, Dialect.MYSQL, Dialect.ORACLE, Dialect.POSTGRESQL, Dialect.HIVE, Dialect.SQLSERVER, Dialect.CLICKHOUSE, Dialect.DORIS, Dialect.PHOENIX, Dialect.STAR_ROCKS, Dialect.PRESTO})
+@SupportDialect({
+    Dialect.SQL,
+    Dialect.MYSQL,
+    Dialect.ORACLE,
+    Dialect.POSTGRESQL,
+    Dialect.HIVE,
+    Dialect.SQLSERVER,
+    Dialect.CLICKHOUSE,
+    Dialect.DORIS,
+    Dialect.PHOENIX,
+    Dialect.STAR_ROCKS,
+    Dialect.PRESTO
+})
 public class CommonSqlTask extends BaseTask {
     private static final Cache<Integer, JobResult> COMMON_SQL_SEARCH_CACHE =
             new TimedCache<>(TimeUnit.MINUTES.toMillis(10));
@@ -26,9 +58,9 @@ public class CommonSqlTask extends BaseTask {
     }
 
     @Override
-    public List<SqlExplainResult> explain()  {
+    public List<SqlExplainResult> explain() {
         DataBaseService dataBaseService = SpringUtil.getBean(DataBaseService.class);
-       return dataBaseService.explainCommonSql(task);
+        return dataBaseService.explainCommonSql(task);
     }
 
     @Override

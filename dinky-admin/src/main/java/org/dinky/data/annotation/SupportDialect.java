@@ -20,7 +20,6 @@
 package org.dinky.data.annotation;
 
 import org.dinky.config.Dialect;
-import org.dinky.data.enums.BusinessType;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

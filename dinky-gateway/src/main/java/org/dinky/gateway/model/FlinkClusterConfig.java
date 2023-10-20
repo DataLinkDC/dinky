@@ -61,7 +61,7 @@ public class FlinkClusterConfig {
             value = "Application Configuration",
             dataType = "AppConfig",
             notes = "Configuration settings for the application")
-    private AppConfig appConfig;
+    private AppConfig appConfig = new AppConfig();
 
     @ApiModelProperty(
             value = "Kubernetes Configuration",

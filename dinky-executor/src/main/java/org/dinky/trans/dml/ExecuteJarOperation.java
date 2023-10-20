@@ -22,9 +22,8 @@ package org.dinky.trans.dml;
 import org.dinky.executor.CustomTableResultImpl;
 import org.dinky.executor.Executor;
 import org.dinky.trans.AbstractOperation;
-import org.dinky.trans.ExtendOperation;
-import org.dinky.trans.Operation;
 import org.dinky.trans.ExecuteJarParseStrategy;
+import org.dinky.trans.ExtendOperation;
 import org.dinky.utils.RunTimeUtil;
 
 import org.apache.flink.api.dag.Pipeline;
@@ -67,7 +66,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         SavepointRestoreSettings savepointRestoreSettings = StrUtil.isBlank(submitParam.getSavepointPath())
                 ? SavepointRestoreSettings.none()
                 : SavepointRestoreSettings.forPath(
-                submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
+                        submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
         PackagedProgram program;
         try {
             Configuration configuration = executor.getTableConfig().getConfiguration();
