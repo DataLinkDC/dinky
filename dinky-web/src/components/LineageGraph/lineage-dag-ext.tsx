@@ -1,13 +1,11 @@
 import LineageDag from 'react-lineage-dag';
 
-import * as ReactDOM from "react-dom";
-import * as _ from "lodash";
-import LineageCanvas from "react-lineage-dag/src/canvas/canvas";
-import {transformInitData, transformEdges} from 'react-lineage-dag/src/adaptor';
-
+import * as _ from 'lodash';
+import * as ReactDOM from 'react-dom';
+import { transformEdges, transformInitData } from 'react-lineage-dag/src/adaptor';
+import LineageCanvas from 'react-lineage-dag/src/canvas/canvas';
 
 export default class LineageDagExt extends LineageDag {
-
   componentDidMount() {
     let root = ReactDOM.findDOMNode(this) as HTMLElement;
 
@@ -64,8 +62,8 @@ export default class LineageDagExt extends LineageDag {
     result.edges = result.edges.map((item) => {
       return {
         ...item,
-        shapeType: 'AdvancedBezier',
-      }
+        shapeType: 'AdvancedBezier'
+      };
     });
 
     this.canvasData = {
@@ -78,14 +76,17 @@ export default class LineageDagExt extends LineageDag {
       result.edges = [];
       // this.canvas.wrapper.style.visibility = 'hidden';
       this.canvas.draw(result, () => {
-        this.canvas.relayout({
-          edges: tmpEdges.map((item) => {
-            return {
-              source: item.sourceNode,
-              target: item.targetNode
-            }
-          })
-        }, true);
+        this.canvas.relayout(
+          {
+            edges: tmpEdges.map((item) => {
+              return {
+                source: item.sourceNode,
+                target: item.targetNode
+              };
+            })
+          },
+          true
+        );
         // this.canvas.wrapper.style.visibility = 'visible';
         debugger;
         this.canvas.addEdges(tmpEdges, true);
@@ -93,10 +94,7 @@ export default class LineageDagExt extends LineageDag {
         let minimap = _.get(this, 'props.config.minimap', {});
 
         const minimapCfg = _.assign({}, minimap.config, {
-          events: [
-            'system.node.click',
-            'system.canvas.click'
-          ]
+          events: ['system.node.click', 'system.canvas.click']
         });
 
         if (minimap && minimap.enable) {
@@ -104,7 +102,7 @@ export default class LineageDagExt extends LineageDag {
         }
 
         if (_.get(this, 'props.config.gridMode')) {
-          this.canvas.setGridMode(true, _.assign({}, _.get(this, 'props.config.gridMode', {})))
+          this.canvas.setGridMode(true, _.assign({}, _.get(this, 'props.config.gridMode', {})));
         }
 
         if (result.nodes.length !== 0) {
@@ -123,6 +121,5 @@ export default class LineageDagExt extends LineageDag {
         this.canvas.unfocus();
       });
     }, _.get(this.props, 'config.delayDraw', 0));
-
   }
 }

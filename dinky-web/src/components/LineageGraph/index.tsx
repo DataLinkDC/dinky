@@ -1,4 +1,4 @@
-import {Badge, Tooltip, Typography} from 'antd';
+import { Badge, Tooltip, Typography } from 'antd';
 
 import {
   LineageDetailInfo,
@@ -6,8 +6,8 @@ import {
   LineageTable,
   LineageTableColumn
 } from '@/types/DevOps/data.d';
-import {l} from '@/utils/intl';
-import {SuccessNotification, WarningNotification} from '@/utils/messages';
+import { l } from '@/utils/intl';
+import { SuccessNotification, WarningNotification } from '@/utils/messages';
 import {
   CompassOutlined,
   ExpandAltOutlined,
@@ -17,12 +17,11 @@ import {
   ReloadOutlined
 } from '@ant-design/icons';
 import _ from 'lodash';
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import 'react-lineage-dag/dist/index.css';
 // import LineageDag from "react-lineage-dag";
-import LineageDagExt from "@/components/LineageGraph/lineage-dag-ext";
+import LineageDagExt from '@/components/LineageGraph/lineage-dag-ext';
 // import LineageDagExt from "@/components/LineageGraph/lineage-dag-ext";
-
 
 interface LineageState {
   lineageData: LineageDetailInfo;
@@ -55,7 +54,7 @@ type ITable = {
   fields: LineageTableColumn[];
 };
 
-const {Text} = Typography;
+const { Text } = Typography;
 
 const InitLineageState: LineageState = {
   lineageData: {
@@ -101,7 +100,7 @@ const buildLineageColumns = (data: LineageDetailInfo) => {
       render: (text: any, record: any, index: number) => {
         return (
           <>
-            <InsertRowAboveOutlined/> {text}
+            <InsertRowAboveOutlined /> {text}
           </>
         );
       }
@@ -118,7 +117,6 @@ const buildLineageTables = (tables: LineageTable[]) => {
   }));
 };
 
-
 const buildLineageRelations = (relations: LineageRelations[]) => {
   return relations.map((relation: LineageRelations) => ({
     id: relation?.id,
@@ -130,7 +128,7 @@ const buildLineageRelations = (relations: LineageRelations[]) => {
 };
 
 const LineageGraph: React.FC<JobLineageProps> = (props) => {
-  const {lineageData, refreshCallBack} = props;
+  const { lineageData, refreshCallBack } = props;
   const [lineageState, setLineageState] = React.useState<LineageState>({
     ...InitLineageState,
     lineageData: lineageData,
@@ -149,14 +147,14 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
     }
   }, [lineageData, lineageState.refresh]);
 
-
   const handleExpandField = (nodeData: any, tables: ITable[]) => {
-    const {isCollapse, id} = nodeData;
-    lineageState.tables.filter((item) => item.id === id)
-      .forEach((item) => item.isCollapse = isCollapse);
+    const { isCollapse, id } = nodeData;
+    lineageState.tables
+      .filter((item) => item.id === id)
+      .forEach((item) => (item.isCollapse = isCollapse));
 
     // todo: 待实现 展开字段
-    setLineageState((prevState) => ({...prevState, expandField: !prevState.expandField}));
+    setLineageState((prevState) => ({ ...prevState, expandField: !prevState.expandField }));
     SuccessNotification(
       lineageState.expandField ? l('lineage.expandField') : l('lineage.expandField')
     );
@@ -168,8 +166,10 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
         id: 'expandField',
         name: lineageState.expandField ? l('lineage.expandField') : l('lineage.expandField'),
         icon: (
-          <Tooltip title={lineageState.expandField ? l('lineage.expandField') : l('lineage.expandField')}>
-            <FullscreenExitOutlined width={300}/>
+          <Tooltip
+            title={lineageState.expandField ? l('lineage.expandField') : l('lineage.expandField')}
+          >
+            <FullscreenExitOutlined width={300} />
           </Tooltip>
         ),
         onClick: (nodeData: any) => handleExpandField(nodeData, _.clone(data))
@@ -187,7 +187,7 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
                 : l('lineage.collapseDownstream')
             }
           >
-            <PlusCircleOutlined/>
+            <PlusCircleOutlined />
           </Tooltip>
         ),
         onClick: (nodeData: { id: string }) => {
@@ -216,7 +216,7 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
                 : l('lineage.collapseUpstream')
             }
           >
-            <ExpandAltOutlined/>
+            <ExpandAltOutlined />
           </Tooltip>
         ),
         onClick: (nodeData: { id: string }) => {
@@ -241,7 +241,7 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
         key: 'minimap',
         icon: (
           <Tooltip title={lineageState.showMinimap ? l('lineage.showMap') : l('lineage.hideMap')}>
-            <CompassOutlined/>
+            <CompassOutlined />
           </Tooltip>
         ),
         name: lineageState.showMinimap ? l('lineage.showMap') : l('lineage.hideMap'),
@@ -257,14 +257,14 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
         key: 'refresh',
         icon: (
           <Tooltip title={l('lineage.refresh')}>
-            <ReloadOutlined spin={lineageState.refresh}/>
+            <ReloadOutlined spin={lineageState.refresh} />
           </Tooltip>
         ),
         title: l('lineage.refresh'),
         onClick: (canvas: any) => {
-          setLineageState((prevState) => ({...prevState, canvas, refresh: true}));
+          setLineageState((prevState) => ({ ...prevState, canvas, refresh: true }));
           refreshCallBack();
-          setLineageState((prevState) => ({...prevState, canvas, refresh: false}));
+          setLineageState((prevState) => ({ ...prevState, canvas, refresh: false }));
         }
       }
     ];
@@ -295,13 +295,13 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
       columns={buildLineageColumns(lineageState.lineageData)}
       operator={buildActionMenu(lineageState.tables)}
       centerId={lineageState.centerId}
-      onLoaded={(canvas: any) => setLineageState((prevState) => ({...prevState, canvas}))}
+      onLoaded={(canvas: any) => setLineageState((prevState) => ({ ...prevState, canvas }))}
       onChange={(data: any) =>
-        setLineageState((prevState) => ({...prevState, centerId: data.id}))
+        setLineageState((prevState) => ({ ...prevState, centerId: data.id }))
       }
       config={{
         titleRender: (title: string) => RenderTitle(title),
-        minimap: {enable: lineageState.showMinimap},
+        minimap: { enable: lineageState.showMinimap },
         enableHoverChain: true,
         showActionIcon: true,
         gridMode: {
