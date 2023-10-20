@@ -19,7 +19,8 @@ import {
 import _ from 'lodash';
 import React, {useEffect} from 'react';
 import 'react-lineage-dag/dist/index.css';
-import LineageDag from "react-lineage-dag";
+// import LineageDag from "react-lineage-dag";
+import LineageDagExt from "@/components/LineageGraph/lineage-dag-ext";
 // import LineageDagExt from "@/components/LineageGraph/lineage-dag-ext";
 
 
@@ -277,7 +278,7 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
         ellipsis
         type={'secondary'}
         onClick={() => {
-          lineageState.canvas.nodes.forEach((item: { redrawTitle: () => void }) => {
+          lineageState.canvas.nodes?.forEach((item: { redrawTitle: () => void }) => {
             item.redrawTitle();
           });
         }}
@@ -288,7 +289,7 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
   };
 
   return (
-    <LineageDag
+    <LineageDagExt
       tables={buildLineageTables(lineageState.lineageData.tables)}
       relations={buildLineageRelations(lineageState.lineageData.relations)}
       columns={buildLineageColumns(lineageState.lineageData)}
@@ -314,23 +315,6 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
             circleColor: '#e8e8e8'
           }
         }
-        // theme: {
-        //   isMouseMoveStopPropagation: true,
-        //   autoFixCanvas: {
-        //     enable: true,
-        //     autoMovePadding: [40, 40, 40, 40],
-        //   },
-        //   edge: {
-        //     type: 'endpoint',
-        //     shapeType: 'AdvancedBezier',
-        //     hasRadius: true,
-        //     isExpandWidth: true,
-        //     label: '111',
-        //     defaultAnimate: true,
-        //     arrowPosition: 1,
-        //     arrowOffset: -5
-        //   },
-        // }
       }}
       butterfly={{
         zoomable: true,

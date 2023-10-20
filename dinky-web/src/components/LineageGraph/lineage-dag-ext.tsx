@@ -44,7 +44,6 @@ export default class LineageDagExt extends LineageDag {
         enableHoverChain: enableHoverChain
       }
     };
-    debugger;
 
     this.canvas = new LineageCanvas(canvasObj);
 
@@ -62,44 +61,68 @@ export default class LineageDagExt extends LineageDag {
     this.originEdges = result.edges;
 
     result = transformEdges(result.nodes, _.cloneDeep(result.edges));
+    result.edges = result.edges.map((item) => {
+      return {
+        ...item,
+        shapeType: 'AdvancedBezier',
+      }
+    });
+
     this.canvasData = {
       nodes: result.nodes,
       edges: result.edges
     };
 
-    let minimap = _.get(this, 'props.config.minimap', {});
+    setTimeout(() => {
+      let tmpEdges = result.edges;
+      result.edges = [];
+      // this.canvas.wrapper.style.visibility = 'hidden';
+      this.canvas.draw(result, () => {
+        this.canvas.relayout({
+          edges: tmpEdges.map((item) => {
+            return {
+              source: item.sourceNode,
+              target: item.targetNode
+            }
+          })
+        }, true);
+        // this.canvas.wrapper.style.visibility = 'visible';
+        debugger;
+        this.canvas.addEdges(tmpEdges, true);
 
-    const minimapCfg = _.assign({}, minimap.config, {
-      events: [
-        'system.node.click',
-        'system.canvas.click'
-      ]
-    });
+        let minimap = _.get(this, 'props.config.minimap', {});
 
-    this.canvas.draw(result, () => {
-      if (minimap && minimap.enable) {
-        this.canvas.setMinimap(true, minimapCfg);
-      }
+        const minimapCfg = _.assign({}, minimap.config, {
+          events: [
+            'system.node.click',
+            'system.canvas.click'
+          ]
+        });
 
-      if (_.get(this, 'props.config.gridMode')) {
-        this.canvas.setGridMode(true, _.assign({}, _.get(this, 'props.config.gridMode', {})))
-      }
+        if (minimap && minimap.enable) {
+          this.canvas.setMinimap(true, minimapCfg);
+        }
 
-      if (result.nodes.length !== 0) {
-        this.canvas.focusCenterWithAnimate();
-        this._isFirstFocus = true;
-      }
-      this.forceUpdate();
-      this.props.onLoaded && this.props.onLoaded(this.canvas);
-    });
+        if (_.get(this, 'props.config.gridMode')) {
+          this.canvas.setGridMode(true, _.assign({}, _.get(this, 'props.config.gridMode', {})))
+        }
 
-    this.canvas.on('system.node.click', (data) => {
-      let node = data.node;
-      this.canvas.focus(node.id);
-    });
-    this.canvas.on('system.canvas.click', () => {
-      this.canvas.unfocus();
-    });
+        if (result.nodes.length !== 0) {
+          this.canvas.focusCenterWithAnimate();
+          this._isFirstFocus = true;
+        }
+
+        this.forceUpdate();
+        this.props.onLoaded && this.props.onLoaded(this.canvas);
+      });
+      this.canvas.on('system.node.click', (data) => {
+        let node = data.node;
+        this.canvas.focus(node.id);
+      });
+      this.canvas.on('system.canvas.click', () => {
+        this.canvas.unfocus();
+      });
+    }, _.get(this.props, 'config.delayDraw', 0));
 
   }
 }
