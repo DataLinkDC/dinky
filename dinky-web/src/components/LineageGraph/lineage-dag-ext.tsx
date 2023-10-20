@@ -1,11 +1,13 @@
 import LineageDag from 'react-lineage-dag';
 
-import * as _ from 'lodash';
-import * as ReactDOM from 'react-dom';
-import { transformEdges, transformInitData } from 'react-lineage-dag/src/adaptor';
-import LineageCanvas from 'react-lineage-dag/src/canvas/canvas';
+import * as ReactDOM from "react-dom";
+import * as _ from "lodash";
+import LineageCanvas from "react-lineage-dag/src/canvas/canvas";
+import {transformInitData, transformEdges} from 'react-lineage-dag/src/adaptor';
+
 
 export default class LineageDagExt extends LineageDag {
+
   componentDidMount() {
     let root = ReactDOM.findDOMNode(this) as HTMLElement;
 
@@ -22,7 +24,7 @@ export default class LineageDagExt extends LineageDag {
       theme: {
         edge: {
           type: 'endpoint',
-          // shapeType: 'AdvancedBezier',
+          shapeType: 'AdvancedBezier',
           arrow: true,
           isExpandWidth: true,
           arrowPosition: 1,
@@ -42,6 +44,7 @@ export default class LineageDagExt extends LineageDag {
         enableHoverChain: enableHoverChain
       }
     };
+    debugger;
 
     this.canvas = new LineageCanvas(canvasObj);
 
@@ -67,23 +70,29 @@ export default class LineageDagExt extends LineageDag {
     let minimap = _.get(this, 'props.config.minimap', {});
 
     const minimapCfg = _.assign({}, minimap.config, {
-      events: ['system.node.click', 'system.canvas.click']
+      events: [
+        'system.node.click',
+        'system.canvas.click'
+      ]
     });
 
-    if (minimap && minimap.enable) {
-      this.canvas.setMinimap(true, minimapCfg);
-    }
+    this.canvas.draw(result, () => {
+      if (minimap && minimap.enable) {
+        this.canvas.setMinimap(true, minimapCfg);
+      }
 
-    if (_.get(this, 'props.config.gridMode')) {
-      this.canvas.setGridMode(true, _.assign({}, _.get(this, 'props.config.gridMode', {})));
-    }
+      if (_.get(this, 'props.config.gridMode')) {
+        this.canvas.setGridMode(true, _.assign({}, _.get(this, 'props.config.gridMode', {})))
+      }
 
-    if (result.nodes.length !== 0) {
-      this.canvas.focusCenterWithAnimate();
-      this._isFirstFocus = true;
-    }
+      if (result.nodes.length !== 0) {
+        this.canvas.focusCenterWithAnimate();
+        this._isFirstFocus = true;
+      }
+      this.forceUpdate();
+      this.props.onLoaded && this.props.onLoaded(this.canvas);
+    });
 
-    this.props.onLoaded && this.props.onLoaded(this.canvas);
     this.canvas.on('system.node.click', (data) => {
       let node = data.node;
       this.canvas.focus(node.id);
@@ -91,5 +100,6 @@ export default class LineageDagExt extends LineageDag {
     this.canvas.on('system.canvas.click', () => {
       this.canvas.unfocus();
     });
+
   }
 }
