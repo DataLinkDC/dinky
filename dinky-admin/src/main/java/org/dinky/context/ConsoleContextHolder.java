@@ -228,12 +228,12 @@ public class ConsoleContextHolder extends BaseSseContext<String, ProcessEntity> 
 
     private ProcessStep getStepNode(String stepType, Map<String, ProcessStep> stepsMap) {
         ProcessStep stepNode = findStepNode(stepType, stepsMap);
-        if (stepNode != null){
+        if (stepNode != null) {
             return stepNode;
         }
         String errorStr = StrFormatter.format(
-                "Get Parent Node Failed, This is most likely a Dinky bug, " +
-                        "please report the following information back to the community：\nProcess:{},\nstep:{},\nprocessNam:{}",
+                "Get Parent Node Failed, This is most likely a Dinky bug, "
+                        + "please report the following information back to the community：\nProcess:{},\nstep:{},\nprocessNam:{}",
                 JSONObject.toJSONString(logPross),
                 stepType,
                 MDC.get(ProcessAspect.PROCESS_NAME));
@@ -249,14 +249,13 @@ public class ConsoleContextHolder extends BaseSseContext<String, ProcessEntity> 
                 return entry.getValue();
             } else {
                 ProcessStep stepNode = findStepNode(stepType, entry.getValue().getChildStepsMap());
-                if (stepNode != null){
+                if (stepNode != null) {
                     return stepNode;
                 }
             }
         }
         return null;
     }
-
 
     private Map<String, ProcessStep> getStepsMap(String processName) {
         return logPross.get(processName).getStepsMap();
