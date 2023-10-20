@@ -19,9 +19,7 @@
 
 package org.dinky.aop;
 
-import cn.hutool.crypto.digest.MD5;
 import org.dinky.context.ConsoleContextHolder;
-import org.dinky.data.dto.TaskDTO;
 import org.dinky.process.annotations.ExecuteProcess;
 import org.dinky.process.annotations.ProcessId;
 import org.dinky.process.annotations.ProcessStep;
@@ -58,8 +56,8 @@ public class ProcessAspect {
     public Object processAround(ProceedingJoinPoint joinPoint, ExecuteProcess executeProcess) throws Throwable {
 
         Object result;
-        String processId = getProcessId(joinPoint);
-        String name = executeProcess.type() + processId;
+        Object processId = getProcessId(joinPoint);
+        String name = executeProcess.type() + String.valueOf(processId);
         ProcessType type = executeProcess.type();
         contextHolder.registerProcess(type, name);
         MDC.put(PROCESS_NAME, name);
@@ -89,7 +87,7 @@ public class ProcessAspect {
         String parentStep = MDC.get(PROCESS_STEP);
         ProcessStepType processStepType = processStep.type();
         MDC.put(PROCESS_STEP, processStepType.getValue());
-        contextHolder.registerProcessStep(processStepType, MDC.get(PROCESS_NAME));
+        contextHolder.registerProcessStep(processStepType, MDC.get(PROCESS_NAME), parentStep);
 
         try {
             result = joinPoint.proceed();
@@ -106,7 +104,7 @@ public class ProcessAspect {
         return result;
     }
 
-    private String getProcessId(ProceedingJoinPoint joinPoint) {
+    private Object getProcessId(ProceedingJoinPoint joinPoint) {
         Object[] params = joinPoint.getArgs();
         if (params.length == 0) {
             throw new IllegalArgumentException("Must have ProcessId params");
@@ -122,11 +120,7 @@ public class ProcessAspect {
             Annotation[] paramAnn = annotations[i];
             for (Annotation annotation : paramAnn) {
                 if (annotation instanceof ProcessId) {
-                    if(param instanceof TaskDTO){
-                        TaskDTO taskDTO = (TaskDTO) param;
-                        return taskDTO.getId()+ MD5.create().digestHex16(taskDTO.getStatement());
-                    }
-                    return String.valueOf(param);
+                    return String.valueOf(param.hashCode());
                 }
             }
         }
