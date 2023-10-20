@@ -120,7 +120,7 @@ public class ProcessAspect {
             Annotation[] paramAnn = annotations[i];
             for (Annotation annotation : paramAnn) {
                 if (annotation instanceof ProcessId) {
-                    return param;
+                    return String.valueOf(param.hashCode());
                 }
             }
         }
