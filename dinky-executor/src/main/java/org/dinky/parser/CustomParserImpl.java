@@ -21,7 +21,6 @@ package org.dinky.parser;
 
 import org.dinky.executor.CustomParser;
 import org.dinky.trans.CreateTemporalTableFunctionParseStrategy;
-import org.dinky.trans.ExecuteJarParseStrategy;
 
 import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.table.delegation.Parser;
@@ -82,7 +81,7 @@ public class CustomParserImpl implements CustomParser {
         public static final DinkyExtendedParser INSTANCE = new DinkyExtendedParser();
 
         private static final List<ExtendedParseStrategy> PARSE_STRATEGIES =
-                Arrays.asList(CreateTemporalTableFunctionParseStrategy.INSTANCE, ExecuteJarParseStrategy.INSTANCE);
+                Arrays.asList(CreateTemporalTableFunctionParseStrategy.INSTANCE);
 
         @Override
         public Optional<Operation> parse(String statement) {
