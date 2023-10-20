@@ -124,7 +124,8 @@ export enum TabsPageType {
 }
 
 export enum TabsPageSubType {
-  flinkSql = 'FlinkSql'
+  flinkSql = 'FlinkSql',
+  flinkJar = 'FlinkJar',
 }
 
 export interface TabsItemType {

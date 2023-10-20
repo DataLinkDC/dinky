@@ -57,10 +57,15 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.parser.SqlType;
+import org.dinky.parser.check.AddJarSqlParser;
 import org.dinky.process.annotations.ProcessStep;
 import org.dinky.process.enums.ProcessStepType;
+import org.dinky.process.exception.DinkyException;
+import org.dinky.trans.ExecuteJarParseStrategy;
 import org.dinky.trans.Operations;
+import org.dinky.trans.dml.ExecuteJarOperation;
 import org.dinky.utils.DinkyClassLoaderUtil;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
@@ -73,6 +78,7 @@ import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
@@ -95,6 +101,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -300,7 +307,86 @@ public class JobManager {
         JobContextHolder.clear();
         CustomTableEnvironmentContext.clear();
         RowLevelPermissionsContext.clear();
+        FlinkUdfPathContextHolder.clear();
         return true;
+    }
+
+    public ObjectNode getJarStreamGraphJson(String statement) throws Exception {
+        StreamGraph streamGraph = getJarStreamGraph(statement);
+        return JsonUtils.parseObject(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
+    }
+
+    public StreamGraph getJarStreamGraph(String statement) throws Exception {
+        String currentSql = "";
+        DinkyClassLoaderUtil.initClassLoader(config);
+        String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
+        ExecuteJarOperation executeJarOperation = null;
+        for (int i = 0; i < statements.length; i++) {
+            String sqlStatement = executor.pretreatStatement(statements[i]);
+            if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
+                currentSql = sqlStatement;
+                executeJarOperation = new ExecuteJarOperation(statement);
+                break;
+            }
+            SqlType operationType = Operations.getOperationType(statement);
+            if (operationType.equals(SqlType.ADD)) {
+                AddJarSqlParser.getAllFilePath(statement).forEach(executor::addJar);
+            }
+        }
+        Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));
+        return executeJarOperation.explain(executor);
+    }
+
+    @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
+    public JobResult executeJarSql(String statement) throws Exception {
+        Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);
+        if (!useGateway) {
+            job.setJobManagerAddress(executorConfig.getJobManagerAddress());
+        }
+        JobContextHolder.setJob(job);
+        StreamGraph streamGraph = getJarStreamGraph(statement);
+        try {
+            if (!useGateway) {
+                executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
+            } else {
+                GatewayResult gatewayResult = null;
+                config.addGatewayConfig(executor.getSetConfig());
+                if (runMode.isApplicationMode()) {
+                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
+                } else {
+                    streamGraph.setJobName(config.getJobName());
+                    JobGraph jobGraph = streamGraph.getJobGraph();
+                    if (Asserts.isNotNullString(config.getSavePointPath())) {
+                        jobGraph.setSavepointRestoreSettings(
+                                SavepointRestoreSettings.forPath(config.getSavePointPath(), true));
+                    }
+                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+                }
+                job.setResult(InsertResult.success(gatewayResult.getId()));
+                job.setJobId(gatewayResult.getId());
+                job.setJids(gatewayResult.getJids());
+                job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
+
+                if (gatewayResult.isSuccess()) {
+                    job.setStatus(Job.JobStatus.SUCCESS);
+                } else {
+                    job.setStatus(Job.JobStatus.FAILED);
+                    job.setError(gatewayResult.getError());
+                }
+            }
+            job.setStatus(Job.JobStatus.SUCCESS);
+            success();
+        } catch (Exception e) {
+            String error = LogUtil.getError("Exception in executing FlinkJarSQL:\n" + addLineNumber(statement), e);
+            job.setEndTime(LocalDateTime.now());
+            job.setStatus(Job.JobStatus.FAILED);
+            job.setError(error);
+            failed();
+            throw e;
+        } finally {
+            close();
+        }
+        return job.getJobResult();
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)

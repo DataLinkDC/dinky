@@ -125,7 +125,8 @@ public class TaskController {
 
     @PostMapping("/getJobPlan")
     @ApiOperation("Get Job Plan")
-    public Result<ObjectNode> getJobPlan(@RequestBody TaskDTO taskDTO) {
+    @ExecuteProcess(type = ProcessType.FLINK_JOB_PLAN)
+    public Result<ObjectNode> getJobPlan(@ProcessId @RequestBody TaskDTO taskDTO) {
         return Result.succeed(taskService.getJobPlan(taskDTO), Status.EXECUTE_SUCCESS);
     }
 

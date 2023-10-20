@@ -17,29 +17,25 @@
  *
  */
 
-package org.dinky.url;
+package org.dinky.data.annotation;
 
-import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
+import org.dinky.config.Dialect;
 
-import java.net.URLStreamHandler;
-import java.net.URLStreamHandlerFactory;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.springframework.context.annotation.Profile;
-
-import cn.hutool.core.lang.Singleton;
-
-@Profile("!test")
-public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
-    @Override
-    public URLStreamHandler createURLStreamHandler(String protocol) {
-        if ("rs".equals(protocol)) {
-            return new RsURLStreamHandler();
-        }
-        try {
-            Class.forName("org.apache.hadoop.fs.FsUrlStreamHandlerFactory");
-        } catch (Exception e) {
-            return null;
-        }
-        return Singleton.get(FsUrlStreamHandlerFactory.class).createURLStreamHandler(protocol);
-    }
+/**
+ * 自定义操作日志记录注解
+ */
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface SupportDialect {
+    /**
+     * 模块
+     */
+    public Dialect[] value();
 }

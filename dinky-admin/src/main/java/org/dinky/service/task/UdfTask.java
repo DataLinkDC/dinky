@@ -17,29 +17,31 @@
  *
  */
 
-package org.dinky.url;
+package org.dinky.service.task;
 
-import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
+import org.dinky.config.Dialect;
+import org.dinky.data.annotation.SupportDialect;
+import org.dinky.data.dto.TaskDTO;
+import org.dinky.data.model.Task;
+import org.dinky.job.JobResult;
+import org.dinky.utils.UDFUtils;
 
-import java.net.URLStreamHandler;
-import java.net.URLStreamHandlerFactory;
+import cn.hutool.core.bean.BeanUtil;
 
-import org.springframework.context.annotation.Profile;
+@SupportDialect({Dialect.JAVA, Dialect.PYTHON, Dialect.SCALA})
+public class UdfTask extends BaseTask {
+    public UdfTask(TaskDTO task) {
+        super(task);
+    }
 
-import cn.hutool.core.lang.Singleton;
-
-@Profile("!test")
-public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
     @Override
-    public URLStreamHandler createURLStreamHandler(String protocol) {
-        if ("rs".equals(protocol)) {
-            return new RsURLStreamHandler();
-        }
-        try {
-            Class.forName("org.apache.hadoop.fs.FsUrlStreamHandlerFactory");
-        } catch (Exception e) {
-            return null;
-        }
-        return Singleton.get(FsUrlStreamHandlerFactory.class).createURLStreamHandler(protocol);
+    public JobResult execute() throws Exception {
+        UDFUtils.taskToUDF(BeanUtil.toBean(task, Task.class));
+        return null;
+    }
+
+    @Override
+    public boolean stop() {
+        return false;
     }
 }
