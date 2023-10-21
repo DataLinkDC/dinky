@@ -54,8 +54,8 @@ public class SseController {
     }
 
     @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @ApiOperation("Get JVM Info")
-    @ApiImplicitParam(name = "sessionKey", value = "last sessionKey", required = true, dataType = "String")
+    @ApiOperation("Connect Sse")
+    @ApiImplicitParam(name = "sessionKey", value = "Session unique key", required = true, dataType = "String")
     public SseEmitter getJvmInfo(String sessionKey) {
         return SseSessionContextHolder.connectSession(sessionKey);
     }
