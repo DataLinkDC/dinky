@@ -260,12 +260,4 @@ public interface TaskService extends ISuperService<Task> {
      * @return A {@link JobModelOverview} object representing the job model overview.
      */
     JobModelOverview getJobStreamingOrBatchModelOverview();
-
-    /**
-     * Get the print tables for the given SQL statement.
-     *
-     * @param statement The SQL statement to get the print tables for.
-     * @return A list of strings representing the print tables.
-     */
-    List<String> getPrintTables(String statement);
 }

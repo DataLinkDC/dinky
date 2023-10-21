@@ -20,6 +20,7 @@
 package org.dinky.context;
 
 import org.dinky.aop.ProcessAspect;
+import org.dinky.data.enums.SseTopic;
 import org.dinky.data.exception.BusException;
 import org.dinky.process.enums.ProcessStatus;
 import org.dinky.process.enums.ProcessStepType;
@@ -31,27 +32,25 @@ import org.dinky.utils.LogUtil;
 
 import org.apache.http.util.TextUtils;
 
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.MDC;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.alibaba.fastjson2.JSONObject;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ConsoleContextHolder extends BaseSseContext<String, ProcessEntity> {
+public class ConsoleContextHolder {
     protected static final ConsoleContextHolder instance = new ConsoleContextHolder();
 
     /**
@@ -73,37 +72,6 @@ public class ConsoleContextHolder extends BaseSseContext<String, ProcessEntity> 
     }
 
     /**
-     * Add the SseEmitter object to the context.
-     *
-     * @param processName process name, which is used as an indication for the keyword list
-     * @param sseEmitter  SseEmitter object
-     */
-    public void addSse(String processName, SseEmitter sseEmitter) {
-        List<SseEmitter> emitters = sseList.getIfPresent(processName);
-        if (emitters == null) {
-            emitters = new ArrayList<>();
-            sseList.put(processName, emitters);
-        }
-        emitters.add(sseEmitter);
-
-        if (logPross.containsKey(processName)) {
-            sendAsync(processName, logPross.get(processName));
-        } else {
-            String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
-            try {
-                String string = FileUtil.readString(filePath, Charset.defaultCharset());
-                ProcessEntity entity = JSONObject.parseObject(string, ProcessEntity.class);
-                sendAsync(processName, entity);
-            } catch (IORuntimeException e) {
-                log.warn("{} have no cache files", processName);
-            }
-        }
-    }
-
-    @Override
-    public void append(String key, ProcessEntity o) {}
-
-    /**
      * Add log messages to specific processes and process steps.
      *
      * @param processName process name
@@ -118,7 +86,10 @@ public class ConsoleContextHolder extends BaseSseContext<String, ProcessEntity> 
         logPross.get(processName).appendLog(log);
         ProcessStep stepNode = getStepNode(processStep.getValue(), getStepsMap(processName));
         stepNode.appendLog(log);
-        sendAsync(processName, logPross.get(processName));
+        String topic = StrFormatter.format("{}/{}", SseTopic.PROCESS_CONSOLE.getValue(), processName);
+        CompletableFuture.runAsync(() -> {
+            SseSessionContextHolder.sendTopic(topic, logPross.get(processName));
+        });
     }
 
     /**

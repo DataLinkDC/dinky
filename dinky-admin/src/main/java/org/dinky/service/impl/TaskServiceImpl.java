@@ -66,7 +66,6 @@ import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
 import org.dinky.mapper.TaskMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.parser.SqlType;
 import org.dinky.process.annotations.ProcessStep;
 import org.dinky.process.enums.ProcessStepType;
 import org.dinky.service.AlertGroupService;
@@ -83,11 +82,9 @@ import org.dinky.service.TaskVersionService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
 import org.dinky.service.task.BaseTask;
-import org.dinky.trans.Operations;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.RunTimeUtil;
-import org.dinky.utils.SqlUtil;
 import org.dinky.utils.UDFUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -98,7 +95,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -207,6 +203,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return jobResult;
     }
 
+    @ProcessStep(type = ProcessStepType.SUBMIT_BUILD_CONFIG)
     public JobConfig buildJobConfig(TaskDTO task) {
         task.setStatement(buildEnvSql(task) + task.getStatement());
         JobConfig config = task.getJobConfig();
@@ -792,17 +789,5 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             treeNodes.add(new TreeNode<>(catalogue.getId(), catalogue.getParentId(), catalogue.getName(), i + 1));
         }
         return treeNodes;
-    }
-
-    @Override
-    public List<String> getPrintTables(String statement) {
-        // TODO: 2023/4/7 this function not support variable sql, because, JobManager and executor
-        // couple function
-        //  and status and task execute.
-        final String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement));
-        return Arrays.stream(statements)
-                .filter(t -> SqlType.PRINT.equals(Operations.getOperationType(t)))
-                .flatMap(t -> Arrays.stream(PrintStatementExplainer.splitTableNames(t)))
-                .collect(Collectors.toList());
     }
 }

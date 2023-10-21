@@ -27,6 +27,8 @@ import org.dinky.process.enums.ProcessStatus;
 import org.dinky.process.enums.ProcessStepType;
 import org.dinky.process.enums.ProcessType;
 
+import org.apache.http.util.TextUtils;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
@@ -81,6 +83,15 @@ public class ProcessAspect {
      */
     @Around(value = "@annotation(processStep)")
     public Object processStepAround(ProceedingJoinPoint joinPoint, ProcessStep processStep) throws Throwable {
+
+        String processName = MDC.get(PROCESS_NAME);
+        if (TextUtils.isEmpty(processName)) {
+            log.warn(
+                    "Process {} does not exist, This registration step {} was abandoned",
+                    processName,
+                    processStep.type());
+            return joinPoint.proceed();
+        }
 
         Object result;
         // Record the current step and restore it after the execution is completed
