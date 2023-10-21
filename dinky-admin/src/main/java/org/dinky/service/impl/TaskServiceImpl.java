@@ -202,6 +202,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return jobResult;
     }
 
+    @ProcessStep(type = ProcessStepType.SUBMIT_BUILD_CONFIG)
     public JobConfig buildJobConfig(TaskDTO task) {
         task.setStatement(buildEnvSql(task) + task.getStatement());
         JobConfig config = task.getJobConfig();
