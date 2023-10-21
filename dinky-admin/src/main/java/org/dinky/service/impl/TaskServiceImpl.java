@@ -50,7 +50,7 @@ import org.dinky.data.model.TaskVersion;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.explainer.printTable.PrintStatementExplainer;
+import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;

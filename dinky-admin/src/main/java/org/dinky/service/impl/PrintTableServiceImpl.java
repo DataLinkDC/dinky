@@ -69,7 +69,6 @@ public class PrintTableServiceImpl implements PrintTableService {
 
     @Override
     public SseEmitter registerListenEntry(String table) {
-
         String fullName = getFullTableName(table);
         String destination = getDestinationByFullName(fullName);
         Set<Target> targets = registerTableMap.get(fullName);
@@ -124,13 +123,9 @@ public class PrintTableServiceImpl implements PrintTableService {
         }
 
         Matcher matcher = FULL_TABLE_NAME_PATTERN.matcher(table);
-        String result = "";
-        if (matcher.matches()) {
-            result = matcher.replaceAll("`$1`.`$2`.`print_$3`");
-        } else {
-            result = String.format("`default_catalog`.`default_database`.`print_%s`", table);
-        }
-        return result;
+        return matcher.matches() ?
+                matcher.replaceAll("`$1`.`$2`.`print_$3`") :
+                String.format("`default_catalog`.`default_database`.`print_%s`", table);
     }
 
     public static String getDestination(String table) {
@@ -236,10 +231,6 @@ public class PrintTableServiceImpl implements PrintTableService {
                     log.error("print table receive data:" + e.getMessage());
                 }
             }
-        }
-
-        public ExecutorService getExecutor() {
-            return executor;
         }
     }
 }

@@ -29,7 +29,7 @@ import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.Executor;
-import org.dinky.explainer.printTable.PrintStatementExplainer;
+import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.enums.GatewayType;
@@ -53,6 +53,7 @@ import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -139,9 +140,12 @@ public class Explainer {
             } else if (operationType.equals(SqlType.PRINT)) {
                 PrintStatementExplainer printStatementExplainer = new PrintStatementExplainer(statement);
 
+                Map<String, String> config = this.executor.getExecutorConfig().getConfig();
+                String host = config.getOrDefault("dinky.dinkyHost", "127.0.0.1");
+                int port = Integer.parseInt(config.getOrDefault("dinky.dinkyPrintPort", "7125"));
                 String[] tableNames = printStatementExplainer.getTableNames();
                 for (String tableName : tableNames) {
-                    trans.add(new StatementParam(PrintStatementExplainer.getCreateStatement(tableName), SqlType.CTAS));
+                    trans.add(new StatementParam(PrintStatementExplainer.getCreateStatement(tableName, host, port), SqlType.CTAS));
                 }
             } else {
                 UDF udf = UDFUtil.toUDF(statement);

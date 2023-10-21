@@ -39,4 +39,10 @@ public class CustomerConfigureOptions {
 
     public static final ConfigOption<String> REST_FORMAT_TYPE =
             key("rest.formatType").stringType().defaultValue("DEFAULT").withDescription("for savepoint format type");
+
+    public static final ConfigOption<String> DINKY_HOST =
+            key("dinky.dinkyHost").stringType().noDefaultValue().withDescription("dinky local address");
+
+    public static final ConfigOption<String> DINKY_PORT =
+            key("dinky.dinkyPrintPort").stringType().noDefaultValue().withDescription("dinky local print port");
 }

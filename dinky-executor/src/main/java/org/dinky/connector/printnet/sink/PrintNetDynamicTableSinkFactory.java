@@ -21,6 +21,7 @@ package org.dinky.connector.printnet.sink;
 
 import static org.apache.flink.configuration.ConfigOptions.key;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
@@ -37,6 +38,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory {
     public static final String IDENTIFIER = "printnet";
 
@@ -54,19 +56,17 @@ public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory 
     @Override
     public DynamicTableSink createDynamicTableSink(Context context) {
         final FactoryUtil.TableFactoryHelper helper = FactoryUtil.createTableFactoryHelper(this, context);
-
-        ObjectIdentifier objectIdentifier = context.getObjectIdentifier();
-
         final ReadableConfig options = helper.getOptions();
 
+        ObjectIdentifier objectIdentifier = context.getObjectIdentifier();
         FactoryUtil.validateFactoryOptions(this, options);
-
         EncodingFormat<SerializationSchema<RowData>> serializingFormat = null;
 
         try {
-            // TODO: 2023/3/17 maybe not right
+            // keep no serialization schema for changelog mode now, you can implement it by yourself
             serializingFormat = helper.discoverEncodingFormat(SerializationFormatFactory.class, FactoryUtil.FORMAT);
         } catch (Exception ignored) {
+            log.debug("Could not create serialization format for '{}'.", objectIdentifier, ignored);
         }
 
         return new PrintNetDynamicTableSink(
