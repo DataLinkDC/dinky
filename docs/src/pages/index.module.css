@@ -42,7 +42,7 @@
 .buttons {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 .structure {
@@ -51,4 +51,26 @@
     flex-direction:row;
     align-items:flex-start;
     justify-content:left
+}
+
+
+/* 响应式布局 */
+
+.box_container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.box {
+  /* background-color: #f1f1f1; */
+  /* border: 1px solid #ccc; */
+  /* padding: 20px; */
+  margin-left: 10px;
+  margin-right: 10px;
+  /* text-align: center; */
+  flex: 1;
+}
+@media (max-width: 900px) {
+  .box {
+      flex-basis: 50%;
+  }
 }
