@@ -66,7 +66,7 @@ export default () => {
 
   const subscribeTopic = (topic: string[], onMessage: (data: SseData) => void) => {
     const sub:SubscriberData = {topic: topic, call: onMessage}
-    subscriberRef.current = [sub, ...subscriberRef.current];
+    subscriberRef.current = [...subscriberRef.current,sub];
     subscribe()
     return () => {
       //组件卸载回调方法，取消订阅此topic
