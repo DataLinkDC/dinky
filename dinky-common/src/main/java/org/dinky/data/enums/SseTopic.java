@@ -20,7 +20,6 @@
 package org.dinky.data.enums;
 
 public enum SseTopic {
-
     METRICS("/TOPIC/METRICS"),
     PROCESS_CONSOLE("/TOPIC/PROCESS_CONSOLE"),
     PRINT_TABLE("/TOPIC/PRINT_TABLE"),

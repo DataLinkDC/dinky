@@ -19,5 +19,4 @@
 
 package org.dinky.service.sse;
 
-public interface SseService {
-}
+public interface SseService {}

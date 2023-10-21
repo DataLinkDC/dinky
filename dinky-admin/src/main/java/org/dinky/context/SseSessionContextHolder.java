@@ -72,7 +72,7 @@ public class SseSessionContextHolder {
         sseEmitter.onTimeout(() -> onTimeout(sessionKey));
         sseEmitter.onCompletion(() -> onCompletion(sessionKey));
         try {
-            //Set the client reconnection interval, 0 to reconnect immediately
+            // Set the client reconnection interval, 0 to reconnect immediately
             sseEmitter.send(SseEmitter.event().reconnectTime(0));
         } catch (IOException e) {
             throw new RuntimeException(e);
