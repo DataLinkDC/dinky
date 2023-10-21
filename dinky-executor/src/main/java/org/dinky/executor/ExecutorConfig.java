@@ -20,6 +20,7 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.gateway.enums.GatewayType;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -36,6 +37,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,12 +49,21 @@ import lombok.Setter;
  */
 @Setter
 @Getter
+@Builder
+@AllArgsConstructor
 @ApiModel(value = "ExecutorConfig", description = "Executor config for a job")
 public class ExecutorConfig {
 
     private static final Logger log = LoggerFactory.getLogger(ExecutorConfig.class);
-    public static final ExecutorConfig DEFAULT = new ExecutorConfig(0, 1, true);
+    private static final ObjectMapper mapper = new ObjectMapper();
 
+    public static final ExecutorConfig DEFAULT = ExecutorConfig.builder()
+            .checkpoint(0)
+            .parallelism(1)
+            .useSqlFragment(true)
+            .build();
+
+    public static final String TYPE_CONST = "type";
     public static final String CHECKPOINT_CONST = "checkpoint";
     public static final String PARALLELISM_CONST = "parallelism";
     public static final String USE_SQL_FRAGMENT = "useSqlFragment";
@@ -61,7 +73,13 @@ public class ExecutorConfig {
     public static final String JOB_NAME = "jobName";
     public static final String CONFIG_CONST = "config";
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    // after unique all run model to remote, this field could discard
+    @ApiModelProperty(
+            value = "Flink run mode",
+            dataType = "String",
+            example = "local standalone",
+            notes = "Flink run mode")
+    private String type;
 
     @ApiModelProperty(
             value = "Job manager rest host",
@@ -139,67 +157,8 @@ public class ExecutorConfig {
             notes = "List of JAR files")
     private String[] jarFiles;
 
-    public ExecutorConfig(boolean useSqlFragment) {
-        this(null, useSqlFragment);
-    }
-
-    public ExecutorConfig(Integer checkpoint) {
-        this(checkpoint, false);
-    }
-
-    public ExecutorConfig(Integer checkpoint, boolean useSqlFragment) {
-        this(checkpoint, null, useSqlFragment, null, null);
-    }
-
-    public ExecutorConfig(Integer checkpoint, Integer parallelism, boolean useSqlFragment) {
-        this(checkpoint, parallelism, useSqlFragment, null, null);
-    }
-
-    public ExecutorConfig(
-            Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath, String jobName) {
-        this(checkpoint, parallelism, useSqlFragment, savePointPath, jobName, null);
-    }
-
-    public ExecutorConfig(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath) {
-        this(checkpoint, parallelism, useSqlFragment, savePointPath, null, null);
-    }
-
-    public ExecutorConfig(
-            Integer checkpoint,
-            Integer parallelism,
-            boolean useSqlFragment,
-            String savePointPath,
-            String jobName,
-            Map<String, String> config) {
-        this(null, null, checkpoint, parallelism, useSqlFragment, false, false, savePointPath, jobName, config, null);
-    }
-
-    private ExecutorConfig(
-            String host,
-            Integer port,
-            Integer checkpoint,
-            Integer parallelism,
-            boolean useSqlFragment,
-            boolean useStatementSet,
-            boolean useBatchModel,
-            String savePointPath,
-            String jobName,
-            Map<String, String> config,
-            Map<String, String> variables) {
-        this.host = host;
-        this.port = port;
-        this.checkpoint = checkpoint;
-        this.parallelism = parallelism;
-        this.useSqlFragment = useSqlFragment;
-        this.useStatementSet = useStatementSet;
-        this.useBatchModel = useBatchModel;
-        this.savePointPath = savePointPath;
-        this.jobName = jobName;
-        this.config = config;
-        this.variables = variables;
-    }
-
     public static ExecutorConfig build(
+            String type,
             String address,
             Integer checkpoint,
             Integer parallelism,
@@ -224,21 +183,24 @@ public class ExecutorConfig {
             }
         }
 
-        return new ExecutorConfig(
-                host,
-                port,
-                checkpoint,
-                parallelism,
-                useSqlFragment,
-                useStatementSet,
-                useBatchModel,
-                savePointPath,
-                jobName,
-                config,
-                variables);
+        return ExecutorConfig.builder()
+                .type(type)
+                .host(host)
+                .port(port)
+                .checkpoint(checkpoint)
+                .parallelism(parallelism)
+                .useSqlFragment(useSqlFragment)
+                .useStatementSet(useStatementSet)
+                .useBatchModel(useBatchModel)
+                .savePointPath(savePointPath)
+                .jobName(jobName)
+                .config(config)
+                .variables(variables)
+                .build();
     }
 
     public static ExecutorConfig build(
+            String type,
             Integer checkpoint,
             Integer parallelism,
             boolean useSqlFragment,
@@ -262,8 +224,9 @@ public class ExecutorConfig {
                 config.put(item.get("key"), item.get("value"));
             }
         }
-        return new ExecutorConfig(
-                null,
+
+        return build(
+                type,
                 null,
                 checkpoint,
                 parallelism,
@@ -279,7 +242,9 @@ public class ExecutorConfig {
     public static ExecutorConfig buildFromMap(Map<String, String> settingMap) {
         Integer checkpoint = NumberUtils.createInteger(settingMap.get(CHECKPOINT_CONST));
         Integer parallelism = NumberUtils.createInteger(settingMap.get(PARALLELISM_CONST));
+        String type = settingMap.get(TYPE_CONST);
         return build(
+                type,
                 checkpoint,
                 parallelism,
                 "1".equals(settingMap.get(USE_SQL_FRAGMENT)),
@@ -295,7 +260,7 @@ public class ExecutorConfig {
     }
 
     public boolean isRemote() {
-        return Asserts.isNotNullString(this.getHost());
+        return !GatewayType.get(type).isLocalExecute();
     }
 
     public boolean isValidParallelism() {

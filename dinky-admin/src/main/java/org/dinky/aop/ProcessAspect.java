@@ -87,7 +87,7 @@ public class ProcessAspect {
         String parentStep = MDC.get(PROCESS_STEP);
         ProcessStepType processStepType = processStep.type();
         MDC.put(PROCESS_STEP, processStepType.getValue());
-        contextHolder.registerProcessStep(processStepType, MDC.get(PROCESS_NAME));
+        contextHolder.registerProcessStep(processStepType, MDC.get(PROCESS_NAME), parentStep);
 
         try {
             result = joinPoint.proceed();
@@ -120,7 +120,7 @@ public class ProcessAspect {
             Annotation[] paramAnn = annotations[i];
             for (Annotation annotation : paramAnn) {
                 if (annotation instanceof ProcessId) {
-                    return param;
+                    return String.valueOf(param.hashCode());
                 }
             }
         }

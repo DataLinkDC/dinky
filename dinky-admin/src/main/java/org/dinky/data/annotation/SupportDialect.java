@@ -17,28 +17,25 @@
  *
  */
 
-package org.dinky.interceptor;
+package org.dinky.data.annotation;
 
-import org.dinky.executor.ExecutorFactory;
+import org.dinky.config.Dialect;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * FlinkInterceptorTest
- *
- * @since 2022/4/9 17:48
+ * 自定义操作日志记录注解
  */
-@Ignore
-public class FlinkInterceptorTest {
-
-    @Test
-    public void replaceFragmentTest() {
-        String statement = "nullif1:=NULLIF(1, 0) as val;\n"
-                + "nullif2:=NULLIF(0, 0) as val$null;\n"
-                + "select ${nullif1},${nullif2}";
-        String pretreatStatement = FlinkInterceptor.pretreatStatement(ExecutorFactory.getDefaultExecutor(), statement);
-        Assert.assertEquals("select NULLIF(1, 0) as val,NULLIF(0, 0) as val$null", pretreatStatement);
-    }
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface SupportDialect {
+    /**
+     * 模块
+     */
+    public Dialect[] value();
 }

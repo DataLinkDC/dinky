@@ -24,7 +24,6 @@ import org.dinky.config.Dialect;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.dto.AbstractStatementDTO;
-import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.JobLifeCycle;
@@ -50,7 +49,6 @@ import org.dinky.data.model.TaskExtConfig;
 import org.dinky.data.model.TaskVersion;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.data.result.Result;
-import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.pool.UdfCodePool;
@@ -66,7 +64,6 @@ import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
 import org.dinky.mapper.TaskMapper;
-import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.process.annotations.ProcessStep;
 import org.dinky.process.enums.ProcessStepType;
@@ -83,6 +80,8 @@ import org.dinky.service.TaskService;
 import org.dinky.service.TaskVersionService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
+import org.dinky.service.task.BaseTask;
+import org.dinky.trans.Operations;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.RunTimeUtil;
@@ -124,6 +123,7 @@ import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.text.StrFormatter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -198,22 +198,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJob(TaskDTO task) throws Exception {
         JobResult jobResult;
-        if (Dialect.isCommonSql(task.getDialect())) {
-            log.info("Preparing to execute common sql...");
-            SqlDTO sqlDTO = SqlDTO.build(task.getStatement(), task.getDatabaseId(), null);
-            jobResult = dataBaseService.executeCommonSql(sqlDTO);
-            ResultPool.putCommonSqlCache(task.getId(), (JdbcSelectResult) jobResult.getResult());
-        } else {
-            log.info("Initializing Flink job config...");
-            JobManager jobManager = JobManager.build(
-                    applicationContext.getBean(TaskServiceImpl.class).buildJobConfig(task));
-            jobResult = jobManager.executeSql(task.getStatement());
-        }
+        jobResult = BaseTask.getTask(task).execute();
         log.info("execute job finished,status is {}", jobResult.getStatus());
         return jobResult;
     }
 
-    @ProcessStep(type = ProcessStepType.SUBMIT_BUILD_CONFIG)
     public JobConfig buildJobConfig(TaskDTO task) {
         task.setStatement(buildEnvSql(task) + task.getStatement());
         JobConfig config = task.getJobConfig();
@@ -339,26 +328,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public List<SqlExplainResult> explainTask(TaskDTO task) throws NotSupportExplainExcepition {
-
-        if (Dialect.isCommonSql(task.getDialect())) {
-            return dataBaseService.explainCommonSql(task);
-        } else if (task.getDialect().equals(Dialect.FLINK_SQL.getValue())) {
-            JobConfig config = buildJobConfig(task);
-            config.buildLocal();
-            JobManager jobManager = JobManager.buildPlanMode(config);
-            return jobManager.explainSql(task.getStatement()).getSqlExplainResults();
-        }
-        throw new NotSupportExplainExcepition(StrFormatter.format(
-                "task [{}] dialect [{}] is can not explain, skip sqlExplain verify",
-                task.getName(),
-                task.getDialect()));
+        return BaseTask.getTask(task).explain();
     }
 
+    @SneakyThrows
     @Override
     public ObjectNode getJobPlan(TaskDTO task) {
-        JobManager jobManager = JobManager.buildPlanMode(buildJobConfig(task));
-        String planJson = jobManager.getJobPlanJson(task.getStatement());
-        return JsonUtils.parseObject(planJson);
+        BaseTask baseTask = BaseTask.getTask(task);
+        return baseTask.getJobPlan();
     }
 
     @Override

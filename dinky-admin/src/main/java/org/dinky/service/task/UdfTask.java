@@ -17,28 +17,31 @@
  *
  */
 
-package org.dinky.interceptor;
+package org.dinky.service.task;
 
-import org.dinky.executor.ExecutorFactory;
+import org.dinky.config.Dialect;
+import org.dinky.data.annotation.SupportDialect;
+import org.dinky.data.dto.TaskDTO;
+import org.dinky.data.model.Task;
+import org.dinky.job.JobResult;
+import org.dinky.utils.UDFUtils;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import cn.hutool.core.bean.BeanUtil;
 
-/**
- * FlinkInterceptorTest
- *
- * @since 2022/4/9 17:48
- */
-@Ignore
-public class FlinkInterceptorTest {
+@SupportDialect({Dialect.JAVA, Dialect.PYTHON, Dialect.SCALA})
+public class UdfTask extends BaseTask {
+    public UdfTask(TaskDTO task) {
+        super(task);
+    }
 
-    @Test
-    public void replaceFragmentTest() {
-        String statement = "nullif1:=NULLIF(1, 0) as val;\n"
-                + "nullif2:=NULLIF(0, 0) as val$null;\n"
-                + "select ${nullif1},${nullif2}";
-        String pretreatStatement = FlinkInterceptor.pretreatStatement(ExecutorFactory.getDefaultExecutor(), statement);
-        Assert.assertEquals("select NULLIF(1, 0) as val,NULLIF(0, 0) as val$null", pretreatStatement);
+    @Override
+    public JobResult execute() throws Exception {
+        UDFUtils.taskToUDF(BeanUtil.toBean(task, Task.class));
+        return null;
+    }
+
+    @Override
+    public boolean stop() {
+        return false;
     }
 }

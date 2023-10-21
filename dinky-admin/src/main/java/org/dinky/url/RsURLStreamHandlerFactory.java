@@ -24,8 +24,11 @@ import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 
+import org.springframework.context.annotation.Profile;
+
 import cn.hutool.core.lang.Singleton;
 
+@Profile("!test")
 public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
     @Override
     public URLStreamHandler createURLStreamHandler(String protocol) {

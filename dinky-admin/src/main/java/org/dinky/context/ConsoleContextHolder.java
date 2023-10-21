@@ -20,14 +20,19 @@
 package org.dinky.context;
 
 import org.dinky.data.enums.SseTopic;
+import org.dinky.aop.ProcessAspect;
 import org.dinky.data.exception.BusException;
 import org.dinky.process.enums.ProcessStatus;
 import org.dinky.process.enums.ProcessStepType;
 import org.dinky.process.enums.ProcessType;
+import org.dinky.process.exception.DinkyException;
 import org.dinky.process.model.ProcessEntity;
 import org.dinky.process.model.ProcessStep;
 import org.dinky.utils.LogUtil;
 
+import org.apache.http.util.TextUtils;
+
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -35,6 +40,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.MDC;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.alibaba.fastjson2.JSONObject;
 
@@ -78,8 +86,8 @@ public class ConsoleContextHolder {
             throw new BusException(StrFormatter.format("process {} does not exist", processName));
         }
         logPross.get(processName).appendLog(log);
-        Map<String, ProcessStep> parentStep = getParentNode(processStep, getStepsMap(processName));
-        parentStep.get(processStep.getValue()).appendLog(log);
+        ProcessStep stepNode = getStepNode(processStep.getValue(), getStepsMap(processName));
+        stepNode.appendLog(log);
         String topic = StrFormatter.format("{}/{}", SseTopic.PROCESS_CONSOLE.getValue(), processName);
         CompletableFuture.runAsync(() -> {
             SseSessionContextHolder.sendTopic(topic, logPross.get(processName));
@@ -115,9 +123,11 @@ public class ConsoleContextHolder {
      *
      * @param type        process step type
      * @param processName process name
+     * @param parentStep  parent step
      * @throws RuntimeException Throws an exception if the process does not exist
      */
-    public void registerProcessStep(ProcessStepType type, String processName) throws RuntimeException {
+    public void registerProcessStep(ProcessStepType type, String processName, String parentStep)
+            throws RuntimeException {
         if (!logPross.containsKey(processName)) {
             throw new BusException(StrFormatter.format("Process {} does not exist", processName));
         }
@@ -132,7 +142,14 @@ public class ConsoleContextHolder {
                 .errLog(new StringBuilder())
                 .childStepsMap(new LinkedHashMap<>())
                 .build();
-        getParentNode(type, process.getStepsMap()).put(type.getValue(), processStep);
+
+        if (TextUtils.isEmpty(parentStep)) {
+            // parentStep为空表示为顶级节点
+            process.getStepsMap().put(type.getValue(), processStep);
+        } else {
+            ProcessStep stepNode = getStepNode(parentStep, process.getStepsMap());
+            stepNode.getChildStepsMap().put(type.getValue(), processStep);
+        }
     }
 
     /**
@@ -173,8 +190,7 @@ public class ConsoleContextHolder {
         if (!logPross.containsKey(processName)) {
             return;
         }
-        Map<String, ProcessStep> processStepNode = getParentNode(type, getStepsMap(processName));
-        ProcessStep processStep = processStepNode.get(type.getValue());
+        ProcessStep processStep = getStepNode(type.getValue(), getStepsMap(processName));
         processStep.setStepStatus(status);
         processStep.setEndTime(LocalDateTime.now());
         processStep.setTime(processStep.getEndTime().compareTo(processStep.getStartTime()));
@@ -183,19 +199,35 @@ public class ConsoleContextHolder {
         }
     }
 
-    /**
-     * The * method first checks if a given type has a parent step (i.e. type.getParentStep()) is null).
-     * If there is a parent step, recursively call the getParentNode method, passing the parent step type and stepsMap
-     * to get the child step mapping of the parent node.
-     * If a given type does not have a parent step, it returns steps directly to indicate that the step of that type is a top-level step.
-     * Finally, the getParentNode method returns a mapping of child steps containing the parent node for use in other methods.
-     */
-    private Map<String, ProcessStep> getParentNode(ProcessStepType type, Map<String, ProcessStep> stepsMap) {
-        if (type.getParentStep() != null) {
-            Map<String, ProcessStep> map = getParentNode(type.getParentStep(), stepsMap);
-            return map.get(type.getParentStep().getValue()).getChildStepsMap();
+    private ProcessStep getStepNode(String stepType, Map<String, ProcessStep> stepsMap) {
+        ProcessStep stepNode = findStepNode(stepType, stepsMap);
+        if (stepNode != null) {
+            return stepNode;
         }
-        return stepsMap;
+        String errorStr = StrFormatter.format(
+                "Get Parent Node Failed, This is most likely a Dinky bug, "
+                        + "please report the following information back to the community：\nProcess:{},\nstep:{},\nprocessNam:{}",
+                JSONObject.toJSONString(logPross),
+                stepType,
+                MDC.get(ProcessAspect.PROCESS_NAME));
+        throw new DinkyException(errorStr);
+    }
+
+    /**
+     * 递归查找节点
+     * */
+    private ProcessStep findStepNode(String stepType, Map<String, ProcessStep> stepsMap) {
+        for (Map.Entry<String, ProcessStep> entry : stepsMap.entrySet()) {
+            if (entry.getKey().equals(stepType)) {
+                return entry.getValue();
+            } else {
+                ProcessStep stepNode = findStepNode(stepType, entry.getValue().getChildStepsMap());
+                if (stepNode != null) {
+                    return stepNode;
+                }
+            }
+        }
+        return null;
     }
 
     private Map<String, ProcessStep> getStepsMap(String processName) {

@@ -55,6 +55,7 @@ public class FlinkJobTask implements DaemonTask {
     @Override
     public DaemonTask setConfig(DaemonTaskConfig config) {
         this.config = config;
+        TenantContextHolder.set(1);
         this.jobInfoDetail = jobInstanceService.getJobInfoDetail(config.getId());
         return this;
     }
