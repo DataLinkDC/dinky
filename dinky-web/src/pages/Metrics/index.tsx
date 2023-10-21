@@ -19,19 +19,22 @@
 
 import FlinkChart from '@/components/FlinkChart';
 import Job from '@/pages/Metrics/Job';
-import { ChartData, MetricsLayout } from '@/pages/Metrics/Job/data';
+import {ChartData, MetricsLayout} from '@/pages/Metrics/Job/data';
 import Server from '@/pages/Metrics/Server';
-import { FlinkMetricsData, JVMMetric, MetricsDataType } from '@/pages/Metrics/Server/data';
-import { getSubMinTime } from '@/pages/Metrics/Server/function';
+import {FlinkMetricsData, JVMMetric, MetricsDataType} from '@/pages/Metrics/Server/data';
+import {getSubMinTime} from '@/pages/Metrics/Server/function';
 import GlobalFilter from '@/pages/Metrics/Server/GlobalFilter';
-import { getMetricsLayout } from '@/pages/Metrics/service';
-import { getSseData } from '@/services/api';
-import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
-import { Row } from 'antd';
-import { useEffect, useState } from 'react';
+import {getMetricsLayout} from '@/pages/Metrics/service';
+import {getSseData} from '@/services/api';
+import {queryDataByParams} from '@/services/BusinessCrud';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {PageContainer, ProCard} from '@ant-design/pro-components';
+import {AreaOptions as G2plotConfig} from '@antv/g2plot/lib/plots/area/types';
+import {Row} from 'antd';
+import {useEffect, useState} from 'react';
+import {useModel} from "@@/exports";
+import {SSE_TOPIC} from "@/pages/DevOps/constants";
+import {SseData} from "@/models/Sse";
 
 const commonChartConfig: G2plotConfig = {
   data: [],
@@ -44,7 +47,6 @@ export default () => {
   const [jvmData] = useState<JVMMetric[]>([]);
   const [flinkMetricsData] = useState<FlinkMetricsData[]>([]);
   const [chartDataList, setChartDataList] = useState<Record<string, ChartData[]>>({});
-  const [eventSource, setEventSource] = useState<EventSource>();
   const [endTime, setEndTime] = useState(new Date());
   const [dateRange, setDateRange] = useState<string>('60s');
   const [custom, setCustom] = useState<boolean>(false);
@@ -52,6 +54,8 @@ export default () => {
   const [startTime, setStartTime] = useState(getSubMinTime(currentTime, 1));
   const [showDinkyServer, setShowDinkySever] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const {subscribeTopic} = useModel('Sse',(model:any)=>({subscribeTopic:model.subscribeTopic}))
 
   /**
    * Data processing
@@ -92,30 +96,22 @@ export default () => {
 
     getInitData();
 
-    return () => {
-      clearInterval(timer);
-      eventSource?.close();
-    };
+    return () => clearInterval(timer);
   }, [startTime]);
-
-  useEffect(() => {
-    setEventSource(
-      getSseData(`${API_CONSTANTS.MONITOR_GET_LAST_DATA}?lastTime=${endTime.getTime()}&keys=local`)
-    );
-  }, [endTime]);
 
   useEffect(() => {
     setLayout();
   }, []);
 
   useEffect(() => {
-    !custom &&
-      eventSource &&
-      (eventSource.onmessage = (e) => {
-        let result = JSON.parse(e.data);
-        dataProcess(result);
+    if (!custom){
+      const topic = `${SSE_TOPIC.METRICS}/local`
+      return subscribeTopic([topic],(data:SseData)=>{
+        dataProcess(data.data);
       });
-  }, [eventSource, custom]);
+    }
+  }, [custom]);
+
   const setLayout = async () => {
     setLayoutData((await getMetricsLayout()).datas);
   };
@@ -126,7 +122,7 @@ export default () => {
     }).then((res) => {
       jvmData.length = 0;
       flinkMetricsData.length = 0;
-      (res as MetricsDataType[]).forEach((d) => dataProcess(d));
+      (res as MetricsDataType[])?.forEach((d) => dataProcess(d));
     });
     queryDataByParams(API_CONSTANTS.SYSTEM_GET_ALL_CONFIG).then((res) => {
       for (const config of res.metrics) {
@@ -177,7 +173,10 @@ export default () => {
   };
 
   return (
-    <PageContainer title={false} loading={loading}>
+    <PageContainer
+      title={false}
+      // loading={loading}
+    >
       <ProCard size={'small'} colSpan={'100%'} bordered>
         <GlobalFilter
           custom={custom}
@@ -190,7 +189,7 @@ export default () => {
       </ProCard>
       {showDinkyServer && (
         <ProCard collapsible title={'Dinky Server'} ghost hoverable bordered headerBordered>
-          <Server chartConfig={commonChartConfig} data={jvmData} />
+          <Server chartConfig={commonChartConfig} data={jvmData}/>
         </ProCard>
       )}
       {layoutData != undefined &&
@@ -226,7 +225,7 @@ export default () => {
             </ProCard>
           );
         })}
-      <Job />
+      <Job/>
     </PageContainer>
   );
 };

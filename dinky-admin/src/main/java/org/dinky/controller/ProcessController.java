@@ -22,20 +22,14 @@ package org.dinky.controller;
 import org.dinky.context.ConsoleContextHolder;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.process.model.ProcessEntity;
-import org.dinky.sse.SseEmitterUTF8;
 
-import java.util.concurrent.TimeUnit;
-
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
@@ -49,18 +43,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/process")
 @RequiredArgsConstructor
 public class ProcessController {
-
-    @GetMapping(value = "/getLastUpdateData", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @ApiOperation("Get Last Update Data")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "lastTime", value = "Last Time", required = false, dataType = "Long"),
-        @ApiImplicitParam(name = "keys", value = "jobids", required = true, dataType = "String")
-    })
-    public SseEmitter getLastUpdateData(String keys) {
-        SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
-        ConsoleContextHolder.getInstances().addSse(keys, emitter);
-        return emitter;
-    }
 
     /**
      * List all process

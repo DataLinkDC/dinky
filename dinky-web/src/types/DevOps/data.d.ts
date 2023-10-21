@@ -194,7 +194,7 @@ declare namespace Jobs {
   export type JobInfoDetail = {
     id: number;
     instance: JobInstance;
-    cluster: any;
+    clusterInstance: any;
     clusterConfiguration: any;
     history: History;
     jobDataDto: JobDataDtoItem;

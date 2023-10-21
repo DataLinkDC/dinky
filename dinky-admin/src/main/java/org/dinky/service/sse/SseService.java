@@ -17,19 +17,6 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.service.sse;
 
-import org.dinky.data.vo.PrintTableVo;
-
-import java.util.List;
-
-public interface PrintTableService {
-
-    /**
-     * Get the print tables for the given SQL statement.
-     *
-     * @param statement The SQL statement to get the print tables for.
-     * @return A list of strings representing the print tables.
-     */
-    List<PrintTableVo> getPrintTables(String statement);
-}
+public interface SseService {}
