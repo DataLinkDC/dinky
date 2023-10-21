@@ -57,6 +57,6 @@ public class SseController {
     @ApiOperation("Get JVM Info")
     @ApiImplicitParam(name = "sessionKey", value = "last sessionKey", required = true, dataType = "String")
     public SseEmitter getJvmInfo(String sessionKey) {
-        return SseSessionContextHolder.conectSession(sessionKey);
+        return SseSessionContextHolder.connectSession(sessionKey);
     }
 }
