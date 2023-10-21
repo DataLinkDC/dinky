@@ -19,15 +19,16 @@
 
 package org.dinky.explainer.print_table;
 
-import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.google.common.base.Strings;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PrintStatementExplainer {
@@ -64,9 +65,9 @@ public class PrintStatementExplainer {
     }
 
     public static String getCreateStatement(String tableName, String localIp, Integer localPort) {
-        String ip = Strings.isNullOrEmpty(localIp) ?
-                getSystemLocalIp().map(InetAddress::getHostAddress).orElse("127.0.0.1") :
-                localIp;
+        String ip = Strings.isNullOrEmpty(localIp)
+                ? getSystemLocalIp().map(InetAddress::getHostAddress).orElse("127.0.0.1")
+                : localIp;
         int port = localPort == null ? DEFAULT_PORT : localPort;
         return MessageFormat.format(CREATE_SQL_TEMPLATE, tableName, ip, port);
     }

@@ -145,7 +145,8 @@ public class Explainer {
                 int port = Integer.parseInt(config.getOrDefault("dinky.dinkyPrintPort", "7125"));
                 String[] tableNames = printStatementExplainer.getTableNames();
                 for (String tableName : tableNames) {
-                    trans.add(new StatementParam(PrintStatementExplainer.getCreateStatement(tableName, host, port), SqlType.CTAS));
+                    trans.add(new StatementParam(
+                            PrintStatementExplainer.getCreateStatement(tableName, host, port), SqlType.CTAS));
                 }
             } else {
                 UDF udf = UDFUtil.toUDF(statement);

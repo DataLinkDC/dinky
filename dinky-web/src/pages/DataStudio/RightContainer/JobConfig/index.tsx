@@ -144,7 +144,6 @@ const JobConfig = (props: any) => {
     />
   );
 
-
   return (
     <div style={{ maxHeight: rightContainer.height }}>
       <ProForm

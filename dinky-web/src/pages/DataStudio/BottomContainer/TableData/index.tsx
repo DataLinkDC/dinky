@@ -1,15 +1,15 @@
+import { SseData } from '@/models/Sse';
 import { getCurrentData } from '@/pages/DataStudio/function';
 import { StateType } from '@/pages/DataStudio/model';
+import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { getData, postAll } from '@/services/api';
 import { l } from '@/utils/intl';
-import {connect, useModel} from '@@/exports';
+import { connect, useModel } from '@@/exports';
 import { Modal, Select, Tabs } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Tab } from 'rc-tabs/lib/interface.d';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import {SSE_TOPIC} from "@/pages/DevOps/constants";
-import {SseData} from "@/models/Sse";
 
 export async function getPrintTables(statement: string) {
   return postAll('api/printTable/getPrintTables', { statement });
@@ -20,21 +20,23 @@ export function clearConsole() {
   return getData('api/process/clearConsole', {});
 }
 export type PrintTable = {
-  tableName:string,
-  fullTableName:string
-}
+  tableName: string;
+  fullTableName: string;
+};
 
 const DataPage = (props: any) => {
   const { style, title } = props;
   const [consoleInfo, setConsoleInfo] = useState<string>('');
-  const {subscribeTopic} = useModel('Sse',(model:any)=>({subscribeTopic:model.subscribeTopic}))
+  const { subscribeTopic } = useModel('Sse', (model: any) => ({
+    subscribeTopic: model.subscribeTopic
+  }));
   const [tableName, setTableName] = useState<string>('');
 
   useEffect(() => {
-    if (title){
+    if (title) {
       setTableName(title.tableName);
-      const topic = `${SSE_TOPIC.PRINT_TABLE}/${title.fullTableName}`
-      return subscribeTopic([topic],(data:SseData)=>{
+      const topic = `${SSE_TOPIC.PRINT_TABLE}/${title.fullTableName}`;
+      return subscribeTopic([topic], (data: SseData) => {
         setConsoleInfo((preConsoleInfo) => preConsoleInfo + '\n' + data.data);
       });
     }
@@ -63,17 +65,17 @@ const TableData = (props: any) => {
     const result = await getPrintTables(statement);
     const tables: PrintTable[] = result.datas;
 
-    let selectTable:PrintTable;
+    let selectTable: PrintTable;
     Modal.confirm({
       title: l('pages.datastudio.print.table.inputTableName'),
       content: (
         <Select
           defaultValue=''
           style={{ width: '90%' }}
-          onChange={(e,t:any) => {
-            selectTable = {tableName:t.label,fullTableName:t.value}
+          onChange={(e, t: any) => {
+            selectTable = { tableName: t.label, fullTableName: t.value };
           }}
-          options={tables.map((table) => ({ label:table.tableName, value: table.fullTableName }))}
+          options={tables.map((table) => ({ label: table.tableName, value: table.fullTableName }))}
         />
       ),
       onOk() {

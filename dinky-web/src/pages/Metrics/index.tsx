@@ -18,23 +18,22 @@
  */
 
 import FlinkChart from '@/components/FlinkChart';
+import { SseData } from '@/models/Sse';
+import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import Job from '@/pages/Metrics/Job';
-import {ChartData, MetricsLayout} from '@/pages/Metrics/Job/data';
+import { ChartData, MetricsLayout } from '@/pages/Metrics/Job/data';
 import Server from '@/pages/Metrics/Server';
-import {FlinkMetricsData, JVMMetric, MetricsDataType} from '@/pages/Metrics/Server/data';
-import {getSubMinTime} from '@/pages/Metrics/Server/function';
+import { FlinkMetricsData, JVMMetric, MetricsDataType } from '@/pages/Metrics/Server/data';
+import { getSubMinTime } from '@/pages/Metrics/Server/function';
 import GlobalFilter from '@/pages/Metrics/Server/GlobalFilter';
-import {getMetricsLayout} from '@/pages/Metrics/service';
-import {getSseData} from '@/services/api';
-import {queryDataByParams} from '@/services/BusinessCrud';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {PageContainer, ProCard} from '@ant-design/pro-components';
-import {AreaOptions as G2plotConfig} from '@antv/g2plot/lib/plots/area/types';
-import {Row} from 'antd';
-import {useEffect, useState} from 'react';
-import {useModel} from "@@/exports";
-import {SSE_TOPIC} from "@/pages/DevOps/constants";
-import {SseData} from "@/models/Sse";
+import { getMetricsLayout } from '@/pages/Metrics/service';
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { useModel } from '@@/exports';
+import { PageContainer, ProCard } from '@ant-design/pro-components';
+import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
+import { Row } from 'antd';
+import { useEffect, useState } from 'react';
 
 const commonChartConfig: G2plotConfig = {
   data: [],
@@ -55,7 +54,9 @@ export default () => {
   const [showDinkyServer, setShowDinkySever] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const {subscribeTopic} = useModel('Sse',(model:any)=>({subscribeTopic:model.subscribeTopic}))
+  const { subscribeTopic } = useModel('Sse', (model: any) => ({
+    subscribeTopic: model.subscribeTopic
+  }));
 
   /**
    * Data processing
@@ -104,9 +105,9 @@ export default () => {
   }, []);
 
   useEffect(() => {
-    if (!custom){
-      const topic = `${SSE_TOPIC.METRICS}/local`
-      return subscribeTopic([topic],(data:SseData)=>{
+    if (!custom) {
+      const topic = `${SSE_TOPIC.METRICS}/local`;
+      return subscribeTopic([topic], (data: SseData) => {
         dataProcess(data.data);
       });
     }
@@ -189,7 +190,7 @@ export default () => {
       </ProCard>
       {showDinkyServer && (
         <ProCard collapsible title={'Dinky Server'} ghost hoverable bordered headerBordered>
-          <Server chartConfig={commonChartConfig} data={jvmData}/>
+          <Server chartConfig={commonChartConfig} data={jvmData} />
         </ProCard>
       )}
       {layoutData != undefined &&
@@ -225,7 +226,7 @@ export default () => {
             </ProCard>
           );
         })}
-      <Job/>
+      <Job />
     </PageContainer>
   );
 };

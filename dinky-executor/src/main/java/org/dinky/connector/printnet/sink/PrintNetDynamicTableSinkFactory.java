@@ -21,7 +21,6 @@ package org.dinky.connector.printnet.sink;
 
 import static org.apache.flink.configuration.ConfigOptions.key;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
@@ -37,6 +36,8 @@ import org.apache.flink.table.factories.SerializationFormatFactory;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory {

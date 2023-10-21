@@ -85,9 +85,9 @@ public class PrintTableServiceImpl implements PrintTableService {
         }
 
         Matcher matcher = FULL_TABLE_NAME_PATTERN.matcher(table);
-        return matcher.matches() ?
-                matcher.replaceAll("`$1`.`$2`.`print_$3`") :
-                String.format("`default_catalog`.`default_database`.`print_%s`", table);
+        return matcher.matches()
+                ? matcher.replaceAll("`$1`.`$2`.`print_$3`")
+                : String.format("`default_catalog`.`default_database`.`print_%s`", table);
     }
 
     public static class PrintTableListener {
