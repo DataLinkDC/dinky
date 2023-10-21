@@ -19,17 +19,16 @@
 
 package org.dinky.context;
 
+import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.PaimonUtil;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
+import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -37,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
  * including operations such as storing and sending metric data.
  */
 @Slf4j
-public class MetricsContextHolder extends BaseSseContext<String, MetricsVO> {
+public class MetricsContextHolder {
 
     protected static final MetricsContextHolder instance = new MetricsContextHolder();
 
@@ -53,59 +52,18 @@ public class MetricsContextHolder extends BaseSseContext<String, MetricsVO> {
 
     private final Long lastDumpTime = System.currentTimeMillis();
 
-    @Override
-    public void append(String key, MetricsVO o) {
-        metricsVOS.add(o);
-        long duration = System.currentTimeMillis() - lastDumpTime;
-        synchronized (metricsVOS) {
-            if (metricsVOS.size() > 1000 || duration > 1000 * 5) {
-                PaimonUtil.writeMetrics(metricsVOS);
-                metricsVOS.clear();
-            }
-        }
-    }
-
-    /**
-     * The addSse method is used to add the SseEmitter object.
-     *
-     * @param keys       keyword list for indicator data
-     * @param sseEmitter SseEmitter object
-     * @param lastTime   initialization data intercepts the largest timestamp
-     */
-    public void addSse(List<String> keys, SseEmitter sseEmitter, LocalDateTime lastTime) {
-        keys.forEach(key -> {
-            List<SseEmitter> sseEmitters = sseList.getIfPresent(key);
-            if (sseEmitters == null) {
-                sseEmitters = new ArrayList<>();
-                sseList.put(key, sseEmitters);
-            }
-            sseEmitters.add(sseEmitter);
-        });
-        sendInitData(keys, sseEmitter, lastTime);
-    }
-
-    /**
-     * The sendInitData method is used to send initialized indicator data.
-     *
-     * @param keys       keyword list for indicator data
-     * @param sseEmitter SseEmitter object
-     * @param lastTime's last timestamp
-     */
-    private void sendInitData(List<String> keys, SseEmitter sseEmitter, LocalDateTime lastTime) {
+    public void sendAsync(String key, MetricsVO o) {
         CompletableFuture.runAsync(() -> {
+            metricsVOS.add(o);
+            long duration = System.currentTimeMillis() - lastDumpTime;
             synchronized (metricsVOS) {
-                metricsVOS.forEach(metricsVO -> {
-                    if (keys.contains(metricsVO.getModel())
-                            && metricsVO.getHeartTime().isAfter(lastTime)) {
-                        try {
-                            sseEmitter.send(metricsVO);
-                        } catch (Exception e) {
-                            log.warn("send metrics error:{}", e.getMessage());
-                            closeSse(sseEmitter);
-                        }
-                    }
-                });
+                if (metricsVOS.size() > 1000 || duration > 1000 * 5) {
+                    PaimonUtil.writeMetrics(metricsVOS);
+                    metricsVOS.clear();
+                }
             }
+            String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
+            SseSessionContextHolder.sendTopic(topic, o);
         });
     }
 }

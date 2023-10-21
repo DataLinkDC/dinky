@@ -17,19 +17,17 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.service.sse.impl;
 
-import org.dinky.data.vo.PrintTableVo;
+import org.dinky.service.sse.SseService;
 
-import java.util.List;
+import org.springframework.stereotype.Service;
 
-public interface PrintTableService {
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-    /**
-     * Get the print tables for the given SQL statement.
-     *
-     * @param statement The SQL statement to get the print tables for.
-     * @return A list of strings representing the print tables.
-     */
-    List<PrintTableVo> getPrintTables(String statement);
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class SseServiceImpl implements SseService {
 }

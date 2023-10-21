@@ -37,10 +37,8 @@ import org.dinky.process.annotations.ExecuteProcess;
 import org.dinky.process.annotations.ProcessId;
 import org.dinky.process.enums.ProcessType;
 import org.dinky.service.TaskService;
-import org.dinky.utils.JsonUtils;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -171,20 +169,6 @@ public class TaskController {
             dataTypeClass = Integer.class)
     public Result<TaskDTO> getOneById(@RequestParam Integer id) {
         return Result.succeed(taskService.getTaskInfoById(id));
-    }
-
-    @PostMapping("/getPrintTables")
-    @ApiOperation("Get Print Tables")
-    @SuppressWarnings("unchecked")
-    @ApiImplicitParam(name = "statement", value = "Statement", dataType = "String", paramType = "body", required = true)
-    public Result<List<String>> getPrintTables(@RequestBody String statement) {
-        try {
-            Map<String, String> data = JsonUtils.toMap(statement);
-            String ss = data.get("statement");
-            return Result.succeed(taskService.getPrintTables(ss));
-        } catch (Exception e) {
-            return Result.failed(e.getMessage());
-        }
     }
 
     @GetMapping(value = "/listFlinkSQLEnv")

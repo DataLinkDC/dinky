@@ -20,15 +20,17 @@
 package org.dinky.controller;
 
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.PrintTableVo;
 import org.dinky.service.PrintTableService;
+import org.dinky.utils.JsonUtils;
 
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -38,23 +40,22 @@ import lombok.AllArgsConstructor;
 @RestController
 @Api(tags = "Print Table Controller")
 @AllArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/printTable")
 public class PrintTableController {
 
     private final PrintTableService printTableService;
 
-    @GetMapping(value = "/subscribe/print", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @ApiOperation("Subscribe p table")
-    @ApiImplicitParam(name = "table", value = "table name", required = true, dataType = "String", paramType = "query")
-    public SseEmitter subscribe(@RequestParam String table) {
-        return printTableService.registerListenEntry(table);
-    }
-
-    @PutMapping("/unSubscribe/print")
-    @ApiOperation("UnSubscribe print table")
-    @ApiImplicitParam(name = "table", value = "table name", required = true, dataType = "String", paramType = "query")
-    public Result<Void> unsubscribe(@RequestParam String table) {
-        printTableService.unRegisterListenEntry(table);
-        return Result.succeed();
+    @PostMapping("/getPrintTables")
+    @ApiOperation("Get Print Tables")
+    @SuppressWarnings("unchecked")
+    @ApiImplicitParam(name = "statement", value = "Statement", dataType = "String", paramType = "body", required = true)
+    public Result<List<PrintTableVo>> getPrintTables(@RequestBody String statement) {
+        try {
+            Map<String, String> data = JsonUtils.toMap(statement);
+            String ss = data.get("statement");
+            return Result.succeed(printTableService.getPrintTables(ss));
+        } catch (Exception e) {
+            return Result.failed(e.getMessage());
+        }
     }
 }
