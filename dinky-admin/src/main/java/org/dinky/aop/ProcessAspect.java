@@ -19,6 +19,7 @@
 
 package org.dinky.aop;
 
+import org.apache.http.util.TextUtils;
 import org.dinky.context.ConsoleContextHolder;
 import org.dinky.process.annotations.ExecuteProcess;
 import org.dinky.process.annotations.ProcessId;
@@ -81,6 +82,12 @@ public class ProcessAspect {
      */
     @Around(value = "@annotation(processStep)")
     public Object processStepAround(ProceedingJoinPoint joinPoint, ProcessStep processStep) throws Throwable {
+
+        String processName = MDC.get(PROCESS_NAME);
+        if (TextUtils.isEmpty(processName)){
+            log.warn("Process {} does not exist, This registration step {} was abandoned", processName,processStep.type());
+            return joinPoint.proceed();
+        }
 
         Object result;
         // Record the current step and restore it after the execution is completed
