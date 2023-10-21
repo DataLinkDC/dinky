@@ -144,7 +144,6 @@ const JobConfig = (props: any) => {
     />
   );
 
-  const executeModels = buildRunModelOptions()
 
   return (
     <div style={{ maxHeight: rightContainer.height }}>
@@ -168,7 +167,7 @@ const JobConfig = (props: any) => {
           name='type'
           label={l('global.table.execmode')}
           tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
-          options={executeModels}
+          options={buildRunModelOptions()}
         />
 
         {[RUN_MODE.YARN_SESSION, RUN_MODE.KUBERNETES_SESSION, RUN_MODE.STANDALONE].includes(
