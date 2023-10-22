@@ -149,7 +149,7 @@ const JobConfig = (props: any) => {
       <ProForm
         size={'middle'}
         initialValues={{
-          name: RUN_MODE.LOCAL,
+          type: RUN_MODE.LOCAL,
           envId: 0,
           parallelism: 1,
           savePointStrategy: 0,
@@ -167,7 +167,6 @@ const JobConfig = (props: any) => {
           label={l('global.table.execmode')}
           tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
           options={buildRunModelOptions()}
-          showSearch
         />
 
         {[RUN_MODE.YARN_SESSION, RUN_MODE.KUBERNETES_SESSION, RUN_MODE.STANDALONE].includes(

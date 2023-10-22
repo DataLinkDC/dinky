@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.explainer.printTable;
+package org.dinky.explainer.print_table;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
