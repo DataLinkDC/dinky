@@ -27,12 +27,12 @@ public class TenantContextHolder {
     private static final ThreadLocal<Object> TENANT_CONTEXT = new InheritableThreadLocal<>();
     private static final ThreadLocal<Boolean> IGNORE_TENANT = new InheritableThreadLocal<>();
 
-    public static void ignoreTenant(){
+    public static void ignoreTenant() {
         IGNORE_TENANT.set(true);
     }
 
-    public static boolean isIgnoreTenant(){
-       return Optional.ofNullable(IGNORE_TENANT.get()).orElse(false);
+    public static boolean isIgnoreTenant() {
+        return Optional.ofNullable(IGNORE_TENANT.get()).orElse(false);
     }
 
     public static void set(Object value) {

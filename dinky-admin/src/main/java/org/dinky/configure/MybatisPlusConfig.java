@@ -115,7 +115,7 @@ public class MybatisPlusConfig {
 
             @Override
             public boolean ignoreTable(String tableName) {
-                if (TenantContextHolder.isIgnoreTenant()){
+                if (TenantContextHolder.isIgnoreTenant()) {
                     return true;
                 }
                 return !IGNORE_TABLE_NAMES.contains(tableName);
