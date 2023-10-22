@@ -28,9 +28,7 @@ import org.dinky.service.PrintTableService;
 import org.dinky.trans.Operations;
 import org.dinky.utils.SqlUtil;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
+import java.net.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -110,10 +108,14 @@ public class PrintTableServiceImpl implements PrintTableService {
         }
 
         private static DatagramSocket getDatagramSocket(int port) {
+            InetAddress host = null;
             try {
-                return new DatagramSocket(port);
-            } catch (SocketException e) {
-                log.error("PrintTableListener:DatagramSocket init failed, port {}: {}", PORT, e.getMessage());
+                host = InetAddress.getLocalHost();
+                return new DatagramSocket(port, host);
+            } catch (SocketException | UnknownHostException e) {
+                log.error("PrintTableListener:DatagramSocket init failed, host: {}, port {}: {}",
+                       host == null ? null : host.getHostAddress(),
+                        PORT, e.getMessage());
             }
             return null;
         }
@@ -135,10 +137,6 @@ public class PrintTableServiceImpl implements PrintTableService {
                     log.error("print table receive data:" + e.getMessage());
                 }
             }
-        }
-
-        public ExecutorService getExecutor() {
-            return executor;
         }
     }
 }
