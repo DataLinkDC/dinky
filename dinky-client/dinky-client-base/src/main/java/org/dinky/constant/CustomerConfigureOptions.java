@@ -42,5 +42,4 @@ public class CustomerConfigureOptions {
 
     public static final ConfigOption<String> DINKY_HOST =
             key("dinky.dinkyHost").stringType().noDefaultValue().withDescription("dinky local address");
-
 }
