@@ -23,7 +23,6 @@ import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -43,16 +42,6 @@ public interface MonitorService extends IService<Metrics> {
      * @return A list of {@link MetricsVO} objects representing the metrics data for the specified time range and job IDs.
      */
     List<MetricsVO> getData(Date startTime, Date endTime, List<String> jobIds);
-
-    /**
-     * Send the latest data to the specified SSE emitter.
-     *
-     * @param sseEmitter The SSE emitter to send the latest data to.
-     * @param lastDate The last date to include in the data.
-     * @param keys A list of keys to filter the data by.
-     * @return {@link SseEmitter}
-     */
-    SseEmitter sendLatestData(SseEmitter sseEmitter, LocalDateTime lastDate, List<String> keys);
 
     /**
      * Send the JVM information to the specified SSE emitter.

@@ -30,15 +30,11 @@ import org.dinky.data.result.Result;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
-import org.dinky.sse.SseEmitterUTF8;
-import org.dinky.utils.TimeUtil;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,7 +42,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -105,19 +100,6 @@ public class MonitorController {
                 DateUtil.date(startTime),
                 DateUtil.date(Opt.ofNullable(endTime).orElse(DateUtil.date().getTime())),
                 jids));
-    }
-
-    @GetMapping(value = "/getLastUpdateData", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @ApiOperation("Get Last Update Data")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "lastTime", value = "Last Time", required = false, dataType = "Long"),
-        @ApiImplicitParam(name = "keys", value = "jobids", required = true, dataType = "String")
-    })
-    public SseEmitter getLastUpdateData(Long lastTime, String keys) {
-        SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
-        lastTime = Opt.ofNullable(lastTime).orElse(TimeUtil.nowTimestamp());
-        return monitorService.sendLatestData(
-                emitter, TimeUtil.toLocalDateTime(lastTime), CollUtil.newArrayList(keys.split(",")));
     }
 
     @PutMapping("/saveFlinkMetrics/{layout}")

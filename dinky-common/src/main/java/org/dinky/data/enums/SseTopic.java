@@ -17,19 +17,21 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.data.enums;
 
-import org.dinky.data.vo.PrintTableVo;
+public enum SseTopic {
+    METRICS("/TOPIC/METRICS"),
+    PROCESS_CONSOLE("/TOPIC/PROCESS_CONSOLE"),
+    PRINT_TABLE("/TOPIC/PRINT_TABLE"),
+    UNKNOWN("UNKNOWN");
 
-import java.util.List;
+    private final String value;
 
-public interface PrintTableService {
+    SseTopic(String value) {
+        this.value = value;
+    }
 
-    /**
-     * Get the print tables for the given SQL statement.
-     *
-     * @param statement The SQL statement to get the print tables for.
-     * @return A list of strings representing the print tables.
-     */
-    List<PrintTableVo> getPrintTables(String statement);
+    public String getValue() {
+        return value;
+    }
 }

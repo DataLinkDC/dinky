@@ -40,3 +40,9 @@ export enum BackPressureStatus {
   OK = 'ok',
   HIGH = 'high'
 }
+
+export const SSE_TOPIC = {
+  METRICS: '/TOPIC/METRICS',
+  PROCESS_CONSOLE: '/TOPIC/PROCESS_CONSOLE',
+  PRINT_TABLE: '/TOPIC/PRINT_TABLE',
+}

@@ -17,19 +17,14 @@
  *
  */
 
-package org.dinky.service;
-
-import org.dinky.data.vo.PrintTableVo;
+package org.dinky.data.dto;
 
 import java.util.List;
 
-public interface PrintTableService {
+import lombok.Data;
 
-    /**
-     * Get the print tables for the given SQL statement.
-     *
-     * @param statement The SQL statement to get the print tables for.
-     * @return A list of strings representing the print tables.
-     */
-    List<PrintTableVo> getPrintTables(String statement);
+@Data
+public class SseSubscribeDTO {
+    private String sessionKey;
+    private List<String> topics;
 }
