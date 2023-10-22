@@ -55,7 +55,6 @@ public class FlinkJobTask implements DaemonTask {
     @Override
     public DaemonTask setConfig(DaemonTaskConfig config) {
         this.config = config;
-        TenantContextHolder.set(1);
         this.jobInfoDetail = jobInstanceService.getJobInfoDetail(config.getId());
         return this;
     }
@@ -74,7 +73,6 @@ public class FlinkJobTask implements DaemonTask {
     @Override
     public boolean dealTask() {
         volatilityBalance();
-        TenantContextHolder.set(1);
 
         boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, isNeedSave());
         JobAlertHandler.getInstance().check(jobInfoDetail);

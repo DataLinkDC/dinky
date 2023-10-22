@@ -21,6 +21,7 @@ package org.dinky.init;
 
 import static org.apache.hadoop.fs.FileSystem.getDefaultUri;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.task.DaemonFactory;
@@ -83,10 +84,10 @@ import lombok.RequiredArgsConstructor;
 @Order(value = 1)
 @RequiredArgsConstructor
 @Profile("!test")
+@Slf4j
 public class SystemInit implements ApplicationRunner {
     private final SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
 
-    private static final Logger log = LoggerFactory.getLogger(SystemInit.class);
     private final ProjectClient projectClient;
     private final SysConfigService sysConfigService;
     private final JobInstanceService jobInstanceService;
@@ -97,6 +98,7 @@ public class SystemInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        TenantContextHolder.ignoreTenant();
         initResources();
 
         List<Tenant> tenants = tenantService.list();
@@ -230,15 +232,11 @@ public class SystemInit implements ApplicationRunner {
     }
 
     public void registerUDF() {
-        // 设置admin用户 ，获取全部的udf代码，此地方没有租户隔离
-        TenantContextHolder.set(1);
         List<Task> allUDF = taskService.getAllUDF();
         if (CollUtil.isNotEmpty(allUDF)) {
             UdfCodePool.registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
         }
         UdfCodePool.updateGitPool(gitProjectService.getGitPool());
-
-        TenantContextHolder.set(null);
     }
 
     public void updateGitBuildState() {
