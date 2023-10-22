@@ -57,8 +57,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
@@ -73,6 +71,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * SystemInit
@@ -83,10 +82,10 @@ import lombok.RequiredArgsConstructor;
 @Order(value = 1)
 @RequiredArgsConstructor
 @Profile("!test")
+@Slf4j
 public class SystemInit implements ApplicationRunner {
     private final SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
 
-    private static final Logger log = LoggerFactory.getLogger(SystemInit.class);
     private final ProjectClient projectClient;
     private final SysConfigService sysConfigService;
     private final JobInstanceService jobInstanceService;
@@ -97,6 +96,7 @@ public class SystemInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        TenantContextHolder.ignoreTenant();
         initResources();
 
         List<Tenant> tenants = tenantService.list();
@@ -230,15 +230,11 @@ public class SystemInit implements ApplicationRunner {
     }
 
     public void registerUDF() {
-        // 设置admin用户 ，获取全部的udf代码，此地方没有租户隔离
-        TenantContextHolder.set(1);
         List<Task> allUDF = taskService.getAllUDF();
         if (CollUtil.isNotEmpty(allUDF)) {
             UdfCodePool.registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
         }
         UdfCodePool.updateGitPool(gitProjectService.getGitPool());
-
-        TenantContextHolder.set(null);
     }
 
     public void updateGitBuildState() {
