@@ -17,9 +17,9 @@
  *
  */
 
-import {useEffect, useRef, useState} from 'react'
-import {postAll} from "@/services/api";
-import {ErrorMessage} from "@/utils/messages";
+import { postAll } from '@/services/api';
+import { ErrorMessage } from '@/utils/messages';
+import { useEffect, useRef, useState } from 'react';
 
 export type SseData = {
   topic: string;
@@ -59,12 +59,12 @@ export default () => {
         try {
           const data: SseData = JSON.parse(e.data);
           subscriberRef.current
-              .filter(sub => sub.topic.includes(data.topic))
-              .forEach(sub => sub.call(data));
-        }catch (e:any) {
-          ErrorMessage(e)
+            .filter((sub) => sub.topic.includes(data.topic))
+            .forEach((sub) => sub.call(data));
+        } catch (e: any) {
+          ErrorMessage(e);
         }
-      }
+      };
     }
   }, [eventSource]);
 
