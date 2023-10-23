@@ -15,6 +15,7 @@ export type MovableSidebarProps = {
   contentHeight?: number;
   defaultSize?: Size;
   visible?: boolean;
+  headerVisible?: boolean;
   children?: React.ReactNode;
   handlerMinimize?: () => void;
   handlerMaxsize?: () => void;
@@ -40,6 +41,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
     minHeight,
     maxHeight,
     enable,
+    headerVisible=true,
     children,
     title,
     contentHeight,
@@ -68,21 +70,23 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
         enable={enable}
       >
         <>
-          <div
-            style={{
-              backgroundColor: token.colorBgBase,
-              borderBlockColor: themeValue.borderColor
-            }}
-            className={'container-header'}
-          >
-            <div>{title}</div>
-            <div className={showBtn ? 'show' : 'hide'}>
-              <Space size={1}>
-                {props.btnGroup}
-                <CircleBtn onClick={props.handlerMinimize} icon={<MinusOutlined />} />
-              </Space>
-            </div>
-          </div>
+            {headerVisible &&
+                <div
+                    style={{
+                        backgroundColor: token.colorBgBase,
+                        borderBlockColor: themeValue.borderColor
+                    }}
+                    className={'container-header'}
+                >
+                    <div>{title}</div>
+                    <div className={showBtn ? 'show' : 'hide'}>
+                        <Space size={1}>
+                            {props.btnGroup}
+                            <CircleBtn onClick={props.handlerMinimize} icon={<MinusOutlined/>}/>
+                        </Space>
+                    </div>
+                </div>
+            }
           <div
             style={{
               height: contentHeight,
