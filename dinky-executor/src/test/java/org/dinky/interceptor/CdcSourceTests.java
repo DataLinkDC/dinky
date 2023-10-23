@@ -20,8 +20,8 @@
 package org.dinky.interceptor;
 
 import org.dinky.executor.Executor;
-import org.dinky.executor.ExecutorSetting;
-import org.dinky.executor.LocalStreamExecutor;
+import org.dinky.executor.ExecutorConfig;
+import org.dinky.executor.ExecutorFactory;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,25 +32,24 @@ public class CdcSourceTests {
     @Ignore
     @Test
     public void printTest() throws Exception {
-        String statement =
-                new StringBuilder()
-                        .append("EXECUTE CDCSOURCE jobname WITH (\n")
-                        .append("  'connector' = 'mysql-cdc',\n")
-                        .append("  'hostname' = '127.0.0.1',\n")
-                        .append("  'port' = '3306',\n")
-                        .append("  'username' = 'root',\n")
-                        .append("  'password' = '123456',\n")
-                        .append("  'checkpoint' = '3000',\n")
-                        .append("  'scan.startup.mode' = 'initial',\n")
-                        .append("  'parallelism' = '1',\n")
-                        .append("  'source.server-time-zone' = 'UTC',\n")
-                        .append("  'table-name' = 'dinky\\.dinky_flink_document',\n")
-                        .append("  'sink.connector'='print'\n")
-                        .append(")")
-                        .toString();
+        String statement = new StringBuilder()
+                .append("EXECUTE CDCSOURCE jobname WITH (\n")
+                .append("  'connector' = 'mysql-cdc',\n")
+                .append("  'hostname' = '127.0.0.1',\n")
+                .append("  'port' = '3306',\n")
+                .append("  'username' = 'root',\n")
+                .append("  'password' = '123456',\n")
+                .append("  'checkpoint' = '3000',\n")
+                .append("  'scan.startup.mode' = 'initial',\n")
+                .append("  'parallelism' = '1',\n")
+                .append("  'source.server-time-zone' = 'UTC',\n")
+                .append("  'table-name' = 'dinky\\.dinky_flink_document',\n")
+                .append("  'sink.connector'='print'\n")
+                .append(")")
+                .toString();
 
-        ExecutorSetting executorSetting = ExecutorSetting.DEFAULT;
-        Executor executor = LocalStreamExecutor.buildLocalExecutor(executorSetting);
+        ExecutorConfig executorConfig = ExecutorConfig.DEFAULT;
+        Executor executor = ExecutorFactory.buildLocalExecutor(executorConfig);
         executor.executeSql(statement);
         executor.execute("");
     }

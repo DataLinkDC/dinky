@@ -19,7 +19,7 @@
 
 package org.dinky.interceptor;
 
-import org.dinky.executor.Executor;
+import org.dinky.executor.ExecutorFactory;
 
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -35,12 +35,10 @@ public class FlinkInterceptorTest {
 
     @Test
     public void replaceFragmentTest() {
-        String statement =
-                "nullif1:=NULLIF(1, 0) as val;\n"
-                        + "nullif2:=NULLIF(0, 0) as val$null;\n"
-                        + "select ${nullif1},${nullif2}";
-        String pretreatStatement = FlinkInterceptor.pretreatStatement(Executor.build(), statement);
-        Assert.assertEquals(
-                "select NULLIF(1, 0) as val,NULLIF(0, 0) as val$null", pretreatStatement);
+        String statement = "nullif1:=NULLIF(1, 0) as val;\n"
+                + "nullif2:=NULLIF(0, 0) as val$null;\n"
+                + "select ${nullif1},${nullif2}";
+        String pretreatStatement = FlinkInterceptor.pretreatStatement(ExecutorFactory.getDefaultExecutor(), statement);
+        Assert.assertEquals("select NULLIF(1, 0) as val,NULLIF(0, 0) as val$null", pretreatStatement);
     }
 }

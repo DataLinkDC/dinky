@@ -32,7 +32,7 @@ public interface AlertGroupService extends ISuperService<AlertGroup> {
      *
      * @return {@link List<AlertGroup>}
      */
-    List<AlertGroup> listEnabledAll();
+    List<AlertGroup> listEnabledAllAlertGroups();
 
     /**
      * get alert group info by id
@@ -46,9 +46,9 @@ public interface AlertGroupService extends ISuperService<AlertGroup> {
      * alert group enable or disable by id
      *
      * @param id
-     * @return
+     * @return {@link Boolean}
      */
-    Boolean enable(Integer id);
+    Boolean modifyAlertGroupStatus(Integer id);
 
     /**
      * delete alert group by id and cascade delete alert history

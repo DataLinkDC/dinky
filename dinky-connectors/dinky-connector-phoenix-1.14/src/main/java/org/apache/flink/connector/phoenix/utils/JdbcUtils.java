@@ -47,17 +47,15 @@ public class JdbcUtils {
      * @param row The records to add to the output.
      * @see PreparedStatement
      */
-    public static void setRecordToStatement(PreparedStatement upload, int[] typesArray, Row row)
-            throws SQLException {
+    public static void setRecordToStatement(PreparedStatement upload, int[] typesArray, Row row) throws SQLException {
         if (typesArray != null && typesArray.length > 0 && typesArray.length != row.getArity()) {
-            LOG.warn(
-                    "Column SQL types array doesn't match arity of passed Row! Check the passed array...");
+            LOG.warn("Column SQL types array doesn't match arity of passed Row! Check the passed" + " array...");
         }
         if (typesArray == null) {
             // no types provided
             for (int index = 0; index < row.getArity(); index++) {
                 LOG.warn(
-                        "Unknown column type for column {}. Best effort approach to set its value: {}.",
+                        "Unknown column type for column {}. Best effort approach to set its value:" + " {}.",
                         index + 1,
                         row.getField(index));
                 upload.setObject(index + 1, row.getField(index));
@@ -70,8 +68,7 @@ public class JdbcUtils {
         }
     }
 
-    public static void setField(PreparedStatement upload, int type, Object field, int index)
-            throws SQLException {
+    public static void setField(PreparedStatement upload, int type, Object field, int index) throws SQLException {
         if (field == null) {
             upload.setNull(index + 1, type);
         } else {
@@ -133,7 +130,8 @@ public class JdbcUtils {
                     default:
                         upload.setObject(index + 1, field);
                         LOG.warn(
-                                "Unmanaged sql type ({}) for column {}. Best effort approach to set its value: {}.",
+                                "Unmanaged sql type ({}) for column {}. Best effort approach to"
+                                        + " set its value: {}.",
                                 type,
                                 index + 1,
                                 field);
@@ -153,9 +151,7 @@ public class JdbcUtils {
             } catch (ClassCastException e) {
                 // enrich the exception with detailed information.
                 String errorMessage =
-                        String.format(
-                                "%s, field index: %s, field value: %s.",
-                                e.getMessage(), index, field);
+                        String.format("%s, field index: %s, field value: %s.", e.getMessage(), index, field);
                 ClassCastException enrichedException = new ClassCastException(errorMessage);
                 enrichedException.setStackTrace(e.getStackTrace());
                 throw enrichedException;
@@ -163,8 +159,7 @@ public class JdbcUtils {
         }
     }
 
-    public static Object getFieldFromResultSet(int index, int type, ResultSet set)
-            throws SQLException {
+    public static Object getFieldFromResultSet(int index, int type, ResultSet set) throws SQLException {
         Object ret;
         switch (type) {
             case java.sql.Types.NULL:
@@ -221,7 +216,7 @@ public class JdbcUtils {
             default:
                 ret = set.getObject(index + 1);
                 LOG.warn(
-                        "Unmanaged sql type ({}) for column {}. Best effort approach to get its value: {}.",
+                        "Unmanaged sql type ({}) for column {}. Best effort approach to get its" + " value: {}.",
                         type,
                         index + 1,
                         ret);

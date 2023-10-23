@@ -34,17 +34,20 @@ public class JdbcConnectionOptions implements Serializable {
     private static final long serialVersionUID = 1L;
 
     protected final String url;
-    @Nullable protected final String driverName;
+
+    @Nullable
+    protected final String driverName;
+
     protected final int connectionCheckTimeoutSeconds;
-    @Nullable protected final String username;
-    @Nullable protected final String password;
+
+    @Nullable
+    protected final String username;
+
+    @Nullable
+    protected final String password;
 
     protected JdbcConnectionOptions(
-            String url,
-            String driverName,
-            String username,
-            String password,
-            int connectionCheckTimeoutSeconds) {
+            String url, String driverName, String username, String password, int connectionCheckTimeoutSeconds) {
         Preconditions.checkArgument(connectionCheckTimeoutSeconds > 0);
         this.url = Preconditions.checkNotNull(url, "jdbc url is empty");
         this.driverName = driverName;
@@ -108,15 +111,13 @@ public class JdbcConnectionOptions implements Serializable {
          * @param connectionCheckTimeoutSeconds the timeout seconds, shouldn't smaller than 1
          *     second.
          */
-        public JdbcConnectionOptionsBuilder withConnectionCheckTimeoutSeconds(
-                int connectionCheckTimeoutSeconds) {
+        public JdbcConnectionOptionsBuilder withConnectionCheckTimeoutSeconds(int connectionCheckTimeoutSeconds) {
             this.connectionCheckTimeoutSeconds = connectionCheckTimeoutSeconds;
             return this;
         }
 
         public JdbcConnectionOptions build() {
-            return new JdbcConnectionOptions(
-                    url, driverName, username, password, connectionCheckTimeoutSeconds);
+            return new JdbcConnectionOptions(url, driverName, username, password, connectionCheckTimeoutSeconds);
         }
     }
 }

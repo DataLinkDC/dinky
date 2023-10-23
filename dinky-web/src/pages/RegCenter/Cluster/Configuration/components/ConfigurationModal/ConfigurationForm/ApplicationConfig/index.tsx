@@ -17,24 +17,25 @@
  *
  */
 
-import {l} from "@/utils/intl";
-import {Divider} from "antd";
-import {ProFormGroup, ProFormText} from "@ant-design/pro-components";
+import { l } from '@/utils/intl';
+import { ProFormGroup, ProFormText } from '@ant-design/pro-components';
+import { Divider } from 'antd';
 
 const ApplicationConfig = () => {
-
-    return <>
-        <Divider>{l('rc.cc.submitSqlConfig')}</Divider>
-        <ProFormGroup labelLayout={'inline'}>
-            <ProFormText
-                width={'xl'}
-                name={["configJson",'appConfig',"userJarPath"]}
-                placeholder={l('rc.cc.sqlSubmitJarPathHelp')}
-                label={l('rc.cc.sqlSubmitJarPath')}
-                tooltip={l('rc.cc.sqlSubmitJarPathHelp')}
-            />
-        </ProFormGroup>
+  return (
+    <>
+      <Divider>{l('rc.cc.submitSqlConfig')}</Divider>
+      <ProFormGroup labelLayout={'inline'}>
+        <ProFormText
+          width={'xl'}
+          name={['config', 'appConfig', 'userJarPath']}
+          placeholder={l('rc.cc.sqlSubmitJarPathHelp')}
+          label={l('rc.cc.sqlSubmitJarPath')}
+          tooltip={l('rc.cc.sqlSubmitJarPathHelp')}
+        />
+      </ProFormGroup>
     </>
-}
+  );
+};
 
-export default ApplicationConfig
+export default ApplicationConfig;

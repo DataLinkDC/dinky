@@ -19,14 +19,14 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.RowPermissions;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.RowPermissionsService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,14 +39,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Api(tags = "RowPermissions Controller")
 @RestController
 @RequestMapping("/api/rowPermissions")
 public class RowPermissionsController {
 
-    @Autowired private RowPermissionsService roleSelectPermissionsService;
+    @Autowired
+    private RowPermissionsService roleSelectPermissionsService;
 
     /**
      * save or update roleSelectPermissions
@@ -55,40 +62,23 @@ public class RowPermissionsController {
      * @return {@link Result}
      */
     @PutMapping
-    public Result saveOrUpdateRole(@RequestBody RowPermissions roleSelectPermissions) {
+    @ApiOperation("Insert Or Update RowPermissions")
+    @Log(title = "Insert Or Update RowPermissions", businessType = BusinessType.INSERT)
+    @ApiImplicitParam(
+            name = "roleSelectPermissions",
+            value = "RowPermissions",
+            dataType = "RowPermissions",
+            paramType = "body",
+            required = true,
+            dataTypeClass = RowPermissions.class)
+    @SaCheckPermission(
+            value = {PermissionConstants.AUTH_ROW_PERMISSIONS_ADD, PermissionConstants.AUTH_ROW_PERMISSIONS_EDIT},
+            mode = SaMode.OR)
+    public Result saveOrUpdateRowPermissions(@RequestBody RowPermissions roleSelectPermissions) {
         if (roleSelectPermissionsService.saveOrUpdate(roleSelectPermissions)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
-        }
-    }
-
-    /**
-     * delete roleSelectPermissions , this method is {@link Deprecated} in the future , please use
-     * {@link #delete(Integer id)}
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result}
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!roleSelectPermissionsService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
         }
     }
 
@@ -99,7 +89,17 @@ public class RowPermissionsController {
      * @return {@link Result}
      */
     @DeleteMapping("/delete")
-    public Result delete(@RequestParam("id") Integer id) {
+    @ApiOperation("Delete RowPermissions By Id")
+    @Log(title = "Delete RowPermissions By Id", businessType = BusinessType.DELETE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "RowPermissions Id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true,
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.AUTH_ROW_PERMISSIONS_DELETE)
+    public Result deleteRowPermissions(@RequestParam("id") Integer id) {
 
         if (roleSelectPermissionsService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -114,7 +114,15 @@ public class RowPermissionsController {
      * @return {@link ProTableResult} of {@link RowPermissions}
      */
     @PostMapping
-    public ProTableResult<RowPermissions> listRoles(@RequestBody JsonNode para) {
+    @ApiOperation("Query RowPermissions List")
+    @ApiImplicitParam(
+            name = "para",
+            value = "Query Condition",
+            dataType = "JsonNode",
+            paramType = "body",
+            required = true,
+            dataTypeClass = JsonNode.class)
+    public ProTableResult<RowPermissions> listRowPermissions(@RequestBody JsonNode para) {
         return roleSelectPermissionsService.selectForProTable(para);
     }
 }

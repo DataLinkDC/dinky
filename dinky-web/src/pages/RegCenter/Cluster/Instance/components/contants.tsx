@@ -15,32 +15,52 @@
  * limitations under the License.
  */
 
-import {Tag} from 'antd';
-import {l} from '@/utils/intl';
-import React from 'react';
-import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
+import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
+import { l } from '@/utils/intl';
+import { Tag } from 'antd';
+import { DefaultOptionType } from 'rc-select/es/Select';
 
 /**
  * Cluster instance type
  */
-export const CLUSTER_INSTANCE_TYPE = [
-    {value: ClusterType.STANDALONE, label: ClusterType.STANDALONE},
-    {value: ClusterType.YARN_SESSION, label: ClusterType.YARN_SESSION},
-    {value: ClusterType.KUBERNETES_SESSION, label: ClusterType.KUBERNETES_SESSION},
-]
-
-/**
- * Cluster instance  is auto registers
- */
-export const CLUSTER_INSTANCE_AUTO_REGISTERS_ENUM = {
-  true: {text: <Tag color={'success'}>{l('global.yes')}</Tag>, status: 'Success'},
-  false: {text: <Tag color={'error'}>{l('global.no')}</Tag>, status: 'Error'},
-}
+export const CLUSTER_INSTANCE_TYPE: DefaultOptionType[] = [
+  {
+    value: ClusterType.STANDALONE,
+    label: 'Standalone',
+    key: ClusterType.STANDALONE
+  },
+  {
+    value: ClusterType.YARN_SESSION,
+    label: 'Yarn Session',
+    key: ClusterType.YARN_SESSION
+  },
+  {
+    value: ClusterType.KUBERNETES_SESSION,
+    label: 'Kubernetes Session',
+    key: ClusterType.KUBERNETES_SESSION
+  },
+  {
+    value: ClusterType.YARN_APPLICATION,
+    label: 'Yarn Application',
+    key: ClusterType.YARN_APPLICATION
+  },
+  {
+    value: ClusterType.LOACL,
+    label: 'Local',
+    key: ClusterType.LOACL
+  }
+];
 
 /**
  * Cluster instance status enum
  */
 export const CLUSTER_INSTANCE_STATUS_ENUM = {
-  1: {text: <Tag color={'success'}>{l('global.table.status.normal')}</Tag>, status: 'Success'},
-  0: {text: <Tag color={'error'}>{l('global.table.status.abnormal')}</Tag>, status: 'Error'},
-}
+  1: {
+    text: <Tag color={'success'}>{l('global.table.status.normal')}</Tag>,
+    status: 'Success'
+  },
+  0: {
+    text: <Tag color={'error'}>{l('global.table.status.abnormal')}</Tag>,
+    status: 'Error'
+  }
+};

@@ -42,7 +42,8 @@ public class FlinkStatementUtil {
             if (i > 0) {
                 sb.append(",");
             }
-            sb.append(String.format("`%s`", table.getColumns().get(i).getName())).append(" \n");
+            sb.append(String.format("`%s`", table.getColumns().get(i).getName()))
+                    .append(" \n");
         }
         sb.append(" FROM `");
         sb.append(sourceName);
@@ -103,10 +104,9 @@ public class FlinkStatementUtil {
 
     public static String getCreateCatalogStatement(FlinkCDCConfig config) {
         String catalogName = config.getSink().get("catalog.name");
-        List<String> catalogParamKeys =
-                config.getSink().keySet().stream()
-                        .filter(s -> s.startsWith("catalog."))
-                        .collect(Collectors.toList());
+        List<String> catalogParamKeys = config.getSink().keySet().stream()
+                .filter(s -> s.startsWith("catalog."))
+                .collect(Collectors.toList());
         StringBuilder sb = new StringBuilder("CREATE CATALOG ");
         sb.append(catalogName);
         sb.append(" WITH (\n");
@@ -136,10 +136,8 @@ public class FlinkStatementUtil {
     private static String getSinkConfigurationString(
             FlinkCDCConfig config, String sinkSchemaName, String sinkTableName, String pkList) {
         String configurationString =
-                SqlUtil.replaceAllParam(
-                        config.getSinkConfigurationString(), "schemaName", sinkSchemaName);
-        configurationString =
-                SqlUtil.replaceAllParam(configurationString, "tableName", sinkTableName);
+                SqlUtil.replaceAllParam(config.getSinkConfigurationString(), "schemaName", sinkSchemaName);
+        configurationString = SqlUtil.replaceAllParam(configurationString, "tableName", sinkTableName);
         if (configurationString.contains("${pkList}")) {
             configurationString = SqlUtil.replaceAllParam(configurationString, "pkList", pkList);
         }

@@ -19,40 +19,65 @@
 
 package org.dinky.data.properties;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@ApiModel(value = "OssProperties", description = "Configuration Properties for Object Storage Service (OSS)")
 public class OssProperties {
 
-    /** 配置前缀 */
-    public static final String PREFIX = "oss";
-
-    /** 是否启用 oss，默认为：true */
+    @ApiModelProperty(
+            value = "Enable OSS",
+            dataType = "boolean",
+            notes = "Whether to enable OSS (Object Storage Service)",
+            example = "true")
     private boolean enable = true;
 
-    /** 对象存储服务的URL */
+    @ApiModelProperty(
+            value = "OSS Endpoint",
+            dataType = "String",
+            notes = "URL of the Object Storage Service",
+            example = "https://example.oss-cn-hangzhou.aliyuncs.com")
     private String endpoint;
 
-    /** 自定义域名 */
+    @ApiModelProperty(
+            value = "Custom Domain",
+            dataType = "String",
+            notes = "Custom domain for OSS",
+            example = "https://custom-domain.com")
     private String customDomain;
 
-    /**
-     * true path-style nginx 反向代理和S3默认支持 pathStyle {http://endpoint/bucketname} false supports
-     * virtual-hosted-style 阿里云等需要配置为 virtual-hosted-style 模式{http://bucketname.endpoint}
-     */
+    @ApiModelProperty(
+            value = "Path Style Access",
+            dataType = "Boolean",
+            notes = "Path style access configuration (true for path-style, false for virtual-hosted-style)",
+            example = "true")
     private Boolean pathStyleAccess = true;
 
-    /** 区域 */
+    @ApiModelProperty(value = "Region", dataType = "String", notes = "Region for OSS", example = "oss-cn-hangzhou")
     private String region;
 
-    /** Access key就像用户ID，可以唯一标识你的账户 */
+    @ApiModelProperty(
+            value = "Access Key",
+            dataType = "String",
+            notes = "Access key for authentication",
+            example = "your-access-key")
     private String accessKey;
 
-    /** Secret key是你账户的密码 */
+    @ApiModelProperty(
+            value = "Secret Key",
+            dataType = "String",
+            notes = "Secret key for authentication",
+            example = "your-secret-key")
     private String secretKey;
 
-    /** 默认的存储桶名称 */
+    @ApiModelProperty(
+            value = "Default Bucket Name",
+            dataType = "String",
+            notes = "Default bucket name",
+            example = "my-bucket")
     private String bucketName;
 }

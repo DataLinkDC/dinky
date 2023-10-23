@@ -32,8 +32,7 @@ public class GitBuildContextHolder {
 
     public static void addRun(Integer id) {
         RUNNING_LIST.add(id);
-        FileUtil.writeUtf8String(
-                JSONUtil.toJsonStr(getAll()), PathConstant.TMP_PATH + "/build.list");
+        FileUtil.writeUtf8String(JSONUtil.toJsonStr(getAll()), PathConstant.TMP_PATH + "/build.list");
     }
 
     public static void remove(Integer id) {

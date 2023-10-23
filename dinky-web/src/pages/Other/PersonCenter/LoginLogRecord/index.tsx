@@ -17,50 +17,51 @@
  *
  */
 
-import React, {useCallback, useEffect, useState} from "react";
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {BackTop, Button, Card, Spin, Timeline} from "antd";
-import {LoginLog} from "@/types/User/data";
-import {l} from "@/utils/intl";
-import {renderTimeLineItems} from "@/pages/Other/PersonCenter/LoginLogRecord/function";
-
+import { renderTimeLineItems } from '@/pages/Other/PersonCenter/LoginLogRecord/function';
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { LoginLog } from '@/types/AuthCenter/data';
+import { l } from '@/utils/intl';
+import { Button, Card, Spin, Timeline } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
 
 type LoginLogRecordProps = {
-    userId: number
-}
+  userId: number;
+};
 const LoginLogRecord: React.FC<LoginLogRecordProps> = (props) => {
-    const {userId} = props
+  const { userId } = props;
 
-    const [loginRecord, setLoginRecord] = useState<LoginLog[]>([]);
-    const [refresh, setRefresh] = useState(false);
+  const [loginRecord, setLoginRecord] = useState<LoginLog[]>([]);
+  const [refresh, setRefresh] = useState(false);
 
-    const queryLoginLog = useCallback(async (id: number) => {
-        setRefresh(true)
-        await queryDataByParams(`/api/log/loginRecord/${id}`).then(res => {
-            setLoginRecord(res)
-            setRefresh(false)
-        })
-    }, [userId])
+  const queryLoginLog = useCallback(
+    async (id: number) => {
+      setRefresh(true);
+      await queryDataByParams(`${API_CONSTANTS.LOGIN_RECORD}/${id}`).then((res) => {
+        setLoginRecord(res);
+        setRefresh(false);
+      });
+    },
+    [userId]
+  );
 
+  useEffect(() => {
+    queryLoginLog(userId);
+  }, [userId]);
 
-    useEffect(() => {
-        queryLoginLog(userId)
-    }, [userId])
-
-
-    return <>
-        <Card bordered={false} extra={ <Button onClick={() => queryLoginLog(userId)}>{l('button.refresh')}</Button>} size="small" >
-            <Spin spinning={refresh}>
-                <Timeline
-                    mode={'alternate'}
-                    reverse
-                    items={renderTimeLineItems(loginRecord)}
-                />
-            </Spin>
-        </Card>
-
-
+  return (
+    <>
+      <Card
+        bordered={false}
+        extra={<Button onClick={() => queryLoginLog(userId)}>{l('button.refresh')}</Button>}
+        size='small'
+      >
+        <Spin spinning={refresh}>
+          <Timeline mode={'alternate'} reverse items={renderTimeLineItems(loginRecord)} />
+        </Spin>
+      </Card>
     </>
-}
+  );
+};
 
-export default LoginLogRecord
+export default LoginLogRecord;

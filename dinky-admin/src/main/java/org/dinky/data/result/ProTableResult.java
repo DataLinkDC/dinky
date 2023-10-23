@@ -22,6 +22,8 @@ package org.dinky.data.result;
 import java.io.Serializable;
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,17 +38,33 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(value = "ProTableResult", description = "ProTableResult")
 public class ProTableResult<T> implements Serializable {
 
     private static final long serialVersionUID = -6377431009117000655L;
-    /** 总数 */
+    /**
+     * 总数
+     */
+    @ApiModelProperty(value = "Total Size", required = true, dataType = "Long", example = "200")
     private Long total;
-    /** 是否成功：true 成功、false 失败 */
+    /**
+     * 是否成功：true 成功、false 失败
+     */
+    @ApiModelProperty(value = "Is Success", required = true, dataType = "Boolean", example = "true")
     private boolean success;
-    /** 当前页码 */
+    /**
+     * 当前页码
+     */
+    @ApiModelProperty(value = "Current PageNum", required = true, dataType = "Integer", example = "1")
     private Integer current;
-    /** 当前每页记录数 */
+    /**
+     * 当前每页记录数
+     */
+    @ApiModelProperty(value = "Current Page Size", required = true, dataType = "Integer", example = "10")
     private Integer pageSize;
-    /** 当前页结果集 */
+    /**
+     * 当前页结果集
+     */
+    @ApiModelProperty(value = "Current Page Data", required = true, dataType = "List<T>", example = "[]")
     private List<T> data;
 }

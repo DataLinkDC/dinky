@@ -17,53 +17,69 @@
  *
  */
 
-import {ProCard} from '@ant-design/pro-components';
-import {Badge} from 'antd';
+import BatchStreamProportion from '@/pages/Home/DevOverView/BatchStreamProportion';
+import DevHeatmap from '@/pages/Home/DevOverView/DevHeatmap';
+import ResourceView from '@/pages/Home/DevOverView/ResourceView';
+import TaskDialectRadar from '@/pages/Home/DevOverView/TaskDialectRadar';
+import { l } from '@/utils/intl';
+import { ProCard } from '@ant-design/pro-components';
+import { Badge } from 'antd';
 import RcResizeObserver from 'rc-resize-observer';
-import React, {useState} from 'react';
-import DevHeatmap from "@/pages/Home/DevOverView/DevHeatmap";
-import TaskDialectRadar from "@/pages/Home/DevOverView/TaskDialectRadar";
-import ResourceView from "@/pages/Home/DevOverView/ResourceView";
-import BatchStreamProportion from "@/pages/Home/DevOverView/BatchStreamProportion";
-import {l} from "@/utils/intl";
+import React, { useState } from 'react';
+
+const noPadding = {
+  paddingInline: '0',
+  paddingBlock: '0'
+};
 
 const DevOverView: React.FC = () => {
   const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
 
   return (
     <RcResizeObserver
-      key="resize-observer"
+      key='resize-observer'
       onResize={(offset) => {
         setSplit(offset.width < 596 ? 'horizontal' : 'vertical');
       }}
     >
       <ProCard
-        title={<><Badge status="processing"/>{l('home.develop')}</>}
+        title={
+          <>
+            <Badge status='processing' />
+            {l('home.develop')}
+          </>
+        }
         headerBordered
         bordered
-        size="small"
+        size='small'
         split={split}
+        bodyStyle={noPadding}
       >
-        <ProCard split="vertical">
-          <ProCard split="horizontal" colSpan={'40%'}>
+        <ProCard split='vertical' bodyStyle={noPadding}>
+          <ProCard
+            title={l('home.job.development')}
+            split='horizontal'
+            colSpan={'40%'}
+            bodyStyle={noPadding}
+          >
             <ProCard>
-              <BatchStreamProportion/>
+              <BatchStreamProportion />
             </ProCard>
-            <ProCard >
-              <DevHeatmap/>
+            <ProCard>
+              <DevHeatmap />
             </ProCard>
           </ProCard>
 
-          <ProCard colSpan={'30%'} >
-            <TaskDialectRadar/>
+          <ProCard title={l('home.job.onlineRate')} colSpan={'30%'} bodyStyle={noPadding}>
+            <TaskDialectRadar />
           </ProCard>
-          <ProCard>
-            <ResourceView/>
+          <ProCard title={l('home.develop.re')} bodyStyle={noPadding}>
+            <ResourceView />
           </ProCard>
         </ProCard>
       </ProCard>
     </RcResizeObserver>
   );
-}
+};
 
-export default DevOverView
+export default DevOverView;

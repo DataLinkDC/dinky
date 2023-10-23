@@ -16,14 +16,13 @@
  *
  */
 
-import React, {useState} from 'react';
-import {Button, Modal, ModalFuncProps, Typography} from 'antd';
-import CodeShow, {CodeShowFormProps} from "@/components/CustomEditor/CodeShow";
-import {l} from "@/utils/intl";
-import {MonacoEditorOptions} from "@/types/Public/data";
+import CodeShow, { CodeShowFormProps } from '@/components/CustomEditor/CodeShow';
+import { MonacoEditorOptions } from '@/types/Public/data';
+import { l } from '@/utils/intl';
+import { Button, Modal, ModalFuncProps, Typography } from 'antd';
+import { useState } from 'react';
 
-const {Paragraph} = Typography;
-
+const { Paragraph } = Typography;
 
 /**
  * In this interface, we define the props for the ShowModal component, which extends the ModalFuncProps interface. Here are the details of the props:
@@ -43,10 +42,10 @@ export interface ShowModalProps extends ModalFuncProps {
 const ErrorShowModal = (props: ShowModalProps) => {
   const {
     /** The content of the code editor. */
-    content = "no code to show",
+    content = 'no code to show',
 
     /** The width of the Modal. */
-    width = "80vh",
+    width = '80vh',
 
     /** Control the Modal show or close */
     open = true,
@@ -55,17 +54,17 @@ const ErrorShowModal = (props: ShowModalProps) => {
     title = l('global.error'),
 
     /** Default disable close icon at top right, it's Not needed */
-    closable=false,
+    closable = false,
 
     /**
      * The properties of the code editor, including its default options.
      */
     codeShowProps = {
       /** Whether line numbers should be shown in the code editor. Default is "off". */
-      lineNumbers: "off",
+      lineNumbers: 'off',
 
       /** The height of the code editor. */
-      height: "50vh",
+      height: '50vh',
 
       /**
        * The options to configure the Monaco Editor instance. The default options are specified
@@ -73,11 +72,10 @@ const ErrorShowModal = (props: ShowModalProps) => {
        */
       options: {
         ...MonacoEditorOptions, // set default options
-        minimap: {enabled: false}
-      },
-    },
+        minimap: { enabled: false }
+      }
+    }
   } = props;
-
 
   const [showModal, setShowModal] = useState<boolean>(open);
 
@@ -88,16 +86,17 @@ const ErrorShowModal = (props: ShowModalProps) => {
       open={showModal}
       title={title}
       closable={closable}
-      footer={<Button type="primary" onClick={()=>setShowModal(false)}>{l('global.notifaction.iknow')}</Button>}
+      footer={
+        <Button type='primary' onClick={() => setShowModal(false)}>
+          {l('global.notification.iknow')}
+        </Button>
+      }
     >
-      <Paragraph ellipsis={{rows: 1, expandable: false}}>
+      <Paragraph ellipsis={{ rows: 1, expandable: false }}>
         <blockquote>{content}</blockquote>
       </Paragraph>
 
-      <CodeShow
-        {...codeShowProps}
-        code={content}
-      />
+      <CodeShow {...codeShowProps} code={content} />
     </Modal>
   );
 };

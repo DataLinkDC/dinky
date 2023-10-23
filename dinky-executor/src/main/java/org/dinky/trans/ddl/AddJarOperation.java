@@ -54,7 +54,6 @@ public class AddJarOperation extends AbstractOperation implements Operation {
     }
 
     public void init() {
-        AddJarSqlParser.getAllFilePath(statement)
-                .forEach(FlinkUdfPathContextHolder::addOtherPlugins);
+        AddJarSqlParser.getAllFilePath(statement).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
     }
 }

@@ -26,6 +26,8 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 
 import cn.hutool.core.date.DateTime;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,17 +40,53 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(value = "Result", description = "Return Result")
 public class Result<T> implements Serializable {
 
     /** result data */
+    @ApiModelProperty(
+            value = "Result Data",
+            name = "datas",
+            dataType = "T",
+            required = true,
+            allowEmptyValue = true,
+            example = "[]")
     private T datas;
-    /** result code */
+
+    @ApiModelProperty(
+            value = "Result Code",
+            name = "code",
+            dataType = "Integer",
+            required = true,
+            example = "0",
+            notes = "0: success, 1: fail")
     private Integer code;
-    /** result msg */
+
+    @ApiModelProperty(
+            value = "Result Message",
+            name = "msg",
+            dataType = "String",
+            required = true,
+            example = "success",
+            notes = "success: success, fail: fail")
     private String msg;
     /** result time */
+    @ApiModelProperty(
+            value = "Result Time",
+            name = "time",
+            dataType = "DateTime",
+            required = true,
+            example = "2021-05-03 19:56:00",
+            notes = "yyyy-MM-dd HH:mm:ss")
     private String time;
     /** result success */
+    @ApiModelProperty(
+            value = "Result is Success",
+            name = "success",
+            dataType = "Boolean",
+            required = true,
+            example = "true",
+            notes = "true: success, false: fail")
     private boolean success;
 
     public Result(Integer code, String msg) {
@@ -63,7 +101,7 @@ public class Result<T> implements Serializable {
     public Result(Status status) {
         if (status != null) {
             this.code = status.getCode();
-            this.msg = status.getMsg();
+            this.msg = status.getMessage();
         }
     }
 
@@ -78,7 +116,7 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> succeed(Status status) {
-        return of(null, CodeEnum.SUCCESS.getCode(), status.getMsg());
+        return of(null, CodeEnum.SUCCESS.getCode(), status.getMessage());
     }
 
     public static <T> Result<T> succeed() {
@@ -94,15 +132,15 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> succeed(T model, Status status) {
-        return of(model, CodeEnum.SUCCESS.getCode(), status.getMsg());
+        return of(model, CodeEnum.SUCCESS.getCode(), status.getMessage());
     }
 
     public static <T> Result<T> succeed(T model, Status status, Object... args) {
-        return of(model, CodeEnum.SUCCESS.getCode(), MessageFormat.format(status.getMsg(), args));
+        return of(model, CodeEnum.SUCCESS.getCode(), MessageFormat.format(status.getMessage(), args));
     }
 
     public static <T> Result<T> succeed(Status status, Object... args) {
-        return of(null, CodeEnum.SUCCESS.getCode(), MessageFormat.format(status.getMsg(), args));
+        return of(null, CodeEnum.SUCCESS.getCode(), MessageFormat.format(status.getMessage(), args));
     }
 
     public static <T> Result<T> data(T model) {
@@ -114,7 +152,7 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> of(T datas, Integer code, Status status) {
-        return new Result<>(datas, code, status.getMsg(), new DateTime().toString(), code == 0);
+        return new Result<>(datas, code, status.getMessage(), new DateTime().toString(), code == 0);
     }
 
     public static <T> Result<T> failed() {
@@ -126,15 +164,15 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> failed(Status status) {
-        return of(null, CodeEnum.ERROR.getCode(), status.getMsg());
+        return of(null, CodeEnum.ERROR.getCode(), status.getMessage());
     }
 
     public static <T> Result<T> failed(Status status, Object... args) {
-        return of(null, CodeEnum.ERROR.getCode(), MessageFormat.format(status.getMsg(), args));
+        return of(null, CodeEnum.ERROR.getCode(), MessageFormat.format(status.getMessage(), args));
     }
 
     public static <T> Result<T> failed(T model, Status status, Object... args) {
-        return of(model, CodeEnum.ERROR.getCode(), MessageFormat.format(status.getMsg(), args));
+        return of(model, CodeEnum.ERROR.getCode(), MessageFormat.format(status.getMessage(), args));
     }
 
     public static <T> Result<T> failed(T model, String msg) {
@@ -142,7 +180,7 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> failed(T model, Status status) {
-        return of(model, CodeEnum.ERROR.getCode(), status.getMsg());
+        return of(model, CodeEnum.ERROR.getCode(), status.getMessage());
     }
 
     /**
@@ -153,7 +191,7 @@ public class Result<T> implements Serializable {
      * @return result
      */
     public static <T> Result<T> errorWithArgs(Status status, Object... args) {
-        return new Result<>(status.getCode(), MessageFormat.format(status.getMsg(), args));
+        return new Result<>(status.getCode(), MessageFormat.format(status.getMessage(), args));
     }
 
     /**
@@ -165,7 +203,7 @@ public class Result<T> implements Serializable {
     public static Result<Void> getResultFromStatus(Status status) {
         Result<Void> result = new Result<Void>();
         result.setCode(status.getCode());
-        result.setMsg(status.getMsg());
+        result.setMsg(status.getMessage());
         return result;
     }
 }

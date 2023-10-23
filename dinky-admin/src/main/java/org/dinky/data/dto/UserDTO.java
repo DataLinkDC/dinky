@@ -19,6 +19,7 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.model.Menu;
 import org.dinky.data.model.Role;
 import org.dinky.data.model.Tenant;
 import org.dinky.data.model.User;
@@ -26,6 +27,8 @@ import org.dinky.data.model.User;
 import java.util.List;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,11 +36,24 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(value = "UserDTO", description = "User DTO")
 public class UserDTO {
 
+    @ApiModelProperty(value = "user", required = true, dataType = "User", allowEmptyValue = false)
     private User user;
+
+    @ApiModelProperty(value = "roleList", required = true, dataType = "List<Role>", allowEmptyValue = false)
     private List<Role> roleList;
+
+    @ApiModelProperty(value = "tenantList", required = true, dataType = "List<Tenant>", allowEmptyValue = false)
     private List<Tenant> tenantList;
+
+    @ApiModelProperty(value = "menuList", required = true, dataType = "List<Menu>", allowEmptyValue = false)
+    private List<Menu> menuList;
+
+    @ApiModelProperty(value = "currentTenant", required = true, dataType = "Tenant", allowEmptyValue = true)
     private Tenant currentTenant;
+
+    @ApiModelProperty(value = "tokenInfo", required = true, dataType = "SaTokenInfo", allowEmptyValue = true)
     private SaTokenInfo tokenInfo;
 }

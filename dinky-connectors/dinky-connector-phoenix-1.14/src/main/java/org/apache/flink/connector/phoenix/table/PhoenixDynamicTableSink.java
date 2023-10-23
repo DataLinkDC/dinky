@@ -72,7 +72,7 @@ public class PhoenixDynamicTableSink implements DynamicTableSink {
         Preconditions.checkState(
                 ChangelogMode.insertOnly().equals(requestedMode)
                         || this.dmlOptions.getKeyFields().isPresent(),
-                "please declare primary key for sink table when query contains update/delete record.");
+                "please declare primary key for sink table when query contains update/delete" + " record.");
     }
 
     @Override
@@ -85,14 +85,12 @@ public class PhoenixDynamicTableSink implements DynamicTableSink {
         builder.setJdbcExecutionOptions(this.executionOptions);
         builder.setRowDataTypeInfo(rowDataTypeInformation);
         builder.setFieldDataTypes(this.tableSchema.getFieldDataTypes());
-        return SinkFunctionProvider.of(
-                new GenericJdbcSinkFunction(builder.build()), this.jdbcOptions.getParallelism());
+        return SinkFunctionProvider.of(new GenericJdbcSinkFunction(builder.build()), this.jdbcOptions.getParallelism());
     }
 
     @Override
     public DynamicTableSink copy() {
-        return new PhoenixDynamicTableSink(
-                this.jdbcOptions, this.executionOptions, this.dmlOptions, this.tableSchema);
+        return new PhoenixDynamicTableSink(this.jdbcOptions, this.executionOptions, this.dmlOptions, this.tableSchema);
     }
 
     @Override
@@ -116,13 +114,8 @@ public class PhoenixDynamicTableSink implements DynamicTableSink {
     }
 
     public int hashCode() {
-        return Objects.hash(
-                new Object[] {
-                    this.jdbcOptions,
-                    this.executionOptions,
-                    this.dmlOptions,
-                    this.tableSchema,
-                    this.dialectName
-                });
+        return Objects.hash(new Object[] {
+            this.jdbcOptions, this.executionOptions, this.dmlOptions, this.tableSchema, this.dialectName
+        });
     }
 }

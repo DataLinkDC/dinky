@@ -19,26 +19,38 @@
 
 package org.dinky.executor;
 
-import org.dinky.assertion.Asserts;
-
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.RestOptions;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import cn.hutool.core.io.FileUtil;
+
 /**
- * LocalStreamExecuter
+ * LocalStreamExecutor
  *
  * @since 2021/5/25 13:48
  */
 public class LocalStreamExecutor extends Executor {
 
-    public LocalStreamExecutor(ExecutorSetting executorSetting) {
-        this.executorSetting = executorSetting;
-        if (Asserts.isNotNull(executorSetting.getConfig())) {
-            Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
+    public LocalStreamExecutor(ExecutorConfig executorConfig) {
+        this.executorConfig = executorConfig;
+        if (executorConfig.isValidJarFiles()) {
+            executorConfig
+                    .getConfig()
+                    .put(
+                            PipelineOptions.JARS.key(),
+                            Stream.of(executorConfig.getJarFiles())
+                                    .map(FileUtil::getAbsolutePath)
+                                    .collect(Collectors.joining(",")));
+        }
+        if (executorConfig.isValidConfig()) {
+            Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
             if (configuration.contains(RestOptions.PORT)) {
-                this.environment =
-                        StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
+                this.environment = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
             } else {
                 this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
             }

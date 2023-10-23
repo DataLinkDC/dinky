@@ -43,22 +43,21 @@ public class StaticResultProvider implements ResultProvider {
      * This converter supports only String, long, int and boolean fields. Moreover, this converter
      * works only with {@link GenericRowData}.
      */
-    public static final RowDataToStringConverter SIMPLE_ROW_DATA_TO_STRING_CONVERTER =
-            rowData -> {
-                GenericRowData genericRowData = (GenericRowData) rowData;
-                String[] results = new String[rowData.getArity()];
-                for (int i = 0; i < results.length; i++) {
-                    Object value = genericRowData.getField(i);
-                    if (Boolean.TRUE.equals(value)) {
-                        results[i] = "TRUE";
-                    } else if (Boolean.FALSE.equals(value)) {
-                        results[i] = "FALSE";
-                    } else {
-                        results[i] = value == null ? PrintStyle.NULL_VALUE : "" + value;
-                    }
-                }
-                return results;
-            };
+    public static final RowDataToStringConverter SIMPLE_ROW_DATA_TO_STRING_CONVERTER = rowData -> {
+        GenericRowData genericRowData = (GenericRowData) rowData;
+        String[] results = new String[rowData.getArity()];
+        for (int i = 0; i < results.length; i++) {
+            Object value = genericRowData.getField(i);
+            if (Boolean.TRUE.equals(value)) {
+                results[i] = "TRUE";
+            } else if (Boolean.FALSE.equals(value)) {
+                results[i] = "FALSE";
+            } else {
+                results[i] = value == null ? PrintStyle.NULL_VALUE : "" + value;
+            }
+        }
+        return results;
+    };
 
     private final List<Row> rows;
     private final Function<Row, RowData> externalToInternalConverter;
@@ -67,8 +66,7 @@ public class StaticResultProvider implements ResultProvider {
         this(rows, StaticResultProvider::rowToInternalRow);
     }
 
-    public StaticResultProvider(
-            List<Row> rows, Function<Row, RowData> externalToInternalConverter) {
+    public StaticResultProvider(List<Row> rows, Function<Row, RowData> externalToInternalConverter) {
         this.rows = rows;
         this.externalToInternalConverter = externalToInternalConverter;
     }
@@ -109,9 +107,7 @@ public class StaticResultProvider implements ResultProvider {
                 values[i] = null;
             } else if (value instanceof String) {
                 values[i] = StringData.fromString((String) value);
-            } else if (value instanceof Boolean
-                    || value instanceof Long
-                    || value instanceof Integer) {
+            } else if (value instanceof Boolean || value instanceof Long || value instanceof Integer) {
                 values[i] = value;
             } else {
                 throw new TableException("Cannot convert row type");

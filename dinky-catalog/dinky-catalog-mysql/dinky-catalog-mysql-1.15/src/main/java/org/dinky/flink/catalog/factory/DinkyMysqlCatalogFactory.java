@@ -60,8 +60,7 @@ public class DinkyMysqlCatalogFactory implements CatalogFactory {
 
     @Override
     public Catalog createCatalog(Context context) {
-        final FactoryUtil.CatalogFactoryHelper helper =
-                FactoryUtil.createCatalogFactoryHelper(this, context);
+        final FactoryUtil.CatalogFactoryHelper helper = FactoryUtil.createCatalogFactoryHelper(this, context);
         helper.validate();
 
         return new DinkyMysqlCatalog(

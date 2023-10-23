@@ -21,8 +21,14 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
+import org.dinky.daemon.task.DaemonFactory;
+import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.dto.ClusterConfigurationDTO;
+import org.dinky.data.dto.JobDataDto;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.Status;
+import org.dinky.data.model.ClusterConfiguration;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.History;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
@@ -31,7 +37,8 @@ import org.dinky.data.model.JobInstanceStatus;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.job.FlinkJobTaskPool;
+import org.dinky.job.FlinkJobTask;
+import org.dinky.job.handler.JobRefreshHandler;
 import org.dinky.mapper.JobInstanceMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.mybatis.util.ProTableUtil;
@@ -40,10 +47,12 @@ import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
-import org.dinky.utils.JSONUtil;
+import org.dinky.service.MonitorService;
+import org.dinky.utils.JsonUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
@@ -68,6 +77,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterConfigurationService;
     private final JobHistoryService jobHistoryService;
+    private final MonitorService monitorService;
 
     @Override
     public JobInstance getByIdWithoutTenant(Integer id) {
@@ -141,55 +151,50 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
     @Override
     public JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance) {
-        Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMsg());
-        String key = jobInstance.getId().toString();
-        FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
-        if (pool.containsKey(key)) {
-            return pool.get(key);
-        } else {
-            JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
-            jobInfoDetail.setInstance(jobInstance);
-            jobInfoDetail.setCluster(clusterInstanceService.getById(jobInstance.getClusterId()));
-            jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
-            History history = historyService.getById(jobInstance.getHistoryId());
-            history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
-            jobInfoDetail.setHistory(history);
-            if (Asserts.isNotNull(history.getClusterConfigurationId())) {
-                jobInfoDetail.setClusterConfiguration(
-                        clusterConfigurationService.getClusterConfigById(
-                                history.getClusterConfigurationId()));
-            }
-            return jobInfoDetail;
+        JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
+
+        Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
+        jobInfoDetail.setInstance(jobInstance);
+
+        ClusterInstance clusterInstance = clusterInstanceService.getById(jobInstance.getClusterId());
+        jobInfoDetail.setClusterInstance(clusterInstance);
+
+        History history = historyService.getById(jobInstance.getHistoryId());
+        history.setConfig(JsonUtils.parseObject(history.getConfigJson()));
+        jobInfoDetail.setHistory(history);
+        if (Asserts.isNotNull(history.getClusterConfigurationId())) {
+            ClusterConfiguration clusterConfig =
+                    clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId());
+            jobInfoDetail.setClusterConfiguration(ClusterConfigurationDTO.fromBean(clusterConfig));
         }
+
+        JobDataDto jobDataDto = jobHistoryService.getJobHistoryDto(jobInstance.getId());
+        jobInfoDetail.setJobDataDto(jobDataDto);
+
+        // Get a list of metrics and deduplicate them based on vertices and metrics
+        Map<String, Map<String, String>> verticesAndMetricsMap = new ConcurrentHashMap<>();
+        monitorService.getJobMetrics(jobInstance.getTaskId()).forEach(m -> {
+            verticesAndMetricsMap.putIfAbsent(m.getVertices(), new ConcurrentHashMap<>());
+            verticesAndMetricsMap.get(m.getVertices()).put(m.getMetrics(), "");
+        });
+        jobInfoDetail.setCustomMetricsMap(verticesAndMetricsMap);
+        return jobInfoDetail;
     }
 
     @Override
-    public JobInfoDetail refreshJobInfoDetailInfo(JobInstance jobInstance) {
-        Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMsg());
-        JobInfoDetail jobInfoDetail;
-        FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
-        String key = jobInstance.getId().toString();
-
-        jobInfoDetail = new JobInfoDetail(jobInstance.getId());
-        jobInfoDetail.setInstance(jobInstance);
-        jobInfoDetail.setCluster(clusterInstanceService.getById(jobInstance.getClusterId()));
-        jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
-        History history = historyService.getById(jobInstance.getHistoryId());
-
-        if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
-            history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
-            jobInfoDetail.setHistory(history);
-
-            jobInfoDetail.setClusterConfiguration(
-                    clusterConfigurationService.getClusterConfigById(
-                            history.getClusterConfigurationId()));
-        }
-        if (pool.containsKey(key)) {
-            pool.refresh(jobInfoDetail);
-        } else {
-            pool.put(key, jobInfoDetail);
-        }
+    public JobInfoDetail refreshJobInfoDetail(Integer jobInstanceId) {
+        JobInfoDetail jobInfoDetail = getJobInfoDetail(jobInstanceId);
+        JobRefreshHandler.refreshJob(jobInfoDetail, true);
+        DaemonFactory.refeshOraddTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId));
         return jobInfoDetail;
+    }
+
+    @Override
+    public void refreshJobByTaskIds(Integer... taskIds) {
+        for (Integer taskId : taskIds) {
+            JobInstance instance = getJobInstanceByTaskId(taskId);
+            refreshJobInfoDetail(instance.getId());
+        }
     }
 
     @Override
@@ -213,21 +218,6 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         Map<String, Object> param = mapper.convertValue(para, Map.class);
         Page<JobInstance> page = new Page<>(current, pageSize);
         List<JobInstance> list = baseMapper.selectForProTable(page, queryWrapper, param);
-        FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
-        for (JobInstance jobInstance : list) {
-            if (pool.containsKey(jobInstance.getId().toString())) {
-                jobInstance.setStatus(
-                        pool.get(jobInstance.getId().toString()).getInstance().getStatus());
-                jobInstance.setUpdateTime(
-                        pool.get(jobInstance.getId().toString()).getInstance().getUpdateTime());
-                jobInstance.setFinishTime(
-                        pool.get(jobInstance.getId().toString()).getInstance().getFinishTime());
-                jobInstance.setError(
-                        pool.get(jobInstance.getId().toString()).getInstance().getError());
-                jobInstance.setDuration(
-                        pool.get(jobInstance.getId().toString()).getInstance().getDuration());
-            }
-        }
         return ProTableResult.<JobInstance>builder()
                 .success(true)
                 .data(list)
@@ -240,7 +230,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public void initTenantByJobInstanceId(Integer id) {
         Integer tenantId = baseMapper.getTenantByJobInstanceId(id);
-        Asserts.checkNull(tenantId, Status.JOB_INSTANCE_NOT_EXIST.getMsg());
+        Asserts.checkNull(tenantId, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
         TenantContextHolder.set(tenantId);
     }
 }

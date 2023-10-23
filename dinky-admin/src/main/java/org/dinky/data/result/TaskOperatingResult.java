@@ -24,20 +24,51 @@ import org.dinky.data.enums.TaskOperatingSavepointSelect;
 import org.dinky.data.enums.TaskOperatingStatus;
 import org.dinky.data.model.Task;
 
+import java.io.Serializable;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /** @version 1.0 */
 @Data
-public class TaskOperatingResult {
+@ApiModel(value = "TaskOperatingResult", description = "Result of a Task Operation")
+public class TaskOperatingResult implements Serializable {
+    private static final long serialVersionUID = 1L;
 
+    @ApiModelProperty(
+            value = "Task",
+            dataType = "Task",
+            example = "{taskObject}",
+            notes = "The task associated with the operation")
     private Task task;
 
+    @ApiModelProperty(
+            value = "Status",
+            dataType = "TaskOperatingStatus",
+            example = "SUCCESS",
+            notes = "The status of the task operation")
     private TaskOperatingStatus status;
 
+    @ApiModelProperty(
+            value = "Code",
+            dataType = "Integer",
+            example = "0",
+            notes = "A code indicating the result of the operation")
     private Integer code;
 
+    @ApiModelProperty(
+            value = "Message",
+            dataType = "String",
+            example = "Operation successful",
+            notes = "A message providing additional information about the operation")
     private String message;
 
+    @ApiModelProperty(
+            value = "Savepoint Selection",
+            dataType = "TaskOperatingSavepointSelect",
+            example = "{savepointSelectObject}",
+            notes = "The savepoint selection information for the task operation")
     private TaskOperatingSavepointSelect taskOperatingSavepointSelect;
 
     public TaskOperatingResult(Task task) {
@@ -46,8 +77,7 @@ public class TaskOperatingResult {
         this.taskOperatingSavepointSelect = TaskOperatingSavepointSelect.DEFAULT_CONFIG;
     }
 
-    public TaskOperatingResult(
-            Task task, TaskOperatingSavepointSelect taskOperatingSavepointSelect) {
+    public TaskOperatingResult(Task task, TaskOperatingSavepointSelect taskOperatingSavepointSelect) {
         this.task = task;
         this.status = TaskOperatingStatus.INIT;
         this.taskOperatingSavepointSelect = taskOperatingSavepointSelect;

@@ -15,15 +15,16 @@
  * limitations under the License.
  */
 
-import {PageContainer} from "@ant-design/pro-components";
-import ProcessList from "./components/ProcessList";
-import SlowlyAppear from "@/components/Animation/SlowlyAppear";
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import { PageContainer } from '@ant-design/pro-components';
+import ProcessList from './components/ProcessList';
 
-export default ()=> {
-
-  return <SlowlyAppear>
-    <PageContainer title={false}>
-      <ProcessList />
-    </PageContainer>
-  </SlowlyAppear>
-}
+export default () => {
+  return (
+    <SlowlyAppear>
+      <PageContainer title={false}>
+        <ProcessList />
+      </PageContainer>
+    </SlowlyAppear>
+  );
+};

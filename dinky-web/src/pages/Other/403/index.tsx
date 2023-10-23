@@ -15,21 +15,28 @@
  * limitations under the License.
  */
 
-import {Button, Result} from "antd";
-import {l} from "@/utils/intl";
+import { l } from '@/utils/intl';
+import { history } from '@umijs/max';
+import { Button, Result } from 'antd';
 
 export const UnAccessible = () => {
-
-  return <>
-    <Result
-      status="403"
-      title="403"
-      subTitle={l("app.request.403")}
-      extra={
-        <Button type="primary">
-          {l("app.request.back")}
-        </Button>
-      }
-    />
-  </>;
+  return (
+    <>
+      <Result
+        status='403'
+        title='403'
+        subTitle={l('app.request.403')}
+        extra={
+          <Button
+            type='primary'
+            onClick={(e) => {
+              history.push('/');
+            }}
+          >
+            {l('app.request.back')}
+          </Button>
+        }
+      />
+    </>
+  );
 };

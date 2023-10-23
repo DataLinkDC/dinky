@@ -24,10 +24,9 @@ body,
   overflow-x: auto;
   overflow-y: auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-  'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-  'Noto Color Emoji';
+    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
 }
-
 
 // .login-form style --- start ----
 .content {
@@ -39,53 +38,53 @@ body,
 }
 
 .header {
-  height: 100px;
-  line-height: 10vh;
   position: relative;
+  height: 100px;
   font-weight: 600;
   font-size: 4rem;
   font-family: PMingLiU-ExtB, 'Helvetica Neue', Arial, Helvetica, sans-serif;
-
+  line-height: 10vh;
 }
 
 .logo {
   position: absolute;
-  width: 28vw;
-  left: -30vw;
-  top: -5vh;
+  top: 10vh;
+  left: 20vw;
   display: flex;
   flex: auto;
   flex-flow: column-reverse;
+  width: 28vw;
 }
 
-
 .desc {
-  margin-bottom: 1rem;
   margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 24px;
   //color: @text-color-secondary;
   //font-size: @font-size-base;
 }
 
-
 .loginformMain {
+  z-index: 1;
   display: flex;
   flex: auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   max-height: max-content;
   padding: 0 6vh 30vh 2vh;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  background-size: cover;
-  background-position: left center;
   background-repeat: no-repeat;
-  z-index: 1;
+  background-position: left center;
+  background-size: cover;
 
   .form {
     position: relative;
     height: 100 * 100vw / 320;
-    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
-    margin-left: 60vw;
     margin-bottom: -15vh;
+    margin-left: 60vw;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
   }
 
   .loginform {
@@ -94,7 +93,6 @@ body,
 }
 
 // .login-form style --- end ----
-
 
 // scrollbar style --- start ----
 ::-webkit-scrollbar {
@@ -118,6 +116,10 @@ body,
 
 ::-webkit-scrollbar-corner {
   background-color: #f5f5f5;
+}
+
+.monaco-scrollable-element > .scrollbar > .slider {
+  background: #8db7fd !important;
 }
 
 // scrollbar style --- end ----
@@ -169,17 +171,17 @@ ol {
 }
 
 .options-button {
-  border: none;
-  background-color: rgba(79, 79, 79, 0.04);
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background-color: rgba(79, 79, 79, 0.04);
+  border: none;
 }
 
 .blue-icon {
-  color: rgb(24, 144, 255);
-  height: border-box;
   width: border-box;
+  height: border-box;
+  color: rgb(24, 144, 255);
 }
 
 .ant-pro-page-container-children-content {
@@ -191,17 +193,21 @@ ol {
 }
 
 .ant-pro-card-body {
-  padding: 0;
   height: max-content;
+  padding: 0;
 }
 
 .hidden-overflow {
   overflow: hidden;
 }
 
+.ant-list .ant-list-pagination {
+  margin-block-start: 0; // 去除 分页组件和 上边表格的间距
+}
+
 .ant-table-wrapper {
-  overflow-y: auto;
   overflow-x: auto;
+  overflow-y: auto;
   overflow-block: auto;
 }
 
@@ -217,64 +223,64 @@ ol {
   overflow-y: auto;
 
   .ant-tree-list-holder-inner {
-    min-width: max-content;
     z-index: auto;
+    min-width: max-content;
   }
 
   .tree-search-value {
     //color: #00EE76;
     color: #c00b26;
-    background-color: rgba(3, 102, 214, 0.5);
     font-size: 15px;
+    background-color: rgba(3, 102, 214, 0.5);
   }
 }
 
 .siderTree {
   height: 100%;
+  min-height: 82vh;
+  max-height: 82vh;
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 82vh;
-  min-height: 82vh;
-
 
   .ant-tree {
     min-width: max-content;
 
     .ant-tree-node-content-wrapper {
       display: flex;
-
-      :hover {
-        color: #1eef07;
-      }
     }
   }
 }
 
+.ant-tree-node-content-wrapper {
+  display: flex;
+}
+
 .gitCodeTree {
-  max-height: 70vh;
   min-height: 70vh;
+  max-height: 70vh;
 }
 
 .schemaTree {
-  max-height: 89vh;
   min-height: 89vh;
+  max-height: 89vh;
 }
 
 .code-content-empty {
-  height: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  color: #999;
+  justify-content: center;
+  height: 100%;
   min-height: 70vh;
   max-height: 70vh;
+  color: #999;
 }
 
 .monaco-float {
   position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  height: 100%;
 
   .float-button {
     position: absolute;
@@ -287,28 +293,27 @@ ol {
 
   .full-screen {
     position: absolute;
-    transform: translate(5%, 15%);
     top: 0;
     right: 2vw;
     width: 40px;
     height: 40px;
+    transform: translate(5%, 15%);
   }
 }
-
 
 /**
  * if i18n is too long, it will break line ,
  * so we need to use pre-wrap , but it will first break line at space, so we need to use nowrap
  */
 .needWrap {
-  white-space: pre-wrap;
   align-content: center;
+  white-space: pre-wrap;
 }
 
 .query-form {
-  width: max-content;
-  left: 0;
   position: absolute;
+  left: 0;
+  width: max-content;
 }
 
 .tiny-charts {
@@ -317,34 +322,38 @@ ol {
   right: 12px;
 }
 
-
 .radio-group-chart {
   position: absolute;
-  right: 0;
   top: 7px;
+  right: 0;
 }
 
 .tag-content {
-  align-items: center;
   align-content: center;
+  align-items: center;
+}
+
+.ant-pro-checkcard-title {
+  overflow: unset;
 }
 
 h5 {
-  margin-left: 0.5rem;
   margin-bottom: 0;
+  margin-left: 0.5rem;
 }
-
 
 // theme
 // light
-.show{
+.show {
   opacity: 1;
   animation: show-anim 0.5s;
 }
-.hide{
+
+.hide {
   opacity: 0;
   animation: hide-anim 0.5s;
 }
+
 @keyframes show-anim {
   0% {
     opacity: 0;
@@ -353,6 +362,7 @@ h5 {
     opacity: 1;
   }
 }
+
 @keyframes hide-anim {
   0% {
     opacity: 1;
@@ -362,19 +372,23 @@ h5 {
   }
 }
 
-.title{
-  font-size: 15px;
+.title {
+  overflow: visible;
   font-weight: 500;
-  font-family: "SimHei",serif;
+  font-size: 15px;
+  font-family: 'SimHei', serif;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
+
 .container-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   line-height: 32px;
   padding-inline: 10px;
-  padding-block: 5px;
-  border-block: 1px solid
+  padding-block: 1px;
+  border-block: 1px solid;
 }
 
 // 滚动条
@@ -383,4 +397,207 @@ h5 {
   direction: ltr;
   scrollbar-color: #d4aa70 #e4e4e4;
   scrollbar-width: thin;
+}
+
+.data-studio-tabs {
+  .ant-tabs-nav {
+    .ant-tabs-nav-wrap {
+      .ant-tabs-tab {
+        padding: 4px 8px;
+      }
+
+      .ant-tabs-tab-active {
+        box-sizing: content-box;
+        border-block-end: 3px solid #8db7fd;
+        padding-block-end: 3px;
+      }
+    }
+  }
+}
+
+.data-studio-form {
+  .ant-form-item {
+    margin-bottom: 5px !important;
+  }
+}
+
+.ant-pro-form-list-item {
+  display: flex !important;
+  align-items: baseline !important;
+}
+
+.ant-pro-checkcard {
+  overflow: hidden;
+
+  .ant-pro-checkcard-body {
+    width: 100vw;
+  }
+}
+
+// ====================  lineage style start ====================
+
+.butterfly-lineage-dag .table-node.focus {
+  border-width: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 5px #0d74e8;
+}
+
+.butterfly-lineage-dag .table-node:hover {
+  border-width: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 5px #0d74e8;
+}
+
+.butterfly-lineage-dag .table-node .field {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  height: 20px;
+  border-width: 10px;
+  border-radius: 4px;
+}
+
+.field.hover-chain {
+  width: 97%;
+  background: #0d74e8 !important;
+}
+
+.butterfly-lineage-dag .table-node .title-con {
+  .title {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+    max-height: 4vh;
+    padding-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    background: #63e0e0;
+    border-radius: 4px;
+    box-shadow: #0d74e8;
+
+    .ant-typography {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}
+
+.butterfly-lineage-dag .table-node .field .point.left-point {
+  left: -10px;
+  z-index: 9999;
+}
+
+.butterfly-lineage-dag .table-node .field .point.right-point {
+  right: -10px;
+  z-index: 9999;
+}
+
+.butterfly-lineage-dag .table-node .title-con {
+  position: relative;
+  display: flex;
+  min-width: 40%;
+}
+
+.butterfly-lineage-dag .butterflies-link.hover-chain {
+  transition: all 0.5s ease-in-out;
+  // 线条缓慢流动
+  animation: 30s linear 0s infinite normal none running running-line;
+  stroke: #02f657;
+  stop-opacity: 1;
+}
+
+.butterfly-lineage-dag .butterflies-arrow.hover-chain {
+  transition: all 0.5s ease-in-out;
+  animation: 30s linear 0s infinite normal none running running-line;
+  fill: #28da8f;
+  stroke: #28da8f;
+}
+
+.butterfly-lineage-dag .table-node .field.hover-chain .point {
+  background: #0095ff;
+  transition: all 0.5s ease-in-out;
+}
+
+.butterfly-lineage-dag .table-node .field {
+  position: relative;
+  align-items: center;
+  height: 26px !important;
+  margin: 0 6px;
+  padding: 4px 4px 4px 6px;
+  white-space: nowrap;
+}
+.butterfly-lineage-dag .table-node .field.hover-chain {
+  color: #fff;
+  transition: all 0.5s ease-in-out;
+}
+
+.butterfly-lineage-dag .table-node .title-con .operator {
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  height: 100%;
+  max-height: 4vh;
+  margin: 0 20px;
+  .operator-item {
+    margin-left: 15px;
+  }
+}
+
+.butterflies-link {
+  transition: all 0.5s ease-in-out; // 线条缓慢流动
+  fill: none; // 线条填充色
+  stroke: #04671f; // 线条颜色
+  stroke-width: 1.5px; // 线条宽度
+  stroke-dasharray: 5, 8; // 线条样式 5px实线 8px空白
+  stroke-dashoffset: -2px; // 线条偏移量
+  stroke-linecap: round; // 线条两端样式
+  stroke-linejoin: round; // 线条连接样式 miter-clip斜角 miter斜角 round圆角 bevel斜角
+}
+
+.butterflies-link:hover {
+  right: 0; // 激活连接线 右边距
+}
+
+.butterflies-arrow {
+  padding-right: 10px !important; // 箭头右边距
+  transition: all 0.5s ease-in-out; // 线条缓慢流动
+  fill: #04671f; // 箭头颜色
+  stroke: #04671f; // 箭头颜色
+  stroke-width: 4px; // 箭头宽度
+}
+
+.butterflies-arrow:hover {
+  right: 0;
+  background: #0366d6;
+}
+// ====================  lineage style end ====================
+
+.card-list-item-wrapper {
+  display: flex;
+}
+.card-list-item {
+  width: 100%;
+  margin: 0;
+}
+.card-list-item {
+  transition: 0.3s;
+}
+
+.card-button-list {
+  display: none;
+}
+
+.card-list-item:hover .card-button-list {
+  display: block;
+}
+
+.card-list-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

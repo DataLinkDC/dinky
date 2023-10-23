@@ -16,26 +16,37 @@
  *
  */
 
-import React from "react";
-import {Button} from "antd";
-import {MinusOutlined, UserSwitchOutlined} from "@ant-design/icons";
-import {l} from "@/utils/intl";
+import { TabsItemType } from '@/pages/DataStudio/model';
+import { Button } from 'antd';
+import React from 'react';
 
-type CircleButtonProps = {
-  // key: string;
+export type CircleButtonProps = {
   icon: React.ReactNode;
+  loading?: boolean;
   onClick?: () => void;
   title?: string;
+  key?: string;
+};
+export type CircleDataStudioButtonProps = {
+  icon: React.ReactNode;
+  loading?: boolean;
+  onClick?: (panes: TabsItemType[], activeKey: string) => void;
+  title?: string;
+  key?: string;
 };
 
 export const CircleBtn: React.FC<CircleButtonProps> = (props) => {
-  const {onClick,title,icon} = props;
+  const { onClick, title, icon, loading } = props;
 
   return (
-    <Button title={title}
-            // key={key}
-            icon={icon} block type={"text"}
-            shape={"circle"}
-            onClick={onClick}/>
+    <Button
+      title={title}
+      loading={loading}
+      icon={icon}
+      block
+      type={'text'}
+      shape={'circle'}
+      onClick={onClick}
+    />
   );
 };

@@ -21,6 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.AlertGroup;
+import org.dinky.data.model.AlertHistory;
 import org.dinky.data.model.AlertInstance;
 import org.dinky.mapper.AlertGroupMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
@@ -40,18 +41,23 @@ import org.springframework.transaction.annotation.Transactional;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
 
 /** AlertGroupServiceImpl */
 @Service
-public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup>
-        implements AlertGroupService {
+@RequiredArgsConstructor
+public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup> implements AlertGroupService {
 
-    @Lazy @Resource private AlertInstanceService alertInstanceService;
+    @Lazy
+    @Resource
+    private AlertInstanceService alertInstanceService;
 
-    @Lazy @Resource private AlertHistoryService alertHistoryService;
+    @Lazy
+    @Resource
+    private AlertHistoryService alertHistoryService;
 
     @Override
-    public List<AlertGroup> listEnabledAll() {
+    public List<AlertGroup> listEnabledAllAlertGroups() {
         return list(new LambdaQueryWrapper<AlertGroup>().eq(AlertGroup::getEnabled, 1));
     }
 
@@ -74,7 +80,7 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
     }
 
     @Override
-    public Boolean enable(Integer id) {
+    public Boolean modifyAlertGroupStatus(Integer id) {
         AlertGroup alertGroup = getById(id);
         alertGroup.setEnabled(!alertGroup.getEnabled());
         return updateById(alertGroup);
@@ -89,10 +95,9 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteGroupById(Integer id) {
-        if (removeById(id)) {
-            alertHistoryService.deleteByAlertGroupId(id);
-            return true;
-        }
-        return false;
+        alertHistoryService
+                .list(new LambdaQueryWrapper<AlertHistory>().eq(AlertHistory::getAlertGroupId, id))
+                .forEach(alertHistory -> alertHistoryService.removeById(alertHistory.getId()));
+        return removeById(id);
     }
 }

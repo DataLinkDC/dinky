@@ -33,6 +33,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
 import cn.dev33.satoken.interceptor.SaInterceptor;
+import cn.dev33.satoken.stp.StpUtil;
 
 /**
  * AppConfiguration
@@ -72,15 +73,45 @@ public class AppConfig implements WebMvcConfigurer {
         registry.addInterceptor(localeChangeInterceptor());
         // 注册Sa-Token的路由拦截器
 
-        registry.addInterceptor(new SaInterceptor())
+        //        registry.addInterceptor(new SaInterceptor(handle -> {
+        //                    // 根据路由划分模块，不同模块不同鉴权
+        //                    SaRouter.match("/api/alertGroup/**", r ->
+        // StpUtil.checkPermission("alertGroup"));
+        //                    SaRouter.match("/api/alertHistory/**", r ->
+        // StpUtil.checkPermission("alertHistory"));
+        //                    SaRouter.match("/api/alertInstance/**", r ->
+        // StpUtil.checkPermission("alertInstance"));
+        //                    SaRouter.match("/api/catalogue/**", r ->
+        // StpUtil.checkPermission("catalogue"));
+        //                    SaRouter.match("/api/clusterConfiguration/**", r ->
+        // StpUtil.checkPermission("clusterConfiguration"));
+        //                    SaRouter.match("/api/cluster/**", r ->
+        // StpUtil.checkPermission("clusterInstance"));
+        //                    SaRouter.match("/api/database/**", r ->
+        // StpUtil.checkPermission("database"));
+        //                    SaRouter.match("/api/document/**", r ->
+        // StpUtil.checkPermission("document"));
+        //                    SaRouter.match("/api/fragment/**", r ->
+        // StpUtil.checkPermission("fragment"));
+        //                    SaRouter.match("/api/git/**", r -> StpUtil.checkPermission("git"));
+        //                    SaRouter.match("/api/history/**", r ->
+        // StpUtil.checkPermission("history"));
+        //
+        //                }))
+        //                .addPathPatterns("/api/**")
+        //                .excludePathPatterns("/api/login")
+        //                .excludePathPatterns("/druid/**")
+        //                .excludePathPatterns("/openapi/**");
+
+        registry.addInterceptor(new SaInterceptor(handler -> StpUtil.checkLogin()))
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/login")
-                .excludePathPatterns("/druid/**")
-                .excludePathPatterns("/openapi/**");
+                .excludePathPatterns(
+                        "/api/login", "/api/ldap/ldapEnableStatus",
+                        "/druid/**", "/openapi/**");
 
         registry.addInterceptor(new TenantInterceptor())
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/login")
+                .excludePathPatterns("/api/login", "/api/ldap/ldapEnableStatus")
                 .addPathPatterns("/api/alertGroup/**")
                 .addPathPatterns("/api/alertHistory/**")
                 .addPathPatterns("/api/alertInstance/**")

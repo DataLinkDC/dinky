@@ -16,23 +16,23 @@
  *
  */
 
-import {l} from "@/utils/intl";
-import {Button} from "antd";
-import {EditTwoTone} from "@ant-design/icons";
-import React from "react";
+import { l } from '@/utils/intl';
+import { EditTwoTone } from '@ant-design/icons';
+import { Button } from 'antd';
+import React from 'react';
 
 type EditButtonProps = {
   onClick: () => void;
 };
 
 export const EditBtn: React.FC<EditButtonProps> = (props) => {
-  const {onClick} = props;
+  const { onClick } = props;
 
   return (
     <Button
-      className={"options-button"}
-      icon={<EditTwoTone/>}
-      title={l("button.edit")}
+      className={'options-button'}
+      icon={<EditTwoTone />}
+      title={l('button.edit')}
       onClick={() => onClick()}
     />
   );

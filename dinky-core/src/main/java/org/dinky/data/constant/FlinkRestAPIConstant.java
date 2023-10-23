@@ -33,6 +33,7 @@ public final class FlinkRestAPIConstant {
     public static final String CONFIG = "/config";
 
     public static final String JOBS = "jobs/";
+    public static final String VERTICES = "/vertices/";
 
     public static final String JOBSLIST = "jobs/overview";
 
@@ -63,4 +64,7 @@ public final class FlinkRestAPIConstant {
     public static final String THREAD_DUMP = "/thread-dump";
 
     public static final String GET = "?get=";
+    public static final String BACKPRESSURE = "/backpressure";
+
+    public static final String WATERMARKS = "/watermarks";
 }

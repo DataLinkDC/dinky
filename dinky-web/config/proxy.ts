@@ -36,8 +36,29 @@ export default {
       // target: 'https://preview.pro.ant.design',
       // 配置了这个可以从 http 代理到 https
       // 依赖 origin 的功能可能需要这个，比如 cookie
+      secure: false,
       changeOrigin: true,
+      logLevel: 'debug',
       pathRewrite: { '^': '' },
+      onProxyRes: (
+        proxyRes: any,
+        req: any,
+        res: {
+          header: (arg0: {
+            'Content-Type': string;
+            'Cache-Control': string;
+            Connection: string;
+            'X-Accel-Buffering': string;
+          }) => void;
+        }
+      ) => {
+        res.header({
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache, no-transform',
+          Connection: 'keep-alive',
+          'X-Accel-Buffering': 'noe'
+        });
+      }
     }
   },
 
@@ -50,14 +71,14 @@ export default {
     '/api/': {
       target: 'https://proapi.azurewebsites.net',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
-    },
+      pathRewrite: { '^': '' }
+    }
   },
   pre: {
     '/api/': {
       target: 'your pre url',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
-    },
-  },
+      pathRewrite: { '^': '' }
+    }
+  }
 };

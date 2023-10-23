@@ -19,18 +19,38 @@
 
 package org.dinky.data.vo;
 
-import org.dinky.data.metrics.MetricsTotal;
-
 import java.time.LocalDateTime;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
-@Getter
-@Setter
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ApiModel(value = "MetricsVO", description = "Metrics Value Object")
 public class MetricsVO {
-    private String content;
-    private MetricsTotal metricsTotal;
+    @ApiModelProperty(value = "Content of metrics", dataType = "Object", notes = "Content of the metrics data.")
+    private Object content;
+
+    @ApiModelProperty(value = "Model name", dataType = "String", notes = "Name of the model.")
     private String model;
+
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(
+            value = "Timestamp of heartbeart",
+            dataType = "LocalDateTime",
+            notes = "Timestamp of the heartbeat data.",
+            example = "2023-09-15 14:30:00")
     private LocalDateTime heartTime;
 }

@@ -33,8 +33,7 @@ import java.util.function.Function;
  * Currently, this statement executor is only used for table/sql to buffer insert/update/delete
  * events, and reduce them in buffer before submit to external database.
  */
-public final class TableBufferReducedStatementExecutor
-        implements JdbcBatchStatementExecutor<RowData> {
+public final class TableBufferReducedStatementExecutor implements JdbcBatchStatementExecutor<RowData> {
 
     private final JdbcBatchStatementExecutor<RowData> upsertExecutor;
     private final JdbcBatchStatementExecutor<RowData> deleteExecutor;
@@ -81,11 +80,10 @@ public final class TableBufferReducedStatementExecutor
             case UPDATE_BEFORE:
                 return false;
             default:
-                throw new UnsupportedOperationException(
-                        String.format(
-                                "Unknown row kind, the supported row kinds is: INSERT, UPDATE_BEFORE, UPDATE_AFTER,"
-                                        + " DELETE, but get: %s.",
-                                rowKind));
+                throw new UnsupportedOperationException(String.format(
+                        "Unknown row kind, the supported row kinds is: INSERT,"
+                                + " UPDATE_BEFORE, UPDATE_AFTER, DELETE, but get: %s.",
+                        rowKind));
         }
     }
 

@@ -119,16 +119,12 @@ public class JdbcTypeUtil {
      */
     public static TableSchema normalizeTableSchema(TableSchema schema) {
         TableSchema.Builder physicalSchemaBuilder = TableSchema.builder();
-        schema.getTableColumns()
-                .forEach(
-                        c -> {
-                            if (c.isPhysical()) {
-                                final DataType type =
-                                        DataTypeUtils.transform(
-                                                c.getType(), TypeTransformations.timeToSqlTypes());
-                                physicalSchemaBuilder.field(c.getName(), type);
-                            }
-                        });
+        schema.getTableColumns().forEach(c -> {
+            if (c.isPhysical()) {
+                final DataType type = DataTypeUtils.transform(c.getType(), TypeTransformations.timeToSqlTypes());
+                physicalSchemaBuilder.field(c.getName(), type);
+            }
+        });
         return physicalSchemaBuilder.build();
     }
 }

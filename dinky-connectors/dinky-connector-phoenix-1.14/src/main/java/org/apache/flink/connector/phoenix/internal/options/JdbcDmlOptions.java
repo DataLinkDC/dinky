@@ -35,7 +35,10 @@ public class JdbcDmlOptions extends JdbcTypedQueryOptions {
     private static final long serialVersionUID = 1L;
 
     private final String[] fieldNames;
-    @Nullable private final String[] keyFields;
+
+    @Nullable
+    private final String[] keyFields;
+
     private final String tableName;
     private final JdbcDialect dialect;
 
@@ -44,11 +47,7 @@ public class JdbcDmlOptions extends JdbcTypedQueryOptions {
     }
 
     private JdbcDmlOptions(
-            String tableName,
-            JdbcDialect dialect,
-            String[] fieldNames,
-            int[] fieldTypes,
-            String[] keyFields) {
+            String tableName, JdbcDialect dialect, String[] fieldNames, int[] fieldTypes, String[] keyFields) {
         super(fieldTypes);
         this.tableName = Preconditions.checkNotNull(tableName, "table is empty");
         this.dialect = Preconditions.checkNotNull(dialect, "dialect name is empty");
@@ -96,8 +95,7 @@ public class JdbcDmlOptions extends JdbcTypedQueryOptions {
     }
 
     /** Builder for {@link JdbcDmlOptions}. */
-    public static class JdbcDmlOptionsBuilder
-            extends JdbcUpdateQueryOptionsBuilder<JdbcDmlOptionsBuilder> {
+    public static class JdbcDmlOptionsBuilder extends JdbcUpdateQueryOptionsBuilder<JdbcDmlOptionsBuilder> {
         private String tableName;
         private String[] fieldNames;
         private String[] keyFields;

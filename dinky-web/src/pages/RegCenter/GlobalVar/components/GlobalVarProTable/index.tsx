@@ -17,218 +17,231 @@
  *
  */
 
-import React, {useRef, useState} from 'react';
-import type {ActionType, ProColumns} from '@ant-design/pro-table';
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
+import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import CodeShow from '@/components/CustomEditor/CodeShow';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
+import GlobalVarDrawer from '@/pages/RegCenter/GlobalVar/components/GlobalVarDrawer';
+import GlobalVarModal from '@/pages/RegCenter/GlobalVar/components/GlobalVarModal';
+import { queryList } from '@/services/api';
+import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
+import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { Document, GlobalVar } from '@/types/RegCenter/data.d';
+import { InitGlobalVarState } from '@/types/RegCenter/init.d';
+import { GlobalVarState } from '@/types/RegCenter/state.d';
+import { l } from '@/utils/intl';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import {l} from "@/utils/intl";
-import {Document, GlobalVar} from "@/types/RegCenter/data";
-import {
-    API_CONSTANTS,
-    PROTABLE_OPTIONS_PUBLIC,
-    STATUS_ENUM,
-    STATUS_MAPPING,
-} from "@/services/constants";
-import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
-import {queryList} from "@/services/api";
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import GlobalVarModal from "@/pages/RegCenter/GlobalVar/components/GlobalVarModal";
-import GlobalVarDrawer from "@/pages/RegCenter/GlobalVar/components/GlobalVarDrawer";
-import {EnableSwitchBtn} from '@/components/CallBackButton/EnableSwitchBtn';
-import {EditBtn} from "@/components/CallBackButton/EditBtn";
-import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
-import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
+import { useRef, useState } from 'react';
 
 const GlobalVarProTable = () => {
-    /**
-     * state
-     */
-    const [modalVisible, handleModalVisible] = useState<boolean>(false);
-    const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-    const [formValues, setFormValues] = useState({});
-    const actionRef = useRef<ActionType>();
-    const [loading, setLoading] = useState<boolean>(false);
-    const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  /**
+   * state
+   */
+  const [globalVarState, setGlobalVarState] = useState<GlobalVarState>(InitGlobalVarState);
 
-    /**
-     * handle cancel all
-     */
-    const handleCancel = () => {
-        handleModalVisible(false);
-        handleUpdateModalVisible(false);
-        setDrawerOpen(false);
-        setFormValues({});
+  const actionRef = useRef<ActionType>();
+
+  /**
+   * handle cancel all
+   */
+  const handleCancel = () => {
+    setGlobalVarState(InitGlobalVarState);
+  };
+
+  const executeAndCallbackRefresh = async (callback: () => void) => {
+    setGlobalVarState((prevState) => ({ ...prevState, loading: true }));
+    await callback();
+    handleCancel();
+    actionRef.current?.reload?.();
+  };
+
+  /**
+   * var enable or disable
+   * @param value
+   */
+  const handleChangeEnable = async (value: Partial<GlobalVar>) => {
+    await executeAndCallbackRefresh(async () =>
+      updateDataByParam(API_CONSTANTS.GLOBAL_VARIABLE_ENABLE, {
+        id: value.id
+      })
+    );
+  };
+
+  /**
+   * delete role by id
+   * @param id role id
+   */
+  const handleDeleteSubmit = async (id: number) => {
+    await executeAndCallbackRefresh(async () =>
+      handleRemoveById(API_CONSTANTS.GLOBAL_VARIABLE_DELETE, id)
+    );
+  };
+
+  /**
+   * handle edit
+   * @param {Partial<Document>} record
+   */
+  const handleClickEdit = (record: Partial<Document>) => {
+    setGlobalVarState((prevState) => ({ ...prevState, value: record, editOpen: true }));
+  };
+
+  /**
+   * handle open drawer
+   * @param {Partial<Document>} record
+   */
+  const handleOpenDrawer = (record: Partial<Document>) => {
+    setGlobalVarState((prevState) => ({ ...prevState, value: record, drawerOpen: true }));
+  };
+
+  /**
+   * handle add or update submit
+   * @param {Partial<GlobalVar>} value
+   * @returns {Promise<void>}
+   */
+  const handleAddOrUpdateSubmit = async (value: Partial<GlobalVar>) => {
+    await executeAndCallbackRefresh(async () =>
+      handleAddOrUpdate(API_CONSTANTS.GLOBAL_VARIABLE, value)
+    );
+  };
+
+  /**
+   * columns
+   */
+  const columns: ProColumns<GlobalVar>[] = [
+    {
+      title: l('rc.gv.name'),
+      dataIndex: 'name',
+      sorter: true,
+      render: (dom, record) => {
+        return <a onClick={() => handleOpenDrawer(record)}>{dom}</a>;
+      }
+    },
+    {
+      title: l('rc.gv.value'),
+      dataIndex: 'fragmentValue',
+      hideInTable: true,
+      render: (_, record) => {
+        return <CodeShow width={'75vh'} code={record.fragmentValue} />;
+      }
+    },
+    {
+      title: l('global.table.note'),
+      dataIndex: 'note',
+      valueType: 'textarea'
+    },
+    {
+      title: l('global.table.isEnable'),
+      dataIndex: 'enabled',
+      hideInSearch: true,
+      width: '15vh',
+      hideInDescriptions: true,
+      render: (_, record) => {
+        return (
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            disabled={!HasAuthority('/registration/fragment/edit')}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
+        );
+      },
+      filters: STATUS_MAPPING(),
+      filterMultiple: false,
+      valueEnum: STATUS_ENUM()
+    },
+    {
+      title: l('global.table.createTime'),
+      dataIndex: 'createTime',
+      hideInSearch: true,
+      width: '20vh',
+      sorter: true,
+      valueType: 'dateTime'
+    },
+    {
+      title: l('global.table.lastUpdateTime'),
+      dataIndex: 'updateTime',
+      width: '20vh',
+      hideInSearch: true,
+      sorter: true,
+      valueType: 'dateTime'
+    },
+    {
+      title: l('global.table.operate'),
+      width: '8%',
+      fixed: 'right',
+      valueType: 'option',
+      hideInDescriptions: true,
+      render: (_, record) => [
+        <Authorized key={`${record.id}_edit`} path='/registration/fragment/edit'>
+          <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />
+        </Authorized>,
+        <Authorized key={`${record.id}_delete`} path='/registration/fragment/delete'>
+          <PopconfirmDeleteBtn
+            key={`${record.id}_delete`}
+            onClick={() => handleDeleteSubmit(record.id)}
+            description={l('rc.gv.deleteConfirm')}
+          />
+        </Authorized>
+      ]
     }
+  ];
 
-    const executeAndCallbackRefresh = async (callback: () => void) => {
-        setLoading(true);
-        await callback();
-        setLoading(false);
-        handleCancel();
-        actionRef.current?.reload?.();
-    }
+  /**
+   * render
+   */
+  return (
+    <>
+      {/*table*/}
+      <ProTable<GlobalVar>
+        headerTitle={l('rc.gv.Management')}
+        actionRef={actionRef}
+        loading={globalVarState.loading}
+        {...PROTABLE_OPTIONS_PUBLIC}
+        toolBarRender={() => [
+          <Authorized key='create' path='/registration/fragment/add'>
+            <CreateBtn
+              key={'vartable'}
+              onClick={() => setGlobalVarState((prevState) => ({ ...prevState, addedOpen: true }))}
+            />
+          </Authorized>
+        ]}
+        request={(params, sorter, filter: any) =>
+          queryList(API_CONSTANTS.GLOBAL_VARIABLE, {
+            ...params,
+            sorter,
+            filter
+          })
+        }
+        columns={columns}
+      />
 
-    /**
-     * var enable or disable
-     * @param value
-     */
-    const handleChangeEnable = async (value: Partial<GlobalVar>) => {
-      await executeAndCallbackRefresh(async () => {
-            await updateEnabled(API_CONSTANTS.GLOBAL_VARIABLE_ENABLE, {id: value.id});
-        })
-    };
+      {/*add*/}
+      <GlobalVarModal
+        onSubmit={(value) => handleAddOrUpdateSubmit(value)}
+        onCancel={() => handleCancel()}
+        modalVisible={globalVarState.addedOpen}
+        values={{}}
+      />
+      {/*update*/}
+      <GlobalVarModal
+        onSubmit={(value) => handleAddOrUpdateSubmit(value)}
+        onCancel={() => handleCancel()}
+        modalVisible={globalVarState.editOpen}
+        values={globalVarState.value}
+      />
 
-    /**
-     * delete role by id
-     * @param id role id
-     */
-    const handleDeleteSubmit = async (id: number) => {
-        await executeAndCallbackRefresh(async () => {
-            await handleRemoveById(API_CONSTANTS.GLOBAL_VARIABLE_DELETE, id);
-        })
-    }
-
-
-
-    /**
-     * handle edit
-     * @param {Partial<Document>} record
-     */
-    const handleClickEdit = (record: Partial<Document>) => {
-        setFormValues(record);
-        handleUpdateModalVisible(true);
-    }
-
-    /**
-     * handle open drawer
-     * @param {Partial<Document>} record
-     */
-    const handleOpenDrawer = (record: Partial<Document>) => {
-        setFormValues(record)
-        setDrawerOpen(true)
-    }
-
-
-    /**
-     * handle add or update submit
-     * @param {Partial<GlobalVar>} value
-     * @returns {Promise<void>}
-     */
-    const handleAddOrUpdateSubmit = async (value: Partial<GlobalVar>) => {
-        await executeAndCallbackRefresh(async () => {
-            await handleAddOrUpdate(API_CONSTANTS.GLOBAL_VARIABLE, value);
-        })
-    }
-
-
-    /**
-     * columns
-     */
-    const columns: ProColumns<GlobalVar>[] = [
-        {
-            title: l('rc.gv.name'),
-            dataIndex: 'name',
-            sorter: true,
-            render: (dom, record) => {
-                return <a onClick={() => handleOpenDrawer(record)}>{dom}</a>;
-            },
-        },
-        {
-            title: l('rc.gv.value'),
-            dataIndex: 'fragmentValue',
-            hideInTable: true,
-            render: (_, record) => {
-                return <CodeShow width={"75vh"} code={record.fragmentValue}/>
-            },
-        },
-        {
-            title: l('global.table.note'),
-            dataIndex: 'note',
-            valueType: 'textarea',
-        },
-        {
-            title: l("global.table.isEnable"),
-            dataIndex: "enabled",
-            hideInSearch: true,
-            width: '15vh',
-            render: (_, record) => {
-                return <EnableSwitchBtn key={`${record.id}_enable`} disabled={drawerOpen} record={record}
-                                        onChange={() => handleChangeEnable(record)}/>;
-            },
-            filters: STATUS_MAPPING(),
-            filterMultiple: false,
-            valueEnum: STATUS_ENUM(),
-        },
-        {
-            title: l('global.table.createTime'),
-            dataIndex: 'createTime',
-            hideInSearch: true,
-            width: '20vh',
-            sorter: true,
-            valueType: 'dateTime',
-        },
-        {
-            title: l('global.table.lastUpdateTime'),
-            dataIndex: 'updateTime',
-            width: '20vh',
-            hideInSearch: true,
-            sorter: true,
-            valueType: 'dateTime',
-        },
-        {
-            title: l('global.table.operate'),
-            width: '10vh',
-            valueType: 'option',
-            render: (_, record) => [
-                <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)}/>,
-                <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
-                                     description={l("rc.gv.deleteConfirm")}/>,
-            ],
-        },
-    ];
-
-
-    /**
-     * render
-     */
-    return <>
-        {/*table*/}
-        <ProTable<GlobalVar>
-            headerTitle={l('rc.gv.Management')}
-            actionRef={actionRef}
-            loading={loading}
-            {...PROTABLE_OPTIONS_PUBLIC}
-            toolBarRender={() => [<CreateBtn key={"vartable"} onClick={() => handleModalVisible(true)}/>,]}
-            request={(params, sorter, filter: any) => queryList(API_CONSTANTS.GLOBAL_VARIABLE, {
-                ...params,
-                sorter,
-                filter
-            })}
-            columns={columns}
-        />
-
-        {/*add*/}
-        <GlobalVarModal
-            onSubmit={(value) => handleAddOrUpdateSubmit(value)}
-            onCancel={() => handleCancel()}
-            modalVisible={modalVisible}
-            values={{}}
-        />
-        {/*update*/}
-        <GlobalVarModal
-            onSubmit={(value) => handleAddOrUpdateSubmit(value)}
-            onCancel={() => handleCancel()}
-            modalVisible={updateModalVisible}
-            values={formValues}
-        />
-
-        {/*drawer render*/}
-        <GlobalVarDrawer
-            onCancel={() => handleCancel()}
-            values={formValues}
-            modalVisible={drawerOpen}
-            columns={columns}
-        />
+      {/*drawer render*/}
+      <GlobalVarDrawer
+        onCancel={() => handleCancel()}
+        values={globalVarState.value}
+        modalVisible={globalVarState.drawerOpen}
+        columns={columns}
+      />
     </>
-        ;
+  );
 };
 export default GlobalVarProTable;

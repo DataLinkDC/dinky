@@ -27,31 +27,51 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_user_role")
+@ApiModel(value = "UserRole", description = "User Role Relationship")
 public class UserRole implements Serializable {
-
     private static final long serialVersionUID = -6123386787317880485L;
-    /** id */
+
+    @ApiModelProperty(value = "ID", dataType = "Integer", notes = "Unique identifier for the user role relationship")
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /** user id */
+    @ApiModelProperty(value = "User ID", dataType = "Integer", notes = "ID of the user associated with this role")
     private Integer userId;
 
-    /** role id */
+    @ApiModelProperty(value = "Role ID", dataType = "Integer", notes = "ID of the role associated with this user")
     private Integer roleId;
 
-    /** create time */
+    @ApiModelProperty(
+            value = "Create Time",
+            dataType = "LocalDateTime",
+            notes = "Timestamp when the user role relationship was created")
     @TableField(fill = FieldFill.INSERT)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
-    /** update time */
+    @ApiModelProperty(
+            value = "Update Time",
+            dataType = "LocalDateTime",
+            notes = "Timestamp when the user role relationship was last updated")
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 }

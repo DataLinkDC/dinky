@@ -25,8 +25,6 @@ import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.function.util.ZipWriter;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.model.ProcessEntity;
 
 import org.apache.flink.client.python.PythonFunctionFactory;
 import org.apache.flink.configuration.Configuration;
@@ -66,14 +64,12 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
     @Override
     public boolean compiler(UDF udf, ReadableConfig conf, Integer missionId) {
         Asserts.checkNull(udf, "flink-config 不能为空");
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        // TODO 改为ProcessStep注释
 
-        process.info("正在编译 python 代码 , class: " + udf.getClassName());
-        File pyFile =
-                FileUtil.writeUtf8String(
-                        udf.getCode(),
-                        PathConstant.getUdfCompilerPythonPath(
-                                missionId, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
+        log.info("正在编译 python 代码 , class: " + udf.getClassName());
+        File pyFile = FileUtil.writeUtf8String(
+                udf.getCode(),
+                PathConstant.getUdfCompilerPythonPath(missionId, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
         File zipFile = ZipUtil.zip(pyFile);
         FileUtil.del(pyFile);
         try {
@@ -87,13 +83,12 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
                     SystemConfiguration.getInstances().getPythonHome());
 
             PythonFunctionFactory.getPythonFunction(udf.getClassName(), configuration, null);
-            process.info("Python udf编译成功 ; className:" + udf.getClassName());
+            log.info("Python udf编译成功 ; className:" + udf.getClassName());
         } catch (Exception e) {
-            process.error(
-                    "Python udf编译失败 ; className:"
-                            + udf.getClassName()
-                            + " 。 原因： "
-                            + ExceptionUtil.getRootCauseMessage(e));
+            log.error("Python udf编译失败 ; className:"
+                    + udf.getClassName()
+                    + " 。 原因： "
+                    + ExceptionUtil.getRootCauseMessage(e));
             return false;
         }
         FileUtil.del(zipFile);
@@ -105,35 +100,27 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
         if (CollUtil.isEmpty(udfList)) {
             return new String[0];
         }
-        udfList =
-                udfList.stream()
-                        .filter(udf -> udf.getFunctionLanguage() == FunctionLanguage.PYTHON)
-                        .collect(Collectors.toList());
+        udfList = udfList.stream()
+                .filter(udf -> udf.getFunctionLanguage() == FunctionLanguage.PYTHON)
+                .collect(Collectors.toList());
 
         if (CollUtil.isEmpty(udfList)) {
             return new String[0];
         }
 
-        InputStream[] inputStreams =
-                udfList.stream()
-                        .map(
-                                udf -> {
-                                    File file =
-                                            FileUtil.writeUtf8String(
-                                                    udf.getCode(),
-                                                    PathConstant.getUdfCompilerPythonPath(
-                                                            missionId,
-                                                            UDFUtil.getPyFileName(
-                                                                            udf.getClassName())
-                                                                    + ".py"));
-                                    return FileUtil.getInputStream(file);
-                                })
-                        .toArray(InputStream[]::new);
+        InputStream[] inputStreams = udfList.stream()
+                .map(udf -> {
+                    File file = FileUtil.writeUtf8String(
+                            udf.getCode(),
+                            PathConstant.getUdfCompilerPythonPath(
+                                    missionId, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
+                    return FileUtil.getInputStream(file);
+                })
+                .toArray(InputStream[]::new);
 
-        String[] paths =
-                udfList.stream()
-                        .map(x -> StrUtil.split(x.getClassName(), ".").get(0) + ".py")
-                        .toArray(String[]::new);
+        String[] paths = udfList.stream()
+                .map(x -> StrUtil.split(x.getClassName(), ".").get(0) + ".py")
+                .toArray(String[]::new);
         String path = PathConstant.getUdfPackagePath(missionId, PathConstant.UDF_PYTHON_NAME);
         File file = FileUtil.file(path);
         FileUtil.del(file);

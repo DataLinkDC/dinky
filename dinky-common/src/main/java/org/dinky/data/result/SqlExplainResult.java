@@ -62,13 +62,11 @@ public class SqlExplainResult {
     }
 
     public static SqlExplainResult success(String type, String sql, String explain) {
-        return new SqlExplainResult(
-                1, type, sql, null, explain, null, true, true, LocalDateTime.now());
+        return new SqlExplainResult(1, type, sql, null, explain, null, true, true, LocalDateTime.now());
     }
 
     public static SqlExplainResult fail(String sql, String error) {
-        return new SqlExplainResult(
-                1, null, sql, null, null, error, false, false, LocalDateTime.now());
+        return new SqlExplainResult(1, null, sql, null, null, error, false, false, LocalDateTime.now());
     }
 
     public Integer getIndex() {
@@ -146,8 +144,8 @@ public class SqlExplainResult {
     @Override
     public String toString() {
         return String.format(
-                "SqlExplainRecord{index=%d, type='%s', sql='%s', parse='%s', explain='%s', error='%s', "
-                        + "parseTrue=%s, explainTrue=%s, explainTime=%s}",
+                "SqlExplainRecord{index=%d, type='%s', sql='%s', parse='%s', explain='%s',"
+                        + " error='%s', parseTrue=%s, explainTrue=%s, explainTime=%s}",
                 index, type, sql, parse, explain, error, parseTrue, explainTrue, explainTime);
     }
 }

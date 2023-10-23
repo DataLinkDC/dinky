@@ -55,11 +55,7 @@ public class ResultRunnable implements Runnable {
     private final String timeZone;
 
     public ResultRunnable(
-            TableResult tableResult,
-            Integer maxRowNum,
-            boolean isChangeLog,
-            boolean isAutoCancel,
-            String timeZone) {
+            TableResult tableResult, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone) {
         this.tableResult = tableResult;
         this.maxRowNum = maxRowNum;
         this.isChangeLog = isChangeLog;
@@ -70,29 +66,22 @@ public class ResultRunnable implements Runnable {
     @Override
     public void run() {
         try {
-            tableResult
-                    .getJobClient()
-                    .ifPresent(
-                            jobClient -> {
-                                String jobId = jobClient.getJobID().toHexString();
-                                if (!ResultPool.containsKey(jobId)) {
-                                    ResultPool.put(
-                                            new SelectResult(
-                                                    jobId,
-                                                    new ArrayList<>(),
-                                                    new LinkedHashSet<>()));
-                                }
+            tableResult.getJobClient().ifPresent(jobClient -> {
+                String jobId = jobClient.getJobID().toHexString();
+                if (!ResultPool.containsKey(jobId)) {
+                    ResultPool.put(new SelectResult(jobId, new ArrayList<>(), new LinkedHashSet<>()));
+                }
 
-                                try {
-                                    if (isChangeLog) {
-                                        catchChangLog(ResultPool.get(jobId));
-                                    } else {
-                                        catchData(ResultPool.get(jobId));
-                                    }
-                                } catch (Exception e) {
-                                    log.error(String.format(e.toString()));
-                                }
-                            });
+                try {
+                    if (isChangeLog) {
+                        catchChangLog(ResultPool.get(jobId));
+                    } else {
+                        catchData(ResultPool.get(jobId));
+                    }
+                } catch (Exception e) {
+                    log.error(String.format(e.toString()));
+                }
+            });
         } catch (Exception e) {
             // Nothing to do
         }
@@ -104,15 +93,11 @@ public class ResultRunnable implements Runnable {
 
         columns.add(0, FlinkConstant.OP);
         selectResult.setColumns(new LinkedHashSet<>(columns));
-        Streams.stream(tableResult.collect())
-                .limit(maxRowNum)
-                .forEach(
-                        row -> {
-                            Map<String, Object> map =
-                                    getFieldMap(columns.subList(1, columns.size()), row);
-                            map.put(FlinkConstant.OP, row.getKind().shortString());
-                            rows.add(map);
-                        });
+        Streams.stream(tableResult.collect()).limit(maxRowNum).forEach(row -> {
+            Map<String, Object> map = getFieldMap(columns.subList(1, columns.size()), row);
+            map.put(FlinkConstant.OP, row.getKind().shortString());
+            rows.add(map);
+        });
 
         if (isAutoCancel) {
             tableResult.getJobClient().ifPresent(JobClient::cancel);
@@ -124,18 +109,14 @@ public class ResultRunnable implements Runnable {
         List<String> columns = FlinkUtil.catchColumn(tableResult);
 
         selectResult.setColumns(new LinkedHashSet<>(columns));
-        Streams.stream(tableResult.collect())
-                .limit(maxRowNum)
-                .forEach(
-                        row -> {
-                            Map<String, Object> map = getFieldMap(columns, row);
-                            if (RowKind.UPDATE_BEFORE == row.getKind()
-                                    || RowKind.DELETE == row.getKind()) {
-                                rows.remove(map);
-                            } else {
-                                rows.add(map);
-                            }
-                        });
+        Streams.stream(tableResult.collect()).limit(maxRowNum).forEach(row -> {
+            Map<String, Object> map = getFieldMap(columns, row);
+            if (RowKind.UPDATE_BEFORE == row.getKind() || RowKind.DELETE == row.getKind()) {
+                rows.remove(map);
+            } else {
+                rows.add(map);
+            }
+        });
     }
 
     private Map<String, Object> getFieldMap(List<String> columns, Row row) {
@@ -148,7 +129,10 @@ public class ResultRunnable implements Runnable {
             } else if (field instanceof Instant) {
                 map.put(
                         column,
-                        ((Instant) field).atZone(ZoneId.of(timeZone)).toLocalDateTime().toString());
+                        ((Instant) field)
+                                .atZone(ZoneId.of(timeZone))
+                                .toLocalDateTime()
+                                .toString());
             } else if (field instanceof Boolean) {
                 map.put(column, field.toString());
             } else {

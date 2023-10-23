@@ -18,11 +18,12 @@
  */
 
 export enum SettingConfigKeyEnum {
-    DINKY = 'Dinky',
-    FLINK = 'Flink',
-    MAVEN = 'Maven',
-    DOLPHIN_SCHEDULER = 'DolphinScheduler',
-    LDAP = 'LDAP',
-    METRIC = 'Metric',
-    RESOURCE = 'Resource',
+  DINKY = 'Dinky',
+  FLINK = 'Flink',
+  MAVEN = 'Maven',
+  DOLPHIN_SCHEDULER = 'DolphinScheduler',
+  LDAP = 'LDAP',
+  METRIC = 'Metric',
+  RESOURCE = 'Resource',
+  ENV = 'Env'
 }

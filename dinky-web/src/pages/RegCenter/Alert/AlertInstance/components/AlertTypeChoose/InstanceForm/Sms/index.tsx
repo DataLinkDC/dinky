@@ -15,11 +15,6 @@
  * limitations under the License.
  */
 
-
-import React, {useCallback} from 'react';
-import {l} from '@/utils/intl';
-import {ProForm, ProFormSelect, ProFormSwitch} from '@ant-design/pro-components';
-import {SWITCH_OPTIONS} from '@/services/constants';
 import {
   renderAlibabaSmsForm,
   renderCloopenSmsForm,
@@ -31,64 +26,65 @@ import {
   renderUniSmsForm,
   renderYunpianSmsForm
 } from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/function';
-import {MANU_FACTURERS, SMS_TYPE} from '@/pages/RegCenter/Alert/AlertInstance/constans';
-
+import { MANU_FACTURERS, SMS_TYPE } from '@/pages/RegCenter/Alert/AlertInstance/constans';
+import { SWITCH_OPTIONS } from '@/services/constants';
+import { l } from '@/utils/intl';
+import { ProForm, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
+import { useCallback } from 'react';
 
 const Sms = (props: any) => {
-  const {values} = props;
+  const { values } = props;
   /**
    * render form by sms type
    */
-  const renderFormBySmsType = useCallback((smsType: number) => {
-    switch (smsType) {
-      case SMS_TYPE.ALIBABA:
-        return renderAlibabaSmsForm();
-      case SMS_TYPE.HUAWEI:
-        return renderHuaWeiSmsForm();
-      case SMS_TYPE.YUNPIAN:
-        return renderYunpianSmsForm();
-      case SMS_TYPE.TENCENT:
-        return renderTencentSmsForm();
-      case SMS_TYPE.UNI:
-        return renderUniSmsForm();
-      case  SMS_TYPE.JDCLOUD:
-        return renderJDSmsForm();
-      case SMS_TYPE.CLOOPEN:
-        return renderCloopenSmsForm();
-      case SMS_TYPE.EMAY:
-        return renderEmaySmsForm();
-      case SMS_TYPE.CTYUN:
-        return renderCtyunForm();
-      default:
-        return undefined;
-    }
-  }, [values.manufacturers]);
-
+  const renderFormBySmsType = useCallback(
+    (smsType: number) => {
+      switch (smsType) {
+        case SMS_TYPE.ALIBABA:
+          return renderAlibabaSmsForm();
+        case SMS_TYPE.HUAWEI:
+          return renderHuaWeiSmsForm();
+        case SMS_TYPE.YUNPIAN:
+          return renderYunpianSmsForm();
+        case SMS_TYPE.TENCENT:
+          return renderTencentSmsForm();
+        case SMS_TYPE.UNI:
+          return renderUniSmsForm();
+        case SMS_TYPE.JDCLOUD:
+          return renderJDSmsForm();
+        case SMS_TYPE.CLOOPEN:
+          return renderCloopenSmsForm();
+        case SMS_TYPE.EMAY:
+          return renderEmaySmsForm();
+        case SMS_TYPE.CTYUN:
+          return renderCtyunForm();
+        default:
+          return undefined;
+      }
+    },
+    [values.manufacturers]
+  );
 
   /**
    * render
    */
-  return <>
-    <ProForm.Group>
-      <ProFormSelect
-        name="manufacturers"
-        label={l('rc.ai.manufacturers')}
-        width={'md'}
-        options={MANU_FACTURERS}
-        rules={[{required: true, message: l('rc.ai.manufacturersPleaseHolder')}]}
-        placeholder={l('rc.ai.manufacturersPleaseHolder')}
-      />
-      <ProFormSwitch
-        name="enabled"
-        label={l('global.table.isEnable')}
-        {...SWITCH_OPTIONS()}
-      />
-    </ProForm.Group>
+  return (
+    <>
+      <ProForm.Group>
+        <ProFormSelect
+          name='manufacturers'
+          label={l('rc.ai.manufacturers')}
+          width={'md'}
+          options={MANU_FACTURERS}
+          rules={[{ required: true, message: l('rc.ai.manufacturersPleaseHolder') }]}
+          placeholder={l('rc.ai.manufacturersPleaseHolder')}
+        />
+        <ProFormSwitch name='enabled' label={l('global.table.isEnable')} {...SWITCH_OPTIONS()} />
+      </ProForm.Group>
 
-    <ProForm.Group>
-      {renderFormBySmsType(values.manufacturers)}
-    </ProForm.Group>
-  </>;
+      <ProForm.Group>{renderFormBySmsType(values.manufacturers)}</ProForm.Group>
+    </>
+  );
 };
 
 export default Sms;

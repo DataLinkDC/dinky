@@ -21,10 +21,25 @@ package org.dinky.data.dto;
 
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
+@ApiModel(value = "JarClassesDTO", description = "DTO for Jar classes information")
 public class JarClassesDTO {
+
+    @ApiModelProperty(
+            value = "Jar File Path",
+            dataType = "String",
+            example = "/path/to/my.jar",
+            notes = "The path to the Jar file")
     private String jarPath;
+
+    @ApiModelProperty(
+            value = "List of Classes",
+            dataType = "List<String>",
+            example = "[\"com.example.Class1\", \"com.example.Class2\"]",
+            notes = "A list of class names in the Jar file")
     private List<String> classList;
 }

@@ -34,8 +34,7 @@ import javax.annotation.Nonnull;
 
 /** A generic SinkFunction for JDBC. */
 @Internal
-public class GenericJdbcSinkFunction<T> extends RichSinkFunction<T>
-        implements CheckpointedFunction {
+public class GenericJdbcSinkFunction<T> extends RichSinkFunction<T> implements CheckpointedFunction {
     private final AbstractJdbcOutputFormat<T> outputFormat;
 
     public GenericJdbcSinkFunction(@Nonnull AbstractJdbcOutputFormat<T> outputFormat) {

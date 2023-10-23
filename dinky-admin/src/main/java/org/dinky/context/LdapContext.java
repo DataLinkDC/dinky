@@ -77,9 +77,7 @@ public class LdapContext {
         public LdapUserIdentification mapFromContext(Object ctx) {
             DirContextOperations adapter = (DirContextOperations) ctx;
             return new LdapUserIdentification(
-                    adapter.getNameInNamespace(),
-                    adapter.getDn().toString(),
-                    adapter.getAttributes());
+                    adapter.getNameInNamespace(), adapter.getDn().toString(), adapter.getAttributes());
         }
     }
 
@@ -95,8 +93,10 @@ public class LdapContext {
          */
         @Override
         public User mapFromAttributes(Attributes attributes) throws NamingException {
-            Attribute usernameAttr = attributes.get(configuration.getLdapCastUsername().getValue());
-            Attribute nicknameAttr = attributes.get(configuration.getLdapCastNickname().getValue());
+            Attribute usernameAttr =
+                    attributes.get(configuration.getLdapCastUsername().getValue());
+            Attribute nicknameAttr =
+                    attributes.get(configuration.getLdapCastNickname().getValue());
 
             if (usernameAttr != null && nicknameAttr != null) {
                 User user = new User();

@@ -46,5 +46,5 @@ export default {
   'shortcut.key.transpositionUpAndDown': 'Transposition up and down',
   'shortcut.key.collapseOrExpand': 'Collapse/Expand',
 
-  'shortcut.key.checked': 'Checked',
-}
+  'shortcut.key.checked': 'Checked'
+};

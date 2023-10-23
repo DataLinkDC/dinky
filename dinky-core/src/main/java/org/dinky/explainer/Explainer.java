@@ -29,9 +29,10 @@ import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.Executor;
-import org.dinky.explainer.watchTable.WatchStatementExplainer;
+import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
@@ -39,9 +40,8 @@ import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 import org.dinky.parser.SqlType;
 import org.dinky.parser.check.AddJarSqlParser;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.model.ProcessEntity;
 import org.dinky.trans.Operations;
+import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
@@ -53,24 +53,23 @@ import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Explainer
  *
  * @since 2021/6/22
  */
+@Slf4j
 public class Explainer {
-    private static final Logger logger = LoggerFactory.getLogger(Explainer.class);
 
     private Executor executor;
     private boolean useStatementSet;
@@ -98,7 +97,7 @@ public class Explainer {
     }
 
     public Explainer initialize(JobManager jobManager, JobConfig config, String statement) {
-        jobManager.initClassLoader(config);
+        DinkyClassLoaderUtil.initClassLoader(config);
         String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement), sqlSeparator);
         jobManager.initUDF(parseUDFFromStatements(statements));
         return this;
@@ -117,8 +116,7 @@ public class Explainer {
             }
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParser.getAllFilePath(statement)
-                        .forEach(FlinkUdfPathContextHolder::addOtherPlugins);
+                AddJarSqlParser.getAllFilePath(statement).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
                 DinkyClassLoaderContextHolder.get()
                         .addURL(URLUtils.getURLs(FlinkUdfPathContextHolder.getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
@@ -130,7 +128,8 @@ public class Explainer {
                     || operationType.equals(SqlType.SELECT)
                     || operationType.equals(SqlType.SHOW)
                     || operationType.equals(SqlType.DESCRIBE)
-                    || operationType.equals(SqlType.DESC)) {
+                    || operationType.equals(SqlType.DESC)
+                    || operationType.equals(SqlType.CTAS)) {
                 trans.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
                 if (!useStatementSet) {
@@ -138,16 +137,16 @@ public class Explainer {
                 }
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
-            } else if (operationType.equals(SqlType.WATCH)) {
-                WatchStatementExplainer watchStatementExplainer =
-                        new WatchStatementExplainer(statement);
+            } else if (operationType.equals(SqlType.PRINT)) {
+                PrintStatementExplainer printStatementExplainer = new PrintStatementExplainer(statement);
 
-                String[] tableNames = watchStatementExplainer.getTableNames();
+                Map<String, String> config = this.executor.getExecutorConfig().getConfig();
+                String host = config.getOrDefault("dinky.dinkyHost", "127.0.0.1");
+                int port = Integer.parseInt(config.getOrDefault("dinky.dinkyPrintPort", "7125"));
+                String[] tableNames = printStatementExplainer.getTableNames();
                 for (String tableName : tableNames) {
-                    trans.add(
-                            new StatementParam(
-                                    WatchStatementExplainer.getCreateStatement(tableName),
-                                    SqlType.CTAS));
+                    trans.add(new StatementParam(
+                            PrintStatementExplainer.getCreateStatement(tableName, host, port), SqlType.CTAS));
                 }
             } else {
                 UDF udf = UDFUtil.toUDF(statement);
@@ -186,8 +185,7 @@ public class Explainer {
     }
 
     public ExplainResult explainSql(String statement) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
-        process.info("Start explain FlinkSQL...");
+        log.info("Start explain FlinkSQL...");
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
         int index = 1;
@@ -209,7 +207,7 @@ public class Explainer {
                 record.setIndex(index);
                 sqlExplainRecords.add(record);
                 correct = false;
-                process.error(error);
+                log.error(error);
                 break;
             }
             record.setExplainTrue(true);
@@ -220,14 +218,41 @@ public class Explainer {
         }
         if (correct && !jobParam.getTrans().isEmpty()) {
             if (useStatementSet) {
-                SqlExplainResult record = new SqlExplainResult();
                 List<String> inserts = new ArrayList<>();
                 for (StatementParam item : jobParam.getTrans()) {
                     if (item.getType().equals(SqlType.INSERT)) {
                         inserts.add(item.getValue());
+                    } else if (item.getType().equals(SqlType.CTAS)) {
+                        SqlExplainResult record = new SqlExplainResult();
+
+                        try {
+                            record.setParseTrue(true);
+                            record.setExplainTrue(true);
+                            record.setSql(item.getValue());
+                            executor.getCustomTableEnvironment()
+                                    .getParser()
+                                    .parse(item.getValue())
+                                    .forEach(x -> {
+                                        executor.getCustomTableEnvironment().executeCTAS(x);
+                                    });
+                        } catch (Exception e) {
+                            String error = LogUtil.getError(e);
+                            record.setError(error);
+                            record.setParseTrue(false);
+                            record.setExplainTrue(false);
+                            correct = false;
+                            log.error(error);
+                            break;
+                        } finally {
+                            record.setType("Modify DML");
+                            record.setExplainTime(LocalDateTime.now());
+                            record.setIndex(index);
+                            sqlExplainRecords.add(record);
+                        }
                     }
                 }
                 if (!inserts.isEmpty()) {
+                    SqlExplainResult record = new SqlExplainResult();
                     String sqlSet = String.join(";\r\n ", inserts);
                     try {
                         record.setExplain(executor.explainStatementSet(inserts));
@@ -239,7 +264,7 @@ public class Explainer {
                         record.setParseTrue(false);
                         record.setExplainTrue(false);
                         correct = false;
-                        process.error(error);
+                        log.error(error);
                     } finally {
                         record.setType("Modify DML");
                         record.setExplainTime(LocalDateTime.now());
@@ -261,7 +286,7 @@ public class Explainer {
                         record.setParseTrue(false);
                         record.setExplainTrue(false);
                         correct = false;
-                        process.error(error);
+                        log.error(error);
                     } finally {
                         record.setType("Modify DML");
                         record.setExplainTime(LocalDateTime.now());
@@ -292,7 +317,7 @@ public class Explainer {
                 record.setIndex(index);
                 sqlExplainRecords.add(record);
                 correct = false;
-                process.error(error);
+                log.error(error);
                 break;
             }
             record.setExplainTrue(true);
@@ -301,9 +326,7 @@ public class Explainer {
             record.setIndex(index++);
             sqlExplainRecords.add(record);
         }
-        process.info(
-                StrUtil.format(
-                        "A total of {} FlinkSQL have been Explained.", sqlExplainRecords.size()));
+        log.info(StrUtil.format("A total of {} FlinkSQL have been Explained.", sqlExplainRecords.size()));
         return new ExplainResult(correct, sqlExplainRecords.size(), sqlExplainRecords);
     }
 
@@ -317,9 +340,7 @@ public class Explainer {
 
         if (!jobParam.getExecute().isEmpty()) {
             List<String> datastreamPlans =
-                    jobParam.getExecute().stream()
-                            .map(StatementParam::getValue)
-                            .collect(Collectors.toList());
+                    jobParam.getExecute().stream().map(StatementParam::getValue).collect(Collectors.toList());
             return executor.getStreamGraphFromDataStream(datastreamPlans);
         }
         return mapper.createObjectNode();
@@ -335,25 +356,21 @@ public class Explainer {
 
         if (!jobParam.getExecute().isEmpty()) {
             List<String> datastreamPlans =
-                    jobParam.getExecute().stream()
-                            .map(StatementParam::getValue)
-                            .collect(Collectors.toList());
+                    jobParam.getExecute().stream().map(StatementParam::getValue).collect(Collectors.toList());
             return executor.getJobPlanInfoFromDataStream(datastreamPlans);
         }
-        throw new RuntimeException(
-                "Creating job plan fails because this job doesn't contain an insert statement.");
+        throw new RuntimeException("Creating job plan fails because this job doesn't contain an insert statement.");
     }
 
     public List<LineageRel> getLineage(String statement) {
-        JobConfig jobConfig =
-                new JobConfig(
-                        "local",
-                        false,
-                        false,
-                        true,
-                        useStatementSet,
-                        1,
-                        executor.getTableConfig().getConfiguration().toMap());
+        JobConfig jobConfig = JobConfig.builder()
+                .type(GatewayType.LOCAL.getLongValue())
+                .useRemote(false)
+                .fragment(true)
+                .statementSet(useStatementSet)
+                .parallelism(1)
+                .configJson(executor.getTableConfig().getConfiguration().toMap())
+                .build();
         this.initialize(JobManager.buildPlanMode(jobConfig), jobConfig, statement);
 
         List<LineageRel> lineageRelList = new ArrayList<>();
@@ -366,12 +383,11 @@ public class Explainer {
                 SqlType operationType = Operations.getOperationType(sql);
                 if (operationType.equals(SqlType.INSERT)) {
                     lineageRelList.addAll(executor.getLineage(sql));
-                } else if (!operationType.equals(SqlType.SELECT)
-                        && !operationType.equals(SqlType.WATCH)) {
+                } else if (!operationType.equals(SqlType.SELECT) && !operationType.equals(SqlType.PRINT)) {
                     executor.executeSql(sql);
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage());
+                log.error(e.getMessage());
                 return lineageRelList;
             }
         }

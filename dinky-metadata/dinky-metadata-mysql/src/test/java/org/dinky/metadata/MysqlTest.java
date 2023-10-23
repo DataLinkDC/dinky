@@ -69,11 +69,10 @@ public class MysqlTest {
         config.setPort(3306);
         config.setUsername("dca");
         config.setPassword("dca");
-        config.setUrl(
-                "jdbc:mysql://"
-                        + IP
-                        + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8"
-                        + "&serverTimezone=UTC&autoReconnect=true");
+        config.setUrl("jdbc:mysql://"
+                + IP
+                + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8"
+                + "&serverTimezone=UTC&autoReconnect=true");
         return Driver.build(config);
     }
 

@@ -43,11 +43,7 @@ import java.util.Objects;
 /** A {@link DynamicTableSource} for JDBC. */
 @Internal
 public class JdbcDynamicTableSource
-        implements
-            ScanTableSource,
-            LookupTableSource,
-            SupportsProjectionPushDown,
-            SupportsLimitPushDown {
+        implements ScanTableSource, LookupTableSource, SupportsProjectionPushDown, SupportsLimitPushDown {
 
     private final JdbcOptions options;
     private final JdbcReadOptions readOptions;
@@ -57,10 +53,10 @@ public class JdbcDynamicTableSource
     private long limit = -1;
 
     public JdbcDynamicTableSource(
-                                  JdbcOptions options,
-                                  JdbcReadOptions readOptions,
-                                  JdbcLookupOptions lookupOptions,
-                                  TableSchema physicalSchema) {
+            JdbcOptions options,
+            JdbcReadOptions readOptions,
+            JdbcLookupOptions lookupOptions,
+            TableSchema physicalSchema) {
         this.options = options;
         this.readOptions = readOptions;
         this.lookupOptions = lookupOptions;
@@ -74,53 +70,48 @@ public class JdbcDynamicTableSource
         String[] keyNames = new String[context.getKeys().length];
         for (int i = 0; i < keyNames.length; i++) {
             int[] innerKeyArr = context.getKeys()[i];
-            Preconditions.checkArgument(
-                    innerKeyArr.length == 1, "JDBC only support non-nested look up keys");
+            Preconditions.checkArgument(innerKeyArr.length == 1, "JDBC only support non-nested look up keys");
             keyNames[i] = physicalSchema.getFieldNames()[innerKeyArr[0]];
         }
         final RowType rowType = (RowType) physicalSchema.toRowDataType().getLogicalType();
 
-        return TableFunctionProvider.of(
-                new JdbcRowDataLookupFunction(
-                        options,
-                        lookupOptions,
-                        physicalSchema.getFieldNames(),
-                        physicalSchema.getFieldDataTypes(),
-                        keyNames,
-                        rowType));
+        return TableFunctionProvider.of(new JdbcRowDataLookupFunction(
+                options,
+                lookupOptions,
+                physicalSchema.getFieldNames(),
+                physicalSchema.getFieldDataTypes(),
+                keyNames,
+                rowType));
     }
 
     @Override
     public ScanRuntimeProvider getScanRuntimeProvider(ScanContext runtimeProviderContext) {
-        final JdbcRowDataInputFormat.Builder builder =
-                JdbcRowDataInputFormat.builder()
-                        .setDrivername(options.getDriverName())
-                        .setDBUrl(options.getDbURL())
-                        .setUsername(options.getUsername().orElse(null))
-                        .setPassword(options.getPassword().orElse(null))
-                        .setAutoCommit(readOptions.getAutoCommit());
+        final JdbcRowDataInputFormat.Builder builder = JdbcRowDataInputFormat.builder()
+                .setDrivername(options.getDriverName())
+                .setDBUrl(options.getDbURL())
+                .setUsername(options.getUsername().orElse(null))
+                .setPassword(options.getPassword().orElse(null))
+                .setAutoCommit(readOptions.getAutoCommit());
 
         if (readOptions.getFetchSize() != 0) {
             builder.setFetchSize(readOptions.getFetchSize());
         }
         final JdbcDialect dialect = options.getDialect();
-        String query =
-                dialect.getSelectFromStatement(
-                        options.getTableName(), physicalSchema.getFieldNames(), lookupOptions.getPreFilterCondition());
+        String query = dialect.getSelectFromStatement(
+                options.getTableName(), physicalSchema.getFieldNames(), lookupOptions.getPreFilterCondition());
         if (readOptions.getPartitionColumnName().isPresent()) {
             long lowerBound = readOptions.getPartitionLowerBound().get();
             long upperBound = readOptions.getPartitionUpperBound().get();
             int numPartitions = readOptions.getNumPartitions().get();
             builder.setParametersProvider(
-                    new JdbcNumericBetweenParametersProvider(lowerBound, upperBound)
-                            .ofBatchNum(numPartitions));
+                    new JdbcNumericBetweenParametersProvider(lowerBound, upperBound).ofBatchNum(numPartitions));
             if (lookupOptions.getPreFilterCondition().length > 0) {
                 query += " AND ";
             } else {
                 query += " WHERE ";
             }
-            query += dialect.quoteIdentifier(readOptions.getPartitionColumnName().get())
-                    + " BETWEEN ? AND ?";
+            query +=
+                    dialect.quoteIdentifier(readOptions.getPartitionColumnName().get()) + " BETWEEN ? AND ?";
         }
         if (limit >= 0) {
             query = String.format("%s %s", query, dialect.getLimitClause(limit));
@@ -128,8 +119,7 @@ public class JdbcDynamicTableSource
         builder.setQuery(query);
         final RowType rowType = (RowType) physicalSchema.toRowDataType().getLogicalType();
         builder.setRowConverter(dialect.getRowConverter(rowType));
-        builder.setRowDataTypeInfo(
-                runtimeProviderContext.createTypeInformation(physicalSchema.toRowDataType()));
+        builder.setRowDataTypeInfo(runtimeProviderContext.createTypeInformation(physicalSchema.toRowDataType()));
 
         return InputFormatProvider.of(builder.build());
     }
@@ -179,8 +169,7 @@ public class JdbcDynamicTableSource
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-                options, readOptions, lookupOptions, physicalSchema, dialectName, limit);
+        return Objects.hash(options, readOptions, lookupOptions, physicalSchema, dialectName, limit);
     }
 
     @Override

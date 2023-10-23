@@ -75,9 +75,8 @@ import java.util.Set;
  */
 public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.ColumnOrigin> {
 
-    public static final RelMetadataProvider SOURCE =
-            ReflectiveRelMetadataProvider.reflectiveSource(
-                    BuiltInMethod.COLUMN_ORIGIN.method, new RelMdColumnOrigins());
+    public static final RelMetadataProvider SOURCE = ReflectiveRelMetadataProvider.reflectiveSource(
+            BuiltInMethod.COLUMN_ORIGIN.method, new RelMdColumnOrigins());
 
     // ~ Constructors -----------------------------------------------------------
 
@@ -89,8 +88,7 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
         return BuiltInMetadata.ColumnOrigin.DEF;
     }
 
-    public Set<RelColumnOrigin> getColumnOrigins(
-            Aggregate rel, RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(Aggregate rel, RelMetadataQuery mq, int iOutputColumn) {
         if (iOutputColumn < rel.getGroupCount()) {
             // get actual index of Group columns.
             return mq.getColumnOrigins(
@@ -135,8 +133,7 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
     }
 
     /** Support the field blood relationship of table function */
-    public Set<RelColumnOrigin> getColumnOrigins(
-            Correlate rel, RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(Correlate rel, RelMetadataQuery mq, int iOutputColumn) {
 
         List<RelDataTypeField> leftFieldList = rel.getLeft().getRowType().getFieldList();
 
@@ -169,8 +166,7 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
         return set;
     }
 
-    public Set<RelColumnOrigin> getColumnOrigins(
-            SetOp rel, RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(SetOp rel, RelMetadataQuery mq, int iOutputColumn) {
         final Set<RelColumnOrigin> set = new HashSet<>();
         for (RelNode input : rel.getInputs()) {
             Set<RelColumnOrigin> inputSet = mq.getColumnOrigins(input, iOutputColumn);
@@ -183,14 +179,12 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
     }
 
     /** Support the field blood relationship of lookup join */
-    public Set<RelColumnOrigin> getColumnOrigins(
-            Snapshot rel, RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(Snapshot rel, RelMetadataQuery mq, int iOutputColumn) {
         return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
     }
 
     /** Support the field blood relationship of watermark */
-    public Set<RelColumnOrigin> getColumnOrigins(
-            SingleRel rel, RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(SingleRel rel, RelMetadataQuery mq, int iOutputColumn) {
         return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
     }
 
@@ -198,8 +192,7 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
      * Support field blood relationship of CEP. The first column is the field after PARTITION BY,
      * and the other columns come from the measures in Match
      */
-    public Set<RelColumnOrigin> getColumnOrigins(
-            Match rel, RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(Match rel, RelMetadataQuery mq, int iOutputColumn) {
         if (iOutputColumn == 0) {
             return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
         }
@@ -227,8 +220,7 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
     }
 
     /** Support the field blood relationship of ROW_NUMBER() */
-    public Set<RelColumnOrigin> getColumnOrigins(
-            Window rel, RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(Window rel, RelMetadataQuery mq, int iOutputColumn) {
         final RelNode input = rel.getInput();
         /**
          * Haven't found a good way to judge whether the field comes from window, for the time
@@ -253,8 +245,7 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
         return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
     }
 
-    public Set<RelColumnOrigin> getColumnOrigins(
-            Project rel, final RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(Project rel, final RelMetadataQuery mq, int iOutputColumn) {
         final RelNode input = rel.getInput();
         RexNode rexNode = rel.getProjects().get(iOutputColumn);
 
@@ -268,17 +259,15 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
         return createDerivedColumnOrigins(set);
     }
 
-    public Set<RelColumnOrigin> getColumnOrigins(
-            Calc rel, final RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(Calc rel, final RelMetadataQuery mq, int iOutputColumn) {
         final RelNode input = rel.getInput();
-        final RexShuttle rexShuttle =
-                new RexShuttle() {
+        final RexShuttle rexShuttle = new RexShuttle() {
 
-                    @Override
-                    public RexNode visitLocalRef(RexLocalRef localRef) {
-                        return rel.getProgram().expandLocalRef(localRef);
-                    }
-                };
+            @Override
+            public RexNode visitLocalRef(RexLocalRef localRef) {
+                return rel.getProgram().expandLocalRef(localRef);
+            }
+        };
         final List<RexNode> projects = new ArrayList<>();
         for (RexNode rex : rexShuttle.apply(rel.getProgram().getProjectList())) {
             projects.add(rex);
@@ -293,12 +282,11 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
             // LOCALTIMESTAMP function
             TableSourceTable table = ((TableSourceTable) rel.getInput().getTable());
             if (table != null) {
-                String targetFieldName =
-                        rel.getProgram()
-                                .getOutputRowType()
-                                .getFieldList()
-                                .get(iOutputColumn)
-                                .getName();
+                String targetFieldName = rel.getProgram()
+                        .getOutputRowType()
+                        .getFieldList()
+                        .get(iOutputColumn)
+                        .getName();
                 List<String> fieldList =
                         table.contextResolvedTable().getResolvedSchema().getColumnNames();
 
@@ -319,8 +307,7 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
         return createDerivedColumnOrigins(set);
     }
 
-    public Set<RelColumnOrigin> getColumnOrigins(
-            Filter rel, RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(Filter rel, RelMetadataQuery mq, int iOutputColumn) {
         return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
     }
 
@@ -328,18 +315,15 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
         return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
     }
 
-    public Set<RelColumnOrigin> getColumnOrigins(
-            TableModify rel, RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(TableModify rel, RelMetadataQuery mq, int iOutputColumn) {
         return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
     }
 
-    public Set<RelColumnOrigin> getColumnOrigins(
-            Exchange rel, RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(Exchange rel, RelMetadataQuery mq, int iOutputColumn) {
         return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
     }
 
-    public Set<RelColumnOrigin> getColumnOrigins(
-            TableFunctionScan rel, RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(TableFunctionScan rel, RelMetadataQuery mq, int iOutputColumn) {
         final Set<RelColumnOrigin> set = new HashSet<>();
         Set<RelColumnMapping> mappings = rel.getColumnMappings();
         if (mappings == null) {
@@ -373,8 +357,7 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
     }
 
     // Catch-all rule when none of the others apply.
-    public Set<RelColumnOrigin> getColumnOrigins(
-            RelNode rel, RelMetadataQuery mq, int iOutputColumn) {
+    public Set<RelColumnOrigin> getColumnOrigins(RelNode rel, RelMetadataQuery mq, int iOutputColumn) {
         // NOTE jvs 28-Mar-2006: We may get this wrong for a physical table
         // expression which supports projections. In that case,
         // it's up to the plugin writer to override with the
@@ -413,28 +396,24 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
         }
         final Set<RelColumnOrigin> set = new HashSet<>();
         for (RelColumnOrigin rco : inputSet) {
-            RelColumnOrigin derived =
-                    new RelColumnOrigin(rco.getOriginTable(), rco.getOriginColumnOrdinal(), true);
+            RelColumnOrigin derived = new RelColumnOrigin(rco.getOriginTable(), rco.getOriginColumnOrdinal(), true);
             set.add(derived);
         }
         return set;
     }
 
-    private Set<RelColumnOrigin> getMultipleColumns(
-            RexNode rexNode, RelNode input, final RelMetadataQuery mq) {
+    private Set<RelColumnOrigin> getMultipleColumns(RexNode rexNode, RelNode input, final RelMetadataQuery mq) {
         final Set<RelColumnOrigin> set = new HashSet<>();
-        final RexVisitor<Void> visitor =
-                new RexVisitorImpl<Void>(true) {
+        final RexVisitor<Void> visitor = new RexVisitorImpl<Void>(true) {
 
-                    public Void visitInputRef(RexInputRef inputRef) {
-                        Set<RelColumnOrigin> inputSet =
-                                mq.getColumnOrigins(input, inputRef.getIndex());
-                        if (inputSet != null) {
-                            set.addAll(inputSet);
-                        }
-                        return null;
-                    }
-                };
+            public Void visitInputRef(RexInputRef inputRef) {
+                Set<RelColumnOrigin> inputSet = mq.getColumnOrigins(input, inputRef.getIndex());
+                if (inputSet != null) {
+                    set.addAll(inputSet);
+                }
+                return null;
+            }
+        };
         rexNode.accept(visitor);
         return set;
     }

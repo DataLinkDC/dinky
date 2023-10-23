@@ -144,7 +144,7 @@ const StudioMenu = (props: any) => {
     const key = current.key;
     const taskKey = (Math.random() * 1000) + '';
     notification.success({
-      message: l('pages.datastudio.editor.submiting','',{jobName: param.jobName}),
+      message: l('pages.datastudio.editor.submitting','',{jobName: param.jobName}),
       description: param.statement.substring(0, 40) + '...',
       duration: null,
       key: taskKey,
@@ -186,7 +186,7 @@ const StudioMenu = (props: any) => {
           id: current.task.id,
         };
         notification.success({
-          message: l('pages.datastudio.editor.async.submiting','',{jobName: current.task.jobName}),
+          message: l('pages.datastudio.editor.async.submitting','',{jobName: current.task.jobName}),
           description: current.task.statement,
           duration: null,
           key: taskKey,

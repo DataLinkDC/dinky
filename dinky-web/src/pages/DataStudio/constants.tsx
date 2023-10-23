@@ -17,16 +17,36 @@
  *
  */
 
-import {MenuItemType} from "rc-menu/lib/interface";
-import {l} from "@/utils/intl";
+import { l } from '@/utils/intl';
+import { DefaultOptionType } from 'antd/es/select';
+import { MenuItemType } from 'rc-menu/lib/interface';
 
-export  const STUDIO_TAG_RIGHT_CONTEXT_MENU: MenuItemType[] = [
-    {
-        key: "closeAll",
-        label: l('right.menu.closeAll'),
-    },
-    {
-        key: "closeOther",
-        label: l('right.menu.closeOther'),
-    }
-]
+export const STUDIO_TAG_RIGHT_CONTEXT_MENU: MenuItemType[] = [
+  {
+    key: 'closeAll',
+    label: l('right.menu.closeAll')
+  },
+  {
+    key: 'closeOther',
+    label: l('right.menu.closeOther')
+  }
+];
+
+export const SAVE_POINT_TYPE: DefaultOptionType[] = [
+  {
+    label: l('global.savepoint.strategy.disabled'),
+    value: 0
+  },
+  {
+    label: l('global.savepoint.strategy.latest'),
+    value: 1
+  },
+  {
+    label: l('global.savepoint.strategy.earliest'),
+    value: 2
+  },
+  {
+    label: l('global.savepoint.strategy.custom'),
+    value: 3
+  }
+];

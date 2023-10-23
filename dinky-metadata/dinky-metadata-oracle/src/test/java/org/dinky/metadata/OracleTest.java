@@ -92,8 +92,7 @@ public class OracleTest {
     @Test
     public void queryTest() {
         Driver driver = getDriver();
-        JdbcSelectResult selectResult =
-                driver.query("select * from CDR.PAT_INFO where ROWNUM<10", 10);
+        JdbcSelectResult selectResult = driver.query("select * from CDR.PAT_INFO where ROWNUM<10", 10);
         LOGGER.info("end...");
     }
 }

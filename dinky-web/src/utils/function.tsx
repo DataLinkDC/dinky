@@ -15,14 +15,9 @@
  * limitations under the License.
  */
 
-import {DIALECT, LANGUAGE_KEY, LANGUAGE_ZH, TENANT_ID} from '@/services/constants';
-import cookies from 'js-cookie';
-import {CODE_EDIT_THEME, THEME} from '@/types/Public/data';
-import {editor} from 'monaco-editor';
-import React, {useEffect, useState} from 'react';
-import {trim} from 'lodash';
 import {
   FileIcon,
+  FlinkSQLSvg,
   FolderSvgExpand,
   JavaSvg,
   LogSvg,
@@ -33,9 +28,21 @@ import {
   XMLSvg,
   YAMLSvg
 } from '@/components/Icons/CodeLanguageIcon';
+import {
+  DATETIME_FORMAT,
+  DIALECT,
+  LANGUAGE_KEY,
+  LANGUAGE_ZH,
+  TENANT_ID
+} from '@/services/constants';
+import { CODE_EDIT_THEME, THEME } from '@/types/Public/data';
+import { l } from '@/utils/intl';
+import dayjs from 'dayjs';
+import cookies from 'js-cookie';
+import { trim } from 'lodash';
+import { editor } from 'monaco-editor';
 import path from 'path';
-import {l} from '@/utils/intl';
-
+import { useEffect, useState } from 'react';
 
 /**
  * get language by localStorage's umi_locale , if not exist , return zh-CN
@@ -53,30 +60,27 @@ export function setKeyToLocalStorage(key: string, value: string) {
   localStorage.setItem(key, value);
 }
 
-
 /**
  * get value by localStorage's key
  * @param key
  */
 export function getValueFromLocalStorage(key: string) {
-    return localStorage.getItem(key) ?? '';
+  return localStorage.getItem(key) ?? '';
 }
-
 
 /**
  * get tenant id
  */
 export function getTenantByLocalStorage() {
-    return getValueFromLocalStorage(TENANT_ID);
+  return getValueFromLocalStorage(TENANT_ID);
 }
-
 
 /**
  * get cookie by key
  * @param key
  */
 export function getCookieByKey(key: string) {
-    return cookies.get(key) ?? '';
+  return cookies.get(key) ?? '';
 }
 
 /**
@@ -86,35 +90,33 @@ export function getCookieByKey(key: string) {
  * @param options
  */
 export function setCookieByKey(key: string, value: string, options?: {}) {
-    cookies.set(key, value, options);
+  cookies.set(key, value, options);
 }
-
 
 /**
  * PUT tenantId TO localStorage & cookies
  * @param tenantId
  */
 export function setTenantStorageAndCookie(tenantId: number) {
-    // save as localStorage
-    setKeyToLocalStorage(TENANT_ID, tenantId.toString());
-    // save as cookies
-    setCookieByKey(TENANT_ID, tenantId.toString(), {path: '/'});
+  // save as localStorage
+  setKeyToLocalStorage(TENANT_ID, tenantId.toString());
+  // save as cookies
+  setCookieByKey(TENANT_ID, tenantId.toString(), { path: '/' });
 }
-
 
 /**
  * parseJsonStr
  * @param jsonStr
  */
 export function parseJsonStr(jsonStr: string) {
-    return JSON.parse(JSON.stringify(jsonStr));
+  return JSON.parse(JSON.stringify(jsonStr));
 }
 
 /**
  * get theme by localStorage's theme
  */
-export function getLocalTheme() :string {
-    return localStorage.getItem(THEME.NAV_THEME) ?? THEME.dark;
+export function getLocalTheme(): string {
+  return localStorage.getItem(THEME.NAV_THEME) ?? THEME.dark;
 }
 
 /**
@@ -122,70 +124,71 @@ export function getLocalTheme() :string {
  * @constructor
  */
 export function convertCodeEditTheme() {
-
-    /**
-     * user can define a new theme by calling the defineTheme method on the editor.
-     */
-    editor.defineTheme(CODE_EDIT_THEME.VS_CUSTOME, {
-        base: 'vs', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
-        inherit: true, // 是否继承基础主题配置 , 默认为 true, is to inherit the base theme
-        // rules is an array of rules. The array must not be sparse (i.e. do not use holes).
-        rules: [
-            {token: 'comment', foreground: '#008800', fontStyle: 'italic'},
-            {token: 'keyword', foreground: '#064cff', fontStyle: 'bold'},
-            {token: 'string', foreground: '#507dee'},
-            {token: 'delimiter', foreground: '#041d81'},
-            {token: 'readonly', foreground: '#e73a6e', background: '#141414', fontStyle: 'italic'},
-            {token: 'number', foreground: '#ffffff'},
-
-        ],
-        // colors is an object of color identifiers and their color values.
-        colors: {
-            'editor.background': '#5d5b5b', //  editor background color
-            'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
-            'editorLineNumber.foreground': '#ffffff', //   editor line number color
-            'editorCursor.foreground': '#ffffff', //  editor cursor color
-            'editorIndentGuide.background': '#ffffff', //  editor indent guide color
-            'editor.foreground': '#ffffff', //  editor selection highlight border color
-            'editor.selectionBackground': '#4ba1ef', //  editor selection highlight color
-            'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
-            'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
-            'editor.wordHighlightBackground': '#8bb2d2', //  editor word highlight color
-        }
-    });
-
-
-    const theme = getLocalTheme();
-    switch (theme) {
-        case THEME.dark:
-            return CODE_EDIT_THEME.VS_CUSTOME;
-        case THEME.light:
-            return CODE_EDIT_THEME.DARK;
-        default:
-            return CODE_EDIT_THEME.HC_BLACK;
+  /**
+   * user can define a new theme by calling the defineTheme method on the editor.
+   */
+  editor.defineTheme(CODE_EDIT_THEME.VS_CUSTOME, {
+    base: 'vs', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
+    inherit: true, // 是否继承基础主题配置 , 默认为 true, is to inherit the base theme
+    // rules is an array of rules. The array must not be sparse (i.e. do not use holes).
+    rules: [
+      { token: 'comment', foreground: '#008800', fontStyle: 'italic' },
+      { token: 'keyword', foreground: '#064cff', fontStyle: 'bold' },
+      { token: 'string', foreground: '#507dee' },
+      { token: 'delimiter', foreground: '#041d81' },
+      {
+        token: 'readonly',
+        foreground: '#e73a6e',
+        background: '#141414',
+        fontStyle: 'italic'
+      },
+      { token: 'number', foreground: '#ffffff' }
+    ],
+    // colors is an object of color identifiers and their color values.
+    colors: {
+      'editor.background': '#5d5b5b', //  editor background color
+      'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
+      'editorLineNumber.foreground': '#ffffff', //   editor line number color
+      'editorCursor.foreground': '#ffffff', //  editor cursor color
+      'editorIndentGuide.background': '#ffffff', //  editor indent guide color
+      'editor.foreground': '#ffffff', //  editor selection highlight border color
+      'editor.selectionBackground': '#4ba1ef', //  editor selection highlight color
+      'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
+      'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
+      'editor.wordHighlightBackground': '#8bb2d2' //  editor word highlight color
     }
-};
+  });
 
+  const theme = getLocalTheme();
+  switch (theme) {
+    case THEME.dark:
+      return CODE_EDIT_THEME.VS_CUSTOME;
+    case THEME.light:
+      return CODE_EDIT_THEME.DARK;
+    default:
+      return CODE_EDIT_THEME.HC_BLACK;
+  }
+}
 
 /**
  * use SSE build single data
  * @param url
  */
 export const useSSEBuildSingleData = (url: string) => {
-    const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<any>(null);
 
-    useEffect(() => {
-        const eventSource = new EventSource(url);
-        eventSource.onmessage = (event) => {
-            const newData = JSON.parse(event.data);
-            setData(newData);
-        };
-        return () => {
-            eventSource.close();
-        };
-    }, [url]);
+  useEffect(() => {
+    const eventSource = new EventSource(url);
+    eventSource.onmessage = (event) => {
+      const newData = JSON.parse(event.data);
+      setData(newData);
+    };
+    return () => {
+      eventSource.close();
+    };
+  }, [url]);
 
-    return data;
+  return data;
 };
 
 /**
@@ -193,56 +196,55 @@ export const useSSEBuildSingleData = (url: string) => {
  * @param url
  */
 export const useSSEBuildArrayData = (url: string) => {
-    const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<any[]>([]);
 
-    useEffect(() => {
-        const eventSource = new EventSource(url);
-        eventSource.onmessage = (event) => {
-            const newData = JSON.parse(event.data);
-            setData((prevData) => [...prevData, newData]);
-        };
-        return () => {
-            eventSource.close();
-        };
-    }, [url]);
+  useEffect(() => {
+    const eventSource = new EventSource(url);
+    eventSource.onmessage = (event) => {
+      const newData = JSON.parse(event.data);
+      setData((prevData) => [...prevData, newData]);
+    };
+    return () => {
+      eventSource.close();
+    };
+  }, [url]);
 
-    return data;
+  return data;
 };
-
 
 /**
  * get file icon by file type
  * @param type
  */
 export const getLanguage = (type: string): string => {
-    switch (type) {
-        case DIALECT.JAVA:
-        case DIALECT.LOG:
-            return DIALECT.JAVA;
-        case DIALECT.MD:
-        case DIALECT.MDX:
-            return DIALECT.MARKDOWN;
-        case DIALECT.XML:
-            return DIALECT.XML;
-        case DIALECT.YAML:
-        case DIALECT.YML:
-            return DIALECT.YAML;
-        case DIALECT.JSON:
-            return DIALECT.JSON;
-        case DIALECT.SH:
-        case DIALECT.BASH:
-        case DIALECT.CMD:
-            return DIALECT.SHELL;
-        case DIALECT.SCALA:
-            return DIALECT.SCALA;
-        case DIALECT.PYTHON:
-        case DIALECT.PYTHON_LONG:
-            return DIALECT.PYTHON_LONG;
-        case DIALECT.SQL:
-            return DIALECT.SQL;
-        default:
-            return DIALECT.JAVASCRIPT;
-    }
+  switch (type) {
+    case DIALECT.JAVA:
+    case DIALECT.LOG:
+      return DIALECT.JAVA;
+    case DIALECT.MD:
+    case DIALECT.MDX:
+      return DIALECT.MARKDOWN;
+    case DIALECT.XML:
+      return DIALECT.XML;
+    case DIALECT.YAML:
+    case DIALECT.YML:
+      return DIALECT.YAML;
+    case DIALECT.JSON:
+      return DIALECT.JSON;
+    case DIALECT.SH:
+    case DIALECT.BASH:
+    case DIALECT.CMD:
+      return DIALECT.SHELL;
+    case DIALECT.SCALA:
+      return DIALECT.SCALA;
+    case DIALECT.PYTHON:
+    case DIALECT.PYTHON_LONG:
+      return DIALECT.PYTHON_LONG;
+    case DIALECT.SQL:
+      return DIALECT.SQL;
+    default:
+      return DIALECT.JAVASCRIPT;
+  }
 };
 
 /**
@@ -250,33 +252,37 @@ export const getLanguage = (type: string): string => {
  * @param type file type
  */
 export const getIcon = (type: string) => {
-    switch (type) {
-        case DIALECT.JAVA:
-            return <JavaSvg/>;
-        case DIALECT.SCALA:
-            return <ScalaSvg/>;
-        case DIALECT.PYTHON:
-        case DIALECT.PYTHON_LONG:
-            return <PythonSvg/>;
-        case DIALECT.MD:
-        case DIALECT.MDX:
-            return <MarkDownSvg/>;
-        case DIALECT.XML:
-            return <XMLSvg/>;
-        case DIALECT.YAML:
-        case DIALECT.YML:
-            return <YAMLSvg/>;
-        case DIALECT.SH:
-        case DIALECT.BASH:
-        case DIALECT.CMD:
-            return <ShellSvg/>;
-        case DIALECT.LOG:
-            return <LogSvg/>;
-        default:
-            return <FileIcon/>;
-    }
+  if (!type) {
+    return <FileIcon />;
+  }
+  switch (type.toLowerCase()) {
+    case DIALECT.JAVA:
+      return <JavaSvg />;
+    case DIALECT.SCALA:
+      return <ScalaSvg />;
+    case DIALECT.PYTHON:
+    case DIALECT.PYTHON_LONG:
+      return <PythonSvg />;
+    case DIALECT.MD:
+    case DIALECT.MDX:
+      return <MarkDownSvg />;
+    case DIALECT.XML:
+      return <XMLSvg />;
+    case DIALECT.YAML:
+    case DIALECT.YML:
+      return <YAMLSvg />;
+    case DIALECT.SH:
+    case DIALECT.BASH:
+    case DIALECT.CMD:
+      return <ShellSvg />;
+    case DIALECT.LOG:
+      return <LogSvg />;
+    case DIALECT.FLINK_SQL:
+      return <FlinkSQLSvg />;
+    default:
+      return <FileIcon />;
+  }
 };
-
 
 /**
  * Get the icon according to the file suffix
@@ -285,18 +291,17 @@ export const getIcon = (type: string) => {
  * @param isLeft is left
  */
 export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => {
-    if (isLeft) {
-        return <FolderSvgExpand/>;
+  if (isLeft) {
+    return <FolderSvgExpand />;
+  } else {
+    if (trim(splitChar).length === 0) {
+      return getIcon(type);
     } else {
-        if (trim(splitChar).length === 0) {
-            return getIcon(type);
-        } else {
-            let suffixOfType = type.toString().split(splitChar).reverse()[0];
-            return getIcon(suffixOfType);
-        }
+      let suffixOfType = type.toString().split(splitChar).reverse()[0];
+      return getIcon(suffixOfType);
     }
+  }
 };
-
 
 /**
  * Get the language according to the file suffix
@@ -304,129 +309,152 @@ export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => 
  * @param splitChar split character
  */
 export const renderLanguage = (type = '', splitChar: string) => {
-    if (trim(splitChar).length === 0) {
-        return getLanguage(type);
-    } else {
-        let suffixOfType = type.toString().split(splitChar).reverse()[0];
-        return getLanguage(suffixOfType);
-    }
+  if (trim(splitChar).length === 0) {
+    return getLanguage(type);
+  } else {
+    let suffixOfType = type.toString().split(splitChar).reverse()[0];
+    return getLanguage(suffixOfType);
+  }
 };
-
 
 /**
  * get the folder separator according to the platform
  */
 export const folderSeparator = () => {
-    return path.sep;
+  return path.sep;
 };
-
 
 /**
  * Generate time string
  * @param s_time datetime
  */
 export const parseSecondStr = (s_time: number) => {
-    let second_time = Math.floor(s_time);
-    let time = second_time + l('global.time.second');
-    if (second_time > 60) {
-        let second = second_time % 60;
-        let min = Math.floor(second_time / 60);
-        time = min + l('global.time.minute') + second + l('global.time.second');
-        if (min > 60) {
-            min = Math.floor(second_time / 60) % 60;
-            let hour = Math.floor(Math.floor(second_time / 60) / 60);
-            time = hour + l('global.time.hour') + min + l('global.time.minute') + second + l('global.time.second');
-            if (hour > 24) {
-                hour = Math.floor(Math.floor(second_time / 60) / 60) % 24;
-                let day = Math.floor(Math.floor(Math.floor(second_time / 60) / 60) / 24);
-                time = day + l('global.time.day') + hour + l('global.time.hour') + min + l('global.time.minute') + second + l('global.time.second');
-            }
-        }
+  let second_time = Math.floor(s_time);
+  let time = second_time + l('global.time.second');
+  if (second_time > 60) {
+    let second = second_time % 60;
+    let min = Math.floor(second_time / 60);
+    time = min + l('global.time.minute') + second + l('global.time.second');
+    if (min > 60) {
+      min = Math.floor(second_time / 60) % 60;
+      let hour = Math.floor(Math.floor(second_time / 60) / 60);
+      time =
+        hour +
+        l('global.time.hour') +
+        min +
+        l('global.time.minute') +
+        second +
+        l('global.time.second');
+      if (hour > 24) {
+        hour = Math.floor(Math.floor(second_time / 60) / 60) % 24;
+        let day = Math.floor(Math.floor(Math.floor(second_time / 60) / 60) / 24);
+        time =
+          day +
+          l('global.time.day') +
+          hour +
+          l('global.time.hour') +
+          min +
+          l('global.time.minute') +
+          second +
+          l('global.time.second');
+      }
     }
-    return time;
+  }
+  return time;
 };
+
+export function parseByteStr(limit: number) {
+  if (limit == null) {
+    return 'None';
+  }
+  let size = '';
+  if (limit < 0.1 * 1024) {
+    //小于0.1KB，则转化成B
+    size = limit.toFixed(2) + 'B';
+  } else if (limit < 0.1 * 1024 * 1024) {
+    //小于0.1MB，则转化成KB
+    size = (limit / 1024).toFixed(2) + 'KB';
+  } else if (limit < 0.1 * 1024 * 1024 * 1024) {
+    //小于0.1GB，则转化成MB
+    size = (limit / (1024 * 1024)).toFixed(2) + 'MB';
+  } else {
+    //其他转化成GB
+    size = (limit / (1024 * 1024 * 1024)).toFixed(2) + 'GB';
+  }
+
+  let sizeStr = size + ''; //转成字符串
+  let index = sizeStr.indexOf('.'); //获取小数点处的索引
+  let dou = sizeStr.substr(index + 1, 2); //获取小数点后两位的值
+  if (dou == '00') {
+    //判断后两位是否为00，如果是则删除00
+    return sizeStr.substring(0, index) + sizeStr.substr(index + 3, 2);
+  }
+  return size;
+}
+
+export function parseNumStr(num: number) {
+  let c =
+    num.toString().indexOf('.') !== -1
+      ? num.toLocaleString()
+      : num.toString().replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+  return c;
+}
 
 /**
  * Generate MilliSecond time string
  * @param {number} second_time
  * @returns {any}
  */
-export function parseMilliSecondStr(second_time: number) {
-    if (((second_time / 1000) % 60) < 1) {
-        return second_time + l('global.time.millisecond');
-    }
-    return parseSecondStr(second_time / 1000);
+export function parseMilliSecondStr(second_time: number | undefined) {
+  if (second_time == null) {
+    return 'None';
+  }
+  if ((second_time / 1000) % 60 < 1) {
+    return second_time + l('global.time.millisecond');
+  }
+  return parseSecondStr(second_time / 1000);
 }
 
-
 /**
- * build tree data
- * @param data
+ * Calculate how many days the dates differ
  * @returns {any}
  */
-export const buildTreeData = (data: any): any => data?.map((item: any) => {
+export function differenceDays(startDateString: any, endDateString: any): number {
+  const startDate = new Date(startDateString);
+  const endDate = new Date(endDateString);
 
-    // build key
-    let buildKey = item.path + folderSeparator() + item.name;
+  // 将日期对象的时间部分设为0，只保留日期
+  startDate.setHours(0, 0, 0, 0);
+  endDate.setHours(0, 0, 0, 0);
 
-    const buildTitleLabel = () => {
-        return <>{item.name}<span
-            style={{color: 'gray'}}> &nbsp;&nbsp;{l('global.size', '', {size: item.size})}</span></>;
-    }
+  // 计算两个日期的时间差（毫秒）
+  const timeDifference = endDate.getTime() - startDate.getTime();
 
-    // if has children , recursive build
-    if (item.children) {
-        return {
-            isLeaf: !item.leaf,
-            id: item?.id,
-            name: item.name,
-            parentId: item.path ?? item.parentId,
-            icon: renderIcon(item.name, '.', item.leaf),
-            content: item.content,
-            path: item.path,
-            fullName: item?.fullName,
-            title: buildTitleLabel(),
-            desc: item?.desc ?? item?.description,
-            key: buildKey,
-            children: buildTreeData(item.children)
-        };
-    }
-    return {
-        isLeaf: !item.leaf,
-        id: item?.id,
-        name: item.name,
-        parentId: item.path ?? item.parentId,
-        icon: renderIcon(item.name, '.', item.leaf),
-        content: item.content,
-        path: item.path,
-        fullName: item?.fullName,
-        desc: item?.desc ?? item?.description,
-        title: buildTitleLabel(),
-        key: buildKey,
-    };
-});
+  // 将毫秒转换为天数
+  const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
 
+  return Math.floor(daysDifference);
+}
 
 /**
  * Determine whether the file is supported
  * @returns {boolean}
  */
 export const unSupportView = (name: string) => {
-
-    return name.endsWith(".jar")
-        || name.endsWith(".war")
-        || name.endsWith(".zip")
-        || name.endsWith(".tar.gz")
-        || name.endsWith(".tar")
-        || name.endsWith(".jpg")
-        || name.endsWith(".png")
-        || name.endsWith(".gif")
-        || name.endsWith(".bmp")
-        || name.endsWith(".jpeg")
-        || name.endsWith(".ico")
-}
-
-
+  return (
+    name.endsWith('.jar') ||
+    name.endsWith('.war') ||
+    name.endsWith('.zip') ||
+    name.endsWith('.tar.gz') ||
+    name.endsWith('.tar') ||
+    name.endsWith('.jpg') ||
+    name.endsWith('.png') ||
+    name.endsWith('.gif') ||
+    name.endsWith('.bmp') ||
+    name.endsWith('.jpeg') ||
+    name.endsWith('.ico')
+  );
+};
 
 /**
  * search tree node
@@ -434,19 +462,57 @@ export const unSupportView = (name: string) => {
  * @param {string} searchValue
  * @returns {any}
  */
-export const searchTreeNode = (originValue :string,searchValue: string): any => {
+export const searchTreeNode = (originValue: string, searchValue: string): any => {
+  let title = <>{originValue}</>;
 
-    let title = <>{originValue}</>;
+  // searchValue is not empty and trim() after length > 0
+  if (searchValue && searchValue.trim().length > 0) {
+    const searchIndex = originValue.indexOf(searchValue); // search index
+    const beforeStr = originValue.substring(0, searchIndex); // before search value
+    const afterStr = originValue.substring(searchIndex + searchValue.length); // after search value
+    // when search index > -1, return render title, else return origin title
+    title =
+      searchIndex > -1 ? (
+        <span>
+          {beforeStr}
+          <span className={'treeList tree-search-value'}>{searchValue}</span>
+          {afterStr}
+        </span>
+      ) : (
+        <span className={'treeList'}>{title}</span>
+      );
+  }
+  return title;
+};
 
-    // searchValue is not empty and trim() after length > 0
-    if (searchValue && searchValue.trim().length > 0) {
-        const searchIndex = originValue.indexOf(searchValue); // search index
-        const beforeStr = originValue.substr(0, searchIndex); // before search value
-        const afterStr = originValue.substr(searchIndex + searchValue.length); // after search value
-        // when search index > -1, return render title, else return origin title
-        title = searchIndex > -1 ?
-            <span>{beforeStr}<span className={'treeList tree-search-value'}>{searchValue}</span>{afterStr}</span>
-            : <span className={'treeList'}>{title}</span> ;
+export const transformTreeData = <T,>(data: T[]): T[] => {
+  return data.map((item: T, index) => {
+    return { ...item, key: index };
+  });
+};
+
+export const transformTableDataToCsv = <T,>(column: string[], data: T[]): string => {
+  let row = '';
+  let csvData = '';
+  for (const title of column) {
+    row += '"' + title + '",';
+  }
+  const delimiter = '\r\n';
+  csvData += row + delimiter; // 添加换行符号
+  for (const item of data) {
+    row = '';
+    for (let key in item) {
+      row += '"' + (item[key] ?? '') + '",';
     }
-    return title
+    csvData += row + delimiter; // 添加换行符号
+  }
+  return csvData;
+};
+
+export const formatDateToYYYYMMDDHHMMSS = (date: Date) => {
+  return dayjs(date).format(DATETIME_FORMAT);
+};
+
+export const parseDateStringToDate = (dateString: Date) => {
+  return dayjs(dateString).toDate();
 };

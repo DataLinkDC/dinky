@@ -19,6 +19,8 @@
 
 package org.dinky.data.model;
 
+import org.dinky.data.enums.Status;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,28 +38,41 @@ import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class Configuration<T> implements Serializable {
-    private final String key;
-    @JsonIgnore private final Class<T> type;
-    @JsonIgnore private transient Function<T, T> desensitizedHandler = null;
+    private String key;
+    private String name;
+
+    @JsonIgnore
+    private final Class<T> type;
+
+    @JsonIgnore
+    private transient Function<T, T> desensitizedHandler = null;
+
     private final String frontType;
     private final List<String> example = new ArrayList<>();
+
+    @JsonIgnore
+    private String noteKey;
+
     private String note;
 
     private final T defaultValue;
-    @JsonIgnore private final transient List<Consumer<T>> changeEventConsumer = new LinkedList<>();
+
+    @JsonIgnore
+    private final transient List<Consumer<T>> changeEventConsumer = new LinkedList<>();
 
     @JsonIgnore
     private final transient List<Consumer<T>> parameterCheckConsumer = new LinkedList<>();
 
     private T value;
-    private static final List<Class<?>> NUMBER_LIST =
-            CollUtil.newArrayList(Double.class, Float.class, Integer.class);
+    private static final List<Class<?>> NUMBER_LIST = CollUtil.newArrayList(Double.class, Float.class, Integer.class);
 
-    public Configuration<T> note(String note) {
-        this.note = note;
+    public Configuration<T> note(Status status) {
+        this.noteKey = status.getKey();
         return this;
     }
 
@@ -167,22 +182,16 @@ public class Configuration<T> implements Serializable {
     }
 
     public void runParameterCheck() {
-        getParameterCheckConsumer()
-                .forEach(
-                        x -> {
-                            x.accept(getValue());
-                        });
+        getParameterCheckConsumer().forEach(x -> x.accept(getValue()));
     }
 
     public void runChangeEvent() {
-        getChangeEventConsumer()
-                .forEach(
-                        x -> {
-                            try {
-                                x.accept(getValue());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
+        getChangeEventConsumer().forEach(x -> {
+            try {
+                x.accept(getValue());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

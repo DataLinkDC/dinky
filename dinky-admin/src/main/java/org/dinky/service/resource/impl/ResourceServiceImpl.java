@@ -20,14 +20,18 @@
 package org.dinky.service.resource.impl;
 
 import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Resources;
+import org.dinky.data.result.Result;
 import org.dinky.mapper.ResourcesMapper;
 import org.dinky.service.resource.BaseResourceManager;
 import org.dinky.service.resource.ResourcesService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,24 +42,20 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
 
 @Service
-public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
-        implements ResourcesService {
-    private static final TimedCache<Integer, Resources> RESOURCES_CACHE =
-            new TimedCache<>(30 * 1000);
+public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources> implements ResourcesService {
+    private static final TimedCache<Integer, Resources> RESOURCES_CACHE = new TimedCache<>(30 * 1000);
     private static final long ALLOW_MAX_CAT_CONTENT_SIZE = 10 * 1024 * 1024;
 
     @Override
     public TreeNodeDTO createFolder(Integer pid, String fileName, String desc) {
-        long count =
-                count(
-                        new LambdaQueryWrapper<Resources>()
-                                .eq(Resources::getPid, pid)
-                                .eq(Resources::getFileName, fileName));
+        long count = count(
+                new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
         if (count > 0) {
             throw new BusException("folder is exists!");
         }
@@ -78,12 +78,10 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         Resources byId = getById(id);
         String sourceFullName = byId.getFullName();
         Assert.notNull(byId, () -> new BusException("resource is not exists!"));
-        long count =
-                count(
-                        new LambdaQueryWrapper<Resources>()
-                                .eq(Resources::getPid, byId.getPid())
-                                .eq(Resources::getFileName, fileName)
-                                .ne(Resources::getId, id));
+        long count = count(new LambdaQueryWrapper<Resources>()
+                .eq(Resources::getPid, byId.getPid())
+                .eq(Resources::getFileName, fileName)
+                .ne(Resources::getId, id));
         Assert.isFalse(count > 0, () -> new BusException("folder is exists!"));
         List<String> split = StrUtil.split(sourceFullName, "/");
         split.remove(split.size() - 1);
@@ -96,8 +94,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         updateById(byId);
         boolean isRunStorageMove = false;
         if (!byId.getIsDirectory()) {
-            List<Resources> list =
-                    list(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, byId.getId()));
+            List<Resources> list = list(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, byId.getId()));
             if (CollUtil.isNotEmpty(list)) {
                 for (Resources resources : list) {
                     resources.setFullName(fullName + "/" + resources.getFileName());
@@ -128,8 +125,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     }
 
     @Override
-    public void createTree(
-            List<TreeNodeDTO> data, Integer pid, Integer showFloorNum, Integer currentFloor) {
+    public void createTree(List<TreeNodeDTO> data, Integer pid, Integer showFloorNum, Integer currentFloor) {
         if (currentFloor > showFloorNum) {
             return;
         }
@@ -160,10 +156,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     @Override
     public String getContentByResourceId(Integer id) {
         Resources resources = getById(id);
-        Assert.notNull(resources, () -> new BusException("resource is not exists!"));
-        Assert.isFalse(
-                resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE,
-                () -> new BusException("file is too large!"));
+        Assert.notNull(resources, () -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST));
+        Assert.isFalse(resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE, () -> new BusException("file is too large!"));
         return getBaseResourceManager().getFileContent(resources.getFullName());
     }
 
@@ -178,11 +172,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         }
         long size = file.getSize();
         String fileName = file.getOriginalFilename();
-        Resources currentUploadResource =
-                getOne(
-                        new LambdaQueryWrapper<Resources>()
-                                .eq(Resources::getPid, pid)
-                                .eq(Resources::getFileName, fileName));
+        Resources currentUploadResource = getOne(
+                new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
         String fullName;
         if (currentUploadResource != null) {
             if (desc != null) {
@@ -212,29 +203,37 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void remove(Integer id) {
-        if (id < 1) {
-            getBaseResourceManager().remove("/");
-            // todo 删除主目录，实际是清空
-            remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId, 0));
-            return;
+    public boolean remove(Integer id) {
+        Assert.isFalse(
+                Opt.ofNullable(getById(id))
+                                .orElseThrow(() -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST))
+                                .getPid()
+                        == -1,
+                () -> new BusException(Status.ROOT_DIR_NOT_ALLOW_DELETE));
+        try {
+            if (id < 1) {
+                getBaseResourceManager().remove("/");
+                // todo 删除主目录，实际是清空
+                remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId, 0));
+            }
+            Resources byId = getById(id);
+            if (isExistsChildren(id)) {
+                getBaseResourceManager().remove(byId.getFullName());
+                if (byId.getIsDirectory()) {
+                    List<Resources> resourceByPidToChildren =
+                            getResourceByPidToChildren(new ArrayList<>(), byId.getId());
+                    removeBatchByIds(resourceByPidToChildren);
+                }
+                List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), byId.getPid());
+                resourceByPidToParent.forEach(x -> x.setSize(x.getSize() - byId.getSize()));
+                updateBatchById(resourceByPidToParent);
+                getBaseResourceManager().remove(byId.getFullName());
+                return removeById(id);
+            }
+            return removeById(id);
+        } catch (Exception e) {
+            throw new BusException(Status.DELETE_FAILED);
         }
-        Resources byId = getById(id);
-        if (!isExistsChildren(id)) {
-            removeById(id);
-            return;
-        }
-        getBaseResourceManager().remove(byId.getFullName());
-        if (byId.getIsDirectory()) {
-            List<Resources> resourceByPidToChildren =
-                    getResourceByPidToChildren(new ArrayList<>(), byId.getId());
-            removeBatchByIds(resourceByPidToChildren);
-        }
-        List<Resources> resourceByPidToParent =
-                getResourceByPidToParent(new ArrayList<>(), byId.getPid());
-        resourceByPidToParent.forEach(x -> x.setSize(x.getSize() - byId.getSize()));
-        updateBatchById(resourceByPidToParent);
-        removeById(id);
     }
 
     private boolean isExistsChildren(Integer id) {
@@ -245,7 +244,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
      * 递归获取所有的资源，从pid到0
      *
      * @param resourcesList data
-     * @param pid pid
+     * @param pid           pid
      * @return data
      */
     @Override
@@ -262,7 +261,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
      * 递归获取所有的资源，从id往下穿
      *
      * @param resourcesList data
-     * @param pid pid
+     * @param pid           pid
      * @return data
      */
     @Override
@@ -278,6 +277,93 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
             }
         }
         return resourcesList;
+    }
+
+    /**
+     * query Resources tree data
+     *
+     * @return {@link Result}< {@link List}< {@link Resources}>>}
+     */
+    @Override
+    public List<Resources> getResourcesTree() {
+        return buildResourcesTree(this.list());
+    }
+
+    /**
+     * build resources tree
+     *
+     * @param resourcesList resources list
+     * @return Resources tree
+     */
+    private List<Resources> buildResourcesTree(List<Resources> resourcesList) {
+        // sort
+        if (CollectionUtil.isNotEmpty(resourcesList)) {
+            resourcesList = resourcesList.stream()
+                    .sorted(Comparator.comparing(Resources::getId))
+                    .collect(Collectors.toList());
+        }
+
+        List<Resources> returnList = new ArrayList<>();
+
+        for (Resources resources : resourcesList) {
+            //  get all child catalogue of parent catalogue id , the -1 is root catalogue
+            if (resources.getPid() == -1) {
+                recursionBuildResourcesAndChildren(resourcesList, resources);
+                returnList.add(resources);
+            }
+        }
+        if (returnList.isEmpty()) {
+            returnList = resourcesList;
+        }
+        return returnList;
+    }
+
+    /**
+     * recursion build resources and children
+     *
+     * @param resourcesList
+     * @param resources
+     */
+    private void recursionBuildResourcesAndChildren(List<Resources> resourcesList, Resources resources) {
+        // obtain a list of child nodes
+        List<Resources> childList = getChildList(resourcesList, resources);
+        resources.setChildren(childList);
+        for (Resources tChild : childList) {
+            if (hasChild(resourcesList, tChild)) {
+                // Determine whether there are child nodes
+                recursionBuildResourcesAndChildren(resourcesList, tChild);
+            } else {
+                tChild.setLeaf(true);
+            }
+        }
+    }
+
+    /**
+     * get child list
+     *
+     * @param list
+     * @param resources
+     * @return
+     */
+    private List<Resources> getChildList(List<Resources> list, Resources resources) {
+        List<Resources> childList = new ArrayList<>();
+        for (Resources n : list) {
+            if (n.getPid().longValue() == resources.getId().longValue()) {
+                childList.add(n);
+            }
+        }
+        return childList;
+    }
+
+    /**
+     * Determine whether there are child nodes
+     *
+     * @param resourcesList
+     * @param resources
+     * @return
+     */
+    private boolean hasChild(List<Resources> resourcesList, Resources resources) {
+        return getChildList(resourcesList, resources).size() > 0;
     }
 
     private BaseResourceManager getBaseResourceManager() {

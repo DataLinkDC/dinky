@@ -19,7 +19,11 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.Role;
+import org.dinky.data.model.User;
 import org.dinky.data.model.UserRole;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -40,12 +44,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.lang.Dict;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@Api(tags = "Role Controller")
 @RequestMapping("/api/role")
 @RequiredArgsConstructor
 public class RoleController {
@@ -54,38 +64,26 @@ public class RoleController {
     private final UserRoleService userRoleService;
 
     /**
-     * create or update role , this method will be {@link Deprecated} in the future, please use
-     * {@link #addedOrUpdateRole(Role)}
-     *
-     * @return delete result code
-     */
-    @PutMapping
-    @Deprecated
-    public Result<Void> saveOrUpdateRole(@RequestBody Role role) {
-        return roleService.saveOrUpdateRole(role);
-    }
-
-    /**
      * create or update role
      *
      * @param role {@link Role}
      * @return {@link Role} of {@link Void}
      */
     @PutMapping("/addedOrUpdateRole")
+    @ApiOperation("Insert Or Update Role")
+    @Log(title = "Insert Or Update Role", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiImplicitParam(
+            name = "role",
+            value = "role",
+            required = true,
+            dataType = "Role",
+            paramType = "body",
+            dataTypeClass = Role.class)
+    @SaCheckPermission(
+            value = {PermissionConstants.AUTH_ROLE_ADD, PermissionConstants.AUTH_ROLE_EDIT},
+            mode = SaMode.OR)
     public Result<Void> addedOrUpdateRole(@RequestBody Role role) {
         return roleService.addedOrUpdateRole(role);
-    }
-
-    /**
-     * delete role by ids , this method will be {@link Deprecated} in the future, please use {@link
-     * #deleteRoleById(Integer)}
-     *
-     * @return delete result code
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        return roleService.deleteRoles(para);
     }
 
     /**
@@ -94,18 +92,54 @@ public class RoleController {
      * @return delete result code
      */
     @DeleteMapping("/delete")
+    @ApiOperation("Delete Role By Id")
+    @Log(title = "Delete Role By Id", businessType = BusinessType.DELETE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(value = PermissionConstants.AUTH_ROLE_DELETE)
     public Result<Void> deleteRoleById(@RequestParam Integer id) {
         return roleService.deleteRoleById(id);
     }
 
-    /** query role list */
+    /**
+     * query role list
+     *
+     * @param para {@link JsonNode}
+     * @return {@link ProTableResult}<{@link Role}>
+     */
     @PostMapping
+    @ApiOperation("Query Role List")
+    @ApiImplicitParam(
+            name = "para",
+            value = "para",
+            required = true,
+            dataType = "JsonNode",
+            paramType = "body",
+            dataTypeClass = JsonNode.class)
     public ProTableResult<Role> listRoles(@RequestBody JsonNode para) {
         return roleService.selectForProTable(para, true);
     }
 
-    /** 获取所有的角色列表以及当前用户的角色 ids */
+    /**
+     * query all role list by user id
+     *
+     * @param id {@link Integer} user id
+     * @return {@link Result}<{@link Dict}>
+     */
     @GetMapping(value = "/getRolesAndIdsByUserId")
+    @ApiOperation("Query Role List By UserId")
+    @ApiImplicitParam(
+            name = "id",
+            value = "id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class)
     public Result<Dict> getRolesAndIdsByUserId(@RequestParam Integer id) {
         List<Role> roleList = roleService.list();
 
@@ -116,5 +150,20 @@ public class RoleController {
         }
         Dict result = Dict.create().set("roles", roleList).set("roleIds", userRoleIds);
         return Result.succeed(result);
+    }
+
+    @GetMapping(value = "/getUserListByRoleId")
+    @ApiOperation("Query User List By RoleId")
+    @ApiImplicitParam(
+            name = "roleId",
+            value = "roleId",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(value = PermissionConstants.AUTH_ROLE_VIEW_USER_LIST)
+    public Result<List<User>> getUserListByRoleId(@RequestParam Integer roleId) {
+        List<User> userRoleList = roleService.getUserListByRoleId(roleId);
+        return Result.succeed(userRoleList);
     }
 }

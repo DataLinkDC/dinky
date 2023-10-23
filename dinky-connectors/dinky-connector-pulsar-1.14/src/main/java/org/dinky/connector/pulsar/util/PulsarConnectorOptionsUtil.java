@@ -38,14 +38,11 @@ public class PulsarConnectorOptionsUtil {
         final Properties pulsarProperties = new Properties();
 
         if (hasPulsarClientProperties(tableOptions)) {
-            tableOptions.keySet().stream()
-                    .filter(key -> key.startsWith(prefix))
-                    .forEach(
-                            key -> {
-                                final String value = tableOptions.get(key);
-                                final String subKey = key.substring((prefix).length());
-                                pulsarProperties.put(subKey, value);
-                            });
+            tableOptions.keySet().stream().filter(key -> key.startsWith(prefix)).forEach(key -> {
+                final String value = tableOptions.get(key);
+                final String subKey = key.substring((prefix).length());
+                pulsarProperties.put(subKey, value);
+            });
         }
         return pulsarProperties;
     }

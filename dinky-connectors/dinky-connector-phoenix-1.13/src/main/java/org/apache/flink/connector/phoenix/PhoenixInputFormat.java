@@ -103,8 +103,7 @@ import org.slf4j.LoggerFactory;
  * @see DriverManager
  */
 @Experimental
-public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
-        implements ResultTypeQueryable<Row> {
+public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit> implements ResultTypeQueryable<Row> {
 
     protected static final long serialVersionUID = 2L;
     protected static final Logger LOG = LoggerFactory.getLogger(PhoenixInputFormat.class);
@@ -118,7 +117,6 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
     protected boolean namespaceMappingEnabled;
     protected boolean mapSystemTablesEnabled;
 
-
     protected transient PreparedStatement statement;
     protected transient ResultSet resultSet;
     protected int fetchSize;
@@ -128,8 +126,7 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
     protected boolean hasNext;
     protected Object[][] parameterValues;
 
-    public PhoenixInputFormat() {
-    }
+    public PhoenixInputFormat() {}
 
     @Override
     public RowTypeInfo getProducedType() {
@@ -154,10 +151,10 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
             }
 
             LOG.debug("openInputFormat query :" + queryTemplate);
-            //删除 ` 号 phoenix中不支持
+            // 删除 ` 号 phoenix中不支持
             String initQuery = StringUtils.remove(queryTemplate, "\\`");
             LOG.debug("openInputFormat initQuery :" + initQuery);
-            //将 " 双引号替换成 '  单引号
+            // 将 " 双引号替换成 '  单引号
             String replaceQuery = StringUtils.replace(initQuery, "\"", "'");
             LOG.info("openInputFormat replaceQuery :" + replaceQuery);
 
@@ -168,8 +165,7 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
         } catch (SQLException se) {
             throw new IllegalArgumentException("open() failed." + se.getMessage(), se);
         } catch (ClassNotFoundException cnfe) {
-            throw new IllegalArgumentException(
-                    "JDBC-Class not found. - " + cnfe.getMessage(), cnfe);
+            throw new IllegalArgumentException("JDBC-Class not found. - " + cnfe.getMessage(), cnfe);
         }
     }
 
@@ -198,7 +194,7 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
      * fashion</b> otherwise.
      *
      * @param inputSplit which is ignored if this InputFormat is executed as a non-parallel source,
-     *                   a "hook" to the query parameters otherwise (using its <i>splitNumber</i>)
+     *     a "hook" to the query parameters otherwise (using its <i>splitNumber</i>)
      * @throws IOException if there's an error during the execution of the query
      */
     @Override
@@ -235,21 +231,17 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
                         statement.setArray(i + 1, (Array) param);
                     } else {
                         // extends with other types if needed
-                        throw new IllegalArgumentException(
-                                "open() failed. Parameter "
-                                        + i
-                                        + " of type "
-                                        + param.getClass()
-                                        + " is not handled (yet).");
+                        throw new IllegalArgumentException("open() failed. Parameter "
+                                + i
+                                + " of type "
+                                + param.getClass()
+                                + " is not handled (yet).");
                     }
                 }
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(
-                            String.format(
-                                    "Executing '%s' with parameters %s",
-                                    queryTemplate,
-                                    Arrays.deepToString(
-                                            parameterValues[inputSplit.getSplitNumber()])));
+                    LOG.debug(String.format(
+                            "Executing '%s' with parameters %s",
+                            queryTemplate, Arrays.deepToString(parameterValues[inputSplit.getSplitNumber()])));
                 }
             }
             resultSet = statement.executeQuery();
@@ -321,7 +313,7 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
     @Override
     public InputSplit[] createInputSplits(int minNumSplits) throws IOException {
         if (parameterValues == null) {
-            return new GenericInputSplit[]{new GenericInputSplit(0, 1)};
+            return new GenericInputSplit[] {new GenericInputSplit(0, 1)};
         }
         GenericInputSplit[] ret = new GenericInputSplit[parameterValues.length];
         for (int i = 0; i < ret.length; i++) {
@@ -354,15 +346,13 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
         return new PhoenixInputFormatBuilder();
     }
 
-    /**
-     * Builder for {@link PhoenixInputFormat}.
-     */
+    /** Builder for {@link PhoenixInputFormat}. */
     public static class PhoenixInputFormatBuilder {
         private final JdbcConnectionOptions.JdbcConnectionOptionsBuilder connOptionsBuilder;
         private final PhoenixInputFormat format;
 
         public PhoenixInputFormatBuilder() {
-            //this.connOptionsBuilder = new JdbcConnectionOptions.JdbcConnectionOptionsBuilder();
+            // this.connOptionsBuilder = new JdbcConnectionOptions.JdbcConnectionOptionsBuilder();
             this.connOptionsBuilder = new JdbcConnectionOptions.JdbcConnectionOptionsBuilder();
             this.format = new PhoenixInputFormat();
             // using TYPE_FORWARD_ONLY for high performance reads
@@ -405,8 +395,7 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
             return this;
         }
 
-        public PhoenixInputFormatBuilder setParametersProvider(
-                JdbcParameterValuesProvider parameterValuesProvider) {
+        public PhoenixInputFormatBuilder setParametersProvider(JdbcParameterValuesProvider parameterValuesProvider) {
             format.parameterValues = parameterValuesProvider.getParameterValues();
             return this;
         }
@@ -442,14 +431,14 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
 
         public PhoenixInputFormat finish() {
             format.connectionProvider =
-                    //new SimpleJdbcConnectionProvider(connOptionsBuilder.build());
-                    new PhoneixJdbcConnectionProvider(connOptionsBuilder.build(), format.namespaceMappingEnabled, format.namespaceMappingEnabled);
+                    // new SimpleJdbcConnectionProvider(connOptionsBuilder.build());
+                    new PhoneixJdbcConnectionProvider(
+                            connOptionsBuilder.build(), format.namespaceMappingEnabled, format.namespaceMappingEnabled);
             if (format.queryTemplate == null) {
                 throw new NullPointerException("No query supplied");
             }
             if (format.rowTypeInfo == null) {
-                throw new NullPointerException(
-                        "No " + RowTypeInfo.class.getSimpleName() + " supplied");
+                throw new NullPointerException("No " + RowTypeInfo.class.getSimpleName() + " supplied");
             }
             if (format.parameterValues == null) {
                 LOG.debug("No input splitting configured (data will be read with parallelism 1).");

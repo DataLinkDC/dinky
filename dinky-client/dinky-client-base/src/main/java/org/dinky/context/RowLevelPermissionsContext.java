@@ -24,8 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /** RowLevelPermissionsContext */
 public class RowLevelPermissionsContext {
 
-    private static final ThreadLocal<ConcurrentHashMap<String, String>>
-            ROW_LEVEL_PERMISSIONS_CONTEXT = new ThreadLocal<>();
+    private static final ThreadLocal<ConcurrentHashMap<String, String>> ROW_LEVEL_PERMISSIONS_CONTEXT =
+            new ThreadLocal<>();
 
     public static void set(ConcurrentHashMap<String, String> value) {
         ROW_LEVEL_PERMISSIONS_CONTEXT.set(value);

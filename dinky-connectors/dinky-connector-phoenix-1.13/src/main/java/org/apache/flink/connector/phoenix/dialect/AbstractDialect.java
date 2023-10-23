@@ -43,26 +43,19 @@ abstract class AbstractDialect implements JdbcDialect {
             //  when n is smaller than Integer.MAX_VALUE
             if (unsupportedTypes().contains(dt.getLogicalType().getTypeRoot())
                     || (dt.getLogicalType() instanceof VarBinaryType
-                            && Integer.MAX_VALUE
-                                    != ((VarBinaryType) dt.getLogicalType()).getLength())) {
+                            && Integer.MAX_VALUE != ((VarBinaryType) dt.getLogicalType()).getLength())) {
                 throw new ValidationException(
-                        String.format(
-                                "The %s dialect doesn't support type: %s.",
-                                dialectName(), dt.toString()));
+                        String.format("The %s dialect doesn't support type: %s.", dialectName(), dt.toString()));
             }
 
             // only validate precision of DECIMAL type for blink planner
             if (dt.getLogicalType() instanceof DecimalType) {
                 int precision = ((DecimalType) dt.getLogicalType()).getPrecision();
                 if (precision > maxDecimalPrecision() || precision < minDecimalPrecision()) {
-                    throw new ValidationException(
-                            String.format(
-                                    "The precision of field '%s' is out of the DECIMAL "
-                                            + "precision range [%d, %d] supported by %s dialect.",
-                                    fieldName,
-                                    minDecimalPrecision(),
-                                    maxDecimalPrecision(),
-                                    dialectName()));
+                    throw new ValidationException(String.format(
+                            "The precision of field '%s' is out of the DECIMAL "
+                                    + "precision range [%d, %d] supported by %s dialect.",
+                            fieldName, minDecimalPrecision(), maxDecimalPrecision(), dialectName()));
                 }
             }
 
@@ -70,14 +63,10 @@ abstract class AbstractDialect implements JdbcDialect {
             if (dt.getLogicalType() instanceof TimestampType) {
                 int precision = ((TimestampType) dt.getLogicalType()).getPrecision();
                 if (precision > maxTimestampPrecision() || precision < minTimestampPrecision()) {
-                    throw new ValidationException(
-                            String.format(
-                                    "The precision of field '%s' is out of the TIMESTAMP "
-                                            + "precision range [%d, %d] supported by %s dialect.",
-                                    fieldName,
-                                    minTimestampPrecision(),
-                                    maxTimestampPrecision(),
-                                    dialectName()));
+                    throw new ValidationException(String.format(
+                            "The precision of field '%s' is out of the TIMESTAMP "
+                                    + "precision range [%d, %d] supported by %s dialect.",
+                            fieldName, minTimestampPrecision(), maxTimestampPrecision(), dialectName()));
                 }
             }
         }

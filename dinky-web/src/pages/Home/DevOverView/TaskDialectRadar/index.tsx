@@ -17,54 +17,54 @@
  *
  */
 
-import React, {useEffect, useState} from 'react';
-import {Radar, RadarConfig} from '@ant-design/plots';
-import {l} from "@/utils/intl";
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/constants";
-import {TaskDialectSummary} from "@/types/Home/data";
-
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { TaskDialectSummary } from '@/types/Home/data';
+import { l } from '@/utils/intl';
+import { Radar, RadarConfig } from '@ant-design/plots';
+import { useEffect, useState } from 'react';
 
 const TaskDialectRadar = () => {
+  const [data, setData] = useState<TaskDialectSummary[]>([]);
 
-    const [data, setData] = useState<TaskDialectSummary[]>([]);
+  useEffect(() => {
+    queryDataByParams(API_CONSTANTS.GET_JOB_TYPE_OVERVIEW).then((res) => {
+      setData(res);
+    });
+  }, []);
 
-    useEffect(() => {
-        queryDataByParams(API_CONSTANTS.GET_JOB_TYPE_OVERVIEW).then((res) => {
-            setData(res);
-        })
-    }, [])
-
-
-
-    const config: RadarConfig = {
-        data: data,
-        xField: 'jobType',
-        yField: 'rate',
-        autoFit: true,
-        appendPadding: [0, 10, 0, 10],
-        meta: {
-          rate: {
-                alias: l('home.job.onlineRate'),
-                min: 0,
-                max: 100,
-                nice: true,
-                formatter: (v) => Number(v) + '%',
-            },
-        },
-        yAxis: {
-            label: false,
-            grid: {
-                alternateColor: 'rgba(0, 0, 0, 0.04)',
-            },
-        },
-        // 开启辅助点
-        point: {
-            size: 2,
-        },
-        area: {},
-    };
-    return <div style={{height: '35vh'}}><Radar {...config} /></div>;
+  const config: RadarConfig = {
+    data: data,
+    xField: 'jobType',
+    yField: 'rate',
+    autoFit: true,
+    appendPadding: [0, 10, 0, 10],
+    meta: {
+      rate: {
+        alias: l('home.job.onlineRate'),
+        min: 0,
+        max: 100,
+        nice: true,
+        formatter: (v) => Number(v) + '%'
+      }
+    },
+    yAxis: {
+      label: false,
+      grid: {
+        alternateColor: 'rgba(0, 0, 0, 0.04)'
+      }
+    },
+    // 开启辅助点
+    point: {
+      size: 2
+    },
+    area: {}
+  };
+  return (
+    <div style={{ height: '35vh' }}>
+      <Radar {...config} />
+    </div>
+  );
 };
 
-export default TaskDialectRadar
+export default TaskDialectRadar;

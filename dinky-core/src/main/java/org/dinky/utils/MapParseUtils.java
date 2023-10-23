@@ -218,10 +218,9 @@ public class MapParseUtils {
         Pattern p = Pattern.compile(sign + field + sign);
         Matcher m = p.matcher(operation);
         while (m.find()) {
-            newOperation =
-                    newOperation.substring(0, m.start(1) + 1)
-                            + fragement
-                            + newOperation.substring(m.end(1) + 1, newOperation.length());
+            newOperation = newOperation.substring(0, m.start(1) + 1)
+                    + fragement
+                    + newOperation.substring(m.end(1) + 1, newOperation.length());
         }
         return newOperation;
     }
@@ -270,8 +269,7 @@ public class MapParseUtils {
                     map.put(key, getTextValue(substring));
                 }
             } else {
-                String substring =
-                        inStr.substring(nestList.get(2 * i - 1) + 2, nestList.get(2 * i + 1) + 1);
+                String substring = inStr.substring(nestList.get(2 * i - 1) + 2, nestList.get(2 * i + 1) + 1);
                 String key = getMapKey(substring);
                 boolean isNext = true;
                 for (int j = 0; j < blackKeys.length; j++) {
@@ -355,9 +353,8 @@ public class MapParseUtils {
         if (splitStr == null || splitStr.indexOf("[") == -1 || splitStr.indexOf("]") == -1) {
             return new ArrayList();
         }
-        return Arrays.stream(
-                        splitStr.substring(splitStr.indexOf("[") + 1, splitStr.lastIndexOf("]"))
-                                .split(", "))
+        return Arrays.stream(splitStr.substring(splitStr.indexOf("[") + 1, splitStr.lastIndexOf("]"))
+                        .split(", "))
                 .collect(Collectors.toList());
     }
 
@@ -373,8 +370,8 @@ public class MapParseUtils {
         if (splitStr == null || splitStr.indexOf("[") == -1 || splitStr.indexOf("]") == -1) {
             return new ArrayList();
         }
-        String substring =
-                splitStr.substring(splitStr.indexOf("[") + 1, splitStr.lastIndexOf("]")).trim();
+        String substring = splitStr.substring(splitStr.indexOf("[") + 1, splitStr.lastIndexOf("]"))
+                .trim();
         // 样例 [default_catalog, default_database, score, project=[sid, cls, score]]
         if (substring.startsWith("[")) {
             // 还是一个集合
@@ -391,12 +388,11 @@ public class MapParseUtils {
             }
             // 倒叙替换 去除集合内容干扰
             for (int i = num - 1; i >= 0; i--) {
-                substring =
-                        substring.substring(0, nestList.get(2 * i))
-                                + "_str"
-                                + i
-                                + "_"
-                                + substring.substring(nestList.get(2 * i + 1) + 1);
+                substring = substring.substring(0, nestList.get(2 * i))
+                        + "_str"
+                        + i
+                        + "_"
+                        + substring.substring(nestList.get(2 * i + 1) + 1);
             }
             // 去除干扰后 default_catalog, default_database, score, project=_str0_, course=_str1_
             // _str0_ = [sid, cls, score]

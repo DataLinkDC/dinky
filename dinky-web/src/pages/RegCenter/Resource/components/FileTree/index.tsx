@@ -17,51 +17,37 @@
  *
  */
 
+import { buildResourceTreeData } from '@/pages/RegCenter/Resource/components/FileTree/function';
+import { ResourceInfo } from '@/types/RegCenter/data';
+import { Empty, Tree } from 'antd';
+import React from 'react';
 
-import React from "react";
-import {buildTreeData} from "@/utils/function";
-import {Button, Tree, Typography, Upload} from "antd";
-import {UploadOutlined} from "@ant-design/icons";
-import {l} from "@/utils/intl";
-
-
-const {DirectoryTree} = Tree;
-const {Text} = Typography;
-
+const { DirectoryTree } = Tree;
 
 type FileTreeProps = {
-  treeData: Partial<any>[];
-  onNodeClick: (info: any) => void
-  onRightClick: (info: any) => void
-  selectedKeys: string[],
-  loadData:({ key, children }: any) => Promise<void>;
-}
+  treeData: ResourceInfo[];
+  onNodeClick: (info: any) => void;
+  onRightClick: (info: any) => void;
+  selectedKeys: string[];
+};
 
 const FileTree: React.FC<FileTreeProps> = (props) => {
+  const { treeData, selectedKeys, onNodeClick, onRightClick } = props;
 
-  const {treeData, selectedKeys, onNodeClick, onRightClick,loadData} = props;
-
-  return <>
-    {
-      (treeData.length > 0) ?
+  return (
+    <>
+      {treeData.length > 0 ? (
         <DirectoryTree
-          loadData={loadData}
           selectedKeys={selectedKeys}
           onSelect={(_, info) => onNodeClick(info)}
-          onRightClick={info => onRightClick(info)}
-          treeData={buildTreeData(treeData)}
-        /> : <>
-          <div style={{marginTop: '40vh', marginLeft: '1vw'}}>
-            <Upload action="/api/resource/uploadFile?pid=0" directory>
-              <Button icon={<UploadOutlined/>}>{l('rc.resource.upload')}</Button>
-            </Upload><br/>
-
-          </div>
-          <Text className={'needWrap'} type="warning">{l('rc.resource.noResource')}</Text>
-        </>
-
-    }
-  </>;
-}
+          onRightClick={(info) => onRightClick(info)}
+          treeData={buildResourceTreeData(treeData)}
+        />
+      ) : (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      )}
+    </>
+  );
+};
 
 export default FileTree;

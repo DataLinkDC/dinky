@@ -40,11 +40,9 @@ import cn.hutool.core.lang.Opt;
  *
  * @since 2021/5/25
  */
-public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M, T>
-        implements ISuperService<T> {
+public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M, T> implements ISuperService<T> {
 
-    private ProTableResult<T> selectForProTable(
-            JsonNode params, boolean isDelete, Map<String, Object> paramsMap) {
+    private ProTableResult<T> selectForProTable(JsonNode params, boolean isDelete, Map<String, Object> paramsMap) {
         Integer current = params.has("current") ? params.get("current").asInt() : 1;
         Integer pageSize = params.has("pageSize") ? params.get("pageSize").asInt() : 10;
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();

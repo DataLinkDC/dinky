@@ -16,27 +16,26 @@
  *
  */
 
-import {l} from "@/utils/intl";
-import {Button} from "antd";
-import {PlusOutlined} from "@ant-design/icons";
-import React from "react";
-import {ShowLogIcon, StartIcon, StopIcon} from "@/components/Icons/CustomIcons";
+import { StartIcon, StopIcon } from '@/components/Icons/CustomIcons';
+import { l } from '@/utils/intl';
+import { Button } from 'antd';
+import React from 'react';
 
 type RunningBtnProps = {
-    onClick: () => void;
-    isRunning?: boolean;
-    title?: string;
+  onClick: () => void;
+  isRunning?: boolean;
+  title?: string;
 };
 
 export const RunningBtn: React.FC<RunningBtnProps> = (props) => {
-    const {onClick, isRunning = false, title = l("button.start")} = props;
+  const { onClick, isRunning = false, title = l('button.start') } = props;
 
-    return (
-        <Button
-            className={"options-button"}
-            title={title}
-            icon={isRunning ? <StopIcon/> : <StartIcon/>}
-            onClick={() => onClick()}
-        />
-    );
+  return (
+    <Button
+      className={'options-button'}
+      title={title}
+      icon={isRunning ? <StopIcon /> : <StartIcon />}
+      onClick={() => onClick()}
+    />
+  );
 };

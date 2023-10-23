@@ -36,6 +36,7 @@ import org.apache.flink.client.deployment.ClusterDescriptor;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.CheckpointingOptions;
+import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.JobManagerOptions;
 import org.apache.flink.configuration.TaskManagerOptions;
@@ -47,11 +48,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import cn.hutool.core.text.StrFormatter;
 
 /**
  * AbstractGateway
@@ -86,9 +90,15 @@ public abstract class AbstractGateway implements Gateway {
         if (Asserts.isNotNull(configMap)) {
             configMap.entrySet().stream()
                     .filter(entry -> Asserts.isAllNotNullString(entry.getKey(), entry.getValue()))
-                    .forEach(
-                            entry ->
-                                    this.configuration.setString(entry.getKey(), entry.getValue()));
+                    .forEach(entry -> this.configuration.setString(entry.getKey(), entry.getValue()));
+        }
+    }
+
+    protected <T> void addConfigParas(ConfigOption<T> key, T value) {
+        if (Asserts.isNotNull(key) && Asserts.isNotNull(value)) {
+            this.configuration.set(key, value);
+        } else {
+            logger.warn("Gateway config key or value is null, key: {}, value: {}", key, value);
         }
     }
 
@@ -100,8 +110,7 @@ public abstract class AbstractGateway implements Gateway {
         return savepointJob(null);
     }
 
-    protected <T> void runSavePointJob(
-            List<JobInfo> jobInfos, ClusterClient<T> clusterClient, String savePoint)
+    protected <T> void runSavePointJob(List<JobInfo> jobInfos, ClusterClient<T> clusterClient, String savePoint)
             throws Exception {
         for (JobInfo jobInfo : jobInfos) {
             if (ActionType.CANCEL == config.getFlinkConfig().getAction()) {
@@ -111,20 +120,14 @@ public abstract class AbstractGateway implements Gateway {
             }
             switch (config.getFlinkConfig().getSavePointType()) {
                 case TRIGGER:
-                    jobInfo.setSavePoint(
-                            FlinkUtil.triggerSavepoint(
-                                    clusterClient, jobInfo.getJobId(), savePoint));
+                    jobInfo.setSavePoint(FlinkUtil.triggerSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
                     break;
                 case STOP:
-                    jobInfo.setSavePoint(
-                            FlinkUtil.stopWithSavepoint(
-                                    clusterClient, jobInfo.getJobId(), savePoint));
+                    jobInfo.setSavePoint(FlinkUtil.stopWithSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.STOP);
                     break;
                 case CANCEL:
-                    jobInfo.setSavePoint(
-                            FlinkUtil.cancelWithSavepoint(
-                                    clusterClient, jobInfo.getJobId(), savePoint));
+                    jobInfo.setSavePoint(FlinkUtil.cancelWithSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.CANCEL);
                     break;
                 default:
@@ -137,10 +140,8 @@ public abstract class AbstractGateway implements Gateway {
         SavePointResult result = SavePointResult.build(getType());
         try (ClusterClient<T> clusterClient =
                 clusterDescriptor.retrieve(applicationId).getClusterClient()) {
-            List<JobInfo> jobInfos =
-                    Collections.singletonList(
-                            new JobInfo(
-                                    config.getFlinkConfig().getJobId(), JobInfo.JobStatus.FAIL));
+            List<JobInfo> jobInfos = Collections.singletonList(
+                    new JobInfo(config.getFlinkConfig().getJobId(), JobInfo.JobStatus.FAIL));
             runSavePointJob(jobInfos, clusterClient, savePoint);
             result.setJobInfos(jobInfos);
         } catch (Exception e) {
@@ -155,8 +156,7 @@ public abstract class AbstractGateway implements Gateway {
         try (ClusterClient<T> clusterClient =
                 clusterDescriptor.retrieve(applicationId).getClusterClient()) {
             List<JobInfo> jobInfos = new ArrayList<>();
-            CompletableFuture<Collection<JobStatusMessage>> listJobsFuture =
-                    clusterClient.listJobs();
+            CompletableFuture<Collection<JobStatusMessage>> listJobsFuture = clusterClient.listJobs();
             for (JobStatusMessage jobStatusMessage : listJobsFuture.get()) {
                 JobInfo jobInfo = new JobInfo(jobStatusMessage.getJobId().toHexString());
                 jobInfo.setStatus(JobInfo.JobStatus.RUN);
@@ -185,21 +185,19 @@ public abstract class AbstractGateway implements Gateway {
         throw new GatewayException("Couldn't deploy Flink Cluster with User Application Jar.");
     }
 
-    protected void resetCheckpointInApplicationMode() {
-        String uuid = UUID.randomUUID().toString().replace("-", "");
-        if (configuration.contains(CheckpointingOptions.CHECKPOINTS_DIRECTORY)) {
-            configuration.set(
-                    CheckpointingOptions.CHECKPOINTS_DIRECTORY,
-                    configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY)
-                            + "/"
-                            + uuid);
-        }
+    protected void resetCheckpointInApplicationMode(String jobName) {
+        String uuid = UUID.randomUUID().toString();
+        String checkpointsDirectory = configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY);
+        String savepointDirectory = configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY);
 
-        if (configuration.contains(CheckpointingOptions.SAVEPOINT_DIRECTORY)) {
-            configuration.set(
-                    CheckpointingOptions.SAVEPOINT_DIRECTORY,
-                    configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY) + "/" + uuid);
-        }
+        Optional.ofNullable(checkpointsDirectory)
+                .ifPresent(dir -> configuration.set(
+                        CheckpointingOptions.CHECKPOINTS_DIRECTORY,
+                        StrFormatter.format("{}/{}/{}", dir, jobName, uuid)));
+
+        Optional.ofNullable(savepointDirectory)
+                .ifPresent(dir -> configuration.set(
+                        CheckpointingOptions.SAVEPOINT_DIRECTORY, StrFormatter.format("{}/{}/{}", dir, jobName, uuid)));
     }
 
     @Override

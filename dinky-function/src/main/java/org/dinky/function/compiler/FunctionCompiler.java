@@ -66,7 +66,8 @@ public interface FunctionCompiler {
                 success = Singleton.get(PythonFunction.class).compiler(udf, conf, missionId);
                 break;
             default:
-                throw UDFCompilerException.notSupportedException(udf.getFunctionLanguage().name());
+                throw UDFCompilerException.notSupportedException(
+                        udf.getFunctionLanguage().name());
         }
         return success;
     }
@@ -81,11 +82,8 @@ public interface FunctionCompiler {
     static void getCompiler(List<UDF> udfList, ReadableConfig conf, Integer missionId) {
         for (UDF udf : udfList) {
             if (!getCompiler(udf, conf, missionId)) {
-                throw new UDFCompilerException(
-                        StrUtil.format(
-                                "codeLanguage:{} , className:{} 编译失败",
-                                udf.getFunctionLanguage(),
-                                udf.getClassName()));
+                throw new UDFCompilerException(StrUtil.format(
+                        "codeLanguage:{} , className:{} 编译失败", udf.getFunctionLanguage(), udf.getClassName()));
             }
         }
     }

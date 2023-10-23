@@ -21,13 +21,41 @@ package org.dinky.data.dto;
 
 import java.io.Serializable;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@ApiModel(value = "ResourcesDTO", description = "DTO for representing resources")
 public class ResourcesDTO implements Serializable {
+
+    @ApiModelProperty(
+            value = "Resource ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "The unique identifier of the resource")
     private Integer id;
+
+    @ApiModelProperty(
+            value = "File Name",
+            dataType = "String",
+            example = "resource_file.txt",
+            notes = "The name of the resource file")
     private String fileName;
+
+    @ApiModelProperty(
+            value = "Parent ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "The unique identifier of the parent resource")
+    private Integer pid;
+
+    @ApiModelProperty(
+            value = "Description",
+            dataType = "String",
+            example = "A sample resource file",
+            notes = "A brief description of the resource")
     private String description;
 }

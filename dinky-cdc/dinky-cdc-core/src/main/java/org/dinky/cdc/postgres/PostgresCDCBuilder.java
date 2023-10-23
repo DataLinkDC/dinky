@@ -64,19 +64,17 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
 
         Properties debeziumProperties = new Properties();
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey())
-                    && Asserts.isNotNullString(entry.getValue())) {
+            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
                 debeziumProperties.setProperty(entry.getKey(), entry.getValue());
             }
         }
 
-        PostgreSQLSource.Builder<String> sourceBuilder =
-                PostgreSQLSource.<String>builder()
-                        .hostname(config.getHostname())
-                        .port(config.getPort())
-                        .database(config.getDatabase())
-                        .username(config.getUsername())
-                        .password(config.getPassword());
+        PostgreSQLSource.Builder<String> sourceBuilder = PostgreSQLSource.<String>builder()
+                .hostname(config.getHostname())
+                .port(config.getPort())
+                .database(config.getDatabase())
+                .username(config.getUsername())
+                .password(config.getPassword());
 
         if (Asserts.isNotNullString(config.getSchema())) {
             String[] schemas = config.getSchema().split(FlinkParamConstant.SPLIT);

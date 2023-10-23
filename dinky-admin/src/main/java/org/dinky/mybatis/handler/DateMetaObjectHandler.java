@@ -52,28 +52,19 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        Object createTime =
-                getFieldValByName(mybatisPlusFillProperties.getCreateTimeField(), metaObject);
-        Object updateTime =
-                getFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), metaObject);
+        Object createTime = getFieldValByName(mybatisPlusFillProperties.getCreateTimeField(), metaObject);
+        Object updateTime = getFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), metaObject);
         Object name = getFieldValByName(mybatisPlusFillProperties.getName(), metaObject);
         if (createTime == null) {
-            setFieldValByName(
-                    mybatisPlusFillProperties.getCreateTimeField(),
-                    LocalDateTime.now(),
-                    metaObject);
+            setFieldValByName(mybatisPlusFillProperties.getCreateTimeField(), LocalDateTime.now(), metaObject);
         }
         if (updateTime == null) {
-            setFieldValByName(
-                    mybatisPlusFillProperties.getUpdateTimeField(),
-                    LocalDateTime.now(),
-                    metaObject);
+            setFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), LocalDateTime.now(), metaObject);
         }
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        setFieldValByName(
-                mybatisPlusFillProperties.getUpdateTimeField(), LocalDateTime.now(), metaObject);
+        setFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), LocalDateTime.now(), metaObject);
     }
 }

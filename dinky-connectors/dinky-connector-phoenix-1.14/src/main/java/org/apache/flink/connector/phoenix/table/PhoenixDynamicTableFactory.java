@@ -49,116 +49,91 @@ import java.util.Set;
  *
  * @since 2022/3/17 9:44
  */
-public class PhoenixDynamicTableFactory
-        implements DynamicTableSourceFactory, DynamicTableSinkFactory {
+public class PhoenixDynamicTableFactory implements DynamicTableSourceFactory, DynamicTableSinkFactory {
     public static final String IDENTIFIER = "phoenix-jdbc";
     public static final ConfigOption<String> URL =
-            ConfigOptions.key("url")
-                    .stringType()
-                    .noDefaultValue()
-                    .withDescription("The JDBC database URL.");
+            ConfigOptions.key("url").stringType().noDefaultValue().withDescription("The JDBC database URL.");
     public static final ConfigOption<String> TABLE_NAME =
-            ConfigOptions.key("table-name")
-                    .stringType()
-                    .noDefaultValue()
-                    .withDescription("The JDBC table name.");
+            ConfigOptions.key("table-name").stringType().noDefaultValue().withDescription("The JDBC table name.");
     public static final ConfigOption<String> USERNAME =
-            ConfigOptions.key("username")
-                    .stringType()
-                    .noDefaultValue()
-                    .withDescription("The JDBC user name.");
+            ConfigOptions.key("username").stringType().noDefaultValue().withDescription("The JDBC user name.");
     public static final ConfigOption<String> PASSWORD =
-            ConfigOptions.key("password")
-                    .stringType()
-                    .noDefaultValue()
-                    .withDescription("The JDBC password.");
-    private static final ConfigOption<String> DRIVER =
-            ConfigOptions.key("driver")
-                    .stringType()
-                    .noDefaultValue()
-                    .withDescription(
-                            "The class name of the JDBC driver to use to connect to this URL. If not set, it will automatically be derived from the URL.");
-    public static final ConfigOption<Duration> MAX_RETRY_TIMEOUT =
-            ConfigOptions.key("connection.max-retry-timeout")
-                    .durationType()
-                    .defaultValue(Duration.ofSeconds(60L))
-                    .withDescription("Maximum timeout between retries.");
-    private static final ConfigOption<String> SCAN_PARTITION_COLUMN =
-            ConfigOptions.key("scan.partition.column")
-                    .stringType()
-                    .noDefaultValue()
-                    .withDescription("The column name used for partitioning the input.");
-    private static final ConfigOption<Integer> SCAN_PARTITION_NUM =
-            ConfigOptions.key("scan.partition.num")
-                    .intType()
-                    .noDefaultValue()
-                    .withDescription("The number of partitions.");
-    private static final ConfigOption<Long> SCAN_PARTITION_LOWER_BOUND =
-            ConfigOptions.key("scan.partition.lower-bound")
-                    .longType()
-                    .noDefaultValue()
-                    .withDescription("The smallest value of the first partition.");
-    private static final ConfigOption<Long> SCAN_PARTITION_UPPER_BOUND =
-            ConfigOptions.key("scan.partition.upper-bound")
-                    .longType()
-                    .noDefaultValue()
-                    .withDescription("The largest value of the last partition.");
-    private static final ConfigOption<Integer> SCAN_FETCH_SIZE =
-            ConfigOptions.key("scan.fetch-size")
-                    .intType()
-                    .defaultValue(0)
-                    .withDescription(
-                            "Gives the reader a hint as to the number of rows that should be fetched from the database per round-trip when reading. If the value is zero, this hint is ignored.");
-    private static final ConfigOption<Boolean> SCAN_AUTO_COMMIT =
-            ConfigOptions.key("scan.auto-commit")
-                    .booleanType()
-                    .defaultValue(true)
-                    .withDescription("Sets whether the driver is in auto-commit mode.");
-    private static final ConfigOption<Long> LOOKUP_CACHE_MAX_ROWS =
-            ConfigOptions.key("lookup.cache.max-rows")
-                    .longType()
-                    .defaultValue(-1L)
-                    .withDescription(
-                            "The max number of rows of lookup cache, over this value, the oldest rows will be eliminated. "
-                                    + "\"cache.max-rows\" and \"cache.ttl\" options must all be specified if any of them is specified.");
-    private static final ConfigOption<Duration> LOOKUP_CACHE_TTL =
-            ConfigOptions.key("lookup.cache.ttl")
-                    .durationType()
-                    .defaultValue(Duration.ofSeconds(10L))
-                    .withDescription("The cache time to live.");
-    private static final ConfigOption<Integer> LOOKUP_MAX_RETRIES =
-            ConfigOptions.key("lookup.max-retries")
-                    .intType()
-                    .defaultValue(3)
-                    .withDescription("The max retry times if lookup database failed.");
-    private static final ConfigOption<Integer> SINK_BUFFER_FLUSH_MAX_ROWS =
-            ConfigOptions.key("sink.buffer-flush.max-rows")
-                    .intType()
-                    .defaultValue(100)
-                    .withDescription(
-                            "The flush max size (includes all append, upsert and delete records), over this number of records, will flush data.");
-    private static final ConfigOption<Duration> SINK_BUFFER_FLUSH_INTERVAL =
-            ConfigOptions.key("sink.buffer-flush.interval")
-                    .durationType()
-                    .defaultValue(Duration.ofSeconds(1L))
-                    .withDescription(
-                            "The flush interval mills, over this time, asynchronous threads will flush data.");
-    private static final ConfigOption<Integer> SINK_MAX_RETRIES =
-            ConfigOptions.key("sink.max-retries")
-                    .intType()
-                    .defaultValue(3)
-                    .withDescription("The max retry times if writing records to database failed.");
+            ConfigOptions.key("password").stringType().noDefaultValue().withDescription("The JDBC password.");
+    private static final ConfigOption<String> DRIVER = ConfigOptions.key("driver")
+            .stringType()
+            .noDefaultValue()
+            .withDescription("The class name of the JDBC driver to use to connect to this URL. If"
+                    + " not set, it will automatically be derived from the URL.");
+    public static final ConfigOption<Duration> MAX_RETRY_TIMEOUT = ConfigOptions.key("connection.max-retry-timeout")
+            .durationType()
+            .defaultValue(Duration.ofSeconds(60L))
+            .withDescription("Maximum timeout between retries.");
+    private static final ConfigOption<String> SCAN_PARTITION_COLUMN = ConfigOptions.key("scan.partition.column")
+            .stringType()
+            .noDefaultValue()
+            .withDescription("The column name used for partitioning the input.");
+    private static final ConfigOption<Integer> SCAN_PARTITION_NUM = ConfigOptions.key("scan.partition.num")
+            .intType()
+            .noDefaultValue()
+            .withDescription("The number of partitions.");
+    private static final ConfigOption<Long> SCAN_PARTITION_LOWER_BOUND = ConfigOptions.key("scan.partition.lower-bound")
+            .longType()
+            .noDefaultValue()
+            .withDescription("The smallest value of the first partition.");
+    private static final ConfigOption<Long> SCAN_PARTITION_UPPER_BOUND = ConfigOptions.key("scan.partition.upper-bound")
+            .longType()
+            .noDefaultValue()
+            .withDescription("The largest value of the last partition.");
+    private static final ConfigOption<Integer> SCAN_FETCH_SIZE = ConfigOptions.key("scan.fetch-size")
+            .intType()
+            .defaultValue(0)
+            .withDescription("Gives the reader a hint as to the number of rows that should be"
+                    + " fetched from the database per round-trip when reading. If the"
+                    + " value is zero, this hint is ignored.");
+    private static final ConfigOption<Boolean> SCAN_AUTO_COMMIT = ConfigOptions.key("scan.auto-commit")
+            .booleanType()
+            .defaultValue(true)
+            .withDescription("Sets whether the driver is in auto-commit mode.");
+    private static final ConfigOption<Long> LOOKUP_CACHE_MAX_ROWS = ConfigOptions.key("lookup.cache.max-rows")
+            .longType()
+            .defaultValue(-1L)
+            .withDescription("The max number of rows of lookup cache, over this value, the oldest"
+                    + " rows will be eliminated. \"cache.max-rows\" and \"cache.ttl\""
+                    + " options must all be specified if any of them is specified.");
+    private static final ConfigOption<Duration> LOOKUP_CACHE_TTL = ConfigOptions.key("lookup.cache.ttl")
+            .durationType()
+            .defaultValue(Duration.ofSeconds(10L))
+            .withDescription("The cache time to live.");
+    private static final ConfigOption<Integer> LOOKUP_MAX_RETRIES = ConfigOptions.key("lookup.max-retries")
+            .intType()
+            .defaultValue(3)
+            .withDescription("The max retry times if lookup database failed.");
+    private static final ConfigOption<Integer> SINK_BUFFER_FLUSH_MAX_ROWS = ConfigOptions.key(
+                    "sink.buffer-flush.max-rows")
+            .intType()
+            .defaultValue(100)
+            .withDescription("The flush max size (includes all append, upsert and delete records),"
+                    + " over this number of records, will flush data.");
+    private static final ConfigOption<Duration> SINK_BUFFER_FLUSH_INTERVAL = ConfigOptions.key(
+                    "sink.buffer-flush.interval")
+            .durationType()
+            .defaultValue(Duration.ofSeconds(1L))
+            .withDescription("The flush interval mills, over this time, asynchronous threads will" + " flush data.");
+    private static final ConfigOption<Integer> SINK_MAX_RETRIES = ConfigOptions.key("sink.max-retries")
+            .intType()
+            .defaultValue(3)
+            .withDescription("The max retry times if writing records to database failed.");
 
-    public static final ConfigOption<Boolean> SCHEMA_NAMESPACE_MAPPING_ENABLE =
-            ConfigOptions.key("phoenix.schema.isnamespacemappingenabled")
-                    .booleanType()
-                    .defaultValue(false)
-                    .withDescription("The JDBC phoenix Schema isNamespaceMappingEnabled.");
-    public static final ConfigOption<Boolean> SCHEMA_MAP_SYSTEMTABLE_ENABLE =
-            ConfigOptions.key("phoenix.schema.mapsystemtablestonamespace")
-                    .booleanType()
-                    .defaultValue(false)
-                    .withDescription("The JDBC phoenix mapSystemTablesToNamespace.");
+    public static final ConfigOption<Boolean> SCHEMA_NAMESPACE_MAPPING_ENABLE = ConfigOptions.key(
+                    "phoenix.schema.isnamespacemappingenabled")
+            .booleanType()
+            .defaultValue(false)
+            .withDescription("The JDBC phoenix Schema isNamespaceMappingEnabled.");
+    public static final ConfigOption<Boolean> SCHEMA_MAP_SYSTEMTABLE_ENABLE = ConfigOptions.key(
+                    "phoenix.schema.mapsystemtablestonamespace")
+            .booleanType()
+            .defaultValue(false)
+            .withDescription("The JDBC phoenix mapSystemTablesToNamespace.");
 
     @Override
     public DynamicTableSink createDynamicTableSink(Context context) {
@@ -193,24 +168,15 @@ public class PhoenixDynamicTableFactory
 
     private PhoenixJdbcOptions getJdbcOptions(ReadableConfig readableConfig) {
         String url = (String) readableConfig.get(URL);
-        PhoenixJdbcOptions.Builder builder =
-                PhoenixJdbcOptions.builder()
-                        .setDBUrl(url)
-                        .setTableName((String) readableConfig.get(TABLE_NAME))
-                        .setDialect((JdbcDialect) JdbcDialects.get(url).get())
-                        .setParallelism(
-                                (Integer)
-                                        readableConfig
-                                                .getOptional(FactoryUtil.SINK_PARALLELISM)
-                                                .orElse((Integer) null))
-                        .setConnectionCheckTimeoutSeconds(
-                                (int)
-                                        ((Duration) readableConfig.get(MAX_RETRY_TIMEOUT))
-                                                .getSeconds())
-                        .setNamespaceMappingEnabled(
-                                readableConfig.get(SCHEMA_NAMESPACE_MAPPING_ENABLE))
-                        .setMapSystemTablesToNamespace(
-                                readableConfig.get(SCHEMA_MAP_SYSTEMTABLE_ENABLE));
+        PhoenixJdbcOptions.Builder builder = PhoenixJdbcOptions.builder()
+                .setDBUrl(url)
+                .setTableName((String) readableConfig.get(TABLE_NAME))
+                .setDialect((JdbcDialect) JdbcDialects.get(url).get())
+                .setParallelism((Integer)
+                        readableConfig.getOptional(FactoryUtil.SINK_PARALLELISM).orElse((Integer) null))
+                .setConnectionCheckTimeoutSeconds((int) ((Duration) readableConfig.get(MAX_RETRY_TIMEOUT)).getSeconds())
+                .setNamespaceMappingEnabled(readableConfig.get(SCHEMA_NAMESPACE_MAPPING_ENABLE))
+                .setMapSystemTablesToNamespace(readableConfig.get(SCHEMA_MAP_SYSTEMTABLE_ENABLE));
         readableConfig.getOptional(DRIVER).ifPresent(builder::setDriverName);
         readableConfig.getOptional(USERNAME).ifPresent(builder::setUsername);
         readableConfig.getOptional(PASSWORD).ifPresent(builder::setPassword);
@@ -248,15 +214,11 @@ public class PhoenixDynamicTableFactory
     }
 
     private JdbcDmlOptions getJdbcDmlOptions(PhoenixJdbcOptions jdbcOptions, TableSchema schema) {
-        String[] keyFields =
-                (String[])
-                        schema.getPrimaryKey()
-                                .map(
-                                        (pk) -> {
-                                            return (String[])
-                                                    pk.getColumns().toArray(new String[0]);
-                                        })
-                                .orElse((String[]) null);
+        String[] keyFields = (String[]) schema.getPrimaryKey()
+                .map((pk) -> {
+                    return (String[]) pk.getColumns().toArray(new String[0]);
+                })
+                .orElse((String[]) null);
         return JdbcDmlOptions.builder()
                 .withTableName(jdbcOptions.getTableName())
                 .withDialect(jdbcOptions.getDialect())
@@ -307,54 +269,39 @@ public class PhoenixDynamicTableFactory
         Optional<JdbcDialect> dialect = JdbcDialects.get(jdbcUrl);
         Preconditions.checkState(dialect.isPresent(), "Cannot handle such jdbc url: " + jdbcUrl);
         this.checkAllOrNone(
-                config,
-                new ConfigOption[] {
-                    SCHEMA_NAMESPACE_MAPPING_ENABLE, SCHEMA_MAP_SYSTEMTABLE_ENABLE
-                });
+                config, new ConfigOption[] {SCHEMA_NAMESPACE_MAPPING_ENABLE, SCHEMA_MAP_SYSTEMTABLE_ENABLE});
         this.checkAllOrNone(config, new ConfigOption[] {USERNAME, PASSWORD});
-        this.checkAllOrNone(
-                config,
-                new ConfigOption[] {
-                    SCAN_PARTITION_COLUMN,
-                    SCAN_PARTITION_NUM,
-                    SCAN_PARTITION_LOWER_BOUND,
-                    SCAN_PARTITION_UPPER_BOUND
-                });
+        this.checkAllOrNone(config, new ConfigOption[] {
+            SCAN_PARTITION_COLUMN, SCAN_PARTITION_NUM, SCAN_PARTITION_LOWER_BOUND, SCAN_PARTITION_UPPER_BOUND
+        });
         if (config.getOptional(SCAN_PARTITION_LOWER_BOUND).isPresent()
                 && config.getOptional(SCAN_PARTITION_UPPER_BOUND).isPresent()) {
             long lowerBound = (Long) config.get(SCAN_PARTITION_LOWER_BOUND);
             long upperBound = (Long) config.get(SCAN_PARTITION_UPPER_BOUND);
             if (lowerBound > upperBound) {
-                throw new IllegalArgumentException(
-                        String.format(
-                                "'%s'='%s' must not be larger than '%s'='%s'.",
-                                SCAN_PARTITION_LOWER_BOUND.key(),
-                                lowerBound,
-                                SCAN_PARTITION_UPPER_BOUND.key(),
-                                upperBound));
+                throw new IllegalArgumentException(String.format(
+                        "'%s'='%s' must not be larger than '%s'='%s'.",
+                        SCAN_PARTITION_LOWER_BOUND.key(), lowerBound, SCAN_PARTITION_UPPER_BOUND.key(), upperBound));
             }
         }
 
         this.checkAllOrNone(config, new ConfigOption[] {LOOKUP_CACHE_MAX_ROWS, LOOKUP_CACHE_TTL});
         if ((Integer) config.get(LOOKUP_MAX_RETRIES) < 0) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "The value of '%s' option shouldn't be negative, but is %s.",
-                            LOOKUP_MAX_RETRIES.key(), config.get(LOOKUP_MAX_RETRIES)));
+            throw new IllegalArgumentException(String.format(
+                    "The value of '%s' option shouldn't be negative, but is %s.",
+                    LOOKUP_MAX_RETRIES.key(), config.get(LOOKUP_MAX_RETRIES)));
         } else if ((Integer) config.get(SINK_MAX_RETRIES) < 0) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "The value of '%s' option shouldn't be negative, but is %s.",
-                            SINK_MAX_RETRIES.key(), config.get(SINK_MAX_RETRIES)));
+            throw new IllegalArgumentException(String.format(
+                    "The value of '%s' option shouldn't be negative, but is %s.",
+                    SINK_MAX_RETRIES.key(), config.get(SINK_MAX_RETRIES)));
         } else if (((Duration) config.get(MAX_RETRY_TIMEOUT)).getSeconds() <= 0L) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "The value of '%s' option must be in second granularity and shouldn't be smaller than 1 second, but is %s.",
-                            MAX_RETRY_TIMEOUT.key(),
-                            config.get(
-                                    ConfigOptions.key(MAX_RETRY_TIMEOUT.key())
-                                            .stringType()
-                                            .noDefaultValue())));
+            throw new IllegalArgumentException(String.format(
+                    "The value of '%s' option must be in second granularity and shouldn't"
+                            + " be smaller than 1 second, but is %s.",
+                    MAX_RETRY_TIMEOUT.key(),
+                    config.get(ConfigOptions.key(MAX_RETRY_TIMEOUT.key())
+                            .stringType()
+                            .noDefaultValue())));
         }
     }
 
@@ -371,16 +318,11 @@ public class PhoenixDynamicTableFactory
         }
 
         String[] propertyNames =
-                (String[])
-                        Arrays.stream(configOptions)
-                                .map(ConfigOption::key)
-                                .toArray(
-                                        (x$0) -> {
-                                            return new String[x$0];
-                                        });
+                (String[]) Arrays.stream(configOptions).map(ConfigOption::key).toArray((x$0) -> {
+                    return new String[x$0];
+                });
         Preconditions.checkArgument(
                 configOptions.length == presentCount || presentCount == 0,
-                "Either all or none of the following options should be provided:\n"
-                        + String.join("\n", propertyNames));
+                "Either all or none of the following options should be provided:\n" + String.join("\n", propertyNames));
     }
 }

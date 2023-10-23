@@ -17,51 +17,77 @@
  *
  */
 
-import {StateType, VIEW} from "@/pages/DataStudio/model";
-import MovableSidebar from "@/components/Sidebar/MovableSidebar";
-import {l} from "@/utils/intl";
-import {Button, Space, Tabs} from "antd";
-import {CloseSquareOutlined, CopyOutlined, QuestionOutlined} from "@ant-design/icons";
-import React from "react";
-import {connect} from "@@/exports";
-import {mapDispatchToProps} from "@/pages/DataStudio/function";
-import {LeftSide, RightSide} from "@/pages/DataStudio/route";
-import useThemeValue from "@/hooks/useThemeValue";
+import Title from '@/components/Front/Title';
+import MovableSidebar from '@/components/Sidebar/MovableSidebar';
+import useThemeValue from '@/hooks/useThemeValue';
+import { mapDispatchToProps } from '@/pages/DataStudio/function';
+import { StateType, VIEW } from '@/pages/DataStudio/model';
+import { RightSide } from '@/pages/DataStudio/route';
+import { l } from '@/utils/intl';
+import { connect } from '@@/exports';
+import { Tabs } from 'antd';
+import React from 'react';
 
 export type RightContainerProps = {
-  size:number
-  bottomHeight:number
-}
-const RightContainer:React.FC<RightContainerProps> = (prop:any) => {
+  size: number;
+  bottomHeight: number;
+};
+const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
   const themeValue = useThemeValue();
-  const {size,leftContainer,rightContainer,bottomHeight,updateRightWidth,updateSelectRightKey}=prop
-  const maxWidth= size.width - 2 * VIEW.leftToolWidth - leftContainer.width - 600
+  const {
+    size,
+    leftContainer,
+    rightContainer,
+    toolContentHeight,
+    updateRightWidth,
+    updateSelectRightKey,
+    tabs
+  } = prop;
+  const maxWidth = size.width - 2 * VIEW.leftToolWidth - leftContainer.width - 600;
   return (
     <MovableSidebar
-      contentHeight={size.contentHeight - VIEW.midMargin - bottomHeight}
-      onResize={(event: any, direction: any, elementRef: {
-        offsetWidth: any;
-      }) => updateRightWidth(elementRef.offsetWidth)}
-      title={<h5>{l(rightContainer.selectKey)}</h5>}
-      handlerMinimize={() => updateSelectRightKey("")}
+      contentHeight={toolContentHeight}
+      onResize={(
+        event: any,
+        direction: any,
+        elementRef: {
+          offsetWidth: any;
+        }
+      ) => updateRightWidth(elementRef.offsetWidth)}
+      title={<Title>{l(rightContainer.selectKey)}</Title>}
+      handlerMinimize={() => updateSelectRightKey('')}
       handlerMaxsize={() => updateRightWidth(maxWidth)}
-      visible={rightContainer.selectKey !== ""}
-      defaultSize={{width: rightContainer.width, height: rightContainer.height}}
-      minWidth={300}
+      visible={rightContainer.selectKey !== ''}
+      defaultSize={{
+        width: rightContainer.width,
+        height: rightContainer.height
+      }}
+      minWidth={200}
       maxWidth={maxWidth}
-      enable={{left: true}}
-      style={{borderInlineStart: "1px solid "+themeValue.borderColor}}
+      enable={{ left: true }}
+      style={{ borderInlineStart: `1px solid ${themeValue.borderColor}` }}
     >
-      <Tabs activeKey={rightContainer.selectKey} items={RightSide} tabBarStyle={{display: "none"}}/>
-
+      {tabs.panes.length > 0 ? (
+        <Tabs
+          activeKey={rightContainer.selectKey}
+          items={RightSide}
+          tabBarStyle={{ display: 'none' }}
+        />
+      ) : (
+        <> </>
+      )}
     </MovableSidebar>
-  )
+  );
 };
 
-export default connect(({Studio}: { Studio: StateType }) => ({
-  leftContainer: Studio.leftContainer,
-  rightContainer: Studio.rightContainer,
-  bottomContainer: Studio.bottomContainer,
-  activeBreadcrumbTitle: Studio.tabs.activeBreadcrumbTitle,
-  tabs: Studio.tabs,
-}), mapDispatchToProps)(RightContainer);
+export default connect(
+  ({ Studio }: { Studio: StateType }) => ({
+    leftContainer: Studio.leftContainer,
+    rightContainer: Studio.rightContainer,
+    bottomContainer: Studio.bottomContainer,
+    activeBreadcrumbTitle: Studio.tabs.activeBreadcrumbTitle,
+    tabs: Studio.tabs,
+    toolContentHeight: Studio.toolContentHeight
+  }),
+  mapDispatchToProps
+)(RightContainer);

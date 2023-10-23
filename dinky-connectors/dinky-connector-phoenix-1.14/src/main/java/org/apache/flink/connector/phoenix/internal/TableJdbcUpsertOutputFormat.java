@@ -45,19 +45,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class TableJdbcUpsertOutputFormat
-        extends JdbcBatchingOutputFormat<
-                                Tuple2<Boolean, Row>, Row, JdbcBatchStatementExecutor<Row>> {
+        extends JdbcBatchingOutputFormat<Tuple2<Boolean, Row>, Row, JdbcBatchStatementExecutor<Row>> {
     private static final Logger LOG = LoggerFactory.getLogger(TableJdbcUpsertOutputFormat.class);
 
     private JdbcBatchStatementExecutor<Row> deleteExecutor;
-    private final StatementExecutorFactory<JdbcBatchStatementExecutor<Row>>
-            deleteStatementExecutorFactory;
+    private final StatementExecutorFactory<JdbcBatchStatementExecutor<Row>> deleteStatementExecutorFactory;
     private Connection conn = null;
 
     TableJdbcUpsertOutputFormat(
-            JdbcConnectionProvider connectionProvider,
-            JdbcDmlOptions dmlOptions,
-            JdbcExecutionOptions batchOptions) {
+            JdbcConnectionProvider connectionProvider, JdbcDmlOptions dmlOptions, JdbcExecutionOptions batchOptions) {
         this(
                 connectionProvider,
                 batchOptions,
@@ -70,8 +66,7 @@ class TableJdbcUpsertOutputFormat
             JdbcConnectionProvider connectionProvider,
             JdbcExecutionOptions batchOptions,
             StatementExecutorFactory<JdbcBatchStatementExecutor<Row>> statementExecutorFactory,
-            StatementExecutorFactory<JdbcBatchStatementExecutor<Row>>
-                    deleteStatementExecutorFactory) {
+            StatementExecutorFactory<JdbcBatchStatementExecutor<Row>> deleteStatementExecutorFactory) {
         super(connectionProvider, batchOptions, statementExecutorFactory, tuple2 -> tuple2.f1);
         this.deleteStatementExecutorFactory = deleteStatementExecutorFactory;
     }
@@ -93,23 +88,18 @@ class TableJdbcUpsertOutputFormat
         }
     }
 
-    private static JdbcBatchStatementExecutor<Row> createDeleteExecutor(
-            JdbcDmlOptions dmlOptions, RuntimeContext ctx) {
-        int[] pkFields =
-                Arrays.stream(dmlOptions.getFieldNames())
-                        .mapToInt(Arrays.asList(dmlOptions.getFieldNames())::indexOf)
+    private static JdbcBatchStatementExecutor<Row> createDeleteExecutor(JdbcDmlOptions dmlOptions, RuntimeContext ctx) {
+        int[] pkFields = Arrays.stream(dmlOptions.getFieldNames())
+                .mapToInt(Arrays.asList(dmlOptions.getFieldNames())::indexOf)
+                .toArray();
+        int[] pkTypes = dmlOptions.getFieldTypes() == null
+                ? null
+                : Arrays.stream(pkFields)
+                        .map(f -> dmlOptions.getFieldTypes()[f])
                         .toArray();
-        int[] pkTypes =
-                dmlOptions.getFieldTypes() == null
-                        ? null
-                        : Arrays.stream(pkFields).map(f -> dmlOptions.getFieldTypes()[f]).toArray();
-        String deleteSql =
-                FieldNamedPreparedStatementImpl.parseNamedStatement(
-                        dmlOptions
-                                .getDialect()
-                                .getDeleteStatement(
-                                        dmlOptions.getTableName(), dmlOptions.getFieldNames()),
-                        new HashMap<>());
+        String deleteSql = FieldNamedPreparedStatementImpl.parseNamedStatement(
+                dmlOptions.getDialect().getDeleteStatement(dmlOptions.getTableName(), dmlOptions.getFieldNames()),
+                new HashMap<>());
         return createKeyedRowExecutor(pkFields, pkTypes, deleteSql);
     }
 
@@ -150,64 +140,49 @@ class TableJdbcUpsertOutputFormat
         deleteExecutor.prepareStatements(connectionProvider.getConnection());
     }
 
-    private static JdbcBatchStatementExecutor<Row> createKeyedRowExecutor(
-            int[] pkFields, int[] pkTypes, String sql) {
+    private static JdbcBatchStatementExecutor<Row> createKeyedRowExecutor(int[] pkFields, int[] pkTypes, String sql) {
         return JdbcBatchStatementExecutor.keyed(
                 sql,
                 createRowKeyExtractor(pkFields),
-                (st, record) ->
-                        setRecordToStatement(
-                                st, pkTypes, createRowKeyExtractor(pkFields).apply(record)));
+                (st, record) -> setRecordToStatement(
+                        st, pkTypes, createRowKeyExtractor(pkFields).apply(record)));
     }
 
-    private static JdbcBatchStatementExecutor<Row> createUpsertRowExecutor(
-            JdbcDmlOptions opt, RuntimeContext ctx) {
+    private static JdbcBatchStatementExecutor<Row> createUpsertRowExecutor(JdbcDmlOptions opt, RuntimeContext ctx) {
         checkArgument(opt.getKeyFields().isPresent());
 
-        int[] pkFields =
-                Arrays.stream(opt.getKeyFields().get())
-                        .mapToInt(Arrays.asList(opt.getFieldNames())::indexOf)
-                        .toArray();
-        int[] pkTypes =
-                opt.getFieldTypes() == null
-                        ? null
-                        : Arrays.stream(pkFields).map(f -> opt.getFieldTypes()[f]).toArray();
+        int[] pkFields = Arrays.stream(opt.getKeyFields().get())
+                .mapToInt(Arrays.asList(opt.getFieldNames())::indexOf)
+                .toArray();
+        int[] pkTypes = opt.getFieldTypes() == null
+                ? null
+                : Arrays.stream(pkFields).map(f -> opt.getFieldTypes()[f]).toArray();
 
         return opt.getDialect()
                 .getUpsertStatement(
-                        opt.getTableName(), opt.getFieldNames(), opt.getKeyFields().get())
-                .map(
-                        sql ->
-                                createSimpleRowExecutor(
-                                        parseNamedStatement(sql),
-                                        opt.getFieldTypes(),
-                                        ctx.getExecutionConfig().isObjectReuseEnabled()))
-                .orElseGet(
-                        () ->
-                                new InsertOrUpdateJdbcExecutor<>(
-                                        parseNamedStatement(
-                                                opt.getDialect()
-                                                        .getRowExistsStatement(
-                                                                opt.getTableName(),
-                                                                opt.getKeyFields().get())),
-                                        parseNamedStatement(
-                                                opt.getDialect()
-                                                        .getInsertIntoStatement(
-                                                                opt.getTableName(),
-                                                                opt.getFieldNames())),
-                                        parseNamedStatement(
-                                                opt.getDialect()
-                                                        .getUpdateStatement(
-                                                                opt.getTableName(),
-                                                                opt.getFieldNames(),
-                                                                opt.getKeyFields().get())),
-                                        createRowJdbcStatementBuilder(pkTypes),
-                                        createRowJdbcStatementBuilder(opt.getFieldTypes()),
-                                        createRowJdbcStatementBuilder(opt.getFieldTypes()),
-                                        createRowKeyExtractor(pkFields),
-                                        ctx.getExecutionConfig().isObjectReuseEnabled()
-                                                ? Row::copy
-                                                : Function.identity()));
+                        opt.getTableName(),
+                        opt.getFieldNames(),
+                        opt.getKeyFields().get())
+                .map(sql -> createSimpleRowExecutor(
+                        parseNamedStatement(sql),
+                        opt.getFieldTypes(),
+                        ctx.getExecutionConfig().isObjectReuseEnabled()))
+                .orElseGet(() -> new InsertOrUpdateJdbcExecutor<>(
+                        parseNamedStatement(opt.getDialect()
+                                .getRowExistsStatement(
+                                        opt.getTableName(), opt.getKeyFields().get())),
+                        parseNamedStatement(
+                                opt.getDialect().getInsertIntoStatement(opt.getTableName(), opt.getFieldNames())),
+                        parseNamedStatement(opt.getDialect()
+                                .getUpdateStatement(
+                                        opt.getTableName(),
+                                        opt.getFieldNames(),
+                                        opt.getKeyFields().get())),
+                        createRowJdbcStatementBuilder(pkTypes),
+                        createRowJdbcStatementBuilder(opt.getFieldTypes()),
+                        createRowJdbcStatementBuilder(opt.getFieldTypes()),
+                        createRowKeyExtractor(pkFields),
+                        ctx.getExecutionConfig().isObjectReuseEnabled() ? Row::copy : Function.identity()));
     }
 
     private static String parseNamedStatement(String statement) {

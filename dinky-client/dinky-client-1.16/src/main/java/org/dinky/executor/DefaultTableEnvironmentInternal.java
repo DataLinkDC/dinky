@@ -36,8 +36,7 @@ import org.apache.flink.table.sources.TableSource;
 import java.util.List;
 
 /** */
-public interface DefaultTableEnvironmentInternal
-        extends TableEnvironmentInternal, TableEnvironmentInstance {
+public interface DefaultTableEnvironmentInternal extends TableEnvironmentInternal, TableEnvironmentInstance {
 
     default TableEnvironmentInternal getTableEnvironmentInternal() {
         return (TableEnvironmentInternal) getTableEnvironment();

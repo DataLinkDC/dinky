@@ -83,9 +83,7 @@ public class SplitUtil {
                 }
 
             } catch (Exception exception) {
-                log.warn(
-                        "Unable to determine sub-database sub-table,reason is {}",
-                        exception.getMessage());
+                log.warn("Unable to determine sub-database sub-table,reason is {}", exception.getMessage());
             }
         }
         return value;

@@ -63,9 +63,8 @@ public class MySqlTypeConvert extends AbstractTypeConvert {
         }
 
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        boolean tinyInt1isBit =
-                Asserts.isNotNullString(driverConfig.getUrl())
-                        && !driverConfig.getUrl().contains("tinyInt1isBit=false");
+        boolean tinyInt1isBit = Asserts.isNotNullString(driverConfig.getUrl())
+                && !driverConfig.getUrl().contains("tinyInt1isBit=false");
         if (tinyInt1isBit) {
             if (isNullable) {
                 return Optional.of(ColumnType.JAVA_LANG_BOOLEAN);

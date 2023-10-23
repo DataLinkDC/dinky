@@ -50,8 +50,7 @@ class KeyedBatchStatementExecutor<T, K> implements JdbcBatchStatementExecutor<T>
      * Keep in mind object reuse: if it's on then key extractor may be required to return new
      * object.
      */
-    KeyedBatchStatementExecutor(
-            String sql, Function<T, K> keyExtractor, JdbcStatementBuilder<K> statementBuilder) {
+    KeyedBatchStatementExecutor(String sql, Function<T, K> keyExtractor, JdbcStatementBuilder<K> statementBuilder) {
         this.parameterSetter = statementBuilder;
         this.keyExtractor = keyExtractor;
         this.sql = sql;

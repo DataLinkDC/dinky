@@ -48,9 +48,7 @@ public class PythonZipStepSse extends StepSse {
     @Override
     public void exec() {
         GitProject gitProject = (GitProject) params.get("gitProject");
-        File file =
-                FileUtil.file(
-                        GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch());
+        File file = FileUtil.file(GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch());
 
         File zipFile = ZipUtil.zip(file);
         addFileMsgLog("ZipFile Path is: " + zipFile);

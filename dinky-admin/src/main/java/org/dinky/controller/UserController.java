@@ -20,16 +20,18 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.ModifyPasswordDTO;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.User;
 import org.dinky.data.params.AssignRoleParams;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.UserVo;
 import org.dinky.service.UserService;
-import org.dinky.service.UserTenantService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,7 +45,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.lang.Dict;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,13 +62,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
+@Api(tags = "User Controller")
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    private final UserTenantService userTenantService;
 
     /**
      * add or update user
@@ -69,6 +76,18 @@ public class UserController {
      * @return {@link Result} with {@link Void}
      */
     @PutMapping
+    @ApiOperation("Insert Or Update User")
+    @Log(title = "Insert Or Update User", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiImplicitParam(
+            name = "user",
+            value = "user",
+            required = true,
+            dataType = "User",
+            paramType = "body",
+            dataTypeClass = User.class)
+    @SaCheckPermission(
+            value = {PermissionConstants.AUTH_USER_ADD, PermissionConstants.AUTH_USER_EDIT},
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdateUser(@RequestBody User user) {
         if (Asserts.isNull(user.getId())) {
             return userService.registerUser(user);
@@ -85,11 +104,21 @@ public class UserController {
      * @return {@link Result} with {@link Void}
      */
     @PutMapping("/enable")
-    public Result<Void> enable(@RequestParam("id") Integer id) {
-        if (userService.checkAdmin(id)) {
+    @ApiOperation("Modify User Status")
+    @Log(title = "Modify User Status", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "user id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.AUTH_USER_EDIT)
+    public Result<Void> modifyUserStatus(@RequestParam("id") Integer id) {
+        if (userService.checkSuperAdmin(id)) {
             return Result.failed(Status.USER_SUPERADMIN_CANNOT_DISABLE);
         } else {
-            if (userService.enable(id)) {
+            if (userService.modifyUserStatus(id)) {
                 return Result.succeed(Status.MODIFY_SUCCESS);
             } else {
                 return Result.failed(Status.MODIFY_FAILED);
@@ -104,8 +133,16 @@ public class UserController {
      * @return {@link Result} with {@link ProTableResult}
      */
     @PostMapping
+    @ApiOperation("Get User List")
+    @ApiImplicitParam(
+            name = "para",
+            value = "para",
+            required = true,
+            dataType = "JsonNode",
+            paramType = "body",
+            dataTypeClass = JsonNode.class)
     public ProTableResult<User> listUser(@RequestBody JsonNode para) {
-        return userService.selectForProTable(para, true);
+        return userService.selectForProTable(para);
     }
 
     /**
@@ -115,6 +152,16 @@ public class UserController {
      * @return {@link Result} with {@link Void}
      */
     @DeleteMapping("/delete")
+    @ApiOperation("Delete User By Id")
+    @Log(title = "Delete User By Id", businessType = BusinessType.DELETE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "user id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.AUTH_USER_DELETE)
     public Result<Void> deleteUserById(@RequestParam("id") Integer id) {
         if (userService.removeUser(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -124,72 +171,24 @@ public class UserController {
     }
 
     /**
-     * delete or batch delete user , this method is will be {@link Deprecated} in the future ，
-     * please use {@link #deleteUserById(Integer)}
-     *
-     * @param para
-     * @return {@link Result} with {@link Void}
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (userService.checkAdmin(id)) {
-                    error.add(id);
-                    continue;
-                }
-                if (!userService.removeUser(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
-
-    /**
-     * get user by id
-     *
-     * @param user {@link User}
-     * @return {@link Result} with {@link User}
-     */
-    @PostMapping("/getOneById")
-    public Result<User> getOneById(@RequestBody User user) {
-        user = userService.getById(user.getId());
-        user.setPassword(null);
-        return Result.succeed(user);
-    }
-
-    /**
      * modify password
      *
      * @param modifyPasswordDTO {@link ModifyPasswordDTO}
      * @return {@link Result} with {@link Void}
      */
     @PostMapping("/modifyPassword")
+    @ApiOperation("Modify Password")
+    @Log(title = "Modify Password", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "modifyPasswordDTO",
+            value = "modifyPasswordDTO",
+            required = true,
+            dataType = "ModifyPasswordDTO",
+            paramType = "body",
+            dataTypeClass = ModifyPasswordDTO.class)
+    @SaCheckPermission(PermissionConstants.AUTH_USER_CHANGE_PASSWORD)
     public Result<Void> modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
         return userService.modifyPassword(modifyPasswordDTO);
-    }
-
-    /**
-     * give user grant role ，the interface will be {@link Deprecated} in the future，please use
-     * {@link #assignRole(AssignRoleParams)}
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result} with {@link Void}
-     */
-    @PutMapping(value = "/grantRole")
-    @Deprecated
-    public Result<Void> grantRole(@RequestBody JsonNode para) {
-        return userService.grantRole(para);
     }
 
     /**
@@ -199,6 +198,16 @@ public class UserController {
      * @return {@link Result} with {@link Void}
      */
     @PostMapping(value = "/assignRole")
+    @ApiOperation("Assign Role")
+    @Log(title = "Assign Role", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "assignRoleParams",
+            value = "assignRoleParams",
+            required = true,
+            dataType = "AssignRoleParams",
+            paramType = "body",
+            dataTypeClass = AssignRoleParams.class)
+    @SaCheckPermission(PermissionConstants.AUTH_USER_ASSIGN_ROLE)
     public Result<Void> assignRole(@RequestBody AssignRoleParams assignRoleParams) {
         return userService.assignRole(assignRoleParams);
     }
@@ -210,10 +219,80 @@ public class UserController {
      * @return {@link Result} with {@link Dict}
      */
     @GetMapping("/getUserListByTenantId")
+    @ApiOperation("Get User List By Tenant Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "tenant id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
     public Result<Dict> getUserListByTenantId(@RequestParam("id") Integer id) {
         List<User> userList = userService.list();
-        List<Integer> userIds = userService.getUserIdsByTeantId(id);
+        List<Integer> userIds = userService.getUserIdsByTenantId(id);
         Dict result = Dict.create().set("users", userList).set("userIds", userIds);
         return Result.succeed(result);
+    }
+
+    @PutMapping("/updateUserToTenantAdmin")
+    @ApiOperation("Update User To Tenant Admin")
+    @Log(title = "Update User To Tenant Admin", businessType = BusinessType.UPDATE)
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "userId",
+                value = "user id",
+                required = true,
+                dataType = "Integer",
+                paramType = "path",
+                dataTypeClass = Integer.class),
+        @ApiImplicitParam(
+                name = "tenantId",
+                value = "tenant id",
+                required = true,
+                dataType = "Integer",
+                paramType = "path",
+                dataTypeClass = Integer.class),
+        @ApiImplicitParam(
+                name = "tenantAdminFlag",
+                value = "tenant admin flag",
+                required = true,
+                dataType = "Boolean",
+                paramType = "path",
+                dataTypeClass = Boolean.class)
+    })
+    @SaCheckPermission(PermissionConstants.AUTH_TENANT_SET_USER_TO_TENANT_ADMIN)
+    public Result<Void> modifyUserToTenantAdmin(
+            @RequestParam Integer userId, @RequestParam Integer tenantId, @RequestParam Boolean tenantAdminFlag) {
+        return userService.modifyUserToTenantAdmin(userId, tenantId, tenantAdminFlag);
+    }
+
+    @PutMapping("/recovery")
+    @ApiOperation("Recovery User")
+    @Log(title = "Recovery User", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "user id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.AUTH_USER_RECOVERY)
+    public Result<Void> recoveryUser(@RequestParam("id") Integer userId) {
+        return userService.recoveryUser(userId);
+    }
+
+    @PutMapping("/resetPassword")
+    @ApiOperation("Reset Password")
+    @Log(title = "Reset Password", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "id",
+            value = "user id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.AUTH_USER_RESET_PASSWORD)
+    public Result<UserVo> resetPassword(@RequestParam("id") Integer userId) {
+        return userService.resetPassword(userId);
     }
 }

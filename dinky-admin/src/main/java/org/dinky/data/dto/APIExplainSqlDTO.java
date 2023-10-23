@@ -19,10 +19,13 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.job.JobConfig;
 
 import java.util.Map;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,14 +36,33 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "APIExplainSqlDTO", description = "API Explain SQL Data Transfer Object")
 public class APIExplainSqlDTO extends AbstractStatementDTO {
 
+    @ApiModelProperty(
+            value = "Use Statement Set",
+            dataType = "boolean",
+            example = "false",
+            notes = "Flag indicating whether to use a statement set")
     private boolean useStatementSet = false;
+
+    @ApiModelProperty(value = "Parallelism", dataType = "Integer", notes = "The parallelism for execution")
     private Integer parallelism;
+
+    @ApiModelProperty(
+            value = "Configuration",
+            dataType = "Map<String, String>",
+            notes = "Additional configuration settings")
     private Map<String, String> configuration;
 
     public JobConfig getJobConfig() {
-        return new JobConfig(
-                "local", false, false, isFragment(), useStatementSet, parallelism, configuration);
+        return JobConfig.builder()
+                .type(GatewayType.LOCAL.getLongValue())
+                .useRemote(false)
+                .fragment(isFragment())
+                .statementSet(useStatementSet)
+                .parallelism(parallelism)
+                .configJson(configuration)
+                .build();
     }
 }

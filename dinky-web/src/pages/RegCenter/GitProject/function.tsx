@@ -20,15 +20,15 @@
  * @param status
  */
 export const renderStatus = (status: number) => {
-  let statusTemp = "";// temp
+  let statusTemp = ''; // temp
   if (status === 0) {
-    statusTemp = "error";
+    statusTemp = 'error';
   } else if (status === 1) {
-    statusTemp = "process";
+    statusTemp = 'process';
   } else if (status === 2) {
-    statusTemp = "finish";
+    statusTemp = 'finish';
   } else {
-    statusTemp = "wait";
+    statusTemp = 'wait';
   }
   return statusTemp;
-}
+};

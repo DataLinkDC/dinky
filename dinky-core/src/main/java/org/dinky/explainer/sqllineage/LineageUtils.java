@@ -55,8 +55,7 @@ public class LineageUtils {
 
     protected static final Logger logger = LoggerFactory.getLogger(LineageUtils.class);
 
-    public static void columnLineageAnalyzer(
-            String sql, String type, TreeNode<LineageColumn> node) {
+    public static void columnLineageAnalyzer(String sql, String type, TreeNode<LineageColumn> node) {
         if (Asserts.isNullString(sql)) {
             return;
         }
@@ -82,33 +81,30 @@ public class LineageUtils {
             SQLSelectQueryBlock sqlSelectQueryBlock = (SQLSelectQueryBlock) sqlSelectQuery;
             // 获取字段列表
             List<SQLSelectItem> selectItems = sqlSelectQueryBlock.getSelectList();
-            selectItems.forEach(
-                    x -> {
-                        // 处理---------------------
-                        String column =
-                                Asserts.isNullString(x.getAlias()) ? x.toString() : x.getAlias();
+            selectItems.forEach(x -> {
+                // 处理---------------------
+                String column = Asserts.isNullString(x.getAlias()) ? x.toString() : x.getAlias();
 
-                        if (column.contains(".")) {
-                            column = column.substring(column.indexOf(".") + 1);
-                        }
-                        column = column.replace("`", "").replace("\"", "");
+                if (column.contains(".")) {
+                    column = column.substring(column.indexOf(".") + 1);
+                }
+                column = column.replace("`", "").replace("\"", "");
 
-                        String expr = x.getExpr().toString();
-                        LineageColumn myColumn = new LineageColumn();
-                        myColumn.setTargetColumnName(column);
-                        myColumn.setExpression(expr);
+                String expr = x.getExpr().toString();
+                LineageColumn myColumn = new LineageColumn();
+                myColumn.setTargetColumnName(column);
+                myColumn.setExpression(expr);
 
-                        TreeNode<LineageColumn> itemNode = new TreeNode<>(myColumn);
-                        SQLExpr expr1 = x.getExpr();
-                        // 解析表达式，添加解析结果子节点
-                        handlerExpr(expr1, itemNode);
+                TreeNode<LineageColumn> itemNode = new TreeNode<>(myColumn);
+                SQLExpr expr1 = x.getExpr();
+                // 解析表达式，添加解析结果子节点
+                handlerExpr(expr1, itemNode);
 
-                        if (node.getLevel() == 0
-                                || node.getData().getTargetColumnName().equals(column)) {
-                            node.addChild(itemNode);
-                            isContinue.set(true);
-                        }
-                    });
+                if (node.getLevel() == 0 || node.getData().getTargetColumnName().equals(column)) {
+                    node.addChild(itemNode);
+                    isContinue.set(true);
+                }
+            });
 
             if (isContinue.get()) {
                 // 获取表
@@ -134,10 +130,8 @@ public class LineageUtils {
             // union的查询语句
         } else if (sqlSelectQuery instanceof SQLUnionQuery) {
             // 处理---------------------
-            columnLineageAnalyzer(
-                    ((SQLUnionQuery) sqlSelectQuery).getLeft().toString(), type, node);
-            columnLineageAnalyzer(
-                    ((SQLUnionQuery) sqlSelectQuery).getRight().toString(), type, node);
+            columnLineageAnalyzer(((SQLUnionQuery) sqlSelectQuery).getLeft().toString(), type, node);
+            columnLineageAnalyzer(((SQLUnionQuery) sqlSelectQuery).getRight().toString(), type, node);
         }
     }
 
@@ -149,12 +143,9 @@ public class LineageUtils {
      */
     private static void handlerSQLUnionQueryTableSource(
             TreeNode<LineageColumn> node, SQLUnionQueryTableSource table, String type) {
-        node.getAllLeafs().stream()
-                .filter(e -> !e.getData().getIsEnd())
-                .forEach(
-                        e -> {
-                            columnLineageAnalyzer(table.getUnion().toString(), type, e);
-                        });
+        node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e -> {
+            columnLineageAnalyzer(table.getUnion().toString(), type, e);
+        });
     }
 
     /**
@@ -163,26 +154,18 @@ public class LineageUtils {
      * @param node
      * @param table
      */
-    private static void handlerSQLSubqueryTableSource(
-            TreeNode<LineageColumn> node, SQLTableSource table, String type) {
-        node.getAllLeafs().stream()
-                .filter(e -> !e.getData().getIsEnd())
-                .forEach(
-                        e -> {
-                            if (Asserts.isNotNullString(e.getData().getSourceTableName())) {
-                                if (e.getData().getSourceTableName().equals(table.getAlias())) {
-                                    columnLineageAnalyzer(
-                                            ((SQLSubqueryTableSource) table).getSelect().toString(),
-                                            type,
-                                            e);
-                                }
-                            } else {
-                                columnLineageAnalyzer(
-                                        ((SQLSubqueryTableSource) table).getSelect().toString(),
-                                        type,
-                                        e);
-                            }
-                        });
+    private static void handlerSQLSubqueryTableSource(TreeNode<LineageColumn> node, SQLTableSource table, String type) {
+        node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e -> {
+            if (Asserts.isNotNullString(e.getData().getSourceTableName())) {
+                if (e.getData().getSourceTableName().equals(table.getAlias())) {
+                    columnLineageAnalyzer(
+                            ((SQLSubqueryTableSource) table).getSelect().toString(), type, e);
+                }
+            } else {
+                columnLineageAnalyzer(
+                        ((SQLSubqueryTableSource) table).getSelect().toString(), type, e);
+            }
+        });
     }
 
     /**
@@ -191,48 +174,35 @@ public class LineageUtils {
      * @param node
      * @param table
      */
-    private static void handlerSQLJoinTableSource(
-            TreeNode<LineageColumn> node, SQLJoinTableSource table, String type) {
+    private static void handlerSQLJoinTableSource(TreeNode<LineageColumn> node, SQLJoinTableSource table, String type) {
         // 处理---------------------
         // 子查询作为表
-        node.getAllLeafs().stream()
-                .filter(e -> !e.getData().getIsEnd())
-                .forEach(
-                        e -> {
-                            if (table.getLeft() instanceof SQLJoinTableSource) {
-                                handlerSQLJoinTableSource(
-                                        node, (SQLJoinTableSource) table.getLeft(), type);
-                            } else if (table.getLeft() instanceof SQLExprTableSource) {
-                                handlerSQLExprTableSource(
-                                        node, (SQLExprTableSource) table.getLeft());
-                            } else if (table.getLeft() instanceof SQLSubqueryTableSource) {
-                                // 处理---------------------
-                                handlerSQLSubqueryTableSource(node, table.getLeft(), type);
-                            } else if (table.getLeft() instanceof SQLUnionQueryTableSource) {
-                                // 处理---------------------
-                                handlerSQLUnionQueryTableSource(
-                                        node, (SQLUnionQueryTableSource) table.getLeft(), type);
-                            }
-                        });
-        node.getAllLeafs().stream()
-                .filter(e -> !e.getData().getIsEnd())
-                .forEach(
-                        e -> {
-                            if (table.getRight() instanceof SQLJoinTableSource) {
-                                handlerSQLJoinTableSource(
-                                        node, (SQLJoinTableSource) table.getRight(), type);
-                            } else if (table.getRight() instanceof SQLExprTableSource) {
-                                handlerSQLExprTableSource(
-                                        node, (SQLExprTableSource) table.getRight());
-                            } else if (table.getRight() instanceof SQLSubqueryTableSource) {
-                                // 处理---------------------
-                                handlerSQLSubqueryTableSource(node, table.getRight(), type);
-                            } else if (table.getRight() instanceof SQLUnionQueryTableSource) {
-                                // 处理---------------------
-                                handlerSQLUnionQueryTableSource(
-                                        node, (SQLUnionQueryTableSource) table.getRight(), type);
-                            }
-                        });
+        node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e -> {
+            if (table.getLeft() instanceof SQLJoinTableSource) {
+                handlerSQLJoinTableSource(node, (SQLJoinTableSource) table.getLeft(), type);
+            } else if (table.getLeft() instanceof SQLExprTableSource) {
+                handlerSQLExprTableSource(node, (SQLExprTableSource) table.getLeft());
+            } else if (table.getLeft() instanceof SQLSubqueryTableSource) {
+                // 处理---------------------
+                handlerSQLSubqueryTableSource(node, table.getLeft(), type);
+            } else if (table.getLeft() instanceof SQLUnionQueryTableSource) {
+                // 处理---------------------
+                handlerSQLUnionQueryTableSource(node, (SQLUnionQueryTableSource) table.getLeft(), type);
+            }
+        });
+        node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e -> {
+            if (table.getRight() instanceof SQLJoinTableSource) {
+                handlerSQLJoinTableSource(node, (SQLJoinTableSource) table.getRight(), type);
+            } else if (table.getRight() instanceof SQLExprTableSource) {
+                handlerSQLExprTableSource(node, (SQLExprTableSource) table.getRight());
+            } else if (table.getRight() instanceof SQLSubqueryTableSource) {
+                // 处理---------------------
+                handlerSQLSubqueryTableSource(node, table.getRight(), type);
+            } else if (table.getRight() instanceof SQLUnionQueryTableSource) {
+                // 处理---------------------
+                handlerSQLUnionQueryTableSource(node, (SQLUnionQueryTableSource) table.getRight(), type);
+            }
+        });
     }
 
     /**
@@ -241,44 +211,29 @@ public class LineageUtils {
      * @param node
      * @param table
      */
-    private static void handlerSQLExprTableSource(
-            TreeNode<LineageColumn> node, SQLExprTableSource table) {
+    private static void handlerSQLExprTableSource(TreeNode<LineageColumn> node, SQLExprTableSource table) {
         SQLExprTableSource tableSource = table;
-        String tableName =
-                tableSource.getExpr() instanceof SQLPropertyExpr
-                        ? ((SQLPropertyExpr) tableSource.getExpr())
-                                .getName()
-                                .replace("`", "")
-                                .replace("\"", "")
-                        : "";
-        String alias =
-                Asserts.isNotNullString(tableSource.getAlias())
-                        ? tableSource.getAlias().replace("`", "").replace("\"", "")
-                        : "";
-        node.getChildren()
-                .forEach(
-                        e -> {
-                            e.getChildren()
-                                    .forEach(
-                                            f -> {
-                                                if (!f.getData().getIsEnd()
-                                                        && (f.getData().getSourceTableName() == null
-                                                                || f.getData()
-                                                                        .getSourceTableName()
-                                                                        .equals(tableName)
-                                                                || f.getData()
-                                                                        .getSourceTableName()
-                                                                        .equals(alias))) {
-                                                    f.getData()
-                                                            .setSourceTableName(
-                                                                    tableSource.toString());
-                                                    f.getData().setIsEnd(true);
-                                                    f.getData()
-                                                            .setExpression(
-                                                                    e.getData().getExpression());
-                                                }
-                                            });
-                        });
+        String tableName = tableSource.getExpr() instanceof SQLPropertyExpr
+                ? ((SQLPropertyExpr) tableSource.getExpr())
+                        .getName()
+                        .replace("`", "")
+                        .replace("\"", "")
+                : "";
+        String alias = Asserts.isNotNullString(tableSource.getAlias())
+                ? tableSource.getAlias().replace("`", "").replace("\"", "")
+                : "";
+        node.getChildren().forEach(e -> {
+            e.getChildren().forEach(f -> {
+                if (!f.getData().getIsEnd()
+                        && (f.getData().getSourceTableName() == null
+                                || f.getData().getSourceTableName().equals(tableName)
+                                || f.getData().getSourceTableName().equals(alias))) {
+                    f.getData().setSourceTableName(tableSource.toString());
+                    f.getData().setIsEnd(true);
+                    f.getData().setExpression(e.getData().getExpression());
+                }
+            });
+        });
     }
 
     /**
@@ -332,19 +287,16 @@ public class LineageUtils {
      * @param expr
      * @param node
      */
-    public static void visitSQLMethodInvoke(
-            SQLMethodInvokeExpr expr, TreeNode<LineageColumn> node) {
+    public static void visitSQLMethodInvoke(SQLMethodInvokeExpr expr, TreeNode<LineageColumn> node) {
         if (expr.getArguments().size() == 0) {
             // 计算表达式，没有更多列，结束循环
             if (node.getData().getExpression().equals(expr.toString())) {
                 node.getData().setIsEnd(true);
             }
         } else {
-            expr.getArguments()
-                    .forEach(
-                            expr1 -> {
-                                handlerExpr(expr1, node);
-                            });
+            expr.getArguments().forEach(expr1 -> {
+                handlerExpr(expr1, node);
+            });
         }
     }
 
@@ -355,11 +307,9 @@ public class LineageUtils {
      * @param node
      */
     public static void visitSQLAggregateExpr(SQLAggregateExpr expr, TreeNode<LineageColumn> node) {
-        expr.getArguments()
-                .forEach(
-                        expr1 -> {
-                            handlerExpr(expr1, node);
-                        });
+        expr.getArguments().forEach(expr1 -> {
+            handlerExpr(expr1, node);
+        });
     }
 
     /**
@@ -370,11 +320,9 @@ public class LineageUtils {
      */
     public static void visitSQLCaseExpr(SQLCaseExpr expr, TreeNode<LineageColumn> node) {
         handlerExpr(expr.getValueExpr(), node);
-        expr.getItems()
-                .forEach(
-                        expr1 -> {
-                            handlerExpr(expr1.getValueExpr(), node);
-                        });
+        expr.getItems().forEach(expr1 -> {
+            handlerExpr(expr1.getValueExpr(), node);
+        });
         handlerExpr(expr.getElseExpr(), node);
     }
 
@@ -413,8 +361,7 @@ public class LineageUtils {
      * @param expr
      * @param node
      */
-    public static void visitSQLIdentifierExpr(
-            SQLIdentifierExpr expr, TreeNode<LineageColumn> node) {
+    public static void visitSQLIdentifierExpr(SQLIdentifierExpr expr, TreeNode<LineageColumn> node) {
         LineageColumn project = new LineageColumn();
         project.setTargetColumnName(expr.getName().replace("`", "").replace("\"", ""));
         TreeNode<LineageColumn> search = node.findChildNode(project);

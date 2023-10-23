@@ -23,6 +23,9 @@ import org.dinky.mybatis.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.Extension;
+import io.swagger.annotations.ExtensionProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -38,9 +41,25 @@ public class AlertInstance extends SuperEntity {
 
     private static final long serialVersionUID = -3435401513220527001L;
 
+    @ApiModelProperty(value = "Tenant ID", required = true, dataType = "Integer", example = "1")
     private Integer tenantId;
 
+    @ApiModelProperty(
+            value = "Alert Instance Type",
+            required = true,
+            dataType = "String",
+            example = "DingTalk",
+            extensions = {
+                @Extension(
+                        name = "alertType-enum",
+                        properties = {@ExtensionProperty(name = "values", value = "DingTalk,WeChat,Email,FeiShu,Sms")})
+            })
     private String type;
 
+    @ApiModelProperty(
+            value = "Alert Instance Params",
+            required = true,
+            dataType = "String",
+            example = "{\"webhook\":\"https://oapi.dingtalk.com/robot/send?access_token=xxxxxx\"}")
     private String params;
 }

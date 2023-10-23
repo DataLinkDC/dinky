@@ -52,8 +52,7 @@ public class SubmitResult {
         this.error = error;
     }
 
-    public SubmitResult(
-            String sessionId, List<String> statements, String flinkHost, String jobName) {
+    public SubmitResult(String sessionId, List<String> statements, String flinkHost, String jobName) {
         this.sessionId = sessionId;
         this.statements = statements;
         this.flinkHost = flinkHost;

@@ -55,15 +55,17 @@ public class PhoenixJdbcExecutionOptions implements Serializable {
         if (this == o) {
             return true;
         } else if (o != null && this.getClass() == o.getClass()) {
-            PhoenixJdbcExecutionOptions that = (PhoenixJdbcExecutionOptions)o;
-            return this.batchIntervalMs == that.batchIntervalMs && this.batchSize == that.batchSize && this.maxRetries == that.maxRetries;
+            PhoenixJdbcExecutionOptions that = (PhoenixJdbcExecutionOptions) o;
+            return this.batchIntervalMs == that.batchIntervalMs
+                    && this.batchSize == that.batchSize
+                    && this.maxRetries == that.maxRetries;
         } else {
             return false;
         }
     }
 
     public int hashCode() {
-        return Objects.hash(new Object[]{this.batchIntervalMs, this.batchSize, this.maxRetries});
+        return Objects.hash(new Object[] {this.batchIntervalMs, this.batchSize, this.maxRetries});
     }
 
     public static PhoenixJdbcExecutionOptions.Builder builder() {
@@ -79,8 +81,7 @@ public class PhoenixJdbcExecutionOptions implements Serializable {
         private int size = 5000;
         private int maxRetries = 3;
 
-        public Builder() {
-        }
+        public Builder() {}
 
         public PhoenixJdbcExecutionOptions.Builder withBatchSize(int size) {
             this.size = size;

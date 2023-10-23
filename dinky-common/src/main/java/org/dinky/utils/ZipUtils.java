@@ -72,8 +72,6 @@ public class ZipUtils {
     public static void main(String[] args) throws IOException {
         // unzip("/Users/zackyoung/Downloads/85.zip", "/Users/zackyoung/Downloads/85");
 
-        Files.move(
-                Paths.get("/Users/zackyoung/Downloads/85/jar/"),
-                Paths.get("/Users/zackyoung/Downloads/85/123/"));
+        Files.move(Paths.get("/Users/zackyoung/Downloads/85/jar/"), Paths.get("/Users/zackyoung/Downloads/85/123/"));
     }
 }

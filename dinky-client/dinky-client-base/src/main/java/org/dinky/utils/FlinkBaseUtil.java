@@ -47,22 +47,15 @@ public class FlinkBaseUtil {
         params.put(FlinkParamConstant.URL, parameters.get(FlinkParamConstant.URL, null));
         params.put(FlinkParamConstant.USERNAME, parameters.get(FlinkParamConstant.USERNAME, null));
         params.put(FlinkParamConstant.PASSWORD, parameters.get(FlinkParamConstant.PASSWORD, null));
-        params.put(
-                FlinkParamConstant.DINKY_ADDR, parameters.get(FlinkParamConstant.DINKY_ADDR, null));
+        params.put(FlinkParamConstant.DINKY_ADDR, parameters.get(FlinkParamConstant.DINKY_ADDR, null));
         return params;
     }
 
     public static String getSinkConfigurationString(
-            Table table,
-            FlinkCDCConfig config,
-            String sinkSchemaName,
-            String sinkTableName,
-            String pkList) {
+            Table table, FlinkCDCConfig config, String sinkSchemaName, String sinkTableName, String pkList) {
         String configurationString =
-                SqlUtil.replaceAllParam(
-                        config.getSinkConfigurationString(), "schemaName", sinkSchemaName);
-        configurationString =
-                SqlUtil.replaceAllParam(configurationString, "tableName", sinkTableName);
+                SqlUtil.replaceAllParam(config.getSinkConfigurationString(), "schemaName", sinkSchemaName);
+        configurationString = SqlUtil.replaceAllParam(configurationString, "tableName", sinkTableName);
         if (configurationString.contains("${pkList}")) {
             configurationString = SqlUtil.replaceAllParam(configurationString, "pkList", pkList);
         }

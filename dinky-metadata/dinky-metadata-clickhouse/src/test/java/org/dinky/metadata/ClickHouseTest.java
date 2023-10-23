@@ -69,7 +69,7 @@ public class ClickHouseTest {
     @Test
     public void schemaTest() {
         List<Schema> schemasAndTables = getDriver().getSchemasAndTables();
-        // LOGGER.info(JSONUtil.toJsonString(schemasAndTables));
+        // LOGGER.info(JsonUtils.toJsonString(schemasAndTables));
         // LOGGER.info("end...");
     }
 
@@ -78,7 +78,7 @@ public class ClickHouseTest {
     public void columnTest() {
         Driver driver = getDriver();
         List<Column> columns = driver.listColumns("xxx", "xxx");
-        // LOGGER.info(JSONUtil.toJsonString(columns));
+        // LOGGER.info(JsonUtils.toJsonString(columns));
         // LOGGER.info("end...");
     }
 
@@ -87,7 +87,7 @@ public class ClickHouseTest {
     public void queryTest() {
         Driver driver = getDriver();
         JdbcSelectResult query = driver.query("select * from xxx", 10);
-        // LOGGER.info(JSONUtil.toJsonString(query));
+        // LOGGER.info(JsonUtils.toJsonString(query));
         // LOGGER.info("end...");
     }
 }

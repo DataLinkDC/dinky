@@ -46,7 +46,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class FileUploadServiceImpl implements FileUploadService {
 
-    @Resource private UploadFileRecordService uploadFileRecordService;
+    @Resource
+    private UploadFileRecordService uploadFileRecordService;
 
     @Override
     public void upload(MultipartFile file, String dir, Byte fileType) {
@@ -57,38 +58,28 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         String filePath = FilePathUtil.addFileSeparator(dir) + file.getOriginalFilename();
         switch (target) {
-            case UploadFileConstant.TARGET_LOCAL:
-                {
-                    try {
-                        file.transferTo(new File(filePath));
-                        if (uploadFileRecordService.saveOrUpdateFile(
-                                file.getOriginalFilename(),
-                                dir,
-                                filePath,
-                                fileType,
-                                UploadFileConstant.TARGET_LOCAL)) {
-                            return;
-                        } else {
-                            throw BusException.valueOfMsg("database exception");
-                        }
-                    } catch (IOException e) {
-                        throw BusException.valueOf("file.upload.failed", e);
-                    }
-                }
-            case UploadFileConstant.TARGET_HDFS:
-                {
-                    HdfsUtil.uploadFile(filePath, file);
+            case UploadFileConstant.TARGET_LOCAL: {
+                try {
+                    file.transferTo(new File(filePath));
                     if (uploadFileRecordService.saveOrUpdateFile(
-                            file.getOriginalFilename(),
-                            dir,
-                            filePath,
-                            fileType,
-                            UploadFileConstant.TARGET_HDFS)) {
+                            file.getOriginalFilename(), dir, filePath, fileType, UploadFileConstant.TARGET_LOCAL)) {
                         return;
                     } else {
                         throw BusException.valueOfMsg("database exception");
                     }
+                } catch (IOException e) {
+                    throw BusException.valueOf("file.upload.failed", e);
                 }
+            }
+            case UploadFileConstant.TARGET_HDFS: {
+                HdfsUtil.uploadFile(filePath, file);
+                if (uploadFileRecordService.saveOrUpdateFile(
+                        file.getOriginalFilename(), dir, filePath, fileType, UploadFileConstant.TARGET_HDFS)) {
+                    return;
+                } else {
+                    throw BusException.valueOfMsg("database exception");
+                }
+            }
             default:
                 throw BusException.valueOfMsg("Illegal upload file destination");
         }

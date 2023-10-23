@@ -26,6 +26,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import cn.hutool.core.util.ReflectUtil;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SseEmitterUTF8 extends SseEmitter {
     public SseEmitterUTF8(Long timeout) {
         super(timeout);
@@ -34,8 +38,16 @@ public class SseEmitterUTF8 extends SseEmitter {
     @Override
     protected void extendResponse(ServerHttpResponse outputMessage) {
         super.extendResponse(outputMessage);
-
         HttpHeaders headers = outputMessage.getHeaders();
         headers.setContentType(new MediaType(MediaType.TEXT_EVENT_STREAM, StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public synchronized void complete() {
+        Boolean complete = (Boolean) ReflectUtil.getFieldValue(this, "complete");
+        if (complete) {
+            return;
+        }
+        super.complete();
     }
 }

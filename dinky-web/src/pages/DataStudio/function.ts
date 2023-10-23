@@ -17,51 +17,155 @@
  *
  */
 
-
-import {Dispatch} from "@@/plugin-dva/types";
-import {DataSources} from "@/types/RegCenter/data";
+import {
+  DataStudioTabsItemType,
+  EnvType,
+  FooterType,
+  JobRunningMsgType,
+  MetadataTabsItemType,
+  STUDIO_MODEL,
+  TabsItemType,
+  TabsPageType,
+  TaskDataType
+} from '@/pages/DataStudio/model';
+import { CONFIG_MODEL_ASYNC } from '@/pages/SettingCenter/GlobalSetting/model';
+import { Cluster, DataSources } from '@/types/RegCenter/data';
+import { Dispatch } from '@@/plugin-dva/types';
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
-  updateToolContentHeight: (key: number) => dispatch({
-    type: "Studio/updateToolContentHeight",
-    payload: key,
-  }),
-  updateCenterContentHeight: (key: number) => dispatch({
-    type: "Studio/updateCenterContentHeight",
-    payload: key,
-  }),
-  updateSelectLeftKey: (key: string) => dispatch({
-    type: "Studio/updateSelectLeftKey",
-    payload: key,
-  }),
-  updateLeftWidth: (width: number) => dispatch({
-    type: "Studio/updateLeftWidth",
-    payload: width,
-  }), updateSelectRightKey: (key: string) => dispatch({
-    type: "Studio/updateSelectRightKey",
-    payload: key,
-  }),
-  updateRightWidth: (width: number) => dispatch({
-    type: "Studio/updateRightWidth",
-    payload: width,
-  }), updateSelectBottomKey: (key: string) => dispatch({
-    type: "Studio/updateSelectBottomKey",
-    payload: key,
-  }), updateSelectBottomSubKey: (key: string) => dispatch({
-    type: "Studio/updateSelectBottomSubKey",
-    payload: key,
-  }),
-  updateBottomHeight: (height: number) => dispatch({
-    type: "Studio/updateBottomHeight",
-    payload: height,
-  }),
-  saveDataBase: (data: DataSources.DataSource[]) => dispatch({
-    type: "Studio/saveDataBase",
-    payload: data,
-  }),
-  updateBottomConsole: (data: string) => dispatch({
-    type: "Studio/updateBottomConsole",
-    payload: data,
-  }),
-
+  updateToolContentHeight: (key: number) =>
+    dispatch({
+      type: STUDIO_MODEL.updateToolContentHeight,
+      payload: key
+    }),
+  updateCenterContentHeight: (key: number) =>
+    dispatch({
+      type: STUDIO_MODEL.updateCenterContentHeight,
+      payload: key
+    }),
+  updateSelectLeftKey: (key: string) =>
+    dispatch({
+      type: STUDIO_MODEL.updateSelectLeftKey,
+      payload: key
+    }),
+  updateLeftWidth: (width: number) =>
+    dispatch({
+      type: STUDIO_MODEL.updateLeftWidth,
+      payload: width
+    }),
+  updateSelectRightKey: (key: string) =>
+    dispatch({
+      type: STUDIO_MODEL.updateSelectRightKey,
+      payload: key
+    }),
+  updateRightWidth: (width: number) =>
+    dispatch({
+      type: STUDIO_MODEL.updateRightWidth,
+      payload: width
+    }),
+  updateSelectBottomKey: (key: string) =>
+    dispatch({
+      type: STUDIO_MODEL.updateSelectBottomKey,
+      payload: key
+    }),
+  updateSelectBottomSubKey: (key: string) =>
+    dispatch({
+      type: STUDIO_MODEL.updateSelectBottomSubKey,
+      payload: key
+    }),
+  updateBottomHeight: (height: number) =>
+    dispatch({
+      type: STUDIO_MODEL.updateBottomHeight,
+      payload: height
+    }),
+  saveDataBase: (data: DataSources.DataSource[]) =>
+    dispatch({
+      type: STUDIO_MODEL.saveDataBase,
+      payload: data
+    }),
+  saveProject: (data: any[]) =>
+    dispatch({
+      type: STUDIO_MODEL.saveProject,
+      payload: data
+    }),
+  updateBottomConsole: (data: string) =>
+    dispatch({
+      type: STUDIO_MODEL.updateBottomConsole,
+      payload: data
+    }),
+  saveSession: (data: Cluster.Instance[]) =>
+    dispatch({
+      type: STUDIO_MODEL.saveSession,
+      payload: data
+    }),
+  saveEnv: (data: EnvType[]) =>
+    dispatch({
+      type: STUDIO_MODEL.saveEnv,
+      payload: data
+    }),
+  saveTabs: (data: TabsItemType[]) =>
+    dispatch({
+      type: STUDIO_MODEL.saveTabs,
+      payload: data
+    }),
+  saveClusterConfiguration: (data: Cluster.Config[]) =>
+    dispatch({
+      type: STUDIO_MODEL.saveClusterConfiguration,
+      payload: data
+    }),
+  updateJobRunningMsg: (data: JobRunningMsgType) =>
+    dispatch({
+      type: STUDIO_MODEL.updateJobRunningMsg,
+      payload: data
+    }),
+  queryDsConfig: (data: string) =>
+    dispatch({
+      type: CONFIG_MODEL_ASYNC.queryDsConfig,
+      payload: data
+    })
 });
+
+export function isDataStudioTabsItemType(
+  item: DataStudioTabsItemType | MetadataTabsItemType | TabsItemType | undefined
+): item is DataStudioTabsItemType {
+  return item?.type === TabsPageType.project;
+}
+
+export function isMetadataTabsItemType(
+  item: DataStudioTabsItemType | MetadataTabsItemType | TabsItemType | undefined
+): item is MetadataTabsItemType {
+  return item?.type === TabsPageType.metadata;
+}
+
+export function getCurrentTab(
+  panes: TabsItemType[],
+  activeKey: string
+): DataStudioTabsItemType | MetadataTabsItemType | undefined {
+  const item = panes.find((item) => item.key === activeKey);
+  switch (item?.type) {
+    case 'project':
+      return item as DataStudioTabsItemType;
+    case 'metadata':
+      return item as MetadataTabsItemType;
+    default:
+      return undefined;
+  }
+}
+
+export const getCurrentData = (
+  panes: TabsItemType[],
+  activeKey: string
+): TaskDataType | undefined => {
+  const item = getCurrentTab(panes, activeKey);
+  return isDataStudioTabsItemType(item) ? item.params.taskData : undefined;
+};
+
+export const getFooterValue = (panes: any, activeKey: string): Partial<FooterType> => {
+  const currentTab = getCurrentTab(panes, activeKey);
+  return isDataStudioTabsItemType(currentTab)
+    ? {
+        codePosition: [1, 1],
+        codeType: currentTab.subType
+      }
+    : {};
+};

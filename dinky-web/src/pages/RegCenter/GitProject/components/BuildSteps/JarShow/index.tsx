@@ -17,22 +17,19 @@
  *
  */
 
-import React, {useEffect} from "react";
-import {GitProject} from "@/types/RegCenter/data";
-import JarList from "@/pages/RegCenter/GitProject/components/BuildSteps/JarShow/JarList";
-
-
+import JarList from '@/pages/RegCenter/GitProject/components/BuildSteps/JarShow/JarList';
+import { GitProject } from '@/types/RegCenter/data';
+import React, { useEffect } from 'react';
 
 /** props
  */
 type JarShowProps = {
-  value: GitProject
-  data: any
-}
+  value: Partial<GitProject>;
+  data: any;
+};
 
 const JarShow: React.FC<JarShowProps> = (props) => {
-
-  const { data ,value} = props;
+  const { data, value } = props;
 
   /**
    * state
@@ -42,16 +39,18 @@ const JarShow: React.FC<JarShowProps> = (props) => {
   /**
    * Effect
    */
-  useEffect(  () => {
+  useEffect(() => {
     setResultData(data);
-  }, [data,value]);
+  }, [data, value]);
 
   /**
    * render
    */
-  return <div style={{height: '50vh',overflowY:'auto'}}>
-    <JarList projectId={value.id} jarAndClassesList={resultData}/>
-  </div>;
+  return (
+    <div style={{ height: '50vh', overflowY: 'auto' }}>
+      <JarList projectId={value.id} jarAndClassesList={resultData} />
+    </div>
+  );
 };
 
 export default JarShow;

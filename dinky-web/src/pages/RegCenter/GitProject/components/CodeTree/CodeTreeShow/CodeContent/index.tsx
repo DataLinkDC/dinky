@@ -15,65 +15,63 @@
  * limitations under the License.
  */
 
-import React from "react";
-import {Empty} from "antd";
-import {l} from "@/utils/intl";
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import {renderLanguage, unSupportView} from "@/utils/function";
-import {GitProjectTreeNode} from "@/types/RegCenter/data";
-
+import CodeShow from '@/components/CustomEditor/CodeShow';
+import { GitProjectTreeNode } from '@/types/RegCenter/data';
+import { renderLanguage, unSupportView } from '@/utils/function';
+import { l } from '@/utils/intl';
+import { Empty } from 'antd';
+import { EditorLanguage } from 'monaco-editor/esm/metadata';
+import React from 'react';
 
 /**
  * CodeContentProps
  */
 type CodeContentProps = {
-    code: string;
-    current: GitProjectTreeNode;
-}
+  code: string;
+  current: GitProjectTreeNode;
+};
 
 /**
  * code edit props
  */
 const CodeEditProps = {
-    height: "70vh",
-    width: "100%",
-    lineNumbers: "on",
+  height: '70vh',
+  width: '100%',
+  lineNumbers: 'on'
 };
 
-
 export const CodeContent: React.FC<CodeContentProps> = (props) => {
-    /**
-     * Get the code and current node from props
-     */
-    const {code, current} = props;
+  /**
+   * Get the code and current node from props
+   */
+  const { code, current } = props;
 
-    /**
-     * Get the language according to the file suffix rules
-     * @returns {string}
-     */
-    const getLanguage = () => {
-        return renderLanguage(current.name, ".");
-    };
+  /**
+   * Get the language according to the file suffix rules
+   * @returns {string}
+   */
+  const getLanguage = () => {
+    return renderLanguage(current.name, '.') as EditorLanguage;
+  };
 
-
-    /**
-     * Render the code display component
-     * @returns {JSX.Element}
-     */
-    const render = () => {
-        if (unSupportView(current.name)) {
-            return <Empty className={"code-content-empty"} description={l("rc.gp.codeTree.unSupportView")}/>
-        } else if (code === "" || code === null) {
-            return <Empty className={"code-content-empty"} description={l("rc.gp.codeTree.clickShow")}/>
-        } else {
-            return <CodeShow {...CodeEditProps} language={getLanguage()} showFloatButton code={code}/>
-        }
+  /**
+   * Render the code display component
+   * @returns {JSX.Element}
+   */
+  const render = () => {
+    if (unSupportView(current.name)) {
+      return (
+        <Empty className={'code-content-empty'} description={l('rc.gp.codeTree.unSupportView')} />
+      );
+    } else if (code === '' || code === null) {
+      return <Empty className={'code-content-empty'} description={l('rc.gp.codeTree.clickShow')} />;
+    } else {
+      return <CodeShow {...CodeEditProps} language={getLanguage()} showFloatButton code={code} />;
     }
+  };
 
-    /**
-     * If the code is empty, display the empty component, otherwise display the code
-     */
-    return <>
-        {render()}
-    </>;
+  /**
+   * If the code is empty, display the empty component, otherwise display the code
+   */
+  return <>{render()}</>;
 };

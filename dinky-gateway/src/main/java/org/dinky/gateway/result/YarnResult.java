@@ -24,15 +24,36 @@ import org.dinky.gateway.enums.GatewayType;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * YarnResult
  *
  * @since 2021/10/29
  */
+@ApiModel(value = "YarnResult", description = "Result of a YARN operation")
 public class YarnResult extends AbstractGatewayResult {
 
+    @ApiModelProperty(
+            value = "YARN application ID",
+            dataType = "String",
+            example = "application_12345_67890",
+            notes = "ID of the YARN application")
     private String appId;
+
+    @ApiModelProperty(
+            value = "YARN application web URL",
+            dataType = "String",
+            example = "http://yarn-cluster:8088",
+            notes = "URL to access the YARN application in the web UI")
     private String webURL;
+
+    @ApiModelProperty(
+            value = "List of job IDs",
+            dataType = "List<String>",
+            example = "[\"job1\", \"job2\"]",
+            notes = "List of job IDs associated with the YARN application")
     private List<String> jids;
 
     public YarnResult(GatewayType type, LocalDateTime startTime) {
@@ -40,11 +61,7 @@ public class YarnResult extends AbstractGatewayResult {
     }
 
     public YarnResult(
-            String appId,
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            boolean isSuccess,
-            String exceptionMsg) {
+            String appId, LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess, String exceptionMsg) {
         super(startTime, endTime, isSuccess, exceptionMsg);
         this.appId = appId;
     }

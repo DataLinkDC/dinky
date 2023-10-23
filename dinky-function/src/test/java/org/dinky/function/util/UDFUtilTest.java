@@ -53,20 +53,11 @@ class UDFUtilTest {
         assertTrue(c.apply("create  function  a  as  'abc'  language python"));
         assertTrue(c.apply("create  function  a  as  'abc'  using jar 'path'"));
         assertTrue(c.apply("create  function  a  as  'abc'  using jar 'path', jar 'path/2'"));
-        assertTrue(
-                c.apply("create tempOrary function  a  as  'abc'  using jar 'path', jar 'path/2'"));
-        assertTrue(
-                c.apply(
-                        "create tempOrary system function  a  as  'abc'  using jar 'path', jar 'path/2'"));
-        assertTrue(
-                c.apply(
-                        "create tempOrary system function  a  as  'abc'  using jar 'path',jar 'path/2'"));
-        assertFalse(
-                c.apply(
-                        " create tempOrary system function  a  as  'abc'  using jar 'path', jar 'path/2'"));
-        assertFalse(
-                c.apply(
-                        "create tempOrary system function  a  as  abc  using jar 'path', jar 'path/2'"));
+        assertTrue(c.apply("create tempOrary function  a  as  'abc'  using jar 'path', jar 'path/2'"));
+        assertTrue(c.apply("create tempOrary system function  a  as  'abc'  using jar 'path', jar" + " 'path/2'"));
+        assertTrue(c.apply("create tempOrary system function  a  as  'abc'  using jar 'path',jar" + " 'path/2'"));
+        assertFalse(c.apply(" create tempOrary system function  a  as  'abc'  using jar 'path', jar" + " 'path/2'"));
+        assertFalse(c.apply("create tempOrary system function  a  as  abc  using jar 'path', jar" + " 'path/2'"));
     }
 
     @Test
@@ -84,12 +75,7 @@ class UDFUtilTest {
         try {
             // 运行Python3脚本的命令，换成自己的即可
             String shell =
-                    StrUtil.join(
-                            " ",
-                            Arrays.asList(
-                                    Opt.ofBlankAble(pyPath).orElse("python3"),
-                                    pyFile,
-                                    checkPyFile));
+                    StrUtil.join(" ", Arrays.asList(Opt.ofBlankAble(pyPath).orElse("python3"), pyFile, checkPyFile));
             process = Runtime.getRuntime().exec(shell);
 
             if (process.waitFor() != 0) {

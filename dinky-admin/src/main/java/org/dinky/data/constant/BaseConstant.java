@@ -28,4 +28,30 @@ public class BaseConstant {
     public static final Integer DEFAULT_BATCH_INSERT_SIZE = 1000;
 
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+
+    /** all permission. */
+    public static final String ALL_PERMISSION = "*:*:*";
+
+    public static final String NORMAL = "0";
+
+    /** 是否菜单外链（是） */
+    public static final String YES_FRAME = "0";
+
+    /** 是否菜单外链（否） */
+    public static final String NO_FRAME = "1";
+
+    /** 菜单类型（目录） */
+    public static final String TYPE_DIR = "M";
+
+    /** 菜单类型（菜单） */
+    public static final String TYPE_MENU = "C";
+
+    /** 菜单类型（按钮） */
+    public static final String TYPE_BUTTON = "F";
+
+    /** Layout组件标识 */
+    public static final String LAYOUT = "Layout";
+
+    /** admin user id */
+    public static final int ADMIN_ID = 1;
 }

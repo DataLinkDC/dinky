@@ -30,29 +30,42 @@ public class TaskWorker implements Runnable {
 
     private volatile boolean running = true;
 
-    private TaskQueue<DaemonTask> queue;
+    private final TaskQueue<DaemonTask> queue;
 
-    public TaskWorker(TaskQueue queue) {
+    public TaskWorker(TaskQueue<DaemonTask> queue) {
         this.queue = queue;
     }
 
+    /**
+     * Perform tasks.
+     * <p>
+     * This method is used to perform tasks. Continuously fetch tasks from the queue
+     * while the task is running (call the queue.dequeue() method). </p>
+     * <p>If the task is fetched, try to process the task (call the daemonTask.dealTask() method).</p>
+     * <p>If the processing task does not complete (returns False),
+     * the task is put back into the queue again (call the queue.enqueue(daemonTask) method).
+     * </p>
+     */
     @Override
     public void run() {
-        // log.info("TaskWorker run");
+        log.debug("TaskWorker run:" + Thread.currentThread().getName());
         while (running) {
             DaemonTask daemonTask = queue.dequeue();
             if (daemonTask != null) {
                 try {
-                    daemonTask.dealTask();
+                    boolean done = daemonTask.dealTask();
+                    if (!done) {
+                        queue.enqueue(daemonTask);
+                    }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                 }
             }
         }
     }
 
     public void shutdown() {
-        // log.info(Thread.currentThread().getName() + "TaskWorker shutdown");
+        log.debug(Thread.currentThread().getName() + "TaskWorker shutdown");
         running = false;
     }
 }

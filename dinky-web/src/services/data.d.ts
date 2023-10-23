@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-
-import {SaTokenInfo} from "@/types/User/data";
+import { SysMenu } from '@/types/RegCenter/data';
+import { SaTokenInfo, UserBaseInfo } from '@/types/User/data';
 
 declare namespace API {
   type Result = {
@@ -28,9 +28,10 @@ declare namespace API {
 
   type CurrentUser = {
     user: UserBaseInfo.User;
-    roleList?: UserBaseInfo.Role[];
-    tenantList?: UserBaseInfo.Tenant[];
+    roleList: UserBaseInfo.Role[];
+    tenantList: UserBaseInfo.Tenant[];
     currentTenant?: UserBaseInfo.Tenant;
+    menuList: SysMenu[];
     tokenInfo: SaTokenInfo;
   };
 
@@ -52,10 +53,6 @@ declare namespace API {
     errorMessage?: string;
     /** 业务上的请求是否成功 */
     success?: boolean;
-  };
-
-  type TenantRequest = {
-    username?: string;
   };
 }
 

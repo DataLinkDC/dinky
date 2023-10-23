@@ -21,6 +21,8 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.dto.SqlDTO;
+import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
@@ -28,16 +30,21 @@ import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
 import org.dinky.data.model.Table;
+import org.dinky.data.result.SqlExplainResult;
+import org.dinky.job.JobResult;
 import org.dinky.mapper.DataBaseMapper;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
+import org.dinky.process.annotations.ProcessStep;
+import org.dinky.process.enums.ProcessStepType;
 import org.dinky.service.DataBaseService;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,8 +58,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  * @since 2021/7/20 23:47
  */
 @Service
-public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBase>
-        implements DataBaseService {
+public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBase> implements DataBaseService {
 
     @Override
     public String testConnect(DataBase dataBase) {
@@ -64,10 +70,9 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         boolean isHealthy = false;
         dataBase.setHeartbeatTime(LocalDateTime.now());
         try {
-            isHealthy =
-                    Asserts.isEquals(
-                            CommonConstant.HEALTHY,
-                            Driver.buildUnconnected(dataBase.getDriverConfig()).test());
+            isHealthy = Asserts.isEquals(
+                    CommonConstant.HEALTHY,
+                    Driver.buildUnconnected(dataBase.getDriverConfig()).test());
             if (isHealthy) {
                 dataBase.setHealthTime(LocalDateTime.now());
             }
@@ -115,7 +120,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
      * @return
      */
     @Override
-    public Boolean enable(Integer id) {
+    public Boolean modifyDataSourceStatus(Integer id) {
         DataBase dataBase = getById(id);
         if (Asserts.isNull(dataBase)) {
             return false;
@@ -132,7 +137,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public List<Schema> getSchemasAndTables(Integer id) {
         DataBase dataBase = getById(id);
-        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
         driver.close();
@@ -142,7 +147,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public List<Column> listColumns(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
-        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Column> columns = driver.listColumns(schemaName, tableName);
         driver.close();
@@ -152,7 +157,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public String getFlinkTableSql(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
-        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Column> columns = driver.listColumns(schemaName, tableName);
         Table table = Table.build(tableName, schemaName, columns);
@@ -162,7 +167,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public String getSqlSelect(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
-        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Column> columns = driver.listColumns(schemaName, tableName);
         Table table = Table.build(tableName, schemaName, columns);
@@ -172,7 +177,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public String getSqlCreate(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
-        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Column> columns = driver.listColumns(schemaName, tableName);
         Table table = Table.build(tableName, schemaName, columns);
@@ -182,7 +187,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public JdbcSelectResult queryData(QueryData queryData) {
         DataBase dataBase = getById(queryData.getId());
-        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         StringBuilder queryOption = driver.genQueryOption(queryData);
         return driver.query(queryOption.toString(), null);
@@ -191,7 +196,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public JdbcSelectResult execSql(QueryData queryData) {
         DataBase dataBase = getById(queryData.getId());
-        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         long startTime = System.currentTimeMillis();
         JdbcSelectResult jdbcSelectResult = driver.query(queryData.getSql(), 500);
@@ -204,12 +209,11 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
-        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         Table table = driver.getTable(schemaName, tableName);
         SqlGeneration sqlGeneration = new SqlGeneration();
-        sqlGeneration.setFlinkSqlCreate(
-                table.getFlinkTableSql(dataBase.getName(), dataBase.getFlinkTemplate()));
+        sqlGeneration.setFlinkSqlCreate(table.getFlinkTableSql(dataBase.getName(), dataBase.getFlinkTemplate()));
         sqlGeneration.setSqlSelect(driver.getSqlSelect(table));
         sqlGeneration.setSqlCreate(driver.getCreateTableSql(table));
         driver.close();
@@ -237,13 +241,66 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     public Boolean copyDatabase(DataBase database) {
         String name = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
         database.setId(null);
-        database.setName(
-                (database.getName().length() > 10
-                                ? database.getName().substring(0, 10)
-                                : database.getName())
-                        + "_"
-                        + name);
+        database.setName((database.getName().length() > 10 ? database.getName().substring(0, 10) : database.getName())
+                + "_"
+                + name);
         database.setCreateTime(null);
         return this.save(database);
+    }
+
+    @Override
+    public List<SqlExplainResult> explainCommonSql(TaskDTO task) {
+        if (Asserts.isNull(task.getDatabaseId())) {
+            return Collections.singletonList(SqlExplainResult.fail(task.getStatement(), "please assign data source."));
+        }
+
+        DataBase dataBase = getById(task.getDatabaseId());
+        if (Asserts.isNull(dataBase)) {
+            return Collections.singletonList(SqlExplainResult.fail(task.getStatement(), "data source not exist."));
+        }
+
+        List<SqlExplainResult> sqlExplainResults;
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            sqlExplainResults = driver.explain(task.getStatement());
+        }
+        return sqlExplainResults;
+    }
+
+    @Override
+    @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE_COMMON_SQL)
+    public JobResult executeCommonSql(SqlDTO sqlDTO) {
+        JobResult result = new JobResult();
+        result.setStatement(sqlDTO.getStatement());
+        result.setStartTime(LocalDateTime.now());
+
+        if (Asserts.isNull(sqlDTO.getDatabaseId())) {
+            result.setSuccess(false);
+            result.setError("please assign data source");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
+
+        DataBase dataBase = getById(sqlDTO.getDatabaseId());
+        if (Asserts.isNull(dataBase)) {
+            result.setSuccess(false);
+            result.setError("data source not exist.");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
+
+        JdbcSelectResult selectResult;
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
+        }
+
+        result.setResult(selectResult);
+        if (selectResult.isSuccess()) {
+            result.setSuccess(true);
+        } else {
+            result.setSuccess(false);
+            result.setError(selectResult.getError());
+        }
+        result.setEndTime(LocalDateTime.now());
+        return result;
     }
 }

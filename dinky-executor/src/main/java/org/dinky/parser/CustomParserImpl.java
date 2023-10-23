@@ -52,12 +52,10 @@ public class CustomParserImpl implements CustomParser {
     public static Supplier<CalciteParser> getCalciteParserSupplier(Parser parser) {
         if (parser instanceof ParserImpl) {
             ParserImpl parserImpl = (ParserImpl) parser;
-            return (Supplier<CalciteParser>)
-                    ReflectUtil.getFieldValue(parserImpl, "calciteParserSupplier");
+            return (Supplier<CalciteParser>) ReflectUtil.getFieldValue(parserImpl, "calciteParserSupplier");
         } else {
-            throw new RuntimeException(
-                    "Unsupported parser type for getCalciteParserSupplier: "
-                            + parser.getClass().getName());
+            throw new RuntimeException("Unsupported parser type for getCalciteParserSupplier: "
+                    + parser.getClass().getName());
         }
     }
 
@@ -69,6 +67,7 @@ public class CustomParserImpl implements CustomParser {
         return command.map(Collections::singletonList).orElse(null);
     }
 
+    @Override
     public Parser getParser() {
         return parser;
     }

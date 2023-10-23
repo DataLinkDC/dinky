@@ -19,35 +19,9 @@
 
 package org.dinky.service;
 
-import org.dinky.data.dto.APICancelDTO;
-import org.dinky.data.dto.APIExecuteJarDTO;
-import org.dinky.data.dto.APIExecuteSqlDTO;
-import org.dinky.data.dto.APIExplainSqlDTO;
-import org.dinky.data.dto.APISavePointDTO;
-import org.dinky.data.result.APIJobResult;
-import org.dinky.data.result.ExplainResult;
-import org.dinky.gateway.result.SavePointResult;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 /**
  * APIService
  *
  * @since 2021/12/11 21:45
  */
-public interface APIService {
-
-    APIJobResult executeSql(APIExecuteSqlDTO apiExecuteSqlDTO);
-
-    ExplainResult explainSql(APIExplainSqlDTO apiExplainSqlDTO);
-
-    ObjectNode getJobPlan(APIExplainSqlDTO apiExplainSqlDTO);
-
-    ObjectNode getStreamGraph(APIExplainSqlDTO apiExplainSqlDTO);
-
-    boolean cancel(APICancelDTO apiCancelDTO);
-
-    SavePointResult savepoint(APISavePointDTO apiSavePointDTO);
-
-    APIJobResult executeJar(APIExecuteJarDTO apiExecuteJarDTO);
-}
+public interface APIService {}

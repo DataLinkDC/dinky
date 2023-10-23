@@ -17,21 +17,18 @@
  *
  */
 
-import React from "react";
-import {CheckCard} from "@ant-design/pro-components";
-import {UserBaseInfo} from "@/types/User/data";
-import {CheckGroupValueType} from "@ant-design/pro-card/es/components/CheckCard/Group";
+import { UserBaseInfo } from '@/types/AuthCenter/data';
+import { CheckGroupValueType } from '@ant-design/pro-card/es/components/CheckCard/Group';
+import { CheckCard } from '@ant-design/pro-components';
+import React from 'react';
 
 type TenantCardProps = {
   tenant: UserBaseInfo.Tenant[];
-  handleChangeTenant: (value :CheckGroupValueType) => void
-}
+  handleChangeTenant: (value: CheckGroupValueType) => void;
+};
 
 const TenantCard: React.FC<TenantCardProps> = (props) => {
-
-  const {tenant,handleChangeTenant} = props;
-
-
+  const { tenant, handleChangeTenant } = props;
 
   const chooseCard = () => {
     let cardList: any[] = [];
@@ -40,12 +37,12 @@ const TenantCard: React.FC<TenantCardProps> = (props) => {
       cardList = tenant.map((item: any) => {
         return (
           <CheckCard
-            size={"default"}
-            key={item?.id}
-            avatar="/icons/tenant_default.svg"
-            title={item?.tenantCode}
-            value={item?.id}
-            description={item?.note}
+            size={'default'}
+            key={item.id}
+            avatar='/icons/tenant_default.svg'
+            title={item.tenantCode}
+            value={item.id}
+            description={item.note}
           />
         );
       });
@@ -53,15 +50,13 @@ const TenantCard: React.FC<TenantCardProps> = (props) => {
     return cardList;
   };
 
-
-  return <>
-    <CheckCard.Group
-      multiple={false}
-      onChange={handleChangeTenant}
-    >
-      {chooseCard()}
-    </CheckCard.Group>
-  </>;
+  return (
+    <>
+      <CheckCard.Group multiple={false} onChange={handleChangeTenant}>
+        {chooseCard()}
+      </CheckCard.Group>
+    </>
+  );
 };
 
 export default TenantCard;

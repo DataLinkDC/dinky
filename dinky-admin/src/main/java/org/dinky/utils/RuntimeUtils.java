@@ -40,33 +40,30 @@ public class RuntimeUtils {
         run(shell, log::info, log::error);
     }
 
-    public static int run(
-            String shell, Consumer<String> outputConsumer, Consumer<String> errorConsumer) {
+    public static int run(String shell, Consumer<String> outputConsumer, Consumer<String> errorConsumer) {
         Process process;
         int waitValue = 1;
         try {
             process = Runtime.getRuntime().exec(shell);
             RUNNING.add(process);
-            new Thread(
-                            () -> {
-                                InputStream inputStream = process.getInputStream();
-                                InputStreamReader inputStreamReader =
-                                        new InputStreamReader(inputStream);
-                                BufferedReader reader = new BufferedReader(inputStreamReader);
+            new Thread(() -> {
+                        InputStream inputStream = process.getInputStream();
+                        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                        BufferedReader reader = new BufferedReader(inputStreamReader);
 
-                                String line;
-                                try {
-                                    while ((line = reader.readLine()) != null) {
-                                        if (outputConsumer != null) {
-                                            outputConsumer.accept(line);
-                                        }
-                                    }
-                                    reader.close();
-                                    inputStream.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                        String line;
+                        try {
+                            while ((line = reader.readLine()) != null) {
+                                if (outputConsumer != null) {
+                                    outputConsumer.accept(line);
                                 }
-                            })
+                            }
+                            reader.close();
+                            inputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    })
                     .start();
             waitValue = process.waitFor();
             RUNNING.remove(process);

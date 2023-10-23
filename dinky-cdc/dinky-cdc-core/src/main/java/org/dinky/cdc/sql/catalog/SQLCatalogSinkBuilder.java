@@ -52,20 +52,17 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
 
     @Override
     protected void initTypeConverterList() {
-        typeConverterList =
-                Lists.newArrayList(
-                        this::convertDateType,
-                        this::convertTimestampType,
-                        this::convertDecimalType,
-                        this::convertBigIntType,
-                        this::convertVarBinaryType);
+        typeConverterList = Lists.newArrayList(
+                this::convertDateType,
+                this::convertTimestampType,
+                this::convertDecimalType,
+                this::convertBigIntType,
+                this::convertVarBinaryType);
     }
 
     @Override
     public void addTableSink(
-            CustomTableEnvironment customTableEnvironment,
-            DataStream<Row> rowDataDataStream,
-            Table table) {
+            CustomTableEnvironment customTableEnvironment, DataStream<Row> rowDataDataStream, Table table) {
 
         String catalogName = config.getSink().get("catalog.name");
         String sinkSchemaName = getSinkSchemaName(table);
@@ -95,19 +92,18 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
     }
 
     @Override
-    protected String createTableName(
-            LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
-        return source.get(schemaFieldName).toString() + "." + source.get("table").toString();
+    protected String createTableName(LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
+        return source.get(schemaFieldName).toString() + "."
+                + source.get("table").toString();
     }
 
     @Override
     protected Optional<Object> convertDateType(Object value, LogicalType logicalType) {
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
-                return Optional.of(
-                        Instant.ofEpochMilli(((Integer) value).longValue())
-                                .atZone(sinkTimeZone)
-                                .toLocalDate());
+                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
+                        .atZone(sinkTimeZone)
+                        .toLocalDate());
             }
             return Optional.of(
                     Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate());
@@ -119,10 +115,9 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
     protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
         if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Optional.of(
-                        Instant.ofEpochMilli(((Integer) value).longValue())
-                                .atZone(sinkTimeZone)
-                                .toLocalDateTime());
+                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
+                        .atZone(sinkTimeZone)
+                        .toLocalDateTime());
             }
 
             if (value instanceof String) {

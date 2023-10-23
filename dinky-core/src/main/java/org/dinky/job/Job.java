@@ -21,7 +21,7 @@ package org.dinky.job;
 
 import org.dinky.data.result.IResult;
 import org.dinky.executor.Executor;
-import org.dinky.executor.ExecutorSetting;
+import org.dinky.executor.ExecutorConfig;
 import org.dinky.gateway.enums.GatewayType;
 
 import java.time.LocalDateTime;
@@ -48,7 +48,7 @@ public class Job {
     private String jobId;
     private String error;
     private IResult result;
-    private ExecutorSetting executorSetting;
+    private ExecutorConfig executorConfig;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Executor executor;
@@ -68,14 +68,14 @@ public class Job {
             GatewayType type,
             JobStatus status,
             String statement,
-            ExecutorSetting executorSetting,
+            ExecutorConfig executorConfig,
             Executor executor,
             boolean useGateway) {
         this.jobConfig = jobConfig;
         this.type = type;
         this.status = status;
         this.statement = statement;
-        this.executorSetting = executorSetting;
+        this.executorConfig = executorConfig;
         this.startTime = LocalDateTime.now();
         this.executor = executor;
         this.useGateway = useGateway;
@@ -84,18 +84,11 @@ public class Job {
     public static Job init(
             GatewayType type,
             JobConfig jobConfig,
-            ExecutorSetting executorSetting,
+            ExecutorConfig executorConfig,
             Executor executor,
             String statement,
             boolean useGateway) {
-        return new Job(
-                jobConfig,
-                type,
-                JobStatus.INITIALIZE,
-                statement,
-                executorSetting,
-                executor,
-                useGateway);
+        return new Job(jobConfig, type, JobStatus.INITIALIZE, statement, executorConfig, executor, useGateway);
     }
 
     public JobResult getJobResult() {

@@ -65,8 +65,8 @@ public interface FieldNamedPreparedStatement extends AutoCloseable {
      *     placeholders
      * @param fieldNames the field names in schema order used as the parameter names
      */
-    static FieldNamedPreparedStatement prepareStatement(
-            Connection connection, String sql, String[] fieldNames) throws SQLException {
+    static FieldNamedPreparedStatement prepareStatement(Connection connection, String sql, String[] fieldNames)
+            throws SQLException {
         return FieldNamedPreparedStatementImpl.prepareStatement(connection, sql, fieldNames);
     }
 
@@ -108,14 +108,12 @@ public interface FieldNamedPreparedStatement extends AutoCloseable {
      */
     int[] executeBatch() throws SQLException;
 
-
     /**
      * Phoenix add Batch method
      *
      * @see PreparedStatement#executeBatch()
      */
     void executeUpdate() throws SQLException;
-
 
     /**
      * Sets the designated parameter to SQL <code>NULL</code>.

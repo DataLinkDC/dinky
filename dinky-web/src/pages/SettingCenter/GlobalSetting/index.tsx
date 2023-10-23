@@ -15,13 +15,16 @@
  * limitations under the License.
  */
 
-import {PageContainer} from '@ant-design/pro-components';
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 import SettingOverView from '@/pages/SettingCenter/GlobalSetting/SettingOverView';
+import { PageContainer } from '@ant-design/pro-components';
 
 export default () => {
-  return <>
-    <PageContainer title={false}>
-      <SettingOverView/>
-    </PageContainer>
-  </>;
-}
+  return (
+    <SlowlyAppear>
+      <PageContainer title={false}>
+        <SettingOverView />
+      </PageContainer>
+    </SlowlyAppear>
+  );
+};

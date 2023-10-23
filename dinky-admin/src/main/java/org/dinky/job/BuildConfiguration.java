@@ -24,7 +24,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.JobManagerConfiguration;
 import org.dinky.data.model.TaskContainerConfigInfo;
 import org.dinky.data.model.TaskManagerConfiguration;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -42,32 +42,25 @@ public class BuildConfiguration {
         // 获取jobManager metrics
         Map<String, String> jobManagerMetricsMap = new HashMap<>(8);
         List<LinkedHashMap> jobManagerMetricsItemsList =
-                JSONUtil.toList(
-                        JSONUtil.toJsonString(flinkAPI.getJobManagerMetrics()),
-                        LinkedHashMap.class);
-        jobManagerMetricsItemsList.forEach(
-                mapItems -> {
-                    String configKey = (String) mapItems.get("id");
-                    String configValue = (String) mapItems.get("value");
-                    if (Asserts.isNotNullString(configKey)
-                            && Asserts.isNotNullString(configValue)) {
-                        jobManagerMetricsMap.put(configKey, configValue);
-                    }
-                });
+                JsonUtils.toList(JsonUtils.toJsonString(flinkAPI.getJobManagerMetrics()), LinkedHashMap.class);
+        jobManagerMetricsItemsList.forEach(mapItems -> {
+            String configKey = (String) mapItems.get("id");
+            String configValue = (String) mapItems.get("value");
+            if (Asserts.isNotNullString(configKey) && Asserts.isNotNullString(configValue)) {
+                jobManagerMetricsMap.put(configKey, configValue);
+            }
+        });
         // 获取jobManager配置信息
         Map<String, String> jobManagerConfigMap = new HashMap<>(8);
         List<LinkedHashMap> jobManagerConfigMapItemsList =
-                JSONUtil.toList(
-                        JSONUtil.toJsonString(flinkAPI.getJobManagerConfig()), LinkedHashMap.class);
-        jobManagerConfigMapItemsList.forEach(
-                mapItems -> {
-                    String configKey = (String) mapItems.get("key");
-                    String configValue = (String) mapItems.get("value");
-                    if (Asserts.isNotNullString(configKey)
-                            && Asserts.isNotNullString(configValue)) {
-                        jobManagerConfigMap.put(configKey, configValue);
-                    }
-                });
+                JsonUtils.toList(JsonUtils.toJsonString(flinkAPI.getJobManagerConfig()), LinkedHashMap.class);
+        jobManagerConfigMapItemsList.forEach(mapItems -> {
+            String configKey = (String) mapItems.get("key");
+            String configValue = (String) mapItems.get("value");
+            if (Asserts.isNotNullString(configKey) && Asserts.isNotNullString(configValue)) {
+                jobManagerConfigMap.put(configKey, configValue);
+            }
+        });
         // 获取jobManager日志
         String jobMangerLog = flinkAPI.getJobManagerLog();
         // 获取jobManager标准输出日志
@@ -99,50 +92,25 @@ public class BuildConfiguration {
                 // 获取container jmxPort
                 Integer jmxPort = taskManagers.get("jmxPort").asInt();
                 // 获取container
-                Long timeSinceLastHeartbeat = taskManagers.get("timeSinceLastHeartbeat").asLong();
+                Long timeSinceLastHeartbeat =
+                        taskManagers.get("timeSinceLastHeartbeat").asLong();
                 // timeSinceLastHeartbeat
                 // 获取container slotsNumber
                 Integer slotsNumber = taskManagers.get("slotsNumber").asInt();
                 // 获取container freeSlots
                 Integer freeSlots = taskManagers.get("freeSlots").asInt();
                 // 获取container
-                String totalResource = JSONUtil.toJsonString(taskManagers.get("totalResource"));
+                String totalResource = JsonUtils.toJsonString(taskManagers.get("totalResource"));
                 // totalResource
                 // 获取container
-                String freeResource = JSONUtil.toJsonString(taskManagers.get("freeResource"));
+                String freeResource = JsonUtils.toJsonString(taskManagers.get("freeResource"));
                 // freeResource
                 // 获取container hardware
-                String hardware = JSONUtil.toJsonString(taskManagers.get("hardware"));
+                String hardware = JsonUtils.toJsonString(taskManagers.get("hardware"));
                 // 获取container
-                String memoryConfiguration =
-                        JSONUtil.toJsonString(taskManagers.get("memoryConfiguration"));
+                String memoryConfiguration = JsonUtils.toJsonString(taskManagers.get("memoryConfiguration"));
                 // memoryConfiguration
                 Asserts.checkNull(containerId, "获取不到 containerId , containerId不能为空");
-                // 获取taskManager metrics
-                JsonNode taskManagerMetrics = flinkAPI.getTaskManagerMetrics(containerId);
-                // 获取taskManager日志
-                String taskManagerLog = flinkAPI.getTaskManagerLog(containerId);
-                // 获取taskManager线程dumps
-                String taskManagerThreadDumps =
-                        JSONUtil.toJsonString(
-                                flinkAPI.getTaskManagerThreadDump(containerId).get("threadInfos"));
-                // 获取taskManager标准输出日志
-                String taskManagerStdOut = flinkAPI.getTaskManagerStdOut(containerId);
-
-                // 获取taskManager metrics
-                Map<String, String> taskManagerMetricsMap = new HashMap<>(8);
-                List<LinkedHashMap> taskManagerMetricsItemsList =
-                        JSONUtil.toList(
-                                JSONUtil.toJsonString(taskManagerMetrics), LinkedHashMap.class);
-                taskManagerMetricsItemsList.forEach(
-                        mapItems -> {
-                            String configKey = (String) mapItems.get("id");
-                            String configValue = (String) mapItems.get("value");
-                            if (Asserts.isNotNullString(configKey)
-                                    && Asserts.isNotNullString(configValue)) {
-                                taskManagerMetricsMap.put(configKey, configValue);
-                            }
-                        });
 
                 /* TaskManagerConfiguration 赋值 */
                 taskManagerConfiguration.setContainerId(containerId);
@@ -159,10 +127,6 @@ public class BuildConfiguration {
 
                 /* TaskContainerConfigInfo 赋值 */
                 TaskContainerConfigInfo taskContainerConfigInfo = new TaskContainerConfigInfo();
-                taskContainerConfigInfo.setMetrics(taskManagerMetricsMap);
-                taskContainerConfigInfo.setTaskManagerLog(taskManagerLog);
-                taskContainerConfigInfo.setTaskManagerThreadDump(taskManagerThreadDumps);
-                taskContainerConfigInfo.setTaskManagerStdout(taskManagerStdOut);
 
                 taskManagerConfiguration.setTaskContainerConfigInfo(taskContainerConfigInfo);
 

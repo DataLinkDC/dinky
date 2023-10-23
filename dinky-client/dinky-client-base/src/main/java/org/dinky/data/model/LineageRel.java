@@ -64,10 +64,7 @@ public class LineageRel {
     }
 
     public static LineageRel build(
-            String sourceTablePath,
-            String sourceColumn,
-            String targetTablePath,
-            String targetColumn) {
+            String sourceTablePath, String sourceColumn, String targetTablePath, String targetColumn) {
         String[] sourceItems = sourceTablePath.split("\\.");
         String[] targetItems = targetTablePath.split("\\.");
 

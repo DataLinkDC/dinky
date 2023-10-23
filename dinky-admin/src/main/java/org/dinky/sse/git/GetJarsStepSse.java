@@ -52,8 +52,7 @@ public class GetJarsStepSse extends StepSse {
     public void exec() {
         List<File> jars = MavenUtil.getJars((File) params.get("pom"));
 
-        List<String> pathList =
-                jars.stream().map(File::getAbsolutePath).collect(Collectors.toList());
+        List<String> pathList = jars.stream().map(File::getAbsolutePath).collect(Collectors.toList());
         addFileMsg(pathList);
 
         params.put("jarPath", pathList);

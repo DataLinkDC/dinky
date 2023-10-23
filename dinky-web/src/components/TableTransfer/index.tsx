@@ -16,23 +16,21 @@
  *
  */
 
-
-import {TransferProps} from "antd/es/transfer";
-import {ColumnsType, TableRowSelection} from "antd/es/table/interface";
-import {Table, Transfer} from "antd";
-import {NORMAL_TABLE_OPTIONS} from "@/services/constants";
-import {difference} from "lodash";
-
+import { UserBaseInfo } from '@/types/User/data';
+import { ProColumns, ProTable } from '@ant-design/pro-components';
+import { Transfer } from 'antd';
+import { TableRowSelection } from 'antd/es/table/interface';
+import { TransferProps } from 'antd/es/transfer';
+import { difference } from 'lodash';
 
 /**
  * Customize Table Transfer Props
  */
 interface TableTransferProps extends TransferProps<any> {
   dataSource: any[];
-  leftColumns: ColumnsType<any>;
-  rightColumns: ColumnsType<any>;
+  leftColumns: ProColumns<UserBaseInfo.User>[] | ProColumns<UserBaseInfo.Role>[];
+  rightColumns: ProColumns<UserBaseInfo.User>[] | ProColumns<UserBaseInfo.Role>[];
 }
-
 
 /**
  * Customize Table Transfer
@@ -41,65 +39,76 @@ interface TableTransferProps extends TransferProps<any> {
  * @param restProps Transfer props
  * @constructor
  */
-const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferProps) => (
+const TableTransfer = ({ leftColumns, rightColumns, ...restProps }: TableTransferProps) => (
+  <Transfer showSelectAll={false} showSearch={true} {...restProps}>
+    {({
+      direction,
+      filteredItems,
+      onItemSelectAll,
+      onItemSelect,
+      selectedKeys: listSelectedKeys,
+      disabled: enableFlag
+    }) => {
+      const columns = direction === 'left' ? leftColumns : rightColumns;
+      const rowSelection: TableRowSelection<any> = {
+        getCheckboxProps: (item) => ({
+          disabled:
+            enableFlag || item.isDelete || (item.hasOwnProperty('enabled') ? !item.enabled : false)
+        }),
+        onSelectAll: (selected, selectedRows) => {
+          const treeSelectedKeys = selectedRows
+            .filter((item) => !item.isDelete || !item.enabled)
+            .map(({ id }) => id);
 
-  <Transfer
-    showSelectAll={false}
-    showSearch={true}
-    {...restProps}
-  >
-    {
-      ({
-         direction,
-         filteredItems,
-         onItemSelectAll,
-         onItemSelect,
-         selectedKeys: listSelectedKeys,
-         disabled: enableFlag,
-       }) => {
-        const columns = direction === "left" ? leftColumns : rightColumns;
-        const rowSelection: TableRowSelection<any> = {
-          getCheckboxProps: item => ({disabled: enableFlag || item.isDelete || (item.hasOwnProperty("enabled") ? !item.enabled : false)}),
-          onSelectAll: function (selected, selectedRows) {
+          const diffKeys = selected
+            ? difference(treeSelectedKeys, listSelectedKeys)
+            : difference(listSelectedKeys, treeSelectedKeys);
 
-            const treeSelectedKeys = selectedRows
-              .filter(item => !item.isDelete || !item.enabled)
-              .map(({id}) => id);
-
-            const diffKeys = selected
-              ? difference(treeSelectedKeys, listSelectedKeys as any)
-              : difference(listSelectedKeys, treeSelectedKeys as any);
-
-            onItemSelectAll(diffKeys as string[], selected);
-          },
-
-          onSelect(item, selected) {
-            onItemSelect(item.id as any, selected);
-          },
-          selectedRowKeys: listSelectedKeys,
-        };
-        return (<>
-              <Table
-                {...NORMAL_TABLE_OPTIONS}
-                size="large"
-                rowSelection={rowSelection}
-                columns={columns}
-                dataSource={filteredItems}
-                style={{
-                  height: "50vh",
-                  pointerEvents: enableFlag ? "none" : undefined
-                }}
-                onRow={(item) => ({
-                  onClick: () => {
-                    // Since the attributes in different objects are different, it is necessary to determine whether there are corresponding attributes in the item
-                    if ((item.hasOwnProperty("isDelete") ? item.isDelete : true) || (item.hasOwnProperty("enabled") ? !item.enabled : false)) return;
-                    onItemSelect(item.id as any, !listSelectedKeys.includes(item.id as any));
-                  },
-                })}
-              />
-          </>
-        );
-      }}
+          onItemSelectAll(diffKeys, selected);
+        },
+        onSelect: (item, selected) => {
+          onItemSelect(item.id, selected);
+        },
+        selectedRowKeys: listSelectedKeys
+      };
+      return (
+        <>
+          <ProTable
+            size='small'
+            ghost
+            toolBarRender={undefined}
+            rowSelection={rowSelection}
+            rowKey={(record) => record.id}
+            columns={columns}
+            search={false}
+            options={false}
+            tableAlertRender={false}
+            dataSource={filteredItems}
+            pagination={{
+              pageSize: 10,
+              showSizeChanger: false,
+              hideOnSinglePage: true
+            }}
+            style={{
+              height: '50vh',
+              overflowY: 'auto',
+              pointerEvents: enableFlag ? 'none' : undefined
+            }}
+            onRow={(item) => ({
+              onClick: () => {
+                // Since the attributes in different objects are different, it is necessary to determine whether there are corresponding attributes in the item
+                if (
+                  (item.hasOwnProperty('isDelete') ? item.isDelete : true) ||
+                  (item.hasOwnProperty('enabled') ? !item.enabled : false)
+                )
+                  return;
+                onItemSelect(item.id, !listSelectedKeys.includes(item.id));
+              }
+            })}
+          />
+        </>
+      );
+    }}
   </Transfer>
 );
 

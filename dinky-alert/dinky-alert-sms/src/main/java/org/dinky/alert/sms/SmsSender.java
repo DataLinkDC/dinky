@@ -39,7 +39,6 @@ import cn.hutool.json.JSONUtil;
 
 /** SmsSender todo: https://wind.kim/doc/start/springboot.html */
 public class SmsSender {
-
     private static final Logger logger = LoggerFactory.getLogger(SmsSender.class);
     private static SupplierConfig configLoader = null;
     private static BaseProviderFactory providerFactory = null;
@@ -50,8 +49,7 @@ public class SmsSender {
     private Integer manufacturers;
 
     SmsSender(String config) {
-        int manufacturersId =
-                Integer.parseInt(JSONUtil.parseObj(config).getStr(SmsConstants.MANU_FACTURERS));
+        int manufacturersId = Integer.parseInt(JSONUtil.parseObj(config).getStr(SmsConstants.MANU_FACTURERS));
         this.manufacturers = manufacturersId;
         requireNonNull(manufacturers, "manufacturers is null");
         configLoader = SmsConfigLoader.getConfigLoader(config, manufacturers);
@@ -95,8 +93,7 @@ public class SmsSender {
                 return SupplierType.CTYUN;
             default:
                 throw new IllegalArgumentException(
-                        "Unsupported manufacturers type: "
-                                + ManuFacturers.getManuFacturers(manufacturersType));
+                        "Unsupported manufacturers type: " + ManuFacturers.getManuFacturers(manufacturersType));
         }
     }
 }

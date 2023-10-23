@@ -71,8 +71,13 @@ public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
     private transient FieldNamedPreparedStatement statement;
     private transient Cache<RowData, List<RowData>> cache;
 
-    public JdbcRowDataLookupFunction(JdbcOptions options, JdbcLookupOptions lookupOptions, String[] fieldNames,
-                                     DataType[] fieldTypes, String[] keyNames, RowType rowType) {
+    public JdbcRowDataLookupFunction(
+            JdbcOptions options,
+            JdbcLookupOptions lookupOptions,
+            String[] fieldNames,
+            DataType[] fieldTypes,
+            String[] keyNames,
+            RowType rowType) {
         Preconditions.checkNotNull(options, "No JdbcOptions supplied.");
         Preconditions.checkNotNull(fieldNames, "No fieldNames supplied.");
         Preconditions.checkNotNull(fieldTypes, "No fieldTypes supplied.");
@@ -80,13 +85,16 @@ public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
         this.connectionProvider = new SimpleJdbcConnectionProvider(options);
         this.keyNames = keyNames;
         List<String> nameList = Arrays.asList(fieldNames);
-        this.keyTypes = (DataType[]) Arrays.stream(keyNames).map((s) -> {
-            Preconditions.checkArgument(nameList.contains(s), "keyName %s can't find in fieldNames %s.",
-                    new Object[]{s, nameList});
-            return fieldTypes[nameList.indexOf(s)];
-        }).toArray((x$0) -> {
-            return new DataType[x$0];
-        });
+        this.keyTypes = (DataType[]) Arrays.stream(keyNames)
+                .map((s) -> {
+                    Preconditions.checkArgument(
+                            nameList.contains(s), "keyName %s can't find in fieldNames %s.", new Object[] {s, nameList
+                            });
+                    return fieldTypes[nameList.indexOf(s)];
+                })
+                .toArray((x$0) -> {
+                    return new DataType[x$0];
+                });
         this.cacheMaxSize = lookupOptions.getCacheMaxSize();
         this.cacheExpireMs = lookupOptions.getCacheExpireMs();
         this.maxRetryTimes = lookupOptions.getMaxRetryTimes();
@@ -100,8 +108,8 @@ public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
             return new UnsupportedOperationException(String.format("Unknown dbUrl:%s", dbURL));
         });
         this.jdbcRowConverter = this.jdbcDialect.getRowConverter(rowType);
-        this.lookupKeyRowConverter = this.jdbcDialect.getRowConverter(
-                RowType.of((LogicalType[]) Arrays.stream(this.keyTypes).map(DataType::getLogicalType).toArray((x$0) -> {
+        this.lookupKeyRowConverter = this.jdbcDialect.getRowConverter(RowType.of((LogicalType[])
+                Arrays.stream(this.keyTypes).map(DataType::getLogicalType).toArray((x$0) -> {
                     return new LogicalType[x$0];
                 })));
     }
@@ -109,11 +117,12 @@ public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
     public void open(FunctionContext context) throws Exception {
         try {
             this.establishConnectionAndStatement();
-            this.cache =
-                    this.cacheMaxSize != -1L && this.cacheExpireMs != -1L
-                            ? CacheBuilder.newBuilder().expireAfterWrite(this.cacheExpireMs, TimeUnit.MILLISECONDS)
-                                    .maximumSize(this.cacheMaxSize).build()
-                            : null;
+            this.cache = this.cacheMaxSize != -1L && this.cacheExpireMs != -1L
+                    ? CacheBuilder.newBuilder()
+                            .expireAfterWrite(this.cacheExpireMs, TimeUnit.MILLISECONDS)
+                            .maximumSize(this.cacheMaxSize)
+                            .build()
+                    : null;
         } catch (SQLException var3) {
             throw new IllegalArgumentException("open() failed.", var3);
         } catch (ClassNotFoundException var4) {
@@ -181,7 +190,6 @@ public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
                             resultSet.close();
                         }
                     }
-
                 }
             } catch (SQLException var22) {
                 LOG.error(String.format("JDBC executeBatch error, retry times = %d", retry), var22);
@@ -209,7 +217,6 @@ public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
                 ++retry;
             }
         }
-
     }
 
     private void establishConnectionAndStatement() throws SQLException, ClassNotFoundException {

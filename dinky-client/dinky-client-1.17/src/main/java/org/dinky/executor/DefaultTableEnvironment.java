@@ -60,26 +60,22 @@ public interface DefaultTableEnvironment extends TableEnvironment, TableEnvironm
     }
 
     @Override
-    default void createFunction(
-            String path, String className, List<ResourceUri> resourceUris, boolean ignoreIfExists) {
+    default void createFunction(String path, String className, List<ResourceUri> resourceUris, boolean ignoreIfExists) {
         getTableEnvironment().createFunction(path, className, resourceUris, ignoreIfExists);
     }
 
     @Override
-    default void createTemporaryFunction(
-            String path, String className, List<ResourceUri> resourceUris) {
+    default void createTemporaryFunction(String path, String className, List<ResourceUri> resourceUris) {
         getTableEnvironment().createTemporaryFunction(path, className, resourceUris);
     }
 
     @Override
-    default void createTemporarySystemFunction(
-            String name, String className, List<ResourceUri> resourceUris) {
+    default void createTemporarySystemFunction(String name, String className, List<ResourceUri> resourceUris) {
         getTableEnvironment().createTemporarySystemFunction(name, className, resourceUris);
     }
 
     @Override
-    default String explainSql(
-            String statement, ExplainFormat format, ExplainDetail... extraDetails) {
+    default String explainSql(String statement, ExplainFormat format, ExplainDetail... extraDetails) {
         return getTableEnvironment().explainSql(statement, format, extraDetails);
     }
 
@@ -140,8 +136,7 @@ public interface DefaultTableEnvironment extends TableEnvironment, TableEnvironm
     }
 
     @Override
-    default void createTemporarySystemFunction(
-            String s, Class<? extends UserDefinedFunction> aClass) {
+    default void createTemporarySystemFunction(String s, Class<? extends UserDefinedFunction> aClass) {
         getTableEnvironment().createTemporarySystemFunction(s, aClass);
     }
 

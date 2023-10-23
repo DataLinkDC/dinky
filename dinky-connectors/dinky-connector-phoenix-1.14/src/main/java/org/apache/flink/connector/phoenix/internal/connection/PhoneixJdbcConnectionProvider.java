@@ -53,9 +53,7 @@ public class PhoneixJdbcConnectionProvider implements JdbcConnectionProvider, Se
     }
 
     public PhoneixJdbcConnectionProvider(
-            JdbcConnectionOptions jdbcOptions,
-            boolean namespaceMappingEnabled,
-            boolean mapSystemTablesEnabled) {
+            JdbcConnectionOptions jdbcOptions, boolean namespaceMappingEnabled, boolean mapSystemTablesEnabled) {
         this.jdbcOptions = jdbcOptions;
         this.namespaceMappingEnabled = namespaceMappingEnabled;
         this.mapSystemTablesEnabled = mapSystemTablesEnabled;
@@ -66,12 +64,10 @@ public class PhoneixJdbcConnectionProvider implements JdbcConnectionProvider, Se
     }
 
     public boolean isConnectionValid() throws SQLException {
-        return this.connection != null
-                && this.connection.isValid(this.jdbcOptions.getConnectionCheckTimeoutSeconds());
+        return this.connection != null && this.connection.isValid(this.jdbcOptions.getConnectionCheckTimeoutSeconds());
     }
 
-    private static Driver loadDriver(String driverName)
-            throws SQLException, ClassNotFoundException {
+    private static Driver loadDriver(String driverName) throws SQLException, ClassNotFoundException {
         Preconditions.checkNotNull(driverName);
         Enumeration drivers = DriverManager.getDrivers();
 
@@ -79,8 +75,7 @@ public class PhoneixJdbcConnectionProvider implements JdbcConnectionProvider, Se
         do {
             if (!drivers.hasMoreElements()) {
                 Class clazz =
-                        Class.forName(
-                                driverName, true, Thread.currentThread().getContextClassLoader());
+                        Class.forName(driverName, true, Thread.currentThread().getContextClassLoader());
 
                 try {
                     return (Driver) clazz.newInstance();
@@ -108,26 +103,19 @@ public class PhoneixJdbcConnectionProvider implements JdbcConnectionProvider, Se
             return this.connection;
         } else {
             if (this.jdbcOptions.getDriverName() == null) {
-                this.connection =
-                        DriverManager.getConnection(
-                                this.jdbcOptions.getDbURL(),
-                                (String) this.jdbcOptions.getUsername().orElse((String) null),
-                                (String) this.jdbcOptions.getPassword().orElse((String) null));
+                this.connection = DriverManager.getConnection(
+                        this.jdbcOptions.getDbURL(),
+                        (String) this.jdbcOptions.getUsername().orElse((String) null),
+                        (String) this.jdbcOptions.getPassword().orElse((String) null));
             } else {
                 Driver driver = this.getLoadedDriver();
                 Properties info = new Properties();
-                this.jdbcOptions
-                        .getUsername()
-                        .ifPresent(
-                                (user) -> {
-                                    info.setProperty("user", user);
-                                });
-                this.jdbcOptions
-                        .getPassword()
-                        .ifPresent(
-                                (password) -> {
-                                    info.setProperty("password", password);
-                                });
+                this.jdbcOptions.getUsername().ifPresent((user) -> {
+                    info.setProperty("user", user);
+                });
+                this.jdbcOptions.getPassword().ifPresent((password) -> {
+                    info.setProperty("password", password);
+                });
 
                 if (this.namespaceMappingEnabled && this.mapSystemTablesEnabled) {
                     info.setProperty("phoenix.schema.isNamespaceMappingEnabled", "true");
@@ -138,8 +126,7 @@ public class PhoneixJdbcConnectionProvider implements JdbcConnectionProvider, Se
 
                 this.connection.setAutoCommit(false);
                 if (this.connection == null) {
-                    throw new SQLException(
-                            "No suitable driver found for " + this.jdbcOptions.getDbURL(), "08001");
+                    throw new SQLException("No suitable driver found for " + this.jdbcOptions.getDbURL(), "08001");
                 }
             }
 

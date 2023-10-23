@@ -130,8 +130,7 @@ public final class InsertOrUpdateJdbcExecutor<R, K, V> implements JdbcBatchState
 
     @Override
     public void closeStatements() throws SQLException {
-        for (PreparedStatement s :
-                Arrays.asList(existStatement, insertStatement, updateStatement)) {
+        for (PreparedStatement s : Arrays.asList(existStatement, insertStatement, updateStatement)) {
             if (s != null) {
                 s.close();
             }

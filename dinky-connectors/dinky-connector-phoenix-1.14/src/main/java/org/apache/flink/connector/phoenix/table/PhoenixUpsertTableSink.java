@@ -59,11 +59,7 @@ public class PhoenixUpsertTableSink implements UpsertStreamTableSink<Row> {
     private boolean isAppendOnly;
 
     private PhoenixUpsertTableSink(
-            TableSchema schema,
-            JdbcOptions options,
-            int flushMaxSize,
-            long flushIntervalMills,
-            int maxRetryTime) {
+            TableSchema schema, JdbcOptions options, int flushMaxSize, long flushIntervalMills, int maxRetryTime) {
         this.schema = TableSchemaUtils.checkOnlyPhysicalColumns(schema);
         this.options = options;
         this.flushMaxSize = flushMaxSize;
@@ -71,17 +67,15 @@ public class PhoenixUpsertTableSink implements UpsertStreamTableSink<Row> {
         this.maxRetryTime = maxRetryTime;
     }
 
-    private JdbcBatchingOutputFormat<Tuple2<Boolean, Row>, Row, JdbcBatchStatementExecutor<Row>>
-            newFormat() {
+    private JdbcBatchingOutputFormat<Tuple2<Boolean, Row>, Row, JdbcBatchStatementExecutor<Row>> newFormat() {
         if (!isAppendOnly && (keyFields == null || keyFields.length == 0)) {
             throw new UnsupportedOperationException("JdbcUpsertTableSink can not support ");
         }
 
         // sql types
-        int[] jdbcSqlTypes =
-                Arrays.stream(schema.getFieldTypes())
-                        .mapToInt(JdbcTypeUtil::typeInformationToSqlType)
-                        .toArray();
+        int[] jdbcSqlTypes = Arrays.stream(schema.getFieldTypes())
+                .mapToInt(JdbcTypeUtil::typeInformationToSqlType)
+                .toArray();
 
         return JdbcBatchingOutputFormat.builder()
                 .setOptions(options)
@@ -99,17 +93,17 @@ public class PhoenixUpsertTableSink implements UpsertStreamTableSink<Row> {
 
         return dataStream
                 .addSink(new GenericJdbcSinkFunction<>(newFormat()))
-                //.addSink(new PhoenixSinkFunction(
+                // .addSink(new PhoenixSinkFunction(
                 //      options,
-                //      new PhoneixJdbcConnectionProvider(options,options.isNamespaceMappingEnabled(), options.isMapSystemTablesEnabled()),
+                //      new
+                // PhoneixJdbcConnectionProvider(options,options.isNamespaceMappingEnabled(),
+                // options.isMapSystemTablesEnabled()),
                 //      getFieldNames(),
                 //      keyFields,
                 //      jdbcSqlTypes
                 //      ))
                 .setParallelism(dataStream.getParallelism())
-                .name(
-                        TableConnectorUtils.generateRuntimeName(
-                                this.getClass(), schema.getFieldNames()));
+                .name(TableConnectorUtils.generateRuntimeName(this.getClass(), schema.getFieldNames()));
     }
 
     @Override
@@ -143,26 +137,22 @@ public class PhoenixUpsertTableSink implements UpsertStreamTableSink<Row> {
     }
 
     @Override
-    public TableSink<Tuple2<Boolean, Row>> configure(
-            String[] fieldNames, TypeInformation<?>[] fieldTypes) {
-        if (!Arrays.equals(getFieldNames(), fieldNames)
-                || !Arrays.equals(getFieldTypes(), fieldTypes)) {
-            throw new ValidationException(
-                    "Reconfiguration with different fields is not allowed. "
-                            + "Expected: "
-                            + Arrays.toString(getFieldNames())
-                            + " / "
-                            + Arrays.toString(getFieldTypes())
-                            + ". "
-                            + "But was: "
-                            + Arrays.toString(fieldNames)
-                            + " / "
-                            + Arrays.toString(fieldTypes));
+    public TableSink<Tuple2<Boolean, Row>> configure(String[] fieldNames, TypeInformation<?>[] fieldTypes) {
+        if (!Arrays.equals(getFieldNames(), fieldNames) || !Arrays.equals(getFieldTypes(), fieldTypes)) {
+            throw new ValidationException("Reconfiguration with different fields is not allowed. "
+                    + "Expected: "
+                    + Arrays.toString(getFieldNames())
+                    + " / "
+                    + Arrays.toString(getFieldTypes())
+                    + ". "
+                    + "But was: "
+                    + Arrays.toString(fieldNames)
+                    + " / "
+                    + Arrays.toString(fieldTypes));
         }
 
         PhoenixUpsertTableSink copy =
-                new PhoenixUpsertTableSink(
-                        schema, options, flushMaxSize, flushIntervalMills, maxRetryTime);
+                new PhoenixUpsertTableSink(schema, options, flushMaxSize, flushIntervalMills, maxRetryTime);
         copy.keyFields = keyFields;
         return copy;
     }
@@ -231,8 +221,7 @@ public class PhoenixUpsertTableSink implements UpsertStreamTableSink<Row> {
         public PhoenixUpsertTableSink build() {
             checkNotNull(schema, "No schema supplied.");
             checkNotNull(options, "No options supplied.");
-            return new PhoenixUpsertTableSink(
-                    schema, options, flushMaxSize, flushIntervalMills, maxRetryTimes);
+            return new PhoenixUpsertTableSink(schema, options, flushMaxSize, flushIntervalMills, maxRetryTimes);
         }
     }
 }

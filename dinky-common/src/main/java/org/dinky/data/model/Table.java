@@ -112,38 +112,26 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
 
     @Transient
     public String getFlinkDDL(String flinkConfig, String tableName) {
-        String columnStrs =
-                columns.stream()
-                        .map(
-                                column -> {
-                                    String comment = "";
-                                    if (Asserts.isNotNullString(column.getComment())) {
-                                        comment =
-                                                String.format(
-                                                        " COMMENT '%s'",
-                                                        column.getComment()
-                                                                .replaceAll("[\"']", ""));
-                                    }
-                                    return String.format(
-                                            "    `%s` %s%s",
-                                            column.getName(), column.getFlinkType(), comment);
-                                })
-                        .collect(Collectors.joining(",\n"));
+        String columnStrs = columns.stream()
+                .map(column -> {
+                    String comment = "";
+                    if (Asserts.isNotNullString(column.getComment())) {
+                        comment = String.format(
+                                " COMMENT '%s'", column.getComment().replaceAll("[\"']", ""));
+                    }
+                    return String.format("    `%s` %s%s", column.getName(), column.getFlinkType(), comment);
+                })
+                .collect(Collectors.joining(",\n"));
 
-        List<String> columnKeys =
-                columns.stream()
-                        .filter(Column::isKeyFlag)
-                        .map(Column::getName)
-                        .map(t -> String.format("`%s`", t))
-                        .collect(Collectors.toList());
+        List<String> columnKeys = columns.stream()
+                .filter(Column::isKeyFlag)
+                .map(Column::getName)
+                .map(t -> String.format("`%s`", t))
+                .collect(Collectors.toList());
 
-        String primaryKeyStr =
-                columnKeys.isEmpty()
-                        ? ""
-                        : columnKeys.stream()
-                                .collect(
-                                        Collectors.joining(
-                                                ",", ",\n    PRIMARY KEY ( ", " ) NOT ENFORCED\n"));
+        String primaryKeyStr = columnKeys.isEmpty()
+                ? ""
+                : columnKeys.stream().collect(Collectors.joining(",", ",\n    PRIMARY KEY ( ", " ) NOT ENFORCED\n"));
 
         return MessageFormat.format(
                 "CREATE TABLE IF NOT EXISTS {0} (\n{1}{2}) WITH (\n{3})\n",

@@ -197,7 +197,9 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
             preparedStatement = conn.get().prepareStatement(createTableSql);
             results = preparedStatement.executeQuery();
             while (results.next()) {
-                createTable.append(results.getString(getDBQuery().createTableName())).append("\n");
+                createTable
+                        .append(results.getString(getDBQuery().createTableName()))
+                        .append("\n");
             }
         } catch (Exception e) {
             e.printStackTrace();

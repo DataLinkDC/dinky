@@ -47,7 +47,8 @@ public class JdbcInsertOptions extends JdbcTypedQueryOptions {
         if (next == null || next.length == 0) {
             return new int[] {first};
         } else {
-            return IntStream.concat(IntStream.of(new int[] {first}), IntStream.of(next)).toArray();
+            return IntStream.concat(IntStream.of(new int[] {first}), IntStream.of(next))
+                    .toArray();
         }
     }
 }

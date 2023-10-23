@@ -15,16 +15,10 @@
  * limitations under the License.
  */
 
-
-
 export enum JOB_LIFE_CYCLE {
   UNKNOWN = 0,
-  CREATE = 1,
-  DEVELOP = 2,
-  DEBUG = 3,
-  RELEASE = 4,
-  ONLINE = 5,
-  CANCEL = 6,
+  DEVELOP = 1,
+  ONLINE = 2
 }
 
 export enum JOB_STATUS {
@@ -38,5 +32,17 @@ export enum JOB_STATUS {
   FAILING = 'FAILING',
   SUSPENDED = 'SUSPENDED',
   CANCELLING = 'CANCELLING',
-  UNKNOWN = 'UNKNOWN',
+  RECONNECTING = 'RECONNECTING',
+  UNKNOWN = 'UNKNOWN'
 }
+
+export enum BackPressureStatus {
+  OK = 'ok',
+  HIGH = 'high'
+}
+
+export const SSE_TOPIC = {
+  METRICS: '/TOPIC/METRICS',
+  PROCESS_CONSOLE: '/TOPIC/PROCESS_CONSOLE',
+  PRINT_TABLE: '/TOPIC/PRINT_TABLE'
+};

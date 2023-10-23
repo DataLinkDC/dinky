@@ -58,19 +58,12 @@ public class MavenStepSse extends StepSse {
     @Override
     public void exec() {
         GitProject gitProject = (GitProject) params.get("gitProject");
-        File pom =
-                FileUtil.file(
-                        GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch());
+        File pom = FileUtil.file(GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch());
 
-        File buildDir =
-                FileUtil.mkdir(
-                        new File(
-                                GitRepository.getProjectBuildDir(gitProject.getName()),
-                                gitProject.getBranch()));
+        File buildDir = FileUtil.mkdir(
+                new File(GitRepository.getProjectBuildDir(gitProject.getName()), gitProject.getBranch()));
 
-        Arrays.stream(
-                        Objects.requireNonNull(
-                                pom.listFiles(pathname -> !".git".equals(pathname.getName()))))
+        Arrays.stream(Objects.requireNonNull(pom.listFiles(pathname -> !".git".equals(pathname.getName()))))
                 .forEach(f -> FileUtil.copy(f, buildDir, true));
         pom = buildDir;
         if (StrUtil.isNotBlank(gitProject.getPom())) {
@@ -79,16 +72,15 @@ public class MavenStepSse extends StepSse {
 
         Assert.isTrue(pom.exists(), "pom not exists!");
 
-        boolean state =
-                MavenUtil.build(
-                        MavenUtil.getMavenSettingsPath(),
-                        pom.getAbsolutePath(),
-                        null,
-                        null,
-                        getLogFile().getAbsolutePath(),
-                        CollUtil.newArrayList("clean", "package"),
-                        StrUtil.split(gitProject.getBuildArgs(), " "),
-                        this::addFileMsgLog);
+        boolean state = MavenUtil.build(
+                MavenUtil.getMavenSettingsPath(),
+                pom.getAbsolutePath(),
+                null,
+                null,
+                getLogFile().getAbsolutePath(),
+                CollUtil.newArrayList("clean", "package"),
+                StrUtil.split(gitProject.getBuildArgs(), " "),
+                this::addFileMsgLog);
         params.put("pom", pom);
         Assert.isTrue(state, "maven build failed");
     }

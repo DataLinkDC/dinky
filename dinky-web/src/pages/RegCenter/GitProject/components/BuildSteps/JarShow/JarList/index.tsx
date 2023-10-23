@@ -17,14 +17,14 @@
  *
  */
 
-import {ActionType, DragSortTable, ProColumns} from "@ant-design/pro-table";
-import {List, Tag} from "antd";
-import React, {useEffect, useRef, useState} from "react";
-import {BuildJarList} from "@/types/RegCenter/data";
-import {l} from "@/utils/intl";
-import {ProList} from "@ant-design/pro-components";
-import {handleOption} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/constants";
+import { handleOption } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { BuildJarList } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { ProList } from '@ant-design/pro-components';
+import { ActionType, DragSortTable, ProColumns } from '@ant-design/pro-table';
+import { List, Tag } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * props
@@ -32,48 +32,50 @@ import {API_CONSTANTS} from "@/services/constants";
 type JarListProps = {
   projectId: number;
   jarAndClassesList: Partial<BuildJarList[]>;
-}
-
+};
 
 const JarList: React.FC<JarListProps> = (props) => {
-
   /**
    * state
    */
-  const {jarAndClassesList,projectId} = props;
+  const { jarAndClassesList, projectId } = props;
   const actionRef = useRef<ActionType>();
-  const [loading,setLoading] = useState(false)
-  const [classes ,setClasses] = useState<Partial<BuildJarList[]>>()
+  const [loading, setLoading] = useState(false);
+  const [classes, setClasses] = useState<Partial<BuildJarList[]>>();
 
   /**
    * init
    */
-  useEffect(()=>{
-    setClasses(jarAndClassesList)
-  },[jarAndClassesList])
+  useEffect(() => {
+    setClasses(jarAndClassesList);
+  }, [jarAndClassesList]);
 
   /**
    * columns
-   * @type {({copyable: boolean, dataIndex: string, tooltip: any, title: any, render: (dom: any, record: BuildJarList) => JSX.Element} | {dataIndex: string, valueType: string} | {copyable: boolean, dataIndex: string, title: any})[]}
    */
   const columns: ProColumns<BuildJarList>[] = [
     {
-      title: l("rc.gp.level"),
-      dataIndex: "orderLine",
-      tooltip: l("rc.gp.ucl.orderLine.tooltip"),
+      title: l('rc.gp.level'),
+      dataIndex: 'orderLine',
+      tooltip: l('rc.gp.ucl.orderLine.tooltip'),
       copyable: true,
-      render: (dom:any, record:BuildJarList) => {
-        return <Tag style={{marginLeft: 10}}  color={record.orderLine> 3 ? 'default': 'success'} >{`No.${record.orderLine}`}</Tag>
+      render: (dom: any, record: BuildJarList) => {
+        return (
+          <Tag
+            style={{ marginLeft: 10 }}
+            color={record.orderLine > 3 ? 'default' : 'success'}
+          >{`No.${record.orderLine}`}</Tag>
+        );
       }
     },
     {
-      dataIndex: "index",
-      valueType: "indexBorder",
+      dataIndex: 'index',
+      valueType: 'indexBorder'
     },
     {
-      title: l("rc.gp.ucl.jarPath"),
-      dataIndex: "jarPath",
-      copyable: true,
+      title: l('rc.gp.ucl.jarPath'),
+      dataIndex: 'jarPath',
+      copyable: true
     }
   ];
 
@@ -82,44 +84,56 @@ const JarList: React.FC<JarListProps> = (props) => {
    * @param {BuildJarList} record
    * @returns {JSX.Element}
    */
-  const renderUdf = (record: BuildJarList) => {
-    return <>
-      <ProList
-          dataSource={record.classList as any[]}
-          rowKey="index"
-          size={"small"}
-          pagination={{
-            pageSize: 5,
-            hideOnSinglePage: true,
-            showSizeChanger: false,
-          }}
-          renderItem={(item,index) => {
-            return <List.Item className={'child-list'} key={index}>{item}</List.Item>;
-          }}
-      />
-    </>;
-  }
+  const renderUdf = (record: BuildJarList): JSX.Element => (
+    <ProList
+      dataSource={record.classList as any[]}
+      rowKey='index'
+      size={'small'}
+      pagination={{
+        pageSize: 5,
+        hideOnSinglePage: true,
+        showSizeChanger: false
+      }}
+      renderItem={(item, index) => {
+        return (
+          <List.Item className={'child-list'} key={index}>
+            {item}
+          </List.Item>
+        );
+      }}
+    />
+  );
 
   /**
    * drag sort call
    * @param {BuildJarList[]} newDataSource
    * @returns {Promise<void>}
    */
-  const handleDragSortEnd = async (newDataSource: BuildJarList[]) => {
-    setLoading(true)
-    const updatedItems = newDataSource.map((item:BuildJarList, index:number) => ({...item, orderLine: index + 1,}));
-    await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_JAR,l('rc.gp.ucl.jarOrder'),{projectId, jars: updatedItems})
-    setClasses(updatedItems)
-    setLoading(false)
+  const handleDragSortEnd = async (newDataSource: BuildJarList[]): Promise<void> => {
+    setLoading(true);
+    const updatedItems = newDataSource.map((item: BuildJarList, index: number) => ({
+      ...item,
+      orderLine: index + 1
+    }));
+    await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_JAR, l('rc.gp.ucl.jarOrder'), {
+      projectId,
+      jars: updatedItems
+    });
+    setClasses(updatedItems);
+    setLoading(false);
     actionRef.current?.reload();
   };
 
   /**
    * render
    */
-  return <>
+  return (
     <DragSortTable<BuildJarList>
-      style={{ overflowY: "auto", msOverflowY: "hidden",marginLeft: "0.5vw" }}
+      style={{
+        overflowY: 'auto',
+        msOverflowY: 'hidden',
+        marginLeft: '0.5vw'
+      }}
       columns={columns}
       toolBarRender={false}
       sortDirections={['ascend']}
@@ -128,17 +142,20 @@ const JarList: React.FC<JarListProps> = (props) => {
       loading={loading}
       dataSource={classes as BuildJarList[]}
       search={false}
-      rowKey="orderLine"
+      rowKey='orderLine'
       revalidateOnFocus
       pagination={{
         defaultPageSize: 5,
-        hideOnSinglePage: true,
+        hideOnSinglePage: true
       }}
-      expandable={{expandRowByClick: false, expandedRowRender: record => renderUdf(record)}}
-      dragSortKey={"orderLine"}
+      expandable={{
+        expandRowByClick: false,
+        expandedRowRender: (record) => renderUdf(record)
+      }}
+      dragSortKey={'orderLine'}
       onDragSortEnd={handleDragSortEnd}
     />
-  </>;
+  );
 };
 
 export default JarList;

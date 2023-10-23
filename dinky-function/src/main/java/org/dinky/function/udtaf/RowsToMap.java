@@ -48,29 +48,21 @@ public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K
     @Override
     public TypeInference getTypeInference(DataTypeFactory typeFactory) {
         return TypeInference.newBuilder()
-                .inputTypeStrategy(
-                        InputTypeStrategies.sequence(
-                                InputTypeStrategies.ANY, InputTypeStrategies.ANY))
-                .accumulatorTypeStrategy(
-                        callContext -> {
-                            List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
-                            final DataType arg0DataType = argumentDataTypes.get(0);
-                            final DataType arg1DataType = argumentDataTypes.get(1);
-                            final DataType accDataType =
-                                    DataTypes.STRUCTURED(
-                                            MyAccum.class,
-                                            DataTypes.FIELD(
-                                                    "mapView",
-                                                    DataTypes.MAP(arg0DataType, arg1DataType)));
-                            return Optional.of(accDataType);
-                        })
-                .outputTypeStrategy(
-                        callContext -> {
-                            List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
-                            final DataType arg0DataType = argumentDataTypes.get(0);
-                            final DataType arg1DataType = argumentDataTypes.get(1);
-                            return Optional.of(DataTypes.MAP(arg0DataType, arg1DataType));
-                        })
+                .inputTypeStrategy(InputTypeStrategies.sequence(InputTypeStrategies.ANY, InputTypeStrategies.ANY))
+                .accumulatorTypeStrategy(callContext -> {
+                    List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
+                    final DataType arg0DataType = argumentDataTypes.get(0);
+                    final DataType arg1DataType = argumentDataTypes.get(1);
+                    final DataType accDataType = DataTypes.STRUCTURED(
+                            MyAccum.class, DataTypes.FIELD("mapView", DataTypes.MAP(arg0DataType, arg1DataType)));
+                    return Optional.of(accDataType);
+                })
+                .outputTypeStrategy(callContext -> {
+                    List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
+                    final DataType arg0DataType = argumentDataTypes.get(0);
+                    final DataType arg1DataType = argumentDataTypes.get(1);
+                    return Optional.of(DataTypes.MAP(arg0DataType, arg1DataType));
+                })
                 .build();
     }
 

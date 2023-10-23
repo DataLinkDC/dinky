@@ -15,17 +15,19 @@
  * limitations under the License.
  */
 
-import {PageContainer} from "@ant-design/pro-components";
-import DataSourceTable from "@/pages/RegCenter/DataSource/components/DataSourceList";
-import Pop from "@/components/Animation/Pop";
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import DataSourceTable from '@/pages/RegCenter/DataSource/components/DataSourceList';
+import { PageContainer } from '@ant-design/pro-components';
 
 /**
  * render DataSource page
  */
 export default () => {
-  return <Pop>
-    <PageContainer title={false}>
-      <DataSourceTable/>
-    </PageContainer>
-  </Pop>;
-}
+  return (
+    <SlowlyAppear>
+      <PageContainer title={false}>
+        <DataSourceTable />
+      </PageContainer>
+    </SlowlyAppear>
+  );
+};

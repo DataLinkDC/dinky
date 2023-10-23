@@ -18,18 +18,12 @@
  */
 
 export type FormConfig = {
-    name: string,
-    label: string,
-    placeholder: string
-    tooltip?: string
-    defaultValue?: string
-    help?: string
-    showOnSubmitType?: string
-    showType?: string
-}
-
-
-export type ConfigItem = {
-    name: string,
-    value: string,
+  name: string;
+  label: string;
+  placeholder: string;
+  tooltip?: string;
+  defaultValue?: string;
+  help?: string;
+  showOnSubmitType?: string;
+  showType?: string;
 };

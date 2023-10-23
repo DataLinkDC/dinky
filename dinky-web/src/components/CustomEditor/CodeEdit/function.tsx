@@ -15,13 +15,10 @@
  * limitations under the License.
  */
 
+import { Column, ISuggestions, MetaData } from '@/components/CustomEditor/CodeEdit/data';
+import { Document, GlobalVar } from '@/types/RegCenter/data.d';
 import * as monaco from 'monaco-editor';
-import keyWordJsonData from "./keyword.json";
-import {Document, GlobalVar} from "@/types/RegCenter/data.d";
-import {Column, ISuggestions, MetaData} from "@/components/CustomEditor/CodeEdit/data";
-
-
-
+import keyWordJsonData from './keyword.json';
 
 // todo: get sqlMetaData from interface
 const buildMetaDataSuggestions = () => {
@@ -33,7 +30,7 @@ const buildMetaDataSuggestions = () => {
       kind: monaco.languages.CompletionItemKind.Constant,
       insertText: item.table,
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      detail: "FlinkSQL Connector => " + item.connector
+      detail: 'FlinkSQL Connector => ' + item.connector
     });
     item.columns.forEach((column: Column) => {
       metaDataSuggestions.push({
@@ -41,7 +38,7 @@ const buildMetaDataSuggestions = () => {
         kind: monaco.languages.CompletionItemKind.Field,
         insertText: column.name,
         insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        detail: "Column => " + column.type + " from " + item.table
+        detail: 'Column => ' + column.type + ' from ' + item.table
       });
     });
   });
@@ -95,7 +92,6 @@ const buildKeyWordJsonSuggestions = () => {
   return keyWordJsonSuggestions;
 };
 
-
 // todo: get globalVariable from interface
 const buildGlobalVariableSuggestions = () => {
   let globalVariableSuggestions: ISuggestions[] = [];
@@ -109,9 +105,8 @@ const buildGlobalVariableSuggestions = () => {
       detail: item.note
     });
   });
-  return globalVariableSuggestions
+  return globalVariableSuggestions;
 };
-
 
 /**
  * build all suggestions

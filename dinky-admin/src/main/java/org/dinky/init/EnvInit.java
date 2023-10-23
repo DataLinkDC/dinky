@@ -47,8 +47,8 @@ public class EnvInit implements ApplicationRunner {
                         + "Application 'Dinky' is running! Access URLs:\n\t"
                         + "Local: \t\thttp://localhost:{}\n\t"
                         + "External: \thttp://{}:{}\n\t"
-                        + "Doc: \thttp://{}:{}/doc.html\n"
-                        + "Druid Monitor: \thttp://{}:{}/druid/index.html\n"
+                        + "Doc: \thttp://{}:{}/doc.html\n\t"
+                        + "Druid Monitor: \thttp://{}:{}/druid/index.html\n\t"
                         + "Actuator: \thttp://{}:{}/actuator\n"
                         + "----------------------------------------------------------",
                 port,

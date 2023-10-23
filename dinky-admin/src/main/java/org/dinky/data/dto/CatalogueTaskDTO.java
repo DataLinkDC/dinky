@@ -19,9 +19,10 @@
 
 package org.dinky.data.dto;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.dinky.data.model.TaskExtConfig;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,15 +33,51 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "CatalogueTaskDTO", description = "DTO for cataloging tasks")
 public class CatalogueTaskDTO {
 
+    @ApiModelProperty(value = "Task ID", dataType = "Integer", example = "1", notes = "The ID of the task")
     private Integer id;
+
+    @ApiModelProperty(value = "Tenant ID", dataType = "Integer", example = "1", notes = "The ID of the tenant")
     private Integer tenantId;
+
+    @ApiModelProperty(value = "Parent ID", dataType = "Integer", example = "2", notes = "The ID of the parent task")
     private Integer parentId;
+
+    @ApiModelProperty(value = "Task ID", dataType = "Integer", example = "3", notes = "The ID of the associated task")
     private Integer taskId;
+
+    @ApiModelProperty(
+            value = "Is Leaf",
+            dataType = "boolean",
+            example = "true",
+            notes = "Specifies whether the task is a leaf node")
     private boolean isLeaf;
+
+    @ApiModelProperty(value = "Name", dataType = "String", example = "Task 1", notes = "The name of the task")
     private String name;
+
+    @ApiModelProperty(value = "Type", dataType = "String", example = "SQL", notes = "The type of the task")
     private String type;
+
+    @ApiModelProperty(
+            value = "Dialect",
+            dataType = "String",
+            example = "MySQL",
+            notes = "The SQL dialect used by the task")
     private String dialect;
-    private Map<String, String> config = new HashMap<>();
+
+    @ApiModelProperty(
+            value = "Note",
+            dataType = "String",
+            example = "This is a sample task",
+            notes = "Additional notes about the task")
+    private String note;
+
+    @ApiModelProperty(
+            value = "Task Configuration JSON",
+            dataType = "TaskExtConfig",
+            notes = "The task's extended configuration in JSON format")
+    private TaskExtConfig configJson;
 }

@@ -51,24 +51,22 @@ public class Operations {
      */
     private static Operation[] getAllOperations() {
         Reflections reflections = new Reflections(Operation.class.getPackage().getName());
-        Set<Class<?>> operations = reflections.get(Scanners.SubTypes.of(Operation.class).asClass());
+        Set<Class<?>> operations =
+                reflections.get(Scanners.SubTypes.of(Operation.class).asClass());
 
         return operations.stream()
                 .filter(t -> !t.isInterface())
-                .map(
-                        t -> {
-                            try {
-                                return (Operation) t.getConstructor().newInstance();
-                            } catch (InstantiationException
-                                    | IllegalAccessException
-                                    | InvocationTargetException
-                                    | NoSuchMethodException e) {
-                                log.error(
-                                        String.format(
-                                                "getAllOperations error, class %s, err: %s", t, e));
-                                throw new RuntimeException(e);
-                            }
-                        })
+                .map(t -> {
+                    try {
+                        return (Operation) t.getConstructor().newInstance();
+                    } catch (InstantiationException
+                            | IllegalAccessException
+                            | InvocationTargetException
+                            | NoSuchMethodException e) {
+                        log.error(String.format("getAllOperations error, class %s, err: %s", t, e));
+                        throw new RuntimeException(e);
+                    }
+                })
                 .toArray(Operation[]::new);
     }
 

@@ -94,25 +94,18 @@ public abstract class StepSse {
 
     public synchronized void sendMsg(Object msg) {
         List<SseEmitter> loseLise = new ArrayList<>();
-        Opt.ofEmptyAble(CollUtil.removeNull(emitterList))
-                .ifPresent(
-                        x -> {
-                            x.forEach(
-                                    emitter -> {
-                                        try {
-                                            emitter.send(
-                                                    SseEmitter.event()
-                                                            .id(
-                                                                    String.valueOf(
-                                                                            msgId
-                                                                                    .getAndIncrement()))
-                                                            .data(msg));
-                                        } catch (IllegalStateException | IOException e) {
-                                            loseLise.add(emitter);
-                                        }
-                                    });
-                            emitterList.removeAll(loseLise);
-                        });
+        Opt.ofEmptyAble(CollUtil.removeNull(emitterList)).ifPresent(x -> {
+            x.forEach(emitter -> {
+                try {
+                    emitter.send(SseEmitter.event()
+                            .id(String.valueOf(msgId.getAndIncrement()))
+                            .data(msg));
+                } catch (IllegalStateException | IOException e) {
+                    loseLise.add(emitter);
+                }
+            });
+            emitterList.removeAll(loseLise);
+        });
     }
 
     public synchronized void addFileMsg(Object msg) {
@@ -157,13 +150,12 @@ public abstract class StepSse {
         FileUtil.del(getLogFile());
         FileUtil.touch(getLogFile());
 
-        cachedThreadPool.execute(
-                () -> {
-                    while (status == 1) {
-                        ThreadUtil.sleep(sleep);
-                        send();
-                    }
-                });
+        cachedThreadPool.execute(() -> {
+            while (status == 1) {
+                ThreadUtil.sleep(sleep);
+                send();
+            }
+        });
         try {
             addFileMsgCusLog("step " + getStep() + ": " + name + " start");
             exec();
@@ -177,8 +169,7 @@ public abstract class StepSse {
 
     public void setFinish(boolean status) {
         this.status = status ? 2 : 0;
-        addFileMsgCusLog(
-                "step " + getStep() + ": " + name + " " + (status ? "finished" : "failed"));
+        addFileMsgCusLog("step " + getStep() + ": " + name + " " + (status ? "finished" : "failed"));
 
         sendSync();
         sendMsg(getEndLog());
@@ -206,15 +197,13 @@ public abstract class StepSse {
     }
 
     private void close() {
-        CollUtil.removeNull(emitterList)
-                .forEach(
-                        emitter -> {
-                            try {
-                                emitter.complete();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
+        CollUtil.removeNull(emitterList).forEach(emitter -> {
+            try {
+                emitter.complete();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         // Manual GC is required here to release file IO(此处需要手动GC，释放文件IO)
         GitProject gitProject = (GitProject) params.get("gitProject");
 
@@ -244,8 +233,7 @@ public abstract class StepSse {
         //
         //        }
 
-        Object dataResult =
-                (data instanceof List) ? StrUtil.join("\n", data) : JSONUtil.toJsonStr(data);
+        Object dataResult = (data instanceof List) ? StrUtil.join("\n", data) : JSONUtil.toJsonStr(data);
         return Dict.create()
                 .set("type", 1)
                 .set("currentStep", getStep())
@@ -277,12 +265,11 @@ public abstract class StepSse {
     public void getStatus(int step, int status, List<Dict> data) {
         Dict result = new Dict().set("step", getStep()).set("name", name).set("status", -1);
         if (getStep() <= step) {
-            Instant instant =
-                    FileUtil.getAttributes(getLogFile().toPath(), true).creationTime().toInstant();
+            Instant instant = FileUtil.getAttributes(getLogFile().toPath(), true)
+                    .creationTime()
+                    .toInstant();
 
-            result.set(
-                            "startTime",
-                            new DateTime(instant).toString(DatePattern.NORM_DATETIME_PATTERN))
+            result.set("startTime", new DateTime(instant).toString(DatePattern.NORM_DATETIME_PATTERN))
                     .set("status", getStep() < step ? 2 : status);
         } else {
             result.set("startTime", null);

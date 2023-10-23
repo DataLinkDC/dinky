@@ -51,8 +51,7 @@ public class JdbcOptions extends JdbcConnectionOptions {
             Integer parallelism,
             int connectionCheckTimeoutSeconds,
             boolean namespaceMappingEnabled,
-            boolean mapSystemTablesEnabled
-    ) {
+            boolean mapSystemTablesEnabled) {
         super(dbURL, driverName, username, password, connectionCheckTimeoutSeconds);
         this.tableName = tableName;
         this.dialect = dialect;
@@ -110,14 +109,12 @@ public class JdbcOptions extends JdbcConnectionOptions {
                     && Objects.equals(username, options.username)
                     && Objects.equals(password, options.password)
                     && Objects.equals(
-                            dialect.getClass().getName(), options.dialect.getClass().getName())
+                            dialect.getClass().getName(),
+                            options.dialect.getClass().getName())
                     && Objects.equals(parallelism, options.parallelism)
-                    && Objects.equals(
-                            connectionCheckTimeoutSeconds, options.connectionCheckTimeoutSeconds)
-                    && Objects.equals(
-                    namespaceMappingEnabled, options.namespaceMappingEnabled)
-                    && Objects.equals(
-                    mapSystemTablesEnabled, options.mapSystemTablesEnabled);
+                    && Objects.equals(connectionCheckTimeoutSeconds, options.connectionCheckTimeoutSeconds)
+                    && Objects.equals(namespaceMappingEnabled, options.namespaceMappingEnabled)
+                    && Objects.equals(mapSystemTablesEnabled, options.mapSystemTablesEnabled);
         } else {
             return false;
         }
@@ -135,8 +132,7 @@ public class JdbcOptions extends JdbcConnectionOptions {
                 parallelism,
                 connectionCheckTimeoutSeconds,
                 namespaceMappingEnabled,
-                mapSystemTablesEnabled
-                );
+                mapSystemTablesEnabled);
     }
 
     /** Builder of {@link JdbcOptions}. */
@@ -220,20 +216,15 @@ public class JdbcOptions extends JdbcConnectionOptions {
             checkNotNull(tableName, "No tableName supplied.");
             if (this.dialect == null) {
                 Optional<JdbcDialect> optional = JdbcDialects.get(dbURL);
-                this.dialect =
-                        optional.orElseGet(
-                                () -> {
-                                    throw new NullPointerException(
-                                            "Unknown dbURL,can not find proper dialect.");
-                                });
+                this.dialect = optional.orElseGet(() -> {
+                    throw new NullPointerException("Unknown dbURL,can not find proper dialect.");
+                });
             }
             if (this.driverName == null) {
                 Optional<String> optional = dialect.defaultDriverName();
-                this.driverName =
-                        optional.orElseGet(
-                                () -> {
-                                    throw new NullPointerException("No driverName supplied.");
-                                });
+                this.driverName = optional.orElseGet(() -> {
+                    throw new NullPointerException("No driverName supplied.");
+                });
             }
 
             return new JdbcOptions(

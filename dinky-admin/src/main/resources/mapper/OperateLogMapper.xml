@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dinky.mapper.OperateLogMapper">
+
+    <select id="selectForProTable" resultType="org.dinky.data.model.OperateLog">
+        select
+        a.*
+        from
+        dinky_sys_operate_log a
+        <where>
+            1=1
+            <if test='param.userId!=null and param.userId!=""'>
+                and a.operate_user_id = #{param.userId}
+            </if>
+            <if test='param.moduleName!=null and param.moduleName!=""'>
+                and a.module_name like "%${param.name}%"
+            </if>
+            <if test='param.method!=null and param.method!=""'>
+                and a.method like "%${param.name}%"
+            </if>
+<!--            <if test='param.operateTime!=null and param.operateTime!=""'>-->
+<!--                and a.operate_time <![CDATA[>=]]> str_to_date( #{operateTime},'%Y-%m-%d %H:%i:%s')-->
+<!--            </if>-->
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!="" and !ew.sqlSegment.startsWith(" ORDER BY")'>
+                and
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!=""'>
+                ${ew.sqlSegment}
+            </if>
+        </where>
+    </select>
+</mapper>

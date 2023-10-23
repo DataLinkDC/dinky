@@ -51,8 +51,7 @@ public class DirUtil {
             throw new BusException(StrUtil.format("Directory path {} does not exist.", path));
         }
         for (File file : files) {
-            FileNode fileNode =
-                    new FileNode(file.getName(), file.isDirectory(), 0, file.getAbsolutePath());
+            FileNode fileNode = new FileNode(file.getName(), file.isDirectory(), 0, file.getAbsolutePath());
             if (!fileNode.isDir()) {
                 fileNode.setSize(file.length());
             }
@@ -68,8 +67,7 @@ public class DirUtil {
             throw new BusException(StrUtil.format("File path {} is not a file.", path));
         }
         try (InputStreamReader inputStreamReader =
-                        new InputStreamReader(
-                                Files.newInputStream(file.toPath()), StandardCharsets.UTF_8);
+                        new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
             String content;
             while ((content = bufferedReader.readLine()) != null) {

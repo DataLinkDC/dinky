@@ -41,9 +41,7 @@ public class TreeUtil {
         List<TreeNodeDTO> nodes = new ArrayList<>();
         if (dir.exists() && dir.isDirectory()) {
 
-            TreeNodeDTO rootNode =
-                    new TreeNodeDTO(
-                            dir.getName(), dir.getAbsolutePath(), true, new ArrayList<>(), 0L);
+            TreeNodeDTO rootNode = new TreeNodeDTO(dir.getName(), dir.getAbsolutePath(), true, new ArrayList<>(), 0L);
             buildTree(dir, rootNode, readContent);
             nodes.add(rootNode);
         }
@@ -62,13 +60,12 @@ public class TreeUtil {
             File[] children = file.listFiles();
             if (children != null) {
                 for (File child : children) {
-                    TreeNodeDTO childNode =
-                            new TreeNodeDTO(
-                                    child.getName(),
-                                    child.getAbsolutePath(),
-                                    child.isDirectory(),
-                                    new ArrayList<>(),
-                                    child.length());
+                    TreeNodeDTO childNode = new TreeNodeDTO(
+                            child.getName(),
+                            child.getAbsolutePath(),
+                            child.isDirectory(),
+                            new ArrayList<>(),
+                            child.length());
                     parentNode.getChildren().add(childNode);
                     buildTree(child, childNode, readContent);
                 }

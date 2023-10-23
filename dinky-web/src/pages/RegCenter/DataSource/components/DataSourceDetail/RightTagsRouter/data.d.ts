@@ -21,17 +21,17 @@ export type QueryData = {
   tableName: string;
   sql: string;
   option: Option;
-}
+};
 
 export type Option = {
   where: string;
   order: string;
   limitStart: string;
   limitEnd: string;
-}
+};
 
 export type QueryParams = {
   id: number;
   schemaName: string;
   tableName: string;
-}
+};

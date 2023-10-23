@@ -19,9 +19,10 @@
 
 package org.dinky.configure.schedule.metrics;
 
-import org.dinky.configure.MetricConfig;
 import org.dinky.configure.schedule.BaseSchedule;
+import org.dinky.context.MetricsContextHolder;
 import org.dinky.data.annotation.GaugeM;
+import org.dinky.data.enums.MetricsType;
 import org.dinky.data.metrics.BaseMetrics;
 import org.dinky.data.metrics.Cpu;
 import org.dinky.data.metrics.Jvm;
@@ -42,7 +43,6 @@ import org.springframework.stereotype.Component;
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.json.JSONUtil;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
@@ -65,21 +65,19 @@ public class GatherSysIndicator extends BaseSchedule {
                 SystemConfiguration.getInstances().getMetricsSysEnable();
         String key = metricsSysEnable.getKey();
 
-        metricsSysEnable.addChangeEvent(
-                x -> {
-                    if (x) {
-                        addSchedule(
-                                key,
-                                this::updateState,
-                                new PeriodicTrigger(
-                                        SystemConfiguration.getInstances()
-                                                .getMetricsSysGatherTiming()
-                                                .getValue()));
-                    } else {
-                        removeSchedule(key);
-                        log.info("Information collection for jvm is turned off（已关闭对jvm的信息收集）");
-                    }
-                });
+        metricsSysEnable.addChangeEvent(x -> {
+            if (x) {
+                addSchedule(
+                        key,
+                        this::updateState,
+                        new PeriodicTrigger(SystemConfiguration.getInstances()
+                                .getMetricsSysGatherTiming()
+                                .getValue()));
+            } else {
+                removeSchedule(key);
+                log.info("Information collection for jvm is turned off（已关闭对jvm的信息收集）");
+            }
+        });
     }
 
     public void updateState() {
@@ -92,44 +90,32 @@ public class GatherSysIndicator extends BaseSchedule {
         metricsTotal.setMem(Mem.of());
 
         MetricsVO metrics = new MetricsVO();
-        metrics.setContent(JSONUtil.toJsonStr(metricsTotal));
+        metrics.setContent(metricsTotal);
         metrics.setHeartTime(now);
-        metrics.setModel("local");
-        MetricConfig.getMetricsQueue().add(metrics);
+        metrics.setModel(MetricsType.LOCAL.getType());
+        MetricsContextHolder.getInstances().sendAsync(metrics.getModel(), metrics);
 
         log.debug("Collecting jvm information ends.");
     }
 
     private void registerMetrics(BaseMetrics baseMetrics) {
         Field[] baseFields = ReflectUtil.getFields(this.getClass());
-        Field baseField =
-                Arrays.stream(baseFields)
-                        .filter(field -> field.getType().equals(baseMetrics.getClass()))
-                        .findFirst()
-                        .orElse(null);
+        Field baseField = Arrays.stream(baseFields)
+                .filter(field -> field.getType().equals(baseMetrics.getClass()))
+                .findFirst()
+                .orElse(null);
         if (baseField == null) {
             return;
         }
         Field[] fields = ReflectUtil.getFields(baseMetrics.getClass());
         for (Field field : fields) {
             GaugeM gaugeM = AnnotationUtil.getAnnotation(field, GaugeM.class);
-            Opt.ofNullable(gaugeM)
-                    .ifPresent(
-                            g ->
-                                    Gauge.builder(
-                                                    gaugeM.name(),
-                                                    () ->
-                                                            (Number)
-                                                                    ReflectUtil.getFieldValue(
-                                                                            ReflectUtil
-                                                                                    .getFieldValue(
-                                                                                            this,
-                                                                                            baseField),
-                                                                            field))
-                                            .baseUnit(g.baseUnit())
-                                            .tags(g.tags())
-                                            .description(gaugeM.description())
-                                            .register(registry));
+            Opt.ofNullable(gaugeM).ifPresent(g -> Gauge.builder(gaugeM.name(), () ->
+                            (Number) ReflectUtil.getFieldValue(ReflectUtil.getFieldValue(this, baseField), field))
+                    .baseUnit(g.baseUnit())
+                    .tags(g.tags())
+                    .description(gaugeM.description())
+                    .register(registry));
         }
     }
 }

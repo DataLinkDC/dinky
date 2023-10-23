@@ -17,26 +17,25 @@
  *
  */
 
-import {l} from "@/utils/intl";
-import {Modal} from "antd";
-import {setTenantStorageAndCookie} from "@/utils/function";
-import React, {useState} from "react";
-import {UserBaseInfo} from "@/types/User/data";
-import TenantCard from "@/pages/Other/Login/ChooseModal/TenantCard";
-import {NORMAL_MODAL_OPTIONS} from "@/services/constants";
-import {CheckGroupValueType} from "@ant-design/pro-card/es/components/CheckCard/Group";
+import TenantCard from '@/pages/Other/Login/ChooseModal/TenantCard';
+import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
+import { setTenantStorageAndCookie } from '@/utils/function';
+import { l } from '@/utils/intl';
+import { CheckGroupValueType } from '@ant-design/pro-card/es/components/CheckCard/Group';
+import { Modal } from 'antd';
+import React, { useState } from 'react';
 
 type ChooseModalProps = {
   tenantVisible: boolean;
   handleTenantVisible: () => void;
   submitting: boolean;
-  handleChooseTenant: (tenantId: number) => void
-  tenant: UserBaseInfo.Tenant[]
-}
+  handleChooseTenant: (tenantId: number) => void;
+  tenant: UserBaseInfo.Tenant[];
+};
 
 const ChooseModal: React.FC<ChooseModalProps> = (props) => {
-
-  const {tenantVisible, handleTenantVisible, submitting, tenant,handleChooseTenant} = props;
+  const { tenantVisible, handleTenantVisible, submitting, tenant, handleChooseTenant } = props;
   const [check, setChecked] = useState<boolean>(true);
   const [checkedTenantId, setCheckedTenantId] = useState<any>();
 
@@ -44,7 +43,7 @@ const ChooseModal: React.FC<ChooseModalProps> = (props) => {
     if (value) {
       //  if no tenant is selected, the confirm button is disabled
       setChecked(false);
-      setCheckedTenantId(value );
+      setCheckedTenantId(value);
       setTenantStorageAndCookie(value as number);
       // setTenantIdParams(value as number);
     } else {
@@ -52,23 +51,22 @@ const ChooseModal: React.FC<ChooseModalProps> = (props) => {
     }
   };
 
-
-  return <>
+  return (
     <Modal
-      title={l("login.chooseTenant")}
+      title={l('login.chooseTenant')}
       open={tenantVisible}
       {...NORMAL_MODAL_OPTIONS}
       onCancel={handleTenantVisible}
       onOk={() => handleChooseTenant(checkedTenantId)}
-      okText={l("button.confirm")}
+      okText={l('button.confirm')}
       okButtonProps={{
         disabled: check,
         loading: submitting
       }}
     >
-      <TenantCard tenant={tenant} handleChangeTenant={tenantChange}/>
+      <TenantCard tenant={tenant} handleChangeTenant={tenantChange} />
     </Modal>
-  </>;
+  );
 };
 
 export default ChooseModal;

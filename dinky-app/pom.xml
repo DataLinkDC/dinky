@@ -5,7 +5,8 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>dinky-app</artifactId>
@@ -37,8 +38,7 @@
         <profile>
             <id>web</id>
             <modules>
-                <module>../dlink-web</module>
-                <module>../dinky-web-flink</module>
+                <module>../dinky-web</module>
             </modules>
         </profile>
     </profiles>

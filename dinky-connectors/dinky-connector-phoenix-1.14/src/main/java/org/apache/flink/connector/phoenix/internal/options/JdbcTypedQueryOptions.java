@@ -26,7 +26,8 @@ import javax.annotation.Nullable;
 /** Jdbc query type options. */
 abstract class JdbcTypedQueryOptions implements Serializable {
 
-    @Nullable private final int[] fieldTypes;
+    @Nullable
+    private final int[] fieldTypes;
 
     JdbcTypedQueryOptions(int[] fieldTypes) {
         this.fieldTypes = fieldTypes;
@@ -36,8 +37,7 @@ abstract class JdbcTypedQueryOptions implements Serializable {
         return fieldTypes;
     }
 
-    public abstract static class JdbcUpdateQueryOptionsBuilder<
-            T extends JdbcUpdateQueryOptionsBuilder<T>> {
+    public abstract static class JdbcUpdateQueryOptionsBuilder<T extends JdbcUpdateQueryOptionsBuilder<T>> {
         int[] fieldTypes;
 
         protected abstract T self();

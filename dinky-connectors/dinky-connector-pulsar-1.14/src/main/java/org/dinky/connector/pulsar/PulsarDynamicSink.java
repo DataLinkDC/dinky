@@ -93,8 +93,7 @@ public class PulsarDynamicSink implements DynamicTableSink {
             Properties pulsarClientProperties,
             Integer sinkParallelism) {
         // Format attributes
-        this.physicalDataType =
-                checkNotNull(physicalDataType, "Physical data type must not be null.");
+        this.physicalDataType = checkNotNull(physicalDataType, "Physical data type must not be null.");
         this.encodingFormat = encodingFormat;
         // Mutable attributes
         this.metadataKeys = Collections.emptyList();
@@ -103,10 +102,8 @@ public class PulsarDynamicSink implements DynamicTableSink {
         this.serviceUrl = checkNotNull(serviceUrl, "Service url must not be null.");
         this.updateMode = checkNotNull(updateMode, "Update mode must not be null.");
         this.pulsarProducerProperties =
-                checkNotNull(
-                        pulsarProducerProperties, "pulsarProducerProperties must not be null.");
-        this.pulsarClientProperties =
-                checkNotNull(pulsarClientProperties, "pulsarClientProperties must not be null.");
+                checkNotNull(pulsarProducerProperties, "pulsarProducerProperties must not be null.");
+        this.pulsarClientProperties = checkNotNull(pulsarClientProperties, "pulsarClientProperties must not be null.");
         this.sinkParallelism = sinkParallelism;
     }
 
@@ -124,16 +121,10 @@ public class PulsarDynamicSink implements DynamicTableSink {
 
     @Override
     public SinkRuntimeProvider getSinkRuntimeProvider(Context context) {
-        SerializationSchema<RowData> runtimeEncoder =
-                encodingFormat.createRuntimeEncoder(context, physicalDataType);
+        SerializationSchema<RowData> runtimeEncoder = encodingFormat.createRuntimeEncoder(context, physicalDataType);
 
-        PulsarSinkFunction<RowData> sinkFunction =
-                new PulsarSinkFunction<>(
-                        topic,
-                        serviceUrl,
-                        pulsarProducerProperties,
-                        pulsarClientProperties,
-                        runtimeEncoder);
+        PulsarSinkFunction<RowData> sinkFunction = new PulsarSinkFunction<>(
+                topic, serviceUrl, pulsarProducerProperties, pulsarClientProperties, runtimeEncoder);
         // sink的并行度设置
         if (sinkParallelism != null) {
             return SinkFunctionProvider.of(sinkFunction, sinkParallelism);
@@ -144,16 +135,15 @@ public class PulsarDynamicSink implements DynamicTableSink {
 
     @Override
     public DynamicTableSink copy() {
-        final PulsarDynamicSink copy =
-                new PulsarDynamicSink(
-                        physicalDataType,
-                        encodingFormat,
-                        topic,
-                        serviceUrl,
-                        updateMode,
-                        pulsarProducerProperties,
-                        pulsarClientProperties,
-                        sinkParallelism);
+        final PulsarDynamicSink copy = new PulsarDynamicSink(
+                physicalDataType,
+                encodingFormat,
+                topic,
+                serviceUrl,
+                updateMode,
+                pulsarProducerProperties,
+                pulsarClientProperties,
+                sinkParallelism);
         copy.metadataKeys = metadataKeys;
         return copy;
     }

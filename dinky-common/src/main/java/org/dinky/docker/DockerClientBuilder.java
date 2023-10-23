@@ -52,8 +52,7 @@ public class DockerClientBuilder {
 
     /** @deprecated use {@link #getInstance(DockerClientConfig)} */
     @Deprecated
-    public static DockerClientBuilder getInstance(
-            DefaultDockerClientConfig.Builder dockerClientConfigBuilder) {
+    public static DockerClientBuilder getInstance(DefaultDockerClientConfig.Builder dockerClientConfigBuilder) {
         return getInstance(dockerClientConfigBuilder.build());
     }
 
@@ -64,10 +63,9 @@ public class DockerClientBuilder {
     /** @deprecated use {@link DefaultDockerClientConfig.Builder#withDockerHost(String)} */
     @Deprecated
     public static DockerClientBuilder getInstance(String serverUrl) {
-        return new DockerClientBuilder(
-                DefaultDockerClientConfig.createDefaultConfigBuilder()
-                        .withDockerHost(serverUrl)
-                        .build());
+        return new DockerClientBuilder(DefaultDockerClientConfig.createDefaultConfigBuilder()
+                .withDockerHost(serverUrl)
+                .build());
     }
 
     /** @deprecated no replacement, use one of {@link DockerHttpClient} */
@@ -99,12 +97,11 @@ public class DockerClientBuilder {
         if (dockerHttpClient != null) {
             return DockerClientImpl.getInstance(dockerClientConfig, dockerHttpClient);
         } else if (dockerCmdExecFactory != null) {
-            return DockerClientImpl.getInstance(dockerClientConfig)
-                    .withDockerCmdExecFactory(dockerCmdExecFactory);
+            return DockerClientImpl.getInstance(dockerClientConfig).withDockerCmdExecFactory(dockerCmdExecFactory);
         } else {
             Logger log = LoggerFactory.getLogger(DockerClientBuilder.class);
-            log.warn(
-                    "'dockerHttpClient' should be set. Falling back to Jersey, will be an error in future releases.");
+            log.warn("'dockerHttpClient' should be set. Falling back to Jersey, will be an error in"
+                    + " future releases.");
 
             return DockerClientImpl.getInstance(
                     dockerClientConfig,

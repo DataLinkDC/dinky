@@ -66,12 +66,11 @@ public class PhoenixDriver extends AbstractJdbcDriver {
         String where = queryData.getOption().getWhere();
         String order = queryData.getOption().getOrder();
 
-        StringBuilder optionBuilder =
-                new StringBuilder()
-                        .append("select * from ")
-                        .append(queryData.getSchemaName())
-                        .append(".")
-                        .append(queryData.getTableName());
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
 
         if (where != null && !where.equals("")) {
             optionBuilder.append(" where ").append(where);
@@ -97,13 +96,12 @@ public class PhoenixDriver extends AbstractJdbcDriver {
         PhoenixTypeConvert phoenixTypeConvert = new PhoenixTypeConvert();
         if (columns != null) {
             for (Column column : columns) {
-                sql.append(
-                        ", \""
-                                + column.getColumnFamily()
-                                + "\".\""
-                                + column.getName()
-                                + "\"  "
-                                + phoenixTypeConvert.convertToDB(column));
+                sql.append(", \""
+                        + column.getColumnFamily()
+                        + "\".\""
+                        + column.getName()
+                        + "\"  "
+                        + phoenixTypeConvert.convertToDB(column));
             }
         }
         sql.append(" ) ");

@@ -54,8 +54,7 @@ public enum GatewayType {
 
     public static GatewayType get(String value) {
         for (GatewayType type : GatewayType.values()) {
-            if (Asserts.isEquals(type.getValue(), value)
-                    || Asserts.isEquals(type.getLongValue(), value)) {
+            if (Asserts.isEquals(type.getValue(), value) || Asserts.isEquals(type.getLongValue(), value)) {
                 return type;
             }
         }
@@ -77,8 +76,13 @@ public enum GatewayType {
         return get(type).isDeployCluster();
     }
 
-    public boolean isDeployCluster() {
+    /**
+     * 是否在本地构建 job graph , 用于校验是否提交到集群
+     * @return true: 本地构建 jobgraph
+     */
+    public boolean isLocalExecute() {
         switch (value) {
+            case "l":
             case "ya":
             case "ypj":
             case "ka":
@@ -89,11 +93,23 @@ public enum GatewayType {
         }
     }
 
+    public boolean isDeployCluster() {
+        switch (this) {
+            case YARN_APPLICATION:
+            case YARN_PER_JOB:
+            case KUBERNETES_APPLICATION:
+            case KUBERNETES_APPLICATION_OPERATOR:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public boolean isApplicationMode() {
-        switch (value) {
-            case "ya":
-            case "ka":
-            case "kao":
+        switch (this) {
+            case YARN_APPLICATION:
+            case KUBERNETES_APPLICATION:
+            case KUBERNETES_APPLICATION_OPERATOR:
                 return true;
             default:
                 return false;

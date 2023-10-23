@@ -19,30 +19,34 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.CatalogueTaskDTO;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.service.CatalogueService;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
 import java.util.List;
-import java.util.UUID;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ZipUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +57,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
+@Api(tags = "Catalogue Controller")
 @RequestMapping("/api/catalogue")
 @RequiredArgsConstructor
 public class CatalogueController {
@@ -60,6 +65,8 @@ public class CatalogueController {
     private final CatalogueService catalogueService;
 
     @PostMapping("/upload/{id}")
+    @Log(title = "Upload Catalogue", businessType = BusinessType.UPLOAD)
+    @ApiOperation("Upload Zip Package And Create Catalogue")
     public Result<String> upload(MultipartFile file, @PathVariable Integer id) {
         // 获取上传的路径
         String filePath = PathConstant.WORK_DIR;
@@ -80,8 +87,8 @@ public class CatalogueController {
             Thread.sleep(1L);
             if (!unzipFile.exists()) {
                 ZipUtil.unzip(zipPath, filePath);
-                Catalogue cata = getCatalogue(id, unzipFileName);
-                traverseFile(unzipPath, cata);
+                Catalogue cata = catalogueService.getCatalogue(id, unzipFileName);
+                catalogueService.traverseFile(unzipPath, cata);
             }
         } catch (Exception e) {
             return Result.failed(e.getMessage());
@@ -91,100 +98,54 @@ public class CatalogueController {
         return Result.succeed("上传zip包并创建工程成功");
     }
 
-    private void traverseFile(String sourcePath, Catalogue catalog) {
-        File file = new File(sourcePath);
-        File[] fs = file.listFiles();
-        if (fs == null) {
-            throw new RuntimeException("目录层级有误");
-        }
-        for (File fl : fs) {
-            if (fl.isFile()) {
-                CatalogueTaskDTO dto =
-                        getCatalogueTaskDTO(
-                                fl.getName(),
-                                catalogueService
-                                        .findByParentIdAndName(
-                                                catalog.getParentId(), catalog.getName())
-                                        .getId());
-                String fileText = getFileText(fl);
-                catalogueService.createCatalogAndFileTask(dto, fileText);
-            } else {
-                Catalogue newCata =
-                        getCatalogue(
-                                catalogueService
-                                        .findByParentIdAndName(
-                                                catalog.getParentId(), catalog.getName())
-                                        .getId(),
-                                fl.getName());
-                traverseFile(fl.getPath(), newCata);
-            }
-        }
-    }
-
-    private String getFileText(File sourceFile) {
-        StringBuilder sb = new StringBuilder();
-        try (InputStreamReader isr =
-                        new InputStreamReader(Files.newInputStream(sourceFile.toPath()));
-                BufferedReader br = new BufferedReader(isr)) {
-            if (sourceFile.isFile() && sourceFile.exists()) {
-
-                String lineText;
-                while ((lineText = br.readLine()) != null) {
-                    sb.append(lineText).append("\n");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
-    }
-
-    private Catalogue getCatalogue(Integer parentId, String name) {
-        Catalogue subcata = new Catalogue();
-        subcata.setTaskId(null);
-        subcata.setName(name);
-        subcata.setType("null");
-        subcata.setParentId(parentId);
-        subcata.setIsLeaf(false);
-        catalogueService.saveOrUpdate(subcata);
-        return subcata;
-    }
-
-    private CatalogueTaskDTO getCatalogueTaskDTO(String name, Integer parentId) {
-        CatalogueTaskDTO catalogueTaskDTO = new CatalogueTaskDTO();
-        catalogueTaskDTO.setName(UUID.randomUUID().toString().substring(0, 6) + name);
-        catalogueTaskDTO.setId(null);
-        catalogueTaskDTO.setParentId(parentId);
-        catalogueTaskDTO.setLeaf(true);
-        return catalogueTaskDTO;
-    }
-
-    /** 新增或者更新 */
-    @PutMapping
-    public Result<Void> saveOrUpdate(@RequestBody Catalogue catalogue) throws Exception {
-        if (catalogueService.saveOrUpdate(catalogue)) {
+    /**
+     * insert or update catalogue
+     *
+     * @param catalogue
+     * @return Result<Void>
+     */
+    @PutMapping("saveOrUpdateCatalogue")
+    @Log(title = "Insert Or Update Catalogue", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update Catalogue")
+    @ApiImplicitParam(
+            name = "catalogue",
+            value = "catalogue",
+            required = true,
+            dataType = "Catalogue",
+            dataTypeClass = Catalogue.class)
+    public Result<Void> saveOrUpdateCatalogue(@RequestBody Catalogue catalogue) {
+        if (catalogueService.saveOrUpdateOrRename(catalogue)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
         }
     }
 
-    /** 获取指定ID的信息 */
-    @PostMapping("/getOneById")
-    public Result<Catalogue> getOneById(@RequestBody Catalogue catalogue) throws Exception {
-        catalogue = catalogueService.getById(catalogue.getId());
-        return Result.succeed(catalogue);
-    }
-
-    /** 获取所有目录 */
+    /**
+     * query catalogue tree data
+     * @return {@link Result}< {@link List}< {@link Catalogue}>>}
+     */
     @PostMapping("/getCatalogueTreeData")
-    public Result<List<Catalogue>> getCatalogueTreeData() {
-        List<Catalogue> catalogues = catalogueService.getAllData();
+    @ApiOperation("Get Catalogue Tree Data")
+    public Result<List<Catalogue>> getCatalogueTree() {
+        List<Catalogue> catalogues = catalogueService.getCatalogueTree();
         return Result.succeed(catalogues);
     }
 
-    /** 创建节点和作业 */
-    @PutMapping("/createTask")
+    /**
+     * create catalogue and task
+     * @param catalogueTaskDTO {@link CatalogueTaskDTO}
+     * @return {@link Result}< {@link Catalogue}>}
+     */
+    @PutMapping("/saveOrUpdateCatalogueAndTask")
+    @Log(title = "Create Catalogue And Task", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Create Catalogue And Task")
+    @ApiImplicitParam(
+            name = "catalogueTaskDTO",
+            value = "catalogueTaskDTO",
+            required = true,
+            dataType = "CatalogueTaskDTO",
+            dataTypeClass = CatalogueTaskDTO.class)
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
         Catalogue catalogue = catalogueService.saveOrUpdateCatalogueAndTask(catalogueTaskDTO);
         if (catalogue.getId() != null) {
@@ -194,32 +155,71 @@ public class CatalogueController {
         }
     }
 
-    /** 重命名节点和作业 */
-    @PutMapping("/toRename")
-    public Result<Void> toRename(@RequestBody Catalogue catalogue) {
-        if (catalogueService.toRename(catalogue)) {
-            return Result.succeed(Status.RENAME_SUCCESS);
-        } else {
-            return Result.failed(Status.RENAME_FAILED);
-        }
-    }
-
-    /** 重命名节点和作业 */
+    /**
+     *  move catalogue
+     * @param originCatalogueId origin catalogue id
+     * @param targetParentId target parent id
+     * @return  {@link Result}< {@link Boolean}>}
+     */
     @PutMapping("/moveCatalogue")
-    public Result<Boolean> moveCatalogue(@RequestBody Catalogue catalogue) {
-        if (catalogueService.moveCatalogue(catalogue.getId(), catalogue.getParentId())) {
+    @Log(title = "Move Catalogue", businessType = BusinessType.UPDATE)
+    @ApiOperation("Move Catalogue")
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "originCatalogueId",
+                value = "originCatalogueId",
+                required = true,
+                dataType = "Integer",
+                dataTypeClass = Integer.class),
+        @ApiImplicitParam(
+                name = "targetParentId",
+                value = "targetParentId",
+                required = true,
+                dataType = "Integer",
+                dataTypeClass = Integer.class)
+    })
+    public Result<Boolean> moveCatalogue(
+            @RequestParam("originCatalogueId") Integer originCatalogueId,
+            @RequestParam("targetParentId") Integer targetParentId) {
+        if (catalogueService.moveCatalogue(originCatalogueId, targetParentId)) {
             return Result.succeed(true, Status.MOVE_SUCCESS);
         } else {
             return Result.failed(false, Status.MOVE_FAILED);
         }
     }
 
+    /**
+     * copy task
+     * @param catalogue {@link Catalogue}
+     * @return {@link Result}< {@link Catalogue}>}
+     */
     @PostMapping("/copyTask")
-    public Result<Catalogue> copyTask(@RequestBody Catalogue catalogue) {
+    @Log(title = "Copy Task", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiImplicitParam(
+            name = "catalogue",
+            value = "catalogue",
+            required = true,
+            dataType = "Catalogue",
+            dataTypeClass = Catalogue.class)
+    @ApiOperation("Copy Task")
+    public Result<Void> copyTask(@RequestBody Catalogue catalogue) {
         if (catalogueService.copyTask(catalogue)) {
             return Result.succeed(Status.COPY_SUCCESS);
         } else {
             return Result.failed(Status.COPY_FAILED);
         }
+    }
+
+    /**
+     * delete catalogue by id
+     * @param id catalogue id
+     * @return {@link Result}< {@link Void}>}
+     */
+    @DeleteMapping("deleteCatalogueById")
+    @Log(title = "Delete Catalogue By Id", businessType = BusinessType.DELETE)
+    @ApiOperation("Delete Catalogue By Id")
+    @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "Integer", dataTypeClass = Integer.class)
+    public Result<Void> deleteCatalogueById(@RequestParam Integer id) {
+        return catalogueService.deleteCatalogueById(id);
     }
 }

@@ -21,11 +21,18 @@ package org.dinky.data.params;
 
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /** assign role params */
 @Data
+@ApiModel(value = "AssignRoleParams", description = "Parameters for Assigning Roles to a User")
 public class AssignRoleParams {
-    Integer userId;
-    List<Integer> roleIds;
+
+    @ApiModelProperty(value = "User ID", dataType = "Integer", notes = "ID of the user to assign roles to")
+    private Integer userId;
+
+    @ApiModelProperty(value = "Role IDs", dataType = "List<Integer>", notes = "List of role IDs to assign to the user")
+    private List<Integer> roleIds;
 }

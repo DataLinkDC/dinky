@@ -21,11 +21,10 @@ package org.dinky.core;
 
 import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
-
-import java.util.HashMap;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,44 +43,33 @@ public class JobManagerTest {
 
     @Ignore
     @Test
-    public void cancelJobSelect() {
-
-        JobConfig config =
-                new JobConfig(
-                        "session-yarn",
-                        true,
-                        true,
-                        true,
-                        true,
-                        "s1",
-                        2,
-                        null,
-                        null,
-                        null,
-                        "测试",
-                        false,
-                        false,
-                        false,
-                        100,
-                        0,
-                        1,
-                        0,
-                        null,
-                        new HashMap<>(),
-                        new HashMap<>());
+    public void cancelJobSelect() throws Exception {
+        JobConfig config = JobConfig.builder()
+                .type(GatewayType.YARN_SESSION.getLongValue())
+                .useResult(true)
+                .useChangeLog(true)
+                .useAutoCancel(true)
+                .session("s1")
+                .clusterId(2)
+                .jobName("Test")
+                .fragment(false)
+                .statementSet(false)
+                .batchModel(false)
+                .maxRowNum(100)
+                .parallelism(1)
+                .build();
         if (config.isUseRemote()) {
             config.setAddress("192.168.123.157:8081");
         }
         JobManager jobManager = JobManager.build(config);
-        String sql1 =
-                "CREATE TABLE Orders (\n"
-                        + "    order_number BIGINT,\n"
-                        + "    price        DECIMAL(32,2),\n"
-                        + "    order_time   TIMESTAMP(3)\n"
-                        + ") WITH (\n"
-                        + "  'connector' = 'datagen',\n"
-                        + "  'rows-per-second' = '1'\n"
-                        + ");";
+        String sql1 = "CREATE TABLE Orders (\n"
+                + "    order_number BIGINT,\n"
+                + "    price        DECIMAL(32,2),\n"
+                + "    order_time   TIMESTAMP(3)\n"
+                + ") WITH (\n"
+                + "  'connector' = 'datagen',\n"
+                + "  'rows-per-second' = '1'\n"
+                + ");";
         String sql3 = "select order_number,price,order_time from Orders";
         String sql = sql1 + sql3;
         JobResult result = jobManager.executeSql(sql);

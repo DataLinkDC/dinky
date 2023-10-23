@@ -19,26 +19,19 @@
 
 package org.dinky.data.model;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.config.Dialect;
-import org.dinky.job.JobConfig;
+import org.dinky.data.typehandler.JSONObjectHandler;
 import org.dinky.mybatis.model.SuperEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import org.apache.ibatis.type.JdbcType;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
+import lombok.NoArgsConstructor;
 
 /**
  * 任务
@@ -48,156 +41,132 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_task")
-@Slf4j
+@NoArgsConstructor
+@ApiModel(value = "Task", description = "Task Information")
 public class Task extends SuperEntity<Task> {
 
     private static final long serialVersionUID = 5988972129893667154L;
+
+    @ApiModelProperty(value = "Dialect", dataType = "String", notes = "Dialect for the task")
     private String dialect;
 
+    @ApiModelProperty(
+            value = "Tenant ID",
+            dataType = "Integer",
+            example = "1001",
+            notes = "ID of the tenant associated with the task")
     private Integer tenantId;
 
+    @ApiModelProperty(value = "Type", dataType = "String", notes = "Type of the task")
     private String type;
 
+    @ApiModelProperty(value = "Check Point", dataType = "Integer", example = "1", notes = "Check point for the task")
     private Integer checkPoint;
 
+    @ApiModelProperty(value = "Save point strategy", dataType = "SavePointStrategy", notes = "Save point strategy")
     private Integer savePointStrategy;
 
+    @ApiModelProperty(value = "Save Point Path", dataType = "String", notes = "Save point path for the task")
     private String savePointPath;
 
+    @ApiModelProperty(value = "Parallelism", dataType = "Integer", example = "4", notes = "Parallelism for the task")
     private Integer parallelism;
 
+    @ApiModelProperty(
+            value = "Fragment",
+            dataType = "Boolean",
+            example = "true",
+            notes = "Fragment option for the task")
     private Boolean fragment;
 
+    @ApiModelProperty(
+            value = "Statement Set",
+            dataType = "Boolean",
+            example = "false",
+            notes = "Statement set option for the task")
     private Boolean statementSet;
 
+    @ApiModelProperty(
+            value = "Batch Model",
+            dataType = "Boolean",
+            example = "true",
+            notes = "Batch model option for the task")
     private Boolean batchModel;
 
+    @ApiModelProperty(
+            value = "ClusterInstance ID",
+            dataType = "Integer",
+            example = "2001",
+            notes = "ID of the cluster associated with the task")
     private Integer clusterId;
 
+    @ApiModelProperty(
+            value = "Cluster Configuration ID",
+            dataType = "Integer",
+            example = "3001",
+            notes = "ID of the cluster configuration associated with the task")
     private Integer clusterConfigurationId;
 
+    @ApiModelProperty(
+            value = "Database ID",
+            dataType = "Integer",
+            example = "4001",
+            notes = "ID of the database associated with the task")
     private Integer databaseId;
 
+    @ApiModelProperty(
+            value = "JAR ID",
+            dataType = "Integer",
+            example = "5001",
+            notes = "ID of the JAR associated with the task")
     private Integer jarId;
 
+    @ApiModelProperty(
+            value = "Environment ID",
+            dataType = "Integer",
+            example = "6001",
+            notes = "ID of the environment associated with the task")
     private Integer envId;
 
+    @ApiModelProperty(
+            value = "Alert Group ID",
+            dataType = "Integer",
+            example = "7001",
+            notes = "ID of the alert group associated with the task")
     private Integer alertGroupId;
 
-    private String configJson;
+    @ApiModelProperty(
+            value = "Configuration JSON",
+            dataType = "TaskExtConfig",
+            notes = "Extended configuration in JSON format for the task")
+    @TableField(typeHandler = JSONObjectHandler.class, jdbcType = JdbcType.VARCHAR)
+    private TaskExtConfig configJson;
 
+    @ApiModelProperty(value = "Note", dataType = "String", notes = "Additional notes for the task")
     private String note;
 
+    @ApiModelProperty(value = "Step", dataType = "Integer", example = "1", notes = "Step for the task")
     private Integer step;
 
+    @ApiModelProperty(
+            value = "Job Instance ID",
+            dataType = "Integer",
+            example = "8001",
+            notes = "ID of the job instance associated with the task")
     private Integer jobInstanceId;
 
+    @ApiModelProperty(
+            value = "Version ID",
+            dataType = "Integer",
+            example = "9001",
+            notes = "ID of the version associated with the task")
     private Integer versionId;
 
-    @TableField(exist = false)
+    @ApiModelProperty(value = "Statement", dataType = "String", notes = "SQL statement for the task")
     private String statement;
 
-    @TableField(exist = false)
-    private String clusterName;
-
-    @TableField(exist = false)
-    private List<Savepoints> savePoints;
-
-    @TableField(exist = false)
-    private List<Map<String, String>> config = new ArrayList<>();
-
-    @TableField(exist = false)
-    private String path;
-
-    @TableField(exist = false)
-    private String jarName;
-
-    @TableField(exist = false)
-    private String clusterConfigurationName;
-
-    @TableField(exist = false)
-    private String databaseName;
-
-    @TableField(exist = false)
-    private String envName;
-
-    @TableField(exist = false)
-    private String alertGroupName;
-
-    public static final ObjectMapper objectMapper = new ObjectMapper();
-
-    @SuppressWarnings("unchecked")
-    public List<Map<String, String>> parseConfig() {
-        if (Asserts.isNullString(configJson)) {
-            return config;
-        }
-
-        try {
-            config = objectMapper.readValue(configJson, ArrayList.class);
-        } catch (JsonProcessingException e) {
-            log.error(e.getMessage());
-        }
-        return config;
-    }
-
-    public JobConfig buildSubmitConfig() {
-        boolean useRemote = clusterId != null && clusterId != 0;
-        Map<String, String> map =
-                parseConfig().stream()
-                        .filter(Asserts::isNotNull)
-                        .collect(
-                                Collectors.toMap(
-                                        item -> item.get("name"),
-                                        item -> item.get("value"),
-                                        (a, b) -> b));
-
-        int jid = Asserts.isNull(jarId) ? 0 : jarId;
-        boolean fg = Asserts.isNotNull(fragment) && fragment;
-        boolean sts = Asserts.isNotNull(statementSet) && statementSet;
-        return new JobConfig(
-                type,
-                step,
-                false,
-                false,
-                useRemote,
-                clusterId,
-                clusterConfigurationId,
-                jid,
-                getId(),
-                getName(),
-                fg,
-                sts,
-                batchModel,
-                checkPoint,
-                parallelism,
-                savePointStrategy,
-                savePointPath,
-                map,
-                isJarTask());
-    }
-
-    public JsonNode parseJsonNode(ObjectMapper mapper) {
-        ObjectNode jsonNode = mapper.createObjectNode();
-        jsonNode.put("name", this.getName());
-        jsonNode.put("dialect", this.dialect);
-        jsonNode.put("type", this.type);
-        jsonNode.put("statement", this.statement);
-        jsonNode.put("checkPoint", this.checkPoint);
-        jsonNode.put("savePointStrategy", this.savePointStrategy);
-        jsonNode.put("savePointPath", this.savePointPath);
-        jsonNode.put("parallelism", this.parallelism);
-        jsonNode.put("fragment", this.fragment);
-        jsonNode.put("statementSet", this.statementSet);
-        jsonNode.put("batchModel", this.batchModel);
-        jsonNode.put("clusterName", this.clusterName);
-        jsonNode.put("configJson", this.configJson);
-        jsonNode.put("note", this.note);
-        jsonNode.put("step", this.step);
-        jsonNode.put("enabled", this.getEnabled());
-        return jsonNode;
-    }
-
-    public boolean isJarTask() {
-        return Dialect.isJarDialect(dialect);
+    public Task(Integer id, Integer jobInstanceId) {
+        this.jobInstanceId = jobInstanceId;
+        this.setId(id);
     }
 }

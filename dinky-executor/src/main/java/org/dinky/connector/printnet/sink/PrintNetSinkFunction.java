@@ -22,7 +22,6 @@ package org.dinky.connector.printnet.sink;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
-import org.apache.flink.streaming.api.operators.StreamingRuntimeContext;
 import org.apache.flink.table.connector.sink.DynamicTableSink;
 import org.apache.flink.table.data.RowData;
 
@@ -32,16 +31,16 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class PrintNetSinkFunction extends RichSinkFunction<RowData> {
-    private final String hostname;
     private final int port;
     private final SerializationSchema<RowData> serializer;
-    private DynamicTableSink.DataStructureConverter converter;
-    private String printIdentifier;
-    private byte[] printHeader;
-    private volatile boolean running = true;
-    private DatagramSocket socket;
-    private final InetAddress target;
+    private final DynamicTableSink.DataStructureConverter converter;
+    private final byte[] printHeader;
+    private transient DatagramSocket socket;
+    private final InetAddress targetAddress;
 
     public PrintNetSinkFunction(
             String hostname,
@@ -49,16 +48,15 @@ public class PrintNetSinkFunction extends RichSinkFunction<RowData> {
             SerializationSchema<RowData> serializer,
             DynamicTableSink.DataStructureConverter converter,
             String printIdentifier) {
-        this.hostname = hostname;
         this.port = port;
         this.serializer = serializer;
         this.converter = converter;
-        this.printIdentifier = printIdentifier;
         printHeader = (printIdentifier + "\n").getBytes();
 
         try {
-            this.target = InetAddress.getByName(hostname);
+            this.targetAddress = InetAddress.getByName(hostname);
         } catch (UnknownHostException e) {
+            log.error("Unknown host: {}", hostname);
             throw new RuntimeException(e);
         }
     }
@@ -70,26 +68,25 @@ public class PrintNetSinkFunction extends RichSinkFunction<RowData> {
             serializer.open(null);
         }
 
-        StreamingRuntimeContext context = (StreamingRuntimeContext) getRuntimeContext();
+        //        StreamingRuntimeContext context = (StreamingRuntimeContext) getRuntimeContext();
         socket = new DatagramSocket();
     }
 
     @Override
     public void invoke(RowData value, Context context) throws IOException {
-
         try {
-            byte[] buf =
-                    serializer != null
-                            ? serializer.serialize(value)
-                            : converter.toExternal(value).toString().getBytes();
+            byte[] buf = serializer != null
+                    ? serializer.serialize(value)
+                    : converter.toExternal(value).toString().getBytes();
 
             byte[] target = new byte[printHeader.length + buf.length];
             System.arraycopy(printHeader, 0, target, 0, printHeader.length);
             System.arraycopy(buf, 0, target, printHeader.length, buf.length);
 
-            DatagramPacket packet = new DatagramPacket(target, target.length, this.target, port);
+            DatagramPacket packet = new DatagramPacket(target, target.length, this.targetAddress, port);
             socket.send(packet);
         } catch (Exception e) {
+            log.error("Failed to send packet: {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }

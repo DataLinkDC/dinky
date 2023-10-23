@@ -33,18 +33,18 @@ public class CorsConfig {
 
     @Bean
     public CorsFilter corsFilter() {
-        //        log.info("设置跨域");
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        // 允许任何头
+        // allow all domain
         corsConfiguration.addAllowedHeader("*");
-        // 允许任何方法（post、get等）
+        // allow all method
         corsConfiguration.addAllowedMethod("*");
-        //
+        // allow all origin
         corsConfiguration.addExposedHeader("*");
+        // allow all origin
         corsConfiguration.addAllowedOriginPattern("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // 对接口配置跨域设置
+        //  set path pattern to apply this configuration to
         source.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsFilter(source);
     }

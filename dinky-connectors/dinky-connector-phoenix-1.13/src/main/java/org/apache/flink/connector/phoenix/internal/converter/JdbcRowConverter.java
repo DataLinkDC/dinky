@@ -46,6 +46,5 @@ public interface JdbcRowConverter extends Serializable {
      * @param statement The statement to be filled.
      * @return The filled statement.
      */
-    FieldNamedPreparedStatement toExternal(RowData rowData, FieldNamedPreparedStatement statement)
-            throws SQLException;
+    FieldNamedPreparedStatement toExternal(RowData rowData, FieldNamedPreparedStatement statement) throws SQLException;
 }

@@ -45,8 +45,7 @@ import cn.hutool.core.convert.Convert;
  * @since 2021/11/18
  */
 @Service
-public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysConfig>
-        implements SysConfigService {
+public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
 
     @Override
     public Map<String, List<Configuration<?>>> getAll() {
@@ -57,22 +56,19 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
     public void initSysConfig() {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
         systemConfiguration.initAfterBeanStarted();
-        List<Configuration<?>> configurationList =
-                systemConfiguration.getAllConfiguration().entrySet().stream()
-                        .flatMap(x -> x.getValue().stream())
-                        .collect(Collectors.toList());
+        List<Configuration<?>> configurationList = systemConfiguration.getAllConfiguration().entrySet().stream()
+                .flatMap(x -> x.getValue().stream())
+                .collect(Collectors.toList());
         List<SysConfig> sysConfigList = list();
-        List<String> nameList =
-                sysConfigList.stream().map(SysConfig::getName).collect(Collectors.toList());
+        List<String> nameList = sysConfigList.stream().map(SysConfig::getName).collect(Collectors.toList());
         configurationList.stream()
                 .filter(x -> !nameList.contains(x.getKey()))
-                .map(
-                        x -> {
-                            SysConfig sysConfig = new SysConfig();
-                            sysConfig.setName(x.getKey());
-                            sysConfig.setValue(Convert.toStr(x.getDefaultValue()));
-                            return sysConfig;
-                        })
+                .map(x -> {
+                    SysConfig sysConfig = new SysConfig();
+                    sysConfig.setName(x.getKey());
+                    sysConfig.setValue(Convert.toStr(x.getDefaultValue()));
+                    return sysConfig;
+                })
                 .forEach(Model::insertOrUpdate);
         Map<String, String> configMap =
                 CollUtil.toMap(list(), new HashMap<>(), SysConfig::getName, SysConfig::getValue);

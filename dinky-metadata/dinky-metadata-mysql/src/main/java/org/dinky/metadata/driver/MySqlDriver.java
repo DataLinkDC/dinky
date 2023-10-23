@@ -35,11 +35,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * MysqlDriver
  *
  * @since 2021/7/20 14:06
  */
+@Slf4j
 public class MySqlDriver extends AbstractJdbcDriver {
 
     @Override
@@ -80,7 +83,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
     @Override
     public String generateCreateTableSql(Table table) {
         String genTableSql = genTable(table);
-        logger.info("Auto generateCreateTableSql {}", genTableSql);
+        log.info("Auto generateCreateTableSql {}", genTableSql);
         return genTableSql;
     }
 
@@ -90,59 +93,45 @@ public class MySqlDriver extends AbstractJdbcDriver {
     }
 
     private String genTable(Table table) {
-        String columnStrs =
-                table.getColumns().stream()
-                        .map(
-                                column -> {
-                                    String unit = "";
-                                    if (column.getPrecision() != null
-                                            && column.getScale() != null
-                                            && column.getPrecision() > 0
-                                            && column.getScale() > 0) {
-                                        unit =
-                                                String.format(
-                                                        "(%s,%s)",
-                                                        column.getPrecision(), column.getScale());
-                                    } else if (null != column.getLength()) {
-                                        unit = String.format("(%s)", column.getLength());
-                                    }
+        String columnStrs = table.getColumns().stream()
+                .map(column -> {
+                    String unit = "";
+                    if (column.getPrecision() != null
+                            && column.getScale() != null
+                            && column.getPrecision() > 0
+                            && column.getScale() > 0) {
+                        unit = String.format("(%s,%s)", column.getPrecision(), column.getScale());
+                    } else if (null != column.getLength()) {
+                        unit = String.format("(%s)", column.getLength());
+                    }
 
-                                    final String dv = column.getDefaultValue();
-                                    String defaultValue =
-                                            Asserts.isNotNull(dv)
-                                                    ? String.format(
-                                                            " DEFAULT %s",
-                                                            "".equals(dv) ? "\"\"" : dv)
-                                                    : String.format(
-                                                            "%s NULL ",
-                                                            !column.isNullable() ? " NOT " : "");
+                    final String dv = column.getDefaultValue();
+                    String defaultValue = Asserts.isNotNull(dv)
+                            ? String.format(" DEFAULT %s", "".equals(dv) ? "\"\"" : dv)
+                            : String.format("%s NULL ", !column.isNullable() ? " NOT " : "");
 
-                                    return String.format(
-                                            "  `%s`  %s%s%s%s%s",
-                                            column.getName(),
-                                            column.getType(),
-                                            unit,
-                                            defaultValue,
-                                            column.isAutoIncrement() ? " AUTO_INCREMENT " : "",
-                                            Asserts.isNotNullString(column.getComment())
-                                                    ? String.format(
-                                                            " COMMENT '%s'", column.getComment())
-                                                    : "");
-                                })
-                        .collect(Collectors.joining(",\n"));
+                    return String.format(
+                            "  `%s`  %s%s%s%s%s",
+                            column.getName(),
+                            column.getType(),
+                            unit,
+                            defaultValue,
+                            column.isAutoIncrement() ? " AUTO_INCREMENT " : "",
+                            Asserts.isNotNullString(column.getComment())
+                                    ? String.format(" COMMENT '%s'", column.getComment())
+                                    : "");
+                })
+                .collect(Collectors.joining(",\n"));
 
-        List<String> columnKeys =
-                table.getColumns().stream()
-                        .filter(Column::isKeyFlag)
-                        .map(Column::getName)
-                        .map(t -> String.format("`%s`", t))
-                        .collect(Collectors.toList());
+        List<String> columnKeys = table.getColumns().stream()
+                .filter(Column::isKeyFlag)
+                .map(Column::getName)
+                .map(t -> String.format("`%s`", t))
+                .collect(Collectors.toList());
 
-        String primaryKeyStr =
-                columnKeys.isEmpty()
-                        ? ""
-                        : columnKeys.stream()
-                                .collect(Collectors.joining(",", ",\n  PRIMARY KEY (", ")\n"));
+        String primaryKeyStr = columnKeys.isEmpty()
+                ? ""
+                : columnKeys.stream().collect(Collectors.joining(",", ",\n  PRIMARY KEY (", ")\n"));
 
         return MessageFormat.format(
                 "CREATE TABLE IF NOT EXISTS `{0}`.`{1}` (\n{2}{3})\n ENGINE={4}{5}{6};",
@@ -151,12 +140,8 @@ public class MySqlDriver extends AbstractJdbcDriver {
                 columnStrs,
                 primaryKeyStr,
                 table.getEngine(),
-                Asserts.isNotNullString(table.getOptions())
-                        ? String.format(" %s", table.getOptions())
-                        : "",
-                Asserts.isNotNullString(table.getComment())
-                        ? String.format(" COMMENT='%s'", table.getComment())
-                        : "");
+                Asserts.isNotNullString(table.getOptions()) ? String.format(" %s", table.getOptions()) : "",
+                Asserts.isNotNullString(table.getComment()) ? String.format(" COMMENT='%s'", table.getComment()) : "");
     }
 
     @Override
@@ -167,12 +152,8 @@ public class MySqlDriver extends AbstractJdbcDriver {
         String limitStart = queryData.getOption().getLimitStart();
         String limitEnd = queryData.getOption().getLimitEnd();
 
-        StringBuilder optionBuilder =
-                new StringBuilder()
-                        .append(
-                                String.format(
-                                        "select * from `%s`.`%s`",
-                                        queryData.getSchemaName(), queryData.getTableName()));
+        StringBuilder optionBuilder = new StringBuilder()
+                .append(String.format("select * from `%s`.`%s`", queryData.getSchemaName(), queryData.getTableName()));
 
         if (where != null && !where.equals("")) {
             optionBuilder.append(" where ").append(where);
@@ -217,9 +198,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
         }
         if (Asserts.isNotNullString(table.getComment())) {
             sb.append(
-                    String.format(
-                            " FROM `%s`.`%s`; -- %s\n",
-                            table.getSchema(), table.getName(), table.getComment()));
+                    String.format(" FROM `%s`.`%s`; -- %s\n", table.getSchema(), table.getName(), table.getComment()));
         } else {
             sb.append(String.format(" FROM `%s`.`%s`;\n", table.getSchema(), table.getName()));
         }

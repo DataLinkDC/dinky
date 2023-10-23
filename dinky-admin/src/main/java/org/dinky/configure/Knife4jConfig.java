@@ -38,9 +38,14 @@ import org.springframework.boot.actuate.endpoint.web.annotation.ServletEndpoints
 import org.springframework.boot.actuate.endpoint.web.servlet.WebMvcEndpointHandlerMapping;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
+import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
+
+import lombok.RequiredArgsConstructor;
+import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -48,11 +53,18 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 @Configuration
+@EnableSwagger2WebMvc
+@RequiredArgsConstructor
+@Import(BeanValidatorPluginsConfiguration.class)
 public class Knife4jConfig {
+
     @Value("${dinky.version}")
     private String dinkyVersion;
+
+    private final OpenApiExtensionResolver openApiExtensionResolver;
 
     @Bean(value = "defaultApi2")
     public Docket defaultApi2() {
@@ -63,13 +75,14 @@ public class Knife4jConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("org.dinky.controller"))
                 .paths(PathSelectors.any())
-                .build();
+                .build()
+                .extensions(openApiExtensionResolver.buildSettingExtensions());
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Dinky REST APIS")
-                .description("Dinky REST APIS")
+                .title("Dinky Rest API Document")
+                .description("Dinky Rest API Document")
                 .version(dinkyVersion)
                 .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0")
                 .license("Apache 2.0")
@@ -86,7 +99,7 @@ public class Knife4jConfig {
             CorsEndpointProperties corsProperties,
             WebEndpointProperties webEndpointProperties,
             Environment environment) {
-        List<ExposableEndpoint<?>> allEndpoints = new ArrayList();
+        List<ExposableEndpoint<?>> allEndpoints = new ArrayList<>();
         Collection<ExposableWebEndpoint> webEndpoints = webEndpointsSupplier.getEndpoints();
         allEndpoints.addAll(webEndpoints);
         allEndpoints.addAll(servletEndpointsSupplier.getEndpoints());
@@ -109,7 +122,6 @@ public class Knife4jConfig {
             WebEndpointProperties webEndpointProperties, Environment environment, String basePath) {
         return webEndpointProperties.getDiscovery().isEnabled()
                 && (StringUtils.hasText(basePath)
-                        || ManagementPortType.get(environment)
-                                .equals(ManagementPortType.DIFFERENT));
+                        || ManagementPortType.get(environment).equals(ManagementPortType.DIFFERENT));
     }
 }

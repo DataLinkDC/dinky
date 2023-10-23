@@ -68,9 +68,7 @@ public class StarRocksDriver extends AbstractJdbcDriver {
             String type = item.toUpperCase();
             if (type.startsWith("SELECT") || type.startsWith("SHOW") || type.startsWith("DESC")) {
                 result = query(item, limit);
-            } else if (type.startsWith("INSERT")
-                    || type.startsWith("UPDATE")
-                    || type.startsWith("DELETE")) {
+            } else if (type.startsWith("INSERT") || type.startsWith("UPDATE") || type.startsWith("DELETE")) {
                 try {
                     resList.add(executeUpdate(item));
                     result.setStatusList(resList);

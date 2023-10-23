@@ -24,14 +24,10 @@ import org.dinky.alert.AlertBaseConstant;
 /** FeiShuConstants */
 public class FeiShuConstants extends AlertBaseConstant {
     public static final String TYPE = "FeiShu";
-
-    /** FeiShu alert baseconstant */
-    public static final String FEI_SHU_TEXT_TEMPLATE =
-            "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":\"{msg} {users} \" }}";
-
-    public static final String FEI_SHU_POST_TEMPLATE =
-            "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":{\"zh_cn\":{\"title\":\"{keyword}\","
-                    + "\"content\":[[{\"tag\":\"text\",\"un_escape\": true,\"text\":\"{msg}\"},{users}]]}}}}";
     public static final String SIGN_TMESTAMP = "timestamp";
     public static final String SIGN = "sign";
+    public static final String ALERT_TEMPLATE_TITLE = "title";
+    public static final String ALERT_TEMPLATE_CONTENT = "content";
+    public static final String ALERT_TEMPLATE_KEYWORD = "keyword";
+    public static final String ALERT_TEMPLATE_AT_USERS = "atUsers";
 }

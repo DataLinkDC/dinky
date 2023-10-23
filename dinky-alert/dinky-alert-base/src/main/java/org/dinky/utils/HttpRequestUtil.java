@@ -33,8 +33,7 @@ import org.apache.http.impl.client.HttpClients;
 public final class HttpRequestUtil {
 
     private HttpRequestUtil() {
-        throw new UnsupportedOperationException(
-                "This is a utility class and cannot be instantiated");
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 
     public static CloseableHttpClient getHttpClient(
@@ -42,8 +41,7 @@ public final class HttpRequestUtil {
         if (enableProxy) {
             HttpHost httpProxy = new HttpHost(proxy, port);
             CredentialsProvider provider = new BasicCredentialsProvider();
-            provider.setCredentials(
-                    new AuthScope(httpProxy), new UsernamePasswordCredentials(user, password));
+            provider.setCredentials(new AuthScope(httpProxy), new UsernamePasswordCredentials(user, password));
             return HttpClients.custom().setDefaultCredentialsProvider(provider).build();
         } else {
             return HttpClients.createDefault();

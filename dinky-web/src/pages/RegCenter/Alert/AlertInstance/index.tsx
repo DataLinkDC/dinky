@@ -15,18 +15,17 @@
  * limitations under the License.
  */
 
-
-import React from 'react';
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 import AlertInstanceList from '@/pages/RegCenter/Alert/AlertInstance/components/AlertInstanceList';
-import {PageContainer} from '@ant-design/pro-components';
-import Scale from '@/components/Animation/Scale';
-
+import { PageContainer } from '@ant-design/pro-components';
+export { ALERT_MODEL, ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
 
 export default () => {
-  return <Scale>
-    <PageContainer title={false}>
-      <AlertInstanceList/>
-    </PageContainer>
-  </Scale>;
-}
-
+  return (
+    <SlowlyAppear>
+      <PageContainer title={false}>
+        <AlertInstanceList />
+      </PageContainer>
+    </SlowlyAppear>
+  );
+};

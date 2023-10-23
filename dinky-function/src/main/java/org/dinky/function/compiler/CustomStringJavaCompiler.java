@@ -86,11 +86,9 @@ public class CustomStringJavaCompiler {
     public boolean compilerToTmpPath(String tmpPath) {
         long startTime = System.currentTimeMillis();
         File codeFile =
-                FileUtil.writeUtf8String(
-                        sourceCode, tmpPath + StrUtil.replace(fullClassName, ".", "/") + ".java");
+                FileUtil.writeUtf8String(sourceCode, tmpPath + StrUtil.replace(fullClassName, ".", "/") + ".java");
         // 标准的内容管理器,更换成自己的实现，覆盖部分方法
-        StandardJavaFileManager standardFileManager =
-                compiler.getStandardFileManager(diagnosticsCollector, null, null);
+        StandardJavaFileManager standardFileManager = compiler.getStandardFileManager(diagnosticsCollector, null, null);
         try {
             standardFileManager.setLocation(
                     StandardLocation.CLASS_OUTPUT, Collections.singletonList(new File(tmpPath)));
@@ -98,18 +96,11 @@ public class CustomStringJavaCompiler {
             throw new RuntimeException(e);
         }
         Iterable<? extends JavaFileObject> javaFileObject =
-                standardFileManager.getJavaFileObjectsFromFiles(
-                        Collections.singletonList(codeFile));
+                standardFileManager.getJavaFileObjectsFromFiles(Collections.singletonList(codeFile));
 
         // 获取一个编译任务
         JavaCompiler.CompilationTask task =
-                compiler.getTask(
-                        null,
-                        standardFileManager,
-                        diagnosticsCollector,
-                        null,
-                        null,
-                        javaFileObject);
+                compiler.getTask(null, standardFileManager, diagnosticsCollector, null, null, javaFileObject);
         // 设置编译耗时
         compilerTakeTime = System.currentTimeMillis() - startTime;
         return task.call();
@@ -118,8 +109,7 @@ public class CustomStringJavaCompiler {
     /** @return 编译信息(错误 警告) */
     public String getCompilerMessage() {
         StringBuilder sb = new StringBuilder();
-        List<Diagnostic<? extends JavaFileObject>> diagnostics =
-                diagnosticsCollector.getDiagnostics();
+        List<Diagnostic<? extends JavaFileObject>> diagnostics = diagnosticsCollector.getDiagnostics();
         for (Diagnostic diagnostic : diagnostics) {
             sb.append(diagnostic.toString()).append("\r\n");
         }
@@ -141,7 +131,8 @@ public class CustomStringJavaCompiler {
         Pattern pattern = Pattern.compile("package\\s+\\S+\\s*;");
         Matcher matcher = pattern.matcher(sourceCode);
         if (matcher.find()) {
-            className = matcher.group().replaceFirst("package", "").replace(";", "").trim() + ".";
+            className =
+                    matcher.group().replaceFirst("package", "").replace(";", "").trim() + ".";
         }
 
         pattern = Pattern.compile("class\\s+(\\S+)\\s+");
@@ -160,12 +151,7 @@ public class CustomStringJavaCompiler {
 
         // java源代码 => StringJavaFileObject对象 的时候使用
         public StringJavaFileObject(String className, String contents) {
-            super(
-                    URI.create(
-                            "string:///"
-                                    + className.replaceAll("\\.", "/")
-                                    + Kind.SOURCE.extension),
-                    Kind.SOURCE);
+            super(URI.create("string:///" + className.replaceAll("\\.", "/") + Kind.SOURCE.extension), Kind.SOURCE);
             this.contents = contents;
         }
 
@@ -183,12 +169,7 @@ public class CustomStringJavaCompiler {
         private ByteArrayOutputStream outPutStream;
 
         public ByteJavaFileObject(String className, Kind kind) {
-            super(
-                    URI.create(
-                            "string:///"
-                                    + className.replaceAll("\\.", "/")
-                                    + Kind.SOURCE.extension),
-                    kind);
+            super(URI.create("string:///" + className.replaceAll("\\.", "/") + Kind.SOURCE.extension), kind);
         }
 
         // StringJavaFileManage 编译之后的字节码输出会调用该方法（把字节码输出到outputStream）
@@ -214,8 +195,7 @@ public class CustomStringJavaCompiler {
         // 获取输出的文件对象，它表示给定位置处指定类型的指定类。
         @Override
         public JavaFileObject getJavaFileForOutput(
-                Location location, String className, JavaFileObject.Kind kind, FileObject sibling)
-                throws IOException {
+                Location location, String className, JavaFileObject.Kind kind, FileObject sibling) throws IOException {
             ByteJavaFileObject javaFileObject = new ByteJavaFileObject(className, kind);
             javaFileObjectMap.put(className, javaFileObject);
             return javaFileObject;

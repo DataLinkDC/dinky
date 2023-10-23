@@ -17,80 +17,74 @@
  *
  */
 
-
-import {Form, Modal} from "antd";
-import React, {useEffect} from "react";
-import {FormContextValue} from "@/components/Context/FormContext";
-import {GlobalVar} from "@/types/RegCenter/data";
-import {NORMAL_MODAL_OPTIONS} from "@/services/constants";
-import {l} from "@/utils/intl";
-import GlobalVarForm from "@/pages/RegCenter/GlobalVar/components/GlobalVarModal/GlobalVarForm";
+import { FormContextValue } from '@/components/Context/FormContext';
+import GlobalVarForm from '@/pages/RegCenter/GlobalVar/components/GlobalVarModal/GlobalVarForm';
+import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
+import { GlobalVar } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { Form, Modal } from 'antd';
+import React, { useEffect } from 'react';
 
 type GlobalVarModalProps = {
-    onSubmit: (values: Partial<GlobalVar>) => void;
-    onCancel: () => void;
-    modalVisible: boolean;
-    values: Partial<GlobalVar>;
-}
+  onSubmit: (values: Partial<GlobalVar>) => void;
+  onCancel: () => void;
+  modalVisible: boolean;
+  values: Partial<GlobalVar>;
+};
 const GlobalVarModal: React.FC<GlobalVarModalProps> = (props) => {
+  /**
+   * init form
+   */
+  const [form] = Form.useForm();
+  /**
+   * init form context
+   */
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
+    }),
+    [form]
+  );
 
-    /**
-     * init form
-     */
-    const [form] = Form.useForm();
-    /**
-     * init form context
-     */
-    const formContext = React.useMemo<FormContextValue>(() => ({
-        resetForm: () => form.resetFields(), // 定义 resetForm 方法
-    }), [form]);
+  /**
+   * init props
+   */
+  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
 
-    /**
-     * init props
-     */
-    const {
-        onSubmit: handleSubmit,
-        onCancel: handleModalVisible,
-        modalVisible,
-        values
-    } = props;
+  /**
+   * when modalVisible or values changed, set form values
+   */
+  useEffect(() => {
+    form.setFieldsValue(values);
+  }, [modalVisible, values, form]);
 
-    /**
-     * when modalVisible or values changed, set form values
-     */
-    useEffect(() => {
-        form.setFieldsValue(values);
-    }, [modalVisible, values, form]);
+  /**
+   * handle cancel
+   */
+  const handleCancel = () => {
+    handleModalVisible();
+    formContext.resetForm();
+  };
+  /**
+   * submit form
+   */
+  const submitForm = async () => {
+    const fieldsValue = await form.validateFields();
+    handleSubmit({ ...values, ...fieldsValue });
+    handleCancel();
+  };
 
-    /**
-     * handle cancel
-     */
-    const handleCancel = () => {
-        handleModalVisible();
-        formContext.resetForm();
-    }
-    /**
-     * submit form
-     */
-    const submitForm = async () => {
-        const fieldsValue = await form.validateFields();
-        await handleSubmit({...values, ...fieldsValue});
-        await handleCancel();
-    };
-
-
-
-    return <>
-        <Modal
-            {...NORMAL_MODAL_OPTIONS}
-            title={values.id ? l('rc.gv.modify') : l('rc.gv.create')}
-            open={modalVisible}
-            onOk={() => submitForm()}
-            onCancel={() => handleModalVisible()}
-        >
-            <GlobalVarForm form={form} values={values}/>
-        </Modal>
-    </>
-}
+  return (
+    <Modal
+      {...NORMAL_MODAL_OPTIONS}
+      title={values.id ? l('rc.gv.modify') : l('rc.gv.create')}
+      open={modalVisible}
+      onOk={() => submitForm()}
+      onCancel={() => handleModalVisible()}
+    >
+      <GlobalVarForm form={form} values={values} />
+    </Modal>
+  );
+};
 
 export default GlobalVarModal;

@@ -19,12 +19,11 @@
 
 package org.dinky.alert.feishu;
 
-import org.dinky.alert.AlertMsg;
+import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,49 +35,38 @@ import org.junit.Test;
 public class FeiShuSenderTest {
 
     private static Map<String, String> feiShuConfig = new HashMap<>();
-    private AlertMsg alertMsg = new AlertMsg();
 
     @Before
     public void initFeiShuConfig() {
-        String uuid = UUID.randomUUID().toString();
-
-        alertMsg.setAlertType("实时告警监控");
-        alertMsg.setAlertTime("2018-08-06 10:31:34.0");
-        alertMsg.setJobID(uuid);
-        alertMsg.setJobName("测试任务");
-        alertMsg.setJobType("SQL");
-        alertMsg.setJobStatus("FAILED");
-        alertMsg.setJobStartTime("2018-08-06 10:31:34.0");
-        alertMsg.setJobEndTime("2018-08-06 10:31:49.0");
-        alertMsg.setJobDuration("23 Seconds");
-        String linkUrl = "[跳转至该任务的FlinkWeb](http://cdh1:8081/#/job/" + uuid + "/overview)";
-        alertMsg.setLinkUrl(linkUrl);
-        String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/" + uuid + "/exceptions)";
-        alertMsg.setExceptionUrl(exceptionUrl);
-
-        feiShuConfig.put(
-                FeiShuConstants.WEB_HOOK,
-                "https://open.feishu.cn/open-apis/bot/v2/hook/aea3cd7f-75b4-45cd-abea-2c0dc808f2a9");
-        feiShuConfig.put(FeiShuConstants.KEYWORD, "Dinky 飞书WebHook 告警测试");
-        feiShuConfig.put(FeiShuConstants.MSG_TYPE, "text");
-        feiShuConfig.put(FeiShuConstants.AT_ALL, "true");
-        feiShuConfig.put(FeiShuConstants.AT_USERS, "zhumingye");
+        feiShuConfig.put(FeiShuConstants.WEB_HOOK, "https://open.feishu.cn/open-apis/bot/v2/hook/key");
+        feiShuConfig.put(FeiShuConstants.KEYWORD, "Dinky");
+        feiShuConfig.put(FeiShuConstants.AT_ALL, "false");
+        feiShuConfig.put(FeiShuConstants.AT_USERS, "gaoyan");
     }
 
     @Ignore
     @Test
-    public void testTextTypeSend() {
-        FeiShuSender feiShuSender = new FeiShuSender(feiShuConfig);
-        AlertResult alertResult = feiShuSender.send("FeiShu Alert", alertMsg.toString());
-        Assert.assertEquals(true, alertResult.getSuccess());
-    }
+    public void testSend() {
 
-    @Ignore
-    @Test
-    public void testPostTypeSend() {
-        feiShuConfig.put(FeiShuConstants.MSG_TYPE, "post");
-        FeiShuSender feiShuSender = new FeiShuSender(feiShuConfig);
-        AlertResult alertResult = feiShuSender.send("FeiShu Alert", alertMsg.toString());
+        String msg =
+                "> The Dinky platform has detected an abnormality in your task. Please go to the Dinky Task page to check the task status.\n"
+                        + "- **Job Name : <font color='#0000FF'>Test Job</font>**\n"
+                        + "- **Job Status : <font color='#FF0000'>FAILED</font>**\n"
+                        + "- **Alert Time : 2023-01-01  12:00:00**\n"
+                        + "- **Start Time : 2023-01-01  12:00:00**\n"
+                        + "- **End Time : 2023-01-01  12:00:00**\n"
+                        + "> **<font color='#FF0000'>The test exception, your job exception will pass here</font>**\n"
+                        + "\n"
+                        + "> Dinky Team  [Go toTask Web](https://github.com/DataLinkDC/dinky)";
+
+        FeiShuAlert feiShuAlert = new FeiShuAlert();
+        AlertConfig alertConfig = new AlertConfig();
+
+        alertConfig.setType("FeiShu");
+        alertConfig.setParam(feiShuConfig);
+        feiShuAlert.setConfig(alertConfig);
+
+        AlertResult alertResult = feiShuAlert.send("FeiShu Alert", msg);
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 }

@@ -33,8 +33,6 @@ import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.model.ProcessEntity;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.TextUtil;
 
@@ -59,24 +57,21 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
 import cn.hutool.core.text.CharSequenceUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * AbstractJdbcDriver
  *
  * @since 2021/7/20 14:09
  */
+@Slf4j
 public abstract class AbstractJdbcDriver extends AbstractDriver {
-
-    protected static Logger logger = LoggerFactory.getLogger(AbstractJdbcDriver.class);
 
     protected ThreadLocal<Connection> conn = new ThreadLocal<>();
 
@@ -93,7 +88,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             DriverManager.getConnection(config.getUrl(), config.getUsername(), config.getPassword())
                     .close();
         } catch (Exception e) {
-            logger.error("Jdbc链接测试失败！错误信息为：" + e.getMessage(), e);
+            log.error("Jdbc链接测试失败！错误信息为：" + e.getMessage(), e);
             return e.getMessage();
         }
         return CommonConstant.HEALTHY;
@@ -217,8 +212,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public boolean existSchema(String schemaName) {
-        return listSchemas().stream()
-                .anyMatch(schemaItem -> Asserts.isEquals(schemaItem.getName(), schemaName));
+        return listSchemas().stream().anyMatch(schemaItem -> Asserts.isEquals(schemaItem.getName(), schemaName));
     }
 
     @Override
@@ -314,9 +308,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 String columnName = results.getString(dbQuery.columnName());
                 if (columnList.contains(dbQuery.columnKey())) {
                     String key = results.getString(dbQuery.columnKey());
-                    field.setKeyFlag(
-                            Asserts.isNotNullString(key)
-                                    && Asserts.isEqualsIgnoreCase(dbQuery.isPK(), key));
+                    field.setKeyFlag(Asserts.isNotNullString(key) && Asserts.isEqualsIgnoreCase(dbQuery.isPK(), key));
                 }
                 field.setName(columnName);
                 if (columnList.contains(dbQuery.columnType())) {
@@ -351,10 +343,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                     }
                 }
                 if (columnList.contains(dbQuery.isNullable())) {
-                    field.setNullable(
-                            Asserts.isEqualsIgnoreCase(
-                                    results.getString(dbQuery.isNullable()),
-                                    dbQuery.nullableValue()));
+                    field.setNullable(Asserts.isEqualsIgnoreCase(
+                            results.getString(dbQuery.isNullable()), dbQuery.nullableValue()));
                 }
                 if (columnList.contains(dbQuery.characterSet())) {
                     field.setCharacterSet(results.getString(dbQuery.characterSet()));
@@ -376,8 +366,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 }
                 if (columnList.contains(dbQuery.autoIncrement())) {
                     field.setAutoIncrement(
-                            Asserts.isEqualsIgnoreCase(
-                                    results.getString(dbQuery.autoIncrement()), "auto_increment"));
+                            Asserts.isEqualsIgnoreCase(results.getString(dbQuery.autoIncrement()), "auto_increment"));
                 }
                 if (columnList.contains(dbQuery.defaultValue())) {
                     field.setDefaultValue(results.getString(dbQuery.defaultValue()));
@@ -533,12 +522,11 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         String limitStart = queryData.getOption().getLimitStart();
         String limitEnd = queryData.getOption().getLimitEnd();
 
-        StringBuilder optionBuilder =
-                new StringBuilder()
-                        .append("select * from ")
-                        .append(queryData.getSchemaName())
-                        .append(".")
-                        .append(queryData.getTableName());
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
 
         if (where != null && !where.equals("")) {
             optionBuilder.append(" where ").append(where);
@@ -560,7 +548,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public JdbcSelectResult query(String sql, Integer limit) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        // TODO 改为ProcessStep注释
         if (Asserts.isNull(limit)) {
             limit = 100;
         }
@@ -613,7 +601,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         } catch (Exception e) {
             result.setError(LogUtil.getError(e));
             result.setSuccess(false);
-            process.error(e.getMessage());
+            log.error(e.getMessage());
         } finally {
             close(preparedStatement, results);
             result.setRowData(datas);
@@ -630,40 +618,39 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
      */
     @Override
     public JdbcSelectResult executeSql(String sql, Integer limit) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
-        process.info("Start parse sql...");
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, config.getType().toLowerCase());
-        process.info(
-                CharSequenceUtil.format(
-                        "A total of {} statement have been Parsed.", stmtList.size()));
+        // TODO 改为ProcessStep注释
+        log.info("Start parse sql...");
+        List<SQLStatement> stmtList =
+                SQLUtils.parseStatements(sql, config.getType().toLowerCase());
+        log.info(CharSequenceUtil.format("A total of {} statement have been Parsed.", stmtList.size()));
         List<Object> resList = new ArrayList<>();
         JdbcSelectResult result = JdbcSelectResult.buildResult();
-        process.info("Start execute sql...");
+        log.info("Start execute sql...");
         for (SQLStatement item : stmtList) {
             String type = item.getClass().getSimpleName();
             if (type.toUpperCase().contains("SELECT")
                     || type.toUpperCase().contains("SHOW")
                     || type.toUpperCase().contains("DESC")
                     || type.toUpperCase().contains("SQLEXPLAINSTATEMENT")) {
-                process.info("Execute query.");
+                log.info("Execute query.");
                 result = query(item.toString(), limit);
             } else if (type.toUpperCase().contains("INSERT")
                     || type.toUpperCase().contains("UPDATE")
                     || type.toUpperCase().contains("DELETE")) {
                 try {
-                    process.info("Execute update.");
+                    log.info("Execute update.");
                     resList.add(executeUpdate(item.toString()));
                     result.setStatusList(resList);
                 } catch (Exception e) {
                     resList.add(0);
                     result.setStatusList(resList);
                     result.error(LogUtil.getError(e));
-                    process.error(e.getMessage());
+                    log.error(e.getMessage());
                     return result;
                 }
             } else {
                 try {
-                    process.info("Execute DDL.");
+                    log.info("Execute DDL.");
                     execute(item.toString());
                     resList.add(1);
                     result.setStatusList(resList);
@@ -671,7 +658,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                     resList.add(0);
                     result.setStatusList(resList);
                     result.error(LogUtil.getError(e));
-                    process.error(e.getMessage());
+                    log.error(e.getMessage());
                     return result;
                 }
             }
@@ -682,10 +669,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public List<SqlExplainResult> explain(String sql) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        // TODO 改为ProcessStep注释
         List<SqlExplainResult> sqlExplainResults = new ArrayList<>();
         String current = null;
-        process.info("Start check sql...");
+        log.info("Start check sql...");
         try {
             List<SQLStatement> stmtList =
                     SQLUtils.parseStatements(sql, config.getType().toLowerCase());
@@ -694,10 +681,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 String type = item.getClass().getSimpleName();
                 sqlExplainResults.add(SqlExplainResult.success(type, current, null));
             }
-            process.info("Sql is correct.");
+            log.info("Sql is correct.");
         } catch (Exception e) {
             sqlExplainResults.add(SqlExplainResult.fail(current, LogUtil.getError(e)));
-            process.error(e.getMessage());
+            log.error(e.getMessage());
         } finally {
             return sqlExplainResults;
         }
@@ -712,9 +699,11 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
         IDBQuery dbQuery = getDBQuery();
-        String sql =
-                "select DATA_LENGTH,TABLE_NAME AS `NAME`,TABLE_SCHEMA AS `Database`,TABLE_COMMENT AS COMMENT,TABLE_CATALOG AS `CATALOG`,TABLE_TYPE"
-                        + " AS `TYPE`,ENGINE AS `ENGINE`,CREATE_OPTIONS AS `OPTIONS`,TABLE_ROWS AS `ROWS`,CREATE_TIME,UPDATE_TIME from information_schema.tables WHERE TABLE_TYPE='BASE TABLE'";
+        String sql = "select DATA_LENGTH,TABLE_NAME AS `NAME`,TABLE_SCHEMA AS `Database`,TABLE_COMMENT"
+                + " AS COMMENT,TABLE_CATALOG AS `CATALOG`,TABLE_TYPE AS `TYPE`,ENGINE AS"
+                + " `ENGINE`,CREATE_OPTIONS AS `OPTIONS`,TABLE_ROWS AS"
+                + " `ROWS`,CREATE_TIME,UPDATE_TIME from information_schema.tables WHERE"
+                + " TABLE_TYPE='BASE TABLE'";
         List<Map<String, String>> schemas = null;
         try {
             preparedStatement = conn.get().prepareStatement(sql);
@@ -751,127 +740,65 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             String database = split[0];
             String tableName = split[1];
             // 匹配对应的表
-            List<Map<String, String>> mapList =
-                    schemaList.stream()
-                            // 过滤不匹配的表
-                            .filter(
-                                    x ->
-                                            contains(database, x.get(dbQuery.schemaName()))
-                                                    && contains(
-                                                            tableName, x.get(dbQuery.tableName())))
-                            .collect(Collectors.toList());
-            List<Table> tableList =
-                    mapList.stream()
-                            // 去重
-                            .collect(
-                                    Collectors.collectingAndThen(
-                                            Collectors.toCollection(
-                                                    () ->
-                                                            new TreeSet<>(
-                                                                    Comparator.comparing(
-                                                                            x ->
-                                                                                    getReValue(
-                                                                                                    x
-                                                                                                            .get(
-                                                                                                                    dbQuery
-                                                                                                                            .schemaName()),
-                                                                                                    splitConfig)
-                                                                                            + "."
-                                                                                            + getReValue(
-                                                                                                    x
-                                                                                                            .get(
-                                                                                                                    dbQuery
-                                                                                                                            .tableName()),
-                                                                                                    splitConfig)))),
-                                            ArrayList::new))
-                            .stream()
-                            .map(
-                                    x -> {
-                                        Table tableInfo = new Table();
-                                        tableInfo.setName(
-                                                getReValue(
-                                                        x.get(dbQuery.tableName()), splitConfig));
-                                        tableInfo.setComment(x.get(dbQuery.tableComment()));
-                                        tableInfo.setSchema(
-                                                getReValue(
-                                                        x.get(dbQuery.schemaName()), splitConfig));
-                                        tableInfo.setType(x.get(dbQuery.tableType()));
-                                        tableInfo.setCatalog(x.get(dbQuery.catalogName()));
-                                        tableInfo.setEngine(x.get(dbQuery.engine()));
-                                        tableInfo.setOptions(x.get(dbQuery.options()));
-                                        tableInfo.setRows(Long.valueOf(x.get(dbQuery.rows())));
-                                        try {
-                                            tableInfo.setCreateTime(
-                                                    SimpleDateFormat.getDateInstance()
-                                                            .parse(x.get(dbQuery.createTime())));
-                                            String updateTime = x.get(dbQuery.updateTime());
-                                            if (Asserts.isNotNullString(updateTime)) {
-                                                tableInfo.setUpdateTime(
-                                                        SimpleDateFormat.getDateInstance()
-                                                                .parse(updateTime));
-                                            }
-                                        } catch (ParseException ignored) {
-                                            logger.warn("set date fail");
-                                        }
-                                        TableType tableType =
-                                                TableType.type(
-                                                        isSplit(
-                                                                x.get(dbQuery.schemaName()),
-                                                                splitConfig),
-                                                        isSplit(
-                                                                x.get(dbQuery.tableName()),
-                                                                splitConfig));
-                                        tableInfo.setTableType(tableType);
+            List<Map<String, String>> mapList = schemaList.stream()
+                    // 过滤不匹配的表
+                    .filter(x -> contains(database, x.get(dbQuery.schemaName()))
+                            && contains(tableName, x.get(dbQuery.tableName())))
+                    .collect(Collectors.toList());
+            List<Table> tableList = mapList.stream()
+                    // 去重
+                    .collect(Collectors.collectingAndThen(
+                            Collectors.toCollection(() -> new TreeSet<>(
+                                    Comparator.comparing(x -> getReValue(x.get(dbQuery.schemaName()), splitConfig)
+                                            + "."
+                                            + getReValue(x.get(dbQuery.tableName()), splitConfig)))),
+                            ArrayList::new))
+                    .stream()
+                    .map(x -> {
+                        Table tableInfo = new Table();
+                        tableInfo.setName(getReValue(x.get(dbQuery.tableName()), splitConfig));
+                        tableInfo.setComment(x.get(dbQuery.tableComment()));
+                        tableInfo.setSchema(getReValue(x.get(dbQuery.schemaName()), splitConfig));
+                        tableInfo.setType(x.get(dbQuery.tableType()));
+                        tableInfo.setCatalog(x.get(dbQuery.catalogName()));
+                        tableInfo.setEngine(x.get(dbQuery.engine()));
+                        tableInfo.setOptions(x.get(dbQuery.options()));
+                        tableInfo.setRows(Long.valueOf(x.get(dbQuery.rows())));
+                        try {
+                            tableInfo.setCreateTime(
+                                    SimpleDateFormat.getDateInstance().parse(x.get(dbQuery.createTime())));
+                            String updateTime = x.get(dbQuery.updateTime());
+                            if (Asserts.isNotNullString(updateTime)) {
+                                tableInfo.setUpdateTime(
+                                        SimpleDateFormat.getDateInstance().parse(updateTime));
+                            }
+                        } catch (ParseException ignored) {
+                            log.warn("set date fail");
+                        }
+                        TableType tableType = TableType.type(
+                                isSplit(x.get(dbQuery.schemaName()), splitConfig),
+                                isSplit(x.get(dbQuery.tableName()), splitConfig));
+                        tableInfo.setTableType(tableType);
 
-                                        if (tableType != TableType.SINGLE_DATABASE_AND_TABLE) {
-                                            String currentSchemaName =
-                                                    getReValue(
-                                                                    x.get(dbQuery.schemaName()),
-                                                                    splitConfig)
-                                                            + "."
-                                                            + getReValue(
-                                                                    x.get(dbQuery.tableName()),
-                                                                    splitConfig);
-                                            List<String> schemaTableNameList =
-                                                    mapList.stream()
-                                                            .filter(
-                                                                    y ->
-                                                                            (getReValue(
-                                                                                                    y
-                                                                                                            .get(
-                                                                                                                    dbQuery
-                                                                                                                            .schemaName()),
-                                                                                                    splitConfig)
-                                                                                            + "."
-                                                                                            + getReValue(
-                                                                                                    y
-                                                                                                            .get(
-                                                                                                                    dbQuery
-                                                                                                                            .tableName()),
-                                                                                                    splitConfig))
-                                                                                    .equals(
-                                                                                            currentSchemaName))
-                                                            .map(
-                                                                    y ->
-                                                                            y.get(
-                                                                                            dbQuery
-                                                                                                    .schemaName())
-                                                                                    + "."
-                                                                                    + y.get(
-                                                                                            dbQuery
-                                                                                                    .tableName()))
-                                                            .collect(Collectors.toList());
-                                            tableInfo.setSchemaTableNameList(schemaTableNameList);
-                                        } else {
-                                            tableInfo.setSchemaTableNameList(
-                                                    Collections.singletonList(
-                                                            x.get(dbQuery.schemaName())
-                                                                    + "."
-                                                                    + x.get(dbQuery.tableName())));
-                                        }
-                                        return tableInfo;
-                                    })
-                            .collect(Collectors.toList());
+                        if (tableType != TableType.SINGLE_DATABASE_AND_TABLE) {
+                            String currentSchemaName = getReValue(x.get(dbQuery.schemaName()), splitConfig)
+                                    + "."
+                                    + getReValue(x.get(dbQuery.tableName()), splitConfig);
+                            List<String> schemaTableNameList = mapList.stream()
+                                    .filter(y -> (getReValue(y.get(dbQuery.schemaName()), splitConfig)
+                                                    + "."
+                                                    + getReValue(y.get(dbQuery.tableName()), splitConfig))
+                                            .equals(currentSchemaName))
+                                    .map(y -> y.get(dbQuery.schemaName()) + "." + y.get(dbQuery.tableName()))
+                                    .collect(Collectors.toList());
+                            tableInfo.setSchemaTableNameList(schemaTableNameList);
+                        } else {
+                            tableInfo.setSchemaTableNameList(Collections.singletonList(
+                                    x.get(dbQuery.schemaName()) + "." + x.get(dbQuery.tableName())));
+                        }
+                        return tableInfo;
+                    })
+                    .collect(Collectors.toList());
             set.addAll(tableList);
         }
         return set;

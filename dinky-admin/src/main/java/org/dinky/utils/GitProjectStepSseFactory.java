@@ -73,31 +73,24 @@ public final class GitProjectStepSseFactory {
         sseEmitterMap.put(gitProject.getId(), emitterList);
     }
 
-    private static StepSse getHeadStepPlan(
-            Integer codeType, int sleep, List<SseEmitter> emitterList, Dict params) {
+    private static StepSse getHeadStepPlan(Integer codeType, int sleep, List<SseEmitter> emitterList, Dict params) {
         AtomicInteger msgId = new AtomicInteger(1);
         AtomicInteger stepAtomic = new AtomicInteger(1);
 
-        HeadStepSse headStepSse =
-                new HeadStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+        HeadStepSse headStepSse = new HeadStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
         GitCloneStepSse gitCloneStepSse =
-                new GitCloneStepSse(
-                        sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+                new GitCloneStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
 
-        DoneStepSse doneStepSse =
-                new DoneStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+        DoneStepSse doneStepSse = new DoneStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
         headStepSse.setNexStepSse(gitCloneStepSse);
         switch (codeType) {
             case 1:
                 MavenStepSse mavenStepSse =
-                        new MavenStepSse(
-                                sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+                        new MavenStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
                 GetJarsStepSse getJarsStepSse =
-                        new GetJarsStepSse(
-                                sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+                        new GetJarsStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
                 AnalysisUdfClassStepSse analysisUdfClassStepSse =
-                        new AnalysisUdfClassStepSse(
-                                sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+                        new AnalysisUdfClassStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
                 gitCloneStepSse.setNexStepSse(mavenStepSse);
                 mavenStepSse.setNexStepSse(getJarsStepSse);
                 getJarsStepSse.setNexStepSse(analysisUdfClassStepSse);
@@ -105,11 +98,9 @@ public final class GitProjectStepSseFactory {
                 return headStepSse;
             case 2:
                 PythonZipStepSse pythonZipStepSse =
-                        new PythonZipStepSse(
-                                sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+                        new PythonZipStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
                 AnalysisUdfPythonStepSse analysisUdfPythonStepSse =
-                        new AnalysisUdfPythonStepSse(
-                                sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+                        new AnalysisUdfPythonStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
 
                 gitCloneStepSse.setNexStepSse(pythonZipStepSse);
                 pythonZipStepSse.setNexStepSse(analysisUdfPythonStepSse);
@@ -126,34 +117,24 @@ public final class GitProjectStepSseFactory {
         Integer step = gitProject.getBuildStep();
         getHeadStepPlan(gitProject.getCodeType(), 0, null, params).getStatus(step, state, dataList);
         try {
-            emitter.send(
-                    SseEmitter.event()
-                            .data(
-                                    StepResult.getStepInfo(
-                                            step, gitProject.getBuildState(), dataList)));
+            emitter.send(SseEmitter.event().data(StepResult.getStepInfo(step, gitProject.getBuildState(), dataList)));
 
             if (gitProject.getBuildState() == 3) {
-                StepResult data =
-                        StepResult.getData(
-                                gitProject.getCodeType().equals(1) ? 5 : 4,
-                                state,
-                                gitProject.getUdfClassMapList());
+                StepResult data = StepResult.getData(
+                        gitProject.getCodeType().equals(1) ? 5 : 4, state, gitProject.getUdfClassMapList());
                 emitter.send(SseEmitter.event().data(data));
             }
 
             File logDir = getLogDir(gitProject.getName(), gitProject.getBranch());
-            IntStream.range(1, step + 1)
-                    .forEach(
-                            s -> {
-                                String log = FileUtil.readUtf8String(new File(logDir, s + ".log"));
-                                StepResult stepResult =
-                                        StepResult.genLog(s, step == s ? state : 2, log, step != s);
-                                try {
-                                    emitter.send(SseEmitter.event().data(stepResult));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            });
+            IntStream.range(1, step + 1).forEach(s -> {
+                String log = FileUtil.readUtf8String(new File(logDir, s + ".log"));
+                StepResult stepResult = StepResult.genLog(s, step == s ? state : 2, log, step != s);
+                try {
+                    emitter.send(SseEmitter.event().data(stepResult));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

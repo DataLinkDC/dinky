@@ -70,8 +70,7 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
         return this;
     }
 
-    public PhoenixJdbcDynamicOutputFormatBuilder setJdbcExecutionOptions(
-            JdbcExecutionOptions executionOptions) {
+    public PhoenixJdbcDynamicOutputFormatBuilder setJdbcExecutionOptions(JdbcExecutionOptions executionOptions) {
         this.executionOptions = executionOptions;
         return this;
     }
@@ -81,8 +80,7 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
         return this;
     }
 
-    public PhoenixJdbcDynamicOutputFormatBuilder setRowDataTypeInfo(
-            TypeInformation<RowData> rowDataTypeInfo) {
+    public PhoenixJdbcDynamicOutputFormatBuilder setRowDataTypeInfo(TypeInformation<RowData> rowDataTypeInfo) {
         this.rowDataTypeInformation = rowDataTypeInfo;
         return this;
     }
@@ -98,9 +96,7 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
         checkNotNull(executionOptions, "jdbc execution options can not be null");
 
         final LogicalType[] logicalTypes =
-                Arrays.stream(fieldDataTypes)
-                        .map(DataType::getLogicalType)
-                        .toArray(LogicalType[]::new);
+                Arrays.stream(fieldDataTypes).map(DataType::getLogicalType).toArray(LogicalType[]::new);
         if (dmlOptions.getKeyFields().isPresent() && dmlOptions.getKeyFields().get().length > 0) {
             // upsert query
             return new JdbcBatchingOutputFormat<>(
@@ -109,31 +105,26 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
                             jdbcOptions.getNamespaceMappingEnabled(),
                             jdbcOptions.getMapSystemTablesToNamespace()),
                     executionOptions,
-                    ctx ->
-                            createBufferReduceExecutor(
-                                    dmlOptions, ctx, rowDataTypeInformation, logicalTypes),
+                    ctx -> createBufferReduceExecutor(dmlOptions, ctx, rowDataTypeInformation, logicalTypes),
                     JdbcBatchingOutputFormat.RecordExtractor.identity());
         } else {
             // append only query
-            final String sql =
-                    dmlOptions
-                            .getDialect()
-                            .getInsertIntoStatement(
-                                    dmlOptions.getTableName(), dmlOptions.getFieldNames());
+            final String sql = dmlOptions
+                    .getDialect()
+                    .getInsertIntoStatement(dmlOptions.getTableName(), dmlOptions.getFieldNames());
             return new JdbcBatchingOutputFormat<>(
                     new PhoneixJdbcConnectionProvider(
                             jdbcOptions,
                             jdbcOptions.getNamespaceMappingEnabled(),
                             jdbcOptions.getMapSystemTablesToNamespace()),
                     executionOptions,
-                    ctx ->
-                            createSimpleBufferedExecutor(
-                                    ctx,
-                                    dmlOptions.getDialect(),
-                                    dmlOptions.getFieldNames(),
-                                    logicalTypes,
-                                    sql,
-                                    rowDataTypeInformation),
+                    ctx -> createSimpleBufferedExecutor(
+                            ctx,
+                            dmlOptions.getDialect(),
+                            dmlOptions.getFieldNames(),
+                            logicalTypes,
+                            sql,
+                            rowDataTypeInformation),
                     JdbcBatchingOutputFormat.RecordExtractor.identity());
         }
     }
@@ -147,28 +138,18 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
         JdbcDialect dialect = opt.getDialect();
         String tableName = opt.getTableName();
         String[] pkNames = opt.getKeyFields().get();
-        int[] pkFields =
-                Arrays.stream(pkNames)
-                        .mapToInt(Arrays.asList(opt.getFieldNames())::indexOf)
-                        .toArray();
+        int[] pkFields = Arrays.stream(pkNames)
+                .mapToInt(Arrays.asList(opt.getFieldNames())::indexOf)
+                .toArray();
         LogicalType[] pkTypes =
                 Arrays.stream(pkFields).mapToObj(f -> fieldTypes[f]).toArray(LogicalType[]::new);
-        final TypeSerializer<RowData> typeSerializer =
-                rowDataTypeInfo.createSerializer(ctx.getExecutionConfig());
+        final TypeSerializer<RowData> typeSerializer = rowDataTypeInfo.createSerializer(ctx.getExecutionConfig());
         final Function<RowData, RowData> valueTransform =
-                ctx.getExecutionConfig().isObjectReuseEnabled()
-                        ? typeSerializer::copy
-                        : Function.identity();
+                ctx.getExecutionConfig().isObjectReuseEnabled() ? typeSerializer::copy : Function.identity();
 
         return new TableBufferReducedStatementExecutor(
                 createUpsertRowExecutor(
-                        dialect,
-                        tableName,
-                        opt.getFieldNames(),
-                        fieldTypes,
-                        pkFields,
-                        pkNames,
-                        pkTypes),
+                        dialect, tableName, opt.getFieldNames(), fieldTypes, pkFields, pkNames, pkTypes),
                 createDeleteExecutor(dialect, tableName, pkNames, pkTypes),
                 createRowKeyExtractor(fieldTypes, pkFields),
                 valueTransform);
@@ -181,13 +162,10 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
             LogicalType[] fieldTypes,
             String sql,
             TypeInformation<RowData> rowDataTypeInfo) {
-        final TypeSerializer<RowData> typeSerializer =
-                rowDataTypeInfo.createSerializer(ctx.getExecutionConfig());
+        final TypeSerializer<RowData> typeSerializer = rowDataTypeInfo.createSerializer(ctx.getExecutionConfig());
         return new TableBufferedStatementExecutor(
                 createSimpleRowExecutor(dialect, fieldNames, fieldTypes, sql),
-                ctx.getExecutionConfig().isObjectReuseEnabled()
-                        ? typeSerializer::copy
-                        : Function.identity());
+                ctx.getExecutionConfig().isObjectReuseEnabled() ? typeSerializer::copy : Function.identity());
     }
 
     private static JdbcBatchStatementExecutor<RowData> createUpsertRowExecutor(
@@ -200,16 +178,8 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
             LogicalType[] pkTypes) {
         return dialect.getUpsertStatement(tableName, fieldNames, pkNames)
                 .map(sql -> createSimpleRowExecutor(dialect, fieldNames, fieldTypes, sql))
-                .orElseGet(
-                        () ->
-                                createInsertOrUpdateExecutor(
-                                        dialect,
-                                        tableName,
-                                        fieldNames,
-                                        fieldTypes,
-                                        pkFields,
-                                        pkNames,
-                                        pkTypes));
+                .orElseGet(() -> createInsertOrUpdateExecutor(
+                        dialect, tableName, fieldNames, fieldTypes, pkFields, pkNames, pkTypes));
     }
 
     private static JdbcBatchStatementExecutor<RowData> createDeleteExecutor(
@@ -222,9 +192,7 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
             JdbcDialect dialect, String[] fieldNames, LogicalType[] fieldTypes, final String sql) {
         final JdbcRowConverter rowConverter = dialect.getRowConverter(RowType.of(fieldTypes));
         return new TableSimpleStatementExecutor(
-                connection ->
-                        FieldNamedPreparedStatement.prepareStatement(connection, sql, fieldNames),
-                rowConverter);
+                connection -> FieldNamedPreparedStatement.prepareStatement(connection, sql, fieldNames), rowConverter);
     }
 
     private static JdbcBatchStatementExecutor<RowData> createInsertOrUpdateExecutor(
@@ -239,23 +207,16 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
         final String insertStmt = dialect.getInsertIntoStatement(tableName, fieldNames);
         final String updateStmt = dialect.getUpdateStatement(tableName, fieldNames, pkNames);
         return new TableInsertOrUpdateStatementExecutor(
-                connection ->
-                        FieldNamedPreparedStatement.prepareStatement(
-                                connection, existStmt, pkNames),
-                connection ->
-                        FieldNamedPreparedStatement.prepareStatement(
-                                connection, insertStmt, fieldNames),
-                connection ->
-                        FieldNamedPreparedStatement.prepareStatement(
-                                connection, updateStmt, fieldNames),
+                connection -> FieldNamedPreparedStatement.prepareStatement(connection, existStmt, pkNames),
+                connection -> FieldNamedPreparedStatement.prepareStatement(connection, insertStmt, fieldNames),
+                connection -> FieldNamedPreparedStatement.prepareStatement(connection, updateStmt, fieldNames),
                 dialect.getRowConverter(RowType.of(pkTypes)),
                 dialect.getRowConverter(RowType.of(fieldTypes)),
                 dialect.getRowConverter(RowType.of(fieldTypes)),
                 createRowKeyExtractor(fieldTypes, pkFields));
     }
 
-    private static Function<RowData, RowData> createRowKeyExtractor(
-            LogicalType[] logicalTypes, int[] pkFields) {
+    private static Function<RowData, RowData> createRowKeyExtractor(LogicalType[] logicalTypes, int[] pkFields) {
         final RowData.FieldGetter[] fieldGetters = new RowData.FieldGetter[pkFields.length];
         for (int i = 0; i < pkFields.length; i++) {
             fieldGetters[i] = createFieldGetter(logicalTypes[pkFields[i]], pkFields[i]);

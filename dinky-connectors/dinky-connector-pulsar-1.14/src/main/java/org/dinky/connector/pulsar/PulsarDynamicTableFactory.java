@@ -76,8 +76,7 @@ import org.slf4j.LoggerFactory;
  * @link PulsarDynamicSink}.
  */
 @Internal
-public class PulsarDynamicTableFactory
-        implements DynamicTableSourceFactory, DynamicTableSinkFactory {
+public class PulsarDynamicTableFactory implements DynamicTableSourceFactory, DynamicTableSinkFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(PulsarDynamicTableFactory.class);
 
@@ -122,8 +121,7 @@ public class PulsarDynamicTableFactory
 
         // discover a suitable decoding format
         final DecodingFormat<DeserializationSchema<RowData>> decodingFormat =
-                helper.discoverDecodingFormat(
-                        DeserializationFormatFactory.class, FactoryUtil.FORMAT);
+                helper.discoverDecodingFormat(DeserializationFormatFactory.class, FactoryUtil.FORMAT);
 
         // validate all options
         // helper.validate();
@@ -178,8 +176,7 @@ public class PulsarDynamicTableFactory
         // validatePKConstraints(update_mode, context.getObjectIdentifier(),
         // context.getCatalogTable(), encodingFormat);
 
-        final DataType physicalDataType =
-                context.getCatalogTable().getSchema().toPhysicalRowDataType();
+        final DataType physicalDataType = context.getCatalogTable().getSchema().toPhysicalRowDataType();
 
         return createPulsarTableSink(
                 physicalDataType,
@@ -188,36 +185,29 @@ public class PulsarDynamicTableFactory
                 tableOptions.get(SERVICE_URL),
                 update_mode,
                 getPulsarProperties(context.getCatalogTable().getOptions(), PROPERTIES_PREFIX),
-                getPulsarProperties(
-                        context.getCatalogTable().getOptions(), PROPERTIES_CLIENT_PREFIX),
+                getPulsarProperties(context.getCatalogTable().getOptions(), PROPERTIES_CLIENT_PREFIX),
                 sinkParallelism);
     }
 
     // 校验sql建表时是否指定主键约束
     private static void validatePKConstraints(
-            @Nullable String updateMode,
-            ObjectIdentifier tableName,
-            CatalogTable catalogTable,
-            Format format) {
+            @Nullable String updateMode, ObjectIdentifier tableName, CatalogTable catalogTable, Format format) {
 
         if (!updateMode.equals("append") && !updateMode.equals("upsert")) {
-            throw new ValidationException(
-                    String.format(
-                            "The Pulsar table '%s' with update-mode should be 'append' or 'upsert'",
-                            tableName.asSummaryString()));
-        } else if (catalogTable.getSchema().getPrimaryKey().isPresent()
-                && updateMode.equals("append")) {
-            throw new ValidationException(
-                    String.format(
-                            "The Pulsar table '%s' with append update-mode doesn't support defining PRIMARY KEY constraint"
-                                    + " on the table, because it can't guarantee the semantic of primary key.",
-                            tableName.asSummaryString()));
-        } else if (!catalogTable.getSchema().getPrimaryKey().isPresent()
-                && updateMode.equals("upsert")) {
-            throw new ValidationException(
-                    "'upsert' tables require to define a PRIMARY KEY constraint. "
-                            + "The PRIMARY KEY specifies which columns should be read from or write to the Pulsar message key. "
-                            + "The PRIMARY KEY also defines records in the 'upsert' table should update or delete on which keys.");
+            throw new ValidationException(String.format(
+                    "The Pulsar table '%s' with update-mode should be 'append' or 'upsert'",
+                    tableName.asSummaryString()));
+        } else if (catalogTable.getSchema().getPrimaryKey().isPresent() && updateMode.equals("append")) {
+            throw new ValidationException(String.format(
+                    "The Pulsar table '%s' with append update-mode doesn't support"
+                            + " defining PRIMARY KEY constraint on the table, because it can't"
+                            + " guarantee the semantic of primary key.",
+                    tableName.asSummaryString()));
+        } else if (!catalogTable.getSchema().getPrimaryKey().isPresent() && updateMode.equals("upsert")) {
+            throw new ValidationException("'upsert' tables require to define a PRIMARY KEY constraint. The PRIMARY KEY"
+                    + " specifies which columns should be read from or write to the Pulsar"
+                    + " message key. The PRIMARY KEY also defines records in the 'upsert'"
+                    + " table should update or delete on which keys.");
         }
     }
 

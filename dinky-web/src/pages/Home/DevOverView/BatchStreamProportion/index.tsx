@@ -17,53 +17,53 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
-import {ProCard, StatisticCard} from "@ant-design/pro-components";
-import CountFormatter from "@/components/CountFormatter";
-import {BatchJobIcon, StreamingJobIcon} from "@/components/Icons/HomeIcon";
-import {imgStyle} from "@/pages/Home/constants";
-import {l} from "@/utils/intl";
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/constants";
-import {BatchStreamingOverView} from "@/types/Home/data";
-
+import CountFormatter from '@/components/CountFormatter';
+import { BatchJobIcon, StreamingJobIcon } from '@/components/Icons/HomeIcon';
+import { imgStyle } from '@/pages/Home/constants';
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { BatchStreamingOverView } from '@/types/Home/data';
+import { l } from '@/utils/intl';
+import { ProCard, StatisticCard } from '@ant-design/pro-components';
+import React, { useEffect, useState } from 'react';
 
 export const BatchStreamProportion: React.FC = () => {
+  const [data, setData] = useState<BatchStreamingOverView>({
+    batchJobCount: 0,
+    streamingJobCount: 0
+  });
 
-    const [data, setData] = useState<BatchStreamingOverView>({
-        batchJobCount: 0,
-        streamingJobCount: 0
+  useEffect(() => {
+    queryDataByParams(API_CONSTANTS.GET_JOB_MODEL_OVERVIEW).then((res) => {
+      setData(res);
     });
+  }, []);
 
-    useEffect(() => {
-        queryDataByParams(API_CONSTANTS.GET_JOB_MODEL_OVERVIEW).then((res) => {
-            setData(res);
-        });
-    }, [])
-
-  return <ProCard split={'vertical'} size={'small'}>
-    <StatisticCard.Group bodyStyle={{alignContent:'center'}}>
-      <StatisticCard
+  return (
+    <ProCard split={'vertical'} size={'small'}>
+      <StatisticCard.Group bodyStyle={{ alignContent: 'center' }}>
+        <StatisticCard
           statistic={{
             title: l('home.job.batch'),
             value: data?.batchJobCount || 0,
             suffix: l('global.item'),
-            icon: <BatchJobIcon style={imgStyle}/>,
-            formatter: (value)=> <CountFormatter value={Number(value)}/>
+            icon: <BatchJobIcon style={imgStyle} />,
+            formatter: (value) => <CountFormatter value={Number(value)} />
           }}
-      />
-        <StatisticCard.Divider/>
-      <StatisticCard
+        />
+        <StatisticCard.Divider />
+        <StatisticCard
           statistic={{
             title: l('home.job.stream'),
-              value: data?.streamingJobCount || 0,
+            value: data?.streamingJobCount || 0,
             suffix: l('global.item'),
-            icon: <StreamingJobIcon style={imgStyle}/>,
-            formatter: (value)=> <CountFormatter value={Number(value)}/>
+            icon: <StreamingJobIcon style={imgStyle} />,
+            formatter: (value) => <CountFormatter value={Number(value)} />
           }}
-      />
-    </StatisticCard.Group>
-  </ProCard>;
-}
+        />
+      </StatisticCard.Group>
+    </ProCard>
+  );
+};
 
 export default BatchStreamProportion;

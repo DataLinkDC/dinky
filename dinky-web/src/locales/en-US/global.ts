@@ -18,10 +18,10 @@
  */
 
 export default {
-  'global.max':'max',
   'button.create': 'Create',
   'button.close': 'Close',
   'button.confirm': 'Confirm',
+  'button.recovery': 'Recovery',
   'button.cancel': 'Cancel',
   'button.finish': 'Finish',
   'button.back': 'Back',
@@ -36,6 +36,8 @@ export default {
   'button.edit': 'Edit',
   'button.start': 'Start',
   'button.stop': 'Stop',
+  'button.publish': 'Publish',
+  'button.offline': 'OffLine',
   'button.assignUser': 'Assign Users',
   'button.assignRole': 'Assign Role',
   'button.changePassword': 'Change Password',
@@ -51,6 +53,9 @@ export default {
   'button.heartbeat': 'Heartbeat',
   'button.recycle': 'Recycle',
   'button.refresh': 'Refresh',
+  'button.expand-all': 'Expand All',
+  'button.collapse-all': 'Collapse All',
+  'button.position': 'Position',
   'button.test': 'Test',
   'button.clear': 'Clear',
   'button.copy': 'Copy',
@@ -72,8 +77,11 @@ export default {
   'button.stopRefresh': 'Stop Auto Refresh',
   'button.startRefresh': 'Start Auto Refresh(5s/e)',
 
+  'menu.menu': 'Menu',
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',
+  'right.menu.addSub': 'Add Sub Item',
+  'right.menu.createSubFolder': 'Create Sub Folder',
   'right.menu.exportJson': 'Export JSON',
   'right.menu.importJson': 'Import JSON',
   'right.menu.rename': 'Rename',
@@ -84,7 +92,7 @@ export default {
   'right.menu.paste': 'Paste',
   'right.menu.delete': 'Delete',
   'right.menu.createCatalogue': 'Create Directory',
-  'right.menu.createRootCatalogue': 'Create Root Directory',
+  'right.menu.createRoot': 'Create Root Directory',
   'right.menu.uploadZipToCreate': 'Upload Zip To Create',
   'right.menu.createTask': 'Create Task',
   'right.menu.closeAll': 'Close All',
@@ -106,6 +114,7 @@ export default {
 
   'global.stay.tuned': 'Stay tuned',
   'global.mini': 'Mini Size',
+  'global.max': 'Max Size',
 
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
@@ -128,6 +137,7 @@ export default {
   'global.table.isEnable': 'Is Enable',
   'global.table.note': 'Note',
   'global.table.status': 'Status',
+  'global.table.jobid': 'Job ID',
 
   'global.table.notePlaceholder': 'please input Note',
   'global.table.status.normal': 'Normal',
@@ -140,12 +150,16 @@ export default {
   'global.table.execmode.batch': 'Batch Mode',
   'global.table.execmode.streaming': 'Stream Mode',
   'global.table.lifecycle.publish': 'Publish',
+  'global.table.lifecycle.stopped': 'Stopped',
   'global.table.lifecycle.online': 'Online',
+  'global.table.lifecycle.offline': 'Offline',
   'global.table.lifecycle.unknown': 'Unknown',
   'global.table.execmode': 'Execution mode',
   'global.table.runmode': 'Run Mode',
   'global.table.runmode.local': 'Local',
   'global.table.runmode.remote': 'Remote',
+
+  'global.search.text': 'Input Key to Search',
 
   'global.savepoint.strategy.disabled': 'Disabled',
   'global.savepoint.strategy.latest': 'Latest',
@@ -159,17 +173,17 @@ export default {
 
   'global.info': 'Info',
   'global.error': 'Error',
+  'global.result': 'Result',
   'global.warning': 'Warning',
   'global.success': 'Success',
   'global.getdata.tips': 'Get Data',
 
-  'global.notifaction.iknow': 'I understand',
-  'global.notifaction.full-error': 'Complete error message',
+  'global.notification.iknow': 'I understand',
+  'global.notification.full-error': 'Complete error message',
 
   'global.item': 'Pieces',
   'global.bout': 'Times',
   'global.size': ' Size: {size}',
-
 
   'global.week.sunday': 'Sunday',
   'global.week.monday': 'Monday',
@@ -189,5 +203,5 @@ export default {
   'global.month.september': 'September',
   'global.month.october': 'October',
   'global.month.november': 'November',
-  'global.month.december': 'December',
+  'global.month.december': 'December'
 };

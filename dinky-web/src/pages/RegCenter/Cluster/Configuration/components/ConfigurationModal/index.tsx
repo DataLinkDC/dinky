@@ -17,93 +17,101 @@
  *
  */
 
-import {Cluster} from '@/types/RegCenter/data';
-import {Button, Form} from 'antd';
-import React, {useEffect} from 'react';
-import {ModalForm} from '@ant-design/pro-components';
-import {l} from '@/utils/intl';
-import {FormContextValue} from '@/components/Context/FormContext';
-import ConfigurationForm from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm";
+import { FormContextValue } from '@/components/Context/FormContext';
+import ConfigurationForm from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm';
+import { Cluster } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { ModalForm } from '@ant-design/pro-components';
+import { Button, Form } from 'antd';
+import React, { useEffect } from 'react';
 
 type ConfigurationModalProps = {
-    visible: boolean;
-    onClose: () => void;
-    value: Partial<Cluster.Config>;
-    onSubmit: (values: Partial<Cluster.Config>) => void;
-}
+  visible: boolean;
+  onClose: () => void;
+  value: Partial<Cluster.Config>;
+  onSubmit: (values: Partial<Cluster.Config>) => void;
+};
 const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
+  const { visible, onClose, onSubmit, value } = props;
 
-    const {visible, onClose, onSubmit, value} = props;
+  /**
+   * init form
+   */
+  const [form] = Form.useForm();
+  /**
+   * init form context
+   */
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
+    }),
+    [form]
+  );
 
-    /**
-     * init form
-     */
-    const [form] = Form.useForm();
-    /**
-     * init form context
-     */
-    const formContext = React.useMemo<FormContextValue>(() => ({
-        resetForm: () => form.resetFields(), // 定义 resetForm 方法
-    }), [form]);
+  const [submitting, setSubmitting] = React.useState<boolean>(false);
 
-    const [submitting, setSubmitting] = React.useState<boolean>(false);
+  /**
+   * when modalVisible or values changed, set form values
+   */
+  useEffect(() => {
+    form.setFieldsValue(value);
+  }, [visible, value, form]);
 
+  /**
+   * handle cancel
+   */
+  const handleCancel = () => {
+    onClose();
+    formContext.resetForm();
+    setSubmitting(false);
+  };
+  /**
+   * submit form
+   */
+  const submitForm = async () => {
+    const fieldsValue = await form.validateFields();
+    setSubmitting(true);
+    await onSubmit(fieldsValue);
+    handleCancel();
+  };
 
-    /**
-     * when modalVisible or values changed, set form values
-     */
-    useEffect(() => {
-        form.setFieldsValue(value);
-    }, [visible, value, form]);
+  /**
+   * render footer
+   * @returns {[JSX.Element, JSX.Element]}
+   */
+  const renderFooter = () => {
+    return [
+      <Button key={'cancel'} onClick={() => handleCancel()}>
+        {l('button.cancel')}
+      </Button>,
+      <Button key={'finish'} loading={submitting} type='primary' onClick={() => submitForm()}>
+        {l('button.finish')}
+      </Button>
+    ];
+  };
 
-    /**
-     * handle cancel
-     */
-    const handleCancel = () => {
-        onClose();
-        formContext.resetForm();
-        setSubmitting(false);
-    };
-    /**
-     * submit form
-     */
-    const submitForm = async () => {
-        const fieldsValue = await form.validateFields();
-        setSubmitting(true);
-        await onSubmit(fieldsValue);
-        handleCancel();
-    };
-
-
-    /**
-     * render footer
-     * @returns {[JSX.Element, JSX.Element]}
-     */
-    const renderFooter = () => {
-        return [
-            <Button key={'cancel'} onClick={() => handleCancel()}>{l('button.cancel')}</Button>,
-            <Button key={'finish'} loading={submitting} type="primary"
-                    onClick={() => submitForm()}>{l('button.finish')}</Button>,
-        ];
-    };
-
-
-    return <>
-        <ModalForm
-            width={'80%'}
-            open={visible}
-            modalProps={{
-                onCancel: handleCancel,
-                bodyStyle: {maxHeight: '70vh', overflowY: 'auto', overflowX: 'hidden'},
-            }}
-            title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}
-            submitter={{render: () => [...renderFooter()]}}
-            initialValues={value}
-            form={form}
-        >
-            <ConfigurationForm form={form} value={value}/>
-        </ModalForm>
-    </>;
+  return (
+    <>
+      <ModalForm
+        width={'80%'}
+        open={visible}
+        modalProps={{
+          onCancel: handleCancel,
+          bodyStyle: {
+            maxHeight: '70vh',
+            overflowY: 'auto',
+            overflowX: 'hidden'
+          }
+        }}
+        title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}
+        submitter={{ render: () => [...renderFooter()] }}
+        initialValues={value}
+        form={form}
+      >
+        <ConfigurationForm form={form} value={value} />
+      </ModalForm>
+    </>
+  );
 };
 
 export default InstanceModal;

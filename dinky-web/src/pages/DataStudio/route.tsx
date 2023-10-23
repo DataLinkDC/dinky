@@ -17,170 +17,293 @@
  *
  */
 
-
+import { CircleDataStudioButtonProps } from '@/components/CallBackButton/CircleBtn';
+import Console from '@/pages/DataStudio/BottomContainer/Console';
+import Lineage from '@/pages/DataStudio/BottomContainer/Lineage';
+import Result from '@/pages/DataStudio/BottomContainer/Result';
+import TableData from '@/pages/DataStudio/BottomContainer/TableData';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
+import { Catalog } from '@/pages/DataStudio/LeftContainer/Catalog';
+import MetaData from '@/pages/DataStudio/LeftContainer/MetaData';
+import Project from '@/pages/DataStudio/LeftContainer/Project';
+import { TabsPageSubType, TabsPageType } from '@/pages/DataStudio/model';
+import ExecuteConfig from '@/pages/DataStudio/RightContainer/ExecuteConfig';
+import HistoryVersion from '@/pages/DataStudio/RightContainer/HistoryVersion';
+import JobConfig from '@/pages/DataStudio/RightContainer/JobConfig';
+import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
+import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
+import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
+  ArrowsAltOutlined,
   BarChartOutlined,
   CalendarOutlined,
   ConsoleSqlOutlined,
   DatabaseOutlined,
   DesktopOutlined,
+  EnvironmentOutlined,
   FolderOutlined,
   HistoryOutlined,
   InfoCircleOutlined,
   MonitorOutlined,
   PlayCircleOutlined,
+  PlusCircleOutlined,
+  PlusOutlined,
+  ReloadOutlined,
   RightSquareOutlined,
   SettingOutlined,
+  ShrinkOutlined,
   TableOutlined,
   ToolOutlined
-} from "@ant-design/icons";
-import React, {ReactNode} from "react";
-import MetaData from "@/pages/DataStudio/LeftContainer/MetaData";
-import Project from "@/pages/DataStudio/LeftContainer/Project";
-import Console from "@/pages/DataStudio/BottomContainer/Console";
-import JobConfig from "@/pages/DataStudio/RightContainer/JobConfig";
-import ExecuteConfig from "@/pages/DataStudio/RightContainer/ExecuteConfig";
-import SavePoints from "@/pages/DataStudio/RightContainer/SavePoints";
-import HistoryVersion from "@/pages/DataStudio/RightContainer/HistoryVersion";
-import JobInfo from "@/pages/DataStudio/RightContainer/JobInfo";
-import {l} from "@/utils/intl";
-import {TabsPageType} from "@/pages/DataStudio/model";
+} from '@ant-design/icons';
+import { DiffEditor } from '@monaco-editor/react';
+import { ReactNode } from 'react';
 
 export const LeftSide = [
   {
+    auth: '/datastudio/left/project',
     key: 'menu.datastudio.project',
     icon: <ConsoleSqlOutlined />,
     label: l('menu.datastudio.project'),
-    children: <Project/>
+    children: <Project />
   },
   {
-    key: 'menu.datastudio.structure',
-    icon: <TableOutlined/>,
-    label: l('menu.datastudio.structure'),
-    children: <div>structure</div>
+    auth: '/datastudio/left/catalog',
+    key: 'menu.datastudio.catalog',
+    icon: <TableOutlined />,
+    label: l('menu.datastudio.catalog'),
+    children: <Catalog />
   },
   {
+    auth: '/datastudio/left/metadata',
     key: 'menu.datastudio.metadata',
-    icon: <DatabaseOutlined/>,
+    icon: <DatabaseOutlined />,
     label: l('menu.datastudio.metadata'),
-    children: <MetaData/>
+    children: <MetaData />
   }
 ];
 
-export const RightSide:TabProp[] = [
+export const RightSide: TabProp[] = [
   {
+    auth: '/datastudio/right/jobConfig',
     key: 'menu.datastudio.jobConfig',
-    icon: <SettingOutlined/>,
+    icon: <SettingOutlined />,
     label: l('menu.datastudio.jobConfig'),
-    children: <JobConfig/>,
-    // isShow: type => type === TabsPageType.flinkSql,
+    children: <JobConfig />,
+    isShow: (type, subType) =>
+      type === TabsPageType.project &&
+      (TabsPageSubType.flinkSql === subType || TabsPageSubType.flinkJar === subType)
   },
   {
+    auth: '/datastudio/right/executeConfig',
     key: 'menu.datastudio.executeConfig',
-    icon: <PlayCircleOutlined/>,
+    icon: <PlayCircleOutlined />,
     label: l('menu.datastudio.executeConfig'),
-    children: <ExecuteConfig/>,
-    isShow: type => type === TabsPageType.flinkSql,
+    children: <ExecuteConfig />,
+    isShow: (type, subType) =>
+      (type === TabsPageType.project && TabsPageSubType.flinkSql === subType) ||
+      isSql(subType ?? '')
   },
   {
+    auth: '/datastudio/right/savePoint',
     key: 'menu.datastudio.savePoint',
-    icon: <FolderOutlined/>,
+    icon: <FolderOutlined />,
     label: l('menu.datastudio.savePoint'),
-    children: <SavePoints/>,
-    isShow: type => type === TabsPageType.flinkSql,
+    children: <SavePoints />,
+    isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
   },
   {
+    auth: '/datastudio/right/historyVision',
     key: 'menu.datastudio.historyVision',
-    icon: <HistoryOutlined/>,
+    icon: <HistoryOutlined />,
     label: l('menu.datastudio.historyVision'),
-    children: <HistoryVersion/>,
-    isShow: type => type === TabsPageType.flinkSql,
-  }, {
+    children: <HistoryVersion />,
+    isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
+  },
+  {
+    auth: '/datastudio/right/jobInfo',
     key: 'menu.datastudio.jobInfo',
-    icon: <InfoCircleOutlined/>,
+    icon: <InfoCircleOutlined />,
     label: l('menu.datastudio.jobInfo'),
-    children: <JobInfo/>,
-    isShow: type => type !== TabsPageType.None,
+    children: <JobInfo />,
+    isShow: (type) => type !== TabsPageType.None
   }
 ];
 
 export const LeftBottomSide = [
   {
+    auth: '/datastudio/bottom/console',
     key: 'menu.datastudio.console',
-    icon: <RightSquareOutlined/>,
+    icon: <RightSquareOutlined />,
     label: l('menu.datastudio.console'),
-    children: <Console/>
+    children: <Console />
   },
   {
+    auth: '/datastudio/bottom/result',
     key: 'menu.datastudio.result',
     icon: <MonitorOutlined />,
     label: l('menu.datastudio.result'),
+    children: <Result />
   },
   {
+    auth: '/datastudio/bottom/bi',
     key: 'menu.datastudio.bi',
     icon: <BarChartOutlined />,
-    label: l('menu.datastudio.bi'),
+    label: l('menu.datastudio.bi')
   },
   {
+    auth: '/datastudio/bottom/lineage',
     key: 'menu.datastudio.lineage',
     icon: <ApartmentOutlined />,
     label: l('menu.datastudio.lineage'),
+    children: <Lineage />
   },
   {
+    auth: '/datastudio/bottom/process',
     key: 'menu.datastudio.process',
     icon: <DesktopOutlined />,
-    label: l('menu.datastudio.process'),
+    label: l('menu.datastudio.process')
   },
   {
+    auth: '/datastudio/bottom/history',
     key: 'menu.datastudio.history',
-    icon: <CalendarOutlined/>,
-    label: l('menu.datastudio.history'),
+    icon: <CalendarOutlined />,
+    label: l('menu.datastudio.history')
   },
   {
+    auth: '/datastudio/bottom/table-data',
     key: 'menu.datastudio.table-data',
     icon: <TableOutlined />,
     label: l('menu.datastudio.table-data'),
+    children: <TableData />
   },
   {
+    auth: '/datastudio/bottom/tool',
     key: 'menu.datastudio.tool',
     icon: <ToolOutlined />,
-    label: l('menu.datastudio.tool'),
+    label: l('menu.datastudio.tool')
   }
-]
+];
 
-export const LeftBottomMoreTabs:{[c:string]:TabProp[]} = {
-  'menu.datastudio.tool':[
+export const LeftBottomMoreTabs: { [c: string]: TabProp[] } = {
+  'menu.datastudio.tool': [
     {
-      key: 'menu.datastudio.tool.datax',
+      key: 'menu.datastudio.tool.text-comparison',
       icon: <ToolOutlined />,
-      label: ('menu.datastudio.tool.datax'),
-      children: <div>datax</div>
-    },{
+      label: l('menu.datastudio.tool.text-comparison'),
+      children: (
+        <DiffEditor
+          height={'100%'}
+          options={{
+            readOnly: false,
+            originalEditable: true,
+            selectOnLineNumbers: true,
+            lineDecorationsWidth: 20,
+            mouseWheelZoom: true,
+            automaticLayout: true,
+            scrollBeyondLastLine: false,
+            scrollbar: {
+              useShadows: false,
+              verticalScrollbarSize: 8,
+              horizontalScrollbarSize: 8,
+              arrowSize: 30
+            }
+          }}
+          language={'text'}
+        />
+      )
+    },
+    {
       key: 'menu.datastudio.tool.datax2',
       icon: <ToolOutlined />,
-      label: ('menu.datastudio.tool.datax2'),
+      label: 'menu.datastudio.tool.datax2',
       children: <div>datax2</div>
-    },
-  ] , 'menu.datastudio.tool2':[
+    }
+  ],
+  'menu.datastudio.tool2': [
     {
-      key: 'menu.datastudio.tool.datax',
+      key: 'menu.datastudio.tool.text-comparison',
       icon: <ToolOutlined />,
-      label: ('menu.datastudio.tool.datax'),
-      children: <div>datax</div>
-    },{
+      label: 'menu.datastudio.tool.text-comparison',
+      children: (
+        <DiffEditor
+          height={'95%'}
+          options={{
+            readOnly: true,
+            selectOnLineNumbers: true,
+            lineDecorationsWidth: 20,
+            mouseWheelZoom: true,
+            automaticLayout: true
+          }}
+          language={'sql'}
+          original={''}
+          modified={''}
+        />
+      )
+    },
+    {
       key: 'menu.datastudio.tool.datax2',
       icon: <ToolOutlined />,
-      label: ('menu.datastudio.tool.datax2'),
+      label: 'menu.datastudio.tool.datax2',
       children: <div>datax2</div>
-    },
+    }
   ]
-}
+};
 
-export type TabProp ={
-  key:string;
+// btn route
+export const BtnRoute: { [c: string]: CircleDataStudioButtonProps[] } = {
+  'menu.datastudio.metadata': [
+    {
+      icon: <PlusOutlined />,
+      title: l('button.create'),
+      onClick: () => {}
+    },
+    {
+      icon: <ReloadOutlined />,
+      title: l('button.refresh'),
+      onClick: () => {}
+    }
+  ],
+  'menu.datastudio.catalog': [
+    {
+      icon: <ReloadOutlined />,
+      title: l('button.refresh'),
+      onClick: () => {}
+    }
+  ],
+  'menu.datastudio.project': [
+    {
+      icon: <PlusCircleOutlined />,
+      title: l('right.menu.createRoot'),
+      key: 'right.menu.createRoot',
+      onClick: () => {}
+    },
+    {
+      icon: <ArrowsAltOutlined />,
+      title: l('button.expand-all'),
+      key: 'button.expand-all',
+      onClick: () => {}
+    },
+    {
+      icon: <ShrinkOutlined />,
+      title: l('button.collapse-all'),
+      key: 'button.collapse-all',
+      onClick: () => {}
+    },
+    {
+      icon: <EnvironmentOutlined />,
+      title: l('button.position'),
+      key: 'button.position',
+      onClick: () => {}
+    }
+  ]
+};
+
+export type TabProp = {
+  key: string;
   icon: ReactNode;
   label: string;
   children: ReactNode;
-  isShow?:(type:TabsPageType)=>boolean;
-}
+  isShow?: (type: TabsPageType, subType?: TabsPageSubType) => boolean;
+  auth?: string;
+};

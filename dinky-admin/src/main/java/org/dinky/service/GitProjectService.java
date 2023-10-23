@@ -34,9 +34,9 @@ import java.util.Map;
  */
 public interface GitProjectService extends ISuperService<GitProject> {
     /**
-     * 保存或更新
+     * Save or update the given Git project.
      *
-     * @param gitProjectDTO gitProjectDTO
+     * @param gitProjectDTO A {@link GitProjectDTO} object representing the Git project to save or update.
      */
     void saveOrUpdate(GitProjectDTO gitProjectDTO);
 
@@ -55,14 +55,20 @@ public interface GitProjectService extends ISuperService<GitProject> {
      */
     Boolean dragendSortJar(GitProjectSortJarParams gitProjectSortJarParams);
 
+    /**
+     * Get the Git pool as a map of strings.
+     *
+     * @return A map of strings representing the Git pool.
+     */
     Map<String, String> getGitPool();
 
     /**
-     * 更新状态
+     * Modify the status of a Git project based on its ID.
      *
-     * @param id id
+     * @param id The ID of the Git project to modify the status for.
+     * @return A boolean value indicating whether the modification was successful.
      */
-    void updateState(Integer id);
+    Boolean modifyGitProjectStatus(Integer id);
 
     /**
      * get project code tree

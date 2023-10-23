@@ -55,14 +55,7 @@ public class AnalysisUdfClassStepSse extends StepSse {
             AtomicInteger msgId,
             AtomicInteger stepAtomic,
             ExecutorService cachedThreadPool) {
-        super(
-                "analysis udf class",
-                sleep,
-                emitterList,
-                params,
-                msgId,
-                stepAtomic,
-                cachedThreadPool);
+        super("analysis udf class", sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
     }
 
     @Override
@@ -72,31 +65,25 @@ public class AnalysisUdfClassStepSse extends StepSse {
         List<GitAnalysisJarDTO> dataList = new ArrayList<>();
         Map<String, List<Class<?>>> udfMap = new TreeMap<>();
         try {
-            Thread.currentThread()
-                    .getContextClassLoader()
-                    .loadClass("org.apache.flink.table.api.ValidationException");
+            Thread.currentThread().getContextClassLoader().loadClass("org.apache.flink.table.api.ValidationException");
         } catch (ClassNotFoundException e) {
             throw new DinkyException("flink dependency not found");
         }
-        pathList.parallelStream()
-                .forEach(
-                        jar -> {
-                            List<Class<?>> udfClassByJar = UDFUtil.getUdfClassByJar(new File(jar));
-                            udfMap.put(jar, udfClassByJar);
-                            sendMsg(Dict.create().set(jar, udfClassByJar));
-                        });
+        pathList.parallelStream().forEach(jar -> {
+            List<Class<?>> udfClassByJar = UDFUtil.getUdfClassByJar(new File(jar));
+            udfMap.put(jar, udfClassByJar);
+            sendMsg(Dict.create().set(jar, udfClassByJar));
+        });
 
         AtomicInteger index = new AtomicInteger(1);
-        udfMap.forEach(
-                (k, v) -> {
-                    GitAnalysisJarDTO gitAnalysisJarDTO = new GitAnalysisJarDTO();
-                    gitAnalysisJarDTO.setJarPath(k);
-                    gitAnalysisJarDTO.setClassList(
-                            v.stream().map(Class::getName).collect(Collectors.toList()));
-                    gitAnalysisJarDTO.setOrderLine(index.get());
-                    index.getAndIncrement();
-                    dataList.add(gitAnalysisJarDTO);
-                });
+        udfMap.forEach((k, v) -> {
+            GitAnalysisJarDTO gitAnalysisJarDTO = new GitAnalysisJarDTO();
+            gitAnalysisJarDTO.setJarPath(k);
+            gitAnalysisJarDTO.setClassList(v.stream().map(Class::getName).collect(Collectors.toList()));
+            gitAnalysisJarDTO.setOrderLine(index.get());
+            index.getAndIncrement();
+            dataList.add(gitAnalysisJarDTO);
+        });
 
         dataList.sort(Comparator.comparing(GitAnalysisJarDTO::getOrderLine));
         String data = JSONUtil.toJsonStr(dataList);

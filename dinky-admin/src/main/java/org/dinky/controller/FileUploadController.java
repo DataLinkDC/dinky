@@ -19,7 +19,9 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
 import org.dinky.data.constant.UploadFileConstant;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.result.Result;
 import org.dinky.service.FileUploadService;
 
@@ -32,12 +34,15 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /** FileUploadController */
 @Slf4j
 @RestController
+@Api(tags = "File Upload Controller")
 @RequestMapping("/api/fileUpload")
 @RequiredArgsConstructor
 public class FileUploadController {
@@ -54,11 +59,12 @@ public class FileUploadController {
      * @return {@link Result}
      */
     @PostMapping
+    @Log(title = "Upload Files", businessType = BusinessType.UPLOAD)
+    @ApiOperation("Upload Files")
     public Result<Void> upload(
             @RequestPart("files") MultipartFile[] files,
             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
-            @RequestParam(value = "fileType", defaultValue = "-1", required = false)
-                    Byte fileType) {
+            @RequestParam(value = "fileType", defaultValue = "-1", required = false) Byte fileType) {
         if (!StringUtils.isEmpty(dir) && fileType != -1) {
             return Result.failed("不要同时指定 dir 和 fileType 参数");
         } else if (StringUtils.isEmpty(dir) && fileType == -1) {
@@ -83,6 +89,8 @@ public class FileUploadController {
      * @return {@link Result}
      */
     @PostMapping(value = "hdfs")
+    @Log(title = "Upload File to Hdfs", businessType = BusinessType.UPLOAD)
+    @ApiOperation("Upload File to Hdfs")
     public Result<Void> uploadHdfs(
             @RequestPart("files") MultipartFile[] files,
             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,

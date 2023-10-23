@@ -80,8 +80,7 @@ public class SQLServerDialect extends AbstractDialect {
     INSERT INTO source (tid, tname) VALUES(3, 'd')
     END*/
     @Override
-    public Optional<String> getUpsertStatement(
-            String tableName, String[] fieldNames, String[] uniqueKeyFields) {
+    public Optional<String> getUpsertStatement(String tableName, String[] fieldNames, String[] uniqueKeyFields) {
         /*get update field*/
         ArrayList<String> updateFieldNamesList = new ArrayList<String>(fieldNames.length);
         Collections.addAll(updateFieldNamesList, fieldNames);
@@ -89,42 +88,35 @@ public class SQLServerDialect extends AbstractDialect {
         Collections.addAll(uniqueKeyFieldsList, uniqueKeyFields);
         updateFieldNamesList.removeAll(uniqueKeyFieldsList);
 
-        String updateClause =
-                Arrays.stream(updateFieldNamesList.toArray(new String[0]))
-                        .map(f -> quoteIdentifier(f) + " = :" + quoteIdentifier(f))
-                        .collect(Collectors.joining(", "));
-        String onClause =
-                Arrays.stream(uniqueKeyFields)
-                        .map(f -> quoteIdentifier(f) + " = :" + quoteIdentifier(f))
-                        .collect(Collectors.joining(" AND "));
-        String sql =
-                "IF EXISTS ( SELECT * FROM "
-                        + tableName
-                        + " WHERE "
-                        + onClause
-                        + " ) "
-                        + " BEGIN "
-                        + " UPDATE "
-                        + tableName
-                        + " SET "
-                        + updateClause
-                        + " WHERE "
-                        + onClause
-                        + " END "
-                        + " ELSE "
-                        + " BEGIN "
-                        + getInsertStatement(tableName, fieldNames)
-                        + " END";
+        String updateClause = Arrays.stream(updateFieldNamesList.toArray(new String[0]))
+                .map(f -> quoteIdentifier(f) + " = :" + quoteIdentifier(f))
+                .collect(Collectors.joining(", "));
+        String onClause = Arrays.stream(uniqueKeyFields)
+                .map(f -> quoteIdentifier(f) + " = :" + quoteIdentifier(f))
+                .collect(Collectors.joining(" AND "));
+        String sql = "IF EXISTS ( SELECT * FROM "
+                + tableName
+                + " WHERE "
+                + onClause
+                + " ) "
+                + " BEGIN "
+                + " UPDATE "
+                + tableName
+                + " SET "
+                + updateClause
+                + " WHERE "
+                + onClause
+                + " END "
+                + " ELSE "
+                + " BEGIN "
+                + getInsertStatement(tableName, fieldNames)
+                + " END";
         return Optional.of(sql);
     }
 
     private String getInsertStatement(String tableName, String[] fieldNames) {
-        String columns =
-                Arrays.stream(fieldNames)
-                        .map(this::quoteIdentifier)
-                        .collect(Collectors.joining(", "));
-        String placeholders =
-                Arrays.stream(fieldNames).map(f -> ":" + f).collect(Collectors.joining(", "));
+        String columns = Arrays.stream(fieldNames).map(this::quoteIdentifier).collect(Collectors.joining(", "));
+        String placeholders = Arrays.stream(fieldNames).map(f -> ":" + f).collect(Collectors.joining(", "));
         return "INSERT INTO " + tableName + "(" + columns + ") VALUES (" + placeholders + ")";
     }
 

@@ -48,5 +48,5 @@ public interface FragmentVariableService extends ISuperService<FragmentVariable>
      * @param id
      * @return {@link Boolean}
      */
-    Boolean enable(Integer id);
+    Boolean modifyFragmentStatus(Integer id);
 }

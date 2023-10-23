@@ -21,14 +21,35 @@ package org.dinky.data.dto;
 
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 /** @since 0.8.0 */
 @Getter
 @Setter
+@ApiModel(value = "GitAnalysisJarDTO", description = "DTO for Git analysis of JAR files")
 public class GitAnalysisJarDTO {
+
+    @ApiModelProperty(
+            value = "JAR Path",
+            dataType = "String",
+            example = "/path/to/jar.jar",
+            notes = "The path to the JAR file")
     private String jarPath;
+
+    @ApiModelProperty(
+            value = "Class List",
+            dataType = "List<String>",
+            example = "[\"com.example.Class1\", \"com.example.Class2\"]",
+            notes = "List of classes in the JAR file")
     private List<String> classList;
+
+    @ApiModelProperty(
+            value = "Order Line",
+            dataType = "Integer",
+            example = "1",
+            notes = "The order line of the JAR file")
     private Integer orderLine = 1;
 }

@@ -23,7 +23,7 @@ export type ProcessSteps = {
   startTime: Date;
   endTime: Date;
   time: string;
-}
+};
 
 export type Process = {
   pid: string;
@@ -39,8 +39,24 @@ export type Process = {
   stepIndex: number;
   steps: ProcessSteps[];
   userId: number;
-}
+};
 
+export type Rule = {
+  ruleKey: string;
+  ruleOperator: string;
+  ruleValue: number;
+};
+
+export type AlertRule = {
+  id: number;
+  name: string;
+  templateId: number;
+  description: string;
+  ruleType: string;
+  triggerConditions: string;
+  rule: any;
+  enabled: boolean;
+};
 
 // ============================  System Settings ============================
 export type Settings = {
@@ -51,11 +67,25 @@ export type Settings = {
   ldap: BaseConfigProperties[];
   metrics: BaseConfigProperties[];
   resource: BaseConfigProperties[];
-}
+};
+
 export type BaseConfigProperties = {
   key: string;
+  name: string;
   value: any;
   note: string;
   frontType: string;
-  example: string[]
+  example: string[];
+};
+
+export interface LogInfo {
+  id: number;
+  name: string;
+  path: string;
+  content: string;
+  parentId: number;
+  size: number;
+  desc: string;
+  children: LogInfo[];
+  leaf: boolean;
 }

@@ -21,14 +21,20 @@ package org.dinky.data.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -36,48 +42,62 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_role")
+@ApiModel(value = "Role", description = "Role Information")
 public class Role implements Serializable {
 
     private static final long serialVersionUID = 6877230738922824958L;
 
-    /** id */
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the role")
     private Integer id;
 
-    /** tenant id */
+    @ApiModelProperty(
+            value = "Tenant ID",
+            dataType = "Integer",
+            example = "1001",
+            notes = "ID of the tenant associated with the role")
     private Integer tenantId;
 
-    /** role code */
+    @ApiModelProperty(
+            value = "Role Code",
+            dataType = "String",
+            example = "ROLE_ADMIN",
+            notes = "Code representing the role")
     private String roleCode;
 
-    /** role name */
+    @ApiModelProperty(value = "Role Name", dataType = "String", example = "Administrator", notes = "Name of the role")
     private String roleName;
 
-    /** is delete */
+    @ApiModelProperty(
+            value = "Is Delete",
+            dataType = "Boolean",
+            notes = "Flag indicating if the role is marked as deleted")
     private Boolean isDelete;
 
-    /** note */
+    @ApiModelProperty(value = "Note", dataType = "String", notes = "Additional notes or details about the role")
     private String note;
 
-    /** create time */
     @TableField(fill = FieldFill.INSERT)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(
+            value = "Create Time",
+            dataType = "String",
+            notes = "Timestamp indicating the creation time of the role")
     private LocalDateTime createTime;
 
-    /** update time */
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(
+            value = "Update Time",
+            dataType = "String",
+            notes = "Timestamp indicating the last update time of the role")
     private LocalDateTime updateTime;
 
-    /** this field is deprecated , it's will be delete in the future namespace list */
     @TableField(exist = false)
-    @Deprecated
-    private List<Namespace> namespaces;
-
-    /** this field is deprecated , it's will be delete in the future namespace namespaceIds */
-    @Deprecated
-    @TableField(exist = false)
-    private String namespaceIds;
-
-    /** tenant */
-    @TableField(exist = false)
+    @ApiModelProperty(value = "Tenant", dataType = "Tenant", notes = "Associated tenant information")
     private Tenant tenant;
 }

@@ -29,15 +29,13 @@ import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
  *
  * @since 2022/3/17 17:41
  */
-public class PhoenixJdbcSinkFunction<T> extends RichSinkFunction<T>
-        implements CheckpointedFunction {
+public class PhoenixJdbcSinkFunction<T> extends RichSinkFunction<T> implements CheckpointedFunction {
 
     @Override
     public void snapshotState(FunctionSnapshotContext functionSnapshotContext) throws Exception {}
 
     @Override
-    public void initializeState(FunctionInitializationContext functionInitializationContext)
-            throws Exception {}
+    public void initializeState(FunctionInitializationContext functionInitializationContext) throws Exception {}
 
     @Override
     public void invoke(T value) throws Exception {}

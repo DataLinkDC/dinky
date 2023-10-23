@@ -17,16 +17,15 @@
  *
  */
 
-import {Editor }  from "@monaco-editor/react";
-import {convertCodeEditTheme} from "@/utils/function";
-import {MonacoEditorOptions} from "@/types/Public/data";
-import React, {useState} from "react";
-import {editor} from "monaco-editor";
-import EditorFloatBtn from "@/components/CustomEditor/EditorFloatBtn";
-import FullscreenBtn from "../FullscreenBtn";
+import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
+import { MonacoEditorOptions } from '@/types/Public/data';
+import { convertCodeEditTheme } from '@/utils/function';
+import { Editor, loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
-import { loader } from '@monaco-editor/react';
-import {EditorLanguage} from "monaco-editor/esm/metadata";
+import { editor } from 'monaco-editor';
+import { EditorLanguage } from 'monaco-editor/esm/metadata';
+import { useState } from 'react';
+import FullscreenBtn from '../FullscreenBtn';
 
 loader.config({ monaco });
 /**
@@ -37,7 +36,7 @@ loader.config({ monaco });
  *  2. Callback for right-clicking to clear logs (optional, not required)
  */
 export type CodeShowFormProps = {
-  height?: string|number;
+  height?: string | number;
   width?: string;
   language?: EditorLanguage;
   options?: any;
@@ -51,7 +50,6 @@ export type CodeShowFormProps = {
 };
 
 const CodeShow = (props: CodeShowFormProps) => {
-
   /**
    * 1. height: edit height
    * 2. width: edit width
@@ -64,22 +62,22 @@ const CodeShow = (props: CodeShowFormProps) => {
    * 9. autoWrap: is auto wrap, value: on | off | wordWrapColumn | bounded
    */
   const {
-    height = "30vh", // if null or undefined, set default value
-    width = "100%", // if null or undefined, set default value
+    height = '30vh', // if null or undefined, set default value
+    width = '100%', // if null or undefined, set default value
     language,
     options = {
-      ...MonacoEditorOptions, // set default options
+      ...MonacoEditorOptions // set default options
     },
     code, // content
     lineNumbers, // show lineNumbers
     theme, // edit theme
-    autoWrap = "on", //  auto wrap
+    autoWrap = 'on', //  auto wrap
     showFloatButton = false,
     refreshLogCallback,
-    fullScreenBtn = false,
+    fullScreenBtn = false
   } = props;
 
-  const {ScrollType} = editor;
+  const { ScrollType } = editor;
 
   const [scrollBeyondLastLine] = useState<boolean>(options.scrollBeyondLastLine);
 
@@ -101,19 +99,18 @@ const CodeShow = (props: CodeShowFormProps) => {
    */
   const handleSyncLog = async () => {
     setLoading(true);
-    setTimeout(() => {
+    setInterval(() => {
       refreshLogCallback?.();
       setLoading(false);
     }, 1000);
   };
-
 
   /**
    *  handle stop auto refresh log
    */
   const handleStopAutoRefresh = () => {
     setStopping(true);
-    setTimeout(() => {
+    setInterval(() => {
       clearInterval(timer);
       setStopping(false);
       setAutoRefresh(false);
@@ -130,7 +127,6 @@ const CodeShow = (props: CodeShowFormProps) => {
     }, 5000);
     setTimer(timerSync);
   };
-
 
   /**
    *  handle scroll to top
@@ -150,16 +146,15 @@ const CodeShow = (props: CodeShowFormProps) => {
    *  handle scroll to down
    */
   const handleDownScroll = () => {
-    editorRef.setScrollPosition({scrollTop: editorRef.getScrollTop() + 500}, ScrollType.Smooth);
+    editorRef.setScrollPosition({ scrollTop: editorRef.getScrollTop() + 500 }, ScrollType.Smooth);
   };
 
   /**
    *  handle scroll to up
    */
   const handleUpScroll = () => {
-    editorRef?.setScrollPosition({scrollTop: editorRef.getScrollTop() - 500}, ScrollType.Smooth);
+    editorRef?.setScrollPosition({ scrollTop: editorRef.getScrollTop() - 500 }, ScrollType.Smooth);
   };
-
 
   /**
    *  editorDidMount
@@ -169,18 +164,17 @@ const CodeShow = (props: CodeShowFormProps) => {
     setEditorRef(editor);
     editor.layout();
     editor.focus();
-    if (scrollBeyondLastLine){
-      editor.onDidChangeModelContent(()=>{
+    if (scrollBeyondLastLine) {
+      editor.onDidChangeModelContent(() => {
         const lineCount = editor.getModel()?.getLineCount() as number;
-        if (lineCount>20){
+        if (lineCount > 20) {
           editor.revealLine(lineCount);
-        }else {
+        } else {
           editor.revealLine(1);
         }
       });
     }
   };
-
 
   const restEditBtnProps = {
     refreshLogCallback,
@@ -193,43 +187,79 @@ const CodeShow = (props: CodeShowFormProps) => {
     handleBackTop,
     handleBackBottom,
     handleUpScroll,
-    handleDownScroll,
+    handleDownScroll
   };
-
 
   /**
    *  render
    */
-  return (<>
-    <div className={"monaco-float"}>
+  return (
+    <div className={'monaco-float'}>
       {/* fullScreen button */}
-      {fullScreenBtn && <FullscreenBtn isFullscreen={fullScreen} fullScreenCallBack={() => setFullScreen(!fullScreen)}/>}
+      {fullScreenBtn && (
+        <FullscreenBtn
+          isFullscreen={fullScreen}
+          fullScreenCallBack={() => setFullScreen(!fullScreen)}
+        />
+      )}
 
       {/* editor */}
       <Editor
         width={width}
         height={height}
-        value={loading ? "loading..." : code}
+        value={loading ? 'loading...' : code}
         language={language}
         options={{
           ...options,
+          scrollBeyondLastLine: false,
           readOnly: true,
           wordWrap: autoWrap,
           autoDetectHighContrast: true,
           selectOnLineNumbers: true,
           fixedOverflowWidgets: true,
-          autoClosingDelete: "always",
+          autoClosingDelete: 'always',
           lineNumbers,
+          scrollbar: {
+            // Subtle shadows to the left & top. Defaults to true.
+            useShadows: false,
 
+            // Render vertical arrows. Defaults to false.
+            // verticalHasArrows: true,
+            // Render horizontal arrows. Defaults to false.
+            // horizontalHasArrows: true,
+
+            // Render vertical scrollbar.
+            // Accepted values: 'auto', 'visible', 'hidden'.
+            // Defaults to 'auto'
+            vertical: 'visible',
+            // Render horizontal scrollbar.
+            // Accepted values: 'auto', 'visible', 'hidden'.
+            // Defaults to 'auto'
+            horizontal: 'visible',
+            verticalScrollbarSize: 8,
+            horizontalScrollbarSize: 8,
+            arrowSize: 30
+          }
         }}
         onMount={editorDidMount}
         theme={theme ? theme : convertCodeEditTheme()}
       />
 
       {/* float button */}
-      {showFloatButton && <EditorFloatBtn {...restEditBtnProps}/>}
+      {showFloatButton && (
+        <div
+          style={{
+            width: 35,
+            height: height,
+            backgroundColor: '#f4f4f4',
+            paddingBlock: 10
+          }}
+        >
+          <EditorFloatBtn {...restEditBtnProps} />
+        </div>
+      )}
     </div>
-  </>);
+  );
 };
 
 export default CodeShow;

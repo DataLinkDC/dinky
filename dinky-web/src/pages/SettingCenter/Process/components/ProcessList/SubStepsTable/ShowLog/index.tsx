@@ -15,44 +15,41 @@
  * limitations under the License.
  */
 
-import React from "react";
-import {Modal} from "antd";
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import {NORMAL_MODAL_OPTIONS} from "@/services/constants";
+import CodeShow from '@/components/CustomEditor/CodeShow';
+import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
+import { Modal } from 'antd';
+import React from 'react';
 
 type ShowLogProps = {
   type: string;
   log: string;
   visibleViewLog: boolean;
   cancelViewLog: () => void;
-}
+};
 /**
  * code edit props
  */
-const CodeEditProps = {
-  height: "70vh",
-  width: "60vw",
-  lineNumbers: "on",
-  language: "java",
+const CodeEditProps: any = {
+  height: '70vh',
+  width: '60vw',
+  lineNumbers: 'on',
+  language: 'java'
 };
 
-
 const ShowLog: React.FC<ShowLogProps> = (props) => {
+  const { type, log, visibleViewLog, cancelViewLog } = props;
 
-  const {type, log, visibleViewLog, cancelViewLog} = props;
-
-
-  return <>
+  return (
     <Modal
       {...NORMAL_MODAL_OPTIONS}
       title={type}
       open={visibleViewLog}
       onCancel={cancelViewLog}
-      okButtonProps={{style: {display: "none"}}}
+      okButtonProps={{ style: { display: 'none' } }}
     >
-      <CodeShow {...CodeEditProps} code={log} showFloatButton/>
+      <CodeShow {...CodeEditProps} code={log} showFloatButton />
     </Modal>
-  </>;
+  );
 };
 
 export default ShowLog;

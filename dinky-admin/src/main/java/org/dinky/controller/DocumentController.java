@@ -19,13 +19,15 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Document;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.DocumentService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,12 +41,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /** DocumentController */
 @Slf4j
 @RestController
+@Api(tags = "Document Controller")
 @RequestMapping("/api/document")
 @RequiredArgsConstructor
 public class DocumentController {
@@ -59,7 +67,19 @@ public class DocumentController {
      * @throws Exception {@link Exception}
      */
     @PutMapping
-    public Result<Void> saveOrUpdate(@RequestBody Document document) throws Exception {
+    @Log(title = "Insert Or Update Document", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update Document")
+    @ApiImplicitParam(
+            name = "document",
+            value = "Document",
+            required = true,
+            dataType = "Document",
+            paramType = "body",
+            dataTypeClass = Document.class)
+    @SaCheckPermission(
+            value = {PermissionConstants.REGISTRATION_DOCUMENT_ADD, PermissionConstants.REGISTRATION_DOCUMENT_EDIT},
+            mode = SaMode.OR)
+    public Result<Void> saveOrUpdateDocument(@RequestBody Document document) throws Exception {
         if (documentService.saveOrUpdate(document)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
@@ -74,35 +94,16 @@ public class DocumentController {
      * @return {@link ProTableResult} of {@link Document}
      */
     @PostMapping
+    @ApiOperation("Document Query List")
+    @ApiImplicitParam(
+            name = "para",
+            value = "Query Condition",
+            required = true,
+            dataType = "JsonNode",
+            paramType = "body",
+            dataTypeClass = JsonNode.class)
     public ProTableResult<Document> listDocuments(@RequestBody JsonNode para) {
         return documentService.selectForProTable(para);
-    }
-
-    /**
-     * batch delete, this method is deprecated, please use {@link #deleteMul(JsonNode)} instead.
-     *
-     * @param para
-     * @return
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!documentService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
     }
 
     /**
@@ -112,6 +113,17 @@ public class DocumentController {
      * @return {@link Result} of {@link Void}
      */
     @DeleteMapping("/delete")
+    @Log(title = "Document Delete By id", businessType = BusinessType.DELETE)
+    @ApiOperation("Document Delete By id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Document Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class,
+            example = "1")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DOCUMENT_DELETE)
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (documentService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -127,8 +139,19 @@ public class DocumentController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping("/enable")
-    public Result<Void> enable(@RequestParam Integer id) {
-        if (documentService.enable(id)) {
+    @Log(title = "Update Document Status", businessType = BusinessType.UPDATE)
+    @ApiOperation("Update Document Status")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Document Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class,
+            example = "1")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DOCUMENT_EDIT)
+    public Result<Void> modifyDocumentStatus(@RequestParam Integer id) {
+        if (documentService.modifyDocumentStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
             return Result.failed(Status.MODIFY_FAILED);
@@ -143,6 +166,15 @@ public class DocumentController {
      * @throws {@link Exception}
      */
     @GetMapping("/getFillAllByVersion")
+    @ApiOperation("Get Document By Version")
+    @ApiImplicitParam(
+            name = "version",
+            value = "Document Version",
+            required = true,
+            dataType = "String",
+            paramType = "query",
+            dataTypeClass = String.class,
+            example = "1.0.0")
     public Result<List<Document>> getFillAllByVersion(@RequestParam String version) {
         return Result.succeed(documentService.getFillAllByVersion(version));
     }

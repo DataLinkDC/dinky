@@ -40,9 +40,7 @@ import lombok.With;
 @NoArgsConstructor
 public class Jvm extends BaseMetrics {
     /** 当前JVM占用的内存总数(b) */
-    @GaugeM(
-            name = "jvm.total",
-            description = "The total amount of memory currently occupied by the JVM (b)")
+    @GaugeM(name = "jvm.total", description = "The total amount of memory currently occupied by the JVM (b)")
     private long total;
 
     /** JVM最大可用内存总数(b) */
@@ -83,8 +81,7 @@ public class Jvm extends BaseMetrics {
 
     public static Jvm of() {
         MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-        MemoryUsage nonHeapMemoryUsage =
-                ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
+        MemoryUsage nonHeapMemoryUsage = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 
         JvmInfo jvmInfo = SystemUtil.getJvmInfo();
@@ -98,9 +95,7 @@ public class Jvm extends BaseMetrics {
                 .withHeapMax(heapMemoryUsage.getMax())
                 .withHeapUsed(heapMemoryUsage.getUsed())
                 .withNonHeapMax(
-                        nonHeapMemoryUsage.getMax() < 0
-                                ? nonHeapMemoryUsage.getUsed()
-                                : nonHeapMemoryUsage.getMax())
+                        nonHeapMemoryUsage.getMax() < 0 ? nonHeapMemoryUsage.getUsed() : nonHeapMemoryUsage.getMax())
                 .withNonHeapUsed(nonHeapMemoryUsage.getUsed())
                 .withThreadPeakCount(threadMXBean.getPeakThreadCount())
                 .withThreadCount(threadMXBean.getThreadCount());

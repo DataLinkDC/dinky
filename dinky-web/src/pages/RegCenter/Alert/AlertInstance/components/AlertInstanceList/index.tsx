@@ -15,52 +15,60 @@
  * limitations under the License.
  */
 
-
-import React, {useEffect, useRef, useState} from 'react';
-import {EditTwoTone} from '@ant-design/icons';
-import {ActionType} from '@ant-design/pro-table';
-import {Button, Descriptions, Modal, Space, Switch, Tag, Tooltip} from 'antd';
-import {l} from '@/utils/intl';
-import {Alert} from '@/types/RegCenter/data.d';
-import {queryList} from '@/services/api';
-import {handleRemoveById, updateEnabled} from '@/services/BusinessCrud';
-import {ProList} from '@ant-design/pro-components';
-import {API_CONSTANTS, PRO_LIST_CARD_OPTIONS, PROTABLE_OPTIONS_PUBLIC, SWITCH_OPTIONS} from '@/services/constants';
-import {DangerDeleteIcon} from '@/components/Icons/CustomIcons';
-import {getAlertIcon, getJSONData, getSmsType} from '@/pages/RegCenter/Alert/AlertInstance/function';
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
+import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
+import { DataAction } from '@/components/StyledComponents';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
+import {
+  getAlertIcon,
+  getJSONData,
+  getSmsType
+} from '@/pages/RegCenter/Alert/AlertInstance/function';
+import {
+  createOrModifyAlertInstance,
+  sendTest
+} from '@/pages/RegCenter/Alert/AlertInstance/service';
+import { queryList } from '@/services/api';
+import { handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
+import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { Alert } from '@/types/RegCenter/data.d';
+import { InitAlertInstanceState } from '@/types/RegCenter/init.d';
+import { AlertInstanceState } from '@/types/RegCenter/state.d';
+import { l } from '@/utils/intl';
+import { ProList } from '@ant-design/pro-components';
+import { ActionType } from '@ant-design/pro-table';
+import { Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
+import React, { useEffect, useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
-import {CreateBtn} from '@/components/CallBackButton/CreateBtn';
-import {createOrModifyAlertInstance, sendTest} from '@/pages/RegCenter/Alert/AlertInstance/service';
-
 
 const AlertInstanceList: React.FC = () => {
   /**
    * status
    */
+  const [alertInstanceState, setAlertInstanceState] =
+    useState<AlertInstanceState>(InitAlertInstanceState);
+
   const actionRef = useRef<ActionType>();
-  const [formValues, setFormValues] = useState<Partial<Alert.AlertInstance>>();
-  const [addVisible, handleAddVisible] = useState<boolean>(false);
-  const [updateVisible, handleUpdateVisible] = useState<boolean>(false);
-  const [alertInstanceList, setAlertInstanceList] = useState<Alert.AlertInstance[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
 
   /**
    * execute query alert instance list
    * set alert instance list
    */
   const queryAlertInstanceList = async () => {
-    await queryList(API_CONSTANTS.ALERT_INSTANCE).then(res => {
-      setAlertInstanceList(res.data);
-    });
+    queryList(API_CONSTANTS.ALERT_INSTANCE).then((res) =>
+      setAlertInstanceState((prevState) => ({ ...prevState, alertInstanceList: res.data }))
+    );
   };
 
-
   const executeAndCallbackRefresh = async (callback: () => void) => {
-    setLoading(true);
+    setAlertInstanceState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     await queryAlertInstanceList();
-    setLoading(false);
+    setAlertInstanceState((prevState) => ({ ...prevState, loading: false }));
   };
 
   /**
@@ -73,11 +81,10 @@ const AlertInstanceList: React.FC = () => {
       content: l('rc.ai.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
-      onOk: async () => {
-        await executeAndCallbackRefresh(async () => {
-          await handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id);
-        });
-      }
+      onOk: async () =>
+        executeAndCallbackRefresh(async () =>
+          handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id)
+        )
     });
   };
 
@@ -86,9 +93,11 @@ const AlertInstanceList: React.FC = () => {
    * @param item
    */
   const handleEnable = async (item: Alert.AlertInstance) => {
-    await executeAndCallbackRefresh(async () => {
-      await updateEnabled(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {id: item.id});
-    });
+    await executeAndCallbackRefresh(async () =>
+      updateDataByParam(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {
+        id: item.id
+      })
+    );
   };
 
   /**
@@ -96,7 +105,7 @@ const AlertInstanceList: React.FC = () => {
    */
   useEffect(() => {
     queryAlertInstanceList();
-  }, [addVisible, updateVisible]);
+  }, [alertInstanceState.addedOpen, alertInstanceState.editOpen]);
 
   /**
    * render alert instance sub title
@@ -105,10 +114,10 @@ const AlertInstanceList: React.FC = () => {
   const renderAlertInstanceSubTitle = (item: Alert.AlertInstance) => {
     return (
       <Descriptions size={'small'} layout={'vertical'} column={1}>
-        <DescriptionsItem
-          className={'hidden-overflow'}
-          key={item.id}>
-          <Tooltip key={item.name} title={item.name}>{item.name}</Tooltip>
+        <DescriptionsItem className={'hidden-overflow'} key={item.id}>
+          <Tooltip key={item.name} title={item.name}>
+            {item.name}
+          </Tooltip>
         </DescriptionsItem>
       </Descriptions>
     );
@@ -119,8 +128,11 @@ const AlertInstanceList: React.FC = () => {
    * @param item
    */
   const editClick = (item: Alert.AlertInstance) => {
-    setFormValues(item);
-    handleUpdateVisible(!updateVisible);
+    setAlertInstanceState((prevState) => ({
+      ...prevState,
+      value: item,
+      editOpen: true
+    }));
   };
 
   /**
@@ -129,19 +141,12 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderAlertInstanceActionButton = (item: Alert.AlertInstance) => {
     return [
-      <Button
-        className={'options-button'}
-        key={'AlertInstanceEdit'}
-        icon={<EditTwoTone/>}
-        title={l('button.edit')}
-        onClick={() => editClick(item)}
-      />,
-      <Button
-        className={'options-button'}
-        key={'DeleteAlertInstanceIcon'}
-        icon={<DangerDeleteIcon/>}
-        onClick={() => handleDeleteSubmit(item.id)}
-      />,
+      <Authorized key={`${item.id}_auth_edit`} path='/registration/alert/instance/edit'>
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
+      </Authorized>,
+      <Authorized key={`${item.id}_auth_delete`} path='/registration/alert/instance/delete'>
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
+      </Authorized>
     ];
   };
 
@@ -151,7 +156,6 @@ const AlertInstanceList: React.FC = () => {
     }
   };
 
-
   /**
    * render alert instance action button
    * @param item
@@ -159,37 +163,40 @@ const AlertInstanceList: React.FC = () => {
   const renderAlertInstanceContent = (item: Alert.AlertInstance) => {
     return (
       <Space className={'hidden-overflow'}>
-        <Tag color="#5BD8A6">
+        <Tag color='#5BD8A6'>
           {item.type} {renderSubType(item)}
         </Tag>
-        <Switch
-          key={item.id}
-          {...SWITCH_OPTIONS()}
-          checked={item.enabled}
+        <EnableSwitchBtn
+          key={`${item.id}_enable`}
+          disabled={!HasAuthority('/registration/alert/instance/edit')}
+          record={item}
           onChange={() => handleEnable(item)}
         />
       </Space>
     );
   };
 
-
   /**
    * render data source
    */
-  const renderDataSource = alertInstanceList.map((item) => ({
+  const renderDataSource = alertInstanceState.alertInstanceList.map((item) => ({
     subTitle: renderAlertInstanceSubTitle(item),
-    actions: renderAlertInstanceActionButton(item),
+    actions: <DataAction>{renderAlertInstanceActionButton(item)}</DataAction>,
     avatar: getAlertIcon(item.type, 60),
-    content: renderAlertInstanceContent(item),
+    content: renderAlertInstanceContent(item)
   }));
-
 
   /**
    * render right tool bar
    */
   const renderToolBar = () => {
     return () => [
-      <CreateBtn key={'CreateAlertInstanceBtn'} onClick={() => handleAddVisible(true)}/>
+      <Authorized key='create' path='/registration/alert/instance/add'>
+        <CreateBtn
+          key={'CreateAlertInstanceBtn'}
+          onClick={() => setAlertInstanceState((prevState) => ({ ...prevState, addedOpen: true }))}
+        />
+      </Authorized>
     ];
   };
 
@@ -197,10 +204,13 @@ const AlertInstanceList: React.FC = () => {
    * click cancel button callback
    */
   const cancelHandler = () => {
-    handleAddVisible(false);
-    handleUpdateVisible(false);
+    setAlertInstanceState((prevState) => ({
+      ...prevState,
+      addedOpen: false,
+      editOpen: false,
+      value: {}
+    }));
     actionRef.current?.reload();
-    setFormValues(undefined);
   };
 
   /**
@@ -224,29 +234,42 @@ const AlertInstanceList: React.FC = () => {
   /**
    * render main list
    */
-  return <>
-    {/* alert instance list */}
-    <ProList<Alert.AlertInstance>
-      {...PROTABLE_OPTIONS_PUBLIC}
-      {...PRO_LIST_CARD_OPTIONS as any}
-      loading={loading}
-      actionRef={actionRef}
-      headerTitle={l('rc.ai.management')}
-      toolBarRender={renderToolBar()}
-      dataSource={renderDataSource}
-    />
+  return (
+    <>
+      {/* alert instance list */}
+      <ProList<Alert.AlertInstance>
+        {...PROTABLE_OPTIONS_PUBLIC}
+        {...(PRO_LIST_CARD_OPTIONS as any)}
+        loading={alertInstanceState.loading}
+        actionRef={actionRef}
+        headerTitle={l('rc.ai.management')}
+        toolBarRender={renderToolBar()}
+        dataSource={renderDataSource}
+      />
 
-    {/* added */}
-    {addVisible && <AlertTypeChoose onTest={handleTestSend} onCancel={cancelHandler} modalVisible={addVisible}
-                                    onSubmit={handleSubmit}
-                                    values={{}}/>}
-    {/* modify */}
+      {/* added */}
+      {alertInstanceState.addedOpen && (
+        <AlertTypeChoose
+          onTest={handleTestSend}
+          onCancel={cancelHandler}
+          modalVisible={alertInstanceState.addedOpen}
+          onSubmit={handleSubmit}
+          values={{}}
+        />
+      )}
+      {/* modify */}
 
-    {updateVisible &&
-      <AlertTypeChoose onTest={handleTestSend} onCancel={cancelHandler} modalVisible={updateVisible}
-                                       onSubmit={handleSubmit}
-                                       values={formValues}/>}
-  </>;
+      {alertInstanceState.editOpen && (
+        <AlertTypeChoose
+          onTest={handleTestSend}
+          onCancel={cancelHandler}
+          modalVisible={alertInstanceState.editOpen}
+          onSubmit={handleSubmit}
+          values={alertInstanceState.value}
+        />
+      )}
+    </>
+  );
 };
 
 export default AlertInstanceList;

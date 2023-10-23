@@ -75,8 +75,7 @@ public class MyJSONUtil {
      * @return {@link PageInfo}
      */
     public static PageInfo<JSONObject> toPageBean(String content) {
-        return verifyResult(
-                MyJSONUtil.toBean(content, new TypeReference<Result<PageInfo<JSONObject>>>() {}));
+        return verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<PageInfo<JSONObject>>>() {}));
     }
 
     /**

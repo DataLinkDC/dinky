@@ -70,30 +70,25 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
         debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
         debeziumProperties.setProperty("decimal.handling.mode", "string");
 
-        config.getDebezium()
-                .forEach(
-                        (key, value) -> {
-                            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
-                                debeziumProperties.setProperty(key, value);
-                            }
-                        });
+        config.getDebezium().forEach((key, value) -> {
+            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                debeziumProperties.setProperty(key, value);
+            }
+        });
 
         // 添加jdbc参数注入
         Properties jdbcProperties = new Properties();
-        config.getJdbc()
-                .forEach(
-                        (key, value) -> {
-                            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
-                                jdbcProperties.setProperty(key, value);
-                            }
-                        });
+        config.getJdbc().forEach((key, value) -> {
+            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                jdbcProperties.setProperty(key, value);
+            }
+        });
 
-        final SqlServerSource.Builder<String> sourceBuilder =
-                SqlServerSource.<String>builder()
-                        .hostname(config.getHostname())
-                        .port(config.getPort())
-                        .username(config.getUsername())
-                        .password(config.getPassword());
+        final SqlServerSource.Builder<String> sourceBuilder = SqlServerSource.<String>builder()
+                .hostname(config.getHostname())
+                .port(config.getPort())
+                .username(config.getUsername())
+                .password(config.getPassword());
 
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
@@ -141,7 +136,6 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
     @Override
     protected String generateUrl(String schema) {
         return String.format(
-                "jdbc:sqlserver://%s:%s;database=%s",
-                config.getHostname(), config.getPort(), config.getDatabase());
+                "jdbc:sqlserver://%s:%s;database=%s", config.getHostname(), config.getPort(), config.getDatabase());
     }
 }

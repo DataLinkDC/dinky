@@ -183,8 +183,8 @@ public class FieldNamedPreparedStatementImpl implements FieldNamedPreparedStatem
 
     // ----------------------------------------------------------------------------------------
 
-    public static FieldNamedPreparedStatement prepareStatement(
-            Connection connection, String sql, String[] fieldNames) throws SQLException {
+    public static FieldNamedPreparedStatement prepareStatement(Connection connection, String sql, String[] fieldNames)
+            throws SQLException {
         checkNotNull(connection, "connection must not be null.");
         checkNotNull(sql, "sql must not be null.");
         checkNotNull(fieldNames, "fieldNames must not be null.");
@@ -203,11 +203,11 @@ public class FieldNamedPreparedStatementImpl implements FieldNamedPreparedStatem
             checkArgument(
                     parameterMap.containsKey(fieldName),
                     fieldName + " doesn't exist in the parameters of SQL statement: " + sql);
-            indexMapping[i] = parameterMap.get(fieldName).stream().mapToInt(v -> v).toArray();
+            indexMapping[i] =
+                    parameterMap.get(fieldName).stream().mapToInt(v -> v).toArray();
         }
 
-        return new FieldNamedPreparedStatementImpl(
-                connection.prepareStatement(parsedSQL), indexMapping);
+        return new FieldNamedPreparedStatementImpl(connection.prepareStatement(parsedSQL), indexMapping);
     }
 
     /**
@@ -230,9 +230,7 @@ public class FieldNamedPreparedStatementImpl implements FieldNamedPreparedStatem
                     j++;
                 }
                 String parameterName = sql.substring(i + 1, j);
-                checkArgument(
-                        !parameterName.isEmpty(),
-                        "Named parameters in SQL statement must not be empty.");
+                checkArgument(!parameterName.isEmpty(), "Named parameters in SQL statement must not be empty.");
                 paramMap.computeIfAbsent(parameterName, n -> new ArrayList<>()).add(fieldIndex);
                 fieldIndex++;
                 i = j - 1;

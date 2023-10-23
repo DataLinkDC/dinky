@@ -24,43 +24,70 @@ import org.dinky.daemon.pool.DefaultThreadPool;
 
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class DaemonFactory {
 
+    /**
+     *
+     * <p><strong>Start the daemon thread.</strong></p>
+     * <p>This method accepts a List&lt;{@link org.dinky.daemon.task.DaemonTaskConfig}&gt; parameter to configure daemon tasks.
+     * Inside the method, it creates a thread and performs the following operations:</p>
+     *
+     * <ol>
+     *   <li>Iterate through each configuration item in <em>configList</em> and construct the corresponding <em>DaemonTask</em>.</li>
+     *   <li>Submit each <em>DaemonTask</em> to the thread pool for execution.</li>
+     *   <li>Enter an infinite loop where the following actions are performed:
+     *     <ul>
+     *       <li>Calculate the waiting time based on the task count, ensuring that the polling interval between tasks
+     *         stays within the specified minimum and maximum intervals.</li>
+     *       <li>Calculate the desired number of working threads, <em>num</em>, increasing one working thread for
+     *         every 100 tasks.</li>
+     *       <li>Dynamically adjust the number of working threads in the thread pool based on a comparison between
+     *         the actual number of working threads and the desired quantity.</li>
+     *     </ul>
+     *   </li>
+     * </ol>
+     */
     public static void start(List<DaemonTaskConfig> configList) {
-        Thread thread =
-                new Thread(
-                        () -> {
-                            DefaultThreadPool defaultThreadPool = DefaultThreadPool.getInstance();
-                            for (DaemonTaskConfig config : configList) {
-                                DaemonTask daemonTask = DaemonTask.build(config);
-                                defaultThreadPool.execute(daemonTask);
-                            }
-                            while (true) {
-                                int taskSize = defaultThreadPool.getTaskSize();
-                                try {
-                                    Thread.sleep(
-                                            Math.max(
-                                                    FlinkTaskConstant.MAX_POLLING_GAP
-                                                            / (taskSize + 1),
-                                                    FlinkTaskConstant.MIN_POLLING_GAP));
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+        Thread thread = new Thread(() -> {
+            DefaultThreadPool defaultThreadPool = DefaultThreadPool.getInstance();
+            for (DaemonTaskConfig config : configList) {
+                // Build a daemon task based on the config and Submit the task to the thread pool for execution
+                DaemonTask daemonTask = DaemonTask.build(config);
+                defaultThreadPool.execute(daemonTask);
+            }
 
-                                int num = taskSize / 100 + 1;
-                                if (defaultThreadPool.getWorkCount() < num) {
-                                    defaultThreadPool.addWorkers(
-                                            num - defaultThreadPool.getWorkCount());
-                                } else if (defaultThreadPool.getWorkCount() > num) {
-                                    defaultThreadPool.removeWorker(
-                                            defaultThreadPool.getWorkCount() - num);
-                                }
-                            }
-                        });
+            while (true) {
+                int taskSize = defaultThreadPool.getTaskSize();
+                try {
+                    // where (taskSize + 1) is to avoid dividing by 0 when taskSize is 0.
+                    Thread.sleep(Math.max(
+                            FlinkTaskConstant.MAX_POLLING_GAP / (taskSize + 1), FlinkTaskConstant.MIN_POLLING_GAP));
+                } catch (InterruptedException e) {
+                    log.error(e.getMessage(), e);
+                }
+
+                // Calculate the desired number of worker threads, adding one worker for every 100 tasks
+                int num = taskSize / 100 + 1;
+
+                // Dynamically adjust the number of worker threads in the thread pool
+                if (defaultThreadPool.getWorkCount() < num) {
+                    defaultThreadPool.addWorkers(num - defaultThreadPool.getWorkCount());
+                } else if (defaultThreadPool.getWorkCount() > num) {
+                    defaultThreadPool.removeWorker(defaultThreadPool.getWorkCount() - num);
+                }
+            }
+        });
         thread.start();
     }
 
-    public static void addTask(DaemonTaskConfig config) {
+    /**
+     * @param config
+     * add task
+     * */
+    public static void refeshOraddTask(DaemonTaskConfig config) {
         DefaultThreadPool.getInstance().execute(DaemonTask.build(config));
     }
 }

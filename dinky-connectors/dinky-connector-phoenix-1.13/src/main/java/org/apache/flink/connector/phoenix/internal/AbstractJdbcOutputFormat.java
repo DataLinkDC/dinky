@@ -65,7 +65,7 @@ public abstract class AbstractJdbcOutputFormat<T> extends RichOutputFormat<T> im
     @Override
     public void flush() throws IOException {}
 
-    //@VisibleForTesting
+    // @VisibleForTesting
     public Connection getConnection() {
         return connectionProvider.getConnection();
     }

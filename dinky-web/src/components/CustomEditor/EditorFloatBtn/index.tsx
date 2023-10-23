@@ -15,11 +15,19 @@
  * limitations under the License.
  */
 
-import React from "react";
-import {FloatButton, Space} from "antd";
-import {l} from "@/utils/intl";
-import {DownCircleFilled, StopFilled, SyncOutlined, UpCircleFilled} from "@ant-design/icons";
-import {PlayCircleFilled} from "@ant-design/icons/lib/icons";
+import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
+import { l } from '@/utils/intl';
+import {
+  DownCircleFilled,
+  StopFilled,
+  SyncOutlined,
+  UpCircleFilled,
+  VerticalAlignBottomOutlined,
+  VerticalAlignTopOutlined
+} from '@ant-design/icons';
+import { PlayCircleFilled } from '@ant-design/icons/lib/icons';
+import { Space } from 'antd';
+import React from 'react';
 
 /**
  * props
@@ -32,13 +40,12 @@ type EditFloatBtnProps = {
   handleSyncLog?: () => void; // sync log callback
   handleStopAutoRefresh?: () => void; // stop auto refresh callback
   handleStartAutoRefresh?: () => void; // start auto refresh callback
-  handleBackTop?: () => void;  // back to top callback
+  handleBackTop?: () => void; // back to top callback
   handleBackBottom?: () => void; // back to bottom callback
   handleUpScroll?: () => void; // up scroll callback
   handleDownScroll?: () => void; // down scroll callback
-}
+};
 const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
-
   /**
    * init props
    */
@@ -56,68 +63,57 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
     handleDownScroll
   } = props;
 
-
   /**
    * render
    */
-  return <>
-    <FloatButton.Group
-      shape="circle"
-      className={"float-button"}
-    >
-      <Space direction={"vertical"}>
-        {/* if refreshLogCallback is not null, then show sync button , auto refresh button and stop auto refresh button  */}
-        {refreshLogCallback &&
+  return (
+    <>
+      <Space direction={'vertical'} size={0}>
+        {refreshLogCallback && (
           <>
-            <FloatButton
-              tooltip={l("button.refresh")}
-              icon={<SyncOutlined spin={loading}/>}
+            <CircleBtn
+              icon={<SyncOutlined spin={loading} />}
               onClick={handleSyncLog}
+              title={l('button.refresh')}
             />
-
-            {autoRefresh ?
-              <FloatButton
-                icon={<StopFilled spin={stopping}/>}
-                tooltip={l("button.stopRefresh")}
+            {autoRefresh ? (
+              <CircleBtn
+                icon={<StopFilled spin={stopping} />}
                 onClick={handleStopAutoRefresh}
-              /> :
-              <FloatButton
-                icon={<PlayCircleFilled/>}
-                tooltip={l("button.startRefresh")}
-                onClick={handleStartAutoRefresh}
+                title={l('button.stopRefresh')}
               />
-            }
+            ) : (
+              <CircleBtn
+                icon={<PlayCircleFilled spin={loading} />}
+                onClick={handleStartAutoRefresh}
+                title={l('button.startRefresh')}
+              />
+            )}
           </>
-        }
-        {/* back top */}
-        <FloatButton.BackTop
-          tooltip={l("button.backTop")}
+        )}
+        <CircleBtn
+          icon={<VerticalAlignTopOutlined />}
           onClick={handleBackTop}
-          visibilityHeight={0}
+          title={l('button.backTop')}
         />
-        {/* go bottom */}
-        <FloatButton.BackTop
-          className={"back-bottom"}
-          tooltip={l("button.backBottom")}
+        <CircleBtn
+          icon={<VerticalAlignBottomOutlined />}
           onClick={handleBackBottom}
-          visibilityHeight={0}
+          title={l('button.backBottom')}
         />
-        {/* scroll up */}
-        <FloatButton
-          icon={<UpCircleFilled/>}
-          tooltip={l("button.upScroll")}
+        <CircleBtn
+          icon={<UpCircleFilled />}
           onClick={handleUpScroll}
+          title={l('button.upScroll')}
         />
-        {/* scroll down */}
-        <FloatButton
-          icon={<DownCircleFilled/>}
-          tooltip={l("button.downScroll")}
+        <CircleBtn
+          icon={<DownCircleFilled />}
           onClick={handleDownScroll}
+          title={l('button.downScroll')}
         />
       </Space>
-    </FloatButton.Group>
-  </>;
-
+    </>
+  );
 };
 
 export default EditorFloatBtn;

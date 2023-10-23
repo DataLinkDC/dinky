@@ -37,30 +37,27 @@ class FlinkCDCConfigTest {
         sinkConfig.put("propertyOne", "propertyOneValue");
         sinkConfig.put("propertyTwo", "propertyTwoValue");
 
-        FlinkCDCConfig flinkCDCConfig =
-                new FlinkCDCConfig(
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        sinkConfig,
-                        null,
-                        null);
+        FlinkCDCConfig flinkCDCConfig = new FlinkCDCConfig(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                sinkConfig,
+                null,
+                null);
         String sinkConfigureStr = flinkCDCConfig.getSinkConfigurationString();
         assertThat(
                 sinkConfigureStr,
-                equalTo(
-                        "'propertyOne' = 'propertyOneValue',\n"
-                                + "'propertyTwo' = 'propertyTwoValue'"));
+                equalTo("'propertyOne' = 'propertyOneValue',\n" + "'propertyTwo' = 'propertyTwoValue'"));
     }
 }

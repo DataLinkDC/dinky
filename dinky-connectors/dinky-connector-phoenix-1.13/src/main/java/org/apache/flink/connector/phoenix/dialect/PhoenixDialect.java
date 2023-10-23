@@ -44,8 +44,7 @@ public class PhoenixDialect extends AbstractDialect {
     private static final int MIN_DECIMAL_PRECISION = 1;
 
     @Override
-    public String getSelectFromStatement(
-            String tableName, String[] selectFields, String[] conditionFields) {
+    public String getSelectFromStatement(String tableName, String[] selectFields, String[] conditionFields) {
 
         return null;
     }
@@ -84,29 +83,16 @@ public class PhoenixDialect extends AbstractDialect {
     }
 
     @Override
-    public Optional<String> getUpsertStatement(
-            String tableName, String[] fieldNames, String[] uniqueKeyFields) {
+    public Optional<String> getUpsertStatement(String tableName, String[] fieldNames, String[] uniqueKeyFields) {
         String columns =
-                (String)
-                        Arrays.stream(fieldNames)
-                                .map(this::quoteIdentifier)
-                                .collect(Collectors.joining(", "));
-        String placeholders =
-                (String)
-                        Arrays.stream(fieldNames)
-                                .map(
-                                        (f) -> {
-                                            return ":" + f;
-                                        })
-                                .collect(Collectors.joining(", "));
+                (String) Arrays.stream(fieldNames).map(this::quoteIdentifier).collect(Collectors.joining(", "));
+        String placeholders = (String) Arrays.stream(fieldNames)
+                .map((f) -> {
+                    return ":" + f;
+                })
+                .collect(Collectors.joining(", "));
         String sql =
-                "UPSERT INTO "
-                        + this.quoteIdentifier(tableName)
-                        + "("
-                        + columns
-                        + ") VALUES ("
-                        + placeholders
-                        + ")";
+                "UPSERT INTO " + this.quoteIdentifier(tableName) + "(" + columns + ") VALUES (" + placeholders + ")";
         return Optional.of(sql);
     }
 

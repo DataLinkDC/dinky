@@ -17,14 +17,14 @@
  *
  */
 
-import React, {useEffect} from "react";
-import {GitProject} from "@/types/RegCenter/data";
-import {l} from "@/utils/intl";
-import {MODAL_FORM_STYLE} from "@/services/constants";
-import {ModalForm} from "@ant-design/pro-components";
-import ProjectForm from "@/pages/RegCenter/GitProject/components/ProjectModal/ProjectForm";
-import {Button, Form} from "antd";
-import {FormContextValue} from "@/components/Context/FormContext";
+import { FormContextValue } from '@/components/Context/FormContext';
+import ProjectForm from '@/pages/RegCenter/GitProject/components/ProjectModal/ProjectForm';
+import { MODAL_FORM_STYLE } from '@/services/constants';
+import { GitProject } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { ModalForm } from '@ant-design/pro-components';
+import { Button, Form } from 'antd';
+import React, { useEffect } from 'react';
 
 /**
  * project modal props
@@ -34,9 +34,8 @@ type ProjectModalProps = {
   values: Partial<GitProject>;
   onSubmit: (values: Partial<GitProject>) => void;
   onCancel: () => void;
-}
+};
 const ProjectModal: React.FC<ProjectModalProps> = (props) => {
-
   /**
    * init form
    */
@@ -44,22 +43,19 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
   /**
    * init form context
    */
-  const formContext = React.useMemo<FormContextValue>(() => ({
-    resetForm: () => form.resetFields(), // 定义 resetForm 方法
-  }), [form]);
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
+    }),
+    [form]
+  );
 
   const [submitting, setSubmitting] = React.useState<boolean>(false);
 
   /**
    * init props
    */
-  const {
-    onSubmit: handleSubmit,
-    onCancel: handleModalVisible,
-    modalVisible,
-    values
-  } = props;
-
+  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
 
   /**
    * when modalVisible or values changed, set form values
@@ -82,10 +78,9 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setSubmitting(true);
-    await handleSubmit({...values, ...fieldsValue});
+    await handleSubmit({ ...values, ...fieldsValue });
     handleCancel();
   };
-
 
   /**
    * render footer
@@ -93,26 +88,35 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
    */
   const renderFooter = () => {
     return [
-      <Button key={"cancel"} onClick={() => handleCancel()}>{l("button.cancel")}</Button>,
-      <Button key={"finish"} loading={submitting} type="primary"
-              onClick={() => submitForm()}>{l("button.finish")}</Button>,
+      <Button key={'cancel'} onClick={() => handleCancel()}>
+        {l('button.cancel')}
+      </Button>,
+      <Button key={'finish'} loading={submitting} type='primary' onClick={() => submitForm()}>
+        {l('button.finish')}
+      </Button>
     ];
   };
 
   /**
    * render
    */
-  return <>
-    <ModalForm<GitProject>
-      {...MODAL_FORM_STYLE}
-      title={values.id ? l("rc.gp.modify") : l("rc.gp.create")}
-      open={modalVisible}
-      form={form}
-      submitter={{render: () => [...renderFooter()]}}
-      initialValues={values}
-    >
-      <ProjectForm values={values} form={form}/>
-    </ModalForm>
-  </>;
+  return (
+    <>
+      <ModalForm<GitProject>
+        {...MODAL_FORM_STYLE}
+        title={values.id ? l('rc.gp.modify') : l('rc.gp.create')}
+        open={modalVisible}
+        form={form}
+        submitter={{ render: () => [...renderFooter()] }}
+        initialValues={values}
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => handleCancel()
+        }}
+      >
+        <ProjectForm values={values} form={form} />
+      </ModalForm>
+    </>
+  );
 };
 export default ProjectModal;

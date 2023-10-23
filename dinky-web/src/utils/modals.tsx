@@ -16,13 +16,10 @@
  *
  */
 
-// ================================ About Modal Compents ================================
-
-import {l} from "@/utils/intl";
-import React from "react";
-import ErrorShowModal from "@/components/Modal/ErrorModalShow";
-import {createRoot} from "react-dom/client";
-
+import ErrorShowModal from '@/components/Modal/ErrorModalShow';
+import { l } from '@/utils/intl';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 
 /**
  * A function that displays a modal containing an error message in code editor.
@@ -30,8 +27,10 @@ import {createRoot} from "react-dom/client";
  * @param title The title of the modal.
  * @param content The content to display in the modal.
  */
-export const ErrorModelWithCode = (title: any = l('global.error'), content: string) => {
-
+export const ErrorModelWithCode = (
+  title: string | React.JSX.Element = l('global.error'),
+  content: string = ''
+) => {
   /** Create a new div element to mount the modal. */
   const modalRoot = document.createElement('div');
 
@@ -45,5 +44,5 @@ export const ErrorModelWithCode = (title: any = l('global.error'), content: stri
       title={title}
       content={content}
     />
-  )
-}
+  );
+};

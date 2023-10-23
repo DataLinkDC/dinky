@@ -19,8 +19,12 @@
 
 package org.dinky.data.result;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.dinky.metadata.result.JdbcSelectResult;
+
+import java.util.concurrent.TimeUnit;
+
+import cn.hutool.cache.Cache;
+import cn.hutool.cache.impl.TimedCache;
 
 /**
  * ResultPool
@@ -31,7 +35,9 @@ public final class ResultPool {
 
     private ResultPool() {}
 
-    private static final Map<String, SelectResult> results = new ConcurrentHashMap<>();
+    private static final Cache<Integer, JdbcSelectResult> COMMON_SQL_SEARCH_CACHE =
+            new TimedCache<>(TimeUnit.MINUTES.toMillis(10));
+    private static final Cache<String, SelectResult> results = new TimedCache<>(TimeUnit.MINUTES.toMillis(10));
 
     public static boolean containsKey(String key) {
         return results.containsKey(key);
@@ -41,8 +47,19 @@ public final class ResultPool {
         results.put(result.getJobId(), result);
     }
 
+    public static void putCommonSqlCache(Integer taskId, JdbcSelectResult result) {
+        COMMON_SQL_SEARCH_CACHE.put(taskId, result);
+    }
+
+    public static JdbcSelectResult getCommonSqlCache(Integer taskId) {
+        return COMMON_SQL_SEARCH_CACHE.get(taskId);
+    }
+
     public static SelectResult get(String key) {
-        return results.getOrDefault(key, SelectResult.buildDestruction(key));
+        if (containsKey(key)) {
+            return results.get(key);
+        }
+        return SelectResult.buildDestruction(key);
     }
 
     public static boolean remove(String key) {
