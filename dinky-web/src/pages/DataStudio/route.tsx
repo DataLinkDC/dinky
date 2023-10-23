@@ -90,7 +90,9 @@ export const RightSide: TabProp[] = [
     icon: <SettingOutlined />,
     label: l('menu.datastudio.jobConfig'),
     children: <JobConfig />,
-    isShow: (type, subType) => type === TabsPageType.project && (TabsPageSubType.flinkSql === subType||TabsPageSubType.flinkJar === subType)
+    isShow: (type, subType) =>
+      type === TabsPageType.project &&
+      (TabsPageSubType.flinkSql === subType || TabsPageSubType.flinkJar === subType)
   },
   {
     auth: '/datastudio/right/executeConfig',

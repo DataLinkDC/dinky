@@ -18,25 +18,27 @@
  */
 
 import FlinkChart from '@/components/FlinkChart';
-import {JobMetricsItem} from '@/pages/DevOps/JobDetail/data';
-import {getMetricsData} from '@/pages/DevOps/JobDetail/JobMetrics/service';
-import {DevopsType} from '@/pages/DevOps/JobDetail/model';
-import {ChartData} from '@/pages/Metrics/Job/data';
-import {MetricsDataType} from '@/pages/Metrics/Server/data';
-import {connect} from '@@/exports';
-import {Row, Spin} from 'antd';
-import {useEffect, useState} from 'react';
-import {useModel} from "umi";
-import {SSE_TOPIC} from "@/pages/DevOps/constants";
-import {SseData} from "@/models/Sse";
+import { SseData } from '@/models/Sse';
+import { SSE_TOPIC } from '@/pages/DevOps/constants';
+import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
+import { getMetricsData } from '@/pages/DevOps/JobDetail/JobMetrics/service';
+import { DevopsType } from '@/pages/DevOps/JobDetail/model';
+import { ChartData } from '@/pages/Metrics/Job/data';
+import { MetricsDataType } from '@/pages/Metrics/Server/data';
+import { connect } from '@@/exports';
+import { Row, Spin } from 'antd';
+import { useEffect, useState } from 'react';
+import { useModel } from 'umi';
 
 const JobChart = (props: any) => {
-  const {jobDetail, metricsTarget, timeRange} = props;
+  const { jobDetail, metricsTarget, timeRange } = props;
 
   const [chartDatas, setChartDatas] = useState<Record<string, ChartData[]>>({});
   const [loading, setLoading] = useState<boolean>(false);
 
-  const {subscribeTopic} = useModel('Sse',(model:any)=>({subscribeTopic:model.subscribeTopic}))
+  const { subscribeTopic } = useModel('Sse', (model: any) => ({
+    subscribeTopic: model.subscribeTopic
+  }));
 
   const dataProcess = (chData: Record<string, ChartData[]>, data: MetricsDataType) => {
     const verticesMap = data.content as Record<string, Record<string, string>>;
@@ -68,9 +70,9 @@ const JobChart = (props: any) => {
       setLoading(false);
     });
 
-    if (timeRange.isReal){
-      const topic = `${SSE_TOPIC.METRICS}/${jobDetail.instance.jid}`
-      return subscribeTopic([topic],(data:SseData)=>{
+    if (timeRange.isReal) {
+      const topic = `${SSE_TOPIC.METRICS}/${jobDetail.instance.jid}`;
+      return subscribeTopic([topic], (data: SseData) => {
         dataProcess(chartDatas, data.data);
       });
     }
@@ -104,7 +106,7 @@ const JobChart = (props: any) => {
   );
 };
 
-export default connect(({Devops}: { Devops: DevopsType }) => ({
+export default connect(({ Devops }: { Devops: DevopsType }) => ({
   jobDetail: Devops.jobInfoDetail,
   metricsTarget: Devops.metrics.jobMetricsTarget,
   layoutName: Devops.metrics.layoutName
