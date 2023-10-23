@@ -19,8 +19,10 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.job.JobManager;
@@ -61,16 +63,15 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
 
     @Override
     public FlinkClusterConfig getFlinkClusterCfg(Integer id) {
-        ClusterConfiguration clusterConfiguration = this.getClusterConfigById(id);
-        Assert.notNull(clusterConfiguration, "The clusterConfiguration not exists!");
-        return clusterConfiguration.getFlinkClusterCfg();
+        ClusterConfiguration cfg = this.getClusterConfigById(id);
+        Assert.notNull(cfg, "The clusterConfiguration not exists!");
+        return FlinkClusterConfig.create(cfg.getType(), cfg.getConfigJson());
     }
 
     @Override
-    public TestResult testGateway(ClusterConfiguration clusterConfiguration) {
-        FlinkClusterConfig config = clusterConfiguration.getFlinkClusterCfg();
-        GatewayConfig gatewayConfig = GatewayConfig.build(config);
-        return JobManager.testGateway(gatewayConfig);
+    public TestResult testGateway(ClusterConfigurationDTO config) {
+        config.getConfig().setType(GatewayType.get(config.getType()));
+        return JobManager.testGateway(GatewayConfig.build(config.getConfig()));
     }
 
     /**

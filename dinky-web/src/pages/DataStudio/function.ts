@@ -20,6 +20,7 @@
 import {
   DataStudioTabsItemType,
   EnvType,
+  FooterType,
   JobRunningMsgType,
   MetadataTabsItemType,
   STUDIO_MODEL,
@@ -27,6 +28,7 @@ import {
   TabsPageType,
   TaskDataType
 } from '@/pages/DataStudio/model';
+import { CONFIG_MODEL_ASYNC } from '@/pages/SettingCenter/GlobalSetting/model';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { Dispatch } from '@@/plugin-dva/types';
 
@@ -115,6 +117,11 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch({
       type: STUDIO_MODEL.updateJobRunningMsg,
       payload: data
+    }),
+  queryDsConfig: (data: string) =>
+    dispatch({
+      type: CONFIG_MODEL_ASYNC.queryDsConfig,
+      payload: data
     })
 });
 
@@ -135,15 +142,14 @@ export function getCurrentTab(
   activeKey: string
 ): DataStudioTabsItemType | MetadataTabsItemType | undefined {
   const item = panes.find((item) => item.key === activeKey);
-  if (item?.type === 'project') {
-    return item as DataStudioTabsItemType;
+  switch (item?.type) {
+    case 'project':
+      return item as DataStudioTabsItemType;
+    case 'metadata':
+      return item as MetadataTabsItemType;
+    default:
+      return undefined;
   }
-
-  if (item?.type === 'metadata') {
-    return item as MetadataTabsItemType;
-  }
-
-  return undefined;
 }
 
 export const getCurrentData = (
@@ -151,19 +157,15 @@ export const getCurrentData = (
   activeKey: string
 ): TaskDataType | undefined => {
   const item = getCurrentTab(panes, activeKey);
-  if (isDataStudioTabsItemType(item)) {
-    return item.params.taskData;
-  }
-  return undefined;
+  return isDataStudioTabsItemType(item) ? item.params.taskData : undefined;
 };
 
-export const getFooterValue = (panes: any, activeKey: string) => {
+export const getFooterValue = (panes: any, activeKey: string): Partial<FooterType> => {
   const currentTab = getCurrentTab(panes, activeKey);
-  if (isDataStudioTabsItemType(currentTab)) {
-    return {
-      codePosition: [1, 1],
-      codeType: currentTab.params.taskData.dialect
-    };
-  }
-  return {};
+  return isDataStudioTabsItemType(currentTab)
+    ? {
+        codePosition: [1, 1],
+        codeType: currentTab.subType
+      }
+    : {};
 };

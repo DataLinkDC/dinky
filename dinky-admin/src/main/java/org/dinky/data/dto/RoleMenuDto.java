@@ -24,6 +24,8 @@ import org.dinky.data.model.Menu;
 import java.io.Serializable;
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,13 +35,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ApiModel(value = "RoleMenuDto", description = "DTO for assigning menus to a role")
 public class RoleMenuDto implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
+    @ApiModelProperty(
+            value = "Role ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "The unique identifier of the role")
     private Integer roleId;
 
+    @ApiModelProperty(
+            value = "Selected Menu IDs",
+            dataType = "List<Integer>",
+            example = "[1, 2, 3]",
+            notes = "A list of menu IDs selected for the role")
     private List<Integer> selectedMenuIds;
 
+    @ApiModelProperty(
+            value = "Menus",
+            dataType = "List<Menu>",
+            notes = "A list of menu objects associated with the role")
     private List<Menu> menus;
 }

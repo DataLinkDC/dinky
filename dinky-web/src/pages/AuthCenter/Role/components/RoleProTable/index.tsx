@@ -21,6 +21,7 @@ import { AssignBtn } from '@/components/CallBackButton/AssignBtn';
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import AssignMenu from '@/pages/AuthCenter/Role/components/AssignMenu';
 import RoleUserList from '@/pages/AuthCenter/Role/components/RoleUserList';
 import { queryList } from '@/services/api';
@@ -130,7 +131,7 @@ const RoleProTable: React.FC = () => {
     queryDataByParams(API_CONSTANTS.ROLE_USER_LIST, { roleId: record.id }).then((res) =>
       setRoleListState((prevState) => ({
         ...prevState,
-        roleUserList: res,
+        roleUserList: res as UserBaseInfo.User[],
         value: record,
         viewUsersOpen: true
       }))
@@ -144,9 +145,13 @@ const RoleProTable: React.FC = () => {
     {
       title: l('role.roleCode'),
       dataIndex: 'roleCode',
-      render: (_, record: UserBaseInfo.Role) => (
-        <a onClick={() => handleClickViewUserList(record)}> {record.roleCode} </a>
-      )
+      render: (_, record: UserBaseInfo.Role) => {
+        return HasAuthority('/auth/role/viewUser') ? (
+          <a onClick={() => handleClickViewUserList(record)}> {record.roleCode} </a>
+        ) : (
+          <span> {record.roleCode} </span>
+        );
+      }
     },
     {
       title: l('role.roleName'),
@@ -182,23 +187,30 @@ const RoleProTable: React.FC = () => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      width: '10vh',
+      width: '10%',
+      fixed: 'right',
       render: (_: any, record: UserBaseInfo.Role) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />,
-        <>
-          {record.id !== 1 && (
-            <PopconfirmDeleteBtn
-              key={`${record.id}_delete`}
-              onClick={() => handleDeleteSubmit(record.id)}
-              description={l('role.deleteConfirm')}
-            />
-          )}
+        <Authorized key={`${record.id}_add_auth`} path='/auth/role/edit'>
+          <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
+        </Authorized>,
+        <Authorized key={`${record.id}_delete_auth`} path='/auth/role/delete'>
+          <>
+            {record.id !== 1 && (
+              <PopconfirmDeleteBtn
+                key={`${record.id}_delete`}
+                onClick={() => handleDeleteSubmit(record.id)}
+                description={l('role.deleteConfirm')}
+              />
+            )}
+          </>
+        </Authorized>,
+        <Authorized key={`${record.id}_assignMenu_auth`} path='/auth/role/assignMenu'>
           <AssignBtn
             key={`${record.id}_ass`}
             onClick={() => handleAssignVisible(record)}
             title={l('role.assignMenu', '', { roleName: record.roleName })}
           />
-        </>
+        </Authorized>
       ]
     }
   ];
@@ -214,10 +226,12 @@ const RoleProTable: React.FC = () => {
         actionRef={actionRef}
         loading={roleListState.loading}
         toolBarRender={() => [
-          <CreateBtn
-            key={'toolBarRender'}
-            onClick={() => setRoleListState((prevState) => ({ ...prevState, addedRoleOpen: true }))}
-          />
+          <Authorized key={'roleadd'} path='/auth/role/add'>
+            <CreateBtn
+              key={'toolBarRender'}
+              onClick={() => setRoleListState((prevState) => ({ ...prevState, addedOpen: true }))}
+            />
+          </Authorized>
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.ROLE, { ...params, sorter, filter })

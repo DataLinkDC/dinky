@@ -20,9 +20,12 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.ResourcesDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
+import org.dinky.data.enums.Status;
+import org.dinky.data.model.Resources;
 import org.dinky.data.result.Result;
 import org.dinky.service.resource.ResourcesService;
 
@@ -37,7 +40,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +59,14 @@ public class ResourceController {
     @PostMapping("/createFolder")
     @ApiOperation("Create Folder")
     @Log(title = "Create Folder", businessType = BusinessType.INSERT)
+    @ApiImplicitParam(
+            name = "resourcesDTO",
+            value = "ResourcesDTO",
+            required = true,
+            dataType = "ResourcesDTO",
+            paramType = "body",
+            dataTypeClass = ResourcesDTO.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_RESOURCE_ADD_FOLDER)
     public Result<TreeNodeDTO> createFolder(@RequestBody ResourcesDTO resourcesDTO) {
         return Result.succeed(resourcesService.createFolder(
                 resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription()));
@@ -61,34 +75,74 @@ public class ResourceController {
     @PostMapping("/rename")
     @ApiOperation("Rename Folder/File")
     @Log(title = "Rename Folder/File", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(
+            name = "resourcesDTO",
+            value = "ResourcesDTO",
+            required = true,
+            dataType = "ResourcesDTO",
+            paramType = "body",
+            dataTypeClass = ResourcesDTO.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_RESOURCE_RENAME)
     public Result<Void> rename(@RequestBody ResourcesDTO resourcesDTO) {
         resourcesService.rename(resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription());
         return Result.succeed();
     }
 
-    @GetMapping("/showByTree")
-    @ApiOperation("Query Folder/File Tree")
-    public Result<List<TreeNodeDTO>> showByTree(Integer pid, Integer showFloorNum) {
-        return Result.succeed(resourcesService.showByTree(pid, showFloorNum));
+    /**
+     * query Resources tree data
+     * @return {@link Result}< {@link List}< {@link Resources}>>}
+     */
+    @GetMapping("/getResourcesTreeData")
+    @ApiOperation("Get Resources Tree Data")
+    public Result<List<Resources>> getResourcesTree() {
+        List<Resources> resources = resourcesService.getResourcesTree();
+        return Result.succeed(resources);
     }
 
     @GetMapping("/getContentByResourceId")
     @ApiOperation("Query Resource Content")
+    @ApiImplicitParam(name = "id", value = "Resource ID", required = true, dataType = "Integer", paramType = "query")
     public Result<String> getContentByResourceId(@RequestParam Integer id) {
         return Result.data(resourcesService.getContentByResourceId(id));
     }
 
     @PostMapping("/uploadFile")
     @ApiOperation("Upload File")
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+                name = "pid",
+                value = "Parent ID",
+                required = true,
+                dataType = "Integer",
+                paramType = "query"),
+        @ApiImplicitParam(
+                name = "desc",
+                value = "Description",
+                required = true,
+                dataType = "String",
+                paramType = "query"),
+        @ApiImplicitParam(
+                name = "file",
+                value = "File",
+                required = true,
+                dataType = "MultipartFile",
+                paramType = "query")
+    })
     @Log(title = "Upload File To Resource", businessType = BusinessType.UPLOAD)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_RESOURCE_UPLOAD)
     public Result<Void> uploadFile(Integer pid, String desc, @RequestParam("file") MultipartFile file) {
         resourcesService.uploadFile(pid, desc, file);
         return Result.succeed();
     }
 
     @DeleteMapping("/remove")
+    @ApiOperation("Remove Folder/File")
+    @Log(title = "Remove Folder/File", businessType = BusinessType.DELETE)
+    @ApiImplicitParam(name = "id", value = "Resource ID", required = true, dataType = "Integer", paramType = "query")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_RESOURCE_DELETE)
     public Result<Void> remove(Integer id) {
-        resourcesService.remove(id);
-        return Result.succeed();
+        return resourcesService.remove(id)
+                ? Result.succeed(Status.DELETE_SUCCESS)
+                : Result.failed(Status.DELETE_FAILED);
     }
 }

@@ -30,6 +30,7 @@ public enum ProcessType {
     FLINK_EXPLAIN("FlinkExplain"),
     FLINK_EXECUTE("FlinkExecute"),
     FLINK_SUBMIT("FlinkSubmit"),
+    FLINK_JOB_PLAN("FLinkJobPlan"),
     SQL_EXPLAIN("SQLExplain"),
     SQL_EXECUTE("SQLExecute"),
     SQL_SUBMIT("SQLSubmit"),

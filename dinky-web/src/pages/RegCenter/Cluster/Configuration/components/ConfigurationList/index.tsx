@@ -24,6 +24,7 @@ import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { RunningBtn } from '@/components/CallBackButton/RunningBtn';
 import { ClusterConfigIcon } from '@/components/Icons/HomeIcon';
 import { DataAction } from '@/components/StyledComponents';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import { imgStyle } from '@/pages/Home/constants';
 import ConfigurationModal from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal';
 import { CLUSTER_CONFIG_TYPE } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
@@ -44,7 +45,6 @@ import { l } from '@/utils/intl';
 import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
 import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
-import DescriptionsItem from 'antd/es/descriptions/Item';
 import { useEffect, useRef, useState } from 'react';
 
 export default () => {
@@ -144,7 +144,6 @@ export default () => {
    */
   const handleSubmit = async (value: Partial<Cluster.Config>) => {
     await executeAndCallbackRefresh(async () => {
-      value.configJson = JSON.stringify(value.configJson);
       await handleAddOrUpdate(API_CONSTANTS.CLUSTER_CONFIGURATION, value);
       await handleCancel();
     });
@@ -157,11 +156,11 @@ export default () => {
   const renderDataSubTitle = (item: Cluster.Config) => {
     return (
       <Descriptions size={'small'} layout={'vertical'} column={1}>
-        <DescriptionsItem className={'hidden-overflow'} key={item.id}>
+        <Descriptions.Item className={'hidden-overflow'} key={item.id}>
           <Tooltip key={item.name} title={item.name}>
             {item.name}
           </Tooltip>
-        </DescriptionsItem>
+        </Descriptions.Item>
       </Descriptions>
     );
   };
@@ -174,7 +173,7 @@ export default () => {
     setClusterConfigState((prevState) => ({
       ...prevState,
       editOpen: true,
-      value: { ...item, configJson: JSON.stringify(item?.configJson ?? {}) }
+      value: { ...item }
     }));
   };
 
@@ -194,20 +193,28 @@ export default () => {
    */
   const renderDataActionButton = (item: Cluster.Config) => {
     return [
-      <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />,
-      <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />,
-      <RunningBtn
-        key={`${item.id}_running`}
-        title={l('rc.cc.start')}
-        onClick={() => handleStartCluster(item)}
-      />,
-      <Button
-        className={'options-button'}
-        key={`${item.id}_heart`}
-        onClick={() => handleCheckHeartBeat(item)}
-        title={l('button.heartbeat')}
-        icon={<HeartTwoTone twoToneColor={item.isAvailable ? '#1ac431' : '#e10d0d'} />}
-      />
+      <Authorized key={`${item.id}_edit`} path='/registration/cluster/config/edit'>
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
+      </Authorized>,
+      <Authorized key={`${item.id}_delete`} path='/registration/cluster/config/delete'>
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
+      </Authorized>,
+      <Authorized key={`${item.id}_delete`} path='/registration/cluster/config/deploy'>
+        <RunningBtn
+          key={`${item.id}_running`}
+          title={l('rc.cc.start')}
+          onClick={() => handleStartCluster(item)}
+        />
+      </Authorized>,
+      <Authorized key={`${item.id}_heart`} path='/registration/cluster/config/heartbeat'>
+        <Button
+          className={'options-button'}
+          key={`${item.id}_heart`}
+          onClick={() => handleCheckHeartBeat(item)}
+          title={l('button.heartbeat')}
+          icon={<HeartTwoTone twoToneColor={item.isAvailable ? '#1ac431' : '#e10d0d'} />}
+        />
+      </Authorized>
     ];
   };
   /**
@@ -217,7 +224,11 @@ export default () => {
   const renderDataContent = (item: Cluster.Config) => {
     return (
       <Space size={4} align={'baseline'} className={'hidden-overflow'}>
-        <EnableSwitchBtn record={item} onChange={() => handleEnable(item)} />
+        <EnableSwitchBtn
+          record={item}
+          onChange={() => handleEnable(item)}
+          disabled={!HasAuthority('/registration/cluster/config/edit')}
+        />
         <Tag color='cyan'>
           {CLUSTER_CONFIG_TYPE.find((record) => item.type === record.value)?.label}
         </Tag>
@@ -249,10 +260,12 @@ export default () => {
    * tool bar render
    */
   const toolBarRender = () => [
-    <CreateBtn
-      key={'configcreate'}
-      onClick={() => setClusterConfigState((prevState) => ({ ...prevState, addedOpen: true }))}
-    />
+    <Authorized key='new' path='/registration/cluster/config/add'>
+      <CreateBtn
+        key={'configcreate'}
+        onClick={() => setClusterConfigState((prevState) => ({ ...prevState, addedOpen: true }))}
+      />
+    </Authorized>
   ];
 
   /**

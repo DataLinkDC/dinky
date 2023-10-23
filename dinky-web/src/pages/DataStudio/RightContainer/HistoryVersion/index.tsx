@@ -59,47 +59,45 @@ const HistoryVersion = (props: any) => {
     let currentValue = current?.statement;
 
     return (
-      <>
-        <Modal
-          title={l('pages.datastudio.label.version.diff')}
-          open={versionDiffVisible}
-          destroyOnClose={true}
-          width={'85%'}
-          bodyStyle={{ height: '70vh' }}
-          onCancel={() => setVersionDiffVisible(false)}
-          footer={[
-            <Button key='back' onClick={() => setVersionDiffVisible(false)}>
-              {l('button.close')}
-            </Button>
-          ]}
-        >
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Tag color='green' style={{ height: '20px' }}>
-              <RocketOutlined /> {leftTitle}
-            </Tag>
-            <Tag color='blue' style={{ height: '20px' }}>
-              <SyncOutlined spin /> {rightTitle}
-            </Tag>
-          </div>
-          <br />
-          <React.StrictMode>
-            <DiffEditor
-              height={'95%'}
-              options={{
-                readOnly: true,
-                selectOnLineNumbers: true,
-                lineDecorationsWidth: 20,
-                mouseWheelZoom: true,
-                automaticLayout: true
-              }}
-              language={'sql'}
-              theme={'vs-dark'}
-              original={originalValue}
-              modified={currentValue}
-            />
-          </React.StrictMode>
-        </Modal>
-      </>
+      <Modal
+        title={l('pages.datastudio.label.version.diff')}
+        open={versionDiffVisible}
+        destroyOnClose={true}
+        width={'85%'}
+        bodyStyle={{ height: '70vh' }}
+        onCancel={() => setVersionDiffVisible(false)}
+        footer={[
+          <Button key='back' onClick={() => setVersionDiffVisible(false)}>
+            {l('button.close')}
+          </Button>
+        ]}
+      >
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Tag color='green' style={{ height: '20px' }}>
+            <RocketOutlined /> {leftTitle}
+          </Tag>
+          <Tag color='blue' style={{ height: '20px' }}>
+            <SyncOutlined spin /> {rightTitle}
+          </Tag>
+        </div>
+        <br />
+        <React.StrictMode>
+          <DiffEditor
+            height={'95%'}
+            options={{
+              readOnly: true,
+              selectOnLineNumbers: true,
+              lineDecorationsWidth: 20,
+              mouseWheelZoom: true,
+              automaticLayout: true
+            }}
+            language={'sql'}
+            theme={'vs-dark'}
+            original={originalValue}
+            modified={currentValue}
+          />
+        </React.StrictMode>
+      </Modal>
     );
   };
 

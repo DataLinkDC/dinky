@@ -23,6 +23,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { BackIcon } from '@/components/Icons/CustomIcons';
+import { Authorized, useAccess } from '@/hooks/useAccess';
 import { UserType, USER_TYPE_ENUM } from '@/pages/AuthCenter/User/components/constants';
 import PasswordModal from '@/pages/AuthCenter/User/components/PasswordModal';
 import UserModalForm from '@/pages/AuthCenter/User/components/UserModalForm';
@@ -43,7 +44,6 @@ import { UserListState } from '@/types/AuthCenter/state.d';
 import { YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import { SuccessMessage, WarningMessage } from '@/utils/messages';
-import { useAccess } from '@@/exports';
 import { LockTwoTone, RedoOutlined } from '@ant-design/icons';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button, Popconfirm } from 'antd';
@@ -220,11 +220,14 @@ const UserProTable = () => {
       hideInSearch: true,
       render: (_: any, record: UserBaseInfo.User) => {
         return (
+          // todo: 实现 启用/禁用按钮的 权限控制该按钮是否处于禁用状态 , 如果有 edit 权限则该按钮可以正常操作, 否则不允许(此按钮禁用状态)
+          // <Authorized key={`${record.id}_enable_auth`} path='/auth/user/edit'>
           <EnableSwitchBtn
             key={`${record.id}_enable`}
             record={record}
             onChange={() => handleChangeEnable(record)}
           />
+          // </Authorized>
         );
       },
       filters: STATUS_MAPPING(),
@@ -242,70 +245,82 @@ const UserProTable = () => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      width: '10vw',
+      width: '12%',
       fixed: 'right',
       render: (_: any, record: UserBaseInfo.User) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />,
-        <AssignBtn
-          key={`${record.id}_delete`}
-          onClick={() => handleAssignRole(record)}
-          title={l('user.assignRole')}
-        />,
-        <>
-          {record.userType === UserType.LOCAL && (
-            <Button
-              className={'options-button'}
-              key={`${record.id}_change`}
-              icon={<LockTwoTone />}
-              title={l('button.changePassword')}
-              onClick={() => {
-                handleChangePassword(record);
-              }}
-            />
-          )}
-        </>,
-        <>
-          {access.canAdmin && !record.isDelete && (
-            <PopconfirmDeleteBtn
-              key={`${record.id}_delete`}
-              onClick={() => handleDeleteUser(record)}
-              description={l('user.deleteConfirm')}
-            />
-          )}
-        </>,
-        <>
-          {access.canAdmin && record.isDelete && (
-            <Popconfirm
-              placement='topRight'
-              title={l('button.recovery')}
-              description={<div className={'needWrap'}>{l('user.recovery')} </div>}
-              onConfirm={() => handleRecoveryUser(record)}
-              okText={l('button.confirm')}
-              cancelText={l('button.cancel')}
-            >
-              <Button title={l('button.recovery')} key={'recovery'} icon={<BackIcon />} />
-            </Popconfirm>
-          )}
-        </>,
-        <>
-          {access.canAdmin && (
-            <Popconfirm
-              placement='topRight'
-              title={l('button.reset')}
-              description={<div className={'needWrap'}>{l('user.reset')} </div>}
-              onConfirm={() => handleResetPassword(record)}
-              okText={l('button.confirm')}
-              cancelText={l('button.cancel')}
-            >
+        <Authorized key={`${record.id}_enable_auth`} path='/auth/user/edit'>
+          <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
+        </Authorized>,
+        <Authorized key={`${record.id}_delete_auth`} path='/auth/user/assignRole'>
+          <AssignBtn
+            key={`${record.id}_delete`}
+            onClick={() => handleAssignRole(record)}
+            title={l('user.assignRole')}
+          />
+        </Authorized>,
+        <Authorized key={`${record.id}_change_auth`} path='/auth/user/changePassword'>
+          <>
+            {record.userType === UserType.LOCAL && (
               <Button
-                title={l('button.reset')}
-                key={'reset'}
-                className={'blue-icon'}
-                icon={<RedoOutlined />}
+                className={'options-button'}
+                key={`${record.id}_change`}
+                icon={<LockTwoTone />}
+                title={l('button.changePassword')}
+                onClick={() => {
+                  handleChangePassword(record);
+                }}
               />
-            </Popconfirm>
-          )}
-        </>
+            )}
+          </>
+        </Authorized>,
+        <Authorized key={`${record.id}_delete_auth`} path='/auth/user/delete'>
+          <>
+            {access.isAdmin && !record.isDelete && (
+              <PopconfirmDeleteBtn
+                key={`${record.id}_delete`}
+                onClick={() => handleDeleteUser(record)}
+                description={l('user.deleteConfirm')}
+              />
+            )}
+          </>
+        </Authorized>,
+        <Authorized key={`${record.id}_recovery_auth`} path='/auth/user/recovery'>
+          <>
+            {access.isAdmin && record.isDelete && (
+              <Popconfirm
+                placement='topRight'
+                title={l('button.recovery')}
+                description={<div className={'needWrap'}>{l('user.recovery')} </div>}
+                onConfirm={() => handleRecoveryUser(record)}
+                okText={l('button.confirm')}
+                cancelText={l('button.cancel')}
+              >
+                <Button title={l('button.recovery')} key={'recovery'} icon={<BackIcon />} />
+              </Popconfirm>
+            )}
+          </>
+        </Authorized>,
+        <Authorized key={`${record.id}_reset_auth`} path='/auth/user/reset'>
+          <>
+            {access.isAdmin && (
+              <Popconfirm
+                placement='topRight'
+                title={l('button.reset')}
+                description={<div className={'needWrap'}>{l('user.reset')} </div>}
+                onConfirm={() => handleResetPassword(record)}
+                okText={l('button.confirm')}
+                cancelText={l('button.cancel')}
+              >
+                <Button
+                  title={l('button.reset')}
+                  key={'reset'}
+                  className={'blue-icon'}
+                  icon={<RedoOutlined />}
+                />
+              </Popconfirm>
+            )}
+          </>
+        </Authorized>
       ]
     }
   ];
@@ -321,10 +336,12 @@ const UserProTable = () => {
         actionRef={actionRef}
         loading={userState.loading}
         toolBarRender={() => [
-          <CreateBtn
-            key={'CreateUser'}
-            onClick={() => setUserState((prevState) => ({ ...prevState, addedOpen: true }))}
-          />
+          <Authorized key={`CreateUser`} path='/auth/user/add'>
+            <CreateBtn
+              key={'CreateUser'}
+              onClick={() => setUserState((prevState) => ({ ...prevState, addedOpen: true }))}
+            />
+          </Authorized>
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.USER, {

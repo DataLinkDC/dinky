@@ -21,6 +21,8 @@ package org.dinky.data.dto;
 
 import org.dinky.gateway.enums.SavePointType;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,8 +33,16 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "APISavePointTaskDTO", description = "API Save Point Task Data Transfer Object")
 public class APISavePointTaskDTO {
 
+    @ApiModelProperty(value = "Task ID", dataType = "Integer", example = "123", notes = "The ID of the task")
     private Integer taskId;
+
+    @ApiModelProperty(
+            value = "Type",
+            dataType = "String",
+            example = "trigger",
+            notes = "The type of save point (e.g., trigger)")
     private String type = SavePointType.TRIGGER.getValue();
 }

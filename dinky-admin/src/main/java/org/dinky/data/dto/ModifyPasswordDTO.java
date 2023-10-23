@@ -19,6 +19,8 @@
 
 package org.dinky.data.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,10 +31,30 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "ModifyPasswordDTO", description = "DTO for modifying user password")
 public class ModifyPasswordDTO {
 
+    @ApiModelProperty(
+            value = "User ID",
+            dataType = "String",
+            example = "123",
+            notes = "The unique identifier of the user")
     private String id;
+
+    @ApiModelProperty(value = "Username", dataType = "String", example = "john_doe", notes = "The username of the user")
     private String username;
+
+    @ApiModelProperty(
+            value = "Current Password",
+            dataType = "String",
+            example = "current_password",
+            notes = "The current password of the user")
     private String password;
+
+    @ApiModelProperty(
+            value = "New Password",
+            dataType = "String",
+            example = "new_password",
+            notes = "The new password to set for the user")
     private String newPassword;
 }

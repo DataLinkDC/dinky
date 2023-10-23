@@ -26,8 +26,6 @@ import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.explainer.lineage.LineageTable;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.model.ProcessEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,9 +33,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -47,12 +42,13 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.stat.TableStat;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class LineageBuilder {
 
-    protected static final Logger logger = LoggerFactory.getLogger(LineageBuilder.class);
-
     public static LineageResult getSqlLineageByOne(String statement, String type) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        // TODO 改为ProcessStep注释
         List<LineageTable> tables = new ArrayList<>();
         List<LineageRelation> relations = new ArrayList<>();
         try {
@@ -140,8 +136,7 @@ public class LineageBuilder {
                 int tSize = tgtList.size();
                 int sSize = srcLists.size();
                 if (tSize != sSize && tSize * 2 != sSize) {
-                    logger.error("Target table fields do not match!");
-                    process.error("Target table fields do not match!");
+                    log.error("Target table fields do not match!");
                     return null;
                 }
                 for (int i = 0; i < tSize; i++) {
@@ -169,19 +164,19 @@ public class LineageBuilder {
                     }
                 }
             } else {
-                process.info("Does not contain an insert statement, cannot analyze the lineage.");
+                log.info("Does not contain an insert statement, cannot analyze the lineage.");
                 return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            process.error("Unexpected exceptions occur! " + e.getMessage());
+            log.error("Unexpected exceptions occur! " + e.getMessage());
             return null;
         }
         return LineageResult.build(tables, relations);
     }
 
     public static LineageResult getSqlLineage(String statement, String type, DriverConfig driverConfig) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        // TODO 改为ProcessStep注释
         List<LineageTable> tables = new ArrayList<>();
         List<LineageRelation> relations = new ArrayList<>();
         Map<Integer, List<List<TableStat.Column>>> srcMap = new HashMap<>();
@@ -207,7 +202,7 @@ public class LineageBuilder {
                     if (columns.size() <= 0 || sqls[n].contains("*")) {
                         Driver driver = Driver.build(driverConfig);
                         if (!targetTable.contains(".")) {
-                            process.error("Target table not specified database!");
+                            log.error("Target table not specified database!");
                             return null;
                         }
                         List<Column> columns1 = driver.listColumns(
@@ -255,7 +250,7 @@ public class LineageBuilder {
                     srcMap.put(n, srcLists);
                     tgtMap.put(n, tgtList);
                 } else {
-                    process.info("Does not contain an insert statement, cannot analyze the lineage.");
+                    log.info("Does not contain an insert statement, cannot analyze the lineage.");
                     return null;
                 }
             }
@@ -302,8 +297,8 @@ public class LineageBuilder {
                 int tSize = tgtList.size();
                 int sSize = srcLists.size();
                 if (tSize != sSize && tSize * 2 != sSize) {
-                    logger.error("Target table fields do not match!");
-                    process.error("Target table fields do not match!");
+                    log.error("Target table fields do not match!");
+                    log.error("Target table fields do not match!");
                     return null;
                 }
                 for (int i = 0; i < tSize; i++) {
@@ -332,8 +327,7 @@ public class LineageBuilder {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            process.error("Unexpected exceptions occur! " + e.getMessage());
+            log.error("Unexpected exceptions occur!", e);
             return null;
         }
         return LineageResult.build(tables, relations);

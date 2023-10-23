@@ -40,17 +40,15 @@ const ShowLog: React.FC<ShowLogProps> = (props) => {
   const { type, log, visibleViewLog, cancelViewLog } = props;
 
   return (
-    <>
-      <Modal
-        {...NORMAL_MODAL_OPTIONS}
-        title={type}
-        open={visibleViewLog}
-        onCancel={cancelViewLog}
-        okButtonProps={{ style: { display: 'none' } }}
-      >
-        <CodeShow {...CodeEditProps} code={log} showFloatButton />
-      </Modal>
-    </>
+    <Modal
+      {...NORMAL_MODAL_OPTIONS}
+      title={type}
+      open={visibleViewLog}
+      onCancel={cancelViewLog}
+      okButtonProps={{ style: { display: 'none' } }}
+    >
+      <CodeShow {...CodeEditProps} code={log} showFloatButton />
+    </Modal>
   );
 };
 

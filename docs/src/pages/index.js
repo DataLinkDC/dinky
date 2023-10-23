@@ -30,15 +30,15 @@ function HomepageHeader() {
     const {siteConfig} = useDocusaurusContext();
     return (
         <header className={clsx('hero hero--primary', styles.heroBanner)}>
-            <div className="container">
-                <div className="desc">
-                    <div className="desc_left">
+            <div className={clsx("container")}>
+                <div className={clsx("desc", styles.box_container)}>
+                    <div className={clsx("desc_left", styles.box)}>
                         <h1 className="hero__title">{siteConfig.title}</h1>
                         <p className="hero__subtitle">{siteConfig.tagline}</p>
                         <p className="hero_desc"> &nbsp;&nbsp;&nbsp;&nbsp;
-                            一站式 FlinkSQL & SQL DataOps <br/>
-                            基于 Apache Flink 二次开发，无侵入，开箱即用<br/>&nbsp;&nbsp;&nbsp;&nbsp;
-                            实时即未来，批流为一体<br/><br/>
+                            一站式 FlinkSQL & SQL DataOps，
+                            基于 Apache Flink 二次开发，无侵入，开箱即用，
+                            实时即未来，批流为一体。<br/><br/>
                         </p>
                         <div className={styles.buttons}>
                             <Link
@@ -73,7 +73,7 @@ function HomepageHeader() {
                              </span>
                         </div>
                     </div>
-                    <div className="desc_right">
+                    <div className={clsx("desc_right", styles.box)} style={{marginTop:"20px"}}>
                         <img src="home.png" className="fly_svg"></img>
                     </div>
                 </div>
@@ -86,11 +86,11 @@ function HomepageHeader() {
 function Structure() {
     const {siteConfig} = useDocusaurusContext();
     return (
-        <div className={clsx("structure", styles.structure)}>
-            <div className="image"><img
+        <div className={clsx("structure", styles.structure,styles.box_container)}>
+            <div className={clsx("image", styles.box)}><img
                 src="http://www.aiwenmo.com/dinky/docs/zh-CN/concept_architecture/architecture/dinky.png"
                 alt="structure"/></div>
-            <div className="text">
+            <div className={clsx("text", styles.box)}>
                 <div className="title">
                     {siteConfig.customFields.structTitle}
                 </div>
@@ -98,21 +98,19 @@ function Structure() {
                 {/*<div className="sub-title">*/}
                 {/*    {siteConfig.customFields.structSubTitle}*/}
                 {/*</div><br/>*/}
-                <div className="description">
+                <div className={clsx("description", styles.box)}>
                     {/*{siteConfig.customFields.structDescription}*/}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    Dinky 是一个开箱即用的一站式实时计算平台<br/>
-                    以 Apache Flink 为基础，连接 OLAP 和数据湖等众多框架 <br/>
-                    致力于流批一体和湖仓一体的建设与实践。
+                    Dinky 是一个开箱即用的一站式实时计算平台,以 Apache Flink 为基础，连接 OLAP 和数据湖等众多框架,致力于流批一体和湖仓一体的建设与实践。
                 </div>
                 <br/>
                 <a href={siteConfig.customFields.learningMore} target="_blank" className="action-button">
                     学习更多 →
                 </a>
-                {/*&nbsp;&nbsp;*/}
-                {/*<a href="/blog"   className="action-button">*/}
-                {/*    最新动态*/}
-                {/*</a>*/}
+                &nbsp;&nbsp;
+                <a href={siteConfig.customFields.teaching} target="_blank" className="action-button">
+                    尚硅谷教学 →
+                </a>
             </div>
         </div>
     );

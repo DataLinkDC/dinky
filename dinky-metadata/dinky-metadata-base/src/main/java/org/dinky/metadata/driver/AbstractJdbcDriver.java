@@ -33,8 +33,6 @@ import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.model.ProcessEntity;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.TextUtil;
 
@@ -59,24 +57,21 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
 import cn.hutool.core.text.CharSequenceUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * AbstractJdbcDriver
  *
  * @since 2021/7/20 14:09
  */
+@Slf4j
 public abstract class AbstractJdbcDriver extends AbstractDriver {
-
-    protected static Logger logger = LoggerFactory.getLogger(AbstractJdbcDriver.class);
 
     protected ThreadLocal<Connection> conn = new ThreadLocal<>();
 
@@ -93,7 +88,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             DriverManager.getConnection(config.getUrl(), config.getUsername(), config.getPassword())
                     .close();
         } catch (Exception e) {
-            logger.error("Jdbc链接测试失败！错误信息为：" + e.getMessage(), e);
+            log.error("Jdbc链接测试失败！错误信息为：" + e.getMessage(), e);
             return e.getMessage();
         }
         return CommonConstant.HEALTHY;
@@ -553,7 +548,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public JdbcSelectResult query(String sql, Integer limit) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        // TODO 改为ProcessStep注释
         if (Asserts.isNull(limit)) {
             limit = 100;
         }
@@ -606,7 +601,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         } catch (Exception e) {
             result.setError(LogUtil.getError(e));
             result.setSuccess(false);
-            process.error(e.getMessage());
+            log.error(e.getMessage());
         } finally {
             close(preparedStatement, results);
             result.setRowData(datas);
@@ -623,39 +618,39 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
      */
     @Override
     public JdbcSelectResult executeSql(String sql, Integer limit) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
-        process.info("Start parse sql...");
+        // TODO 改为ProcessStep注释
+        log.info("Start parse sql...");
         List<SQLStatement> stmtList =
                 SQLUtils.parseStatements(sql, config.getType().toLowerCase());
-        process.info(CharSequenceUtil.format("A total of {} statement have been Parsed.", stmtList.size()));
+        log.info(CharSequenceUtil.format("A total of {} statement have been Parsed.", stmtList.size()));
         List<Object> resList = new ArrayList<>();
         JdbcSelectResult result = JdbcSelectResult.buildResult();
-        process.info("Start execute sql...");
+        log.info("Start execute sql...");
         for (SQLStatement item : stmtList) {
             String type = item.getClass().getSimpleName();
             if (type.toUpperCase().contains("SELECT")
                     || type.toUpperCase().contains("SHOW")
                     || type.toUpperCase().contains("DESC")
                     || type.toUpperCase().contains("SQLEXPLAINSTATEMENT")) {
-                process.info("Execute query.");
+                log.info("Execute query.");
                 result = query(item.toString(), limit);
             } else if (type.toUpperCase().contains("INSERT")
                     || type.toUpperCase().contains("UPDATE")
                     || type.toUpperCase().contains("DELETE")) {
                 try {
-                    process.info("Execute update.");
+                    log.info("Execute update.");
                     resList.add(executeUpdate(item.toString()));
                     result.setStatusList(resList);
                 } catch (Exception e) {
                     resList.add(0);
                     result.setStatusList(resList);
                     result.error(LogUtil.getError(e));
-                    process.error(e.getMessage());
+                    log.error(e.getMessage());
                     return result;
                 }
             } else {
                 try {
-                    process.info("Execute DDL.");
+                    log.info("Execute DDL.");
                     execute(item.toString());
                     resList.add(1);
                     result.setStatusList(resList);
@@ -663,7 +658,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                     resList.add(0);
                     result.setStatusList(resList);
                     result.error(LogUtil.getError(e));
-                    process.error(e.getMessage());
+                    log.error(e.getMessage());
                     return result;
                 }
             }
@@ -674,10 +669,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public List<SqlExplainResult> explain(String sql) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        // TODO 改为ProcessStep注释
         List<SqlExplainResult> sqlExplainResults = new ArrayList<>();
         String current = null;
-        process.info("Start check sql...");
+        log.info("Start check sql...");
         try {
             List<SQLStatement> stmtList =
                     SQLUtils.parseStatements(sql, config.getType().toLowerCase());
@@ -686,10 +681,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 String type = item.getClass().getSimpleName();
                 sqlExplainResults.add(SqlExplainResult.success(type, current, null));
             }
-            process.info("Sql is correct.");
+            log.info("Sql is correct.");
         } catch (Exception e) {
             sqlExplainResults.add(SqlExplainResult.fail(current, LogUtil.getError(e)));
-            process.error(e.getMessage());
+            log.error(e.getMessage());
         } finally {
             return sqlExplainResults;
         }
@@ -778,7 +773,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                                         SimpleDateFormat.getDateInstance().parse(updateTime));
                             }
                         } catch (ParseException ignored) {
-                            logger.warn("set date fail");
+                            log.warn("set date fail");
                         }
                         TableType tableType = TableType.type(
                                 isSplit(x.get(dbQuery.schemaName()), splitConfig),

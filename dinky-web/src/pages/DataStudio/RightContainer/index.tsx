@@ -38,7 +38,7 @@ const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
     size,
     leftContainer,
     rightContainer,
-    bottomHeight,
+    toolContentHeight,
     updateRightWidth,
     updateSelectRightKey,
     tabs
@@ -46,7 +46,7 @@ const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
   const maxWidth = size.width - 2 * VIEW.leftToolWidth - leftContainer.width - 600;
   return (
     <MovableSidebar
-      contentHeight={size.contentHeight - VIEW.midMargin - bottomHeight}
+      contentHeight={toolContentHeight}
       onResize={(
         event: any,
         direction: any,
@@ -62,7 +62,7 @@ const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
         width: rightContainer.width,
         height: rightContainer.height
       }}
-      minWidth={300}
+      minWidth={200}
       maxWidth={maxWidth}
       enable={{ left: true }}
       style={{ borderInlineStart: `1px solid ${themeValue.borderColor}` }}
@@ -86,7 +86,8 @@ export default connect(
     rightContainer: Studio.rightContainer,
     bottomContainer: Studio.bottomContainer,
     activeBreadcrumbTitle: Studio.tabs.activeBreadcrumbTitle,
-    tabs: Studio.tabs
+    tabs: Studio.tabs,
+    toolContentHeight: Studio.toolContentHeight
   }),
   mapDispatchToProps
 )(RightContainer);

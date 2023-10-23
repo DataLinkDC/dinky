@@ -21,6 +21,8 @@ package org.dinky.data.params;
 
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +31,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(value = "AssignUserToTenantParams", description = "Parameters for Assigning Users to a Tenant")
 public class AssignUserToTenantParams {
-    Integer tenantId;
-    List<Integer> userIds;
+
+    @ApiModelProperty(value = "Tenant ID", dataType = "Integer", notes = "ID of the tenant to assign users to")
+    private Integer tenantId;
+
+    @ApiModelProperty(
+            value = "User IDs",
+            dataType = "List<Integer>",
+            notes = "List of user IDs to assign to the tenant")
+    private List<Integer> userIds;
 }

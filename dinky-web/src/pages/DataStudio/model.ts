@@ -16,7 +16,7 @@ import ICodeEditor = editor.ICodeEditor;
  */
 export const VIEW = {
   headerHeight: 32,
-  headerNavHeight: 55,
+  headerNavHeight: 56,
   footerHeight: 25,
   sideWidth: 40,
   leftToolWidth: 180,
@@ -26,7 +26,7 @@ export const VIEW = {
   rightMargin: 32,
   leftMargin: 36,
   midMargin: 44,
-  otherHeight: 1,
+  otherHeight: 0,
   paddingInline: 50
 };
 
@@ -103,6 +103,10 @@ export type TaskDataBaseType = {
   id: number;
   name: string;
   statement: string;
+  dialect: string;
+  step: number;
+  // Only common sql has(只有普通sql才有)
+  databaseId?: number;
 };
 
 export type TaskDataType = TaskDataBaseType & Record<string, any>;
@@ -120,7 +124,8 @@ export enum TabsPageType {
 }
 
 export enum TabsPageSubType {
-  flinkSql = 'flinksql'
+  flinkSql = 'FlinkSql',
+  flinkJar = 'FlinkJar'
 }
 
 export interface TabsItemType {
@@ -130,6 +135,7 @@ export interface TabsItemType {
   type: TabsPageType;
   subType?: TabsPageSubType;
   key: string;
+  treeKey: string;
   value: string;
   icon: any;
   closable: boolean;
@@ -222,7 +228,7 @@ export type JobRunningMsgType = {
 /**
  * footer
  */
-type FooterType = {
+export type FooterType = {
   codePosition: [number, number];
   space: number;
   codeEncoding: string;
@@ -368,14 +374,14 @@ const Model: ModelType = {
     *queryProject({ payload }, { call, put }) {
       const response: [] = yield call(getTaskData, payload);
       yield put({
-        type: STUDIO_MODEL.saveProject,
+        type: 'saveProject',
         payload: response
       });
     },
     *queryFlinkConfigOptions({ payload }, { call, put }) {
       const response: [] = yield call(getFlinkConfigs, payload);
       yield put({
-        type: STUDIO_MODEL.saveFlinkConfigOptions,
+        type: 'saveFlinkConfigOptions',
         payload: response
       });
     }
@@ -521,9 +527,6 @@ const Model: ModelType = {
     },
     /**
      * flink config options
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, flinkConfigOptions: any, tabs: TabsType, project: {data: any[], expandKeys: [], selectKey: []}, leftContainer: Container, env: EnvType[], footContainer: FooterType, clusterConfiguration: Cluster.Config[], toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectDatabaseId: number | null, expandKeys: [], selectKey: []}, sessionCluster: Cluster.Instance[], isFullScreen: boolean, rightContainer: Container, bottomContainerContent: BottomContainerContent, bottomContainer: Container}}
      */
     saveFlinkConfigOptions(state, { payload }) {
       return {
@@ -609,32 +612,27 @@ const Model: ModelType = {
       if (needCloseKey === activeKey) {
         for (const [index, pane] of panes.entries()) {
           if (pane.key === needCloseKey) {
-            const item =
-              index + 1 >= panes.length
-                ? index + 1 > 1 && index + 1 === panes.length
-                  ? panes[index - 1]
-                  : panes[0]
-                : panes[index + 1];
-            const newPanes = panes.filter((pane) => pane.key !== needCloseKey);
-            let footerValue: object = getFooterValue(panes, item.key);
+            const nextPane = panes[(index + 1) % panes.length];
             return {
               ...state,
               tabs: {
-                panes: newPanes,
-                activeKey: item.key,
+                panes: panes.filter((pane) => pane.key !== needCloseKey),
+                activeKey: nextPane.key,
                 activeBreadcrumbTitle:
-                  panes.length < 2 ? '' : [item.type, item.breadcrumbLabel, item.label].join('/')
+                  panes.length < 2
+                    ? ''
+                    : [nextPane.type, nextPane.breadcrumbLabel, nextPane.label].join('/')
               },
               footContainer: {
                 ...state.footContainer,
-                ...footerValue
+                ...getFooterValue(panes, nextPane.key)
               }
             };
           }
         }
       }
+
       const newPanes = panes.filter((pane) => pane.key !== needCloseKey);
-      let footerValue: object = getFooterValue(newPanes, activeKey);
       return {
         ...state,
         tabs: {
@@ -644,10 +642,11 @@ const Model: ModelType = {
         },
         footContainer: {
           ...state.footContainer,
-          ...footerValue
+          ...getFooterValue(newPanes, activeKey)
         }
       };
     },
+
     /**
      * 添加tab 如果存在则不添加
      */
@@ -669,6 +668,7 @@ const Model: ModelType = {
           };
         }
       }
+
       node.key =
         state.tabs.panes.length === 0
           ? '0'
@@ -712,8 +712,8 @@ const Model: ModelType = {
         ...state,
         tabs: {
           panes: tabsItem ? [tabsItem] : [],
-          activeKey: tabsItem?.key || '',
-          activeBreadcrumbTitle: tabsItem?.breadcrumbLabel || ''
+          activeKey: tabsItem?.key ?? '',
+          activeBreadcrumbTitle: tabsItem?.breadcrumbLabel ?? ''
         }
       };
     },

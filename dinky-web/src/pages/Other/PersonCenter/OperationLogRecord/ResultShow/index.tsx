@@ -38,18 +38,16 @@ const ResultShow: React.FC<ResultShowProps> = (props) => {
   } = props;
 
   return (
-    <>
-      <Modal
-        title={l('global.result')}
-        open={open}
-        {...NORMAL_MODAL_OPTIONS}
-        onCancel={onCancel}
-        okButtonProps={{ hidden: true }}
-        cancelText={l('button.close')}
-      >
-        <CodeShow language={'json'} height={'60vh'} code={data} />
-      </Modal>
-    </>
+    <Modal
+      title={l('global.result')}
+      open={open}
+      {...NORMAL_MODAL_OPTIONS}
+      onCancel={onCancel}
+      okButtonProps={{ hidden: true }}
+      cancelText={l('button.close')}
+    >
+      <CodeShow language={'json'} height={'60vh'} code={data} />
+    </Modal>
   );
 };
 

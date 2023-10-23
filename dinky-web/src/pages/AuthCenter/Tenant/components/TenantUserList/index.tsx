@@ -17,6 +17,7 @@
  *
  */
 
+import { Authorized } from '@/hooks/useAccess';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
@@ -74,17 +75,19 @@ const TenantUserList: React.FC<TenantUserListProps> = (props) => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      width: '12vh',
+      width: '10%',
       fixed: 'right',
       render: (_: any, record: UserBaseInfo.User) => [
-        <Button
-          type={'link'}
-          key={`${record.id}_set_tenant_m`}
-          title={record.tenantAdminFlag ? l('tenant.cancel.admin') : l('tenant.set.admin')}
-          onClick={() => onSubmit(record)}
-        >
-          {record.tenantAdminFlag ? l('tenant.cancel.admin') : l('tenant.set.admin')}
-        </Button>
+        <Authorized key={`${record.id}_set_tenant_m_auth`} path='/auth/tenant/modifyTenantManager'>
+          <Button
+            type={'link'}
+            key={`${record.id}_set_tenant_m`}
+            title={record.tenantAdminFlag ? l('tenant.cancel.admin') : l('tenant.set.admin')}
+            onClick={() => onSubmit(record)}
+          >
+            {record.tenantAdminFlag ? l('tenant.cancel.admin') : l('tenant.set.admin')}
+          </Button>
+        </Authorized>
       ]
     }
   ];

@@ -19,8 +19,6 @@
 
 package org.dinky.executor;
 
-import org.dinky.assertion.Asserts;
-
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -31,19 +29,15 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class RemoteBatchExecutor extends Executor {
 
-    public RemoteBatchExecutor(EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
-        this.environmentSetting = environmentSetting;
-        this.executorSetting = executorSetting;
-        if (Asserts.isNotNull(executorSetting.getConfig())) {
-            Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
+    public RemoteBatchExecutor(ExecutorConfig executorConfig) {
+        this.executorConfig = executorConfig;
+        if (executorConfig.isValidConfig()) {
+            Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
             this.environment = StreamExecutionEnvironment.createRemoteEnvironment(
-                    environmentSetting.getHost(),
-                    environmentSetting.getPort(),
-                    configuration,
-                    environmentSetting.getJarFiles());
+                    executorConfig.getHost(), executorConfig.getPort(), configuration, executorConfig.getJarFiles());
         } else {
             this.environment = StreamExecutionEnvironment.createRemoteEnvironment(
-                    environmentSetting.getHost(), environmentSetting.getPort(), environmentSetting.getJarFiles());
+                    executorConfig.getHost(), executorConfig.getPort(), executorConfig.getJarFiles());
         }
         init();
     }

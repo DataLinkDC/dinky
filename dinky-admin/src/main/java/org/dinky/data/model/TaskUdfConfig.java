@@ -22,17 +22,25 @@ package org.dinky.data.model;
 import java.io.Serializable;
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@ApiModel(value = "TaskUdfConfig", description = "UDF (User-Defined Function) Configuration for Task")
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskUdfConfig implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @ApiModelProperty(value = "Template ID", dataType = "Integer", example = "1", notes = "ID of the UDF template")
     private Integer templateId;
+
+    @ApiModelProperty(value = "Select Keys", dataType = "List<Object>", notes = "List of select keys")
     private List<Object> selectKeys;
+
+    @ApiModelProperty(value = "Class Name", dataType = "String", notes = "Name of the UDF class")
     private String className;
 }

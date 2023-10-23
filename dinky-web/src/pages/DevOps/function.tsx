@@ -17,108 +17,6 @@
 
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { l } from '@/utils/intl';
-import {
-  CameraOutlined,
-  CarryOutOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  CloseCircleOutlined,
-  EditOutlined,
-  MinusCircleOutlined,
-  QuestionCircleOutlined,
-  SyncOutlined
-} from '@ant-design/icons';
-import { Tag } from 'antd';
-
-/**
- * Renders a tag for the job life cycle based on the provided step.
- *
- * @param {number} step - The step in the job life cycle.
- * @returns {JSX.Element} - The tag representing the job life cycle.
- */
-export const TagJobLifeCycle = (step?: number) => {
-  switch (step) {
-    case JOB_LIFE_CYCLE.DEVELOP:
-      return (
-        <Tag icon={<EditOutlined />} color='default'>
-          {l('global.table.lifecycle.dev')}
-        </Tag>
-      );
-    case JOB_LIFE_CYCLE.RELEASE:
-      return (
-        <Tag icon={<CameraOutlined />} color='green'>
-          {l('global.table.lifecycle.publish')}
-        </Tag>
-      );
-    case JOB_LIFE_CYCLE.ONLINE:
-      return (
-        <Tag icon={<CarryOutOutlined />} color='blue'>
-          {l('global.table.lifecycle.online')}
-        </Tag>
-      );
-    default:
-      return step;
-  }
-};
-
-/**
- * Renders a tag for the job status based on the provided status.
- *
- * @param {string|undefined} status - The status of the job.
- * @returns {JSX.Element} - The tag representing the job status.
- */
-export const TagJobStatus = (status: string | undefined) => {
-  switch (status) {
-    case JOB_STATUS.RUNNING:
-      return (
-        <Tag icon={<SyncOutlined spin />} color='green'>
-          RUNNING
-        </Tag>
-      );
-    case JOB_STATUS.FINISHED:
-      return (
-        <Tag icon={<CheckCircleOutlined />} color='blue'>
-          FINISHED
-        </Tag>
-      );
-    case JOB_STATUS.CANCELED:
-      return (
-        <Tag icon={<MinusCircleOutlined />} color='orange'>
-          CANCELED
-        </Tag>
-      );
-    case JOB_STATUS.INITIALIZING:
-      return (
-        <Tag icon={<ClockCircleOutlined />} color='default'>
-          INITIALIZING
-        </Tag>
-      );
-    case JOB_STATUS.RESTARTING:
-      return (
-        <Tag icon={<ClockCircleOutlined />} color='default'>
-          RESTARTING
-        </Tag>
-      );
-    case JOB_STATUS.CREATED:
-      return (
-        <Tag icon={<ClockCircleOutlined />} color='default'>
-          CREATED
-        </Tag>
-      );
-    case JOB_STATUS.UNKNOWN:
-      return (
-        <Tag icon={<QuestionCircleOutlined />} color='default'>
-          UNKNOWN
-        </Tag>
-      );
-    default:
-      return (
-        <Tag icon={<CloseCircleOutlined />} color='error'>
-          FAILED
-        </Tag>
-      );
-  }
-};
 
 /**
  * Generates an array of options for the life cycle filter.
@@ -128,15 +26,8 @@ export const TagJobStatus = (status: string | undefined) => {
 export const LIFECYCLE_FILTER = () => {
   return [
     { text: l('global.table.lifecycle.dev'), value: JOB_LIFE_CYCLE.DEVELOP },
-    {
-      text: l('global.table.lifecycle.publish'),
-      value: JOB_LIFE_CYCLE.RELEASE
-    },
     { text: l('global.table.lifecycle.online'), value: JOB_LIFE_CYCLE.ONLINE },
-    {
-      text: l('global.table.lifecycle.unknown'),
-      value: JOB_LIFE_CYCLE.UNKNOWN
-    }
+    { text: l('global.table.lifecycle.unknown'), value: JOB_LIFE_CYCLE.UNKNOWN }
   ];
 };
 

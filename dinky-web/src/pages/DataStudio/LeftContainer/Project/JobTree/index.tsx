@@ -17,12 +17,14 @@
  *
  */
 
+import { getCurrentTab } from '@/pages/DataStudio/function';
 import {
   buildProjectTree,
   generateList,
+  getLeafKeyList,
   getParentKey
 } from '@/pages/DataStudio/LeftContainer/Project/function';
-import { StateType } from '@/pages/DataStudio/model';
+import { StateType, TabsItemType } from '@/pages/DataStudio/model';
 import { BtnRoute } from '@/pages/DataStudio/route';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
@@ -44,7 +46,15 @@ type TreeProps = {
 };
 
 const JobTree: React.FC<TreeProps & connect> = (props) => {
-  const { projectData, onNodeClick, style, height, onRightClick, selectedKeys } = props;
+  const {
+    projectData,
+    onNodeClick,
+    style,
+    height,
+    onRightClick,
+    selectedKeys: selectedKey
+  } = props;
+
   const [searchValue, setSearchValueValue] = useState('');
   const [data, setData] = useState<any[]>(buildProjectTree(projectData, searchValue));
 
@@ -54,7 +64,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
   const [expandedKeys, setExpandedKeys] = useState<Key[]>();
   const [autoExpandParent, setAutoExpandParent] = useState(true);
-
+  const [selectedKeys, setSelectedKeys] = useState(selectedKey);
   const onChangeSearch = (e: any) => {
     let { value } = e.target;
     if (!value) {
@@ -80,15 +90,34 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   const onExpand = (expandedKeys: Key[]) => {
     setExpandedKeys(expandedKeys);
   };
+
   const expandAll = () => {
-    const map = data.filter((x: { isLeaf: any }) => !x.isLeaf).map((x: { key: any }) => x.key);
-    setExpandedKeys(map);
+    setExpandedKeys(getLeafKeyList(projectData));
   };
+
   const btn = BtnRoute['menu.datastudio.project'];
+  const positionKey = (panes: TabsItemType[], activeKey: string) => {
+    const treeKey = getCurrentTab(panes, activeKey)?.treeKey;
+    if (treeKey) {
+      const expandList: any[] = generateList(data, []);
+      let expandedKeys: any = expandList
+        .map((item: any) => {
+          if (item?.key === treeKey) {
+            return getParentKey(item.key, data);
+          }
+          return null;
+        })
+        .filter((item: any, i: number, self: any) => item && self.indexOf(item) === i);
+      setExpandedKeys(expandedKeys);
+      setAutoExpandParent(true);
+      setSelectedKeys([treeKey]);
+    }
+  };
 
   btn[1].onClick = expandAll;
 
   btn[2].onClick = () => setExpandedKeys([]);
+  btn[3].onClick = positionKey;
 
   return (
     <>

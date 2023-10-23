@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-import { buildTreeData } from '@/utils/function';
+import { buildLogInfoTreeData } from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsTree/function';
+import { LogInfo } from '@/types/SettingCenter/data';
 import { Empty, Tree } from 'antd';
 import React from 'react';
 
 type LogsTreeProps = {
-  treeData: Partial<any>[];
+  treeData: LogInfo[];
   onNodeClick: (info: any) => void;
 };
 
@@ -34,7 +35,7 @@ const LogsTree: React.FC<LogsTreeProps> = (props) => {
       {treeData.length > 0 ? (
         <DirectoryTree
           onSelect={(_, info) => onNodeClick(info)}
-          treeData={buildTreeData(treeData)}
+          treeData={buildLogInfoTreeData(treeData)}
         />
       ) : (
         <Empty className={'code-content-empty'} />

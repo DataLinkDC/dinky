@@ -46,7 +46,7 @@ public interface AlertGroupService extends ISuperService<AlertGroup> {
      * alert group enable or disable by id
      *
      * @param id
-     * @return
+     * @return {@link Boolean}
      */
     Boolean modifyAlertGroupStatus(Integer id);
 

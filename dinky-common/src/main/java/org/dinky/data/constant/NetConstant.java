@@ -27,8 +27,8 @@ public final class NetConstant {
     public static final String COLON = ":";
     /** 斜杠/ */
     public static final String SLASH = "/";
-    /** 连接运行服务器超时时间 1000 */
-    public static final Integer SERVER_TIME_OUT_ACTIVE = 1000;
+    /** 连接运行服务器超时时间 10秒 */
+    public static final Integer SERVER_TIME_OUT_ACTIVE = 10000;
     /** 读取服务器超时时间 3000 */
     public static final Integer READ_TIME_OUT = 3000;
     /** 连接FLINK历史服务器超时时间 2000 */

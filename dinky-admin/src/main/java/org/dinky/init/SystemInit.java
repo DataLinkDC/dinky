@@ -44,10 +44,12 @@ import org.dinky.service.TaskService;
 import org.dinky.service.TenantService;
 import org.dinky.service.resource.impl.HdfsResourceManager;
 import org.dinky.service.resource.impl.OssResourceManager;
-import org.dinky.utils.JSONUtil;
+import org.dinky.url.RsURLStreamHandlerFactory;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.OssTemplate;
 import org.dinky.utils.UDFUtils;
 
+import org.apache.catalina.webresources.TomcatURLStreamHandlerFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 
@@ -55,10 +57,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -70,6 +71,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * SystemInit
@@ -79,10 +81,11 @@ import lombok.RequiredArgsConstructor;
 @Component
 @Order(value = 1)
 @RequiredArgsConstructor
+@Profile("!test")
+@Slf4j
 public class SystemInit implements ApplicationRunner {
     private final SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
 
-    private static final Logger log = LoggerFactory.getLogger(SystemInit.class);
     private final ProjectClient projectClient;
     private final SysConfigService sysConfigService;
     private final JobInstanceService jobInstanceService;
@@ -93,6 +96,7 @@ public class SystemInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        TenantContextHolder.ignoreTenant();
         initResources();
 
         List<Tenant> tenants = tenantService.list();
@@ -104,6 +108,11 @@ public class SystemInit implements ApplicationRunner {
         initDolphinScheduler();
         registerUDF();
         updateGitBuildState();
+        registerURL();
+    }
+
+    private void registerURL() {
+        TomcatURLStreamHandlerFactory.getInstance().addUserFactory(new RsURLStreamHandlerFactory());
     }
 
     private void initResources() {
@@ -116,55 +125,55 @@ public class SystemInit implements ApplicationRunner {
                         systemConfiguration.getResourcesHdfsDefaultFS(),
                         systemConfiguration.getResourcesOssAccessKey(),
                         systemConfiguration.getResourcesOssRegion())
-                .forEach(x -> {
-                    x.addParameterCheck((y) -> {
-                        if (systemConfiguration.getResourcesEnable().getValue()) {
-                            switch (systemConfiguration.getResourcesModel().getValue()) {
-                                case OSS:
-                                    OssProperties ossProperties = new OssProperties();
-                                    ossProperties.setAccessKey(systemConfiguration
-                                            .getResourcesOssAccessKey()
-                                            .getValue());
-                                    ossProperties.setSecretKey(systemConfiguration
-                                            .getResourcesOssSecretKey()
-                                            .getValue());
-                                    ossProperties.setEndpoint(systemConfiguration
-                                            .getResourcesOssEndpoint()
-                                            .getValue());
-                                    ossProperties.setBucketName(systemConfiguration
-                                            .getResourcesOssBucketName()
-                                            .getValue());
-                                    ossProperties.setRegion(systemConfiguration
-                                            .getResourcesOssRegion()
-                                            .getValue());
-                                    Singleton.get(OssResourceManager.class)
-                                            .setOssTemplate(new OssTemplate(ossProperties));
-                                    break;
-                                case HDFS:
-                                    final Configuration configuration = new Configuration();
-                                    configuration.set(
-                                            "fs.defaultFS",
+                .forEach(x -> x.addParameterCheck(y -> {
+                    if (Boolean.TRUE.equals(
+                            systemConfiguration.getResourcesEnable().getValue())) {
+                        switch (systemConfiguration.getResourcesModel().getValue()) {
+                            case OSS:
+                                OssProperties ossProperties = new OssProperties();
+                                ossProperties.setAccessKey(systemConfiguration
+                                        .getResourcesOssAccessKey()
+                                        .getValue());
+                                ossProperties.setSecretKey(systemConfiguration
+                                        .getResourcesOssSecretKey()
+                                        .getValue());
+                                ossProperties.setEndpoint(systemConfiguration
+                                        .getResourcesOssEndpoint()
+                                        .getValue());
+                                ossProperties.setBucketName(systemConfiguration
+                                        .getResourcesOssBucketName()
+                                        .getValue());
+                                ossProperties.setRegion(systemConfiguration
+                                        .getResourcesOssRegion()
+                                        .getValue());
+                                Singleton.get(OssResourceManager.class).setOssTemplate(new OssTemplate(ossProperties));
+                                break;
+                            case HDFS:
+                                final Configuration configuration = new Configuration();
+                                configuration.set(
+                                        "fs.defaultFS",
+                                        systemConfiguration
+                                                .getResourcesHdfsDefaultFS()
+                                                .getValue());
+                                try {
+                                    FileSystem fileSystem = FileSystem.get(
+                                            getDefaultUri(configuration),
+                                            configuration,
                                             systemConfiguration
-                                                    .getResourcesHdfsDefaultFS()
+                                                    .getResourcesHdfsUser()
                                                     .getValue());
-                                    try {
-                                        FileSystem fileSystem = FileSystem.get(
-                                                getDefaultUri(configuration),
-                                                configuration,
-                                                systemConfiguration
-                                                        .getResourcesHdfsUser()
-                                                        .getValue());
-                                        Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
-                                    } catch (Exception e) {
-                                        throw new DinkyException(e);
-                                    }
-                            }
+                                    Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
+                                } catch (Exception e) {
+                                    throw new DinkyException(e);
+                                }
                         }
-                    });
-                });
+                    }
+                }));
     }
 
-    /** init task monitor */
+    /**
+     * init task monitor
+     */
     private void initTaskMonitor() {
         List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
         List<DaemonTaskConfig> configList = new ArrayList<>();
@@ -175,13 +184,16 @@ public class SystemInit implements ApplicationRunner {
         DaemonFactory.start(configList);
     }
 
-    /** init DolphinScheduler */
+    /**
+     * init DolphinScheduler
+     */
     private void initDolphinScheduler() {
         systemConfiguration
                 .getAllConfiguration()
                 .get("dolphinscheduler")
                 .forEach(c -> c.addParameterCheck(v -> {
-                    if (systemConfiguration.getDolphinschedulerEnable().getValue()) {
+                    if (Boolean.TRUE.equals(
+                            systemConfiguration.getDolphinschedulerEnable().getValue())) {
                         if (StrUtil.isEmpty(Convert.toStr(v))) {
                             sysConfigService.updateSysConfigByKv(
                                     systemConfiguration
@@ -218,21 +230,17 @@ public class SystemInit implements ApplicationRunner {
     }
 
     public void registerUDF() {
-        // 设置admin用户 ，获取全部的udf代码，此地方没有租户隔离
-        TenantContextHolder.set(1);
         List<Task> allUDF = taskService.getAllUDF();
         if (CollUtil.isNotEmpty(allUDF)) {
             UdfCodePool.registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
         }
         UdfCodePool.updateGitPool(gitProjectService.getGitPool());
-
-        TenantContextHolder.set(null);
     }
 
     public void updateGitBuildState() {
         String path = PathConstant.TMP_PATH + "/build.list";
         if (FileUtil.exist(path)) {
-            List<Integer> runningList = JSONUtil.toList(FileUtil.readUtf8String(path), Integer.class);
+            List<Integer> runningList = JsonUtils.toList(FileUtil.readUtf8String(path), Integer.class);
             gitProjectService.list().stream()
                     .filter(x -> x.getBuildState().equals(1))
                     .filter(x -> runningList.contains(x.getId()))

@@ -95,9 +95,8 @@ public class ProjectClient {
                 .execute()
                 .body();
 
-        Project pageBeanAndFindByName = null;
         try {
-            pageBeanAndFindByName = MyJSONUtil.toPageBeanAndFindByName(
+            return MyJSONUtil.toPageBeanAndFindByName(
                     content,
                     SystemConfiguration.getInstances()
                             .getDolphinschedulerProjectName()
@@ -107,7 +106,5 @@ public class ProjectClient {
             SystemConfiguration.getInstances().getDolphinschedulerEnable().setValue(false);
             throw new RuntimeException(content);
         }
-
-        return pageBeanAndFindByName;
     }
 }

@@ -24,7 +24,6 @@ import {
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
-import { Form, Radio } from 'antd';
 
 const Email = (props: any) => {
   const { values } = props;
@@ -98,20 +97,6 @@ const Email = (props: any) => {
             label={l('global.table.isEnable')}
             {...SWITCH_OPTIONS()}
           />
-
-          {/* msgtype */}
-          <Form.Item
-            name='msgtype'
-            label={l('rc.ai.msgtype')}
-            rules={[{ required: true, message: l('rc.ai.msgtypePleaseHolder') }]}
-          >
-            <Radio.Group>
-              <Radio value='text'>{l('rc.ai.text')}</Radio>
-              <Radio value='table'>{l('rc.ai.table')}</Radio>
-              <Radio value='attachment'>{l('rc.ai.attachment')}</Radio>
-              <Radio value='table attachment'>{l('rc.ai.tableAttachment')}</Radio>
-            </Radio.Group>
-          </Form.Item>
         </ProForm.Group>
 
         {/* proxy */}

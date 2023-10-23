@@ -1,19 +1,29 @@
-import { TaskDataType } from '@/pages/DataStudio/model';
 import { postAll } from '@/services/api';
 import { handleGetOption, handleOption } from '@/services/BusinessCrud';
-import { DIALECT, RUN_MODE } from '@/services/constants';
+import { DIALECT } from '@/services/constants';
 
 export async function explainSql(params: any) {
-  return postAll('/api/studio/explainSql', params);
+  return postAll('/api/task/explainSql', params);
 }
+
 export async function getJobPlan(title: string, params: any) {
-  return handleOption('/api/studio/getJobPlan', title, params);
+  return handleOption('/api/task/getJobPlan', title, params);
 }
-export async function executeSql(title: string, params: TaskDataType) {
-  return handleOption('/api/studio/executeSql', title, params);
+
+export async function executeSql(title: string, id: number) {
+  return handleGetOption('/api/task/submitTask', title, { id });
 }
-export function offLineTask(title: string, id: number, type: string) {
-  return handleGetOption('api/task/offLineTask', title, { id, type });
+
+export function cancelTask(title: string, id: number) {
+  return handleGetOption('api/task/cancel', title, { id });
+}
+
+export function onLineTask(id: number) {
+  return handleGetOption('api/task/onLineTask', '', { taskId: id });
+}
+
+export function offLinelTask(id: number) {
+  return handleGetOption('api/task/cancel', '', { taskId: id });
 }
 
 export const isSql = (dialect: string) => {
@@ -32,17 +42,6 @@ export const isSql = (dialect: string) => {
     case DIALECT.HIVE:
     case DIALECT.STARROCKS:
     case DIALECT.PRESTO:
-      return true;
-    default:
-      return false;
-  }
-};
-export const isOnline = (type: string) => {
-  switch (type) {
-    case RUN_MODE.LOCAL:
-    case RUN_MODE.STANDALONE:
-    case RUN_MODE.YARN_SESSION:
-    case RUN_MODE.KUBERNETES_SESSION:
       return true;
     default:
       return false;

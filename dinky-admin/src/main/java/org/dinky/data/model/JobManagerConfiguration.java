@@ -21,6 +21,8 @@ package org.dinky.data.model;
 
 import java.util.Map;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -29,13 +31,21 @@ import lombok.Data;
  * @create: 2022-06-26 10:53
  */
 @Data
+@ApiModel(value = "JobManagerConfiguration", description = "Job Manager Configuration Information")
 public class JobManagerConfiguration {
 
+    @ApiModelProperty(value = "Metrics", dataType = "Map<String, String>", notes = "Metrics related to the job manager")
     private Map<String, String> metrics;
 
+    @ApiModelProperty(
+            value = "Job Manager Config",
+            dataType = "Map<String, String>",
+            notes = "Configuration settings for the job manager")
     private Map<String, String> jobManagerConfig;
 
+    @ApiModelProperty(value = "Job Manager Log", dataType = "String", notes = "Log information for the job manager")
     private String jobManagerLog;
 
+    @ApiModelProperty(value = "Job Manager Stdout", dataType = "String", notes = "Standard output for the job manager")
     private String jobManagerStdout;
 }

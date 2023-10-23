@@ -16,3 +16,10 @@
  *   limitations under the License.
  *
  */
+
+import { BaseState } from '@/types/Public/state';
+import { AlertRule } from '@/types/SettingCenter/data';
+
+export interface AlertRuleListState extends BaseState {
+  value: Partial<AlertRule>;
+}

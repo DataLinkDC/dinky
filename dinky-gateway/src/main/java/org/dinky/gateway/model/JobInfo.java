@@ -19,6 +19,8 @@
 
 package org.dinky.gateway.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,10 +31,28 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "JobInfo", description = "Information about a job")
 public class JobInfo {
 
+    @ApiModelProperty(
+            value = "Job ID",
+            dataType = "String",
+            example = "job123",
+            notes = "Unique identifier for the job")
     private String jobId;
+
+    @ApiModelProperty(
+            value = "Save Point",
+            dataType = "String",
+            example = "s3://checkpoint/savepoint-123",
+            notes = "Save point path for the job")
     private String savePoint;
+
+    @ApiModelProperty(
+            value = "Job Status",
+            dataType = "JobStatus",
+            example = "RUNNING",
+            notes = "Current status of the job")
     private JobStatus status;
 
     public JobInfo(String jobId) {

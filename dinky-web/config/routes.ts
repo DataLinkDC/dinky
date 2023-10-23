@@ -110,13 +110,13 @@ export default [
         ]
       },
       {
-        path: '/registration/database',
-        name: 'database',
+        path: '/registration/datasource',
+        name: 'datasource',
         icon: 'DatabaseOutlined',
         component: './RegCenter/DataSource',
         routes: [
           {
-            path: '/registration/database/detail/:id'
+            path: '/registration/datasource/detail/:id'
           }
         ]
       },
@@ -134,6 +134,11 @@ export default [
             path: '/registration/alert/group',
             name: 'group',
             component: './RegCenter/Alert/AlertGroup'
+          },
+          {
+            path: '/registration/alert/template',
+            name: 'template',
+            component: './RegCenter/Alert/AlertTemplate'
           }
         ]
       },
@@ -150,8 +155,8 @@ export default [
         component: './RegCenter/GlobalVar'
       },
       {
-        path: '/registration/gitprojects',
-        name: 'gitprojects',
+        path: '/registration/gitproject',
+        name: 'gitproject',
         icon: 'GithubOutlined',
         component: './RegCenter/GitProject'
       },
@@ -209,6 +214,12 @@ export default [
         name: 'tenant',
         icon: 'SecurityScanOutlined',
         component: './AuthCenter/Tenant'
+      },
+      {
+        path: '/auth/token',
+        name: 'token',
+        icon: 'SecurityScanOutlined',
+        component: './AuthCenter/Token'
       }
     ]
   },
@@ -240,6 +251,12 @@ export default [
         name: 'process',
         icon: 'ReconciliationOutlined',
         component: './SettingCenter/Process'
+      },
+      {
+        path: '/settings/alertrulelist',
+        name: 'alertrulelist',
+        icon: 'ReconciliationOutlined',
+        component: './SettingCenter/AlertRule'
       }
     ]
   },

@@ -21,11 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
-import org.dinky.alert.AlertMsg;
 import org.dinky.alert.AlertResult;
-import org.dinky.alert.ShowType;
-import org.dinky.data.constant.BaseConstant;
-import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.AlertInstance;
 import org.dinky.data.result.Result;
@@ -33,21 +29,19 @@ import org.dinky.mapper.AlertInstanceMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertInstanceService;
-import org.dinky.utils.JSONUtil;
+import org.dinky.utils.JsonUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -74,55 +68,18 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
     @Override
     public AlertResult testAlert(AlertInstance alertInstance) {
         AlertConfig alertConfig = AlertConfig.build(
-                alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
+                alertInstance.getName(), alertInstance.getType(), JsonUtils.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
 
-        AlertMsg alertMsg = getAlertMsg(alertInstance);
-        String title = Status.TEST_MSG_JOB_NAME_TITLE.getMessage()
-                + "【"
-                + alertMsg.getJobName()
-                + "】："
-                + alertMsg.getJobStatus()
-                + "!";
-        return alert.send(title, alertMsg.toString());
-    }
+        String msg = "\n- **Job Name :** <font color='gray'>Test Job</font>\n"
+                + "- **Job Status :** <font color='red'>FAILED</font>\n"
+                + "- **Alert Time :** 2023-01-01  12:00:00\n"
+                + "- **Start Time :** 2023-01-01  12:00:00\n"
+                + "- **End Time :** 2023-01-01  12:00:00\n"
+                + "- **<font color='red'>The test exception, your job exception will pass here</font>**\n"
+                + "[Go to Task Web](https://github.com/DataLinkDC/dinky)";
 
-    private static AlertMsg getAlertMsg(AlertInstance alertInstance) {
-        String currentDateTime =
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(BaseConstant.YYYY_MM_DD_HH_MM_SS));
-
-        String uuid = UUID.randomUUID().toString();
-
-        AlertMsg.AlertMsgBuilder alertMsgBuilder = AlertMsg.builder()
-                .alertType(Status.TEST_MSG_TITLE.getMessage())
-                .alertTime(currentDateTime)
-                .jobID(uuid)
-                .jobName(Status.TEST_MSG_JOB_NAME.getMessage())
-                .jobType("SQL")
-                .jobStatus("FAILED")
-                .jobStartTime(currentDateTime)
-                .jobEndTime(currentDateTime)
-                .jobDuration("1 Seconds");
-
-        String linkUrl = "http://cdh1:8081/#/job/" + uuid + "/overview";
-        String exceptionUrl = "http://cdh1:8081/#/job/" + uuid + "/exceptions";
-
-        Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
-        if (!alertInstance.getType().equals("Sms")) {
-            if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
-                alertMsgBuilder.linkUrl("[" + Status.TEST_MSG_JOB_URL.getMessage() + " FlinkWeb](" + linkUrl + ")");
-                alertMsgBuilder.exceptionUrl(
-                        "[" + Status.TEST_MSG_JOB_LOG_URL.getMessage() + "](" + exceptionUrl + ")");
-            } else {
-                alertMsgBuilder.linkUrl(linkUrl);
-                alertMsgBuilder.exceptionUrl(exceptionUrl);
-            }
-        } else {
-            alertMsgBuilder.linkUrl(linkUrl);
-            alertMsgBuilder.exceptionUrl(exceptionUrl);
-        }
-        AlertMsg alertMsg = alertMsgBuilder.build();
-        return alertMsg;
+        return alert.send("Fei Shu Alert Test", msg);
     }
 
     /**

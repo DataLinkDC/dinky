@@ -19,6 +19,8 @@
 
 package org.dinky.data.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,10 +31,28 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "SqlDTO", description = "DTO for SQL query")
 public class SqlDTO {
 
+    @ApiModelProperty(
+            value = "SQL Statement",
+            dataType = "String",
+            example = "SELECT * FROM users",
+            notes = "The SQL query statement")
     private String statement;
+
+    @ApiModelProperty(
+            value = "Database ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "The identifier of the target database")
     private Integer databaseId;
+
+    @ApiModelProperty(
+            value = "Maximum Number of Rows",
+            dataType = "Integer",
+            example = "100",
+            notes = "The maximum number of rows to fetch in the query result")
     private Integer maxRowNum;
 
     public SqlDTO(String statement, Integer databaseId, Integer maxRowNum) {

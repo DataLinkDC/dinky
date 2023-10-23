@@ -40,7 +40,18 @@ export default {
       changeOrigin: true,
       logLevel: 'debug',
       pathRewrite: { '^': '' },
-      onProxyRes: (proxyRes, req, res) => {
+      onProxyRes: (
+        proxyRes: any,
+        req: any,
+        res: {
+          header: (arg0: {
+            'Content-Type': string;
+            'Cache-Control': string;
+            Connection: string;
+            'X-Accel-Buffering': string;
+          }) => void;
+        }
+      ) => {
         res.header({
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache, no-transform',

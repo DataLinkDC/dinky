@@ -29,6 +29,11 @@ import javax.naming.NamingException;
 
 public interface LdapService {
 
+    /**
+     * List all users.
+     *
+     * @return A list of {@link User} objects representing all users.
+     */
     List<User> listUsers();
 
     /**

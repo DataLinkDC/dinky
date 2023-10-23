@@ -42,9 +42,9 @@ const ResourceView = () => {
   const [data, setData] = useState<ResourceOverView>();
 
   useEffect(() => {
-    queryDataByParams(API_CONSTANTS.GET_RESOURCE_OVERVIEW).then((res) => {
-      setData(res);
-    });
+    queryDataByParams(API_CONSTANTS.GET_RESOURCE_OVERVIEW).then((res) =>
+      setData(res as ResourceOverView)
+    );
   }, []);
 
   return (

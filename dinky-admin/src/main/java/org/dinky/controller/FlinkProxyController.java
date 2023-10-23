@@ -19,25 +19,18 @@
 
 package org.dinky.controller;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
-import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
@@ -47,14 +40,14 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 
 @Controller
-@Api(tags = "Flink Proxy Controller", hidden = true)
+@Api(tags = "Flink Proxy Controller", hidden = true, description = "Flink Proxy API")
 @RequestMapping(FlinkProxyController.API)
 public class FlinkProxyController {
     public static final String API = "/api/flink/";
 
     @RequestMapping("/**")
     @ApiOperation("Flink Proxy API")
-    public void proxyUba(HttpServletRequest request, HttpServletResponse resp) throws IOException, URISyntaxException {
+    public void proxyUba(HttpServletRequest request, HttpServletResponse resp) throws URISyntaxException {
         // String url = URLDecoder.decode(request.getRequestURL().toString(), "UTF-8");
         URI uri = new URI(request.getRequestURI());
         String path = uri.getPath();
@@ -62,29 +55,6 @@ public class FlinkProxyController {
             return;
         }
         path = path.replace(API, "");
-        String web = "web/";
-        List<String> pathSplit = StrUtil.split(path, "/");
-        if (path.contains(web)) {
-            CollUtil.removeBlank(pathSplit);
-            if (pathSplit.size() < 2) {
-                return;
-            }
-            String host = pathSplit.get(1);
-            path = path.replace(web + host, "");
-            if ("/".equals(path)) {
-                ServletUtil.write(
-                        resp, ResourceUtil.getStream("classpath:/static/flink/index.html"), MediaType.TEXT_HTML_VALUE);
-                return;
-            }
-            String mimeType = FileUtil.getMimeType(path);
-            if (StrUtil.isBlank(mimeType)) {
-                HttpRequest httpRequest = HttpUtil.createRequest(Method.valueOf(request.getMethod()), host + path);
-                writeToHttpServletResponse(httpRequest.execute(), resp);
-            } else {
-                ServletUtil.write(resp, ResourceUtil.getStream("classpath:/static/flink/" + path), mimeType);
-            }
-            return;
-        }
         if (StrUtil.isBlank(path)) {
             return;
         }
@@ -93,7 +63,7 @@ public class FlinkProxyController {
             path = HttpUtil.urlWithForm(path, URLUtil.decode(query), StandardCharsets.UTF_8, true);
         }
         HttpRequest httpRequest = HttpUtil.createRequest(Method.valueOf(request.getMethod()), path);
-        try (HttpResponse httpResponse = httpRequest.execute(); ) {
+        try (HttpResponse httpResponse = httpRequest.execute()) {
             writeToHttpServletResponse(httpResponse, resp);
         }
     }
@@ -101,9 +71,7 @@ public class FlinkProxyController {
     @SneakyThrows
     public void writeToHttpServletResponse(HttpResponse httpResponse, HttpServletResponse resp) {
         if (httpResponse.body() != null) {
-            httpResponse.headers().forEach((k, v) -> {
-                resp.addHeader(k, v.get(0));
-            });
+            httpResponse.headers().forEach((k, v) -> resp.addHeader(k, v.get(0)));
             httpResponse.writeBody(resp.getOutputStream(), true, null);
         }
     }

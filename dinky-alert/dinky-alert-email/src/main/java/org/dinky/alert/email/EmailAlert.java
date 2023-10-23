@@ -22,8 +22,21 @@ package org.dinky.alert.email;
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import freemarker.template.TemplateException;
+
 /** EmailAlert */
 public class EmailAlert extends AbstractAlert {
+    private static final Logger log = LoggerFactory.getLogger(EmailAlert.class);
 
     @Override
     public String getType() {
@@ -32,7 +45,24 @@ public class EmailAlert extends AbstractAlert {
 
     @Override
     public AlertResult send(String title, String content) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put(EmailConstants.ALERT_TEMPLATE_TITLE, title);
+        params.put(EmailConstants.ALERT_TEMPLATE_CONTENT, markdownToHtml(content));
+
         EmailSender emailSender = new EmailSender(getConfig().getParam());
-        return emailSender.send(title, content);
+        try {
+            return emailSender.send(title, buildContent(params));
+        } catch (TemplateException | IOException e) {
+            log.error("{}'message send error, Reason:{}", getType(), e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String markdownToHtml(String markdown) {
+        Parser parser = Parser.builder().build();
+        Node document = parser.parse(markdown);
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        return renderer.render(document);
     }
 }

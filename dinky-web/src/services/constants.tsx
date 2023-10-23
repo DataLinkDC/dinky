@@ -36,6 +36,9 @@ export const LANGUAGE_KEY = 'umi_locale';
 export const LANGUAGE_ZH = 'zh-CN';
 export const LANGUAGE_EN = 'en-US';
 
+export const DATE_FORMAT = 'YYYY-MM-DD';
+export const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+
 /**
  * REQUEST METHOD CONSTANTS
  */
@@ -104,6 +107,7 @@ export const PRO_LIST_CARD_META = {
   type: {},
   avatar: {},
   content: {},
+  description: {},
   actions: {
     cardActionProps: 'actions'
   }

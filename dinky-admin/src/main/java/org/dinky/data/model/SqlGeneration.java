@@ -19,46 +19,32 @@
 
 package org.dinky.data.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * SqlGeneration
  *
  * @since 2022/1/29 16:13
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ApiModel(value = "SqlGeneration", description = "SQL Generation Information")
 public class SqlGeneration {
 
+    @ApiModelProperty(
+            value = "Flink SQL Create Statement",
+            dataType = "String",
+            notes = "Flink SQL statement for creating a table or view")
     private String flinkSqlCreate;
+
+    @ApiModelProperty(value = "SQL Select Statement", dataType = "String", notes = "SQL SELECT statement")
     private String sqlSelect;
+
+    @ApiModelProperty(value = "SQL Create Statement", dataType = "String", notes = "SQL statement for creating a table")
     private String sqlCreate;
-
-    public SqlGeneration() {}
-
-    public SqlGeneration(String flinkSqlCreate, String sqlSelect, String sqlCreate) {
-        this.flinkSqlCreate = flinkSqlCreate;
-        this.sqlSelect = sqlSelect;
-        this.sqlCreate = sqlCreate;
-    }
-
-    public String getFlinkSqlCreate() {
-        return flinkSqlCreate;
-    }
-
-    public void setFlinkSqlCreate(String flinkSqlCreate) {
-        this.flinkSqlCreate = flinkSqlCreate;
-    }
-
-    public String getSqlSelect() {
-        return sqlSelect;
-    }
-
-    public void setSqlSelect(String sqlSelect) {
-        this.sqlSelect = sqlSelect;
-    }
-
-    public String getSqlCreate() {
-        return sqlCreate;
-    }
-
-    public void setSqlCreate(String sqlCreate) {
-        this.sqlCreate = sqlCreate;
-    }
 }

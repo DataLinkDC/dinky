@@ -28,9 +28,16 @@ import {
   XMLSvg,
   YAMLSvg
 } from '@/components/Icons/CodeLanguageIcon';
-import { DIALECT, LANGUAGE_KEY, LANGUAGE_ZH, TENANT_ID } from '@/services/constants';
+import {
+  DATETIME_FORMAT,
+  DIALECT,
+  LANGUAGE_KEY,
+  LANGUAGE_ZH,
+  TENANT_ID
+} from '@/services/constants';
 import { CODE_EDIT_THEME, THEME } from '@/types/Public/data';
 import { l } from '@/utils/intl';
+import dayjs from 'dayjs';
 import cookies from 'js-cookie';
 import { trim } from 'lodash';
 import { editor } from 'monaco-editor';
@@ -398,7 +405,7 @@ export function parseNumStr(num: number) {
  * @param {number} second_time
  * @returns {any}
  */
-export function parseMilliSecondStr(second_time: number) {
+export function parseMilliSecondStr(second_time: number | undefined) {
   if (second_time == null) {
     return 'None';
   }
@@ -428,60 +435,6 @@ export function differenceDays(startDateString: any, endDateString: any): number
 
   return Math.floor(daysDifference);
 }
-
-/**
- * build tree data
- * @param data
- * @returns {any}
- */
-export const buildTreeData = (data: any): any =>
-  data?.map((item: any) => {
-    // build key
-    let buildKey = item.path + folderSeparator() + item.name;
-
-    const buildTitleLabel = () => {
-      return (
-        <>
-          {item.name}
-          <span style={{ color: 'gray' }}>
-            {' '}
-            &nbsp;&nbsp;{l('global.size', '', { size: item.size })}
-          </span>
-        </>
-      );
-    };
-
-    // if has children , recursive build
-    if (item.children) {
-      return {
-        isLeaf: !item.leaf,
-        id: item?.id,
-        name: item.name,
-        parentId: item.path ?? item.parentId,
-        icon: renderIcon(item.name, '.', item.leaf),
-        content: item.content,
-        path: item.path,
-        fullName: item?.fullName,
-        title: buildTitleLabel(),
-        desc: item?.desc ?? item?.description,
-        key: buildKey,
-        children: buildTreeData(item.children)
-      };
-    }
-    return {
-      isLeaf: !item.leaf,
-      id: item?.id,
-      name: item.name,
-      parentId: item.path ?? item.parentId,
-      icon: renderIcon(item.name, '.', item.leaf),
-      content: item.content,
-      path: item.path,
-      fullName: item?.fullName,
-      desc: item?.desc ?? item?.description,
-      title: buildTitleLabel(),
-      key: buildKey
-    };
-  });
 
 /**
  * Determine whether the file is supported
@@ -554,4 +507,12 @@ export const transformTableDataToCsv = <T,>(column: string[], data: T[]): string
     csvData += row + delimiter; // 添加换行符号
   }
   return csvData;
+};
+
+export const formatDateToYYYYMMDDHHMMSS = (date: Date) => {
+  return dayjs(date).format(DATETIME_FORMAT);
+};
+
+export const parseDateStringToDate = (dateString: Date) => {
+  return dayjs(dateString).toDate();
 };

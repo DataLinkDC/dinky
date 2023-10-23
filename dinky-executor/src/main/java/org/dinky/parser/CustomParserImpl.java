@@ -67,6 +67,7 @@ public class CustomParserImpl implements CustomParser {
         return command.map(Collections::singletonList).orElse(null);
     }
 
+    @Override
     public Parser getParser() {
         return parser;
     }

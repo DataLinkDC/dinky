@@ -42,7 +42,6 @@ public class LogUtil {
                 PrintWriter pw = new PrintWriter(sw)) {
             e.printStackTrace(pw);
             error = sw.toString();
-            logger.error(error);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } finally {
@@ -56,8 +55,7 @@ public class LogUtil {
                 PrintWriter pw = new PrintWriter(sw)) {
             e.printStackTrace(pw);
             LocalDateTime now = LocalDateTime.now();
-            error = now.toString() + ": " + msg + " \nError message:\n " + sw.toString();
-            logger.error(error);
+            error = now + ": " + msg + " \nError message:\n " + sw;
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } finally {

@@ -79,17 +79,15 @@ const RoleModalForm: React.FC<RoleModalProps> = (props) => {
    * render
    */
   return (
-    <>
-      <Modal
-        {...NORMAL_MODAL_OPTIONS}
-        title={values.id ? l('role.update') : l('role.create')}
-        open={modalVisible}
-        onCancel={() => handleCancel()}
-        onOk={() => submitForm()}
-      >
-        <RoleProForm form={form} values={values} />
-      </Modal>
-    </>
+    <Modal
+      {...NORMAL_MODAL_OPTIONS}
+      title={values.id ? l('role.update') : l('role.create')}
+      open={modalVisible}
+      onCancel={() => handleCancel()}
+      onOk={() => submitForm()}
+    >
+      <RoleProForm form={form} values={values} />
+    </Modal>
   );
 };
 export default RoleModalForm;

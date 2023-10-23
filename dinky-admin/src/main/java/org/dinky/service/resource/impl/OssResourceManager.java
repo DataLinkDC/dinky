@@ -24,6 +24,8 @@ import org.dinky.process.exception.DinkyException;
 import org.dinky.service.resource.BaseResourceManager;
 import org.dinky.utils.OssTemplate;
 
+import java.io.InputStream;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.model.CopyObjectRequest;
@@ -36,26 +38,26 @@ public class OssResourceManager implements BaseResourceManager {
 
     @Override
     public void remove(String path) {
-        getOssTemplate().removeObject(getOssTemplate().getBucketName(), getFile(path));
+        getOssTemplate().removeObject(getOssTemplate().getBucketName(), getFilePath(path));
     }
 
     @Override
     public void rename(String path, String newPath) {
         CopyObjectRequest copyObjectRequest = new CopyObjectRequest(
                 getOssTemplate().getBucketName(),
-                getFile(path),
+                getFilePath(path),
                 getOssTemplate().getBucketName(),
-                getFile(newPath));
+                getFilePath(newPath));
         getOssTemplate().getAmazonS3().copyObject(copyObjectRequest);
         DeleteObjectRequest deleteObjectRequest =
-                new DeleteObjectRequest(getOssTemplate().getBucketName(), getFile(path));
+                new DeleteObjectRequest(getOssTemplate().getBucketName(), getFilePath(path));
         getOssTemplate().getAmazonS3().deleteObject(deleteObjectRequest);
     }
 
     @Override
     public void putFile(String path, MultipartFile file) {
         try {
-            getOssTemplate().putObject(getOssTemplate().getBucketName(), getFile(path), file.getInputStream());
+            getOssTemplate().putObject(getOssTemplate().getBucketName(), getFilePath(path), file.getInputStream());
         } catch (Exception e) {
             throw new DinkyException(e);
         }
@@ -63,9 +65,14 @@ public class OssResourceManager implements BaseResourceManager {
 
     @Override
     public String getFileContent(String path) {
-        return IoUtil.readUtf8(getOssTemplate()
-                .getObject(getOssTemplate().getBucketName(), getFile(path))
-                .getObjectContent());
+        return IoUtil.readUtf8(getFile(path));
+    }
+
+    @Override
+    public InputStream getFile(String path) {
+        return getOssTemplate()
+                .getObject(getOssTemplate().getBucketName(), getFilePath(path))
+                .getObjectContent();
     }
 
     public OssTemplate getOssTemplate() {

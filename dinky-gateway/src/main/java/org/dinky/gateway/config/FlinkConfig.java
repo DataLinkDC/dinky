@@ -33,6 +33,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,15 +45,63 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "FlinkConfig", description = "Configuration for a Flink job")
 public class FlinkConfig {
 
+    @ApiModelProperty(
+            value = "Name of the Flink job",
+            dataType = "String",
+            example = "MyFlinkJob",
+            notes = "Name of the Flink job")
     private String jobName;
+
+    @ApiModelProperty(
+            value = "ID of the Flink job",
+            dataType = "String",
+            example = "job-12345",
+            notes = "ID of the Flink job")
     private String jobId;
+
+    @ApiModelProperty(
+            value = "Flink version",
+            dataType = "String",
+            example = "1.13.2",
+            notes = "Version of Flink used for the job")
     private String flinkVersion;
+
+    @ApiModelProperty(
+            value = "Action to perform (e.g., START, STOP)",
+            dataType = "String",
+            example = "START",
+            notes = "Action to perform for the Flink job")
     private ActionType action;
+
+    @ApiModelProperty(
+            value = "Type of savepoint (e.g., TRIGGER, CANCEL)",
+            dataType = "String",
+            example = "TRIGGER",
+            notes = "Type of savepoint to create")
     private SavePointType savePointType;
+
+    @ApiModelProperty(
+            value = "Path to savepoint",
+            dataType = "String",
+            example = "/path/to/savepoint",
+            notes = "Path to the savepoint")
     private String savePoint;
+
+    @ApiModelProperty(
+            value = "Additional configuration properties",
+            dataType = "Map",
+            example = "{\"key1\":\"value1\",\"key2\":\"value2\"}",
+            notes = "Additional configuration properties for the job")
     private Map<String, String> configuration = new HashMap<>();
+
+    @ApiModelProperty(
+            value = "List of Flink configuration properties",
+            dataType = "List<Map<String, String>>",
+            example = "[{\"key\":\"value\"},{\"key2\":\"value2\"}]",
+            notes = "List of Flink configuration properties")
     private List<Map<String, String>> flinkConfigList = new ArrayList<>();
 
     private static final ObjectMapper mapper = new ObjectMapper();

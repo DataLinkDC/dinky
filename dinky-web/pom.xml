@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>dinky-web</artifactId>
@@ -31,6 +31,15 @@
 
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>/src/services/</directory>
+                <includes>
+                    <include>constants.tsx</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <!-- 调用npm命令插件 -->
             <plugin>

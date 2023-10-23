@@ -1,9 +1,10 @@
+import { cancelTask } from '@/pages/DataStudio/HeaderContainer/service';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { isStatusDone } from '@/pages/DevOps/function';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import { getData, postAll } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
-import { useRequest } from '@@/exports';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { Button, Dropdown, message, Modal, Space } from 'antd';
 
@@ -16,7 +17,7 @@ const operatorType = {
 };
 const JobOperator = (props: JobProps) => {
   const { jobDetail } = props;
-  const webUri = `/api/flink/${jobDetail?.history?.jobManagerAddress}/#/job/${jobDetail?.instance?.jid}/overview`;
+  const webUri = `/api/flink/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`;
 
   const handleJobOperator = (key: string) => {
     Modal.confirm({
@@ -26,26 +27,17 @@ const JobOperator = (props: JobProps) => {
       cancelText: l('button.cancel'),
       onOk: async () => {
         if (key == operatorType.CANCEL_JOB) {
-          useRequest({
-            url: API_CONSTANTS.CANCEL_JOB,
-            params: {
-              clusterId: jobDetail?.cluster?.id,
-              jobId: jobDetail?.instance?.jid
-            }
+          postAll(API_CONSTANTS.CANCEL_JOB, {
+            clusterId: jobDetail?.cluster?.id,
+            jobId: jobDetail?.instance?.jid
           });
         } else if (key == operatorType.RESTART_JOB) {
-          useRequest({
-            url: API_CONSTANTS.RESTART_TASK,
-            params: {
-              id: jobDetail?.instance?.taskId,
-              isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE
-            }
+          getData(API_CONSTANTS.RESTART_TASK, {
+            id: jobDetail?.instance?.taskId,
+            isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE
           });
         } else {
-          useRequest({
-            url: API_CONSTANTS.OFFLINE_TASK,
-            params: { id: jobDetail?.instance?.taskId, type: key }
-          });
+          cancelTask('', jobDetail?.instance?.taskId);
         }
         message.success(l('devops.jobinfo.job.key.success', '', { key: key }));
       }
@@ -99,10 +91,6 @@ const JobOperator = (props: JobProps) => {
                 {
                   key: operatorType.SAVEPOINT_CANCEL,
                   label: l('devops.jobinfo.savepoint.cancel')
-                },
-                {
-                  key: operatorType.CANCEL_JOB,
-                  label: l('devops.jobinfo.savepoint.canceljob')
                 }
               ]
             }}

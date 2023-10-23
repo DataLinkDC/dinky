@@ -29,6 +29,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -40,52 +42,96 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_job_instance")
+@ApiModel(value = "JobInstance", description = "Job Instance Information")
 public class JobInstance implements Serializable {
 
     private static final long serialVersionUID = -3410230507904303730L;
 
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(
+            value = "ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "Unique identifier for the job instance")
     private Integer id;
 
+    @ApiModelProperty(
+            value = "Tenant ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "Tenant ID associated with the job instance")
     private Integer tenantId;
 
+    @ApiModelProperty(value = "Name", dataType = "String", notes = "Name of the job instance")
     private String name;
 
+    @ApiModelProperty(
+            value = "Task ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "Task ID associated with the job instance")
     private Integer taskId;
 
+    @ApiModelProperty(value = "Step", dataType = "Integer", example = "1", notes = "Step number of the job instance")
     private Integer step;
 
+    @ApiModelProperty(
+            value = "ClusterInstance ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "ClusterInstance ID associated with the job instance")
     private Integer clusterId;
 
+    @ApiModelProperty(value = "JID", dataType = "String", notes = "JID of the job instance")
     private String jid;
 
+    @ApiModelProperty(value = "Status", dataType = "String", notes = "Status of the job instance")
     private String status;
 
+    @ApiModelProperty(
+            value = "History ID",
+            dataType = "Integer",
+            example = "1",
+            notes = "History ID associated with the job instance")
     private Integer historyId;
 
+    @ApiModelProperty(value = "Error", dataType = "String", notes = "Error message associated with the job instance")
     private String error;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty(
+            value = "Create Time",
+            dataType = "String",
+            notes = "Timestamp indicating the creation time of the job instance")
     private LocalDateTime createTime;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty(
+            value = "Update Time",
+            dataType = "String",
+            notes = "Timestamp indicating the last update time of the job instance")
     private LocalDateTime updateTime;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(
+            value = "Finish Time",
+            dataType = "String",
+            notes = "Timestamp indicating the finish time of the job instance")
     private LocalDateTime finishTime;
 
+    @ApiModelProperty(
+            value = "Duration",
+            dataType = "Long",
+            example = "3600",
+            notes = "Duration of the job instance in seconds")
     private Long duration;
 
+    @ApiModelProperty(
+            value = "Failed Restart Count",
+            dataType = "Integer",
+            example = "2",
+            notes = "Count of failed restarts")
     private Integer failedRestartCount;
-
-    @TableField(exist = false)
-    private String type;
-
-    @TableField(exist = false)
-    private String clusterName;
-
-    @TableField(exist = false)
-    private String jobManagerAddress;
 }

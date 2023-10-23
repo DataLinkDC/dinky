@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.RoleMenuDto;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
@@ -38,7 +39,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,8 +65,22 @@ public class MenuController {
     @PutMapping("addOrUpdate")
     @Log(title = "Insert Or Update Menu ", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Menu")
+    @ApiImplicitParam(
+            name = "menu",
+            value = "Menu",
+            dataType = "Menu",
+            paramType = "body",
+            required = true,
+            dataTypeClass = Menu.class)
+    @SaCheckPermission(
+            value = {
+                PermissionConstants.AUTH_MENU_ADD_ROOT,
+                PermissionConstants.AUTH_MENU_EDIT,
+                PermissionConstants.AUTH_MENU_ADD_SUB
+            },
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdateMenu(@RequestBody Menu menu) {
-        if (menuService.saveOrUpdate(menu)) {
+        if (menuService.saveOrUpdateMenu(menu)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
@@ -90,6 +108,8 @@ public class MenuController {
     @DeleteMapping("/delete")
     @ApiOperation("Delete Menu By Id")
     @Log(title = "Delete Menu By Id", businessType = BusinessType.DELETE)
+    @ApiImplicitParam(name = "id", value = "Menu Id", dataType = "Integer", paramType = "query", required = true)
+    @SaCheckPermission(value = PermissionConstants.AUTH_MENU_DELETE)
     public Result<Void> deleteMenuById(@RequestParam("id") Integer id) {
         return menuService.deleteMenuById(id);
     }
@@ -102,6 +122,7 @@ public class MenuController {
      */
     @GetMapping(value = "/roleMenus")
     @ApiOperation("Load Role Menu")
+    @ApiImplicitParam(name = "roleId", value = "Role Id", dataType = "Integer", paramType = "query", required = true)
     public Result<RoleMenuDto> roleMenuTreeSelect(@RequestParam("id") Integer roleId) {
         List<Menu> menus = menuService.buildMenuTree(menuService.list());
         RoleMenuDto menuVO = RoleMenuDto.builder()

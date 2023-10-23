@@ -28,11 +28,40 @@ import java.util.List;
 
 public interface LoginLogService extends ISuperService<LoginLog> {
 
+    /**
+     * Save the login log for a user.
+     *
+     * @param user A {@link User} object representing the user to save the login log for.
+     * @param status The status of the login operation.
+     * @param ip The IP address of the login device.
+     * @param msg The message associated with the login operation.
+     */
+    @Deprecated
     void saveLoginLog(User user, Integer status, String ip, String msg);
 
+    /**
+     * Save the login log for a user with only the status and IP address.
+     *
+     * @param user A {@link User} object representing the user to save the login log for.
+     * @param status The status of the login operation.
+     * @param ip The IP address of the login device.
+     */
+    @Deprecated
     void saveLoginLog(User user, Status status, String ip);
 
+    /**
+     * Save the login log for a user with only the status.
+     *
+     * @param user A {@link User} object representing the user to save the login log for.
+     * @param status The status of the login operation.
+     */
     void saveLoginLog(User user, Status status);
 
+    /**
+     * Get the login records for a user.
+     *
+     * @param userId The ID of the user to get the login records for.
+     * @return A list of {@link LoginLog} objects representing the login records for the specified user.
+     */
     List<LoginLog> loginRecord(Integer userId);
 }

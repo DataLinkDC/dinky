@@ -36,6 +36,14 @@ declare namespace Alert {
     type: string;
     params: string;
   };
+
+  /**
+   * alert template
+   */
+  export type AlertTemplate = BaseBeanColumns & {
+    id: number;
+    templateContent: string;
+  };
 }
 
 export type AlertConfig = {
@@ -77,7 +85,6 @@ declare namespace Cluster {
   export type Config = BaseBeanColumns & {
     type: string;
     config?: any;
-    configJson: any;
     isAvailable?: boolean;
     note: string;
   };
@@ -213,3 +220,19 @@ export type UDFTemplate = BaseBeanColumns & {
   functionType: string;
   templateCode: string;
 };
+
+export interface ResourceInfo {
+  id: number;
+  fileName: string;
+  description: string;
+  userId: number;
+  type: number;
+  size: number;
+  pid: number;
+  fullName: string;
+  isDirectory: boolean;
+  createTime: string;
+  updateTime: string;
+  children: ResourceInfo[];
+  leaf: boolean;
+}

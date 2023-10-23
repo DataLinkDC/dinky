@@ -22,13 +22,46 @@ package org.dinky.gateway.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
+@ApiModel(value = "K8sConfig", description = "Configuration for running Flink jobs on Kubernetes")
 public class K8sConfig {
+
+    @ApiModelProperty(
+            value = "Kubernetes configuration",
+            dataType = "Map<String, String>",
+            example = "{\"key1\": \"value1\", \"key2\": \"value2\"}",
+            notes = "Kubernetes configuration properties")
     private Map<String, String> configuration = new HashMap<>();
+
+    @ApiModelProperty(
+            value = "Docker configuration for Kubernetes pods",
+            dataType = "Map<String, Object>",
+            example = "{\"key1\": \"value1\", \"key2\": 123}",
+            notes = "Docker configuration properties for pods")
     private Map<String, Object> dockerConfig = new HashMap<>();
+
+    @ApiModelProperty(
+            value = "Pod template for Flink jobs",
+            dataType = "String",
+            example = "flink-pod-template.yaml",
+            notes = "YAML file containing the pod template for Flink jobs")
     private String podTemplate;
+
+    @ApiModelProperty(
+            value = "JobManager pod template for Flink jobs",
+            dataType = "String",
+            example = "jm-pod-template.yaml",
+            notes = "YAML file containing the pod template for the JobManager in Flink jobs")
     private String jmPodTemplate;
+
+    @ApiModelProperty(
+            value = "TaskManager pod template for Flink jobs",
+            dataType = "String",
+            example = "tm-pod-template.yaml",
+            notes = "YAML file containing the pod template for TaskManagers in Flink jobs")
     private String tmPodTemplate;
 }

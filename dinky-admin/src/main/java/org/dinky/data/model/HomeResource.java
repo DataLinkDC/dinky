@@ -19,23 +19,32 @@
 
 package org.dinky.data.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
+@ApiModel(value = "HomeResource", description = "Home Resource Information")
 public class HomeResource {
 
-    /** flink instance count */
+    @ApiModelProperty(value = "Flink ClusterInstance Count", dataType = "Integer")
     private Integer flinkClusterCount;
-    /** flink config count */
+
+    @ApiModelProperty(value = "Flink Config Count", dataType = "Integer")
     private Integer flinkConfigCount;
-    /** data source count */
+
+    @ApiModelProperty(value = "Database Source Count", dataType = "Integer")
     private Integer dbSourceCount;
-    /** global var count */
+
+    @ApiModelProperty(value = "Global Variable Count", dataType = "Integer")
     private Integer globalVarCount;
-    /** alert instance count */
+
+    @ApiModelProperty(value = "Alert Instance Count", dataType = "Integer")
     private Integer alertInstanceCount;
-    /** alert group count */
+
+    @ApiModelProperty(value = "Alert Group Count", dataType = "Integer")
     private Integer alertGroupCount;
-    /** git project count */
+
+    @ApiModelProperty(value = "Git Project Count", dataType = "Integer")
     private Integer gitProjectCount;
 }

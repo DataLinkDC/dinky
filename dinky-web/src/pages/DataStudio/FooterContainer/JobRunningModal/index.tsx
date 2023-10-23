@@ -32,34 +32,32 @@ const JobRunningModal: React.FC<JobRunningModalProps> = (props) => {
   const { visible, onCancel, onOk, value } = props;
 
   return (
-    <>
-      <Modal
-        title={`Job ${value?.jobName} is running`}
-        open={visible}
-        onOk={onOk}
-        width={'50%'}
-        centered
-        onCancel={onCancel}
-        footer={null}
-      >
-        <Space direction='vertical' style={{ width: '100%' }}>
-          <Row gutter={[12, 12]}>
-            <Col span={23}>
-              <Progress
-                showInfo
-                strokeLinecap={'round'}
-                percent={100}
-                status='active'
-                strokeColor={{ from: '#108ee9', to: '#87d068' }}
-              />
-            </Col>
-            <Col span={1}>
-              <StopTwoTone />
-            </Col>
-          </Row>
-        </Space>
-      </Modal>
-    </>
+    <Modal
+      title={`Job ${value?.jobName} is running`}
+      open={visible}
+      onOk={onOk}
+      width={'50%'}
+      centered
+      onCancel={onCancel}
+      footer={null}
+    >
+      <Space direction='vertical' style={{ width: '100%' }}>
+        <Row gutter={[12, 12]}>
+          <Col span={23}>
+            <Progress
+              showInfo
+              strokeLinecap={'round'}
+              percent={100}
+              status='active'
+              strokeColor={{ from: '#108ee9', to: '#87d068' }}
+            />
+          </Col>
+          <Col span={1}>
+            <StopTwoTone />
+          </Col>
+        </Row>
+      </Space>
+    </Modal>
   );
 };
 

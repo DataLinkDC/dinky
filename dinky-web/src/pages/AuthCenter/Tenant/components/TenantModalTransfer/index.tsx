@@ -40,19 +40,17 @@ const TenantModalTransfer: React.FC<TableTransferFromProps> = (props) => {
   };
 
   return (
-    <>
-      <Modal
-        title={l('tenant.AssignUser')}
-        open={modalVisible}
-        destroyOnClose
-        maskClosable={false}
-        width={'75%'}
-        onCancel={() => onCancel()}
-        onOk={() => handleSubmit(targetKeys)}
-      >
-        <TenantTransfer tenant={tenant} onChange={(value) => handleValueChange(value)} />
-      </Modal>
-    </>
+    <Modal
+      title={l('tenant.AssignUser')}
+      open={modalVisible}
+      destroyOnClose
+      maskClosable={false}
+      width={'75%'}
+      onCancel={() => onCancel()}
+      onOk={() => handleSubmit(targetKeys)}
+    >
+      <TenantTransfer tenant={tenant} onChange={(value) => handleValueChange(value)} />
+    </Modal>
   );
 };
 export default TenantModalTransfer;

@@ -19,6 +19,8 @@
 
 package org.dinky.data.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * ColumnType
  *
@@ -63,6 +65,7 @@ public enum ColumnType {
         this.flinkType = flinkType;
     }
 
+    @JsonValue
     public String getJavaType() {
         return javaType;
     }

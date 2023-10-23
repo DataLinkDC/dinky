@@ -36,17 +36,6 @@ const WeChat = (props: any) => {
     <>
       <ProForm.Group>
         <ProFormRadio.Group
-          name='msgtype'
-          label={l('rc.ai.msgtype')}
-          rules={[{ required: true, message: l('rc.ai.msgtypePleaseHolder') }]}
-        >
-          <Radio.Group>
-            <Radio value='markdown'>{l('rc.ai.markdown')}</Radio>
-            <Radio value='text'>{l('rc.ai.text')}</Radio>
-          </Radio.Group>
-        </ProFormRadio.Group>
-
-        <ProFormRadio.Group
           name='sendType'
           label={l('rc.ai.sendType')}
           rules={[{ required: true, message: l('rc.ai.sendTypePleaseHolder') }]}

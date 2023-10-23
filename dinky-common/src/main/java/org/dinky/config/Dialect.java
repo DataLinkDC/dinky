@@ -77,7 +77,7 @@ public enum Dialect {
      * @param value {@link Dialect}
      * @return If is flink sql, return false, otherwise return true.
      */
-    public static boolean notFlinkSql(String value) {
+    public static boolean isCommonSql(String value) {
         Dialect dialect = Dialect.get(value);
         switch (dialect) {
             case SQL:

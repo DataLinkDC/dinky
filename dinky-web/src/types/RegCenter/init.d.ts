@@ -20,6 +20,7 @@
 import {
   AlertGroupState,
   AlertInstanceState,
+  AlertTemplateState,
   BuildStepsState,
   ClusterConfigState,
   ClusterInstanceState,
@@ -55,6 +56,17 @@ export const InitAlertInstanceState: AlertInstanceState = {
 };
 
 /**
+ * alert template state init
+ */
+export const InitAlertTemplateState: AlertTemplateState = {
+  alertTemplateList: [],
+  loading: false,
+  addedOpen: false,
+  editOpen: false,
+  value: {}
+};
+
+/**
  * cluster configuration state init
  * @type {{addedClusterConfigOpen: boolean, loading: boolean, editClusterConfigOpen: boolean, value: {}}}
  */
@@ -74,7 +86,8 @@ export const InitClusterInstanceState: ClusterInstanceState = {
   loading: false,
   addedOpen: false,
   editOpen: false,
-  value: {}
+  value: {},
+  instanceList: []
 };
 
 /**

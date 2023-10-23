@@ -35,7 +35,7 @@ type GeneralConfigProps = {
   onSave: (data: BaseConfigProperties) => void;
   loading: boolean;
   toolBarRender?: any;
-  selectChanges?: Record<string, (value: RadioChangeEvent) => void>;
+  selectChanges?: (e: RadioChangeEvent) => void;
 };
 
 const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
@@ -73,7 +73,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
   const renderTitle = (entity: BaseConfigProperties) => {
     return (
       <>
-        <Descriptions.Item>{l(`sys.${entity.key}`)}</Descriptions.Item>
+        <Descriptions.Item>{entity.name}</Descriptions.Item>
         <Space style={{ marginLeft: 15 }} size={0}>
           {tag}
         </Space>
@@ -94,14 +94,16 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     } else if (entity.frontType === 'option') {
       // @ts-ignore
       return (
-        <Radio.Group onChange={selectChanges[entity.key]} defaultValue={entity.value.toLowerCase()}>
-          {entity.example.map((item: any) => {
-            return (
-              <Radio.Button key={item} value={item.toLowerCase()}>
-                {item}
-              </Radio.Button>
-            );
-          })}
+        <Radio.Group
+          onChange={selectChanges}
+          value={entity.value.toLowerCase()}
+          // defaultValue={entity.value.toLowerCase()}
+        >
+          {entity.example.map((item: any) => (
+            <Radio.Button key={item} value={item.toLowerCase()}>
+              {item}
+            </Radio.Button>
+          ))}
         </Radio.Group>
       );
     } else {
@@ -120,7 +122,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     },
     description: {
       editable: false,
-      render: (dom: any, entity: BaseConfigProperties) => <>{l(`sys.${entity.key}.note`)}</>
+      render: (dom: any, entity: BaseConfigProperties) => <>{entity.note}</>
     },
     content: {
       dataIndex: 'value',

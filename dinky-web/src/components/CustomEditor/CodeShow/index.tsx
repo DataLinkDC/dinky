@@ -194,73 +194,71 @@ const CodeShow = (props: CodeShowFormProps) => {
    *  render
    */
   return (
-    <>
-      <div className={'monaco-float'}>
-        {/* fullScreen button */}
-        {fullScreenBtn && (
-          <FullscreenBtn
-            isFullscreen={fullScreen}
-            fullScreenCallBack={() => setFullScreen(!fullScreen)}
-          />
-        )}
-
-        {/* editor */}
-        <Editor
-          width={width}
-          height={height}
-          value={loading ? 'loading...' : code}
-          language={language}
-          options={{
-            ...options,
-            scrollBeyondLastLine: false,
-            readOnly: true,
-            wordWrap: autoWrap,
-            autoDetectHighContrast: true,
-            selectOnLineNumbers: true,
-            fixedOverflowWidgets: true,
-            autoClosingDelete: 'always',
-            lineNumbers,
-            scrollbar: {
-              // Subtle shadows to the left & top. Defaults to true.
-              useShadows: false,
-
-              // Render vertical arrows. Defaults to false.
-              // verticalHasArrows: true,
-              // Render horizontal arrows. Defaults to false.
-              // horizontalHasArrows: true,
-
-              // Render vertical scrollbar.
-              // Accepted values: 'auto', 'visible', 'hidden'.
-              // Defaults to 'auto'
-              vertical: 'visible',
-              // Render horizontal scrollbar.
-              // Accepted values: 'auto', 'visible', 'hidden'.
-              // Defaults to 'auto'
-              horizontal: 'visible',
-              verticalScrollbarSize: 8,
-              horizontalScrollbarSize: 8,
-              arrowSize: 30
-            }
-          }}
-          onMount={editorDidMount}
-          theme={theme ? theme : convertCodeEditTheme()}
+    <div className={'monaco-float'}>
+      {/* fullScreen button */}
+      {fullScreenBtn && (
+        <FullscreenBtn
+          isFullscreen={fullScreen}
+          fullScreenCallBack={() => setFullScreen(!fullScreen)}
         />
+      )}
 
-        {/* float button */}
-        {showFloatButton && (
-          <div
-            style={{
-              width: 35,
-              height: height,
-              backgroundColor: '#f4f4f4',
-              paddingBlock: 10
-            }}
-          >
-            <EditorFloatBtn {...restEditBtnProps} />
-          </div>
-        )}
-      </div>
-    </>
+      {/* editor */}
+      <Editor
+        width={width}
+        height={height}
+        value={loading ? 'loading...' : code}
+        language={language}
+        options={{
+          ...options,
+          scrollBeyondLastLine: false,
+          readOnly: true,
+          wordWrap: autoWrap,
+          autoDetectHighContrast: true,
+          selectOnLineNumbers: true,
+          fixedOverflowWidgets: true,
+          autoClosingDelete: 'always',
+          lineNumbers,
+          scrollbar: {
+            // Subtle shadows to the left & top. Defaults to true.
+            useShadows: false,
+
+            // Render vertical arrows. Defaults to false.
+            // verticalHasArrows: true,
+            // Render horizontal arrows. Defaults to false.
+            // horizontalHasArrows: true,
+
+            // Render vertical scrollbar.
+            // Accepted values: 'auto', 'visible', 'hidden'.
+            // Defaults to 'auto'
+            vertical: 'visible',
+            // Render horizontal scrollbar.
+            // Accepted values: 'auto', 'visible', 'hidden'.
+            // Defaults to 'auto'
+            horizontal: 'visible',
+            verticalScrollbarSize: 8,
+            horizontalScrollbarSize: 8,
+            arrowSize: 30
+          }
+        }}
+        onMount={editorDidMount}
+        theme={theme ? theme : convertCodeEditTheme()}
+      />
+
+      {/* float button */}
+      {showFloatButton && (
+        <div
+          style={{
+            width: 35,
+            height: height,
+            backgroundColor: '#f4f4f4',
+            paddingBlock: 10
+          }}
+        >
+          <EditorFloatBtn {...restEditBtnProps} />
+        </div>
+      )}
+    </div>
   );
 };
 

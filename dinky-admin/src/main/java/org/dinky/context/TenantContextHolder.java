@@ -19,10 +19,21 @@
 
 package org.dinky.context;
 
+import java.util.Optional;
+
 /** TenantContextHolder */
 public class TenantContextHolder {
 
     private static final ThreadLocal<Object> TENANT_CONTEXT = new InheritableThreadLocal<>();
+    private static final ThreadLocal<Boolean> IGNORE_TENANT = new InheritableThreadLocal<>();
+
+    public static void ignoreTenant() {
+        IGNORE_TENANT.set(true);
+    }
+
+    public static boolean isIgnoreTenant() {
+        return Optional.ofNullable(IGNORE_TENANT.get()).orElse(false);
+    }
 
     public static void set(Object value) {
         TENANT_CONTEXT.set(value);

@@ -1,6 +1,8 @@
 import { TagAlignLeft } from '@/components/StyledComponents';
 import { BtnRoute } from '@/pages/DataStudio/route';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
+import DataSourceModal from '@/pages/RegCenter/DataSource/components/DataSourceModal';
+import { handleTest, saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { DatabaseOutlined, TableOutlined } from '@ant-design/icons';
@@ -9,7 +11,7 @@ import { connect } from '@umijs/max';
 import { Spin, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { StateType, STUDIO_MODEL } from '../../model';
-import { clearMetaDataTable, showMetaDataTable } from './service';
+import { clearMetaDataTable, getDataBase, showMetaDataTable } from './service';
 
 const MetaData = (props: any) => {
   const {
@@ -19,6 +21,7 @@ const MetaData = (props: any) => {
   } = props;
   const [treeData, setTreeData] = useState<[]>([]);
   const [isLoadingDatabase, setIsLoadingDatabase] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
   const selectDb = (dbData as DataSources.DataSource[]).filter((x) => x.id === selectDatabaseId)[0];
 
   /**
@@ -67,6 +70,9 @@ const MetaData = (props: any) => {
   };
 
   BtnRoute['menu.datastudio.metadata'][0].onClick = () => {
+    setShowCreate(true);
+  };
+  BtnRoute['menu.datastudio.metadata'][1].onClick = () => {
     if (!selectDatabaseId) return;
     setIsLoadingDatabase(true);
     clearMetaDataTable(selectDatabaseId).then(() => {
@@ -152,13 +158,27 @@ const MetaData = (props: any) => {
 
   return (
     <Spin spinning={isLoadingDatabase} delay={500}>
+      <DataSourceModal
+        values={{}}
+        visible={showCreate}
+        onCancel={() => setShowCreate(false)}
+        onTest={(value) => handleTest(value)}
+        onSubmit={async (value) => {
+          await saveOrUpdateHandle(value);
+          const data = await getDataBase();
+          dispatch({
+            type: STUDIO_MODEL.saveDataBase,
+            payload: data
+          });
+        }}
+      />
       <ProForm
         style={{ height: 40 }}
         initialValues={{ selectDb: selectDatabaseId }}
         submitter={false}
       >
         <ProFormSelect
-          style={{ paddingInline: 10 }}
+          style={{ paddingInline: 6 }}
           // width={leftContainer.width  }
           width={'xl'}
           // addonAfter={<ReloadOutlined spin={isLoadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}

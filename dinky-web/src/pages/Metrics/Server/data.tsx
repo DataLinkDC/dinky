@@ -34,12 +34,9 @@ export type JVMMetric = {
   mem: MemoryType;
   time: Date;
 };
-export type FlinkMetricsData = {
-  jobId: string;
-  taskId: number;
-  urls: string[];
-  verticesAndMetricsMap: Record<string, Record<string, string>>;
-};
+
+export type FlinkMetricsData = Record<string, Record<string, string>>;
+
 export type JvmDataRecord = {
   cpuLastValue: number;
   heapMax: number;

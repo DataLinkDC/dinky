@@ -178,30 +178,31 @@ CREATE TABLE `dinky_sys_login_log` (
 -- ----------------------------
 -- Table structure for dinky_sys_operate_log
 -- ----------------------------
-CREATE TABLE `dinky_sys_operate_log`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `module_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'module name',
-  `business_type` int NULL DEFAULT 0 COMMENT 'business type',
-  `method` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'method name',
-  `request_method` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request method',
-  `operate_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate name',
-  `operate_user_id` int NOT NULL COMMENT 'operate user id',
-  `operate_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate url',
-  `operate_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'ip',
-  `operate_location` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate location',
-  `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'request param',
-  `json_result` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT 'return json result',
-  `status` int DEFAULT NULL COMMENT 'operate status',
-  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT 'error msg',
-  `operate_time` datetime(0) NULL DEFAULT NULL COMMENT 'operate time',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'operate log record' ROW_FORMAT = Dynamic;
+CREATE TABLE `dinky_sys_operate_log` (
+                                         `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                         `module_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'module name',
+                                         `business_type` int DEFAULT '0' COMMENT 'business type',
+                                         `method` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'method name',
+                                         `request_method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'request method',
+                                         `operate_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'operate name',
+                                         `operate_user_id` int NOT NULL COMMENT 'operate user id',
+                                         `operate_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'operate url',
+                                         `operate_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'ip',
+                                         `operate_location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'operate location',
+                                         `operate_param` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'request param',
+                                         `json_result` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'return json result',
+                                         `status` int DEFAULT NULL COMMENT 'operate status',
+                                         `error_msg` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'error msg',
+                                         `operate_time` datetime DEFAULT NULL COMMENT 'operate time',
+                                         PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='operate log record';
 
 alter table dinky_user
     add super_admin_flag tinyint default 0 comment 'is super admin(0:false,1true)' after enabled;
 
 alter table dinky_user_tenant add tenant_admin_flag tinyint default 0  comment 'tenant admin flag(0:false,1:true)' after tenant_id;
 
+alter table dinky_task add column `statement` longtext DEFAULT NULL COMMENT 'job statement';
 
 drop table dinky_namespace;
 drop table dinky_role_namespace;
@@ -211,7 +212,6 @@ drop table dinky_role_namespace;
 -- ----------------------------
 -- Table structure for dinky_sys_menu
 -- ----------------------------
-drop table if exists `dinky_sys_menu`;
 create table `dinky_sys_menu` (
                                   `id` bigint not null auto_increment comment ' id',
                                   `parent_id` bigint not null comment 'parent menu id',
@@ -233,7 +233,6 @@ create table `dinky_sys_menu` (
 -- ----------------------------
 -- Table structure dinky_sys_role_menu
 -- ----------------------------
-drop table if exists `dinky_sys_role_menu`;
 CREATE TABLE `dinky_sys_role_menu` (
                                        `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
                                        `role_id` bigint NOT NULL COMMENT 'role id',
@@ -245,6 +244,51 @@ CREATE TABLE `dinky_sys_role_menu` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+
+create table if not exists dinky_alert_template
+(
+    id               int auto_increment
+        primary key  COMMENT 'id',
+    name             varchar(20)    unicode    COMMENT 'template name',
+    template_content text              null COMMENT 'template content',
+    enabled          tinyint default 1 null COMMENT 'is enable',
+    create_time      datetime          null COMMENT 'create time',
+    update_time      datetime          null COMMENT 'update time'
+);
+
+create table if not exists dinky_alert_rules
+(
+    id                 int auto_increment
+        primary key comment 'id',
+    name               varchar(40)  unique     not null comment 'rule name',
+    rule               text              null comment 'specify rule',
+    template_id        int               null comment 'template id',
+    rule_type          varchar(10)       null comment 'alert rule type',
+    trigger_conditions varchar(20)       null comment 'trigger conditions',
+    description        text              null comment 'description',
+    enabled            tinyint default 1 null comment 'is enable',
+    create_time        datetime          null comment 'create time',
+    update_time        datetime          null comment 'update time'
+);
+
+-- ----------------------------
+-- Table structure dinky_sys_token
+-- ----------------------------
+CREATE TABLE `dinky_sys_token` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `token_value` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'token value',
+  `user_id` bigint NOT NULL COMMENT 'user id',
+  `role_id` bigint NOT NULL COMMENT 'role id',
+  `tenant_id` bigint NOT NULL COMMENT 'tenant id',
+  `expire_type` tinyint NOT NULL COMMENT '1: never expire, 2: expire after a period of time, 3: expire at a certain time',
+  `expire_start_time` datetime DEFAULT NULL COMMENT 'expire start time ,when expire_type = 3 , it is the start time of the period',
+  `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
+  `create_time` datetime NOT NULL COMMENT 'create time',
+  `update_time` datetime NOT NULL COMMENT 'modify time',
+  `creator` bigint DEFAULT NULL COMMENT '创建人',
+  `updator` bigint DEFAULT NULL COMMENT '修改人',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='token management';
 
 
 

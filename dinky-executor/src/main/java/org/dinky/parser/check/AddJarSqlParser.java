@@ -20,6 +20,7 @@
 package org.dinky.parser.check;
 
 import org.dinky.process.exception.DinkyException;
+import org.dinky.utils.URLUtils;
 
 import java.io.File;
 import java.util.HashSet;
@@ -29,7 +30,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 
@@ -51,11 +51,16 @@ public class AddJarSqlParser {
         patternStatements(statements).stream()
                 .map(x -> ReUtil.findAll(ADD_JAR_PATTERN, x, 2).get(0))
                 .distinct()
-                .forEach(path -> {
-                    if (!FileUtil.exist(path)) {
-                        throw new DinkyException(StrUtil.format("file : {} not exists!", path));
+                .forEach(urlPath -> {
+                    try {
+                        File file = URLUtils.toFile(urlPath);
+                        if (file == null || !file.exists()) {
+                            throw new DinkyException(StrUtil.format("file : {} not exists!", urlPath));
+                        }
+                        fileSet.add(file);
+                    } catch (Exception e) {
+                        throw new DinkyException(StrUtil.format("url:{} request failed!", urlPath), e);
                     }
-                    fileSet.add(FileUtil.file(path));
                 });
         return fileSet;
     }

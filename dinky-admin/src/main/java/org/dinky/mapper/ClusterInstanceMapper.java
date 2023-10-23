@@ -19,7 +19,7 @@
 
 package org.dinky.mapper;
 
-import org.dinky.data.model.Cluster;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -28,6 +28,6 @@ import java.util.List;
 
 /** ClusterInstanceMapper */
 @Mapper
-public interface ClusterInstanceMapper extends SuperMapper<Cluster> {
-    List<Cluster> listSessionEnable();
+public interface ClusterInstanceMapper extends SuperMapper<ClusterInstance> {
+    List<ClusterInstance> listSessionEnable();
 }

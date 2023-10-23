@@ -20,12 +20,13 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { DataAction } from '@/components/StyledComponents';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import DataSourceDetail from '@/pages/RegCenter/DataSource/components/DataSourceDetail';
 import { renderDBIcon } from '@/pages/RegCenter/DataSource/components/function';
+import { handleTest, saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
 import { queryList } from '@/services/api';
 import {
-  handleAddOrUpdate,
   handleOption,
   handlePutDataByParams,
   handleRemoveById,
@@ -51,20 +52,25 @@ import { connect } from 'umi';
 import DataSourceModal from '../DataSourceModal';
 
 const DataSourceTable: React.FC<connect & StateType> = (props) => {
-  const navigate = useNavigate();
-
   const { dispatch } = props;
+  const navigate = useNavigate();
 
   /**
    * state
    */
-  const actionRef = React.useRef<ActionType>();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [detailPage, setDetailPage] = useState<boolean>(false);
-  const [updateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState<DataSources.DataSource[]>([]);
   const [formValues, setFormValues] = useState<Partial<DataSources.DataSource>>({});
+  const actionRef = React.useRef<ActionType>();
+
+  /**
+   * query  list
+   */
+  useEffect(() => {
+    queryDataSourceList();
+  }, []);
 
   /**
    * execute query  list
@@ -79,19 +85,11 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * extra callback
    * @param callback
    */
-  const executeAndCallbackRefresh = async (callback: () => void) => {
+  const executeAndCallbackRefresh = async (callback: () => Promise<any>) => {
     setLoading(true);
     await callback();
     await queryDataSourceList();
     setLoading(false);
-  };
-
-  /**
-   * handle add or update
-   * @param item
-   */
-  const saveOrUpdateHandle = async (item: Partial<DataSources.DataSource>) => {
-    await executeAndCallbackRefresh(async () => handleAddOrUpdate(API_CONSTANTS.DATASOURCE, item));
   };
 
   /**
@@ -120,14 +118,6 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   };
 
   /**
-   * handle test
-   * @param item
-   */
-  const handleTest = async (item: Partial<DataSources.DataSource>) => {
-    await handleOption(API_CONSTANTS.DATASOURCE_TEST, l('button.test'), item);
-  };
-
-  /**
    * handle check heart
    * @param item
    */
@@ -144,13 +134,6 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
       handleOption(API_CONSTANTS.DATASOURCE_COPY, l('button.copy'), item)
     );
   };
-
-  /**
-   * query  list
-   */
-  useEffect(() => {
-    queryDataSourceList();
-  }, []);
 
   /**
    * render sub title
@@ -174,7 +157,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    */
   const editClick = (item: DataSources.DataSource) => {
     setFormValues(item);
-    setUpdateModalVisible(!modalVisible);
+    setModalVisible(!modalVisible);
   };
 
   /**
@@ -189,8 +172,8 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
         payload: item.id
       });
       setFormValues(item);
-      navigate(`/registration/database/detail/${item.id}`, {
-        state: { from: '/registration/database' }
+      navigate(`/registration/datasource/detail/${item.id}`, {
+        state: { from: '/registration/datasource' }
       });
       setDetailPage(!detailPage);
     } else {
@@ -204,22 +187,30 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    */
   const renderDataSourceActionButton = (item: DataSources.DataSource) => {
     return [
-      <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />,
-      <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />,
-      <Button
-        className={'options-button'}
-        key={`${item.id}_heart`}
-        onClick={() => handleCheckHeartBeat(item)}
-        title={l('button.heartbeat')}
-        icon={<HeartTwoTone twoToneColor={item.status ? '#1ac431' : '#e10d0d'} />}
-      />,
-      <Button
-        className={'options-button'}
-        key={`${item.id}_copy`}
-        onClick={() => onCopyDataBase(item)}
-        title={l('button.copy')}
-        icon={<CopyTwoTone />}
-      />
+      <Authorized key={`${item.id}_edit`} path='/registration/datasource/add'>
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
+      </Authorized>,
+      <Authorized key={`${item.id}_delete`} path='/registration/datasource/delete'>
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
+      </Authorized>,
+      <Authorized key={`${item.id}_detail`} path='/registration/datasource/heartbeat'>
+        <Button
+          className={'options-button'}
+          key={`${item.id}_heart`}
+          onClick={() => handleCheckHeartBeat(item)}
+          title={l('button.heartbeat')}
+          icon={<HeartTwoTone twoToneColor={item.status ? '#1ac431' : '#e10d0d'} />}
+        />
+      </Authorized>,
+      <Authorized key={`${item.id}_test`} path='/registration/datasource/copy'>
+        <Button
+          className={'options-button'}
+          key={`${item.id}_copy`}
+          onClick={() => onCopyDataBase(item)}
+          title={l('button.copy')}
+          icon={<CopyTwoTone />}
+        />
+      </Authorized>
     ];
   };
   /**
@@ -230,7 +221,11 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
     return (
       <Space className={'hidden-overflow'}>
         <Tag color='cyan'>{item.type}</Tag>
-        <EnableSwitchBtn record={item} onChange={() => handleEnable(item)} />
+        <EnableSwitchBtn
+          record={item}
+          onChange={() => handleEnable(item)}
+          disabled={!HasAuthority('/registration/datasource/edit')}
+        />
         <Tag
           icon={item.status ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
           color={item.status ? 'success' : 'warning'}
@@ -259,7 +254,6 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    */
   const cancelAll = () => {
     setModalVisible(false);
-    setUpdateModalVisible(false);
     setFormValues({});
   };
 
@@ -278,27 +272,20 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
             actionRef={actionRef}
             headerTitle={l('rc.ds.management')}
             toolBarRender={() => [
-              <CreateBtn key={'CreateBtn'} onClick={() => setModalVisible(true)} />
+              <Authorized key='create' path='/registration/datasource/add'>
+                <CreateBtn key={'CreateBtn'} onClick={() => setModalVisible(true)} />
+              </Authorized>
             ]}
             dataSource={renderDataSource}
           />
 
           {/* added */}
           <DataSourceModal
-            values={{}}
+            values={formValues}
             visible={modalVisible}
             onCancel={cancelAll}
             onTest={(value) => handleTest(value)}
-            onSubmit={(value) => saveOrUpdateHandle(value)}
-          />
-
-          {/* modify*/}
-          <DataSourceModal
-            values={formValues}
-            visible={updateModalVisible}
-            onCancel={cancelAll}
-            onTest={(value) => handleTest(value)}
-            onSubmit={(value) => saveOrUpdateHandle(value)}
+            onSubmit={(value) => executeAndCallbackRefresh(async () => saveOrUpdateHandle(value))}
           />
         </>
       ) : (

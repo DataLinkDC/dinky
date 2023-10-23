@@ -67,7 +67,7 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
       ...current,
       // useSession: useSession,
       // session: currentSession.session,
-      configJson: JSON.stringify(current.config),
+      configJson: current?.config,
       taskId: current?.id
     };
     setResult(<Text>{l('pages.datastudio.explain.validate')}</Text>);

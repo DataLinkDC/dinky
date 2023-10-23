@@ -26,11 +26,11 @@ import { Transfer } from 'antd';
 
 const MetricsConfigTab = (props: any) => {
   const { vertice, onValueChange, jobDetail, metricsTarget } = props;
-  const jobManagerUrl = jobDetail.cluster?.jobManagerHost;
-  const jobId = jobDetail.jobHistory.job?.jid;
+  const jobManagerUrl = jobDetail.clusterInstance?.jobManagerHost;
+  const jobId = jobDetail.jobDataDto.job?.jid;
 
   const { data } = useRequest({
-    url: API_CONSTANTS.GET_JOB_MERTICE_ITEMS,
+    url: API_CONSTANTS.GET_JOB_METRICS_ITEMS,
     params: { address: jobManagerUrl, jobId: jobId, verticeId: vertice.id }
   });
 

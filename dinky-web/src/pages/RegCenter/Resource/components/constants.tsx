@@ -22,7 +22,6 @@ import {
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
-  UndoOutlined,
   UploadOutlined
 } from '@ant-design/icons';
 
@@ -32,35 +31,43 @@ import {
  * @returns {[{icon: JSX.Element, disabled: boolean, label: string, key: string}, {icon: JSX.Element, disabled: boolean, label: string, key: string}, {icon: JSX.Element, disabled: boolean, label: string, key: string}]}
  * @constructor
  */
-export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
-  {
-    key: 'createFolder',
-    icon: <PlusCircleOutlined />,
-    label: l('right.menu.createFolder'),
-    disabled: isDisabled
-  },
-  {
-    key: 'upload',
-    icon: <UploadOutlined />,
-    label: l('button.upload'),
-    disabled: isDisabled
-  },
+export const RIGHT_CONTEXT_FILE_MENU = [
   {
     key: 'delete',
     icon: <DeleteOutlined />,
     label: l('right.menu.delete'),
-    disabled: isDisabled
+    path: '/registration/resource/delete'
   },
   {
     key: 'rename',
     icon: <EditOutlined />,
     label: l('right.menu.rename'),
-    disabled: isDisabled
+    path: '/registration/resource/rename'
+  }
+];
+export const RIGHT_CONTEXT_FOLDER_MENU = [
+  {
+    key: 'createFolder',
+    icon: <PlusCircleOutlined />,
+    label: l('right.menu.createFolder'),
+    path: '/registration/resource/addFolder'
   },
   {
-    key: 'refresh',
-    icon: <UndoOutlined />,
-    label: l('right.menu.refresh'),
-    disabled: isDisabled
+    key: 'upload',
+    icon: <UploadOutlined />,
+    label: l('button.upload'),
+    path: '/registration/resource/upload'
+  },
+  {
+    key: 'delete',
+    icon: <DeleteOutlined />,
+    label: l('right.menu.delete'),
+    path: '/registration/resource/delete'
+  },
+  {
+    key: 'rename',
+    icon: <EditOutlined />,
+    label: l('right.menu.rename'),
+    path: '/registration/resource/rename'
   }
 ];

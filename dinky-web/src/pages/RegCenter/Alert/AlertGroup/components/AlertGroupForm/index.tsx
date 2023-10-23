@@ -24,7 +24,6 @@ import { Alert } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import {
   ModalForm,
-  ProForm,
   ProFormSelect,
   ProFormSwitch,
   ProFormText,
@@ -145,11 +144,15 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
       title={formVals.id ? l('rc.ag.modify') : l('rc.ag.create')}
       open={modalVisible}
       {...MODAL_FORM_STYLE}
+      form={form}
+      initialValues={getFormData(formVals)}
       submitter={{ render: () => [...renderFooter()] }}
+      modalProps={{
+        destroyOnClose: true,
+        onCancel: () => handleModalVisible(false)
+      }}
     >
-      <ProForm form={form} initialValues={getFormData(formVals)} submitter={false}>
-        {renderAlertGroupForm()}
-      </ProForm>
+      {renderAlertGroupForm()}
     </ModalForm>
   );
 };

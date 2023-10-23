@@ -1,15 +1,12 @@
-import {
-  JOB_STATUS_FILTER,
-  LIFECYCLE_FILTER,
-  TagJobLifeCycle,
-  TagJobStatus
-} from '@/pages/DevOps/function';
+import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
+import StatusTag from '@/components/JobTags/StatusTag';
+import { JOB_STATUS_FILTER, LIFECYCLE_FILTER } from '@/pages/DevOps/function';
 import JobHistoryList from '@/pages/DevOps/JobList/components/JobHistoryList';
 import { queryList } from '@/services/api';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
-import { parseSecondStr } from '@/utils/function';
+import { parseMilliSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ClockCircleTwoTone, EyeTwoTone } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
@@ -24,7 +21,10 @@ const JobList = () => {
   const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
     {
       title: l('devops.jobinfo.config.taskId'),
-      dataIndex: 'taskId'
+      dataIndex: 'taskId',
+      width: '6%',
+      valueType: 'indexBorder',
+      fixed: 'left'
     },
     {
       title: l('global.table.jobname'),
@@ -36,7 +36,7 @@ const JobList = () => {
       hideInSearch: true,
       filterMultiple: false,
       dataIndex: 'step',
-      render: (_: any, row: { step: number }) => TagJobLifeCycle(row.step)
+      render: (_: any, row: { step: number }) => <JobLifeCycleTag status={row.step} />
     },
     {
       title: l('global.table.runmode'),
@@ -46,7 +46,8 @@ const JobList = () => {
     {
       title: l('devops.jobinfo.config.JobId'),
       dataIndex: 'jid',
-      width: '15%'
+      width: '20%',
+      copyable: true
     },
     {
       title: l('global.table.createTime'),
@@ -56,7 +57,7 @@ const JobList = () => {
     {
       title: l('global.table.useTime'),
       hideInSearch: true,
-      render: (_: any, row: Jobs.JobInstance) => parseSecondStr(row.duration)
+      render: (_: any, row: Jobs.JobInstance) => parseMilliSecondStr(row.duration)
     },
     {
       title: l('global.table.status'),
@@ -64,12 +65,14 @@ const JobList = () => {
       filterMultiple: false,
       hideInSearch: true,
       dataIndex: 'status',
-      render: (_: any, row: Jobs.JobInstance) => TagJobStatus(row.status)
+      render: (_: any, row: Jobs.JobInstance) => <StatusTag status={row.status} />
     },
     Table.EXPAND_COLUMN,
     {
       title: l('global.table.operate'),
       valueType: 'option',
+      width: '5%',
+      fixed: 'right',
       render: (text: any, record: Jobs.JobInstance) => [
         <Button
           className={'options-button'}

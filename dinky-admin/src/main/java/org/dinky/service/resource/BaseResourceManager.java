@@ -23,6 +23,8 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.service.resource.impl.HdfsResourceManager;
 import org.dinky.service.resource.impl.OssResourceManager;
 
+import java.io.InputStream;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.io.FileUtil;
@@ -39,6 +41,8 @@ public interface BaseResourceManager {
 
     String getFileContent(String path);
 
+    InputStream getFile(String path);
+
     static BaseResourceManager getInstance() {
         switch (SystemConfiguration.getInstances().getResourcesModel().getValue()) {
             case HDFS:
@@ -50,7 +54,7 @@ public interface BaseResourceManager {
         }
     }
 
-    default String getFile(String path) {
+    default String getFilePath(String path) {
         return FileUtil.normalize(
                 FileUtil.file(instances.getResourcesUploadBasePath().getValue(), path)
                         .toString());

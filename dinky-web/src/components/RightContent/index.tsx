@@ -119,7 +119,6 @@ const GlobalHeaderRight: React.FC = () => {
           <FullscreenExitOutlined {...fullScreenProps} onClick={screenFull} />
         )}
       </Tooltip>
-      <Avatar />
       <Tooltip placement='bottom' title={<span>{menuVersion}</span>}>
         <Space style={actionClassName}>{menuVersion}</Space>
       </Tooltip>
@@ -131,6 +130,7 @@ const GlobalHeaderRight: React.FC = () => {
         unCheckedChildren={<ThemeStar />}
         onChange={(value) => setTheme(value ? THEME.dark : THEME.light)}
       />
+      <Avatar />
     </>
   );
 };
