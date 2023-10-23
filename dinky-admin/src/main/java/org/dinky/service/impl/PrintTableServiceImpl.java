@@ -22,7 +22,7 @@ package org.dinky.service.impl;
 import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.PrintTableVo;
-import org.dinky.explainer.printTable.PrintStatementExplainer;
+import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.parser.SqlType;
 import org.dinky.service.PrintTableService;
 import org.dinky.trans.Operations;
@@ -30,7 +30,9 @@ import org.dinky.utils.SqlUtil;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -85,13 +87,9 @@ public class PrintTableServiceImpl implements PrintTableService {
         }
 
         Matcher matcher = FULL_TABLE_NAME_PATTERN.matcher(table);
-        String result = "";
-        if (matcher.matches()) {
-            result = matcher.replaceAll("`$1`.`$2`.`print_$3`");
-        } else {
-            result = String.format("`default_catalog`.`default_database`.`print_%s`", table);
-        }
-        return result;
+        return matcher.matches()
+                ? matcher.replaceAll("`$1`.`$2`.`print_$3`")
+                : String.format("`default_catalog`.`default_database`.`print_%s`", table);
     }
 
     public static class PrintTableListener {
@@ -114,10 +112,16 @@ public class PrintTableServiceImpl implements PrintTableService {
         }
 
         private static DatagramSocket getDatagramSocket(int port) {
+            InetAddress host = null;
             try {
-                return new DatagramSocket(port);
-            } catch (SocketException e) {
-                log.error("PrintTableListener:DatagramSocket init failed, port {}: {}", PORT, e.getMessage());
+                host = InetAddress.getLocalHost();
+                return new DatagramSocket(port, host);
+            } catch (SocketException | UnknownHostException e) {
+                log.error(
+                        "PrintTableListener:DatagramSocket init failed, host: {}, port {}: {}",
+                        host == null ? null : host.getHostAddress(),
+                        PORT,
+                        e.getMessage());
             }
             return null;
         }
@@ -139,10 +143,6 @@ public class PrintTableServiceImpl implements PrintTableService {
                     log.error("print table receive data:" + e.getMessage());
                 }
             }
-        }
-
-        public ExecutorService getExecutor() {
-            return executor;
         }
     }
 }

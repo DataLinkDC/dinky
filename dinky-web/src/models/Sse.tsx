@@ -22,32 +22,31 @@ import {postAll} from "@/services/api";
 import {ErrorMessage} from "@/utils/messages";
 
 export type SseData = {
-  topic: string,
-  data: any
-}
+  topic: string;
+  data: any;
+};
 export type SubscriberData = {
-  topic: string[],
-  call: (data: SseData) => void
-}
+  topic: string[];
+  call: (data: SseData) => void;
+};
 
 export default () => {
-
   const uuidRef = useRef<string>(crypto.randomUUID());
   const subscriberRef = useRef<SubscriberData[]>([]);
   const [eventSource, setEventSource] = useState<EventSource>();
 
   const subscribe = async () => {
-    const topics: string[] = []
-    subscriberRef.current.forEach(sub => topics.push(...sub.topic))
-    const para = {sessionKey: uuidRef.current, topics: topics}
-    await postAll('api/sse/subscribeTopic', para)
-  }
+    const topics: string[] = [];
+    subscriberRef.current.forEach((sub) => topics.push(...sub.topic));
+    const para = { sessionKey: uuidRef.current, topics: topics };
+    await postAll('api/sse/subscribeTopic', para);
+  };
 
   const reconnectSse = () => {
     const sseUrl = '/api/sse/connect?sessionKey=' + uuidRef.current;
     eventSource?.close();
-    setEventSource(new EventSource(sseUrl))
-  }
+    setEventSource(new EventSource(sseUrl));
+  };
 
   useEffect(() => {
     reconnectSse();
@@ -70,19 +69,18 @@ export default () => {
   }, [eventSource]);
 
   const subscribeTopic = (topic: string[], onMessage: (data: SseData) => void) => {
-    const sub:SubscriberData = {topic: topic, call: onMessage}
-    subscriberRef.current = [...subscriberRef.current,sub];
-    subscribe()
+    const sub: SubscriberData = { topic: topic, call: onMessage };
+    subscriberRef.current = [...subscriberRef.current, sub];
+    subscribe();
     return () => {
       //组件卸载回调方法，取消订阅此topic
-      subscriberRef.current = subscriberRef.current.filter(item => item !== sub);
-      subscribe()
-    }
-  }
+      subscriberRef.current = subscriberRef.current.filter((item) => item !== sub);
+      subscribe();
+    };
+  };
 
   return {
     subscribeTopic,
     reconnectSse
-  }
-
-}
+  };
+};
