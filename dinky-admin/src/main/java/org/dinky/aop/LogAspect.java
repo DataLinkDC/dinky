@@ -117,7 +117,6 @@ public class LogAspect {
 
             if (e != null) {
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());
-                log.error("pre doAfterThrowing Exception:{}", e.getMessage());
                 operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
             }
             operLog.setStatus(BusinessStatus.SUCCESS.ordinal());
@@ -137,8 +136,7 @@ public class LogAspect {
 
         } catch (Exception exp) {
             // 记录本地异常日志
-            log.error("pre doAfterThrowing Exception:{}", exp.getMessage());
-            exp.printStackTrace();
+            log.error("pre doAfterThrowing Exception:", exp);
         }
     }
 

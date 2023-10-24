@@ -35,7 +35,7 @@ type GeneralConfigProps = {
   onSave: (data: BaseConfigProperties) => void;
   loading: boolean;
   toolBarRender?: any;
-  selectChanges?: Record<string, (value: RadioChangeEvent) => void>;
+  selectChanges?: (e: RadioChangeEvent) => void;
 };
 
 const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
@@ -95,16 +95,15 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
       // @ts-ignore
       return (
         <Radio.Group
-          onChange={selectChanges ? selectChanges[entity.key] : undefined}
-          defaultValue={entity.value.toLowerCase()}
+          onChange={selectChanges}
+          value={entity.value.toLowerCase()}
+          // defaultValue={entity.value.toLowerCase()}
         >
-          {entity.example.map((item: any) => {
-            return (
-              <Radio.Button key={item} value={item.toLowerCase()}>
-                {item}
-              </Radio.Button>
-            );
-          })}
+          {entity.example.map((item: any) => (
+            <Radio.Button key={item} value={item.toLowerCase()}>
+              {item}
+            </Radio.Button>
+          ))}
         </Radio.Group>
       );
     } else {

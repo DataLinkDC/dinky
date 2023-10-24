@@ -437,60 +437,6 @@ export function differenceDays(startDateString: any, endDateString: any): number
 }
 
 /**
- * build tree data
- * @param data
- * @returns {any}
- */
-export const buildTreeData = (data: any): any =>
-  data?.map((item: any) => {
-    // build key
-    let buildKey = item.path + folderSeparator() + item.name;
-
-    const buildTitleLabel = () => {
-      return (
-        <>
-          {item.name}
-          <span style={{ color: 'gray' }}>
-            {' '}
-            &nbsp;&nbsp;{l('global.size', '', { size: item.size })}
-          </span>
-        </>
-      );
-    };
-
-    // if has children , recursive build
-    if (item.children) {
-      return {
-        isLeaf: !item.leaf,
-        id: item?.id,
-        name: item.name,
-        parentId: item.path ?? item.parentId,
-        icon: renderIcon(item.name, '.', item.leaf),
-        content: item.content,
-        path: item.path,
-        fullName: item?.fullName,
-        title: buildTitleLabel(),
-        desc: item?.desc ?? item?.description,
-        key: buildKey,
-        children: buildTreeData(item.children)
-      };
-    }
-    return {
-      isLeaf: !item.leaf,
-      id: item?.id,
-      name: item.name,
-      parentId: item.path ?? item.parentId,
-      icon: renderIcon(item.name, '.', item.leaf),
-      content: item.content,
-      path: item.path,
-      fullName: item?.fullName,
-      desc: item?.desc ?? item?.description,
-      title: buildTitleLabel(),
-      key: buildKey
-    };
-  });
-
-/**
  * Determine whether the file is supported
  * @returns {boolean}
  */

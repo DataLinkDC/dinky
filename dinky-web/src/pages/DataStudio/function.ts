@@ -142,15 +142,14 @@ export function getCurrentTab(
   activeKey: string
 ): DataStudioTabsItemType | MetadataTabsItemType | undefined {
   const item = panes.find((item) => item.key === activeKey);
-  if (item?.type === 'project') {
-    return item as DataStudioTabsItemType;
+  switch (item?.type) {
+    case 'project':
+      return item as DataStudioTabsItemType;
+    case 'metadata':
+      return item as MetadataTabsItemType;
+    default:
+      return undefined;
   }
-
-  if (item?.type === 'metadata') {
-    return item as MetadataTabsItemType;
-  }
-
-  return undefined;
 }
 
 export const getCurrentData = (
@@ -158,19 +157,15 @@ export const getCurrentData = (
   activeKey: string
 ): TaskDataType | undefined => {
   const item = getCurrentTab(panes, activeKey);
-  if (isDataStudioTabsItemType(item)) {
-    return item.params.taskData;
-  }
-  return undefined;
+  return isDataStudioTabsItemType(item) ? item.params.taskData : undefined;
 };
 
 export const getFooterValue = (panes: any, activeKey: string): Partial<FooterType> => {
   const currentTab = getCurrentTab(panes, activeKey);
-  if (isDataStudioTabsItemType(currentTab)) {
-    return {
-      codePosition: [1, 1],
-      codeType: currentTab.params.taskData.dialect
-    };
-  }
-  return {};
+  return isDataStudioTabsItemType(currentTab)
+    ? {
+        codePosition: [1, 1],
+        codeType: currentTab.subType
+      }
+    : {};
 };

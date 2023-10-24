@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
@@ -67,6 +66,7 @@ public class AdminController {
     @PostMapping("/login")
     @ApiImplicitParam(name = "loginDTO", value = "LoginDTO", required = true, dataTypeClass = LoginDTO.class)
     @ApiOperation(value = "Login", notes = "Login")
+    @SaIgnore
     public Result<UserDTO> login(@RequestBody LoginDTO loginDTO) {
         return userService.loginUser(loginDTO);
     }
@@ -90,7 +90,6 @@ public class AdminController {
      * @return {@link Result}{@link UserDTO} obtain the current user's UserDTO
      */
     @GetMapping("/current")
-    @SaCheckLogin
     @ApiOperation(value = "Current User Info", notes = "Current User Info")
     public Result<UserDTO> getCurrentUserInfo() {
         return userService.queryCurrentUserInfo();
@@ -103,7 +102,6 @@ public class AdminController {
      * @return {@link Result}{@link Tenant} the specified tenant
      */
     @PostMapping("/chooseTenant")
-    @SaCheckLogin
     @ApiImplicitParam(name = "tenantId", value = "tenantId", required = true, dataTypeClass = Integer.class)
     @ApiOperation(value = "Choose Tenant To Login", notes = "Choose Tenant To Login")
     public Result<Tenant> switchingTenant(@RequestParam("tenantId") Integer tenantId) {
@@ -116,16 +114,8 @@ public class AdminController {
      * @return {@link Result}{@link SaTokenInfo}
      */
     @GetMapping("/tokenInfo")
-    @SaCheckLogin
     @ApiOperation(value = "Query Current User Token Info", notes = "Query Current User Token Info")
     public Result<SaTokenInfo> getTokenInfo() {
-        return Result.succeed(StpUtil.getTokenInfo());
-    }
-
-    @GetMapping("/keepAlive")
-    @SaCheckLogin
-    @ApiOperation(value = "Query Current User Token Info", notes = "Query Current User Token Info")
-    public Result<SaTokenInfo> keepAlive() {
         return Result.succeed(StpUtil.getTokenInfo());
     }
 }

@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertTemplate;
@@ -36,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -65,6 +68,7 @@ public class AlertTemplateController {
             dataType = "Integer",
             paramType = "query",
             example = "1")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_ALERT_TEMPLATE_DELETE)
     public Result<Boolean> deleteAlertTemplateById(@RequestParam Integer id) {
         if (alertTemplateService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -82,6 +86,12 @@ public class AlertTemplateController {
             dataType = "AlertTemplate",
             paramType = "body",
             dataTypeClass = AlertTemplate.class)
+    @SaCheckPermission(
+            value = {
+                PermissionConstants.REGISTRATION_ALERT_TEMPLATE_ADD,
+                PermissionConstants.REGISTRATION_ALERT_TEMPLATE_EDIT
+            },
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdateAlertTemplate(@RequestBody AlertTemplate alertTemplate) {
         if (alertTemplateService.saveOrUpdate(alertTemplate)) {
             return Result.succeed(Status.SAVE_SUCCESS);

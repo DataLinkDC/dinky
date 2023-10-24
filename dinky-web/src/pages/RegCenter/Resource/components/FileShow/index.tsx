@@ -20,8 +20,11 @@
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { renderLanguage, unSupportView } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { Empty } from 'antd';
+import { Empty, Space, Typography } from 'antd';
 import React from 'react';
+import { NavLink } from 'react-router-dom';
+
+const { Text } = Typography;
 
 const CodeEditProps = {
   height: '88vh',
@@ -46,7 +49,7 @@ const FileShow: React.FC<FileShowProps> = (props) => {
    * code show props
    * @type {{code: string, onChange: (val: string) => void, language: string, showFloatButton: boolean, refreshLogCallback: () => void}}
    */
-  const restCodeShowProps = {
+  const restCodeShowProps: any = {
     showFloatButton: true,
     code,
     onChange: onChange,
@@ -60,10 +63,45 @@ const FileShow: React.FC<FileShowProps> = (props) => {
   const renderContent = () => {
     if (name && unSupportView(name) && isLeaf) {
       return (
-        <Empty className={'code-content-empty'} description={l('rc.gp.codeTree.unSupportView')} />
+        <Empty
+          style={{ alignItems: 'center', justifyContent: 'center', top: '50%', height: '100%' }}
+          imageStyle={{
+            marginTop: '20vh'
+          }}
+          description={l('rc.gp.codeTree.unSupportView')}
+        />
       );
     } else if (code === '' || code === null || code === undefined) {
-      return <Empty className={'code-content-empty'} description={l('rc.resource.click')} />;
+      return (
+        <>
+          <Empty
+            style={{ alignItems: 'center', justifyContent: 'center', top: '50%', height: '100%' }}
+            imageStyle={{
+              marginTop: '20vh'
+            }}
+            description={
+              <>
+                <Space direction={'vertical'}>
+                  <Text type='success' strong>
+                    {' '}
+                    {l('rc.resource.click')}
+                  </Text>
+                  <Text type='danger' strong>
+                    {l('rc.resource.click.tip1')}
+                  </Text>
+                  <Text mark ellipsis italic>
+                    {l('rc.resource.click.tip2')}
+                  </Text>
+                  <Text mark ellipsis italic>
+                    {l('rc.resource.click.tip3')}{' '}
+                    <NavLink to={'/settings/globalsetting'}>{l('menu.settings')}</NavLink>
+                  </Text>
+                </Space>
+              </>
+            }
+          />
+        </>
+      );
     } else {
       return <CodeEdit {...restCodeShowProps} {...CodeEditProps} />;
     }

@@ -16,14 +16,17 @@
  */
 
 import { LogSvg } from '@/components/Icons/CodeLanguageIcon';
+import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import LogList from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList';
 import RootLogs from '@/pages/SettingCenter/SystemLogs/TagInfo/RootLogs';
 import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const TagInfo = () => {
   const [activeKey, setActiveKey] = useState('logs');
+  const [tags, setTags] = useState([]);
+  const access = useAccess();
 
   // tab list
   const tabList = [
@@ -32,22 +35,33 @@ const TagInfo = () => {
       label: (
         <Space>
           <LogSvg />
-          {'Root Logs'}
+          Root Logs
         </Space>
       ),
-      children: <RootLogs />
+      children: <RootLogs />,
+      path: '/settings/systemlog/rootlog'
     },
     {
       key: 'logList',
       label: (
         <Space>
           <LogSvg />
-          {'Log List'}
+          Log List
         </Space>
       ),
-      children: <LogList />
+      children: <LogList />,
+      path: '/settings/systemlog/loglist'
     }
   ];
+
+  useEffect(() => {
+    const filterResultTags = tabList.filter(
+      (menu) =>
+        !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu.label, access })
+    );
+    setTags(filterResultTags as []); // set tags
+    setActiveKey(filterResultTags[0]?.key ?? 'logs'); // set default active key
+  }, []);
 
   /**
    * render
@@ -64,7 +78,7 @@ const TagInfo = () => {
           type: 'card',
           animated: true,
           onChange: (key: string) => setActiveKey(key),
-          items: tabList
+          items: tags
         }}
       />
     </>

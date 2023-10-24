@@ -220,3 +220,19 @@ export type UDFTemplate = BaseBeanColumns & {
   functionType: string;
   templateCode: string;
 };
+
+export interface ResourceInfo {
+  id: number;
+  fileName: string;
+  description: string;
+  userId: number;
+  type: number;
+  size: number;
+  pid: number;
+  fullName: string;
+  isDirectory: boolean;
+  createTime: string;
+  updateTime: string;
+  children: ResourceInfo[];
+  leaf: boolean;
+}

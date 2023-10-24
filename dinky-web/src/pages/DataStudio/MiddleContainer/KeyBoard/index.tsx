@@ -20,6 +20,7 @@
 import { KEY_BOARD_MIDDLE } from '@/pages/DataStudio/MiddleContainer/KeyBoard/constant';
 import { l } from '@/utils/intl';
 import { Divider, Typography } from 'antd';
+import { Fragment } from 'react';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -27,7 +28,7 @@ const KeyBoard = () => {
   const buildKeyBoard = () => {
     return KEY_BOARD_MIDDLE.map((item, index) => {
       return (
-        <>
+        <Fragment key={index}>
           {index % 5 === 0 ? (
             <>
               <Divider plain orientationMargin={0} />
@@ -42,7 +43,7 @@ const KeyBoard = () => {
               <Divider type='vertical' />
             </>
           )}
-        </>
+        </Fragment>
       );
     });
   };

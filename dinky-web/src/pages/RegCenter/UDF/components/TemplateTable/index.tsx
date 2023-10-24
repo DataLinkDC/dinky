@@ -20,7 +20,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import CodeShow from '@/components/CustomEditor/CodeShow';
-import { Authorized } from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import TemplateModal from '@/pages/RegCenter/UDF/components/TemplateModal';
 import {
   CODE_TYPE_ENUM,
@@ -163,16 +163,15 @@ const TemplateTable: React.FC = () => {
       title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInSearch: true,
+      hideInDescriptions: true,
       render: (_: any, record: UDFTemplate) => {
         return (
-          <Authorized key={`${record.id}_enable`} path='/registration/udf/enable'>
-            <EnableSwitchBtn
-              key={`${record.id}_enable`}
-              disabled={templateState.drawerOpen}
-              record={record}
-              onChange={() => handleChangeEnable(record)}
-            />
-          </Authorized>
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            disabled={!HasAuthority('/registration/udf/template/edit')}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
         );
       }
     },
@@ -192,14 +191,15 @@ const TemplateTable: React.FC = () => {
     },
     {
       title: l('global.table.operate'),
-      width: '10vh',
+      width: '8%',
+      fixed: 'right',
       hideInSearch: true,
       hideInDescriptions: true,
       render: (text: any, record: UDFTemplate) => [
-        <Authorized key={`${record.id}_edit`} path='/registration/udf/edit'>
+        <Authorized key={`${record.id}_edit`} path='/registration/udf/template/edit'>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete`} path='/registration/udf/delete'>
+        <Authorized key={`${record.id}_delete`} path='/registration/udf/template/delete'>
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteSubmit(record.id)}
@@ -218,7 +218,7 @@ const TemplateTable: React.FC = () => {
         actionRef={actionRef}
         headerTitle={l('rc.udf.management')}
         toolBarRender={() => [
-          <Authorized key='create' path='/registration/udf/new'>
+          <Authorized key='create' path='/registration/udf/template/add'>
             <CreateBtn
               key={'template'}
               onClick={() => setTemplateState((prevState) => ({ ...prevState, addedOpen: true }))}
@@ -231,7 +231,7 @@ const TemplateTable: React.FC = () => {
         columns={columns}
       />
       {/* added */}
-      {templateState.editOpen && (
+      {templateState.addedOpen && (
         <TemplateModal
           values={templateState.value}
           visible={templateState.addedOpen}

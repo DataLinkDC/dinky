@@ -17,24 +17,30 @@
  *
  */
 
-import { TabsPageType } from '@/pages/DataStudio/model';
+import { TabsPageType, TaskDataType } from '@/pages/DataStudio/model';
+import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { HomeOutlined } from '@ant-design/icons';
 
 /**
  * @description: 生成面包屑
- * @type {({title: JSX.Element} | {title: string})[]}
  */
 export const buildBreadcrumbItems = (breadcrumb: string) => {
-  const items = [{ title: <HomeOutlined /> }];
-
   // 如果有 activeBreadcrumbTitle, 则切割 activeBreadcrumbTitle, 生成面包屑数组, 并映射
   const activeBreadcrumbTitleList = Array.from(breadcrumb.split('/')).map((title) => ({
     title: <>{title}</>
   }));
-  items.push(...activeBreadcrumbTitleList);
-  return items;
+
+  return [{ title: <HomeOutlined /> }, ...activeBreadcrumbTitleList];
 };
 
-export const projectCommonShow = (type?: TabsPageType, subType?: string, data?: any) => {
+export const projectCommonShow = (type?: TabsPageType) => {
   return type === TabsPageType.project;
+};
+
+export const isOnline = (data: TaskDataType | undefined) => {
+  return data ? JOB_LIFE_CYCLE.ONLINE == data.step : false;
+};
+
+export const isRunning = (data: TaskDataType | undefined) => {
+  return data ? JOB_STATUS.RUNNING == data.status : false;
 };

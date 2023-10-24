@@ -121,8 +121,8 @@ export const buildEnvOptions = (env: any[]) => {
   const envList: DefaultOptionType[] = [
     {
       label: l('button.disable'),
-      value: 0,
-      key: 0
+      value: -1,
+      key: -1
     }
   ];
 
@@ -151,7 +151,7 @@ export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
   const alertGroupOptions: DefaultOptionType[] = [
     {
       label: l('button.disable'),
-      value: 0
+      value: -1
     }
   ];
   for (const item of alertGroups) {

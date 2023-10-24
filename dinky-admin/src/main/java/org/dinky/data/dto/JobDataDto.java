@@ -19,14 +19,22 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.flink.checkpoint.CheckPointOverView;
+import org.dinky.data.flink.config.CheckpointConfigInfo;
+import org.dinky.data.flink.config.FlinkJobConfigInfo;
+import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
+import org.dinky.data.flink.job.FlinkJobDetailInfo;
 import org.dinky.data.model.JobHistory;
-import org.dinky.utils.JSONUtil;
+import org.dinky.data.model.mapping.ClusterConfigurationMapping;
+import org.dinky.data.model.mapping.ClusterInstanceMapping;
+import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.core.lang.Opt;
+import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,39 +61,30 @@ public class JobDataDto {
             notes = "Tenant ID associated with the job history")
     private Integer tenantId;
 
-    @TableField(exist = false)
-    @ApiModelProperty(value = "Job Object", notes = "Object representing job details")
-    private JsonNode job;
+    @ApiModelProperty(value = "FlinkJobDetailInfo", notes = "FlinkJobDetailInfo representing job details")
+    private FlinkJobDetailInfo job;
 
-    @TableField(exist = false)
-    @ApiModelProperty(value = "Exceptions Object", notes = "Object representing job exceptions")
-    private JsonNode exceptions;
+    @ApiModelProperty(value = "Exceptions Detail Object", notes = "Object representing job exceptions details")
+    private FlinkJobExceptionsDetail exceptions;
 
-    @TableField(exist = false)
     @ApiModelProperty(value = "Checkpoints Object", notes = "Object representing job checkpoints")
-    private JsonNode checkpoints;
+    private CheckPointOverView checkpoints;
 
-    @TableField(exist = false)
     @ApiModelProperty(value = "Checkpoints Config Object", notes = "Object representing checkpoints configuration")
-    private JsonNode checkpointsConfig;
+    private CheckpointConfigInfo checkpointsConfig;
 
-    @TableField(exist = false)
-    @ApiModelProperty(value = "Config Object", notes = "Object representing job configuration")
-    private JsonNode config;
+    @ApiModelProperty(value = "JobConfigInfo", notes = "JobConfigInfo representing job configuration")
+    private FlinkJobConfigInfo config;
 
-    @TableField(exist = false)
     @ApiModelProperty(value = "Jar Object", notes = "Object representing the JAR used in the job")
     private JsonNode jar;
 
-    @TableField(exist = false)
-    @ApiModelProperty(value = "Cluster Object", notes = "Object representing the cluster")
-    private JsonNode cluster;
+    @ApiModelProperty(value = "ClusterInstance Object", notes = "Object representing the cluster")
+    private ClusterInstanceMapping cluster;
 
-    @TableField(exist = false)
     @ApiModelProperty(value = "Cluster Configuration Object", notes = "Object representing cluster configuration")
-    private JsonNode clusterConfiguration;
+    private ClusterConfigurationMapping clusterConfiguration;
 
-    @TableField(exist = false)
     @ApiModelProperty(
             value = "Error Flag",
             dataType = "boolean",
@@ -93,7 +92,6 @@ public class JobDataDto {
             notes = "Flag indicating if there was an error")
     private boolean error;
 
-    @TableField(exist = false)
     @ApiModelProperty(
             value = "Error Message",
             dataType = "boolean",
@@ -105,30 +103,32 @@ public class JobDataDto {
         return JobHistory.builder()
                 .id(this.id)
                 .tenantId(this.tenantId)
-                .jobJson(JSONUtil.toJsonString(getJob()))
-                .exceptionsJson(JSONUtil.toJsonString(getExceptions()))
-                .checkpointsJson(JSONUtil.toJsonString(getCheckpoints()))
-                .checkpointsConfigJson(JSONUtil.toJsonString(getCheckpointsConfig()))
-                .configJson(JSONUtil.toJsonString(getConfig()))
-                .jarJson(JSONUtil.toJsonString(getJar()))
-                .clusterJson(JSONUtil.toJsonString(getCluster()))
-                .clusterConfigurationJson(JSONUtil.toJsonString(getClusterConfiguration()))
+                .jobJson(this.job)
+                .exceptionsJson(this.exceptions)
+                .checkpointsJson(this.checkpoints)
+                .checkpointsConfigJson(this.checkpointsConfig)
+                .configJson(this.config)
+                .jarJson(JSONUtil.toJsonStr(getJar()))
+                .clusterJson(this.cluster)
+                .clusterConfigurationJson(this.clusterConfiguration)
                 .updateTime(LocalDateTime.now())
                 .build();
     }
 
     public static JobDataDto fromJobHistory(JobHistory jobHistory) {
-        return JobDataDto.builder()
-                .id(jobHistory.getId())
-                .tenantId(jobHistory.getTenantId())
-                .job(JSONUtil.parseToJsonNode(jobHistory.getJobJson()))
-                .exceptions(JSONUtil.parseToJsonNode(jobHistory.getExceptionsJson()))
-                .checkpoints(JSONUtil.parseToJsonNode(jobHistory.getCheckpointsJson()))
-                .checkpointsConfig(JSONUtil.parseToJsonNode(jobHistory.getCheckpointsConfigJson()))
-                .config(JSONUtil.parseToJsonNode(jobHistory.getConfigJson()))
-                .jar(JSONUtil.parseToJsonNode(jobHistory.getJarJson()))
-                .cluster(JSONUtil.parseToJsonNode(jobHistory.getClusterJson()))
-                .clusterConfiguration(JSONUtil.parseToJsonNode(jobHistory.getClusterConfigurationJson()))
-                .build();
+        return Opt.ofNullable(jobHistory)
+                .map(x -> JobDataDto.builder()
+                        .id(jobHistory.getId())
+                        .tenantId(jobHistory.getTenantId())
+                        .job(jobHistory.getJobJson())
+                        .exceptions(jobHistory.getExceptionsJson())
+                        .checkpoints(jobHistory.getCheckpointsJson())
+                        .checkpointsConfig(jobHistory.getCheckpointsConfigJson())
+                        .config(jobHistory.getConfigJson())
+                        .jar(JsonUtils.parseToJsonNode(jobHistory.getJarJson()))
+                        .cluster(jobHistory.getClusterJson())
+                        .clusterConfiguration(jobHistory.getClusterConfigurationJson())
+                        .build())
+                .orElse(null);
     }
 }

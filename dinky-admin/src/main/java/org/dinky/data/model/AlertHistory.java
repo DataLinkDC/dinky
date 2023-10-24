@@ -27,6 +27,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -56,6 +60,10 @@ public class AlertHistory implements Serializable {
     @ApiModelProperty(value = "Alert Group ID", example = "1", required = true, dataType = "Integer")
     private Integer alertGroupId;
 
+    @ApiModelProperty(value = "Alert Group", dataType = "AlertGroup")
+    @TableField(exist = false)
+    private AlertGroup alertGroup;
+
     @ApiModelProperty(value = "Alert Instance ID", example = "1", required = true, dataType = "Integer")
     private Integer jobInstanceId;
 
@@ -77,6 +85,8 @@ public class AlertHistory implements Serializable {
             example = "2022-02-24 20:12:00",
             required = false,
             dataType = "LocalDateTime")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
@@ -85,5 +95,7 @@ public class AlertHistory implements Serializable {
             example = "2022-02-24 20:12:00",
             required = false,
             dataType = "LocalDateTime")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime updateTime;
 }

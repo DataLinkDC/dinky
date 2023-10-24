@@ -1,5 +1,5 @@
-import { API } from '@/services/data';
-import { SysMenu } from '@/types/RegCenter/data';
+import { API } from '@/services/data.d';
+import { SysMenu } from '@/types/AuthCenter/data.d';
 import React, { createContext, ReactElement, useContext } from 'react';
 
 /***
@@ -21,6 +21,20 @@ type AuthorizedProps = {
   path: string;
   denied?: ReactElement | null;
   children?: ReactElement | null;
+};
+
+/**
+ *  判断用户是否有某一个权限 有返回true 没有返回false
+ *    <p>
+ *      主要针对按钮级别的禁用 ,在按钮禁用属性中需要使用(取反) !HasAuthority('xxx')来判断
+ *      使用: <Button disabled={!HasAuthority('xxx')}>Test</Button>
+ * @param path
+ * @constructor
+ */
+export const HasAuthority = (path: string): boolean => {
+  const { isAdmin, blocks = [] } = useContext(AccessContext);
+  if (isAdmin) return true;
+  return blocks.some((block) => block.path === path);
 };
 
 export function Authorized({ path, denied = null, children = null }: AuthorizedProps) {
@@ -73,7 +87,7 @@ export function AuthorizedObject({ path, denied = null, children = null, access 
 
   if (!blocks.length) return denied;
 
-  const authority = blocks.some((block) => block.path === path);
+  const authority = blocks.some((block: { path: string }) => block.path === path);
 
   return authority ? children : denied;
 }

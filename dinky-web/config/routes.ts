@@ -110,13 +110,13 @@ export default [
         ]
       },
       {
-        path: '/registration/database',
-        name: 'database',
+        path: '/registration/datasource',
+        name: 'datasource',
         icon: 'DatabaseOutlined',
         component: './RegCenter/DataSource',
         routes: [
           {
-            path: '/registration/database/detail/:id'
+            path: '/registration/datasource/detail/:id'
           }
         ]
       },
@@ -155,8 +155,8 @@ export default [
         component: './RegCenter/GlobalVar'
       },
       {
-        path: '/registration/gitprojects',
-        name: 'gitprojects',
+        path: '/registration/gitproject',
+        name: 'gitproject',
         icon: 'GithubOutlined',
         component: './RegCenter/GitProject'
       },

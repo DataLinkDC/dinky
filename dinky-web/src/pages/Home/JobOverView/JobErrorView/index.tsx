@@ -32,6 +32,7 @@ interface DataType {
   rank: React.Key;
   name: string;
   value: number;
+  key: string;
 }
 
 const JobErrorView: React.FC = () => {
@@ -39,42 +40,50 @@ const JobErrorView: React.FC = () => {
     {
       rank: 1,
       name: '任务1',
-      value: 10000
+      value: 10000,
+      key: '任务1'
     },
     {
       rank: 2,
       name: '任务2',
-      value: 20000
+      value: 20000,
+      key: '任务2'
     },
     {
       rank: 3,
       name: '任务3',
-      value: 30000
+      value: 30000,
+      key: '任务3'
     },
     {
       rank: 4,
       name: '任务4',
-      value: 40000
+      value: 40000,
+      key: '任务4'
     },
     {
       rank: 5,
       name: '任务5',
-      value: 50000
+      value: 50000,
+      key: '任务5'
     },
     {
       rank: 6,
       name: '任务6',
-      value: 60000
+      value: 60000,
+      key: '任务6'
     },
     {
       rank: 7,
       name: '任务7',
-      value: 70000
+      value: 70000,
+      key: '任务7'
     },
     {
       rank: 8,
       name: '任务8',
-      value: 80000
+      value: 80000,
+      key: '任务8'
     }
   ]);
 

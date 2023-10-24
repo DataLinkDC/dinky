@@ -77,7 +77,6 @@ public enum Status {
     EXECUTE_FAILED(9020, "execute.failed"),
     RESTART_SUCCESS(9021, "restart.success"),
     RESTART_FAILED(9022, "restart.failed"),
-    // 已成功停止
     STOP_SUCCESS(9023, "stop.success"),
     STOP_FAILED(9024, "stop.failed"),
     RENAME_SUCCESS(9025, "rename.success"),
@@ -171,6 +170,10 @@ public enum Status {
     TASK_NOT_EXIST(12003, "task.not.exist"),
     JOB_INSTANCE_NOT_EXIST(12004, "job.instance.not.exist"),
     SAVEPOINT_IS_NULL(12005, "savepoint.is.null"),
+    TASK_STATUS_IS_NOT_DONE(12006, "task.status.is.not.done"),
+    TASK_SQL_EXPLAN_FAILED(12007, "task.sql.explain.failed"),
+    TASK_UPDATE_FAILED(12008, "task.update.failed"),
+    TASK_IS_ONLINE(12009, "task.is.online"),
 
     /**
      * alert instance
@@ -195,6 +198,7 @@ public enum Status {
     CLUSTER_INSTANCE_RECYCLE_SUCCESS(15002, "cluster.instance.recycle.success"),
     CLUSTER_INSTANCE_KILL(15003, "cluster.instance.kill"),
     CLUSTER_INSTANCE_DEPLOY(15004, "cluster.instance.deploy"),
+    CLUSTER_NOT_EXIST(15004, "cluster.not.exist"),
 
     /**
      * git
@@ -249,6 +253,12 @@ public enum Status {
     ALERT_RULE_CHECKPOINT_FAIL(20004, "alert.rule.checkpointFail"),
     ALERT_RULE_JOB_RUN_EXCEPTION(20005, "alert.rule.jobRunException"),
     ALERT_RULE_CHECKPOINT_TIMEOUT(20006, "alert.rule.checkpointTimeout"),
+
+    /**
+     * Resource
+     */
+    ROOT_DIR_NOT_ALLOW_DELETE(9031, "resource.root.dir.not.allow.delete"),
+    RESOURCE_DIR_OR_FILE_NOT_EXIST(9032, "resource.dir.or.file.not.exist"),
 
     /**
      * global exception
@@ -322,12 +332,12 @@ public enum Status {
     SYS_METRICS_SETTINGS_FLINK_GATHERTIMING_NOTE(153, "sys.metrics.settings.flink.gatherTiming.note"),
     SYS_METRICS_SETTINGS_FLINK_GATHERTIMEOUT(154, "sys.metrics.settings.flink.gatherTimeout"),
     SYS_METRICS_SETTINGS_FLINK_GATHERTIMEOUT_NOTE(155, "sys.metrics.settings.flink.gatherTimeout.note"),
-    SYS_RESOURCE_SETTINGS_ENABLE(156, "sys.resource.settings.enable"),
-    SYS_RESOURCE_SETTINGS_ENABLE_NOTE(157, "sys.resource.settings.enable.note"),
-    SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH(158, "sys.resource.settings.upload.base.path"),
-    SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH_NOTE(159, "sys.resource.settings.upload.base.path.note"),
-    SYS_RESOURCE_SETTINGS_MODEL(160, "sys.resource.settings.model"),
-    SYS_RESOURCE_SETTINGS_MODEL_NOTE(161, "sys.resource.settings.model.note"),
+    SYS_RESOURCE_SETTINGS_ENABLE(156, "sys.resource.settings.base.enable"),
+    SYS_RESOURCE_SETTINGS_ENABLE_NOTE(157, "sys.resource.settings.base.enable.note"),
+    SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH(158, "sys.resource.settings.base.upload.base.path"),
+    SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH_NOTE(159, "sys.resource.settings.base.upload.base.path.note"),
+    SYS_RESOURCE_SETTINGS_MODEL(160, "sys.resource.settings.base.model"),
+    SYS_RESOURCE_SETTINGS_MODEL_NOTE(161, "sys.resource.settings.base.model.note"),
     SYS_RESOURCE_SETTINGS_OSS_ENDPOINT(162, "sys.resource.settings.oss.endpoint"),
     SYS_RESOURCE_SETTINGS_OSS_ENDPOINT_NOTE(163, "sys.resource.settings.oss.endpoint.note"),
     SYS_RESOURCE_SETTINGS_OSS_ACCESSKEY(164, "sys.resource.settings.oss.accessKey"),
@@ -347,9 +357,18 @@ public enum Status {
      * gateway config
      */
     GAETWAY_KUBERNETS_TEST_FAILED(180, "gateway.kubernetes.test.failed"),
-    GAETWAY_KUBERNETS_TEST_SUCCESS(180, "gateway.kubernetes.test.success"),
-    ;
+    GAETWAY_KUBERNETS_TEST_SUCCESS(181, "gateway.kubernetes.test.success"),
 
+    /**
+     * process
+     * */
+    PROCESS_SUBMIT_SUBMITTASK(190, "process.submit.submitTask"),
+    PROCESS_SUBMIT_CHECKSQL(191, "process.submit.checkSql"),
+    PROCESS_SUBMIT_EXECUTE(192, "process.submit.execute"),
+    PROCESS_SUBMIT_BUILDCONFIG(193, "process.submit.buildConfig"),
+    PROCESS_SUBMIT_EXECUTECOMMSQL(194, "process.submit.execute.commSql"),
+    PROCESS_SUBMIT_EXECUTEFLINKSQL(195, "process.submit.execute.flinkSql"),
+    ;
     private final int code;
     private final String key;
 

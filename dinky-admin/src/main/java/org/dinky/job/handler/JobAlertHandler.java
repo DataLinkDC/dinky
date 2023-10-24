@@ -22,14 +22,14 @@ package org.dinky.job.handler;
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
-import org.dinky.alert.Rules.CheckpointsRule;
-import org.dinky.alert.Rules.ExceptionRule;
+import org.dinky.alert.rules.CheckpointsRule;
+import org.dinky.alert.rules.ExceptionRule;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FreeMarkerHolder;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.pool.DefaultThreadPool;
-import org.dinky.data.constant.FlinkRestResultConstant;
 import org.dinky.data.dto.AlertRuleDTO;
+import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.AlertHistory;
@@ -37,12 +37,12 @@ import org.dinky.data.model.AlertInstance;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.SystemConfiguration;
-import org.dinky.data.model.Task;
 import org.dinky.data.options.AlertRuleOptions;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
 import org.dinky.service.TaskService;
 import org.dinky.service.impl.AlertRuleServiceImpl;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.TimeUtil;
 
 import java.io.IOException;
@@ -93,7 +93,7 @@ public class JobAlertHandler {
 
     private final Facts ruleFacts = new Facts();
 
-    private static JobAlertHandler defaultJobAlertHandler;
+    private static volatile JobAlertHandler defaultJobAlertHandler;
 
     static {
         taskService = SpringContextUtils.getBean("taskServiceImpl", TaskService.class);
@@ -126,9 +126,12 @@ public class JobAlertHandler {
     public void check(JobInfoDetail jobInfoDetail) {
         ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_TIME, TimeUtil.nowStr());
         ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_DETAIL, jobInfoDetail);
-        ruleFacts.put(
-                AlertRuleOptions.JOB_ALERT_RULE_JOB_NAME,
-                jobInfoDetail.getJobDataDto().getJob());
+        if (Asserts.isNotNull(jobInfoDetail.getJobDataDto().getJob())) {
+            ruleFacts.put(
+                    AlertRuleOptions.JOB_ALERT_RULE_JOB_NAME,
+                    jobInfoDetail.getJobDataDto().getJob());
+        }
+
         ruleFacts.put(
                 AlertRuleOptions.JOB_ALERT_RULE_KEY, jobInfoDetail.getInstance().getId());
         ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_INSTANCE, jobInfoDetail.getInstance());
@@ -138,10 +141,13 @@ public class JobAlertHandler {
         ruleFacts.put(
                 AlertRuleOptions.JOB_ALERT_RULE_END_TIME,
                 TimeUtil.convertTimeToString(jobInfoDetail.getInstance().getFinishTime()));
-        ruleFacts.put(
-                AlertRuleOptions.JOB_ALERT_RULE_CHECK_POINTS,
-                jobInfoDetail.getJobDataDto().getCheckpoints());
-        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CLUSTER, jobInfoDetail.getCluster());
+        if (Asserts.isNotNull(jobInfoDetail.getJobDataDto().getCheckpoints())) {
+            ruleFacts.put(
+                    AlertRuleOptions.JOB_ALERT_RULE_CHECK_POINTS,
+                    jobInfoDetail.getJobDataDto().getCheckpoints());
+        }
+
+        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CLUSTER, jobInfoDetail.getClusterInstance());
         ruleFacts.put(
                 AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS,
                 jobInfoDetail.getJobDataDto().getExceptions());
@@ -150,13 +156,11 @@ public class JobAlertHandler {
                     AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS_MSG,
                     jobInfoDetail.getJobDataDto().getErrorMsg());
         } else {
-            ruleFacts.put(
-                    AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS_MSG,
-                    jobInfoDetail
-                            .getJobDataDto()
-                            .getExceptions()
-                            .get(FlinkRestResultConstant.ROOT_EXCEPTION)
-                            .toString());
+            if (Asserts.isNotNull(jobInfoDetail.getJobDataDto().getExceptions().getRootException())) {
+                ruleFacts.put(
+                        AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS_MSG,
+                        jobInfoDetail.getJobDataDto().getExceptions().getRootException());
+            }
         }
 
         rulesEngine.fire(rules, ruleFacts);
@@ -216,7 +220,7 @@ public class JobAlertHandler {
     private void executeAlertAction(Facts facts, AlertRuleDTO alertRuleDTO) {
         JobInfoDetail jobInfoDetail = facts.get(AlertRuleOptions.JOB_ALERT_RULE_JOB_DETAIL);
         JobInstance jobInstance = jobInfoDetail.getInstance();
-        Task task = taskService.getById(jobInfoDetail.getInstance().getTaskId());
+        TaskDTO task = taskService.getTaskInfoById(jobInfoDetail.getInstance().getTaskId());
 
         String taskUrl = StrFormatter.format(
                 "{}/#/devops/job-detail?id={}",
@@ -265,7 +269,7 @@ public class JobAlertHandler {
      */
     private void sendAlert(
             AlertInstance alertInstance, int jobInstanceId, int alertGid, String title, String alertMsg) {
-        Map<String, String> params = org.dinky.utils.JSONUtil.toMap(alertInstance.getParams());
+        Map<String, String> params = JsonUtils.toMap(alertInstance.getParams());
         AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(), params);
         Alert alert = Alert.build(alertConfig);
         AlertResult alertResult = alert.send(title, alertMsg);

@@ -1,4 +1,4 @@
-import { TagJobStatus } from '@/pages/DevOps/function';
+import StatusTag from '@/components/JobTags/StatusTag';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { parseByteStr, parseMilliSecondStr, parseNumStr } from '@/utils/function';
 import { l } from '@/utils/intl';
@@ -12,9 +12,9 @@ export type VerticesTableListItem = {
   status: string;
   metrics: any;
   parallelism: number;
-  startTime?: string;
+  startTime?: number;
   duration?: number;
-  endTime?: string;
+  endTime?: number;
   tasks: any;
 };
 
@@ -32,7 +32,7 @@ const FlinkTable = (props: JobProps): JSX.Element => {
       title: l('devops.baseinfo.name'),
       dataIndex: 'name',
       ellipsis: true,
-      width: 400,
+      width: '20%',
       render: (dom, entity) => {
         return <Link>{entity.name}</Link>;
       }
@@ -41,30 +41,35 @@ const FlinkTable = (props: JobProps): JSX.Element => {
       title: l('devops.baseinfo.status'),
       dataIndex: 'status',
       sorter: true,
+      width: '8%',
       render: (dom, entity) => {
-        return <>{TagJobStatus(entity.status)}</>;
+        return <StatusTag status={entity.status} />;
       }
     },
     {
       title: l('devops.baseinfo.readbytes'),
+      width: '7%',
       render: (dom, entity) => {
         return parseByteStr(entity.metrics['read-bytes']);
       }
     },
     {
       title: l('devops.baseinfo.readrecords'),
+      width: '7%',
       render: (dom, entity) => {
         return parseNumStr(entity.metrics['read-records']);
       }
     },
     {
       title: l('devops.baseinfo.writebytes'),
+      width: '7%',
       render: (dom, entity) => {
         return parseByteStr(entity.metrics['write-bytes']);
       }
     },
     {
       title: l('devops.baseinfo.writerecords'),
+      width: '7%',
       render: (dom, entity) => {
         return parseNumStr(entity.metrics['write-records']);
       }
@@ -72,23 +77,27 @@ const FlinkTable = (props: JobProps): JSX.Element => {
     {
       title: l('devops.baseinfo.parallelism'),
       sorter: true,
+      width: '7%',
       dataIndex: 'parallelism'
     },
     {
       title: l('global.table.startTime'),
-      dataIndex: 'start-time',
+      dataIndex: 'startTime',
       valueType: 'dateTime'
+    },
+    {
+      title: l('global.table.endTime'),
+      dataIndex: 'endTime',
+      valueType: 'dateTime',
+      render: (dom, entity) => {
+        return entity.endTime === -1 ? '-' : entity.endTime;
+      }
     },
     {
       title: l('global.table.useTime'),
       render: (dom, entity) => {
         return parseMilliSecondStr(entity.duration);
       }
-    },
-    {
-      title: l('global.table.endTime'),
-      dataIndex: 'end-time',
-      valueType: 'dateTime'
     }
     // {
     //   title: l('devops.baseinfo.tasks'),
@@ -102,20 +111,21 @@ const FlinkTable = (props: JobProps): JSX.Element => {
     <>
       <ProCard>
         <ProTable
+          defaultSize={'small'}
           columns={columns}
-          style={{ width: '100%' }}
+          style={{ width: '100%', height: '30vh' }}
           dataSource={jobDetail?.jobDataDto?.job?.vertices}
           rowKey='name'
           pagination={{
             defaultPageSize: 10,
-            showSizeChanger: true
+            showSizeChanger: true,
+            hideOnSinglePage: true
           }}
           toolBarRender={false}
           search={false}
           size='small'
         />
       </ProCard>
-      <br />
     </>
   );
 };

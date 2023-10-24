@@ -76,7 +76,7 @@ public class TaskVersionConfigureDTO implements Serializable {
     private Boolean batchModel;
 
     @ApiModelProperty(
-            value = "Flink Cluster ID",
+            value = "Flink ClusterInstance ID",
             dataType = "Integer",
             example = "3",
             notes = "The ID of the Flink cluster")

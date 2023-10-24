@@ -76,10 +76,10 @@ public class JobInstance implements Serializable {
     private Integer step;
 
     @ApiModelProperty(
-            value = "Cluster ID",
+            value = "ClusterInstance ID",
             dataType = "Integer",
             example = "1",
-            notes = "Cluster ID associated with the job instance")
+            notes = "ClusterInstance ID associated with the job instance")
     private Integer clusterId;
 
     @ApiModelProperty(value = "JID", dataType = "String", notes = "JID of the job instance")

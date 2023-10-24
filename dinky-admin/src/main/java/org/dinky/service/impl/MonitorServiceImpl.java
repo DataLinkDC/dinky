@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.context.MetricsContextHolder;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.metrics.Jvm;
 import org.dinky.data.model.Metrics;
@@ -34,8 +33,6 @@ import org.apache.paimon.data.Timestamp;
 import org.apache.paimon.predicate.Predicate;
 import org.apache.paimon.predicate.PredicateBuilder;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -93,12 +90,6 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
     }
 
     @Override
-    public SseEmitter sendLatestData(SseEmitter sseEmitter, LocalDateTime lastDate, List<String> keys) {
-        MetricsContextHolder.addSse(keys, sseEmitter, lastDate);
-        return sseEmitter;
-    }
-
-    @Override
     public SseEmitter sendJvmInfo(SseEmitter sseEmitter) {
         scheduleRefreshMonitorDataExecutor.execute(() -> {
             try {
@@ -106,8 +97,6 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
                     sseEmitter.send(JSONUtil.toJsonStr(Jvm.of()));
                     ThreadUtil.sleep(10000);
                 }
-            } catch (IOException e) {
-                sseEmitter.complete();
             } catch (Exception e) {
                 e.printStackTrace();
                 sseEmitter.complete();

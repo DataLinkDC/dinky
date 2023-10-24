@@ -19,8 +19,11 @@
 
 package org.dinky.data.model;
 
+import org.dinky.data.typehandler.JSONObjectHandler;
+import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.mybatis.model.SuperEntity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import io.swagger.annotations.ApiModel;
@@ -58,7 +61,8 @@ public class ClusterConfiguration extends SuperEntity {
             dataType = "String",
             example = "test",
             notes = "cluster config json")
-    private String configJson;
+    @TableField(typeHandler = JSONObjectHandler.class)
+    private FlinkClusterConfig configJson;
 
     @ApiModelProperty(
             value = "isAvailable",

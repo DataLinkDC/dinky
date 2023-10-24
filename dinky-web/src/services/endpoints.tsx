@@ -108,6 +108,7 @@ export enum API_CONSTANTS {
   // ----cluster instance
   // cluster instance list
   CLUSTER_INSTANCE = '/api/cluster',
+  CLUSTER_INSTANCE_LIST = '/api/cluster/list',
   CLUSTER_INSTANCE_ENABLE = '/api/cluster/enable',
   CLUSTER_INSTANCE_DELETE = '/api/cluster/delete',
   CLUSTER_INSTANCE_HEARTBEATS = '/api/cluster/heartbeats',
@@ -216,18 +217,25 @@ export enum API_CONSTANTS {
   GET_JOB_LIST = '/api/jobInstance',
   GET_JOB_BY_ID = '/api/jobInstance/getOneById',
   GET_JOB_DETAIL = '/api/jobInstance/getJobInfoDetail',
+  REFRESH_JOB_DETAIL = '/api/jobInstance/refreshJobInfoDetail',
+  READ_CHECKPOINT = '/api/flinkConf/readCheckPoint',
   GET_JOB_VERSION = '/api/task/version',
   GET_JOBMANAGER_LOG = 'api/jobInstance/getJobManagerLog',
   GET_JOBMANAGER_STDOUT = 'api/jobInstance/getJobManagerStdOut',
   GET_JOBMANAGER_THREAD_DUMP = 'api/jobInstance/getJobManagerThreadDump',
   GET_TASKMANAGER_LIST = 'api/jobInstance/getTaskManagerList',
   GET_TASKMANAGER_LOG = 'api/jobInstance/getTaskManagerLog',
-  GET_JOB_MERTICE_ITEMS = 'api/jobInstance/getJobMetricsItems',
+  GET_JOB_METRICS_ITEMS = 'api/jobInstance/getJobMetricsItems',
   CANCEL_JOB = '/api/studio/cancel',
-  OFFLINE_TASK = '/api/task/offLineTask',
+  // /api/studio/getLineage
+  STUDIO_GET_LINEAGE = '/api/studio/getLineage',
+  // /api/jobInstance/getLineage
+  JOB_INSTANCE_GET_LINEAGE = '/api/jobInstance/getLineage',
   RESTART_TASK = '/api/task/restartTask',
   RESTART_TASK_FROM_CHECKPOINT = '/api/task/selectSavePointRestartTask',
   GET_SAVEPOINTS = '/api/savepoints',
+  ALERT_HISTORY_LIST = '/api/alertHistory/list',
+  ALERT_HISTORY_DELETE = '/api/alertHistory/delete',
 
   // -- LDAP
   GET_LDAP_ENABLE = '/api/ldap/ldapEnableStatus',
@@ -257,7 +265,7 @@ export enum API_CONSTANTS {
   FLINK_TABLE_DATA = '/api/subscribe/print',
 
   // resource
-  RESOURCE_SHOW_TREE = '/api/resource/showByTree',
+  RESOURCE_SHOW_TREE = '/api/resource/getResourcesTreeData',
   RESOURCE_GET_CONTENT_BY_ID = '/api/resource/getContentByResourceId',
   RESOURCE_REMOVE = '/api/resource/remove',
   RESOURCE_CREATE_FOLDER = '/api/resource/createFolder',
@@ -269,5 +277,8 @@ export enum API_CONSTANTS {
   SAVE_OR_UPDATE_TASK_URL = '/api/catalogue/saveOrUpdateCatalogueAndTask',
   SAVE_OR_UPDATE_CATALOGUE_URL = '/api/catalogue/saveOrUpdateCatalogue',
   COPY_TASK_URL = '/api/catalogue/copyTask',
-  MOVE_CATALOGUE_URL = '/api/catalogue/moveCatalogue'
+  MOVE_CATALOGUE_URL = '/api/catalogue/moveCatalogue',
+
+  //task
+  TASK = '/api/task'
 }

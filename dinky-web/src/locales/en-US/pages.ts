@@ -106,6 +106,9 @@ export default {
   'devops.baseinfo.tasks': 'Operator',
   'devops.baseinfo.writebytes': 'Send Bytes',
   'devops.baseinfo.writerecords': 'Send Records',
+  'devops.baseinfo.backpressure': 'BackPressure',
+  'devops.baseinfo.busy': 'Busy',
+  'devops.baseinfo.idle': 'Idle',
   'devops.jobinfo.ck.checkpoint_type': 'Type',
   'devops.jobinfo.ck.duration': 'Duration',
   'devops.jobinfo.ck.external_path': 'Storage Location',
@@ -122,7 +125,15 @@ export default {
   'devops.jobinfo.ck.taskid': 'Task ID',
   'devops.jobinfo.ck.trigger_timestamp': 'Trigger Time',
   'devops.jobinfo.config.ClusterInstanceName': 'Flink Instance',
-  'devops.jobinfo.config.JobAlert': 'Alert',
+  'devops.jobinfo.config.JobAlert': 'Alert History',
+  'devops.jobinfo.config.JobAlert.history.group': 'Alert Group',
+  'devops.jobinfo.config.JobAlert.history.title': 'Alert Title',
+  'devops.jobinfo.config.JobAlert.history.content': 'Alert Content',
+  'devops.jobinfo.config.JobAlert.history.status': 'Alert Send Status',
+  'devops.jobinfo.config.JobAlert.history.log': 'Alert Log',
+  'devops.jobinfo.config.JobAlert.history.time': 'Alert Time',
+  'devops.jobinfo.config.JobAlert.history.delete':
+    'Are you sure to delete the alert history record?',
   'devops.jobinfo.config.JobBaseInfo': 'Job Base Info',
   'devops.jobinfo.config.JobCheckpoints': 'Checkpoints Info',
   'devops.jobinfo.config.JobId': 'Flink Job ID',
@@ -133,7 +144,6 @@ export default {
   'devops.jobinfo.config.JobParallelism': 'JobParallelism',
   'devops.jobinfo.config.JobType': 'Job Type',
   'devops.jobinfo.config.JobVersion': 'History Info',
-  'devops.jobinfo.config.OperatorGraph': 'Operator Graph',
   'devops.jobinfo.config.RestartStrategy': 'RestartStrategy',
   'devops.jobinfo.config.UserCustomConf': 'Custom Config',
   'devops.jobinfo.config.execmode': 'Exec Mode',
@@ -299,6 +309,12 @@ export default {
   'pages.datastudio.editor.stop.job': 'Stop job',
   'pages.datastudio.editor.stop.jobConfirm': 'Are you sure to stop the job [{jobName}]? ',
   'pages.datastudio.editor.submitting': 'The new task [{jobName}] is executing',
+  'pages.datastudio.editor.onlyread':
+    'Task has been published, modification is prohibited, please go offline first',
+  'pages.datastudio.editor.notsave': 'Current changes are not saved! ',
+  'pages.datastudio.editor.notsave.note':
+    'Continue will discard the changes, are you sure to continue?',
+  'pages.datastudio.to.jobDetail': 'Operation Center',
   'pages.datastudio.explain.validate': 'Validating...',
   'pages.datastudio.explain.validate.allright': 'All Right',
   'pages.datastudio.explain.validate.error': 'There are errors, a total of {errorCount}',
@@ -312,6 +328,21 @@ export default {
   'pages.datastudio.footer.codeType': 'Code Type',
   'pages.datastudio.footer.lineSeparator': 'Line Separator',
   'pages.datastudio.footer.memDetails': 'Maximum heap size',
+
+  'pages.datastudio.sql.sqlChanged': 'Code recovery',
+  'pages.datastudio.sql.sqlChangedPrompt':
+    'The code you modified is not saved, it is inconsistent with the server, we cached the last modification for you, please select the version',
+  'pages.datastudio.sql.sqldiff.title': 'Code comparison',
+  'pages.datastudio.sql.paramdiff.title': 'Configuration comparison',
+  'pages.datastudio.sql.nochange': 'No change in job content',
+  'pages.datastudio.sql.useCache': 'Use cached version',
+  'pages.datastudio.sql.useServer': 'Use server version',
+  'pages.datastudio.sql.cacheVersion': 'Local cache code',
+  'pages.datastudio.sql.serverVersion': 'server-side code',
+  'pages.datastudio.sql.configItem': 'Configuration Item',
+  'pages.datastudio.sql.cacheConfigItem': 'Local cache configuration',
+  'pages.datastudio.sql.serverConfigItem': 'server-side configuration',
+
   'pages.datastudio.help.sqlChanged': 'Sql context or configure changed',
   'pages.datastudio.help.sqlChangedPrompt':
     'the remote context is not the same as the current page , will the data be flushed?',
@@ -322,6 +353,8 @@ export default {
   'pages.datastudio.label.execConfig.changelog': 'Print ChangeLog',
   'pages.datastudio.label.execConfig.changelog.tip':
     'Open the print stream, it will run synchronously and return the ChangeLog containing op information, it is not enabled by default and returns the final result Table',
+  'pages.datastudio.label.execConfig.selectDatabase': 'Select Database',
+  'pages.datastudio.label.execConfig.selectDatabase.tip': 'Select the database to be used',
   'pages.datastudio.label.execConfig.maxrow': 'Maximum number of rows',
   'pages.datastudio.label.execConfig.maxrow.tip': 'The maximum number of rows of preview data',
   'pages.datastudio.label.execConfig.preview.result': 'Preview Result',
@@ -388,7 +421,7 @@ export default {
    *
    * */
 
-  'rc.ag.alertCount': 'Alert Count',
+  'rc.ag.alertCount': 'Alert Instance Count: {count}',
   'rc.ag.alertInstanceIds': 'Alert instance',
   'rc.ag.chooseAlertInstanceIds': 'please choose Alert Instance',
   'rc.ag.create': 'Create Alert Group',
@@ -615,6 +648,7 @@ export default {
   'rc.ci.alias': 'Alias',
   'rc.ci.aliasPlaceholder': 'Please enter an alias!',
   'rc.ci.ar': 'Auto Registration',
+  'rc.ci.mr': 'Manual Registration',
   'rc.ci.create': 'Create Cluster Instance',
   'rc.ci.deleteConfirm': 'Are you sure to delete this Flink Cluster instance? ',
   'rc.ci.heartbeat': 'Heartbeat Detection',
@@ -636,6 +670,8 @@ export default {
   'rc.ci.type': 'Type',
   'rc.ci.typePlaceholder': 'Please select a cluster type!',
   'rc.ci.version': 'Version',
+  'rc.ci.desc': 'Note',
+  'rc.ci.search': 'Search Name/Alias/Note',
   'rc.doc.category': 'Document Type',
   'rc.doc.categoryPlaceholder': 'Please select the type of this Document!',
   'rc.doc.create': 'Create Document',
@@ -773,9 +809,17 @@ export default {
   'rc.gv.value': 'Value',
   'rc.gv.valuePlaceholder': 'Please enter the Global Variable value',
   'rc.resource.click': 'Click left file to view details',
-  'rc.resource.noResource':
-    '\t\tNo resources\nPlease Click the button above to upload folders/files',
+  'rc.resource.click.tip1':
+    'please make sure the resource configuration is correct, otherwise it will cause resource upload failure!',
+  'rc.resource.click.tip2':
+    'If the resource configuration of your configuration center does not configure the resource upload path or use the default resource upload path (/dinky)',
+  'rc.resource.click.tip3': 'You can click the link on the right to configure ->',
   'rc.resource.upload': 'Upload Files/Folders',
+  'rc.resource.upload.success': 'File [{fileName}] Upload successfully',
+  'rc.resource.upload.fail': 'File [{fileName}] Upload failed',
+  'rc.resource.upload.tip1': 'Click or drag file to this area to upload',
+  'rc.resource.upload.tip2':
+    'Support for a single or bulk upload. Strictly prohibited from uploading company data or\n          other banned files.',
   'rc.template.codeType': 'Code Type',
   'rc.template.codeTypePlaceholder': 'Please select code type! ',
   'rc.template.create': 'Create UDF Template',
@@ -800,7 +844,7 @@ export default {
   'role.EnterRoleCode': 'Please enter Role Code!',
   'role.EnterRoleName': 'Please enter Role Name!',
   'role.assign': 'Assign Permissions',
-  'role.assignMenu': 'Role',
+  'role.assignMenu': 'Role: {roleName}, Assign Menu',
   'role.belongTenant': 'Belong Tenant',
   'role.create': 'Create Role',
   'role.delete': 'Delete Role',
@@ -992,5 +1036,16 @@ export default {
   'user.type': 'User Type',
   'user.update': 'Modify User',
   'user.username': 'User Name',
-  'user.usernamePlaceholder': 'Please enter user name'
+  'user.usernamePlaceholder': 'Please enter user name',
+
+  'lineage.getError': 'Cannot Get Lineage',
+  'lineage.expandField': 'Expand Field',
+  'lineage.collapseField': 'Collapse Field',
+  'lineage.expandDownstream': 'Expand Downstream',
+  'lineage.collapseDownstream': 'Collapse Downstream',
+  'lineage.expandUpstream': 'Expand Upstream',
+  'lineage.collapseUpstream': 'Collapse Upstream',
+  'lineage.showMap': 'Show Map',
+  'lineage.hideMap': 'Hide Map',
+  'lineage.refresh': 'Refresh'
 };

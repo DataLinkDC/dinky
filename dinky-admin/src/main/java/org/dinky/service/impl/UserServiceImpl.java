@@ -20,6 +20,7 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.context.UserInfoContextHolder;
 import org.dinky.data.dto.LoginDTO;
@@ -55,6 +56,7 @@ import org.dinky.service.UserTenantService;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -364,6 +366,21 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         }
         List<Integer> roleIds = currentRole.stream().map(Role::getId).collect(Collectors.toList());
         return roleSelectPermissionsService.listRoleSelectPermissionsByRoleIds(roleIds);
+    }
+
+    @Override
+    public void buildRowPermission() {
+        List<RowPermissions> currentRoleSelectPermissions = getCurrentRoleSelectPermissions();
+        if (Asserts.isNotNullCollection(currentRoleSelectPermissions)) {
+            ConcurrentHashMap<String, String> permission = new ConcurrentHashMap<>();
+            for (RowPermissions roleSelectPermissions : currentRoleSelectPermissions) {
+                if (Asserts.isAllNotNullString(
+                        roleSelectPermissions.getTableName(), roleSelectPermissions.getExpression())) {
+                    permission.put(roleSelectPermissions.getTableName(), roleSelectPermissions.getExpression());
+                }
+            }
+            RowLevelPermissionsContext.set(permission);
+        }
     }
 
     @Override

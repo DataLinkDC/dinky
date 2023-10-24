@@ -64,4 +64,7 @@ public final class FlinkRestAPIConstant {
     public static final String THREAD_DUMP = "/thread-dump";
 
     public static final String GET = "?get=";
+    public static final String BACKPRESSURE = "/backpressure";
+
+    public static final String WATERMARKS = "/watermarks";
 }

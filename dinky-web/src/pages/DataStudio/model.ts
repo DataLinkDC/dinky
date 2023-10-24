@@ -16,7 +16,7 @@ import ICodeEditor = editor.ICodeEditor;
  */
 export const VIEW = {
   headerHeight: 32,
-  headerNavHeight: 55,
+  headerNavHeight: 56,
   footerHeight: 25,
   sideWidth: 40,
   leftToolWidth: 180,
@@ -26,7 +26,7 @@ export const VIEW = {
   rightMargin: 32,
   leftMargin: 36,
   midMargin: 44,
-  otherHeight: 1,
+  otherHeight: 0,
   paddingInline: 50
 };
 
@@ -103,6 +103,10 @@ export type TaskDataBaseType = {
   id: number;
   name: string;
   statement: string;
+  dialect: string;
+  step: number;
+  // Only common sql has(只有普通sql才有)
+  databaseId?: number;
 };
 
 export type TaskDataType = TaskDataBaseType & Record<string, any>;
@@ -120,7 +124,8 @@ export enum TabsPageType {
 }
 
 export enum TabsPageSubType {
-  flinkSql = 'flinksql'
+  flinkSql = 'FlinkSql',
+  flinkJar = 'FlinkJar'
 }
 
 export interface TabsItemType {
@@ -130,6 +135,7 @@ export interface TabsItemType {
   type: TabsPageType;
   subType?: TabsPageSubType;
   key: string;
+  treeKey: string;
   value: string;
   icon: any;
   closable: boolean;

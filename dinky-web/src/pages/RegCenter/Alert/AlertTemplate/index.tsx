@@ -16,7 +16,9 @@
  *   limitations under the License.
  *
  */
-import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
+import { Authorized } from '@/hooks/useAccess';
 import AlertTemplateForm from '@/pages/RegCenter/Alert/AlertTemplate/components/AlertTemplateForm';
 import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -25,7 +27,7 @@ import { InitAlertTemplateState } from '@/types/RegCenter/init.d';
 import { AlertTemplateState } from '@/types/RegCenter/state';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
-import { EditTwoTone, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Card, List, Modal, Typography } from 'antd';
 import { useState } from 'react';
@@ -97,19 +99,12 @@ export default () => {
    */
   const renderAlertTemplateActionButton = (item: Alert.AlertTemplate) => {
     return [
-      <Button
-        className={'options-button'}
-        key={'AlertGroupEdit'}
-        icon={<EditTwoTone />}
-        title={l('button.edit')}
-        onClick={() => editClick(item)}
-      />,
-      <Button
-        className={'options-button'}
-        key={'DeleteAlertGroupIcon'}
-        icon={<DangerDeleteIcon />}
-        onClick={() => handleDeleteSubmit(item.id)}
-      />
+      <Authorized key={item.id} path='/registration/alert/template/edit'>
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
+      </Authorized>,
+      <Authorized key={item.id} path='/registration/alert/template/delete'>
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
+      </Authorized>
     ];
   };
 
@@ -133,13 +128,17 @@ export default () => {
 
     return (
       <List.Item>
-        <Button
-          type='dashed'
-          style={{ height: '25vh', width: '100%' }}
-          onClick={() => setAlertTemplateState((prevState) => ({ ...prevState, addedOpen: true }))}
-        >
-          <PlusOutlined /> {l('rc.alert.template.new')}
-        </Button>
+        <Authorized key={item.id} path='/registration/alert/template/add'>
+          <Button
+            type='dashed'
+            style={{ height: '25vh', width: '100%' }}
+            onClick={() =>
+              setAlertTemplateState((prevState) => ({ ...prevState, addedOpen: true }))
+            }
+          >
+            <PlusOutlined /> {l('rc.alert.template.new')}
+          </Button>
+        </Authorized>
       </List.Item>
     );
   };

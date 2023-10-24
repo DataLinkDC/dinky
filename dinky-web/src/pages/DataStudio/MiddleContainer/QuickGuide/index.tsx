@@ -21,6 +21,7 @@ import { QUICK_GUIDE } from '@/pages/DataStudio/MiddleContainer/QuickGuide/const
 import { l } from '@/utils/intl';
 import { Link } from '@umijs/max';
 import { Divider, Typography } from 'antd';
+import { Fragment } from 'react';
 
 const { Title, Paragraph } = Typography;
 
@@ -28,7 +29,7 @@ const QuickGuide = () => {
   const buildQuickGuide = () => {
     return QUICK_GUIDE.map((item, index) => {
       return (
-        <>
+        <Fragment key={index}>
           {index % 5 === 0 ? (
             <>
               <Divider plain orientationMargin={0} />
@@ -44,7 +45,7 @@ const QuickGuide = () => {
               </Link>
             </>
           )}
-        </>
+        </Fragment>
       );
     });
   };

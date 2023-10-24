@@ -18,32 +18,29 @@
  */
 
 import FlinkChart from '@/components/FlinkChart';
+import { SseData } from '@/models/Sse';
+import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
 import { getMetricsData } from '@/pages/DevOps/JobDetail/JobMetrics/service';
 import { DevopsType } from '@/pages/DevOps/JobDetail/model';
 import { ChartData } from '@/pages/Metrics/Job/data';
 import { MetricsDataType } from '@/pages/Metrics/Server/data';
-import { getSseData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/endpoints';
 import { connect } from '@@/exports';
 import { Row, Spin } from 'antd';
 import { useEffect, useState } from 'react';
+import { useModel } from 'umi';
 
 const JobChart = (props: any) => {
   const { jobDetail, metricsTarget, timeRange } = props;
 
-  const [eventSource, setEventSource] = useState<EventSource>();
   const [chartDatas, setChartDatas] = useState<Record<string, ChartData[]>>({});
   const [loading, setLoading] = useState<boolean>(false);
 
-  const sseUrl = `${API_CONSTANTS.MONITOR_GET_LAST_DATA}?lastTime=${new Date().getTime()}&keys=${
-    jobDetail.instance.jid
-  }`;
+  const { subscribeTopic } = useModel('Sse', (model: any) => ({
+    subscribeTopic: model.subscribeTopic
+  }));
 
   const dataProcess = (chData: Record<string, ChartData[]>, data: MetricsDataType) => {
-    if (data.model == 'local') {
-      return;
-    }
     const verticesMap = data.content as Record<string, Record<string, string>>;
     Object.keys(verticesMap).forEach((verticeId) =>
       Object.keys(verticesMap[verticeId]).forEach((mertics) => {
@@ -68,28 +65,18 @@ const JobChart = (props: any) => {
       endTime: timeRange.endTime,
       taskIds: jobDetail.instance.taskId
     }).then((result) => {
-      setLoading(false);
       const chData = {};
       (result as MetricsDataType[]).forEach((d) => dataProcess(chData, d));
-      if (!timeRange.isReal) {
-        eventSource?.close();
-        setEventSource(undefined);
-      } else {
-        if (!eventSource) {
-          setEventSource(getSseData(sseUrl));
-        }
-      }
+      setLoading(false);
     });
-  }, [timeRange]);
 
-  useEffect(() => {
-    if (eventSource && timeRange.isReal) {
-      eventSource.onmessage = (e) => {
-        let result = JSON.parse(e.data);
-        dataProcess(chartDatas, result);
-      };
+    if (timeRange.isReal) {
+      const topic = `${SSE_TOPIC.METRICS}/${jobDetail.instance.jid}`;
+      return subscribeTopic([topic], (data: SseData) => {
+        dataProcess(chartDatas, data.data);
+      });
     }
-  }, [eventSource]);
+  }, [timeRange]);
 
   const renderMetricsCardList = (
     metricsList: Record<string, JobMetricsItem[]>,

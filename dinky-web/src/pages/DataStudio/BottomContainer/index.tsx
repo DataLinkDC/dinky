@@ -15,6 +15,7 @@ export type BottomContainerProps = {
 };
 const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
   const { dispatch, size, bottomContainer } = props;
+  const width = document.documentElement.clientWidth - VIEW.sideWidth * 2;
 
   /**
    * 侧边栏最小化
@@ -82,7 +83,13 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
    * @param direction
    * @param {{offsetHeight: any}} elementRef
    */
-  const resizeCallback = (event: any, direction: any, elementRef: { offsetHeight: any }) => {
+  const resizeCallback = (
+    event: any,
+    direction: any,
+    elementRef: {
+      offsetHeight: any;
+    }
+  ) => {
     updateBottomHeight(elementRef.offsetHeight);
     const centerContentHeight =
       document.documentElement.clientHeight -
@@ -92,7 +99,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       VIEW.otherHeight -
       bottomContainer.height;
     updateCenterContentHeight(centerContentHeight);
-    updateToolContentHeight(centerContentHeight - VIEW.midMargin);
+    updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
   };
 
   const renderTabPane = () => {
@@ -140,7 +147,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       return {
         ...item,
         children: (
-          <ContentScroll height={props.bottomContainer.height - VIEW.midMargin}>
+          <ContentScroll height={props.bottomContainer.height - VIEW.leftMargin}>
             {item.children}
           </ContentScroll>
         )
@@ -148,7 +155,6 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
     });
   };
 
-  // @ts-ignore
   return (
     <MovableSidebar
       title={
@@ -169,12 +175,14 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
           </Space>
         </ConfigProvider>
       }
-      visible={bottomContainer.selectKey !== ''}
+      visible={bottomContainer.selectKey}
       style={{
         zIndex: 999,
         height: bottomContainer.height,
         marginTop: 0,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        position: 'fixed',
+        bottom: VIEW.footerHeight
       }}
       defaultSize={{ width: '100%', height: bottomContainer.height }}
       minHeight={VIEW.midMargin}
@@ -189,6 +197,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       btnGroup={[<CircleBtn key={'max'} icon={<PlusOutlined />} />]}
       enable={{ top: true }}
       handlerMinimize={handleMinimize}
+      maxWidth={width}
     >
       <Tabs
         activeKey={

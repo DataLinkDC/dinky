@@ -35,11 +35,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * MysqlDriver
  *
  * @since 2021/7/20 14:06
  */
+@Slf4j
 public class MySqlDriver extends AbstractJdbcDriver {
 
     @Override
@@ -80,7 +83,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
     @Override
     public String generateCreateTableSql(Table table) {
         String genTableSql = genTable(table);
-        logger.info("Auto generateCreateTableSql {}", genTableSql);
+        log.info("Auto generateCreateTableSql {}", genTableSql);
         return genTableSql;
     }
 

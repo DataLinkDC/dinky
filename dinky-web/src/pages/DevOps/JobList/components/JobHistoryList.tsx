@@ -1,4 +1,4 @@
-import { TagJobStatus } from '@/pages/DevOps/function';
+import StatusTag from '@/components/JobTags/StatusTag';
 import { queryList } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
@@ -36,7 +36,7 @@ const JobHistoryList = (props: HistoryProps) => {
     {
       title: l('global.table.status'),
       dataIndex: 'status',
-      render: (_: any, row: { status: string | undefined }) => TagJobStatus(row.status)
+      render: (_: any, row: { status: string | undefined }) => <StatusTag status={row.status} />
     },
     {
       title: l('global.table.useTime'),

@@ -20,6 +20,8 @@
 package org.dinky.data.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -118,4 +120,16 @@ public class Resources extends Model<Resources> {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    @TableField(exist = false)
+    @ApiModelProperty(value = "Children", required = true, dataType = "List<Resources>", example = "[]")
+    private List<Resources> children = new ArrayList<>();
+
+    @TableField(exist = false)
+    @ApiModelProperty(
+            value = "Is Leaf",
+            dataType = "boolean",
+            example = "false",
+            notes = "Indicates whether the tree node is a leaf node (true/false)")
+    private boolean isLeaf;
 }

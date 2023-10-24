@@ -19,17 +19,18 @@ import LogsShow from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsShow'
 import LogsTree from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsTree';
 import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { LogInfo } from '@/types/SettingCenter/data';
 import { ProCard } from '@ant-design/pro-components';
 import { useEffect, useState } from 'react';
 
 const LogList = () => {
-  const [treeData, setTreeData] = useState<Partial<any>[]>([]);
+  const [treeData, setTreeData] = useState<LogInfo[]>([]);
   const [log, setLog] = useState<string>('');
   const [clickFileName, setClickFileName] = useState<any>();
 
   const queryLogList = async () => {
-    await queryDataByParams(API_CONSTANTS.SYSTEM_ROOT_LOG_LIST).then((res) => {
-      setTreeData(res);
+    await queryDataByParams<LogInfo[]>(API_CONSTANTS.SYSTEM_ROOT_LOG_LIST).then((res) => {
+      setTreeData(res ?? []);
     });
   };
 
@@ -37,7 +38,7 @@ const LogList = () => {
     await queryDataByParams(API_CONSTANTS.SYSTEM_ROOT_LOG_READ, {
       path: fileName
     }).then((res) => {
-      setLog(res);
+      setLog(res as string);
     });
   };
 
@@ -61,11 +62,12 @@ const LogList = () => {
 
   return (
     <>
-      <ProCard ghost>
-        <ProCard ghost colSpan={'18%'} className={'siderTree'}>
+      <ProCard ghost bordered>
+        <ProCard ghost hoverable bordered colSpan={'18%'} className={'siderTree'}>
           <LogsTree treeData={treeData} onNodeClick={(info: any) => handleNodeClick(info)} />
         </ProCard>
-        <ProCard ghost>
+        <ProCard.Divider type={'vertical'} />
+        <ProCard ghost hoverable bordered>
           <LogsShow code={log} refreshLogCallback={() => refreshLogByClickNode()} />
         </ProCard>
       </ProCard>

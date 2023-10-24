@@ -18,30 +18,28 @@
  */
 
 import SlowlyAppear from '@/components/Animation/SlowlyAppear';
-import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
-import { Authorized } from '@/hooks/useAccess';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
+import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
+import { DataAction } from '@/components/StyledComponents';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import AlertGroupForm from '@/pages/RegCenter/Alert/AlertGroup/components/AlertGroupForm';
 import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
-import {
-  PROTABLE_OPTIONS_PUBLIC,
-  PRO_LIST_CARD_OPTIONS,
-  SWITCH_OPTIONS
-} from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 import { InitAlertGroupState } from '@/types/RegCenter/init.d';
 import { AlertGroupState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
-import { EditTwoTone, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ActionType } from '@ant-design/pro-table';
 import { connect, Dispatch } from '@umijs/max';
-import { Button, Descriptions, Modal, Space, Switch, Tag, Tooltip } from 'antd';
-import DescriptionsItem from 'antd/es/descriptions/Item';
+import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 
 const AlertGroupTableList: React.FC = (props: any) => {
@@ -139,7 +137,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const renderToolBar = () => {
     return () => [
-      <Authorized key='create' path='/registration/alert/group/new'>
+      <Authorized key='create' path='/registration/alert/group/add'>
         <Button
           key={'CreateAlertGroup'}
           type='primary'
@@ -169,22 +167,11 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const renderAlertGroupActionButton = (item: Alert.AlertGroup) => {
     return [
-      <Authorized key={item.id} path='/registration/alert/group/edit'>
-        <Button
-          className={'options-button'}
-          key={'AlertGroupEdit'}
-          icon={<EditTwoTone />}
-          title={l('button.edit')}
-          onClick={() => editClick(item)}
-        />
+      <Authorized key={`${item.id}_auth_edit`} path='/registration/alert/group/edit'>
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={item.id} path='/registration/alert/group/delete'>
-        <Button
-          className={'options-button'}
-          key={'DeleteAlertGroupIcon'}
-          icon={<DangerDeleteIcon />}
-          onClick={() => handleDeleteSubmit(item.id)}
-        />
+      <Authorized key={`${item.id}_auth_delete`} path='/registration/alert/group/delete'>
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>
     ];
   };
@@ -194,14 +181,14 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * @param item
    */
   const renderAlertGroupContent = (item: Alert.AlertGroup) => {
-    const instanceCnt = item.alertInstanceIds.split(',').length || 0;
+    const instanceCnt = item.alertInstanceIds.split(',').length ?? 0;
     return (
       <>
         <Space className={'hidden-overflow'}>
-          <Switch
-            key={item.id}
-            {...SWITCH_OPTIONS()}
-            checked={item.enabled}
+          <EnableSwitchBtn
+            key={`${item.id}_enable`}
+            disabled={!HasAuthority('/registration/alert/group/edit')}
+            record={item}
             onChange={() => handleEnable(item)}
           />
           <Tag color='warning'>{l('rc.ag.alertCount', '', { count: instanceCnt })}</Tag>
@@ -217,11 +204,11 @@ const AlertGroupTableList: React.FC = (props: any) => {
   const renderAlertGroupSubTitle = (item: Alert.AlertGroup) => {
     return (
       <Descriptions size={'small'} layout={'vertical'} column={1}>
-        <DescriptionsItem className={'hidden-overflow'} key={item.id}>
+        <Descriptions.Item className={'hidden-overflow'} key={item.id}>
           <Tooltip key={item.id} title={item.name}>
             <Tag color='success'>{item.name}</Tag>
           </Tooltip>
-        </DescriptionsItem>
+        </Descriptions.Item>
       </Descriptions>
     );
   };
@@ -231,7 +218,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const renderDataSource = alertGroupState.alertGroupList.map((item: Alert.AlertGroup) => ({
     subTitle: renderAlertGroupSubTitle(item),
-    actions: renderAlertGroupActionButton(item),
+    actions: <DataAction>{renderAlertGroupActionButton(item)}</DataAction>,
     avatar: getAlertIcon(ALERT_TYPE.GROUP, 60),
     content: renderAlertGroupContent(item)
   }));

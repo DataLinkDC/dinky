@@ -17,12 +17,13 @@
  *
  */
 
-import { WebIcon } from '@/components/Icons/CustomIcons';
 import { RUN_MODE } from '@/services/constants';
 import { Cluster } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import { Button } from 'antd';
+import { Typography } from 'antd';
 import { RuleObject } from 'rc-field-form/es/interface';
+
+const { Text, Paragraph, Link } = Typography;
 
 /**
  * validatorJMHAAdderess
@@ -60,17 +61,14 @@ export const renderWebUiRedirect = (record: Cluster.Instance) => {
       record.type === RUN_MODE.YARN_PER_JOB)
   ) {
     return (
-      <>
-        <Button
-          icon={<WebIcon />}
-          key={`${record.id}_webui`}
-          type='link'
-          title={`http://${record.jobManagerHost}/#/overview`}
-          href={`http://${record.jobManagerHost}/#/overview`}
-          target='_blank'
-        />
-      </>
+      <Link
+        href={`/api/flink/${record.jobManagerHost}/#/overview`}
+        key={`${record.id}_webui`}
+        target='_blank'
+      >
+        {record.jobManagerHost}
+      </Link>
     );
   }
-  return undefined;
+  return <Link>{record.hosts}</Link>;
 };

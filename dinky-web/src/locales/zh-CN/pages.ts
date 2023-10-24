@@ -100,6 +100,9 @@ export default {
   'devops.baseinfo.tasks': '算子',
   'devops.baseinfo.writebytes': '发送字节',
   'devops.baseinfo.writerecords': '发送记录',
+  'devops.baseinfo.backpressure': '反压',
+  'devops.baseinfo.busy': '繁忙',
+  'devops.baseinfo.idle': '空闲',
   'devops.jobinfo.ck.checkpoint_type': '类型',
   'devops.jobinfo.ck.duration': '耗时',
   'devops.jobinfo.ck.external_path': '存储位置',
@@ -117,6 +120,13 @@ export default {
   'devops.jobinfo.ck.trigger_timestamp': '触发时间',
   'devops.jobinfo.config.ClusterInstanceName': 'Flink实例',
   'devops.jobinfo.config.JobAlert': '告警记录',
+  'devops.jobinfo.config.JobAlert.history.group': '告警组',
+  'devops.jobinfo.config.JobAlert.history.title': '告警标题',
+  'devops.jobinfo.config.JobAlert.history.content': '告警内容',
+  'devops.jobinfo.config.JobAlert.history.status': '告警发送状态',
+  'devops.jobinfo.config.JobAlert.history.log': '告警日志',
+  'devops.jobinfo.config.JobAlert.history.time': '告警时间',
+  'devops.jobinfo.config.JobAlert.history.delete': '你确定删除该告警记录吗?',
   'devops.jobinfo.config.JobBaseInfo': '作业基本信息',
   'devops.jobinfo.config.JobCheckpoints': '作业快照',
   'devops.jobinfo.config.JobId': 'Flink Job ID',
@@ -127,7 +137,6 @@ export default {
   'devops.jobinfo.config.JobParallelism': '作业并行度',
   'devops.jobinfo.config.JobType': '任务类型',
   'devops.jobinfo.config.JobVersion': '版本信息',
-  'devops.jobinfo.config.OperatorGraph': '算子图',
   'devops.jobinfo.config.RestartStrategy': '重启策略',
   'devops.jobinfo.config.UserCustomConf': '用户自定义配置',
   'devops.jobinfo.config.execmode': '执行模式',
@@ -281,8 +290,8 @@ export default {
    *
    * */
 
-  'pages.datastudio.editor.check': '检查当前的 FlinkSql',
-  'pages.datastudio.editor.exec': '执行',
+  'pages.datastudio.editor.check': '检查',
+  'pages.datastudio.editor.exec': '运行',
   'pages.datastudio.editor.exec.error': '任务【{jobName}】执行失败',
   'pages.datastudio.editor.exec.success': '执行成功',
   'pages.datastudio.editor.execute.warn':
@@ -293,6 +302,10 @@ export default {
   'pages.datastudio.editor.stop.job': '停止作业',
   'pages.datastudio.editor.stop.jobConfirm': '确定停止作业【{jobName}】吗？',
   'pages.datastudio.editor.submitting': '新任务【{jobName}】正在执行',
+  'pages.datastudio.editor.onlyread': '任务已发布，禁止修改，请先下线任务',
+  'pages.datastudio.editor.notsave': '当前修改内容未保存！',
+  'pages.datastudio.editor.notsave.note': '继续将抛弃所修改内容，确定继续吗？',
+  'pages.datastudio.to.jobDetail': '运维',
   'pages.datastudio.explain.validate': '正在校验中...',
   'pages.datastudio.explain.validate.allright': '全部正确',
   'pages.datastudio.explain.validate.error': '存在错误，共计{errorCount}个',
@@ -306,8 +319,21 @@ export default {
   'pages.datastudio.footer.codeType': '代码类型：',
   'pages.datastudio.footer.lineSeparator': '行分隔符：',
   'pages.datastudio.footer.memDetails': '最大堆大小：{max}\n已使用：   {used}M',
-  'pages.datastudio.help.sqlChanged': 'Sql内容或配置变更',
-  'pages.datastudio.help.sqlChangedPrompt': '检测到当前页与远端不一致，是否刷新更新数据？',
+
+  'pages.datastudio.sql.sqlChanged': '代码恢复',
+  'pages.datastudio.sql.sqlChangedPrompt':
+    '您修改的代码未保存，与服务端不一致，我们为您缓存了上次修改，请选择版本',
+  'pages.datastudio.sql.sqldiff.title': '代码对比',
+  'pages.datastudio.sql.paramdiff.title': '配置对比',
+  'pages.datastudio.sql.nochange': '作业内容无变化',
+  'pages.datastudio.sql.useCache': '使用缓存版本',
+  'pages.datastudio.sql.useServer': '使用服务器版本',
+  'pages.datastudio.sql.cacheVersion': '本地缓存代码',
+  'pages.datastudio.sql.serverVersion': '服务端代码',
+  'pages.datastudio.sql.configItem': '配置项',
+  'pages.datastudio.sql.cacheConfigItem': '本地缓存配置',
+  'pages.datastudio.sql.serverConfigItem': '服务端配置',
+
   'pages.datastudio.label.execConfig': '执行配置',
   'pages.datastudio.label.execConfig.autostop': '自动停止',
   'pages.datastudio.label.execConfig.autostop.tip':
@@ -315,6 +341,8 @@ export default {
   'pages.datastudio.label.execConfig.changelog': '打印流',
   'pages.datastudio.label.execConfig.changelog.tip':
     '开启打印流，将同步运行并返回含有 op 信息的 ChangeLog，默认不开启且返回最终结果 Table',
+  'pages.datastudio.label.execConfig.selectDatabase': '选择数据源',
+  'pages.datastudio.label.execConfig.selectDatabase.tip': '选择 Sql 语句执行的数据源',
   'pages.datastudio.label.execConfig.maxrow': '最大行数',
   'pages.datastudio.label.execConfig.maxrow.tip': '预览数据的最大行数',
   'pages.datastudio.label.execConfig.preview.result': '预览结果',
@@ -364,6 +392,12 @@ export default {
   'pages.datastudio.label.version.rollback.flinksql': '回滚Flink SQL版本',
   'pages.datastudio.label.version.rollback.flinksqlConfirm':
     '确定回滚Flink SQL版本至【{versionId}】吗？',
+
+  'pages.datastudio.catalog.flinkSqlEnvSelect': '请选择 FlinkSqlEnv',
+  'pages.datastudio.catalog.catalogSelect': '请选择 catalog & database',
+  'pages.datastudio.catalog.tableInfo': '表信息',
+  'pages.datastudio.catalog.fieldInformation': '字段信息',
+
   'pages.datastudio.print.table.inputTableName': '请选择表名',
   'pages.devops.jobinfo.localenv': '本地环境',
   'pages.metadata.DataSearch': '数据查询',
@@ -375,7 +409,7 @@ export default {
    *
    * */
 
-  'rc.ag.alertCount': '告警实例数',
+  'rc.ag.alertCount': '告警实例数: {count}',
   'rc.ag.alertInstanceIds': '告警实例',
   'rc.ag.chooseAlertInstanceIds': '请选择告警组实例',
   'rc.ag.create': '创建告警组',
@@ -587,6 +621,7 @@ export default {
   'rc.ci.alias': '实例别名',
   'rc.ci.aliasPlaceholder': '请输入别名!',
   'rc.ci.ar': '自动注册',
+  'rc.ci.mr': '手动注册',
   'rc.ci.create': '创建集群',
   'rc.ci.deleteConfirm': '确定删除该 Flink 实例吗？',
   'rc.ci.heartbeat': '心跳检测',
@@ -607,6 +642,8 @@ export default {
   'rc.ci.type': '类型',
   'rc.ci.typePlaceholder': '请选择集群类型!',
   'rc.ci.version': '版本',
+  'rc.ci.desc': '描述',
+  'rc.ci.search': '搜索 名称/别名/备注',
   'rc.doc.category': '文档类型',
   'rc.doc.categoryPlaceholder': '请选择该文档所属类型!',
   'rc.doc.create': '创建文档',
@@ -740,8 +777,15 @@ export default {
   'rc.gv.value': '变量值',
   'rc.gv.valuePlaceholder': '请输入全局变量值',
   'rc.resource.click': '点击左侧文件查看详情',
-  'rc.resource.noResource': '\t\t暂无资源\n请点击上方按钮上传文件夹/文件',
+  'rc.resource.click.tip1': '请确保资源配置正确,否则会导致资源上传失败!',
+  'rc.resource.click.tip2':
+    ' 如果您的配置中心的资源配置没有配置资源上传路径/使用默认的资源上传路径(/dinky)',
+  'rc.resource.click.tip3': ' 您可以点击右侧链接进行配置 ->',
   'rc.resource.upload': '上传文件夹/文件',
+  'rc.resource.upload.success': '文件 【{fileName}】 上传成功',
+  'rc.resource.upload.fail': '文件 【{fileName}】 上传失败',
+  'rc.resource.upload.tip1': '点击或拖拽文件到此区域上传',
+  'rc.resource.upload.tip2': '支持单个或批量上传。严禁上传公司数据或其他禁止上传的文件。',
   'rc.template.codeType': '代码类型',
   'rc.template.codeTypePlaceholder': '请选择代码类型！',
   'rc.template.create': '创建 UDF 模板',
@@ -766,7 +810,7 @@ export default {
   'role.EnterRoleCode': '请输入角色编码!',
   'role.EnterRoleName': '请输入角色名称!',
   'role.assign': '分配权限',
-  'role.assignMenu': '角色',
+  'role.assignMenu': '角色: {roleName} 分配菜单',
   'role.belongTenant': '所属租户',
   'role.create': '创建角色',
   'role.delete': '删除角色',
@@ -955,5 +999,16 @@ export default {
   'user.type': '注册类型',
   'user.update': '修改用户',
   'user.username': '用户名',
-  'user.usernamePlaceholder': '请输入用户名'
+  'user.usernamePlaceholder': '请输入用户名',
+
+  'lineage.getError': '无法获取血缘',
+  'lineage.expandField': '展开字段',
+  'lineage.collapseField': '收缩字段',
+  'lineage.expandDownstream': '展开下游',
+  'lineage.collapseDownstream': '收起下游',
+  'lineage.expandUpstream': '展开上游',
+  'lineage.collapseUpstream': '收起上游',
+  'lineage.showMap': '显示小地图',
+  'lineage.hideMap': '隐藏小地图',
+  'lineage.refresh': '刷新血缘'
 };

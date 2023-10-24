@@ -21,8 +21,6 @@ package org.dinky.function.compiler;
 
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.model.ProcessEntity;
 
 import org.apache.flink.configuration.ReadableConfig;
 
@@ -46,19 +44,19 @@ public class JavaCompiler implements FunctionCompiler {
      */
     @Override
     public boolean compiler(UDF udf, ReadableConfig conf, Integer missionId) {
-        ProcessEntity process = ProcessContextHolder.getProcess();
-        process.info("正在编译 java 代码 , class: " + udf.getClassName());
+        // TODO 改为ProcessStep注释
+        log.info("正在编译 java 代码 , class: " + udf.getClassName());
         CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(udf.getCode());
         boolean res = compiler.compilerToTmpPath(PathConstant.getUdfCompilerJavaPath(missionId));
         String className = compiler.getFullClassName();
         if (res) {
-            process.info("class编译成功:" + className);
-            process.info("compilerTakeTime：" + compiler.getCompilerTakeTime());
+            log.info("class编译成功:" + className);
+            log.info("compilerTakeTime：" + compiler.getCompilerTakeTime());
             return true;
         } else {
             log.error("class编译失败:{}", className);
-            process.error("class编译失败:" + className);
-            process.error(compiler.getCompilerMessage());
+            log.error("class编译失败:" + className);
+            log.error(compiler.getCompilerMessage());
             return false;
         }
     }

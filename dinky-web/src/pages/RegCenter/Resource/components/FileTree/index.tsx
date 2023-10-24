@@ -17,48 +17,34 @@
  *
  */
 
-import { buildTreeData } from '@/utils/function';
-import { l } from '@/utils/intl';
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Tree, Typography, Upload } from 'antd';
+import { buildResourceTreeData } from '@/pages/RegCenter/Resource/components/FileTree/function';
+import { ResourceInfo } from '@/types/RegCenter/data';
+import { Empty, Tree } from 'antd';
 import React from 'react';
 
 const { DirectoryTree } = Tree;
-const { Text } = Typography;
 
 type FileTreeProps = {
-  treeData: Partial<any>[];
+  treeData: ResourceInfo[];
   onNodeClick: (info: any) => void;
   onRightClick: (info: any) => void;
   selectedKeys: string[];
-  loadData: ({ key, children }: any) => Promise<void>;
 };
 
 const FileTree: React.FC<FileTreeProps> = (props) => {
-  const { treeData, selectedKeys, onNodeClick, onRightClick, loadData } = props;
+  const { treeData, selectedKeys, onNodeClick, onRightClick } = props;
 
   return (
     <>
       {treeData.length > 0 ? (
         <DirectoryTree
-          loadData={loadData}
           selectedKeys={selectedKeys}
           onSelect={(_, info) => onNodeClick(info)}
           onRightClick={(info) => onRightClick(info)}
-          treeData={buildTreeData(treeData)}
+          treeData={buildResourceTreeData(treeData)}
         />
       ) : (
-        <>
-          <div style={{ marginTop: '40vh', marginLeft: '1vw' }}>
-            <Upload action='/api/resource/uploadFile?pid=0' directory>
-              <Button icon={<UploadOutlined />}>{l('rc.resource.upload')}</Button>
-            </Upload>
-            <br />
-          </div>
-          <Text className={'needWrap'} type='warning'>
-            {l('rc.resource.noResource')}
-          </Text>
-        </>
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
     </>
   );

@@ -16,3 +16,11 @@
  *   limitations under the License.
  *
  */
+
+import { AlertHistory } from '@/types/DevOps/data';
+import { BaseState } from '@/types/Public/state';
+
+export interface AlertHistoryState extends BaseState {
+  alertHistory: AlertHistory[];
+  showContent: boolean;
+}

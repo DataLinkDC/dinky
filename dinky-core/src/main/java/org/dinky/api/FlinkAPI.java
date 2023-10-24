@@ -27,6 +27,7 @@ import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.SavePointResult;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,12 +130,11 @@ public class FlinkAPI {
     }
 
     @SuppressWarnings("checkstyle:Indentation")
-    public SavePointResult savepoints(String jobId, String savePointType, Map<String, String> taskConfig) {
-        SavePointType type = SavePointType.get(savePointType);
+    public SavePointResult savepoints(String jobId, SavePointType savePointType, Map<String, String> taskConfig) {
         JobInfo jobInfo = new JobInfo(jobId);
         Map<String, Object> paramMap = new HashMap<>(8);
         String paramType = null;
-        switch (type) {
+        switch (savePointType) {
             case CANCEL:
                 paramMap.put(CANCEL_JOB, true);
                 paramType = FlinkRestAPIConstant.SAVEPOINTS;
@@ -377,7 +377,7 @@ public class FlinkAPI {
         return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.THREAD_DUMP);
     }
 
-    public JsonNode getJobMetricesItems(String jobId, String verticeId) {
+    public JsonNode getJobMetricsItems(String jobId, String verticeId) {
         return get(FlinkRestAPIConstant.JOBS
                 + jobId
                 + FlinkRestAPIConstant.VERTICES
@@ -385,8 +385,48 @@ public class FlinkAPI {
                 + FlinkRestAPIConstant.METRICS);
     }
 
-    public JsonNode getJobMetricesData(String jobId, String verticeId, String metrics) {
+    public JsonNode getJobMetricsData(String jobId, String verticeId, String metrics) {
         return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.VERTICES + verticeId
                 + FlinkRestAPIConstant.METRICS + "?get=" + URLEncodeUtil.encode(metrics));
+    }
+
+    /**
+     * GET backpressure
+     */
+    public String getBackPressure(String jobId, String verticeId) {
+        return getResult(FlinkRestAPIConstant.JOBS
+                + jobId
+                + FlinkRestAPIConstant.VERTICES
+                + verticeId
+                + FlinkRestAPIConstant.BACKPRESSURE);
+    }
+
+    /**
+     * GET watermark
+     */
+    public String getWatermark(String jobId, String verticeId) {
+        return getResult(FlinkRestAPIConstant.JOBS
+                + jobId
+                + FlinkRestAPIConstant.VERTICES
+                + verticeId
+                + FlinkRestAPIConstant.WATERMARKS);
+    }
+    /**
+     * get vertices
+     */
+    public List<String> getVertices(String jobId) {
+        JsonNode jsonNode = getJobInfo(jobId);
+        if (jsonNode == null) {
+            return null;
+        }
+        List<String> arrayList = new ArrayList<>();
+        jsonNode.get("vertices").forEach(node -> {
+            if (Asserts.isNull(node)) {
+                return;
+            }
+            String id = node.get("id").asText();
+            arrayList.add(id);
+        });
+        return arrayList;
     }
 }

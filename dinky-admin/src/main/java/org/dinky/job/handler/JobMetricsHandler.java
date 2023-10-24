@@ -53,7 +53,8 @@ public class JobMetricsHandler {
      */
     public static void writeFlinkMetrics(JobInfoDetail jobInfoDetail) {
         Map<String, Map<String, String>> customMetricsList = jobInfoDetail.getCustomMetricsMap();
-        String[] jobManagerUrls = jobInfoDetail.getCluster().getJobManagerHost().split(",");
+        String[] jobManagerUrls =
+                jobInfoDetail.getClusterInstance().getJobManagerHost().split(",");
         String jobId = jobInfoDetail.getInstance().getJid();
 
         // Create a CompletableFuture array for concurrent acquisition of indicator data
@@ -65,7 +66,7 @@ public class JobMetricsHandler {
         AsyncUtil.waitAll(array);
 
         MetricsVO metricsVO = new MetricsVO(customMetricsList, jobId, LocalDateTime.now());
-        MetricsContextHolder.sendAsync(metricsVO);
+        MetricsContextHolder.getInstances().sendAsync(metricsVO.getModel(), metricsVO);
     }
 
     /**

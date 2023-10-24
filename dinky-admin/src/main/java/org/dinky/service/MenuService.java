@@ -44,7 +44,8 @@ public interface MenuService extends ISuperService<Menu> {
      * @param user login user
      * @return {@link List<Menu>} menu list
      */
-    public List<Menu> selectMenuList(User user);
+    @Deprecated
+    List<Menu> selectMenuList(User user);
 
     /**
      * query menu list by menu and user
@@ -52,8 +53,9 @@ public interface MenuService extends ISuperService<Menu> {
      * @param menu menu
      * @return {@link List<Menu>} menu list
      */
-    public List<Menu> selectMenuList(Menu menu, User user);
+    List<Menu> selectMenuList(Menu menu, User user);
 
+    @Deprecated
     List<Menu> listMenusBySuperFlag(Integer superFlag);
 
     /**
@@ -70,6 +72,7 @@ public interface MenuService extends ISuperService<Menu> {
      * @param user login user
      * @return {@link Menu} menu
      */
+    @Deprecated
     List<Menu> selectMenuTreeByUserId(User user);
 
     /**
@@ -127,4 +130,11 @@ public interface MenuService extends ISuperService<Menu> {
      * @return permission List
      */
     Set<String> selectMenuPermsByRoleId(Integer roleId);
+
+    /**
+     * save or update menu
+     * @param menu
+     * @return
+     */
+    boolean saveOrUpdateMenu(Menu menu);
 }

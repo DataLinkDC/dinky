@@ -17,16 +17,32 @@
  *
  */
 
+import FlinkDag from '@/components/FlinkDag';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import FlinkTable from '@/pages/DevOps/JobDetail/JobOverview/components/FlinkTable';
 import JobDesc from '@/pages/DevOps/JobDetail/JobOverview/components/JobDesc';
+import { ProCard } from '@ant-design/pro-components';
+import { Empty } from 'antd';
 
 const JobConfigTab = (props: JobProps) => {
   const { jobDetail } = props;
+  const job = jobDetail?.jobDataDto?.job;
 
   return (
     <>
       <JobDesc jobDetail={jobDetail} />
+      <ProCard
+        style={{
+          height: '40vh'
+        }}
+      >
+        {job ? (
+          <FlinkDag job={job} checkPoints={jobDetail.jobDataDto.checkpoints} />
+        ) : (
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        )}
+      </ProCard>
+
       <FlinkTable jobDetail={jobDetail} />
     </>
   );

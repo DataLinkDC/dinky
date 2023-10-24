@@ -17,94 +17,24 @@
  *
  */
 
-import { getCurrentData } from '@/pages/DataStudio/function';
-import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
-import { SWITCH_OPTIONS } from '@/services/constants';
-import { l } from '@/utils/intl';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { ProForm, ProFormDigit, ProFormGroup, ProFormSwitch } from '@ant-design/pro-components';
-import { useForm } from 'antd/es/form/Form';
+import { getCurrentTab } from '@/pages/DataStudio/function';
+import { StateType, TabsPageSubType } from '@/pages/DataStudio/model';
+import ExecuteConfigCommonSql from '@/pages/DataStudio/RightContainer/ExecuteConfig/CommonSql';
+import ExecuteConfigFlinkSql from '@/pages/DataStudio/RightContainer/ExecuteConfig/FlinkSql';
 import { connect } from 'umi';
 
 const ExecuteConfig = (props: any) => {
   const {
-    dispatch,
     tabs: { panes, activeKey }
   } = props;
-  const [form] = useForm();
-  const current = getCurrentData(panes, activeKey);
-
-  form.setFieldsValue(current);
-  const onValuesChange = (change: any, all: any) => {
-    for (let i = 0; i < panes.length; i++) {
-      if (panes[i].key === activeKey) {
-        for (const key in change) {
-          panes[i].params.taskData[key] = all[key];
-        }
-        break;
-      }
+  const current = getCurrentTab(panes, activeKey);
+  {
+    if (current?.subType === TabsPageSubType.flinkSql) {
+      return <ExecuteConfigFlinkSql />;
+    } else {
+      return <ExecuteConfigCommonSql />;
     }
-    dispatch({
-      type: STUDIO_MODEL.saveTabs,
-      payload: { ...props.tabs }
-    });
-  };
-
-  return (
-    <>
-      <ProForm
-        initialValues={{
-          maxRowNum: 100
-        }}
-        style={{ padding: '10px' }}
-        form={form}
-        submitter={false}
-        layout='vertical'
-        onValuesChange={onValuesChange}
-      >
-        <ProFormGroup>
-          <ProFormSwitch
-            label={l('pages.datastudio.label.execConfig.preview.result')}
-            name='useResult'
-            tooltip={{
-              title: l('pages.datastudio.label.execConfig.preview.result.tip'),
-              icon: <InfoCircleOutlined />
-            }}
-            {...SWITCH_OPTIONS()}
-          />
-
-          <ProFormSwitch
-            label={l('pages.datastudio.label.execConfig.changelog')}
-            name='useChangeLog'
-            tooltip={{
-              title: l('pages.datastudio.label.execConfig.changelog.tip'),
-              icon: <InfoCircleOutlined />
-            }}
-            {...SWITCH_OPTIONS()}
-          />
-        </ProFormGroup>
-        <ProFormGroup>
-          <ProFormSwitch
-            label={l('pages.datastudio.label.execConfig.autostop')}
-            name='useAutoCancel'
-            tooltip={{
-              title: l('pages.datastudio.label.execConfig.autostop.tip'),
-              icon: <InfoCircleOutlined />
-            }}
-            {...SWITCH_OPTIONS()}
-          />
-          <ProFormDigit
-            width={'xs'}
-            label={l('pages.datastudio.label.execConfig.maxrow')}
-            name='maxRowNum'
-            tooltip={l('pages.datastudio.label.execConfig.maxrow.tip')}
-            min={1}
-            max={9999}
-          />
-        </ProFormGroup>
-      </ProForm>
-    </>
-  );
+  }
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({

@@ -25,7 +25,6 @@ package org.dinky.constant;
  * @since 2021/5/25 15:51
  */
 public interface FlinkSQLConstant {
-
     /** 分隔符 */
     String SEPARATOR = ";\n";
     /** DDL 类型 */
@@ -34,12 +33,16 @@ public interface FlinkSQLConstant {
     String DML = "DML";
     /** DATASTREAM 类型 */
     String DATASTREAM = "DATASTREAM";
-    /** 片段 Fragments 标识 */
-    String FRAGMENTS = ":=";
 
-    /** 内置日期变量前缀 */
-    String INNER_DATETIME_KEY = "_CURRENT_DATE_";
+    /** The define identifier of FlinkSQL Variable */
+    String VARIABLES = ":=";
+
+    /** The define identifier of FlinkSQL Date Variable */
+    String INNER_DATE_KEY = "_CURRENT_DATE_";
+
+    /** The define identifier of FlinkSQL Timestamp Variable */
+    String INNER_TIMESTAMP_KEY = "_CURRENT_TIMESTAMP_";
 
     /** 内置日期变量格式 确定后不能修改 */
-    String INNER_DATETIME_FORMAT = "yyyyMMdd";
+    String INNER_DATE_FORMAT = "yyyy-MM-dd";
 }
