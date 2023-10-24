@@ -120,7 +120,8 @@ const ConsoleContent = (props: ConsoleProps) => {
           height={props.height - 53}
           language={'kotlin'}
           lineNumbers={'off'}
-          showFloatButton
+          //TODO 按钮显示有问题，先注释
+          // showFloatButton
         />
       </div>
     </div>
