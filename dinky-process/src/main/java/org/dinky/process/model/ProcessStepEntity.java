@@ -24,7 +24,7 @@ import org.dinky.process.enums.ProcessStatus;
 import org.dinky.process.enums.ProcessStepType;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,23 +40,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProcessStep {
-
-    private String name;
-    private ProcessStatus stepStatus;
+public class ProcessStepEntity {
+    private String key;
+    private String title;
+    private ProcessStatus status;
     private ProcessStepType type;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private long time;
     private StringBuilder log = new StringBuilder();
-    private StringBuilder errLog = new StringBuilder();
-    private LinkedHashMap<String, ProcessStep> childStepsMap;
+    private LinkedList<ProcessStepEntity> children;
 
     public void appendLog(String str) {
         log.append(str).append(CommonConstant.LineSep);
-    }
-
-    public void appendErrLog(String str) {
-        errLog.append(str).append(CommonConstant.LineSep);
     }
 }
