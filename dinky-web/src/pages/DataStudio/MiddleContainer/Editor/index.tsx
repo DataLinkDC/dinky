@@ -70,11 +70,12 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
   };
 
   return (
-    <Spin spinning={loading}>
+    <>
+      <Spin spinning={loading} delay={600}></Spin>
       <DiffModal diffs={diff} open={isModalOpen} fileName={currentData?.name} onUse={upDateTask} />
       <Editor
         width={'100%'}
-        height={'84vh'}
+        height={'100%'}
         value={currentTab?.params?.taskData?.statement}
         language={'sql'}
         options={{
@@ -124,7 +125,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
         }}
         theme={'vs-dark'}
       />
-    </Spin>
+    </>
   );
 };
 
