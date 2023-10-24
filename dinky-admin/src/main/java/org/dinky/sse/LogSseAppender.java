@@ -21,11 +21,11 @@ package org.dinky.sse;
 
 import org.dinky.aop.ProcessAspect;
 import org.dinky.context.ConsoleContextHolder;
-import org.dinky.process.enums.ProcessStepType;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -51,6 +51,10 @@ public class LogSseAppender extends AbstractAppender {
         super(name, filter, layout, ignoreExceptions, properties);
     }
 
+    public StringLayout getStringLayout() {
+        return (StringLayout) getLayout();
+    }
+
     /**
      * This method is called when a new log comes over, contextData is the data in the MDC,
      * set in {@link ProcessAspect} If contextData contains PROCESS_NAME and PROCESS_STEP,
@@ -63,9 +67,9 @@ public class LogSseAppender extends AbstractAppender {
         if (contextData.containsKey(ProcessAspect.PROCESS_NAME)
                 && contextData.containsKey(ProcessAspect.PROCESS_STEP)) {
             String processName = contextData.getValue(ProcessAspect.PROCESS_NAME);
-            String processStep = contextData.getValue(ProcessAspect.PROCESS_STEP);
-            ConsoleContextHolder.getInstances()
-                    .appendLog(processName, ProcessStepType.get(processStep), event.toString());
+            String processStepPid = contextData.getValue(ProcessAspect.PROCESS_STEP);
+            String log = getStringLayout().toSerializable(event);
+            ConsoleContextHolder.getInstances().appendLog(processName, processStepPid, log);
         }
     }
 
