@@ -33,15 +33,7 @@ import {
   getJobPlan,
   onLineTask
 } from '@/pages/DataStudio/HeaderContainer/service';
-import {
-  DataStudioTabsItemType,
-  MetadataTabsItemType,
-  StateType,
-  TabsPageSubType,
-  TabsPageType,
-  TaskDataType,
-  VIEW
-} from '@/pages/DataStudio/model';
+import { StateType, TabsPageSubType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { ConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
@@ -101,8 +93,12 @@ const HeaderContainer = (props: any) => {
   const [messageApi, messageContextHolder] = message.useMessage();
 
   // 检查是否开启 ds 配置 & 如果
-  const [enableDs] = useState<boolean>(dsConfig.some(
-      (item: BaseConfigProperties) => item.key === 'dolphinscheduler.settings.enable' && item.value === 'true'));
+  const [enableDs] = useState<boolean>(
+    dsConfig.some(
+      (item: BaseConfigProperties) =>
+        item.key === 'dolphinscheduler.settings.enable' && item.value === 'true'
+    )
+  );
 
   const currentData = getCurrentData(panes, activeKey);
   const currentTab = getCurrentTab(panes, activeKey);
@@ -110,7 +106,6 @@ const HeaderContainer = (props: any) => {
   useEffect(() => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
   }, []);
-
 
   const handleSave = async () => {
     const saved = await handlePutDataJson('/api/task', currentData);
@@ -144,8 +139,8 @@ const HeaderContainer = (props: any) => {
     if (!saved) return;
 
     const res = await executeSql(
-        l('pages.datastudio.editor.submitting', '', {jobName: currentData.name}),
-        currentData.id
+      l('pages.datastudio.editor.submitting', '', { jobName: currentData.name }),
+      currentData.id
     );
 
     if (!res) return;
@@ -157,7 +152,7 @@ const HeaderContainer = (props: any) => {
     });
     messageApi.success(l('pages.datastudio.editor.exec.success'));
     currentData.status = JOB_STATUS.RUNNING;
-    saveTabs({...props.tabs});
+    saveTabs({ ...props.tabs });
   };
 
   const handleChangeJobLife = async () => {
