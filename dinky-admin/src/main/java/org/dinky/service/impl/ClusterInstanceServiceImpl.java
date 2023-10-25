@@ -68,6 +68,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public String getJobManagerAddress(ClusterInstance clusterInstance) {
+        //TODO 这里判空逻辑有问题，clusterInstance有可能为null
         Assert.check(clusterInstance);
         FlinkClusterInfo info =
                 FlinkCluster.testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
