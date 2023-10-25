@@ -17,14 +17,15 @@
  *
  */
 
-package org.dinky.process.model;
+package org.dinky.data.model;
 
 import org.dinky.data.constant.CommonConstant;
-import org.dinky.process.enums.ProcessStatus;
-import org.dinky.process.enums.ProcessStepType;
+import org.dinky.data.enums.ProcessStatus;
+import org.dinky.data.enums.ProcessStepType;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,7 +50,7 @@ public class ProcessStepEntity {
     private LocalDateTime endTime;
     private long time;
     private StringBuilder log = new StringBuilder();
-    private LinkedList<ProcessStepEntity> children;
+    private CopyOnWriteArrayList<ProcessStepEntity> children;
 
     public void appendLog(String str) {
         log.append(str).append(CommonConstant.LineSep);
