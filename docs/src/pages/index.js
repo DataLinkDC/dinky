@@ -32,7 +32,7 @@ function HomepageHeader() {
         <header className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className={clsx("container")}>
                 <div className={clsx("desc", styles.box_container)}>
-                    <div className={clsx("desc_left", styles.box)}>
+                    <div className={clsx("desc_left", styles.box,styles.descLeft)}>
                         <h1 className="hero__title">{siteConfig.title}</h1>
                         <p className="hero__subtitle">{siteConfig.tagline}</p>
                         <p className="hero_desc"> &nbsp;&nbsp;&nbsp;&nbsp;
@@ -41,40 +41,41 @@ function HomepageHeader() {
                             实时即未来，批流为一体。<br/><br/>
                         </p>
                         <div className={styles.buttons}>
+                            <div className={styles.buttonLink}>
                             <Link
                                 className="button button--secondary button--lg"
-                                style={{borderRadius: '2rem', border: '1px solid #42b983'}}
                                 to="https://github.com/DataLinkDC/dlink">
                                 GitHub
                             </Link>
-                            &nbsp;&nbsp;
+                            </div>
+                            <div className={styles.buttonLink}>
                             <Link
                                 className="button button--secondary button--lg"
-                                style={{borderRadius: '2rem', border: '1px solid #42b983'}}
                                 to="https://gitee.com/mirrors/Dlink">
                                 Gitee
                             </Link>
-                            &nbsp;&nbsp;
-                            <Link
-                                className="button button--secondary button--lg"
-                                style={{backgroundColor: '#42b983', borderRadius: '2rem', border: '1px solid #42b983'}}
-                                to="/docs/next/get_started/quick_experience">
-                                Quick Start
-                            </Link>
-                            &nbsp;&nbsp;
-                            <span className={styles.indexCtasGitHubButtonWrapper}>
-                           <iframe
-                               className={styles.indexCtasGitHubButton}
-                               src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dlink&amp;type=star&amp;count=true&amp;size=large"
-                               width={160}
-                               height={30}
-                               title="GitHub Stars"
-                           />
-                             </span>
+                            </div>
+
+                            <div className={styles.buttonLink}>
+                               <Link
+                                   className="button button--secondary button--lg"
+                                   style={{backgroundColor: '#42b983'}}
+                                   to="/docs/next/get_started/quick_experience">
+                                   Quick Start
+                               </Link>
+                            </div>
+                            <div className={styles.buttonLink}>
+                               <iframe style={{width:"100px",height:"30px"}}
+                                    src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dlink&amp;type=star&amp;count=true&amp;size=large"
+                                    title="GitHub Stars"
+                                />
+                            </div>
                         </div>
                     </div>
-                    <div className={clsx("desc_right", styles.box)} style={{marginTop:"20px"}}>
-                        <img src="home.png" className="fly_svg"></img>
+                    <div className={clsx("desc_right", styles.box,styles.descRight)}>
+                        <div>
+                           <img src="home.png" className="fly_svg"></img>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -90,15 +91,15 @@ function Structure() {
             <div className={clsx("image", styles.box)}><img
                 src="http://www.aiwenmo.com/dinky/docs/zh-CN/concept_architecture/architecture/dinky.png"
                 alt="structure"/></div>
-            <div className={clsx("text", styles.box)}>
-                <div className="title">
+            <div className={clsx("text", styles.box,styles.structureText)}>
+                <div className={clsx("title", styles.box,styles.structureText)}>
                     {siteConfig.customFields.structTitle}
                 </div>
                 <br/>
                 {/*<div className="sub-title">*/}
                 {/*    {siteConfig.customFields.structSubTitle}*/}
                 {/*</div><br/>*/}
-                <div className={clsx("description", styles.box)}>
+                <div className={clsx("description", styles.box,styles.structureDesc)}>
                     {/*{siteConfig.customFields.structDescription}*/}
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     Dinky 是一个开箱即用的一站式实时计算平台,以 Apache Flink 为基础，连接 OLAP 和数据湖等众多框架,致力于流批一体和湖仓一体的建设与实践。

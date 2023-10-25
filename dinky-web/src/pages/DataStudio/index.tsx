@@ -19,7 +19,6 @@ import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import { FullScreenProvider, useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
-import { getConsoleData } from '@/pages/DataStudio/BottomContainer/Console/service';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import { mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
@@ -53,7 +52,6 @@ const DataStudio = (props: any) => {
     saveDataBase,
     saveProject,
     updateToolContentHeight,
-    updateBottomConsole,
     saveSession,
     saveEnv,
     updateCenterContentHeight,
@@ -102,18 +100,16 @@ const DataStudio = (props: any) => {
   const loadData = async () => {
     Promise.all([
       getDataBase(),
-      getConsoleData(),
       getTaskData(),
       getSessionData(),
       getEnvData(),
       getClusterConfigurationData()
     ]).then((res) => {
       saveDataBase(res[0]);
-      updateBottomConsole(res[1]);
-      saveProject(res[2]);
-      saveSession(res[3]);
-      saveEnv(res[4]);
-      saveClusterConfiguration(res[5]);
+      saveProject(res[1]);
+      saveSession(res[2]);
+      saveEnv(res[3]);
+      saveClusterConfiguration(res[4]);
     });
   };
 
