@@ -99,31 +99,19 @@ const HeaderContainer = (props: any) => {
 
   const [modal, contextHolder] = Modal.useModal();
   const [messageApi, messageContextHolder] = message.useMessage();
-  const [enableDs, setEnableDs] = useState<boolean>(false);
-  const [currentData, setCurrentData] = useState<TaskDataType | undefined>(undefined);
-  const [currentTab, setCurrentTab] = useState<
-    DataStudioTabsItemType | MetadataTabsItemType | undefined
-  >(undefined);
+  // 检查是否开启 ds 配置 & 如果
+
+  const [enableDs] =
+      useState<boolean>(dsConfig.some(
+          (item: BaseConfigProperties) => item.key === 'dolphinscheduler.settings.enable' && item.value === 'true'));
+
+  const currentData = getCurrentData(panes, activeKey);
+  const currentTab = getCurrentTab(panes, activeKey);
 
   useEffect(() => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
   }, []);
 
-  useEffect(() => {
-    setCurrentTab(getCurrentTab(panes, activeKey));
-    setCurrentData(getCurrentData(panes, activeKey));
-  }, [panes, activeKey]);
-
-  useEffect(() => {
-    // 检查是否开启 ds 配置 & 如果
-    if (!dsConfig) {
-      dsConfig.foreach((item: BaseConfigProperties) => {
-        if (item.key === 'dolphinscheduler.settings.enable') {
-          setEnableDs(item.value === 'true');
-        }
-      });
-    }
-  }, [dsConfig]);
 
   const handleSave = async () => {
     const saved = await handlePutDataJson('/api/task', currentData);
@@ -154,23 +142,23 @@ const HeaderContainer = (props: any) => {
   const handlerSubmit = async () => {
     if (!currentData) return;
     const saved = currentData.step == JOB_LIFE_CYCLE.ONLINE ? true : await handleSave();
-    if (saved) {
-      const res = await executeSql(
-        l('pages.datastudio.editor.submitting', '', { jobName: currentData.name }),
-        currentData.id
-      );
-      if (!res) return;
+    if (!saved) return;
 
-      updateJobRunningMsg({
-        taskId: currentData.id,
-        jobName: currentData.name,
-        jobState: res.datas.status,
-        runningLog: res.msg
-      });
-      messageApi.success(l('pages.datastudio.editor.exec.success'));
-      currentData.status = JOB_STATUS.RUNNING;
-      saveTabs({ ...props.tabs });
-    }
+    const res = await executeSql(
+        l('pages.datastudio.editor.submitting', '', {jobName: currentData.name}),
+        currentData.id
+    );
+
+    if (!res) return;
+    updateJobRunningMsg({
+      taskId: currentData.id,
+      jobName: currentData.name,
+      jobState: res.datas.status,
+      runningLog: res.msg
+    });
+    messageApi.success(l('pages.datastudio.editor.exec.success'));
+    currentData.status = JOB_STATUS.RUNNING;
+    saveTabs({...props.tabs});
   };
 
   const handleChangeJobLife = async () => {
