@@ -34,7 +34,6 @@
         <module>dinky-client</module>
         <module>dinky-cdc</module>
         <module>dinky-catalog</module>
-        <module>dinky-process</module>
         <module>dinky-gateway</module>
         <module>dinky-function</module>
         <module>dinky-metadata</module>
@@ -641,11 +640,6 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-scheduler</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
-                <artifactId>dinky-process</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
