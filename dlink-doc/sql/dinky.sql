@@ -606,7 +606,7 @@ CREATE TABLE `dlink_task_version` (
                                       `task_id` int NOT NULL COMMENT 'task ID ',
                                       `tenant_id` int NOT NULL DEFAULT '1' COMMENT 'tenant id',
                                       `version_id` int NOT NULL COMMENT 'version ID ',
-                                      `statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'flink sql statement',
+                                      `statement` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'flink sql statement',
                                       `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'version name',
                                       `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'alisa',
                                       `dialect` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'dialect',
