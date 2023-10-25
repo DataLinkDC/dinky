@@ -99,11 +99,10 @@ const HeaderContainer = (props: any) => {
 
   const [modal, contextHolder] = Modal.useModal();
   const [messageApi, messageContextHolder] = message.useMessage();
-  // 检查是否开启 ds 配置 & 如果
 
-  const [enableDs] =
-      useState<boolean>(dsConfig.some(
-          (item: BaseConfigProperties) => item.key === 'dolphinscheduler.settings.enable' && item.value === 'true'));
+  // 检查是否开启 ds 配置 & 如果
+  const [enableDs] = useState<boolean>(dsConfig.some(
+      (item: BaseConfigProperties) => item.key === 'dolphinscheduler.settings.enable' && item.value === 'true'));
 
   const currentData = getCurrentData(panes, activeKey);
   const currentTab = getCurrentTab(panes, activeKey);
