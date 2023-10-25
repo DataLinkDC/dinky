@@ -25,6 +25,7 @@ import org.dinky.context.TenantContextHolder;
 import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.dto.AbstractStatementDTO;
+import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.JobLifeCycle;
@@ -196,8 +197,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJob(TaskDTO task) throws Exception {
-        JobResult jobResult;
-        jobResult = BaseTask.getTask(task).execute();
+        JobResult jobResult = BaseTask.getTask(task).execute();
         log.info("execute job finished,status is {}", jobResult.getStatus());
         return jobResult;
     }
@@ -238,7 +238,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             task.setVariables(fragmentVariableService.listEnabledVariables());
         }
         int envId = Optional.ofNullable(task.getEnvId()).orElse(-1);
-        if (envId >= 0) {
+        if (envId > 0) {
             TaskDTO envTask = this.getTaskInfoById(task.getEnvId());
             if (Asserts.isNotNull(envTask) && Asserts.isNotNullString(envTask.getStatement())) {
                 sql += envTask.getStatement() + CommonConstant.LineSep;
@@ -275,6 +275,34 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
         } else {
             log.error("Job Submit failed, error: " + jobResult.getError());
+        }
+        return jobResult;
+    }
+
+    @Override
+    @ProcessStep(type = ProcessStepType.SUBMIT_TASK)
+    public JobResult debugTask(DebugDTO debugDTO) throws Exception {
+        initTenantByTaskId(debugDTO.getId());
+
+        TaskDTO taskDTO = this.getTaskInfoById(debugDTO.getId());
+        taskDTO.setUseResult(debugDTO.isUseResult());
+        taskDTO.setUseChangeLog(debugDTO.isUseChangeLog());
+        taskDTO.setUseAutoCancel(debugDTO.isUseAutoCancel());
+        taskDTO.setMaxRowNum(debugDTO.getMaxRowNum());
+        // 注解自调用会失效，这里通过获取对象方法绕过此限制
+        TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
+        taskServiceBean.preCheckTask(taskDTO);
+
+        JobResult jobResult = taskServiceBean.executeJob(taskDTO);
+
+        if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
+            log.info("Job debug success");
+            Task task = new Task(debugDTO.getId(), jobResult.getJobInstanceId());
+            if (!this.updateById(task)) {
+                throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
+            }
+        } else {
+            log.error("Job debug failed, error: " + jobResult.getError());
         }
         return jobResult;
     }

@@ -85,7 +85,8 @@ public enum Status {
     MOVE_FAILED(9028, "move.failed"),
     TEST_CONNECTION_SUCCESS(9029, "test.connection.success"),
     TEST_CONNECTION_FAILED(9030, "test.connection.failed"),
-
+    DEBUG_SUCCESS(9031, "debug.success"),
+    DEBUG_FAILED(9032, "debug.failed"),
     /**
      * user,tenant,role
      */

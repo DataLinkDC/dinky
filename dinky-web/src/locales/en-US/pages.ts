@@ -298,9 +298,12 @@ export default {
    * */
 
   'pages.datastudio.editor.check': 'Check current FlinkSql',
+  'pages.datastudio.editor.debug': 'Debug',
   'pages.datastudio.editor.exec': 'Execute',
-  'pages.datastudio.editor.exec.error': 'Task [jobName}] execution failed',
+  'pages.datastudio.editor.exec.error': 'Task [{jobName}] execution failed',
+  'pages.datastudio.editor.debug.error': 'Task [{jobName}] debug failed',
   'pages.datastudio.editor.exec.success': 'Execution succeeded',
+  'pages.datastudio.editor.debug.success': 'Debug succeeded',
   'pages.datastudio.editor.execute.warn':
     'The execution mode of this task is [{type}], which does not support SQL query, please save it manually and use the button on the right - job submission',
   'pages.datastudio.editor.explan': 'Get the current FlinkSql execution graph',
@@ -309,6 +312,7 @@ export default {
   'pages.datastudio.editor.stop.job': 'Stop job',
   'pages.datastudio.editor.stop.jobConfirm': 'Are you sure to stop the job [{jobName}]? ',
   'pages.datastudio.editor.submitting': 'The new task [{jobName}] is executing',
+  'pages.datastudio.editor.debugging': 'The new task [{jobName}] is debugging',
   'pages.datastudio.editor.onlyread':
     'Task has been published, modification is prohibited, please go offline first',
   'pages.datastudio.editor.notsave': 'Current changes are not saved! ',
