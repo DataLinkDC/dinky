@@ -70,6 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -239,13 +240,16 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
 
         List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
         logger.info("Create {} FlinkSQL insert into successful...", tableName);
+        if (operations.isEmpty()) {
+            return operations;
+        }
+
         try {
-            if (!operations.isEmpty()) {
-                Operation operation = operations.get(0);
-                if (operation instanceof ModifyOperation) {
-                    modifyOperations.add((ModifyOperation) operation);
-                }
+            Operation operation = operations.get(0);
+            if (operation instanceof ModifyOperation) {
+                modifyOperations.add((ModifyOperation) operation);
             }
+
         } catch (Exception e) {
             logger.error("Translate to plan occur exception: {}", e.toString());
             throw e;
@@ -445,53 +449,35 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     @Override
     public String getSinkSchemaName(Table table) {
-        String schemaName = table.getSchema();
-        if (config.getSink().containsKey("sink.db")) {
-            schemaName = config.getSink().get("sink.db");
-        }
-        return schemaName;
+        return config.getSink().getOrDefault("sink.db", table.getSchema());
     }
 
     @Override
     public String getSinkTableName(Table table) {
         String tableName = table.getName();
-        if (config.getSink().containsKey("table.prefix.schema")
-                && (Boolean.parseBoolean(config.getSink().get("table.prefix.schema")))) {
+        Map<String, String> sink = config.getSink();
+        if (Boolean.parseBoolean(sink.get("table.prefix.schema"))) {
             tableName = table.getSchema() + "_" + tableName;
         }
 
-        if (config.getSink().containsKey("table.prefix")) {
-            tableName = config.getSink().get("table.prefix") + tableName;
-        }
+        tableName = sink.getOrDefault("table.prefix", "") + tableName + sink.getOrDefault("table.suffix", "");
 
-        if (config.getSink().containsKey("table.suffix")) {
-            tableName = tableName + config.getSink().get("table.suffix");
-        }
-
-        if (config.getSink().containsKey("table.lower")
-                && (Boolean.parseBoolean(config.getSink().get("table.lower")))) {
+        if (Boolean.parseBoolean(sink.get("table.lower"))) {
             tableName = tableName.toLowerCase();
         }
 
-        if (config.getSink().containsKey("table.upper")
-                && (Boolean.parseBoolean(config.getSink().get("table.upper")))) {
+        if (Boolean.parseBoolean(sink.get("table.upper"))) {
             tableName = tableName.toUpperCase();
         }
         return tableName;
     }
 
     protected List<String> getPKList(Table table) {
-        List<String> pks = new ArrayList<>();
         if (Asserts.isNullCollection(table.getColumns())) {
-            return pks;
+            return new ArrayList<>();
         }
 
-        for (Column column : table.getColumns()) {
-            if (column.isKeyFlag()) {
-                pks.add(column.getName());
-            }
-        }
-        return pks;
+        return table.getColumns().stream().filter(Column::isKeyFlag).map(Column::getName).collect(Collectors.toList());
     }
 
     protected ZoneId getSinkTimeZone() {

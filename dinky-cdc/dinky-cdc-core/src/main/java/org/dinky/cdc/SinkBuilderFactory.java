@@ -41,7 +41,8 @@ import org.slf4j.LoggerFactory;
 public class SinkBuilderFactory {
     private static final Logger logger = LoggerFactory.getLogger(SinkBuilderFactory.class);
 
-    private SinkBuilderFactory() {}
+    private SinkBuilderFactory() {
+    }
 
     private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP = getPlusSinkBuilder();
 
@@ -51,9 +52,9 @@ public class SinkBuilderFactory {
             throw new FlinkClientException("set Sink connector。");
         }
         return SINK_BUILDER_MAP
-                .getOrDefault(config.getSink().get("connector"), SQLSinkBuilder::new)
-                .get()
-                .create(config);
+            .getOrDefault(config.getSink().get("connector"), SQLSinkBuilder::new)
+            .get()
+            .create(config);
     }
 
     private static Map<String, Supplier<SinkBuilder>> getPlusSinkBuilder() {
@@ -64,20 +65,12 @@ public class SinkBuilderFactory {
         final ServiceLoader<SinkBuilder> loader = ServiceLoader.load(SinkBuilder.class);
 
         final List<SinkBuilder> sinkBuilders = new ArrayList<>();
-        final Iterator<SinkBuilder> factories = loader.iterator();
-        while (factories.hasNext()) {
-            try {
-                final SinkBuilder factory = factories.next();
-                if (factory != null) {
-                    sinkBuilders.add(factory);
-                }
-            } catch (Throwable e) {
-                logger.warn("Could not load service provider class : {}", e.getMessage());
-            }
+        for (SinkBuilder factory : loader) {
+            sinkBuilders.add(factory);
         }
 
         Map<String, Supplier<SinkBuilder>> plusSinkBuilder = sinkBuilders.stream()
-                .collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, SinkBuilderFactory::getSupplier));
+            .collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, SinkBuilderFactory::getSupplier));
         map.putAll(plusSinkBuilder);
         return map;
     }
