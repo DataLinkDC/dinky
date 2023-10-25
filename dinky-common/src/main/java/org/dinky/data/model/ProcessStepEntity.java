@@ -24,7 +24,6 @@ import org.dinky.data.enums.ProcessStatus;
 import org.dinky.data.enums.ProcessStepType;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.AllArgsConstructor;
