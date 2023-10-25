@@ -1975,7 +1975,7 @@ CREATE TABLE "public"."dinky_metrics" (
                                           "position" int4,
                                           "show_type" varchar(255) COLLATE "pg_catalog"."default",
                                           "show_size" varchar(255) COLLATE "pg_catalog"."default",
-                                          "title" varchar(255) COLLATE "pg_catalog"."default",
+                                          "title" text COLLATE "pg_catalog"."default",
                                           "layout_name" varchar(255) COLLATE "pg_catalog"."default",
                                           "create_time" timestamp(6) NOT null,
                                           "update_time" timestamp(6) NOT null,

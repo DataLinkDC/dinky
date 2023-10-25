@@ -31,6 +31,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { Navigate } from 'umi';
 import { default as defaultSettings, default as Settings } from '../config/defaultSettings';
+import { FullScreenProvider } from './hooks/useEditor';
 import { errorConfig } from './requestErrorConfig';
 import { getDataByParamsReturnResult } from './services/BusinessCrud';
 import { API } from './services/data';
@@ -114,6 +115,39 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+  console.log(initialState);
+  const fullscreen = initialState?.fullscreen;
+
+  const defaultSettings = {
+    onPageChange: () => {
+      const { location } = history;
+      // 如果没有登录，重定向到 login
+      if (!initialState?.currentUser && location.pathname !== loginPath) {
+        history.push(loginPath);
+      }
+    },
+    // 自定义 403 页面
+    unAccessible: <UnAccessible />,
+    // 增加一个 loading 的状态
+    childrenRender: (children) => {
+      return initialState?.loading ? (
+        <PageLoading />
+      ) : (
+        <AccessContextProvider currentUser={initialState?.currentUser}>
+          <FullScreenProvider>{children}</FullScreenProvider>
+        </AccessContextProvider>
+      );
+    }
+  };
+
+  if (fullscreen) {
+    return {
+      ...initialState?.settings,
+      siderWidth: 0,
+      ...defaultSettings,
+      layout: 'side'
+    };
+  }
   return {
     headerTitleRender: () => {
       // 重新对 title 的设置进行设置
@@ -135,25 +169,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         theme === THEME.light || undefined ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)'
     },*/
     isChildrenLayout: true,
-    onPageChange: () => {
-      const { location } = history;
-      // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
-      }
-    },
-    // 自定义 403 页面
-    unAccessible: <UnAccessible />,
-    // 增加一个 loading 的状态
-    childrenRender: (children) => {
-      return initialState?.loading ? (
-        <PageLoading />
-      ) : (
-        <AccessContextProvider currentUser={initialState?.currentUser}>
-          {children}
-        </AccessContextProvider>
-      );
-    },
+    ...defaultSettings,
     ...initialState?.settings
   };
 };

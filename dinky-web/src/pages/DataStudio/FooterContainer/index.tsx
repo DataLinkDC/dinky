@@ -1,7 +1,7 @@
 import useThemeValue from '@/hooks/useThemeValue';
 import JobRunningModal from '@/pages/DataStudio/FooterContainer/JobRunningModal';
 import { getCurrentTab } from '@/pages/DataStudio/function';
-import { StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import { StateType,TabsPageType,VIEW} from '@/pages/DataStudio/model';
 import { getSseData } from '@/services/api';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
