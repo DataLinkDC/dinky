@@ -22,12 +22,14 @@ package org.dinky.service.impl;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.context.TenantContextHolder;
+import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.dto.AbstractStatementDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
+import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
@@ -65,8 +67,6 @@ import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
 import org.dinky.mapper.TaskMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.process.annotations.ProcessStep;
-import org.dinky.process.enums.ProcessStepType;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.ClusterConfigurationService;
@@ -238,7 +238,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             task.setVariables(fragmentVariableService.listEnabledVariables());
         }
         int envId = Optional.ofNullable(task.getEnvId()).orElse(-1);
-        if (envId != -1) {
+        if (envId >= 0) {
             TaskDTO envTask = this.getTaskInfoById(task.getEnvId());
             if (Asserts.isNotNull(envTask) && Asserts.isNotNullString(envTask.getStatement())) {
                 sql += envTask.getStatement() + CommonConstant.LineSep;

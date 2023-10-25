@@ -39,7 +39,7 @@ export default () => {
     const topics: string[] = [];
     subscriberRef.current.forEach((sub) => topics.push(...sub.topic));
     const para = { sessionKey: uuidRef.current, topics: topics };
-    await postAll('api/sse/subscribeTopic', para);
+    await postAll('api/sse/subscribeTopic', para).catch(e=>ErrorMessage(e))
   };
 
   const reconnectSse = () => {
@@ -54,7 +54,7 @@ export default () => {
 
   useEffect(() => {
     if (eventSource) {
-      eventSource.onopen = () => subscribe();
+      eventSource.onopen = () => setTimeout(()=>subscribe(),1000);
       eventSource.onmessage = (e) => {
         try {
           const data: SseData = JSON.parse(e.data);

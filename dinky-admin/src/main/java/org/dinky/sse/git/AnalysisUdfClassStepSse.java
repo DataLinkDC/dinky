@@ -20,9 +20,9 @@
 package org.dinky.sse.git;
 
 import org.dinky.data.dto.GitAnalysisJarDTO;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.GitProject;
 import org.dinky.function.util.UDFUtil;
-import org.dinky.process.exception.DinkyException;
 import org.dinky.sse.StepSse;
 
 import java.io.File;

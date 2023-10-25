@@ -23,6 +23,7 @@ import org.dinky.data.dto.AbstractStatementDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.JobLifeCycle;
+import org.dinky.data.exception.ExcuteException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
@@ -33,7 +34,6 @@ import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
 import org.dinky.mybatis.service.ISuperService;
-import org.dinky.process.exception.ExcuteException;
 
 import java.util.List;
 

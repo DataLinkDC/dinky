@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.compiler.CustomStringScalaCompiler;
@@ -32,7 +33,6 @@ import org.dinky.function.pool.UdfCodePool;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.pool.ClassEntity;
 import org.dinky.pool.ClassPool;
-import org.dinky.process.exception.DinkyException;
 
 import org.apache.flink.client.python.PythonFunctionFactory;
 import org.apache.flink.configuration.Configuration;
