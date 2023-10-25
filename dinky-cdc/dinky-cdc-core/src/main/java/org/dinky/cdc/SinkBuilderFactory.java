@@ -28,7 +28,6 @@ import org.dinky.exception.FlinkClientException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -41,8 +40,7 @@ import org.slf4j.LoggerFactory;
 public class SinkBuilderFactory {
     private static final Logger logger = LoggerFactory.getLogger(SinkBuilderFactory.class);
 
-    private SinkBuilderFactory() {
-    }
+    private SinkBuilderFactory() {}
 
     private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP = getPlusSinkBuilder();
 
@@ -52,9 +50,9 @@ public class SinkBuilderFactory {
             throw new FlinkClientException("set Sink connector。");
         }
         return SINK_BUILDER_MAP
-            .getOrDefault(config.getSink().get("connector"), SQLSinkBuilder::new)
-            .get()
-            .create(config);
+                .getOrDefault(config.getSink().get("connector"), SQLSinkBuilder::new)
+                .get()
+                .create(config);
     }
 
     private static Map<String, Supplier<SinkBuilder>> getPlusSinkBuilder() {
@@ -70,7 +68,7 @@ public class SinkBuilderFactory {
         }
 
         Map<String, Supplier<SinkBuilder>> plusSinkBuilder = sinkBuilders.stream()
-            .collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, SinkBuilderFactory::getSupplier));
+                .collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, SinkBuilderFactory::getSupplier));
         map.putAll(plusSinkBuilder);
         return map;
     }

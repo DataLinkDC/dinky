@@ -477,7 +477,10 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             return new ArrayList<>();
         }
 
-        return table.getColumns().stream().filter(Column::isKeyFlag).map(Column::getName).collect(Collectors.toList());
+        return table.getColumns().stream()
+                .filter(Column::isKeyFlag)
+                .map(Column::getName)
+                .collect(Collectors.toList());
     }
 
     protected ZoneId getSinkTimeZone() {
