@@ -19,11 +19,20 @@
 
 package org.dinky.executor;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.extra.expression.engine.jexl.JexlEngine;
+import static java.lang.String.format;
+import static org.apache.flink.util.Preconditions.checkArgument;
+import static org.apache.flink.util.Preconditions.checkNotNull;
+
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkSQLConstant;
+
+import org.apache.flink.table.api.DataTypes;
+import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.catalog.exceptions.CatalogException;
+import org.apache.flink.types.Row;
+import org.apache.flink.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,17 +40,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.flink.table.api.DataTypes;
-import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.catalog.exceptions.CatalogException;
-import org.apache.flink.types.Row;
-import org.apache.flink.util.StringUtils;
-import org.dinky.assertion.Asserts;
-import org.dinky.constant.FlinkSQLConstant;
-import static java.lang.String.format;
-import static org.apache.flink.util.Preconditions.checkArgument;
-import static org.apache.flink.util.Preconditions.checkNotNull;
+
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.extra.expression.engine.jexl.JexlEngine;
 
 /**
  * Flink Sql Variable Manager
@@ -65,8 +69,10 @@ public final class VariableManager {
      *          id -> IdUtil  -> to generate random uuid
      *          ...
      */
-    public static final Dict ENGINE_CONTEXT = Dict.create().set("random", RandomUtil.class).set("date", DateUtil.class).set("id", IdUtil.class);
-
+    public static final Dict ENGINE_CONTEXT = Dict.create()
+            .set("random", RandomUtil.class)
+            .set("date", DateUtil.class)
+            .set("id", IdUtil.class);
 
     public VariableManager() {
         variables = new HashMap<>();

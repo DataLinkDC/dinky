@@ -36,5 +36,4 @@ public interface FlinkSQLConstant {
 
     /** The define identifier of FlinkSQL Variable */
     String VARIABLES = ":=";
-
 }
