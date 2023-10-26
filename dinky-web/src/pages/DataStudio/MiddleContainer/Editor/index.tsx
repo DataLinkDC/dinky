@@ -17,6 +17,7 @@
  *
  */
 
+import { useEditor } from '@/hooks/useEditor';
 import { getCurrentTab } from '@/pages/DataStudio/function';
 import { TASK_VAR_FILTER } from '@/pages/DataStudio/MiddleContainer/Editor/constants';
 import DiffModal from '@/pages/DataStudio/MiddleContainer/Editor/DiffModal';
@@ -37,7 +38,6 @@ import { Button, Spin } from 'antd';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
 import React, { useState } from 'react';
 import { format } from 'sql-formatter';
-import { useEditor } from '@/hooks/useEditor';
 
 export type EditorProps = {
   taskId: number;
