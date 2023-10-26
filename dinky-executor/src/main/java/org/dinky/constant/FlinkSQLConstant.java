@@ -36,13 +36,4 @@ public interface FlinkSQLConstant {
 
     /** The define identifier of FlinkSQL Variable */
     String VARIABLES = ":=";
-
-    /** The define identifier of FlinkSQL Date Variable */
-    String INNER_DATE_KEY = "_CURRENT_DATE_";
-
-    /** The define identifier of FlinkSQL Timestamp Variable */
-    String INNER_TIMESTAMP_KEY = "_CURRENT_TIMESTAMP_";
-
-    /** 内置日期变量格式 确定后不能修改 */
-    String INNER_DATE_FORMAT = "yyyy-MM-dd";
 }

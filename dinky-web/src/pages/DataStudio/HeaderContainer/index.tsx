@@ -217,7 +217,7 @@ const HeaderContainer = (props: any) => {
   const routes: ButtonRoute[] = [
     // 保存按钮 icon
     {
-      hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's' || e.metaKey && e.key === 's',
+      hotKey: (e: KeyboardEvent) => (e.ctrlKey && e.key === 's') || (e.metaKey && e.key === 's'),
       hotKeyDesc: 'Ctrl/Command +S',
       isShow: projectCommonShow(currentTab?.type),
       icon: <SaveOutlined />,
@@ -237,7 +237,8 @@ const HeaderContainer = (props: any) => {
     {
       // 检查 sql按钮
       icon: <ScheduleOutlined />,
-      hotKey: (e: KeyboardEvent) => e.altKey && e.code === 'Digit2' || e.altKey && e.key === '@',
+      hotKey: (e: KeyboardEvent) =>
+        (e.altKey && e.code === 'Digit2') || (e.altKey && e.key === '@'),
       hotKeyDesc: 'Alt+2/@',
       title: l('pages.datastudio.editor.check'),
       click: () => showExplain(),

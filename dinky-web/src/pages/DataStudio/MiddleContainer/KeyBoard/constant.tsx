@@ -34,7 +34,7 @@ export const KEY_BOARD_MIDDLE = [
     key: 'alt3',
     label: 'Alt + 3',
     description: l('shortcut.key.beautify')
-  },
+  }
   // {
   //   key: 'f2',
   //   label: 'F2',
