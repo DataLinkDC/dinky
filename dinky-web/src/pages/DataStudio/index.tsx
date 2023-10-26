@@ -16,6 +16,7 @@
  */
 
 import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
+import { FullScreenProvider, useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
@@ -67,6 +68,8 @@ const DataStudio = (props: any) => {
   const app = getDvaApp(); // 获取dva的实例
   const persist = app._store.persist;
   const bottomHeight = bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
+
+  const { fullscreen } = useEditor();
 
   const getClientSize = () => ({
     width: document.documentElement.clientWidth,
@@ -197,49 +200,56 @@ const DataStudio = (props: any) => {
   );
 
   return (
-    <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
-      <PersistGate loading={null} persistor={persist}>
-        <div style={{ marginInline: -10, marginTop: -6, width: size.width }}>
-          <SecondHeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
-          <Layout
-            hasSider
-            style={{
-              minHeight: size.contentHeight,
-              maxHeight: size.contentHeight,
-              paddingInline: 0
-            }}
-          >
-            <Sider collapsed collapsedWidth={40}>
-              <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                {LeftTopMenu}
-                {LeftBottomMenu}
-              </div>
-            </Sider>
+      fullscreen ? (
+        <MiddleContainer />
+      ) : (
+        <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
+          <PersistGate loading={null} persistor={persist}>
+            <div style={{ marginInline: -10, marginTop: -6, width: size.width }}>
+              <SecondHeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
+              <Layout
+                hasSider
+                style={{
+                  minHeight: size.contentHeight,
+                  maxHeight: size.contentHeight,
+                  paddingInline: 0
+                }}
+              >
+                <Sider collapsed collapsedWidth={40}>
+                  <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                    {LeftTopMenu}
+                    {LeftBottomMenu}
+                  </div>
+                </Sider>
 
-            <Content style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-              <div style={{ display: 'flex' }}>
-                <LeftContainer size={size} />
-                <Content
-                  style={{
-                    width:
-                      size.width - 2 * VIEW.sideWidth - leftContainer.width - rightContainer.width
-                  }}
-                >
-                  <MiddleContainer />
+                <Content style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                  <div style={{ display: 'flex' }}>
+                    <LeftContainer size={size} />
+                    <Content
+                      style={{
+                        width:
+                          size.width -
+                          2 * VIEW.sideWidth -
+                          leftContainer.width -
+                          rightContainer.width
+                      }}
+                    >
+                      <MiddleContainer />
+                    </Content>
+                    <RightContainer size={size} bottomHeight={bottomHeight} />
+                  </div>
+                  {<BottomContainer size={size} />}
                 </Content>
-                <RightContainer size={size} bottomHeight={bottomHeight} />
-              </div>
-              {<BottomContainer size={size} />}
-            </Content>
 
-            <Sider collapsed collapsedWidth={40}>
-              {RightTopMenu}
-            </Sider>
-          </Layout>
-          {<FooterContainer token={token} />}
-        </div>
-      </PersistGate>
-    </PageContainer>
+                <Sider collapsed collapsedWidth={40}>
+                  {RightTopMenu}
+                </Sider>
+              </Layout>
+              {<FooterContainer token={token} />}
+            </div>
+          </PersistGate>
+        </PageContainer>
+      )
   );
 };
 

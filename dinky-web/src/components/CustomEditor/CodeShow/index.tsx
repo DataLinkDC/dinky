@@ -242,7 +242,7 @@ const CodeShow = (props: CodeShowFormProps) => {
           }
         }}
         onMount={editorDidMount}
-        theme={theme ? theme : convertCodeEditTheme()}
+        theme={convertCodeEditTheme()}
       />
 
       {/* float button */}

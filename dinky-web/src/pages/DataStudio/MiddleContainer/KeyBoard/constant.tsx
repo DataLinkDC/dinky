@@ -22,7 +22,7 @@ import { l } from '@/utils/intl';
 export const KEY_BOARD_MIDDLE = [
   {
     key: 'ctrls',
-    label: 'Ctrl + S',
+    label: 'Ctrl / Command + S',
     description: l('shortcut.key.save')
   },
   {
@@ -35,16 +35,16 @@ export const KEY_BOARD_MIDDLE = [
     label: 'Alt + 3',
     description: l('shortcut.key.beautify')
   },
-  {
-    key: 'f2',
-    label: 'F2',
-    description: l('shortcut.key.fullscreen')
-  },
-  {
-    key: 'esc',
-    label: 'Esc',
-    description: l('shortcut.key.fullscreenClose')
-  }
+  // {
+  //   key: 'f2',
+  //   label: 'F2',
+  //   description: l('shortcut.key.fullscreen')
+  // },
+  // {
+  //   key: 'esc',
+  //   label: 'Esc',
+  //   description: l('shortcut.key.fullscreenClose')
+  // }
 ];
 
 export const KEY_BOARD_RIGHT_SLIDER = [
