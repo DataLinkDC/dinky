@@ -17,26 +17,19 @@
  *
  */
 
-package org.dinky.process.exception;
+package org.dinky.data.annotations;
 
-/** @since 0.7.0 */
-public class DinkyException extends RuntimeException {
+import org.dinky.data.enums.ProcessStepType;
 
-    public DinkyException() {}
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    public DinkyException(String message) {
-        super(message);
-    }
-
-    public DinkyException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DinkyException(Throwable cause) {
-        super(cause);
-    }
-
-    public DinkyException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface ProcessStep {
+    ProcessStepType type();
 }

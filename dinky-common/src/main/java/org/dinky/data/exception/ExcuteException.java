@@ -17,20 +17,25 @@
  *
  */
 
-package org.dinky.process.annotations;
+package org.dinky.data.exception;
 
-import org.dinky.process.enums.ProcessType;
+public class ExcuteException extends Exception {
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+    public ExcuteException() {}
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-public @interface ExecuteProcess {
+    public ExcuteException(String message) {
+        super(message);
+    }
 
-    ProcessType type();
+    public ExcuteException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ExcuteException(Throwable cause) {
+        super(cause);
+    }
+
+    public ExcuteException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }

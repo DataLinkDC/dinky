@@ -19,8 +19,6 @@
 
 package org.dinky.data.exception;
 
-import org.dinky.process.exception.ExcuteException;
-
 public class SqlExplainExcepition extends ExcuteException {
     public SqlExplainExcepition(String message) {
         super(message);

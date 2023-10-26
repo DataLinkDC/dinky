@@ -17,10 +17,9 @@
  *
  */
 
-package org.dinky.process.enums;
+package org.dinky.data.enums;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.enums.Status;
 
 import lombok.Getter;
 

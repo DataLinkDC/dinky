@@ -20,14 +20,14 @@
 package org.dinky.context;
 
 import org.dinky.aop.ProcessAspect;
+import org.dinky.data.enums.ProcessStatus;
+import org.dinky.data.enums.ProcessStepType;
+import org.dinky.data.enums.ProcessType;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.exception.BusException;
-import org.dinky.process.enums.ProcessStatus;
-import org.dinky.process.enums.ProcessStepType;
-import org.dinky.process.enums.ProcessType;
-import org.dinky.process.exception.DinkyException;
-import org.dinky.process.model.ProcessEntity;
-import org.dinky.process.model.ProcessStepEntity;
+import org.dinky.data.exception.DinkyException;
+import org.dinky.data.model.ProcessEntity;
+import org.dinky.data.model.ProcessStepEntity;
 import org.dinky.utils.LogUtil;
 
 import org.apache.http.util.TextUtils;
@@ -36,11 +36,11 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.MDC;
 
@@ -129,7 +129,7 @@ public class ConsoleContextHolder {
                 .type(type)
                 .title(processName)
                 .startTime(LocalDateTime.now())
-                .children(new LinkedList<>())
+                .children(new CopyOnWriteArrayList<>())
                 .build();
         logPross.put(processName, entity);
         appendLog(processName, null, "Start Process:" + processName);
@@ -157,7 +157,7 @@ public class ConsoleContextHolder {
                 .type(type)
                 .title(type.getDesc().getMessage())
                 .log(new StringBuilder())
-                .children(new LinkedList<>())
+                .children(new CopyOnWriteArrayList<>())
                 .build();
 
         if (TextUtils.isEmpty(parentStepPid)) {
@@ -223,7 +223,7 @@ public class ConsoleContextHolder {
                 StrFormatter.format("Process Step {} exit with status:{}", step.getType(), status));
     }
 
-    private ProcessStepEntity getStepNode(String stepPid, LinkedList<ProcessStepEntity> stepsMap) {
+    private ProcessStepEntity getStepNode(String stepPid, CopyOnWriteArrayList<ProcessStepEntity> stepsMap) {
         ProcessStepEntity stepNode = findStepNode(stepPid, stepsMap);
         if (stepNode != null) {
             return stepNode;
@@ -240,7 +240,7 @@ public class ConsoleContextHolder {
     /**
      * 递归查找节点
      * */
-    private ProcessStepEntity findStepNode(String stepPid, LinkedList<ProcessStepEntity> stepsMap) {
+    private ProcessStepEntity findStepNode(String stepPid, CopyOnWriteArrayList<ProcessStepEntity> stepsMap) {
         for (ProcessStepEntity processStepEntity : stepsMap) {
             if (processStepEntity.getKey().equals(stepPid)) {
                 return processStepEntity;
@@ -254,7 +254,7 @@ public class ConsoleContextHolder {
         return null;
     }
 
-    private LinkedList<ProcessStepEntity> getStepsMap(String processName) {
+    private CopyOnWriteArrayList<ProcessStepEntity> getStepsMap(String processName) {
         return logPross.get(processName).getChildren();
     }
 }
