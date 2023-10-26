@@ -19,17 +19,16 @@
 
 package org.dinky.app;
 
-import org.apache.flink.api.java.utils.ParameterTool;
 import org.dinky.app.constant.AppParamConstant;
 import org.dinky.app.db.DBUtil;
 import org.dinky.app.flinksql.Submitter;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.utils.JsonUtils;
 
-import java.sql.SQLException;
+import org.apache.flink.api.java.utils.ParameterTool;
+
 import java.util.Base64;
 
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,8 +52,8 @@ public class MainApp {
             log.info("dinky app is Ready to run, config is {}", appConfig);
             DBUtil.init(appConfig);
             Submitter.submit(appConfig);
-        }catch (Exception e){
-            log.error("exectue app failed with config: {}",appConfig);
+        } catch (Exception e) {
+            log.error("exectue app failed with config: {}", appConfig);
             throw e;
         }
     }
