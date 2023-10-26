@@ -49,7 +49,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
     taskId,
     tabs: { panes, activeKey },
     dispatch,
-    height,
+    height
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
