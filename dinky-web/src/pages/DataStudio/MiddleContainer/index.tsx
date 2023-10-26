@@ -223,7 +223,18 @@ const MiddleContainer = (props: any) => {
         }
 
         const v = item.params;
-        return <Editor taskId={v.taskId} />;
+        return (
+          <Editor
+            taskId={v.taskId}
+            height={
+              activeKey === item.key
+                ? fullscreen
+                  ? document.body.clientHeight
+                  : props.centerContentHeight - 40
+                : 0
+            }
+          />
+        );
       }
 
       if (isMetadataTabsItemType(item)) {
@@ -256,7 +267,7 @@ const MiddleContainer = (props: any) => {
             activeKey === item.key
               ? fullscreen
                 ? document.body.clientHeight
-                : props.centerContentHeight - 35
+                : props.centerContentHeight - 40
               : 0
           }
         >
