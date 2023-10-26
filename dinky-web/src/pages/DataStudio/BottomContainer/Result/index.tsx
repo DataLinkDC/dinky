@@ -141,6 +141,7 @@ const Result = (props: any) => {
         }
       } else {
         // flink sql
+        // to do: get job data by history id list, not flink jid
         if (current.jobInstanceId) {
           const res = await postAll(API_CONSTANTS.GET_JOB_BY_ID, {
             id: current.jobInstanceId

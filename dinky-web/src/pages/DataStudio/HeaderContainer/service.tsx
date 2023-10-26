@@ -29,6 +29,10 @@ export async function getJobPlan(title: string, params: any) {
   return handleOption('/api/task/getJobPlan', title, params);
 }
 
+export async function debugTask(title: string, params: any) {
+  return postAll('/api/task/debugTask', params);
+}
+
 export async function executeSql(title: string, id: number) {
   return handleGetOption('/api/task/submitTask', title, { id });
 }

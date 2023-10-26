@@ -22,6 +22,7 @@ package org.dinky.controller;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.annotations.ExecuteProcess;
 import org.dinky.data.annotations.ProcessId;
+import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.BusinessType;
@@ -79,6 +80,20 @@ public class TaskController {
         } else {
             return Result.failed(jobResult, jobResult.getError());
         }
+    }
+
+    @PostMapping("/debugTask")
+    @ApiOperation("Debug Task")
+    @Log(title = "Debug Task", businessType = BusinessType.DEBUG)
+    @ApiImplicitParam(
+            name = "debugTask",
+            value = "Debug Task",
+            required = true,
+            dataType = "DebugDTO",
+            paramType = "body")
+    public Result<JobResult> debugTask(@RequestBody DebugDTO debugDTO) throws Exception {
+        JobResult result = taskService.debugTask(debugDTO);
+        return Result.succeed(result, Status.EXECUTE_SUCCESS);
     }
 
     @GetMapping("/cancel")

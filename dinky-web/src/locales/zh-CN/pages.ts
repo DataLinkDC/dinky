@@ -291,8 +291,11 @@ export default {
    * */
 
   'pages.datastudio.editor.check': '检查',
+  'pages.datastudio.editor.debug': '调试',
   'pages.datastudio.editor.exec': '运行',
   'pages.datastudio.editor.exec.error': '任务【{jobName}】执行失败',
+  'pages.datastudio.editor.debug.error': '任务【{jobName}】调试失败',
+  'pages.datastudio.editor.debug.success': '调试成功',
   'pages.datastudio.editor.exec.success': '执行成功',
   'pages.datastudio.editor.execute.warn':
     '该任务执行模式为【{type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交',
@@ -302,6 +305,7 @@ export default {
   'pages.datastudio.editor.stop.job': '停止作业',
   'pages.datastudio.editor.stop.jobConfirm': '确定停止作业【{jobName}】吗？',
   'pages.datastudio.editor.submitting': '新任务【{jobName}】正在执行',
+  'pages.datastudio.editor.debugging': '新任务【{jobName}】正在调试',
   'pages.datastudio.editor.onlyread': '任务已发布，禁止修改，请先下线任务',
   'pages.datastudio.editor.notsave': '当前修改内容未保存！',
   'pages.datastudio.editor.notsave.note': '继续将抛弃所修改内容，确定继续吗？',

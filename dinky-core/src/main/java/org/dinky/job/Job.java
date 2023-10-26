@@ -88,7 +88,12 @@ public class Job {
             Executor executor,
             String statement,
             boolean useGateway) {
-        return new Job(jobConfig, type, JobStatus.INITIALIZE, statement, executorConfig, executor, useGateway);
+        Job job = new Job(jobConfig, type, JobStatus.INITIALIZE, statement, executorConfig, executor, useGateway);
+        if (!useGateway) {
+            job.setJobManagerAddress(executorConfig.getJobManagerAddress());
+        }
+        JobContextHolder.setJob(job);
+        return job;
     }
 
     public JobResult getJobResult() {

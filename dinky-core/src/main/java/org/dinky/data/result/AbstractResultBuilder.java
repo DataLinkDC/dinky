@@ -17,58 +17,8 @@
  *
  */
 
-package org.dinky.data.enums;
+package org.dinky.data.result;
 
-/** 业务操作类型 */
-public enum BusinessType {
-    /** 其它 */
-    OTHER,
-
-    /** 新增 */
-    INSERT,
-
-    /** 新增或修改 */
-    INSERT_OR_UPDATE,
-
-    /** 修改 */
-    UPDATE,
-
-    /** 提交 */
-    SUBMIT,
-
-    /** Debug */
-    DEBUG,
-
-    /** 执行 */
-    EXECUTE,
-
-    /** 触发 */
-    TRIGGER,
-
-    /** query */
-    QUERY,
-
-    /** test */
-    TEST,
-
-    /** 删除 */
-    DELETE,
-
-    /** 授权 */
-    GRANT,
-
-    /** 导出 */
-    EXPORT,
-
-    /** 导入 */
-    IMPORT,
-
-    /** 上传 */
-    UPLOAD,
-
-    /** 下载 */
-    DOWNLOAD,
-
-    /** remote op */
-    REMOTE_OPERATION,
+public abstract class AbstractResultBuilder {
+    protected String id;
 }
