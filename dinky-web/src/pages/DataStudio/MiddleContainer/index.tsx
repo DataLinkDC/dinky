@@ -51,8 +51,7 @@ const MiddleContainer = (props: any) => {
   } = props;
   const themeValue = useThemeValue();
 
-
-  const {fullscreen} = useEditor();
+  const { fullscreen } = useEditor();
 
   const [contextMenuPosition, setContextMenuPosition] = useState({});
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
@@ -252,7 +251,15 @@ const MiddleContainer = (props: any) => {
         </Space>
       ),
       children: (
-        <ContentScroll height={activeKey === item.key ? fullscreen ? document.body.clientHeight : props.centerContentHeight - 35 : 0}>
+        <ContentScroll
+          height={
+            activeKey === item.key
+              ? fullscreen
+                ? document.body.clientHeight
+                : props.centerContentHeight - 35
+              : 0
+          }
+        >
           {renderContent()}
         </ContentScroll>
       )
