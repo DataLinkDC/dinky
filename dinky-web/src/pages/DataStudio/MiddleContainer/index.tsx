@@ -51,8 +51,7 @@ const MiddleContainer = (props: any) => {
   } = props;
   const themeValue = useThemeValue();
 
-
-  const {fullscreen} = useEditor();
+  const { fullscreen } = useEditor();
 
   const [contextMenuPosition, setContextMenuPosition] = useState({});
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
@@ -224,7 +223,18 @@ const MiddleContainer = (props: any) => {
         }
 
         const v = item.params;
-        return <Editor taskId={v.taskId} />;
+        return (
+          <Editor
+            taskId={v.taskId}
+            height={
+              activeKey === item.key
+                ? fullscreen
+                  ? document.body.clientHeight
+                  : props.centerContentHeight - 40
+                : 0
+            }
+          />
+        );
       }
 
       if (isMetadataTabsItemType(item)) {
@@ -252,7 +262,15 @@ const MiddleContainer = (props: any) => {
         </Space>
       ),
       children: (
-        <ContentScroll height={activeKey === item.key ? fullscreen ? document.body.clientHeight : props.centerContentHeight - 35 : 0}>
+        <ContentScroll
+          height={
+            activeKey === item.key
+              ? fullscreen
+                ? document.body.clientHeight
+                : props.centerContentHeight - 40
+              : 0
+          }
+        >
           {renderContent()}
         </ContentScroll>
       )

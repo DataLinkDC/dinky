@@ -41,13 +41,15 @@ import { useEditor } from '@/hooks/useEditor';
 
 export type EditorProps = {
   taskId: number;
+  height?: number;
 };
 
 const CodeEditor: React.FC<EditorProps & any> = (props) => {
   const {
     taskId,
     tabs: { panes, activeKey },
-    dispatch
+    dispatch,
+    height,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -96,7 +98,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
 
   return (
     <Spin spinning={loading} delay={600}>
-      <div style={{ width: '100%', height: fullscreen ? 'calc(100vh - 50px)' : '33vh' }}>
+      <div style={{ width: '100%', height: fullscreen ? 'calc(100vh - 50px)' : height }}>
         <DiffModal
           diffs={diff}
           open={isModalOpen}
@@ -162,8 +164,8 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
         <div
           style={{
             position: 'absolute',
-            top: 0,
-            right: 150
+            top: 20,
+            right: '7%'
           }}
         >
           {fullscreen ? (

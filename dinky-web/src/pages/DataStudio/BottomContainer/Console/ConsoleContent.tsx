@@ -44,12 +44,26 @@ export interface ProcessStep extends DataNode {
   time: number;
   log: string;
   lastUpdateStep: ProcessStep;
+  children: ProcessStep[];
 }
+
+const buildExpandKeys = (node: ProcessStep) => {
+  const keys: Key[] = [];
+  keys.push(node.key);
+  if (node.children.length > 0) {
+    node.children.forEach((item: ProcessStep) => {
+      keys.push(...buildExpandKeys(item));
+    });
+  }
+  return keys;
+};
+
 const ConsoleContent = (props: ConsoleProps) => {
   const { tab } = props;
 
   const [selectNode, setSelectNode] = useState<ProcessStep>();
   const [processNode, setProcessNode] = useState<ProcessStep>();
+  const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
 
   const process = `FlinkSubmit/${tab.params.taskId}`;
   const topic = `${SSE_TOPIC.PROCESS_CONSOLE}/${process}`;
@@ -105,6 +119,16 @@ const ConsoleContent = (props: ConsoleProps) => {
     );
   };
 
+  useEffect(() => {
+    if (processNode) {
+      setExpandedKeys(buildExpandKeys(processNode));
+    }
+  }, [processNode]);
+
+  const handleExpand = (expandedKeys: Key[]) => {
+    setExpandedKeys(expandedKeys);
+  };
+
   return (
     <div style={{ overflow: 'hidden' }}>
       <MovableSidebar
@@ -125,9 +149,8 @@ const ConsoleContent = (props: ConsoleProps) => {
             titleRender={renderTitle}
             onSelect={onSelect}
             treeData={[processNode]}
-            expandAction={'doubleClick'}
-            defaultExpandParent
-            defaultExpandAll
+            expandedKeys={expandedKeys}
+            onExpand={handleExpand}
           />
         ) : (
           <Empty />
