@@ -16,6 +16,7 @@
  */
 
 import ContentScroll from '@/components/Scroll/ContentScroll';
+import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import { STUDIO_TAG_RIGHT_CONTEXT_MENU } from '@/pages/DataStudio/constants';
 import {
@@ -49,6 +50,9 @@ const MiddleContainer = (props: any) => {
     dispatch
   } = props;
   const themeValue = useThemeValue();
+
+
+  const {fullscreen} = useEditor();
 
   const [contextMenuPosition, setContextMenuPosition] = useState({});
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
@@ -248,7 +252,7 @@ const MiddleContainer = (props: any) => {
         </Space>
       ),
       children: (
-        <ContentScroll height={activeKey === item.key ? props.centerContentHeight - 35 : 0}>
+        <ContentScroll height={activeKey === item.key ? fullscreen ? document.body.clientHeight : props.centerContentHeight - 35 : 0}>
           {renderContent()}
         </ContentScroll>
       )
