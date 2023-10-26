@@ -110,7 +110,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
           language={'sql'}
           options={{
             readOnlyMessage: { value: l('pages.datastudio.editor.onlyread') },
-            readOnly: true,//currentData?.step == JOB_LIFE_CYCLE.ONLINE,
+            readOnly: currentData?.step == JOB_LIFE_CYCLE.ONLINE,
             scrollBeyondLastLine: false,
             wordWrap: 'on',
             autoDetectHighContrast: true,
