@@ -32,6 +32,7 @@ import HistoryVersion from '@/pages/DataStudio/RightContainer/HistoryVersion';
 import JobConfig from '@/pages/DataStudio/RightContainer/JobConfig';
 import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
+import { convertCodeEditTheme } from '@/utils/function';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -210,6 +211,7 @@ export const LeftBottomMoreTabs: { [c: string]: TabProp[] } = {
             }
           }}
           language={'text'}
+          theme={convertCodeEditTheme()}
         />
       )
     },

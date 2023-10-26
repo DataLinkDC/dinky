@@ -1642,7 +1642,7 @@ CREATE TABLE `dinky_metrics` (
                                  `position` int(11) DEFAULT null,
                                  `show_type` varchar(255) DEFAULT null,
                                  `show_size` varchar(255) DEFAULT null,
-                                 `title` varchar(255) DEFAULT null,
+                                 `title` CLOB DEFAULT null,
                                  `layout_name` varchar(255) DEFAULT null,
                                  `create_time` datetime DEFAULT null,
                                  `update_time` datetime DEFAULT null
