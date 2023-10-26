@@ -20,9 +20,9 @@
 package org.dinky.controller;
 
 import org.dinky.context.ConsoleContextHolder;
+import org.dinky.data.model.ProcessEntity;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
-import org.dinky.process.model.ProcessEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

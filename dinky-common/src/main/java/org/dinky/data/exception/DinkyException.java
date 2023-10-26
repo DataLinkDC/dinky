@@ -17,15 +17,26 @@
  *
  */
 
-package org.dinky.process.annotations;
+package org.dinky.data.exception;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+/** @since 0.7.0 */
+public class DinkyException extends RuntimeException {
 
-@Target(ElementType.PARAMETER)
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-public @interface ProcessId {}
+    public DinkyException() {}
+
+    public DinkyException(String message) {
+        super(message);
+    }
+
+    public DinkyException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DinkyException(Throwable cause) {
+        super(cause);
+    }
+
+    public DinkyException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
+}

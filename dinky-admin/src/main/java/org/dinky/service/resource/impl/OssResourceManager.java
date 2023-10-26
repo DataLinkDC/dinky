@@ -20,7 +20,7 @@
 package org.dinky.service.resource.impl;
 
 import org.dinky.data.exception.BusException;
-import org.dinky.process.exception.DinkyException;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.service.resource.BaseResourceManager;
 import org.dinky.utils.OssTemplate;
 

@@ -20,8 +20,8 @@
 package org.dinky.utils;
 
 import org.dinky.data.dto.GitProjectDTO;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.function.constant.PathConstant;
-import org.dinky.process.exception.DinkyException;
 
 import java.io.File;
 import java.io.StringWriter;

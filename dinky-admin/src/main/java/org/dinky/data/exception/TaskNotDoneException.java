@@ -19,8 +19,6 @@
 
 package org.dinky.data.exception;
 
-import org.dinky.process.exception.ExcuteException;
-
 public class TaskNotDoneException extends ExcuteException {
     public TaskNotDoneException(String message) {
         super(message);

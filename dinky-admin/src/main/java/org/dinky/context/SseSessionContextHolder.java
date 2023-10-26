@@ -62,7 +62,7 @@ public class SseSessionContextHolder {
      * @return The SseEmitter for the session.
      */
     public static SseEmitter connectSession(String sessionKey) {
-        log.info("New session wants to connect: {}", sessionKey);
+        log.debug("New session wants to connect: {}", sessionKey);
         if (exists(sessionKey)) {
             log.warn("Session key already exists: {}", sessionKey);
             closeSse(sessionKey);
@@ -97,7 +97,7 @@ public class SseSessionContextHolder {
      * @param sessionKey The session key of the timed-out session.
      */
     public static void onTimeout(String sessionKey) {
-        log.info("Type: SseSession Timeout, Session ID: {}", sessionKey);
+        log.debug("Type: SseSession Timeout, Session ID: {}", sessionKey);
         closeSse(sessionKey);
     }
 
@@ -142,7 +142,7 @@ public class SseSessionContextHolder {
      * @param sessionKey The session key of the completed session.
      */
     public static void onCompletion(String sessionKey) {
-        log.info("Type: SseSession Completion, Session ID: {}", sessionKey);
+        log.debug("Type: SseSession Completion, Session ID: {}", sessionKey);
         closeSse(sessionKey);
     }
 
