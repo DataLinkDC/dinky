@@ -69,7 +69,7 @@ public class DBUtil {
     }
 
     public static String getSysConfig(String key) throws SQLException {
-        Entity option = Entity.create("dinky_sys_config").set("enabled", true).set("name", key);
+        Entity option = Entity.create("dinky_sys_config").set("name", key);
         List<Entity> entities = db.find(option);
         if (entities.size() <= 0) {
             throw new IllegalArgumentException(
