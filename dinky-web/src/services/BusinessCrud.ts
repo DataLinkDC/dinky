@@ -204,6 +204,19 @@ export const handleGetOption = async (url: string, title: string, param: any) =>
   }
 };
 
+export const handleGetOptionWithoutMsg = async (url: string, param: any) => {
+  try {
+    const result = await getData(url, param);
+    if (result.code === RESPONSE_CODE.SUCCESS) {
+      return result;
+    }
+    WarningMessage(result.msg);
+    return undefined;
+  } catch (error) {
+    return undefined;
+  }
+};
+
 export const handleData = async (url: string, id: any) => {
   try {
     const { code, datas } = await getInfoById(url, id);

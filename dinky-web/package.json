@@ -70,7 +70,7 @@
     "redux-persist": "^6.0.0",
     "remark-gfm": "^4.0.0",
     "screenfull": "^6.0.2",
-    "sql-formatter": "^13.0.1",
+    "sql-formatter": "^13.0.2",
     "styled-components": "^6.0.8",
     "use-sse": "^2.0.1"
   },
