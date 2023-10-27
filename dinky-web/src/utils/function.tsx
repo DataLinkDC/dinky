@@ -124,41 +124,40 @@ export function getLocalTheme(): string {
  * @constructor
  */
 export function convertCodeEditTheme() {
-
-      /**
-       * user can define a new theme by calling the defineTheme method on the editor.
-       */
-      editor.defineTheme(CODE_EDIT_THEME.VS_CUSTOME, {
-        base: 'vs', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
-        inherit: true, // 是否继承基础主题配置 , 默认为 true, is to inherit the base theme
-        // rules is an array of rules. The array must not be sparse (i.e. do not use holes).
-        rules: [
-          { token: 'comment', foreground: '#008800', fontStyle: 'italic' },
-          { token: 'keyword', foreground: '#064cff', fontStyle: 'bold' },
-          { token: 'string', foreground: '#507dee' },
-          { token: 'delimiter', foreground: '#041d81' },
-          {
-            token: 'readonly',
-            foreground: '#e73a6e',
-            background: '#141414',
-            fontStyle: 'italic'
-          },
-          { token: 'number', foreground: '#ffffff' }
-        ],
-        // colors is an object of color identifiers and their color values.
-        colors: {
-          'editor.background': '#2f2e2e', //  editor background color
-          'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
-          'editorLineNumber.foreground': '#ffffff', //   editor line number color
-          'editorCursor.foreground': '#ffffff', //  editor cursor color
-          'editorIndentGuide.background': '#ffffff', //  editor indent guide color
-          'editor.foreground': '#ffffff', //  editor selection highlight border color
-          'editor.selectionBackground': '#4ba1ef', //  editor selection highlight color
-          'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
-          'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
-          'editor.wordHighlightBackground': '#8bb2d2' //  editor word highlight color
-        }
-      });
+  /**
+   * user can define a new theme by calling the defineTheme method on the editor.
+   */
+  editor.defineTheme(CODE_EDIT_THEME.VS_CUSTOME, {
+    base: 'vs', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
+    inherit: true, // 是否继承基础主题配置 , 默认为 true, is to inherit the base theme
+    // rules is an array of rules. The array must not be sparse (i.e. do not use holes).
+    rules: [
+      { token: 'comment', foreground: '#008800', fontStyle: 'italic' },
+      { token: 'keyword', foreground: '#064cff', fontStyle: 'bold' },
+      { token: 'string', foreground: '#507dee' },
+      { token: 'delimiter', foreground: '#041d81' },
+      {
+        token: 'readonly',
+        foreground: '#e73a6e',
+        background: '#141414',
+        fontStyle: 'italic'
+      },
+      { token: 'number', foreground: '#ffffff' }
+    ],
+    // colors is an object of color identifiers and their color values.
+    colors: {
+      'editor.background': '#2f2e2e', //  editor background color
+      'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
+      'editorLineNumber.foreground': '#ffffff', //   editor line number color
+      'editorCursor.foreground': '#ffffff', //  editor cursor color
+      'editorIndentGuide.background': '#ffffff', //  editor indent guide color
+      'editor.foreground': '#ffffff', //  editor selection highlight border color
+      'editor.selectionBackground': '#4ba1ef', //  editor selection highlight color
+      'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
+      'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
+      'editor.wordHighlightBackground': '#8bb2d2' //  editor word highlight color
+    }
+  });
 
   const theme = getLocalTheme();
   switch (theme) {

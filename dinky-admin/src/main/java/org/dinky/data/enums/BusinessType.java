@@ -36,6 +36,9 @@ public enum BusinessType {
     /** 提交 */
     SUBMIT,
 
+    /** Debug */
+    DEBUG,
+
     /** 执行 */
     EXECUTE,
 
