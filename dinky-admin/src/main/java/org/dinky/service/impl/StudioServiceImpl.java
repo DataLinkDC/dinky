@@ -88,7 +88,7 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public JdbcSelectResult getCommonSqlData(Integer taskId) {
-        return ResultPool.getCommonSqlCache(taskId);
+        return (JdbcSelectResult) ResultPool.getCommonSqlCache(taskId);
     }
 
     @Override
