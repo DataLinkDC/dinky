@@ -388,11 +388,6 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
-                <artifactId>dinky-client-1.13</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
                 <artifactId>dinky-client-1.14</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -413,7 +408,7 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
-                <artifactId>dinky-catalog-mysql-1.13</artifactId>
+                <artifactId>dinky-client-1.18</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -438,17 +433,12 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
-                <artifactId>dinky-connector-jdbc-1.13</artifactId>
+                <artifactId>dinky-catalog-mysql-1.18</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-connector-jdbc-1.14</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
-                <artifactId>dinky-connector-phoenix-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -573,11 +563,6 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
-                <artifactId>dinky-flink-1.13</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
                 <artifactId>dinky-flink-1.14</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -594,6 +579,11 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-flink-1.17</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-flink-1.18</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -936,19 +926,13 @@
         </profile>
 
         <profile>
-            <id>flink-1.13</id>
-            <properties>
-                <dinky.flink.version>1.13</dinky.flink.version>
-            </properties>
-        </profile>
-
-        <profile>
             <id>flink-1.14</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <dinky.flink.version>1.14</dinky.flink.version>
+                <flink.version>1.14.6</flink.version>
             </properties>
         </profile>
 
@@ -956,6 +940,8 @@
             <id>flink-1.15</id>
             <properties>
                 <dinky.flink.version>1.15</dinky.flink.version>
+                <flink.version>1.15.2</flink.version>
+
             </properties>
         </profile>
 
@@ -963,12 +949,23 @@
             <id>flink-1.16</id>
             <properties>
                 <dinky.flink.version>1.16</dinky.flink.version>
+                <flink.version>1.16.0</flink.version>
+
             </properties>
         </profile>
         <profile>
             <id>flink-1.17</id>
             <properties>
                 <dinky.flink.version>1.17</dinky.flink.version>
+                <flink.version>1.17.1</flink.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.18</id>
+            <properties>
+                <dinky.flink.version>1.18</dinky.flink.version>
+                <flink.version>1.18.0</flink.version>
             </properties>
         </profile>
 

@@ -31,7 +31,6 @@
     <name>Dinky : Connector : Phoenix 1.14</name>
 
     <properties>
-        <flink.version>1.14.6</flink.version>
         <junit.version>4.12</junit.version>
         <!--  compile/provided-->
         <phoenix.scope.runtime>provided</phoenix.scope.runtime>
