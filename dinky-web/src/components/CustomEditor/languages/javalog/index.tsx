@@ -1,6 +1,7 @@
 import {editor} from "monaco-editor";
 import {languages} from "monaco-editor";
 
+// todo 自定义语言不生效
 export  const JavaLog = () => {
     // Register a new language
     languages.register({ id: "java-log" });
