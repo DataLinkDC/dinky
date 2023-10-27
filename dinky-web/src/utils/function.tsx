@@ -167,7 +167,6 @@ export function convertCodeEditTheme(editorInstance?: any) {
     encodedTokensColors: []
   });
 
-
   const theme = getLocalTheme();
   switch (theme) {
     case THEME.dark:

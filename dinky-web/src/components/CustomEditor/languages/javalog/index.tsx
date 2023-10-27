@@ -4,7 +4,7 @@ export function LogLanguage(monaco: any) {
   monaco?.languages.register({
     id: 'javalog',
     extensions: ['.log'],
-    aliases: ['javalog', 'Javalog', 'Javalog', 'jl', 'log'],
+    aliases: ['javalog', 'Javalog', 'Javalog', 'jl', 'log']
   });
   monaco?.languages.setMonarchTokensProvider('javalog', {
     // todo: 如果需要分段展示不同的颜色 则需要在这里添加规则, 且正则必须是严格模式, 否则会匹配一整行,无法达到预期效果
