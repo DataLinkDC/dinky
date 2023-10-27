@@ -17,13 +17,19 @@
  *
  */
 
-package org.dinky.constant;
+package org.dinky.data.app;
 
-/**
- * FlinkParam
- *
- * @since 2022/3/9 19:18
- */
-public final class FlinkParamConstant {
-    public static final String SPLIT = ",";
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+@Data
+public class AppDatabase {
+    @ApiModelProperty(value = "ID", required = true, dataType = "Integer", example = "1", notes = "Primary Key")
+    private Integer id;
+
+    @ApiModelProperty(value = "Name", required = true, dataType = "String", example = "Name")
+    private String name;
+
+    @ApiModelProperty(value = "flinkConfig", dataType = "String", example = "flinkConfig")
+    private String flinkConfig;
 }

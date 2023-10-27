@@ -17,13 +17,23 @@
  *
  */
 
-package org.dinky.constant;
+package org.dinky.app.model;
+
+import org.dinky.parser.SqlType;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * FlinkParam
+ * StatementParam
  *
- * @since 2022/3/9 19:18
+ * @since 2021/11/16
  */
-public final class FlinkParamConstant {
-    public static final String SPLIT = ",";
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class StatementParam {
+    private String value;
+    private SqlType type;
 }

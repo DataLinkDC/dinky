@@ -22,8 +22,6 @@ package org.dinky.executor;
 import org.dinky.assertion.Asserts;
 import org.dinky.gateway.enums.GatewayType;
 
-import org.apache.commons.lang3.math.NumberUtils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,16 +60,6 @@ public class ExecutorConfig {
             .parallelism(1)
             .useSqlFragment(true)
             .build();
-
-    public static final String TYPE_CONST = "type";
-    public static final String CHECKPOINT_CONST = "checkpoint";
-    public static final String PARALLELISM_CONST = "parallelism";
-    public static final String USE_SQL_FRAGMENT = "useSqlFragment";
-    public static final String USE_STATEMENT_SET = "useStatementSet";
-    public static final String USE_BATCH_MODEL = "useBatchModel";
-    public static final String SAVE_POINT_PATH = "savePointPath";
-    public static final String JOB_NAME = "jobName";
-    public static final String CONFIG_CONST = "config";
 
     // after unique all run model to remote, this field could discard
     @ApiModelProperty(
@@ -237,22 +225,6 @@ public class ExecutorConfig {
                 jobName,
                 config,
                 null);
-    }
-
-    public static ExecutorConfig buildFromMap(Map<String, String> settingMap) {
-        Integer checkpoint = NumberUtils.createInteger(settingMap.get(CHECKPOINT_CONST));
-        Integer parallelism = NumberUtils.createInteger(settingMap.get(PARALLELISM_CONST));
-        String type = settingMap.get(TYPE_CONST);
-        return build(
-                type,
-                checkpoint,
-                parallelism,
-                "1".equals(settingMap.get(USE_SQL_FRAGMENT)),
-                "1".equals(settingMap.get(USE_STATEMENT_SET)),
-                "1".equals(settingMap.get(USE_BATCH_MODEL)),
-                settingMap.get(SAVE_POINT_PATH),
-                settingMap.get(JOB_NAME),
-                settingMap.get(CONFIG_CONST));
     }
 
     public String getJobManagerAddress() {

@@ -74,7 +74,6 @@ public abstract class KubernetesGateway extends AbstractGateway {
         } catch (Exception e) {
             logger.warn("load locale config yaml failed：{},Skip config it", e.getMessage());
         }
-        addConfigParas(KubernetesConfigOptions.FLINK_CONF_DIR, flinkConfigPath);
 
         addConfigParas(flinkConfig.getConfiguration());
         addConfigParas(k8sConfig.getConfiguration());

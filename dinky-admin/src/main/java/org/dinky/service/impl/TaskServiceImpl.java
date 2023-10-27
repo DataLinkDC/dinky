@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.data.annotations.ProcessStep;
+import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.dto.AbstractStatementDTO;
 import org.dinky.data.dto.DebugDTO;
@@ -95,6 +96,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -153,15 +155,17 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private CatalogueService catalogueService;
 
     private String[] buildParams(int id) {
-        return String.format(
-                        "--id %d --driver %s --url %s --username %s --password %s --dinkyAddr %s",
-                        id,
-                        dsProperties.getDriverClassName(),
-                        dsProperties.getUrl(),
-                        dsProperties.getUsername(),
-                        dsProperties.getPassword(),
-                        SystemConfiguration.getInstances().getDinkyAddr())
-                .split(" ");
+        AppParamConfig appParamConfig = AppParamConfig.builder()
+                .taskId(id)
+                .url(dsProperties.getUrl())
+                .username(dsProperties.getUsername())
+                .password(dsProperties.getPassword())
+                .dinkyAddr(SystemConfiguration.getInstances().getDinkyAddr().getValue())
+                .split(SystemConfiguration.getInstances().getSqlSeparator())
+                .build();
+        String encodeParam = Base64.getEncoder()
+                .encodeToString(JsonUtils.toJsonString(appParamConfig).getBytes());
+        return StrFormatter.format("--config {}", encodeParam).split(" ");
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_PRECHECK)
@@ -217,6 +221,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             FlinkClusterConfig flinkClusterCfg =
                     clusterCfgService.getFlinkClusterCfg(config.getClusterConfigurationId());
             flinkClusterCfg.getAppConfig().setUserJarParas(buildParams(config.getTaskId()));
+            flinkClusterCfg.getAppConfig().setUserJarMainAppClass(CommonConstant.DINKY_APP_MAIN_CLASS);
             config.buildGatewayConfig(flinkClusterCfg);
         } else {
             log.info("Init remote cluster");

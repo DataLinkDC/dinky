@@ -17,13 +17,9 @@
  *
  */
 
-package org.dinky.constant;
+package org.dinky.app.constant;
 
-/**
- * FlinkParam
- *
- * @since 2022/3/9 19:18
- */
-public final class FlinkParamConstant {
-    public static final String SPLIT = ",";
+public class AppParamConstant {
+    public static final String config = "config";
+    public static final String isEncrypt = "encrypt";
 }
