@@ -16,7 +16,7 @@
  *
  */
 
-import { TabsItemType } from '@/pages/DataStudio/model';
+import { TabsItemType } from '@/pages/DataStudio/types';
 import { Button } from 'antd';
 import React from 'react';
 

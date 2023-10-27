@@ -146,7 +146,7 @@ export function convertCodeEditTheme() {
     ],
     // colors is an object of color identifiers and their color values.
     colors: {
-      'editor.background': '#5d5b5b', //  editor background color
+      'editor.background': '#2f2e2e', //  editor background color
       'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
       'editorLineNumber.foreground': '#ffffff', //   editor line number color
       'editorCursor.foreground': '#ffffff', //  editor cursor color

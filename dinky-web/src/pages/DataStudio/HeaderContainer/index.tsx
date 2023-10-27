@@ -28,7 +28,7 @@ import {
   projectCommonShow
 } from '@/pages/DataStudio/HeaderContainer/function';
 import {
-  cancelTask,
+  cancelTask, debugTask,
   executeSql,
   getJobPlan,
   onLineTask
@@ -44,6 +44,7 @@ import { connect } from '@@/exports';
 import {
   ApartmentOutlined,
   CaretRightFilled,
+  BugOutlined,
   EnvironmentOutlined,
   FundOutlined,
   MergeCellsOutlined,
@@ -133,6 +134,26 @@ const HeaderContainer = (props: any) => {
     });
   };
 
+  const handlerDebug = async () => {
+    if (!currentData) return;
+
+    const res = await debugTask(
+      l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
+      currentData
+    );
+
+    if (!res) return;
+    updateJobRunningMsg({
+      taskId: currentData.id,
+      jobName: currentData.name,
+      jobState: res.datas.status,
+      runningLog: res.msg
+    });
+    messageApi.success(l('pages.datastudio.editor.debug.success'));
+    currentData.status = JOB_STATUS.RUNNING;
+    saveTabs({ ...props.tabs });
+  };
+
   const handlerSubmit = async () => {
     if (!currentData) return;
     const saved = currentData.step == JOB_LIFE_CYCLE.ONLINE ? true : await handleSave();
@@ -148,7 +169,7 @@ const HeaderContainer = (props: any) => {
       taskId: currentData.id,
       jobName: currentData.name,
       jobState: res.datas.status,
-      runningLog: res.msg
+      runningLog: res.msg,
     });
     messageApi.success(l('pages.datastudio.editor.exec.success'));
     currentData.status = JOB_STATUS.RUNNING;
@@ -196,8 +217,8 @@ const HeaderContainer = (props: any) => {
   const routes: ButtonRoute[] = [
     // 保存按钮 icon
     {
-      hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
-      hotKeyDesc: 'Ctrl+S',
+      hotKey: (e: KeyboardEvent) => (e.ctrlKey && e.key === 's') || (e.metaKey && e.key === 's'),
+      hotKeyDesc: 'Ctrl/Command +S',
       isShow: projectCommonShow(currentTab?.type),
       icon: <SaveOutlined />,
       title: l('button.save'),
@@ -216,6 +237,9 @@ const HeaderContainer = (props: any) => {
     {
       // 检查 sql按钮
       icon: <ScheduleOutlined />,
+      hotKey: (e: KeyboardEvent) =>
+        (e.altKey && e.code === 'Digit2') || (e.altKey && e.key === '@'),
+      hotKeyDesc: 'Alt+2/@',
       title: l('pages.datastudio.editor.check'),
       click: () => showExplain(),
       isShow: projectCommonShow(currentTab?.type)
@@ -254,6 +278,19 @@ const HeaderContainer = (props: any) => {
       click: handlerSubmit,
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       hotKeyDesc: 'Shift+F10',
+      isShow: currentTab?.type == TabsPageType.project && !isRunning(currentData),
+      props: {
+        style: { background: '#52c41a' },
+        type: 'primary'
+      }
+    },
+    {
+      // Debug button
+      icon: <BugOutlined />,
+      title: l('pages.datastudio.editor.debug'),
+      click: handlerDebug,
+      hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F9',
+      hotKeyDesc: 'Shift+F9',
       isShow: currentTab?.type == TabsPageType.project && !isRunning(currentData),
       props: {
         style: { background: '#52c41a' },

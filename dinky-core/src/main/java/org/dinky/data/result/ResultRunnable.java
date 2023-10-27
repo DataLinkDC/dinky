@@ -49,14 +49,21 @@ public class ResultRunnable implements Runnable {
 
     private static final String nullColumn = "";
     private final TableResult tableResult;
+    private final String id;
     private final Integer maxRowNum;
     private final boolean isChangeLog;
     private final boolean isAutoCancel;
     private final String timeZone;
 
     public ResultRunnable(
-            TableResult tableResult, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone) {
+            TableResult tableResult,
+            String id,
+            Integer maxRowNum,
+            boolean isChangeLog,
+            boolean isAutoCancel,
+            String timeZone) {
         this.tableResult = tableResult;
+        this.id = id;
         this.maxRowNum = maxRowNum;
         this.isChangeLog = isChangeLog;
         this.isAutoCancel = isAutoCancel;
@@ -67,16 +74,14 @@ public class ResultRunnable implements Runnable {
     public void run() {
         try {
             tableResult.getJobClient().ifPresent(jobClient -> {
-                String jobId = jobClient.getJobID().toHexString();
-                if (!ResultPool.containsKey(jobId)) {
-                    ResultPool.put(new SelectResult(jobId, new ArrayList<>(), new LinkedHashSet<>()));
+                if (!ResultPool.containsKey(id)) {
+                    ResultPool.put(new SelectResult(id, new ArrayList<>(), new LinkedHashSet<>()));
                 }
-
                 try {
                     if (isChangeLog) {
-                        catchChangLog(ResultPool.get(jobId));
+                        catchChangLog(ResultPool.get(id));
                     } else {
-                        catchData(ResultPool.get(jobId));
+                        catchData(ResultPool.get(id));
                     }
                 } catch (Exception e) {
                     log.error(String.format(e.toString()));
