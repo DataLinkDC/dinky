@@ -17,38 +17,32 @@
  *
  */
 
-package org.dinky.app.flinksql;
+package org.dinky.data.app;
 
-import org.dinky.parser.SqlType;
+import lombok.Builder;
+import lombok.Data;
 
 /**
- * StatementParam
- *
- * @since 2021/11/16
- */
-public class StatementParam {
+ * Dinky configuration information passed by the submit Application task
+ * */
+@Data
+@Builder
+public class AppParamConfig {
+    private int taskId;
+    private String url;
+    private String username;
+    private String password;
+    private String dinkyAddr;
+    private String split;
 
-    private String value;
-    private SqlType type;
-
-    public StatementParam(String value, SqlType type) {
-        this.value = value;
-        this.type = type;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public SqlType getType() {
-        return type;
-    }
-
-    public void setType(SqlType type) {
-        this.type = type;
+    @Override
+    public String toString() {
+        return "\nAppParamConfig{" + "\ntaskId="
+                + taskId + "\n, url='"
+                + url + '\'' + "\n, username='"
+                + username + '\'' + "\n, password='***********'"
+                + "\n, dinkyAddr='"
+                + dinkyAddr + '\'' + "\n, split='"
+                + split + '\'' + "'\n}'";
     }
 }

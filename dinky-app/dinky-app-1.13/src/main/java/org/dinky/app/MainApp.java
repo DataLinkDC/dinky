@@ -19,27 +19,42 @@
 
 package org.dinky.app;
 
-import org.dinky.app.db.DBConfig;
+import org.dinky.app.constant.AppParamConstant;
+import org.dinky.app.db.DBUtil;
 import org.dinky.app.flinksql.Submitter;
-import org.dinky.assertion.Asserts;
-import org.dinky.constant.FlinkParamConstant;
-import org.dinky.utils.FlinkBaseUtil;
+import org.dinky.data.app.AppParamConfig;
+import org.dinky.utils.JsonUtils;
 
-import java.io.IOException;
-import java.util.Map;
+import org.apache.flink.api.java.utils.ParameterTool;
+
+import java.util.Base64;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * MainApp
  *
- * @since 2021/10/27
+ * @since 2022/11/05
  */
 public class MainApp {
 
-    public static void main(String[] args) throws IOException {
-        Map<String, String> params = FlinkBaseUtil.getParamsFromArgs(args);
-        String id = params.get(FlinkParamConstant.ID);
-        Asserts.checkNullString(id, "请配置入参 id ");
-        DBConfig dbConfig = DBConfig.build(params);
-        Submitter.submit(Integer.valueOf(id), dbConfig, params.get(FlinkParamConstant.DINKY_ADDR));
+    private static final Logger log = LoggerFactory.getLogger(Submitter.class);
+
+    public static void main(String[] args) throws Exception {
+        log.info("=========================Start run dinky app job===============================");
+        ParameterTool parameters = ParameterTool.fromArgs(args);
+        boolean isEncrypt = parameters.getBoolean(AppParamConstant.isEncrypt, true);
+        String config = parameters.get(AppParamConstant.config);
+        config = isEncrypt ? new String(Base64.getDecoder().decode(config)) : config;
+        AppParamConfig appConfig = JsonUtils.toJavaBean(config, AppParamConfig.class);
+        try {
+            log.info("dinky app is Ready to run, config is {}", appConfig);
+            DBUtil.init(appConfig);
+            Submitter.submit(appConfig);
+        } catch (Exception e) {
+            log.error("exectue app failed with config: {}", appConfig);
+            throw e;
+        }
     }
 }
