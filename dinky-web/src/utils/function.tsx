@@ -146,27 +146,27 @@ export function convertCodeEditTheme() {
     ],
     // colors is an object of color identifiers and their color values.
     colors: {
-      'editor.background': '#2f2e2e', //  editor background color
-      'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
-      'editorLineNumber.foreground': '#ffffff', //   editor line number color
-      'editorCursor.foreground': '#ffffff', //  editor cursor color
-      'editorIndentGuide.background': '#ffffff', //  editor indent guide color
-      'editor.foreground': '#ffffff', //  editor selection highlight border color
-      'editor.selectionBackground': '#4ba1ef', //  editor selection highlight color
-      'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
-      'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
-      'editor.wordHighlightBackground': '#8bb2d2' //  editor word highlight color
+      // 'editor.background': '#2f2e2e', //  editor background color
+      // 'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
+      // 'editorLineNumber.foreground': '#ffffff', //   editor line number color
+      // 'editorCursor.foreground': '#ffffff', //  editor cursor color
+      // 'editorIndentGuide.background': '#ffffff', //  editor indent guide color
+      // 'editor.foreground': '#ffffff', //  editor selection highlight border color
+      // 'editor.selectionBackground': '#4ba1ef', //  editor selection highlight color
+      // 'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
+      // 'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
+      // 'editor.wordHighlightBackground': '#8bb2d2' //  editor word highlight color
     }
   });
 
   const theme = getLocalTheme();
   switch (theme) {
     case THEME.dark:
-      return CODE_EDIT_THEME.VS_CUSTOME;
-    case THEME.light:
       return CODE_EDIT_THEME.DARK;
+    case THEME.light:
+      return CODE_EDIT_THEME.VS_CUSTOME;
     default:
-      return CODE_EDIT_THEME.HC_BLACK;
+      return CODE_EDIT_THEME.VS_CUSTOME;
   }
 }
 
