@@ -369,6 +369,7 @@ public enum Status {
     PROCESS_SUBMIT_BUILDCONFIG(193, "process.submit.buildConfig"),
     PROCESS_SUBMIT_EXECUTECOMMSQL(194, "process.submit.execute.commSql"),
     PROCESS_SUBMIT_EXECUTEFLINKSQL(195, "process.submit.execute.flinkSql"),
+    PROCESS_REGISTER_EXITS(196, "process.register.exits"),
     ;
     private final int code;
     private final String key;

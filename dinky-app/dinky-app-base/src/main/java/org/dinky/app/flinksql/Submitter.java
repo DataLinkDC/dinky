@@ -25,6 +25,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
+import org.dinky.data.enums.Status;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
@@ -89,12 +90,13 @@ public class Submitter {
                 .build();
 
         // 加载第三方jar //TODO 这里有问题，需要修一修
-        //        String dinkyAddr = Optional.ofNullable(config.getDinkyAddr()).orElse("");
-        //        loadDep(appTask.getType(), config.getTaskId(), dinkyAddr, executorConfig);
+        // loadDep(appTask.getType(),
+        // config.getTaskId(),DBUtil.getSysConfig(Status.SYS_ENV_SETTINGS_DINKYADDR.getKey()), executorConfig);
 
         log.info("The job configuration is as follows: {}", executorConfig);
 
-        String[] statements = SqlUtil.getStatements(sql, config.getSplit());
+        String[] statements =
+                SqlUtil.getStatements(sql, DBUtil.getSysConfig(Status.SYS_FLINK_SETTINGS_SQLSEPARATOR.getKey()));
         excuteJob(executorConfig, statements);
     }
 

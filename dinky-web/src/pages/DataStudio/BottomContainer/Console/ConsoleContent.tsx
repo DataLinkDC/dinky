@@ -145,6 +145,7 @@ const ConsoleContent = (props: ConsoleProps) => {
         {processNode ? (
           <DirectoryTree
             className={'treeList'}
+            style={{height:props.height}}
             showIcon={false}
             titleRender={renderTitle}
             onSelect={onSelect}

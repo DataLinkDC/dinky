@@ -24,7 +24,7 @@ import lombok.Data;
 
 /**
  * Dinky configuration information passed by the submit Application task
- * */
+ */
 @Data
 @Builder
 public class AppParamConfig {
@@ -32,17 +32,14 @@ public class AppParamConfig {
     private String url;
     private String username;
     private String password;
-    private String dinkyAddr;
-    private String split;
 
     @Override
     public String toString() {
-        return "\nAppParamConfig{" + "\ntaskId="
-                + taskId + "\n, url='"
-                + url + '\'' + "\n, username='"
-                + username + '\'' + "\n, password='***********'"
-                + "\n, dinkyAddr='"
-                + dinkyAddr + '\'' + "\n, split='"
-                + split + '\'' + "'\n}'";
+        return "\nAppParamConfig{"
+                + "\n  taskId=" + taskId
+                + "\n, url='" + url + '\''
+                + "\n, username='" + username + '\''
+                + "\n, password='***********'"
+                + "}";
     }
 }
