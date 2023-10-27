@@ -28,7 +28,8 @@ import {
   projectCommonShow
 } from '@/pages/DataStudio/HeaderContainer/function';
 import {
-  cancelTask, debugTask,
+  cancelTask,
+  debugTask,
   executeSql,
   getJobPlan,
   onLineTask
@@ -43,8 +44,8 @@ import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import {
   ApartmentOutlined,
-  CaretRightFilled,
   BugOutlined,
+  CaretRightFilled,
   EnvironmentOutlined,
   FundOutlined,
   MergeCellsOutlined,
@@ -169,7 +170,7 @@ const HeaderContainer = (props: any) => {
       taskId: currentData.id,
       jobName: currentData.name,
       jobState: res.datas.status,
-      runningLog: res.msg,
+      runningLog: res.msg
     });
     messageApi.success(l('pages.datastudio.editor.exec.success'));
     currentData.status = JOB_STATUS.RUNNING;
