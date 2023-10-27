@@ -56,6 +56,7 @@
         <commons-email>1.5</commons-email>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <dinky.flink.version>1.14</dinky.flink.version>
+        <flink.version>1.14.6</flink.version>
         <docker.java.version>3.2.14</docker.java.version>
         <druid-starter>1.2.8</druid-starter>
         <easy.rules.version>4.1.0</easy.rules.version>
