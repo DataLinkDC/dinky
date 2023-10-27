@@ -24,8 +24,7 @@ import {
 } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { StateType } from '@/pages/DataStudio/model';
-import { postAll } from '@/services/api';
-import {handleGetOption, handleGetOptionWithoutMsg} from '@/services/BusinessCrud';
+import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
@@ -238,7 +237,7 @@ const Result = (props: any) => {
       {data.columns ? (
         <Table
           columns={getColumns(data.columns)}
-          size="small"
+          size='small'
           dataSource={data.rowData?.map((item: any, index: number) => {
             return { ...item, key: index };
           })}
