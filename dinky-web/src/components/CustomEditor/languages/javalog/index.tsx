@@ -12,13 +12,18 @@ export function LogLanguage(monaco: any) {
       root: [
         // 默认不区分大小写 //
         [/\[(\w*-\d*)+\]/, 'custom-thread'],
-        [/\s+(\w.+):$/, 'custom-class'],
+        [/(\w+(\.))+(\w+)(\(\d+\))?(:){1}/, 'custom-class'],
+        [/(\w+(\.))+(\w+)(\(\d+\))?\s+/, 'custom-class'],
         [/error/, 'custom-error'],
         [/warring/, 'custom-warning'],
         [/warn/, 'custom-warning'],
         [/info/, 'custom-info'],
         [
           /^[1-9]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\s+(20|21|22|23|[0-1]\d):[0-5]\d:[0-5]\d\.\d{3}/,
+          'custom-date'
+        ],
+        [
+          /[1-9]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\s+(20|21|22|23|[0-1]\d):[0-5]\d:[0-5]\d\s(CST)/,
           'custom-date'
         ]
       ]
