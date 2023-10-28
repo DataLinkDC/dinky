@@ -29,7 +29,7 @@ Its main feature are as follows:
 - Support automatically managed SavePoint/CheckPoint recovery and triggering mechanisms: latest, earliest, specified, etc.
 - Support resource management: Cluster instance, cluster configuration, jar, data source, alarm group, alarm instance, document, global variable, system configuration, etc.
 - Support enterprise-level management: multi-tenant, user, role, project space.
-- More hidden features are waiting for friends to explore.
+- More hidden features await exploration by our users.
 
 ## Principle
 
@@ -88,7 +88,7 @@ See [source code compilation](https://github.com/DataLinkDC/dinky/blob/dev/docs/
 
 ## How to Upgrade
 
-Due to many functions, there are many bugs and optimization points. It is strongly recommended to use or upgrade to the latest version.
+Due to the numerous functionalities, there are several bugs and optimization points that need attention.. It is strongly recommended to use or upgrade to the latest version.
 
 Upgrade steps:
 
@@ -98,9 +98,9 @@ Upgrade steps:
 
 ## Thanks
 
-Standing on the shoulders of giants, Dinky was born. For this we express our heartfelt thanks to all the open source software used and its communities! We also hope that we are not only beneficiaries of open source, but also contributors to open source. We also hope that partners who have the same enthusiasm and belief in open source will join in and contribute to open source together.
+Standing on the shoulders of giants, Dinky was born. For this we express our heartfelt thanks to all the open source software used and its communities! We also hope that we are not only beneficiaries of open source, but also contributors to open source. We also hope that partners who share our enthusiasm and belief in open source will join us in contributing to the open-source community.
 
-A partial list of acknowledgements follows:
+Below is a partial list of acknowledgements:
 
 [Apache Flink](https://github.com/apache/flink)
 
@@ -124,13 +124,13 @@ A partial list of acknowledgements follows:
 
 [SpringBoot]()
 
-Thanks to [JetBrains](https://www.jetbrains.com/?from=dlink) for sponsoring a free open source license.
+Thanks to [JetBrains](https://www.jetbrains.com/?from=dlink) for providing a free open-source license.
 
 [![JetBrains](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/main/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
 
 ## Get Help
 
-1.Create an issue and describe it clearly.
+1.Create an issue and provide a clear description.
 
 2.Visit the [official website](http://www.dlink.top/#/) website to read the latest documentation manual.
 
