@@ -1,19 +1,21 @@
 # Dinky
 
+<div align="center">
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=socialflat-square&)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Total Lines](https://img.shields.io/github/stars/DataLinkDC/dinky?style=socialflat-square&label=stars)](https://github.com/DataLinkDC/dinky/stargazers)
 [![CN doc](https://img.shields.io/badge/文档-中文版-blue.svg?style=socialflat-square&)](README_zh_CN.md)
 [![EN doc](https://img.shields.io/badge/document-English-blue.svg?style=socialflat-square&)](README.md)
+</div>
 
 [![Stargazers over time](https://starchart.cc/DataLinkDC/dinky.svg)](https://starchart.cc/DataLinkDC/dinky)
 
 ## Introduction
 
-Dinky is an out of the box one-stop real-time computing platform dedicated to the construction and practice of Unified Streaming & Batch and Unified Data Lake & Data Warehouse. Based on Apache Flink, Dinky provides the ability to connect many big data frameworks including OLAP and Data Lake.
+Dinky is an out-of-the-box, one-stop, real-time computing platform dedicated to the construction and practice of Unified Streaming & Batch and Unified Data Lake & Data Warehouse. Based on Apache Flink, Dinky provides the ability to connect many big data frameworks including OLAP and Data Lake.
 
 ## Feature
 
-Its main feature are as follows:
+Its main features are as follows:
 
 - Immersive Flink SQL Data Development: Automatic prompt completion, syntax highlighting, statement beautification, online debugging, syntax verification, execution plan, MetaStore, lineage, version comparison, etc.
 - Support FlinkSQL multi-version development and execution modes: Local,Standalone,Yarn/Kubernetes Session,Yarn Per-Job,Yarn/Kubernetes Application.
