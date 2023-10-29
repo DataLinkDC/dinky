@@ -27,11 +27,11 @@
         <profile>
             <id>flink-all</id>
             <modules>
-                <module>dinky-app-1.13</module>
                 <module>dinky-app-1.14</module>
                 <module>dinky-app-1.15</module>
                 <module>dinky-app-1.16</module>
                 <module>dinky-app-1.17</module>
+                <module>dinky-app-1.18</module>
             </modules>
         </profile>
 

@@ -123,50 +123,58 @@ export function getLocalTheme(): string {
  * get code edit theme by localStorage's theme
  * @constructor
  */
-export function convertCodeEditTheme() {
+export function convertCodeEditTheme(editorInstance?: any) {
+  if (!editorInstance) {
+    editorInstance = editor;
+  }
   /**
-   * user can define a new theme by calling the defineTheme method on the editor.
+   * 定义亮色 覆盖vs主题,增加扩展规则
    */
-  editor.defineTheme(CODE_EDIT_THEME.VS_CUSTOME, {
+  editorInstance.defineTheme(CODE_EDIT_THEME.VS, {
     base: 'vs', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
-    inherit: true, // 是否继承基础主题配置 , 默认为 true, is to inherit the base theme
-    // rules is an array of rules. The array must not be sparse (i.e. do not use holes).
+    inherit: true, // 是否继承主题配置
     rules: [
-      { token: 'comment', foreground: '#008800', fontStyle: 'italic' },
-      { token: 'keyword', foreground: '#064cff', fontStyle: 'bold' },
-      { token: 'string', foreground: '#507dee' },
-      { token: 'delimiter', foreground: '#041d81' },
-      {
-        token: 'readonly',
-        foreground: '#e73a6e',
-        background: '#141414',
-        fontStyle: 'italic'
-      },
-      { token: 'number', foreground: '#ffffff' }
+      // 注意,默认的不做修改 因为上边继承了父主题, 只添加自己定义的 , 否则会覆盖默认的 , 导致编辑器样式不一致
+      { token: 'custom-info', foreground: '#808080' },
+      { token: 'custom-thread', foreground: '#07f313' },
+      { token: 'custom-class', foreground: '#1060d9' },
+      { token: 'custom-error', foreground: '#ff0000', fontStyle: 'bold' },
+      { token: 'custom-warning', foreground: '#FFA500', fontStyle: 'bold' },
+      { token: 'custom-date', foreground: '#008800' },
+      { token: 'custom-process', foreground: '#07f313' }
     ],
-    // colors is an object of color identifiers and their color values.
-    colors: {
-      'editor.background': '#2f2e2e', //  editor background color
-      'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
-      'editorLineNumber.foreground': '#ffffff', //   editor line number color
-      'editorCursor.foreground': '#ffffff', //  editor cursor color
-      'editorIndentGuide.background': '#ffffff', //  editor indent guide color
-      'editor.foreground': '#ffffff', //  editor selection highlight border color
-      'editor.selectionBackground': '#4ba1ef', //  editor selection highlight color
-      'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
-      'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
-      'editor.wordHighlightBackground': '#8bb2d2' //  editor word highlight color
-    }
+    colors: {},
+    encodedTokensColors: []
+  });
+
+  /**
+   * 定义暗色 覆盖vs-dark主题,增加扩展规则
+   */
+  editorInstance.defineTheme(CODE_EDIT_THEME.DARK, {
+    base: 'vs-dark', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
+    inherit: true, // 是否继承主题配置
+    rules: [
+      // 注意,默认的不做修改 因为上边继承了父主题, 只添加自己定义的 , 否则会覆盖默认的 , 导致编辑器样式不一致
+      { token: 'custom-info', foreground: '#008800' },
+      { token: 'custom-thread', foreground: '#07f313' },
+      { token: 'custom-class', foreground: '#1060d9' },
+      { token: 'custom-error', foreground: '#ff0000', fontStyle: 'bold' },
+      { token: 'custom-warning', foreground: '#FFA500', fontStyle: 'bold' },
+      { token: 'custom-date', foreground: '#008800' },
+      { token: 'custom-process', foreground: '#07f313' }
+    ],
+    colors: {},
+    encodedTokensColors: []
   });
 
   const theme = getLocalTheme();
   switch (theme) {
     case THEME.dark:
-      return CODE_EDIT_THEME.VS_CUSTOME;
-    case THEME.light:
       return CODE_EDIT_THEME.DARK;
+    case THEME.light:
+      return CODE_EDIT_THEME.VS;
     default:
-      return CODE_EDIT_THEME.HC_BLACK;
+      return CODE_EDIT_THEME.VS;
   }
 }
 

@@ -19,6 +19,7 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import MovableSidebar from '@/components/Sidebar/MovableSidebar';
+import useThemeValue from '@/hooks/useThemeValue';
 import { SseData } from '@/models/Sse';
 import { DataStudioTabsItemType, StateType } from '@/pages/DataStudio/model';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
@@ -30,12 +31,14 @@ import { Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { Key, useEffect, useState } from 'react';
+
 const { Text } = Typography;
 
 export type ConsoleProps = {
   tab: DataStudioTabsItemType;
   height: number;
 };
+
 export interface ProcessStep extends DataNode {
   status: string;
   type: string;
@@ -70,6 +73,7 @@ const ConsoleContent = (props: ConsoleProps) => {
   const { subscribeTopic } = useModel('Sse', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
+  const themeValue = useThemeValue();
 
   const onUpdate = (data: ProcessStep) => {
     setProcessNode((prevState: any) => {
@@ -96,7 +100,12 @@ const ConsoleContent = (props: ConsoleProps) => {
     { onSuccess: async (res) => onUpdate(res) }
   );
   useEffect(() => subscribeTopic([topic], (data: SseData) => onUpdate(data.data)), []);
-  const onSelect = (_selectedKeys: Key[], info: { node: ProcessStep }) => setSelectNode(info.node);
+  const onSelect = (
+    _selectedKeys: Key[],
+    info: {
+      node: ProcessStep;
+    }
+  ) => setSelectNode(info.node);
 
   const renderTitle = (node: any) => {
     const startDate = new Date(node.startTime);
@@ -140,7 +149,11 @@ const ConsoleContent = (props: ConsoleProps) => {
         visible={true}
         enable={{ right: true }}
         headerVisible={false}
-        style={{ borderInlineStart: `1px`, float: 'left' }}
+        style={{
+          float: 'left',
+          borderInlineEnd: `1px solid ${themeValue.borderColor}`,
+          paddingInline: 10
+        }}
       >
         {processNode ? (
           <DirectoryTree
@@ -156,12 +169,13 @@ const ConsoleContent = (props: ConsoleProps) => {
           <Empty />
         )}
       </MovableSidebar>
-      <div>
+      <div style={{ display: 'inline', width: 1500 }}>
         <CodeShow
           code={selectNode?.log ? selectNode.log : ''}
           height={props.height - 53}
-          language={'kotlin'}
+          language={'javalog'}
           lineNumbers={'off'}
+          autoWrap={'off'}
           //TODO 按钮显示有问题，先注释
           // showFloatButton
         />

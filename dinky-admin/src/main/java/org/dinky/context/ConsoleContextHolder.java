@@ -24,6 +24,7 @@ import org.dinky.data.enums.ProcessStatus;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.ProcessType;
 import org.dinky.data.enums.SseTopic;
+import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.ProcessEntity;
@@ -75,6 +76,9 @@ public class ConsoleContextHolder {
     }
 
     public ProcessEntity getProcess(String processName) {
+        if (logPross.containsKey(processName)) {
+            return logPross.get(processName);
+        }
         try {
             String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
             String string = FileUtil.readString(filePath, StandardCharsets.UTF_8);
@@ -120,14 +124,14 @@ public class ConsoleContextHolder {
      */
     public void registerProcess(ProcessType type, String processName) throws RuntimeException {
         if (logPross.containsKey(processName)) {
-            throw new BusException("Another user is running an action to suppress this request");
+            throw new BusException(Status.PROCESS_REGISTER_EXITS);
         }
         ProcessEntity entity = ProcessEntity.builder()
                 .key(UUID.fastUUID().toString())
                 .log(new StringBuilder())
                 .status(ProcessStatus.INITIALIZING)
                 .type(type)
-                .title(processName)
+                .title(type.getValue())
                 .startTime(LocalDateTime.now())
                 .children(new CopyOnWriteArrayList<>())
                 .build();

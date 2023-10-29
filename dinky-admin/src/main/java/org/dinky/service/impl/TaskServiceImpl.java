@@ -160,8 +160,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 .url(dsProperties.getUrl())
                 .username(dsProperties.getUsername())
                 .password(dsProperties.getPassword())
-                .dinkyAddr(SystemConfiguration.getInstances().getDinkyAddr().getValue())
-                .split(SystemConfiguration.getInstances().getSqlSeparator())
                 .build();
         String encodeParam = Base64.getEncoder()
                 .encodeToString(JsonUtils.toJsonString(appParamConfig).getBytes());
@@ -179,7 +177,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 && task.getJobInstanceId() > 0) {
             JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
             if (jobInstance != null && !JobStatus.isDone(jobInstance.getStatus())) {
-                throw new TaskNotDoneException(Status.TASK_STATUS_IS_NOT_DONE.getMessage());
+                throw new BusException(Status.TASK_STATUS_IS_NOT_DONE.getMessage());
             }
         }
 
@@ -327,6 +325,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean cancelTaskJob(TaskDTO task) {
+        if (Dialect.isCommonSql(task.getDialect())) {
+            return true;
+        }
         JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
         Assert.notNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
         ClusterInstance clusterInstance = clusterInstanceService.getById(jobInstance.getClusterId());

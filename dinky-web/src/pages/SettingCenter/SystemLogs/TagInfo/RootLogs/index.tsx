@@ -27,7 +27,8 @@ const CodeEditProps = {
   height: '82vh',
   width: '100%',
   lineNumbers: 'on',
-  language: 'java'
+  language: 'javalog',
+  autoWrap: 'off'
 };
 const RootLogs = () => {
   const [code, setCode] = useState<string>('');

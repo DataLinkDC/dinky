@@ -24,8 +24,7 @@ import {
 } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { StateType } from '@/pages/DataStudio/model';
-import { postAll } from '@/services/api';
-import { handleGetOption } from '@/services/BusinessCrud';
+import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
@@ -142,18 +141,18 @@ const Result = (props: any) => {
       } else {
         // flink sql
         // to do: get job data by history id list, not flink jid
-        if (current.jobInstanceId) {
-          const res = await postAll(API_CONSTANTS.GET_JOB_BY_ID, {
-            id: current.jobInstanceId
+        console.log(current);
+        if (current.id) {
+          const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
+            id: current.id
           });
-          const jobData = res.datas;
-          if ('unknown' !== jobData.status.toLowerCase()) {
-            const jid = jobData.jid;
+          const historyData = res.datas;
+          if ('2' == historyData.status) {
+            const historyId = historyData.id;
             const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', {
-              jobId: jid
+              jobId: historyId
             });
             const datas = tableData.datas;
-            datas.jid = jid;
             if (datas.success) {
               params.resultData = datas;
               setData(datas);
@@ -238,6 +237,7 @@ const Result = (props: any) => {
       {data.columns ? (
         <Table
           columns={getColumns(data.columns)}
+          size='small'
           dataSource={data.rowData?.map((item: any, index: number) => {
             return { ...item, key: index };
           })}
