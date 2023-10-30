@@ -17,7 +17,7 @@
  *
  */
 
-import {getCurrentData, getCurrentTab} from '@/pages/DataStudio/function';
+import { getCurrentData } from '@/pages/DataStudio/function';
 import { StateType, TaskDataType } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
 import { Descriptions } from 'antd';

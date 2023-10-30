@@ -18,6 +18,7 @@
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
+import { getTabByTaskId } from '@/pages/DataStudio/function';
 import {
   FOLDER_RIGHT_MENU,
   JOB_RIGHT_MENU
@@ -25,7 +26,7 @@ import {
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
-import {DataStudioParams, StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC} from '@/pages/DataStudio/model';
+import { StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import {
   handleAddOrUpdate,
   handleOption,
@@ -41,7 +42,6 @@ import { Modal, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { Key, useEffect, useState } from 'react';
 import { connect } from 'umi';
-import {getCurrentTab, getTabByTaskId, mapDispatchToProps} from "@/pages/DataStudio/function";
 
 const { Text } = Typography;
 
@@ -165,8 +165,8 @@ const Project: React.FC = (props: connect) => {
       options.parentId = projectState.isCreateTask
         ? projectState.value.id
         : projectState.isEdit
-          ? projectState.value.parentId
-          : options.parentId;
+        ? projectState.value.parentId
+        : options.parentId;
     } else {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL;
     }
@@ -185,21 +185,21 @@ const Project: React.FC = (props: connect) => {
         }));
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         if (projectState.isEdit) {
-          const {id} = values;
-          const currentTabs = getTabByTaskId(panes, id)
-          if(currentTabs){
+          const { id } = values;
+          const currentTabs = getTabByTaskId(panes, id);
+          if (currentTabs) {
             currentTabs.label = values.name;
             // currentTabs.params.taskData.name = values.name;
-            const {params} = currentTabs;
-            const {taskData} = params;
-            if(taskData){
+            const { params } = currentTabs;
+            const { taskData } = params;
+            if (taskData) {
               taskData.name = values.name;
             }
           }
-          dispatch({ type: STUDIO_MODEL.saveTabs, payload: { ...props.tabs }});
+          dispatch({ type: STUDIO_MODEL.saveTabs, payload: { ...props.tabs } });
           // update active breadcrumb title
-          if(activeKey === currentTabs?.key){
-            dispatch({ type: STUDIO_MODEL.updateTabsActiveKey, payload: activeKey});
+          if (activeKey === currentTabs?.key) {
+            dispatch({ type: STUDIO_MODEL.updateTabsActiveKey, payload: activeKey });
           }
         }
         // close job modal by project state
