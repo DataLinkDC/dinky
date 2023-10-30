@@ -54,7 +54,8 @@
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
         <clickhouse.version>0.2.6</clickhouse.version>
         <commons-email>1.5</commons-email>
-        <commons-jexl3>3.3</commons-jexl3>
+        <!--    jexl cannot be upgraded to 3.3, and static methods need to be used.(jexl不能升级到3.3，需要使用到静态方法的使用)    -->
+        <commons-jexl3>3.2.1</commons-jexl3>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <dinky.flink.version>1.14</dinky.flink.version>
         <docker.java.version>3.2.14</docker.java.version>
