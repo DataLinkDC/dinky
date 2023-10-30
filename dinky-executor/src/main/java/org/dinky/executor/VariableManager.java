@@ -53,7 +53,6 @@ import cn.hutool.extra.expression.engine.jexl.JexlEngine;
  * @since 2021/6/7 22:06
  */
 public final class VariableManager {
-
     public static final String VARIABLE = "variable";
     static final String SHOW_VARIABLES = "SHOW VARIABLES";
     private final Map<String, String> variables;
@@ -92,17 +91,10 @@ public final class VariableManager {
      *
      * @param variableName name under which to register the given sql variable
      * @param variable     a variable of sql to register
-     * @throws CatalogException if the registration of the sql variable under the given name failed.
-     *                          But at the moment, with CatalogException, not SqlException
      */
     public void registerVariable(String variableName, String variable) {
         checkArgument(!StringUtils.isNullOrWhitespaceOnly(variableName), "sql variable name cannot be null or empty.");
         checkNotNull(variable, "sql variable cannot be null");
-
-        if (variables.containsKey(variableName)) {
-            throw new CatalogException(format("The variable of sql %s already exists.", variableName));
-        }
-
         variables.put(variableName, variable);
     }
 

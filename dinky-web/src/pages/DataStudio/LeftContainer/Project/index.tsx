@@ -39,7 +39,7 @@ import { ProjectState } from '@/types/Studio/state.d';
 import { l } from '@/utils/intl';
 import { Modal, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
-import React, { useEffect, useState } from 'react';
+import React, {Key, useEffect, useState} from 'react';
 import { connect } from 'umi';
 
 const { Text } = Typography;
@@ -120,6 +120,7 @@ const Project: React.FC = (props: connect) => {
           taskId: taskId
         },
         type: 'project',
+        console: {},
         subType: type
       }
     });
@@ -353,6 +354,7 @@ const Project: React.FC = (props: connect) => {
   return (
     <div style={{ paddingInline: 5 }}>
       <JobTree
+        selectKeyChange={(keys: Key[]) => setProjectState((prevState) => ({ ...prevState, selectedKeys: keys }))}
         selectedKeys={projectState.selectedKeys}
         onRightClick={handleRightClick}
         onNodeClick={(info: any) => onNodeClick(info)}

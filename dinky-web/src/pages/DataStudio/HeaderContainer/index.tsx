@@ -152,6 +152,7 @@ const HeaderContainer = (props: any) => {
     });
     messageApi.success(l('pages.datastudio.editor.debug.success'));
     currentData.status = JOB_STATUS.RUNNING;
+    if (currentTab) currentTab.console.result = res.datas.result;
     saveTabs({ ...props.tabs });
   };
 

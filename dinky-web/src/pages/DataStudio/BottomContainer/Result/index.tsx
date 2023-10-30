@@ -126,8 +126,9 @@ const Result = (props: any) => {
     }
 
     const params = currentTabs.params;
-    if (params.resultData && !isRefresh) {
-      setData(params.resultData);
+    const consoleData = currentTabs.console;
+    if (consoleData.result && !isRefresh) {
+      setData(consoleData.result);
     } else {
       if (isSql(current.dialect)) {
         // common sql
@@ -135,13 +136,12 @@ const Result = (props: any) => {
           taskId: params.taskId
         });
         if (res.datas) {
-          params.resultData = res.datas;
+          consoleData.result = res.datas;
           setData(res.datas);
         }
       } else {
         // flink sql
         // to do: get job data by history id list, not flink jid
-        console.log(current);
         if (current.id) {
           const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
             id: current.id
@@ -154,10 +154,10 @@ const Result = (props: any) => {
             });
             const datas = tableData.datas;
             if (datas.success) {
-              params.resultData = datas;
+              consoleData.result = datas;
               setData(datas);
             } else {
-              params.resultData = {};
+              consoleData.result = {};
               setData({});
             }
           }
@@ -170,7 +170,7 @@ const Result = (props: any) => {
   useEffect(() => {
     setData({});
     loadData();
-  }, [currentTabs]);
+  }, [currentTabs, currentTabs?.console.result]);
 
   const getColumns = (columns: string[]) => {
     return columns?.map((item) => {

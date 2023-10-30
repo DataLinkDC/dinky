@@ -83,25 +83,6 @@ export const buildProjectTree = (
         const currentPath = path ? [...path, item.name] : [item.name];
         // 构造生命周期的值
         const stepValue = buildStepValue(item.task?.step);
-        // 渲染生命周期的徽标
-        const renderStepBadge = item.isLeaf && showBadge(item.type) && (
-          <>
-            <Badge.Ribbon
-              style={{
-                top: -14,
-                left: -57,
-                width: '56px',
-                height: '18px',
-                fontSize: '6px',
-                lineHeight: '18px'
-              }}
-              key={item.id}
-              placement={'start'}
-              text={stepValue.title}
-              color={stepValue.color}
-            />
-          </>
-        );
         // 渲染生命周期的 标记点
         const renderPreFixState = item.isLeaf && showBadge(item.type) && (
           <>
@@ -116,7 +97,6 @@ export const buildProjectTree = (
         const renderTitle = (
           <>
             <Space align={'baseline'} size={2}>
-              {renderStepBadge}
               {searchTreeNode(item.name, searchValue)}
             </Space>
           </>
@@ -138,7 +118,7 @@ export const buildProjectTree = (
           type: item.type,
           title: (
             <>
-              {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(16)}</>} {renderTitle}
+              {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(2)}</>} {renderTitle}
             </>
           ),
           fullInfo: item,

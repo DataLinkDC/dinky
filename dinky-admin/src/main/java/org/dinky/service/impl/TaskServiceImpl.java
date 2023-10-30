@@ -266,8 +266,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
-        taskServiceBean.preCheckTask(taskDTO);
-
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
 
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
@@ -288,16 +286,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         initTenantByTaskId(debugDTO.getId());
 
         TaskDTO taskDTO = this.getTaskInfoById(debugDTO.getId());
-        taskDTO.setUseResult(debugDTO.isUseResult());
+        // Debug mode need return result
+        taskDTO.setUseResult(true);
         taskDTO.setUseChangeLog(debugDTO.isUseChangeLog());
         taskDTO.setUseAutoCancel(debugDTO.isUseAutoCancel());
         taskDTO.setMaxRowNum(debugDTO.getMaxRowNum());
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
-        taskServiceBean.preCheckTask(taskDTO);
-
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
-
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
             log.info("Job debug success");
             Task task = new Task(debugDTO.getId(), jobResult.getJobInstanceId());
