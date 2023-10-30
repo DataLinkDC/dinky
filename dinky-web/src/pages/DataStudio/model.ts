@@ -126,6 +126,7 @@ export type TaskDataBaseType = {
   step: number;
   // Only common sql has(只有普通sql才有)
   databaseId?: number;
+  envId?: number;
 };
 
 export type TaskDataType = TaskDataBaseType & Record<string, any>;

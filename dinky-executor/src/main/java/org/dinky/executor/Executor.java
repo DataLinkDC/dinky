@@ -89,7 +89,7 @@ public abstract class Executor {
     protected Map<String, Object> setConfig = new HashMap<>();
 
     // Dinky variable manager
-    protected VariableManager variableManager = new VariableManager();
+    protected VariableManager variableManager = VariableManager.INSTANCE;
 
     public VariableManager getVariableManager() {
         return variableManager;

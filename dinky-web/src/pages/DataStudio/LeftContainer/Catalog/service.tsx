@@ -27,6 +27,6 @@ export async function getMSSchemaInfo(params: StudioMetaStoreParam) {
 export async function getMSCatalogs(params: StudioMetaStoreParam) {
   return (await postAll('/api/studio/getMSCatalogs', params)).datas;
 }
-export async function getMSFlinkColumns(params: StudioMetaStoreParam) {
-  return (await getDataByParamsReturnResult('/api/studio/getMSFlinkColumns', params)).datas;
+export async function getMSColumns(params: StudioMetaStoreParam) {
+  return (await postAll('/api/studio/getMSColumns', params)).datas;
 }
