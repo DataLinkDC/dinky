@@ -152,7 +152,7 @@ export interface TabsItemType {
   type: TabsPageType;
   subType?: TabsPageSubType;
   key: string;
-  treeKey: string;
+  treeKey: number;
   value: string;
   icon: any;
   closable: boolean;

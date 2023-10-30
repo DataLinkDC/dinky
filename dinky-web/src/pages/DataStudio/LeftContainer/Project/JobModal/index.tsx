@@ -100,12 +100,13 @@ const JobModal: React.FC<JobModalProps> = (props) => {
       formData.configJson.udfConfig.templateId = selectKeys[selectKeys.length - 1];
     }
     onSubmit({ ...values, ...formData } as Catalogue);
+
   };
 
   const renderForm = () => {
     return (
       <>
-        <ProFormSelect
+        {!values.id && <ProFormSelect
           name={'type'}
           label={l('catalog.type')}
           tooltip={l('catalog.type.tip')}
@@ -114,7 +115,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
           disabled={!!values.id}
           placeholder={l('catalog.type.placeholder')}
           rules={[{ required: true, message: l('catalog.type.placeholder') }]}
-        />
+        />}
         <ProFormText
           name='name'
           label={l('catalog.name')}
