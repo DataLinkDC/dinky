@@ -101,7 +101,6 @@ export type TaskType = {
   session: string;
   maxRowNum: number;
   jobName: string;
-  useResult: boolean;
   useChangeLog: boolean;
   useAutoCancel: boolean;
 };
@@ -133,7 +132,6 @@ export type TaskDataType = TaskDataBaseType & Record<string, any>;
 export type DataStudioParams = {
   taskId: number;
   taskData: TaskDataType;
-  resultData: Record<string, any>;
 };
 
 export enum TabsPageType {

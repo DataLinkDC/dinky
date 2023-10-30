@@ -43,6 +43,7 @@ type TreeProps = {
   onRightClick: (info: any) => void;
   style?: React.CSSProperties;
   selectedKeys: Key[];
+  selectKeyChange: (keys: Key[]) => void;
 };
 
 const JobTree: React.FC<TreeProps & connect> = (props) => {
@@ -52,7 +53,8 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     style,
     height,
     onRightClick,
-    selectedKeys: selectedKey
+    selectKeyChange,
+    selectedKeys
   } = props;
 
   const [searchValue, setSearchValueValue] = useState('');
@@ -64,7 +66,6 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
   const [expandedKeys, setExpandedKeys] = useState<Key[]>();
   const [autoExpandParent, setAutoExpandParent] = useState(true);
-  const [selectedKeys, setSelectedKeys] = useState(selectedKey);
   const onChangeSearch = (e: any) => {
     let { value } = e.target;
     if (!value) {
@@ -110,7 +111,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
         .filter((item: any, i: number, self: any) => item && self.indexOf(item) === i);
       setExpandedKeys(expandedKeys);
       setAutoExpandParent(true);
-      setSelectedKeys([treeKey]);
+      selectKeyChange([treeKey])
     }
   };
 

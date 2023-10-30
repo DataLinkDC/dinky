@@ -145,7 +145,8 @@ public class Job2MysqlHandler implements JobHandler {
                 clusterId = clusterInstance.getId();
             }
         } else if (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
-                && Asserts.isNotNullString(job.getJobManagerAddress())) {
+                && Asserts.isNotNullString(job.getJobManagerAddress())
+                && Asserts.isNotNullString(job.getJobId())) {
             clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
                     job.getJobManagerAddress(),
                     job.getJobId(),
