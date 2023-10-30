@@ -20,6 +20,7 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.dto.RoleDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Role;
 import org.dinky.data.model.RowPermissions;
@@ -77,7 +78,9 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result<Void> addedOrUpdateRole(Role role) {
+    public Result<Void> addedOrUpdateRole(RoleDTO roleDTO) {
+        Role role = roleDTO.toBean();
+
         if (Asserts.isNull(role.getId())) {
             Role roleCode =
                     roleService.getOne(new LambdaQueryWrapper<Role>().eq(Role::getRoleCode, role.getRoleCode()));
