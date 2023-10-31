@@ -415,6 +415,12 @@ export default {
   'pages.metadata.DataSearch': 'Data Search',
   'pages.metadata.selectDatabase': 'Select Database',
   'pages.task.savePointPath': 'SavePoint Path',
+
+  'pages.datastudio.catalog.catalogSelect': 'Please select catalog & database',
+  'pages.datastudio.catalog.tableInfo': 'Table Info',
+  'pages.datastudio.catalog.fieldInformation': 'Field Information',
+  'pages.datastudio.catalog.selectDatasource': 'Select Datasource',
+  'pages.datastudio.catalog.openMission': 'Open Mission',
   /**
    *
    * rc

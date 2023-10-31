@@ -394,10 +394,11 @@ export default {
   'pages.datastudio.label.version.rollback.flinksqlConfirm':
     '确定回滚Flink SQL版本至【{versionId}】吗？',
 
-  'pages.datastudio.catalog.flinkSqlEnvSelect': '请选择 FlinkSqlEnv',
   'pages.datastudio.catalog.catalogSelect': '请选择 catalog & database',
   'pages.datastudio.catalog.tableInfo': '表信息',
   'pages.datastudio.catalog.fieldInformation': '字段信息',
+  'pages.datastudio.catalog.selectDatasource': '请选择数据源',
+  'pages.datastudio.catalog.openMission': '请打开任务',
 
   'pages.datastudio.print.table.inputTableName': '请选择表名',
   'pages.devops.jobinfo.localenv': '本地环境',
