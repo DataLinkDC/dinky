@@ -18,12 +18,11 @@
  */
 
 import {TableDataNode} from '@/pages/DataStudio/LeftContainer/Catalog/data';
-import {MetaStoreTableType, StateType} from '@/pages/DataStudio/model';
+import {StateType} from '@/pages/DataStudio/model';
 import {BtnRoute} from '@/pages/DataStudio/route';
 import ColumnInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/ColumnInfo';
 import TableInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/TableInfo';
 import {l} from '@/utils/intl';
-import {connect} from '@@/exports';
 import {
     AppstoreOutlined,
     BlockOutlined,
@@ -41,6 +40,7 @@ import {getMSCatalogs, getMSColumns, getMSSchemaInfo} from './service';
 import {getCurrentData} from "@/pages/DataStudio/function";
 import {DIALECT} from "@/services/constants";
 import {isSql} from "@/pages/DataStudio/HeaderContainer/service";
+import {connect} from "@umijs/max";
 
 const Catalog: React.FC = (props: connect) => {
     const {tabs} = props;
@@ -82,7 +82,7 @@ const Catalog: React.FC = (props: connect) => {
 
     useEffect(() => {
         getCatalogs();
-    }, [envId]);
+    }, [envId,databaseId]);
 
     useEffect(() => {
         if (table) {
@@ -275,7 +275,7 @@ const Catalog: React.FC = (props: connect) => {
         onRefreshTreeData(value);
     };
 
-    const openColumnInfo = (e: React.MouseEvent, node: TableDataNode) => {
+    const openColumnInfo = (_e: React.MouseEvent, node: TableDataNode) => {
         if (node.isLeaf && node.isTable) {
             setTable(node.name);
             setRow(node);
