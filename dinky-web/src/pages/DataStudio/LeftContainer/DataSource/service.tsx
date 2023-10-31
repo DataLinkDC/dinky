@@ -17,26 +17,28 @@
  *
  */
 
-import { getCurrentTab } from '@/pages/DataStudio/function';
-import { StateType, TabsPageSubType } from '@/pages/DataStudio/model';
-import ExecuteConfigCommonSql from '@/pages/DataStudio/RightContainer/ExecuteConfig/CommonSql';
-import ExecuteConfigFlinkSql from '@/pages/DataStudio/RightContainer/ExecuteConfig/FlinkSql';
-import { connect } from 'umi';
+import { handleGetOption, queryDataByParams } from '@/services/BusinessCrud';
+import { l } from '@/utils/intl';
 
-const ExecuteConfig = (props: any) => {
-  const {
-    tabs: { panes, activeKey }
-  } = props;
-  const current = getCurrentTab(panes, activeKey);
-  {
-    if (current?.subType === TabsPageSubType.flinkSql) {
-      return <ExecuteConfigFlinkSql />;
-    } else {
-      return <ExecuteConfigCommonSql />;
-    }
+/*--- 刷新 元数据表 ---*/
+export async function showDataSourceTable(id: number) {
+  try {
+    const result = await handleGetOption(
+      'api/database/getSchemasAndTables',
+      l('pages.metadata.DataSearch'),
+      { id: id }
+    );
+    return result?.data;
+  } catch (e) {
+    console.error(e);
+    return null;
   }
-};
+}
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs
-}))(ExecuteConfig);
+/*--- 清理 元数据表缓存 ---*/
+export function clearDataSourceTable(id: number) {
+  return queryDataByParams('api/database/unCacheSchemasAndTables', { id: id });
+}
+export function getDataSourceList() {
+  return queryDataByParams('api/database/listEnabledAll');
+}

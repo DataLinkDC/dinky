@@ -67,8 +67,8 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
     }
 
     getData(API_CONSTANTS.READ_CHECKPOINT, { path: selectPath, operatorId: id }).then((res) => {
-      const genData = Object.keys(res.datas).map((x) => {
-        const datum = res.datas[x];
+      const genData = Object.keys(res.data).map((x) => {
+        const datum = res.data[x];
         return {
           key: x,
           label: x,
@@ -80,7 +80,7 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
                   label: y,
                   children: (
                     <Table
-                      dataSource={datum[y].datas}
+                      dataSource={datum[y].data}
                       columns={(datum[y].headers as string[]).map((z) => {
                         return {
                           title: z,

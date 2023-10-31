@@ -22,13 +22,13 @@ import { getData, putDataAsArray } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 
 export async function getMetricsLayout(params: {}) {
-  return (await getData(API_CONSTANTS.METRICS_LAYOUT_GET_BY_NAME, params)).datas;
+  return (await getData(API_CONSTANTS.METRICS_LAYOUT_GET_BY_NAME, params)).data;
 }
 
 export async function getMetricsData(params: {}) {
-  return (await getData(API_CONSTANTS.MONITOR_GET_FLINK_DATA, params)).datas;
+  return (await getData(API_CONSTANTS.MONITOR_GET_FLINK_DATA, params)).data;
 }
 
 export async function putMetricsLayout(layoutName: string, params: JobMetricsItem[]) {
-  return (await putDataAsArray(API_CONSTANTS.SAVE_FLINK_METRICS + layoutName, params)).datas;
+  return (await putDataAsArray(API_CONSTANTS.SAVE_FLINK_METRICS + layoutName, params)).data;
 }

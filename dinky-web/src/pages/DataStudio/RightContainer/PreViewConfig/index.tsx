@@ -17,28 +17,26 @@
  *
  */
 
-import { handleGetOption, queryDataByParams } from '@/services/BusinessCrud';
-import { l } from '@/utils/intl';
+import { getCurrentTab } from '@/pages/DataStudio/function';
+import { StateType, TabsPageSubType } from '@/pages/DataStudio/model';
+import ExecuteConfigCommonSql from '@/pages/DataStudio/RightContainer/PreViewConfig/CommonSql';
+import ExecuteConfigFlinkSql from '@/pages/DataStudio/RightContainer/PreViewConfig/FlinkSql';
+import { connect } from 'umi';
 
-/*--- 刷新 元数据表 ---*/
-export async function showMetaDataTable(id: number) {
-  try {
-    const result = await handleGetOption(
-      'api/database/getSchemasAndTables',
-      l('pages.metadata.DataSearch'),
-      { id: id }
-    );
-    return result?.datas;
-  } catch (e) {
-    console.error(e);
-    return null;
+const PreViewConfig = (props: any) => {
+  const {
+    tabs: { panes, activeKey }
+  } = props;
+  const current = getCurrentTab(panes, activeKey);
+  {
+    if (current?.subType === TabsPageSubType.flinkSql) {
+      return <ExecuteConfigFlinkSql />;
+    } else {
+      return <ExecuteConfigCommonSql />;
+    }
   }
-}
+};
 
-/*--- 清理 元数据表缓存 ---*/
-export function clearMetaDataTable(id: number) {
-  return queryDataByParams('api/database/unCacheSchemasAndTables', { id: id });
-}
-export function getDataBase() {
-  return queryDataByParams('api/database/listEnabledAll');
-}
+export default connect(({ Studio }: { Studio: StateType }) => ({
+  tabs: Studio.tabs
+}))(PreViewConfig);

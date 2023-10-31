@@ -157,7 +157,7 @@ const UserProTable = () => {
         id: value.id
       }).then((res) => {
         const {
-          datas: { user, originalPassword }
+          data: { user, originalPassword }
         } = res;
         SuccessMessage(
           l('user.resetPasswordSuccess', '', {

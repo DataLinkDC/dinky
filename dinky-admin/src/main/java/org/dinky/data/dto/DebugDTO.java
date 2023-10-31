@@ -40,13 +40,6 @@ public class DebugDTO {
     private Integer id;
 
     @ApiModelProperty(
-            value = "Use Result",
-            dataType = "boolean",
-            example = "true",
-            notes = "Flag indicating whether to preview table result")
-    private boolean useResult = true;
-
-    @ApiModelProperty(
             value = "Use ChangeLog",
             dataType = "boolean",
             example = "false",

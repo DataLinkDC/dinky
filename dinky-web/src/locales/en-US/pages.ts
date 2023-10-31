@@ -350,7 +350,6 @@ export default {
   'pages.datastudio.help.sqlChanged': 'Sql context or configure changed',
   'pages.datastudio.help.sqlChangedPrompt':
     'the remote context is not the same as the current page , will the data be flushed?',
-  'pages.datastudio.label.execConfig': 'Execution Config',
   'pages.datastudio.label.execConfig.autostop': 'AutoStop',
   'pages.datastudio.label.execConfig.autostop.tip':
     'Enable autostop, it will automatically stop the task after capturing the maximum number of records',
@@ -361,9 +360,6 @@ export default {
   'pages.datastudio.label.execConfig.selectDatabase.tip': 'Select the database to be used',
   'pages.datastudio.label.execConfig.maxrow': 'Maximum number of rows',
   'pages.datastudio.label.execConfig.maxrow.tip': 'The maximum number of rows of preview data',
-  'pages.datastudio.label.execConfig.preview.result': 'Preview Result',
-  'pages.datastudio.label.execConfig.preview.result.tip':
-    'Open the preview result, it will run synchronously and return the data result',
   'pages.datastudio.label.jobConfig': 'Job Config',
   'pages.datastudio.label.jobConfig.addConfig': 'Add Config item',
   'pages.datastudio.label.jobConfig.addConfig.params': 'parameters',

@@ -338,7 +338,6 @@ export default {
   'pages.datastudio.sql.cacheConfigItem': '本地缓存配置',
   'pages.datastudio.sql.serverConfigItem': '服务端配置',
 
-  'pages.datastudio.label.execConfig': '执行配置',
   'pages.datastudio.label.execConfig.autostop': '自动停止',
   'pages.datastudio.label.execConfig.autostop.tip':
     '开启自动停止，将在捕获最大行数记录后自动停止任务',
@@ -349,8 +348,6 @@ export default {
   'pages.datastudio.label.execConfig.selectDatabase.tip': '选择 Sql 语句执行的数据源',
   'pages.datastudio.label.execConfig.maxrow': '最大行数',
   'pages.datastudio.label.execConfig.maxrow.tip': '预览数据的最大行数',
-  'pages.datastudio.label.execConfig.preview.result': '预览结果',
-  'pages.datastudio.label.execConfig.preview.result.tip': '开启预览结果，将同步运行并返回数据结果',
   'pages.datastudio.label.jobConfig': '作业配置',
   'pages.datastudio.label.jobConfig.addConfig': '添加配置项',
   'pages.datastudio.label.jobConfig.addConfig.params': '参数',

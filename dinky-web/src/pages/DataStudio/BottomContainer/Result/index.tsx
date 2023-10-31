@@ -44,13 +44,12 @@ type Data = {
 };
 const Result = (props: any) => {
   const {
-    saveTabs,
     tabs: { panes, activeKey }
   } = props;
   const [data, setData] = useState<Data>({});
   const [loading, setLoading] = useState<boolean>(true);
   const currentTabs = getCurrentTab(panes, activeKey);
-  const current = getCurrentData(panes, activeKey) ?? [];
+  const current = getCurrentData(panes, activeKey) ?? {};
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -126,38 +125,38 @@ const Result = (props: any) => {
     }
 
     const params = currentTabs.params;
-    if (params.resultData && !isRefresh) {
-      setData(params.resultData);
+    const consoleData = currentTabs.console;
+    if (consoleData.result && !isRefresh) {
+      setData(consoleData.result);
     } else {
       if (isSql(current.dialect)) {
         // common sql
         const res = await handleGetOption('api/studio/getCommonSqlData', 'Get Data', {
           taskId: params.taskId
         });
-        if (res.datas) {
-          params.resultData = res.datas;
-          setData(res.datas);
+        if (res.data) {
+          consoleData.result = res.data;
+          setData(res.data);
         }
       } else {
         // flink sql
         // to do: get job data by history id list, not flink jid
-        console.log(current);
         if (current.id) {
           const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
             id: current.id
           });
-          const historyData = res.datas;
+          const historyData = res.data;
           if ('2' == historyData.status) {
             const historyId = historyData.id;
             const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', {
               jobId: historyId
             });
-            const datas = tableData.datas;
-            if (datas.success) {
-              params.resultData = datas;
-              setData(datas);
+            const data = tableData.data;
+            if (data.success) {
+              consoleData.result = data;
+              setData(data);
             } else {
-              params.resultData = {};
+              consoleData.result = {};
               setData({});
             }
           }
@@ -170,7 +169,7 @@ const Result = (props: any) => {
   useEffect(() => {
     setData({});
     loadData();
-  }, [currentTabs]);
+  }, [currentTabs, currentTabs?.console.result]);
 
   const getColumns = (columns: string[]) => {
     return columns?.map((item) => {

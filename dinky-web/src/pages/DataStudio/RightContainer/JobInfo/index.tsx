@@ -27,16 +27,15 @@ import { connect } from 'umi';
 
 const JobInfo = (props: any) => {
   const {
-    tabs: { panes, activeKey }
+    tabs: { panes, activeKey, activeBreadcrumbTitle }
   } = props;
-
   const [currentInfo, setCurrentInfo] = useState<Partial<TaskDataType>>(
     getCurrentData(panes, activeKey) ?? {}
   );
 
   useEffect(() => {
-    setCurrentInfo({ ...currentInfo, ...getCurrentData(panes, activeKey) });
-  }, [activeKey, panes]);
+    setCurrentInfo({ ...getCurrentData(panes, activeKey) });
+  }, [activeKey, activeBreadcrumbTitle]);
 
   return (
     <div style={{ paddingInline: 8 }}>

@@ -101,7 +101,6 @@ export type TaskType = {
   session: string;
   maxRowNum: number;
   jobName: string;
-  useResult: boolean;
   useChangeLog: boolean;
   useAutoCancel: boolean;
 };
@@ -134,7 +133,6 @@ export type TaskDataType = TaskDataBaseType & Record<string, any>;
 export type DataStudioParams = {
   taskId: number;
   taskData: TaskDataType;
-  resultData: Record<string, any>;
 };
 
 export enum TabsPageType {
@@ -155,7 +153,7 @@ export interface TabsItemType {
   type: TabsPageType;
   subType?: TabsPageSubType;
   key: string;
-  treeKey: string;
+  treeKey: number;
   value: string;
   icon: any;
   closable: boolean;
@@ -308,6 +306,8 @@ export type ModelType = {
     updateBottomHeight: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
     saveProject: Reducer<StateType>;
+    updateProjectExpandKey: Reducer<StateType>;
+    updateProjectSelectKey: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
     closeTab: Reducer<StateType>;
     removeTag: Reducer<StateType>;
@@ -545,6 +545,20 @@ const Model: ModelType = {
         project: { ...state.project, data: payload }
       };
     },
+
+    updateProjectExpandKey(state, { payload }) {
+      return {
+        ...state,
+        project: { ...state.project, expandKeys: payload }
+      };
+    },
+    updateProjectSelectKey(state, { payload }) {
+      return {
+        ...state,
+        project: { ...state.project, selectKey: payload }
+      };
+    },
+
     /**
      * flink config options
      */

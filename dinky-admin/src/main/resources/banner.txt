@@ -7,6 +7,6 @@
                                   \__.'
 
 
-Version: @project.version@
+Version: @revision@
 Github:  https://github.com/DataLinkDC/dinky
 公众号:   Dinky 开源

@@ -105,16 +105,18 @@ const JobModal: React.FC<JobModalProps> = (props) => {
   const renderForm = () => {
     return (
       <>
-        <ProFormSelect
-          name={'type'}
-          label={l('catalog.type')}
-          tooltip={l('catalog.type.tip')}
-          options={JOB_TYPE}
-          initialValue={JOB_TYPE[0]['options'][0]['value']}
-          disabled={!!values.id}
-          placeholder={l('catalog.type.placeholder')}
-          rules={[{ required: true, message: l('catalog.type.placeholder') }]}
-        />
+        {!values.id && (
+          <ProFormSelect
+            name={'type'}
+            label={l('catalog.type')}
+            tooltip={l('catalog.type.tip')}
+            options={JOB_TYPE}
+            initialValue={JOB_TYPE[0]['options'][0]['value']}
+            disabled={!!values.id}
+            placeholder={l('catalog.type.placeholder')}
+            rules={[{ required: true, message: l('catalog.type.placeholder') }]}
+          />
+        )}
         <ProFormText
           name='name'
           label={l('catalog.name')}
