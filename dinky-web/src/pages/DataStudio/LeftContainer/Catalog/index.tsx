@@ -54,7 +54,6 @@ export const Catalog: React.FC = (props: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [columnData, setColumnData] = useState([]);
 
-
   useEffect(() => {
     if (envId) {
       setLoading(true);
