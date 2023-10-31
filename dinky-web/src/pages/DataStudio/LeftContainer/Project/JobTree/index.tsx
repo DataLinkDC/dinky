@@ -148,6 +148,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
           onSelect={(_, info) => onNodeClick(info)}
           onRightClick={onRightClick}
           expandedKeys={expandKeys}
+          expandAction={'doubleClick'}
           selectedKeys={selectKey}
           onExpand={onExpand}
           treeData={data}
