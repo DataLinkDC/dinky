@@ -51,7 +51,7 @@ import {
   PlusCircleOutlined,
   PlusOutlined,
   ReloadOutlined,
-  RightSquareOutlined,
+  RightSquareOutlined, RotateRightOutlined,
   SettingOutlined,
   ShrinkOutlined,
   TableOutlined,
@@ -59,6 +59,7 @@ import {
 } from '@ant-design/icons';
 import { DiffEditor } from '@monaco-editor/react';
 import { ReactNode } from 'react';
+import JsonToSql from "@/pages/DataStudio/BottomContainer/Tools/JsonToSql";
 
 export const LeftSide = [
   {
@@ -216,38 +217,10 @@ export const LeftBottomMoreTabs: { [c: string]: TabProp[] } = {
       )
     },
     {
-      key: 'menu.datastudio.tool.datax2',
-      icon: <ToolOutlined />,
-      label: 'menu.datastudio.tool.datax2',
-      children: <div>datax2</div>
-    }
-  ],
-  'menu.datastudio.tool2': [
-    {
-      key: 'menu.datastudio.tool.text-comparison',
-      icon: <ToolOutlined />,
-      label: 'menu.datastudio.tool.text-comparison',
-      children: (
-        <DiffEditor
-          height={'95%'}
-          options={{
-            readOnly: true,
-            selectOnLineNumbers: true,
-            lineDecorationsWidth: 20,
-            mouseWheelZoom: true,
-            automaticLayout: true
-          }}
-          language={'sql'}
-          original={''}
-          modified={''}
-        />
-      )
-    },
-    {
-      key: 'menu.datastudio.tool.datax2',
-      icon: <ToolOutlined />,
-      label: 'menu.datastudio.tool.datax2',
-      children: <div>datax2</div>
+      key: 'menu.datastudio.tool.jsonToSql',
+      icon:<RotateRightOutlined />,
+      label: l("menu.datastudio.tool.jsonToSql"),
+      children: <JsonToSql />
     }
   ]
 };
