@@ -23,8 +23,6 @@ import Lineage from '@/pages/DataStudio/BottomContainer/Lineage';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
-import { Catalog } from '@/pages/DataStudio/LeftContainer/Catalog';
-import MetaData from '@/pages/DataStudio/LeftContainer/MetaData';
 import Project from '@/pages/DataStudio/LeftContainer/Project';
 import { TabsPageSubType, TabsPageType } from '@/pages/DataStudio/model';
 import HistoryVersion from '@/pages/DataStudio/RightContainer/HistoryVersion';
@@ -59,6 +57,8 @@ import {
 } from '@ant-design/icons';
 import { DiffEditor } from '@monaco-editor/react';
 import { ReactNode } from 'react';
+import {Catalog} from "@/pages/DataStudio/LeftContainer/Catalog";
+import DataSource from "@/pages/DataStudio/LeftContainer/DataSource";
 
 export const LeftSide = [
   {
@@ -76,11 +76,11 @@ export const LeftSide = [
     children: <Catalog />
   },
   {
-    auth: '/datastudio/left/metadata',
-    key: 'menu.datastudio.metadata',
+    auth: '/datastudio/left/datasource',
+    key: 'menu.datastudio.datasource',
     icon: <DatabaseOutlined />,
-    label: l('menu.datastudio.metadata'),
-    children: <MetaData />
+    label: l('menu.datastudio.datasource'),
+    children: <DataSource />
   }
 ];
 

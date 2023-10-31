@@ -79,7 +79,7 @@ export default {
 
   'menu.datastudio.project': '项目',
   'menu.datastudio.catalog': 'Catalog',
-  'menu.datastudio.metadata': '元数据',
+  'menu.datastudio.datasource': '数据源',
   'menu.datastudio.console': '控制台',
   'menu.datastudio.jobConfig': '作业配置',
   'menu.datastudio.previewConfig': '预览配置',

@@ -21,7 +21,7 @@ import { handleGetOption, queryDataByParams } from '@/services/BusinessCrud';
 import { l } from '@/utils/intl';
 
 /*--- 刷新 元数据表 ---*/
-export async function showMetaDataTable(id: number) {
+export async function showDataSourceTable(id: number) {
   try {
     const result = await handleGetOption(
       'api/database/getSchemasAndTables',
@@ -36,9 +36,9 @@ export async function showMetaDataTable(id: number) {
 }
 
 /*--- 清理 元数据表缓存 ---*/
-export function clearMetaDataTable(id: number) {
+export function clearDataSourceTable(id: number) {
   return queryDataByParams('api/database/unCacheSchemasAndTables', { id: id });
 }
-export function getDataBase() {
+export function getDataSourceList() {
   return queryDataByParams('api/database/listEnabledAll');
 }

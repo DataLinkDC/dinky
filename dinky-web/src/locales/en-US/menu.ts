@@ -79,7 +79,7 @@ export default {
 
   'menu.datastudio.project': 'Project',
   'menu.datastudio.catalog': 'Catalog',
-  'menu.datastudio.metadata': 'Metadata',
+  'menu.datastudio.datasource': 'Data Source',
   'menu.datastudio.console': 'Console',
   'menu.datastudio.jobConfig': 'Job Config',
   'menu.datastudio.previewConfig': 'PreView Config',
