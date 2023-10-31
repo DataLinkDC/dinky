@@ -95,5 +95,6 @@ export default {
   'menu.datastudio.history': 'History',
   'menu.datastudio.table-data': 'Table Data',
 
-  'menu.datastudio.tool.text-comparison': 'Text Comparison'
+  'menu.datastudio.tool.text-comparison': 'Text Comparison',
+  'menu.datastudio.tool.jsonToSql': 'JSON TO Flink-SQL'
 };
