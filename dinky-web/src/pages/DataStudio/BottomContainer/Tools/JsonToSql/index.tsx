@@ -7,6 +7,7 @@ import {jsonToSql} from "@/pages/DataStudio/BottomContainer/Tools/JsonToSql/serv
 import {convertCodeEditTheme} from "@/utils/function";
 import {connect} from "@@/exports";
 import {StateType} from "@/pages/DataStudio/model";
+import CodeEdit from "@/components/CustomEditor/CodeEdit";
 
 const padding = 10;
 
@@ -30,7 +31,7 @@ const JsonToSql: React.FC = (props:connect) => {
 
             <div style={{display: "flex", paddingBlockStart: padding}}>
                 <div style={{width: "50%", border}}>
-                    <Editor height={maxHeight} value={jsonData} language={"json"} theme={convertCodeEditTheme()} onChange={(x) => {
+                    <CodeEdit height={maxHeight+"px"} code={jsonData} language={"json"} theme={convertCodeEditTheme()} onChange={(x) => {
                         setJsonData(x ?? "");
                     }}/>
                 </div>
