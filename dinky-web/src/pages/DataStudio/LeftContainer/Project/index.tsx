@@ -103,7 +103,7 @@ const Project: React.FC = (props: connect) => {
   const onExpand = (expandedKeys: Key[]) => {
     dispatch({
       type: STUDIO_MODEL.updateProjectExpandKey,
-      payload: [...expandedKeys, ...expandKeys]
+      payload: expandedKeys
     });
   };
 
@@ -124,7 +124,7 @@ const Project: React.FC = (props: connect) => {
     dispatch({ type: STUDIO_MODEL.updateProjectSelectKey, payload: [key] });
 
     if (!isLeaf) {
-      dispatch({ type: STUDIO_MODEL.updateProjectExpandKey, payload: [key, ...expandKeys] });
+      dispatch({ type: STUDIO_MODEL.updateProjectExpandKey, payload: [...expandKeys, key] });
       return;
     }
 

@@ -96,5 +96,4 @@ export default {
 
   'menu.datastudio.tool.text-comparison': '文本比对',
   'menu.datastudio.tool.jsonToSql': 'JSON转Flink-SQL'
-
 };
