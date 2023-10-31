@@ -53,7 +53,6 @@ import cn.hutool.extra.expression.engine.jexl.JexlEngine;
  * @since 2021/6/7 22:06
  */
 public final class VariableManager {
-    public static final VariableManager INSTANCE = new VariableManager();
 
     public static final String VARIABLE = "variable";
     static final String SHOW_VARIABLES = "SHOW VARIABLES";
