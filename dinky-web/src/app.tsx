@@ -59,7 +59,7 @@ export function patchRoutes({ routes }: any) {
 
 const queryUserInfo = async () => {
   return getDataByParamsReturnResult(API_CONSTANTS.CURRENT_USER).then((result) => {
-    const { user, roleList, tenantList, currentTenant, menuList, saTokenInfo } = result.datas;
+    const { user, roleList, tenantList, currentTenant, menuList, saTokenInfo } = result.data;
     const currentUser: API.CurrentUser = {
       user: {
         ...user,

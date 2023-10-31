@@ -82,7 +82,7 @@ const TableData = (props: any) => {
   const addTab = async () => {
     if (!statement) return;
     const result = await getPrintTables(statement);
-    const tables: PrintTable[] = result.datas;
+    const tables: PrintTable[] = result.data;
 
     let selectTable: PrintTable;
     Modal.confirm({

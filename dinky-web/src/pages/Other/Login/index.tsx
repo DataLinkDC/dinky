@@ -88,7 +88,7 @@ const Login: React.FC = () => {
       await SuccessMessageAsync(
         l('login.chooseTenantSuccess', '', {
           msg: chooseTenantResult.msg,
-          tenantCode: chooseTenantResult.datas.tenantCode
+          tenantCode: chooseTenantResult.data.tenantCode
         })
       );
       /**
@@ -143,12 +143,12 @@ const Login: React.FC = () => {
           setLocalStorageOfToken(JSON.stringify(res))
         );
       }
-      setInitialState((s) => ({ ...s, currentUser: result.datas }));
+      setInitialState((s) => ({ ...s, currentUser: result.data }));
       await SuccessMessageAsync(l('login.result', '', { msg: result.msg, time: result.time }));
       /**
        * After successful login, set the tenant list
        */
-      const tenantList: UserBaseInfo.Tenant[] = result.datas.tenantList;
+      const tenantList: UserBaseInfo.Tenant[] = result.data.tenantList;
       await assertTenant(tenantList);
       /**
        * Determine whether the current tenant list is multiple

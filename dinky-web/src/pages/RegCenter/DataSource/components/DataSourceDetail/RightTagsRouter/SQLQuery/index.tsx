@@ -67,10 +67,10 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
     );
     const {
       code,
-      datas: { columns, rowData }
+      data: { columns, rowData }
     } = result; // 获取到的数据
     if (code === 1) {
-      setErrMsg({ isErr: true, msg: result.datas.error });
+      setErrMsg({ isErr: true, msg: result.data.error });
     } else {
       setErrMsg({ isErr: false, msg: '' });
     }

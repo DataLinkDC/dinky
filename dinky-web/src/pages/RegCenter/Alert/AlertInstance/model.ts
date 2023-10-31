@@ -48,8 +48,8 @@ const AlertModel: AlertModelType = {
 
   effects: {
     *queryInstance({}, { call, put }) {
-      const { datas } = yield call(showAlertInstance);
-      yield put({ type: 'saveInstance', payload: datas });
+      const { data } = yield call(showAlertInstance);
+      yield put({ type: 'saveInstance', payload: data });
     }
   },
 

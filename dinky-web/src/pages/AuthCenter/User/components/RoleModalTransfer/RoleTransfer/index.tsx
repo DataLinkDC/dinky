@@ -57,10 +57,10 @@ const RoleTransfer = (props: TransferFromProps) => {
     getData(API_CONSTANTS.GET_ROLES_BY_USERID, { id: role.id }).then((result) => {
       setRoleTransferState((prevState) => ({
         ...prevState,
-        roleList: result.datas.roles,
-        targetKeys: result.datas.roleIds
+        roleList: result.data.roles,
+        targetKeys: result.data.roleIds
       }));
-      handleChange(result.datas.roleIds);
+      handleChange(result.data.roleIds);
     });
   }, []);
 

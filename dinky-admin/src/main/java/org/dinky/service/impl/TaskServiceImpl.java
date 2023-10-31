@@ -559,9 +559,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result<Void> rollbackTask(TaskRollbackVersionDTO dto) {
+    public boolean rollbackTask(TaskRollbackVersionDTO dto) {
         if (Asserts.isNull(dto.getVersionId()) || Asserts.isNull(dto.getId())) {
-            return Result.failed("the version is error");
+            throw new BusException("the version is error");
         }
 
         LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>()
@@ -575,8 +575,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         BeanUtil.copyProperties(taskVersion.getTaskConfigure(), updateTask);
         updateTask.setId(taskVersion.getTaskId());
         updateTask.setStep(JobLifeCycle.DEVELOP.getValue());
-        baseMapper.updateById(updateTask);
-        return Result.succeed("version rollback success！");
+        return baseMapper.updateById(updateTask) > 0;
     }
 
     @Override

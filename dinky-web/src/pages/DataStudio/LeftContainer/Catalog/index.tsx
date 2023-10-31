@@ -54,10 +54,6 @@ export const Catalog: React.FC = (props: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [columnData, setColumnData] = useState([]);
 
-  BtnRoute['menu.datastudio.catalog'][0].onClick = () => {
-    refreshMetaStoreTables();
-  };
-
   useEffect(() => {
     if (envId) {
       setLoading(true);
@@ -238,6 +234,10 @@ export const Catalog: React.FC = (props: any) => {
 
   const refreshMetaStoreTables = () => {
     onRefreshTreeData(catalog + '.' + database);
+  };
+
+  BtnRoute['menu.datastudio.catalog'][0].onClick = () => {
+    refreshMetaStoreTables();
   };
 
   const onChangeMetaStoreCatalogs = (value: string) => {

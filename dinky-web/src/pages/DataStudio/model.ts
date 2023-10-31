@@ -305,6 +305,8 @@ export type ModelType = {
     updateBottomHeight: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
     saveProject: Reducer<StateType>;
+    updateProjectExpandKey: Reducer<StateType>;
+    updateProjectSelectKey: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
     closeTab: Reducer<StateType>;
     removeTag: Reducer<StateType>;
@@ -542,6 +544,20 @@ const Model: ModelType = {
         project: { ...state.project, data: payload }
       };
     },
+
+    updateProjectExpandKey(state, { payload }) {
+      return {
+        ...state,
+        project: { ...state.project, expandKeys: payload }
+      };
+    },
+    updateProjectSelectKey(state, { payload }) {
+      return {
+        ...state,
+        project: { ...state.project, selectKey: payload }
+      };
+    },
+
     /**
      * flink config options
      */
