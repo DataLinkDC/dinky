@@ -31,11 +31,12 @@ public class DorisTypeConvert implements ITypeConvert {
         if (Asserts.isNull(column)) {
             return columnType;
         }
+        Integer length = Asserts.isNull(column.getLength()) ? 0 : column.getLength();
         String t = column.getType().toLowerCase();
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
         if (t.contains("char")) {
             columnType = ColumnType.STRING;
-        } else if (t.contains("boolean")) {
+        } else if (t.contains("boolean") || (t.contains("tinyint") && length.equals(1))) {
             if (isNullable) {
                 columnType = ColumnType.JAVA_LANG_BOOLEAN;
             } else {
