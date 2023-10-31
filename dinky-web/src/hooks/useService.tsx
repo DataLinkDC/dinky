@@ -59,7 +59,7 @@ export const RequestProvider = memo(({ children }) => {
           return request(url, { ...opts, method });
         },
         {
-          formatResult: (result) => result?.datas,
+          formatResult: (result: { data: any }) => result?.data,
           requestMethod: (requestOptions: any) => {
             if (typeof requestOptions === 'string') {
               return request(requestOptions);

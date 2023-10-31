@@ -44,13 +44,12 @@ type Data = {
 };
 const Result = (props: any) => {
   const {
-    saveTabs,
     tabs: { panes, activeKey }
   } = props;
   const [data, setData] = useState<Data>({});
   const [loading, setLoading] = useState<boolean>(true);
   const currentTabs = getCurrentTab(panes, activeKey);
-  const current = getCurrentData(panes, activeKey) ?? [];
+  const current = getCurrentData(panes, activeKey) ?? {};
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -135,9 +134,9 @@ const Result = (props: any) => {
         const res = await handleGetOption('api/studio/getCommonSqlData', 'Get Data', {
           taskId: params.taskId
         });
-        if (res.datas) {
-          consoleData.result = res.datas;
-          setData(res.datas);
+        if (res.data) {
+          consoleData.result = res.data;
+          setData(res.data);
         }
       } else {
         // flink sql
@@ -146,16 +145,16 @@ const Result = (props: any) => {
           const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
             id: current.id
           });
-          const historyData = res.datas;
+          const historyData = res.data;
           if ('2' == historyData.status) {
             const historyId = historyData.id;
             const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', {
               jobId: historyId
             });
-            const datas = tableData.datas;
-            if (datas.success) {
-              consoleData.result = datas;
-              setData(datas);
+            const data = tableData.data;
+            if (data.success) {
+              consoleData.result = data;
+              setData(data);
             } else {
               consoleData.result = {};
               setData({});

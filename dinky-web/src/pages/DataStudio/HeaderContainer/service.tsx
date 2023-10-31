@@ -41,8 +41,8 @@ export function cancelTask(title: string, id: number) {
   return handleGetOption('api/task/cancel', title, { id });
 }
 
-export function onLineTask(id: number) {
-  return handleGetOption('api/task/onLineTask', '', { taskId: id });
+export function onLineTask(title = '', id: number) {
+  return handleGetOption('api/task/onLineTask', title, { taskId: id });
 }
 
 export function offLinelTask(id: number) {

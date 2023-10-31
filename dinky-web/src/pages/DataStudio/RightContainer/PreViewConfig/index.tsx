@@ -19,11 +19,11 @@
 
 import { getCurrentTab } from '@/pages/DataStudio/function';
 import { StateType, TabsPageSubType } from '@/pages/DataStudio/model';
-import ExecuteConfigCommonSql from '@/pages/DataStudio/RightContainer/ExecuteConfig/CommonSql';
-import ExecuteConfigFlinkSql from '@/pages/DataStudio/RightContainer/ExecuteConfig/FlinkSql';
+import ExecuteConfigCommonSql from '@/pages/DataStudio/RightContainer/PreViewConfig/CommonSql';
+import ExecuteConfigFlinkSql from '@/pages/DataStudio/RightContainer/PreViewConfig/FlinkSql';
 import { connect } from 'umi';
 
-const ExecuteConfig = (props: any) => {
+const PreViewConfig = (props: any) => {
   const {
     tabs: { panes, activeKey }
   } = props;
@@ -39,4 +39,4 @@ const ExecuteConfig = (props: any) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs
-}))(ExecuteConfig);
+}))(PreViewConfig);

@@ -26,7 +26,12 @@ import {
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
-import { StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
+import {
+  DataStudioParams,
+  StateType,
+  STUDIO_MODEL,
+  STUDIO_MODEL_ASYNC
+} from '@/pages/DataStudio/model';
 import {
   handleAddOrUpdate,
   handleOption,
@@ -48,6 +53,7 @@ const { Text } = Typography;
 const Project: React.FC = (props: connect) => {
   const {
     dispatch,
+    project: { expandKeys, selectKey },
     tabs: { panes, activeKey }
   } = props;
 
@@ -90,6 +96,15 @@ const Project: React.FC = (props: connect) => {
       rightClickedNode: { ...node, ...fullInfo },
       value: fullInfo
     }));
+    // 设置选中的值
+    dispatch({ type: STUDIO_MODEL.updateProjectSelectKey, payload: [key] });
+  };
+
+  const onExpand = (expandedKeys: Key[]) => {
+    dispatch({
+      type: STUDIO_MODEL.updateProjectExpandKey,
+      payload: [...expandedKeys, ...expandKeys]
+    });
   };
 
   /**
@@ -106,8 +121,10 @@ const Project: React.FC = (props: connect) => {
       selectedKeys: [key],
       contextMenuOpen: false
     }));
+    dispatch({ type: STUDIO_MODEL.updateProjectSelectKey, payload: [key] });
 
     if (!isLeaf) {
+      dispatch({ type: STUDIO_MODEL.updateProjectExpandKey, payload: [key, ...expandKeys] });
       return;
     }
 
@@ -154,9 +171,7 @@ const Project: React.FC = (props: connect) => {
     const options = {
       url: '',
       isLeaf: projectState.isCreateSub ? false : projectState.value.isLeaf,
-      parentId: projectState.isCreateSub
-        ? projectState.selectedKeys[0]
-        : projectState.value.parentId
+      parentId: projectState.isCreateSub ? selectKey[0] : projectState.value.parentId
     };
 
     // 如果是编辑任务 或者 创建任务 , 则需要传入父级id
@@ -191,7 +206,7 @@ const Project: React.FC = (props: connect) => {
             currentTabs.label = values.name;
             // currentTabs.params.taskData.name = values.name;
             const { params } = currentTabs;
-            const { taskData } = params;
+            const { taskData } = params as DataStudioParams;
             if (taskData) {
               taskData.name = values.name;
             }
@@ -221,7 +236,7 @@ const Project: React.FC = (props: connect) => {
    * @returns {Promise<void>}
    */
   const handleDeleteSubmit = async () => {
-    const { key, isLeaf, name, type, taskId } = projectState.rightClickedNode;
+    const { key, isLeaf, name, type } = projectState.rightClickedNode;
     handleContextCancel();
     if (!isLeaf) {
       await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
@@ -317,7 +332,7 @@ const Project: React.FC = (props: connect) => {
       l('right.menu.paste'),
       {
         originCatalogueId: projectState.cutId,
-        targetParentId: projectState.selectedKeys[0]
+        targetParentId: selectKey[0]
       },
       () => {
         // 重置 cutId
@@ -378,10 +393,10 @@ const Project: React.FC = (props: connect) => {
     <div style={{ paddingInline: 5 }}>
       <JobTree
         selectKeyChange={(keys: Key[]) =>
-          setProjectState((prevState) => ({ ...prevState, selectedKeys: keys }))
+          dispatch({ type: STUDIO_MODEL.updateProjectSelectKey, payload: keys })
         }
-        selectedKeys={projectState.selectedKeys}
         onRightClick={handleRightClick}
+        onExpand={onExpand}
         onNodeClick={(info: any) => onNodeClick(info)}
       />
       <RightContextMenu
@@ -458,5 +473,6 @@ const Project: React.FC = (props: connect) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs
+  tabs: Studio.tabs,
+  project: Studio.project
 }))(Project);

@@ -24,6 +24,7 @@ import { searchTreeNode } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { Badge, Space } from 'antd';
 import { PresetStatusColorType } from 'antd/es/_util/colors';
+import { Key } from 'react';
 
 export const generateList = (data: any, list: any[]) => {
   for (const element of data) {
@@ -52,15 +53,19 @@ export const getParentKey = (key: number | string, tree: any): any => {
   return parentKey;
 };
 
-export const getLeafKeyList = (tree: any): any => {
-  let leafKeyList = [];
+export const getLeafKeyList = (tree: any[]): Key[] => {
+  let leafKeyList: Key[] = [];
   for (const node of tree) {
-    if (node.isLeaf) {
-      leafKeyList.push(node.id);
-      continue;
-    }
-    if (node.children) {
-      leafKeyList = leafKeyList.concat(getLeafKeyList(node.children));
+    if (!node.isLeaf) {
+      // 目录节点 || is a directory node
+      leafKeyList.push(node.id); // 目录节点不需要递归 || directory nodes do not need to be recursive
+      if (node.children) {
+        // 目录节点的子节点需要递归 || the child nodes of the directory node need to be recursive
+        leafKeyList = leafKeyList.concat(getLeafKeyList(node.children)); // 递归 || recursive
+      }
+    } else {
+      // 非目录节点 | is not a directory node
+      leafKeyList = leafKeyList.concat(getLeafKeyList(node.children)); // 递归 || recursive
     }
   }
   return leafKeyList;

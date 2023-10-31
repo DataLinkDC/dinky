@@ -77,7 +77,7 @@ const DataSourceDetail = (props: any) => {
     await getDataByIdReturnResult(API_CONSTANTS.DATASOURCE_GET_SCHEMA_TABLES, dataSource.id).then(
       (res) => {
         if (res.code === RESPONSE_CODE.SUCCESS) {
-          setTreeData(res.datas);
+          setTreeData(res.data);
         }
       }
     );

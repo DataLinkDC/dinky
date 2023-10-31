@@ -27,10 +27,10 @@ import { Catalog } from '@/pages/DataStudio/LeftContainer/Catalog';
 import MetaData from '@/pages/DataStudio/LeftContainer/MetaData';
 import Project from '@/pages/DataStudio/LeftContainer/Project';
 import { TabsPageSubType, TabsPageType } from '@/pages/DataStudio/model';
-import ExecuteConfig from '@/pages/DataStudio/RightContainer/ExecuteConfig';
 import HistoryVersion from '@/pages/DataStudio/RightContainer/HistoryVersion';
 import JobConfig from '@/pages/DataStudio/RightContainer/JobConfig';
 import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
+import PreViewConfig from '@/pages/DataStudio/RightContainer/PreViewConfig';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
 import { convertCodeEditTheme } from '@/utils/function';
 import { l } from '@/utils/intl';
@@ -46,8 +46,8 @@ import {
   FolderOutlined,
   HistoryOutlined,
   InfoCircleOutlined,
+  InsertRowRightOutlined,
   MonitorOutlined,
-  PlayCircleOutlined,
   PlusCircleOutlined,
   PlusOutlined,
   ReloadOutlined,
@@ -96,11 +96,11 @@ export const RightSide: TabProp[] = [
       (TabsPageSubType.flinkSql === subType || TabsPageSubType.flinkJar === subType)
   },
   {
-    auth: '/datastudio/right/executeConfig',
-    key: 'menu.datastudio.executeConfig',
-    icon: <PlayCircleOutlined />,
-    label: l('menu.datastudio.executeConfig'),
-    children: <ExecuteConfig />,
+    auth: '/datastudio/right/previewConfig',
+    key: 'menu.datastudio.previewConfig',
+    icon: <InsertRowRightOutlined />,
+    label: l('menu.datastudio.previewConfig'),
+    children: <PreViewConfig />,
     isShow: (type, subType) =>
       (type === TabsPageType.project && TabsPageSubType.flinkSql === subType) ||
       isSql(subType ?? '')

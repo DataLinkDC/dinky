@@ -33,7 +33,7 @@ enum ErrorCode {
 // 与后端约定的响应数据格式
 interface ResponseStructure {
   success: boolean;
-  datas?: boolean;
+  data?: boolean;
   code: number;
   msg: string;
 }
@@ -48,11 +48,11 @@ export const errorConfig: RequestConfig = {
   errorConfig: {
     // 错误抛出
     errorThrower: (res: ResponseStructure) => {
-      const { success, datas, msg, code } = res as ResponseStructure;
+      const { success, data, msg, code } = res as ResponseStructure;
       if (!success) {
         const error: any = new Error(msg);
         error.name = 'BizError';
-        error.info = { msg, code, datas };
+        error.info = { msg, code, data };
         throw error; // 抛出自制的错误
       }
     },

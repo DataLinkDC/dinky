@@ -87,6 +87,13 @@ public enum Status {
     TEST_CONNECTION_FAILED(9030, "test.connection.failed"),
     DEBUG_SUCCESS(9031, "debug.success"),
     DEBUG_FAILED(9032, "debug.failed"),
+    PUBLISH_SUCCESS(9033, "publish.success"),
+    PUBLISH_FAILED(9034, "publish.failed"),
+    OFFLINE_SUCCESS(9035, "offline.success"),
+    OFFLINE_FAILED(9036, "offline.failed"),
+    VERSION_ROLLBACK_SUCCESS(9037, "version.rollback.success"),
+    VERSION_ROLLBACK_FAILED(9038, "version.rollback.failed"),
+
     /**
      * user,tenant,role
      */

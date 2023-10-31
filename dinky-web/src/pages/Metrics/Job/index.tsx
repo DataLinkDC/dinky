@@ -125,7 +125,7 @@ const Job = () => {
     const {
       cluster: { hosts: url },
       instance: { name: flinkJobName, jid: flinkJobId }
-    } = taskDetail.datas;
+    } = taskDetail.data;
     setMetricsData((prevState) => ({
       ...prevState,
       url: url,

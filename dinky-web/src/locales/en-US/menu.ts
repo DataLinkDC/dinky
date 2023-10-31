@@ -82,7 +82,7 @@ export default {
   'menu.datastudio.metadata': 'Metadata',
   'menu.datastudio.console': 'Console',
   'menu.datastudio.jobConfig': 'Job Config',
-  'menu.datastudio.executeConfig': 'Execute Config',
+  'menu.datastudio.previewConfig': 'PreView Config',
   'menu.datastudio.savePoint': 'Save Point',
   'menu.datastudio.historyVision': 'History Vision',
   'menu.datastudio.jobInfo': 'Job Info',

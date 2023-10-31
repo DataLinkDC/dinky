@@ -38,7 +38,7 @@ const JobStatusPie = () => {
   const refreshStatusCount = () => {
     const res = getStatusCount();
     res.then((result) => {
-      const statusCountData: StatusCountOverView = result.datas.instance;
+      const statusCountData: StatusCountOverView = result.data.instance;
       const newJobStatusData: PieItem[] = [];
       for (const item in statusCountData) {
         if (item === 'all') {

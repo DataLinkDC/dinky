@@ -28,7 +28,7 @@ export async function showMetaDataTable(id: number) {
       l('pages.metadata.DataSearch'),
       { id: id }
     );
-    return result?.datas;
+    return result?.data;
   } catch (e) {
     console.error(e);
     return null;

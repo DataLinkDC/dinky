@@ -338,7 +338,6 @@ export default {
   'pages.datastudio.sql.cacheConfigItem': '本地缓存配置',
   'pages.datastudio.sql.serverConfigItem': '服务端配置',
 
-  'pages.datastudio.label.execConfig': '执行配置',
   'pages.datastudio.label.execConfig.autostop': '自动停止',
   'pages.datastudio.label.execConfig.autostop.tip':
     '开启自动停止，将在捕获最大行数记录后自动停止任务',

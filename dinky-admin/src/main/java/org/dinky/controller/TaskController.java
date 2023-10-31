@@ -93,14 +93,21 @@ public class TaskController {
             paramType = "body")
     public Result<JobResult> debugTask(@RequestBody DebugDTO debugDTO) throws Exception {
         JobResult result = taskService.debugTask(debugDTO);
-        return Result.succeed(result, Status.EXECUTE_SUCCESS);
+        if (result.isSuccess()) {
+            return Result.succeed(result, Status.DEBUG_SUCCESS);
+        }
+        return Result.failed(result, Status.DEBUG_FAILED);
     }
 
     @GetMapping("/cancel")
     @Log(title = "Cancel Flink Job", businessType = BusinessType.TRIGGER)
     @ApiOperation("Cancel Flink Job")
-    public Result<Boolean> cancel(@RequestParam Integer id) {
-        return Result.succeed(taskService.cancelTaskJob(taskService.getTaskInfoById(id)), Status.EXECUTE_SUCCESS);
+    public Result<Void> cancel(@RequestParam Integer id) {
+        if (taskService.cancelTaskJob(taskService.getTaskInfoById(id))) {
+            return Result.succeed(Status.EXECUTE_SUCCESS);
+        } else {
+            return Result.failed(Status.EXECUTE_FAILED);
+        }
     }
 
     /**
@@ -110,7 +117,11 @@ public class TaskController {
     @ApiOperation("Restart Task")
     @Log(title = "Restart Task", businessType = BusinessType.REMOTE_OPERATION)
     public Result<JobResult> restartTask(@RequestParam Integer id, String savePointPath) throws Exception {
-        return Result.succeed(taskService.restartTask(id, savePointPath));
+        JobResult jobResult = taskService.restartTask(id, savePointPath);
+        if (jobResult.isSuccess()) {
+            return Result.succeed(jobResult, Status.RESTART_SUCCESS);
+        }
+        return Result.failed(jobResult, Status.RESTART_FAILED);
     }
 
     @GetMapping("/savepoint")
@@ -127,7 +138,11 @@ public class TaskController {
     @Log(title = "onLineTask", businessType = BusinessType.TRIGGER)
     @ApiOperation("onLineTask")
     public Result<Boolean> onLineTask(@RequestParam Integer taskId) {
-        return Result.succeed(taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.ONLINE));
+        if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.ONLINE)) {
+            return Result.succeed(Status.PUBLISH_SUCCESS);
+        } else {
+            return Result.failed(Status.PUBLISH_FAILED);
+        }
     }
 
     @PostMapping("/explainSql")
@@ -197,7 +212,10 @@ public class TaskController {
     @ApiOperation("Rollback Task")
     @Log(title = "Rollback Task", businessType = BusinessType.UPDATE)
     public Result<Void> rollbackTask(@RequestBody TaskRollbackVersionDTO dto) {
-        return taskService.rollbackTask(dto);
+        if (taskService.rollbackTask(dto)) {
+            return Result.succeed(Status.VERSION_ROLLBACK_SUCCESS);
+        }
+        return Result.failed(Status.VERSION_ROLLBACK_FAILED);
     }
 
     @GetMapping(value = "/getTaskAPIAddress")
