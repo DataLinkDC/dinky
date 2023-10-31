@@ -256,8 +256,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     @ProcessStep(type = ProcessStepType.SUBMIT_TASK)
     public JobResult submitTask(Integer id, String savePointPath) throws Exception {
-        initTenantByTaskId(id);
-
         TaskDTO taskDTO = this.getTaskInfoById(id);
 
         if (StringUtils.isNotBlank(savePointPath)) {
