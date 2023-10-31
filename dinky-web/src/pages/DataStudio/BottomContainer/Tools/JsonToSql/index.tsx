@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import {Button, Space} from "antd";
 import CodeShow from "@/components/CustomEditor/CodeShow";
 import useThemeValue from "@/hooks/useThemeValue";
-import {Editor} from "@monaco-editor/react";
 import {jsonToSql} from "@/pages/DataStudio/BottomContainer/Tools/JsonToSql/service";
 import {convertCodeEditTheme} from "@/utils/function";
 import {connect} from "@@/exports";
