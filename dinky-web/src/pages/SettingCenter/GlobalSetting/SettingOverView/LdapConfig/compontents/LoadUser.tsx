@@ -50,7 +50,7 @@ export const LoadUser = () => {
   const fetchUserData = async () => {
     setLoading(true);
     const res = await getData(API_CONSTANTS.LDAP_LIST_USER);
-    setUsers(res.datas);
+    setUsers(res.data);
     setLoading(false);
   };
 

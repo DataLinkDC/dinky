@@ -114,7 +114,7 @@ export default () => {
   }, [custom]);
 
   const setLayout = async () => {
-    setLayoutData((await getMetricsLayout()).datas);
+    setLayoutData((await getMetricsLayout()).data);
   };
   const getInitData = () => {
     queryDataByParams(API_CONSTANTS.MONITOR_GET_SYSTEM_DATA, {

@@ -38,7 +38,7 @@ export const projectCommonShow = (type?: TabsPageType) => {
 };
 
 export const isOnline = (data: TaskDataType | undefined) => {
-  return data ? JOB_LIFE_CYCLE.ONLINE == data.step : false;
+  return data ? JOB_LIFE_CYCLE.PUBLISH == data.step : false;
 };
 
 export const isRunning = (data: TaskDataType | undefined) => {

@@ -24,13 +24,13 @@ import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { Catalog } from '@/pages/DataStudio/LeftContainer/Catalog';
-import MetaData from '@/pages/DataStudio/LeftContainer/MetaData';
+import DataSource from '@/pages/DataStudio/LeftContainer/DataSource';
 import Project from '@/pages/DataStudio/LeftContainer/Project';
 import { TabsPageSubType, TabsPageType } from '@/pages/DataStudio/model';
-import ExecuteConfig from '@/pages/DataStudio/RightContainer/ExecuteConfig';
 import HistoryVersion from '@/pages/DataStudio/RightContainer/HistoryVersion';
 import JobConfig from '@/pages/DataStudio/RightContainer/JobConfig';
 import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
+import PreViewConfig from '@/pages/DataStudio/RightContainer/PreViewConfig';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
 import { convertCodeEditTheme } from '@/utils/function';
 import { l } from '@/utils/intl';
@@ -46,8 +46,8 @@ import {
   FolderOutlined,
   HistoryOutlined,
   InfoCircleOutlined,
+  InsertRowRightOutlined,
   MonitorOutlined,
-  PlayCircleOutlined,
   PlusCircleOutlined,
   PlusOutlined,
   ReloadOutlined,
@@ -77,11 +77,11 @@ export const LeftSide = [
     children: <Catalog />
   },
   {
-    auth: '/datastudio/left/metadata',
-    key: 'menu.datastudio.metadata',
+    auth: '/datastudio/left/datasource',
+    key: 'menu.datastudio.datasource',
     icon: <DatabaseOutlined />,
-    label: l('menu.datastudio.metadata'),
-    children: <MetaData />
+    label: l('menu.datastudio.datasource'),
+    children: <DataSource />
   }
 ];
 
@@ -97,11 +97,11 @@ export const RightSide: TabProp[] = [
       (TabsPageSubType.flinkSql === subType || TabsPageSubType.flinkJar === subType)
   },
   {
-    auth: '/datastudio/right/executeConfig',
-    key: 'menu.datastudio.executeConfig',
-    icon: <PlayCircleOutlined />,
-    label: l('menu.datastudio.executeConfig'),
-    children: <ExecuteConfig />,
+    auth: '/datastudio/right/previewConfig',
+    key: 'menu.datastudio.previewConfig',
+    icon: <InsertRowRightOutlined />,
+    label: l('menu.datastudio.previewConfig'),
+    children: <PreViewConfig />,
     isShow: (type, subType) =>
       (type === TabsPageType.project && TabsPageSubType.flinkSql === subType) ||
       isSql(subType ?? '')

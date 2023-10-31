@@ -46,12 +46,12 @@ public class Result<T> implements Serializable {
     /** result data */
     @ApiModelProperty(
             value = "Result Data",
-            name = "datas",
+            name = "data",
             dataType = "T",
             required = true,
             allowEmptyValue = true,
             example = "[]")
-    private T datas;
+    private T data;
 
     @ApiModelProperty(
             value = "Result Code",
@@ -95,7 +95,7 @@ public class Result<T> implements Serializable {
     }
 
     public void setData(T data) {
-        this.datas = data;
+        this.data = data;
     }
 
     public Result(Status status) {
@@ -105,10 +105,10 @@ public class Result<T> implements Serializable {
         }
     }
 
-    public Result(Integer code, String msg, T datas) {
+    public Result(Integer code, String msg, T data) {
         this.code = code;
         this.msg = msg;
-        this.datas = datas;
+        this.data = data;
     }
 
     public static <T> Result<T> succeed(String msg) {
@@ -147,12 +147,12 @@ public class Result<T> implements Serializable {
         return of(model, CodeEnum.SUCCESS.getCode(), "");
     }
 
-    public static <T> Result<T> of(T datas, Integer code, String msg) {
-        return new Result<>(datas, code, msg, new DateTime().toString(), code == 0);
+    public static <T> Result<T> of(T data, Integer code, String msg) {
+        return new Result<>(data, code, msg, new DateTime().toString(), code == 0);
     }
 
-    public static <T> Result<T> of(T datas, Integer code, Status status) {
-        return new Result<>(datas, code, status.getMessage(), new DateTime().toString(), code == 0);
+    public static <T> Result<T> of(T data, Integer code, Status status) {
+        return new Result<>(data, code, status.getMessage(), new DateTime().toString(), code == 0);
     }
 
     public static <T> Result<T> failed() {

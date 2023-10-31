@@ -78,20 +78,20 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
     result.then((res) => {
       const errorExplainData: [] = [];
       let errorCount: number = 0;
-      if (!res.datas) {
+      if (!res.data) {
         setResult(<Text type='danger'>{res.msg}</Text>);
         return;
       } else {
-        for (let i in res.datas) {
-          if (!res.datas[i].explainTrue || !res.datas[i].parseTrue) {
+        for (let i in res.data) {
+          if (!res.data[i].explainTrue || !res.data[i].parseTrue) {
             // @ts-ignore
-            errorExplainData.push(res.datas[i]);
+            errorExplainData.push(res.data[i]);
             errorCount++;
           }
         }
       }
       if (errorCount == 0) {
-        setExplainData(res.datas);
+        setExplainData(res.data);
         setResult(<Text type='success'>{l('pages.datastudio.explain.validate.allright')}</Text>);
       } else {
         setExplainData(errorExplainData);

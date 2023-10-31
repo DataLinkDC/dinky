@@ -22,7 +22,7 @@ import { postAll, putDataJson } from '@/services/api';
 import { queryDataByParams } from '@/services/BusinessCrud';
 
 export async function getTaskData() {
-  return (await postAll('/api/catalogue/getCatalogueTreeData')).datas;
+  return (await postAll('/api/catalogue/getCatalogueTreeData')).data;
 }
 export function getTaskDetails(id: number): Promise<TaskDataType | undefined> {
   return queryDataByParams('/api/task', { id: id });

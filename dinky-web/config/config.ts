@@ -152,7 +152,7 @@ export default defineConfig({
    * @doc https://umijs.org/docs/max/request
    */
   request: {
-    dataField: 'datas'
+    dataField: 'data'
   },
   /**
    * @name 权限插件

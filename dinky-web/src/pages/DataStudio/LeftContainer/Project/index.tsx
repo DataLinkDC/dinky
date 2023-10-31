@@ -18,6 +18,7 @@
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
+import { getTabByTaskId } from '@/pages/DataStudio/function';
 import {
   FOLDER_RIGHT_MENU,
   JOB_RIGHT_MENU
@@ -25,7 +26,12 @@ import {
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
-import {DataStudioParams, StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC} from '@/pages/DataStudio/model';
+import {
+  DataStudioParams,
+  StateType,
+  STUDIO_MODEL,
+  STUDIO_MODEL_ASYNC
+} from '@/pages/DataStudio/model';
 import {
   handleAddOrUpdate,
   handleOption,
@@ -39,15 +45,15 @@ import { ProjectState } from '@/types/Studio/state.d';
 import { l } from '@/utils/intl';
 import { Modal, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
-import React, {Key, useEffect, useState} from 'react';
+import React, { Key, useEffect, useState } from 'react';
 import { connect } from 'umi';
-import {getCurrentTab, getTabByTaskId, mapDispatchToProps} from "@/pages/DataStudio/function";
 
 const { Text } = Typography;
 
 const Project: React.FC = (props: connect) => {
   const {
     dispatch,
+    project: { expandKeys, selectKey },
     tabs: { panes, activeKey }
   } = props;
 
@@ -90,6 +96,15 @@ const Project: React.FC = (props: connect) => {
       rightClickedNode: { ...node, ...fullInfo },
       value: fullInfo
     }));
+    // 设置选中的值
+    dispatch({ type: STUDIO_MODEL.updateProjectSelectKey, payload: [key] });
+  };
+
+  const onExpand = (expandedKeys: Key[]) => {
+    dispatch({
+      type: STUDIO_MODEL.updateProjectExpandKey,
+      payload: [...expandedKeys, ...expandKeys]
+    });
   };
 
   /**
@@ -106,8 +121,10 @@ const Project: React.FC = (props: connect) => {
       selectedKeys: [key],
       contextMenuOpen: false
     }));
+    dispatch({ type: STUDIO_MODEL.updateProjectSelectKey, payload: [key] });
 
     if (!isLeaf) {
+      dispatch({ type: STUDIO_MODEL.updateProjectExpandKey, payload: [key, ...expandKeys] });
       return;
     }
 
@@ -154,9 +171,7 @@ const Project: React.FC = (props: connect) => {
     const options = {
       url: '',
       isLeaf: projectState.isCreateSub ? false : projectState.value.isLeaf,
-      parentId: projectState.isCreateSub
-        ? projectState.selectedKeys[0]
-        : projectState.value.parentId
+      parentId: projectState.isCreateSub ? selectKey[0] : projectState.value.parentId
     };
 
     // 如果是编辑任务 或者 创建任务 , 则需要传入父级id
@@ -165,8 +180,8 @@ const Project: React.FC = (props: connect) => {
       options.parentId = projectState.isCreateTask
         ? projectState.value.id
         : projectState.isEdit
-          ? projectState.value.parentId
-          : options.parentId;
+        ? projectState.value.parentId
+        : options.parentId;
     } else {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL;
     }
@@ -185,21 +200,21 @@ const Project: React.FC = (props: connect) => {
         }));
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         if (projectState.isEdit) {
-          const {id} = values;
-          const currentTabs = getTabByTaskId(panes, id)
-          if(currentTabs){
+          const { id } = values;
+          const currentTabs = getTabByTaskId(panes, id);
+          if (currentTabs) {
             currentTabs.label = values.name;
             // currentTabs.params.taskData.name = values.name;
-            const {params} = currentTabs;
-            const {taskData} = params;
-            if(taskData){
+            const { params } = currentTabs;
+            const { taskData } = params as DataStudioParams;
+            if (taskData) {
               taskData.name = values.name;
             }
           }
-          dispatch({ type: STUDIO_MODEL.saveTabs, payload: { ...props.tabs }});
+          dispatch({ type: STUDIO_MODEL.saveTabs, payload: { ...props.tabs } });
           // update active breadcrumb title
-          if(activeKey === currentTabs?.key){
-            dispatch({ type: STUDIO_MODEL.updateTabsActiveKey, payload: activeKey});
+          if (activeKey === currentTabs?.key) {
+            dispatch({ type: STUDIO_MODEL.updateTabsActiveKey, payload: activeKey });
           }
         }
         // close job modal by project state
@@ -221,7 +236,7 @@ const Project: React.FC = (props: connect) => {
    * @returns {Promise<void>}
    */
   const handleDeleteSubmit = async () => {
-    const { key, isLeaf, name, type, taskId } = projectState.rightClickedNode;
+    const { key, isLeaf, name, type } = projectState.rightClickedNode;
     handleContextCancel();
     if (!isLeaf) {
       await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
@@ -317,7 +332,7 @@ const Project: React.FC = (props: connect) => {
       l('right.menu.paste'),
       {
         originCatalogueId: projectState.cutId,
-        targetParentId: projectState.selectedKeys[0]
+        targetParentId: selectKey[0]
       },
       () => {
         // 重置 cutId
@@ -377,9 +392,11 @@ const Project: React.FC = (props: connect) => {
   return (
     <div style={{ paddingInline: 5 }}>
       <JobTree
-        selectKeyChange={(keys: Key[]) => setProjectState((prevState) => ({ ...prevState, selectedKeys: keys }))}
-        selectedKeys={projectState.selectedKeys}
+        selectKeyChange={(keys: Key[]) =>
+          dispatch({ type: STUDIO_MODEL.updateProjectSelectKey, payload: keys })
+        }
         onRightClick={handleRightClick}
+        onExpand={onExpand}
         onNodeClick={(info: any) => onNodeClick(info)}
       />
       <RightContextMenu
@@ -456,5 +473,6 @@ const Project: React.FC = (props: connect) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs
+  tabs: Studio.tabs,
+  project: Studio.project
 }))(Project);
