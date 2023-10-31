@@ -1,3 +1,22 @@
+/*
+ *
+ *   Licensed to the Apache Software Foundation (ASF) under one or more
+ *   contributor license agreements.  See the NOTICE file distributed with
+ *   this work for additional information regarding copyright ownership.
+ *   The ASF licenses this file to You under the Apache License, Version 2.0
+ *   (the "License"); you may not use this file except in compliance with
+ *   the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { DIALECT } from '@/services/constants';
 import { Catalogue } from '@/types/Studio/data.d';
@@ -64,25 +83,6 @@ export const buildProjectTree = (
         const currentPath = path ? [...path, item.name] : [item.name];
         // 构造生命周期的值
         const stepValue = buildStepValue(item.task?.step);
-        // 渲染生命周期的徽标
-        const renderStepBadge = item.isLeaf && showBadge(item.type) && (
-          <>
-            <Badge.Ribbon
-              style={{
-                top: -14,
-                left: -57,
-                width: '56px',
-                height: '18px',
-                fontSize: '6px',
-                lineHeight: '18px'
-              }}
-              key={item.id}
-              placement={'start'}
-              text={stepValue.title}
-              color={stepValue.color}
-            />
-          </>
-        );
         // 渲染生命周期的 标记点
         const renderPreFixState = item.isLeaf && showBadge(item.type) && (
           <>
@@ -97,7 +97,6 @@ export const buildProjectTree = (
         const renderTitle = (
           <>
             <Space align={'baseline'} size={2}>
-              {renderStepBadge}
               {searchTreeNode(item.name, searchValue)}
             </Space>
           </>
@@ -119,7 +118,7 @@ export const buildProjectTree = (
           type: item.type,
           title: (
             <>
-              {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(16)}</>} {renderTitle}
+              {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(2)}</>} {renderTitle}
             </>
           ),
           fullInfo: item,

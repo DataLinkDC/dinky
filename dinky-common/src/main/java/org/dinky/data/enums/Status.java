@@ -85,7 +85,8 @@ public enum Status {
     MOVE_FAILED(9028, "move.failed"),
     TEST_CONNECTION_SUCCESS(9029, "test.connection.success"),
     TEST_CONNECTION_FAILED(9030, "test.connection.failed"),
-
+    DEBUG_SUCCESS(9031, "debug.success"),
+    DEBUG_FAILED(9032, "debug.failed"),
     /**
      * user,tenant,role
      */
@@ -368,6 +369,7 @@ public enum Status {
     PROCESS_SUBMIT_BUILDCONFIG(193, "process.submit.buildConfig"),
     PROCESS_SUBMIT_EXECUTECOMMSQL(194, "process.submit.execute.commSql"),
     PROCESS_SUBMIT_EXECUTEFLINKSQL(195, "process.submit.execute.flinkSql"),
+    PROCESS_REGISTER_EXITS(196, "process.register.exits"),
     ;
     private final int code;
     private final String key;

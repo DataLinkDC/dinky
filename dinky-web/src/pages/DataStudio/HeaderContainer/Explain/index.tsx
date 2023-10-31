@@ -24,7 +24,7 @@ import { StateType } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
 import { ConsoleSqlOutlined } from '@ant-design/icons';
 import ProList from '@ant-design/pro-list';
-import { Space, Tag, Typography } from 'antd';
+import { Drawer, Space, Tag, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 
@@ -48,6 +48,8 @@ export type ExplainProps = {
 const Explain: React.FC<ExplainProps> = (props: any) => {
   const [explainData, setExplainData] = useState([]);
   const [result, setResult] = useState(<Text>{l('pages.datastudio.explain.validate')}</Text>);
+  const [showModal, setShowModal] = useState(false);
+  const [explainInfo, setExplainInfo] = useState('');
   const {
     tabs: { panes, activeKey }
   } = props;
@@ -103,7 +105,10 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
       }
     });
   }, []);
-
+  const showPlanDrawer = (info: string) => {
+    setShowModal(true);
+    setExplainInfo(info);
+  };
   const renderContent = () => {
     return (
       <>
@@ -142,15 +147,28 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
                 return (
                   <>
                     {row.sql ? (
-                      <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}>
-                        {row.sql}
-                      </Paragraph>
+                      <>
+                        <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}>
+                          {row.sql}
+                        </Paragraph>
+                      </>
                     ) : null}
                     {row.error ? (
                       <Paragraph>
                         <CodeShow code={row.error} language='java' height='500px' />
                       </Paragraph>
                     ) : null}
+                    {row.explain ? (
+                      <a
+                        onClick={() => showPlanDrawer(row.explain)}
+                        style={{ float: 'right' }}
+                        type={'link'}
+                      >
+                        Show Plan
+                      </a>
+                    ) : (
+                      <></>
+                    )}
                   </>
                 );
               }
@@ -199,18 +217,21 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
         <blockquote>{result}</blockquote>
       </Paragraph>
       {renderContent()}
+      <Drawer
+        width={'50%'}
+        title='Show Plan'
+        placement='right'
+        onClose={() => setShowModal(false)}
+        open={showModal}
+      >
+        <CodeShow
+          style={{ alignItems: 'inherit' }}
+          code={explainInfo}
+          language='java'
+          height='500px'
+        />
+      </Drawer>
     </>
-    // <Modal
-    //   width={'100%'}
-    //   destroyOnClose
-    //   centered
-    //   title={l('pages.datastudio.explain.validate.msg')}
-    //   open={modalVisible}
-    //   footer={false}
-    //   onCancel={onClose}
-    // >
-    //
-    // </Modal>
   );
 };
 

@@ -64,16 +64,6 @@ const ExecuteConfigFlinkSql = (props: any) => {
       >
         <ProFormGroup>
           <ProFormSwitch
-            label={l('pages.datastudio.label.execConfig.preview.result')}
-            name='useResult'
-            tooltip={{
-              title: l('pages.datastudio.label.execConfig.preview.result.tip'),
-              icon: <InfoCircleOutlined />
-            }}
-            {...SWITCH_OPTIONS()}
-          />
-
-          <ProFormSwitch
             label={l('pages.datastudio.label.execConfig.changelog')}
             name='useChangeLog'
             tooltip={{
@@ -82,8 +72,6 @@ const ExecuteConfigFlinkSql = (props: any) => {
             }}
             {...SWITCH_OPTIONS()}
           />
-        </ProFormGroup>
-        <ProFormGroup>
           <ProFormSwitch
             label={l('pages.datastudio.label.execConfig.autostop')}
             name='useAutoCancel'
@@ -93,6 +81,8 @@ const ExecuteConfigFlinkSql = (props: any) => {
             }}
             {...SWITCH_OPTIONS()}
           />
+        </ProFormGroup>
+        <ProFormGroup>
           <ProFormDigit
             width={'xs'}
             label={l('pages.datastudio.label.execConfig.maxrow')}

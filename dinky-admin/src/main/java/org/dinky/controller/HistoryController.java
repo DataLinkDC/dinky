@@ -21,11 +21,14 @@ package org.dinky.controller;
 
 import org.dinky.data.model.History;
 import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.service.HistoryService;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -61,5 +64,15 @@ public class HistoryController {
     @ApiImplicitParam(name = "para", value = "Query Parameters", dataType = "JsonNode", paramType = "body")
     public ProTableResult<History> listHistory(@RequestBody JsonNode para) {
         return historyService.selectForProTable(para);
+    }
+
+    /**
+     * 获取Job实例的所有信息
+     */
+    @GetMapping("/getLatestHistoryById")
+    @ApiOperation("Get latest history info by id")
+    @ApiImplicitParam(name = "id", value = "task id", dataType = "Integer", paramType = "query", required = true)
+    public Result<History> getLatestHistoryById(@RequestParam Integer id) {
+        return Result.succeed(historyService.getLatestHistoryById(id));
     }
 }

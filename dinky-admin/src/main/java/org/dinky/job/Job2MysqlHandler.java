@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.task.DaemonFactory;
 import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.History;
@@ -133,7 +134,7 @@ public class Job2MysqlHandler implements JobHandler {
         ClusterInstance clusterInstance;
         final Integer clusterConfigurationId = job.getJobConfig().getClusterConfigurationId();
         if (job.isUseGateway()) {
-            clusterInstance = clusterInstanceService.registersCluster(ClusterInstance.autoRegistersCluster(
+            clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
                     job.getJobManagerAddress(),
                     job.getJobId(),
                     job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
@@ -144,8 +145,9 @@ public class Job2MysqlHandler implements JobHandler {
                 clusterId = clusterInstance.getId();
             }
         } else if (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
-                && Asserts.isNotNullString(job.getJobManagerAddress())) {
-            clusterInstance = clusterInstanceService.registersCluster(ClusterInstance.autoRegistersCluster(
+                && Asserts.isNotNullString(job.getJobManagerAddress())
+                && Asserts.isNotNullString(job.getJobId())) {
+            clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
                     job.getJobManagerAddress(),
                     job.getJobId(),
                     job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),

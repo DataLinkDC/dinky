@@ -212,10 +212,12 @@ export enum API_CONSTANTS {
 
   // process list
   PROCESS_LIST = '/api/process/listAllProcess',
+  PROCESS_LOG = '/api/process/getProcess',
 
   // ---- devops
   GET_JOB_LIST = '/api/jobInstance',
   GET_JOB_BY_ID = '/api/jobInstance/getOneById',
+  GET_LATEST_HISTORY_BY_ID = '/api/history/getLatestHistoryById',
   GET_JOB_DETAIL = '/api/jobInstance/getJobInfoDetail',
   REFRESH_JOB_DETAIL = '/api/jobInstance/refreshJobInfoDetail',
   READ_CHECKPOINT = '/api/flinkConf/readCheckPoint',

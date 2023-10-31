@@ -37,4 +37,12 @@ public interface HistoryService extends ISuperService<History> {
      */
     @Deprecated
     boolean removeHistoryById(Integer id);
+
+    /**
+     * Get latest history info by task id.
+     *
+     * @param id The ID of the task.
+     * @return History info.
+     */
+    History getLatestHistoryById(Integer id);
 }

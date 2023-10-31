@@ -21,6 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
 import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.dto.RoleDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.Role;
 import org.dinky.data.model.User;
@@ -66,24 +67,24 @@ public class RoleController {
     /**
      * create or update role
      *
-     * @param role {@link Role}
+     * @param roleDTO {@link Role}
      * @return {@link Role} of {@link Void}
      */
     @PutMapping("/addedOrUpdateRole")
     @ApiOperation("Insert Or Update Role")
     @Log(title = "Insert Or Update Role", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiImplicitParam(
-            name = "role",
-            value = "role",
+            name = "roleDTO",
+            value = "RoleDTO",
             required = true,
-            dataType = "Role",
+            dataType = "RoleDTO",
             paramType = "body",
             dataTypeClass = Role.class)
     @SaCheckPermission(
             value = {PermissionConstants.AUTH_ROLE_ADD, PermissionConstants.AUTH_ROLE_EDIT},
             mode = SaMode.OR)
-    public Result<Void> addedOrUpdateRole(@RequestBody Role role) {
-        return roleService.addedOrUpdateRole(role);
+    public Result<Void> addedOrUpdateRole(@RequestBody RoleDTO roleDTO) {
+        return roleService.addedOrUpdateRole(roleDTO);
     }
 
     /**

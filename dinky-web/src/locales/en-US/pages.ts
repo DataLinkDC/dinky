@@ -298,9 +298,12 @@ export default {
    * */
 
   'pages.datastudio.editor.check': 'Check current FlinkSql',
+  'pages.datastudio.editor.debug': 'Debug',
   'pages.datastudio.editor.exec': 'Execute',
-  'pages.datastudio.editor.exec.error': 'Task [jobName}] execution failed',
+  'pages.datastudio.editor.exec.error': 'Task [{jobName}] execution failed',
+  'pages.datastudio.editor.debug.error': 'Task [{jobName}] debug failed',
   'pages.datastudio.editor.exec.success': 'Execution succeeded',
+  'pages.datastudio.editor.debug.success': 'Debug succeeded',
   'pages.datastudio.editor.execute.warn':
     'The execution mode of this task is [{type}], which does not support SQL query, please save it manually and use the button on the right - job submission',
   'pages.datastudio.editor.explan': 'Get the current FlinkSql execution graph',
@@ -309,6 +312,7 @@ export default {
   'pages.datastudio.editor.stop.job': 'Stop job',
   'pages.datastudio.editor.stop.jobConfirm': 'Are you sure to stop the job [{jobName}]? ',
   'pages.datastudio.editor.submitting': 'The new task [{jobName}] is executing',
+  'pages.datastudio.editor.debugging': 'The new task [{jobName}] is debugging',
   'pages.datastudio.editor.onlyread':
     'Task has been published, modification is prohibited, please go offline first',
   'pages.datastudio.editor.notsave': 'Current changes are not saved! ',
@@ -357,9 +361,6 @@ export default {
   'pages.datastudio.label.execConfig.selectDatabase.tip': 'Select the database to be used',
   'pages.datastudio.label.execConfig.maxrow': 'Maximum number of rows',
   'pages.datastudio.label.execConfig.maxrow.tip': 'The maximum number of rows of preview data',
-  'pages.datastudio.label.execConfig.preview.result': 'Preview Result',
-  'pages.datastudio.label.execConfig.preview.result.tip':
-    'Open the preview result, it will run synchronously and return the data result',
   'pages.datastudio.label.jobConfig': 'Job Config',
   'pages.datastudio.label.jobConfig.addConfig': 'Add Config item',
   'pages.datastudio.label.jobConfig.addConfig.params': 'parameters',

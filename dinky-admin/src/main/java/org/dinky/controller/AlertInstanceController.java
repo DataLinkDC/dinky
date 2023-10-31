@@ -23,6 +23,7 @@ import org.dinky.alert.AlertPool;
 import org.dinky.alert.AlertResult;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.dto.AlertInstanceDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertInstance;
@@ -186,21 +187,21 @@ public class AlertInstanceController {
     /**
      * send test alert message
      *
-     * @param alertInstance {@link AlertInstance}
+     * @param alertInstanceDTO {@link AlertInstanceDTO}
      * @return {@link Result} of {@link Void}
      */
     @PostMapping("/sendTest")
     @Log(title = "Test Send To AlertInstance", businessType = BusinessType.TEST)
     @ApiOperation("Test Send To AlertInstance")
     @ApiImplicitParam(
-            name = "alertInstance",
-            value = "AlertInstance",
-            dataType = "AlertInstance",
+            name = "alertInstanceDTO",
+            value = "AlertInstanceDTO",
+            dataType = "AlertInstanceDTO",
             paramType = "body",
             required = true,
-            dataTypeClass = AlertInstance.class)
-    public Result<Void> sendAlertMsgTest(@RequestBody AlertInstance alertInstance) {
-        AlertResult alertResult = alertInstanceService.testAlert(alertInstance);
+            dataTypeClass = AlertInstanceDTO.class)
+    public Result<Void> sendAlertMsgTest(@RequestBody AlertInstanceDTO alertInstanceDTO) {
+        AlertResult alertResult = alertInstanceService.testAlert(alertInstanceDTO);
         if (alertResult.getSuccess()) {
             return Result.succeed(Status.SEND_TEST_SUCCESS);
         } else {

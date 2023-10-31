@@ -45,7 +45,7 @@ type BuildStepsProps = {
 
 const CodeShowProps = {
   height: '50vh',
-  language: 'java',
+  language: 'javalog',
   lineNumbers: 'on',
   showFloatButton: true
 };

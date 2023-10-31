@@ -141,7 +141,7 @@ const CodeEdit = (props: CodeEditFormProps) => {
           className={'editor-develop'}
           onMount={editorDidMount}
           onChange={onChange}
-          theme={theme ? theme : convertCodeEditTheme()}
+          theme={convertCodeEditTheme()}
         />
         {showFloatButton && <EditorFloatBtn {...restEditBtnProps} />}
       </div>

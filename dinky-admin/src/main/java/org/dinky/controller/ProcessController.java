@@ -20,8 +20,9 @@
 package org.dinky.controller;
 
 import org.dinky.context.ConsoleContextHolder;
+import org.dinky.data.model.ProcessEntity;
 import org.dinky.data.result.ProTableResult;
-import org.dinky.process.model.ProcessEntity;
+import org.dinky.data.result.Result;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,5 +62,12 @@ public class ProcessController {
                 .success(true)
                 .data(ConsoleContextHolder.getInstances().list())
                 .build();
+    }
+
+    @GetMapping("/getProcess")
+    @ApiOperation("get process")
+    @ApiImplicitParam(name = "processName", value = "process name", dataType = "ProcessEntity")
+    public Result<ProcessEntity> listAllProcess(@RequestParam String processName) {
+        return Result.succeed(ConsoleContextHolder.getInstances().getProcess(processName));
     }
 }

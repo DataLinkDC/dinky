@@ -17,7 +17,7 @@
  *
  */
 
-import { getCurrentData } from '@/pages/DataStudio/function';
+import {getCurrentData, getCurrentTab} from '@/pages/DataStudio/function';
 import { StateType, TaskDataType } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
 import { Descriptions } from 'antd';
@@ -27,16 +27,15 @@ import { connect } from 'umi';
 
 const JobInfo = (props: any) => {
   const {
-    tabs: { panes, activeKey }
+    tabs: { panes, activeKey, activeBreadcrumbTitle }
   } = props;
-
   const [currentInfo, setCurrentInfo] = useState<Partial<TaskDataType>>(
     getCurrentData(panes, activeKey) ?? {}
   );
 
   useEffect(() => {
-    setCurrentInfo({ ...currentInfo, ...getCurrentData(panes, activeKey) });
-  }, [activeKey, panes]);
+    setCurrentInfo({ ...getCurrentData(panes, activeKey) });
+  }, [activeKey, activeBreadcrumbTitle]);
 
   return (
     <div style={{ paddingInline: 8 }}>

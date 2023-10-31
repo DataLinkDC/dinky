@@ -1,3 +1,21 @@
+/*
+ *
+ *   Licensed to the Apache Software Foundation (ASF) under one or more
+ *   contributor license agreements.  See the NOTICE file distributed with
+ *   this work for additional information regarding copyright ownership.
+ *   The ASF licenses this file to You under the Apache License, Version 2.0
+ *   (the "License"); you may not use this file except in compliance with
+ *   the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
 import {
   getCurrentData,
   getCurrentTab,
@@ -6,8 +24,7 @@ import {
 } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { StateType } from '@/pages/DataStudio/model';
-import { postAll } from '@/services/api';
-import { handleGetOption } from '@/services/BusinessCrud';
+import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
@@ -109,8 +126,9 @@ const Result = (props: any) => {
     }
 
     const params = currentTabs.params;
-    if (params.resultData && !isRefresh) {
-      setData(params.resultData);
+    const consoleData = currentTabs.console;
+    if (consoleData.result && !isRefresh) {
+      setData(consoleData.result);
     } else {
       if (isSql(current.dialect)) {
         // common sql
@@ -118,28 +136,28 @@ const Result = (props: any) => {
           taskId: params.taskId
         });
         if (res.datas) {
-          params.resultData = res.datas;
+          consoleData.result = res.datas;
           setData(res.datas);
         }
       } else {
         // flink sql
-        if (current.jobInstanceId) {
-          const res = await postAll(API_CONSTANTS.GET_JOB_BY_ID, {
-            id: current.jobInstanceId
+        // to do: get job data by history id list, not flink jid
+        if (current.id) {
+          const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
+            id: current.id
           });
-          const jobData = res.datas;
-          if ('unknown' !== jobData.status.toLowerCase()) {
-            const jid = jobData.jid;
+          const historyData = res.datas;
+          if ('2' == historyData.status) {
+            const historyId = historyData.id;
             const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', {
-              jobId: jid
+              jobId: historyId
             });
             const datas = tableData.datas;
-            datas.jid = jid;
             if (datas.success) {
-              params.resultData = datas;
+              consoleData.result = datas;
               setData(datas);
             } else {
-              params.resultData = {};
+              consoleData.result = {};
               setData({});
             }
           }
@@ -152,7 +170,7 @@ const Result = (props: any) => {
   useEffect(() => {
     setData({});
     loadData();
-  }, [currentTabs]);
+  }, [currentTabs, currentTabs?.console.result]);
 
   const getColumns = (columns: string[]) => {
     return columns?.map((item) => {
@@ -219,6 +237,7 @@ const Result = (props: any) => {
       {data.columns ? (
         <Table
           columns={getColumns(data.columns)}
+          size='small'
           dataSource={data.rowData?.map((item: any, index: number) => {
             return { ...item, key: index };
           })}

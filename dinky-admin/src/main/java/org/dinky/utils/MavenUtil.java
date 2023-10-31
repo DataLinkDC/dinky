@@ -19,9 +19,9 @@
 
 package org.dinky.utils;
 
+import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.function.constant.PathConstant;
-import org.dinky.process.exception.DinkyException;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MavenUtil {
     static final String javaExecutor = FileUtil.file(
-                    FileUtil.file(SystemUtil.getJavaRuntimeInfo().getHomeDir()).getParentFile(), "/bin/java")
+                    FileUtil.file(SystemUtil.getJavaRuntimeInfo().getHomeDir()), "/bin/java")
             .getAbsolutePath();
     private static final String EXECTOR = SystemUtil.getOsInfo().isWindows() ? "mvn.cmd" : "mvn";
 

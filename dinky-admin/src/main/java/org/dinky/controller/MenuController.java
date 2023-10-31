@@ -21,7 +21,8 @@ package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
 import org.dinky.data.constant.PermissionConstants;
-import org.dinky.data.dto.RoleMenuDto;
+import org.dinky.data.dto.MenuDTO;
+import org.dinky.data.dto.RoleMenuDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
@@ -59,16 +60,16 @@ public class MenuController {
     /**
      * save or update menu
      *
-     * @param menu {@link Menu}
+     * @param menuDTO {@link MenuDTO}
      * @return {@link Result} with {@link Void}
      */
     @PutMapping("addOrUpdate")
     @Log(title = "Insert Or Update Menu ", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Menu")
     @ApiImplicitParam(
-            name = "menu",
-            value = "Menu",
-            dataType = "Menu",
+            name = "menuDTO",
+            value = "MenuDTO",
+            dataType = "MenuDTO",
             paramType = "body",
             required = true,
             dataTypeClass = Menu.class)
@@ -79,8 +80,8 @@ public class MenuController {
                 PermissionConstants.AUTH_MENU_ADD_SUB
             },
             mode = SaMode.OR)
-    public Result<Void> saveOrUpdateMenu(@RequestBody Menu menu) {
-        if (menuService.saveOrUpdateMenu(menu)) {
+    public Result<Void> saveOrUpdateMenu(@RequestBody MenuDTO menuDTO) {
+        if (menuService.saveOrUpdateMenu(menuDTO)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
@@ -118,14 +119,14 @@ public class MenuController {
      * load role menu tree
      *
      * @param roleId role id
-     * @return {@link RoleMenuDto}
+     * @return {@link RoleMenuDTO}
      */
     @GetMapping(value = "/roleMenus")
     @ApiOperation("Load Role Menu")
     @ApiImplicitParam(name = "roleId", value = "Role Id", dataType = "Integer", paramType = "query", required = true)
-    public Result<RoleMenuDto> roleMenuTreeSelect(@RequestParam("id") Integer roleId) {
+    public Result<RoleMenuDTO> roleMenuTreeSelect(@RequestParam("id") Integer roleId) {
         List<Menu> menus = menuService.buildMenuTree(menuService.list());
-        RoleMenuDto menuVO = RoleMenuDto.builder()
+        RoleMenuDTO menuVO = RoleMenuDTO.builder()
                 .roleId(roleId)
                 .selectedMenuIds(menuService.selectMenuListByRoleId(roleId))
                 .menus(menus)

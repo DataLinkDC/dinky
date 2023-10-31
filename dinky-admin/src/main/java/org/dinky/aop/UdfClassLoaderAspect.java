@@ -21,8 +21,8 @@ package org.dinky.aop;
 
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.DinkyClassLoaderContextHolder;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.job.JobResult;
-import org.dinky.process.exception.DinkyException;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

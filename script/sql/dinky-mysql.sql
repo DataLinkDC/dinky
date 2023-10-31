@@ -1047,7 +1047,7 @@ CREATE TABLE `dinky_metrics` (
                                  `position` int(11) DEFAULT NULL COMMENT 'position',
                                  `show_type` varchar(255) DEFAULT NULL COMMENT 'show type',
                                  `show_size` varchar(255) DEFAULT NULL COMMENT 'show size',
-                                 `title` varchar(255) DEFAULT NULL COMMENT 'title',
+                                 `title` longtext DEFAULT NULL COMMENT 'title',
                                  `layout_name` varchar(255) DEFAULT NULL COMMENT 'layout name',
                                  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',

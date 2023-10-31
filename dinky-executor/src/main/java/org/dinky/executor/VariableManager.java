@@ -33,16 +33,19 @@ import org.apache.flink.table.catalog.exceptions.CatalogException;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.StringUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.extra.expression.engine.jexl.JexlEngine;
 
 /**
  * Flink Sql Variable Manager
@@ -50,10 +53,25 @@ import java.util.regex.Pattern;
  * @since 2021/6/7 22:06
  */
 public final class VariableManager {
-
     public static final String VARIABLE = "variable";
     static final String SHOW_VARIABLES = "SHOW VARIABLES";
     private final Map<String, String> variables;
+
+    public static final JexlEngine ENGINE = new JexlEngine();
+
+    /**
+     * <p>
+     *      engine , key is variable name , value is class .
+     *      for example:
+     *          random -> RandomUtil -> about random operation
+     *          date -> DateUtil -> about date operation
+     *          id -> IdUtil  -> to generate random uuid
+     *          ...
+     */
+    public static final Dict ENGINE_CONTEXT = Dict.create()
+            .set("random", RandomUtil.class)
+            .set("date", DateUtil.class)
+            .set("id", IdUtil.class);
 
     public VariableManager() {
         variables = new HashMap<>();
@@ -73,17 +91,10 @@ public final class VariableManager {
      *
      * @param variableName name under which to register the given sql variable
      * @param variable     a variable of sql to register
-     * @throws CatalogException if the registration of the sql variable under the given name failed.
-     *                          But at the moment, with CatalogException, not SqlException
      */
     public void registerVariable(String variableName, String variable) {
         checkArgument(!StringUtils.isNullOrWhitespaceOnly(variableName), "sql variable name cannot be null or empty.");
         checkNotNull(variable, "sql variable cannot be null");
-
-        if (variables.containsKey(variableName)) {
-            throw new CatalogException(format("The variable of sql %s already exists.", variableName));
-        }
-
         variables.put(variableName, variable);
     }
 
@@ -127,21 +138,18 @@ public final class VariableManager {
      * @throws CatalogException if the unregistration of the sql variable under the given name
      *                          failed. But at the moment, with CatalogException, not SqlException
      */
-    public String getVariable(String variableName) {
+    public Object getVariable(String variableName) {
         checkArgument(
                 !StringUtils.isNullOrWhitespaceOnly(variableName), "sql variableName name cannot be null or empty.");
-
-        if (variables.containsKey(variableName)) {
-            return variables.get(variableName);
+        try {
+            if (variables.containsKey(variableName)) {
+                return variables.get(variableName);
+            }
+            // use jexl to parse variable value
+            return ENGINE.eval(variableName, ENGINE_CONTEXT);
+        } catch (Exception e) {
+            throw new CatalogException(format("The variable of sql %s does not exist.", variableName));
         }
-
-        if (isInnerDateVariable(variableName)) {
-            return parseDateVariable(variableName);
-        } else if (isInnerTimestampVariable(variableName)) {
-            return parseTimestampVar(variableName);
-        }
-
-        throw new CatalogException(format("The variable of sql %s does not exist.", variableName));
     }
 
     /**
@@ -188,7 +196,7 @@ public final class VariableManager {
     }
 
     public boolean checkShowVariables(String sql) {
-        return SHOW_VARIABLES.equals(sql.trim().toUpperCase());
+        return SHOW_VARIABLES.equalsIgnoreCase(sql.trim());
     }
 
     /**
@@ -229,95 +237,11 @@ public final class VariableManager {
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
             String key = m.group(1);
-            String value = getVariable(key);
+            Object value = getVariable(key);
             m.appendReplacement(sb, "");
-
-            // if value is null, parse inner date variable
-            if (value == null) {
-                if (isInnerDateVariable(key)) {
-                    value = parseDateVariable(key);
-                } else if (isInnerTimestampVariable(key)) {
-                    value = parseTimestampVar(key);
-                }
-            }
-
             sb.append(value == null ? "" : value);
         }
         m.appendTail(sb);
         return sb.toString();
-    }
-
-    /**
-     * verify if key is inner variable, such as _CURRENT_DATE_ - 1
-     *
-     * @param key
-     * @return
-     */
-    private boolean isInnerDateVariable(String key) {
-        return key.startsWith(FlinkSQLConstant.INNER_DATE_KEY);
-    }
-
-    /**
-     * verify if key is inner variable, such as _CURRENT_TIMESTAMP_ - 100
-     *
-     * @param key
-     * @return
-     */
-    private boolean isInnerTimestampVariable(String key) {
-        return key.startsWith(FlinkSQLConstant.INNER_TIMESTAMP_KEY);
-    }
-
-    /**
-     * parse date variable
-     *
-     * @param key
-     * @return
-     */
-    private String parseDateVariable(String key) {
-        int days = 0;
-        if (key.contains("+")) {
-            int s = key.indexOf("+") + 1;
-            String num = key.substring(s).trim();
-            days = Integer.parseInt(num);
-        } else if (key.contains("-")) {
-            int s = key.indexOf("-") + 1;
-            String num = key.substring(s).trim();
-            days = Integer.parseInt(num) * -1;
-        }
-
-        SimpleDateFormat dtf = new SimpleDateFormat(FlinkSQLConstant.INNER_DATE_FORMAT);
-        Date endDate = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(endDate);
-        calendar.add(Calendar.DAY_OF_YEAR, days);
-        Date startDate = calendar.getTime();
-
-        return dtf.format(startDate);
-    }
-
-    /**
-     * parse timestamp variable
-     *
-     * @param key
-     * @return
-     */
-    private String parseTimestampVar(String key) {
-        long millisecond = 0;
-        try {
-            if (key.contains("+")) {
-                int s = key.indexOf("+") + 1;
-                String num = key.substring(s).trim();
-                millisecond = Long.parseLong(num);
-            } else if (key.contains("-")) {
-                int s = key.indexOf("-") + 1;
-                String num = key.substring(s).trim();
-                millisecond = Long.parseLong(num) * -1;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return String.valueOf(System.currentTimeMillis() + millisecond);
     }
 }

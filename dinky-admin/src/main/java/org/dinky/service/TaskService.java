@@ -20,9 +20,11 @@
 package org.dinky.service;
 
 import org.dinky.data.dto.AbstractStatementDTO;
+import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.JobLifeCycle;
+import org.dinky.data.exception.ExcuteException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
@@ -33,7 +35,6 @@ import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
 import org.dinky.mybatis.service.ISuperService;
-import org.dinky.process.exception.ExcuteException;
 
 import java.util.List;
 
@@ -68,6 +69,15 @@ public interface TaskService extends ISuperService<Task> {
      * @throws ExcuteException If there is an error executing the task.
      */
     JobResult submitTask(Integer id, String savePointPath) throws Exception;
+
+    /**
+     * Debug the given task and return the job result.
+     *
+     * @param debugDTO The param of preview task.
+     * @return A {@link JobResult} object representing the result of the submitted task.
+     * @throws ExcuteException If there is an error debugging the task.
+     */
+    JobResult debugTask(DebugDTO debugDTO) throws Exception;
 
     /**
      * Restart the given task and return the job result.

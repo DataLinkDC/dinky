@@ -20,10 +20,14 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.ExecuteProcess;
+import org.dinky.data.annotations.ProcessId;
+import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.JobLifeCycle;
+import org.dinky.data.enums.ProcessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.model.Task;
@@ -33,9 +37,6 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
-import org.dinky.process.annotations.ExecuteProcess;
-import org.dinky.process.annotations.ProcessId;
-import org.dinky.process.enums.ProcessType;
 import org.dinky.service.TaskService;
 
 import java.util.List;
@@ -79,6 +80,20 @@ public class TaskController {
         } else {
             return Result.failed(jobResult, jobResult.getError());
         }
+    }
+
+    @PostMapping("/debugTask")
+    @ApiOperation("Debug Task")
+    @Log(title = "Debug Task", businessType = BusinessType.DEBUG)
+    @ApiImplicitParam(
+            name = "debugTask",
+            value = "Debug Task",
+            required = true,
+            dataType = "DebugDTO",
+            paramType = "body")
+    public Result<JobResult> debugTask(@RequestBody DebugDTO debugDTO) throws Exception {
+        JobResult result = taskService.debugTask(debugDTO);
+        return Result.succeed(result, Status.EXECUTE_SUCCESS);
     }
 
     @GetMapping("/cancel")

@@ -18,16 +18,17 @@
  */
 
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
+import { LogLanguage } from '@/components/CustomEditor/languages/javalog';
+import useThemeValue from '@/hooks/useThemeValue';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import { Editor, loader } from '@monaco-editor/react';
-import * as monaco from 'monaco-editor';
+import { Editor, useMonaco } from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FullscreenBtn from '../FullscreenBtn';
 
-loader.config({ monaco });
+// loader.config({monaco});
 /**
  * props
  * todo:
@@ -38,15 +39,15 @@ loader.config({ monaco });
 export type CodeShowFormProps = {
   height?: string | number;
   width?: string;
-  language?: EditorLanguage;
+  language?: EditorLanguage | string;
   options?: any;
   code: string;
   lineNumbers?: string;
-  theme?: string;
   autoWrap?: string;
   showFloatButton?: boolean;
   refreshLogCallback?: () => void;
   fullScreenBtn?: boolean;
+  style?: React.CSSProperties;
 };
 
 const CodeShow = (props: CodeShowFormProps) => {
@@ -70,7 +71,6 @@ const CodeShow = (props: CodeShowFormProps) => {
     },
     code, // content
     lineNumbers, // show lineNumbers
-    theme, // edit theme
     autoWrap = 'on', //  auto wrap
     showFloatButton = false,
     refreshLogCallback,
@@ -87,11 +87,16 @@ const CodeShow = (props: CodeShowFormProps) => {
   const [fullScreen, setFullScreen] = useState<boolean>(false);
   const [editorRef, setEditorRef] = useState<any>();
   const [timer, setTimer] = useState<NodeJS.Timer>();
+  const themeValue = useThemeValue();
 
-  // // register TypeScript language service, if language is not set default value is typescript!
-  // monaco.languages.register({
-  //   id: language || "typescript",
-  // });
+  // 使用编辑器钩子, 拿到编辑器实例
+  const monaco = useMonaco();
+
+  useEffect(() => {
+    convertCodeEditTheme(monaco?.editor);
+    // 需要调用 手动注册下自定义语言
+    LogLanguage(monaco);
+  }, [monaco]);
 
   /**
    *  handle sync log
@@ -194,7 +199,7 @@ const CodeShow = (props: CodeShowFormProps) => {
    *  render
    */
   return (
-    <div className={'monaco-float'}>
+    <div className={'monaco-float'} style={props.style}>
       {/* fullScreen button */}
       {fullScreenBtn && (
         <FullscreenBtn
@@ -219,6 +224,7 @@ const CodeShow = (props: CodeShowFormProps) => {
           fixedOverflowWidgets: true,
           autoClosingDelete: 'always',
           lineNumbers,
+          minimap: { enabled: false },
           scrollbar: {
             // Subtle shadows to the left & top. Defaults to true.
             useShadows: false,
@@ -242,7 +248,7 @@ const CodeShow = (props: CodeShowFormProps) => {
           }
         }}
         onMount={editorDidMount}
-        theme={theme ? theme : convertCodeEditTheme()}
+        theme={convertCodeEditTheme()}
       />
 
       {/* float button */}
@@ -251,7 +257,7 @@ const CodeShow = (props: CodeShowFormProps) => {
           style={{
             width: 35,
             height: height,
-            backgroundColor: '#f4f4f4',
+            backgroundColor: themeValue.borderColor,
             paddingBlock: 10
           }}
         >

@@ -24,6 +24,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.constant.FlinkConstant;
+import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.gateway.config.GatewayConfig;
@@ -68,6 +69,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public String getJobManagerAddress(ClusterInstance clusterInstance) {
+        // TODO 这里判空逻辑有问题，clusterInstance有可能为null
         Assert.check(clusterInstance);
         FlinkClusterInfo info =
                 FlinkCluster.testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
@@ -123,6 +125,14 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     @Override
     public List<ClusterInstance> listAutoEnable() {
         return list(new QueryWrapper<ClusterInstance>().eq("enabled", 1).eq("auto_registers", 1));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ClusterInstance registersCluster(ClusterInstanceDTO clusterInstanceDTO) {
+        ClusterInstance clusterInstance = clusterInstanceDTO.toBean();
+
+        return this.registersCluster(clusterInstance);
     }
 
     @Override
@@ -188,7 +198,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         GatewayConfig gatewayConfig =
                 GatewayConfig.build(FlinkClusterConfig.create(clusterCfg.getType(), clusterCfg.getConfigJson()));
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
-        return registersCluster(ClusterInstance.autoRegistersCluster(
+        return registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
                 gatewayResult.getWebURL().replace("http://", ""),
                 gatewayResult.getId(),
                 clusterCfg.getName() + "_" + LocalDateTime.now(),
