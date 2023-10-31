@@ -25,7 +25,7 @@ import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, useMonaco } from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
-import {CSSProperties, useEffect, useState} from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import FullscreenBtn from '../FullscreenBtn';
 
 // loader.config({monaco});
@@ -245,7 +245,7 @@ const CodeShow = (props: CodeShowFormProps) => {
             horizontalScrollbarSize: 8,
             arrowSize: 30
           },
-          ...options,
+          ...options
         }}
         onMount={editorDidMount}
         theme={convertCodeEditTheme()}
