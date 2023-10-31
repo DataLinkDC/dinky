@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DorisQuery extends AbstractDBQuery {
+
     @Override
     public String schemaAllSql() {
         return DorisConstant.QUERY_ALL_DATABASE;
@@ -112,14 +113,14 @@ public class DorisQuery extends AbstractDBQuery {
     // return null skip it
     @Override
     public String precision() {
-        return null;
+        return "NUMERIC_PRECISION";
     }
 
     // Doris does not have scale field，
     // return null skip it
     @Override
     public String scale() {
-        return null;
+        return "NUMERIC_SCALE";
     }
 
     // Doris does not have autoIncrement field，
