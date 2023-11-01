@@ -21,7 +21,7 @@ import { SaTokenInfo, UserBaseInfo } from '@/types/User/data';
 declare namespace API {
   type Result = {
     code: number;
-    datas: any;
+    data: any;
     msg: string;
     time: Date;
   };

@@ -155,7 +155,7 @@ knife4j:
   enable: true
 
 dinky:
-  version: @project.version@
+  version: ${revision}
 sms:
   is-print: false
 

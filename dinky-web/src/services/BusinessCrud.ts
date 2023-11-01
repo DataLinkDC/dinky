@@ -219,9 +219,9 @@ export const handleGetOptionWithoutMsg = async (url: string, param: any) => {
 
 export const handleData = async (url: string, id: any) => {
   try {
-    const { code, datas } = await getInfoById(url, id);
+    const { code, data } = await getInfoById(url, id);
     if (code === RESPONSE_CODE.SUCCESS) {
-      return datas;
+      return data;
     }
     return undefined;
   } catch (error) {
@@ -262,8 +262,8 @@ export const handlePutDataJson = async (url: string, fields: any) => {
 
 export const getDataByParams = async (url: string, params?: any) => {
   try {
-    const { datas, data } = await getDataByRequestBody(url, params);
-    return datas ?? data;
+    const { data } = await getDataByRequestBody(url, params);
+    return data;
   } catch (error) {
     return undefined;
   }
@@ -277,9 +277,9 @@ export const queryDataByParams = async <T>(
 ): Promise<T | undefined> => {
   try {
     beforeCallBack?.();
-    const { datas } = await getData(url, params);
+    const { data } = await getData(url, params);
     afterCallBack?.();
-    return datas;
+    return data;
   } catch (error) {
     return undefined;
   }

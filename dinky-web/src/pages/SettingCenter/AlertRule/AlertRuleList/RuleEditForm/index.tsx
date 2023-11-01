@@ -59,7 +59,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
   const [form] = Form.useForm<AlertRule>();
 
   const getAlertTemplate = async () => {
-    const template: Alert.AlertTemplate[] = (await getData(API_CONSTANTS.ALERT_TEMPLATE)).datas;
+    const template: Alert.AlertTemplate[] = (await getData(API_CONSTANTS.ALERT_TEMPLATE)).data;
     return template.map((t) => ({ label: t.name, value: t.id }));
   };
 

@@ -37,9 +37,9 @@ export const LdapConfig = ({ data, onSave }: LdapConfigProps) => {
 
   const testConnection = async () => {
     setLoading(true);
-    const datas = await queryDataByParams(API_CONSTANTS.LDAP_TEST_CONNECT);
-    if (datas) {
-      SuccessMessage(l('sys.ldap.settings.testConnect.success', '', { count: datas }));
+    const data = await queryDataByParams(API_CONSTANTS.LDAP_TEST_CONNECT);
+    if (data) {
+      SuccessMessage(l('sys.ldap.settings.testConnect.success', '', { count: data }));
     }
     setLoading(false);
   };

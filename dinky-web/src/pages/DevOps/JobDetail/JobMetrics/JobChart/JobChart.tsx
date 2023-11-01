@@ -82,11 +82,11 @@ const JobChart = (props: any) => {
     metricsList: Record<string, JobMetricsItem[]>,
     chartData: Record<string, ChartData[]>
   ) => {
-    let datas: JobMetricsItem[] = [];
+    let data: JobMetricsItem[] = [];
     for (let [key, value] of Object.entries(metricsList)) {
-      datas = [...datas, ...value];
+      data = [...data, ...value];
     }
-    return datas?.map((metricsItem) => {
+    return data?.map((metricsItem) => {
       const key = `${metricsItem.vertices}-${metricsItem.metrics}`;
       return (
         <FlinkChart

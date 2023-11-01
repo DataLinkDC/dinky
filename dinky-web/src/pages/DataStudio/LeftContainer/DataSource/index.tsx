@@ -30,9 +30,9 @@ import { connect } from '@umijs/max';
 import { Spin, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { StateType, STUDIO_MODEL } from '../../model';
-import { clearMetaDataTable, getDataBase, showMetaDataTable } from './service';
+import { clearDataSourceTable, getDataSourceList, showDataSourceTable } from './service';
 
-const MetaData = (props: any) => {
+const DataSource = (props: any) => {
   const {
     dispatch,
     toolContentHeight,
@@ -54,7 +54,7 @@ const MetaData = (props: any) => {
     }
 
     setIsLoadingDatabase(true);
-    const tables = (await showMetaDataTable(databaseId)) ?? [];
+    const tables = (await showDataSourceTable(databaseId)) ?? [];
     setIsLoadingDatabase(false);
 
     for (let table of tables) {
@@ -94,7 +94,7 @@ const MetaData = (props: any) => {
   BtnRoute['menu.datastudio.metadata'][1].onClick = () => {
     if (!selectDatabaseId) return;
     setIsLoadingDatabase(true);
-    clearMetaDataTable(selectDatabaseId).then(() => {
+    clearDataSourceTable(selectDatabaseId).then(() => {
       onChangeDataBase(selectDatabaseId);
     });
   };
@@ -184,7 +184,7 @@ const MetaData = (props: any) => {
         onTest={(value) => handleTest(value)}
         onSubmit={async (value) => {
           await saveOrUpdateHandle(value);
-          const data = await getDataBase();
+          const data = await getDataSourceList();
           dispatch({
             type: STUDIO_MODEL.saveDataBase,
             payload: data
@@ -226,4 +226,4 @@ export default connect(({ Studio }: { Studio: StateType }) => ({
   toolContentHeight: Studio.toolContentHeight,
   leftContainer: Studio.leftContainer,
   database: Studio.database
-}))(MetaData);
+}))(DataSource);

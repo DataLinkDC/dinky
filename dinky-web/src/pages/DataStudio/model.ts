@@ -125,6 +125,7 @@ export type TaskDataBaseType = {
   step: number;
   // Only common sql has(只有普通sql才有)
   databaseId?: number;
+  envId?: number;
 };
 
 export type TaskDataType = TaskDataBaseType & Record<string, any>;
@@ -305,6 +306,8 @@ export type ModelType = {
     updateBottomHeight: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
     saveProject: Reducer<StateType>;
+    updateProjectExpandKey: Reducer<StateType>;
+    updateProjectSelectKey: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
     closeTab: Reducer<StateType>;
     removeTag: Reducer<StateType>;
@@ -542,6 +545,20 @@ const Model: ModelType = {
         project: { ...state.project, data: payload }
       };
     },
+
+    updateProjectExpandKey(state, { payload }) {
+      return {
+        ...state,
+        project: { ...state.project, expandKeys: payload }
+      };
+    },
+    updateProjectSelectKey(state, { payload }) {
+      return {
+        ...state,
+        project: { ...state.project, selectKey: payload }
+      };
+    },
+
     /**
      * flink config options
      */

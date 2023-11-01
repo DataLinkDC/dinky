@@ -338,7 +338,6 @@ export default {
   'pages.datastudio.sql.cacheConfigItem': '本地缓存配置',
   'pages.datastudio.sql.serverConfigItem': '服务端配置',
 
-  'pages.datastudio.label.execConfig': '执行配置',
   'pages.datastudio.label.execConfig.autostop': '自动停止',
   'pages.datastudio.label.execConfig.autostop.tip':
     '开启自动停止，将在捕获最大行数记录后自动停止任务',
@@ -395,10 +394,11 @@ export default {
   'pages.datastudio.label.version.rollback.flinksqlConfirm':
     '确定回滚Flink SQL版本至【{versionId}】吗？',
 
-  'pages.datastudio.catalog.flinkSqlEnvSelect': '请选择 FlinkSqlEnv',
   'pages.datastudio.catalog.catalogSelect': '请选择 catalog & database',
   'pages.datastudio.catalog.tableInfo': '表信息',
   'pages.datastudio.catalog.fieldInformation': '字段信息',
+  'pages.datastudio.catalog.selectDatasource': '请选择数据源',
+  'pages.datastudio.catalog.openMission': '请打开任务',
 
   'pages.datastudio.print.table.inputTableName': '请选择表名',
   'pages.devops.jobinfo.localenv': '本地环境',

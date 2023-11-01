@@ -23,7 +23,7 @@ import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import { mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
-import { getDataBase } from '@/pages/DataStudio/LeftContainer/MetaData/service';
+import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
 import { StateType, TabsItemType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
@@ -99,7 +99,7 @@ const DataStudio = (props: any) => {
 
   const loadData = async () => {
     Promise.all([
-      getDataBase(),
+      getDataSourceList(),
       getTaskData(),
       getSessionData(),
       getEnvData(),

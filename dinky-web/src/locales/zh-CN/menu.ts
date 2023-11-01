@@ -79,10 +79,10 @@ export default {
 
   'menu.datastudio.project': '项目',
   'menu.datastudio.catalog': 'Catalog',
-  'menu.datastudio.metadata': '元数据',
+  'menu.datastudio.datasource': '数据源',
   'menu.datastudio.console': '控制台',
   'menu.datastudio.jobConfig': '作业配置',
-  'menu.datastudio.executeConfig': '执行配置',
+  'menu.datastudio.previewConfig': '预览配置',
   'menu.datastudio.savePoint': '保存点',
   'menu.datastudio.historyVision': '历史版本',
   'menu.datastudio.jobInfo': '作业信息',
@@ -94,5 +94,6 @@ export default {
   'menu.datastudio.history': '历史',
   'menu.datastudio.table-data': '表数据',
 
-  'menu.datastudio.tool.text-comparison': '文本比对'
+  'menu.datastudio.tool.text-comparison': '文本比对',
+  'menu.datastudio.tool.jsonToSql': 'JSON转Flink-SQL'
 };

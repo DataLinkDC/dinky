@@ -79,10 +79,10 @@ export default {
 
   'menu.datastudio.project': 'Project',
   'menu.datastudio.catalog': 'Catalog',
-  'menu.datastudio.metadata': 'Metadata',
+  'menu.datastudio.datasource': 'Data Source',
   'menu.datastudio.console': 'Console',
   'menu.datastudio.jobConfig': 'Job Config',
-  'menu.datastudio.executeConfig': 'Execute Config',
+  'menu.datastudio.previewConfig': 'PreView Config',
   'menu.datastudio.savePoint': 'Save Point',
   'menu.datastudio.historyVision': 'History Vision',
   'menu.datastudio.jobInfo': 'Job Info',
@@ -95,5 +95,6 @@ export default {
   'menu.datastudio.history': 'History',
   'menu.datastudio.table-data': 'Table Data',
 
-  'menu.datastudio.tool.text-comparison': 'Text Comparison'
+  'menu.datastudio.tool.text-comparison': 'Text Comparison',
+  'menu.datastudio.tool.jsonToSql': 'JSON TO Flink-SQL'
 };

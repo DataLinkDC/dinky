@@ -44,8 +44,8 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
   useEffect(() => {
     getData(API_CONSTANTS.GET_LDAP_ENABLE).then(
       (res) => {
-        setLdapEnabled(res.datas);
-        form.setFieldValue('ldapLogin', res.datas);
+        setLdapEnabled(res.data);
+        form.setFieldValue('ldapLogin', res.data);
       },
       (err) => console.error(err)
     );
