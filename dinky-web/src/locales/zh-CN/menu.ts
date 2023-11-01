@@ -59,7 +59,7 @@ export default {
   'menu.registration.document': '文档',
   'menu.registration.fragment': '全局变量',
   'menu.registration.gitproject': 'Git 项目(Beta)',
-  'menu.registration.udf': 'UDF 模板',
+  'menu.registration.udf': 'UDF',
   'menu.registration.resource': '资源',
   'menu.auth': '认证中心',
   'menu.auth.user': '用户',
