@@ -29,11 +29,13 @@ import InstanceForm from './InstanceForm';
 type InstanceModalProps = {
   visible: boolean;
   onClose: () => void;
-  value: Partial<Cluster.Instance>;
-  onSubmit: (values: Partial<Cluster.Instance>) => void;
+  value: Cluster.Instance | Partial<Cluster.Instance>;
+  onSubmit: (values: Cluster.Instance) => void;
 };
 const InstanceModal: React.FC<InstanceModalProps> = (props) => {
-  const { visible, onClose, onSubmit, value } = props;
+  const { visible
+    , onClose, onSubmit,
+    value } = props;
 
   /**
    * init form
@@ -72,7 +74,7 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setSubmitting(true);
-    await onSubmit({ ...value, ...fieldsValue });
+    onSubmit({...value, ...fieldsValue});
     handleCancel();
   };
 
@@ -97,11 +99,12 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
         {...MODAL_FORM_OPTIONS}
         open={visible}
         modalProps={{ onCancel: handleCancel }}
+        form={form}
         title={value.id ? l('rc.ci.modify') : l('rc.ci.create')}
         submitter={{ render: () => [...renderFooter()] }}
         initialValues={value}
       >
-        <InstanceForm form={form} value={value} />
+        <InstanceForm />
       </ModalForm>
     </>
   );

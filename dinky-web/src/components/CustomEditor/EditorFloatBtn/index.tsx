@@ -68,7 +68,7 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
    */
   return (
     <>
-      <Space direction={'vertical'} size={0}>
+      <Space direction={'vertical'} align={"center"}  size={2}>
         {refreshLogCallback && (
           <>
             <CircleBtn

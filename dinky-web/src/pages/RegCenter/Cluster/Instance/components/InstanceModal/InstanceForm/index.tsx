@@ -33,12 +33,8 @@ import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React from 'react';
 
-type InstanceFormProps = {
-  form: FormInstance<Values>;
-  value: Partial<Cluster.Instance>;
-};
-const InstanceForm: React.FC<InstanceFormProps> = (props) => {
-  const { form, value } = props;
+
+const InstanceForm = () => {
 
   const renderForm = () => {
     return (
@@ -95,10 +91,7 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
 
   return (
     <>
-      {/*// @ts-ignore*/}
-      <ProForm {...MODAL_FORM_OPTIONS} form={form} initialValues={value} submitter={false}>
         {renderForm()}
-      </ProForm>
     </>
   );
 };

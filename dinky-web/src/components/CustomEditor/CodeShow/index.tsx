@@ -18,15 +18,16 @@
  */
 
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
-import { LogLanguage } from '@/components/CustomEditor/languages/javalog';
+import {LogLanguage} from '@/components/CustomEditor/languages/javalog';
 import useThemeValue from '@/hooks/useThemeValue';
-import { MonacoEditorOptions } from '@/types/Public/data';
-import { convertCodeEditTheme } from '@/utils/function';
-import { Editor, useMonaco } from '@monaco-editor/react';
-import { editor } from 'monaco-editor';
-import { EditorLanguage } from 'monaco-editor/esm/metadata';
-import { CSSProperties, useEffect, useState } from 'react';
+import {MonacoEditorOptions} from '@/types/Public/data';
+import {convertCodeEditTheme} from '@/utils/function';
+import {Editor, useMonaco} from '@monaco-editor/react';
+import {editor} from 'monaco-editor';
+import {EditorLanguage} from 'monaco-editor/esm/metadata';
+import {CSSProperties, useEffect, useState} from 'react';
 import FullscreenBtn from '../FullscreenBtn';
+import {Loading} from "@/pages/Other/Loading";
 
 // loader.config({monaco});
 /**
@@ -77,7 +78,7 @@ const CodeShow = (props: CodeShowFormProps) => {
     fullScreenBtn = false
   } = props;
 
-  const { ScrollType } = editor;
+  const {ScrollType} = editor;
 
   const [scrollBeyondLastLine] = useState<boolean>(options.scrollBeyondLastLine);
 
@@ -116,7 +117,7 @@ const CodeShow = (props: CodeShowFormProps) => {
   const handleStopAutoRefresh = () => {
     setStopping(true);
     setInterval(() => {
-      clearInterval(timer);
+      clearInterval(timer as any);
       setStopping(false);
       setAutoRefresh(false);
     }, 1000);
@@ -151,14 +152,14 @@ const CodeShow = (props: CodeShowFormProps) => {
    *  handle scroll to down
    */
   const handleDownScroll = () => {
-    editorRef.setScrollPosition({ scrollTop: editorRef.getScrollTop() + 500 }, ScrollType.Smooth);
+    editorRef.setScrollPosition({scrollTop: editorRef.getScrollTop() + 500}, ScrollType.Smooth);
   };
 
   /**
    *  handle scroll to up
    */
   const handleUpScroll = () => {
-    editorRef?.setScrollPosition({ scrollTop: editorRef.getScrollTop() - 500 }, ScrollType.Smooth);
+    editorRef?.setScrollPosition({scrollTop: editorRef.getScrollTop() - 500}, ScrollType.Smooth);
   };
 
   /**
@@ -212,7 +213,8 @@ const CodeShow = (props: CodeShowFormProps) => {
       <Editor
         width={width}
         height={height}
-        value={loading ? 'loading...' : code}
+        loading={<Loading loading={loading}/>}
+        value={code ?? ''}
         language={language}
         options={{
           scrollBeyondLastLine: false,
@@ -257,8 +259,7 @@ const CodeShow = (props: CodeShowFormProps) => {
           style={{
             width: 35,
             height: height,
-            backgroundColor: themeValue.borderColor,
-            paddingBlock: 10
+            paddingBlock: 10,
           }}
         >
           <EditorFloatBtn {...restEditBtnProps} />
