@@ -36,7 +36,6 @@ import org.dinky.gateway.enums.GatewayType;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
-import org.dinky.service.JarService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
@@ -57,7 +56,6 @@ public class Job2MysqlHandler implements JobHandler {
     private static final HistoryService historyService;
     private static final ClusterInstanceService clusterInstanceService;
     private static final ClusterConfigurationService clusterConfigurationService;
-    private static final JarService jarService;
     private static final JobInstanceService jobInstanceService;
     private static final JobHistoryService jobHistoryService;
     private static final TaskService taskService;
@@ -67,7 +65,6 @@ public class Job2MysqlHandler implements JobHandler {
         clusterInstanceService = SpringContextUtils.getBean("clusterInstanceServiceImpl", ClusterInstanceService.class);
         clusterConfigurationService =
                 SpringContextUtils.getBean("clusterConfigurationServiceImpl", ClusterConfigurationService.class);
-        jarService = SpringContextUtils.getBean("jarServiceImpl", JarService.class);
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
         jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
         taskService = SpringContextUtils.getBean("taskServiceImpl", TaskService.class);
@@ -191,11 +188,6 @@ public class Job2MysqlHandler implements JobHandler {
         JobHistory jobHistory = jobHistoryBuilder
                 .id(jobInstance.getId())
                 .clusterJson(ClusterInstanceMapping.getClusterInstanceMapping(clusterInstance))
-                .jarJson(
-                        Asserts.isNotNull(job.getJobConfig().getJarId())
-                                ? JsonUtils.toJsonString(
-                                        jarService.getById(job.getJobConfig().getJarId()))
-                                : null)
                 .clusterConfigurationJson(
                         Asserts.isNotNull(clusterConfigurationId)
                                 ? ClusterConfigurationMapping.getClusterConfigurationMapping(

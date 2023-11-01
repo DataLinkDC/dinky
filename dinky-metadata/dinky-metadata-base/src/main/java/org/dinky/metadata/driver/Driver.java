@@ -70,6 +70,15 @@ public interface Driver extends AutoCloseable {
         }
     }
 
+    static Driver buildNewConnection(DriverConfig config) {
+        Optional<Driver> optionalDriver = Driver.get(config);
+        if (!optionalDriver.isPresent()) {
+            throw new MetaDataException("Missing " + config.getType() + " dependency package: dinky-metadata-"
+                    + config.getType().toLowerCase() + ".jar");
+        }
+        return optionalDriver.get().connect();
+    }
+
     static Driver buildUnconnected(DriverConfig config) {
         synchronized (Driver.class) {
             Optional<Driver> optionalDriver = Driver.get(config);

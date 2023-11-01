@@ -27,14 +27,10 @@ import org.dinky.data.flink.job.FlinkJobDetailInfo;
 import org.dinky.data.model.JobHistory;
 import org.dinky.data.model.mapping.ClusterConfigurationMapping;
 import org.dinky.data.model.mapping.ClusterInstanceMapping;
-import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import cn.hutool.core.lang.Opt;
-import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -76,9 +72,6 @@ public class JobDataDto {
     @ApiModelProperty(value = "JobConfigInfo", notes = "JobConfigInfo representing job configuration")
     private FlinkJobConfigInfo config;
 
-    @ApiModelProperty(value = "Jar Object", notes = "Object representing the JAR used in the job")
-    private JsonNode jar;
-
     @ApiModelProperty(value = "ClusterInstance Object", notes = "Object representing the cluster")
     private ClusterInstanceMapping cluster;
 
@@ -108,7 +101,6 @@ public class JobDataDto {
                 .checkpointsJson(this.checkpoints)
                 .checkpointsConfigJson(this.checkpointsConfig)
                 .configJson(this.config)
-                .jarJson(JSONUtil.toJsonStr(getJar()))
                 .clusterJson(this.cluster)
                 .clusterConfigurationJson(this.clusterConfiguration)
                 .updateTime(LocalDateTime.now())
@@ -125,7 +117,6 @@ public class JobDataDto {
                         .checkpoints(jobHistory.getCheckpointsJson())
                         .checkpointsConfig(jobHistory.getCheckpointsConfigJson())
                         .config(jobHistory.getConfigJson())
-                        .jar(JsonUtils.parseToJsonNode(jobHistory.getJarJson()))
                         .cluster(jobHistory.getClusterJson())
                         .clusterConfiguration(jobHistory.getClusterConfigurationJson())
                         .build())

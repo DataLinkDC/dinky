@@ -17,35 +17,23 @@
  *
  */
 
-package org.dinky.data.model;
+package org.dinky;
 
-import org.dinky.mybatis.model.SuperEntity;
+import cn.hutool.setting.dialect.Props;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-/** UploadFileRecord */
-@Data
-@EqualsAndHashCode(callSuper = false)
-@TableName("dinky_upload_file_record")
-@Deprecated
-public class UploadFileRecord extends SuperEntity {
-
-    private static final long serialVersionUID = 3769285632787490408L;
+public final class DinkyVersion {
+    private DinkyVersion() {}
 
     /**
-     * File type id: hadoop-conf(1)、flink-conf(2)、flink-lib(3)、user-jar(4)、dinky-jar(5), -1
-     * represent no file type.
+     * Return the full version string of the present Dinky codebase.
+     *
+     * @return the version of Dinky
      */
-    private Byte fileType = -1;
-
-    private String fileName;
-    /** Where file upload to: local(1)、hdfs(2) */
-    private Byte target;
-
-    private String fileParentPath;
-    private String fileAbsolutePath;
-    private Boolean isFile = true;
+    public static String getVersion() {
+        try {
+            return Props.getProp("common.properties").getProperty("version");
+        } catch (Exception e) {
+            return "${revision}";
+        }
+    }
 }

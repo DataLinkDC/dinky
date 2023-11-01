@@ -19,11 +19,12 @@
 
 package org.dinky.configure;
 
+import org.dinky.DinkyVersion;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.web.server.ManagementPortType;
@@ -61,8 +62,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 @Import(BeanValidatorPluginsConfiguration.class)
 public class Knife4jConfig {
 
-    @Value("${dinky.version}")
-    private String dinkyVersion;
+    private final String dinkyVersion = DinkyVersion.getVersion();
 
     private final OpenApiExtensionResolver openApiExtensionResolver;
 
