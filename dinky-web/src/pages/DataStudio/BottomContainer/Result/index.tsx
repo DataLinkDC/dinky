@@ -147,7 +147,7 @@ const Result = (props: any) => {
             id: current.id
           });
           const historyData = res.data;
-          if ('2' == historyData.status) {
+          if (historyData && '2' == historyData.status) {
             const historyId = historyData.id;
             const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', {
               jobId: historyId

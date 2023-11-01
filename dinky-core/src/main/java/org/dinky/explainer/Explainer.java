@@ -126,6 +126,7 @@ public class Explainer {
                 statementList.add(statement);
             } else if (operationType.equals(SqlType.INSERT)
                     || operationType.equals(SqlType.SELECT)
+                    || operationType.equals(SqlType.WITH)
                     || operationType.equals(SqlType.SHOW)
                     || operationType.equals(SqlType.DESCRIBE)
                     || operationType.equals(SqlType.DESC)
