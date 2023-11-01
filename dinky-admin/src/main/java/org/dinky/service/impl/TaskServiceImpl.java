@@ -42,7 +42,6 @@ import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.DataBase;
-import org.dinky.data.model.Jar;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
@@ -75,7 +74,6 @@ import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.FragmentVariableService;
-import org.dinky.service.JarService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.SavepointsService;
 import org.dinky.service.TaskService;
@@ -139,7 +137,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final SavepointsService savepointsService;
     private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterCfgService;
-    private final JarService jarService;
     private final DataBaseService dataBaseService;
     private final JobInstanceService jobInstanceService;
     private final AlertGroupService alertGroupService;
@@ -615,13 +612,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
             jsonNode.put("databaseName", Asserts.isNotNull(dataBase) ? dataBase.getName() : null);
         }
-
-        // jarName
-        if (Asserts.isNotNull(task.getJarId())) {
-            Jar jar = jarService.getById(task.getJarId());
-            jsonNode.put("jarName", Asserts.isNotNull(jar) ? jar.getName() : null);
-        }
-
         // envName
         if (Asserts.isNotNull(task.getEnvId())) {
             Task envTask = getById(task.getEnvId());
@@ -699,13 +689,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                         dataBaseService.getOne(new QueryWrapper<DataBase>().eq("name", task.getDatabaseName()));
                 if (Asserts.isNotNull(dataBase)) {
                     task.setDatabaseId(dataBase.getId());
-                }
-            }
-
-            if (Asserts.isNotNull(task.getJarName())) {
-                Jar jar = jarService.getOne(new QueryWrapper<Jar>().eq("name", task.getJarName()));
-                if (Asserts.isNotNull(jar)) {
-                    task.setJarId(jar.getId());
                 }
             }
 
