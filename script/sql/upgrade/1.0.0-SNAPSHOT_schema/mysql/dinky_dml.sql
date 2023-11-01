@@ -276,6 +276,7 @@ LEFT JOIN
 
 -- 删除dinky_job_history 的 jar_json 字段
 alter table dinky_job_history drop column jar_json;
+alter table dinky_task drop column jar_id;
 
 
 insert into `dinky_flink_document`  values (218, 'Reference', '建表语句', 'Streaming', 'EXECUTE CDCSOURCE print', 'Whole library synchronization print', 'EXECUTE CDCSOURCE demo_print WITH (

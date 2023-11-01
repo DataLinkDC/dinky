@@ -1219,7 +1219,6 @@ CREATE TABLE `dinky_task`  (
                              `cluster_id` int(11) NULL DEFAULT NULL COMMENT 'Flink cluster ID',
                              `cluster_configuration_id` int(11) NULL DEFAULT NULL COMMENT 'cluster configuration ID',
                              `database_id` int(11) NULL DEFAULT NULL COMMENT 'database ID',
-                             `jar_id` int(11) NULL DEFAULT NULL COMMENT 'Jar ID',
                              `env_id` int(11) NULL DEFAULT NULL COMMENT 'env id',
                              `alert_group_id` bigint(20) NULL DEFAULT NULL COMMENT 'alert group id',
                              `config_json` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'configuration json',

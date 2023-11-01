@@ -1472,7 +1472,6 @@ CREATE TABLE "public"."dinky_task" (
                                        "cluster_id" int4,
                                        "cluster_configuration_id" int4,
                                        "database_id" int4,
-                                       "jar_id" int4,
                                        "env_id" int4,
                                        "alert_group_id" int8,
                                        "config_json" text COLLATE "pg_catalog"."default",
@@ -1501,7 +1500,6 @@ COMMENT ON COLUMN "public"."dinky_task"."batch_model" IS 'use batch model';
 COMMENT ON COLUMN "public"."dinky_task"."cluster_id" IS 'Flink cluster ID';
 COMMENT ON COLUMN "public"."dinky_task"."cluster_configuration_id" IS 'cluster configuration ID';
 COMMENT ON COLUMN "public"."dinky_task"."database_id" IS 'database ID';
-COMMENT ON COLUMN "public"."dinky_task"."jar_id" IS 'Jar ID';
 COMMENT ON COLUMN "public"."dinky_task"."env_id" IS 'env id';
 COMMENT ON COLUMN "public"."dinky_task"."alert_group_id" IS 'alert group id';
 COMMENT ON COLUMN "public"."dinky_task"."config_json" IS 'configuration json';
