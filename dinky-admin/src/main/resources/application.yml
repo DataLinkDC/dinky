@@ -154,8 +154,6 @@ sa-token:
 knife4j:
   enable: true
 
-dinky:
-  version: ${revision}
 sms:
   is-print: false
 
