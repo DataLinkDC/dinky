@@ -19,10 +19,38 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.config.Dialect;
+import org.dinky.data.model.UDFManage;
+import org.dinky.data.vo.UDFManageVO;
+import org.dinky.mapper.UDFManageMapper;
 import org.dinky.service.UDFService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import cn.hutool.core.io.FileUtil;
+
 /** @since 0.6.8 */
 @Service
-public class UDFServiceImpl implements UDFService {}
+public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> implements UDFService {
+
+    @Override
+    public List<UDFManageVO> selectAll() {
+        List<UDFManageVO> udfManageList = baseMapper.selectAll();
+        return udfManageList.stream()
+                .filter(x -> "resources".equals(x.getSource()))
+                .peek(x -> {
+                    String fileName = x.getFileName();
+                    if ("jar".equals(FileUtil.getSuffix(fileName))) {
+                        x.setDialect(Dialect.JAVA.getValue());
+                    } else {
+                        x.setDialect(Dialect.PYTHON.getValue());
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+}

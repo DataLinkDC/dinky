@@ -17,15 +17,29 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.data.model;
 
-import org.dinky.data.model.UDFManage;
-import org.dinky.data.vo.UDFManageVO;
+import org.dinky.mybatis.model.SuperEntity;
 
-import java.util.List;
+import com.baomidou.mybatisplus.annotation.TableName;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-public interface UDFService extends IService<UDFManage> {
-    List<UDFManageVO> selectAll();
+@Data
+@EqualsAndHashCode(callSuper = false)
+@TableName("dinky_udf_manage")
+@ApiModel(value = "UDFTemplate", description = "User-Defined Function Template")
+public class UDFManage extends SuperEntity {
+
+    @ApiModelProperty(value = "Class Name", dataType = "String", notes = "Class Name")
+    private String className;
+
+    @ApiModelProperty(value = "Task Id", dataType = "Integer", notes = "Task Id")
+    private Integer taskId;
+
+    @ApiModelProperty(value = "Resources Id", dataType = "Integer", notes = "Resources Id")
+    private Integer resourcesId;
 }

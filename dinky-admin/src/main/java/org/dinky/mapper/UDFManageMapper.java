@@ -17,15 +17,20 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.mapper;
 
 import org.dinky.data.model.UDFManage;
 import org.dinky.data.vo.UDFManageVO;
+import org.dinky.mybatis.mapper.SuperMapper;
+
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-
-public interface UDFService extends IService<UDFManage> {
+/**
+ * UDFManageMapper
+ */
+@Mapper
+public interface UDFManageMapper extends SuperMapper<UDFManage> {
     List<UDFManageVO> selectAll();
 }

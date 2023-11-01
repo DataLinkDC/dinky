@@ -17,15 +17,28 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.data.vo;
 
-import org.dinky.data.model.UDFManage;
-import org.dinky.data.vo.UDFManageVO;
+import java.io.Serializable;
+import java.util.Date;
 
-import java.util.List;
+import lombok.Data;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+@Data
+public class UDFManageVO implements Serializable {
+    private Integer id;
+    private String name;
+    private Boolean enabled;
+    private String className;
+    private Integer taskId;
+    private Integer resourcesId;
+    /**
+     * develop or resources
+     */
+    private String source;
 
-public interface UDFService extends IService<UDFManage> {
-    List<UDFManageVO> selectAll();
+    private String dialect;
+    private String fileName;
+    private Date createTime;
+    private Date updateTime;
 }

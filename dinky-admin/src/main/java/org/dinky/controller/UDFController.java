@@ -17,15 +17,31 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.controller;
 
-import org.dinky.data.model.UDFManage;
 import org.dinky.data.vo.UDFManageVO;
+import org.dinky.service.UDFService;
 
 import java.util.List;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-public interface UDFService extends IService<UDFManage> {
-    List<UDFManageVO> selectAll();
+import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Api(tags = "UDF Controller")
+@RestController
+@RequestMapping("/api/udf")
+@RequiredArgsConstructor
+public class UDFController {
+    private final UDFService udfService;
+
+    @GetMapping("/list")
+    public List<UDFManageVO> list() {
+        return udfService.selectAll();
+    }
 }
