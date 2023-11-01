@@ -29,8 +29,6 @@ import org.dinky.job.Job;
 import org.dinky.job.JobResult;
 import org.dinky.utils.UDFUtils;
 
-import org.apache.flink.configuration.Configuration;
-
 import java.util.Collections;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -49,7 +47,7 @@ public class UdfTask extends BaseTask {
         jobResult.setStatus(Job.JobStatus.SUCCESS);
         try {
             UDF udf = UDFUtils.taskToUDF(BeanUtil.toBean(task, Task.class));
-            FunctionFactory.initUDF(Collections.singletonList(udf), task.getId(), new Configuration());
+            FunctionFactory.initUDF(Collections.singletonList(udf), task.getId());
         } catch (Exception e) {
             jobResult.setSuccess(false);
             jobResult.setError(ExceptionUtil.getRootCauseMessage(e));
