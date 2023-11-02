@@ -72,7 +72,7 @@ public class MenuController {
             dataType = "MenuDTO",
             paramType = "body",
             required = true,
-            dataTypeClass = Menu.class)
+            dataTypeClass = MenuDTO.class)
     @SaCheckPermission(
             value = {
                 PermissionConstants.AUTH_MENU_ADD_ROOT,
