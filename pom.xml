@@ -959,7 +959,7 @@
             <id>flink-1.15</id>
             <properties>
                 <dinky.flink.version>1.15</dinky.flink.version>
-                <flink.version>1.15.2</flink.version>
+                <flink.version>1.15.4</flink.version>
 
             </properties>
         </profile>
@@ -968,7 +968,7 @@
             <id>flink-1.16</id>
             <properties>
                 <dinky.flink.version>1.16</dinky.flink.version>
-                <flink.version>1.16.0</flink.version>
+                <flink.version>1.16.2</flink.version>
 
             </properties>
         </profile>
