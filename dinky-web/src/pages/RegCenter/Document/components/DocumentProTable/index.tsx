@@ -150,7 +150,7 @@ const DocumentTableList: React.FC = () => {
       hideInTable: true,
       hideInSearch: true,
       render: (_, record) => {
-        return <CodeShow width={'85vh'} code={record.fillValue} />;
+        return <CodeShow language={'sql'} width={'40vw'} code={record.fillValue} />;
       }
     },
     {

@@ -20,6 +20,7 @@
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
 import { LogLanguage } from '@/components/CustomEditor/languages/javalog';
 import useThemeValue from '@/hooks/useThemeValue';
+import { Loading } from '@/pages/Other/Loading';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, useMonaco } from '@monaco-editor/react';
@@ -116,7 +117,7 @@ const CodeShow = (props: CodeShowFormProps) => {
   const handleStopAutoRefresh = () => {
     setStopping(true);
     setInterval(() => {
-      clearInterval(timer);
+      clearInterval(timer as any);
       setStopping(false);
       setAutoRefresh(false);
     }, 1000);
@@ -212,7 +213,8 @@ const CodeShow = (props: CodeShowFormProps) => {
       <Editor
         width={width}
         height={height}
-        value={loading ? 'loading...' : code}
+        loading={<Loading loading={loading} />}
+        value={code ?? ''}
         language={language}
         options={{
           scrollBeyondLastLine: false,
@@ -257,7 +259,6 @@ const CodeShow = (props: CodeShowFormProps) => {
           style={{
             width: 35,
             height: height,
-            backgroundColor: themeValue.borderColor,
             paddingBlock: 10
           }}
         >
