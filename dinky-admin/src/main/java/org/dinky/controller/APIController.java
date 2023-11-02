@@ -178,4 +178,19 @@ public class APIController {
     public Result<String> exportSql(@RequestParam Integer id) {
         return Result.succeed(taskService.exportSql(id));
     }
+
+    @GetMapping("/getTaskLineage")
+    @ApiOperation("Get Task Lineage")
+    @Log(title = "Get Task Lineage", businessType = BusinessType.OTHER)
+    @ApiImplicitParam(
+            name = "id",
+            value = "Task Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class)
+    public Result getTaskLineage(@RequestParam Integer id) {
+        taskService.initTenantByTaskId(id);
+        return Result.succeed(taskService.getTaskLineage(id), "获取成功");
+    }
 }

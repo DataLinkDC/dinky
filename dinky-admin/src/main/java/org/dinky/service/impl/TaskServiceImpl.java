@@ -53,6 +53,9 @@ import org.dinky.data.model.TaskVersion;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.explainer.lineage.LineageBuilder;
+import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
@@ -781,6 +784,28 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         final List<Catalogue> catalogueList = catalogueService.list(queryWrapper);
         return Result.succeed(
                 TreeUtil.build(dealWithCatalogue(catalogueList), -1).get(0));
+    }
+
+    @Override
+    public LineageResult getTaskLineage(Integer id) {
+        TaskDTO task = getTaskInfoById(id);
+        if (!Dialect.isCommonSql(task.getDialect())) {
+            if (Asserts.isNull(task.getDatabaseId())) {
+                return null;
+            }
+            DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
+            if (Asserts.isNull(dataBase)) {
+                return null;
+            }
+            if (task.getDialect().equalsIgnoreCase("doris") || task.getDialect().equalsIgnoreCase("starrocks")) {
+                return SQLLineageBuilder.getSqlLineage(task.getStatement(), "mysql", dataBase.getDriverConfig());
+            } else {
+                return SQLLineageBuilder.getSqlLineage(
+                        task.getStatement(), task.getDialect().toLowerCase(), dataBase.getDriverConfig());
+            }
+        } else {
+            return LineageBuilder.getColumnLineageByLogicalPlan(buildEnvSql(task));
+        }
     }
 
     private List<TreeNode<Integer>> dealWithCatalogue(List<Catalogue> catalogueList) {

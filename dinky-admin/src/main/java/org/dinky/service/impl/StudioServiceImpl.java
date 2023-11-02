@@ -22,8 +22,8 @@ package org.dinky.service.impl;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
-import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
+import org.dinky.data.dto.StudioLineageDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.ClusterInstance;
@@ -38,6 +38,7 @@ import org.dinky.data.result.SelectResult;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.metadata.driver.Driver;
@@ -104,7 +105,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public LineageResult getLineage(StudioCADTO studioCADTO) {
+    public LineageResult getLineage(StudioLineageDTO studioCADTO) {
         // TODO 添加ProcessStep
         if (Asserts.isNotNullString(studioCADTO.getDialect())
                 && !Dialect.FLINK_SQL.equalsVal(studioCADTO.getDialect())) {
@@ -118,10 +119,9 @@ public class StudioServiceImpl implements StudioService {
                 return null;
             }
             if (Dialect.DORIS.equalsVal(studioCADTO.getDialect())) {
-                return org.dinky.explainer.sqllineage.LineageBuilder.getSqlLineage(
-                        studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
+                return SQLLineageBuilder.getSqlLineage(studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
             } else {
-                return org.dinky.explainer.sqllineage.LineageBuilder.getSqlLineage(
+                return SQLLineageBuilder.getSqlLineage(
                         studioCADTO.getStatement(), studioCADTO.getDialect().toLowerCase(), dataBase.getDriverConfig());
             }
         } else {
