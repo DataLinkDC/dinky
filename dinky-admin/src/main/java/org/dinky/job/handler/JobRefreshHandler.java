@@ -55,6 +55,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -248,8 +249,8 @@ public class JobRefreshHandler {
 
         if (GatewayType.isDeployCluster(clusterType)) {
             JobConfig jobConfig = new JobConfig();
-            FlinkClusterConfig configJson = jobDataDto.getClusterConfiguration().getConfigJson();
-            jobConfig.buildGatewayConfig(configJson);
+            String configJson = jobDataDto.getClusterConfiguration().getConfigJson();
+            jobConfig.buildGatewayConfig(new JSONObject(configJson).toBean(FlinkClusterConfig.class));
             jobConfig.getGatewayConfig().setType(GatewayType.get(clusterType));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
             Gateway.build(jobConfig.getGatewayConfig()).onJobFinishCallback(jobInstance.getStatus());
