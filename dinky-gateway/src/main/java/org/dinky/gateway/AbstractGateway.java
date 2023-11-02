@@ -25,6 +25,7 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.exception.NotSupportGetStatusException;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.SavePointResult;
@@ -172,7 +173,7 @@ public abstract class AbstractGateway implements Gateway {
 
     @Override
     public JobStatus getJobStatusById(String id) {
-        return JobStatus.UNKNOWN;
+        throw new NotSupportGetStatusException(StrFormatter.format("{} is not support get status.", getType()));
     }
 
     @Override

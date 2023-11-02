@@ -47,6 +47,8 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ReflectUtil;
+import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
 
 /**
  * KubernetesGateway
@@ -55,6 +57,7 @@ import cn.hutool.core.util.ReflectUtil;
 public abstract class KubernetesGateway extends AbstractGateway {
 
     protected FlinkKubeClient client;
+    protected KubernetesClient kubernetesClient;
 
     public KubernetesGateway() {}
 
@@ -108,6 +111,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
 
     private void initKubeClient() {
         client = FlinkKubeClientFactory.getInstance().fromConfiguration(configuration, "client");
+        kubernetesClient = new DefaultKubernetesClient();
     }
 
     public SavePointResult savepointCluster(String savePoint) {

@@ -69,8 +69,9 @@ public class SavePointResult extends AbstractGatewayResult {
     }
 
     @Override
-    public void setId(String id) {
+    public GatewayResult setId(String id) {
         this.appId = id;
+        return this;
     }
 
     @Override

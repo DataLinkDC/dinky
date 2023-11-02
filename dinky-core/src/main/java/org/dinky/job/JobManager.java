@@ -102,6 +102,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -604,12 +605,13 @@ public class JobManager {
                 success();
             }
         } catch (Exception e) {
-            String error = LogUtil.getError("Exception in executing FlinkSQL:\n" + addLineNumber(currentSql), e);
+            String error = StrFormatter.format(
+                    "Exception in executing FlinkSQL:\n{}\n{}", addLineNumber(currentSql), e.getMessage());
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
             failed();
-            throw e;
+            throw new Exception(error, e);
         } finally {
             close();
         }
