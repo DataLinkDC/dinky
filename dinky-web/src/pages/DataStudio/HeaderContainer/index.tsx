@@ -182,7 +182,7 @@ const HeaderContainer = (props: any) => {
   const handleChangeJobLife = async () => {
     if (!currentData) return;
     if (isOnline(currentData)) {
-      await cancelTask(l('global.table.lifecycle.offline'), currentData.id);
+      await offLineTask(l('global.table.lifecycle.offline'), currentData.id);
       currentData.step = JOB_LIFE_CYCLE.DEVELOP;
     } else {
       const saved = await handleSave();
