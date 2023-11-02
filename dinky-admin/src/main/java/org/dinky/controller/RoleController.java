@@ -79,7 +79,7 @@ public class RoleController {
             required = true,
             dataType = "RoleDTO",
             paramType = "body",
-            dataTypeClass = Role.class)
+            dataTypeClass = RoleDTO.class)
     @SaCheckPermission(
             value = {PermissionConstants.AUTH_ROLE_ADD, PermissionConstants.AUTH_ROLE_EDIT},
             mode = SaMode.OR)

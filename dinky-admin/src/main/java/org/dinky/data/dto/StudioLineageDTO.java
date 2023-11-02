@@ -32,7 +32,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel(value = "StudioCADTO", description = "DTO for Studio SQL query")
-public class StudioCADTO extends AbstractStatementDTO {
+public class StudioLineageDTO extends AbstractStatementDTO {
 
     @ApiModelProperty(
             value = "Use Statement Set",

@@ -69,7 +69,7 @@ public class LogSseAppender extends AbstractAppender {
             String processName = contextData.getValue(ProcessAspect.PROCESS_NAME);
             String processStepPid = contextData.getValue(ProcessAspect.PROCESS_STEP);
             String log = getStringLayout().toSerializable(event);
-            ConsoleContextHolder.getInstances().appendLog(processName, processStepPid, log);
+            ConsoleContextHolder.getInstances().appendLog(processName, processStepPid, log, true);
         }
     }
 

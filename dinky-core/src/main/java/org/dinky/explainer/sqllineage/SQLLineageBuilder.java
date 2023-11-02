@@ -45,7 +45,7 @@ import com.alibaba.druid.stat.TableStat;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class LineageBuilder {
+public class SQLLineageBuilder {
 
     public static LineageResult getSqlLineageByOne(String statement, String type) {
         // TODO 改为ProcessStep注释

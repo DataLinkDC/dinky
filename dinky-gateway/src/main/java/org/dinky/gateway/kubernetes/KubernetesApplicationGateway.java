@@ -20,141 +20,215 @@
 package org.dinky.gateway.kubernetes;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.constant.NetConstant;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.enums.GatewayType;
+import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
-import org.dinky.utils.LogUtil;
 
+import org.apache.flink.api.common.JobStatus;
+import org.apache.flink.client.deployment.ClusterDeploymentException;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
+import org.apache.flink.kubernetes.utils.Constants;
 import org.apache.flink.runtime.client.JobStatusMessage;
-import org.apache.http.util.TextUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.nodes.NodeTuple;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
 
 import cn.hutool.core.text.StrFormatter;
-import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpUtil;
+import io.fabric8.kubernetes.api.model.ContainerStatus;
+import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
 
 /**
  * KubernetesApplicationGateway
- *
- * @since 2021/12/26 14:59
  */
 public class KubernetesApplicationGateway extends KubernetesGateway {
 
+    /**
+     * @return The type of the Kubernetes gateway, which is GatewayType.KUBERNETES_APPLICATION.
+     */
     @Override
     public GatewayType getType() {
         return GatewayType.KUBERNETES_APPLICATION;
     }
 
+    /**
+     * Submits a jar file to the Kubernetes gateway.
+     *
+     * @throws RuntimeException if an error occurs during submission.
+     */
     @Override
     public GatewayResult submitJar() {
-        if (Asserts.isNull(client)) {
-            init();
+        try {
+            logger.info("Start submit k8s application.");
+            ClusterClientProvider<String> clusterClient = deployApplication();
+            Deployment deployment = kubernetesClient
+                    .apps()
+                    .deployments()
+                    .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
+                    .withName(configuration.getString(KubernetesConfigOptions.CLUSTER_ID))
+                    .get();
+            KubernetesResult kubernetesResult = waitForJmAndJobStart(deployment, clusterClient);
+            kubernetesResult.success();
+            return kubernetesResult;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            client.close();
+            kubernetesClient.close();
         }
-
-        AppConfig appConfig = config.getAppConfig();
-        String[] userJarParas =
-                Asserts.isNotNull(appConfig.getUserJarParas()) ? appConfig.getUserJarParas() : new String[0];
-
-        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
-                createClusterSpecificationBuilder();
-        ApplicationConfiguration applicationConfiguration =
-                new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
-
-        KubernetesResult result = KubernetesResult.build(getType());
-
-        try (KubernetesClusterDescriptor kubernetesClusterDescriptor =
-                new KubernetesClusterDescriptor(configuration, client)) {
-            ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deployApplicationCluster(
-                    clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
-            ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
-            Collection<JobStatusMessage> jobStatusMessages =
-                    clusterClient.listJobs().get();
-
-            int counts = SystemConfiguration.getInstances().getJobIdWait();
-            while (jobStatusMessages.isEmpty() && counts > 0) {
-                Thread.sleep(1000);
-                counts--;
-                try {
-                    jobStatusMessages = clusterClient.listJobs().get();
-                    logger.info("Get K8s Job list: {}", jobStatusMessages);
-                } catch (ExecutionException e) {
-                    logger.error("Get Job list Error: {}", e.getMessage());
-                    if (StrUtil.contains(e.getMessage(), "Number of retries has been exhausted.")) {
-                        // refresh the job manager ip address
-                        clusterClient.close();
-                        clusterClient = clusterClientProvider.getClusterClient();
-                    } else {
-                        throw e;
-                    }
-                }
-                if (!jobStatusMessages.isEmpty()) {
-                    break;
-                }
-            }
-
-            // application mode only have one job, so we can get any one to be jobId
-            String jobId = "";
-            if (!jobStatusMessages.isEmpty()) {
-                List<String> jids = new ArrayList<>();
-                for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
-                    jobId = jobStatusMessage.getJobId().toHexString();
-                    jids.add(jobId);
-                }
-                result.setJids(jids);
-            }
-
-            // if JobStatusMessage not have job id,  it`s maybe wrong with submit,throw exception
-            if (TextUtils.isEmpty(jobId)) {
-                int cost = SystemConfiguration.getInstances().getJobIdWait() - counts;
-                String clusterId = clusterClient.getClusterId();
-                throw new Exception(
-                        StrFormatter.format("Unable to get JobID,wait time:{}, Job name:{}", cost, clusterId));
-            }
-
-            result.setId(jobId);
-            result.setWebURL(clusterClient.getWebInterfaceURL());
-            waitForTaskManagerToBeReady(result.getWebURL(), jobId);
-            result.success();
-        } catch (Exception e) {
-            logger.error("submit K8s Application error", e);
-            result.fail(LogUtil.getError(e));
-        }
-        return result;
     }
 
     /**
-     * Waiting for TaskManager to successfully start,if skip this step, may obtain an NullPointerException in the next step
+     * Checks the status of a Pod in Kubernetes.
      *
-     * @param apiPath
-     * @param jobId
+     * @param pod The Pod to check the status of.
+     * @return True if the Pod is ready, false otherwise.
+     * @throws GatewayException if the Pod has restarted or terminated.
      */
-    static void waitForTaskManagerToBeReady(String apiPath, String jobId) {
-        int jobIdWait = SystemConfiguration.getInstances().getJobIdWait();
-        String fullPath = String.format("%s/jobs/%s", apiPath, jobId);
-        for (int i = 1; i <= jobIdWait; i++) {
-            try {
-                // 不抛异常，就为成功
-                String result = HttpUtil.get(fullPath, NetConstant.SERVER_TIME_OUT_ACTIVE);
-                logger.info("get job status success,jobPath:{},result: {}", fullPath, result);
-                return;
-            } catch (Exception e) {
-                logger.info("Unable to connect to Flink JobManager: {},wait count:{}", fullPath, i);
-                ThreadUtil.sleep(1000);
-            }
+    public boolean checkPodStatus(Pod pod) {
+        // Get the Flink container status.
+        Optional<ContainerStatus> flinContainer = pod.getStatus().getContainerStatuses().stream()
+                .filter(s -> s.getName().equals(Constants.MAIN_CONTAINER_NAME))
+                .findFirst();
+        ContainerStatus containerStatus =
+                flinContainer.orElseThrow(() -> new GatewayException("Deploy k8s failed, can't find flink container"));
+
+        Yaml yaml = new Yaml(new LogRepresenter());
+        String logStr = StrFormatter.format(
+                "Got Flink Container State:\nPod: {},\tReady: {},\trestartCount: {},\timage: {}\n"
+                        + "------CurrentState------\n{}\n------LastState------\n{}",
+                pod.getMetadata().getName(),
+                containerStatus.getReady(),
+                containerStatus.getRestartCount(),
+                containerStatus.getImage(),
+                yaml.dumpAsMap(containerStatus.getState()),
+                yaml.dumpAsMap(containerStatus.getLastState()));
+        logger.info(logStr);
+
+        if (containerStatus.getRestartCount() > 0 || containerStatus.getState().getTerminated() != null) {
+            throw new GatewayException("Deploy k8s failed, pod have restart or terminated");
         }
-        logger.error("wait for taskManager to be ready timeout,path=" + fullPath);
+        return containerStatus.getReady();
+    }
+
+    /**
+     * Deploys an application to Kubernetes.
+     *
+     * @return A ClusterClientProvider<String> object for accessing the Kubernetes cluster.
+     * @throws ClusterDeploymentException if deployment to Kubernetes fails.
+     */
+    public ClusterClientProvider<String> deployApplication() throws ClusterDeploymentException {
+        if (Asserts.isNull(client)) {
+            init();
+        }
+        // Build the commit information
+        AppConfig appConfig = config.getAppConfig();
+        String[] userJarParas =
+                Asserts.isNotNull(appConfig.getUserJarParas()) ? appConfig.getUserJarParas() : new String[0];
+        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
+                createClusterSpecificationBuilder();
+        // Deploy to k8s
+        ApplicationConfiguration applicationConfiguration =
+                new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
+        KubernetesClusterDescriptor kubernetesClusterDescriptor =
+                new KubernetesClusterDescriptor(configuration, client);
+        return kubernetesClusterDescriptor.deployApplicationCluster(
+                clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
+    }
+
+    /**
+     * Waits for the JobManager and the Job to start in Kubernetes.
+     *
+     * @param deployment    The deployment in Kubernetes.
+     * @param clusterClient The ClusterClientProvider<String> object for accessing the Kubernetes cluster.
+     * @return A KubernetesResult object containing the Kubernetes gateway's Web URL, the Job ID, and the cluster ID.
+     * @throws InterruptedException if waiting is interrupted.
+     */
+    public KubernetesResult waitForJmAndJobStart(Deployment deployment, ClusterClientProvider<String> clusterClient)
+            throws InterruptedException {
+        KubernetesResult result = KubernetesResult.build(getType());
+        long waitSends = SystemConfiguration.getInstances().getJobIdWait() * 1000L;
+        long startTime = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() - startTime < waitSends) {
+            List<Pod> pods = kubernetesClient
+                    .pods()
+                    .inNamespace(deployment.getMetadata().getNamespace())
+                    .withLabelSelector(deployment.getSpec().getSelector())
+                    .list()
+                    .getItems();
+            for (Pod pod : pods) {
+                if (!checkPodStatus(pod)) {
+                    logger.info("Kubernetes Pod have not ready, reTry at 5 sec later");
+                    continue;
+                }
+                try (ClusterClient<String> client = clusterClient.getClusterClient()) {
+                    logger.info("Start get job list ....");
+                    Collection<JobStatusMessage> jobList = client.listJobs().get(15, TimeUnit.SECONDS);
+                    logger.info("Get K8S Job list: {}", jobList);
+                    if (jobList.isEmpty()) {
+                        logger.error("Get job is empty, will be reconnect later....");
+                        continue;
+                    }
+                    JobStatusMessage job = jobList.stream().findFirst().get();
+                    JobStatus jobStatus = client.getJobStatus(job.getJobId()).get();
+                    // To create a cluster ID, you need to combine the cluster ID with the jobID to ensure uniqueness
+                    String cid = configuration.getString(KubernetesConfigOptions.CLUSTER_ID)
+                            + job.getJobId().toHexString();
+                    logger.info("Success get job status:{}", jobStatus);
+                    return result.setWebURL(client.getWebInterfaceURL())
+                            .setJids(Collections.singletonList(job.getJobId().toHexString()))
+                            .setId(cid);
+                } catch (GatewayException e) {
+                    throw e;
+                } catch (Exception ex) {
+                    logger.error("Get job status failed,{}", ex.getMessage());
+                }
+            }
+            Thread.sleep(5000);
+        }
+        throw new GatewayException(
+                "The number of retries exceeds the limit, check the K8S cluster for more information");
+    }
+
+    /**
+     * Represents Java Bean properties for YAML serialization with LogRepresenter.
+     * If the property value is null, it is ignored.
+     */
+    static class LogRepresenter extends Representer {
+        /**
+         * Represents the Java Bean property, ignoring null and empty values.
+         *
+         * @param javaBean      The Java Bean object.
+         * @param property      The property to represent.
+         * @param propertyValue The value of the property.
+         * @param tag           The custom tag.
+         * @return The represented node tuple, or null if the property value is null.
+         */
+        @Override
+        protected NodeTuple representJavaBeanProperty(
+                Object javaBean, Property property, Object propertyValue, Tag tag) {
+            if (propertyValue == null) {
+                return null;
+            }
+            return super.representJavaBeanProperty(javaBean, property, propertyValue, tag);
+        }
     }
 }

@@ -228,9 +228,10 @@ public class JobRefreshHandler {
                 Gateway gateway = Gateway.build(gatewayConfig);
                 return gateway.getJobStatusById(appId);
             } catch (NotSupportGetStatusException ignored) {
+                // if the gateway does not support get status, then use the api to get job status
+                // ignore to do something here
             }
         }
-
         JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
         String status = jobDataDto.getJob().getState();
         return JobStatus.get(status);
