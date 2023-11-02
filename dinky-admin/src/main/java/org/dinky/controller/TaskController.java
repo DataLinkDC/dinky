@@ -25,6 +25,7 @@ import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
+import org.dinky.data.dto.TaskSaveDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.ProcessType;
@@ -169,8 +170,8 @@ public class TaskController {
             dataType = "Task",
             paramType = "body",
             dataTypeClass = Task.class)
-    public Result<Void> saveOrUpdateTask(@RequestBody Task task) {
-        if (taskService.saveOrUpdateTask(task)) {
+    public Result<Void> saveOrUpdateTask(@RequestBody TaskSaveDTO task) {
+        if (taskService.saveOrUpdateTask(task.toTaskEntity())) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
