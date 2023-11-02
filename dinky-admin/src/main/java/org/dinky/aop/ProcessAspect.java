@@ -101,7 +101,7 @@ public class ProcessAspect {
         ProcessStepType processStepType = processStep.type();
         ProcessStepEntity step = contextHolder.registerProcessStep(processStepType, MDC.get(PROCESS_NAME), parentStep);
         MDC.put(PROCESS_STEP, step.getKey());
-        contextHolder.appendLog(processName, step.getKey(), "Start Process Step:" + step.getType());
+        contextHolder.appendLog(processName, step.getKey(), "Start Process Step:" + step.getType(), true);
 
         try {
             result = joinPoint.proceed();

@@ -254,7 +254,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    @ProcessStep(type = ProcessStepType.SUBMIT_TASK)
     public JobResult submitTask(Integer id, String savePointPath) throws Exception {
         initTenantByTaskId(id);
 
@@ -269,15 +268,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         taskServiceBean.preCheckTask(taskDTO);
 
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
-
-        if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
-            log.info("Job Submit success");
-            Task task = new Task(id, jobResult.getJobInstanceId());
-            if (!this.updateById(task)) {
-                throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
-            }
-        } else {
-            log.error("Job Submit failed, error: " + jobResult.getError());
+        log.info("Job Submit success");
+        Task task = new Task(id, jobResult.getJobInstanceId());
+        if (!this.updateById(task)) {
+            throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
         }
         return jobResult;
     }
@@ -435,6 +429,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Integer tenantId = baseMapper.getTenantByTaskId(id);
         Asserts.checkNull(tenantId, Status.TASK_NOT_EXIST.getMessage());
         TenantContextHolder.set(tenantId);
+        log.info("Init task tenan finished..");
     }
 
     @Override
