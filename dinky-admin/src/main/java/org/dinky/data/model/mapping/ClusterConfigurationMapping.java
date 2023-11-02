@@ -28,6 +28,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.dinky.gateway.model.FlinkClusterConfig;
 
 @Data
 @AllArgsConstructor
@@ -75,7 +76,7 @@ public class ClusterConfigurationMapping {
             dataType = "String",
             example = "test",
             notes = "cluster config json")
-    private String configJson;
+    private FlinkClusterConfig configJson;
 
     @ApiModelProperty(
             value = "isAvailable",

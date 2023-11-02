@@ -249,8 +249,8 @@ public class JobRefreshHandler {
 
         if (GatewayType.isDeployCluster(clusterType)) {
             JobConfig jobConfig = new JobConfig();
-            String configJson = jobDataDto.getClusterConfiguration().getConfigJson();
-            jobConfig.buildGatewayConfig(new JSONObject(configJson).toBean(FlinkClusterConfig.class));
+            FlinkClusterConfig configJson = jobDataDto.getClusterConfiguration().getConfigJson();
+            jobConfig.buildGatewayConfig(configJson);
             jobConfig.getGatewayConfig().setType(GatewayType.get(clusterType));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
             Gateway.build(jobConfig.getGatewayConfig()).onJobFinishCallback(jobInstance.getStatus());
