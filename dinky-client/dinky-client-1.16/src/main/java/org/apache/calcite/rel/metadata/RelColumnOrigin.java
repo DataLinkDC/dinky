@@ -50,20 +50,13 @@ public class RelColumnOrigin {
 
     // ~ Constructors -----------------------------------------------------------
 
-    public RelColumnOrigin(
-        RelOptTable originTable,
-        int iOriginColumn,
-        boolean isDerived) {
+    public RelColumnOrigin(RelOptTable originTable, int iOriginColumn, boolean isDerived) {
         this.originTable = originTable;
         this.iOriginColumn = iOriginColumn;
         this.isDerived = isDerived;
     }
 
-    public RelColumnOrigin(
-        RelOptTable originTable,
-        int iOriginColumn,
-        boolean isDerived,
-        String transform) {
+    public RelColumnOrigin(RelOptTable originTable, int iOriginColumn, boolean isDerived, String transform) {
         this.originTable = originTable;
         this.iOriginColumn = iOriginColumn;
         this.isDerived = isDerived;
@@ -111,15 +104,13 @@ public class RelColumnOrigin {
             return false;
         }
         RelColumnOrigin other = (RelColumnOrigin) obj;
-        return originTable.getQualifiedName().equals(
-            other.originTable.getQualifiedName())
-            && (iOriginColumn == other.iOriginColumn)
-            && (isDerived == other.isDerived);
+        return originTable.getQualifiedName().equals(other.originTable.getQualifiedName())
+                && (iOriginColumn == other.iOriginColumn)
+                && (isDerived == other.isDerived);
     }
 
     @Override
     public int hashCode() {
-        return originTable.getQualifiedName().hashCode()
-            + iOriginColumn + (isDerived ? 313 : 0);
+        return originTable.getQualifiedName().hashCode() + iOriginColumn + (isDerived ? 313 : 0);
     }
 }

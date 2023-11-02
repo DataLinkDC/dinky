@@ -21,6 +21,8 @@ package org.dinky.utils;
 
 import static org.junit.Assert.assertEquals;
 
+import org.dinky.data.model.LineageRel;
+
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
@@ -31,7 +33,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.dinky.data.model.LineageRel;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,7 +41,6 @@ import org.junit.Test;
  * @description: LineageContextTest
  * @author: HamaWhite
  */
-
 public class LineageContextTest {
 
     private static TableEnvironmentImpl tableEnv;
@@ -50,9 +50,8 @@ public class LineageContextTest {
     public static void setUp() {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironment(new Configuration());
 
-        EnvironmentSettings settings = EnvironmentSettings.newInstance()
-            .inStreamingMode()
-            .build();
+        EnvironmentSettings settings =
+                EnvironmentSettings.newInstance().inStreamingMode().build();
         tableEnv = (TableEnvironmentImpl) StreamTableEnvironment.create(env, settings);
 
         context = new LineageContext(tableEnv);
@@ -62,23 +61,21 @@ public class LineageContextTest {
     public void init() {
         // create table ST
         tableEnv.executeSql("DROP TABLE IF EXISTS ST");
-        tableEnv.executeSql("CREATE TABLE ST (     " +
-            "    a STRING                               ," +
-            "    b STRING                               ," +
-            "    c STRING                                " +
-            ") WITH (                                    " +
-            "    'connector' = 'datagen'                ," +
-            "    'rows-per-second' = '1'                 " +
-            ")");
+        tableEnv.executeSql("CREATE TABLE ST (     " + "    a STRING                               ,"
+                + "    b STRING                               ,"
+                + "    c STRING                                "
+                + ") WITH (                                    "
+                + "    'connector' = 'datagen'                ,"
+                + "    'rows-per-second' = '1'                 "
+                + ")");
 
         // create table TT
         tableEnv.executeSql("DROP TABLE IF EXISTS TT");
-        tableEnv.executeSql("CREATE TABLE TT (     " +
-            "    A STRING                               ," +
-            "    B STRING                                " +
-            ") WITH (                                    " +
-            "    'connector' = 'print'                   " +
-            ")");
+        tableEnv.executeSql("CREATE TABLE TT (     " + "    A STRING                               ,"
+                + "    B STRING                                "
+                + ") WITH (                                    "
+                + "    'connector' = 'print'                   "
+                + ")");
     }
 
     @Test
@@ -97,11 +94,19 @@ public class LineageContextTest {
 
     private List<LineageRel> buildResult(String[][] expectedArray) {
         return Stream.of(expectedArray)
-            .map(e -> {
-                String transform = e.length == 5 ? e[4] : null;
-                return new LineageRel("default_catalog", "default_database", e[0], e[1], "default_catalog",
-                    "default_database", e[2], e[3],
-                    transform);
-            }).collect(Collectors.toList());
+                .map(e -> {
+                    String transform = e.length == 5 ? e[4] : null;
+                    return new LineageRel(
+                            "default_catalog",
+                            "default_database",
+                            e[0],
+                            e[1],
+                            "default_catalog",
+                            "default_database",
+                            e[2],
+                            e[3],
+                            transform);
+                })
+                .collect(Collectors.toList());
     }
 }

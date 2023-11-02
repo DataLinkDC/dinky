@@ -19,6 +19,8 @@
 
 package org.dinky.utils;
 
+import org.dinky.data.model.LineageRel;
+
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.metadata.RelColumnOrigin;
@@ -36,8 +38,6 @@ import org.apache.flink.table.planner.plan.schema.TableSourceTable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import org.dinky.data.model.LineageRel;
 
 /**
  * LineageContext
@@ -124,8 +124,9 @@ public class LineageContext {
                     String sourceColumn = fieldNames.get(ordinal);
 
                     // add record
-                    resultList.add(LineageRel.build(sourceTable, sourceColumn, sinkTable, targetColumn,
-                        relColumnOrigin.getTransform()));                }
+                    resultList.add(LineageRel.build(
+                            sourceTable, sourceColumn, sinkTable, targetColumn, relColumnOrigin.getTransform()));
+                }
             }
         }
         return resultList;

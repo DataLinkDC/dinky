@@ -19,6 +19,12 @@
 
 package org.dinky.executor;
 
+import org.dinky.assertion.Asserts;
+import org.dinky.context.DinkyClassLoaderContextHolder;
+import org.dinky.data.model.LineageRel;
+import org.dinky.data.result.SqlExplainResult;
+import org.dinky.utils.LineageContext;
+
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
@@ -52,11 +58,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.context.DinkyClassLoaderContextHolder;
-import org.dinky.data.model.LineageRel;
-import org.dinky.data.result.SqlExplainResult;
-import org.dinky.utils.LineageContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -254,8 +255,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     @Override
     public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext =
-                new LineageContext((TableEnvironmentImpl) streamTableEnvironment);
+        LineageContext lineageContext = new LineageContext((TableEnvironmentImpl) streamTableEnvironment);
         return lineageContext.getLineage(statement);
     }
 
