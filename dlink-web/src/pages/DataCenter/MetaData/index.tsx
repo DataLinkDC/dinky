@@ -122,7 +122,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
 
   const onChangeDataBase = (value: string | number) => {
     onRefreshTreeData(Number(value));
-    setRow(null);
+    setRow(undefined);
   };
 
   const refeshDataBase = (value: string | number) => {

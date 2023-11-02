@@ -39,6 +39,7 @@ public interface ResultBuilder {
             String timeZone) {
         switch (operationType) {
             case SELECT:
+            case WITH:
                 return new SelectResultBuilder(id, maxRowNum, isChangeLog, isAutoCancel, timeZone);
             case SHOW:
             case DESC:

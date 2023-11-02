@@ -149,6 +149,7 @@ export default {
   'global.table.lifecycle.dev': 'Develop',
   'global.table.execmode.batch': 'Batch Mode',
   'global.table.execmode.streaming': 'Stream Mode',
+  'global.table.lifecycle.publishing': 'Publishing',
   'global.table.lifecycle.publish': 'Publish',
   'global.table.lifecycle.stopped': 'Stopped',
   'global.table.lifecycle.online': 'Online',

@@ -1,23 +1,24 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
+import { getTabByTaskId } from '@/pages/DataStudio/function';
 import {
   FOLDER_RIGHT_MENU,
   JOB_RIGHT_MENU
@@ -25,7 +26,12 @@ import {
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
-import { StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
+import {
+  DataStudioParams,
+  StateType,
+  STUDIO_MODEL,
+  STUDIO_MODEL_ASYNC
+} from '@/pages/DataStudio/model';
 import {
   handleAddOrUpdate,
   handleOption,
@@ -39,13 +45,17 @@ import { ProjectState } from '@/types/Studio/state.d';
 import { l } from '@/utils/intl';
 import { Modal, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
-import React, { useEffect, useState } from 'react';
+import React, { Key, useEffect, useState } from 'react';
 import { connect } from 'umi';
 
 const { Text } = Typography;
 
 const Project: React.FC = (props: connect) => {
-  const { dispatch } = props;
+  const {
+    dispatch,
+    project: { expandKeys, selectKey },
+    tabs: { panes, activeKey }
+  } = props;
 
   const [projectState, setProjectState] = useState<ProjectState>(InitProjectState);
 
@@ -86,6 +96,15 @@ const Project: React.FC = (props: connect) => {
       rightClickedNode: { ...node, ...fullInfo },
       value: fullInfo
     }));
+    // 设置选中的值
+    dispatch({ type: STUDIO_MODEL.updateProjectSelectKey, payload: [key] });
+  };
+
+  const onExpand = (expandedKeys: Key[]) => {
+    dispatch({
+      type: STUDIO_MODEL.updateProjectExpandKey,
+      payload: expandedKeys
+    });
   };
 
   /**
@@ -102,8 +121,10 @@ const Project: React.FC = (props: connect) => {
       selectedKeys: [key],
       contextMenuOpen: false
     }));
+    dispatch({ type: STUDIO_MODEL.updateProjectSelectKey, payload: [key] });
 
     if (!isLeaf) {
+      dispatch({ type: STUDIO_MODEL.updateProjectExpandKey, payload: [...expandKeys, key] });
       return;
     }
 
@@ -120,6 +141,7 @@ const Project: React.FC = (props: connect) => {
           taskId: taskId
         },
         type: 'project',
+        console: {},
         subType: type
       }
     });
@@ -149,9 +171,7 @@ const Project: React.FC = (props: connect) => {
     const options = {
       url: '',
       isLeaf: projectState.isCreateSub ? false : projectState.value.isLeaf,
-      parentId: projectState.isCreateSub
-        ? projectState.selectedKeys[0]
-        : projectState.value.parentId
+      parentId: projectState.isCreateSub ? selectKey[0] : projectState.value.parentId
     };
 
     // 如果是编辑任务 或者 创建任务 , 则需要传入父级id
@@ -166,7 +186,7 @@ const Project: React.FC = (props: connect) => {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL;
     }
 
-    const result = await handleAddOrUpdate(
+    handleAddOrUpdate(
       options.url,
       {
         ...values,
@@ -176,6 +196,29 @@ const Project: React.FC = (props: connect) => {
       () => {},
       () => {
         setProjectState((prevState) => ({
+          ...prevState
+        }));
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        if (projectState.isEdit) {
+          const { id } = values;
+          const currentTabs = getTabByTaskId(panes, id);
+          if (currentTabs) {
+            currentTabs.label = values.name;
+            // currentTabs.params.taskData.name = values.name;
+            const { params } = currentTabs;
+            const { taskData } = params as DataStudioParams;
+            if (taskData) {
+              taskData.name = values.name;
+            }
+          }
+          dispatch({ type: STUDIO_MODEL.saveTabs, payload: { ...props.tabs } });
+          // update active breadcrumb title
+          if (activeKey === currentTabs?.key) {
+            dispatch({ type: STUDIO_MODEL.updateTabsActiveKey, payload: activeKey });
+          }
+        }
+        // close job modal by project state
+        setProjectState((prevState) => ({
           ...prevState,
           isCreateSub: false,
           isRename: false,
@@ -183,10 +226,6 @@ const Project: React.FC = (props: connect) => {
           isCreateTask: false,
           isCut: false
         }));
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
-        if (projectState.isRename) {
-          // todo: 如果是重命名/修改(修改了名字), 则需要 更新 tab 的 label
-        }
       }
     );
   };
@@ -197,7 +236,7 @@ const Project: React.FC = (props: connect) => {
    * @returns {Promise<void>}
    */
   const handleDeleteSubmit = async () => {
-    const { key, isLeaf, name, type, taskId } = projectState.rightClickedNode;
+    const { key, isLeaf, name, type } = projectState.rightClickedNode;
     handleContextCancel();
     if (!isLeaf) {
       await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
@@ -293,7 +332,7 @@ const Project: React.FC = (props: connect) => {
       l('right.menu.paste'),
       {
         originCatalogueId: projectState.cutId,
-        targetParentId: projectState.selectedKeys[0]
+        targetParentId: selectKey[0]
       },
       () => {
         // 重置 cutId
@@ -353,8 +392,11 @@ const Project: React.FC = (props: connect) => {
   return (
     <div style={{ paddingInline: 5 }}>
       <JobTree
-        selectedKeys={projectState.selectedKeys}
+        selectKeyChange={(keys: Key[]) =>
+          dispatch({ type: STUDIO_MODEL.updateProjectSelectKey, payload: keys })
+        }
         onRightClick={handleRightClick}
+        onExpand={onExpand}
         onNodeClick={(info: any) => onNodeClick(info)}
       />
       <RightContextMenu
@@ -431,5 +473,6 @@ const Project: React.FC = (props: connect) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs
+  tabs: Studio.tabs,
+  project: Studio.project
 }))(Project);

@@ -115,13 +115,6 @@ public class Task extends SuperEntity<Task> {
     private Integer databaseId;
 
     @ApiModelProperty(
-            value = "JAR ID",
-            dataType = "Integer",
-            example = "5001",
-            notes = "ID of the JAR associated with the task")
-    private Integer jarId;
-
-    @ApiModelProperty(
             value = "Environment ID",
             dataType = "Integer",
             example = "6001",

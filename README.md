@@ -1,11 +1,9 @@
 # Dinky
 
-<div align="center">
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=socialflat-square&)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Total Lines](https://img.shields.io/github/stars/DataLinkDC/dinky?style=socialflat-square&label=stars)](https://github.com/DataLinkDC/dinky/stargazers)
 [![CN doc](https://img.shields.io/badge/文档-中文版-blue.svg?style=socialflat-square&)](README_zh_CN.md)
 [![EN doc](https://img.shields.io/badge/document-English-blue.svg?style=socialflat-square&)](README.md)
-</div>
 
 [![Stargazers over time](https://starchart.cc/DataLinkDC/dinky.svg)](https://starchart.cc/DataLinkDC/dinky)
 
@@ -17,13 +15,13 @@ Dinky is an out-of-the-box, one-stop, real-time computing platform dedicated to 
 
 Its main features are as follows:
 
-- Immersive Flink SQL Data Development: Automatic prompt completion, syntax highlighting, statement beautification, online debugging, syntax verification, execution plan, MetaStore, lineage, version comparison, etc.
-- Support FlinkSQL multi-version development and execution modes: Local,Standalone,Yarn/Kubernetes Session,Yarn Per-Job,Yarn/Kubernetes Application.
-- Support Apache Flink ecology: Connector,FlinkCDC,Table Store,etc.
-- Support FlinkSQL syntax enhancement: Database synchronization, execution environments, global variables, statement merging, table-valued aggregate functions, load dependency, row-level permissions, etc.
+- Immersive Flink SQL Data Development: Dinky provides automatic prompt completion, syntax highlighting, statement beautification, online debugging, syntax verification, execution plan, MetaStore, lineage, version comparison, and more.
+- Support FlinkSQL multi-version development and execution modes: Dinky supports multiple development and execution modes for FlinkSQL, including Local, Standalone, Yarn/Kubernetes Session, Yarn Per-Job, and Yarn/Kubernetes Application.
+- Support FlinkSQL syntax enhancement: Dinky enhances FlinkSQL with features like database synchronization, execution environments, global variables, statement 
+  merging, table-valued aggregate functions, load dependency, and row-level permissions.
 - Supports real-time warehousing and lake entry of the entire FlinkCDC database, multi-database output, and automatic table creation.
-- Support SQL job development: ClickHouse, Doris, Hive, Mysql, Oracle, Phoenix, PostgreSql, Presto, SqlServer, StarRocks, etc.
-- Support real-time online debugging preview Table, ChangeLog, statistical chart and UDF.
+- Support SQL job development: You can develop SQL jobs for various databases, including ClickHouse, Doris, Hive, MySQL, Oracle, Phoenix, PostgreSQL, Presto, SQL Server, StarRocks, and more.
+- Support real-time online debugging:preview Table, ChangeLog, statistical chart and UDF.
 - Support Flink Catalog, data source metadata online query and management.
 - Support real-time task operation and maintenance: Online and offline, job information, cluster information, job snapshot, exception information, data map, data exploration, historical version, alarm record, etc.
 - Support as multi-version FlinkSQL Server and OpenApi capability.

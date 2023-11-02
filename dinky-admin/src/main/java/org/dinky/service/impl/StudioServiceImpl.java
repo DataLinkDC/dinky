@@ -188,12 +188,19 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public List<Column> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO) {
+    public List<Column> getMSColumns(StudioMetaStoreDTO studioMetaStoreDTO) {
+        String catalogName = studioMetaStoreDTO.getCatalog();
+        String database = studioMetaStoreDTO.getDatabase();
+        String tableName = studioMetaStoreDTO.getTable();
         List<Column> columns = new ArrayList<>();
-        if (!Dialect.isCommonSql(studioMetaStoreDTO.getDialect())) {
-            String catalogName = studioMetaStoreDTO.getCatalog();
-            String database = studioMetaStoreDTO.getDatabase();
-            String tableName = studioMetaStoreDTO.getTable();
+        if (Dialect.isCommonSql(studioMetaStoreDTO.getDialect())) {
+            DataBase dataBase = dataBaseService.getById(studioMetaStoreDTO.getDatabaseId());
+            if (Asserts.isNotNull(dataBase)) {
+                Driver driver = Driver.build(dataBase.getDriverConfig());
+                columns.addAll(driver.listColumns(database, tableName));
+            }
+        } else {
+
             String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
             CustomTableEnvironment customTableEnvironment =

@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -338,7 +339,6 @@ export default {
   'pages.datastudio.sql.cacheConfigItem': '本地缓存配置',
   'pages.datastudio.sql.serverConfigItem': '服务端配置',
 
-  'pages.datastudio.label.execConfig': '执行配置',
   'pages.datastudio.label.execConfig.autostop': '自动停止',
   'pages.datastudio.label.execConfig.autostop.tip':
     '开启自动停止，将在捕获最大行数记录后自动停止任务',
@@ -349,8 +349,6 @@ export default {
   'pages.datastudio.label.execConfig.selectDatabase.tip': '选择 Sql 语句执行的数据源',
   'pages.datastudio.label.execConfig.maxrow': '最大行数',
   'pages.datastudio.label.execConfig.maxrow.tip': '预览数据的最大行数',
-  'pages.datastudio.label.execConfig.preview.result': '预览结果',
-  'pages.datastudio.label.execConfig.preview.result.tip': '开启预览结果，将同步运行并返回数据结果',
   'pages.datastudio.label.jobConfig': '作业配置',
   'pages.datastudio.label.jobConfig.addConfig': '添加配置项',
   'pages.datastudio.label.jobConfig.addConfig.params': '参数',
@@ -397,10 +395,11 @@ export default {
   'pages.datastudio.label.version.rollback.flinksqlConfirm':
     '确定回滚Flink SQL版本至【{versionId}】吗？',
 
-  'pages.datastudio.catalog.flinkSqlEnvSelect': '请选择 FlinkSqlEnv',
   'pages.datastudio.catalog.catalogSelect': '请选择 catalog & database',
   'pages.datastudio.catalog.tableInfo': '表信息',
   'pages.datastudio.catalog.fieldInformation': '字段信息',
+  'pages.datastudio.catalog.selectDatasource': '请选择数据源',
+  'pages.datastudio.catalog.openMission': '请打开任务',
 
   'pages.datastudio.print.table.inputTableName': '请选择表名',
   'pages.devops.jobinfo.localenv': '本地环境',

@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -19,12 +20,7 @@
 import { StatusTagProps } from '@/components/JobTags/data';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { l } from '@/utils/intl';
-import {
-  CameraOutlined,
-  CarryOutOutlined,
-  CloseCircleOutlined,
-  EditOutlined
-} from '@ant-design/icons';
+import { CameraOutlined, CloseCircleOutlined, EditOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
 
 /**
@@ -44,18 +40,11 @@ const JobLifeCycleTag = (props: StatusTagProps) => {
           color: 'default',
           text: l('global.table.lifecycle.dev')
         };
-      case JOB_LIFE_CYCLE.RELEASE:
+      case JOB_LIFE_CYCLE.PUBLISH:
         return {
           icon: <CameraOutlined />,
           color: 'green',
           text: l('global.table.lifecycle.publish')
-        };
-
-      case JOB_LIFE_CYCLE.ONLINE:
-        return {
-          icon: <CarryOutOutlined />,
-          color: 'blue',
-          text: l('global.table.lifecycle.online')
         };
       default:
         return {

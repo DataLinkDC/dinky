@@ -1,21 +1,22 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
+
 import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import { FlexCenterDiv } from '@/components/StyledComponents';
 import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
@@ -41,6 +42,7 @@ import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/Settin
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
+import { SuccessMessageAsync } from '@/utils/messages';
 import { connect } from '@@/exports';
 import {
   ApartmentOutlined,
@@ -56,7 +58,7 @@ import {
   ScheduleOutlined,
   SendOutlined
 } from '@ant-design/icons';
-import { Breadcrumb, Descriptions, message, Modal, Space } from 'antd';
+import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import { ButtonProps } from 'antd/es/button/button';
 import React, { useEffect, useState } from 'react';
 
@@ -92,7 +94,6 @@ const HeaderContainer = (props: any) => {
   } = props;
 
   const [modal, contextHolder] = Modal.useModal();
-  const [messageApi, messageContextHolder] = message.useMessage();
 
   // 检查是否开启 ds 配置 & 如果
   const [enableDs] = useState<boolean>(
@@ -147,17 +148,18 @@ const HeaderContainer = (props: any) => {
     updateJobRunningMsg({
       taskId: currentData.id,
       jobName: currentData.name,
-      jobState: res.datas.status,
+      jobState: res.data.status,
       runningLog: res.msg
     });
-    messageApi.success(l('pages.datastudio.editor.debug.success'));
+    await SuccessMessageAsync(l('pages.datastudio.editor.debug.success'));
     currentData.status = JOB_STATUS.RUNNING;
+    if (currentTab) currentTab.console.result = res.data.result;
     saveTabs({ ...props.tabs });
   };
 
   const handlerSubmit = async () => {
     if (!currentData) return;
-    const saved = currentData.step == JOB_LIFE_CYCLE.ONLINE ? true : await handleSave();
+    const saved = currentData.step == JOB_LIFE_CYCLE.PUBLISH ? true : await handleSave();
     if (!saved) return;
 
     const res = await executeSql(
@@ -169,10 +171,10 @@ const HeaderContainer = (props: any) => {
     updateJobRunningMsg({
       taskId: currentData.id,
       jobName: currentData.name,
-      jobState: res.datas.status,
+      jobState: res.data.status,
       runningLog: res.msg
     });
-    messageApi.success(l('pages.datastudio.editor.exec.success'));
+    await SuccessMessageAsync(l('pages.datastudio.editor.exec.success'));
     currentData.status = JOB_STATUS.RUNNING;
     saveTabs({ ...props.tabs });
   };
@@ -180,13 +182,13 @@ const HeaderContainer = (props: any) => {
   const handleChangeJobLife = async () => {
     if (!currentData) return;
     if (isOnline(currentData)) {
-      await cancelTask('', currentData.id);
+      await cancelTask(l('global.table.lifecycle.offline'), currentData.id);
       currentData.step = JOB_LIFE_CYCLE.DEVELOP;
     } else {
       const saved = await handleSave();
       if (saved) {
-        await onLineTask(currentData.id);
-        currentData.step = JOB_LIFE_CYCLE.ONLINE;
+        await onLineTask(l('global.table.lifecycle.publishing'), currentData.id);
+        currentData.step = JOB_LIFE_CYCLE.PUBLISH;
       }
     }
     saveTabs({ ...props.tabs });
@@ -199,7 +201,7 @@ const HeaderContainer = (props: any) => {
         title: l('pages.datastudio.editor.explan.tip'),
         width: '100%',
         icon: null,
-        content: <FlinkGraph data={result.datas} />,
+        content: <FlinkGraph data={result.data} />,
         cancelButtonProps: { style: { display: 'none' } }
       });
     }
@@ -375,7 +377,6 @@ const HeaderContainer = (props: any) => {
             })}
         </Space>
         {contextHolder}
-        {messageContextHolder}
       </div>
     );
   };

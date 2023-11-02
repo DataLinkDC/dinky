@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ApiModel(value = "RoleMenuDto", description = "DTO for assigning menus to a role")
-public class RoleMenuDto implements Serializable {
+public class RoleMenuDTO implements Serializable {
 
     @ApiModelProperty(
             value = "Role ID",

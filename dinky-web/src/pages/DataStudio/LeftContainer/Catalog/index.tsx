@@ -1,29 +1,31 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
+import { getCurrentData } from '@/pages/DataStudio/function';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { TableDataNode } from '@/pages/DataStudio/LeftContainer/Catalog/data';
-import { MetaStoreTableType } from '@/pages/DataStudio/model';
+import { StateType } from '@/pages/DataStudio/model';
 import { BtnRoute } from '@/pages/DataStudio/route';
 import ColumnInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/ColumnInfo';
 import TableInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/TableInfo';
+import { DIALECT } from '@/services/constants';
 import { l } from '@/utils/intl';
-import { useRequest } from '@@/exports';
 import {
   AppstoreOutlined,
   BlockOutlined,
@@ -32,18 +34,38 @@ import {
   FunctionOutlined,
   TableOutlined
 } from '@ant-design/icons';
+import { connect } from '@umijs/max';
 import { Button, Col, Empty, Modal, Row, Select, Spin, Tabs } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { DefaultOptionType } from 'rc-select/lib/Select';
 import React, { useEffect, useState } from 'react';
-import { getMSCatalogs, getMSFlinkColumns, getMSSchemaInfo } from './service';
+import { getMSCatalogs, getMSColumns, getMSSchemaInfo } from './service';
 
-export const Catalog: React.FC = (props: any) => {
-  const data = useRequest({
-    url: '/api/task/listFlinkSQLEnv'
-  });
-  const [envId, setEnvId] = useState<number>();
+const Catalog: React.FC = (props: connect) => {
+  const { tabs } = props;
+  const currentData = getCurrentData(tabs.panes, tabs.activeKey);
+  if (!currentData) {
+    return <Empty description={l('pages.datastudio.catalog.selectDatasource')} />;
+  }
+  const dialect = currentData?.dialect.toLowerCase() ?? '';
+  const fragment = currentData?.fragment ?? true;
+  let envId: number | undefined;
+  let databaseId: number | undefined;
+  let engine: string | undefined;
+  if (dialect === DIALECT.FLINKSQLENV) {
+    envId = currentData?.id;
+    engine = 'Flink';
+  } else if (dialect === DIALECT.FLINK_SQL) {
+    envId = currentData?.envId;
+    engine = 'Flink';
+  } else if (isSql(dialect)) {
+    databaseId = currentData?.databaseId;
+    if (!databaseId) {
+      return <Empty description={l('pages.datastudio.catalog.openMission')} />;
+    }
+  }
+  envId = envId ?? -1;
   const [catalogSelect, setCatalogSelect] = useState<DefaultOptionType[]>([]);
   const [catalog, setCatalog] = useState<string>('default_catalog');
   const [database, setDatabase] = useState<string>('');
@@ -59,44 +81,20 @@ export const Catalog: React.FC = (props: any) => {
   };
 
   useEffect(() => {
-    if (envId) {
-      setLoading(true);
-      setTreeData([]);
-      setCatalogSelect([]);
-      setDatabase('');
-      let param = {
-        envId: envId,
-        fragment: true,
-        dialect: 'FlinkSqlEnv'
-      };
-      getMSCatalogs(param).then((d) => {
-        setCatalogSelect(
-          (d as any[]).map((item) => {
-            setLoading(false);
-            return {
-              label: item.name,
-              options: (item.schemas as any[]).map((schema) => {
-                return {
-                  label: schema.name,
-                  value: item.name + '.' + schema.name
-                };
-              })
-            };
-          })
-        );
-      });
-    }
-  }, [envId]);
+    getCatalogs();
+  }, [envId, databaseId]);
 
   useEffect(() => {
     if (table) {
       setLoading(true);
       setColumnData([]);
-      getMSFlinkColumns({
+      getMSColumns({
         envId,
         catalog,
         database,
-        table
+        table,
+        dialect,
+        databaseId
       }).then((res) => {
         setLoading(false);
         setColumnData(res);
@@ -120,42 +118,40 @@ export const Catalog: React.FC = (props: any) => {
     setDatabase(databaseTmp);
     let param = {
       envId: envId,
-      fragment: true,
-      dialect: 'FlinkSqlEnv',
+      fragment: fragment,
+      dialect: dialect,
       catalog: catalogTmp,
-      database: databaseTmp
+      database: databaseTmp,
+      databaseId
     };
     const result = getMSSchemaInfo(param);
     result.then((res) => {
       setLoading(false);
-      const tables: MetaStoreTableType[] = [];
+      const tables: any[] = [];
       if (res.tables) {
         for (let i = 0; i < res.tables.length; i++) {
-          tables.push({
-            name: res.tables[i].name,
-            columns: res.tables[i].columns
-          });
+          tables.push(res.tables[i]);
         }
       }
       const treeDataTmp: DataNode[] = [];
       const tablesData: TableDataNode[] = [];
-      for (let i = 0; i < tables.length; i++) {
+      for (const t of tables) {
         tablesData.push({
-          title: tables[i].name,
-          key: tables[i].name,
+          title: t.name,
+          key: t.name,
           icon: <TableOutlined />,
           isLeaf: true,
           isTable: true,
-          name: tables[i].name,
+          name: t.name,
           schema: databaseTmp,
           catalog: catalog,
-          comment: '-',
-          type: '',
-          engine: 'Flink',
-          options: '',
-          rows: -1,
-          createTime: '',
-          updateTime: ''
+          comment: t.comment,
+          type: t.type,
+          engine: engine ?? t.engine,
+          options: t.options,
+          rows: t.rows,
+          createTime: t.createTime,
+          updateTime: t.updateTime
         });
       }
       treeDataTmp.push({
@@ -236,15 +232,50 @@ export const Catalog: React.FC = (props: any) => {
     });
   };
 
+  const getCatalogs = () => {
+    if (envId || databaseId) {
+      setLoading(true);
+      setTreeData([]);
+      setCatalogSelect([]);
+      setDatabase('');
+      let param = {
+        envId: envId,
+        fragment: fragment,
+        dialect: dialect,
+        databaseId
+      };
+      getMSCatalogs(param).then((d) => {
+        setCatalogSelect(
+          (d as any[]).map((item) => {
+            setLoading(false);
+            return {
+              label: item.name,
+              options: (item.schemas as any[]).map((schema) => {
+                return {
+                  label: schema.name,
+                  value: item.name + '.' + schema.name
+                };
+              })
+            };
+          })
+        );
+      });
+    }
+  };
+
   const refreshMetaStoreTables = () => {
-    onRefreshTreeData(catalog + '.' + database);
+    if (database) {
+      onRefreshTreeData(catalog + '.' + database);
+    } else {
+      getCatalogs();
+    }
   };
 
   const onChangeMetaStoreCatalogs = (value: string) => {
     onRefreshTreeData(value);
   };
 
-  const openColumnInfo = (e: React.MouseEvent, node: TableDataNode) => {
+  const openColumnInfo = (_e: React.MouseEvent, node: TableDataNode) => {
     if (node.isLeaf && node.isTable) {
       setTable(node.name);
       setRow(node);
@@ -259,17 +290,9 @@ export const Catalog: React.FC = (props: any) => {
 
   return (
     <Spin spinning={loading}>
-      <div style={{ paddingInline: 10 }}>
-        <Row>
+      <div style={{ paddingInline: 10, paddingBlock: 5 }}>
+        <Row style={{ paddingBlock: 10 }}>
           <Col span={24}>
-            <Select
-              placeholder={l('pages.datastudio.catalog.flinkSqlEnvSelect')}
-              style={{ width: '100%' }}
-              onChange={setEnvId}
-              options={(data.data as any[])?.map((x) => {
-                return { value: x.id, label: x.name };
-              })}
-            />
             <Select
               value={database ? database : null}
               style={{ width: '100%' }}
@@ -346,3 +369,6 @@ export const Catalog: React.FC = (props: any) => {
     </Spin>
   );
 };
+export default connect(({ Studio }: { Studio: StateType }) => ({
+  tabs: Studio.tabs
+}))(Catalog);

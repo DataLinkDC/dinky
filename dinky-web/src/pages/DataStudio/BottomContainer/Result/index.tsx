@@ -1,21 +1,22 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
+
 import {
   getCurrentData,
   getCurrentTab,
@@ -44,13 +45,12 @@ type Data = {
 };
 const Result = (props: any) => {
   const {
-    saveTabs,
     tabs: { panes, activeKey }
   } = props;
   const [data, setData] = useState<Data>({});
   const [loading, setLoading] = useState<boolean>(true);
   const currentTabs = getCurrentTab(panes, activeKey);
-  const current = getCurrentData(panes, activeKey) ?? [];
+  const current = getCurrentData(panes, activeKey) ?? {};
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -126,38 +126,38 @@ const Result = (props: any) => {
     }
 
     const params = currentTabs.params;
-    if (params.resultData && !isRefresh) {
-      setData(params.resultData);
+    const consoleData = currentTabs.console;
+    if (consoleData.result && !isRefresh) {
+      setData(consoleData.result);
     } else {
       if (isSql(current.dialect)) {
         // common sql
         const res = await handleGetOption('api/studio/getCommonSqlData', 'Get Data', {
           taskId: params.taskId
         });
-        if (res.datas) {
-          params.resultData = res.datas;
-          setData(res.datas);
+        if (res.data) {
+          consoleData.result = res.data;
+          setData(res.data);
         }
       } else {
         // flink sql
         // to do: get job data by history id list, not flink jid
-        console.log(current);
         if (current.id) {
           const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
             id: current.id
           });
-          const historyData = res.datas;
-          if ('2' == historyData.status) {
+          const historyData = res.data;
+          if (historyData && '2' == historyData.status) {
             const historyId = historyData.id;
             const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', {
               jobId: historyId
             });
-            const datas = tableData.datas;
-            if (datas.success) {
-              params.resultData = datas;
-              setData(datas);
+            const data = tableData.data;
+            if (data.success) {
+              consoleData.result = data;
+              setData(data);
             } else {
-              params.resultData = {};
+              consoleData.result = {};
               setData({});
             }
           }
@@ -170,7 +170,7 @@ const Result = (props: any) => {
   useEffect(() => {
     setData({});
     loadData();
-  }, [currentTabs]);
+  }, [currentTabs, currentTabs?.console.result]);
 
   const getColumns = (columns: string[]) => {
     return columns?.map((item) => {

@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -24,6 +24,7 @@ import { searchTreeNode } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { Badge, Space } from 'antd';
 import { PresetStatusColorType } from 'antd/es/_util/colors';
+import { Key } from 'react';
 
 export const generateList = (data: any, list: any[]) => {
   for (const element of data) {
@@ -52,15 +53,19 @@ export const getParentKey = (key: number | string, tree: any): any => {
   return parentKey;
 };
 
-export const getLeafKeyList = (tree: any): any => {
-  let leafKeyList = [];
+export const getLeafKeyList = (tree: any[]): Key[] => {
+  let leafKeyList: Key[] = [];
   for (const node of tree) {
-    if (node.isLeaf) {
-      leafKeyList.push(node.id);
-      continue;
-    }
-    if (node.children) {
-      leafKeyList = leafKeyList.concat(getLeafKeyList(node.children));
+    if (!node.isLeaf) {
+      // 目录节点 || is a directory node
+      leafKeyList.push(node.id); // 目录节点不需要递归 || directory nodes do not need to be recursive
+      if (node.children) {
+        // 目录节点的子节点需要递归 || the child nodes of the directory node need to be recursive
+        leafKeyList = leafKeyList.concat(getLeafKeyList(node.children)); // 递归 || recursive
+      }
+    } else {
+      // 非目录节点 | is not a directory node
+      leafKeyList = leafKeyList.concat(getLeafKeyList(node.children)); // 递归 || recursive
     }
   }
   return leafKeyList;
@@ -83,25 +88,6 @@ export const buildProjectTree = (
         const currentPath = path ? [...path, item.name] : [item.name];
         // 构造生命周期的值
         const stepValue = buildStepValue(item.task?.step);
-        // 渲染生命周期的徽标
-        const renderStepBadge = item.isLeaf && showBadge(item.type) && (
-          <>
-            <Badge.Ribbon
-              style={{
-                top: -14,
-                left: -57,
-                width: '56px',
-                height: '18px',
-                fontSize: '6px',
-                lineHeight: '18px'
-              }}
-              key={item.id}
-              placement={'start'}
-              text={stepValue.title}
-              color={stepValue.color}
-            />
-          </>
-        );
         // 渲染生命周期的 标记点
         const renderPreFixState = item.isLeaf && showBadge(item.type) && (
           <>
@@ -116,7 +102,6 @@ export const buildProjectTree = (
         const renderTitle = (
           <>
             <Space align={'baseline'} size={2}>
-              {renderStepBadge}
               {searchTreeNode(item.name, searchValue)}
             </Space>
           </>
@@ -138,7 +123,7 @@ export const buildProjectTree = (
           type: item.type,
           title: (
             <>
-              {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(16)}</>} {renderTitle}
+              {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(2)}</>} {renderTitle}
             </>
           ),
           fullInfo: item,
