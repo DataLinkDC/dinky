@@ -93,6 +93,9 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
             return kubernetesResult;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        }finally {
+            client.close();
+            kubernetesClient.close();
         }
     }
 
