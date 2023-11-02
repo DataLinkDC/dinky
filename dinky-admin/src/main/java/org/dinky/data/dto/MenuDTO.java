@@ -45,6 +45,9 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "MenuDTO", description = "API Menu Data Transfer Object")
 public class MenuDTO {
 
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the menu")
+    private Integer id;
+
     @ApiModelProperty(value = "Parent ID", dataType = "Integer", example = "0", notes = "ID of the parent menu")
     private Integer parentId;
 
