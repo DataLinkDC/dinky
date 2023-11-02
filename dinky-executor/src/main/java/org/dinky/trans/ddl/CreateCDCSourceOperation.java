@@ -105,7 +105,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             final List<String> schemaTableNameList = new ArrayList<>();
             if (SplitUtil.isEnabled(cdcSource.getSplit())) {
                 DriverConfig driverConfig = DriverConfig.build(cdcBuilder.parseMetaDataConfig());
-                Driver driver = Driver.build(driverConfig);
+                Driver driver = Driver.buildNewConnection(driverConfig);
 
                 // 这直接传正则过去
                 schemaTableNameList.addAll(tableRegList.stream()

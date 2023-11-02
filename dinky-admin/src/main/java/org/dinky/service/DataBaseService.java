@@ -19,6 +19,7 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.DataBaseDTO;
 import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.model.Column;
@@ -43,10 +44,10 @@ public interface DataBaseService extends ISuperService<DataBase> {
     /**
      * test connect database
      *
-     * @param dataBase {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link String}
      */
-    String testConnect(DataBase dataBase);
+    String testConnect(DataBaseDTO dataBaseDTO);
 
     /**
      * check heart beat
@@ -59,10 +60,10 @@ public interface DataBaseService extends ISuperService<DataBase> {
     /**
      * save or update database
      *
-     * @param dataBase {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Boolean}
      */
-    Boolean saveOrUpdateDataBase(DataBase dataBase);
+    Boolean saveOrUpdateDataBase(DataBaseDTO dataBaseDTO);
 
     /**
      * enable or disable database
@@ -173,10 +174,10 @@ public interface DataBaseService extends ISuperService<DataBase> {
     /**
      * copy database
      *
-     * @param database {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Boolean}
      */
-    Boolean copyDatabase(DataBase database);
+    Boolean copyDatabase(DataBaseDTO dataBaseDTO);
 
     /**
      * Explain common SQL statements for the given task.

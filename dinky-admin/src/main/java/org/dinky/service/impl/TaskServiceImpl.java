@@ -42,7 +42,6 @@ import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.DataBase;
-import org.dinky.data.model.Jar;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
@@ -75,7 +74,6 @@ import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.FragmentVariableService;
-import org.dinky.service.JarService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.SavepointsService;
 import org.dinky.service.TaskService;
@@ -139,7 +137,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final SavepointsService savepointsService;
     private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterCfgService;
-    private final JarService jarService;
     private final DataBaseService dataBaseService;
     private final JobInstanceService jobInstanceService;
     private final AlertGroupService alertGroupService;
@@ -256,8 +253,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     @ProcessStep(type = ProcessStepType.SUBMIT_TASK)
     public JobResult submitTask(Integer id, String savePointPath) throws Exception {
-        initTenantByTaskId(id);
-
         TaskDTO taskDTO = this.getTaskInfoById(id);
 
         if (StringUtils.isNotBlank(savePointPath)) {
@@ -266,8 +261,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
-        taskServiceBean.preCheckTask(taskDTO);
-
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
 
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
@@ -288,16 +281,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         initTenantByTaskId(debugDTO.getId());
 
         TaskDTO taskDTO = this.getTaskInfoById(debugDTO.getId());
-        taskDTO.setUseResult(debugDTO.isUseResult());
+        // Debug mode need return result
+        taskDTO.setUseResult(true);
         taskDTO.setUseChangeLog(debugDTO.isUseChangeLog());
         taskDTO.setUseAutoCancel(debugDTO.isUseAutoCancel());
         taskDTO.setMaxRowNum(debugDTO.getMaxRowNum());
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
-        taskServiceBean.preCheckTask(taskDTO);
-
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
-
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
             log.info("Job debug success");
             Task task = new Task(debugDTO.getId(), jobResult.getJobInstanceId());
@@ -563,9 +554,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result<Void> rollbackTask(TaskRollbackVersionDTO dto) {
+    public boolean rollbackTask(TaskRollbackVersionDTO dto) {
         if (Asserts.isNull(dto.getVersionId()) || Asserts.isNull(dto.getId())) {
-            return Result.failed("the version is error");
+            throw new BusException("the version is error");
         }
 
         LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>()
@@ -579,8 +570,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         BeanUtil.copyProperties(taskVersion.getTaskConfigure(), updateTask);
         updateTask.setId(taskVersion.getTaskId());
         updateTask.setStep(JobLifeCycle.DEVELOP.getValue());
-        baseMapper.updateById(updateTask);
-        return Result.succeed("version rollback success！");
+        return baseMapper.updateById(updateTask) > 0;
     }
 
     @Override
@@ -620,13 +610,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
             jsonNode.put("databaseName", Asserts.isNotNull(dataBase) ? dataBase.getName() : null);
         }
-
-        // jarName
-        if (Asserts.isNotNull(task.getJarId())) {
-            Jar jar = jarService.getById(task.getJarId());
-            jsonNode.put("jarName", Asserts.isNotNull(jar) ? jar.getName() : null);
-        }
-
         // envName
         if (Asserts.isNotNull(task.getEnvId())) {
             Task envTask = getById(task.getEnvId());
@@ -704,13 +687,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                         dataBaseService.getOne(new QueryWrapper<DataBase>().eq("name", task.getDatabaseName()));
                 if (Asserts.isNotNull(dataBase)) {
                     task.setDatabaseId(dataBase.getId());
-                }
-            }
-
-            if (Asserts.isNotNull(task.getJarName())) {
-                Jar jar = jarService.getOne(new QueryWrapper<Jar>().eq("name", task.getJarName()));
-                if (Asserts.isNotNull(jar)) {
-                    task.setJarId(jar.getId());
                 }
             }
 

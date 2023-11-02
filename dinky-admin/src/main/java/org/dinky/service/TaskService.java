@@ -206,7 +206,7 @@ public interface TaskService extends ISuperService<Task> {
      * @param dto The {@link TaskRollbackVersionDTO} object representing the task to rollback.
      * @return A {@link Result} object indicating the result of the rollback operation.
      */
-    Result<Void> rollbackTask(TaskRollbackVersionDTO dto);
+    boolean rollbackTask(TaskRollbackVersionDTO dto);
 
     /**
      * Get the size of all tasks with the given name in the system.

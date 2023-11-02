@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.task.DaemonFactory;
 import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.History;
@@ -35,7 +36,6 @@ import org.dinky.gateway.enums.GatewayType;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
-import org.dinky.service.JarService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
@@ -56,7 +56,6 @@ public class Job2MysqlHandler implements JobHandler {
     private static final HistoryService historyService;
     private static final ClusterInstanceService clusterInstanceService;
     private static final ClusterConfigurationService clusterConfigurationService;
-    private static final JarService jarService;
     private static final JobInstanceService jobInstanceService;
     private static final JobHistoryService jobHistoryService;
     private static final TaskService taskService;
@@ -66,7 +65,6 @@ public class Job2MysqlHandler implements JobHandler {
         clusterInstanceService = SpringContextUtils.getBean("clusterInstanceServiceImpl", ClusterInstanceService.class);
         clusterConfigurationService =
                 SpringContextUtils.getBean("clusterConfigurationServiceImpl", ClusterConfigurationService.class);
-        jarService = SpringContextUtils.getBean("jarServiceImpl", JarService.class);
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
         jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
         taskService = SpringContextUtils.getBean("taskServiceImpl", TaskService.class);
@@ -133,7 +131,7 @@ public class Job2MysqlHandler implements JobHandler {
         ClusterInstance clusterInstance;
         final Integer clusterConfigurationId = job.getJobConfig().getClusterConfigurationId();
         if (job.isUseGateway()) {
-            clusterInstance = clusterInstanceService.registersCluster(ClusterInstance.autoRegistersCluster(
+            clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
                     job.getJobManagerAddress(),
                     job.getJobId(),
                     job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
@@ -144,8 +142,9 @@ public class Job2MysqlHandler implements JobHandler {
                 clusterId = clusterInstance.getId();
             }
         } else if (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
-                && Asserts.isNotNullString(job.getJobManagerAddress())) {
-            clusterInstance = clusterInstanceService.registersCluster(ClusterInstance.autoRegistersCluster(
+                && Asserts.isNotNullString(job.getJobManagerAddress())
+                && Asserts.isNotNullString(job.getJobId())) {
+            clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
                     job.getJobManagerAddress(),
                     job.getJobId(),
                     job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
@@ -189,11 +188,6 @@ public class Job2MysqlHandler implements JobHandler {
         JobHistory jobHistory = jobHistoryBuilder
                 .id(jobInstance.getId())
                 .clusterJson(ClusterInstanceMapping.getClusterInstanceMapping(clusterInstance))
-                .jarJson(
-                        Asserts.isNotNull(job.getJobConfig().getJarId())
-                                ? JsonUtils.toJsonString(
-                                        jarService.getById(job.getJobConfig().getJarId()))
-                                : null)
                 .clusterConfigurationJson(
                         Asserts.isNotNull(clusterConfigurationId)
                                 ? ClusterConfigurationMapping.getClusterConfigurationMapping(

@@ -19,43 +19,28 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.model.UploadFileRecord;
 import org.dinky.data.result.Result;
-import org.dinky.service.UploadFileRecordService;
+import org.dinky.tools.JsonToSqlConvent;
 
-import java.util.List;
-
-import javax.annotation.Resource;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** FileUploadController */
 @Slf4j
-@Api(tags = "File Upload Controller")
 @RestController
-@SaCheckLogin
-@RequestMapping("/api/uploadFileRecord")
-public class UploadFileRecordController {
-
-    @Resource
-    private UploadFileRecordService uploadFileRecordService;
-
-    /** @param record {@link UploadFileRecord} */
-    @PostMapping("/list")
-    @ApiOperation("Get Upload List")
-    public Result<String> getUploadFileRecord(@RequestBody UploadFileRecord record) {
-        List<UploadFileRecord> records = uploadFileRecordService.list(new QueryWrapper<>(record));
-        return Result.succeed(JSONUtil.toJsonStr(records));
+@Api(tags = "Tools Controller")
+@RequestMapping("/api/tools")
+@RequiredArgsConstructor
+public class ToolsController {
+    @PostMapping("/jsonToFlinkSql")
+    public Result<String> jsonToSql(@RequestBody Map<String, String> data) {
+        return Result.succeed(JsonToSqlConvent.commonDataJson(data.get("data")), "");
     }
 }

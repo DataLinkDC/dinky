@@ -17,17 +17,29 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.data.dto;
 
-import org.dinky.data.model.UploadFileRecord;
-import org.dinky.mybatis.service.ISuperService;
+import java.util.List;
 
-/** UploadFileRecordService */
-public interface UploadFileRecordService extends ISuperService<UploadFileRecord> {
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    /** Save or update base on file absolute path and file type. */
-    boolean saveOrUpdateFile(String fileName, String parentPath, String absolutePath, Byte fileType, Byte target);
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ApiModel(value = "AssignMenuToRoleDto", description = "DTO for assigning menus to a role")
+public class AssignMenuToRoleDTO {
 
-    /** Save or update base on file type. */
-    boolean saveOrUpdateDir(String parentPath, Byte fileType, Byte target);
+    @ApiModelProperty(value = "Role ID", dataType = "Integer", example = "1", notes = "The ID of the role")
+    private Integer roleId;
+
+    @ApiModelProperty(
+            value = "Menu IDs",
+            dataType = "List<Integer>",
+            example = "[1, 2, 3]",
+            notes = "A list of menu IDs to assign to the role")
+    private List<Integer> menuIds;
 }

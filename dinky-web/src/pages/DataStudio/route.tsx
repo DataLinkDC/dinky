@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -22,15 +22,16 @@ import Console from '@/pages/DataStudio/BottomContainer/Console';
 import Lineage from '@/pages/DataStudio/BottomContainer/Lineage';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
+import JsonToSql from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
-import { Catalog } from '@/pages/DataStudio/LeftContainer/Catalog';
-import MetaData from '@/pages/DataStudio/LeftContainer/MetaData';
+import Catalog from '@/pages/DataStudio/LeftContainer/Catalog';
+import DataSource from '@/pages/DataStudio/LeftContainer/DataSource';
 import Project from '@/pages/DataStudio/LeftContainer/Project';
 import { TabsPageSubType, TabsPageType } from '@/pages/DataStudio/model';
-import ExecuteConfig from '@/pages/DataStudio/RightContainer/ExecuteConfig';
 import HistoryVersion from '@/pages/DataStudio/RightContainer/HistoryVersion';
 import JobConfig from '@/pages/DataStudio/RightContainer/JobConfig';
 import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
+import PreViewConfig from '@/pages/DataStudio/RightContainer/PreViewConfig';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
 import { convertCodeEditTheme } from '@/utils/function';
 import { l } from '@/utils/intl';
@@ -46,12 +47,13 @@ import {
   FolderOutlined,
   HistoryOutlined,
   InfoCircleOutlined,
+  InsertRowRightOutlined,
   MonitorOutlined,
-  PlayCircleOutlined,
   PlusCircleOutlined,
   PlusOutlined,
   ReloadOutlined,
   RightSquareOutlined,
+  RotateRightOutlined,
   SettingOutlined,
   ShrinkOutlined,
   TableOutlined,
@@ -76,11 +78,11 @@ export const LeftSide = [
     children: <Catalog />
   },
   {
-    auth: '/datastudio/left/metadata',
-    key: 'menu.datastudio.metadata',
+    auth: '/datastudio/left/datasource',
+    key: 'menu.datastudio.datasource',
     icon: <DatabaseOutlined />,
-    label: l('menu.datastudio.metadata'),
-    children: <MetaData />
+    label: l('menu.datastudio.datasource'),
+    children: <DataSource />
   }
 ];
 
@@ -96,11 +98,11 @@ export const RightSide: TabProp[] = [
       (TabsPageSubType.flinkSql === subType || TabsPageSubType.flinkJar === subType)
   },
   {
-    auth: '/datastudio/right/executeConfig',
-    key: 'menu.datastudio.executeConfig',
-    icon: <PlayCircleOutlined />,
-    label: l('menu.datastudio.executeConfig'),
-    children: <ExecuteConfig />,
+    auth: '/datastudio/right/previewConfig',
+    key: 'menu.datastudio.previewConfig',
+    icon: <InsertRowRightOutlined />,
+    label: l('menu.datastudio.previewConfig'),
+    children: <PreViewConfig />,
     isShow: (type, subType) =>
       (type === TabsPageType.project && TabsPageSubType.flinkSql === subType) ||
       isSql(subType ?? '')
@@ -216,38 +218,10 @@ export const LeftBottomMoreTabs: { [c: string]: TabProp[] } = {
       )
     },
     {
-      key: 'menu.datastudio.tool.datax2',
-      icon: <ToolOutlined />,
-      label: 'menu.datastudio.tool.datax2',
-      children: <div>datax2</div>
-    }
-  ],
-  'menu.datastudio.tool2': [
-    {
-      key: 'menu.datastudio.tool.text-comparison',
-      icon: <ToolOutlined />,
-      label: 'menu.datastudio.tool.text-comparison',
-      children: (
-        <DiffEditor
-          height={'95%'}
-          options={{
-            readOnly: true,
-            selectOnLineNumbers: true,
-            lineDecorationsWidth: 20,
-            mouseWheelZoom: true,
-            automaticLayout: true
-          }}
-          language={'sql'}
-          original={''}
-          modified={''}
-        />
-      )
-    },
-    {
-      key: 'menu.datastudio.tool.datax2',
-      icon: <ToolOutlined />,
-      label: 'menu.datastudio.tool.datax2',
-      children: <div>datax2</div>
+      key: 'menu.datastudio.tool.jsonToSql',
+      icon: <RotateRightOutlined />,
+      label: l('menu.datastudio.tool.jsonToSql'),
+      children: <JsonToSql />
     }
   ]
 };

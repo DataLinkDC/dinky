@@ -17,29 +17,26 @@
  *
  */
 
-package org.dinky.service.impl;
+import { getCurrentTab } from '@/pages/DataStudio/function';
+import { StateType, TabsPageSubType } from '@/pages/DataStudio/model';
+import ExecuteConfigCommonSql from '@/pages/DataStudio/RightContainer/PreViewConfig/CommonSql';
+import ExecuteConfigFlinkSql from '@/pages/DataStudio/RightContainer/PreViewConfig/FlinkSql';
+import { connect } from 'umi';
 
-import org.dinky.data.model.Jar;
-import org.dinky.mapper.JarMapper;
-import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.service.JarService;
-
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-/**
- * JarServiceImpl
- *
- * @since 2021/11/13
- */
-@Service
-public class JarServiceImpl extends SuperServiceImpl<JarMapper, Jar> implements JarService {
-
-    @Override
-    public List<Jar> listEnabledAll() {
-        return list(new QueryWrapper<Jar>().eq("enabled", 1));
+const PreViewConfig = (props: any) => {
+  const {
+    tabs: { panes, activeKey }
+  } = props;
+  const current = getCurrentTab(panes, activeKey);
+  {
+    if (current?.subType === TabsPageSubType.flinkSql) {
+      return <ExecuteConfigFlinkSql />;
+    } else {
+      return <ExecuteConfigCommonSql />;
     }
-}
+  }
+};
+
+export default connect(({ Studio }: { Studio: StateType }) => ({
+  tabs: Studio.tabs
+}))(PreViewConfig);

@@ -20,6 +20,7 @@
 package org.dinky.service;
 
 import org.dinky.cluster.FlinkClusterInfo;
+import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -93,7 +94,15 @@ public interface ClusterInstanceService extends ISuperService<ClusterInstance> {
     /**
      * register clusterInstance instance
      *
-     * @param clusterInstance {@link ClusterInstance} clusterInstance instance
+     * @param clusterInstanceDTO {@link ClusterInstanceDTO} clusterInstanceDTO instance
+     * @return {@link ClusterInstance}
+     */
+    ClusterInstance registersCluster(ClusterInstanceDTO clusterInstanceDTO);
+
+    /**
+     * register clusterInstance instance
+     *
+     * @param clusterInstance {@link ClusterInstance} clusterInstanceDTO instance
      * @return {@link ClusterInstance}
      */
     ClusterInstance registersCluster(ClusterInstance clusterInstance);

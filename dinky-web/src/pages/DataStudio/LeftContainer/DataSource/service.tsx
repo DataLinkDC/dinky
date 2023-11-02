@@ -17,13 +17,28 @@
  *
  */
 
-package org.dinky.mapper;
+import { handleGetOption, queryDataByParams } from '@/services/BusinessCrud';
+import { l } from '@/utils/intl';
 
-import org.dinky.data.model.UploadFileRecord;
-import org.dinky.mybatis.mapper.SuperMapper;
+/*--- 刷新 元数据表 ---*/
+export async function showDataSourceTable(id: number) {
+  try {
+    const result = await handleGetOption(
+      'api/database/getSchemasAndTables',
+      l('pages.metadata.DataSearch'),
+      { id: id }
+    );
+    return result?.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
 
-import org.apache.ibatis.annotations.Mapper;
-
-/** UploadFileRecordMapper */
-@Mapper
-public interface UploadFileRecordMapper extends SuperMapper<UploadFileRecord> {}
+/*--- 清理 元数据表缓存 ---*/
+export function clearDataSourceTable(id: number) {
+  return queryDataByParams('api/database/unCacheSchemasAndTables', { id: id });
+}
+export function getDataSourceList() {
+  return queryDataByParams('api/database/listEnabledAll');
+}

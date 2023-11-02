@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.data.dto.AssignMenuToRoleDto;
+import org.dinky.data.dto.AssignMenuToRoleDTO;
 import org.dinky.data.model.RoleMenu;
 import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
@@ -32,5 +32,5 @@ public interface RoleMenuService extends ISuperService<RoleMenu> {
      * @param assignMenuToRoleDto
      * @return
      */
-    Result<Void> assignMenuToRole(AssignMenuToRoleDto assignMenuToRoleDto);
+    Result<Void> assignMenuToRole(AssignMenuToRoleDTO assignMenuToRoleDto);
 }

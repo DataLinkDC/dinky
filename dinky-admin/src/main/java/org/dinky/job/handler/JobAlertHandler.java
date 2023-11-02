@@ -91,8 +91,6 @@ public class JobAlertHandler {
      */
     private FreeMarkerHolder freeMarkerHolder;
 
-    private final Facts ruleFacts = new Facts();
-
     private static volatile JobAlertHandler defaultJobAlertHandler;
 
     static {
@@ -124,6 +122,9 @@ public class JobAlertHandler {
      * checks for alert conditions for each job in the task pool.
      */
     public void check(JobInfoDetail jobInfoDetail) {
+        Facts ruleFacts = new Facts();
+        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_EXCEPTION_CHECK, new ExceptionRule());
+        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CHECKPOINT_RULES, new CheckpointsRule());
         ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_TIME, TimeUtil.nowStr());
         ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_DETAIL, jobInfoDetail);
         if (Asserts.isNotNull(jobInfoDetail.getJobDataDto().getJob())) {
@@ -170,9 +171,6 @@ public class JobAlertHandler {
      * Refreshes the alert rules and related data.
      */
     public void refreshRulesData() {
-        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_EXCEPTION_CHECK, new ExceptionRule());
-        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CHECKPOINT_RULES, new CheckpointsRule());
-
         List<AlertRuleDTO> ruleDTOS = alertRuleService.getBaseMapper().selectWithTemplate();
         freeMarkerHolder = new FreeMarkerHolder();
         rulesEngine = new DefaultRulesEngine();

@@ -355,7 +355,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public List<Role> getCurrentRole() {
-        return roleService.getRoleByUserId(StpUtil.getLoginIdAsInt());
+        if (StpUtil.isLogin()) {
+            return roleService.getRoleByUserId(StpUtil.getLoginIdAsInt());
+        }
+        return new ArrayList<>();
     }
 
     @Override

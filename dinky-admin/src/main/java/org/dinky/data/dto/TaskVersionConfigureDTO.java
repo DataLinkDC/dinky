@@ -96,9 +96,6 @@ public class TaskVersionConfigureDTO implements Serializable {
             notes = "The ID of the database source")
     private Integer databaseId;
 
-    @ApiModelProperty(value = "Jar ID", dataType = "Integer", example = "6", notes = "The ID of the JAR file")
-    private Integer jarId;
-
     @ApiModelProperty(
             value = "Environment ID",
             dataType = "Integer",

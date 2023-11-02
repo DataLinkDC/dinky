@@ -55,5 +55,5 @@ public interface StudioService {
 
     Schema getMSSchemaInfo(StudioMetaStoreDTO studioMetaStoreDTO);
 
-    List<Column> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO);
+    List<Column> getMSColumns(StudioMetaStoreDTO studioMetaStoreDTO);
 }

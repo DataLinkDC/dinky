@@ -20,6 +20,7 @@
 package org.dinky.service.impl;
 
 import org.dinky.data.constant.BaseConstant;
+import org.dinky.data.dto.MenuDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Menu;
 import org.dinky.data.model.RoleMenu;
@@ -289,12 +290,14 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     /**
      * save or update menu
      *
-     * @param menu
+     * @param menuDTO
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveOrUpdateMenu(Menu menu) {
+    public boolean saveOrUpdateMenu(MenuDTO menuDTO) {
+        Menu menu = menuDTO.toBean();
+
         if (StrUtil.isNotEmpty(menu.getPath())) {
             // replace first / and replace other / to : for router
             String replacedPerms = menu.getPath().replaceFirst("/", "").replaceAll("/", ":");

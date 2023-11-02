@@ -128,7 +128,7 @@ public class JobResult {
         this.jobConfig = jobConfig;
         this.jobManagerAddress = jobManagerAddress;
         this.status = status;
-        this.success = (status == (Job.JobStatus.SUCCESS)) ? true : false;
+        this.success = status == (Job.JobStatus.SUCCESS);
         this.statement = statement;
         this.jobId = jobId;
         this.error = error;
