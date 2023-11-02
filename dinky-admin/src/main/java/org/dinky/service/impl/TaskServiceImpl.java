@@ -425,17 +425,17 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws SqlExplainExcepition {
         TaskDTO task = getTaskInfoById(taskId);
         task.setStep(lifeCycle.getValue());
-        if (lifeCycle == JobLifeCycle.ONLINE) {
-            List<SqlExplainResult> sqlExplainResults = explainTask(task);
-            for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
-                if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
-                    throw new SqlExplainExcepition(StrFormatter.format(
-                            "task [{}] sql explain failed, sql [{}], error: [{}]",
-                            task.getName(),
-                            sqlExplainResult.getSql(),
-                            sqlExplainResult.getError()));
-                }
-            }
+        if (lifeCycle == JobLifeCycle.PUBLISH) {
+//            List<SqlExplainResult> sqlExplainResults = explainTask(task);
+//            for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
+//                if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
+//                    throw new SqlExplainExcepition(StrFormatter.format(
+//                            "task [{}] sql explain failed, sql [{}], error: [{}]",
+//                            task.getName(),
+//                            sqlExplainResult.getSql(),
+//                            sqlExplainResult.getError()));
+//                }
+//            }
             taskVersionService.createTaskVersionSnapshot(task);
         }
         return saveOrUpdate(task.buildTask());
@@ -444,7 +444,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public boolean saveOrUpdateTask(Task task) {
 
-        if (JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
+        if (JobLifeCycle.PUBLISH.equalsValue(task.getStep())) {
             throw new BusException(Status.TASK_IS_ONLINE.getMessage());
         }
 

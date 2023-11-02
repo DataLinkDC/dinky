@@ -135,11 +135,11 @@ public class TaskController {
                 Status.EXECUTE_SUCCESS);
     }
 
-    @GetMapping("/onLineTask")
-    @Log(title = "onLineTask", businessType = BusinessType.TRIGGER)
-    @ApiOperation("onLineTask")
-    public Result<Boolean> onLineTask(@RequestParam Integer taskId) throws SqlExplainExcepition {
-        if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.ONLINE)) {
+    @GetMapping("/changeTaskLife")
+    @Log(title = "changeTaskLife", businessType = BusinessType.TRIGGER)
+    @ApiOperation("changeTaskLife")
+    public Result<Boolean> changeTaskLife(@RequestParam Integer taskId,@RequestParam Integer lifeCycle) throws SqlExplainExcepition {
+        if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.get(lifeCycle))) {
             return Result.succeed(Status.PUBLISH_SUCCESS);
         } else {
             return Result.failed(Status.PUBLISH_FAILED);
