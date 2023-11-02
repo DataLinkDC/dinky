@@ -26,7 +26,6 @@ import org.dinky.data.vo.UDFManageVO;
 import org.dinky.service.UDFService;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,6 +54,7 @@ public class UDFController {
     public Result<List<Resources>> udfResourcesList() {
         return Result.succeed(udfService.udfResourcesList());
     }
+
     @PostMapping("/addOrUpdateByResourceId")
     public Result<Void> saveOrUpdate(@RequestBody CommonDTO<List<Integer>> dto) {
         udfService.addOrUpdateByResourceId(dto.getData());

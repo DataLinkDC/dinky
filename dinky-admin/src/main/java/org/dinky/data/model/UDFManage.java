@@ -19,17 +19,17 @@
 
 package org.dinky.data.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 import org.dinky.mybatis.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
 @EqualsAndHashCode(callSuper = false)

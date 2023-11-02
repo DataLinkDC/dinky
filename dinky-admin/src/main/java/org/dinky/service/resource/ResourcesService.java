@@ -123,5 +123,5 @@ public interface ResourcesService extends IService<Resources> {
      * @param filterFunction filter function
      * @return {@link Result}< {@link List}< {@link Resources}>>}
      */
-    List<Resources> getResourcesTreeByFilter(Function<Resources,Boolean> filterFunction);
+    List<Resources> getResourcesTreeByFilter(Function<Resources, Boolean> filterFunction);
 }

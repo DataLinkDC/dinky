@@ -19,7 +19,6 @@
 
 package org.dinky.service.resource.impl;
 
-import cn.hutool.core.io.FileUtil;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
@@ -28,6 +27,7 @@ import org.dinky.data.result.Result;
 import org.dinky.mapper.ResourcesMapper;
 import org.dinky.service.resource.BaseResourceManager;
 import org.dinky.service.resource.ResourcesService;
+import org.dinky.utils.RSUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.dinky.utils.RSUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,6 +46,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
@@ -223,8 +223,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     public boolean remove(Integer id) {
         Assert.isFalse(
                 Opt.ofNullable(getById(id))
-                        .orElseThrow(() -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST))
-                        .getPid()
+                                .orElseThrow(() -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST))
+                                .getPid()
                         == -1,
                 () -> new BusException(Status.ROOT_DIR_NOT_ALLOW_DELETE));
         try {
@@ -314,7 +314,10 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
      */
     public List<Resources> getResourcesTreeByFilter(Function<Resources, Boolean> filterFunction) {
         List<Resources> list = this.list();
-        return buildResourcesTree(filterFunction == null ? list : list.stream().filter(filterFunction::apply).collect(Collectors.toList()));
+        return buildResourcesTree(
+                filterFunction == null
+                        ? list
+                        : list.stream().filter(filterFunction::apply).collect(Collectors.toList()));
     }
 
     /**
