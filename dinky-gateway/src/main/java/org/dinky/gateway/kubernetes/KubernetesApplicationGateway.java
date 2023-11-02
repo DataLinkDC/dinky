@@ -54,15 +54,11 @@ import cn.hutool.core.text.StrFormatter;
 import io.fabric8.kubernetes.api.model.ContainerStatus;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClient;
 
 /**
  * KubernetesApplicationGateway
  */
 public class KubernetesApplicationGateway extends KubernetesGateway {
-
-    KubernetesClient kubernetesClient = new DefaultKubernetesClient();
 
     /**
      * @return The type of the Kubernetes gateway, which is GatewayType.KUBERNETES_APPLICATION.
@@ -93,7 +89,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
             return kubernetesResult;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
-        }finally {
+        } finally {
             client.close();
             kubernetesClient.close();
         }
