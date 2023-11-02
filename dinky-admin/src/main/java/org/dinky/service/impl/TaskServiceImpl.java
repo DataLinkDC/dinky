@@ -255,7 +255,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
         taskServiceBean.preCheckTask(taskDTO);
-        //The job instance does not exist by default,
+        // The job instance does not exist by default,
         // so that it does not affect other operations, such as checking the jobmanager address
         taskDTO.setJobInstanceId(null);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
@@ -426,16 +426,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         TaskDTO task = getTaskInfoById(taskId);
         task.setStep(lifeCycle.getValue());
         if (lifeCycle == JobLifeCycle.PUBLISH) {
-//            List<SqlExplainResult> sqlExplainResults = explainTask(task);
-//            for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
-//                if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
-//                    throw new SqlExplainExcepition(StrFormatter.format(
-//                            "task [{}] sql explain failed, sql [{}], error: [{}]",
-//                            task.getName(),
-//                            sqlExplainResult.getSql(),
-//                            sqlExplainResult.getError()));
-//                }
-//            }
+            //            List<SqlExplainResult> sqlExplainResults = explainTask(task);
+            //            for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
+            //                if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
+            //                    throw new SqlExplainExcepition(StrFormatter.format(
+            //                            "task [{}] sql explain failed, sql [{}], error: [{}]",
+            //                            task.getName(),
+            //                            sqlExplainResult.getSql(),
+            //                            sqlExplainResult.getError()));
+            //                }
+            //            }
             taskVersionService.createTaskVersionSnapshot(task);
         }
         return saveOrUpdate(task.buildTask());

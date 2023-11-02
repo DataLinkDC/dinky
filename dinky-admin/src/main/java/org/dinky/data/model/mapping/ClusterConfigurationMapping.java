@@ -20,6 +20,7 @@
 package org.dinky.data.model.mapping;
 
 import org.dinky.data.model.ClusterConfiguration;
+import org.dinky.gateway.model.FlinkClusterConfig;
 
 import java.time.LocalDateTime;
 
@@ -28,7 +29,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.dinky.gateway.model.FlinkClusterConfig;
 
 @Data
 @AllArgsConstructor

@@ -139,7 +139,8 @@ public class TaskController {
     @GetMapping("/changeTaskLife")
     @Log(title = "changeTaskLife", businessType = BusinessType.TRIGGER)
     @ApiOperation("changeTaskLife")
-    public Result<Boolean> changeTaskLife(@RequestParam Integer taskId,@RequestParam Integer lifeCycle) throws SqlExplainExcepition {
+    public Result<Boolean> changeTaskLife(@RequestParam Integer taskId, @RequestParam Integer lifeCycle)
+            throws SqlExplainExcepition {
         if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.get(lifeCycle))) {
             return Result.succeed(Status.PUBLISH_SUCCESS);
         } else {
