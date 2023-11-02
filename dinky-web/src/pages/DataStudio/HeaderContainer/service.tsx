@@ -17,9 +17,9 @@
  *
  */
 
-import {postAll} from '@/services/api';
-import {handleGetOption, handleOption} from '@/services/BusinessCrud';
-import {DIALECT} from '@/services/constants';
+import { postAll } from '@/services/api';
+import { handleGetOption, handleOption } from '@/services/BusinessCrud';
+import { DIALECT } from '@/services/constants';
 
 export async function explainSql(params: any) {
   return postAll('/api/task/explainSql', params);
@@ -34,15 +34,15 @@ export async function debugTask(title: string, params: any) {
 }
 
 export async function executeSql(title: string, id: number) {
-  return handleGetOption('/api/task/submitTask', title, {id});
+  return handleGetOption('/api/task/submitTask', title, { id });
 }
 
 export function cancelTask(title: string, id: number) {
-  return handleGetOption('api/task/cancel', title, {id});
+  return handleGetOption('api/task/cancel', title, { id });
 }
 
 export function changeTaskLife(title = '', id: number, life: number) {
-  return handleGetOption('api/task/changeTaskLife', title, {taskId: id, lifeCycle: life});
+  return handleGetOption('api/task/changeTaskLife', title, { taskId: id, lifeCycle: life });
 }
 
 export const isSql = (dialect: string) => {
