@@ -32,8 +32,7 @@ import {
   cancelTask, changeTaskLife,
   debugTask,
   executeSql,
-  getJobPlan, offLinelTask,
-  onLineTask
+  getJobPlan,
 } from '@/pages/DataStudio/HeaderContainer/service';
 import { StateType, TabsPageSubType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
