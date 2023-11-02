@@ -19,12 +19,18 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.dto.CommonDTO;
+import org.dinky.data.model.Resources;
+import org.dinky.data.result.Result;
 import org.dinky.data.vo.UDFManageVO;
 import org.dinky.service.UDFService;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,7 +47,17 @@ public class UDFController {
     private final UDFService udfService;
 
     @GetMapping("/list")
-    public List<UDFManageVO> list() {
-        return udfService.selectAll();
+    public Result<List<UDFManageVO>> list() {
+        return Result.succeed(udfService.selectAll());
+    }
+
+    @GetMapping("/udfResourcesList")
+    public Result<List<Resources>> udfResourcesList() {
+        return Result.succeed(udfService.udfResourcesList());
+    }
+    @PostMapping("/addOrUpdateByResourceId")
+    public Result<Void> saveOrUpdate(@RequestBody CommonDTO<List<Integer>> dto) {
+        udfService.addOrUpdateByResourceId(dto.getData());
+        return Result.succeed();
     }
 }

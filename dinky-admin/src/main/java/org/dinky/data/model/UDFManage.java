@@ -19,6 +19,9 @@
 
 package org.dinky.data.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.dinky.mybatis.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -32,7 +35,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_udf_manage")
 @ApiModel(value = "UDFTemplate", description = "User-Defined Function Template")
-public class UDFManage extends SuperEntity {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UDFManage extends SuperEntity<UDFManage> {
 
     @ApiModelProperty(value = "Class Name", dataType = "String", notes = "Class Name")
     private String className;

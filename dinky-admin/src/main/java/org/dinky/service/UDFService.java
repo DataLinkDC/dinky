@@ -19,13 +19,20 @@
 
 package org.dinky.service;
 
+import org.dinky.data.model.Resources;
 import org.dinky.data.model.UDFManage;
 import org.dinky.data.vo.UDFManageVO;
 
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface UDFService extends IService<UDFManage> {
     List<UDFManageVO> selectAll();
+
+    List<Resources> udfResourcesList();
+
+    @Transactional(rollbackFor = Exception.class)
+    void addOrUpdateByResourceId(List<Integer> resourceIds);
 }

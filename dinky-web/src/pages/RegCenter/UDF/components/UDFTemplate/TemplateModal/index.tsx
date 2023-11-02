@@ -18,7 +18,7 @@
  */
 
 import { FormContextValue } from '@/components/Context/FormContext';
-import TemplateProFrom from '@/pages/RegCenter/UDF/components/TemplateModal/TemplateProFrom';
+import TemplateProFrom from '@/pages/RegCenter/UDF/components/UDFTemplate/TemplateModal/TemplateProFrom';
 import { GitProject, UDFTemplate } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { ModalForm } from '@ant-design/pro-components';

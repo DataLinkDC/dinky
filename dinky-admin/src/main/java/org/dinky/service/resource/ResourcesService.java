@@ -23,7 +23,9 @@ import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.Resources;
 import org.dinky.data.result.Result;
 
+import java.io.File;
 import java.util.List;
+import java.util.function.Function;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -77,6 +79,8 @@ public interface ResourcesService extends IService<Resources> {
      */
     String getContentByResourceId(Integer id);
 
+    File getFile(Integer id);
+
     /**
      * Upload a file to the specified folder.
      *
@@ -113,4 +117,11 @@ public interface ResourcesService extends IService<Resources> {
      * @return {@link Result}< {@link List}< {@link Resources}>>}
      */
     List<Resources> getResourcesTree();
+
+    /**
+     * query Resources tree data by filter
+     * @param filterFunction filter function
+     * @return {@link Result}< {@link List}< {@link Resources}>>}
+     */
+    List<Resources> getResourcesTreeByFilter(Function<Resources,Boolean> filterFunction);
 }

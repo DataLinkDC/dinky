@@ -226,6 +226,7 @@ export type UDFTemplate = BaseBeanColumns & {
 
 export interface UDFRegisterInfo {
   id: number;
+  resourcesId: number;
   name: string;
   className: string;
   enable: boolean;

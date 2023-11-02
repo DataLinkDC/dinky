@@ -187,6 +187,11 @@ export enum API_CONSTANTS {
   // ---- get project build logs by id----
   GIT_PROJECT_BUILD_STEP_LOGS = '/api/git/build-step-logs',
 
+  //UDF Manage
+  UDF_LIST = '/api/udf/list',
+  UDF_RESOURCES_LIST = '/api/udf/udfResourcesList',
+  UDF_ADD = '/api/udf/addOrUpdateByResourceId',
+
   // UDF template
   UDF_TEMPLATE = '/api/udf/template/list',
   // UDF template add or update

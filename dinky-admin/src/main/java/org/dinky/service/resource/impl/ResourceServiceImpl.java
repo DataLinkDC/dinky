@@ -19,6 +19,7 @@
 
 package org.dinky.service.resource.impl;
 
+import cn.hutool.core.io.FileUtil;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
@@ -28,11 +29,14 @@ import org.dinky.mapper.ResourcesMapper;
 import org.dinky.service.resource.BaseResourceManager;
 import org.dinky.service.resource.ResourcesService;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.dinky.utils.RSUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -161,6 +165,19 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         return getBaseResourceManager().getFileContent(resources.getFullName());
     }
 
+    @Override
+    public File getFile(Integer id) {
+        Resources resources = getById(id);
+        Assert.notNull(resources, () -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST));
+        Assert.isFalse(resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE, () -> new BusException("file is too large!"));
+        String filePath = RSUtils.getFilePath(resources.getFullName());
+        File file = FileUtil.file(filePath);
+        if (!file.exists()) {
+            FileUtil.writeFromStream(getBaseResourceManager().getFile(resources.getFullName()), file);
+        }
+        return file;
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void uploadFile(Integer pid, String desc, MultipartFile file) {
@@ -206,8 +223,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     public boolean remove(Integer id) {
         Assert.isFalse(
                 Opt.ofNullable(getById(id))
-                                .orElseThrow(() -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST))
-                                .getPid()
+                        .orElseThrow(() -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST))
+                        .getPid()
                         == -1,
                 () -> new BusException(Status.ROOT_DIR_NOT_ALLOW_DELETE));
         try {
@@ -287,6 +304,17 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     @Override
     public List<Resources> getResourcesTree() {
         return buildResourcesTree(this.list());
+    }
+
+    /**
+     * query Resources tree data by filter
+     *
+     * @param filterFunction filter function
+     * @return {@link Result}< {@link List}< {@link Resources}>>}
+     */
+    public List<Resources> getResourcesTreeByFilter(Function<Resources, Boolean> filterFunction) {
+        List<Resources> list = this.list();
+        return buildResourcesTree(filterFunction == null ? list : list.stream().filter(filterFunction::apply).collect(Collectors.toList()));
     }
 
     /**

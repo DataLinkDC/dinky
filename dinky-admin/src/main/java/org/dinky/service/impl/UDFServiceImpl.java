@@ -19,24 +19,48 @@
 
 package org.dinky.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.Assert;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.dinky.config.Dialect;
+import org.dinky.data.model.Resources;
 import org.dinky.data.model.UDFManage;
 import org.dinky.data.vo.UDFManageVO;
 import org.dinky.mapper.UDFManageMapper;
 import org.dinky.service.UDFService;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.dinky.service.resource.ResourcesService;
+import org.dinky.utils.UDFUtils;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import cn.hutool.core.io.FileUtil;
+import org.springframework.transaction.annotation.Transactional;
 
-/** @since 0.6.8 */
+/**
+ * @since 0.6.8
+ */
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> implements UDFService {
+    private final ResourcesService resourcesService;
+
+    public void update(UDFManage entity) {
+        Assert.notNull(entity, "Entity must be not null");
+        super.updateById(entity);
+    }
 
     @Override
     public List<UDFManageVO> selectAll() {
@@ -52,5 +76,46 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
                     }
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Resources> udfResourcesList() {
+        return resourcesService.getResourcesTreeByFilter(x -> {
+            String suffix = FileUtil.getSuffix(x.getFileName());
+            return x.getIsDirectory() || "jar".equals(suffix) || "zip".equals(suffix) || "py".equals(suffix);
+        });
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void addOrUpdateByResourceId(List<Integer> resourceIds) {
+        LambdaQueryWrapper<UDFManage> queryWrapper = new LambdaQueryWrapper<UDFManage>().and(x -> x.isNotNull(UDFManage::getResourcesId));
+        List<UDFManage> udfManageList = baseMapper.selectList(queryWrapper);
+        List<Integer> udfManageIdList = udfManageList.stream().map(UDFManage::getResourcesId).distinct().collect(Collectors.toList());
+        // 1. Delete all UDFs that are not in the resourceIds list.
+        List<UDFManage> needDeleteList = udfManageList.stream().filter(x -> !resourceIds.contains(x.getResourcesId())).collect(Collectors.toList());
+        removeByIds(needDeleteList);
+        // 2. Add all UDFs that are not in the UDFManage table.
+        Collection<Integer> needAddList = resourceIds.stream().filter(x -> !udfManageIdList.contains(x)).collect(Collectors.toList());
+        if (CollUtil.isNotEmpty(needAddList)) {
+            List<Resources> resources = resourcesService.listByIds(needAddList);
+            List<UDFManage> manageList = resources.stream().flatMap(x -> {
+                String suffix = FileUtil.getSuffix(x.getFileName());
+                if ("jar".equals(suffix)) {
+                    File file = resourcesService.getFile(x.getId());
+                    List<Class<?>> classes = UDFUtils.getUdfClassByJar(file);
+                    return classes.stream().map(Class::getName).map(className -> UDFManage.builder().className(className).resourcesId(x.getId()).build());
+                } else if ("py".equals(suffix) || "zip".equals(suffix)) {
+                    File file = resourcesService.getFile(x.getId());
+                    List<String> pythonUdfList = UDFUtils.getPythonUdfList(file.getAbsolutePath());
+                    return pythonUdfList.stream().map(className -> UDFManage.builder().className(className).resourcesId(x.getId()).build());
+                } else {
+                    log.error("Unsupported file type: {}", suffix);
+                }
+                return Stream.of();
+            }).collect(Collectors.toList());
+            saveBatch(manageList);
+        }
+
     }
 }

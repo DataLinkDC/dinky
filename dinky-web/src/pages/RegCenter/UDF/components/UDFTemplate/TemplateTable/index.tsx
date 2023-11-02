@@ -23,7 +23,6 @@ import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
-import TemplateModal from '@/pages/RegCenter/UDF/components/TemplateModal';
 import {
   CODE_TYPE_ENUM,
   CODE_TYPE_FILTER,
@@ -41,6 +40,7 @@ import { l } from '@/utils/intl';
 import { ProTable } from '@ant-design/pro-components';
 import { ActionType, ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
+import TemplateModal from '../TemplateModal';
 import UDFTemplateDrawer from '../UDFTemplateDrawer';
 
 const CodeShowProps: any = {
