@@ -30,6 +30,7 @@ import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.ProcessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.NotSupportExplainExcepition;
+import org.dinky.data.exception.SqlExplainExcepition;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -137,7 +138,7 @@ public class TaskController {
     @GetMapping("/onLineTask")
     @Log(title = "onLineTask", businessType = BusinessType.TRIGGER)
     @ApiOperation("onLineTask")
-    public Result<Boolean> onLineTask(@RequestParam Integer taskId) {
+    public Result<Boolean> onLineTask(@RequestParam Integer taskId) throws SqlExplainExcepition {
         if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.ONLINE)) {
             return Result.succeed(Status.PUBLISH_SUCCESS);
         } else {
