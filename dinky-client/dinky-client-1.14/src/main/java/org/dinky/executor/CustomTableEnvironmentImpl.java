@@ -22,7 +22,6 @@ package org.dinky.executor;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
@@ -68,7 +67,6 @@ import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.operations.ddl.CreateTableASOperation;
 import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.table.planner.delegation.DefaultExecutor;
-import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
 import org.apache.flink.types.Row;
 
@@ -94,8 +92,6 @@ import cn.hutool.core.util.ReflectUtil;
  */
 public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
-    private final FlinkChainedProgram flinkChainedProgram;
-
     public CustomTableEnvironmentImpl(
             CatalogManager catalogManager,
             ModuleManager moduleManager,
@@ -117,8 +113,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 isStreamingMode,
                 userClassLoader));
         this.executor = executor;
-        this.flinkChainedProgram =
-                FlinkStreamProgramWithoutPhysical.buildProgram((Configuration) executionEnvironment.getConfiguration());
     }
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
@@ -365,8 +359,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     @Override
     public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext =
-                new LineageContext(flinkChainedProgram, (TableEnvironmentImpl) streamTableEnvironment);
+        LineageContext lineageContext = new LineageContext((TableEnvironmentImpl) streamTableEnvironment);
         return lineageContext.getLineage(statement);
     }
 

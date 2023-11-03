@@ -53,6 +53,9 @@ import org.dinky.data.model.TaskVersion;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.explainer.lineage.LineageBuilder;
+import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
@@ -251,7 +254,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    @ProcessStep(type = ProcessStepType.SUBMIT_TASK)
     public JobResult submitTask(Integer id, String savePointPath) throws Exception {
         TaskDTO taskDTO = this.getTaskInfoById(id);
 
@@ -262,15 +264,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
-
-        if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
-            log.info("Job Submit success");
-            Task task = new Task(id, jobResult.getJobInstanceId());
-            if (!this.updateById(task)) {
-                throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
-            }
-        } else {
-            log.error("Job Submit failed, error: " + jobResult.getError());
+        log.info("Job Submit success");
+        Task task = new Task(id, jobResult.getJobInstanceId());
+        if (!this.updateById(task)) {
+            throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
         }
         return jobResult;
     }
@@ -426,6 +423,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Integer tenantId = baseMapper.getTenantByTaskId(id);
         Asserts.checkNull(tenantId, Status.TASK_NOT_EXIST.getMessage());
         TenantContextHolder.set(tenantId);
+        log.info("Init task tenan finished..");
     }
 
     @Override
@@ -781,6 +779,28 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         final List<Catalogue> catalogueList = catalogueService.list(queryWrapper);
         return Result.succeed(
                 TreeUtil.build(dealWithCatalogue(catalogueList), -1).get(0));
+    }
+
+    @Override
+    public LineageResult getTaskLineage(Integer id) {
+        TaskDTO task = getTaskInfoById(id);
+        if (!Dialect.isCommonSql(task.getDialect())) {
+            if (Asserts.isNull(task.getDatabaseId())) {
+                return null;
+            }
+            DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
+            if (Asserts.isNull(dataBase)) {
+                return null;
+            }
+            if (task.getDialect().equalsIgnoreCase("doris") || task.getDialect().equalsIgnoreCase("starrocks")) {
+                return SQLLineageBuilder.getSqlLineage(task.getStatement(), "mysql", dataBase.getDriverConfig());
+            } else {
+                return SQLLineageBuilder.getSqlLineage(
+                        task.getStatement(), task.getDialect().toLowerCase(), dataBase.getDriverConfig());
+            }
+        } else {
+            return LineageBuilder.getColumnLineageByLogicalPlan(buildEnvSql(task));
+        }
     }
 
     private List<TreeNode<Integer>> dealWithCatalogue(List<Catalogue> catalogueList) {

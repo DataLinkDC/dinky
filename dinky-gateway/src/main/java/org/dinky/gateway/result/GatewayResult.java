@@ -30,7 +30,7 @@ public interface GatewayResult {
 
     String getId();
 
-    void setId(String id);
+    GatewayResult setId(String id);
 
     String getWebURL();
 
