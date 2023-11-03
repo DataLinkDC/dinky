@@ -17,12 +17,12 @@
  *
  */
 
-import { Transfer,Tree } from 'antd';
-import type { TransferDirection,TransferItem } from 'antd/es/transfer';
+import { Transfer, Tree } from 'antd';
+import type { TransferDirection, TransferItem } from 'antd/es/transfer';
 import type { DataNode } from 'antd/es/tree';
-import React,{ Key } from 'react';
+import React, { Key } from 'react';
 
-const {DirectoryTree} = Tree;
+const { DirectoryTree } = Tree;
 interface TreeTransferProps {
   dataSource: DataNode[];
   targetKeys: Key[];
@@ -37,9 +37,12 @@ const generateTree = (treeNodes: DataNode[] = [], checkedKeys: Key[] = []): Data
     disabled: checkedKeys.includes(props.key as string),
     children: generateTree(children, checkedKeys)
   }));
-export const TreeTransfer: React.FC<TreeTransferProps> = ({dataSource, targetKeys, ...restProps}) => {
+export const TreeTransfer: React.FC<TreeTransferProps> = ({
+  dataSource,
+  targetKeys,
+  ...restProps
+}) => {
   const transferDataSource: TransferItem[] = [];
-
 
   function flatten(list: DataNode[] = []) {
     list.forEach((item) => {

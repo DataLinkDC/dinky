@@ -21,7 +21,8 @@ import {
   ConfigSvg,
   FileIcon,
   FlinkSQLSvg,
-  FolderSvgExpand, JarSvg,
+  FolderSvgExpand,
+  JarSvg,
   JavaSvg,
   LogSvg,
   MarkDownSvg,
@@ -29,7 +30,8 @@ import {
   ScalaSvg,
   ShellSvg,
   XMLSvg,
-  YAMLSvg, ZipSvg
+  YAMLSvg,
+  ZipSvg
 } from '@/components/Icons/CodeLanguageIcon';
 import {
   DATETIME_FORMAT,

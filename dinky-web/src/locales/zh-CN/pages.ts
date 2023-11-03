@@ -813,7 +813,6 @@ export default {
   'rc.udf.register.deleteConfirm': '确定删除该 UDF 吗？',
   'rc.udf.register': '注册 UDF',
 
-
   /**
    *
    * role

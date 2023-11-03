@@ -17,10 +17,10 @@
  *
  */
 
+import { TagAlignCenter } from '@/components/StyledComponents';
 import { ResourceInfo } from '@/types/RegCenter/data';
-import { parseByteStr,renderIcon } from '@/utils/function';
+import { parseByteStr, renderIcon } from '@/utils/function';
 import { l } from '@/utils/intl';
-import {TagAlignCenter} from "@/components/StyledComponents";
 
 const buildTitleLabel = (item: ResourceInfo) => {
   return (
@@ -35,7 +35,6 @@ const buildTitleLabel = (item: ResourceInfo) => {
     </>
   );
 };
-
 
 /**
  * 判断目录是否为空
@@ -57,7 +56,11 @@ function isDirectoryEmpty(directory: ResourceInfo): boolean {
   return true;
 }
 
-function filterEmpty(isFilterEmptyChildren: boolean, item: ResourceInfo, filterSuffixList: string[]) {
+function filterEmpty(
+  isFilterEmptyChildren: boolean,
+  item: ResourceInfo,
+  filterSuffixList: string[]
+) {
   if (isFilterEmptyChildren) {
     if (item.isDirectory) {
       // 如果是目录，则递归遍历看最深处是否是空目录，是的话过滤掉
@@ -75,19 +78,25 @@ function filterEmpty(isFilterEmptyChildren: boolean, item: ResourceInfo, filterS
   return true;
 }
 
-export const buildResourceTreeData = (data: ResourceInfo[], isFilterEmptyChildren = false, filterSuffixList : string[] = []): any =>
-  data.filter((item: ResourceInfo) => filterEmpty(isFilterEmptyChildren, item, filterSuffixList)).map((item: ResourceInfo) => {
-    return {
-      isLeaf: !item.isDirectory,
-      name: item.fileName,
-      parentId: item.pid,
-      label: item.fullName + '/' + item.fileName,
-      icon: <TagAlignCenter>{renderIcon(item.fileName, '.', item.isDirectory)}</TagAlignCenter>,
-      path: item.fullName,
-      title: buildTitleLabel(item),
-      fullInfo: item,
-      key: item.id,
-      id: item.id,
-      children: item.children && buildResourceTreeData(item.children, isFilterEmptyChildren)
-    };
-  });
+export const buildResourceTreeData = (
+  data: ResourceInfo[],
+  isFilterEmptyChildren = false,
+  filterSuffixList: string[] = []
+): any =>
+  data
+    .filter((item: ResourceInfo) => filterEmpty(isFilterEmptyChildren, item, filterSuffixList))
+    .map((item: ResourceInfo) => {
+      return {
+        isLeaf: !item.isDirectory,
+        name: item.fileName,
+        parentId: item.pid,
+        label: item.fullName + '/' + item.fileName,
+        icon: <TagAlignCenter>{renderIcon(item.fileName, '.', item.isDirectory)}</TagAlignCenter>,
+        path: item.fullName,
+        title: buildTitleLabel(item),
+        fullInfo: item,
+        key: item.id,
+        id: item.id,
+        children: item.children && buildResourceTreeData(item.children, isFilterEmptyChildren)
+      };
+    });
