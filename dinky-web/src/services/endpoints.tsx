@@ -188,6 +188,7 @@ export enum API_CONSTANTS {
   UDF_LIST = '/api/udf/list',
   UDF_RESOURCES_LIST = '/api/udf/udfResourcesList',
   UDF_ADD = '/api/udf/addOrUpdateByResourceId',
+  UDF_UPDATE = '/api/udf/update',
 
   // UDF template
   UDF_TEMPLATE = '/api/udf/template/list',

@@ -237,6 +237,26 @@ export interface UDFRegisterInfo {
   // createTime: string;
   updateTime: Date;
 }
+export interface UDFRegisterInfoParent {
+  num: number;
+  resourcesId: number;
+  dialect: string;
+  source: string;
+  fileName: string;
+}
+export interface UDFRegisterInfoChild {
+  id: number;
+  resourcesId: number;
+  name: string;
+  className: string;
+  enable: boolean;
+  dialect: string;
+  source: string;
+  fileName: string;
+  // tenantId: number;
+  // createTime: string;
+  updateTime: Date;
+}
 
 export interface ResourceInfo {
   id: number;

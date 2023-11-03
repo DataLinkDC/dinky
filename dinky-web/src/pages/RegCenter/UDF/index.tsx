@@ -35,15 +35,15 @@ export default () => {
           centered: true,
         }}
         tabList={[
+            {
+                tab: 'UDF 注册管理',
+                key: 'udf-register',
+                children: <UDFRegister />,
+            },
           {
             tab: 'UDF 模版',
             key: 'udf-template',
             children: <TemplateTable />,
-          },
-          {
-            tab: 'UDF 注册管理',
-            key: 'udf-register',
-            children: <UDFRegister />,
           },
         ]}
         title={false}

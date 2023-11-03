@@ -26,6 +26,7 @@ interface TreeTransferProps {
     dataSource: DataNode[];
     targetKeys: Key[];
     onChange?: (targetKeys: Key[], direction: TransferDirection, moveKeys: string[]) => void;
+    height?: number;
 }
 
 const isChecked = (selectedKeys: React.Key[], eventKey: React.Key) =>
@@ -36,7 +37,7 @@ const generateTree = (treeNodes: DataNode[] = [], checkedKeys: Key[] = []): Data
         disabled: checkedKeys.includes(props.key as string),
         children: generateTree(children, checkedKeys),
     }));
-export const TreeTransfer: React.FC<TreeTransferProps> = ({dataSource, targetKeys, ...restProps}) => {
+export const TreeTransfer: React.FC<TreeTransferProps> = ({dataSource, targetKeys,height, ...restProps}) => {
     const {token} = theme.useToken();
 
     const transferDataSource: TransferItem[] = [];
@@ -66,6 +67,7 @@ export const TreeTransfer: React.FC<TreeTransferProps> = ({dataSource, targetKey
                     return (
                         <div style={{padding: token.paddingXS}}>
                             <Tree
+                                height={height}
                                 blockNode
                                 checkable
                                 checkStrictly

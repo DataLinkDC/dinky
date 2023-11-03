@@ -17,26 +17,26 @@
  *
  */
 
-import {EditableProTable, ProColumns} from "@ant-design/pro-components";
-import {UDFRegisterInfo} from "@/types/RegCenter/data";
+import {ProColumns} from "@ant-design/pro-components";
+import {UDFRegisterInfo, UDFRegisterInfoParent} from "@/types/RegCenter/data";
 import {EditBtn} from "@/components/CallBackButton/EditBtn";
 import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
 import {Key, useEffect, useRef, useState} from "react";
-import {ActionType} from "@ant-design/pro-table";
+import ProTable, {ActionType} from "@ant-design/pro-table";
 import {useRequest} from "@@/plugin-request";
 import {API_CONSTANTS} from "@/services/endpoints";
-import {Button, Modal, Space} from "antd";
+import {Button, Modal} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import {TreeTransfer} from "@/components/Transfer/TreeTransfer";
 import {buildResourceTreeData} from "@/pages/RegCenter/Resource/components/FileTree/function";
-import {add} from "./service";
+import {add, update} from "./service";
+import {l} from "@/utils/intl";
 
-import {
-    BaseResult
-} from 'C:/project/ideaProjects/dinky/dinky-web/node_modules/@umijs/plugins/node_modules/@ahooksjs/use-request/es/types';
 
 const UDFRegister = () => {
-    const req: BaseResult<UDFRegisterInfo[], any> = useRequest({
+    const req = useRequest<{
+        data: UDFRegisterInfo[]
+    }>({
         url: API_CONSTANTS.UDF_LIST
     });
     const req_resources = useRequest({
@@ -63,109 +63,155 @@ const UDFRegister = () => {
         setUDFRegisterState(prevState => ({...prevState, editableKeys}));
     }
 
-    const columns: ProColumns<UDFRegisterInfo>[] = [
+    const groupData: {
+        [p: string]: UDFRegisterInfo[] | undefined
+    } = Object.fromEntries(
+        Array.from(new Set(req.data?.map(({fileName}) => fileName))).map((type) => [
+            type,
+            req.data?.filter((item) => item.fileName === type),
+        ]),
+    )
+    const parentData: UDFRegisterInfoParent[] = Object.keys(groupData)?.map((key) => {
+        const d = groupData[key] ?? [];
+        return {
+            resourcesId: d[0].resourcesId,
+            dialect: d[0].dialect,
+            source: d[0].source,
+            fileName: key,
+            num: d.length,
+        }
+    })
+
+
+    const columnsParent: ProColumns<UDFRegisterInfoParent>[] = [
         {
-            title: '名称',
-            dataIndex: 'name',
-            width: '10%',
-            // readonly: udfRegisterState.isEdit && !udfRegisterState.isAdd,
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        message: '请输入名称',
-                    },
-                ],
-            },
-        },
-        {
-            title: '类名',
-            dataIndex: 'className',
-            // readonly: !udfRegisterState.isEdit && udfRegisterState.isAdd,
-            readonly: true,
-            width: '15%',
-        },
-        {
-            title: '语言',
-            dataIndex: 'dialect',
-            readonly: true,
-            // readonly: !udfRegisterState.isEdit && udfRegisterState.isAdd,
-            width: '8%',
-        },
-        {
-            title: '来源',
-            dataIndex: 'source',
-            readonly: true,
-            // readonly: !udfRegisterState.isEdit && udfRegisterState.isAdd,
-            width: '10%',
-        },
-        {
-            title: '文件名',
+            title: '文件名称',
+            width: 120,
             dataIndex: 'fileName',
-            readonly: true,
-            // readonly: !udfRegisterState.isEdit && udfRegisterState.isAdd,
-            width: '20%',
-        },
-        {
-            title: '更新时间',
-            dataIndex: 'updateTime',
-            readonly: true,
-            // readonly: !udfRegisterState.isEdit && udfRegisterState.isAdd,
-            valueType: 'dateTime',
-            width: '15%',
-        },
-        {
-            title: '操作',
-            valueType: 'option',
-            width: '10%',
-            render: (_text, record, _, action) => {
-                return [
-                    <EditBtn key={`${record.id}_edit`} onClick={() => {
-                        action?.startEditable?.(record.id);
-                        setUDFRegisterState(prevState => ({...prevState, isEdit: true, isAdd: false}));
-                    }}/>
-                    , record.source == "develop" ?
-                        <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => {
-                        }} description={"确定删除吗???"}/>
-                        : <></>
-                ]
-            },
+        }, {
+            title: 'udf解析数量',
+            width: 120,
+            dataIndex: 'num',
+        }, {
+            title: '来源',
+            width: 120,
+            dataIndex: 'source',
+            valueEnum: {
+                resources: {text: "resources"},
+                develop: {text: 'develop'},
+            }
+        }, {
+            title: '语言',
+            width: 120,
+            dataIndex: 'dialect',
+            valueEnum: {
+                java: {text: "Java"},
+                python: {text: 'Python'},
+            }
         }
     ]
+    const expandedRowRender = (expandedRow: UDFRegisterInfoParent) => {
+
+        const columns: ProColumns<UDFRegisterInfo>[] = [
+            {
+                title: '名称',
+                dataIndex: 'name',
+                width: '10%',
+                formItemProps: {
+                    rules: [
+                        {
+                            required: true,
+                            message: '请输入名称',
+                        },
+                    ],
+                },
+            },
+            {
+                title: '类名',
+                dataIndex: 'className',
+                readonly: true,
+                width: '15%',
+            },
+            {
+                title: '更新时间',
+                dataIndex: 'updateTime',
+                readonly: true,
+                valueType: 'dateTime',
+                width: '15%',
+            },
+            {
+                title: '操作',
+                valueType: 'option',
+                width: '10%',
+                render: (_text, record, _, action) => {
+                    return [
+                        <EditBtn key={`${record.id}_edit`} onClick={() => {
+                            action?.startEditable?.(record.id);
+                            setUDFRegisterState(prevState => ({...prevState, isEdit: true, isAdd: false}));
+                        }}/>
+                        , record.source == "develop" ?
+                            <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => {
+                            }} description={"确定删除吗???"}/>
+                            : <></>
+                    ]
+                },
+            }
+        ]
+
+        return (
+            <ProTable
+                rowKey={"id"}
+                columns={columns}
+                headerTitle={false}
+                search={false}
+                options={false}
+                dataSource={groupData[expandedRow.fileName]}
+                pagination={false}
+                actionRef={actionRef}
+                editable={{
+                    deleteText: false,
+                    type: 'single',
+                    editableKeys: udfRegisterState.editableKeys,
+                    onChange: editableKeysChange,
+                    onSave: async (_, row) => {
+                        await update(row.id, row.name);
+                        await req.refresh();
+                        actionRef.current?.reload();
+                    },
+                    actionRender: (_, _2, defaultDom) => [
+                        defaultDom.save,
+                        defaultDom.cancel
+                    ]
+                }}
+            />
+        );
+    };
 
 
     return (
         <>
-            <Space>
-                <Button
-                    type="primary"
-                    onClick={() => {
-                        setShowEdit(true);
-                    }}
-                    icon={<PlusOutlined/>}
-                >
-                    新增
-                </Button>
-            </Space>
-            <EditableProTable<UDFRegisterInfo>
-                rowKey="id"
-                headerTitle={false}
-                maxLength={20}
+            <ProTable<UDFRegisterInfoParent>
+                dataSource={parentData}
+                columns={columnsParent}
+                rowKey="resourcesId"
                 pagination={{
                     showQuickJumper: true,
-                    pageSize: 20,
                 }}
-                controlled
-                recordCreatorProps={false}
-                actionRef={actionRef}
-                editable={{
-                    type: 'single',
-                    editableKeys: udfRegisterState.editableKeys,
-                    onChange: editableKeysChange,
-                }}
-                columns={columns}
-                value={req.data}
-
+                expandable={{expandedRowRender}}
+                search={false}
+                dateFormatter="string"
+                options={false}
+                toolBarRender={() => [
+                    <Button
+                        type="primary"
+                        onClick={() => {
+                            setShowEdit(true);
+                        }}
+                        icon={<PlusOutlined/>}
+                    >
+                        {l('button.create')}
+                    </Button>
+                ]}
             />
             <Modal width={1500} open={showEdit} destroyOnClose closable onCancel={() => setShowEdit(false)}
                    onOk={() => {
@@ -175,8 +221,8 @@ const UDFRegister = () => {
                            })
                        })
                    }}>
-                <TreeTransfer dataSource={buildResourceTreeData(req_resources.data ?? [])}
-                              targetKeys={targetKeys} onChange={setTargetKeys}/>
+                    <TreeTransfer dataSource={buildResourceTreeData(req_resources.data ?? [])}
+                                  targetKeys={targetKeys} onChange={setTargetKeys} height={500}/>
             </Modal>
         </>
     )

@@ -30,10 +30,29 @@ import org.springframework.transaction.annotation.Transactional;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface UDFService extends IService<UDFManage> {
+    /**
+     * update udf name by id
+     * @param entity udf
+     * @return boolean
+     */
+    boolean update(UDFManage entity);
+
+    /**
+     * get all udf
+     * @return List
+     */
     List<UDFManageVO> selectAll();
 
+    /**
+     * get udf by id
+     * @return UDFManage
+     */
     List<Resources> udfResourcesList();
 
+    /**
+     * add or update udf by resourceIds
+     * @param resourceIds resourceIds
+     */
     @Transactional(rollbackFor = Exception.class)
     void addOrUpdateByResourceId(List<Integer> resourceIds);
 }

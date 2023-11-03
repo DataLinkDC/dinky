@@ -43,6 +43,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.CharUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,9 +57,14 @@ import lombok.extern.slf4j.Slf4j;
 public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> implements UDFService {
     private final ResourcesService resourcesService;
 
-    public void update(UDFManage entity) {
+    @Override
+    public boolean update(UDFManage entity) {
         Assert.notNull(entity, "Entity must be not null");
-        super.updateById(entity);
+        Integer id = entity.getId();
+        UDFManage byId = getById(id);
+        Assert.notNull(byId, "UDFManage not found");
+        byId.setName(entity.getName());
+        return super.updateById(byId);
     }
 
     @Override
@@ -108,17 +115,25 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
                         if ("jar".equals(suffix)) {
                             File file = resourcesService.getFile(x.getId());
                             List<Class<?>> classes = UDFUtils.getUdfClassByJar(file);
-                            return classes.stream().map(Class::getName).map(className -> UDFManage.builder()
-                                    .className(className)
-                                    .resourcesId(x.getId())
-                                    .build());
+                            return classes.stream().map(clazz -> {
+                                UDFManage udfManage = UDFManage.builder()
+                                        .className(clazz.getName())
+                                        .resourcesId(x.getId())
+                                        .build();
+                                udfManage.setName(StrUtil.toUnderlineCase(getSimpleClassName(clazz.getName())));
+                                return udfManage;
+                            });
                         } else if ("py".equals(suffix) || "zip".equals(suffix)) {
                             File file = resourcesService.getFile(x.getId());
                             List<String> pythonUdfList = UDFUtils.getPythonUdfList(file.getAbsolutePath());
-                            return pythonUdfList.stream().map(className -> UDFManage.builder()
-                                    .className(className)
-                                    .resourcesId(x.getId())
-                                    .build());
+                            return pythonUdfList.stream().map(className -> {
+                                UDFManage udfManage = UDFManage.builder()
+                                        .className(className)
+                                        .resourcesId(x.getId())
+                                        .build();
+                                udfManage.setName(StrUtil.toUnderlineCase(getSimpleClassName(className)));
+                                return udfManage;
+                            });
                         } else {
                             log.error("Unsupported file type: {}", suffix);
                         }
@@ -127,5 +142,13 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
                     .collect(Collectors.toList());
             saveBatch(manageList);
         }
+    }
+
+    private static String getSimpleClassName(String className) {
+        final List<String> packages = StrUtil.split(className, CharUtil.DOT);
+        if (null == packages || packages.size() < 2) {
+            return className;
+        }
+        return CollUtil.getLast(packages);
     }
 }

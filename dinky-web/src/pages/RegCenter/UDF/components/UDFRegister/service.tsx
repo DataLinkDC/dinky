@@ -24,3 +24,6 @@ import {Key} from "react";
 export const add = (ids:Key[]) => {
     return postAll(API_CONSTANTS.UDF_ADD,{data:ids});
 }
+export const update = (id:Key,name:string) => {
+    return postAll(API_CONSTANTS.UDF_UPDATE,{id,name});
+}

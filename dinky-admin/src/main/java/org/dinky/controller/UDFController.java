@@ -21,6 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.data.dto.CommonDTO;
 import org.dinky.data.model.Resources;
+import org.dinky.data.model.UDFManage;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.UDFManageVO;
 import org.dinky.service.UDFService;
@@ -37,6 +38,9 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Flink udf controller
+ */
 @Slf4j
 @Api(tags = "UDF Controller")
 @RestController
@@ -45,16 +49,44 @@ import lombok.extern.slf4j.Slf4j;
 public class UDFController {
     private final UDFService udfService;
 
+    /**
+     * update udf name by id
+     *
+     * @return Result
+     */
     @GetMapping("/list")
     public Result<List<UDFManageVO>> list() {
         return Result.succeed(udfService.selectAll());
     }
 
+    /**
+     * update udf
+     *
+     * @param udfManage udfManage
+     * @return Result
+     */
+    @PostMapping("/update")
+    public Result<Void> update(@RequestBody UDFManage udfManage) {
+        udfService.update(udfManage);
+        return Result.succeed();
+    }
+
+    /**
+     * get udf resources list
+     *
+     * @return Result
+     */
     @GetMapping("/udfResourcesList")
     public Result<List<Resources>> udfResourcesList() {
         return Result.succeed(udfService.udfResourcesList());
     }
 
+    /**
+     * add or update by resource id
+     *
+     * @param dto dto
+     * @return Result
+     */
     @PostMapping("/addOrUpdateByResourceId")
     public Result<Void> saveOrUpdate(@RequestBody CommonDTO<List<Integer>> dto) {
         udfService.addOrUpdateByResourceId(dto.getData());
