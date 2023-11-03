@@ -20,6 +20,7 @@
 package org.dinky.data.model.mapping;
 
 import org.dinky.data.model.ClusterConfiguration;
+import org.dinky.gateway.model.FlinkClusterConfig;
 
 import java.time.LocalDateTime;
 
@@ -75,7 +76,7 @@ public class ClusterConfigurationMapping {
             dataType = "String",
             example = "test",
             notes = "cluster config json")
-    private String configJson;
+    private FlinkClusterConfig configJson;
 
     @ApiModelProperty(
             value = "isAvailable",

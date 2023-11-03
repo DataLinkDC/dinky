@@ -41,12 +41,8 @@ export function cancelTask(title: string, id: number) {
   return handleGetOption('api/task/cancel', title, { id });
 }
 
-export function onLineTask(title = '', id: number) {
-  return handleGetOption('api/task/onLineTask', title, { taskId: id });
-}
-
-export function offLinelTask(id: number) {
-  return handleGetOption('api/task/cancel', '', { taskId: id });
+export function changeTaskLife(title = '', id: number, life: number) {
+  return handleGetOption('api/task/changeTaskLife', title, { taskId: id, lifeCycle: life });
 }
 
 export const isSql = (dialect: string) => {

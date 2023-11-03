@@ -30,10 +30,10 @@ import {
 } from '@/pages/DataStudio/HeaderContainer/function';
 import {
   cancelTask,
+  changeTaskLife,
   debugTask,
   executeSql,
-  getJobPlan,
-  onLineTask
+  getJobPlan
 } from '@/pages/DataStudio/HeaderContainer/service';
 import { StateType, TabsPageSubType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
@@ -182,12 +182,20 @@ const HeaderContainer = (props: any) => {
   const handleChangeJobLife = async () => {
     if (!currentData) return;
     if (isOnline(currentData)) {
-      await cancelTask(l('global.table.lifecycle.offline'), currentData.id);
+      await changeTaskLife(
+        l('global.table.lifecycle.offline'),
+        currentData.id,
+        JOB_LIFE_CYCLE.DEVELOP
+      );
       currentData.step = JOB_LIFE_CYCLE.DEVELOP;
     } else {
       const saved = await handleSave();
       if (saved) {
-        await onLineTask(l('global.table.lifecycle.publishing'), currentData.id);
+        await changeTaskLife(
+          l('global.table.lifecycle.publishing'),
+          currentData.id,
+          JOB_LIFE_CYCLE.PUBLISH
+        );
         currentData.step = JOB_LIFE_CYCLE.PUBLISH;
       }
     }
