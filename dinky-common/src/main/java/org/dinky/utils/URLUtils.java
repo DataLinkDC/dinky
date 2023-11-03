@@ -30,11 +30,15 @@ import java.util.stream.Collectors;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 
-/** @since 0.7.0 */
+/**
+ * @since 0.7.0
+ */
 public class URLUtils {
     private static final String TMP_PATH = StrUtil.join(File.separator, System.getProperty("user.dir"), "tmp");
+
     /**
      * url download file to local
+     *
      * @param urlPath urlPath
      * @return file
      */
@@ -44,9 +48,9 @@ public class URLUtils {
             URLConnection urlConnection = url.openConnection();
             if ("http".equals(url.getProtocol())
                     || "https".equals(url.getProtocol())
-                    || "hdfs".equals(url.getProtocol())
-                    || "rs".equals(url.getProtocol())) {
-                String path = StrUtil.join(File.separator, TMP_PATH, "downloadFile", url.getPath());
+                    || "hdfs".equals(url.getProtocol())) {
+            } else if ("rs".equals(url.getProtocol())) {
+                String path = StrUtil.join(File.separator, TMP_PATH, "rs", url.getPath());
                 return FileUtil.writeFromStream(urlConnection.getInputStream(), path);
             } else if ("file".equals(url.getProtocol())) {
                 return new File(url.getPath());

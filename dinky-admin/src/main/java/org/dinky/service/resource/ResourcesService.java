@@ -79,6 +79,11 @@ public interface ResourcesService extends IService<Resources> {
      */
     String getContentByResourceId(Integer id);
 
+    /**
+     * Download files from explorer（从资源管理器下载文件）
+     * @param id resource id
+     * @return {@link File}
+     */
     File getFile(Integer id);
 
     /**

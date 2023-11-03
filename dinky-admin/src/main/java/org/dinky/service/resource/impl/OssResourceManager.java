@@ -65,11 +65,11 @@ public class OssResourceManager implements BaseResourceManager {
 
     @Override
     public String getFileContent(String path) {
-        return IoUtil.readUtf8(getFile(path));
+        return IoUtil.readUtf8(readFile(path));
     }
 
     @Override
-    public InputStream getFile(String path) {
+    public InputStream readFile(String path) {
         return getOssTemplate()
                 .getObject(getOssTemplate().getBucketName(), getFilePath(path))
                 .getObjectContent();

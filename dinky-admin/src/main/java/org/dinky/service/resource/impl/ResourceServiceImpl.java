@@ -27,7 +27,7 @@ import org.dinky.data.result.Result;
 import org.dinky.mapper.ResourcesMapper;
 import org.dinky.service.resource.BaseResourceManager;
 import org.dinky.service.resource.ResourcesService;
-import org.dinky.utils.RSUtils;
+import org.dinky.utils.URLUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +46,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
@@ -170,12 +169,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         Resources resources = getById(id);
         Assert.notNull(resources, () -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST));
         Assert.isFalse(resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE, () -> new BusException("file is too large!"));
-        String filePath = RSUtils.getFilePath(resources.getFullName());
-        File file = FileUtil.file(filePath);
-        if (!file.exists()) {
-            FileUtil.writeFromStream(getBaseResourceManager().getFile(resources.getFullName()), file);
-        }
-        return file;
+        return URLUtils.toFile("rs:" + resources.getFullName());
     }
 
     @Transactional(rollbackFor = Exception.class)

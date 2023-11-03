@@ -23,6 +23,10 @@ import org.apache.poi.ss.formula.functions.T;
 
 import lombok.Data;
 
+/**
+ * When using post, the dto passed as a parameter(使用post时，一个参数传递的dto)
+ * @param <T> params
+ */
 @Data
 public class CommonDTO<T> {
     private T data;
