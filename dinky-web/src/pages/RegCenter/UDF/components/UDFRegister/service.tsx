@@ -17,13 +17,13 @@
  *
  */
 
-import {postAll} from "@/services/api";
-import {API_CONSTANTS} from "@/services/endpoints";
-import {Key} from "react";
+import { postAll } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { Key } from 'react';
 
-export const add = (ids:Key[]) => {
-    return postAll(API_CONSTANTS.UDF_ADD,{data:ids});
-}
-export const update = (id:Key,name:string) => {
-    return postAll(API_CONSTANTS.UDF_UPDATE,{id,name});
-}
+export const add = (ids: Key[]) => {
+  return postAll(API_CONSTANTS.UDF_ADD, { data: ids });
+};
+export const update = (id: Key, name: string) => {
+  return postAll(API_CONSTANTS.UDF_UPDATE, { id, name });
+};
