@@ -49,5 +49,13 @@ export const TASK_VAR_FILTER = [
   'useAutoCancel',
   'status',
   'step',
-  'jobConfig'
+  'jobConfig',
+  'note',
+  'step',
+  'versionId',
+  'clusterName',
+  'clusterConfigurationName',
+  'databaseName',
+  'envName',
+  'alertGroupName',
 ];
