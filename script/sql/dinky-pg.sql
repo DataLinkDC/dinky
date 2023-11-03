@@ -2756,9 +2756,9 @@ CREATE TABLE "public"."dinky_udf_manage" (
 ALTER TABLE "public"."dinky_udf_manage"
     OWNER TO "postgres";
 
-CREATE INDEX "name,enabled" ON "public"."dinky_udf_manage" USING btree (
+CREATE INDEX "name,resources_id" ON "public"."dinky_udf_manage" USING btree (
     "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-    "enabled" "pg_catalog"."int2_ops" ASC NULLS LAST
+    "resources_id" "pg_catalog"."int2_ops" ASC NULLS LAST
     );
 
 COMMENT ON COLUMN "public"."dinky_udf_manage"."name" IS 'udf name';

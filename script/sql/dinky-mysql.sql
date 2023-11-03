@@ -1927,9 +1927,9 @@ CREATE TABLE `dinky_udf_manage` (
                                     `class_name` varchar(50) DEFAULT NULL COMMENT 'Complete class name',
                                     `task_id` int(11) DEFAULT NULL COMMENT 'task id',
                                     `resources_id` int(11) DEFAULT NULL COMMENT 'resources id',
-                                    `enabled` tinyint(1) DEFAULT NULL COMMENT 'is enable',
+                                    `enabled` tinyint(1) DEFAULT 1 COMMENT 'is enable',
                                     `create_time` datetime DEFAULT NULL COMMENT 'create time',
                                     `update_time` datetime DEFAULT NULL COMMENT 'update time',
                                     PRIMARY KEY (`id`) USING BTREE,
-                                    KEY `name,enabled` (`name`,`enabled`) USING BTREE
+                                    KEY `name,resources_id` (`name`,`resources_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='udf';
