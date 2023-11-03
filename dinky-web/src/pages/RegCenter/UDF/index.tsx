@@ -18,10 +18,9 @@
  */
 
 import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import UDFRegister from '@/pages/RegCenter/UDF/components/UDFRegister';
 import TemplateTable from '@/pages/RegCenter/UDF/components/UDFTemplate/TemplateTable';
-import {PageContainer} from '@ant-design/pro-components';
-import UDFRegister from "@/pages/RegCenter/UDF/components/UDFRegister";
-import * as React from "react";
+import { PageContainer } from '@ant-design/pro-components';
 
 export default () => {
   return (
@@ -32,19 +31,19 @@ export default () => {
           size: 'small',
           animated: true,
           tabBarGutter: 10,
-          centered: true,
+          centered: true
         }}
         tabList={[
-            {
-                tab: 'UDF 注册管理',
-                key: 'udf-register',
-                children: <UDFRegister />,
-            },
+          {
+            tab: 'UDF 注册管理',
+            key: 'udf-register',
+            children: <UDFRegister />
+          },
           {
             tab: 'UDF 模版',
             key: 'udf-template',
-            children: <TemplateTable />,
-          },
+            children: <TemplateTable />
+          }
         ]}
         title={false}
       />

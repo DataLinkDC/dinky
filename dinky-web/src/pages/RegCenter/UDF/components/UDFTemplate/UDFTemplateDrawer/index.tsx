@@ -17,10 +17,10 @@
  *
  */
 
+import UDFTemplateDesc from '@/pages/RegCenter/UDF/components/UDFTemplate/UDFTemplateDrawer/UDFTemplateDesc';
 import { UDFTemplate } from '@/types/RegCenter/data';
 import { Drawer } from 'antd';
 import React from 'react';
-import UDFTemplateDesc from "@/pages/RegCenter/UDF/components/UDFTemplate/UDFTemplateDrawer/UDFTemplateDesc";
 
 type UDFTemplateDrawerProps = {
   onCancel: (flag?: boolean) => void;
