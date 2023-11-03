@@ -24,6 +24,7 @@ import org.dinky.config.Dialect;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.exception.DinkyException;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.compiler.CustomStringScalaCompiler;
@@ -94,7 +95,9 @@ public class UDFUtil {
     public static final String YARN = "YARN";
     public static final String APPLICATION = "APPLICATION";
 
-    /** 网关类型 map 快速获取 session 与 application 等类型，为了减少判断 */
+    /**
+     * 网关类型 map 快速获取 session 与 application 等类型，为了减少判断
+     */
     public static final Map<String, List<GatewayType>> GATEWAY_TYPE_MAP = MapUtil.builder(
                     SESSION,
                     Arrays.asList(GatewayType.YARN_SESSION, GatewayType.KUBERNETES_SESSION, GatewayType.STANDALONE))
@@ -103,7 +106,9 @@ public class UDFUtil {
             .build();
 
     protected static final Logger log = LoggerFactory.getLogger(UDFUtil.class);
-    /** 存放 udf md5与版本对应的k,v值 */
+    /**
+     * 存放 udf md5与版本对应的k,v值
+     */
     protected static final Map<String, Integer> UDF_MD5_MAP = new HashMap<>();
 
     public static final String PYTHON_UDF_ATTR = "(\\S)\\s+=\\s+ud(?:f|tf|af|taf)";
@@ -115,8 +120,8 @@ public class UDFUtil {
     /**
      * 模板解析
      *
-     * @param dialect 方言
-     * @param template 模板
+     * @param dialect   方言
+     * @param template  模板
      * @param className 类名
      * @return {@link String}
      */
@@ -268,7 +273,9 @@ public class UDFUtil {
         }
     }
 
-    /** 扫描udf包文件，写入md5到 UDF_MD5_MAP */
+    /**
+     * 扫描udf包文件，写入md5到 UDF_MD5_MAP
+     */
     @Deprecated
     private static void scanUDFMD5() {
         List<String> fileList = FileUtil.listFileNames(PathConstant.UDF_PATH);
@@ -367,6 +374,10 @@ public class UDFUtil {
         return classList;
     }
 
+    public static List<String> getPythonUdfList(String udfFile) {
+        return getPythonUdfList(SystemConfiguration.getInstances().getPythonHome(), udfFile);
+    }
+
     public static List<String> getPythonUdfList(String pythonPath, String udfFile) {
         File checkFile = new File(PathConstant.TMP_PATH, "getPyFuncList.py");
         if (!checkFile.exists()) {
@@ -386,13 +397,11 @@ public class UDFUtil {
             configuration.set(PythonOptions.PYTHON_FILES, udfFile + ".zip");
             configuration.set(PythonOptions.PYTHON_CLIENT_EXECUTABLE, pythonPath);
             configuration.set(PythonOptions.PYTHON_EXECUTABLE, pythonPath);
-
-            System.out.println(udfName);
             try {
                 PythonFunctionFactory.getPythonFunction(udfName, configuration, null);
                 successUdfList.add(udfName);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("", e);
             }
         }
         return successUdfList;

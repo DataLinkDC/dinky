@@ -17,16 +17,19 @@
  *
  */
 
-package org.dinky.url;
+package org.dinky.utils;
 
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
+import org.dinky.function.constant.PathConstant;
 
-public class RsURLStreamHandler extends URLStreamHandler {
+import java.io.File;
 
-    @Override
-    protected URLConnection openConnection(URL u) {
-        return new RsURLConnection(u);
+import cn.hutool.core.util.StrUtil;
+
+/**
+ * Resources Utils
+ */
+public class RSUtils {
+    public static String getFilePath(String path) {
+        return StrUtil.join(File.separator, PathConstant.TMP_PATH, "rs", path);
     }
 }

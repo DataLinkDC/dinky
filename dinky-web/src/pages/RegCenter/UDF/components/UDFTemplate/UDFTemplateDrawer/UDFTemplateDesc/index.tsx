@@ -17,16 +17,30 @@
  *
  */
 
-package org.dinky.url;
+import { GlobalVar, UDFTemplate } from '@/types/RegCenter/data';
+import { ProDescriptions } from '@ant-design/pro-components';
+import React from 'react';
 
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
+type UDFTemplateDescProps = {
+  values: Partial<UDFTemplate>;
+  columns: any;
+};
+const UDFTemplateDesc: React.FC<UDFTemplateDescProps> = (props) => {
+  const { values, columns } = props;
+  return (
+    <>
+      <ProDescriptions<GlobalVar>
+        column={1}
+        loading={values && Object.keys(values).length === 0}
+        title={values.name}
+        request={async () => ({
+          data: values
+        })}
+        params={{ id: values.id }}
+        columns={columns}
+      />
+    </>
+  );
+};
 
-public class RsURLStreamHandler extends URLStreamHandler {
-
-    @Override
-    protected URLConnection openConnection(URL u) {
-        return new RsURLConnection(u);
-    }
-}
+export default UDFTemplateDesc;

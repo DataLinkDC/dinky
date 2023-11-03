@@ -17,16 +17,27 @@
  *
  */
 
-package org.dinky.url;
+import { UDFTemplate } from '@/types/RegCenter/data';
+import { Drawer } from 'antd';
+import React from 'react';
+import UDFTemplateDesc from "@/pages/RegCenter/UDF/components/UDFTemplate/UDFTemplateDrawer/UDFTemplateDesc";
 
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
+type UDFTemplateDrawerProps = {
+  onCancel: (flag?: boolean) => void;
+  values: Partial<UDFTemplate>;
+  modalVisible: boolean;
+  columns: any;
+};
+const UDFTemplateDrawer: React.FC<UDFTemplateDrawerProps> = (props) => {
+  const { onCancel: handleCancel, values, modalVisible, columns } = props;
 
-public class RsURLStreamHandler extends URLStreamHandler {
+  return (
+    <>
+      <Drawer width={'45%'} open={modalVisible} onClose={() => handleCancel(false)}>
+        <UDFTemplateDesc values={values} columns={columns} />
+      </Drawer>
+    </>
+  );
+};
 
-    @Override
-    protected URLConnection openConnection(URL u) {
-        return new RsURLConnection(u);
-    }
-}
+export default UDFTemplateDrawer;

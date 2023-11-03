@@ -17,16 +17,20 @@
  *
  */
 
-package org.dinky.url;
+package org.dinky.mapper;
 
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
+import org.dinky.data.model.UDFManage;
+import org.dinky.data.vo.UDFManageVO;
+import org.dinky.mybatis.mapper.SuperMapper;
 
-public class RsURLStreamHandler extends URLStreamHandler {
+import org.apache.ibatis.annotations.Mapper;
 
-    @Override
-    protected URLConnection openConnection(URL u) {
-        return new RsURLConnection(u);
-    }
+import java.util.List;
+
+/**
+ * UDFManageMapper
+ */
+@Mapper
+public interface UDFManageMapper extends SuperMapper<UDFManage> {
+    List<UDFManageVO> selectAll();
 }

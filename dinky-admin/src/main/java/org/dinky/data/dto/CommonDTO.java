@@ -17,16 +17,17 @@
  *
  */
 
-package org.dinky.url;
+package org.dinky.data.dto;
 
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
+import org.apache.poi.ss.formula.functions.T;
 
-public class RsURLStreamHandler extends URLStreamHandler {
+import lombok.Data;
 
-    @Override
-    protected URLConnection openConnection(URL u) {
-        return new RsURLConnection(u);
-    }
+/**
+ * When using post, the dto passed as a parameter(使用post时，一个参数传递的dto)
+ * @param <T> params
+ */
+@Data
+public class CommonDTO<T> {
+    private T data;
 }
