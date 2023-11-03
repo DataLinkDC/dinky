@@ -16,12 +16,12 @@
  *
  */
 
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { ProColumns, ProTable } from '@ant-design/pro-components';
 import { Transfer } from 'antd';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { TransferProps } from 'antd/es/transfer';
 import { difference } from 'lodash';
-import {UserBaseInfo} from "@/types/AuthCenter/data.d";
 
 /**
  * Customize Table Transfer Props

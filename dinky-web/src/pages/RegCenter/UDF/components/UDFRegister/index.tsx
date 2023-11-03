@@ -21,22 +21,21 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import UDFRegisterModal from '@/pages/RegCenter/UDF/components/UDFRegister/UDFRegisterModal';
 import { API_CONSTANTS } from '@/services/endpoints';
-import { UDFRegisterInfo,UDFRegisterInfoParent } from '@/types/RegCenter/data';
+import { UDFRegisterInfo, UDFRegisterInfoParent } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
 import { useRequest } from '@@/plugin-request';
 import { ProColumns } from '@ant-design/pro-components';
-import ProTable,{ ActionType } from '@ant-design/pro-table';
-import React, { Key,useEffect,useRef,useState } from 'react';
-import { add,update } from './service';
-import {l} from "@/utils/intl";
+import ProTable, { ActionType } from '@ant-design/pro-table';
+import React, { Key, useEffect, useRef, useState } from 'react';
+import { add, update } from './service';
 
 type UDFRegisterProps = {
   showEdit: boolean;
   showEditChange: (showEdit: boolean) => void;
-}
+};
 
 const UDFRegister: React.FC<UDFRegisterProps> = (props) => {
-
-  const { showEdit,showEditChange } = props;
+  const { showEdit, showEditChange } = props;
 
   const udfRegisterInfoRequest = useRequest<{
     data: UDFRegisterInfo[];
@@ -100,7 +99,7 @@ const UDFRegister: React.FC<UDFRegisterProps> = (props) => {
     },
     {
       title: l('rc.udf.register.source'),
-      width: "25%",
+      width: '25%',
       dataIndex: 'source',
       valueEnum: {
         resources: { text: 'resources' },
@@ -122,7 +121,7 @@ const UDFRegister: React.FC<UDFRegisterProps> = (props) => {
       {
         title: l('rc.udf.register.name'),
         dataIndex: 'name',
-        width: '10%',
+        width: '10%'
       },
       {
         title: l('rc.udf.register.className'),
@@ -168,7 +167,7 @@ const UDFRegister: React.FC<UDFRegisterProps> = (props) => {
       await update(row.id, row.name);
       await udfRegisterInfoRequest.refresh();
       actionRef.current?.reload();
-    }
+    };
 
     return (
       <ProTable
@@ -191,7 +190,6 @@ const UDFRegister: React.FC<UDFRegisterProps> = (props) => {
       />
     );
   };
-
 
   /**
    * submit register udf

@@ -18,12 +18,12 @@
  */
 
 import SlowlyAppear from '@/components/Animation/SlowlyAppear';
-import { CreateBtn } from "@/components/CallBackButton/CreateBtn";
-import UDFRegister from "@/pages/RegCenter/UDF/components/UDFRegister";
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import UDFRegister from '@/pages/RegCenter/UDF/components/UDFRegister';
 import TemplateTable from '@/pages/RegCenter/UDF/components/UDFTemplate/TemplateTable';
+import { l } from '@/utils/intl';
 import { PageContainer } from '@ant-design/pro-components';
-import * as React from "react";
-import {l} from "@/utils/intl";
+import * as React from 'react';
 
 export default () => {
   const [showEdit, setShowEdit] = React.useState<boolean>(false);
