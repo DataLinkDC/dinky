@@ -23,10 +23,16 @@ import org.dinky.config.Dialect;
 import org.dinky.data.annotation.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.model.Task;
+import org.dinky.function.FunctionFactory;
+import org.dinky.function.data.model.UDF;
+import org.dinky.job.Job;
 import org.dinky.job.JobResult;
 import org.dinky.utils.UDFUtils;
 
+import java.util.Collections;
+
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 
 @SupportDialect({Dialect.JAVA, Dialect.PYTHON, Dialect.SCALA})
 public class UdfTask extends BaseTask {
@@ -36,12 +42,22 @@ public class UdfTask extends BaseTask {
 
     @Override
     public JobResult execute() throws Exception {
-        UDFUtils.taskToUDF(BeanUtil.toBean(task, Task.class));
-        return null;
+        JobResult jobResult = new JobResult();
+        jobResult.setSuccess(true);
+        jobResult.setStatus(Job.JobStatus.SUCCESS);
+        try {
+            UDF udf = UDFUtils.taskToUDF(BeanUtil.toBean(task, Task.class));
+            FunctionFactory.initUDF(Collections.singletonList(udf), task.getId());
+        } catch (Exception e) {
+            jobResult.setSuccess(false);
+            jobResult.setError(ExceptionUtil.getRootCauseMessage(e));
+            jobResult.setStatus(Job.JobStatus.FAILED);
+        }
+        return jobResult;
     }
 
     @Override
     public boolean stop() {
-        return false;
+        return true;
     }
 }

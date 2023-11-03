@@ -17,16 +17,13 @@
  *
  */
 
-package org.dinky.url;
+import {postAll} from "@/services/api";
+import {API_CONSTANTS} from "@/services/endpoints";
+import {Key} from "react";
 
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
-
-public class RsURLStreamHandler extends URLStreamHandler {
-
-    @Override
-    protected URLConnection openConnection(URL u) {
-        return new RsURLConnection(u);
-    }
+export const add = (ids:Key[]) => {
+    return postAll(API_CONSTANTS.UDF_ADD,{data:ids});
+}
+export const update = (id:Key,name:string) => {
+    return postAll(API_CONSTANTS.UDF_UPDATE,{id,name});
 }

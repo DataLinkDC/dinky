@@ -20,16 +20,11 @@
 package org.dinky.url;
 
 import org.dinky.data.exception.BusException;
-import org.dinky.function.constant.PathConstant;
 import org.dinky.service.resource.BaseResourceManager;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
 
 public class RsURLConnection extends URLConnection {
     private InputStream inputStream;
@@ -40,6 +35,7 @@ public class RsURLConnection extends URLConnection {
         if (instance == null) {
             throw BusException.valueOf("ResourceManager is disabled");
         }
+        inputStream = instance.readFile(getURL().getPath());
     }
 
     @Override
@@ -50,11 +46,5 @@ public class RsURLConnection extends URLConnection {
 
     public RsURLConnection(URL url) {
         super(url);
-    }
-
-    public File toFile() {
-        connect();
-        String path = StrUtil.join(File.separator, PathConstant.TMP_PATH, "rs", getURL().getPath());
-        return FileUtil.writeFromStream(inputStream, path);
     }
 }

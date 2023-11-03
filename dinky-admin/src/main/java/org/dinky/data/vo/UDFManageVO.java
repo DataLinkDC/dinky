@@ -17,16 +17,28 @@
  *
  */
 
-package org.dinky.url;
+package org.dinky.data.vo;
 
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
+import java.io.Serializable;
+import java.util.Date;
 
-public class RsURLStreamHandler extends URLStreamHandler {
+import lombok.Data;
 
-    @Override
-    protected URLConnection openConnection(URL u) {
-        return new RsURLConnection(u);
-    }
+@Data
+public class UDFManageVO implements Serializable {
+    private Integer id;
+    private String name;
+    private Boolean enabled;
+    private String className;
+    private Integer taskId;
+    private Integer resourcesId;
+    /**
+     * develop or resources
+     */
+    private String source;
+
+    private String dialect;
+    private String fileName;
+    private Date createTime;
+    private Date updateTime;
 }

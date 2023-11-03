@@ -858,6 +858,7 @@
     </scm>
     <repositories>
         <repository>
+            <snapshots />
             <id>apache-snapshots</id>
             <url>https://maven.aliyun.com/repository/apache-snapshots</url>
         </repository>

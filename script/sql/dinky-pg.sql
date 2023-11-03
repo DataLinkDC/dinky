@@ -2739,3 +2739,40 @@ INSERT INTO public.dinky_alert_template VALUES (1, 'Default', '
 ', 1, null, null);
 
 COMMIT;
+
+CREATE TABLE "public"."dinky_udf_manage" (
+                                             "id" int4 NOT NULL,
+                                             "name" varchar(50) COLLATE "pg_catalog"."default",
+                                             "class_name" varchar(50) COLLATE "pg_catalog"."default",
+                                             "task_id" int4,
+                                             "resources_id" int4,
+                                             "enabled" int2,
+                                             "create_time" timestamp(6),
+                                             "update_time" timestamp(6),
+                                             CONSTRAINT "dinky_udf_manage_pkey" PRIMARY KEY ("id")
+)
+;
+
+ALTER TABLE "public"."dinky_udf_manage"
+    OWNER TO "postgres";
+
+CREATE INDEX "name,resources_id" ON "public"."dinky_udf_manage" USING btree (
+    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+    "resources_id" "pg_catalog"."int2_ops" ASC NULLS LAST
+    );
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."name" IS 'udf name';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."class_name" IS 'Complete class name';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."task_id" IS 'task id';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."resources_id" IS 'resources id';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."enabled" IS 'is enable';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."create_time" IS 'create time';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."update_time" IS 'update time';
+
+COMMENT ON TABLE "public"."dinky_udf_manage" IS 'udf';
