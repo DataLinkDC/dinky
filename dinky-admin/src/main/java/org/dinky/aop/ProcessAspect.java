@@ -110,10 +110,8 @@ public class ProcessAspect {
             contextHolder.finishedStep(MDC.get(PROCESS_NAME), step, ProcessStatus.FAILED, e);
             throw e;
         } finally {
-            // If a parent step exists, it is restored after the execution is complete
-            if (parentStep != null) {
-                MDC.put(PROCESS_STEP, parentStep);
-            }
+            // restored after the execution is complete
+            MDC.put(PROCESS_STEP, parentStep);
         }
         return result;
     }
