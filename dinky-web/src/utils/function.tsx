@@ -16,9 +16,10 @@
  */
 
 import {
+  ConfigSvg,
   FileIcon,
   FlinkSQLSvg,
-  FolderSvgExpand,
+  FolderSvgExpand, JarSvg,
   JavaSvg,
   LogSvg,
   MarkDownSvg,
@@ -26,7 +27,7 @@ import {
   ScalaSvg,
   ShellSvg,
   XMLSvg,
-  YAMLSvg
+  YAMLSvg, ZipSvg
 } from '@/components/Icons/CodeLanguageIcon';
 import {
   DATETIME_FORMAT,
@@ -279,12 +280,20 @@ export const getIcon = (type: string) => {
     case DIALECT.YAML:
     case DIALECT.YML:
       return <YAMLSvg />;
+    case DIALECT.JAR:
+      return <JarSvg />;
     case DIALECT.SH:
     case DIALECT.BASH:
     case DIALECT.CMD:
       return <ShellSvg />;
+    case DIALECT.CONF:
+      return <ConfigSvg />;
     case DIALECT.LOG:
       return <LogSvg />;
+    case DIALECT.ZIP:
+    case DIALECT.TAR:
+    case DIALECT.TAR_GZ:
+      return <ZipSvg />;
     case DIALECT.FLINK_SQL:
       return <FlinkSQLSvg />;
     default:
