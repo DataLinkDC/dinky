@@ -168,9 +168,9 @@ public class TaskController {
             name = "task",
             value = "Task",
             required = true,
-            dataType = "Task",
+            dataType = "TaskSaveDTO",
             paramType = "body",
-            dataTypeClass = Task.class)
+            dataTypeClass = TaskSaveDTO.class)
     public Result<Void> saveOrUpdateTask(@RequestBody TaskSaveDTO task) {
         if (taskService.saveOrUpdateTask(task.toTaskEntity())) {
             return Result.succeed(Status.SAVE_SUCCESS);
