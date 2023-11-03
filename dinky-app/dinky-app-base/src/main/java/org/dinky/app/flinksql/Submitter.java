@@ -103,7 +103,7 @@ public class Submitter {
     public static String buildSql(AppTask appTask) throws SQLException {
         StringBuilder sb = new StringBuilder();
         // build env task
-        if (Asserts.isNotNull(appTask.getEnvId())) {
+        if (Asserts.isNotNull(appTask.getEnvId()) && appTask.getEnvId() > 0) {
             AppTask envTask = DBUtil.getTask(appTask.getEnvId());
             if (Asserts.isNotNullString(envTask.getStatement())) {
                 log.info("use statement is enable, load env:{}", envTask.getName());

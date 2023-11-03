@@ -195,7 +195,7 @@ public class ConsoleContextHolder {
         if (e != null) {
             appendLog(processName, null, LogUtil.getError(e.getCause()), true);
         }
-        String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), process.getTitle());
+        String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
         if (FileUtil.exist(filePath)) {
             Assert.isTrue(FileUtil.del(filePath));
         }

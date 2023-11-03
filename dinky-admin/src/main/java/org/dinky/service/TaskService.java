@@ -26,6 +26,7 @@ import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.exception.ExcuteException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
+import org.dinky.data.exception.SqlExplainExcepition;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
 import org.dinky.data.model.Task;
@@ -162,7 +163,7 @@ public interface TaskService extends ISuperService<Task> {
      * @param lifeCycle The new life cycle of the task.
      * @return true if the life cycle is successfully changed, false otherwise.
      */
-    boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle);
+    boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws SqlExplainExcepition;
 
     /**
      * Save or update the given task.
