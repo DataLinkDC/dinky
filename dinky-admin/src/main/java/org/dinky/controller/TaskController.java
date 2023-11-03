@@ -25,11 +25,13 @@ import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
+import org.dinky.data.dto.TaskSaveDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.ProcessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.NotSupportExplainExcepition;
+import org.dinky.data.exception.SqlExplainExcepition;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -134,11 +136,12 @@ public class TaskController {
                 Status.EXECUTE_SUCCESS);
     }
 
-    @GetMapping("/onLineTask")
-    @Log(title = "onLineTask", businessType = BusinessType.TRIGGER)
-    @ApiOperation("onLineTask")
-    public Result<Boolean> onLineTask(@RequestParam Integer taskId) {
-        if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.ONLINE)) {
+    @GetMapping("/changeTaskLife")
+    @Log(title = "changeTaskLife", businessType = BusinessType.TRIGGER)
+    @ApiOperation("changeTaskLife")
+    public Result<Boolean> changeTaskLife(@RequestParam Integer taskId, @RequestParam Integer lifeCycle)
+            throws SqlExplainExcepition {
+        if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.get(lifeCycle))) {
             return Result.succeed(Status.PUBLISH_SUCCESS);
         } else {
             return Result.failed(Status.PUBLISH_FAILED);
@@ -165,11 +168,11 @@ public class TaskController {
             name = "task",
             value = "Task",
             required = true,
-            dataType = "Task",
+            dataType = "TaskSaveDTO",
             paramType = "body",
-            dataTypeClass = Task.class)
-    public Result<Void> saveOrUpdateTask(@RequestBody Task task) {
-        if (taskService.saveOrUpdateTask(task)) {
+            dataTypeClass = TaskSaveDTO.class)
+    public Result<Void> saveOrUpdateTask(@RequestBody TaskSaveDTO task) {
+        if (taskService.saveOrUpdateTask(task.toTaskEntity())) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);

@@ -39,8 +39,10 @@ import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.apache.flink.kubernetes.kubeclient.Fabric8FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClientFactory;
+import org.apache.http.util.TextUtils;
 
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import cn.hutool.core.io.FileUtil;
@@ -111,7 +113,13 @@ public abstract class KubernetesGateway extends AbstractGateway {
 
     private void initKubeClient() {
         client = FlinkKubeClientFactory.getInstance().fromConfiguration(configuration, "client");
-        kubernetesClient = new DefaultKubernetesClient();
+        String kubeFile = configuration.getString(KubernetesConfigOptions.KUBE_CONFIG_FILE);
+        if (TextUtils.isEmpty(kubeFile)) {
+            kubernetesClient = new DefaultKubernetesClient();
+        } else {
+            String kubeStr = FileUtil.readString(kubeFile, StandardCharsets.UTF_8);
+            kubernetesClient = DefaultKubernetesClient.fromConfig(kubeStr);
+        }
     }
 
     public SavePointResult savepointCluster(String savePoint) {
