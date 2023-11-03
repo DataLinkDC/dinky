@@ -45,7 +45,6 @@ public class SuggestionServiceImpl implements SuggestionService {
     private final DocumentService documentService;
     private final FragmentVariableService fragmentVariableService;
 
-
     /**
      *  get suggestions for editor
      * @param enableSchemaSuggestion whether enable schema suggestion

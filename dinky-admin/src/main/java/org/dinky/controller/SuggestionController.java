@@ -19,8 +19,6 @@
 
 package org.dinky.controller;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
 import org.dinky.data.dto.SuggestionDTO;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.suggestion.SuggestionVO;
@@ -34,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,14 +47,14 @@ public class SuggestionController {
     private final SuggestionService suggestionService;
 
     @PostMapping("/queryAllSuggestions")
-    @ApiOperation(value = "QueryAllSuggestions", notes = "queryAllSuggestions" )
+    @ApiOperation(value = "QueryAllSuggestions", notes = "queryAllSuggestions")
     @ApiImplicitParam(name = "suggestionDTO", value = "suggestionDTO", required = true, dataType = "SuggestionDTO")
     public Result<List<SuggestionVO>> queryAllSuggestions(@RequestBody SuggestionDTO suggestionDTO) {
         return Result.succeed(suggestionService.getSuggestions(suggestionDTO.isEnableSchemaSuggestion()));
     }
 
     @PostMapping("/queryAllSuggestionsByKeyWord")
-    @ApiOperation(value = "QueryAllSuggestionsByKeyWord", notes = "queryAllSuggestionsByKeyWord" )
+    @ApiOperation(value = "QueryAllSuggestionsByKeyWord", notes = "queryAllSuggestionsByKeyWord")
     @ApiImplicitParam(name = "suggestionDTO", value = "suggestionDTO", required = true, dataType = "SuggestionDTO")
     public Result<List<SuggestionVO>> queryAllSuggestionsByKeyWord(@RequestBody SuggestionDTO suggestionDTO) {
         return Result.succeed(suggestionService.getSuggestionsByKeyWord(
@@ -62,7 +62,7 @@ public class SuggestionController {
     }
 
     @PostMapping("/queryAllSuggestionsBySqlStatement")
-    @ApiOperation(value = "QueryAllSuggestionsBySqlStatement", notes = "queryAllSuggestionsBySqlStatement" )
+    @ApiOperation(value = "QueryAllSuggestionsBySqlStatement", notes = "queryAllSuggestionsBySqlStatement")
     @ApiImplicitParam(name = "suggestionDTO", value = "suggestionDTO", required = true, dataType = "SuggestionDTO")
     public Result<List<SuggestionVO>> queryAllSuggestionsBySqlStatement(@RequestBody SuggestionDTO suggestionDTO) {
         return Result.succeed(suggestionService.getSuggestionsBySqlStatement(
