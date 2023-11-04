@@ -42,6 +42,9 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "ClusterInstanceDTO", description = "API Cluster Instance Data Transfer Object")
 public class ClusterInstanceDTO {
 
+    @ApiModelProperty(value = "id", required = true, dataType = "Integer", example = "id")
+    private Integer id;
+
     @ApiModelProperty(value = "Name", required = true, dataType = "String", example = "Name")
     private String name;
 

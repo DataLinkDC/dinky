@@ -21,8 +21,8 @@ package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotation.Log;
-import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
+import org.dinky.data.dto.StudioLineageDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
@@ -112,7 +112,7 @@ public class StudioController {
             required = true,
             dataType = "StudioCADTO",
             paramType = "body")
-    public Result<LineageResult> getLineage(@RequestBody StudioCADTO studioCADTO) {
+    public Result<LineageResult> getLineage(@RequestBody StudioLineageDTO studioCADTO) {
         LineageResult lineage = studioService.getLineage(studioCADTO);
         return Asserts.isNull(lineage) ? Result.failed("血缘分析异常") : Result.succeed(lineage, "血缘分析成功");
     }

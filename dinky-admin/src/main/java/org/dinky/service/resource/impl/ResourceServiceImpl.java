@@ -27,10 +27,13 @@ import org.dinky.data.result.Result;
 import org.dinky.mapper.ResourcesMapper;
 import org.dinky.service.resource.BaseResourceManager;
 import org.dinky.service.resource.ResourcesService;
+import org.dinky.utils.URLUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -161,6 +164,14 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         return getBaseResourceManager().getFileContent(resources.getFullName());
     }
 
+    @Override
+    public File getFile(Integer id) {
+        Resources resources = getById(id);
+        Assert.notNull(resources, () -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST));
+        Assert.isFalse(resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE, () -> new BusException("file is too large!"));
+        return URLUtils.toFile("rs:" + resources.getFullName());
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void uploadFile(Integer pid, String desc, MultipartFile file) {
@@ -287,6 +298,20 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     @Override
     public List<Resources> getResourcesTree() {
         return buildResourcesTree(this.list());
+    }
+
+    /**
+     * query Resources tree data by filter
+     *
+     * @param filterFunction filter function
+     * @return {@link Result}< {@link List}< {@link Resources}>>}
+     */
+    public List<Resources> getResourcesTreeByFilter(Function<Resources, Boolean> filterFunction) {
+        List<Resources> list = this.list();
+        return buildResourcesTree(
+                filterFunction == null
+                        ? list
+                        : list.stream().filter(filterFunction::apply).collect(Collectors.toList()));
     }
 
     /**

@@ -41,7 +41,7 @@ public interface BaseResourceManager {
 
     String getFileContent(String path);
 
-    InputStream getFile(String path);
+    InputStream readFile(String path);
 
     static BaseResourceManager getInstance() {
         switch (SystemConfiguration.getInstances().getResourcesModel().getValue()) {

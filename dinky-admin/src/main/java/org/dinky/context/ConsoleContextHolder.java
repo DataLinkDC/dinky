@@ -70,7 +70,7 @@ public class ConsoleContextHolder {
 
     /**
      * Get a list of all processes
-     * */
+     */
     public List<ProcessEntity> list() {
         return new ArrayList<>(logPross.values());
     }
@@ -93,16 +93,18 @@ public class ConsoleContextHolder {
      * Add log messages to specific processes and process steps.
      *
      * @param processName process name
-     * @param stepPid process step type
+     * @param stepPid     process step type
      * @param log         messages
      * @throws BusException Throws an exception if the process does not exist
      */
-    public void appendLog(String processName, String stepPid, String log) {
+    public void appendLog(String processName, String stepPid, String log, boolean recordGlobal) {
         if (!logPross.containsKey(processName)) {
             throw new BusException(StrFormatter.format("process {} does not exist", processName));
         }
         ProcessEntity process = logPross.get(processName);
-        process.appendLog(log);
+        if (recordGlobal) {
+            process.appendLog(log);
+        }
         if (stepPid != null) {
             ProcessStepEntity stepNode = getStepNode(stepPid, getStepsMap(processName));
             stepNode.appendLog(log);
@@ -136,15 +138,15 @@ public class ConsoleContextHolder {
                 .children(new CopyOnWriteArrayList<>())
                 .build();
         logPross.put(processName, entity);
-        appendLog(processName, null, "Start Process:" + processName);
+        appendLog(processName, null, "Start Process:" + processName, true);
     }
 
     /**
      * Register a new process step.
      *
-     * @param type        process step type
-     * @param processName process name
-     * @param parentStepPid  parent step
+     * @param type          process step type
+     * @param processName   process name
+     * @param parentStepPid parent step
      * @throws RuntimeException Throws an exception if the process does not exist
      */
     public ProcessStepEntity registerProcessStep(ProcessStepType type, String processName, String parentStepPid)
@@ -180,7 +182,6 @@ public class ConsoleContextHolder {
      * @param processName process name
      * @param status      Process status
      * @param e           exception object, optional
-     *
      */
     public void finishedProcess(String processName, ProcessStatus status, Throwable e) {
         if (!logPross.containsKey(processName)) {
@@ -192,14 +193,14 @@ public class ConsoleContextHolder {
         process.setTime(
                 Duration.between(process.getStartTime(), process.getEndTime()).toMillis());
         if (e != null) {
-            appendLog(processName, null, LogUtil.getError(e));
+            appendLog(processName, null, LogUtil.getError(e.getCause()), true);
         }
-        String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), process.getTitle());
+        String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
         if (FileUtil.exist(filePath)) {
             Assert.isTrue(FileUtil.del(filePath));
         }
         FileUtil.writeUtf8String(JSONObject.toJSONString(process), filePath);
-        appendLog(processName, null, StrFormatter.format("Process {} exit with status:{}", processName, status));
+        appendLog(processName, null, StrFormatter.format("Process {} exit with status:{}", processName, status), true);
         logPross.remove(processName);
     }
 
@@ -211,7 +212,7 @@ public class ConsoleContextHolder {
      * @param status      Process step status
      * @param e           exception object, optional
      */
-    public void finishedStep(String processName, ProcessStepEntity step, ProcessStatus status, Throwable e) {
+    public void finishedStep(String processName, ProcessStepEntity step, ProcessStatus status, Exception e) {
         if (!logPross.containsKey(processName)) {
             return;
         }
@@ -219,12 +220,13 @@ public class ConsoleContextHolder {
         step.setEndTime(LocalDateTime.now());
         step.setTime(Duration.between(step.getStartTime(), step.getEndTime()).toMillis());
         if (e != null) {
-            appendLog(processName, step.getKey(), LogUtil.getError(e));
+            appendLog(processName, step.getKey(), LogUtil.getError(e.getCause()), false);
         }
         appendLog(
                 processName,
                 step.getKey(),
-                StrFormatter.format("Process Step {} exit with status:{}", step.getType(), status));
+                StrFormatter.format("Process Step {} exit with status:{}", step.getType(), status),
+                true);
     }
 
     private ProcessStepEntity getStepNode(String stepPid, CopyOnWriteArrayList<ProcessStepEntity> stepsMap) {
@@ -243,7 +245,7 @@ public class ConsoleContextHolder {
 
     /**
      * 递归查找节点
-     * */
+     */
     private ProcessStepEntity findStepNode(String stepPid, CopyOnWriteArrayList<ProcessStepEntity> stepsMap) {
         for (ProcessStepEntity processStepEntity : stepsMap) {
             if (processStepEntity.getKey().equals(stepPid)) {

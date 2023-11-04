@@ -60,9 +60,6 @@ public class UDFTemplateServiceImpl extends SuperServiceImpl<UDFTemplateMapper, 
     public Boolean modifyUDFTemplateStatus(Integer id) {
         UDFTemplate udfTemplate = getById(id);
         udfTemplate.setEnabled(!udfTemplate.getEnabled());
-        if (updateById(udfTemplate)) {
-            return true;
-        }
-        return false;
+        return updateById(udfTemplate);
     }
 }

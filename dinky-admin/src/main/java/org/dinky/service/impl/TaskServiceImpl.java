@@ -53,6 +53,9 @@ import org.dinky.data.model.TaskVersion;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.explainer.lineage.LineageBuilder;
+import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
@@ -164,7 +167,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_PRECHECK)
-    public void preCheckTask(TaskDTO task) throws TaskNotDoneException, SqlExplainExcepition {
+    public void preCheckTask(TaskDTO task) throws TaskNotDoneException {
         log.info("Start check and config task, task:{}", task.getName());
 
         Assert.notNull(task, Status.TASK_NOT_EXIST.getMessage());
@@ -177,21 +180,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 throw new BusException(Status.TASK_STATUS_IS_NOT_DONE.getMessage());
             }
         }
-
-        log.info("Start explain Sql,task: {},Dialect:{}", task.getName(), task.getDialect());
-
-        List<SqlExplainResult> sqlExplainResults = explainTask(task);
-        for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
-            if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
-                throw new SqlExplainExcepition(StrFormatter.format(
-                        "task [{}] sql explain failed, sql [{}], error: [{}]",
-                        task.getName(),
-                        sqlExplainResult.getSql(),
-                        sqlExplainResult.getError()));
-            }
-        }
-
-        log.info("Explain Sql finish");
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
@@ -218,11 +206,17 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             flinkClusterCfg.getAppConfig().setUserJarParas(buildParams(config.getTaskId()));
             flinkClusterCfg.getAppConfig().setUserJarMainAppClass(CommonConstant.DINKY_APP_MAIN_CLASS);
             config.buildGatewayConfig(flinkClusterCfg);
+            Optional.ofNullable(task.getJobInstanceId()).ifPresent(i -> {
+                JobInstance jobInstance = jobInstanceService.getById(i);
+                config.setClusterId(jobInstance.getClusterId());
+            });
         } else {
-            log.info("Init remote cluster");
-            String address = clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId());
-            config.setAddress(address);
+            Optional.ofNullable(task.getClusterId()).ifPresent(config::setClusterId);
         }
+        log.info("Init remote cluster");
+        Optional.ofNullable(config.getClusterId()).ifPresent(i -> {
+            config.setAddress(clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), i));
+        });
         return config;
     }
 
@@ -251,7 +245,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    @ProcessStep(type = ProcessStepType.SUBMIT_TASK)
     public JobResult submitTask(Integer id, String savePointPath) throws Exception {
         TaskDTO taskDTO = this.getTaskInfoById(id);
 
@@ -261,16 +254,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
+        taskServiceBean.preCheckTask(taskDTO);
+        // The job instance does not exist by default,
+        // so that it does not affect other operations, such as checking the jobmanager address
+        taskDTO.setJobInstanceId(null);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
-
-        if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
-            log.info("Job Submit success");
-            Task task = new Task(id, jobResult.getJobInstanceId());
-            if (!this.updateById(task)) {
-                throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
-            }
-        } else {
-            log.error("Job Submit failed, error: " + jobResult.getError());
+        log.info("Job Submit success");
+        Task task = new Task(id, jobResult.getJobInstanceId());
+        if (!this.updateById(task)) {
+            throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
         }
         return jobResult;
     }
@@ -426,22 +418,33 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Integer tenantId = baseMapper.getTenantByTaskId(id);
         Asserts.checkNull(tenantId, Status.TASK_NOT_EXIST.getMessage());
         TenantContextHolder.set(tenantId);
+        log.info("Init task tenan finished..");
     }
 
     @Override
-    public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) {
-        TaskDTO taskInfoById = getTaskInfoById(taskId);
-        taskInfoById.setStep(lifeCycle.getValue());
-        if (lifeCycle == JobLifeCycle.ONLINE) {
-            taskVersionService.createTaskVersionSnapshot(taskInfoById);
+    public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws SqlExplainExcepition {
+        TaskDTO task = getTaskInfoById(taskId);
+        task.setStep(lifeCycle.getValue());
+        if (lifeCycle == JobLifeCycle.PUBLISH) {
+            //            List<SqlExplainResult> sqlExplainResults = explainTask(task);
+            //            for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
+            //                if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
+            //                    throw new SqlExplainExcepition(StrFormatter.format(
+            //                            "task [{}] sql explain failed, sql [{}], error: [{}]",
+            //                            task.getName(),
+            //                            sqlExplainResult.getSql(),
+            //                            sqlExplainResult.getError()));
+            //                }
+            //            }
+            taskVersionService.createTaskVersionSnapshot(task);
         }
-        return saveOrUpdate(taskInfoById.buildTask());
+        return saveOrUpdate(task.buildTask());
     }
 
     @Override
     public boolean saveOrUpdateTask(Task task) {
 
-        if (JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
+        if (JobLifeCycle.PUBLISH.equalsValue(task.getStep())) {
             throw new BusException(Status.TASK_IS_ONLINE.getMessage());
         }
 
@@ -781,6 +784,28 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         final List<Catalogue> catalogueList = catalogueService.list(queryWrapper);
         return Result.succeed(
                 TreeUtil.build(dealWithCatalogue(catalogueList), -1).get(0));
+    }
+
+    @Override
+    public LineageResult getTaskLineage(Integer id) {
+        TaskDTO task = getTaskInfoById(id);
+        if (!Dialect.isCommonSql(task.getDialect())) {
+            if (Asserts.isNull(task.getDatabaseId())) {
+                return null;
+            }
+            DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
+            if (Asserts.isNull(dataBase)) {
+                return null;
+            }
+            if (task.getDialect().equalsIgnoreCase("doris") || task.getDialect().equalsIgnoreCase("starrocks")) {
+                return SQLLineageBuilder.getSqlLineage(task.getStatement(), "mysql", dataBase.getDriverConfig());
+            } else {
+                return SQLLineageBuilder.getSqlLineage(
+                        task.getStatement(), task.getDialect().toLowerCase(), dataBase.getDriverConfig());
+            }
+        } else {
+            return LineageBuilder.getColumnLineageByLogicalPlan(buildEnvSql(task));
+        }
     }
 
     private List<TreeNode<Integer>> dealWithCatalogue(List<Catalogue> catalogueList) {

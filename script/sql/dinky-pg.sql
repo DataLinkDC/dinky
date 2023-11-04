@@ -1628,7 +1628,7 @@ CREATE TABLE "public"."dinky_udf_template" (
                                                "code_type" varchar(10) COLLATE "pg_catalog"."default",
                                                "function_type" varchar(10) COLLATE "pg_catalog"."default",
                                                "template_code" text COLLATE "pg_catalog"."default",
-                                               "enabled" int2,
+                                               "enabled" int2 NOT null DEFAULT 1,
                                                "create_time" timestamp(6),
                                                "update_time" timestamp(6)
 )
@@ -1653,7 +1653,7 @@ public class ${className} extends ScalarFunction {
     public String eval(String s) {
         return null;
     }
-}', null, '2022-10-19 09:17:37', '2022-10-25 17:45:57');
+}', 1, '2022-10-19 09:17:37', '2022-10-25 17:45:57');
 INSERT INTO "public"."dinky_udf_template" VALUES (2, 'java_udtf', 'Java', 'UDTF', '${(package=='''')?string('''',''package ''+package+'';'')}
 
 import org.apache.flink.table.functions.ScalarFunction;
@@ -1667,7 +1667,7 @@ public static class ${className} extends TableFunction<Row> {
       collect(Row.of(s, s.length()));
     }
   }
-}', null, '2022-10-19 09:22:58', '2022-10-25 17:49:30');
+}', 1, '2022-10-19 09:22:58', '2022-10-25 17:49:30');
 INSERT INTO "public"."dinky_udf_template" VALUES (3, 'scala_udf', 'Scala', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}
 
 import org.apache.flink.table.api._
@@ -1678,7 +1678,7 @@ class ${className} extends ScalarFunction {
   def eval(s: String, begin: Integer, end: Integer): String = {
     "this is scala"
   }
-}', null, '2022-10-25 09:21:32', '2022-10-25 17:49:46');
+}', 1, '2022-10-25 09:21:32', '2022-10-25 17:49:46');
 INSERT INTO "public"."dinky_udf_template" VALUES (4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFunction, DataTypes
 from pyflink.table.udf import udf
 
@@ -1690,13 +1690,13 @@ class ${className}(ScalarFunction):
         return str(variable)
 
 
-${attr!''f''} = udf(${className}(), result_type=DataTypes.STRING())', null, '2022-10-25 09:23:07', '2022-10-25 09:34:01');
+${attr!''f''} = udf(${className}(), result_type=DataTypes.STRING())', 1, '2022-10-25 09:23:07', '2022-10-25 09:34:01');
 INSERT INTO "public"."dinky_udf_template" VALUES (5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes
 from pyflink.table.udf import udf
 
 @udf(result_type=DataTypes.STRING())
 def ${className}(variable1:str):
-  return ''''', null, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
+  return ''''', 1, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
 
 
 -- ----------------------------
@@ -2739,3 +2739,40 @@ INSERT INTO public.dinky_alert_template VALUES (1, 'Default', '
 ', 1, null, null);
 
 COMMIT;
+
+CREATE TABLE "public"."dinky_udf_manage" (
+                                             "id" int4 NOT NULL,
+                                             "name" varchar(50) COLLATE "pg_catalog"."default",
+                                             "class_name" varchar(50) COLLATE "pg_catalog"."default",
+                                             "task_id" int4,
+                                             "resources_id" int4,
+                                             "enabled" int2,
+                                             "create_time" timestamp(6),
+                                             "update_time" timestamp(6),
+                                             CONSTRAINT "dinky_udf_manage_pkey" PRIMARY KEY ("id")
+)
+;
+
+ALTER TABLE "public"."dinky_udf_manage"
+    OWNER TO "postgres";
+
+CREATE INDEX "name,resources_id" ON "public"."dinky_udf_manage" USING btree (
+    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+    "resources_id" "pg_catalog"."int2_ops" ASC NULLS LAST
+    );
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."name" IS 'udf name';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."class_name" IS 'Complete class name';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."task_id" IS 'task id';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."resources_id" IS 'resources id';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."enabled" IS 'is enable';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."create_time" IS 'create time';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."update_time" IS 'update time';
+
+COMMENT ON TABLE "public"."dinky_udf_manage" IS 'udf';

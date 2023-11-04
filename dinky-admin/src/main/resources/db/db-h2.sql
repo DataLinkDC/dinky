@@ -2342,7 +2342,7 @@ CREATE TABLE `dinky_udf_template` (
                                     `code_type` varchar(10) null DEFAULT null COMMENT 'code type',
                                     `function_type` varchar(10) null DEFAULT null COMMENT 'function type',
                                     `template_code` longtext null COMMENT 'code',
-                                    `enabled` tinyint(1) null DEFAULT 1 COMMENT 'is enable',
+                                    `enabled` tinyint(1) not null DEFAULT 1 COMMENT 'is enable',
                                     `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                                     `update_time` datetime DEFAULT null ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
@@ -2356,7 +2356,7 @@ public class ${className} extends ScalarFunction {
         return null;
     }
 }'
-       , null, '2022-10-19 09:17:37', '2022-10-25 17:45:57');
+       , 1, '2022-10-19 09:17:37', '2022-10-25 17:45:57');
 INSERT INTO `dinky_udf_template`
 VALUES (2, 'java_udtf', 'Java', 'UDTF', '${(package=='''')?string('''',''package ''+package+'';'')}
 
@@ -2372,7 +2372,7 @@ public static class ${className} extends TableFunction<Row> {
     }
   }
 }'
-       , null, '2022-10-19 09:22:58', '2022-10-25 17:49:30');
+       , 1, '2022-10-19 09:22:58', '2022-10-25 17:49:30');
 INSERT INTO `dinky_udf_template`
 VALUES (3, 'scala_udf', 'Scala', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}
 
@@ -2385,7 +2385,7 @@ class ${className} extends ScalarFunction {
     "this is scala"
   }
 }'
-       , null, '2022-10-25 09:21:32', '2022-10-25 17:49:46');
+       , 1, '2022-10-25 09:21:32', '2022-10-25 17:49:46');
 INSERT INTO `dinky_udf_template`
 VALUES (4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFunction, DataTypes
 from pyflink.table.udf import udf
@@ -2399,7 +2399,7 @@ class ${className}(ScalarFunction):
 
 
 ${attr!''f''} = udf(${className}(), result_type=DataTypes.STRING())'
-       , null, '2022-10-25 09:23:07', '2022-10-25 09:34:01');
+       , 1, '2022-10-25 09:23:07', '2022-10-25 09:34:01');
 INSERT INTO `dinky_udf_template`
 VALUES (5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes
 from pyflink.table.udf import udf
@@ -2407,7 +2407,7 @@ from pyflink.table.udf import udf
 @udf(result_type=DataTypes.STRING())
 def ${className}(variable1:str):
   return '''''
-       , null, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
+       , 1, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
 
 
 DROP TABLE IF EXISTS `dinky_user`;
@@ -2895,3 +2895,14 @@ INSERT INTO dinky_alert_template VALUES (1, 'Default', '
 - **<font color=''red''>${(exceptions.rootException)?substring(0,20)}</font>**
 [Go toTask Web](http://${taskUrl})
 ', 1, null, null);
+
+CREATE TABLE `dinky_udf_manage` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                                    `name` varchar(50) DEFAULT NULL COMMENT 'udf name',
+                                    `class_name` varchar(50) DEFAULT NULL COMMENT 'Complete class name',
+                                    `task_id` int(11) DEFAULT NULL COMMENT 'task id',
+                                    `resources_id` int(11) DEFAULT NULL COMMENT 'resources id',
+                                    `enabled` tinyint(1) DEFAULT 1 COMMENT 'is enable',
+                                    `create_time` datetime DEFAULT NULL COMMENT 'create time',
+                                    `update_time` datetime DEFAULT NULL COMMENT 'update time'
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC;

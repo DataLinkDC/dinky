@@ -240,6 +240,7 @@ alter table dinky_task alter column `step` set default 1;
 -- todo: 需要修改历史作业的默认值 , 过滤条件待定
 
 
+
 replace  INTO dinky_task SELECT
                              t.id,
                              t.`name`,
@@ -277,7 +278,8 @@ LEFT JOIN
 -- 删除dinky_job_history 的 jar_json 字段
 alter table dinky_job_history drop column jar_json;
 alter table dinky_task drop column jar_id;
-
+UPDATE dinky_task_version SET task_configure=JSON_REMOVE(task_configure, '$.jarId');
+UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.jarId');
 
 insert into `dinky_flink_document`  values (218, 'Reference', '建表语句', 'Streaming', 'EXECUTE CDCSOURCE print', 'Whole library synchronization print', 'EXECUTE CDCSOURCE demo_print WITH (
   ''connector'' = ''mysql-cdc'',
@@ -679,3 +681,8 @@ WITH (
     ''connector'' = ''kafka''
 )
 AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions', 0, 1, '2023-10-31 16:41:46', '2023-10-31 16:43:29');
+
+
+
+-- 修改 dinky_udf_template 表的 enable 字段 不允许为空 默认为 1
+alter table dinky_udf_template modify column `enabled` tinyint(1) not null default 1 comment 'is enable, 0:no 1:yes';

@@ -1,21 +1,22 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
+
 import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import { FlexCenterDiv } from '@/components/StyledComponents';
 import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
@@ -29,10 +30,10 @@ import {
 } from '@/pages/DataStudio/HeaderContainer/function';
 import {
   cancelTask,
+  changeTaskLife,
   debugTask,
   executeSql,
-  getJobPlan,
-  onLineTask
+  getJobPlan
 } from '@/pages/DataStudio/HeaderContainer/service';
 import { StateType, TabsPageSubType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
@@ -181,12 +182,20 @@ const HeaderContainer = (props: any) => {
   const handleChangeJobLife = async () => {
     if (!currentData) return;
     if (isOnline(currentData)) {
-      await cancelTask(l('global.table.lifecycle.offline'), currentData.id);
+      await changeTaskLife(
+        l('global.table.lifecycle.offline'),
+        currentData.id,
+        JOB_LIFE_CYCLE.DEVELOP
+      );
       currentData.step = JOB_LIFE_CYCLE.DEVELOP;
     } else {
       const saved = await handleSave();
       if (saved) {
-        await onLineTask(l('global.table.lifecycle.publishing'), currentData.id);
+        await changeTaskLife(
+          l('global.table.lifecycle.publishing'),
+          currentData.id,
+          JOB_LIFE_CYCLE.PUBLISH
+        );
         currentData.step = JOB_LIFE_CYCLE.PUBLISH;
       }
     }
