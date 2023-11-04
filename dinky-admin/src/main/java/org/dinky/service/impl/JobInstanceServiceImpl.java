@@ -21,7 +21,9 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
+import org.dinky.daemon.pool.DefaultThreadPool;
 import org.dinky.daemon.task.DaemonFactory;
+import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
 import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.dto.JobDataDto;
@@ -56,12 +58,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobInstanceServiceImpl
@@ -70,6 +74,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, JobInstance>
         implements JobInstanceService {
 
@@ -182,18 +187,48 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     }
 
     @Override
-    public JobInfoDetail refreshJobInfoDetail(Integer jobInstanceId) {
+    public JobInfoDetail refreshJobInfoDetail(Integer jobInstanceId, boolean isForce) {
         JobInfoDetail jobInfoDetail = getJobInfoDetail(jobInstanceId);
-        JobRefreshHandler.refreshJob(jobInfoDetail, true);
-        DaemonFactory.refeshOraddTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId));
+        // Directly returns database data if the task has completed and is not a forced refresh
+        if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus()) && !isForce) {
+            return jobInfoDetail;
+        }
+        boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, true);
+        // If the task becomes incomplete after a forced refresh, it is re-queued to the task
+        if (!isDone) {
+            DaemonFactory.refeshOraddTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId));
+        }
         return jobInfoDetail;
+    }
+
+    @Override
+    public boolean hookJobDone(String jobId, Integer taskId) {
+        LambdaQueryWrapper<JobInstance> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(JobInstance::getJid, jobId).eq(JobInstance::getTaskId, taskId);
+        JobInstance instance = baseMapper.selectOne(queryWrapper);
+        if (instance == null) {
+            // Not having a corresponding jobinstance means that this may not have succeeded in running,
+            // returning true to prevent retry.
+            return true;
+        }
+        DaemonTaskConfig config = DaemonTaskConfig.build(FlinkJobTask.TYPE, instance.getId());
+        DaemonTask daemonTask = DefaultThreadPool.getInstance().dequeueByTask(config);
+        if (daemonTask == null) {
+            daemonTask = DaemonTask.build(config);
+        }
+        boolean isDone = daemonTask.dealTask();
+        // If the task is not completed, it is re-queued
+        if (!isDone) {
+            DefaultThreadPool.getInstance().execute(daemonTask);
+        }
+        return isDone;
     }
 
     @Override
     public void refreshJobByTaskIds(Integer... taskIds) {
         for (Integer taskId : taskIds) {
             JobInstance instance = getJobInstanceByTaskId(taskId);
-            refreshJobInfoDetail(instance.getId());
+            refreshJobInfoDetail(instance.getId(), false);
         }
     }
 
