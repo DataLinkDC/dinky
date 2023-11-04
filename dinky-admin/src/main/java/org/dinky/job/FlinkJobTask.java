@@ -58,6 +58,11 @@ public class FlinkJobTask implements DaemonTask {
         return this;
     }
 
+    @Override
+    public DaemonTaskConfig getConfig() {
+        return config;
+    }
+
     /**
      * Processing tasks.
      * <p>
