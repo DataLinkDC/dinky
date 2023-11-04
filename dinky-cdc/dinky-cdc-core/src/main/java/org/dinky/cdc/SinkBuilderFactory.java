@@ -20,6 +20,7 @@
 package org.dinky.cdc;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.cdc.kafka.KafkaSinkBuilder;
 import org.dinky.cdc.sql.SQLSinkBuilder;
 import org.dinky.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import org.dinky.data.model.FlinkCDCConfig;
@@ -59,6 +60,7 @@ public class SinkBuilderFactory {
         Map<String, Supplier<SinkBuilder>> map = new HashMap<>();
         map.put(SQLSinkBuilder.KEY_WORD, SQLSinkBuilder::new);
         map.put(SQLCatalogSinkBuilder.KEY_WORD, SQLCatalogSinkBuilder::new);
+        map.put(KafkaSinkBuilder.KEY_WORD, KafkaSinkBuilder::new);
 
         final ServiceLoader<SinkBuilder> loader = ServiceLoader.load(SinkBuilder.class);
 
