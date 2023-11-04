@@ -193,9 +193,9 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus()) && !isForce) {
             return jobInfoDetail;
         }
-        JobRefreshHandler.refreshJob(jobInfoDetail, true);
+        boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, true);
         // If the task becomes incomplete after a forced refresh, it is re-queued to the task
-        if (!JobStatus.isDone(jobInfoDetail.getInstance().getStatus())) {
+        if (!isDone) {
             DaemonFactory.refeshOraddTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId));
         }
         return jobInfoDetail;
