@@ -65,7 +65,7 @@ function filterEmpty(isFilterEmptyChildren: boolean, item: ResourceInfo, filterS
     } else {
       // 如果是文件，则判断该文件末尾后缀是不是 .jar 文件，是的话留着，不是的话仍然过滤
       // 获取文件后缀 , 如果没有后缀则返回空 false
-      const suffix = item.fileName.split('.').pop();
+      const suffix = item.fileName.split('.').reverse().pop();
       if (suffix) {
         // 如果有后缀，则判断是否在过滤列表中
         return !filterSuffixList.includes(suffix);
