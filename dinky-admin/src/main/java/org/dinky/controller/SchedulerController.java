@@ -207,6 +207,9 @@ public class SchedulerController {
             return Result.failed(Status.DS_WORK_FLOW_DEFINITION_TASK_NAME_EXIST, processName, taskName);
         }
 
+        Long taskCode = taskClient.genTaskCode(projectCode);
+        taskRequest.setCode(taskCode);
+
         String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
         taskClient.createTaskDefinition(projectCode, process.getCode(), upstreamCodes, taskDefinitionJsonObj);
 

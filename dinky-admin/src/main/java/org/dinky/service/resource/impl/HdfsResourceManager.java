@@ -68,11 +68,11 @@ public class HdfsResourceManager implements BaseResourceManager {
 
     @Override
     public String getFileContent(String path) {
-        return IoUtil.readUtf8(getFile(path));
+        return IoUtil.readUtf8(readFile(path));
     }
 
     @Override
-    public InputStream getFile(String path) {
+    public InputStream readFile(String path) {
         try {
             return getHdfs().open(new Path(getFilePath(path)));
         } catch (IOException e) {
