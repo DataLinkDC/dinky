@@ -223,7 +223,6 @@ export type UDFTemplate = BaseBeanColumns & {
   templateCode: string;
 };
 
-
 export interface UDFRegisterInfo {
   id: number;
   resourcesId: number;

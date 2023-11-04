@@ -218,7 +218,7 @@ const TemplateTable: React.FC = () => {
         {...PROTABLE_OPTIONS_PUBLIC}
         loading={templateState.loading}
         actionRef={actionRef}
-        headerTitle={l('rc.udf.management')}
+        headerTitle={l('rc.udf.template.management')}
         toolBarRender={() => [
           <Authorized key='create' path='/registration/udf/template/add'>
             <CreateBtn

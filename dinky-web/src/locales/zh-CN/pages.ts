@@ -802,7 +802,17 @@ export default {
   'rc.template.templateCode': '模板代码',
   'rc.template.templateCodeLabel': '模板代码（{language}）',
   'rc.template.templateCodePlaceholder': '请编辑模板代码！',
-  'rc.udf.management': 'UDF 模板管理',
+  'rc.udf.template.management': 'UDF 模板管理',
+  'rc.udf.register.management': 'UDF 注册管理',
+  'rc.udf.register.file.name': '文件名称',
+  'rc.udf.register.parse.count': 'UDF 解析数量',
+  'rc.udf.register.source': '来源',
+  'rc.udf.register.language': '语言',
+  'rc.udf.register.name': '名称',
+  'rc.udf.register.className': '类名',
+  'rc.udf.register.deleteConfirm': '确定删除该 UDF 吗？',
+  'rc.udf.register': '注册 UDF',
+
   /**
    *
    * role

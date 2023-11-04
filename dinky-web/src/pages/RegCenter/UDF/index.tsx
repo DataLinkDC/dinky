@@ -18,12 +18,23 @@
  */
 
 import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import UDFRegister from '@/pages/RegCenter/UDF/components/UDFRegister';
 import TemplateTable from '@/pages/RegCenter/UDF/components/UDFTemplate/TemplateTable';
-import {PageContainer} from '@ant-design/pro-components';
-import UDFRegister from "@/pages/RegCenter/UDF/components/UDFRegister";
-import * as React from "react";
+import { l } from '@/utils/intl';
+import { PageContainer } from '@ant-design/pro-components';
+import * as React from 'react';
 
 export default () => {
+  const [showEdit, setShowEdit] = React.useState<boolean>(false);
+  const [activeKey, setActiveKey] = React.useState<string>('udf-register');
+
+  const renderExtra = () => {
+    return activeKey === 'udf-register' ? (
+      <CreateBtn key={'add'} onClick={() => setShowEdit(true)} />
+    ) : null;
+  };
+
   return (
     <SlowlyAppear>
       <PageContainer
@@ -31,20 +42,23 @@ export default () => {
           type: 'card',
           size: 'small',
           animated: true,
-          tabBarGutter: 10,
-          centered: true,
+          tabBarGutter: 5,
+          centered: true
         }}
+        onTabChange={setActiveKey}
+        tabActiveKey={activeKey}
+        tabBarExtraContent={renderExtra()}
         tabList={[
-            {
-                tab: 'UDF 注册管理',
-                key: 'udf-register',
-                children: <UDFRegister />,
-            },
           {
-            tab: 'UDF 模版',
-            key: 'udf-template',
-            children: <TemplateTable />,
+            tab: l('rc.udf.register.management'),
+            key: 'udf-register',
+            children: <UDFRegister showEditChange={setShowEdit} showEdit={showEdit} />
           },
+          {
+            tab: l('rc.udf.template.management'),
+            key: 'udf-template',
+            children: <TemplateTable />
+          }
         ]}
         title={false}
       />
