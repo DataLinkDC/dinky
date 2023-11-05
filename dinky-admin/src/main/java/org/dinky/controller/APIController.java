@@ -24,6 +24,7 @@ import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.NotSupportExplainExcepition;
+import org.dinky.data.model.ID;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
@@ -64,11 +65,25 @@ public class APIController {
     private final TaskService taskService;
     private final JobInstanceService jobInstanceService;
 
+    // Interface compatible with DolphinScheduler
+    @GetMapping("/submitTask")
+    @ApiOperation("Submit Task")
+    public Result<JobResult> submitTask(@RequestParam Integer id) throws Exception {
+        taskService.initTenantByTaskId(id);
+        JobResult jobResult = taskService.submitTask(id, null);
+        if (jobResult.isSuccess()) {
+            return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
+        } else {
+            return Result.failed(jobResult, jobResult.getError());
+        }
+    }
+
     @PostMapping("/submitTask")
     @ApiOperation("Submit Task")
     //    @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
-    public Result<JobResult> submitTask(@RequestBody TaskDTO taskDTO) throws Exception {
-        JobResult jobResult = taskService.submitTask(taskDTO.getId(), null);
+    public Result<JobResult> submitTask(@RequestBody ID id) throws Exception {
+        taskService.initTenantByTaskId(id.getId());
+        JobResult jobResult = taskService.submitTask(id.getId(), null);
         if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
         } else {
@@ -162,5 +177,20 @@ public class APIController {
             dataTypeClass = Integer.class)
     public Result<String> exportSql(@RequestParam Integer id) {
         return Result.succeed(taskService.exportSql(id));
+    }
+
+    @GetMapping("/getTaskLineage")
+    @ApiOperation("Get Task Lineage")
+    @Log(title = "Get Task Lineage", businessType = BusinessType.OTHER)
+    @ApiImplicitParam(
+            name = "id",
+            value = "Task Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class)
+    public Result getTaskLineage(@RequestParam Integer id) {
+        taskService.initTenantByTaskId(id);
+        return Result.succeed(taskService.getTaskLineage(id), "获取成功");
     }
 }

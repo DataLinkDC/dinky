@@ -152,6 +152,21 @@ export function getCurrentTab(
   }
 }
 
+export function getTabByTaskId(
+  panes: TabsItemType[],
+  id: number
+): DataStudioTabsItemType | MetadataTabsItemType | undefined {
+  const item = panes.find((item) => item.treeKey === id);
+  switch (item?.type) {
+    case 'project':
+      return item as DataStudioTabsItemType;
+    case 'metadata':
+      return item as MetadataTabsItemType;
+    default:
+      return undefined;
+  }
+}
+
 export const getCurrentData = (
   panes: TabsItemType[],
   activeKey: string

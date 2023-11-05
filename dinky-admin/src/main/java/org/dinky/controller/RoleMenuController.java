@@ -21,7 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
 import org.dinky.data.constant.PermissionConstants;
-import org.dinky.data.dto.AssignMenuToRoleDto;
+import org.dinky.data.dto.AssignMenuToRoleDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.result.Result;
 import org.dinky.service.RoleMenuService;
@@ -50,7 +50,7 @@ public class RoleMenuController {
     /**
      * assign menus to role
      *
-     * @param assignMenuToRoleDto
+     * @param assignMenuToRoleDTO
      * @return {@link Result} with {@link Void}
      */
     @PostMapping("assignMenuToRole")
@@ -63,7 +63,7 @@ public class RoleMenuController {
             dataType = "AssignMenuToRoleDto",
             paramType = "body")
     @SaCheckPermission(PermissionConstants.AUTH_ROLE_ASSIGN_MENU)
-    public Result<Void> assignMenuToRole(@RequestBody AssignMenuToRoleDto assignMenuToRoleDto) {
-        return roleMenuService.assignMenuToRole(assignMenuToRoleDto);
+    public Result<Void> assignMenuToRole(@RequestBody AssignMenuToRoleDTO assignMenuToRoleDTO) {
+        return roleMenuService.assignMenuToRole(assignMenuToRoleDTO);
     }
 }

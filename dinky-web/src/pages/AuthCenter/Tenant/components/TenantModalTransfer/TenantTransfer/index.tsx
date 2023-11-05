@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -46,10 +47,10 @@ const TenantTransfer: React.FC<TenantTransferFromProps> = (props) => {
     getData(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, { id: tenant.id }).then((result) => {
       setTenantTransferState((prevState) => ({
         ...prevState,
-        userList: result.datas.users,
-        targetKeys: result.datas.userIds
+        userList: result.data.users,
+        targetKeys: result.data.userIds
       }));
-      handleChange(result.datas.userIds);
+      handleChange(result.data.userIds);
     });
   }, []);
 

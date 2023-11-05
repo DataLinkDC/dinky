@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import Footer from '@/components/Footer';
@@ -31,6 +33,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { Navigate } from 'umi';
 import { default as defaultSettings, default as Settings } from '../config/defaultSettings';
+import { FullScreenProvider } from './hooks/useEditor';
 import { errorConfig } from './requestErrorConfig';
 import { getDataByParamsReturnResult } from './services/BusinessCrud';
 import { API } from './services/data';
@@ -58,7 +61,7 @@ export function patchRoutes({ routes }: any) {
 
 const queryUserInfo = async () => {
   return getDataByParamsReturnResult(API_CONSTANTS.CURRENT_USER).then((result) => {
-    const { user, roleList, tenantList, currentTenant, menuList, saTokenInfo } = result.datas;
+    const { user, roleList, tenantList, currentTenant, menuList, saTokenInfo } = result.data;
     const currentUser: API.CurrentUser = {
       user: {
         ...user,
@@ -114,6 +117,38 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+  const fullscreen = initialState?.fullscreen;
+
+  const defaultSettings = {
+    onPageChange: () => {
+      const { location } = history;
+      // 如果没有登录，重定向到 login
+      if (!initialState?.currentUser && location.pathname !== loginPath) {
+        history.push(loginPath);
+      }
+    },
+    // 自定义 403 页面
+    unAccessible: <UnAccessible />,
+    // 增加一个 loading 的状态
+    childrenRender: (children) => {
+      return initialState?.loading ? (
+        <PageLoading />
+      ) : (
+        <AccessContextProvider currentUser={initialState?.currentUser}>
+          <FullScreenProvider>{children}</FullScreenProvider>
+        </AccessContextProvider>
+      );
+    }
+  };
+
+  if (fullscreen) {
+    return {
+      ...initialState?.settings,
+      siderWidth: 0,
+      ...defaultSettings,
+      layout: 'side'
+    };
+  }
   return {
     headerTitleRender: () => {
       // 重新对 title 的设置进行设置
@@ -135,25 +170,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         theme === THEME.light || undefined ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)'
     },*/
     isChildrenLayout: true,
-    onPageChange: () => {
-      const { location } = history;
-      // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
-      }
-    },
-    // 自定义 403 页面
-    unAccessible: <UnAccessible />,
-    // 增加一个 loading 的状态
-    childrenRender: (children) => {
-      return initialState?.loading ? (
-        <PageLoading />
-      ) : (
-        <AccessContextProvider currentUser={initialState?.currentUser}>
-          {children}
-        </AccessContextProvider>
-      );
-    },
+    ...defaultSettings,
     ...initialState?.settings
   };
 };

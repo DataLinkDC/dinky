@@ -29,6 +29,9 @@ import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.context.RowLevelPermissionsContext;
+import org.dinky.data.annotations.ProcessStep;
+import org.dinky.data.enums.ProcessStepType;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.ErrorResult;
@@ -58,9 +61,6 @@ import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.parser.SqlType;
 import org.dinky.parser.check.AddJarSqlParser;
-import org.dinky.process.annotations.ProcessStep;
-import org.dinky.process.enums.ProcessStepType;
-import org.dinky.process.exception.DinkyException;
 import org.dinky.trans.ExecuteJarParseStrategy;
 import org.dinky.trans.Operations;
 import org.dinky.trans.dml.ExecuteJarOperation;
@@ -102,6 +102,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -340,10 +341,6 @@ public class JobManager {
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
         Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);
-        if (!useGateway) {
-            job.setJobManagerAddress(executorConfig.getJobManagerAddress());
-        }
-        JobContextHolder.setJob(job);
         StreamGraph streamGraph = getJarStreamGraph(statement);
         try {
             if (!useGateway) {
@@ -392,10 +389,6 @@ public class JobManager {
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeSql(String statement) throws Exception {
         Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);
-        if (!useGateway) {
-            job.setJobManagerAddress(executorConfig.getJobManagerAddress());
-        }
-        JobContextHolder.setJob(job);
         ready();
         String currentSql = "";
         DinkyClassLoaderUtil.initClassLoader(config);
@@ -462,6 +455,7 @@ public class JobManager {
                             // Build insert result.
                             IResult result = ResultBuilder.build(
                                             SqlType.INSERT,
+                                            job.getId().toString(),
                                             config.getMaxRowNum(),
                                             config.isUseChangeLog(),
                                             config.isUseAutoCancel(),
@@ -498,6 +492,7 @@ public class JobManager {
                             if (config.isUseResult()) {
                                 IResult result = ResultBuilder.build(
                                                 item.getType(),
+                                                job.getId().toString(),
                                                 config.getMaxRowNum(),
                                                 config.isUseChangeLog(),
                                                 config.isUseAutoCancel(),
@@ -524,6 +519,7 @@ public class JobManager {
                                 if (config.isUseResult()) {
                                     IResult result = ResultBuilder.build(
                                                     item.getType(),
+                                                    job.getId().toString(),
                                                     config.getMaxRowNum(),
                                                     config.isUseChangeLog(),
                                                     config.isUseAutoCancel(),
@@ -591,6 +587,7 @@ public class JobManager {
                     if (config.isUseResult()) {
                         IResult result = ResultBuilder.build(
                                         SqlType.EXECUTE,
+                                        job.getId().toString(),
                                         config.getMaxRowNum(),
                                         config.isUseChangeLog(),
                                         config.isUseAutoCancel(),
@@ -608,12 +605,13 @@ public class JobManager {
                 success();
             }
         } catch (Exception e) {
-            String error = LogUtil.getError("Exception in executing FlinkSQL:\n" + addLineNumber(currentSql), e);
+            String error = StrFormatter.format(
+                    "Exception in executing FlinkSQL:\n{}\n{}", addLineNumber(currentSql), e.getMessage());
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
             failed();
-            throw e;
+            throw new Exception(error, e);
         } finally {
             close();
         }
@@ -676,7 +674,8 @@ public class JobManager {
                 }
                 LocalDateTime startTime = LocalDateTime.now();
                 TableResult tableResult = executor.executeSql(newStatement);
-                result = ResultBuilder.build(operationType, config.getMaxRowNum(), false, false, executor.getTimeZone())
+                result = ResultBuilder.build(
+                                operationType, null, config.getMaxRowNum(), false, false, executor.getTimeZone())
                         .getResult(tableResult);
                 result.setStartTime(startTime);
             }
@@ -757,7 +756,6 @@ public class JobManager {
     public JobResult executeJar() {
         // TODO 改为ProcessStep注释
         Job job = Job.init(runMode, config, executorConfig, executor, null, useGateway);
-        JobContextHolder.setJob(job);
         ready();
         try {
             GatewayResult gatewayResult =

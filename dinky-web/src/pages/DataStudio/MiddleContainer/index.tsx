@@ -1,21 +1,24 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import ContentScroll from '@/components/Scroll/ContentScroll';
+import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import { STUDIO_TAG_RIGHT_CONTEXT_MENU } from '@/pages/DataStudio/constants';
 import {
@@ -49,6 +52,8 @@ const MiddleContainer = (props: any) => {
     dispatch
   } = props;
   const themeValue = useThemeValue();
+
+  const { fullscreen } = useEditor();
 
   const [contextMenuPosition, setContextMenuPosition] = useState({});
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
@@ -103,7 +108,8 @@ const MiddleContainer = (props: any) => {
     });
   };
 
-  const updateActiveKey = (key: string, value: string) => {
+  const updateActiveKey = (item: TabsItemType) => {
+    const { key, value, treeKey } = item;
     if (key === activeKey) {
       return;
     }
@@ -116,12 +122,23 @@ const MiddleContainer = (props: any) => {
       payload: key
     });
 
-    // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
-    const name = value.toString().replace('.', '/');
-    dispatch({
-      type: STUDIO_MODEL.updateDatabaseSelectKey,
-      payload: [name]
-    });
+    // 这里如果加此项功能和定位功能重复 , 暂时注释
+    // if (item.type === TabsPageType.project) {
+    // 更新左侧树选中的 key
+    // dispatch({
+    //   type: STUDIO_MODEL.updateProjectSelectKey,
+    //   payload: [treeKey]
+    // });
+    // }
+
+    if (item.type === TabsPageType.metadata) {
+      // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
+      const name = value.toString().replace('.', '/');
+      dispatch({
+        type: STUDIO_MODEL.updateDatabaseSelectKey,
+        payload: [name]
+      });
+    }
   };
 
   /**
@@ -155,7 +172,7 @@ const MiddleContainer = (props: any) => {
   const handleRightClick = (info: React.MouseEvent<HTMLDivElement>, item: TabsItemType) => {
     // 阻止默认右键事件
     info.preventDefault();
-    updateActiveKey(item.key, item.label);
+    updateActiveKey(item);
 
     // 设置选中的值
     setIncludeTab(item);
@@ -220,7 +237,18 @@ const MiddleContainer = (props: any) => {
         }
 
         const v = item.params;
-        return <Editor taskId={v.taskId} />;
+        return (
+          <Editor
+            taskId={v.taskId}
+            height={
+              activeKey === item.key
+                ? fullscreen
+                  ? document.body.clientHeight
+                  : props.centerContentHeight - 40
+                : 0
+            }
+          />
+        );
       }
 
       if (isMetadataTabsItemType(item)) {
@@ -235,7 +263,7 @@ const MiddleContainer = (props: any) => {
       key: item.key,
       label: (
         <Space
-          onClick={(e) => updateActiveKey(item.key, item.label)}
+          onClick={() => updateActiveKey(item)}
           size={0}
           onContextMenu={(e) => handleRightClick(e, item)}
           key={item.key}
@@ -243,12 +271,20 @@ const MiddleContainer = (props: any) => {
           {getTabIcon(item.icon, 16)}
           <Text type={item.isModified ? 'success' : undefined}>
             {item.label}
-            {item.isModified ? '*' : ''}
+            {item.isModified ? ' *' : ''}
           </Text>
         </Space>
       ),
       children: (
-        <ContentScroll height={activeKey === item.key ? props.centerContentHeight - 35 : 0}>
+        <ContentScroll
+          height={
+            activeKey === item.key
+              ? fullscreen
+                ? document.body.clientHeight
+                : props.centerContentHeight - 40
+              : 0
+          }
+        >
           {renderContent()}
         </ContentScroll>
       )

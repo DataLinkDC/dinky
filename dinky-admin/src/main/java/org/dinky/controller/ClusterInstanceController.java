@@ -21,6 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
 import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.ClusterInstance;
@@ -63,7 +64,7 @@ public class ClusterInstanceController {
     /**
      * added or updated cluster instance
      *
-     * @param clusterInstance {@link ClusterInstance} cluster instance
+     * @param clusterInstanceDTO {@link ClusterInstanceDTO} cluster instance
      * @return {@link Result}<{@link Void}>
      * @throws Exception exception
      */
@@ -71,21 +72,22 @@ public class ClusterInstanceController {
     @Log(title = "Insert Or Update Cluster Instance", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Cluster Instance")
     @ApiImplicitParam(
-            name = "clusterInstance",
-            value = "ClusterInstance Instance",
-            dataType = "ClusterInstance",
+            name = "clusterInstanceDTO",
+            value = "ClusterInstanceDTO Instance",
+            dataType = "ClusterInstanceDTO",
             paramType = "body",
             required = true,
-            dataTypeClass = ClusterInstance.class)
+            dataTypeClass = ClusterInstanceDTO.class)
     @SaCheckPermission(
             value = {
                 PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT,
                 PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD
             },
             mode = SaMode.OR)
-    public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstance clusterInstance) throws Exception {
-        clusterInstance.setAutoRegisters(false);
-        clusterInstanceService.registersCluster(clusterInstance);
+    public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstanceDTO clusterInstanceDTO)
+            throws Exception {
+        clusterInstanceDTO.setAutoRegisters(false);
+        clusterInstanceService.registersCluster(clusterInstanceDTO);
         return Result.succeed(Status.SAVE_SUCCESS);
     }
 

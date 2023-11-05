@@ -1,21 +1,22 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
+
 import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import { FlexCenterDiv } from '@/components/StyledComponents';
 import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
@@ -29,28 +30,23 @@ import {
 } from '@/pages/DataStudio/HeaderContainer/function';
 import {
   cancelTask,
+  changeTaskLife,
+  debugTask,
   executeSql,
-  getJobPlan,
-  onLineTask
+  getJobPlan
 } from '@/pages/DataStudio/HeaderContainer/service';
-import {
-  DataStudioTabsItemType,
-  MetadataTabsItemType,
-  StateType,
-  TabsPageSubType,
-  TabsPageType,
-  TaskDataType,
-  VIEW
-} from '@/pages/DataStudio/model';
+import { StateType, TabsPageSubType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { ConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
+import { SuccessMessageAsync } from '@/utils/messages';
 import { connect } from '@@/exports';
 import {
   ApartmentOutlined,
+  BugOutlined,
   CaretRightFilled,
   EnvironmentOutlined,
   FundOutlined,
@@ -62,7 +58,7 @@ import {
   ScheduleOutlined,
   SendOutlined
 } from '@ant-design/icons';
-import { Breadcrumb, Descriptions, message, Modal, Space } from 'antd';
+import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import { ButtonProps } from 'antd/es/button/button';
 import React, { useEffect, useState } from 'react';
 
@@ -98,32 +94,21 @@ const HeaderContainer = (props: any) => {
   } = props;
 
   const [modal, contextHolder] = Modal.useModal();
-  const [messageApi, messageContextHolder] = message.useMessage();
-  const [enableDs, setEnableDs] = useState<boolean>(false);
-  const [currentData, setCurrentData] = useState<TaskDataType | undefined>(undefined);
-  const [currentTab, setCurrentTab] = useState<
-    DataStudioTabsItemType | MetadataTabsItemType | undefined
-  >(undefined);
+
+  // 检查是否开启 ds 配置 & 如果
+  const [enableDs] = useState<boolean>(
+    dsConfig.some(
+      (item: BaseConfigProperties) =>
+        item.key === 'dolphinscheduler.settings.enable' && item.value === 'true'
+    )
+  );
+
+  const currentData = getCurrentData(panes, activeKey);
+  const currentTab = getCurrentTab(panes, activeKey);
 
   useEffect(() => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
   }, []);
-
-  useEffect(() => {
-    setCurrentTab(getCurrentTab(panes, activeKey));
-    setCurrentData(getCurrentData(panes, activeKey));
-  }, [panes, activeKey]);
-
-  useEffect(() => {
-    // 检查是否开启 ds 配置 & 如果
-    if (!dsConfig) {
-      dsConfig.foreach((item: BaseConfigProperties) => {
-        if (item.key === 'dolphinscheduler.settings.enable') {
-          setEnableDs(item.value === 'true');
-        }
-      });
-    }
-  }, [dsConfig]);
 
   const handleSave = async () => {
     const saved = await handlePutDataJson('/api/task', currentData);
@@ -151,38 +136,67 @@ const HeaderContainer = (props: any) => {
     });
   };
 
+  const handlerDebug = async () => {
+    if (!currentData) return;
+
+    const res = await debugTask(
+      l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
+      currentData
+    );
+
+    if (!res) return;
+    updateJobRunningMsg({
+      taskId: currentData.id,
+      jobName: currentData.name,
+      jobState: res.data.status,
+      runningLog: res.msg
+    });
+    await SuccessMessageAsync(l('pages.datastudio.editor.debug.success'));
+    currentData.status = JOB_STATUS.RUNNING;
+    if (currentTab) currentTab.console.result = res.data.result;
+    saveTabs({ ...props.tabs });
+  };
+
   const handlerSubmit = async () => {
     if (!currentData) return;
-    const saved = currentData.step == JOB_LIFE_CYCLE.ONLINE ? true : await handleSave();
-    if (saved) {
-      const res = await executeSql(
-        l('pages.datastudio.editor.submitting', '', { jobName: currentData.name }),
-        currentData.id
-      );
-      if (!res) return;
+    const saved = currentData.step == JOB_LIFE_CYCLE.PUBLISH ? true : await handleSave();
+    if (!saved) return;
 
-      updateJobRunningMsg({
-        taskId: currentData.id,
-        jobName: currentData.name,
-        jobState: res.datas.status,
-        runningLog: res.msg
-      });
-      messageApi.success(l('pages.datastudio.editor.exec.success'));
-      currentData.status = JOB_STATUS.RUNNING;
-      saveTabs({ ...props.tabs });
-    }
+    const res = await executeSql(
+      l('pages.datastudio.editor.submitting', '', { jobName: currentData.name }),
+      currentData.id
+    );
+
+    if (!res) return;
+    updateJobRunningMsg({
+      taskId: currentData.id,
+      jobName: currentData.name,
+      jobState: res.data.status,
+      runningLog: res.msg
+    });
+    await SuccessMessageAsync(l('pages.datastudio.editor.exec.success'));
+    currentData.status = JOB_STATUS.RUNNING;
+    saveTabs({ ...props.tabs });
   };
 
   const handleChangeJobLife = async () => {
     if (!currentData) return;
     if (isOnline(currentData)) {
-      await cancelTask('', currentData.id);
+      await changeTaskLife(
+        l('global.table.lifecycle.offline'),
+        currentData.id,
+        JOB_LIFE_CYCLE.DEVELOP
+      );
       currentData.step = JOB_LIFE_CYCLE.DEVELOP;
     } else {
       const saved = await handleSave();
       if (saved) {
-        await onLineTask(currentData.id);
-        currentData.step = JOB_LIFE_CYCLE.ONLINE;
+        await changeTaskLife(
+          l('global.table.lifecycle.publishing'),
+          currentData.id,
+          JOB_LIFE_CYCLE.PUBLISH
+        );
+        currentData.step = JOB_LIFE_CYCLE.PUBLISH;
       }
     }
     saveTabs({ ...props.tabs });
@@ -195,7 +209,7 @@ const HeaderContainer = (props: any) => {
         title: l('pages.datastudio.editor.explan.tip'),
         width: '100%',
         icon: null,
-        content: <FlinkGraph data={result.datas} />,
+        content: <FlinkGraph data={result.data} />,
         cancelButtonProps: { style: { display: 'none' } }
       });
     }
@@ -214,8 +228,8 @@ const HeaderContainer = (props: any) => {
   const routes: ButtonRoute[] = [
     // 保存按钮 icon
     {
-      hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
-      hotKeyDesc: 'Ctrl+S',
+      hotKey: (e: KeyboardEvent) => (e.ctrlKey && e.key === 's') || (e.metaKey && e.key === 's'),
+      hotKeyDesc: 'Ctrl/Command +S',
       isShow: projectCommonShow(currentTab?.type),
       icon: <SaveOutlined />,
       title: l('button.save'),
@@ -234,6 +248,9 @@ const HeaderContainer = (props: any) => {
     {
       // 检查 sql按钮
       icon: <ScheduleOutlined />,
+      hotKey: (e: KeyboardEvent) =>
+        (e.altKey && e.code === 'Digit2') || (e.altKey && e.key === '@'),
+      hotKeyDesc: 'Alt+2/@',
       title: l('pages.datastudio.editor.check'),
       click: () => showExplain(),
       isShow: projectCommonShow(currentTab?.type)
@@ -272,6 +289,19 @@ const HeaderContainer = (props: any) => {
       click: handlerSubmit,
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       hotKeyDesc: 'Shift+F10',
+      isShow: currentTab?.type == TabsPageType.project && !isRunning(currentData),
+      props: {
+        style: { background: '#52c41a' },
+        type: 'primary'
+      }
+    },
+    {
+      // Debug button
+      icon: <BugOutlined />,
+      title: l('pages.datastudio.editor.debug'),
+      click: handlerDebug,
+      hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F9',
+      hotKeyDesc: 'Shift+F9',
       isShow: currentTab?.type == TabsPageType.project && !isRunning(currentData),
       props: {
         style: { background: '#52c41a' },
@@ -355,7 +385,6 @@ const HeaderContainer = (props: any) => {
             })}
         </Space>
         {contextHolder}
-        {messageContextHolder}
       </div>
     );
   };

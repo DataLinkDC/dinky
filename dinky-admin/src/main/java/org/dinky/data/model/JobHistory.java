@@ -110,13 +110,6 @@ public class JobHistory implements Serializable {
     private FlinkJobConfigInfo configJson;
 
     @ApiModelProperty(
-            value = "Jar JSON",
-            dataType = "String",
-            example = "{\"jarName\": \"example.jar\"}",
-            notes = "JSON representation of the JAR")
-    private String jarJson;
-
-    @ApiModelProperty(
             value = "ClusterInstance JSON",
             dataType = "String",
             example = "{\"clusterName\": \"exampleCluster\"}",

@@ -22,6 +22,7 @@ package org.dinky.daemon.pool;
 import org.dinky.daemon.entity.TaskQueue;
 import org.dinky.daemon.entity.TaskWorker;
 import org.dinky.daemon.task.DaemonTask;
+import org.dinky.daemon.task.DaemonTaskConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,6 +69,11 @@ public class DefaultThreadPool implements ThreadPool {
         if (daemonTask != null) {
             queue.enqueue(daemonTask);
         }
+    }
+
+    @Override
+    public DaemonTask dequeueByTask(DaemonTaskConfig daemonTask) {
+        return queue.dequeueByTask(daemonTask);
     }
 
     @Override

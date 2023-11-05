@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -291,8 +292,11 @@ export default {
    * */
 
   'pages.datastudio.editor.check': '检查',
+  'pages.datastudio.editor.debug': '调试',
   'pages.datastudio.editor.exec': '运行',
   'pages.datastudio.editor.exec.error': '任务【{jobName}】执行失败',
+  'pages.datastudio.editor.debug.error': '任务【{jobName}】调试失败',
+  'pages.datastudio.editor.debug.success': '调试成功',
   'pages.datastudio.editor.exec.success': '执行成功',
   'pages.datastudio.editor.execute.warn':
     '该任务执行模式为【{type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交',
@@ -302,6 +306,7 @@ export default {
   'pages.datastudio.editor.stop.job': '停止作业',
   'pages.datastudio.editor.stop.jobConfirm': '确定停止作业【{jobName}】吗？',
   'pages.datastudio.editor.submitting': '新任务【{jobName}】正在执行',
+  'pages.datastudio.editor.debugging': '新任务【{jobName}】正在调试',
   'pages.datastudio.editor.onlyread': '任务已发布，禁止修改，请先下线任务',
   'pages.datastudio.editor.notsave': '当前修改内容未保存！',
   'pages.datastudio.editor.notsave.note': '继续将抛弃所修改内容，确定继续吗？',
@@ -334,7 +339,6 @@ export default {
   'pages.datastudio.sql.cacheConfigItem': '本地缓存配置',
   'pages.datastudio.sql.serverConfigItem': '服务端配置',
 
-  'pages.datastudio.label.execConfig': '执行配置',
   'pages.datastudio.label.execConfig.autostop': '自动停止',
   'pages.datastudio.label.execConfig.autostop.tip':
     '开启自动停止，将在捕获最大行数记录后自动停止任务',
@@ -345,8 +349,6 @@ export default {
   'pages.datastudio.label.execConfig.selectDatabase.tip': '选择 Sql 语句执行的数据源',
   'pages.datastudio.label.execConfig.maxrow': '最大行数',
   'pages.datastudio.label.execConfig.maxrow.tip': '预览数据的最大行数',
-  'pages.datastudio.label.execConfig.preview.result': '预览结果',
-  'pages.datastudio.label.execConfig.preview.result.tip': '开启预览结果，将同步运行并返回数据结果',
   'pages.datastudio.label.jobConfig': '作业配置',
   'pages.datastudio.label.jobConfig.addConfig': '添加配置项',
   'pages.datastudio.label.jobConfig.addConfig.params': '参数',
@@ -393,10 +395,11 @@ export default {
   'pages.datastudio.label.version.rollback.flinksqlConfirm':
     '确定回滚Flink SQL版本至【{versionId}】吗？',
 
-  'pages.datastudio.catalog.flinkSqlEnvSelect': '请选择 FlinkSqlEnv',
   'pages.datastudio.catalog.catalogSelect': '请选择 catalog & database',
   'pages.datastudio.catalog.tableInfo': '表信息',
   'pages.datastudio.catalog.fieldInformation': '字段信息',
+  'pages.datastudio.catalog.selectDatasource': '请选择数据源',
+  'pages.datastudio.catalog.openMission': '请打开任务',
 
   'pages.datastudio.print.table.inputTableName': '请选择表名',
   'pages.devops.jobinfo.localenv': '本地环境',
@@ -799,7 +802,17 @@ export default {
   'rc.template.templateCode': '模板代码',
   'rc.template.templateCodeLabel': '模板代码（{language}）',
   'rc.template.templateCodePlaceholder': '请编辑模板代码！',
-  'rc.udf.management': 'UDF 模板管理',
+  'rc.udf.template.management': 'UDF 模板管理',
+  'rc.udf.register.management': 'UDF 注册管理',
+  'rc.udf.register.file.name': '文件名称',
+  'rc.udf.register.parse.count': 'UDF 解析数量',
+  'rc.udf.register.source': '来源',
+  'rc.udf.register.language': '语言',
+  'rc.udf.register.name': '名称',
+  'rc.udf.register.className': '类名',
+  'rc.udf.register.deleteConfirm': '确定删除该 UDF 吗？',
+  'rc.udf.register': '注册 UDF',
+
   /**
    *
    * role

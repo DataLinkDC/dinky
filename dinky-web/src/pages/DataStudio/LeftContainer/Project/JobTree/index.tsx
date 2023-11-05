@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -24,7 +24,7 @@ import {
   getLeafKeyList,
   getParentKey
 } from '@/pages/DataStudio/LeftContainer/Project/function';
-import { StateType, TabsItemType } from '@/pages/DataStudio/model';
+import { StateType, STUDIO_MODEL, TabsItemType } from '@/pages/DataStudio/model';
 import { BtnRoute } from '@/pages/DataStudio/route';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
@@ -42,17 +42,20 @@ type TreeProps = {
   onNodeClick: (info: any) => void;
   onRightClick: (info: any) => void;
   style?: React.CSSProperties;
-  selectedKeys: Key[];
+  selectKeyChange: (keys: Key[]) => void;
+  onExpand: (expandedKeys: Key[]) => void;
 };
 
 const JobTree: React.FC<TreeProps & connect> = (props) => {
   const {
-    projectData,
+    project: { data: projectData, expandKeys, selectKey },
     onNodeClick,
     style,
     height,
     onRightClick,
-    selectedKeys: selectedKey
+    selectKeyChange,
+    onExpand,
+    dispatch
   } = props;
 
   const [searchValue, setSearchValueValue] = useState('');
@@ -62,13 +65,14 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     setData(buildProjectTree(projectData, searchValue));
   }, [searchValue, projectData]);
 
-  const [expandedKeys, setExpandedKeys] = useState<Key[]>();
   const [autoExpandParent, setAutoExpandParent] = useState(true);
-  const [selectedKeys, setSelectedKeys] = useState(selectedKey);
   const onChangeSearch = (e: any) => {
     let { value } = e.target;
     if (!value) {
-      setExpandedKeys([]);
+      dispatch({
+        type: STUDIO_MODEL.updateProjectExpandKey,
+        payload: []
+      });
       setSearchValueValue(value);
       return;
     }
@@ -82,17 +86,19 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
         return null;
       })
       .filter((item: any, i: number, self: any) => item && self.indexOf(item) === i);
-    setExpandedKeys(expandedKeys);
+    dispatch({
+      type: STUDIO_MODEL.updateProjectExpandKey,
+      payload: expandedKeys
+    });
     setSearchValueValue(value);
     setAutoExpandParent(true);
   };
 
-  const onExpand = (expandedKeys: Key[]) => {
-    setExpandedKeys(expandedKeys);
-  };
-
   const expandAll = () => {
-    setExpandedKeys(getLeafKeyList(projectData));
+    dispatch({
+      type: STUDIO_MODEL.updateProjectExpandKey,
+      payload: getLeafKeyList(projectData)
+    });
   };
 
   const btn = BtnRoute['menu.datastudio.project'];
@@ -108,15 +114,22 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
           return null;
         })
         .filter((item: any, i: number, self: any) => item && self.indexOf(item) === i);
-      setExpandedKeys(expandedKeys);
+      dispatch({
+        type: STUDIO_MODEL.updateProjectExpandKey,
+        payload: expandedKeys
+      });
       setAutoExpandParent(true);
-      setSelectedKeys([treeKey]);
+      selectKeyChange([treeKey]);
     }
   };
 
   btn[1].onClick = expandAll;
 
-  btn[2].onClick = () => setExpandedKeys([]);
+  btn[2].onClick = () =>
+    dispatch({
+      type: STUDIO_MODEL.updateProjectExpandKey,
+      payload: []
+    });
   btn[3].onClick = positionKey;
 
   return (
@@ -134,8 +147,9 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
           className={'treeList'}
           onSelect={(_, info) => onNodeClick(info)}
           onRightClick={onRightClick}
-          expandedKeys={expandedKeys}
-          selectedKeys={selectedKeys}
+          expandedKeys={expandKeys}
+          expandAction={'doubleClick'}
+          selectedKeys={selectKey}
           onExpand={onExpand}
           treeData={data}
           autoExpandParent={autoExpandParent}
@@ -152,5 +166,5 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   height: Studio.toolContentHeight,
-  projectData: Studio.project.data
+  project: Studio.project
 }))(JobTree);

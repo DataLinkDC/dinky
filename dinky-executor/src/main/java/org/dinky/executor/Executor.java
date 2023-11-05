@@ -181,12 +181,13 @@ public abstract class Executor {
         if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
             return flinkInterceptorResult.getTableResult();
         }
-        if (!flinkInterceptorResult.isNoExecute()) {
-            KerberosUtil.authenticate(setConfig);
-            return tableEnvironment.executeSql(statement);
-        } else {
+
+        if (flinkInterceptorResult.isNoExecute()) {
             return CustomTableResultImpl.TABLE_RESULT_OK;
         }
+
+        KerberosUtil.authenticate(setConfig);
+        return tableEnvironment.executeSql(statement);
     }
 
     public void initUDF(String... udfFilePath) {

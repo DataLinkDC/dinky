@@ -19,7 +19,7 @@
 
 package org.dinky.parser.check;
 
-import org.dinky.process.exception.DinkyException;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.utils.URLUtils;
 
 import java.io.File;

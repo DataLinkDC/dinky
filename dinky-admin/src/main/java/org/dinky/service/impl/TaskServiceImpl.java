@@ -22,12 +22,16 @@ package org.dinky.service.impl;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.context.TenantContextHolder;
+import org.dinky.data.annotations.ProcessStep;
+import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.dto.AbstractStatementDTO;
+import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
+import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
@@ -38,7 +42,6 @@ import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.DataBase;
-import org.dinky.data.model.Jar;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
@@ -50,6 +53,9 @@ import org.dinky.data.model.TaskVersion;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.explainer.lineage.LineageBuilder;
+import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
@@ -65,15 +71,12 @@ import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
 import org.dinky.mapper.TaskMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.process.annotations.ProcessStep;
-import org.dinky.process.enums.ProcessStepType;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.FragmentVariableService;
-import org.dinky.service.JarService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.SavepointsService;
 import org.dinky.service.TaskService;
@@ -94,6 +97,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -136,7 +140,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final SavepointsService savepointsService;
     private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterCfgService;
-    private final JarService jarService;
     private final DataBaseService dataBaseService;
     private final JobInstanceService jobInstanceService;
     private final AlertGroupService alertGroupService;
@@ -152,19 +155,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private CatalogueService catalogueService;
 
     private String[] buildParams(int id) {
-        return String.format(
-                        "--id %d --driver %s --url %s --username %s --password %s --dinkyAddr %s",
-                        id,
-                        dsProperties.getDriverClassName(),
-                        dsProperties.getUrl(),
-                        dsProperties.getUsername(),
-                        dsProperties.getPassword(),
-                        SystemConfiguration.getInstances().getDinkyAddr())
-                .split(" ");
+        AppParamConfig appParamConfig = AppParamConfig.builder()
+                .taskId(id)
+                .url(dsProperties.getUrl())
+                .username(dsProperties.getUsername())
+                .password(dsProperties.getPassword())
+                .build();
+        String encodeParam = Base64.getEncoder()
+                .encodeToString(JsonUtils.toJsonString(appParamConfig).getBytes());
+        return StrFormatter.format("--config {}", encodeParam).split(" ");
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_PRECHECK)
-    public void preCheckTask(TaskDTO task) throws TaskNotDoneException, SqlExplainExcepition {
+    public void preCheckTask(TaskDTO task) throws TaskNotDoneException {
         log.info("Start check and config task, task:{}", task.getName());
 
         Assert.notNull(task, Status.TASK_NOT_EXIST.getMessage());
@@ -174,30 +177,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 && task.getJobInstanceId() > 0) {
             JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
             if (jobInstance != null && !JobStatus.isDone(jobInstance.getStatus())) {
-                throw new TaskNotDoneException(Status.TASK_STATUS_IS_NOT_DONE.getMessage());
+                throw new BusException(Status.TASK_STATUS_IS_NOT_DONE.getMessage());
             }
         }
-
-        log.info("Start explain Sql,task: {},Dialect:{}", task.getName(), task.getDialect());
-
-        List<SqlExplainResult> sqlExplainResults = explainTask(task);
-        for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
-            if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
-                throw new SqlExplainExcepition(StrFormatter.format(
-                        "task [{}] sql explain failed, sql [{}], error: [{}]",
-                        task.getName(),
-                        sqlExplainResult.getSql(),
-                        sqlExplainResult.getError()));
-            }
-        }
-
-        log.info("Explain Sql finish");
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJob(TaskDTO task) throws Exception {
-        JobResult jobResult;
-        jobResult = BaseTask.getTask(task).execute();
+        JobResult jobResult = BaseTask.getTask(task).execute();
         log.info("execute job finished,status is {}", jobResult.getStatus());
         return jobResult;
     }
@@ -217,12 +204,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             FlinkClusterConfig flinkClusterCfg =
                     clusterCfgService.getFlinkClusterCfg(config.getClusterConfigurationId());
             flinkClusterCfg.getAppConfig().setUserJarParas(buildParams(config.getTaskId()));
+            flinkClusterCfg.getAppConfig().setUserJarMainAppClass(CommonConstant.DINKY_APP_MAIN_CLASS);
             config.buildGatewayConfig(flinkClusterCfg);
+            Optional.ofNullable(task.getJobInstanceId()).ifPresent(i -> {
+                JobInstance jobInstance = jobInstanceService.getById(i);
+                config.setClusterId(jobInstance.getClusterId());
+            });
         } else {
-            log.info("Init remote cluster");
-            String address = clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId());
-            config.setAddress(address);
+            Optional.ofNullable(task.getClusterId()).ifPresent(config::setClusterId);
         }
+        log.info("Init remote cluster");
+        Optional.ofNullable(config.getClusterId()).ifPresent(i -> {
+            config.setAddress(clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), i));
+        });
         return config;
     }
 
@@ -238,7 +232,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             task.setVariables(fragmentVariableService.listEnabledVariables());
         }
         int envId = Optional.ofNullable(task.getEnvId()).orElse(-1);
-        if (envId != -1) {
+        if (envId > 0) {
             TaskDTO envTask = this.getTaskInfoById(task.getEnvId());
             if (Asserts.isNotNull(envTask) && Asserts.isNotNullString(envTask.getStatement())) {
                 sql += envTask.getStatement() + CommonConstant.LineSep;
@@ -251,10 +245,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    @ProcessStep(type = ProcessStepType.SUBMIT_TASK)
     public JobResult submitTask(Integer id, String savePointPath) throws Exception {
-        initTenantByTaskId(id);
-
         TaskDTO taskDTO = this.getTaskInfoById(id);
 
         if (StringUtils.isNotBlank(savePointPath)) {
@@ -264,17 +255,40 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
         taskServiceBean.preCheckTask(taskDTO);
-
+        // The job instance does not exist by default,
+        // so that it does not affect other operations, such as checking the jobmanager address
+        taskDTO.setJobInstanceId(null);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
+        log.info("Job Submit success");
+        Task task = new Task(id, jobResult.getJobInstanceId());
+        if (!this.updateById(task)) {
+            throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
+        }
+        return jobResult;
+    }
 
+    @Override
+    @ProcessStep(type = ProcessStepType.SUBMIT_TASK)
+    public JobResult debugTask(DebugDTO debugDTO) throws Exception {
+        initTenantByTaskId(debugDTO.getId());
+
+        TaskDTO taskDTO = this.getTaskInfoById(debugDTO.getId());
+        // Debug mode need return result
+        taskDTO.setUseResult(true);
+        taskDTO.setUseChangeLog(debugDTO.isUseChangeLog());
+        taskDTO.setUseAutoCancel(debugDTO.isUseAutoCancel());
+        taskDTO.setMaxRowNum(debugDTO.getMaxRowNum());
+        // 注解自调用会失效，这里通过获取对象方法绕过此限制
+        TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
+        JobResult jobResult = taskServiceBean.executeJob(taskDTO);
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
-            log.info("Job Submit success");
-            Task task = new Task(id, jobResult.getJobInstanceId());
+            log.info("Job debug success");
+            Task task = new Task(debugDTO.getId(), jobResult.getJobInstanceId());
             if (!this.updateById(task)) {
                 throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
             }
         } else {
-            log.error("Job Submit failed, error: " + jobResult.getError());
+            log.error("Job debug failed, error: " + jobResult.getError());
         }
         return jobResult;
     }
@@ -294,6 +308,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean cancelTaskJob(TaskDTO task) {
+        if (Dialect.isCommonSql(task.getDialect())) {
+            return true;
+        }
         JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
         Assert.notNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
         ClusterInstance clusterInstance = clusterInstanceService.getById(jobInstance.getClusterId());
@@ -401,22 +418,33 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Integer tenantId = baseMapper.getTenantByTaskId(id);
         Asserts.checkNull(tenantId, Status.TASK_NOT_EXIST.getMessage());
         TenantContextHolder.set(tenantId);
+        log.info("Init task tenan finished..");
     }
 
     @Override
-    public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) {
-        TaskDTO taskInfoById = getTaskInfoById(taskId);
-        taskInfoById.setStep(lifeCycle.getValue());
-        if (lifeCycle == JobLifeCycle.ONLINE) {
-            taskVersionService.createTaskVersionSnapshot(taskInfoById);
+    public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws SqlExplainExcepition {
+        TaskDTO task = getTaskInfoById(taskId);
+        task.setStep(lifeCycle.getValue());
+        if (lifeCycle == JobLifeCycle.PUBLISH) {
+            //            List<SqlExplainResult> sqlExplainResults = explainTask(task);
+            //            for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
+            //                if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
+            //                    throw new SqlExplainExcepition(StrFormatter.format(
+            //                            "task [{}] sql explain failed, sql [{}], error: [{}]",
+            //                            task.getName(),
+            //                            sqlExplainResult.getSql(),
+            //                            sqlExplainResult.getError()));
+            //                }
+            //            }
+            taskVersionService.createTaskVersionSnapshot(task);
         }
-        return saveOrUpdate(taskInfoById.buildTask());
+        return saveOrUpdate(task.buildTask());
     }
 
     @Override
     public boolean saveOrUpdateTask(Task task) {
 
-        if (JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
+        if (JobLifeCycle.PUBLISH.equalsValue(task.getStep())) {
             throw new BusException(Status.TASK_IS_ONLINE.getMessage());
         }
 
@@ -529,9 +557,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result<Void> rollbackTask(TaskRollbackVersionDTO dto) {
+    public boolean rollbackTask(TaskRollbackVersionDTO dto) {
         if (Asserts.isNull(dto.getVersionId()) || Asserts.isNull(dto.getId())) {
-            return Result.failed("the version is error");
+            throw new BusException("the version is error");
         }
 
         LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>()
@@ -545,8 +573,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         BeanUtil.copyProperties(taskVersion.getTaskConfigure(), updateTask);
         updateTask.setId(taskVersion.getTaskId());
         updateTask.setStep(JobLifeCycle.DEVELOP.getValue());
-        baseMapper.updateById(updateTask);
-        return Result.succeed("version rollback success！");
+        return baseMapper.updateById(updateTask) > 0;
     }
 
     @Override
@@ -586,13 +613,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
             jsonNode.put("databaseName", Asserts.isNotNull(dataBase) ? dataBase.getName() : null);
         }
-
-        // jarName
-        if (Asserts.isNotNull(task.getJarId())) {
-            Jar jar = jarService.getById(task.getJarId());
-            jsonNode.put("jarName", Asserts.isNotNull(jar) ? jar.getName() : null);
-        }
-
         // envName
         if (Asserts.isNotNull(task.getEnvId())) {
             Task envTask = getById(task.getEnvId());
@@ -670,13 +690,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                         dataBaseService.getOne(new QueryWrapper<DataBase>().eq("name", task.getDatabaseName()));
                 if (Asserts.isNotNull(dataBase)) {
                     task.setDatabaseId(dataBase.getId());
-                }
-            }
-
-            if (Asserts.isNotNull(task.getJarName())) {
-                Jar jar = jarService.getOne(new QueryWrapper<Jar>().eq("name", task.getJarName()));
-                if (Asserts.isNotNull(jar)) {
-                    task.setJarId(jar.getId());
                 }
             }
 
@@ -771,6 +784,28 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         final List<Catalogue> catalogueList = catalogueService.list(queryWrapper);
         return Result.succeed(
                 TreeUtil.build(dealWithCatalogue(catalogueList), -1).get(0));
+    }
+
+    @Override
+    public LineageResult getTaskLineage(Integer id) {
+        TaskDTO task = getTaskInfoById(id);
+        if (!Dialect.isCommonSql(task.getDialect())) {
+            if (Asserts.isNull(task.getDatabaseId())) {
+                return null;
+            }
+            DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
+            if (Asserts.isNull(dataBase)) {
+                return null;
+            }
+            if (task.getDialect().equalsIgnoreCase("doris") || task.getDialect().equalsIgnoreCase("starrocks")) {
+                return SQLLineageBuilder.getSqlLineage(task.getStatement(), "mysql", dataBase.getDriverConfig());
+            } else {
+                return SQLLineageBuilder.getSqlLineage(
+                        task.getStatement(), task.getDialect().toLowerCase(), dataBase.getDriverConfig());
+            }
+        } else {
+            return LineageBuilder.getColumnLineageByLogicalPlan(buildEnvSql(task));
+        }
     }
 
     private List<TreeNode<Integer>> dealWithCatalogue(List<Catalogue> catalogueList) {

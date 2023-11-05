@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import { getFlinkConfigs } from '@/pages/DataStudio/RightContainer/JobConfig/service';
@@ -71,7 +90,6 @@ export type TaskType = {
   clusterConfigurationName?: string;
   databaseId?: number;
   databaseName?: string;
-  jarId?: number;
   envId?: number;
   jobInstanceId?: number;
   note?: string;
@@ -82,7 +100,6 @@ export type TaskType = {
   session: string;
   maxRowNum: number;
   jobName: string;
-  useResult: boolean;
   useChangeLog: boolean;
   useAutoCancel: boolean;
 };
@@ -107,6 +124,7 @@ export type TaskDataBaseType = {
   step: number;
   // Only common sql has(只有普通sql才有)
   databaseId?: number;
+  envId?: number;
 };
 
 export type TaskDataType = TaskDataBaseType & Record<string, any>;
@@ -114,7 +132,6 @@ export type TaskDataType = TaskDataBaseType & Record<string, any>;
 export type DataStudioParams = {
   taskId: number;
   taskData: TaskDataType;
-  resultData: Record<string, any>;
 };
 
 export enum TabsPageType {
@@ -135,7 +152,7 @@ export interface TabsItemType {
   type: TabsPageType;
   subType?: TabsPageSubType;
   key: string;
-  treeKey: string;
+  treeKey: number;
   value: string;
   icon: any;
   closable: boolean;
@@ -288,6 +305,8 @@ export type ModelType = {
     updateBottomHeight: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
     saveProject: Reducer<StateType>;
+    updateProjectExpandKey: Reducer<StateType>;
+    updateProjectSelectKey: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
     closeTab: Reducer<StateType>;
     removeTag: Reducer<StateType>;
@@ -525,6 +544,20 @@ const Model: ModelType = {
         project: { ...state.project, data: payload }
       };
     },
+
+    updateProjectExpandKey(state, { payload }) {
+      return {
+        ...state,
+        project: { ...state.project, expandKeys: payload }
+      };
+    },
+    updateProjectSelectKey(state, { payload }) {
+      return {
+        ...state,
+        project: { ...state.project, selectKey: payload }
+      };
+    },
+
     /**
      * flink config options
      */

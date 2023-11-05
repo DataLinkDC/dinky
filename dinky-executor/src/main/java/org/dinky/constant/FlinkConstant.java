@@ -36,4 +36,6 @@ public interface FlinkConstant {
     String LOCAL_HOST = "localhost:8081";
     /** changlog op */
     String OP = "op";
+
+    String DEFAULT_FLINK_HOME = "/opt/flink";
 }

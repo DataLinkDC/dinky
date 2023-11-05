@@ -22,8 +22,8 @@ package org.dinky.utils;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.job.JobConfig;
-import org.dinky.process.exception.DinkyException;
 
 import org.apache.flink.configuration.PipelineOptions;
 

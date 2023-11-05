@@ -31,7 +31,6 @@
     <name>Dinky : Connector : JDBC 1.14</name>
 
     <properties>
-        <flink.version>1.14.6</flink.version>
         <junit.version>4.12</junit.version>
         <otj-pg-embedded.version>0.13.3</otj-pg-embedded.version>
         <postgres.version>42.2.10</postgres.version>

@@ -19,6 +19,9 @@
 
 package org.dinky.daemon.entity;
 
+import org.dinky.daemon.task.DaemonTask;
+import org.dinky.daemon.task.DaemonTaskConfig;
+
 import java.util.LinkedList;
 
 import lombok.Getter;
@@ -26,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Slf4j
-public class TaskQueue<T> {
+public class TaskQueue<T extends DaemonTask> {
 
     private final LinkedList<T> tasks = new LinkedList<>();
 
@@ -36,7 +39,7 @@ public class TaskQueue<T> {
         synchronized (lock) {
             lock.notifyAll();
             // prevent duplicate additions
-            tasks.remove(task);
+            dequeueByTask(task.getConfig());
             tasks.addLast(task);
         }
     }
@@ -51,6 +54,21 @@ public class TaskQueue<T> {
                 }
             }
             return tasks.removeFirst();
+        }
+    }
+
+    public T dequeueByTask(DaemonTaskConfig task) {
+        synchronized (lock) {
+            T find = null;
+            for (T t : tasks) {
+                if (t.getConfig().equals(task)) {
+                    find = t;
+                }
+            }
+            if (find != null) {
+                tasks.remove(find);
+            }
+            return find;
         }
     }
 

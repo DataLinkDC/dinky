@@ -63,6 +63,8 @@ public enum SqlType {
 
     CTAS("CTAS", "^CREATE\\s.*AS\\sSELECT.*$"),
 
+    WITH("WITH", "^WITH.*"),
+
     UNKNOWN("UNKNOWN", "^UNKNOWN.*");
 
     private String type;

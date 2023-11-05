@@ -158,4 +158,25 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <resources>
+            <!--      Replace maven global variables      -->
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>common.properties</include>
+                </includes>
+            </resource>
+            <!--      Keep files with variables that are not replaced      -->
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>common.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+    </build>
 </project>

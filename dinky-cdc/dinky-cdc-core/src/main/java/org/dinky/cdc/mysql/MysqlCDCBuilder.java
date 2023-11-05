@@ -187,7 +187,16 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
 
     @Override
     public Map<String, String> parseMetaDataConfig() {
+        boolean tinyInt1isBit = !config.getJdbc().containsKey("tinyInt1isBit")
+                || "true".equalsIgnoreCase(config.getJdbc().get("tinyInt1isBit"));
+        boolean transformedBitIsBoolean = !config.getJdbc().containsKey("transformedBitIsBoolean")
+                || "true".equalsIgnoreCase(config.getJdbc().get("transformedBitIsBoolean"));
         String url = String.format("jdbc:mysql://%s:%d/", config.getHostname(), config.getPort());
+        if (tinyInt1isBit && transformedBitIsBoolean) {
+            url += "?tinyInt1isBit=true";
+        } else {
+            url += "?tinyInt1isBit=false";
+        }
         return parseMetaDataSingleConfig(url);
     }
 

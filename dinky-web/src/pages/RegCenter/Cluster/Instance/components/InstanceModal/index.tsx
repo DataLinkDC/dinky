@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -29,8 +29,8 @@ import InstanceForm from './InstanceForm';
 type InstanceModalProps = {
   visible: boolean;
   onClose: () => void;
-  value: Partial<Cluster.Instance>;
-  onSubmit: (values: Partial<Cluster.Instance>) => void;
+  value: Cluster.Instance | Partial<Cluster.Instance>;
+  onSubmit: (values: Cluster.Instance) => void;
 };
 const InstanceModal: React.FC<InstanceModalProps> = (props) => {
   const { visible, onClose, onSubmit, value } = props;
@@ -72,7 +72,7 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setSubmitting(true);
-    await onSubmit({ ...value, ...fieldsValue });
+    onSubmit({ ...value, ...fieldsValue });
     handleCancel();
   };
 
@@ -97,11 +97,12 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
         {...MODAL_FORM_OPTIONS}
         open={visible}
         modalProps={{ onCancel: handleCancel }}
+        form={form}
         title={value.id ? l('rc.ci.modify') : l('rc.ci.create')}
         submitter={{ render: () => [...renderFooter()] }}
         initialValues={value}
       >
-        <InstanceForm form={form} value={value} />
+        <InstanceForm />
       </ModalForm>
     </>
   );

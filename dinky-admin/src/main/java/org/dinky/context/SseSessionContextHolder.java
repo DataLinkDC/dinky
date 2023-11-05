@@ -62,18 +62,18 @@ public class SseSessionContextHolder {
      * @return The SseEmitter for the session.
      */
     public static SseEmitter connectSession(String sessionKey) {
-        log.info("New session wants to connect: {}", sessionKey);
+        log.debug("New session wants to connect: {}", sessionKey);
         if (exists(sessionKey)) {
             log.warn("Session key already exists: {}", sessionKey);
             closeSse(sessionKey);
         }
-        SseEmitter sseEmitter = new SseEmitter(60 * 1000L);
+        SseEmitter sseEmitter = new SseEmitter(60 * 1000L * 10);
         sseEmitter.onError(err -> onError(sessionKey, err));
         sseEmitter.onTimeout(() -> onTimeout(sessionKey));
         sseEmitter.onCompletion(() -> onCompletion(sessionKey));
         try {
             // Set the client reconnection interval, 0 to reconnect immediately
-            sseEmitter.send(SseEmitter.event().reconnectTime(0));
+            sseEmitter.send(SseEmitter.event().reconnectTime(1000));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -97,7 +97,7 @@ public class SseSessionContextHolder {
      * @param sessionKey The session key of the timed-out session.
      */
     public static void onTimeout(String sessionKey) {
-        log.info("Type: SseSession Timeout, Session ID: {}", sessionKey);
+        log.debug("Type: SseSession Timeout, Session ID: {}", sessionKey);
         closeSse(sessionKey);
     }
 
@@ -142,7 +142,7 @@ public class SseSessionContextHolder {
      * @param sessionKey The session key of the completed session.
      */
     public static void onCompletion(String sessionKey) {
-        log.info("Type: SseSession Completion, Session ID: {}", sessionKey);
+        log.debug("Type: SseSession Completion, Session ID: {}", sessionKey);
         closeSse(sessionKey);
     }
 

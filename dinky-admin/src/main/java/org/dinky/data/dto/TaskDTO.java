@@ -119,9 +119,6 @@ public class TaskDTO extends AbstractStatementDTO {
             notes = "The identifier of the database")
     private Integer databaseId;
 
-    @ApiModelProperty(value = "JAR ID", dataType = "Integer", example = "4", notes = "The identifier of the JAR")
-    private Integer jarId;
-
     @ApiModelProperty(
             value = "Alert Group ID",
             dataType = "Integer",
@@ -173,9 +170,6 @@ public class TaskDTO extends AbstractStatementDTO {
 
     @ApiModelProperty(value = "Path", dataType = "String", notes = "Path associated with the task")
     private String path;
-
-    @ApiModelProperty(value = "JAR Name", dataType = "String", notes = "Name of the associated JAR")
-    private String jarName;
 
     @ApiModelProperty(
             value = "Cluster Configuration Name",

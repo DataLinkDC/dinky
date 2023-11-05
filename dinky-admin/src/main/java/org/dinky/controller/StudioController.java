@@ -21,8 +21,8 @@ package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotation.Log;
-import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
+import org.dinky.data.dto.StudioLineageDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
@@ -112,7 +112,7 @@ public class StudioController {
             required = true,
             dataType = "StudioCADTO",
             paramType = "body")
-    public Result<LineageResult> getLineage(@RequestBody StudioCADTO studioCADTO) {
+    public Result<LineageResult> getLineage(@RequestBody StudioLineageDTO studioCADTO) {
         LineageResult lineage = studioService.getLineage(studioCADTO);
         return Asserts.isNull(lineage) ? Result.failed("血缘分析异常") : Result.succeed(lineage, "血缘分析成功");
     }
@@ -158,7 +158,7 @@ public class StudioController {
     }
 
     /** 获取 Meta Store Flink Column 信息 */
-    @GetMapping("/getMSFlinkColumns")
+    @PostMapping("/getMSColumns")
     @ApiOperation("Get Flink Column List")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "envId", value = "envId", required = true, dataType = "Integer", paramType = "query"),
@@ -176,16 +176,7 @@ public class StudioController {
                 paramType = "query"),
         @ApiImplicitParam(name = "table", value = "table", required = true, dataType = "String", paramType = "query")
     })
-    public Result<List<Column>> getMSFlinkColumns(
-            @RequestParam Integer envId,
-            @RequestParam String catalog,
-            @RequestParam String database,
-            @RequestParam String table) {
-        StudioMetaStoreDTO studioMetaStoreDTO = new StudioMetaStoreDTO();
-        studioMetaStoreDTO.setEnvId(envId);
-        studioMetaStoreDTO.setCatalog(catalog);
-        studioMetaStoreDTO.setDatabase(database);
-        studioMetaStoreDTO.setTable(table);
-        return Result.succeed(studioService.getMSFlinkColumns(studioMetaStoreDTO));
+    public Result<List<Column>> getMSColumns(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
+        return Result.succeed(studioService.getMSColumns(studioMetaStoreDTO));
     }
 }

@@ -20,20 +20,23 @@
 package org.dinky.service;
 
 import org.dinky.data.dto.AbstractStatementDTO;
+import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.JobLifeCycle;
+import org.dinky.data.exception.ExcuteException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
+import org.dinky.data.exception.SqlExplainExcepition;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
 import org.dinky.mybatis.service.ISuperService;
-import org.dinky.process.exception.ExcuteException;
 
 import java.util.List;
 
@@ -68,6 +71,15 @@ public interface TaskService extends ISuperService<Task> {
      * @throws ExcuteException If there is an error executing the task.
      */
     JobResult submitTask(Integer id, String savePointPath) throws Exception;
+
+    /**
+     * Debug the given task and return the job result.
+     *
+     * @param debugDTO The param of preview task.
+     * @return A {@link JobResult} object representing the result of the submitted task.
+     * @throws ExcuteException If there is an error debugging the task.
+     */
+    JobResult debugTask(DebugDTO debugDTO) throws Exception;
 
     /**
      * Restart the given task and return the job result.
@@ -151,7 +163,7 @@ public interface TaskService extends ISuperService<Task> {
      * @param lifeCycle The new life cycle of the task.
      * @return true if the life cycle is successfully changed, false otherwise.
      */
-    boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle);
+    boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws SqlExplainExcepition;
 
     /**
      * Save or update the given task.
@@ -196,7 +208,7 @@ public interface TaskService extends ISuperService<Task> {
      * @param dto The {@link TaskRollbackVersionDTO} object representing the task to rollback.
      * @return A {@link Result} object indicating the result of the rollback operation.
      */
-    Result<Void> rollbackTask(TaskRollbackVersionDTO dto);
+    boolean rollbackTask(TaskRollbackVersionDTO dto);
 
     /**
      * Get the size of all tasks with the given name in the system.
@@ -260,4 +272,12 @@ public interface TaskService extends ISuperService<Task> {
      * @return A {@link JobModelOverview} object representing the job model overview.
      */
     JobModelOverview getJobStreamingOrBatchModelOverview();
+
+    /**
+     * Get the task with the given name and tenant ID.
+     *
+     * @param id The id of the task to get.
+     * @return A {@link LineageResult} object representing the found task lineage.
+     */
+    LineageResult getTaskLineage(Integer id);
 }

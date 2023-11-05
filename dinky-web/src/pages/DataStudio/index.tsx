@@ -1,29 +1,31 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
+import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
-import { getConsoleData } from '@/pages/DataStudio/BottomContainer/Console/service';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import { mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
-import { getDataBase } from '@/pages/DataStudio/LeftContainer/MetaData/service';
+import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
 import { StateType, TabsItemType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
@@ -52,7 +54,6 @@ const DataStudio = (props: any) => {
     saveDataBase,
     saveProject,
     updateToolContentHeight,
-    updateBottomConsole,
     saveSession,
     saveEnv,
     updateCenterContentHeight,
@@ -69,6 +70,8 @@ const DataStudio = (props: any) => {
   const app = getDvaApp(); // 获取dva的实例
   const persist = app._store.persist;
   const bottomHeight = bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
+
+  const { fullscreen } = useEditor();
 
   const getClientSize = () => ({
     width: document.documentElement.clientWidth,
@@ -98,19 +101,17 @@ const DataStudio = (props: any) => {
 
   const loadData = async () => {
     Promise.all([
-      getDataBase(),
-      getConsoleData(),
+      getDataSourceList(),
       getTaskData(),
       getSessionData(),
       getEnvData(),
       getClusterConfigurationData()
     ]).then((res) => {
       saveDataBase(res[0]);
-      updateBottomConsole(res[1]);
-      saveProject(res[2]);
-      saveSession(res[3]);
-      saveEnv(res[4]);
-      saveClusterConfiguration(res[5]);
+      saveProject(res[1]);
+      saveSession(res[2]);
+      saveEnv(res[3]);
+      saveClusterConfiguration(res[4]);
     });
   };
 
@@ -200,7 +201,9 @@ const DataStudio = (props: any) => {
     />
   );
 
-  return (
+  return fullscreen ? (
+    <MiddleContainer />
+  ) : (
     <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
       <PersistGate loading={null} persistor={persist}>
         <div style={{ marginInline: -10, marginTop: -6, width: size.width }}>

@@ -206,8 +206,8 @@ ol {
 }
 
 .ant-table-wrapper {
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow-x: hidden;
+  overflow-y: hidden;
   overflow-block: auto;
 }
 
@@ -397,6 +397,12 @@ h5 {
   direction: ltr;
   scrollbar-color: #d4aa70 #e4e4e4;
   scrollbar-width: thin;
+}
+
+.editor-full-screen {
+  .ant-tabs-tabpane {
+    height: 100vh;
+  }
 }
 
 .data-studio-tabs {

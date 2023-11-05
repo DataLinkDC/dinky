@@ -27,6 +27,8 @@ import org.dinky.service.HistoryService;
 
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 /**
  * HistoryServiceImpl
  *
@@ -42,5 +44,13 @@ public class HistoryServiceImpl extends SuperServiceImpl<HistoryMapper, History>
             ResultPool.remove(history.getJobId());
         }
         return removeById(id);
+    }
+
+    @Override
+    public History getLatestHistoryById(Integer id) {
+        return baseMapper.selectOne(new QueryWrapper<History>()
+                .eq("task_id", id)
+                .orderByDesc("start_time")
+                .last("limit 1"));
     }
 }

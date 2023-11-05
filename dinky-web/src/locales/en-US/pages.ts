@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -298,9 +299,12 @@ export default {
    * */
 
   'pages.datastudio.editor.check': 'Check current FlinkSql',
+  'pages.datastudio.editor.debug': 'Debug',
   'pages.datastudio.editor.exec': 'Execute',
-  'pages.datastudio.editor.exec.error': 'Task [jobName}] execution failed',
+  'pages.datastudio.editor.exec.error': 'Task [{jobName}] execution failed',
+  'pages.datastudio.editor.debug.error': 'Task [{jobName}] debug failed',
   'pages.datastudio.editor.exec.success': 'Execution succeeded',
+  'pages.datastudio.editor.debug.success': 'Debug succeeded',
   'pages.datastudio.editor.execute.warn':
     'The execution mode of this task is [{type}], which does not support SQL query, please save it manually and use the button on the right - job submission',
   'pages.datastudio.editor.explan': 'Get the current FlinkSql execution graph',
@@ -309,6 +313,7 @@ export default {
   'pages.datastudio.editor.stop.job': 'Stop job',
   'pages.datastudio.editor.stop.jobConfirm': 'Are you sure to stop the job [{jobName}]? ',
   'pages.datastudio.editor.submitting': 'The new task [{jobName}] is executing',
+  'pages.datastudio.editor.debugging': 'The new task [{jobName}] is debugging',
   'pages.datastudio.editor.onlyread':
     'Task has been published, modification is prohibited, please go offline first',
   'pages.datastudio.editor.notsave': 'Current changes are not saved! ',
@@ -346,7 +351,6 @@ export default {
   'pages.datastudio.help.sqlChanged': 'Sql context or configure changed',
   'pages.datastudio.help.sqlChangedPrompt':
     'the remote context is not the same as the current page , will the data be flushed?',
-  'pages.datastudio.label.execConfig': 'Execution Config',
   'pages.datastudio.label.execConfig.autostop': 'AutoStop',
   'pages.datastudio.label.execConfig.autostop.tip':
     'Enable autostop, it will automatically stop the task after capturing the maximum number of records',
@@ -357,9 +361,6 @@ export default {
   'pages.datastudio.label.execConfig.selectDatabase.tip': 'Select the database to be used',
   'pages.datastudio.label.execConfig.maxrow': 'Maximum number of rows',
   'pages.datastudio.label.execConfig.maxrow.tip': 'The maximum number of rows of preview data',
-  'pages.datastudio.label.execConfig.preview.result': 'Preview Result',
-  'pages.datastudio.label.execConfig.preview.result.tip':
-    'Open the preview result, it will run synchronously and return the data result',
   'pages.datastudio.label.jobConfig': 'Job Config',
   'pages.datastudio.label.jobConfig.addConfig': 'Add Config item',
   'pages.datastudio.label.jobConfig.addConfig.params': 'parameters',
@@ -415,6 +416,12 @@ export default {
   'pages.metadata.DataSearch': 'Data Search',
   'pages.metadata.selectDatabase': 'Select Database',
   'pages.task.savePointPath': 'SavePoint Path',
+
+  'pages.datastudio.catalog.catalogSelect': 'Please select catalog & database',
+  'pages.datastudio.catalog.tableInfo': 'Table Info',
+  'pages.datastudio.catalog.fieldInformation': 'Field Information',
+  'pages.datastudio.catalog.selectDatasource': 'Select Datasource',
+  'pages.datastudio.catalog.openMission': 'Open Mission',
   /**
    *
    * rc
@@ -833,7 +840,16 @@ export default {
   'rc.template.templateCode': 'Template Code',
   'rc.template.templateCodeLabel': 'Template Code( {language} )',
   'rc.template.templateCodePlaceholder': 'Please edit the template code! ',
-  'rc.udf.management': 'UDF Template Management',
+  'rc.udf.template.management': 'UDF Template Management',
+  'rc.udf.register.management': 'UDF Register Management',
+  'rc.udf.register.file.name': 'File Name',
+  'rc.udf.register.parse.count': 'UDF Parse Count',
+  'rc.udf.register.source': 'Source',
+  'rc.udf.register.language': 'Language',
+  'rc.udf.register.name': 'UDF Name',
+  'rc.udf.register.className': 'Class Name',
+  'rc.udf.register.deleteConfirm': 'Are you sure you want to delete this UDF? ',
+  'rc.udf.register': 'Register UDF',
   /**
    *
    * role

@@ -22,6 +22,7 @@ package org.dinky.service.impl;
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
+import org.dinky.data.dto.AlertInstanceDTO;
 import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.AlertInstance;
 import org.dinky.data.result.Result;
@@ -66,9 +67,9 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
     }
 
     @Override
-    public AlertResult testAlert(AlertInstance alertInstance) {
+    public AlertResult testAlert(AlertInstanceDTO alertInstanceDTO) {
         AlertConfig alertConfig = AlertConfig.build(
-                alertInstance.getName(), alertInstance.getType(), JsonUtils.toMap(alertInstance.getParams()));
+                alertInstanceDTO.getName(), alertInstanceDTO.getType(), JsonUtils.toMap(alertInstanceDTO.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
 
         String msg = "\n- **Job Name :** <font color='gray'>Test Job</font>\n"

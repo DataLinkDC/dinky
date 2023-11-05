@@ -20,6 +20,7 @@
 package org.dinky.service;
 
 import org.dinky.alert.AlertResult;
+import org.dinky.data.dto.AlertInstanceDTO;
 import org.dinky.data.model.AlertInstance;
 import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
@@ -39,10 +40,10 @@ public interface AlertInstanceService extends ISuperService<AlertInstance> {
     /**
      * test one alert instance
      *
-     * @param alertInstance {@link AlertInstance}
+     * @param alertInstanceDTO {@link AlertInstanceDTO}
      * @return {@link AlertResult}
      */
-    AlertResult testAlert(AlertInstance alertInstance);
+    AlertResult testAlert(AlertInstanceDTO alertInstanceDTO);
 
     /**
      * delete alert instance
