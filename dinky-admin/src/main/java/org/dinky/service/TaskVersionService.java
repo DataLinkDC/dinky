@@ -38,6 +38,7 @@ public interface TaskVersionService extends ISuperService<TaskVersion> {
      * Create a snapshot of a task version.
      *
      * @param task A {@link TaskDTO} object representing the task to create a snapshot for.
+     * @return
      */
-    void createTaskVersionSnapshot(TaskDTO task);
+    Integer createTaskVersionSnapshot(TaskDTO task);
 }

@@ -39,7 +39,7 @@ const JobVersionTab = (props: JobProps) => {
     isLatest: true
   };
 
-  const [currentVersion, setCurrentVersion] = useState<TaskVersionListItem>();
+  const [currentVersion, setCurrentVersion] = useState<TaskVersionListItem>(latestVersion);
 
   const versionList = useRequest(
     {
