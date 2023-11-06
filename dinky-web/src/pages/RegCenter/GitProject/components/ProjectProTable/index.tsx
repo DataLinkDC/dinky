@@ -29,7 +29,8 @@ import ClassList from '@/pages/RegCenter/GitProject/components/BuildSteps/JarSho
 import { CodeTree } from '@/pages/RegCenter/GitProject/components/CodeTree';
 import ProjectModal from '@/pages/RegCenter/GitProject/components/ProjectModal';
 import {
-   GIT_PROJECT_BUILD_STEP_JAVA_ENUM, GIT_PROJECT_BUILD_STEP_PYTHON_ENUM,
+  GIT_PROJECT_BUILD_STEP_JAVA_ENUM,
+  GIT_PROJECT_BUILD_STEP_PYTHON_ENUM,
   GIT_PROJECT_CODE_TYPE,
   GIT_PROJECT_CODE_TYPE_ENUM,
   GIT_PROJECT_STATUS,
@@ -227,7 +228,8 @@ const ProjectProTable: React.FC = () => {
       dataIndex: 'buildStep',
       hideInSearch: true,
       // filters: GIT_PROJECT_BUILD_STEP,
-      valueEnum: (row) => row.codeType === 1 ? GIT_PROJECT_BUILD_STEP_JAVA_ENUM : GIT_PROJECT_BUILD_STEP_PYTHON_ENUM,
+      valueEnum: (row) =>
+        row.codeType === 1 ? GIT_PROJECT_BUILD_STEP_JAVA_ENUM : GIT_PROJECT_BUILD_STEP_PYTHON_ENUM
     },
     {
       title: l('rc.gp.buildState'),
