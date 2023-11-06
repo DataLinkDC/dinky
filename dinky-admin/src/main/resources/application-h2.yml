@@ -21,3 +21,5 @@ spring:
     url: jdbc:h2:mem:dinky;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;INIT=runscript from 'classpath:db/db-h2.sql'
     username: dinky
     password: dinky
+    druid:
+      initial-size: 1
