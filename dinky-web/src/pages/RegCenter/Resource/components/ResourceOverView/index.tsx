@@ -38,6 +38,7 @@ import {MenuInfo} from 'rc-menu/es/interface';
 import {Resizable} from 're-resizable';
 import React, {useCallback, useState} from 'react';
 import {useAsyncEffect} from "ahooks";
+import {unSupportView} from "@/utils/function";
 
 const ResourceOverView: React.FC = () => {
     const [resourceState, setResourceState] = useState<ResourceState>(InitResourceState);
@@ -80,11 +81,11 @@ const ResourceOverView: React.FC = () => {
      */
     const handleNodeClick = async (info: any): Promise<void> => {
         const {
-            node: {id, isLeaf, key},
+            node: {id, isLeaf, key, name},
             node
         } = info;
         setResourceState((prevState) => ({...prevState, selectedKeys: [key], clickedNode: node}));
-        if (isLeaf) {
+        if (isLeaf && !unSupportView(name)) {
             await queryContent(id);
         } else {
             setResourceState((prevState) => ({...prevState, content: ''}));
