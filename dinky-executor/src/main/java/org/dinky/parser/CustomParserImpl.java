@@ -23,7 +23,6 @@ import org.dinky.executor.CustomParser;
 import org.dinky.trans.CreateTemporalTableFunctionParseStrategy;
 
 import org.apache.calcite.sql.SqlNode;
-import org.apache.calcite.sql.SqlNodeList;
 import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.planner.calcite.FlinkPlannerImpl;
@@ -31,7 +30,6 @@ import org.apache.flink.table.planner.delegation.ParserImpl;
 import org.apache.flink.table.planner.parse.CalciteParser;
 import org.apache.flink.table.planner.parse.ExtendedParseStrategy;
 import org.apache.flink.table.planner.parse.ExtendedParser;
-import org.apache.flink.util.Preconditions;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -94,13 +92,7 @@ public class CustomParserImpl implements CustomParser {
 
     @Override
     public SqlNode parseSql(String statement) {
-        CalciteParser parser = calciteParserSupplier.get();
-
-        // use parseSqlList here because we need to support statement end with ';' in sql client.
-        SqlNodeList sqlNodeList = parser.parseSqlList(statement);
-        List<SqlNode> parsed = sqlNodeList.getList();
-        Preconditions.checkArgument(parsed.size() == 1, "only single statement supported");
-        return parsed.get(0);
+        return calciteParserSupplier.get().parse(statement);
     }
 
     @Override

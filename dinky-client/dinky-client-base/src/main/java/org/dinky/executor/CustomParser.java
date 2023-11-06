@@ -33,7 +33,7 @@ public interface CustomParser {
     SqlNode parseExpression(String sqlExpression);
 
     /**
-     * Entry point for parsing SQL and return the abstract syntax tree
+     * Entry point for parsing a SQL and return the abstract syntax tree
      *
      * @param statement the SQL statement to evaluate
      * @return abstract syntax tree
