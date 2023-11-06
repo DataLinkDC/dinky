@@ -194,6 +194,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     <Button
       key={'rebuild'}
       type={'dashed'}
+      hidden={showLog}
       loading={currentStep !== steps.length && percent !== 99}
       onClick={() => onRebuild()}
     >

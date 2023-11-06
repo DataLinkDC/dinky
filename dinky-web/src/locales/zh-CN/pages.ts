@@ -726,7 +726,7 @@ export default {
   'rc.gp.build.step.1': '环境检查',
   'rc.gp.build.step.2': '克隆项目',
   'rc.gp.build.step.3': '编译构建',
-  'rc.gp.build.step.4': '获取 Jar 包',
+  'rc.gp.build.step.4': '获取产物',
   'rc.gp.build.step.5': '分析 UDF',
   'rc.gp.build.step.6': '完成',
   'rc.gp.buildArgs': '构建参数',

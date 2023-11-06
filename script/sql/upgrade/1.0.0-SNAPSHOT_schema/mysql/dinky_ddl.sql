@@ -97,7 +97,7 @@ CREATE TABLE `dinky_git_project` (
                                      `last_build` datetime DEFAULT NULL,
                                      `description` varchar(255) DEFAULT NULL,
                                      `build_state` tinyint(2) NOT NULL DEFAULT '0' COMMENT '0-notStart 1-process 2-failed 3-success',
-                                     `build_step` tinyint(2) NOT NULL DEFAULT '0',
+                                     `build_step` tinyint(2) NOT NULL DEFAULT '0' COMMENT 'different from java and python, when build java project, the step value is as follows: 0: environment check 1: clone project 2: compile and build 3: get artifact 4: analyze UDF 5: finish; when build python project, the step value is as follows: 0: environment check 1: clone project 2: get artifact 3: analyze UDF 4: finish',
                                      `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0-disable 1-enable',
                                      `udf_class_map_list` text COMMENT 'scan udf class',
                                      `order_line` int(11) NOT NULL DEFAULT '1' COMMENT 'order',
