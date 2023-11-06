@@ -20,7 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.FlinkUdfManifest;

@@ -17,23 +17,27 @@
  *
  */
 
-package org.dinky.data.annotation;
+package org.dinky.data.annotations;
 
+import org.dinky.data.enums.BusinessType;
+
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.FIELD})
+/** 自定义操作日志记录注解 */
+@Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
-public @interface GaugeM {
-    String name();
+@Documented
+public @interface Log {
+    /** 模块 */
+    String title() default "";
 
-    String baseUnit() default "bytes";
+    /** 功能 */
+    BusinessType businessType() default BusinessType.OTHER;
 
-    String[] tags() default {};
-
-    String description() default "";
+    /** 是否保存请求的参数 */
+    boolean isSaveRequestData() default true;
 }

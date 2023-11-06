@@ -19,7 +19,9 @@
 
 package org.dinky.data.constant;
 
-import org.springframework.boot.system.ApplicationHome;
+import cn.hutool.core.io.FileUtil;
+
+import java.io.File;
 
 /**
  * DirConstant
@@ -28,14 +30,8 @@ import org.springframework.boot.system.ApplicationHome;
  */
 public class DirConstant {
 
-    public static final String FILE_SEPARATOR = "file.separator";
-    public static final String LOG_DIR_PATH;
-    public static final String ROOT_LOG_PATH;
-
-    static {
-        String separator = System.getProperty(FILE_SEPARATOR);
-        String rootPath = new ApplicationHome().getDir().getPath();
-        LOG_DIR_PATH = rootPath + separator + "logs";
-        ROOT_LOG_PATH = LOG_DIR_PATH + separator + "dinky.log";
-    }
+    public static final String FILE_SEPARATOR = File.separator;
+    public static final String ROOT_PATH = FileUtil.getUserHomeDir().getAbsolutePath();
+    public static final String LOG_DIR_PATH = ROOT_PATH + FILE_SEPARATOR + "logs";
+    public static final String ROOT_LOG_PATH = LOG_DIR_PATH + FILE_SEPARATOR + "dinky.log";
 }

@@ -17,25 +17,23 @@
  *
  */
 
-package org.dinky.data.annotation;
+package org.dinky.data.annotations;
 
-import org.dinky.config.Dialect;
-
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * 自定义操作日志记录注解
- */
-@Target({ElementType.TYPE})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SupportDialect {
-    /**
-     * 模块
-     */
-    public Dialect[] value();
+@Inherited
+public @interface GaugeM {
+    String name();
+
+    String baseUnit() default "bytes";
+
+    String[] tags() default {};
+
+    String description() default "";
 }

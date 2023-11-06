@@ -19,34 +19,31 @@
 
 package org.dinky.configure;
 
-import org.dinky.context.TenantContextHolder;
-import org.dinky.data.annotation.ConditionalOnListProperty;
-import org.dinky.interceptor.PostgreSQLPrepareInterceptor;
-import org.dinky.interceptor.PostgreSQLQueryInterceptor;
-import org.dinky.mybatis.handler.DateMetaObjectHandler;
-import org.dinky.mybatis.properties.MybatisPlusFillProperties;
-
-import java.util.Set;
-
-import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.google.common.collect.ImmutableSet;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.NullValue;
+import org.dinky.context.TenantContextHolder;
+import org.dinky.interceptor.PostgreSQLPrepareInterceptor;
+import org.dinky.interceptor.PostgreSQLQueryInterceptor;
+import org.dinky.mybatis.handler.DateMetaObjectHandler;
+import org.dinky.mybatis.properties.MybatisPlusFillProperties;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+
+import java.util.Set;
 
 /** mybatisPlus config class */
 @Configuration
@@ -80,8 +77,7 @@ public class MybatisPlusConfig {
             "dinky_task_version");
 
     @Bean
-    //    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "pgsql , jmx")
-    @ConditionalOnListProperty(name = "spring.profiles.active", havingValue = "pgsql")
+    @Profile("pgsql")
     public PostgreSQLQueryInterceptor postgreSQLQueryInterceptor() {
         return new PostgreSQLQueryInterceptor();
     }
@@ -92,8 +88,7 @@ public class MybatisPlusConfig {
      * @return {@linkplain PostgreSQLPrepareInterceptor}
      */
     @Bean
-    //    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "pgsql , jmx")
-    @ConditionalOnListProperty(name = "spring.profiles.active", havingValue = "pgsql")
+    @Profile("pgsql")
     public PostgreSQLPrepareInterceptor postgreSQLPrepareInterceptor() {
         return new PostgreSQLPrepareInterceptor();
     }

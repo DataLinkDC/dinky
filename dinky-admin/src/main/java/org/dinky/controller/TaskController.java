@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.annotations.ExecuteProcess;
 import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.dto.DebugDTO;
