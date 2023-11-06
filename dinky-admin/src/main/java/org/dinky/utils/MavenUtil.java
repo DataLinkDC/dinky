@@ -93,7 +93,8 @@ public class MavenUtil {
         } else {
             localRepositoryDirectory = repositoryDir;
         }
-        String mavenCommandLine = getMavenCommandLine(pom, mavenHome, localRepositoryDirectory, setting, goals, args);
+        String mavenCommandLine =
+                getMavenCommandLineByMvn(pom, mavenHome, localRepositoryDirectory, setting, goals, args);
         Opt.ofNullable(consumer).ifPresent(c -> c.accept("Executing command: " + mavenCommandLine + "\n"));
 
         int waitValue = RuntimeUtils.run(
@@ -102,7 +103,7 @@ public class MavenUtil {
                     s = DateUtil.date().toMsStr() + " - " + s + "\n";
                     consumer.accept(s);
                 },
-                log::error);
+                consumer::accept);
         return waitValue == 0;
     }
 
@@ -142,6 +143,30 @@ public class MavenUtil {
                 .ifPresent(x -> commandLine.add("-Dmaven.repo.local=" + StrUtil.wrap(repositoryDir, "\"")));
         commandLine.add("-Dclassworlds.conf=" + StrUtil.wrap(mavenHome + "/bin/m2.conf", "\""));
         commandLine.add("-classpath " + classpath + " org.codehaus.classworlds.Launcher");
+        commandLine.add("-s " + settingsPath);
+        commandLine.add("-f " + projectDir);
+        commandLine.add(StrUtil.join(" ", args));
+        commandLine.add(StrUtil.join(" ", goals));
+        return StrUtil.join(" ", commandLine);
+    }
+
+    public static String getMavenCommandLineByMvn(
+            String projectDir,
+            String mavenHome,
+            String repositoryDir,
+            String settingsPath,
+            List<String> goals,
+            List<String> args) {
+        projectDir = StrUtil.wrap(projectDir, "\"");
+        settingsPath = StrUtil.wrap(settingsPath, "\"");
+        List<String> commandLine = new LinkedList<>();
+
+        commandLine.add(mavenHome + "/bin/mvn");
+        commandLine.add("-Dmaven.multiModuleProjectDirectory=" + projectDir);
+        commandLine.add("-Dmaven.home=" + StrUtil.wrap(mavenHome, "\""));
+        Opt.ofBlankAble(repositoryDir)
+                .ifPresent(x -> commandLine.add("-Dmaven.repo.local=" + StrUtil.wrap(repositoryDir, "\"")));
+        commandLine.add("-Dclassworlds.conf=" + StrUtil.wrap(mavenHome + "/bin/m2.conf", "\""));
         commandLine.add("-s " + settingsPath);
         commandLine.add("-f " + projectDir);
         commandLine.add(StrUtil.join(" ", args));
