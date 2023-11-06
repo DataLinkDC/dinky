@@ -131,7 +131,7 @@ export const CLONE_TYPES = [
  * @param item
  */
 export const renderBranchesTagColor = (item: string) => {
-  let colorTag = item.includes('dev')
+  return item.includes('dev')
     ? 'processing'
     : item.includes('test')
     ? 'warning'
@@ -142,13 +142,9 @@ export const renderBranchesTagColor = (item: string) => {
     : item.includes('main')
     ? 'success'
     : 'default';
-  return colorTag;
 };
 
-/**
- * git project build step enum
- */
-export const GIT_PROJECT_BUILD_STEP_ENUM = {
+const GIT_PROJECT_BUILD_STEP_BASE = {
   0: {
     title: l('rc.gp.build.step.0'),
     text: l('rc.gp.build.step.0'),
@@ -159,6 +155,12 @@ export const GIT_PROJECT_BUILD_STEP_ENUM = {
     text: l('rc.gp.build.step.1'),
     status: 'default'
   },
+}
+/**
+ * git project build step enum
+ */
+export const GIT_PROJECT_BUILD_STEP_JAVA_ENUM = {
+  ...GIT_PROJECT_BUILD_STEP_BASE,
   2: {
     title: l('rc.gp.build.step.2'),
     text: l('rc.gp.build.step.2'),
@@ -185,6 +187,32 @@ export const GIT_PROJECT_BUILD_STEP_ENUM = {
     status: 'success'
   }
 };
+
+export const GIT_PROJECT_BUILD_STEP_PYTHON_ENUM = {
+  ...GIT_PROJECT_BUILD_STEP_BASE,
+  2: {
+    title: l('rc.gp.build.step.2'),
+    text: l('rc.gp.build.step.2'),
+    status: 'processing'
+  },
+  3: {
+    title: l('rc.gp.build.step.4'),
+    text: l('rc.gp.build.step.4'),
+    status: 'success'
+  },
+  4: {
+    title: l('rc.gp.build.step.5'),
+    text: l('rc.gp.build.step.5'),
+    status: 'success'
+  },
+  5: {
+    title: l('rc.gp.build.step.6'),
+    text: l('rc.gp.build.step.6'),
+    status: 'success'
+  }
+};
+
+
 /**
  * git project build step filter
  */
@@ -228,7 +256,6 @@ export const GIT_PROJECT_BUILD_STEP = [
 
 /**
  * git project build step enum
- * @type {{"100%": string, "0%": string, "20%": string, "40%": string, "60%": string, "80%": string}}
  */
 export const processColor = {
   '0%': '#8ac1ea',
