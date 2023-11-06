@@ -23,12 +23,15 @@ import org.dinky.executor.CustomParser;
 import org.dinky.trans.CreateTemporalTableFunctionParseStrategy;
 
 import org.apache.calcite.sql.SqlNode;
+import org.apache.calcite.sql.SqlNodeList;
 import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.planner.calcite.FlinkPlannerImpl;
 import org.apache.flink.table.planner.delegation.ParserImpl;
 import org.apache.flink.table.planner.parse.CalciteParser;
 import org.apache.flink.table.planner.parse.ExtendedParseStrategy;
 import org.apache.flink.table.planner.parse.ExtendedParser;
+import org.apache.flink.util.Preconditions;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,11 +45,13 @@ public class CustomParserImpl implements CustomParser {
 
     private static final DinkyExtendedParser DINKY_EXTENDED_PARSER = DinkyExtendedParser.INSTANCE;
     private final Parser parser;
+    private final Supplier<FlinkPlannerImpl> validatorSupplier;
     private final Supplier<CalciteParser> calciteParserSupplier;
 
     public CustomParserImpl(Parser parser) {
         this.parser = parser;
         this.calciteParserSupplier = getCalciteParserSupplier(this.parser);
+        this.validatorSupplier = getValidatorSupplier(this.parser);
     }
 
     public static Supplier<CalciteParser> getCalciteParserSupplier(Parser parser) {
@@ -55,6 +60,16 @@ public class CustomParserImpl implements CustomParser {
             return (Supplier<CalciteParser>) ReflectUtil.getFieldValue(parserImpl, "calciteParserSupplier");
         } else {
             throw new RuntimeException("Unsupported parser type for getCalciteParserSupplier: "
+                    + parser.getClass().getName());
+        }
+    }
+
+    public static Supplier<FlinkPlannerImpl> getValidatorSupplier(Parser parser) {
+        if (parser instanceof ParserImpl) {
+            ParserImpl parserImpl = (ParserImpl) parser;
+            return (Supplier<FlinkPlannerImpl>) ReflectUtil.getFieldValue(parserImpl, "validatorSupplier");
+        } else {
+            throw new RuntimeException("Unsupported parser type for getValidatorSupplier: "
                     + parser.getClass().getName());
         }
     }
@@ -75,6 +90,23 @@ public class CustomParserImpl implements CustomParser {
     @Override
     public SqlNode parseExpression(String sqlExpression) {
         return calciteParserSupplier.get().parseExpression(sqlExpression);
+    }
+
+    @Override
+    public SqlNode parseSql(String statement) {
+        CalciteParser parser = calciteParserSupplier.get();
+
+        // use parseSqlList here because we need to support statement end with ';' in sql client.
+        SqlNodeList sqlNodeList = parser.parseSqlList(statement);
+        List<SqlNode> parsed = sqlNodeList.getList();
+        Preconditions.checkArgument(parsed.size() == 1, "only single statement supported");
+        return parsed.get(0);
+    }
+
+    @Override
+    public SqlNode validate(SqlNode sqlNode) {
+        FlinkPlannerImpl flinkPlanner = validatorSupplier.get();
+        return flinkPlanner.validate(sqlNode);
     }
 
     public static class DinkyExtendedParser extends ExtendedParser {

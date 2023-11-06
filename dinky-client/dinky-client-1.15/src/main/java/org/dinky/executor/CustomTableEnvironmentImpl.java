@@ -319,7 +319,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     @Override
     public List<LineageRel> getLineage(String statement) {
         LineageContext lineageContext = new LineageContext((TableEnvironmentImpl) streamTableEnvironment);
-        return lineageContext.getLineage(statement);
+        return lineageContext.analyzeLineage(statement);
     }
 
     @Override
