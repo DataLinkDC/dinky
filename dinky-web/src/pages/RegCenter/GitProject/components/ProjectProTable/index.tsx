@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -353,6 +353,15 @@ const ProjectProTable: React.FC = () => {
   };
 
   /**
+   * re try build
+   * @param value
+   */
+  const handleReTryBuild = async (value: Partial<GitProject>) => {
+    handleCancel();
+    await handleBuild(value);
+  };
+
+  /**
    * render
    */
   return (
@@ -401,7 +410,9 @@ const ProjectProTable: React.FC = () => {
       {gitProjectStatus.buildOpen && (
         <BuildSteps
           title={l('rc.gp.build')}
-          onCancel={handleCancel}
+          onOk={handleCancel}
+          onRebuild={() => handleReTryBuild(gitProjectStatus.value)}
+          onReTry={() => handleReTryBuild(gitProjectStatus.value)}
           values={gitProjectStatus.value}
         />
       )}
@@ -410,7 +421,9 @@ const ProjectProTable: React.FC = () => {
       {gitProjectStatus.logOpen && (
         <BuildSteps
           title={l('rc.gp.log')}
-          onCancel={handleCancel}
+          onOk={handleCancel}
+          showLog={gitProjectStatus.logOpen}
+          onRebuild={() => handleReTryBuild(gitProjectStatus.value)}
           values={gitProjectStatus.value}
         />
       )}
