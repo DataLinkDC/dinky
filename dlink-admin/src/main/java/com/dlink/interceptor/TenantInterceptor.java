@@ -19,13 +19,22 @@
 
 package com.dlink.interceptor;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.dlink.context.TenantContextHolder;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dlink.dto.UserDTO;
+import com.dlink.model.Tenant;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,10 +47,31 @@ public class TenantInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Arrays.stream(request.getCookies())
-            .filter(t -> "tenantId".equals(t.getName()))
-            .findFirst()
-            .ifPresent(t -> TenantContextHolder.set(Integer.valueOf(t.getValue())));
+
+        Object object = StpUtil.getSession().get("user");
+        if(object==null){
+            StpUtil.logout();
+            return false;
+        }
+        UserDTO userDTO = (UserDTO)object;
+
+        Map<String, String> map = Arrays.stream(request.getCookies())
+                .filter(t -> "tenantId".equals(t.getName()))
+                .collect(Collectors.toMap(Cookie::getName, Cookie::getValue));
+        if(MapUtils.isEmpty(map)){
+            StpUtil.logout();
+            return false;
+        }
+
+        List<Tenant> tenants = userDTO.getTenantList().stream()
+                .filter(t -> t.getId() == Integer.parseInt(map.get("tenantId")))
+                .collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(tenants)){
+            StpUtil.logout();
+            return false;
+        }
+
+        TenantContextHolder.set(tenants.get(0).getId());
 
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
