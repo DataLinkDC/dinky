@@ -50,7 +50,6 @@
     </modules>
 
     <properties>
-        <jgit.version>5.13.1.202206130422-r</jgit.version>
         <assertj.version>3.21.0</assertj.version>
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
         <clickhouse.version>0.2.6</clickhouse.version>
@@ -78,6 +77,7 @@
         <javax.mail>1.6.2</javax.mail>
         <jaxb.version>2.3.0</jaxb.version>
         <jedis.version>2.9.0</jedis.version>
+        <jgit.version>5.13.1.202206130422-r</jgit.version>
         <junit5.version>5.9.1</junit5.version>
         <knife4j.version>4.1.0</knife4j.version>
         <log4j.version>2.19.0</log4j.version>

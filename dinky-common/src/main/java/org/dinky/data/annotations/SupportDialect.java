@@ -37,5 +37,5 @@ public @interface SupportDialect {
     /**
      * Support Dialect
      */
-     Dialect[] value();
+    Dialect[] value();
 }
