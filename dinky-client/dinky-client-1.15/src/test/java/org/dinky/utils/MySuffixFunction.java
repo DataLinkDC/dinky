@@ -17,19 +17,17 @@
  *
  */
 
-package org.dinky.executor;
+package org.dinky.utils;
 
-import org.apache.calcite.sql.SqlNode;
-import org.apache.flink.table.delegation.Parser;
+import org.apache.flink.table.functions.ScalarFunction;
 
-/** */
-public interface ExtendedParser extends Parser {
+/**
+ * @description: MySuffixFunction
+ * @author: HamaWhite
+ */
+public class MySuffixFunction extends ScalarFunction {
 
-    SqlNode parseExpression(String sqlExpression);
-
-    SqlNode parseSql(String statement);
-
-    SqlNode validate(SqlNode sqlNode);
-
-    CustomParser getCustomParser();
+    public String eval(String input) {
+        return input.concat("-HamaWhite");
+    }
 }
