@@ -17,19 +17,36 @@
  *
  */
 
-package org.dinky.executor;
+package org.dinky.data.model;
 
-import org.apache.calcite.sql.SqlNode;
-import org.apache.flink.table.delegation.Parser;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-/** */
-public interface ExtendedParser extends Parser {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
-    SqlNode parseExpression(String sqlExpression);
+/**
+ * @description: FunctionResult
+ * @author: HamaWhite
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
+public class FunctionResult {
 
-    SqlNode parseSql(String statement);
+    private String catalogName;
 
-    SqlNode validate(SqlNode sqlNode);
+    private String database;
 
-    CustomParser getCustomParser();
+    private String functionName;
+
+    public static Set<FunctionResult> build(String catalog, String database, String[] expectedArray) {
+        return Stream.of(expectedArray)
+                .map(e -> new FunctionResult(catalog, database, e))
+                .collect(Collectors.toSet());
+    }
 }

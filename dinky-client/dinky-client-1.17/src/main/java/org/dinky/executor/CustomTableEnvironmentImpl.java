@@ -40,7 +40,6 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.ExplainFormat;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 import org.apache.flink.table.operations.CreateTableASOperation;
 import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
@@ -251,8 +250,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     @Override
     public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext = new LineageContext((TableEnvironmentImpl) streamTableEnvironment);
-        return lineageContext.getLineage(statement);
+        LineageContext lineageContext = new LineageContext(this);
+        return lineageContext.analyzeLineage(statement);
     }
 
     @Override
