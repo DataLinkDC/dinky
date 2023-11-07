@@ -17,28 +17,36 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.data.model;
 
-import org.dinky.data.dto.TaskDTO;
-import org.dinky.data.model.TaskVersion;
-import org.dinky.mybatis.service.ISuperService;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
-public interface TaskVersionService extends ISuperService<TaskVersion> {
+/**
+ * @description: FunctionResult
+ * @author: HamaWhite
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
+public class FunctionResult {
 
-    /**
-     * @description 通过作业Id查询版本数据
-     * @param taskId
-     * @return java.util.List<org.dinky.data.model.TaskVersion>
-     */
-    List<TaskVersion> getTaskVersionByTaskId(Integer taskId);
+    private String catalogName;
 
-    /**
-     * Create a snapshot of a task version.
-     *
-     * @param task A {@link TaskDTO} object representing the task to create a snapshot for.
-     * @return
-     */
-    Integer createTaskVersionSnapshot(TaskDTO task);
+    private String database;
+
+    private String functionName;
+
+    public static Set<FunctionResult> build(String catalog, String database, String[] expectedArray) {
+        return Stream.of(expectedArray)
+                .map(e -> new FunctionResult(catalog, database, e))
+                .collect(Collectors.toSet());
+    }
 }

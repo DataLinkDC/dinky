@@ -436,7 +436,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             //                            sqlExplainResult.getError()));
             //                }
             //            }
-            taskVersionService.createTaskVersionSnapshot(task);
+            Integer taskVersionId = taskVersionService.createTaskVersionSnapshot(task);
+            task.setVersionId(taskVersionId);
         }
         return saveOrUpdate(task.buildTask());
     }
@@ -558,12 +559,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean rollbackTask(TaskRollbackVersionDTO dto) {
-        if (Asserts.isNull(dto.getVersionId()) || Asserts.isNull(dto.getId())) {
+        if (Asserts.isNull(dto.getVersionId()) || Asserts.isNull(dto.getTaskId())) {
             throw new BusException("the version is error");
         }
 
         LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>()
-                .eq(TaskVersion::getTaskId, dto.getId())
+                .eq(TaskVersion::getTaskId, dto.getTaskId())
                 .eq(TaskVersion::getVersionId, dto.getVersionId());
 
         TaskVersion taskVersion = taskVersionService.getOne(queryWrapper);

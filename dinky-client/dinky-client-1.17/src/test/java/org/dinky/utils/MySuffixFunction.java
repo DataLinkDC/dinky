@@ -17,28 +17,17 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.utils;
 
-import org.dinky.data.dto.TaskDTO;
-import org.dinky.data.model.TaskVersion;
-import org.dinky.mybatis.service.ISuperService;
+import org.apache.flink.table.functions.ScalarFunction;
 
-import java.util.List;
+/**
+ * @description: MySuffixFunction
+ * @author: HamaWhite
+ */
+public class MySuffixFunction extends ScalarFunction {
 
-public interface TaskVersionService extends ISuperService<TaskVersion> {
-
-    /**
-     * @description 通过作业Id查询版本数据
-     * @param taskId
-     * @return java.util.List<org.dinky.data.model.TaskVersion>
-     */
-    List<TaskVersion> getTaskVersionByTaskId(Integer taskId);
-
-    /**
-     * Create a snapshot of a task version.
-     *
-     * @param task A {@link TaskDTO} object representing the task to create a snapshot for.
-     * @return
-     */
-    Integer createTaskVersionSnapshot(TaskDTO task);
+    public String eval(String input) {
+        return input.concat("-HamaWhite");
+    }
 }

@@ -19,7 +19,10 @@
 
 package org.dinky.data.model;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * LineageResult
@@ -73,6 +76,23 @@ public class LineageRel {
         this.transform = transform;
     }
 
+    public LineageRel(
+            String catalog,
+            String database,
+            String sourceTable,
+            String sourceColumn,
+            String targetTable,
+            String targetColumn) {
+        this.sourceCatalog = catalog;
+        this.sourceDatabase = database;
+        this.sourceTable = sourceTable;
+        this.sourceColumn = sourceColumn;
+        this.targetCatalog = catalog;
+        this.targetDatabase = database;
+        this.targetTable = targetTable;
+        this.targetColumn = targetColumn;
+    }
+
     public static LineageRel build(
             String sourceTablePath,
             String sourceColumn,
@@ -94,26 +114,17 @@ public class LineageRel {
                 transform);
     }
 
-    public static LineageRel build(
-            String sourceCatalog,
-            String sourceDatabase,
-            String sourceTable,
-            String sourceColumn,
-            String targetCatalog,
-            String targetDatabase,
-            String targetTable,
-            String targetColumn,
-            String transform) {
-        return new LineageRel(
-                sourceCatalog,
-                sourceDatabase,
-                sourceTable,
-                sourceColumn,
-                targetCatalog,
-                targetDatabase,
-                targetTable,
-                targetColumn,
-                transform);
+    public static List<LineageRel> build(String catalog, String database, String[][] expectedArray) {
+        return Stream.of(expectedArray)
+                .map(e -> {
+                    LineageRel lineageRel = new LineageRel(catalog, database, e[0], e[1], e[2], e[3]);
+                    // transform field is optional
+                    if (e.length == 5) {
+                        lineageRel.setTransform(e[4]);
+                    }
+                    return lineageRel;
+                })
+                .collect(Collectors.toList());
     }
 
     public String getSourceCatalog() {
@@ -158,6 +169,10 @@ public class LineageRel {
 
     public String getTransform() {
         return transform;
+    }
+
+    public void setTransform(String transform) {
+        this.transform = transform;
     }
 
     @Override

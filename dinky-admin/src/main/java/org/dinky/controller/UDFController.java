@@ -88,7 +88,7 @@ public class UDFController {
      * @return Result
      */
     @PostMapping("/addOrUpdateByResourceId")
-    public Result<Void> saveOrUpdate(@RequestBody CommonDTO<List<Integer>> dto) {
+    public Result<Void> addOrUpdateByResourceId(@RequestBody CommonDTO<List<Integer>> dto) {
         udfService.addOrUpdateByResourceId(dto.getData());
         return Result.succeed();
     }
