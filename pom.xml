@@ -50,6 +50,7 @@
     </modules>
 
     <properties>
+        <jgit.version>5.13.1.202206130422-r</jgit.version>
         <assertj.version>3.21.0</assertj.version>
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
         <clickhouse.version>0.2.6</clickhouse.version>
