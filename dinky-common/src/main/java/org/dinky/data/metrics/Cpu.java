@@ -19,7 +19,7 @@
 
 package org.dinky.data.metrics;
 
-import org.dinky.data.annotation.GaugeM;
+import org.dinky.data.annotations.GaugeM;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.system.oshi.CpuInfo;

@@ -17,25 +17,23 @@
  *
  */
 
-package org.dinky.data.constant;
+package org.dinky.data.annotations;
 
-import org.springframework.boot.system.ApplicationHome;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * DirConstant
- *
- * @since 2022/10/15 18:37
- */
-public class DirConstant {
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface GaugeM {
+    String name();
 
-    public static final String FILE_SEPARATOR = "file.separator";
-    public static final String LOG_DIR_PATH;
-    public static final String ROOT_LOG_PATH;
+    String baseUnit() default "bytes";
 
-    static {
-        String separator = System.getProperty(FILE_SEPARATOR);
-        String rootPath = new ApplicationHome().getDir().getPath();
-        LOG_DIR_PATH = rootPath + separator + "logs";
-        ROOT_LOG_PATH = LOG_DIR_PATH + separator + "dinky.log";
-    }
+    String[] tags() default {};
+
+    String description() default "";
 }

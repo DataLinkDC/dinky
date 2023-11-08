@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;

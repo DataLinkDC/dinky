@@ -17,25 +17,21 @@
  *
  */
 
-package org.dinky.data.annotation;
+package org.dinky.data.constant;
 
-import org.dinky.config.Dialect;
+import java.io.File;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import cn.hutool.core.io.FileUtil;
 
 /**
- * 自定义操作日志记录注解
+ * DirConstant
+ *
+ * @since 2022/10/15 18:37
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SupportDialect {
-    /**
-     * 模块
-     */
-    public Dialect[] value();
+public class DirConstant {
+
+    public static final String FILE_SEPARATOR = File.separator;
+    public static final String ROOT_PATH = FileUtil.getUserHomeDir().getAbsolutePath();
+    public static final String LOG_DIR_PATH = ROOT_PATH + FILE_SEPARATOR + "logs";
+    public static final String ROOT_LOG_PATH = LOG_DIR_PATH + FILE_SEPARATOR + "dinky.log";
 }

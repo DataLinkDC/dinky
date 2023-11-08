@@ -19,7 +19,7 @@
 
 package org.dinky.data.metrics;
 
-import org.dinky.data.annotation.GaugeM;
+import org.dinky.data.annotations.GaugeM;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
