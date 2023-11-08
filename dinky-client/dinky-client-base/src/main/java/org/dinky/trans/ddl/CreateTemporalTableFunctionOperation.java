@@ -20,9 +20,9 @@
 package org.dinky.trans.ddl;
 
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.parse.CreateTemporalTableFunctionParseStrategy;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
+import org.dinky.trans.parse.CreateTemporalTableFunctionParseStrategy;
 
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.expressions.Expression;

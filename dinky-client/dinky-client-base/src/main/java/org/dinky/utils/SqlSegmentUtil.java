@@ -20,7 +20,7 @@
 package org.dinky.utils;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.parse.SqlSegment;
+import org.dinky.parser.SqlSegment;
 
 import java.util.HashMap;
 import java.util.List;

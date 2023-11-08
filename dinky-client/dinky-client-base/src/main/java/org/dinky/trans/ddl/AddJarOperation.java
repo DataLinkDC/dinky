@@ -21,9 +21,9 @@ package org.dinky.trans.ddl;
 
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.parse.check.AddJarSqlParserStrategy;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
+import org.dinky.trans.parse.AddJarSqlParseStrategy;
 
 import org.apache.flink.table.api.TableResult;
 
@@ -45,7 +45,7 @@ public class AddJarOperation extends AbstractOperation implements ExtendOperatio
 
     @Override
     public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
-        Arrays.stream(AddJarSqlParserStrategy.getInfo(statement)).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
+        Arrays.stream(AddJarSqlParseStrategy.getInfo(statement)).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
         return Optional.of(TABLE_RESULT_OK);
     }
 

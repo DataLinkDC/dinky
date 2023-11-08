@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.parse;
+package org.dinky.trans.parse;
 
 import org.dinky.trans.ddl.CreateTemporalTableFunctionOperation;
 

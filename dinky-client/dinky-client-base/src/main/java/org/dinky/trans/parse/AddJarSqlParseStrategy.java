@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.parse.check;
+package org.dinky.trans.parse;
 
 import org.dinky.data.exception.DinkyException;
 import org.dinky.trans.ddl.AddJarOperation;
@@ -40,13 +40,13 @@ import cn.hutool.core.util.StrUtil;
 /**
  * @since 0.7.0
  */
-public class AddJarSqlParserStrategy extends AbstractRegexParseStrategy {
+public class AddJarSqlParseStrategy extends AbstractRegexParseStrategy {
 
     private static final String ADD_JAR = "(add\\s+customjar)\\s+'(.*.jar)'";
     private static final Pattern ADD_JAR_PATTERN = Pattern.compile(ADD_JAR, Pattern.CASE_INSENSITIVE);
-    public static final AddJarSqlParserStrategy INSTANCE = new AddJarSqlParserStrategy();
+    public static final AddJarSqlParseStrategy INSTANCE = new AddJarSqlParseStrategy();
 
-    protected AddJarSqlParserStrategy() {
+    protected AddJarSqlParseStrategy() {
         super(ADD_JAR_PATTERN);
     }
 

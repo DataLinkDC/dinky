@@ -22,9 +22,9 @@ package org.dinky.trans.ddl;
 import static org.apache.flink.table.api.Expressions.$;
 
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.parse.CreateAggTableSelectSqlParserStrategy;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
+import org.dinky.trans.parse.CreateAggTableSelectSqlParseStrategy;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.api.Table;
@@ -51,7 +51,7 @@ public class CreateAggTableOperation extends AbstractOperation implements Extend
 
     @Override
     public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
-        AggTable aggTable = CreateAggTableSelectSqlParserStrategy.getInfo(statement);
+        AggTable aggTable = CreateAggTableSelectSqlParseStrategy.getInfo(statement);
         Table source = tEnv.sqlQuery("select * from " + aggTable.getTable());
         List<String> wheres = aggTable.getWheres();
         if (wheres != null && CollUtil.isNotEmpty(wheres)) {

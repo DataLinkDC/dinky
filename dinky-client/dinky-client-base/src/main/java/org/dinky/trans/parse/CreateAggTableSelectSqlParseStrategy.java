@@ -17,8 +17,9 @@
  *
  */
 
-package org.dinky.parse;
+package org.dinky.trans.parse;
 
+import org.dinky.parser.SqlSegment;
 import org.dinky.trans.ddl.CreateAggTableOperation;
 import org.dinky.utils.SqlSegmentUtil;
 
@@ -35,13 +36,13 @@ import java.util.regex.Pattern;
  *
  * @since 2021/6/14 16:56
  */
-public class CreateAggTableSelectSqlParserStrategy extends AbstractRegexParseStrategy {
+public class CreateAggTableSelectSqlParseStrategy extends AbstractRegexParseStrategy {
     private static final String PATTERN_STR = "(create\\s+aggtable)(.+)(as\\s+select)(.+)";
     private static final Pattern PATTERN = Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
-    public static final CreateAggTableSelectSqlParserStrategy INSTANCE = new CreateAggTableSelectSqlParserStrategy();
+    public static final CreateAggTableSelectSqlParseStrategy INSTANCE = new CreateAggTableSelectSqlParseStrategy();
 
-    public CreateAggTableSelectSqlParserStrategy() {
+    public CreateAggTableSelectSqlParseStrategy() {
         super(PATTERN);
     }
 

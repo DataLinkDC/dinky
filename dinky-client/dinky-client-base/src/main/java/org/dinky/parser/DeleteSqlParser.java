@@ -17,28 +17,22 @@
  *
  */
 
-package org.dinky.parse;
+package org.dinky.parser;
 
 /**
- * SelectSqlParser
+ * DeleteSqlParser
  *
- * @since 2021/6/14 16:53
+ * @since 2021/6/14 16:51
  */
-public class SelectSqlParser extends BaseSingleSqlParser {
+public class DeleteSqlParser extends BaseSingleSqlParser {
 
-    public SelectSqlParser(String originalSql) {
+    public DeleteSqlParser(String originalSql) {
         super(originalSql);
     }
 
     @Override
     protected void initializeSegments() {
-        segments.add(new SqlSegment("(select)(.+)(from)", "[,]"));
-        segments.add(new SqlSegment(
-                "(from)(.+?)(where |group\\s+by|having|order\\s+by | ENDOFSQL)",
-                "(,|s+lefts+joins+|s+rights+joins+|s+inners+joins+)"));
-        segments.add(new SqlSegment("(where)(.+?)(group\\s+by |having| order\\s+by | ENDOFSQL)", "(and|or)"));
-        segments.add(new SqlSegment("(group\\s+by)(.+?)(having|order\\s+by| ENDOFSQL)", "[,]"));
-        segments.add(new SqlSegment("(having)(.+?)(order\\s+by| ENDOFSQL)", "(and|or)"));
-        segments.add(new SqlSegment("(order\\s+by)(.+)( ENDOFSQL)", "[,]"));
+        segments.add(new SqlSegment("(delete\\s+from)(.+)( where | ENDOFSQL)", "[,]"));
+        segments.add(new SqlSegment("(where)(.+)( ENDOFSQL)", "(and|or)"));
     }
 }

@@ -20,9 +20,9 @@
 package org.dinky.trans.dml;
 
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.parse.ExecuteJarParseStrategy;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
+import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.RunTimeUtil;
 
 import org.apache.flink.api.dag.Pipeline;

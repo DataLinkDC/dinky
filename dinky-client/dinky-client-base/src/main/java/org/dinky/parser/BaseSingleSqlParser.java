@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.parse;
+package org.dinky.parser;
 
 import org.dinky.assertion.Asserts;
 

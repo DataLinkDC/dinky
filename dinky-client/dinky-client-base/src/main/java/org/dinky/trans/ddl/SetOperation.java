@@ -21,9 +21,9 @@ package org.dinky.trans.ddl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.parse.SetSqlParserStrategy;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
+import org.dinky.trans.parse.SetSqlParseStrategy;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.Configuration;
@@ -58,7 +58,7 @@ public class SetOperation extends AbstractOperation implements ExtendOperation {
         } catch (ClassNotFoundException e) {
             logger.error("Class not found: org.apache.log4j.Logger");
         }
-        Map<String, List<String>> map = SetSqlParserStrategy.getInfo(statement);
+        Map<String, List<String>> map = SetSqlParseStrategy.getInfo(statement);
         if (Asserts.isNotNullMap(map) && map.size() == 2) {
             Map<String, String> confMap = new HashMap<>();
             confMap.put(StringUtils.join(map.get("SET"), "."), StringUtils.join(map.get("="), ","));

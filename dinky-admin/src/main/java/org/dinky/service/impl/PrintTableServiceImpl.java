@@ -23,7 +23,7 @@ import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.PrintTableVo;
 import org.dinky.explainer.print_table.PrintStatementExplainer;
-import org.dinky.parse.SqlType;
+import org.dinky.parser.SqlType;
 import org.dinky.service.PrintTableService;
 import org.dinky.trans.Operations;
 import org.dinky.utils.SqlUtil;

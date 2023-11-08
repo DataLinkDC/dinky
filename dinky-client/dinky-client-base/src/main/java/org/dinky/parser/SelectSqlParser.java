@@ -17,28 +17,28 @@
  *
  */
 
-package org.dinky.parse;
+package org.dinky.parser;
 
 /**
- * InsertSelectSqlParser
+ * SelectSqlParser
  *
  * @since 2021/6/14 16:53
  */
-public class InsertSelectSqlParser extends BaseSingleSqlParser {
+public class SelectSqlParser extends BaseSingleSqlParser {
 
-    public InsertSelectSqlParser(String originalSql) {
+    public SelectSqlParser(String originalSql) {
         super(originalSql);
     }
 
     @Override
     protected void initializeSegments() {
-        segments.add(new SqlSegment("(insert\\s+into)(.+)( select )", "[,]"));
         segments.add(new SqlSegment("(select)(.+)(from)", "[,]"));
         segments.add(new SqlSegment(
-                "(from)(.+?)( where | on | having | group\\s+by | order\\s+by | ENDOFSQL)",
-                "(,|\\s+left\\s+join\\s+|\\s+right\\s+join\\s+|\\s+inner\\s+join\\s+)"));
-        segments.add(new SqlSegment("(where|on|having)(.+?)( group\\s+by | order\\s+by | ENDOFSQL)", "(and|or)"));
-        segments.add(new SqlSegment("(group\\s+by)(.+?)( order\\s+by| ENDOFSQL)", "[,]"));
-        segments.add(new SqlSegment("(order\\s+by)(.+?)( ENDOFSQL)", "[,]"));
+                "(from)(.+?)(where |group\\s+by|having|order\\s+by | ENDOFSQL)",
+                "(,|s+lefts+joins+|s+rights+joins+|s+inners+joins+)"));
+        segments.add(new SqlSegment("(where)(.+?)(group\\s+by |having| order\\s+by | ENDOFSQL)", "(and|or)"));
+        segments.add(new SqlSegment("(group\\s+by)(.+?)(having|order\\s+by| ENDOFSQL)", "[,]"));
+        segments.add(new SqlSegment("(having)(.+?)(order\\s+by| ENDOFSQL)", "(and|or)"));
+        segments.add(new SqlSegment("(order\\s+by)(.+)( ENDOFSQL)", "[,]"));
     }
 }

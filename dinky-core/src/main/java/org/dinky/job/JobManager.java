@@ -59,11 +59,11 @@ import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
-import org.dinky.parse.ExecuteJarParseStrategy;
-import org.dinky.parse.SqlType;
-import org.dinky.parse.check.AddJarSqlParserStrategy;
+import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
 import org.dinky.trans.dml.ExecuteJarOperation;
+import org.dinky.trans.parse.AddJarSqlParseStrategy;
+import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
@@ -331,7 +331,7 @@ public class JobManager {
             }
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParserStrategy.getAllFilePath(statement).forEach(executor::addJar);
+                AddJarSqlParseStrategy.getAllFilePath(statement).forEach(executor::addJar);
             }
         }
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));

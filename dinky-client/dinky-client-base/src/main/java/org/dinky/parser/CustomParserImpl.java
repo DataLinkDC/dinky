@@ -17,9 +17,13 @@
  *
  */
 
-package org.dinky.parse;
+package org.dinky.parser;
 
 import org.dinky.executor.CustomParser;
+import org.dinky.trans.parse.AddJarSqlParseStrategy;
+import org.dinky.trans.parse.CreateAggTableSelectSqlParseStrategy;
+import org.dinky.trans.parse.CreateTemporalTableFunctionParseStrategy;
+import org.dinky.trans.parse.SetSqlParseStrategy;
 
 import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.table.delegation.Parser;
@@ -30,13 +34,12 @@ import org.apache.flink.table.planner.parse.CalciteParser;
 import org.apache.flink.table.planner.parse.ExtendedParseStrategy;
 import org.apache.flink.table.planner.parse.ExtendedParser;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
-import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 
 public class CustomParserImpl implements CustomParser {
@@ -104,11 +107,11 @@ public class CustomParserImpl implements CustomParser {
     public static class DinkyExtendedParser extends ExtendedParser {
         public static final DinkyExtendedParser INSTANCE = new DinkyExtendedParser();
 
-        private static final List<ExtendedParseStrategy> PARSE_STRATEGIES =
-                ClassUtil.scanPackageBySuper("org.dinky.parse", ExtendedParseStrategy.class).stream()
-                        .map(x -> ReflectUtil.getStaticFieldValue(ReflectUtil.getField(x, "INSTANCE")))
-                        .map((x -> (ExtendedParseStrategy) x))
-                        .collect(Collectors.toList());
+        private static final List<ExtendedParseStrategy> PARSE_STRATEGIES = Arrays.asList(
+                AddJarSqlParseStrategy.INSTANCE,
+                CreateAggTableSelectSqlParseStrategy.INSTANCE,
+                SetSqlParseStrategy.INSTANCE,
+                CreateTemporalTableFunctionParseStrategy.INSTANCE);
 
         @Override
         public Optional<Operation> parse(String statement) {

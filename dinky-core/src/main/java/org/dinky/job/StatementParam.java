@@ -19,7 +19,7 @@
 
 package org.dinky.job;
 
-import org.dinky.parse.SqlType;
+import org.dinky.parser.SqlType;
 
 /**
  * StatementParam

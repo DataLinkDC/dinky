@@ -17,8 +17,9 @@
  *
  */
 
-package org.dinky.parse;
+package org.dinky.trans.parse;
 
+import org.dinky.parser.SqlSegment;
 import org.dinky.trans.dml.ExecuteJarOperation;
 
 import org.apache.flink.table.operations.Operation;

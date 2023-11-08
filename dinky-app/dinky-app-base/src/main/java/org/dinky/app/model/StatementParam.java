@@ -19,7 +19,7 @@
 
 package org.dinky.app.model;
 
-import org.dinky.parse.SqlType;
+import org.dinky.parser.SqlType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

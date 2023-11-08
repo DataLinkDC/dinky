@@ -30,7 +30,7 @@ import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
 import org.dinky.interceptor.FlinkInterceptor;
-import org.dinky.parse.SqlType;
+import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.ZipUtils;

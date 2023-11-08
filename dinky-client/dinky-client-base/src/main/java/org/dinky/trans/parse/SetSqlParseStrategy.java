@@ -17,8 +17,9 @@
  *
  */
 
-package org.dinky.parse;
+package org.dinky.trans.parse;
 
+import org.dinky.parser.SqlSegment;
 import org.dinky.trans.ddl.SetOperation;
 import org.dinky.utils.SqlSegmentUtil;
 
@@ -35,14 +36,14 @@ import java.util.regex.Pattern;
  *
  * @since 2021/10/21 18:41
  */
-public class SetSqlParserStrategy extends AbstractRegexParseStrategy {
+public class SetSqlParseStrategy extends AbstractRegexParseStrategy {
     //    private static final String PATTERN_STR =
     // "SET(\\s+(?<key>[^'\\s]+)\\s*=\\s*('(?<quotedVal>[^']*)'|(?<val>\\S+)))?";
     private static final String PATTERN_STR = "(set)(.+)";
     private static final Pattern PATTERN = Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-    public static final SetSqlParserStrategy INSTANCE = new SetSqlParserStrategy();
+    public static final SetSqlParseStrategy INSTANCE = new SetSqlParseStrategy();
 
-    public SetSqlParserStrategy() {
+    public SetSqlParseStrategy() {
         super(PATTERN);
     }
 
