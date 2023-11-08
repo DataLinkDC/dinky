@@ -760,7 +760,8 @@ export default {
   'rc.gp.build.step.1': 'Check Env',
   'rc.gp.build.step.2': 'Git Clone',
   'rc.gp.build.step.3': 'Maven Build',
-  'rc.gp.build.step.4': 'Get Jars',
+  // 获取产物
+  'rc.gp.build.step.4': 'Get Artifact',
   'rc.gp.build.step.5': 'Analysis UDF',
   'rc.gp.build.step.6': 'Finish',
   'rc.gp.buildArgs': 'Build Arguments',

@@ -26,6 +26,8 @@ export default {
   'button.confirm': '确定',
   'button.cancel': '取消',
   'button.finish': '完成',
+  'button.retry': '重试',
+  'button.rebuild': '重新构建',
   'button.back': '返回',
   'button.save': '保存',
   'button.delete': '删除',

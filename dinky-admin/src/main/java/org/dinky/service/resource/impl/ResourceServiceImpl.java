@@ -169,7 +169,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         Resources resources = getById(id);
         Assert.notNull(resources, () -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST));
         Assert.isFalse(resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE, () -> new BusException("file is too large!"));
-        return URLUtils.toFile("rs:" + resources.getFullName());
+        return URLUtils.toFile("rs://" + resources.getFullName());
     }
 
     @Transactional(rollbackFor = Exception.class)

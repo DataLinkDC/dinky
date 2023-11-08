@@ -163,7 +163,7 @@ const ConsoleContent = (props: ConsoleProps) => {
             onSelect={onSelect}
             treeData={[processNode]}
             expandedKeys={expandedKeys}
-            expandAction={"doubleClick"}
+            expandAction={'doubleClick'}
             onExpand={handleExpand}
           />
         ) : (

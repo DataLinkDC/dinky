@@ -29,6 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.lang.Opt;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,7 +62,8 @@ public class RuntimeUtils {
                             reader.close();
                             inputStream.close();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            errorConsumer.accept(ExceptionUtil.stacktraceToOneLineString(e));
+                            RUNNING.remove(process);
                         }
                     })
                     .start();
@@ -74,7 +76,7 @@ public class RuntimeUtils {
                 Opt.ofNullable(errorConsumer).ifPresent(x -> x.accept(errMsg));
             }
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            errorConsumer.accept(ExceptionUtil.stacktraceToOneLineString(e));
         }
         return waitValue;
     }
