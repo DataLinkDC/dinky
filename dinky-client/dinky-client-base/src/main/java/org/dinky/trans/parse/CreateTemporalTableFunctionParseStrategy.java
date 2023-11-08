@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.trans;
+package org.dinky.trans.parse;
 
 import org.dinky.trans.ddl.CreateTemporalTableFunctionOperation;
 
@@ -51,8 +51,9 @@ public class CreateTemporalTableFunctionParseStrategy extends AbstractRegexParse
 
     public static String[] getInfo(String statement) {
         Matcher matcher = PATTERN.matcher(statement);
-        matcher.find();
-
+        if (!matcher.find()) {
+            throw new IllegalArgumentException("Invalid statement: " + statement);
+        }
         String functionType = matcher.group(1) == null ? "" : matcher.group(1).trim();
         String exist = matcher.group(2) == null ? "" : matcher.group(2).trim();
         String functionName = matcher.group(3).trim();

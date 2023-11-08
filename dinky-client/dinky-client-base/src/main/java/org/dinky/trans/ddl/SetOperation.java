@@ -20,27 +20,27 @@
 package org.dinky.trans.ddl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.executor.Executor;
-import org.dinky.parser.SingleSqlParserFactory;
+import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
-import org.dinky.trans.Operation;
+import org.dinky.trans.ExtendOperation;
+import org.dinky.trans.parse.SetSqlParseStrategy;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * SetOperation
  *
  * @since 2021/10/21 19:56
  */
-public class SetOperation extends AbstractOperation implements Operation {
-
-    private static final String KEY_WORD = "SET";
+public class SetOperation extends AbstractOperation implements ExtendOperation {
 
     public SetOperation() {}
 
@@ -49,34 +49,30 @@ public class SetOperation extends AbstractOperation implements Operation {
     }
 
     @Override
-    public String getHandle() {
-        return KEY_WORD;
-    }
-
-    @Override
-    public Operation create(String statement) {
-        return new SetOperation(statement);
-    }
-
-    @Override
-    public TableResult build(Executor executor) {
+    public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
         try {
             if (null != Class.forName("org.apache.log4j.Logger")) {
-                executor.parseAndLoadConfiguration(statement);
-                return null;
+                tEnv.parseAndLoadConfiguration(statement, new HashMap<>());
+                return Optional.of(TABLE_RESULT_OK);
             }
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error("Class not found: org.apache.log4j.Logger");
         }
-        Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
+        Map<String, List<String>> map = SetSqlParseStrategy.getInfo(statement);
         if (Asserts.isNotNullMap(map) && map.size() == 2) {
             Map<String, String> confMap = new HashMap<>();
             confMap.put(StringUtils.join(map.get("SET"), "."), StringUtils.join(map.get("="), ","));
-            executor.getCustomTableEnvironment().getConfig().addConfiguration(Configuration.fromMap(confMap));
+            TableConfig config = tEnv.getConfig();
+            config.addConfiguration(Configuration.fromMap(confMap));
             Configuration configuration = Configuration.fromMap(confMap);
-            executor.getExecutionConfig().configure(configuration, null);
-            executor.getCustomTableEnvironment().getConfig().addConfiguration(configuration);
+            tEnv.getStreamExecutionEnvironment().getConfig().configure(configuration, null);
+            config.addConfiguration(configuration);
         }
+        return Optional.of(TABLE_RESULT_OK);
+    }
+
+    @Override
+    public String asSummaryString() {
         return null;
     }
 }

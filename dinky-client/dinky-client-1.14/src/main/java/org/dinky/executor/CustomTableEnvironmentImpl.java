@@ -70,13 +70,16 @@ import org.apache.flink.table.planner.delegation.DefaultExecutor;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
 import org.apache.flink.types.Row;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -124,13 +127,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         configuration.set(ExecutionOptions.RUNTIME_MODE, RuntimeExecutionMode.BATCH);
         TableConfig tableConfig = new TableConfig();
         tableConfig.addConfiguration(configuration);
-        return create(
-                executionEnvironment,
-                EnvironmentSettings.newInstance()
-                        .useBlinkPlanner()
-                        .inBatchMode()
-                        .build(),
-                tableConfig);
+        return create(executionEnvironment, EnvironmentSettings.inBatchMode(), tableConfig);
     }
 
     public static CustomTableEnvironmentImpl create(
@@ -295,15 +292,14 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return record;
     }
 
-    public boolean parseAndLoadConfiguration(
-            String statement, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
+    public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
         for (Operation operation : operations) {
             if (operation instanceof SetOperation) {
-                callSet((SetOperation) operation, environment, setMap);
+                callSet((SetOperation) operation, getStreamExecutionEnvironment(), setMap);
                 return true;
             } else if (operation instanceof ResetOperation) {
-                callReset((ResetOperation) operation, environment, setMap);
+                callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
                 return true;
             }
         }
@@ -375,6 +371,19 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             CreateTableOperation createTableOperation = createTableASOperation.getCreateTableOperation();
             executeInternal(createTableOperation);
             getPlanner().translate(CollUtil.newArrayList(createTableASOperation.getInsertOperation()));
+        }
+    }
+
+    @Override
+    public void addJar(File... jarPath) {
+        Configuration configuration = this.getRootConfiguration();
+        List<String> jars = configuration.get(PipelineOptions.JARS);
+        if (jars == null) {
+            configuration.set(
+                    PipelineOptions.JARS,
+                    Arrays.stream(jarPath).map(File::getAbsolutePath).collect(Collectors.toList()));
+        } else {
+            CollUtil.addAll(jars, jarPath);
         }
     }
 

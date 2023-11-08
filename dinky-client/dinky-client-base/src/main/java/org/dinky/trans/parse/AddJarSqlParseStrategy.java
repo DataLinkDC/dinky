@@ -17,10 +17,14 @@
  *
  */
 
-package org.dinky.parser.check;
+package org.dinky.trans.parse;
 
 import org.dinky.data.exception.DinkyException;
+import org.dinky.trans.ddl.AddJarOperation;
 import org.dinky.utils.URLUtils;
+
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.planner.parse.AbstractRegexParseStrategy;
 
 import java.io.File;
 import java.util.HashSet;
@@ -33,11 +37,22 @@ import java.util.stream.Stream;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 
-/** @since 0.7.0 */
-public class AddJarSqlParser {
+/**
+ * @since 0.7.0
+ */
+public class AddJarSqlParseStrategy extends AbstractRegexParseStrategy {
 
     private static final String ADD_JAR = "(add\\s+customjar)\\s+'(.*.jar)'";
     private static final Pattern ADD_JAR_PATTERN = Pattern.compile(ADD_JAR, Pattern.CASE_INSENSITIVE);
+    public static final AddJarSqlParseStrategy INSTANCE = new AddJarSqlParseStrategy();
+
+    protected AddJarSqlParseStrategy() {
+        super(ADD_JAR_PATTERN);
+    }
+
+    public static File[] getInfo(String statement) {
+        return getAllFilePath(statement).toArray(new File[0]);
+    }
 
     protected static List<String> patternStatements(String[] statements) {
         return Stream.of(statements)
@@ -46,7 +61,7 @@ public class AddJarSqlParser {
                 .collect(Collectors.toList());
     }
 
-    public static Set<File> getAllFilePath(String[] statements) {
+    public static Set<File> getAllFilePath(String... statements) {
         Set<File> fileSet = new HashSet<>();
         patternStatements(statements).stream()
                 .map(x -> ReUtil.findAll(ADD_JAR_PATTERN, x, 2).get(0))
@@ -67,5 +82,15 @@ public class AddJarSqlParser {
 
     public static Set<File> getAllFilePath(String statements) {
         return getAllFilePath(new String[] {statements});
+    }
+
+    @Override
+    public Operation convert(String statement) {
+        return new AddJarOperation(statement);
+    }
+
+    @Override
+    public String[] getHints() {
+        return new String[0];
     }
 }

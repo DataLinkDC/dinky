@@ -17,31 +17,32 @@
  *
  */
 
-package org.dinky.trans.ddl;
+package org.dinky.trans.show;
 
-import static org.apache.flink.table.api.Expressions.$;
-
+import org.dinky.assertion.Asserts;
 import org.dinky.executor.Executor;
+import org.dinky.parser.SingleSqlParserFactory;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.Operation;
 
-import org.apache.flink.table.api.Table;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.api.TableResult;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * CreateAggTableOperation
+ * ShowFragmentOperation
  *
- * @since 2021/6/13 19:24
+ * @since 2022/2/17 17:08
  */
-public class CreateAggTableOperation extends AbstractOperation implements Operation {
+public class ShowFragmentOperation extends AbstractOperation implements Operation {
 
-    private static final String KEY_WORD = "CREATE AGGTABLE";
+    private static final String KEY_WORD = "SHOW FRAGMENT ";
 
-    public CreateAggTableOperation() {}
+    public ShowFragmentOperation() {}
 
-    public CreateAggTableOperation(String statement) {
+    public ShowFragmentOperation(String statement) {
         super(statement);
     }
 
@@ -52,23 +53,17 @@ public class CreateAggTableOperation extends AbstractOperation implements Operat
 
     @Override
     public Operation create(String statement) {
-        return new CreateAggTableOperation(statement);
+        return new ShowFragmentOperation(statement);
     }
 
     @Override
     public TableResult build(Executor executor) {
-        AggTable aggTable = AggTable.build(statement);
-        Table source = executor.getCustomTableEnvironment().sqlQuery("select * from " + aggTable.getTable());
-        List<String> wheres = aggTable.getWheres();
-        if (wheres != null && wheres.size() > 0) {
-            for (String s : wheres) {
-                source = source.filter($(s));
+        Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
+        if (Asserts.isNotNullMap(map)) {
+            if (map.containsKey("FRAGMENT")) {
+                return executor.getVariableManager().getVariableResult(StringUtils.join(map.get("FRAGMENT"), ""));
             }
         }
-        Table sink = source.groupBy($(aggTable.getGroupBy()))
-                .flatAggregate($(aggTable.getAggBy()))
-                .select($(aggTable.getColumns()));
-        executor.getCustomTableEnvironment().registerTable(aggTable.getName(), sink);
-        return null;
+        return executor.getVariableManager().getVariableResult(null);
     }
 }

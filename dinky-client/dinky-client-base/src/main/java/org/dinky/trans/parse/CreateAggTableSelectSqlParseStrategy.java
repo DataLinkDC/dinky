@@ -17,21 +17,37 @@
  *
  */
 
-package org.dinky.parser;
+package org.dinky.trans.parse;
+
+import org.dinky.parser.SqlSegment;
+import org.dinky.trans.ddl.CreateAggTableOperation;
+import org.dinky.utils.SqlSegmentUtil;
+
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.planner.parse.AbstractRegexParseStrategy;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * CreateAggTableSelectSqlParser
  *
  * @since 2021/6/14 16:56
  */
-public class CreateAggTableSelectSqlParser extends BaseSingleSqlParser {
+public class CreateAggTableSelectSqlParseStrategy extends AbstractRegexParseStrategy {
+    private static final String PATTERN_STR = "(create\\s+aggtable)(.+)(as\\s+select)(.+)";
+    private static final Pattern PATTERN = Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
-    public CreateAggTableSelectSqlParser(String originalSql) {
-        super(originalSql);
+    public static final CreateAggTableSelectSqlParseStrategy INSTANCE = new CreateAggTableSelectSqlParseStrategy();
+
+    public CreateAggTableSelectSqlParseStrategy() {
+        super(PATTERN);
     }
 
-    @Override
-    protected void initializeSegments() {
+    public static CreateAggTableOperation.AggTable getInfo(String statement) {
+        List<SqlSegment> segments = new ArrayList<>();
         segments.add(new SqlSegment("(create\\s+aggtable)(.+)(as\\s+select)", "[,]"));
         segments.add(new SqlSegment("(select)(.+)(from)", "[,]"));
         segments.add(new SqlSegment(
@@ -42,5 +58,17 @@ public class CreateAggTableSelectSqlParser extends BaseSingleSqlParser {
         segments.add(new SqlSegment("(group\\s+by)(.+?)( order\\s+by | agg\\s+by | ENDOFSQL)", "[,]"));
         segments.add(new SqlSegment("(order\\s+by)(.+?)( agg\\s+by | ENDOFSQL)", "[,]"));
         segments.add(new SqlSegment("(agg\\s+by)(.+?)( ENDOFSQL)", "[,]"));
+        Map<String, List<String>> splitSql2Segment = SqlSegmentUtil.splitSql2Segment(segments, statement);
+        return CreateAggTableOperation.AggTable.build(statement, splitSql2Segment);
+    }
+
+    @Override
+    public Operation convert(String statement) {
+        return new CreateAggTableOperation(statement);
+    }
+
+    @Override
+    public String[] getHints() {
+        return new String[0];
     }
 }

@@ -19,39 +19,24 @@
 
 package org.dinky.trans.ddl;
 
-import org.dinky.executor.Executor;
+import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
-import org.dinky.trans.Operation;
+import org.dinky.trans.ExtendOperation;
 
 import org.apache.flink.table.api.TableResult;
 
-/**
- * ShowFragmentsOperation
- *
- * @since 2022/2/17 16:31
- */
-public class ShowFragmentsOperation extends AbstractOperation implements Operation {
+import java.util.Optional;
 
-    private static final String KEY_WORD = "SHOW FRAGMENTS";
+public class PrintTableOperation extends AbstractOperation implements ExtendOperation {
+    public PrintTableOperation() {}
 
-    public ShowFragmentsOperation() {}
-
-    public ShowFragmentsOperation(String statement) {
-        super(statement);
+    @Override
+    public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
+        return Optional.empty();
     }
 
     @Override
-    public String getHandle() {
-        return KEY_WORD;
-    }
-
-    @Override
-    public Operation create(String statement) {
-        return new ShowFragmentsOperation(statement);
-    }
-
-    @Override
-    public TableResult build(Executor executor) {
-        return executor.getVariableManager().getVariables();
+    public String asSummaryString() {
+        return null;
     }
 }

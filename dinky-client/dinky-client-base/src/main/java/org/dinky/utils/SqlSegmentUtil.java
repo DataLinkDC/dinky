@@ -17,16 +17,24 @@
  *
  */
 
-package org.dinky.trans;
+package org.dinky.utils;
 
-import org.dinky.executor.Executor;
+import org.dinky.assertion.Asserts;
+import org.dinky.parser.SqlSegment;
 
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.operations.Operation;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.util.Optional;
-
-/** */
-public interface ExtendOperation extends Operation {
-    Optional<? extends TableResult> execute(Executor executor);
+public class SqlSegmentUtil {
+    public static Map<String, List<String>> splitSql2Segment(List<SqlSegment> segments, String statement) {
+        Map<String, List<String>> map = new HashMap<>();
+        for (SqlSegment sqlSegment : segments) {
+            sqlSegment.parse(statement);
+            if (Asserts.isNotNullString(sqlSegment.getStart())) {
+                map.put(sqlSegment.getType().toUpperCase(), sqlSegment.getBodyPieces());
+            }
+        }
+        return map;
+    }
 }

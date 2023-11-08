@@ -17,32 +17,26 @@
  *
  */
 
-package org.dinky.trans.ddl;
+package org.dinky.trans.show;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.executor.Executor;
-import org.dinky.parser.SingleSqlParserFactory;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.Operation;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.api.TableResult;
 
-import java.util.List;
-import java.util.Map;
-
 /**
- * ShowFragmentOperation
+ * ShowFragmentsOperation
  *
- * @since 2022/2/17 17:08
+ * @since 2022/2/17 16:31
  */
-public class ShowFragmentOperation extends AbstractOperation implements Operation {
+public class ShowFragmentsOperation extends AbstractOperation implements Operation {
 
-    private static final String KEY_WORD = "SHOW FRAGMENT ";
+    private static final String KEY_WORD = "SHOW FRAGMENTS";
 
-    public ShowFragmentOperation() {}
+    public ShowFragmentsOperation() {}
 
-    public ShowFragmentOperation(String statement) {
+    public ShowFragmentsOperation(String statement) {
         super(statement);
     }
 
@@ -53,17 +47,11 @@ public class ShowFragmentOperation extends AbstractOperation implements Operatio
 
     @Override
     public Operation create(String statement) {
-        return new ShowFragmentOperation(statement);
+        return new ShowFragmentsOperation(statement);
     }
 
     @Override
     public TableResult build(Executor executor) {
-        Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
-        if (Asserts.isNotNullMap(map)) {
-            if (map.containsKey("FRAGMENT")) {
-                return executor.getVariableManager().getVariableResult(StringUtils.join(map.get("FRAGMENT"), ""));
-            }
-        }
-        return executor.getVariableManager().getVariableResult(null);
+        return executor.getVariableManager().getVariables();
     }
 }

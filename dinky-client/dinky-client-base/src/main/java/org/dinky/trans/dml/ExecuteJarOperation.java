@@ -19,11 +19,10 @@
 
 package org.dinky.trans.dml;
 
-import org.dinky.executor.CustomTableResultImpl;
-import org.dinky.executor.Executor;
+import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
-import org.dinky.trans.ExecuteJarParseStrategy;
 import org.dinky.trans.ExtendOperation;
+import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.RunTimeUtil;
 
 import org.apache.flink.api.dag.Pipeline;
@@ -51,17 +50,17 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
     }
 
     @Override
-    public Optional<? extends TableResult> execute(Executor executor) {
+    public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
         try {
-            executor.getStreamExecutionEnvironment().execute(getStreamGraph(executor));
+            tEnv.getStreamExecutionEnvironment().execute(getStreamGraph(tEnv));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        return Optional.of(CustomTableResultImpl.TABLE_RESULT_OK);
+        return Optional.of(TABLE_RESULT_OK);
     }
 
-    protected StreamGraph getStreamGraph(Executor executor) {
+    protected StreamGraph getStreamGraph(CustomTableEnvironment tEnv) {
         JarSubmitParam submitParam = JarSubmitParam.build(statement);
         SavepointRestoreSettings savepointRestoreSettings = StrUtil.isBlank(submitParam.getSavepointPath())
                 ? SavepointRestoreSettings.none()
@@ -69,7 +68,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
                         submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
         PackagedProgram program;
         try {
-            Configuration configuration = executor.getTableConfig().getConfiguration();
+            Configuration configuration = tEnv.getConfig().getConfiguration();
             File file = FileUtil.file(submitParam.getUri());
             program = PackagedProgram.newBuilder()
                     .setJarFile(file)
@@ -78,7 +77,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
                     .setSavepointRestoreSettings(savepointRestoreSettings)
                     .setArguments(RunTimeUtil.handleCmds(submitParam.getArgs()))
                     .build();
-            executor.addJar(file);
+            tEnv.addJar(file);
             Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(program, configuration, 1, true);
             Assert.isTrue(pipeline instanceof StreamGraph, "can not translate");
             return (StreamGraph) pipeline;
@@ -92,8 +91,8 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         return statement;
     }
 
-    public StreamGraph explain(Executor executor) {
-        return getStreamGraph(executor);
+    public StreamGraph explain(CustomTableEnvironment tEnv) {
+        return getStreamGraph(tEnv);
     }
 
     @Setter

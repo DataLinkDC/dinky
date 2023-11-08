@@ -19,25 +19,38 @@
 
 package org.dinky.trans.ddl;
 
-import org.dinky.executor.Executor;
+import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
-import org.dinky.trans.Operation;
+import org.dinky.trans.ExtendOperation;
+import org.dinky.trans.parse.AddJarSqlParseStrategy;
 
 import org.apache.flink.table.api.TableResult;
 
-public class PrintTableOperation extends AbstractOperation implements Operation {
+import java.util.Arrays;
+import java.util.Optional;
+
+/**
+ * @since 0.7.0
+ */
+public class AddJarOperation extends AbstractOperation implements ExtendOperation {
+
+    private static final String KEY_WORD = "ADD CUSTOMJAR";
+
+    public AddJarOperation(String statement) {
+        super(statement);
+    }
+
+    public AddJarOperation() {}
+
     @Override
-    public String getHandle() {
-        return "Print";
+    public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
+        Arrays.stream(AddJarSqlParseStrategy.getInfo(statement)).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
+        return Optional.of(TABLE_RESULT_OK);
     }
 
     @Override
-    public Operation create(String statement) {
-        return null;
-    }
-
-    @Override
-    public TableResult build(Executor executor) {
-        return null;
+    public String asSummaryString() {
+        return statement;
     }
 }

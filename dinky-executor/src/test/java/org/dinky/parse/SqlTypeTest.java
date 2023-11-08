@@ -17,7 +17,9 @@
  *
  */
 
-package org.dinky.parser;
+package org.dinky.parse;
+
+import org.dinky.parser.SqlType;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

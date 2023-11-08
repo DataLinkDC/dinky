@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.trans;
+package org.dinky.trans.parse;
 
 import org.dinky.parser.SqlSegment;
 import org.dinky.trans.dml.ExecuteJarOperation;
