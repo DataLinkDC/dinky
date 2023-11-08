@@ -41,6 +41,7 @@ import org.apache.flink.table.api.ExplainFormat;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
+import org.apache.flink.table.catalog.CatalogDescriptor;
 import org.apache.flink.table.operations.CreateTableASOperation;
 import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
@@ -53,6 +54,12 @@ import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.types.Row;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -113,6 +120,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         }
     }
 
+    @Override
     public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
         for (Operation operation : operations) {
@@ -127,6 +135,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return false;
     }
 
+    @Override
     public ObjectNode getStreamGraph(String statement) {
         List<Operation> operations = super.getParser().parse(statement);
         if (operations.size() != 1) {
@@ -166,6 +175,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(getJobGraphFromInserts(statements)));
     }
 
+    @Override
     public StreamGraph getStreamGraphFromInserts(List<String> statements) {
         List<ModifyOperation> modifyOperations = new ArrayList<>();
         statements.stream().map(statement -> getParser().parse(statement)).forEach(operations -> {
@@ -185,10 +195,12 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return transOperatoinsToStreamGraph(modifyOperations);
     }
 
+    @Override
     public JobGraph getJobGraphFromInserts(List<String> statements) {
         return getStreamGraphFromInserts(statements).getJobGraph();
     }
 
+    @Override
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         List<Operation> operations = getParser().parse(statement);
         if (operations.size() != 1) {
@@ -278,5 +290,10 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             SinkModifyOperation sinkModifyOperation = createTableASOperation.toSinkModifyOperation(getCatalogManager());
             getPlanner().translate(CollUtil.newArrayList(sinkModifyOperation));
         }
+    }
+
+    @Override
+    public void createCatalog(String catalogName, CatalogDescriptor catalogDescriptor) {
+        getCatalogManager().createCatalog(catalogName, catalogDescriptor);
     }
 }

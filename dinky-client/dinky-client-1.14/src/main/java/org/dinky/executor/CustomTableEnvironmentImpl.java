@@ -75,7 +75,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -124,13 +127,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         configuration.set(ExecutionOptions.RUNTIME_MODE, RuntimeExecutionMode.BATCH);
         TableConfig tableConfig = new TableConfig();
         tableConfig.addConfiguration(configuration);
-        return create(
-                executionEnvironment,
-                EnvironmentSettings.newInstance()
-                        .useBlinkPlanner()
-                        .inBatchMode()
-                        .build(),
-                tableConfig);
+        return create(executionEnvironment, EnvironmentSettings.inBatchMode(), tableConfig);
     }
 
     public static CustomTableEnvironmentImpl create(
