@@ -17,30 +17,22 @@
  *
  */
 
-package org.dinky.executor;
+package org.dinky.parse;
 
-import org.dinky.trans.ExtendOperation;
+/**
+ * ShowFragmentsParser
+ *
+ * @since 2022/2/17 16:19
+ */
+public class ShowFragmentParser extends BaseSingleSqlParser {
 
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.operations.Operation;
-
-import java.util.Optional;
-
-public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperationExecutor {
-
-    private CustomTableEnvironment tEnv;
-
-    public CustomExtendedOperationExecutorImpl(CustomTableEnvironment tEnv) {
-        this.tEnv = tEnv;
+    public ShowFragmentParser(String originalSql) {
+        super(originalSql);
     }
 
     @Override
-    public Optional<? extends TableResult> executeOperation(Operation operation) {
-        if (operation instanceof ExtendOperation) {
-            ExtendOperation extendOperation = (ExtendOperation) operation;
-            return extendOperation.execute(tEnv);
-        }
-
-        return Optional.empty();
+    protected void initializeSegments() {
+        // SHOW FRAGMENT (.+)
+        segments.add(new SqlSegment("FRAGMENT", "(show\\s+fragment)\\s+(.*)( ENDOFSQL)", ","));
     }
 }

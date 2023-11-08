@@ -17,30 +17,22 @@
  *
  */
 
-package org.dinky.executor;
+package org.dinky.parse;
 
-import org.dinky.trans.ExtendOperation;
+/**
+ * DeleteSqlParser
+ *
+ * @since 2021/6/14 16:51
+ */
+public class DeleteSqlParser extends BaseSingleSqlParser {
 
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.operations.Operation;
-
-import java.util.Optional;
-
-public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperationExecutor {
-
-    private CustomTableEnvironment tEnv;
-
-    public CustomExtendedOperationExecutorImpl(CustomTableEnvironment tEnv) {
-        this.tEnv = tEnv;
+    public DeleteSqlParser(String originalSql) {
+        super(originalSql);
     }
 
     @Override
-    public Optional<? extends TableResult> executeOperation(Operation operation) {
-        if (operation instanceof ExtendOperation) {
-            ExtendOperation extendOperation = (ExtendOperation) operation;
-            return extendOperation.execute(tEnv);
-        }
-
-        return Optional.empty();
+    protected void initializeSegments() {
+        segments.add(new SqlSegment("(delete\\s+from)(.+)( where | ENDOFSQL)", "[,]"));
+        segments.add(new SqlSegment("(where)(.+)( ENDOFSQL)", "(and|or)"));
     }
 }

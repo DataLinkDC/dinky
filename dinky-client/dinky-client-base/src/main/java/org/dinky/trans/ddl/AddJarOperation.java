@@ -17,30 +17,40 @@
  *
  */
 
-package org.dinky.executor;
+package org.dinky.trans.ddl;
 
+import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.parse.check.AddJarSqlParserStrategy;
+import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
 
 import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.operations.Operation;
 
+import java.util.Arrays;
 import java.util.Optional;
 
-public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperationExecutor {
+/**
+ * @since 0.7.0
+ */
+public class AddJarOperation extends AbstractOperation implements ExtendOperation {
 
-    private CustomTableEnvironment tEnv;
+    private static final String KEY_WORD = "ADD CUSTOMJAR";
 
-    public CustomExtendedOperationExecutorImpl(CustomTableEnvironment tEnv) {
-        this.tEnv = tEnv;
+    public AddJarOperation(String statement) {
+        super(statement);
+    }
+
+    public AddJarOperation() {}
+
+    @Override
+    public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
+        Arrays.stream(AddJarSqlParserStrategy.getInfo(statement)).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
+        return Optional.of(TABLE_RESULT_OK);
     }
 
     @Override
-    public Optional<? extends TableResult> executeOperation(Operation operation) {
-        if (operation instanceof ExtendOperation) {
-            ExtendOperation extendOperation = (ExtendOperation) operation;
-            return extendOperation.execute(tEnv);
-        }
-
-        return Optional.empty();
+    public String asSummaryString() {
+        return statement;
     }
 }

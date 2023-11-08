@@ -17,30 +17,27 @@
  *
  */
 
-package org.dinky.executor;
+package org.dinky.parse;
 
-import org.dinky.trans.ExtendOperation;
+/**
+ * InsertSqlParser
+ *
+ * @since 2021/6/14 16:54
+ */
+public class InsertSqlParser extends BaseSingleSqlParser {
 
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.operations.Operation;
-
-import java.util.Optional;
-
-public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperationExecutor {
-
-    private CustomTableEnvironment tEnv;
-
-    public CustomExtendedOperationExecutorImpl(CustomTableEnvironment tEnv) {
-        this.tEnv = tEnv;
+    public InsertSqlParser(String originalSql) {
+        super(originalSql);
     }
 
     @Override
-    public Optional<? extends TableResult> executeOperation(Operation operation) {
-        if (operation instanceof ExtendOperation) {
-            ExtendOperation extendOperation = (ExtendOperation) operation;
-            return extendOperation.execute(tEnv);
-        }
+    protected void initializeSegments() {
+        segments.add(new SqlSegment("(insert\\s+into)(.+?)([(])", "[,]"));
+        segments.add(new SqlSegment("([(])(.+?)([)]\\s+values\\s+[(])", "[,]"));
+        segments.add(new SqlSegment("([)]\\s+values\\s+[(])(.+)([)]\\s+ENDOFSQL)", "[,]"));
+    }
 
-        return Optional.empty();
+    public String getParsedSql() {
+        return super.getParsedSql() + ")";
     }
 }

@@ -17,30 +17,29 @@
  *
  */
 
-package org.dinky.executor;
+package org.dinky.trans;
 
-import org.dinky.trans.ExtendOperation;
+import org.dinky.executor.CustomTableEnvironment;
 
+import org.apache.flink.table.api.DataTypes;
+import org.apache.flink.table.api.ResultKind;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.api.internal.TableResultImpl;
+import org.apache.flink.table.catalog.Column;
+import org.apache.flink.table.catalog.ResolvedSchema;
 import org.apache.flink.table.operations.Operation;
+import org.apache.flink.types.Row;
 
+import java.util.Collections;
 import java.util.Optional;
 
-public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperationExecutor {
+/** */
+public interface ExtendOperation extends Operation {
+    Optional<? extends TableResult> execute(CustomTableEnvironment tEnv);
 
-    private CustomTableEnvironment tEnv;
-
-    public CustomExtendedOperationExecutorImpl(CustomTableEnvironment tEnv) {
-        this.tEnv = tEnv;
-    }
-
-    @Override
-    public Optional<? extends TableResult> executeOperation(Operation operation) {
-        if (operation instanceof ExtendOperation) {
-            ExtendOperation extendOperation = (ExtendOperation) operation;
-            return extendOperation.execute(tEnv);
-        }
-
-        return Optional.empty();
-    }
+    TableResult TABLE_RESULT_OK = TableResultImpl.builder()
+            .resultKind(ResultKind.SUCCESS)
+            .schema(ResolvedSchema.of(Column.physical("result", DataTypes.STRING())))
+            .data(Collections.singletonList(Row.of("OK")))
+            .build();
 }

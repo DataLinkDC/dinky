@@ -59,9 +59,9 @@ import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
-import org.dinky.parser.SqlType;
-import org.dinky.parser.check.AddJarSqlParser;
-import org.dinky.trans.ExecuteJarParseStrategy;
+import org.dinky.parse.ExecuteJarParseStrategy;
+import org.dinky.parse.SqlType;
+import org.dinky.parse.check.AddJarSqlParserStrategy;
 import org.dinky.trans.Operations;
 import org.dinky.trans.dml.ExecuteJarOperation;
 import org.dinky.utils.DinkyClassLoaderUtil;
@@ -331,11 +331,11 @@ public class JobManager {
             }
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParser.getAllFilePath(statement).forEach(executor::addJar);
+                AddJarSqlParserStrategy.getAllFilePath(statement).forEach(executor::addJar);
             }
         }
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));
-        return executeJarOperation.explain(executor);
+        return executeJarOperation.explain(executor.getCustomTableEnvironment());
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)

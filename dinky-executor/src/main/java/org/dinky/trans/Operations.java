@@ -19,7 +19,7 @@
 
 package org.dinky.trans;
 
-import org.dinky.parser.SqlType;
+import org.dinky.parse.SqlType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;

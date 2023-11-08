@@ -17,30 +17,24 @@
  *
  */
 
-package org.dinky.executor;
+package org.dinky.utils;
 
-import org.dinky.trans.ExtendOperation;
+import org.dinky.assertion.Asserts;
+import org.dinky.parse.SqlSegment;
 
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.operations.Operation;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.util.Optional;
-
-public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperationExecutor {
-
-    private CustomTableEnvironment tEnv;
-
-    public CustomExtendedOperationExecutorImpl(CustomTableEnvironment tEnv) {
-        this.tEnv = tEnv;
-    }
-
-    @Override
-    public Optional<? extends TableResult> executeOperation(Operation operation) {
-        if (operation instanceof ExtendOperation) {
-            ExtendOperation extendOperation = (ExtendOperation) operation;
-            return extendOperation.execute(tEnv);
+public class SqlSegmentUtil {
+    public static Map<String, List<String>> splitSql2Segment(List<SqlSegment> segments, String statement) {
+        Map<String, List<String>> map = new HashMap<>();
+        for (SqlSegment sqlSegment : segments) {
+            sqlSegment.parse(statement);
+            if (Asserts.isNotNullString(sqlSegment.getStart())) {
+                map.put(sqlSegment.getType().toUpperCase(), sqlSegment.getBodyPieces());
+            }
         }
-
-        return Optional.empty();
+        return map;
     }
 }

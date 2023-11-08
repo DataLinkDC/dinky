@@ -20,7 +20,7 @@
 package org.dinky.trans.ddl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.parser.SingleSqlParserFactory;
+import org.dinky.parse.SingleSqlParserFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;

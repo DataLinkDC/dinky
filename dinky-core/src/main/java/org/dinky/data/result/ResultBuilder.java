@@ -19,7 +19,7 @@
 
 package org.dinky.data.result;
 
-import org.dinky.parser.SqlType;
+import org.dinky.parse.SqlType;
 
 import org.apache.flink.table.api.TableResult;
 

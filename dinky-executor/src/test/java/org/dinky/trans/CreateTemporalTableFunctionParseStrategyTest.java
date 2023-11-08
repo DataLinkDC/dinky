@@ -19,6 +19,8 @@
 
 package org.dinky.trans;
 
+import org.dinky.parse.CreateTemporalTableFunctionParseStrategy;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

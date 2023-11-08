@@ -17,30 +17,26 @@
  *
  */
 
-package org.dinky.executor;
+package org.dinky.trans.ddl;
 
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
 
 import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.operations.Operation;
 
 import java.util.Optional;
 
-public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperationExecutor {
+public class PrintTableOperation extends AbstractOperation implements ExtendOperation {
+    public PrintTableOperation() {}
 
-    private CustomTableEnvironment tEnv;
-
-    public CustomExtendedOperationExecutorImpl(CustomTableEnvironment tEnv) {
-        this.tEnv = tEnv;
+    @Override
+    public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
+        return Optional.empty();
     }
 
     @Override
-    public Optional<? extends TableResult> executeOperation(Operation operation) {
-        if (operation instanceof ExtendOperation) {
-            ExtendOperation extendOperation = (ExtendOperation) operation;
-            return extendOperation.execute(tEnv);
-        }
-
-        return Optional.empty();
+    public String asSummaryString() {
+        return null;
     }
 }
