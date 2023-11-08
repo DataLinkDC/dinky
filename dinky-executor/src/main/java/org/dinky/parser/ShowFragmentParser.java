@@ -19,9 +19,6 @@
 
 package org.dinky.parser;
 
-import org.dinky.parser.BaseSingleSqlParser;
-import org.dinky.parser.SqlSegment;
-
 /**
  * ShowFragmentsParser
  *
