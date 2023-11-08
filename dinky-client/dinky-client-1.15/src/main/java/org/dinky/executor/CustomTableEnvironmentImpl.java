@@ -65,10 +65,8 @@ import org.apache.flink.table.operations.ddl.CreateTableASOperation;
 import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.types.Row;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -193,6 +191,19 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
+    public void addJar(File... jarPath) {
+        Configuration configuration = this.getRootConfiguration();
+        List<String> jars = configuration.get(PipelineOptions.JARS);
+        if (jars == null) {
+            configuration.set(
+                    PipelineOptions.JARS,
+                    Arrays.stream(jarPath).map(File::getAbsolutePath).collect(Collectors.toList()));
+        } else {
+            CollUtil.addAll(jars, jarPath);
+        }
+    }
+
+    @Override
     public JobPlanInfo getJobPlanInfo(List<String> statements) {
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(getJobGraphFromInserts(statements)));
     }
@@ -254,15 +265,14 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return record;
     }
 
-    public boolean parseAndLoadConfiguration(
-            String statement, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
+    public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
         for (Operation operation : operations) {
             if (operation instanceof SetOperation) {
-                callSet((SetOperation) operation, environment, setMap);
+                callSet((SetOperation) operation, getStreamExecutionEnvironment(), setMap);
                 return true;
             } else if (operation instanceof ResetOperation) {
-                callReset((ResetOperation) operation, environment, setMap);
+                callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
                 return true;
             }
         }
