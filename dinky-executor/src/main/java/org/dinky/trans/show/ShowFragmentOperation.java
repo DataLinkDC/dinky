@@ -21,7 +21,7 @@ package org.dinky.trans.show;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.executor.Executor;
-import org.dinky.parse.SingleSqlParserFactory;
+import org.dinky.parser.SingleSqlParserFactory;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.Operation;
 

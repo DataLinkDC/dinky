@@ -17,25 +17,25 @@
  *
  */
 
-package org.dinky.parse;
+package org.dinky.parser;
 
 import org.dinky.parser.BaseSingleSqlParser;
 import org.dinky.parser.SqlSegment;
 
 /**
- * CreateCDCSourceSqlParser
+ * ShowFragmentsParser
  *
- * @since 2022/1/29 23:39
+ * @since 2022/2/17 16:19
  */
-public class CreateCDCSourceSqlParser extends BaseSingleSqlParser {
+public class ShowFragmentParser extends BaseSingleSqlParser {
 
-    public CreateCDCSourceSqlParser(String originalSql) {
+    public ShowFragmentParser(String originalSql) {
         super(originalSql);
     }
 
     @Override
     protected void initializeSegments() {
-        segments.add(new SqlSegment("CDCSOURCE", "(execute\\s+cdcsource\\s+)(.+)(\\s+with\\s+\\()", "[,]"));
-        segments.add(new SqlSegment("WITH", "(with\\s+\\()(.+)(\\))", "',"));
+        // SHOW FRAGMENT (.+)
+        segments.add(new SqlSegment("FRAGMENT", "(show\\s+fragment)\\s+(.*)( ENDOFSQL)", ","));
     }
 }

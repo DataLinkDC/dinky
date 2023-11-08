@@ -17,14 +17,7 @@
  *
  */
 
-package org.dinky.parse;
-
-import org.dinky.parser.BaseSingleSqlParser;
-import org.dinky.parser.DeleteSqlParser;
-import org.dinky.parser.InsertSelectSqlParser;
-import org.dinky.parser.InsertSqlParser;
-import org.dinky.parser.SelectSqlParser;
-import org.dinky.parser.UpdateSqlParser;
+package org.dinky.parser;
 
 import java.util.Collections;
 import java.util.List;
