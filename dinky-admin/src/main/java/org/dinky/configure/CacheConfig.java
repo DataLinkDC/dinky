@@ -20,12 +20,7 @@
 package org.dinky.configure;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
  * CacheCoonfigure
@@ -37,14 +32,14 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class CacheConfig {
 
     /** 配置Redis缓存注解的value序列化方式 */
-    @Bean
-    public RedisCacheConfiguration cacheConfiguration() {
-        return RedisCacheConfiguration.defaultCacheConfig()
-                // 序列化为json
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()))
-                .serializeKeysWith(
-                        RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
-    }
+//    @Bean
+//    public RedisCacheConfiguration cacheConfiguration() {
+//        return RedisCacheConfiguration.defaultCacheConfig()
+//                // 序列化为json
+//                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()))
+//                .serializeKeysWith(
+//                        RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
+//    }
 
     // /**
     // * 配置RedisTemplate的序列化方式
