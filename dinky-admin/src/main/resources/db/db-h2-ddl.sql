@@ -1,7 +1,7 @@
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS `dinky_alert_group`;
+
 CREATE TABLE `dinky_alert_group` (
                                    `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
                                    `name` varchar(50) NOT null COMMENT 'alert group name',
@@ -12,7 +12,7 @@ CREATE TABLE `dinky_alert_group` (
                                    `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                                    `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_alert_history`;
+
 CREATE TABLE `dinky_alert_history` (
                                      `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
                                      `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
@@ -25,7 +25,7 @@ CREATE TABLE `dinky_alert_history` (
                                      `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                                      `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_alert_instance`;
+
 CREATE TABLE `dinky_alert_instance` (
                                       `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
                                       `name` varchar(50) NOT null COMMENT 'alert instance name',
@@ -36,7 +36,7 @@ CREATE TABLE `dinky_alert_instance` (
                                       `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                                       `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_catalogue`;
+
 CREATE TABLE `dinky_catalogue` (
                                  `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                                  `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
@@ -49,7 +49,7 @@ CREATE TABLE `dinky_catalogue` (
                                  `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                                  `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_cluster`;
+
 CREATE TABLE `dinky_cluster` (
                                `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                                `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
@@ -68,7 +68,7 @@ CREATE TABLE `dinky_cluster` (
                                `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                                `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_cluster_configuration`;
+
 CREATE TABLE `dinky_cluster_configuration` (
                                              `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                                              `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
@@ -81,7 +81,7 @@ CREATE TABLE `dinky_cluster_configuration` (
                                              `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                                              `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_database`;
+
 CREATE TABLE `dinky_database` (
                                 `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                                 `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
@@ -104,7 +104,7 @@ CREATE TABLE `dinky_database` (
                                 `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                                 `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_flink_document`;
+
 CREATE TABLE `dinky_flink_document` (
                                       `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
                                       `category` varchar(255) null DEFAULT null COMMENT 'document category',
@@ -120,7 +120,7 @@ CREATE TABLE `dinky_flink_document` (
                                       `update_time` datetime(0) null DEFAULT null COMMENT 'update_time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
-DROP TABLE IF EXISTS `dinky_fragment`;
+
 CREATE TABLE `dinky_fragment` (
                                 `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
                                 `name` varchar(50) NOT null COMMENT 'fragment name',
@@ -131,7 +131,7 @@ CREATE TABLE `dinky_fragment` (
                                 `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                                 `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_history`;
+
 CREATE TABLE `dinky_history` (
                                `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                                `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
@@ -154,7 +154,7 @@ CREATE TABLE `dinky_history` (
                                INDEX cluster_index2(`cluster_id`)
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
-DROP TABLE IF EXISTS `dinky_job_history`;
+
 CREATE TABLE `dinky_job_history` (
                                    `id` int(11) NOT null COMMENT 'id',
                                    `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
@@ -167,7 +167,7 @@ CREATE TABLE `dinky_job_history` (
                                    `cluster_configuration_json` json null COMMENT 'cluster config',
                                    `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_job_instance`;
+
 CREATE TABLE `dinky_job_instance` (
                                     `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
                                     `name` varchar(255) null DEFAULT null COMMENT 'job instance name',
@@ -187,7 +187,7 @@ CREATE TABLE `dinky_job_instance` (
                                     INDEX job_instance_task_id_idx13(`task_id`)
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
-DROP TABLE IF EXISTS `dinky_role`;
+
 CREATE TABLE `dinky_role` (
                             `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                             `tenant_id` int(11) NOT null COMMENT 'tenant id',
@@ -200,7 +200,7 @@ CREATE TABLE `dinky_role` (
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 
-DROP TABLE IF EXISTS `dinky_savepoints`;
+
 CREATE TABLE `dinky_savepoints` (
                                   `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                                   `task_id` int(11) NOT null COMMENT 'task ID',
@@ -211,7 +211,7 @@ CREATE TABLE `dinky_savepoints` (
                                   `create_time` datetime(0) null DEFAULT null COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
-DROP TABLE IF EXISTS `dinky_sys_config`;
+
 CREATE TABLE `dinky_sys_config` (
                                   `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                                   `name` varchar(255) NOT null COMMENT 'configuration name',
@@ -219,7 +219,7 @@ CREATE TABLE `dinky_sys_config` (
                                   `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                                   `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_task`;
+
 CREATE TABLE `dinky_task` (
                             `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                             `name` varchar(255) NOT null COMMENT 'Job name',
@@ -249,7 +249,7 @@ CREATE TABLE `dinky_task` (
                             `statement` text null DEFAULT null COMMENT 'statement'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
-DROP TABLE IF EXISTS `dinky_task_version`;
+
 CREATE TABLE `dinky_task_version` (
                                     `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                                     `task_id` int(11) NOT null COMMENT 'task ID ',
@@ -262,7 +262,7 @@ CREATE TABLE `dinky_task_version` (
                                     `task_configure` text NOT null COMMENT 'task configuration',
                                     `create_time` datetime(0) null DEFAULT null COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_tenant`;
+
 CREATE TABLE `dinky_tenant` (
                               `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                               `tenant_code` varchar(64) NOT null COMMENT 'tenant code',
@@ -272,7 +272,7 @@ CREATE TABLE `dinky_tenant` (
                               `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
-DROP TABLE IF EXISTS `dinky_udf`;
+
 CREATE TABLE `dinky_udf` (
                            `id` int(11) NOT null AUTO_INCREMENT,
                            `name` varchar(200) null DEFAULT null COMMENT 'udf name',
@@ -292,7 +292,7 @@ CREATE TABLE `dinky_udf` (
                            `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                            `update_time` datetime DEFAULT null ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_udf_template`;
+
 CREATE TABLE `dinky_udf_template` (
                                     `id` int(11) NOT null AUTO_INCREMENT,
                                     `name` varchar(100) null DEFAULT null COMMENT 'template name',
@@ -305,7 +305,7 @@ CREATE TABLE `dinky_udf_template` (
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 
-DROP TABLE IF EXISTS `dinky_user`;
+
 CREATE TABLE `dinky_user` (
                             `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                             `username` varchar(50) NOT null COMMENT 'username',
@@ -322,7 +322,7 @@ CREATE TABLE `dinky_user` (
                             `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
-DROP TABLE IF EXISTS `dinky_user_role`;
+
 CREATE TABLE `dinky_user_role` (
                                  `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                                  `user_id` int(11) NOT null COMMENT 'user id',
@@ -331,7 +331,7 @@ CREATE TABLE `dinky_user_role` (
                                  `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
-DROP TABLE IF EXISTS `dinky_user_tenant`;
+
 CREATE TABLE `dinky_user_tenant` (
                                    `id` int(11) NOT null AUTO_INCREMENT COMMENT 'ID',
                                    `user_id` int(11) NOT null COMMENT 'user id',
@@ -341,7 +341,7 @@ CREATE TABLE `dinky_user_tenant` (
                                    `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
-DROP TABLE IF EXISTS `metadata_column`;
+
 CREATE TABLE `metadata_column` (
                                  `column_name` varchar(255) NOT null COMMENT 'column name',
                                  `column_type` varchar(255) NOT null COMMENT 'column type, such as : Physical , Metadata , Computed , WATERMARK',
@@ -353,7 +353,7 @@ CREATE TABLE `metadata_column` (
                                  `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
                                  `create_time` datetime(0) NOT null DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `metadata_database`;
+
 CREATE TABLE `metadata_database` (
                                    `id` int(11) NOT null AUTO_INCREMENT COMMENT 'id',
                                    `database_name` varchar(255) NOT null COMMENT 'database name',
@@ -361,7 +361,7 @@ CREATE TABLE `metadata_database` (
                                    `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
                                    `create_time` datetime(0) null DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `metadata_database_property`;
+
 CREATE TABLE `metadata_database_property` (
                                             `key` varchar(255) NOT null COMMENT 'key',
                                             `value` varchar(255) null DEFAULT null COMMENT 'value',
@@ -369,7 +369,7 @@ CREATE TABLE `metadata_database_property` (
                                             `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
                                             `create_time` datetime(0) NOT null DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `metadata_function`;
+
 CREATE TABLE `metadata_function` (
                                    `id` int(11) NOT null AUTO_INCREMENT COMMENT '主键',
                                    `function_name` varchar(255) NOT null COMMENT 'function name',
@@ -379,7 +379,7 @@ CREATE TABLE `metadata_function` (
                                    `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
                                    `create_time` datetime(0) null DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `metadata_table`;
+
 CREATE TABLE `metadata_table` (
                                 `id` int(11) NOT null AUTO_INCREMENT COMMENT '主键',
                                 `table_name` varchar(255) NOT null COMMENT 'table name',
@@ -389,7 +389,7 @@ CREATE TABLE `metadata_table` (
                                 `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
                                 `create_time` datetime(0) null DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `metadata_table_property`;
+
 CREATE TABLE `metadata_table_property` (
                                          `key` varchar(255) NOT null COMMENT 'key',
                                          `value` mediumtext null COMMENT 'value',
@@ -403,7 +403,7 @@ CREATE TABLE `metadata_table_property` (
 -- ----------------------------
 -- Table structure for dinky_row_permissions
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_row_permissions`;
+
 CREATE TABLE dinky_row_permissions (
                                              id int PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
                                              role_id int NOT null COMMENT '角色ID',
@@ -413,7 +413,7 @@ CREATE TABLE dinky_row_permissions (
                                              update_time datetime null COMMENT '更新时间'
 );
 SET FOREIGN_KEY_CHECKS = 1;
-DROP TABLE IF EXISTS `dinky_git_project`;
+
 CREATE TABLE `dinky_git_project` (
                                    `id` bigint(20) NOT null AUTO_INCREMENT,
                                    `tenant_id` bigint(20) NOT null,
@@ -438,7 +438,7 @@ CREATE TABLE `dinky_git_project` (
                                    `update_time` datetime NOT null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
 ) ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS dinky_metrics;
+
 CREATE TABLE `dinky_metrics` (
                                  `id` int(11) NOT null AUTO_INCREMENT,
                                  `task_id` int(255) DEFAULT null,
@@ -453,7 +453,7 @@ CREATE TABLE `dinky_metrics` (
                                  `update_time` datetime DEFAULT null
 ) ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS dinky_resources;
+
 CREATE TABLE `dinky_resources` (
                                    `id` int(11) NOT null AUTO_INCREMENT COMMENT 'key',
                                    `file_name` varchar(64) DEFAULT null COMMENT 'file name',
@@ -472,7 +472,7 @@ CREATE TABLE `dinky_resources` (
 -- ----------------------------
 -- Table structure for dinky_sys_login_log
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_sys_login_log;
+
 CREATE TABLE `dinky_sys_login_log` (
   `id` int(11) NOT null AUTO_INCREMENT COMMENT 'key',
   `user_id` int(11) NOT null COMMENT 'user id',
@@ -492,7 +492,7 @@ CREATE TABLE `dinky_sys_login_log` (
 -- ----------------------------
 -- Table structure for dinky_sys_operate_log
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_sys_operate_log`;
+
 CREATE TABLE `dinky_sys_operate_log`  (
   `id` bigint NOT null AUTO_INCREMENT COMMENT 'id',
   `module_name` varchar(50) DEFAULT '' COMMENT 'module name',
@@ -517,7 +517,7 @@ CREATE TABLE `dinky_sys_operate_log`  (
 -- ----------------------------
 -- Table structure for dinky_sys_menu
 -- ----------------------------
-drop table if exists `dinky_sys_menu`;
+
 create table `dinky_sys_menu` (
                                   `id` bigint not null auto_increment comment ' id',
                                   `parent_id` bigint not null comment 'parent menu id',
@@ -538,7 +538,7 @@ create table `dinky_sys_menu` (
 -- ----------------------------
 -- Table structure dinky_sys_role_menu
 -- ----------------------------
-drop table if exists `dinky_sys_role_menu`;
+
 CREATE TABLE `dinky_sys_role_menu` (
                                        `id` bigint NOT null AUTO_INCREMENT COMMENT 'id',
                                        `role_id` bigint NOT null COMMENT 'role id',
@@ -554,7 +554,7 @@ CREATE TABLE `dinky_sys_role_menu` (
 -- ----------------------------
 -- Table structure dinky_sys_token
 -- ----------------------------
-drop table if exists `dinky_sys_token`;
+
 CREATE TABLE `dinky_sys_token` (
                                    `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
                                    `token_value` varchar(255) NOT NULL COMMENT 'token value',
@@ -576,7 +576,7 @@ CREATE TABLE `dinky_sys_token` (
 -- ----------------------------
 -- Table structure dinky_sys_alert
 -- ----------------------------
-drop table if exists `dinky_alert_template`;
+
 create table if not exists dinky_alert_template
 (
     id               int auto_increment
@@ -588,7 +588,7 @@ create table if not exists dinky_alert_template
     update_time      datetime          null COMMENT 'update time'
 );
 
-drop table if exists `dinky_alert_rules`;
+
 create table if not exists dinky_alert_rules
 (
     id                 int auto_increment

@@ -21,7 +21,7 @@ package org.dinky.data.constant;
 
 import java.io.File;
 
-import cn.hutool.core.io.FileUtil;
+import cn.hutool.system.SystemUtil;
 
 /**
  * DirConstant
@@ -31,7 +31,7 @@ import cn.hutool.core.io.FileUtil;
 public class DirConstant {
 
     public static final String FILE_SEPARATOR = File.separator;
-    public static final String ROOT_PATH = FileUtil.getUserHomeDir().getAbsolutePath();
+    public static final String ROOT_PATH = System.getProperty(SystemUtil.USER_DIR);
     public static final String LOG_DIR_PATH = ROOT_PATH + FILE_SEPARATOR + "logs";
     public static final String ROOT_LOG_PATH = LOG_DIR_PATH + FILE_SEPARATOR + "dinky.log";
 }
