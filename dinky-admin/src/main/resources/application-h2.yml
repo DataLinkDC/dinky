@@ -31,5 +31,5 @@ spring:
   sql:
     init:
       schema-locations: classpath:db/db-h2-ddl.sql
-      mode: always
       data-locations: classpath:db/db-h2-dml.sql
+      mode: always
