@@ -86,6 +86,7 @@ public class TokenController {
             value = {PermissionConstants.AUTH_TOKEN_ADD, PermissionConstants.AUTH_TOKEN_EDIT},
             mode = SaMode.OR)
     public Result<Void> saveOrUpdateToken(@RequestBody SysToken sysToken) {
+        sysToken.setSource(SysToken.Source.CUSTOM);
         return tokenService.saveOrUpdate(sysToken)
                 ? Result.succeed(Status.SAVE_SUCCESS)
                 : Result.failed(Status.SAVE_FAILED);

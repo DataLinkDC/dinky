@@ -19,6 +19,7 @@
 
 package org.dinky.utils;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.function.constant.PathConstant;
 
@@ -97,6 +98,10 @@ public class PaimonUtil {
         schemaBuilder.options(options);
         Schema schema = schemaBuilder.build();
         SCHEMA_MAP.put(METRICS_IDENTIFIER, schema);
+    }
+
+    public static <T> void write(String table, List<T> metricsList) {
+
     }
 
     public static synchronized void writeMetrics(List<MetricsVO> metricsList) {
@@ -193,13 +198,18 @@ public class PaimonUtil {
     }
 
     public static Table createOrGetMetricsTable() {
+        return createOrGetTable("dinky_metrics");
+    }
+
+    public static Table createOrGetTable(String tableName) {
         try {
-            if (CATALOG.tableExists(METRICS_IDENTIFIER)) {
-                return CATALOG.getTable(METRICS_IDENTIFIER);
+            Identifier identifier = Identifier.create(DINKY_DB, tableName);
+            if (CATALOG.tableExists(identifier)) {
+                return CATALOG.getTable(identifier);
             }
 
-            CATALOG.createTable(METRICS_IDENTIFIER, SCHEMA_MAP.get(METRICS_IDENTIFIER), false);
-            return CATALOG.getTable(METRICS_IDENTIFIER);
+            CATALOG.createTable(identifier, SCHEMA_MAP.get(identifier), false);
+            return CATALOG.getTable(identifier);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
