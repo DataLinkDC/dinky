@@ -275,20 +275,23 @@ create table if not exists dinky_alert_rules
 -- Table structure dinky_sys_token
 -- ----------------------------
 CREATE TABLE `dinky_sys_token` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `token_value` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'token value',
-  `user_id` bigint NOT NULL COMMENT 'user id',
-  `role_id` bigint NOT NULL COMMENT 'role id',
-  `tenant_id` bigint NOT NULL COMMENT 'tenant id',
-  `expire_type` tinyint NOT NULL COMMENT '1: never expire, 2: expire after a period of time, 3: expire at a certain time',
-  `expire_start_time` datetime DEFAULT NULL COMMENT 'expire start time ,when expire_type = 3 , it is the start time of the period',
-  `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
-  `create_time` datetime NOT NULL COMMENT 'create time',
-  `update_time` datetime NOT NULL COMMENT 'modify time',
-  `creator` bigint DEFAULT NULL COMMENT '创建人',
-  `updator` bigint DEFAULT NULL COMMENT '修改人',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='token management';
+   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+   `token_value` varchar(255) NOT NULL COMMENT 'token value',
+   `user_id` bigint(20) NOT NULL COMMENT 'user id',
+   `role_id` bigint(20) NOT NULL COMMENT 'role id',
+   `tenant_id` bigint(20) NOT NULL COMMENT 'tenant id',
+   `expire_type` tinyint(4) NOT NULL COMMENT '1: never expire, 2: expire after a period of time, 3: expire at a certain time',
+   `expire_start_time` datetime DEFAULT NULL COMMENT 'expire start time ,when expire_type = 3 , it is the start time of the period',
+   `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
+   `create_time` datetime NOT NULL COMMENT 'create time',
+   `update_time` datetime NOT NULL COMMENT 'modify time',
+   `creator` bigint(20) DEFAULT NULL COMMENT '创建人',
+   `updator` bigint(20) DEFAULT NULL COMMENT '修改人',
+   `source` tinyint(2) DEFAULT NULL COMMENT '1:login 2:custom',
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `token_value` (`token_value`) USING BTREE,
+   KEY `source` (`source`) USING HASH
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COMMENT='token management';
 
 CREATE TABLE `dinky_udf_manage` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
