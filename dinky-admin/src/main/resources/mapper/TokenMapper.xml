@@ -4,10 +4,10 @@
 
     <select id="selectForProTable" resultType="org.dinky.data.model.SysToken">
         select
-            a.*,
-            b.username,
-            c.role_name,
-            d.tenant_code
+        a.*,
+        b.username,
+        c.role_name,
+        d.tenant_code
         from
         dinky_sys_token a
         join dinky_user b on a.user_id = b.id
@@ -37,6 +37,7 @@
             <if test='ew.sqlSegment!=null and ew.sqlSegment!=""'>
                 ${ew.sqlSegment}
             </if>
+            and source=2
         </where>
     </select>
 
