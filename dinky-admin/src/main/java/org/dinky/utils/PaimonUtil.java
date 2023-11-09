@@ -100,8 +100,38 @@ public class PaimonUtil {
         SCHEMA_MAP.put(METRICS_IDENTIFIER, schema);
     }
 
-    public static <T> void write(String table, List<T> metricsList) {
+    public static <T> void write(String table, List<T> dataList,Class<T> clazz) {
+        if (CollUtil.isEmpty(dataList)) {
+            return;
+        }
+        Table metricsTable = createOrGetMetricsTable();
+        BatchWriteBuilder writeBuilder = metricsTable.newBatchWriteBuilder();
 
+        // 2. Write records in distributed tasks
+
+        try (BatchTableWrite write = writeBuilder.newWrite()) {
+            ReflectUtil.getFields()
+//            for (MetricsVO metrics : dataList) {
+//                LocalDateTime now = metrics.getHeartTime();
+//
+//                BinaryRow row = new BinaryRow(30);
+//                BinaryRowWriter writer = new BinaryRowWriter(row);
+//                writer.writeTimestamp(0, Timestamp.fromLocalDateTime(now), 3);
+//                writer.writeString(1, BinaryString.fromString(metrics.getModel()));
+//                writer.writeString(2, BinaryString.fromString(JSONUtil.toJsonStr(metrics.getContent())));
+//                writer.writeString(3, BinaryString.fromString(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+//                write.write(row);
+//            }
+            List<CommitMessage> messages = write.prepareCommit();
+
+            // 3. Collect all CommitMessages to a global node and commit
+            try (BatchTableCommit commit = writeBuilder.newCommit()) {
+                commit.commit(messages);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static synchronized void writeMetrics(List<MetricsVO> metricsList) {
