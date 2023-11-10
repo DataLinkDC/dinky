@@ -17,39 +17,19 @@
  *
  */
 
-package org.dinky.data.paimon;
+package org.dinky.data.annotations.paimon;
 
-import org.dinky.data.annotations.paimon.Option;
-import org.dinky.data.annotations.paimon.Options;
-import org.dinky.data.annotations.paimon.PartitionKey;
-import org.dinky.data.annotations.paimon.PrimaryKey;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.io.Serializable;
+@Target(ElementType.ANNOTATION_TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface Option {
+    String key();
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Options({
-    @Option(key = "file.format", value = "parquet"),
-    @Option(key = "snapshot.time-retained", value = "10 s"),
-})
-public class CacheData implements Serializable {
-
-    @PartitionKey
-    private String cacheName;
-
-    @PrimaryKey
-    private String key;
-    /**
-     * Serialized json data
-     */
-    private String data;
+    String value();
 }

@@ -21,10 +21,10 @@ package org.dinky.utils;
 
 import static org.dinky.data.constant.PaimonTableConstant.DINKY_DB;
 
+import org.dinky.data.annotations.paimon.Option;
+import org.dinky.data.annotations.paimon.Options;
 import org.dinky.data.annotations.paimon.PartitionKey;
 import org.dinky.data.annotations.paimon.PrimaryKey;
-import org.dinky.data.constant.PaimonTableConstant;
-import org.dinky.data.vo.MetricsVO;
 import org.dinky.function.constant.PathConstant;
 
 import org.apache.paimon.catalog.Catalog;
@@ -62,6 +62,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import cn.hutool.cache.Cache;
+import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
@@ -76,6 +78,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PaimonUtil {
+    private static final Cache<Class<?>, Schema> SCHEMA_CACHE = CacheUtil.newLRUCache(100);
     private static final CatalogContext CONTEXT =
             CatalogContext.create(new Path(URLUtil.toURI(URLUtil.url(PathConstant.TMP_PATH + "paimon"))));
     private static final Catalog CATALOG = CatalogFactory.createCatalog(CONTEXT);
@@ -207,10 +210,6 @@ public class PaimonUtil {
         return dataList;
     }
 
-    public static Table createOrGetMetricsTable() {
-        return createOrGetTable(PaimonTableConstant.DINKY_METRICS, MetricsVO.class);
-    }
-
     public static Table createOrGetTable(String tableName, Class<?> clazz) {
         try {
             Identifier identifier = Identifier.create(DINKY_DB, tableName);
@@ -225,38 +224,41 @@ public class PaimonUtil {
     }
 
     public static Schema getSchemaByClass(Class<?> clazz) {
-        List<String> primaryKeys = new ArrayList<>();
-        List<String> partitionKeys = new ArrayList<>();
-        Schema.Builder builder = Schema.newBuilder();
-        Field[] fields = ReflectUtil.getFields(clazz, field -> !ModifierUtil.isStatic(field));
-        for (Field field : fields) {
-            String fieldName = StrUtil.toUnderlineCase(field.getName());
-            if (field.getAnnotations().length > 0) {
-                if (AnnotationUtil.hasAnnotation(field, PartitionKey.class)) {
-                    partitionKeys.add(fieldName);
+        return SCHEMA_CACHE.get(clazz, () -> {
+            List<String> primaryKeys = new ArrayList<>();
+            List<String> partitionKeys = new ArrayList<>();
+            Schema.Builder builder = Schema.newBuilder();
+            Field[] fields = ReflectUtil.getFields(clazz, field -> !ModifierUtil.isStatic(field));
+            for (Field field : fields) {
+                String fieldName = StrUtil.toUnderlineCase(field.getName());
+                if (field.getAnnotations().length > 0) {
+                    if (AnnotationUtil.hasAnnotation(field, PartitionKey.class)) {
+                        partitionKeys.add(fieldName);
+                    }
+                    if (AnnotationUtil.hasAnnotation(field, PrimaryKey.class)) {
+                        primaryKeys.add(fieldName);
+                    }
                 }
-                if (AnnotationUtil.hasAnnotation(field, PrimaryKey.class)) {
-                    primaryKeys.add(fieldName);
-                }
-            }
 
-            Class<?> type = field.getType();
-            DataType dataType = PaimonTypeUtil.classToDataType(type);
-            builder.column(fieldName, dataType);
-        }
-        // check OPTIONS (static field)
-        Field optionsField = ReflectUtil.getField(clazz, "OPTIONS");
-        if (ModifierUtil.isStatic(optionsField)) {
-            Map<String, String> options = (Map<String, String>) ReflectUtil.getStaticFieldValue(optionsField);
-            builder.options(options);
-        } else {
-            // default options
-            Map<String, String> defaultOptions =
-                    MapUtil.builder("file.format", "parquet").build();
-            builder.options(defaultOptions);
-        }
-        // builder schema;
-        return builder.partitionKeys(partitionKeys).primaryKey(primaryKeys).build();
+                Class<?> type = field.getType();
+                DataType dataType = PaimonTypeUtil.classToDataType(type);
+                builder.column(fieldName, dataType);
+            }
+            // get options
+            Options options = AnnotationUtil.getAnnotation(clazz, Options.class);
+            if (options != null) {
+                for (Option option : options.value()) {
+                    builder.option(option.key(), option.value());
+                }
+            } else {
+                // default options
+                Map<String, String> defaultOptions =
+                        MapUtil.builder("file.format", "parquet").build();
+                builder.options(defaultOptions);
+            }
+            // builder schema;
+            return builder.partitionKeys(partitionKeys).primaryKey(primaryKeys).build();
+        });
     }
 
     public static Identifier getIdentifier(String tableName) {
