@@ -22,14 +22,15 @@ package org.dinky.configure;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
 import cn.dev33.satoken.stp.StpLogic;
+import cn.dev33.satoken.util.SaTokenConsts;
 
 @Configuration
 public class SaTokenConfigure {
     // Sa-Token 整合 jwt (Simple 简单模式)
     @Bean
     public StpLogic getStpLogicJwt() {
-        return new StpLogicJwtForSimple();
+        //        return new StpLogicJwtForSimple();
+        return new StpLogic(SaTokenConsts.TOKEN_STYLE_RANDOM_32);
     }
 }

@@ -2663,7 +2663,8 @@ create table public.dinky_sys_token (
   create_time timestamp without time zone,
   update_time timestamp without time zone,
   creator bigint,
-  updator bigint
+  updator bigint,
+  source bigint
 );
 comment on table public.dinky_sys_token is 'token table';
 comment on column public.dinky_sys_token.id is 'id';
@@ -2678,6 +2679,7 @@ comment on column public.dinky_sys_token.create_time is 'create time';
 comment on column public.dinky_sys_token.update_time is 'modify time';
 comment on column public.dinky_sys_token.creator is 'creat user';
 comment on column public.dinky_sys_token.updator is 'modify user';
+comment on column public.dinky_sys_token.source is 'source';
 
 
 -- ----------------------------

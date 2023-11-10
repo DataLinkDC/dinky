@@ -568,6 +568,7 @@ CREATE TABLE `dinky_sys_token` (
                                    `update_time` datetime NOT NULL COMMENT 'modify time',
                                    `creator` bigint DEFAULT NULL COMMENT '创建人',
                                    `updator` bigint DEFAULT NULL COMMENT '修改人',
+                                   `source` tinyint(2) DEFAULT NULL COMMENT '1:login 2:custom',
                                    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='token management';
 
