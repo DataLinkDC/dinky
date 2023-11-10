@@ -19,32 +19,32 @@
 
 package org.dinky.data.vo;
 
+import org.dinky.data.annotations.paimon.PartitionKey;
+import org.dinky.data.annotations.paimon.PrimaryKey;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
-import cn.hutool.core.map.MapUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import cn.hutool.core.map.MapUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.dinky.data.annotations.paimon.PartitionKey;
-import org.dinky.data.annotations.paimon.PrimaryKey;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "MetricsVO", description = "Metrics Value Object")
 public class MetricsVO implements Serializable {
-    private final static Map<String, String> OPTIONS = MapUtil.builder("file.format", "parquet")
+    private static final Map<String, String> OPTIONS = MapUtil.builder("file.format", "parquet")
             .put("snapshot.time-retained", "10 s")
             .put("partition.expiration-time", "7d")
             .put("partition.expiration-check-interval", "1d")

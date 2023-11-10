@@ -19,17 +19,14 @@
 
 package org.dinky.utils;
 
-import cn.hutool.core.annotation.AnnotationUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.date.TimeInterval;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.ModifierUtil;
-import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
-import cn.hutool.json.JSONUtil;
-import lombok.extern.slf4j.Slf4j;
+import static org.dinky.data.constant.PaimonTableConstant.DINKY_DB;
+
+import org.dinky.data.annotations.paimon.PartitionKey;
+import org.dinky.data.annotations.paimon.PrimaryKey;
+import org.dinky.data.constant.PaimonTableConstant;
+import org.dinky.data.vo.MetricsVO;
+import org.dinky.function.constant.PathConstant;
+
 import org.apache.paimon.catalog.Catalog;
 import org.apache.paimon.catalog.CatalogContext;
 import org.apache.paimon.catalog.CatalogFactory;
@@ -56,24 +53,26 @@ import org.apache.paimon.table.source.TableRead;
 import org.apache.paimon.types.DataField;
 import org.apache.paimon.types.DataType;
 import org.apache.paimon.types.DataTypeRoot;
-import org.apache.paimon.types.DataTypes;
-import org.dinky.data.annotations.paimon.PartitionKey;
-import org.dinky.data.annotations.paimon.PrimaryKey;
-import org.dinky.data.constant.PaimonTableConstant;
-import org.dinky.data.vo.MetricsVO;
-import org.dinky.function.constant.PathConstant;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.dinky.data.constant.PaimonTableConstant.DINKY_DB;
+import cn.hutool.core.annotation.AnnotationUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.TimeInterval;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ModifierUtil;
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PaimonUtil {
@@ -88,16 +87,15 @@ public class PaimonUtil {
             throw new RuntimeException(e);
         }
 
-
-//        Schema.Builder schemaBuilder = Schema.newBuilder();
-//        schemaBuilder.primaryKey("heart_time", "model", "date");
-//        schemaBuilder.partitionKeys("model", "date");
-//        schemaBuilder.column("heart_time", DataTypes.TIMESTAMP_MILLIS());
-//        schemaBuilder.column("model", DataTypes.STRING());
-//        schemaBuilder.column("content", DataTypes.STRING());
-//        schemaBuilder.column("date", DataTypes.STRING());
-//        schemaBuilder.options(options);
-//        Schema schema = schemaBuilder.build();
+        //        Schema.Builder schemaBuilder = Schema.newBuilder();
+        //        schemaBuilder.primaryKey("heart_time", "model", "date");
+        //        schemaBuilder.partitionKeys("model", "date");
+        //        schemaBuilder.column("heart_time", DataTypes.TIMESTAMP_MILLIS());
+        //        schemaBuilder.column("model", DataTypes.STRING());
+        //        schemaBuilder.column("content", DataTypes.STRING());
+        //        schemaBuilder.column("date", DataTypes.STRING());
+        //        schemaBuilder.options(options);
+        //        Schema schema = schemaBuilder.build();
 
     }
 
@@ -131,9 +129,15 @@ public class PaimonUtil {
                     DataType type = dataField.type();
                     String fieldName = StrUtil.toCamelCase(dataField.name());
                     if (type.getTypeRoot() == DataTypeRoot.VARCHAR) {
-                        BinaryWriter.write(writer, i, BinaryString.fromString(JSONUtil.toJsonStr(ReflectUtil.getFieldValue(t, fieldName))), type, null);
+                        BinaryWriter.write(
+                                writer,
+                                i,
+                                BinaryString.fromString(JSONUtil.toJsonStr(ReflectUtil.getFieldValue(t, fieldName))),
+                                type,
+                                null);
                     } else if (type.getTypeRoot() == DataTypeRoot.TIME_WITHOUT_TIME_ZONE) {
-                        Timestamp timestamp = Timestamp.fromLocalDateTime((LocalDateTime) ReflectUtil.getFieldValue(t, fieldName));
+                        Timestamp timestamp =
+                                Timestamp.fromLocalDateTime((LocalDateTime) ReflectUtil.getFieldValue(t, fieldName));
                         BinaryWriter.write(writer, i, timestamp, type, null);
                     } else {
                         BinaryWriter.write(writer, i, ReflectUtil.getFieldValue(t, fieldName), type, null);
@@ -141,7 +145,6 @@ public class PaimonUtil {
                 }
                 write.write(row);
             }
-
 
             List<CommitMessage> messages = write.prepareCommit();
 
@@ -165,8 +168,7 @@ public class PaimonUtil {
         TimeInterval timer = DateUtil.timer();
         List<T> dataList = new ArrayList<>();
 
-        PredicateBuilder builder =
-                new PredicateBuilder(getSchemaByClass(clazz).rowType());
+        PredicateBuilder builder = new PredicateBuilder(getSchemaByClass(clazz).rowType());
 
         ReadBuilder readBuilder;
         try {
@@ -260,10 +262,11 @@ public class PaimonUtil {
             builder.options(options);
         } else {
             // default options
-            Map<String, String> defaultOptions = MapUtil.builder("file.format", "parquet").build();
+            Map<String, String> defaultOptions =
+                    MapUtil.builder("file.format", "parquet").build();
             builder.options(defaultOptions);
         }
-        //builder schema;
+        // builder schema;
         return builder.partitionKeys(partitionKeys).primaryKey(primaryKeys).build();
     }
 

@@ -1,23 +1,46 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.dinky.configure.cache;
 
-import cn.hutool.cache.impl.TimedCache;
-import cn.hutool.core.convert.Convert;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONReader;
-import com.alibaba.fastjson2.JSONWriter;
-import org.apache.paimon.data.BinaryString;
 import org.dinky.data.constant.PaimonTableConstant;
 import org.dinky.data.paimon.CacheData;
 import org.dinky.utils.PaimonUtil;
-import org.springframework.cache.support.AbstractValueAdaptingCache;
+
+import org.apache.paimon.data.BinaryString;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.springframework.cache.support.AbstractValueAdaptingCache;
+
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
+import com.alibaba.fastjson2.JSONWriter;
+
+import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.core.convert.Convert;
+
 public class PaimonCache extends AbstractValueAdaptingCache {
-    private static  final Class<CacheData> clazz = CacheData.class;
+    private static final Class<CacheData> clazz = CacheData.class;
 
     public static final String NAME = "paimon-cache";
     private final String cacheName;
@@ -53,9 +76,12 @@ public class PaimonCache extends AbstractValueAdaptingCache {
         Object o = cache.get(strKey);
         if (o == null) {
             PaimonUtil.createOrGetTable(TABLE_NAME, clazz);
-            List<CacheData> cacheData = PaimonUtil.batchReadTable(TABLE_NAME, clazz, x -> Arrays.asList(x.equal(0, BinaryString.fromString(cacheName))
-                    , x.equal(1, BinaryString.fromString(strKey)))
-            );
+            List<CacheData> cacheData = PaimonUtil.batchReadTable(
+                    TABLE_NAME,
+                    clazz,
+                    x -> Arrays.asList(
+                            x.equal(x.indexOf("cache_name"), BinaryString.fromString(cacheName)),
+                            x.equal(x.indexOf("key"), BinaryString.fromString(strKey))));
             if (cacheData.isEmpty()) {
                 return null;
             }
@@ -74,14 +100,21 @@ public class PaimonCache extends AbstractValueAdaptingCache {
         String strKey = Convert.toStr(key);
         cache.put(strKey, value);
         PaimonUtil.createOrGetTable(TABLE_NAME, clazz);
-        CacheData cacheData = CacheData.builder().cacheName(cacheName).key(strKey).data(serialize(value)).build();
+        CacheData cacheData = CacheData.builder()
+                .cacheName(cacheName)
+                .key(strKey)
+                .data(serialize(value))
+                .build();
         PaimonUtil.write(TABLE_NAME, Collections.singletonList(cacheData), clazz);
     }
 
     @Override
     public void evict(Object key) {
-        cache.remove(key);
-        // todo delete from table
+        String strKey = Convert.toStr(key);
+        cache.remove(strKey);
+        CacheData cacheData =
+                CacheData.builder().cacheName(cacheName).key(strKey).data("").build();
+        PaimonUtil.write(TABLE_NAME, Collections.singletonList(cacheData), clazz);
     }
 
     @Override

@@ -19,8 +19,6 @@
 
 package org.dinky.context;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.json.JSONUtil;
 import org.dinky.data.constant.PaimonTableConstant;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
@@ -34,6 +32,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import cn.hutool.core.text.StrFormatter;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -71,8 +71,9 @@ public class MetricsContextHolder {
             SseSessionContextHolder.sendTopic(topic, o);
         });
     }
+
     private static synchronized void writeMetrics(List<MetricsVO> metricsList) {
-        ObjectUtil.clone(metricsList).forEach(metrics->{
+        ObjectUtil.clone(metricsList).forEach(metrics -> {
             LocalDateTime now = metrics.getHeartTime();
             metrics.setDate(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
             metrics.setContent(JSONUtil.toJsonStr(metrics.getContent()));
