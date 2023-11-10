@@ -23,7 +23,6 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.dag.Transformation;
@@ -40,7 +39,6 @@ import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 import org.apache.flink.table.operations.CreateTableASOperation;
 import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
@@ -50,10 +48,11 @@ import org.apache.flink.table.operations.SinkModifyOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.operations.ddl.CreateTableOperation;
-import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.types.Row;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -78,13 +77,10 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     private static final Logger log = LoggerFactory.getLogger(CustomTableEnvironmentImpl.class);
 
-    private final FlinkChainedProgram flinkChainedProgram;
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public CustomTableEnvironmentImpl(StreamTableEnvironment streamTableEnvironment) {
         super(streamTableEnvironment);
-        this.flinkChainedProgram = FlinkStreamProgramWithoutPhysical.buildProgram(
-                (Configuration) getStreamExecutionEnvironment().getConfiguration());
     }
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
@@ -106,6 +102,33 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(executionEnvironment, settings);
 
         return new CustomTableEnvironmentImpl(streamTableEnvironment);
+    }
+
+    public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
+        List<Operation> operations = getParser().parse(statement);
+        for (Operation operation : operations) {
+            if (operation instanceof SetOperation) {
+                callSet((SetOperation) operation, getStreamExecutionEnvironment(), setMap);
+                return true;
+            } else if (operation instanceof ResetOperation) {
+                callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void addJar(File... jarPath) {
+        Configuration configuration = this.getRootConfiguration();
+        List<String> jars = configuration.get(PipelineOptions.JARS);
+        if (jars == null) {
+            configuration.set(
+                    PipelineOptions.JARS,
+                    Arrays.stream(jarPath).map(File::getAbsolutePath).collect(Collectors.toList()));
+        } else {
+            CollUtil.addAll(jars, jarPath);
+        }
     }
 
     public ObjectNode getStreamGraph(String statement) {
@@ -204,20 +227,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return record;
     }
 
-    public boolean parseAndLoadConfiguration(
-            String statement, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
-        for (Operation operation : getParser().parse(statement)) {
-            if (operation instanceof SetOperation) {
-                callSet((SetOperation) operation, environment, setMap);
-                return true;
-            } else if (operation instanceof ResetOperation) {
-                callReset((ResetOperation) operation, environment, setMap);
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void callSet(
             SetOperation setOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
         if (!setOperation.getKey().isPresent() || !setOperation.getValue().isPresent()) {
@@ -260,9 +269,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     @Override
     public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext =
-                new LineageContext(flinkChainedProgram, (TableEnvironmentImpl) streamTableEnvironment);
-        return lineageContext.getLineage(statement);
+        LineageContext lineageContext = new LineageContext(this);
+        return lineageContext.analyzeLineage(statement);
     }
 
     @Override

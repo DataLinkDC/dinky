@@ -20,7 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.DataBaseDTO;

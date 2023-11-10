@@ -1204,10 +1204,22 @@ CREATE TABLE "public"."dinky_git_project" (
                                               "update_time" timestamp(6) NOT null
 )
 ;
+COMMENT ON COLUMN "public"."dinky_git_project"."id" IS 'ID';
+COMMENT ON COLUMN "public"."dinky_git_project"."tenant_id" IS 'tenant id';
+COMMENT ON COLUMN "public"."dinky_git_project"."name" IS 'project name';
+COMMENT ON COLUMN "public"."dinky_git_project"."url" IS 'git url';
+COMMENT ON COLUMN "public"."dinky_git_project"."branch" IS 'git branch';
+COMMENT ON COLUMN "public"."dinky_git_project"."username" IS 'username';
+COMMENT ON COLUMN "public"."dinky_git_project"."password" IS 'password';
+COMMENT ON COLUMN "public"."dinky_git_project"."pom" IS 'pom';
+COMMENT ON COLUMN "public"."dinky_git_project"."build_args" IS 'build args';
 COMMENT ON COLUMN "public"."dinky_git_project"."private_key" IS 'keypath';
 COMMENT ON COLUMN "public"."dinky_git_project"."code_type" IS 'code type(1-java,2-python)';
 COMMENT ON COLUMN "public"."dinky_git_project"."type" IS '1-http ,2-ssh';
+COMMENT ON COLUMN "public"."dinky_git_project"."last_build" IS 'last build time';
+COMMENT ON COLUMN "public"."dinky_git_project"."description" IS 'description';
 COMMENT ON COLUMN "public"."dinky_git_project"."build_state" IS '0-notStart 1-process 2-failed 3-success';
+COMMENT ON COLUMN "public"."dinky_git_project"."build_step" IS 'different from java and python, when build java project, the step value is as follows: 0: environment check 1: clone project 2: compile and build 3: get artifact 4: analyze UDF 5: finish; when build python project, the step value is as follows: 0: environment check 1: clone project 2: get artifact 3: analyze UDF 4: finish';
 COMMENT ON COLUMN "public"."dinky_git_project"."enabled" IS '0-disable 1-enable';
 COMMENT ON COLUMN "public"."dinky_git_project"."udf_class_map_list" IS 'scan udf class';
 COMMENT ON COLUMN "public"."dinky_git_project"."order_line" IS 'order';
@@ -2651,7 +2663,8 @@ create table public.dinky_sys_token (
   create_time timestamp without time zone,
   update_time timestamp without time zone,
   creator bigint,
-  updator bigint
+  updator bigint,
+  source bigint
 );
 comment on table public.dinky_sys_token is 'token table';
 comment on column public.dinky_sys_token.id is 'id';
@@ -2666,6 +2679,7 @@ comment on column public.dinky_sys_token.create_time is 'create time';
 comment on column public.dinky_sys_token.update_time is 'modify time';
 comment on column public.dinky_sys_token.creator is 'creat user';
 comment on column public.dinky_sys_token.updator is 'modify user';
+comment on column public.dinky_sys_token.source is 'source';
 
 
 -- ----------------------------
@@ -2739,3 +2753,40 @@ INSERT INTO public.dinky_alert_template VALUES (1, 'Default', '
 ', 1, null, null);
 
 COMMIT;
+
+CREATE TABLE "public"."dinky_udf_manage" (
+                                             "id" int4 NOT NULL,
+                                             "name" varchar(50) COLLATE "pg_catalog"."default",
+                                             "class_name" varchar(50) COLLATE "pg_catalog"."default",
+                                             "task_id" int4,
+                                             "resources_id" int4,
+                                             "enabled" int2,
+                                             "create_time" timestamp(6),
+                                             "update_time" timestamp(6),
+                                             CONSTRAINT "dinky_udf_manage_pkey" PRIMARY KEY ("id")
+)
+;
+
+ALTER TABLE "public"."dinky_udf_manage"
+    OWNER TO "postgres";
+
+CREATE INDEX "name,resources_id" ON "public"."dinky_udf_manage" USING btree (
+    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+    "resources_id" "pg_catalog"."int2_ops" ASC NULLS LAST
+    );
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."name" IS 'udf name';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."class_name" IS 'Complete class name';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."task_id" IS 'task id';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."resources_id" IS 'resources id';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."enabled" IS 'is enable';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."create_time" IS 'create time';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."update_time" IS 'update time';
+
+COMMENT ON TABLE "public"."dinky_udf_manage" IS 'udf';

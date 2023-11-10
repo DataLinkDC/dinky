@@ -21,7 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.ID;
 import org.dinky.data.model.JobInfoDetail;
@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.Dict;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -133,8 +134,9 @@ public class JobInstanceController {
             dataType = "Integer",
             paramType = "query",
             required = true)
-    public Result<JobInfoDetail> refreshJobInfoDetail(@RequestParam Integer id) {
-        return Result.succeed(jobInstanceService.refreshJobInfoDetail(id));
+    public Result<JobInfoDetail> refreshJobInfoDetail(
+            @RequestParam Integer id, @RequestParam(defaultValue = "false") boolean isForce) {
+        return Result.succeed(jobInstanceService.refreshJobInfoDetail(id, isForce));
     }
 
     /**
@@ -300,5 +302,17 @@ public class JobInstanceController {
             @RequestParam String verticeId,
             @RequestParam String metrics) {
         return Result.succeed(FlinkAPI.build(address).getJobMetricsData(jobId, verticeId, metrics));
+    }
+
+    @GetMapping("/hookJobDone")
+    @ApiOperation("hookJobDone")
+    @SaIgnore
+    public Result<Dict> hookJobDone(@RequestParam String jobId, @RequestParam Integer taskId) {
+        boolean done = jobInstanceService.hookJobDone(jobId, taskId);
+        if (done) {
+            return Result.succeed();
+        } else {
+            return Result.failed();
+        }
     }
 }

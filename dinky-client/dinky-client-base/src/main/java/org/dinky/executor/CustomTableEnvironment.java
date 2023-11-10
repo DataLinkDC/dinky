@@ -35,6 +35,7 @@ import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.types.Row;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,7 @@ public interface CustomTableEnvironment
 
     SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
 
-    boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment config, Map<String, Object> setMap);
+    boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap);
 
     StreamExecutionEnvironment getStreamExecutionEnvironment();
 
@@ -74,4 +75,6 @@ public interface CustomTableEnvironment
     <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList);
 
     void executeCTAS(Operation operation);
+
+    void addJar(File... jarPath);
 }

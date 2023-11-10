@@ -1550,7 +1550,7 @@ CREATE TABLE `dinky_git_project` (
                                    `last_build` datetime DEFAULT NULL,
                                    `description` varchar(255) DEFAULT NULL,
                                    `build_state` tinyint(2) NOT NULL DEFAULT '0' COMMENT '0-notStart 1-process 2-failed 3-success',
-                                   `build_step` tinyint(2) NOT NULL DEFAULT '0',
+                                   `build_step` tinyint(2) NOT NULL DEFAULT '0' COMMENT 'different from java and python, when build java project, the step value is as follows: 0: environment check 1: clone project 2: compile and build 3: get artifact 4: analyze UDF 5: finish; when build python project, the step value is as follows: 0: environment check 1: clone project 2: get artifact 3: analyze UDF 4: finish',
                                    `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0-disable 1-enable',
                                    `udf_class_map_list` text COMMENT 'scan udf class',
                                    `order_line` int(11) NOT NULL DEFAULT '1' COMMENT 'order',
@@ -1841,29 +1841,6 @@ CREATE TABLE `dinky_sys_role_menu` (
                                        UNIQUE KEY `un_role_menu_inx` (`role_id`,`menu_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
--- ----------------------------
--- Table structure dinky_sys_token
--- ----------------------------
-drop table if exists `dinky_sys_token`;
-CREATE TABLE `dinky_sys_token` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `token_value` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'token value',
-  `user_id` bigint NOT NULL COMMENT 'user id',
-  `role_id` bigint NOT NULL COMMENT 'role id',
-  `tenant_id` bigint NOT NULL COMMENT 'tenant id',
-  `expire_type` tinyint NOT NULL COMMENT '1: never expire, 2: expire after a period of time, 3: expire at a certain time',
-  `expire_start_time` datetime DEFAULT NULL COMMENT 'expire start time ,when expire_type = 3 , it is the start time of the period',
-  `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
-  `create_time` datetime NOT NULL COMMENT 'create time',
-  `update_time` datetime NOT NULL COMMENT 'modify time',
-  `creator` bigint DEFAULT NULL COMMENT '创建人',
-  `updator` bigint DEFAULT NULL COMMENT '修改人',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='token management';
-
-
-
 -- ----------------------------
 -- Table structure dinky_sys_alert
 -- ----------------------------
@@ -1918,6 +1895,42 @@ INSERT INTO dinky_alert_template VALUES (1, 'Default', '
 [Go toTask Web](http://${taskUrl})
 ', 1, null, null);
 
-COMMIT;
 
+CREATE TABLE `dinky_udf_manage` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                                    `name` varchar(50) DEFAULT NULL COMMENT 'udf name',
+                                    `class_name` varchar(50) DEFAULT NULL COMMENT 'Complete class name',
+                                    `task_id` int(11) DEFAULT NULL COMMENT 'task id',
+                                    `resources_id` int(11) DEFAULT NULL COMMENT 'resources id',
+                                    `enabled` tinyint(1) DEFAULT 1 COMMENT 'is enable',
+                                    `create_time` datetime DEFAULT NULL COMMENT 'create time',
+                                    `update_time` datetime DEFAULT NULL COMMENT 'update time',
+                                    PRIMARY KEY (`id`) USING BTREE,
+                                    KEY `name,resources_id` (`name`,`resources_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='udf';
+
+-- ----------------------------
+-- Table structure dinky_sys_token
+-- ----------------------------
+drop table if exists `dinky_sys_token`;
+CREATE TABLE `dinky_sys_token` (
+   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+   `token_value` varchar(255) NOT NULL COMMENT 'token value',
+   `user_id` bigint(20) NOT NULL COMMENT 'user id',
+   `role_id` bigint(20) NOT NULL COMMENT 'role id',
+   `tenant_id` bigint(20) NOT NULL COMMENT 'tenant id',
+   `expire_type` tinyint(4) NOT NULL COMMENT '1: never expire, 2: expire after a period of time, 3: expire at a certain time',
+   `expire_start_time` datetime DEFAULT NULL COMMENT 'expire start time ,when expire_type = 3 , it is the start time of the period',
+   `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
+   `create_time` datetime NOT NULL COMMENT 'create time',
+   `update_time` datetime NOT NULL COMMENT 'modify time',
+   `creator` bigint(20) DEFAULT NULL COMMENT '创建人',
+   `updator` bigint(20) DEFAULT NULL COMMENT '修改人',
+   `source` tinyint(2) DEFAULT NULL COMMENT '1:login 2:custom',
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `token_value` (`token_value`) USING BTREE,
+   KEY `source` (`source`) USING HASH
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COMMENT='token management';
+
+COMMIT;
 SET FOREIGN_KEY_CHECKS = 1;

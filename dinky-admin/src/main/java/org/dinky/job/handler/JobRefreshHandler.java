@@ -55,7 +55,8 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import cn.hutool.json.JSONObject;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,12 +92,18 @@ public class JobRefreshHandler {
                 jobInfoDetail.getInstance().getName());
 
         JobInstance jobInstance = jobInfoDetail.getInstance();
+        JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
         String oldStatus = jobInstance.getStatus();
 
-        JobDataDto jobDataDto = getJobHistory(
-                jobInstance.getId(),
-                jobInfoDetail.getClusterInstance().getJobManagerHost(),
-                jobInfoDetail.getInstance().getJid());
+        // Update the value of JobData from the flink api while ignoring the null value to prevent
+        // some other configuration from being overwritten
+        BeanUtil.copyProperties(
+                getJobData(
+                        jobInstance.getId(),
+                        jobInfoDetail.getClusterInstance().getJobManagerHost(),
+                        jobInfoDetail.getInstance().getJid()),
+                jobDataDto,
+                CopyOptions.create().ignoreNullValue());
 
         if (Asserts.isNull(jobDataDto.getJob()) || jobDataDto.isError()) {
             // If the job fails to get it, the default Finish Time is the current time
@@ -165,7 +172,7 @@ public class JobRefreshHandler {
      * @param jobId          The job ID.
      * @return {@link org.dinky.data.dto.JobDataDto}.
      */
-    public static JobDataDto getJobHistory(Integer id, String jobManagerHost, String jobId) {
+    public static JobDataDto getJobData(Integer id, String jobManagerHost, String jobId) {
         JobDataDto.JobDataDtoBuilder builder = JobDataDto.builder();
         FlinkAPI api = FlinkAPI.build(jobManagerHost);
         try {
@@ -249,8 +256,8 @@ public class JobRefreshHandler {
 
         if (GatewayType.isDeployCluster(clusterType)) {
             JobConfig jobConfig = new JobConfig();
-            String configJson = jobDataDto.getClusterConfiguration().getConfigJson();
-            jobConfig.buildGatewayConfig(new JSONObject(configJson).toBean(FlinkClusterConfig.class));
+            FlinkClusterConfig configJson = jobDataDto.getClusterConfiguration().getConfigJson();
+            jobConfig.buildGatewayConfig(configJson);
             jobConfig.getGatewayConfig().setType(GatewayType.get(clusterType));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
             Gateway.build(jobConfig.getGatewayConfig()).onJobFinishCallback(jobInstance.getStatus());

@@ -146,7 +146,7 @@ public final class VariableManager {
                 return variables.get(variableName);
             }
             // use jexl to parse variable value
-            return ENGINE.eval(variableName, ENGINE_CONTEXT);
+            return ENGINE.eval(variableName, ENGINE_CONTEXT, null);
         } catch (Exception e) {
             throw new CatalogException(format("The variable of sql %s does not exist.", variableName));
         }

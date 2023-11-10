@@ -52,7 +52,7 @@ public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, 
     }
 
     @Override
-    public void createTaskVersionSnapshot(TaskDTO task) {
+    public Integer createTaskVersionSnapshot(TaskDTO task) {
         List<TaskVersion> taskVersions = getTaskVersionByTaskId(task.getId());
         List<Integer> versionIds =
                 taskVersions.stream().map(TaskVersion::getVersionId).collect(Collectors.toList());
@@ -69,22 +69,22 @@ public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, 
         taskVersion.setTaskId(taskVersion.getId());
         taskVersion.setId(null);
 
-        if (Asserts.isNull(task.getVersionId())) {
+        if (Asserts.isNull(task.getVersionId()) || !versionIds.contains(task.getVersionId())) {
             // FIRST RELEASE, ADD NEW VERSION
             taskVersion.setVersionId(1);
-            task.setVersionId(1);
             taskVersion.setCreateTime(LocalDateTime.now());
             save(taskVersion);
         } else {
             // Explain that there is a version, you need to determine whether it is an old version after fallback
-            TaskVersion version = versionMap.get(task.getVersionId());
-            version.setId(null);
-            if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)) {
-                taskVersion.setVersionId(Collections.max(versionIds) + 1);
-                task.setVersionId(Collections.max(versionIds) + 1);
+            TaskVersion version = versionMap.getOrDefault(task.getVersionId(), new TaskVersion());
+            // IDs are not involved in the comparison
+            if (!taskVersion.equals(version)) {
+                int newVersionId = versionIds.isEmpty() ? 1 : Collections.max(versionIds) + 1;
+                taskVersion.setVersionId(newVersionId);
                 taskVersion.setCreateTime(LocalDateTime.now());
                 save(taskVersion);
             }
         }
+        return taskVersion.getVersionId();
     }
 }

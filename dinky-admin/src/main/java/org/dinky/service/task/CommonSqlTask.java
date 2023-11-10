@@ -20,7 +20,7 @@
 package org.dinky.service.task;
 
 import org.dinky.config.Dialect;
-import org.dinky.data.annotation.SupportDialect;
+import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.result.ResultPool;

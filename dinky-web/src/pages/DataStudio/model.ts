@@ -90,7 +90,6 @@ export type TaskType = {
   clusterConfigurationName?: string;
   databaseId?: number;
   databaseName?: string;
-  jarId?: number;
   envId?: number;
   jobInstanceId?: number;
   note?: string;

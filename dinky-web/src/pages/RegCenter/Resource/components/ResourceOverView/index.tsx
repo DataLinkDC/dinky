@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -32,11 +32,13 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { ResourceInfo } from '@/types/RegCenter/data';
 import { InitResourceState } from '@/types/RegCenter/init.d';
 import { ResourceState } from '@/types/RegCenter/state.d';
+import { unSupportView } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
+import { useAsyncEffect } from 'ahooks';
 import { MenuInfo } from 'rc-menu/es/interface';
 import { Resizable } from 're-resizable';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 const ResourceOverView: React.FC = () => {
   const [resourceState, setResourceState] = useState<ResourceState>(InitResourceState);
@@ -55,22 +57,19 @@ const ResourceOverView: React.FC = () => {
     );
   };
 
-  useEffect(() => {
-    refreshTree();
-  }, [resourceState]);
+  useAsyncEffect(async () => {
+    await refreshTree();
+  }, []);
 
   /**
    * query content by id
    * @type {(id: number) => Promise<void>}
    */
-  const queryContent = useCallback(
-    async (id: number) => {
-      await queryDataByParams<string>(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {
-        id
-      }).then((res) => setResourceState((prevState) => ({ ...prevState, content: res ?? '' })));
-    },
-    [resourceState.clickedNode]
-  );
+  const queryContent: (id: number) => Promise<void> = useCallback(async (id: number) => {
+    await queryDataByParams<string>(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {
+      id
+    }).then((res) => setResourceState((prevState) => ({ ...prevState, content: res ?? '' })));
+  }, []);
 
   /**
    * the node click event
@@ -79,11 +78,11 @@ const ResourceOverView: React.FC = () => {
    */
   const handleNodeClick = async (info: any): Promise<void> => {
     const {
-      node: { id, isLeaf, key },
+      node: { id, isLeaf, key, name },
       node
     } = info;
     setResourceState((prevState) => ({ ...prevState, selectedKeys: [key], clickedNode: node }));
-    if (isLeaf) {
+    if (isLeaf && !unSupportView(name)) {
       await queryContent(id);
     } else {
       setResourceState((prevState) => ({ ...prevState, content: '' }));
@@ -140,7 +139,7 @@ const ResourceOverView: React.FC = () => {
     }
   };
 
-  const handleMenuClick = (node: MenuInfo) => {
+  const handleMenuClick = async (node: MenuInfo) => {
     switch (node.key) {
       case 'createFolder':
         handleCreateFolder();
@@ -149,7 +148,7 @@ const ResourceOverView: React.FC = () => {
         handleUpload();
         break;
       case 'delete':
-        handleDelete();
+        await handleDelete();
         break;
       case 'rename':
         handleRename();
@@ -183,9 +182,9 @@ const ResourceOverView: React.FC = () => {
   /**
    * the rename cancel
    */
-  const handleModalCancel = () => {
+  const handleModalCancel = async () => {
     setResourceState((prevState) => ({ ...prevState, editOpen: false }));
-    refreshTree();
+    await refreshTree();
   };
 
   /**
@@ -222,11 +221,11 @@ const ResourceOverView: React.FC = () => {
   const renderRightMenu = () => {
     if (!resourceState.rightClickedNode.isLeaf) {
       return RIGHT_CONTEXT_FOLDER_MENU.filter(
-        (menu) => !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+        (menu) => !menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
       );
     }
     return RIGHT_CONTEXT_FILE_MENU.filter(
-      (menu) => !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+      (menu) => !menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
     );
   };
 

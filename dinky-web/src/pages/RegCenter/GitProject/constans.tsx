@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -131,7 +131,7 @@ export const CLONE_TYPES = [
  * @param item
  */
 export const renderBranchesTagColor = (item: string) => {
-  let colorTag = item.includes('dev')
+  return item.includes('dev')
     ? 'processing'
     : item.includes('test')
     ? 'warning'
@@ -142,13 +142,14 @@ export const renderBranchesTagColor = (item: string) => {
     : item.includes('main')
     ? 'success'
     : 'default';
-  return colorTag;
 };
 
 /**
- * git project build step enum
+ * 区别于 java 和 Python 类型 | different from java and python
+ * 构建 java 工程时:   步骤值映射如下: 0: 环境检查 1: 克隆项目 2: 编译构建 3: 获取产物 4: 分析 UDF 5: 完成; (when build java project, the step value is as follows: 0: environment check 1: clone project 2: compile and build 3: get artifact 4: analyze UDF 5: finish)
+ * 构建 python 工程时: 步骤值映射如下: 0: 环境检查 1: 克隆项目 2: 获取产物 3: 分析 UDF 4: 完成;(when build python project, the step value is as follows: 0: environment check 1: clone project 2: get artifact 3: analyze UDF 4: finish)
  */
-export const GIT_PROJECT_BUILD_STEP_ENUM = {
+const GIT_PROJECT_BUILD_STEP_BASE = {
   0: {
     title: l('rc.gp.build.step.0'),
     text: l('rc.gp.build.step.0'),
@@ -158,7 +159,13 @@ export const GIT_PROJECT_BUILD_STEP_ENUM = {
     title: l('rc.gp.build.step.1'),
     text: l('rc.gp.build.step.1'),
     status: 'default'
-  },
+  }
+};
+/**
+ * git project build step enum
+ */
+export const GIT_PROJECT_BUILD_STEP_JAVA_ENUM = {
+  ...GIT_PROJECT_BUILD_STEP_BASE,
   2: {
     title: l('rc.gp.build.step.2'),
     text: l('rc.gp.build.step.2'),
@@ -185,6 +192,31 @@ export const GIT_PROJECT_BUILD_STEP_ENUM = {
     status: 'success'
   }
 };
+
+export const GIT_PROJECT_BUILD_STEP_PYTHON_ENUM = {
+  ...GIT_PROJECT_BUILD_STEP_BASE,
+  2: {
+    title: l('rc.gp.build.step.2'),
+    text: l('rc.gp.build.step.2'),
+    status: 'processing'
+  },
+  3: {
+    title: l('rc.gp.build.step.4'),
+    text: l('rc.gp.build.step.4'),
+    status: 'success'
+  },
+  4: {
+    title: l('rc.gp.build.step.5'),
+    text: l('rc.gp.build.step.5'),
+    status: 'success'
+  },
+  5: {
+    title: l('rc.gp.build.step.6'),
+    text: l('rc.gp.build.step.6'),
+    status: 'success'
+  }
+};
+
 /**
  * git project build step filter
  */
@@ -228,7 +260,6 @@ export const GIT_PROJECT_BUILD_STEP = [
 
 /**
  * git project build step enum
- * @type {{"100%": string, "0%": string, "20%": string, "40%": string, "60%": string, "80%": string}}
  */
 export const processColor = {
   '0%': '#8ac1ea',

@@ -1,7 +1,12 @@
-# -*- coding: utf-8 -*-
+import hashlib
 import importlib
+import os
 import sys
-import platform
+import uuid
+import zipfile
+import appdirs
+import shutil
+
 import pyflink
 
 # import ast
@@ -41,9 +46,6 @@ import pyflink
 #     except Exception as e:
 #         pass
 
-
-import os
-
 if len(sys.argv) < 2:
     raise Exception("Please enter the file path")
 
@@ -52,23 +54,62 @@ project_path: str = sys.argv[1]
 udf_name_list = set()
 
 
+def get_file_md5(path):
+    """
+    获取文件内容的MD5值
+    :param path: 文件所在路径
+    :return:
+    """
+    with open(path, 'rb') as file:
+        data = file.read()
+
+    diff_check = hashlib.md5()
+    diff_check.update(data)
+    md5_code = diff_check.hexdigest()
+    return md5_code
+
+
 def list_modules(root_dir):
     """返回给定目录下所有模块和子模块的名称"""
     modules = []
-    for dirpath, _, filenames in os.walk(root_dir):
-        for filename in filenames:
-            if filename.endswith(".py"):
-                p_ = project_path.replace(os.sep, ".")
-                module_name = os.path.splitext(os.path.join(dirpath, filename))[0].replace(os.sep, ".").replace(
-                    p_ + ".", "")
-                modules.append(module_name.replace(root_dir, ""))
+    if os.path.isdir(root_dir):
+        sys.path.append(project_path)
+        for dirpath, _, filenames in os.walk(root_dir):
+            for filename in filenames:
+                parse_file(dirpath, filename, modules, root_dir)
+    else:
+        file_dir = os.path.dirname(root_dir)
+        sys.path.append(file_dir)
+        parse_file(file_dir, root_dir, modules, file_dir)
+        if project_path.endswith(".py"):
+            sys.path.append(file_dir)
+        elif project_path.endswith(".zip"):
+            tmp_dir = appdirs.user_cache_dir()
+            file = zipfile.ZipFile(project_path)
+            unzip_file_path = os.path.normpath(tmp_dir + "/dinky/udf_parse/" + get_file_md5(project_path))
+            if os.path.exists(unzip_file_path):
+                shutil.rmtree(unzip_file_path)
+            file.extractall(unzip_file_path)
+            sys.path.append(unzip_file_path)
+            for dirpath, _, filenames in os.walk(unzip_file_path):
+                for filename in filenames:
+                    parse_file(dirpath, filename, modules, unzip_file_path)
+            file.close()
     return modules
+
+
+def parse_file(dirpath, filename, modules, root_dir):
+    root_dir = os.path.normpath(root_dir)
+    if filename.endswith(".py"):
+        p_ = root_dir.replace(os.sep, ".")
+        module_name = os.path.splitext(os.path.join(dirpath, filename))[0].replace(os.sep, ".").replace(
+            p_ + ".", "")
+        modules.append(module_name.replace(root_dir, ""))
 
 
 if __name__ == '__main__':
     modules = list_modules(project_path)
 
-    sys.path.append(project_path)
     for module_name in modules:
         try:
             module = importlib.import_module(module_name)

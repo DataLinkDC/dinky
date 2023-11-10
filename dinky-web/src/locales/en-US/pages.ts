@@ -760,7 +760,8 @@ export default {
   'rc.gp.build.step.1': 'Check Env',
   'rc.gp.build.step.2': 'Git Clone',
   'rc.gp.build.step.3': 'Maven Build',
-  'rc.gp.build.step.4': 'Get Jars',
+  // 获取产物
+  'rc.gp.build.step.4': 'Get Artifact',
   'rc.gp.build.step.5': 'Analysis UDF',
   'rc.gp.build.step.6': 'Finish',
   'rc.gp.buildArgs': 'Build Arguments',
@@ -840,7 +841,16 @@ export default {
   'rc.template.templateCode': 'Template Code',
   'rc.template.templateCodeLabel': 'Template Code( {language} )',
   'rc.template.templateCodePlaceholder': 'Please edit the template code! ',
-  'rc.udf.management': 'UDF Template Management',
+  'rc.udf.template.management': 'UDF Template Management',
+  'rc.udf.register.management': 'UDF Register Management',
+  'rc.udf.register.file.name': 'File Name',
+  'rc.udf.register.parse.count': 'UDF Parse Count',
+  'rc.udf.register.source': 'Source',
+  'rc.udf.register.language': 'Language',
+  'rc.udf.register.name': 'UDF Name',
+  'rc.udf.register.className': 'Class Name',
+  'rc.udf.register.deleteConfirm': 'Are you sure you want to delete this UDF? ',
+  'rc.udf.register': 'Register UDF',
   /**
    *
    * role

@@ -76,6 +76,7 @@ public interface ITypeConvert {
             case "blob":
                 return results.getBlob(columnName);
             case "boolean":
+            case "bool":
             case "bit":
                 return results.getBoolean(columnName);
             case "byte":
