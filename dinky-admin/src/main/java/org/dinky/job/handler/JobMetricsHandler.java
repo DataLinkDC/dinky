@@ -49,7 +49,6 @@ public class JobMetricsHandler {
      * Use concurrent programming to get the data of each indicator through asynchronous requests. </br>
      * Send to MetricsContextHolder asynchronously at the end of the method.  </br>
      * Thus, the operation of writing the Flink indicator is completed. </br>
-     *
      */
     public static void writeFlinkMetrics(JobInfoDetail jobInfoDetail) {
         Map<String, Map<String, String>> customMetricsList = jobInfoDetail.getCustomMetricsMap();
@@ -64,8 +63,10 @@ public class JobMetricsHandler {
                 .toArray(CompletableFuture[]::new);
         // Wait for all Completable Future executions to finish
         AsyncUtil.waitAll(array);
-
-        MetricsVO metricsVO = new MetricsVO(customMetricsList, jobId, LocalDateTime.now());
+        MetricsVO metricsVO = new MetricsVO();
+        metricsVO.setContent(customMetricsList);
+        metricsVO.setHeartTime(LocalDateTime.now());
+        metricsVO.setModel(jobId);
         MetricsContextHolder.getInstances().sendAsync(metricsVO.getModel(), metricsVO);
     }
 

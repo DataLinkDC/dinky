@@ -228,7 +228,7 @@ export const LeftBottomMoreTabs: { [c: string]: TabProp[] } = {
 
 // btn route
 export const BtnRoute: { [c: string]: CircleDataStudioButtonProps[] } = {
-  'menu.datastudio.metadata': [
+  'menu.datastudio.datasource': [
     {
       icon: <PlusOutlined />,
       title: l('button.create'),
