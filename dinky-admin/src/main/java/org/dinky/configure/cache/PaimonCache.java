@@ -41,8 +41,6 @@ import cn.hutool.core.convert.Convert;
 
 public class PaimonCache extends AbstractValueAdaptingCache {
     private static final Class<CacheData> clazz = CacheData.class;
-
-    public static final String NAME = "paimon-cache";
     private final String cacheName;
     private static final String TABLE_NAME = PaimonTableConstant.DINKY_CACHE;
     /**
@@ -57,7 +55,7 @@ public class PaimonCache extends AbstractValueAdaptingCache {
 
     @Override
     public String getName() {
-        return NAME;
+        return cacheName;
     }
 
     @Override
