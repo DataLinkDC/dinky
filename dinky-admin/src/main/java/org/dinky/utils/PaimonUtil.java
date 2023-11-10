@@ -86,17 +86,6 @@ public class PaimonUtil {
         } catch (Catalog.DatabaseAlreadyExistException e) {
             throw new RuntimeException(e);
         }
-
-        //        Schema.Builder schemaBuilder = Schema.newBuilder();
-        //        schemaBuilder.primaryKey("heart_time", "model", "date");
-        //        schemaBuilder.partitionKeys("model", "date");
-        //        schemaBuilder.column("heart_time", DataTypes.TIMESTAMP_MILLIS());
-        //        schemaBuilder.column("model", DataTypes.STRING());
-        //        schemaBuilder.column("content", DataTypes.STRING());
-        //        schemaBuilder.column("date", DataTypes.STRING());
-        //        schemaBuilder.options(options);
-        //        Schema schema = schemaBuilder.build();
-
     }
 
     public static void dropTable(String table) {
