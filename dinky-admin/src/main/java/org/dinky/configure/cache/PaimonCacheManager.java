@@ -1,18 +1,27 @@
 package org.dinky.configure.cache;
 
 import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
+import org.springframework.cache.jcache.JCacheCache;
+import org.springframework.cache.support.AbstractCacheManager;
+import org.springframework.util.Assert;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 
-public class PaimonCacheManager implements CacheManager {
+public class PaimonCacheManager extends AbstractCacheManager {
+
     @Override
-    public Cache getCache(String name) {
-        return null;
+    protected Collection<? extends Cache> loadCaches() {
+        Collection<Cache> caches = new LinkedHashSet<>();
+        for (String cacheName : this.getCacheNames()) {
+            Cache cache = this.getCache(cacheName);
+            caches.add(cache);
+        }
+        return caches;
     }
 
     @Override
-    public Collection<String> getCacheNames() {
-        return null;
+    protected Cache getMissingCache(String name) {
+        return new PaimonCache(name);
     }
 }

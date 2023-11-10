@@ -19,10 +19,15 @@
 
 package org.dinky.context;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONUtil;
+import org.dinky.data.constant.PaimonTableConstant;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.PaimonUtil;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,12 +63,20 @@ public class MetricsContextHolder {
             long duration = System.currentTimeMillis() - lastDumpTime;
             synchronized (metricsVOS) {
                 if (metricsVOS.size() > 1000 || duration > 1000 * 5) {
-                    PaimonUtil.writeMetrics(metricsVOS);
+                    writeMetrics(metricsVOS);
                     metricsVOS.clear();
                 }
             }
             String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
             SseSessionContextHolder.sendTopic(topic, o);
         });
+    }
+    private static synchronized void writeMetrics(List<MetricsVO> metricsList) {
+        ObjectUtil.clone(metricsList).forEach(metrics->{
+            LocalDateTime now = metrics.getHeartTime();
+            metrics.setDate(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            metrics.setContent(JSONUtil.toJsonStr(metrics.getContent()));
+        });
+        PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, metricsList, MetricsVO.class);
     }
 }

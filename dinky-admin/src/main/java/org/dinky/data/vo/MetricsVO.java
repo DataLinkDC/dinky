@@ -19,8 +19,12 @@
 
 package org.dinky.data.vo;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
+import cn.hutool.core.map.MapUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -32,25 +36,40 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.dinky.data.annotations.paimon.PartitionKey;
+import org.dinky.data.annotations.paimon.PrimaryKey;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "MetricsVO", description = "Metrics Value Object")
-public class MetricsVO {
-    @ApiModelProperty(value = "Content of metrics", dataType = "Object", notes = "Content of the metrics data.")
-    private Object content;
-
-    @ApiModelProperty(value = "Model name", dataType = "String", notes = "Name of the model.")
-    private String model;
+public class MetricsVO implements Serializable {
+    private final static Map<String, String> OPTIONS = MapUtil.builder("file.format", "parquet")
+            .put("snapshot.time-retained", "10 s")
+            .put("partition.expiration-time", "7d")
+            .put("partition.expiration-check-interval", "1d")
+            .put("partition.timestamp-formatter", "yyyy-MM-dd")
+            .put("partition.timestamp-pattern", "$date")
+            .build();
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @PrimaryKey
     @ApiModelProperty(
             value = "Timestamp of heartbeart",
             dataType = "LocalDateTime",
             notes = "Timestamp of the heartbeat data.",
             example = "2023-09-15 14:30:00")
     private LocalDateTime heartTime;
+
+    @ApiModelProperty(value = "Model name", dataType = "String", notes = "Name of the model.")
+    @PartitionKey
+    private String model;
+
+    @ApiModelProperty(value = "Content of metrics", dataType = "Object", notes = "Content of the metrics data.")
+    private Object content;
+
+    @PartitionKey
+    private String date;
 }
