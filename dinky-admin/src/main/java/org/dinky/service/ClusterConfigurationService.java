@@ -72,4 +72,6 @@ public interface ClusterConfigurationService extends ISuperService<ClusterConfig
      * @return A boolean value indicating whether the modification was successful.
      */
     Boolean modifyClusterConfigStatus(Integer id);
+
+    List<ClusterConfigurationDTO> selectListByKeyWord(String keyword);
 }

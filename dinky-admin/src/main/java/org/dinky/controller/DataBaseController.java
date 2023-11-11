@@ -49,11 +49,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
-import cn.hutool.core.collection.CollectionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -113,17 +110,7 @@ public class DataBaseController {
     @GetMapping("/list")
     @ApiOperation("DataBase Get All")
     public Result<List<DataBase>> listDataBases(@RequestParam(value = "keyword") String keyword) {
-        List<DataBase> dataBaseList = databaseService.list(new LambdaQueryWrapper<DataBase>()
-                .like(DataBase::getName, keyword)
-                .or()
-                .like(DataBase::getNote, keyword));
-        // 密码不返回
-        if (CollectionUtil.isNotEmpty(dataBaseList)) {
-            for (DataBase data : dataBaseList) {
-                data.setPassword(null);
-            }
-        }
-        return Result.succeed(dataBaseList);
+        return Result.succeed(databaseService.selectListByKeyWord(keyword));
     }
 
     /**

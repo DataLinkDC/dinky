@@ -37,8 +37,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
@@ -93,11 +91,7 @@ public class AlertGroupController {
     @GetMapping("/list")
     @ApiOperation("Query AlertGroup List")
     public Result<List<AlertGroup>> listAlertGroups(@RequestParam String keyword) {
-        List<AlertGroup> alertGroupList = alertGroupService.list(new LambdaQueryWrapper<>(AlertGroup.class)
-                .like(AlertGroup::getName, keyword)
-                .or()
-                .like(AlertGroup::getNote, keyword));
-        return Result.succeed(alertGroupList);
+        return Result.succeed(alertGroupService.selectListByKeyWord(keyword));
     }
 
     /**

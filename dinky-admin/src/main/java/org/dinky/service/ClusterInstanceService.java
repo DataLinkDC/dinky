@@ -144,4 +144,6 @@ public interface ClusterInstanceService extends ISuperService<ClusterInstance> {
      * @return {@link ClusterInstance}
      */
     ClusterInstance deploySessionCluster(Integer id);
+
+    List<ClusterInstance> selectListByKeyWord(String searchKeyWord);
 }

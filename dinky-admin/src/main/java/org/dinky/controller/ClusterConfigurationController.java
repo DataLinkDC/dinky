@@ -30,7 +30,6 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.service.ClusterConfigurationService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,8 +39,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
@@ -103,12 +100,7 @@ public class ClusterConfigurationController {
     @GetMapping("/list")
     @ApiOperation("Cluster Config List")
     public Result<List<ClusterConfigurationDTO>> listClusterConfigList(@RequestParam String keyword) {
-        List<ClusterConfigurationDTO> result = clusterConfigurationService
-                .list(new LambdaQueryWrapper<ClusterConfiguration>().like(ClusterConfiguration::getName, keyword))
-                .stream()
-                .map(ClusterConfigurationDTO::fromBean)
-                .collect(Collectors.toList());
-        return Result.succeed(result);
+        return Result.succeed(clusterConfigurationService.selectListByKeyWord(keyword));
     }
 
     /**

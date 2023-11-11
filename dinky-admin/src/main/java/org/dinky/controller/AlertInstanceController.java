@@ -41,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
 
@@ -104,11 +103,7 @@ public class AlertInstanceController {
     @GetMapping("/list")
     @ApiOperation("Query AlertInstance List")
     public Result<List<AlertInstance>> listAlertInstances(@RequestParam(value = "keyword") String keyword) {
-        List<AlertInstance> alertInstanceList = alertInstanceService.list(new LambdaQueryWrapper<AlertInstance>()
-                .like(AlertInstance::getName, keyword)
-                .or()
-                .like(AlertInstance::getType, keyword));
-        return Result.succeed(alertInstanceList);
+        return Result.succeed(alertInstanceService.selectListByKeyWord(keyword));
     }
 
     /**
