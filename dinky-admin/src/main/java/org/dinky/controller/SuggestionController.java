@@ -25,6 +25,7 @@ import org.dinky.data.vo.suggestion.SuggestionVO;
 import org.dinky.service.SuggestionService;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@Api(tags = "SuggestionVO Controller")
+@Api(tags = "Suggestion Controller")
 @RequestMapping("/api/suggestion")
 @RequiredArgsConstructor
 public class SuggestionController {
@@ -49,7 +50,7 @@ public class SuggestionController {
     @PostMapping("/queryAllSuggestions")
     @ApiOperation(value = "QueryAllSuggestions", notes = "queryAllSuggestions")
     @ApiImplicitParam(name = "suggestionDTO", value = "suggestionDTO", required = true, dataType = "SuggestionDTO")
-    public Result<List<SuggestionVO>> queryAllSuggestions(@RequestBody SuggestionDTO suggestionDTO) {
+    public Result<Set<SuggestionVO>> queryAllSuggestions(@RequestBody SuggestionDTO suggestionDTO) {
         return Result.succeed(suggestionService.getSuggestions(suggestionDTO.isEnableSchemaSuggestion()));
     }
 

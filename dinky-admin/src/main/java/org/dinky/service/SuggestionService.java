@@ -22,6 +22,7 @@ package org.dinky.service;
 import org.dinky.data.vo.suggestion.SuggestionVO;
 
 import java.util.List;
+import java.util.Set;
 
 public interface SuggestionService {
 
@@ -30,7 +31,7 @@ public interface SuggestionService {
      * @param enableSchemaSuggestion whether enable schema suggestion
      * @return suggestions list
      */
-    List<SuggestionVO> getSuggestions(boolean enableSchemaSuggestion);
+    Set<SuggestionVO> getSuggestions(boolean enableSchemaSuggestion);
 
     /**
      *  by keyword get suggestions list

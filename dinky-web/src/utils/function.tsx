@@ -311,7 +311,7 @@ export const getIcon = (type: string) => {
  * @param splitChar split character
  * @param isLeft is left
  */
-export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => {
+export const  renderIcon = (type: string, splitChar: string, isLeft: boolean) => {
   if (isLeft) {
     return <FolderSvgExpand />;
   } else {

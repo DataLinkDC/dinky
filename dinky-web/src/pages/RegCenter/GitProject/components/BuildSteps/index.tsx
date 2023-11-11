@@ -18,10 +18,7 @@
  */
 
 import { AutoSteps } from '@/pages/RegCenter/GitProject/components/BuildSteps/AutoSteps';
-import {
-  JavaSteps,
-  PythonSteps
-} from '@/pages/RegCenter/GitProject/components/BuildSteps/constants';
+import { JavaSteps,PythonSteps } from '@/pages/RegCenter/GitProject/components/BuildSteps/constants';
 import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
 import { renderStatus } from '@/pages/RegCenter/GitProject/function';
 import { getSseData } from '@/services/api';
@@ -30,8 +27,8 @@ import { GitProject } from '@/types/RegCenter/data.d';
 import { InitGitBuildStepsState } from '@/types/RegCenter/init.d';
 import { GitBuildStepsState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
-import { Button, Modal } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Button,Modal } from 'antd';
+import React,{ useEffect,useState } from 'react';
 
 /**
  * props
@@ -186,7 +183,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
       type={'primary'}
       danger
       hidden={!onReTry}
-      disabled={onReTry && Number(steps[currentStep]?.status) !== 2}
+      disabled={steps[currentStep - 1]?.status !== 'error'}
       onClick={() => handleReTry()}
     >
       {l('button.retry')}
@@ -196,6 +193,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
       type={'dashed'}
       hidden={showLog}
       loading={currentStep !== steps.length && percent !== 99}
+      disabled={onReTry && steps[currentStep - 1]?.status === 'error'}
       onClick={() => onRebuild()}
     >
       {l('button.rebuild')}
@@ -203,6 +201,8 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     <Button
       key={'finish'}
       type={showLog ? 'default' : 'primary'}
+      danger={showLog}
+      disabled={steps[currentStep - 1]?.status === 'error' && percent !== 99}
       loading={currentStep !== steps.length && percent !== 99}
       onClick={() => handleCancel()}
     >
@@ -214,7 +214,13 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
    * render
    */
   return (
-    <Modal title={title} width={'85%'} open={true} maskClosable={false} footer={footerButtons}>
+    <Modal
+        title={title}
+        width={'85%'}
+        open={true}
+        maskClosable={false}
+        footer={footerButtons}
+    >
       <AutoSteps
         steps={steps}
         percent={percent}

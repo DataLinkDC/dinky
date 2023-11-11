@@ -18,6 +18,7 @@
  */
 
 
+begin ;
 delete from `dinky_task_statement` where id in (select id from `dinky_task` where `name` = 'dlink_default_catalog');
 
 delete from `dinky_task` where `name` = 'dlink_default_catalog';
@@ -58,7 +59,7 @@ UPDATE `dinky_sys_config` SET  `name` = 'flink.settings.useRestAPI' where `name`
 UPDATE `dinky_sys_config` SET  `name` = 'flink.settings.sqlSeparator' where `name` = 'sqlSeparator';
 UPDATE `dinky_sys_config` SET  `name` = 'flink.settings.jobIdWait' where `name` = 'jobIdWait';
 
-INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `type`, `size`, `pid`, `full_name`, `is_directory`) VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '/Root', 1);
+INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `type`, `size`, `pid`, `full_name`, `is_directory`) VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '', 1);
 
 
 -- ----------------------------
@@ -686,3 +687,7 @@ AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions
 
 -- 修改 dinky_udf_template 表的 enable 字段 不允许为空 默认为 1
 alter table dinky_udf_template modify column `enabled` tinyint(1) not null default 1 comment 'is enable, 0:no 1:yes';
+
+
+
+commit ;

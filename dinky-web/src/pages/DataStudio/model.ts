@@ -19,7 +19,7 @@
 
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
-import { getFlinkConfigs } from '@/pages/DataStudio/RightContainer/JobConfig/service';
+import {getFlinkConfigs, querySuggessionData} from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
@@ -29,6 +29,7 @@ import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
 import ICodeEditor = editor.ICodeEditor;
+import {SuggestionInfo} from "@/types/Public/data";
 
 /**
  * 初始化布局宽高度
@@ -284,6 +285,7 @@ export type StateType = {
   tabs: TabsType;
   bottomContainerContent: BottomContainerContent;
   footContainer: FooterType;
+  suggestions: SuggestionInfo[];
 };
 
 export type ModelType = {
@@ -292,6 +294,7 @@ export type ModelType = {
   effects: {
     queryProject: Effect;
     queryFlinkConfigOptions: Effect;
+    querySuggestions: Effect;
   };
   reducers: {
     updateToolContentHeight: Reducer<StateType>;
@@ -324,6 +327,7 @@ export type ModelType = {
     saveFooterValue: Reducer<StateType>;
     updateJobRunningMsg: Reducer<StateType>;
     saveFlinkConfigOptions: Reducer<StateType>;
+    updateSuggestions: Reducer<StateType>;
   };
 };
 
@@ -387,7 +391,8 @@ const Model: ModelType = {
         jobState: '',
         runningLog: ''
       }
-    }
+    },
+    suggestions: []
   },
   effects: {
     *queryProject({ payload }, { call, put }) {
@@ -401,6 +406,13 @@ const Model: ModelType = {
       const response: [] = yield call(getFlinkConfigs, payload);
       yield put({
         type: 'saveFlinkConfigOptions',
+        payload: response
+      });
+    },
+    *querySuggestions({ payload }, { call, put }) {
+      const response: SuggestionInfo[] = yield call(querySuggessionData, payload);
+      yield put({
+        type: 'updateSuggestions',
         payload: response
       });
     }
@@ -829,6 +841,12 @@ const Model: ModelType = {
           jobRunningMsg: payload
         }
       };
+    },
+    updateSuggestions(state, { payload }) {
+        return {
+            ...state,
+            suggestions: payload
+        };
     }
   }
 };

@@ -27,9 +27,10 @@ import org.dinky.service.DocumentService;
 import org.dinky.service.FragmentVariableService;
 import org.dinky.service.SuggestionService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -46,35 +47,37 @@ public class SuggestionServiceImpl implements SuggestionService {
     private final FragmentVariableService fragmentVariableService;
 
     /**
-     *  get suggestions for editor
+     * get suggestions for editor
+     *
      * @param enableSchemaSuggestion whether enable schema suggestion
      * @return suggestions list
      */
     @Override
-    public List<SuggestionVO> getSuggestions(boolean enableSchemaSuggestion) {
-        List<SuggestionVO> suggestionVOS = new ArrayList<>();
+    public Set<SuggestionVO> getSuggestions(boolean enableSchemaSuggestion) {
+        Set<SuggestionVO> suggestionVOS = new HashSet<>();
         // 1. 构建文档的建议列表
-        buildDocumentSuggestions(documentService.list(), suggestionVOS);
+        buildDocumentSuggestions(new HashSet<>(documentService.list()), suggestionVOS);
         // 2. 全局变量的建议列表
-        buildGlobalVariableSuggestions(fragmentVariableService.listEnabledAll(), suggestionVOS);
+        buildGlobalVariableSuggestions(new HashSet<>(fragmentVariableService.listEnabledAll()), suggestionVOS);
         // todo: 如果启用了schema，需要构建schema的建议列表
         // 3. schema的建议列表
         if (enableSchemaSuggestion) {
-            buildSchemaSuggestions(Arrays.asList(), suggestionVOS);
+            buildSchemaSuggestions(Set.of(), suggestionVOS);
         }
         // 4. 自定义关键词提示
-        buildCustomSuggestions(new ArrayList<>(), suggestionVOS);
+        buildCustomSuggestions(Set.of(), suggestionVOS);
 
         return suggestionVOS;
     }
 
     /**
      * build global variable suggestions
+     *
      * @param fragmentVariableList fragment variable list
-     * @param suggestionVOS suggestion list
+     * @param suggestionVOS        suggestion list
      */
     private static void buildGlobalVariableSuggestions(
-            List<FragmentVariable> fragmentVariableList, List<SuggestionVO> suggestionVOS) {
+            Set<FragmentVariable> fragmentVariableList, Set<SuggestionVO> suggestionVOS) {
         fragmentVariableList.stream()
                 .map(fragmentVariable -> {
                     SuggestionLabelVO suggestionLabelVO = SuggestionLabelVO.builder()
@@ -83,7 +86,9 @@ public class SuggestionServiceImpl implements SuggestionService {
                             .description(fragmentVariable.getNote())
                             .build();
                     return SuggestionVO.builder()
+                            .key(fragmentVariable.getId() + "_fragmentVariable")
                             .label(suggestionLabelVO)
+                            .kind(4)
                             .insertText(fragmentVariable.getFragmentValue())
                             .detail(fragmentVariable.getNote())
                             .build();
@@ -93,19 +98,21 @@ public class SuggestionServiceImpl implements SuggestionService {
 
     /**
      * build schema suggestions
+     *
      * @param buildingSchemaList schema list
-     * @param suggestionVOS suggestion list
+     * @param suggestionVOS      suggestion list
      */
-    private static void buildSchemaSuggestions(List<Object> buildingSchemaList, List<SuggestionVO> suggestionVOS) {
+    private static void buildSchemaSuggestions(Set<Object> buildingSchemaList, Set<SuggestionVO> suggestionVOS) {
         // todo: 构建schema的建议列表 , 包含 库名 、表名、字段名、.... , 能做到根据库名点出表名，根据表名点出字段名
     }
 
     /**
      * build custom suggestions
+     *
      * @param customKeyWordList custom keyword list
-     * @param suggestionVOS suggestion list
+     * @param suggestionVOS     suggestion list
      */
-    private static void buildCustomSuggestions(List<Object> customKeyWordList, List<SuggestionVO> suggestionVOS) {
+    private static void buildCustomSuggestions(Set<Object> customKeyWordList, Set<SuggestionVO> suggestionVOS) {
         // todo: 自定义关键词提示,
         //      1. 此处自定义是属于 dinky 内部自定义语法关键词提示, 如果有片段, 将片段的建议列表加入到文档中进行提示
         //      2. 可以加入 yml 语法的关键词提示 , 因为在集群配置中会有 yml 的配置文件写法 , 获取方式待定
@@ -113,10 +120,11 @@ public class SuggestionServiceImpl implements SuggestionService {
 
     /**
      * build document suggestions
-     * @param documentList document list
+     *
+     * @param documentList  document list
      * @param suggestionVOS suggestion list
      */
-    private static void buildDocumentSuggestions(List<Document> documentList, List<SuggestionVO> suggestionVOS) {
+    private static void buildDocumentSuggestions(Set<Document> documentList, Set<SuggestionVO> suggestionVOS) {
         documentList.stream()
                 .map(document -> {
                     String detail =
@@ -127,9 +135,10 @@ public class SuggestionServiceImpl implements SuggestionService {
                             .description(document.getDescription())
                             .build();
                     return SuggestionVO.builder()
+                            .key(document.getId() + "_document")
                             .label(suggestionLabelVO)
                             .insertText(document.getFillValue())
-                            .kind(27)
+                            .kind(4)
                             .detail(detail)
                             .build();
                 })
@@ -137,10 +146,11 @@ public class SuggestionServiceImpl implements SuggestionService {
     }
 
     /**
-     *  by keyword get suggestions list
-     * @param enableSchemaSuggestion  whether enable schema suggestion
-     * @param keyWord  keyword
-     * @return  suggestions list
+     * by keyword get suggestions list
+     *
+     * @param enableSchemaSuggestion whether enable schema suggestion
+     * @param keyWord                keyword
+     * @return suggestions list
      */
     @Override
     public List<SuggestionVO> getSuggestionsByKeyWord(boolean enableSchemaSuggestion, String keyWord) {
@@ -150,10 +160,11 @@ public class SuggestionServiceImpl implements SuggestionService {
     }
 
     /**
-     *  by sql statement get suggestions list
-     * @param enableSchemaSuggestion     whether enable schema suggestion
-     * @param sqlStatement  sql statement
-     * @return  suggestions list
+     * by sql statement get suggestions list
+     *
+     * @param enableSchemaSuggestion whether enable schema suggestion
+     * @param sqlStatement           sql statement
+     * @return suggestions list
      */
     @Override
     public List<SuggestionVO> getSuggestionsBySqlStatement(

@@ -17,6 +17,7 @@
  *
  */
 
+import CodeEdit from "@/components/CustomEditor/CodeEdit";
 import { useEditor } from '@/hooks/useEditor';
 import { getCurrentTab } from '@/pages/DataStudio/function';
 import { TASK_VAR_FILTER } from '@/pages/DataStudio/MiddleContainer/Editor/constants';
@@ -24,20 +25,20 @@ import DiffModal from '@/pages/DataStudio/MiddleContainer/Editor/DiffModal';
 import {
   DataStudioTabsItemType,
   StateType,
-  STUDIO_MODEL,
+  STUDIO_MODEL, STUDIO_MODEL_ASYNC,
   TaskDataType
 } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
-import { convertCodeEditTheme } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { connect, useRequest } from '@@/exports';
-import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
-import { Editor } from '@monaco-editor/react';
-import { Button, Spin } from 'antd';
-import { editor, KeyCode, KeyMod } from 'monaco-editor';
-import React, { useState } from 'react';
+import { connect,useRequest } from '@@/exports';
+import { FullscreenExitOutlined,FullscreenOutlined } from '@ant-design/icons';
+import { Button,Spin } from 'antd';
+import { editor,KeyCode,KeyMod } from 'monaco-editor';
+import React, {useEffect, useState} from 'react';
 import { format } from 'sql-formatter';
+import {buildAllSuggestionsToEditor} from "@/components/CustomEditor/CodeEdit/function";
+import {useMonaco} from "@monaco-editor/react";
 
 export type EditorProps = {
   taskId: number;
@@ -52,10 +53,19 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
     height
   } = props;
 
+  useEffect(() => {
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.querySuggestions,
+      payload: {
+        enableSchemaSuggestions: false
+      }
+    });
+  }, []);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [diff, setDiff] = useState<any>([]);
   const { fullscreen, setFullscreen } = useEditor();
-  const [editorIns, setEditorIns] = useState<editor.IStandaloneCodeEditor>(null);
+  const [editorIns, setEditorIns] = useState<editor.IStandaloneCodeEditor>();
 
   const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
   const currentData = currentTab.params.taskData;
@@ -96,6 +106,42 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
     setIsModalOpen(false);
   };
 
+
+  const editorDidMount = (editor: editor.IStandaloneCodeEditor) => {
+    editor.layout();
+    editor.focus();
+
+    editor.onDidChangeCursorPosition((e) => {
+      props.footContainer.codePosition = [e.position.lineNumber, e.position.column];
+      dispatch({
+        type: STUDIO_MODEL.saveFooterValue,
+        payload: { ...props.footContainer }
+      });
+    });
+
+    editor.addCommand(KeyMod.Alt | KeyCode.Digit3, () => {
+      editor?.trigger('anyString', 'editor.action.formatDocument', '');
+      editor.setValue(format(editor.getValue()));
+    });
+    setEditorIns(editor);
+  }
+
+  const handleEditChange = (v: string | undefined) => {
+    if (!currentData || !currentTab) {
+      return;
+    }
+    if (typeof v === 'string') {
+      currentData.statement = v;
+    }
+    currentTab.isModified = true;
+    dispatch({
+      type: STUDIO_MODEL.saveTabs,
+      payload: { ...props.tabs }
+    });
+  }
+
+
+
   return (
     <Spin spinning={loading} delay={600}>
       <div style={{ width: '100%', height: fullscreen ? 'calc(100vh - 50px)' : height }}>
@@ -105,62 +151,19 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
           fileName={currentData?.name}
           onUse={upDateTask}
         />
-        <Editor
-          value={currentTab?.params?.taskData?.statement}
-          language={'sql'}
-          options={{
-            readOnlyMessage: { value: l('pages.datastudio.editor.onlyread') },
-            readOnly: currentData?.step == JOB_LIFE_CYCLE.PUBLISH,
-            scrollBeyondLastLine: false,
-            wordWrap: 'on',
-            autoDetectHighContrast: true,
-            scrollbar: {
-              // Subtle shadows to the left & top. Defaults to true.
-              useShadows: false,
-              // Defaults to 'auto'
-              vertical: 'visible',
-              // Defaults to 'auto'
-              horizontal: 'visible',
-              verticalScrollbarSize: 8,
-              horizontalScrollbarSize: 8,
-              arrowSize: 30
-            },
-            automaticLayout: true
-          }}
-          className={'editor-develop'}
-          onMount={(editor: editor.IStandaloneCodeEditor) => {
-            editor.layout();
-            editor.focus();
-
-            editor.onDidChangeCursorPosition((e) => {
-              props.footContainer.codePosition = [e.position.lineNumber, e.position.column];
-              dispatch({
-                type: STUDIO_MODEL.saveFooterValue,
-                payload: { ...props.footContainer }
-              });
-            });
-
-            editor.addCommand(KeyMod.Alt | KeyCode.Digit3, () => {
-              editor?.trigger('anyString', 'editor.action.formatDocument');
-              editor.setValue(format(editor.getValue()));
-            });
-            setEditorIns(editor);
-          }}
-          onChange={(v) => {
-            if (!currentData || !currentTab) {
-              return;
-            }
-            if (typeof v === 'string') {
-              currentData.statement = v;
-            }
-            currentTab.isModified = true;
-            dispatch({
-              type: STUDIO_MODEL.saveTabs,
-              payload: { ...props.tabs }
-            });
-          }}
-          theme={convertCodeEditTheme()}
-        ></Editor>
+        <CodeEdit
+            code={currentTab?.params?.taskData?.statement}
+            language={'sql'}
+            editorDidMount={editorDidMount}
+            onChange={handleEditChange}
+            enableSuggestions={true}
+            options={{
+              readOnlyMessage: { value: l('pages.datastudio.editor.onlyread') },
+              readOnly: currentData?.step == JOB_LIFE_CYCLE.PUBLISH,
+              scrollBeyondLastLine: false,
+              wordWrap: 'on',
+            }}
+        />
         <div
           style={{
             position: 'absolute',
@@ -176,7 +179,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
               }}
               icon={<FullscreenExitOutlined />}
               onClick={() => {
-                editorIns.layout();
+                editorIns?.layout();
                 setFullscreen(false);
               }}
             />
@@ -188,7 +191,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
               }}
               icon={<FullscreenOutlined />}
               onClick={() => {
-                editorIns.layout();
+                editorIns?.layout();
                 setFullscreen(true);
               }}
             />

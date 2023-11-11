@@ -33,6 +33,9 @@ import lombok.NoArgsConstructor;
 public class SuggestionVO implements Serializable {
 
     private static final long serialVersionUID = 4631906403475634212L;
+
+    private Object key;
+
     // label
     private SuggestionLabelVO label;
     // kind

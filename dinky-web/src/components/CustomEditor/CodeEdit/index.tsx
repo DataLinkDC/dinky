@@ -18,13 +18,17 @@
  */
 
 import * as monaco from 'monaco-editor';
+import { editor } from 'monaco-editor';
 
+import { buildAllSuggestionsToEditor } from "@/components/CustomEditor/CodeEdit/function";
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
+import { StateType } from "@/pages/DataStudio/model";
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import { Editor, OnChange } from '@monaco-editor/react';
-import { editor } from 'monaco-editor';
-import { useState } from 'react';
+import { Editor,OnChange,useMonaco } from '@monaco-editor/react';
+import ITextModel = editor.ITextModel;
+import {memo, useState} from "react";
+import {connect} from "@umijs/max";
 
 export type CodeEditFormProps = {
   height?: string;
@@ -38,9 +42,11 @@ export type CodeEditFormProps = {
   theme?: string;
   autoWrap?: string;
   showFloatButton?: boolean;
+  editorDidMount?: (editor: editor.IStandaloneCodeEditor) => void;
+  enableSuggestions?: boolean;
 };
 
-const CodeEdit = (props: CodeEditFormProps) => {
+const CodeEdit = (props: CodeEditFormProps & connect) => {
   const [editorRef, setEditorRef] = useState<any>();
 
   /**
@@ -67,22 +73,34 @@ const CodeEdit = (props: CodeEditFormProps) => {
     code, // content
     readOnly = false, // is readOnly
     lineNumbers, // show lineNumbers
-    theme, // edit theme
+    enableSuggestions = false, // enable suggestions
+    suggestionsData, // suggestions data
     autoWrap = 'on', // auto wrap
-    showFloatButton = false
+    showFloatButton = false,
+    editorDidMount
   } = props;
 
   const { ScrollType } = editor;
+
+  const monacoHook = useMonaco();
 
   /**
    *  editorDidMount
    * @param {editor.IStandaloneCodeEditor} editor
    */
-  const editorDidMount = (editor: editor.IStandaloneCodeEditor) => {
+  const editorDidMountChange = (editor: editor.IStandaloneCodeEditor) => {
     setEditorRef(editor);
     editor.layout();
     editor.focus();
   };
+
+  if (enableSuggestions) {
+    monacoHook?.languages.registerCompletionItemProvider(language || 'typescript', {
+      provideCompletionItems: (model: ITextModel, position: monaco.Position) =>
+        buildAllSuggestionsToEditor(model, position, suggestionsData),
+    });
+  }
+
   /**
    *  handle scroll to top
    */
@@ -111,8 +129,10 @@ const CodeEdit = (props: CodeEditFormProps) => {
     editorRef?.setScrollPosition({ scrollTop: editorRef.getScrollTop() - 500 }, ScrollType.Smooth);
   };
 
+  // todo: 标记错误信息
+
   // register TypeScript language service
-  monaco.languages.register({
+  monacoHook?.languages.register({
     id: language || 'typescript'
   });
 
@@ -133,13 +153,34 @@ const CodeEdit = (props: CodeEditFormProps) => {
           language={language}
           options={{
             ...options,
-            readOnly,
+            tabCompletion: 'on', // tab 补全
+            cursorSmoothCaretAnimation: true, // 光标动画
+            screenReaderAnnounceInlineSuggestion: true, // 屏幕阅读器提示
+            formatOnPaste: true, // 粘贴时格式化
+            mouseWheelZoom: true, // 鼠标滚轮缩放
+            folding: true, //代码折叠
+            autoClosingBrackets: 'always', // 自动闭合括号
+            autoClosingOvertype: 'always', // 用于在右引号或括号上键入的选项
+            autoClosingQuotes: 'always', // 自动闭合引号
+            automaticLayout: true, // 自动布局
+            readOnly, // 是否只读
+            scrollbar: {
+              // Subtle shadows to the left & top. Defaults to true.
+              useShadows: false,
+              // Defaults to 'auto'
+              vertical: 'visible',
+              // Defaults to 'auto'
+              horizontal: 'visible',
+              verticalScrollbarSize: 8,
+              horizontalScrollbarSize: 8,
+              arrowSize: 30
+            },
             wordWrap: autoWrap,
             autoDetectHighContrast: true,
             lineNumbers
           }}
           className={'editor-develop'}
-          onMount={editorDidMount}
+          onMount={editorDidMount ?? editorDidMountChange}
           onChange={onChange}
           theme={convertCodeEditTheme()}
         />
@@ -149,4 +190,6 @@ const CodeEdit = (props: CodeEditFormProps) => {
   );
 };
 
-export default CodeEdit;
+export default connect(({ Studio }: { Studio: StateType }) => ({
+  suggestionsData: Studio.suggestions
+}))(memo(CodeEdit));
