@@ -64,12 +64,19 @@ const LogList = () => {
 
   return (
     <>
-      <ProCard bodyStyle={{height: parent.innerHeight - 160}} ghost bordered>
-        <ProCard ghost bodyStyle={{height: parent.innerHeight - 160}} hoverable bordered colSpan={'18%'} className={'siderTree'}>
+      <ProCard bodyStyle={{ height: parent.innerHeight - 160 }} ghost bordered>
+        <ProCard
+          ghost
+          bodyStyle={{ height: parent.innerHeight - 160 }}
+          hoverable
+          bordered
+          colSpan={'18%'}
+          className={'siderTree'}
+        >
           <LogsTree treeData={treeData} onNodeClick={(info: any) => handleNodeClick(info)} />
         </ProCard>
         <ProCard.Divider type={'vertical'} />
-        <ProCard ghost bodyStyle={{height: parent.innerHeight - 175}} hoverable bordered>
+        <ProCard ghost bodyStyle={{ height: parent.innerHeight - 175 }} hoverable bordered>
           <LogsShow code={log} refreshLogCallback={() => refreshLogByClickNode()} />
         </ProCard>
       </ProCard>

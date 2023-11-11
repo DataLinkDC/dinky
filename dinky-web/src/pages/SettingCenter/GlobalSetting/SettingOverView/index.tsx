@@ -197,7 +197,7 @@ const SettingOverView = () => {
       <div style={{ paddingBottom: '20px' }}>
         <ProCard
           ghost
-          bodyStyle={{height: '80vh'}}
+          bodyStyle={{ height: '80vh' }}
           className={'schemaTree'}
           size='small'
           bordered

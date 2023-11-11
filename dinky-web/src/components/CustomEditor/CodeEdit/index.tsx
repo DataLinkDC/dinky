@@ -20,15 +20,15 @@
 import * as monaco from 'monaco-editor';
 import { editor } from 'monaco-editor';
 
-import { buildAllSuggestionsToEditor } from "@/components/CustomEditor/CodeEdit/function";
+import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
-import { StateType } from "@/pages/DataStudio/model";
+import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import { Editor,OnChange,useMonaco } from '@monaco-editor/react';
+import { Editor, OnChange, useMonaco } from '@monaco-editor/react';
+import { connect } from '@umijs/max';
+import { memo, useState } from 'react';
 import ITextModel = editor.ITextModel;
-import {memo, useState} from "react";
-import {connect} from "@umijs/max";
 
 export type CodeEditFormProps = {
   height?: string;
@@ -97,7 +97,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   if (enableSuggestions) {
     monacoHook?.languages.registerCompletionItemProvider(language || 'typescript', {
       provideCompletionItems: (model: ITextModel, position: monaco.Position) =>
-        buildAllSuggestionsToEditor(model, position, suggestionsData),
+        buildAllSuggestionsToEditor(model, position, suggestionsData)
     });
   }
 

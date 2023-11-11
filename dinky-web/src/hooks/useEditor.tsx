@@ -17,7 +17,7 @@
  *
  */
 
-import React, {
+import {
   createContext,
   Dispatch,
   FC,

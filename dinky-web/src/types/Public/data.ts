@@ -54,14 +54,11 @@ export type ExcludeNameAndEnableColumns = {
   updateTime: Date;
 };
 
-
-
 export type SuggestionLabel = {
   label: string;
   detail?: string;
   description?: string;
-}
-
+};
 
 export type SuggestionInfo = {
   key: string | number;
@@ -69,4 +66,4 @@ export type SuggestionInfo = {
   kind: number;
   insertText: string;
   detail?: string;
-}
+};
