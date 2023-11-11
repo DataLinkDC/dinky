@@ -32,7 +32,8 @@ import {
   handleAddOrUpdate,
   handleOption,
   handlePutDataByParams,
-  handleRemoveById, queryDataByParams,
+  handleRemoveById,
+  queryDataByParams,
   updateDataByParam
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
@@ -43,7 +44,7 @@ import { ClusterConfigState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
-import {Button, Descriptions, Input, Modal, Space, Tag, Tooltip} from 'antd';
+import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 
 export default () => {
@@ -56,7 +57,7 @@ export default () => {
   const actionRef = useRef<ActionType>();
 
   const queryClusterConfigList = async (keyword = '') => {
-    queryDataByParams(API_CONSTANTS.CLUSTER_CONFIGURATION , {keyword}).then((res) =>
+    queryDataByParams(API_CONSTANTS.CLUSTER_CONFIGURATION, { keyword }).then((res) =>
       setClusterConfigState((prevState) => ({ ...prevState, configList: res as Cluster.Config[] }))
     );
   };
@@ -254,11 +255,11 @@ export default () => {
    */
   const toolBarRender = () => [
     <Input.Search
-        loading={clusterConfigState.loading}
-        key={`_search`}
-        allowClear
-        placeholder={l('rc.cc.search')}
-        onSearch={(value) => queryClusterConfigList(value)}
+      loading={clusterConfigState.loading}
+      key={`_search`}
+      allowClear
+      placeholder={l('rc.cc.search')}
+      onSearch={(value) => queryClusterConfigList(value)}
     />,
     <Authorized key='new' path='/registration/cluster/config/add'>
       <CreateBtn

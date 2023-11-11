@@ -18,30 +18,34 @@
  */
 
 import { SAVE_POINT_TYPE } from '@/pages/DataStudio/constants';
-import { getCurrentData,getCurrentTab,isDataStudioTabsItemType } from '@/pages/DataStudio/function';
-import { SessionType,StateType,STUDIO_MODEL } from '@/pages/DataStudio/model';
 import {
-buildAlertGroupOptions,
-buildClusterConfigOptions,
-buildClusterOptions,
-buildEnvOptions,
-buildRunModelOptions,
-calculatorWidth
+  getCurrentData,
+  getCurrentTab,
+  isDataStudioTabsItemType
+} from '@/pages/DataStudio/function';
+import { SessionType, StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
+import {
+  buildAlertGroupOptions,
+  buildClusterConfigOptions,
+  buildClusterOptions,
+  buildEnvOptions,
+  buildRunModelOptions,
+  calculatorWidth
 } from '@/pages/DataStudio/RightContainer/JobConfig/function';
 import { AlertStateType } from '@/pages/RegCenter/Alert/AlertInstance/model';
-import { RUN_MODE,SWITCH_OPTIONS } from '@/services/constants';
+import { RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import {
-ProForm,
-ProFormDigit,
-ProFormGroup,
-ProFormList,
-ProFormSelect,
-ProFormSwitch,
-ProFormText
+  ProForm,
+  ProFormDigit,
+  ProFormGroup,
+  ProFormList,
+  ProFormSelect,
+  ProFormSwitch,
+  ProFormText
 } from '@ant-design/pro-components';
-import { Badge,Space,Typography } from 'antd';
+import { Badge, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
 import { useEffect } from 'react';

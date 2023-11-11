@@ -26,7 +26,12 @@ import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import AlertGroupForm from '@/pages/RegCenter/Alert/AlertGroup/components/AlertGroupForm';
 import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
-import {handleAddOrUpdate, handleRemoveById, queryDataByParams, updateDataByParam} from '@/services/BusinessCrud';
+import {
+  handleAddOrUpdate,
+  handleRemoveById,
+  queryDataByParams,
+  updateDataByParam
+} from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
@@ -38,7 +43,7 @@ import { ProList } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ActionType } from '@ant-design/pro-table';
 import { connect, Dispatch } from '@umijs/max';
-import {Button, Descriptions, Input, Modal, Space, Tag, Tooltip} from 'antd';
+import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 
 const AlertGroupTableList: React.FC = (props: any) => {
@@ -53,9 +58,12 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * execute query alert instance list
    * set alert instance list
    */
-  const queryAlertGroupList = async (keyword='') => {
-    queryDataByParams(API_CONSTANTS.ALERT_GROUP,{keyword}).then((res) =>
-      setAlertGroupState((prevState) => ({ ...prevState, alertGroupList: res as Alert.AlertGroup[] }))
+  const queryAlertGroupList = async (keyword = '') => {
+    queryDataByParams(API_CONSTANTS.ALERT_GROUP, { keyword }).then((res) =>
+      setAlertGroupState((prevState) => ({
+        ...prevState,
+        alertGroupList: res as Alert.AlertGroup[]
+      }))
     );
   };
 
@@ -137,11 +145,11 @@ const AlertGroupTableList: React.FC = (props: any) => {
   const renderToolBar = () => {
     return () => [
       <Input.Search
-          loading={alertGroupState.loading}
-          key={`_search`}
-          allowClear
-          placeholder={l('rc.ag.search')}
-          onSearch={(value) => queryAlertGroupList(value)}
+        loading={alertGroupState.loading}
+        key={`_search`}
+        allowClear
+        placeholder={l('rc.ag.search')}
+        onSearch={(value) => queryAlertGroupList(value)}
       />,
       <Authorized key='create' path='/registration/alert/group/add'>
         <Button

@@ -30,7 +30,8 @@ import { handleTest, saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/ser
 import {
   handleOption,
   handlePutDataByParams,
-  handleRemoveById, queryDataByParams,
+  handleRemoveById,
+  queryDataByParams,
   updateDataByParam
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
@@ -46,7 +47,7 @@ import {
   HeartTwoTone
 } from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
-import {Button, Descriptions, Input, Modal, Space, Tag, Tooltip} from 'antd';
+import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -66,8 +67,10 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const [formValues, setFormValues] = useState<Partial<DataSources.DataSource>>({});
   const actionRef = React.useRef<ActionType>();
 
-  const queryDataSourceList = async (keyword='') => {
-     queryDataByParams(API_CONSTANTS.DATASOURCE,{keyword}).then((res) => setDataSource(res as DataSources.DataSource[]));
+  const queryDataSourceList = async (keyword = '') => {
+    queryDataByParams(API_CONSTANTS.DATASOURCE, { keyword }).then((res) =>
+      setDataSource(res as DataSources.DataSource[])
+    );
   };
 
   /**
@@ -81,7 +84,6 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * execute query  list
    * set   list
    */
-
 
   /**
    * extra callback
@@ -262,16 +264,16 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const renderToolBar = () => {
     return [
       <Input.Search
-          loading={loading}
-          key={`_search`}
-          allowClear
-          placeholder={l('rc.ds.search')}
-          onSearch={(value) => queryDataSourceList(value)}
+        loading={loading}
+        key={`_search`}
+        allowClear
+        placeholder={l('rc.ds.search')}
+        onSearch={(value) => queryDataSourceList(value)}
       />,
       <Authorized key='create' path='/registration/datasource/add'>
         <CreateBtn key={'CreateBtn'} onClick={() => setModalVisible(true)} />
-      </Authorized>,
-    ]
+      </Authorized>
+    ];
   };
 
   /**
