@@ -38,11 +38,8 @@ import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
   ArrowsAltOutlined,
-  BarChartOutlined,
-  CalendarOutlined,
   ConsoleSqlOutlined,
   DatabaseOutlined,
-  DesktopOutlined,
   EnvironmentOutlined,
   FolderOutlined,
   HistoryOutlined,
@@ -149,12 +146,6 @@ export const LeftBottomSide = [
     children: <Result />
   },
   {
-    auth: '/datastudio/bottom/bi',
-    key: 'menu.datastudio.bi',
-    icon: <BarChartOutlined />,
-    label: l('menu.datastudio.bi')
-  },
-  {
     auth: '/datastudio/bottom/lineage',
     key: 'menu.datastudio.lineage',
     icon: <ApartmentOutlined />,
@@ -162,16 +153,11 @@ export const LeftBottomSide = [
     children: <Lineage />
   },
   {
-    auth: '/datastudio/bottom/process',
-    key: 'menu.datastudio.process',
-    icon: <DesktopOutlined />,
-    label: l('menu.datastudio.process')
-  },
-  {
     auth: '/datastudio/bottom/history',
     key: 'menu.datastudio.history',
-    icon: <CalendarOutlined />,
-    label: l('menu.datastudio.history')
+    icon: <HistoryOutlined />,
+    label: l('menu.datastudio.history'),
+    // children: <JobExecHistory />
   },
   {
     auth: '/datastudio/bottom/table-data',
