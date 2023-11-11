@@ -154,7 +154,7 @@ export enum API_CONSTANTS {
   // alert instance list all
   ALERT_INSTANCE_LIST_ENABLE_ALL = '/api/alertInstance/listEnabledAll',
   // sendTest
-    ALERT_INSTANCE_SEND_TEST = '/api/alertInstance/sendTest',
+  ALERT_INSTANCE_SEND_TEST = '/api/alertInstance/sendTest',
 
   // ---- alert group ----
   ALERT_GROUP = '/api/alertGroup/list',

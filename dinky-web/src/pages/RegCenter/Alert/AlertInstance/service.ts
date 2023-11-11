@@ -20,6 +20,7 @@
 import { postAll } from '@/services/api';
 import { handleAddOrUpdate } from '@/services/BusinessCrud';
 import { RESPONSE_CODE } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import {
@@ -28,7 +29,6 @@ import {
   SuccessMessage,
   WarningMessage
 } from '@/utils/messages';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 export async function createOrModifyAlertInstance(alertInstance: Alert.AlertInstance) {
   return handleAddOrUpdate(API_CONSTANTS.ALERT_INSTANCE_ADD_OR_UPDATE, alertInstance);

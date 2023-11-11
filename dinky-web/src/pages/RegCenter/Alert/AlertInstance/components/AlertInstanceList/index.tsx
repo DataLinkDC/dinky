@@ -32,7 +32,7 @@ import {
   createOrModifyAlertInstance,
   sendTest
 } from '@/pages/RegCenter/Alert/AlertInstance/service';
-import {handleRemoveById, queryDataByParams, updateDataByParam} from '@/services/BusinessCrud';
+import { handleRemoveById, queryDataByParams, updateDataByParam } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert } from '@/types/RegCenter/data.d';
@@ -41,7 +41,7 @@ import { AlertInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { ProList } from '@ant-design/pro-components';
 import { ActionType } from '@ant-design/pro-table';
-import {Descriptions, Input, Modal, Space, Tag, Tooltip} from 'antd';
+import { Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
@@ -60,8 +60,11 @@ const AlertInstanceList: React.FC = () => {
    * set alert instance list
    */
   const queryAlertInstanceList = async (keyword = '') => {
-    queryDataByParams(API_CONSTANTS.ALERT_INSTANCE,{keyword}).then((res) =>
-      setAlertInstanceState((prevState) => ({ ...prevState, alertInstanceList: res as Alert.AlertInstance[] }))
+    queryDataByParams(API_CONSTANTS.ALERT_INSTANCE, { keyword }).then((res) =>
+      setAlertInstanceState((prevState) => ({
+        ...prevState,
+        alertInstanceList: res as Alert.AlertInstance[]
+      }))
     );
   };
 
@@ -193,11 +196,11 @@ const AlertInstanceList: React.FC = () => {
   const renderToolBar = () => {
     return () => [
       <Input.Search
-          loading={alertInstanceState.loading}
-          key={`_search`}
-          allowClear
-          placeholder={l('rc.ai.search')}
-          onSearch={(value) => queryAlertInstanceList(value)}
+        loading={alertInstanceState.loading}
+        key={`_search`}
+        allowClear
+        placeholder={l('rc.ai.search')}
+        onSearch={(value) => queryAlertInstanceList(value)}
       />,
       <Authorized key='create' path='/registration/alert/instance/add'>
         <CreateBtn
