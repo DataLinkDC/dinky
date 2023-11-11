@@ -57,4 +57,6 @@ public interface AlertGroupService extends ISuperService<AlertGroup> {
      * @return {@link Boolean}
      */
     Boolean deleteGroupById(Integer id);
+
+    List<AlertGroup> selectListByKeyWord(String keyword);
 }

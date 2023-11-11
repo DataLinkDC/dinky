@@ -60,4 +60,6 @@ public interface AlertInstanceService extends ISuperService<AlertInstance> {
      * @return {@link Boolean}
      */
     Boolean modifyAlertInstanceStatus(Integer id);
+
+    List<AlertInstance> selectListByKeyWord(String keyword);
 }
