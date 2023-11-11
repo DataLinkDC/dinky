@@ -160,23 +160,23 @@ const mappingKind = (kind: number) => {
   }
 };
 
+/**
+ * build all suggestions to editor
+ * @param model ITextModel
+ * @param position monaco.Position
+ * @param suggestionsData SuggestionInfo[]
+ * @returns ProviderResult<CompletionList>
+ */
 export const buildAllSuggestionsToEditor = (
   model: ITextModel,
   position: monaco.Position,
   suggestionsData: SuggestionInfo[]
 ): ProviderResult<CompletionList> => {
   const valueRange = model.getWordUntilPosition(position); //get inout word range
-  const range = new monaco.Range(
-    position.lineNumber,
-    valueRange.startColumn,
-    position.lineNumber,
-    valueRange.endColumn
+  //  get range
+  const range = new monaco.Range(position.lineNumber, valueRange.startColumn, position.lineNumber, valueRange.endColumn
   );
-
-  const suggestionInfos = _.clone(suggestionsData);
-
-  //todo: 补充补全建议 关键词建议
-  const subgraphOptions: CompletionItem[] = suggestionInfos.map((item) => {
+  const subgraphOptions: CompletionItem[] = suggestionsData.map((item) => {
     return {
       key: item.key,
       label: {
@@ -189,15 +189,10 @@ export const buildAllSuggestionsToEditor = (
       insertText: item.insertText,
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.KeepWhitespace
       // detail: item?.detail,
-      // additionalTextEdits: [
-      //   {
-      //     forceMoveMarkers: true,
-      //     text: item.insertText,
-      //     range: range
-      //   }
-      // ]
     };
   });
+  //todo: 补充补全建议 关键词建议
+
   return {
     suggestions: subgraphOptions
   };

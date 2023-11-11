@@ -27,7 +27,7 @@ import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, OnChange, useMonaco } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
-import { memo, useState } from 'react';
+import {memo, useState} from 'react';
 import ITextModel = editor.ITextModel;
 
 export type CodeEditFormProps = {
