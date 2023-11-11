@@ -27,7 +27,6 @@ import ProviderResult = languages.ProviderResult;
 import CompletionList = languages.CompletionList;
 import CompletionItem = languages.CompletionItem;
 // 导入 lodash
-import _ from 'lodash';
 
 /**
  * get keyWordJson from {@link ./keyword.json}
@@ -174,7 +173,11 @@ export const buildAllSuggestionsToEditor = (
 ): ProviderResult<CompletionList> => {
   const valueRange = model.getWordUntilPosition(position); //get inout word range
   //  get range
-  const range = new monaco.Range(position.lineNumber, valueRange.startColumn, position.lineNumber, valueRange.endColumn
+  const range = new monaco.Range(
+    position.lineNumber,
+    valueRange.startColumn,
+    position.lineNumber,
+    valueRange.endColumn
   );
   const subgraphOptions: CompletionItem[] = suggestionsData.map((item) => {
     return {
