@@ -19,8 +19,12 @@
 
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
-import {getFlinkConfigs, querySuggessionData} from '@/pages/DataStudio/RightContainer/JobConfig/service';
+import {
+  getFlinkConfigs,
+  querySuggessionData
+} from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+import { SuggestionInfo } from '@/types/Public/data';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { createModelTypes } from '@/utils/modelUtils';
@@ -29,7 +33,6 @@ import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
 import ICodeEditor = editor.ICodeEditor;
-import {SuggestionInfo} from "@/types/Public/data";
 
 /**
  * 初始化布局宽高度
@@ -843,10 +846,10 @@ const Model: ModelType = {
       };
     },
     updateSuggestions(state, { payload }) {
-        return {
-            ...state,
-            suggestions: payload
-        };
+      return {
+        ...state,
+        suggestions: payload
+      };
     }
   }
 };

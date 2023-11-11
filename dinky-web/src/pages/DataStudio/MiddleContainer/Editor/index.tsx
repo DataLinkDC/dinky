@@ -17,7 +17,7 @@
  *
  */
 
-import CodeEdit from "@/components/CustomEditor/CodeEdit";
+import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { useEditor } from '@/hooks/useEditor';
 import { getCurrentTab } from '@/pages/DataStudio/function';
 import { TASK_VAR_FILTER } from '@/pages/DataStudio/MiddleContainer/Editor/constants';
@@ -25,20 +25,19 @@ import DiffModal from '@/pages/DataStudio/MiddleContainer/Editor/DiffModal';
 import {
   DataStudioTabsItemType,
   StateType,
-  STUDIO_MODEL, STUDIO_MODEL_ASYNC,
+  STUDIO_MODEL,
+  STUDIO_MODEL_ASYNC,
   TaskDataType
 } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
-import { connect,useRequest } from '@@/exports';
-import { FullscreenExitOutlined,FullscreenOutlined } from '@ant-design/icons';
-import { Button,Spin } from 'antd';
-import { editor,KeyCode,KeyMod } from 'monaco-editor';
-import React, {useEffect, useState} from 'react';
+import { connect, useRequest } from '@@/exports';
+import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
+import { Button, Spin } from 'antd';
+import { editor, KeyCode, KeyMod } from 'monaco-editor';
+import React, { useEffect, useState } from 'react';
 import { format } from 'sql-formatter';
-import {buildAllSuggestionsToEditor} from "@/components/CustomEditor/CodeEdit/function";
-import {useMonaco} from "@monaco-editor/react";
 
 export type EditorProps = {
   taskId: number;
@@ -106,7 +105,6 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
     setIsModalOpen(false);
   };
 
-
   const editorDidMount = (editor: editor.IStandaloneCodeEditor) => {
     editor.layout();
     editor.focus();
@@ -124,7 +122,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
       editor.setValue(format(editor.getValue()));
     });
     setEditorIns(editor);
-  }
+  };
 
   const handleEditChange = (v: string | undefined) => {
     if (!currentData || !currentTab) {
@@ -138,9 +136,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
       type: STUDIO_MODEL.saveTabs,
       payload: { ...props.tabs }
     });
-  }
-
-
+  };
 
   return (
     <Spin spinning={loading} delay={600}>
@@ -152,17 +148,17 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
           onUse={upDateTask}
         />
         <CodeEdit
-            code={currentTab?.params?.taskData?.statement}
-            language={'sql'}
-            editorDidMount={editorDidMount}
-            onChange={handleEditChange}
-            enableSuggestions={true}
-            options={{
-              readOnlyMessage: { value: l('pages.datastudio.editor.onlyread') },
-              readOnly: currentData?.step == JOB_LIFE_CYCLE.PUBLISH,
-              scrollBeyondLastLine: false,
-              wordWrap: 'on',
-            }}
+          code={currentTab?.params?.taskData?.statement}
+          language={'sql'}
+          editorDidMount={editorDidMount}
+          onChange={handleEditChange}
+          enableSuggestions={true}
+          options={{
+            readOnlyMessage: { value: l('pages.datastudio.editor.onlyread') },
+            readOnly: currentData?.step == JOB_LIFE_CYCLE.PUBLISH,
+            scrollBeyondLastLine: false,
+            wordWrap: 'on'
+          }}
         />
         <div
           style={{

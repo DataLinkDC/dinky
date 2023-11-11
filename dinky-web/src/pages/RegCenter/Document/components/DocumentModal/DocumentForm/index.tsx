@@ -38,7 +38,7 @@ import {
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import { DefaultOptionType } from 'rc-select/lib/Select';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 type DocumentFormProps = {
   values: Partial<Document>;

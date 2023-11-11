@@ -18,7 +18,10 @@
  */
 
 import { AutoSteps } from '@/pages/RegCenter/GitProject/components/BuildSteps/AutoSteps';
-import { JavaSteps,PythonSteps } from '@/pages/RegCenter/GitProject/components/BuildSteps/constants';
+import {
+  JavaSteps,
+  PythonSteps
+} from '@/pages/RegCenter/GitProject/components/BuildSteps/constants';
 import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
 import { renderStatus } from '@/pages/RegCenter/GitProject/function';
 import { getSseData } from '@/services/api';
@@ -27,8 +30,8 @@ import { GitProject } from '@/types/RegCenter/data.d';
 import { InitGitBuildStepsState } from '@/types/RegCenter/init.d';
 import { GitBuildStepsState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
-import { Button,Modal } from 'antd';
-import React,{ useEffect,useState } from 'react';
+import { Button, Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
 
 /**
  * props
@@ -214,13 +217,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
    * render
    */
   return (
-    <Modal
-        title={title}
-        width={'85%'}
-        open={true}
-        maskClosable={false}
-        footer={footerButtons}
-    >
+    <Modal title={title} width={'85%'} open={true} maskClosable={false} footer={footerButtons}>
       <AutoSteps
         steps={steps}
         percent={percent}

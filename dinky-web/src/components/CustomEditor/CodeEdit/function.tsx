@@ -17,10 +17,10 @@
  *
  */
 
-import { SuggestionInfo } from "@/types/Public/data";
+import { SuggestionInfo } from '@/types/Public/data';
 
 import * as monaco from 'monaco-editor';
-import { editor,languages } from 'monaco-editor';
+import { editor, languages } from 'monaco-editor';
 import keyWordJsonData from './keyword.json';
 import ITextModel = editor.ITextModel;
 import ProviderResult = languages.ProviderResult;
@@ -187,7 +187,7 @@ export const buildAllSuggestionsToEditor = (
       range: range,
       kind: mappingKind(item.kind),
       insertText: item.insertText,
-      insertTextRules: monaco.languages.CompletionItemInsertTextRule.KeepWhitespace,
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.KeepWhitespace
       // detail: item?.detail,
       // additionalTextEdits: [
       //   {
@@ -197,7 +197,6 @@ export const buildAllSuggestionsToEditor = (
       //   }
       // ]
     };
-
   });
   return {
     suggestions: subgraphOptions
