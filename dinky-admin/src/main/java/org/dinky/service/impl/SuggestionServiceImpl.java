@@ -27,9 +27,7 @@ import org.dinky.service.DocumentService;
 import org.dinky.service.FragmentVariableService;
 import org.dinky.service.SuggestionService;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SuggestionServiceImpl implements SuggestionService {
 
     private final DocumentService documentService;
+
     private final FragmentVariableService fragmentVariableService;
 
     /**
@@ -62,10 +61,10 @@ public class SuggestionServiceImpl implements SuggestionService {
         // todo: 如果启用了schema，需要构建schema的建议列表
         // 3. schema的建议列表
         if (enableSchemaSuggestion) {
-            buildSchemaSuggestions(Set.of(), suggestionVOS);
+            buildSchemaSuggestions(new HashSet<>(), suggestionVOS);
         }
         // 4. 自定义关键词提示
-        buildCustomSuggestions(Set.of(), suggestionVOS);
+        buildCustomSuggestions(new HashSet<>(), suggestionVOS);
 
         return suggestionVOS;
     }
@@ -153,10 +152,10 @@ public class SuggestionServiceImpl implements SuggestionService {
      * @return suggestions list
      */
     @Override
-    public List<SuggestionVO> getSuggestionsByKeyWord(boolean enableSchemaSuggestion, String keyWord) {
+    public Set<SuggestionVO> getSuggestionsByKeyWord(boolean enableSchemaSuggestion, String keyWord) {
         return getSuggestions(enableSchemaSuggestion).stream()
                 .filter(suggestionVO -> suggestionVO.getLabel().getLabel().contains(keyWord))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -167,9 +166,9 @@ public class SuggestionServiceImpl implements SuggestionService {
      * @return suggestions list
      */
     @Override
-    public List<SuggestionVO> getSuggestionsBySqlStatement(
+    public Set<SuggestionVO> getSuggestionsBySqlStatement(
             boolean enableSchemaSuggestion, String sqlStatement, int position) {
         // todo: 根据传入的sql，获取建议列表, 需要和flink的sql解析器结合起来
-        return Arrays.asList();
+        return new HashSet<>();
     }
 }

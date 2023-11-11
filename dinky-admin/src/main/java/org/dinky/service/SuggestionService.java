@@ -21,7 +21,6 @@ package org.dinky.service;
 
 import org.dinky.data.vo.suggestion.SuggestionVO;
 
-import java.util.List;
 import java.util.Set;
 
 public interface SuggestionService {
@@ -39,7 +38,7 @@ public interface SuggestionService {
      * @param keyWord  keyword
      * @return  suggestions list
      */
-    List<SuggestionVO> getSuggestionsByKeyWord(boolean enableSchemaSuggestion, String keyWord);
+    Set<SuggestionVO> getSuggestionsByKeyWord(boolean enableSchemaSuggestion, String keyWord);
 
     /**
      *  by sql statement get suggestions list
@@ -47,5 +46,5 @@ public interface SuggestionService {
      * @param sqlStatement  sql statement
      * @return  suggestions list
      */
-    List<SuggestionVO> getSuggestionsBySqlStatement(boolean enableSchemaSuggestion, String sqlStatement, int position);
+    Set<SuggestionVO> getSuggestionsBySqlStatement(boolean enableSchemaSuggestion, String sqlStatement, int position);
 }

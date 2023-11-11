@@ -24,7 +24,6 @@ import org.dinky.data.result.Result;
 import org.dinky.data.vo.suggestion.SuggestionVO;
 import org.dinky.service.SuggestionService;
 
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,7 +56,7 @@ public class SuggestionController {
     @PostMapping("/queryAllSuggestionsByKeyWord")
     @ApiOperation(value = "QueryAllSuggestionsByKeyWord", notes = "queryAllSuggestionsByKeyWord")
     @ApiImplicitParam(name = "suggestionDTO", value = "suggestionDTO", required = true, dataType = "SuggestionDTO")
-    public Result<List<SuggestionVO>> queryAllSuggestionsByKeyWord(@RequestBody SuggestionDTO suggestionDTO) {
+    public Result<Set<SuggestionVO>> queryAllSuggestionsByKeyWord(@RequestBody SuggestionDTO suggestionDTO) {
         return Result.succeed(suggestionService.getSuggestionsByKeyWord(
                 suggestionDTO.isEnableSchemaSuggestion(), suggestionDTO.getKeyWord()));
     }
@@ -65,7 +64,7 @@ public class SuggestionController {
     @PostMapping("/queryAllSuggestionsBySqlStatement")
     @ApiOperation(value = "QueryAllSuggestionsBySqlStatement", notes = "queryAllSuggestionsBySqlStatement")
     @ApiImplicitParam(name = "suggestionDTO", value = "suggestionDTO", required = true, dataType = "SuggestionDTO")
-    public Result<List<SuggestionVO>> queryAllSuggestionsBySqlStatement(@RequestBody SuggestionDTO suggestionDTO) {
+    public Result<Set<SuggestionVO>> queryAllSuggestionsBySqlStatement(@RequestBody SuggestionDTO suggestionDTO) {
         return Result.succeed(suggestionService.getSuggestionsBySqlStatement(
                 suggestionDTO.isEnableSchemaSuggestion(),
                 suggestionDTO.getSqlStatement(),
