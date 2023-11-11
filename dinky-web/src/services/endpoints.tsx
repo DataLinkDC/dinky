@@ -112,13 +112,14 @@ export enum API_CONSTANTS {
   CLUSTER_INSTANCE_RECYCLE = '/api/cluster/recycle',
   CLUSTER_CONFIGURATION_START = '/api/cluster/deploySessionClusterInstance',
   // cluster configuration list
-  CLUSTER_CONFIGURATION = '/api/clusterConfiguration',
+  CLUSTER_CONFIGURATION = '/api/clusterConfiguration/list',
+  CLUSTER_CONFIGURATION_ADD_OR_UPDATE = '/api/clusterConfiguration/addOrUpdate',
   CLUSTER_CONFIGURATION_DELETE = '/api/clusterConfiguration/delete',
   CLUSTER_CONFIGURATION_ENABLE = '/api/clusterConfiguration/enable',
   CLUSTER_CONFIGURATION_TEST = '/api/clusterConfiguration/testConnect',
 
   // datasource registries list
-  DATASOURCE = '/api/database',
+  DATASOURCE = '/api/database/list',
   // datasource registries delete
   DATASOURCE_DELETE = '/api/database/delete',
   // datasource registries enable or disable
@@ -144,16 +145,20 @@ export enum API_CONSTANTS {
 
   // ---- alert instance ----
   // alert instance list
-  ALERT_INSTANCE = '/api/alertInstance',
+  ALERT_INSTANCE = '/api/alertInstance/list',
+  ALERT_INSTANCE_ADD_OR_UPDATE = '/api/alertInstance/addOrUpdate',
   // delete alert instance by id
   ALERT_INSTANCE_DELETE = '/api/alertInstance/delete',
   // alert instance enable or disable
   ALERT_INSTANCE_ENABLE = '/api/alertInstance/enable',
   // alert instance list all
   ALERT_INSTANCE_LIST_ENABLE_ALL = '/api/alertInstance/listEnabledAll',
+  // sendTest
+    ALERT_INSTANCE_SEND_TEST = '/api/alertInstance/sendTest',
 
   // ---- alert group ----
-  ALERT_GROUP = '/api/alertGroup',
+  ALERT_GROUP = '/api/alertGroup/list',
+  ALERT_GROUP_ADD_OR_UPDATE = '/api/alertGroup/addOrUpdate',
   // delete alert group by id
   ALERT_GROUP_DELETE = '/api/alertGroup/delete',
   // alert group enable or disable

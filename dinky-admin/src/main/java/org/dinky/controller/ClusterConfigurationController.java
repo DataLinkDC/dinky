@@ -25,7 +25,6 @@ import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.ClusterConfiguration;
-import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.service.ClusterConfigurationService;
@@ -42,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
@@ -70,7 +69,7 @@ public class ClusterConfigurationController {
      * @param clusterConfiguration
      * @return
      */
-    @PutMapping
+    @PutMapping("/saveOrUpdate")
     @Log(title = "Insert Or Update Cluster Config", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Cluster Config")
     @ApiImplicitParam(
@@ -98,29 +97,18 @@ public class ClusterConfigurationController {
 
     /**
      * query cluster config list
-     *
-     * @param para
+     * @param keyword
      * @return
      */
-    @PostMapping
+    @GetMapping("/list")
     @ApiOperation("Cluster Config List")
-    @ApiImplicitParam(
-            name = "para",
-            value = "Cluster Configuration",
-            dataType = "JsonNode",
-            paramType = "body",
-            required = true)
-    public ProTableResult<ClusterConfigurationDTO> listClusterConfigList(@RequestBody JsonNode para) {
-        ProTableResult<ClusterConfiguration> result = clusterConfigurationService.selectForProTable(para);
-        List<ClusterConfigurationDTO> dtoList =
-                result.getData().stream().map(ClusterConfigurationDTO::fromBean).collect(Collectors.toList());
-        return ProTableResult.<ClusterConfigurationDTO>builder()
-                .success(true)
-                .data(dtoList)
-                .total(result.getTotal())
-                .current(result.getCurrent())
-                .pageSize(result.getPageSize())
-                .build();
+    public Result<List<ClusterConfigurationDTO>> listClusterConfigList(@RequestParam String keyword) {
+        List<ClusterConfigurationDTO> result = clusterConfigurationService
+                .list(new LambdaQueryWrapper<ClusterConfiguration>().like(ClusterConfiguration::getName, keyword))
+                .stream()
+                .map(ClusterConfigurationDTO::fromBean)
+                .collect(Collectors.toList());
+        return Result.succeed(result);
     }
 
     /**

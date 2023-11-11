@@ -31,7 +31,6 @@ import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
-import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.metadata.driver.DriverPool;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -50,10 +49,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
+import cn.hutool.core.collection.CollectionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -107,27 +107,23 @@ public class DataBaseController {
     /**
      * get all database
      *
-     * @param para {@link JsonNode}
-     * @return {@link ProTableResult}< {@link DataBase}>
+     * @param keyword {@link String}
+     * @return {@link Result}< {@link DataBase}>
      */
-    @PostMapping
+    @GetMapping("/list")
     @ApiOperation("DataBase Get All")
-    @ApiImplicitParam(
-            name = "para",
-            value = "JsonNode",
-            required = true,
-            dataType = "JsonNode",
-            paramType = "body",
-            dataTypeClass = JsonNode.class)
-    public ProTableResult<DataBase> listDataBases(@RequestBody JsonNode para) {
-        final ProTableResult<DataBase> result = databaseService.selectForProTable(para);
+    public Result<List<DataBase>> listDataBases(@RequestParam(value = "keyword") String keyword) {
+        List<DataBase> dataBaseList = databaseService.list(new LambdaQueryWrapper<DataBase>()
+                .like(DataBase::getName, keyword)
+                .or()
+                .like(DataBase::getNote, keyword));
         // 密码不返回
-        if (result != null && result.getData() != null) {
-            for (DataBase data : result.getData()) {
+        if (CollectionUtil.isNotEmpty(dataBaseList)) {
+            for (DataBase data : dataBaseList) {
                 data.setPassword(null);
             }
         }
-        return result;
+        return Result.succeed(dataBaseList);
     }
 
     /**
@@ -295,9 +291,9 @@ public class DataBaseController {
     /**
      * get columns of table
      *
-     * @param id {@link Integer}
+     * @param id         {@link Integer}
      * @param schemaName {@link String}
-     * @param tableName {@link String}
+     * @param tableName  {@link String}
      * @return {@link Result}< {@link List}< {@link Column}>>
      */
     @GetMapping("/listColumns")
@@ -387,9 +383,9 @@ public class DataBaseController {
     /**
      * get sql generation
      *
-     * @param id {@link Integer}
+     * @param id         {@link Integer}
      * @param schemaName {@link String}
-     * @param tableName {@link String}
+     * @param tableName  {@link String}
      * @return {@link Result}< {@link SqlGeneration}>
      */
     @GetMapping("/getSqlGeneration")

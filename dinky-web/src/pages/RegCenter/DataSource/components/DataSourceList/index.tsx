@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
@@ -25,11 +27,10 @@ import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import DataSourceDetail from '@/pages/RegCenter/DataSource/components/DataSourceDetail';
 import { renderDBIcon } from '@/pages/RegCenter/DataSource/components/function';
 import { handleTest, saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
-import { queryList } from '@/services/api';
 import {
   handleOption,
   handlePutDataByParams,
-  handleRemoveById,
+  handleRemoveById, queryDataByParams,
   updateDataByParam
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
@@ -45,7 +46,7 @@ import {
   HeartTwoTone
 } from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
-import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
+import {Button, Descriptions, Input, Modal, Space, Tag, Tooltip} from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -65,6 +66,10 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const [formValues, setFormValues] = useState<Partial<DataSources.DataSource>>({});
   const actionRef = React.useRef<ActionType>();
 
+  const queryDataSourceList = async (keyword='') => {
+     queryDataByParams(API_CONSTANTS.DATASOURCE,{keyword}).then((res) => setDataSource(res as DataSources.DataSource[]));
+  };
+
   /**
    * query  list
    */
@@ -76,10 +81,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * execute query  list
    * set   list
    */
-  const queryDataSourceList = async () => {
-    const res = await queryList(API_CONSTANTS.DATASOURCE);
-    setDataSource(res.data);
-  };
+
 
   /**
    * extra callback
@@ -257,6 +259,21 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
     setFormValues({});
   };
 
+  const renderToolBar = () => {
+    return [
+      <Input.Search
+          loading={loading}
+          key={`_search`}
+          allowClear
+          placeholder={l('rc.ds.search')}
+          onSearch={(value) => queryDataSourceList(value)}
+      />,
+      <Authorized key='create' path='/registration/datasource/add'>
+        <CreateBtn key={'CreateBtn'} onClick={() => setModalVisible(true)} />
+      </Authorized>,
+    ]
+  };
+
   /**
    * render
    */
@@ -271,11 +288,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
             tooltip={l('rc.ds.enter')}
             actionRef={actionRef}
             headerTitle={l('rc.ds.management')}
-            toolBarRender={() => [
-              <Authorized key='create' path='/registration/datasource/add'>
-                <CreateBtn key={'CreateBtn'} onClick={() => setModalVisible(true)} />
-              </Authorized>
-            ]}
+            toolBarRender={renderToolBar}
             dataSource={renderDataSource}
           />
 
