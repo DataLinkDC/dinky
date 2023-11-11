@@ -153,7 +153,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             >
               <CodeEdit
                 {...CodeEditProps}
-                onChange={(value) => flinkConfigChange(value ?? '')}
+                onChange={flinkConfigChange}
                 code={values.flinkConfig || ''}
               />
             </ProForm.Item>
@@ -165,7 +165,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             >
               <CodeEdit
                 {...CodeEditProps}
-                onChange={(value) => flinkTemplateChange(value ?? '')}
+                onChange={flinkTemplateChange}
                 code={values.flinkTemplate || ''}
               />
             </ProForm.Item>

@@ -136,6 +136,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
             onChange={handleFillValueChange}
             code={codeFillValue}
             language={'sql'}
+            enableSuggestions={false}
             {...CodeEditProps}
           />
         </ProFormItem>

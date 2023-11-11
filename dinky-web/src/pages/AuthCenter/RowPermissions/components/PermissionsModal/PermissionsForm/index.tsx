@@ -41,7 +41,7 @@ type PermissionsFormProps = {
  */
 const CodeEditProps = {
   height: '25vh',
-  lineNumbers: 'off'
+  lineNumbers: 'on'
 };
 
 const PermissionsForm: React.FC<PermissionsFormProps> = (props) => {
@@ -99,9 +99,7 @@ const PermissionsForm: React.FC<PermissionsFormProps> = (props) => {
           ]}
         >
           <CodeEdit
-            onChange={(value) => {
-              setExpression(value ?? '');
-            }}
+            onChange={setExpression}
             code={expression}
             language={'sql'}
             {...CodeEditProps}

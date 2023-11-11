@@ -71,7 +71,7 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
       label: <TagAlignCenter>Default Pod Template</TagAlignCenter>,
       children: (
         <ProFormItem key='dpe' name={['config', 'kubernetesConfig', 'podTemplate']}>
-          <CodeEdit {...CodeEditProps} code={value.config?.kubernetesConfig?.podTemplate ?? ''} />
+          <CodeEdit  {...CodeEditProps} code={value.config?.kubernetesConfig?.podTemplate ?? ''} />
         </ProFormItem>
       )
     },
