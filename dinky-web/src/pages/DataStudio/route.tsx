@@ -156,7 +156,7 @@ export const LeftBottomSide = [
     auth: '/datastudio/bottom/history',
     key: 'menu.datastudio.history',
     icon: <HistoryOutlined />,
-    label: l('menu.datastudio.history'),
+    label: l('menu.datastudio.history')
     // children: <JobExecHistory />
   },
   {
