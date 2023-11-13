@@ -17,22 +17,18 @@
  *
  */
 
-import { getDataByParams, queryDataByParams } from '@/services/BusinessCrud';
+package org.dinky.data.dto;
 
-export function getSessionData() {
-  return queryDataByParams('api/cluster/listSessionEnable');
-}
-export function getEnvData() {
-  return queryDataByParams('/api/task/listFlinkSQLEnv');
-}
-export function getClusterConfigurationData() {
-  return queryDataByParams('/api/clusterConfiguration/listEnabledAll');
-}
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-export function getFlinkConfigs() {
-  return queryDataByParams('/api/flinkConf/configOptions');
-}
-
-export function querySuggessionData(params: any) {
-  return getDataByParams('/api/suggestion/queryAllSuggestions', params);
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class SuggestionDTO {
+    private boolean enableSchemaSuggestion;
+    private String keyWord;
+    private String sqlStatement;
+    private int position;
 }

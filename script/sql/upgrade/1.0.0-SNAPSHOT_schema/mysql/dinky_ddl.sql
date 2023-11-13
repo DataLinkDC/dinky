@@ -20,6 +20,7 @@
  SET NAMES utf8mb4;
  SET FOREIGN_KEY_CHECKS = 0;
 
+begin ;
 -- rename table
 ALTER TABLE dlink_alert_group RENAME dinky_alert_group;
 ALTER TABLE dlink_alert_history RENAME dinky_alert_history;
@@ -311,5 +312,7 @@ drop table if exists dinky_task_statement;
 drop table if exists dinky_jar;
 drop table if exists dinky_schema_history;
 drop table if exists dinky_upload_file_record;
+
+commit ;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -36,7 +36,7 @@ VALUES ( 2, 1, 'python-udf', 'https://github.com/zackyoungh/dinky-quickstart-pyt
 
 INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `type`, `size`, `pid`, `full_name`,
                                `is_directory`)
-VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '/', 1);
+VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '', 1);
 
 
 INSERT INTO `dinky_sys_menu`

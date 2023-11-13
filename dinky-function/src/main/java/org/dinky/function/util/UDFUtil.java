@@ -378,9 +378,12 @@ public class UDFUtil {
         return getPythonUdfList(SystemConfiguration.getInstances().getPythonHome(), udfFile);
     }
 
+    private static final String PYTHON_FUNC_FILE_MD5 =
+            MD5.create().digestHex(ResourceUtil.readUtf8Str("getPyFuncList.py"));
+
     public static List<String> getPythonUdfList(String pythonPath, String udfFile) {
         File checkFile = new File(PathConstant.TMP_PATH, "getPyFuncList.py");
-        if (!checkFile.exists()) {
+        if (!checkFile.exists() || !MD5.create().digestHex(checkFile).equals(PYTHON_FUNC_FILE_MD5)) {
             FileUtil.writeUtf8String(ResourceUtil.readUtf8Str("getPyFuncList.py"), checkFile);
         }
         List<String> udfNameList = execPyAndGetUdfNameList(pythonPath, checkFile.getAbsolutePath(), udfFile);
