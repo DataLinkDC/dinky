@@ -195,7 +195,7 @@ export const buildAllSuggestionsToEditor = (
     };
   });
   //todo: 补充补全建议 关键词建议
-
+  console.log('subgraphOptions', subgraphOptions)
   return {
     suggestions: subgraphOptions
   };

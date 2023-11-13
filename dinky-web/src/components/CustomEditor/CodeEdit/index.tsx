@@ -25,9 +25,9 @@ import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import { Editor, OnChange, useMonaco } from '@monaco-editor/react';
+import { Editor, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
-import { memo, useState } from 'react';
+import {memo, useCallback, useEffect, useRef} from 'react';
 import ITextModel = editor.ITextModel;
 
 export type CodeEditFormProps = {
@@ -42,12 +42,17 @@ export type CodeEditFormProps = {
   theme?: string;
   autoWrap?: string;
   showFloatButton?: boolean;
-  editorDidMount?: (editor: editor.IStandaloneCodeEditor) => void;
+  editorDidMount?: (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => void;
   enableSuggestions?: boolean;
+  monacoRef?: any;
+  editorRef?: any;
 };
 
+
 const CodeEdit = (props: CodeEditFormProps & connect) => {
-  const [editorRef, setEditorRef] = useState<any>();
+
+
+
 
   /**
    * 1. height: edit height
@@ -77,62 +82,100 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     suggestionsData, // suggestions data
     autoWrap = 'on', // auto wrap
     showFloatButton = false,
-    editorDidMount
+    editorDidMount,
+    editorRef,
+    monacoRef
   } = props;
+
+
+  const editorInstance = useRef<editor.IStandaloneCodeEditor |any>(editorRef);
+  const monacoInstance = useRef<Monaco | any>(monacoRef);
 
   const { ScrollType } = editor;
 
-  const monacoHook = useMonaco();
+  console.log(enableSuggestions, suggestionsData)
+
+  const buildAllSuggestions = useCallback(async (model: ITextModel, position: monaco.Position) => {
+    return buildAllSuggestionsToEditor(model, position, suggestionsData);
+  }, []);
+
+  const reloadCompletion = () =>{
+
+   monacoInstance?.current?.languages?.registerCompletionItemProvider(language || 'sql', {
+      provideCompletionItems: (model: ITextModel, position: monaco.Position) => {
+        console.log(code)
+        return buildAllSuggestions(model, position);
+      }
+    });
+  };
+
+
+  useEffect(
+    () => () => {
+
+      reloadCompletion();
+    }, [code]);
 
   /**
    *  editorDidMount
    * @param {editor.IStandaloneCodeEditor} editor
+   * @param monaco
    */
-  const editorDidMountChange = (editor: editor.IStandaloneCodeEditor) => {
-    setEditorRef(editor);
+  const editorDidMountChange = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
+    if (editorRef || monacoRef || editorDidMount) {
+      editorDidMount(editor, monaco);
+    }else {
+      editorInstance.current = editor;
+      monacoInstance.current = monaco;
+    }
+    if (enableSuggestions) {
+      console.log('enableSuggestions', enableSuggestions)
+      reloadCompletion();
+    }
     editor.layout();
     editor.focus();
   };
 
-  if (enableSuggestions) {
-    monacoHook?.languages.registerCompletionItemProvider(language || 'typescript', {
-      provideCompletionItems: (model: ITextModel, position: monaco.Position) =>
-        buildAllSuggestionsToEditor(model, position, suggestionsData)
-    });
-  }
 
   /**
    *  handle scroll to top
    */
   const handleBackTop = () => {
-    editorRef.revealLine(1);
+    editorInstance?.current?.revealLine(1);
   };
 
   /**
    *  handle scroll to bottom
    */
   const handleBackBottom = () => {
-    editorRef.revealLine(editorRef.getModel().getLineCount());
+    // @ts-ignore
+    editorInstance?.current?.revealLine(editorInstance?.current?.getModel()?.().getLineCount());
   };
 
   /**
    *  handle scroll to down
    */
   const handleDownScroll = () => {
-    editorRef.setScrollPosition({ scrollTop: editorRef.getScrollTop() + 500 }, ScrollType.Smooth);
+    editorInstance?.current?.setScrollPosition(
+      { scrollTop:  editorInstance?.current?.getScrollTop() + 500 },
+      ScrollType.Smooth
+    );
   };
 
   /**
    *  handle scroll to up
    */
   const handleUpScroll = () => {
-    editorRef?.setScrollPosition({ scrollTop: editorRef.getScrollTop() - 500 }, ScrollType.Smooth);
+    editorInstance?.current?.setScrollPosition(
+      { scrollTop:  editorInstance?.current?.getScrollTop() - 500 },
+      ScrollType.Smooth
+    );
   };
 
   // todo: 标记错误信息
 
   // register TypeScript language service
-  monacoHook?.languages.register({
+  monacoInstance?.current?.languages.register({
     id: language || 'typescript'
   });
 
@@ -143,6 +186,54 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     handleDownScroll
   };
 
+  const finalEditorOptions = {
+    ...options,
+    tabCompletion: 'on', // tab 补全
+    cursorSmoothCaretAnimation: true, // 光标动画
+    screenReaderAnnounceInlineSuggestion: true, // 屏幕阅读器提示
+    formatOnPaste: true, // 粘贴时格式化
+    mouseWheelZoom: true, // 鼠标滚轮缩放
+    autoClosingBrackets: 'always', // 自动闭合括号
+    autoClosingOvertype: 'always', // 用于在右引号或括号上键入的选项
+    autoClosingQuotes: 'always', // 自动闭合引号
+    showUnused: true, // 显示未使用的代码
+    unfoldOnClickAfterEndOfLine: true, // 控制在折叠线之后单击空内容是否会展开该线
+    showFoldingControls: 'always', // 代码折叠控件 'always' | 'mouseover' | 'never'
+    automaticLayout: true, // 自动布局
+    readOnly, // 是否只读
+    wrappingIndent:
+      language === 'yaml' || language === 'yml' || language === 'json' ? 'indent' : 'none',
+    inlineSuggest: {
+      enabled: true,
+      showToolbar: 'always',
+      keepOnBlur: false
+    },
+    suggest: {
+      quickSuggestions: true,
+      showStatusBar: true,
+      preview: true,
+      previewMode: 'preview',
+      showVariables: true,
+      showFields: true,
+      showKeywords: true,
+      showWords: true
+    },
+    scrollbar: {
+      // Subtle shadows to the left & top. Defaults to true.
+      useShadows: false,
+      // Defaults to 'auto'
+      vertical: 'visible',
+      // Defaults to 'auto'
+      horizontal: 'visible',
+      verticalScrollbarSize: 8,
+      horizontalScrollbarSize: 8,
+      arrowSize: 30
+    },
+    wordWrap: autoWrap,
+    autoDetectHighContrast: true,
+    lineNumbers
+  };
+
   return (
     <>
       <div className={'monaco-float'}>
@@ -151,34 +242,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
           height={height}
           value={code}
           language={language}
-          options={{
-            ...options,
-            tabCompletion: 'on', // tab 补全
-            cursorSmoothCaretAnimation: true, // 光标动画
-            screenReaderAnnounceInlineSuggestion: true, // 屏幕阅读器提示
-            formatOnPaste: true, // 粘贴时格式化
-            mouseWheelZoom: true, // 鼠标滚轮缩放
-            folding: true, //代码折叠
-            autoClosingBrackets: 'always', // 自动闭合括号
-            autoClosingOvertype: 'always', // 用于在右引号或括号上键入的选项
-            autoClosingQuotes: 'always', // 自动闭合引号
-            automaticLayout: true, // 自动布局
-            readOnly, // 是否只读
-            scrollbar: {
-              // Subtle shadows to the left & top. Defaults to true.
-              useShadows: false,
-              // Defaults to 'auto'
-              vertical: 'visible',
-              // Defaults to 'auto'
-              horizontal: 'visible',
-              verticalScrollbarSize: 8,
-              horizontalScrollbarSize: 8,
-              arrowSize: 30
-            },
-            wordWrap: autoWrap,
-            autoDetectHighContrast: true,
-            lineNumbers
-          }}
+          options={finalEditorOptions}
           className={'editor-develop'}
           onMount={editorDidMount ?? editorDidMountChange}
           onChange={onChange}

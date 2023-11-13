@@ -36,8 +36,9 @@ import { connect, useRequest } from '@@/exports';
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { Button, Spin } from 'antd';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { format } from 'sql-formatter';
+import {Monaco} from "@monaco-editor/react";
 
 export type EditorProps = {
   taskId: number;
@@ -64,7 +65,8 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [diff, setDiff] = useState<any>([]);
   const { fullscreen, setFullscreen } = useEditor();
-  const [editorIns, setEditorIns] = useState<editor.IStandaloneCodeEditor>();
+  const editorInstance = useRef<editor.IStandaloneCodeEditor |any>();
+  const monacoInstance = useRef<Monaco | any>();
 
   const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
   const currentData = currentTab.params.taskData;
@@ -105,7 +107,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
     setIsModalOpen(false);
   };
 
-  const editorDidMount = (editor: editor.IStandaloneCodeEditor) => {
+  const editorDidMount = (editor: editor.IStandaloneCodeEditor , monaco: Monaco) => {
     editor.layout();
     editor.focus();
 
@@ -121,7 +123,8 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
       editor?.trigger('anyString', 'editor.action.formatDocument', '');
       editor.setValue(format(editor.getValue()));
     });
-    setEditorIns(editor);
+    monacoInstance.current = monaco;
+    editorInstance.current = editor;
   };
 
   const handleEditChange = (v: string | undefined) => {
@@ -148,6 +151,8 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
           onUse={upDateTask}
         />
         <CodeEdit
+          monacoInstance={monacoInstance}
+          editorInstance={editorInstance}
           code={currentTab?.params?.taskData?.statement}
           language={'sql'}
           editorDidMount={editorDidMount}
@@ -163,19 +168,21 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
         <div
           style={{
             position: 'absolute',
-            top: 20,
-            right: '7%'
+            top: 15,
+            right: '10%',
+            boxShadow: '0 0 10px #ccc',
           }}
         >
           {fullscreen ? (
             <Button
               type='text'
               style={{
-                color: '#fff'
+                zIndex: 999
               }}
+              title={l('global.fullScreen.exit')}
               icon={<FullscreenExitOutlined />}
               onClick={() => {
-                editorIns?.layout();
+                editorInstance?.current?.layout();
                 setFullscreen(false);
               }}
             />
@@ -183,11 +190,12 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
             <Button
               type='text'
               style={{
-                color: '#fff'
+                zIndex: 999
               }}
+              title={l('global.fullScreen')}
               icon={<FullscreenOutlined />}
               onClick={() => {
-                editorIns?.layout();
+                editorInstance?.current?.layout();
                 setFullscreen(true);
               }}
             />

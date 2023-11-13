@@ -26,7 +26,7 @@ import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, useMonaco } from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
-import { CSSProperties, useEffect, useState } from 'react';
+import {CSSProperties, useEffect, useRef, useState} from 'react';
 import FullscreenBtn from '../FullscreenBtn';
 
 // loader.config({monaco});
@@ -86,9 +86,8 @@ const CodeShow = (props: CodeShowFormProps) => {
   const [stopping, setStopping] = useState<boolean>(false);
   const [autoRefresh, setAutoRefresh] = useState<boolean>(false);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
-  const [editorRef, setEditorRef] = useState<any>();
+  const editorInstance = useRef<editor.IStandaloneCodeEditor |any>();
   const [timer, setTimer] = useState<NodeJS.Timer>();
-  const themeValue = useThemeValue();
 
   // 使用编辑器钩子, 拿到编辑器实例
   const monaco = useMonaco();
@@ -138,28 +137,28 @@ const CodeShow = (props: CodeShowFormProps) => {
    *  handle scroll to top
    */
   const handleBackTop = () => {
-    editorRef.revealLine(1);
+    editorInstance?.current?.revealLine(1);
   };
 
   /**
    *  handle scroll to bottom
    */
   const handleBackBottom = () => {
-    editorRef.revealLine(editorRef.getModel().getLineCount());
+    editorInstance?.current?.revealLine(editorInstance?.current?.getModel().getLineCount());
   };
 
   /**
    *  handle scroll to down
    */
   const handleDownScroll = () => {
-    editorRef.setScrollPosition({ scrollTop: editorRef.getScrollTop() + 500 }, ScrollType.Smooth);
+    editorInstance?.current?.setScrollPosition({ scrollTop: editorInstance?.current?.getScrollTop() + 500 }, ScrollType.Smooth);
   };
 
   /**
    *  handle scroll to up
    */
   const handleUpScroll = () => {
-    editorRef?.setScrollPosition({ scrollTop: editorRef.getScrollTop() - 500 }, ScrollType.Smooth);
+    editorInstance?.current?.setScrollPosition({ scrollTop: editorInstance?.current?.getScrollTop() - 500 }, ScrollType.Smooth);
   };
 
   /**
@@ -167,7 +166,7 @@ const CodeShow = (props: CodeShowFormProps) => {
    * @param {editor.IStandaloneCodeEditor} editor
    */
   const editorDidMount = (editor: editor.IStandaloneCodeEditor) => {
-    setEditorRef(editor);
+    editorInstance.current = editor;
     editor.layout();
     editor.focus();
     if (scrollBeyondLastLine) {
