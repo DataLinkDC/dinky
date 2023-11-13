@@ -18,26 +18,24 @@
  */
 
 import * as monaco from 'monaco-editor';
-import { editor,languages,Position } from 'monaco-editor';
+import { editor, languages, Position } from 'monaco-editor';
 
 import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import {Editor, Monaco, OnChange} from '@monaco-editor/react';
+import { Editor, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
-import useMemoCallback from "rc-menu/es/hooks/useMemoCallback";
-import {memo, useCallback, useRef} from 'react';
+import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
+import { memo, useCallback, useRef } from 'react';
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
 import CompletionContext = languages.CompletionContext;
 
-
 let provider = {
-  dispose: () => {},
+  dispose: () => {}
 };
-
 
 export type CodeEditFormProps = {
   height?: string;
@@ -104,9 +102,12 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     return buildAllSuggestionsToEditor(model, position, suggestionsData);
   };
 
-  const buildAllSuggestionsCallback = useCallback(async (model: ITextModel, position: monaco.Position) => {
-    return buildAllSuggestions(model, position);
-  } , [code,activeKey]);
+  const buildAllSuggestionsCallback = useCallback(
+    async (model: ITextModel, position: monaco.Position) => {
+      return buildAllSuggestions(model, position);
+    },
+    [code, activeKey]
+  );
 
   // memo
   const memoizedBuildAllSuggestionsCallback = useMemoCallback(buildAllSuggestionsCallback);
@@ -116,7 +117,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
       provideCompletionItems: (
         model: editor.ITextModel,
         position: Position,
-        context: CompletionContext,
+        context: CompletionContext
       ) => {
         const allSuggestions = memoizedBuildAllSuggestionsCallback(model, position);
         context.triggerKind =
@@ -297,5 +298,5 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   suggestionsData: Studio.suggestions,
-  tabs: Studio.tabs,
+  tabs: Studio.tabs
 }))(memo(CodeEdit));
