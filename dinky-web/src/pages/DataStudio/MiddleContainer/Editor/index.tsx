@@ -37,7 +37,7 @@ import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { Monaco } from '@monaco-editor/react';
 import { Button, Spin } from 'antd';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {memo, useEffect, useRef, useState} from 'react';
 import { format } from 'sql-formatter';
 
 export type EditorProps = {
@@ -110,6 +110,8 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
   const editorDidMount = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editor.layout();
     editor.focus();
+    monacoInstance.current = monaco;
+    editorInstance.current = editor;
 
     editor.onDidChangeCursorPosition((e) => {
       props.footContainer.codePosition = [e.position.lineNumber, e.position.column];
@@ -123,8 +125,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
       editor?.trigger('anyString', 'editor.action.formatDocument', '');
       editor.setValue(format(editor.getValue()));
     });
-    monacoInstance.current = monaco;
-    editorInstance.current = editor;
+
   };
 
   const handleEditChange = (v: string | undefined) => {
@@ -209,4 +210,4 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   footContainer: Studio.footContainer
-}))(CodeEditor);
+}))(memo(CodeEditor));

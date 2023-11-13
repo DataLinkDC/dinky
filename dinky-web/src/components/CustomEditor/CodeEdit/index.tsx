@@ -27,8 +27,16 @@ import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useRef } from 'react';
 import ITextModel = editor.ITextModel;
+import useMemoCallback from "rc-menu/es/hooks/useMemoCallback";
+import {useAsyncEffect, useUpdateEffect} from "ahooks";
+
+
+let provider = {
+  dispose: () => {},
+};
+
 
 export type CodeEditFormProps = {
   height?: string;
@@ -87,27 +95,20 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 
   const { ScrollType } = editor;
 
-  console.log(enableSuggestions, suggestionsData);
-
+  /**
+   * build all suggestions
+   */
   const buildAllSuggestions = useCallback(async (model: ITextModel, position: monaco.Position) => {
     return buildAllSuggestionsToEditor(model, position, suggestionsData);
-  }, []);
+  }, [code]);
 
-  const reloadCompletion = () => {
-    monacoInstance?.current?.languages?.registerCompletionItemProvider(language || 'sql', {
-      provideCompletionItems: (model: ITextModel, position: monaco.Position) => {
-        console.log(code);
-        return buildAllSuggestions(model, position);
-      }
-    });
-  };
 
-  useEffect(
-    () => () => {
-      reloadCompletion();
-    },
-    [code]
-  );
+  /**
+   * 当code变化时，重新注册provider 以及 dispose
+   */
+  useUpdateEffect(() => {
+    provider.dispose();
+  } , [code])
 
   /**
    *  editorDidMount
@@ -115,16 +116,24 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
    * @param monaco
    */
   const editorDidMountChange = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
-    if (editorRef || monacoRef || editorDidMount) {
+    if (editorRef.current || monacoRef.current || editorDidMount) {
       editorDidMount(editor, monaco);
     } else {
       editorInstance.current = editor;
       monacoInstance.current = monaco;
     }
     if (enableSuggestions) {
-      console.log('enableSuggestions', enableSuggestions);
-      reloadCompletion();
+      provider= monaco.languages.registerCompletionItemProvider(language || 'sql', {
+         provideCompletionItems: (model: ITextModel, position: monaco.Position) => {
+          return buildAllSuggestions(model, position);
+        }
+      });
     }
+    // register TypeScript language service
+    monaco.languages.register({
+      id: language || 'typescript'
+    });
+
     editor.layout();
     editor.focus();
   };
@@ -166,10 +175,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 
   // todo: 标记错误信息
 
-  // register TypeScript language service
-  monacoInstance?.current?.languages.register({
-    id: language || 'typescript'
-  });
+
 
   const restEditBtnProps = {
     handleBackTop,
@@ -211,11 +217,8 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
       showWords: true
     },
     scrollbar: {
-      // Subtle shadows to the left & top. Defaults to true.
       useShadows: false,
-      // Defaults to 'auto'
       vertical: 'visible',
-      // Defaults to 'auto'
       horizontal: 'visible',
       verticalScrollbarSize: 8,
       horizontalScrollbarSize: 8,
@@ -236,7 +239,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
           language={language}
           options={finalEditorOptions}
           className={'editor-develop'}
-          onMount={editorDidMount ?? editorDidMountChange}
+          onMount={editorDidMountChange}
           onChange={onChange}
           theme={convertCodeEditTheme()}
         />
