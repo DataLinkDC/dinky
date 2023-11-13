@@ -27,16 +27,13 @@ import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
+import { useUpdateEffect } from 'ahooks';
 import { memo, useCallback, useRef } from 'react';
 import ITextModel = editor.ITextModel;
-import useMemoCallback from "rc-menu/es/hooks/useMemoCallback";
-import {useAsyncEffect, useUpdateEffect} from "ahooks";
-
 
 let provider = {
-  dispose: () => {},
+  dispose: () => {}
 };
-
 
 export type CodeEditFormProps = {
   height?: string;
@@ -98,17 +95,19 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   /**
    * build all suggestions
    */
-  const buildAllSuggestions = useCallback(async (model: ITextModel, position: monaco.Position) => {
-    return buildAllSuggestionsToEditor(model, position, suggestionsData);
-  }, [code]);
-
+  const buildAllSuggestions = useCallback(
+    async (model: ITextModel, position: monaco.Position) => {
+      return buildAllSuggestionsToEditor(model, position, suggestionsData);
+    },
+    [code]
+  );
 
   /**
    * 当code变化时，重新注册provider 以及 dispose
    */
   useUpdateEffect(() => {
     provider.dispose();
-  } , [code])
+  }, [code]);
 
   /**
    *  editorDidMount
@@ -123,8 +122,8 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
       monacoInstance.current = monaco;
     }
     if (enableSuggestions) {
-      provider= monaco.languages.registerCompletionItemProvider(language || 'sql', {
-         provideCompletionItems: (model: ITextModel, position: monaco.Position) => {
+      provider = monaco.languages.registerCompletionItemProvider(language || 'sql', {
+        provideCompletionItems: (model: ITextModel, position: monaco.Position) => {
           return buildAllSuggestions(model, position);
         }
       });
@@ -174,8 +173,6 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   };
 
   // todo: 标记错误信息
-
-
 
   const restEditBtnProps = {
     handleBackTop,
