@@ -394,7 +394,7 @@ public class UDFUtil {
                 continue;
             }
             Configuration configuration = new Configuration();
-            configuration.set(PythonOptions.PYTHON_FILES, udfFile + ".zip");
+            configuration.set(PythonOptions.PYTHON_FILES, udfFile);
             configuration.set(PythonOptions.PYTHON_CLIENT_EXECUTABLE, pythonPath);
             configuration.set(PythonOptions.PYTHON_EXECUTABLE, pythonPath);
             try {
@@ -413,7 +413,7 @@ public class UDFUtil {
             String shell =
                     StrUtil.join(" ", Arrays.asList(Opt.ofBlankAble(pyPath).orElse("python3"), pyFile, checkPyFile));
 
-            return StrUtil.split(RuntimeUtil.execForStr(shell), ",");
+            return StrUtil.split(StrUtil.trim(RuntimeUtil.execForStr(shell)), ",");
         } catch (Exception e) {
             throw new DinkyException(e);
         }

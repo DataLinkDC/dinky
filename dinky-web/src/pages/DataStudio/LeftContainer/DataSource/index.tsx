@@ -88,10 +88,10 @@ const DataSource = (props: any) => {
     onRefreshTreeData(value);
   };
 
-  BtnRoute['menu.datastudio.metadata'][0].onClick = () => {
+  BtnRoute['menu.datastudio.datasource'][0].onClick = () => {
     setShowCreate(true);
   };
-  BtnRoute['menu.datastudio.metadata'][1].onClick = () => {
+  BtnRoute['menu.datastudio.datasource'][1].onClick = () => {
     if (!selectDatabaseId) return;
     setIsLoadingDatabase(true);
     clearDataSourceTable(selectDatabaseId).then(() => {

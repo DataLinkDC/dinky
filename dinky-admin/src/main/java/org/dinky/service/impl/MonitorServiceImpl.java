@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.data.constant.PaimonTableConstant;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.metrics.Jvm;
@@ -81,7 +82,7 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
             return CollUtil.newArrayList(local, greaterOrEqual, lessOrEqual);
         };
         List<MetricsVO> metricsVOList =
-                PaimonUtil.batchReadTable(PaimonUtil.METRICS_IDENTIFIER, MetricsVO.class, filter);
+                PaimonUtil.batchReadTable(PaimonTableConstant.DINKY_METRICS, MetricsVO.class, filter);
         return metricsVOList.stream()
                 .filter(x -> x.getHeartTime().isAfter(startTS.toLocalDateTime()))
                 .filter(x -> x.getHeartTime().isBefore(endTS.toLocalDateTime()))

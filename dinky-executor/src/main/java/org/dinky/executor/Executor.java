@@ -137,7 +137,8 @@ public abstract class Executor {
         CustomTableEnvironmentContext.set(tableEnvironment);
         tableEnvironment.injectParser(
                 new CustomParserImpl(tableEnvironment.getPlanner().getParser()));
-        tableEnvironment.injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
+        tableEnvironment.injectExtendedExecutor(
+                new CustomExtendedOperationExecutorImpl(this.getCustomTableEnvironment()));
 
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
         if (executorConfig.isValidJobName()) {
@@ -295,7 +296,7 @@ public abstract class Executor {
     }
 
     public boolean parseAndLoadConfiguration(String statement) {
-        return tableEnvironment.parseAndLoadConfiguration(statement, environment, setConfig);
+        return tableEnvironment.parseAndLoadConfiguration(statement, setConfig);
     }
 
     public List<LineageRel> getLineage(String statement) {

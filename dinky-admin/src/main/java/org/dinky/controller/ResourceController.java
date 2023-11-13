@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.ResourcesDTO;
 import org.dinky.data.dto.TreeNodeDTO;

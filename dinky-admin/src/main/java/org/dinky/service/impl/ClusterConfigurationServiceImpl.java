@@ -31,10 +31,12 @@ import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.ClusterConfigurationService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.hutool.core.lang.Assert;
@@ -86,5 +88,18 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
             return this.updateById(clusterConfiguration);
         }
         return false;
+    }
+
+    /**
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<ClusterConfigurationDTO> selectListByKeyWord(String keyword) {
+        return getBaseMapper()
+                .selectList(new LambdaQueryWrapper<ClusterConfiguration>().like(ClusterConfiguration::getName, keyword))
+                .stream()
+                .map(ClusterConfigurationDTO::fromBean)
+                .collect(Collectors.toList());
     }
 }

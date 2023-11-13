@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -39,6 +40,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -154,4 +156,16 @@ public class SysToken implements Serializable {
             dataType = "List<LocalDateTime>",
             notes = "List of timestamps indicating the time range for token expiration")
     private List<LocalDateTime> expireTimeRange;
+
+    private Source source;
+
+    @Getter
+    @AllArgsConstructor
+    public enum Source {
+        LOGIN(1),
+        CUSTOM(2);
+
+        @EnumValue
+        private final int type;
+    }
 }

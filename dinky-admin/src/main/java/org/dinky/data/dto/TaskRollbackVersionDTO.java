@@ -31,7 +31,7 @@ import lombok.Data;
 public class TaskRollbackVersionDTO implements Serializable {
 
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "The identifier of the task")
-    private Integer id;
+    private Integer taskId;
 
     @ApiModelProperty(
             value = "Version ID",

@@ -24,9 +24,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImpl;
-import org.apache.flink.table.delegation.ExtendedOperationExecutor;
 import org.apache.flink.table.delegation.Planner;
-import org.apache.flink.table.planner.delegation.PlannerBase;
 
 import cn.hutool.core.util.ReflectUtil;
 
@@ -61,13 +59,7 @@ public abstract class AbstractCustomTableEnvironment
     }
 
     @Override
-    public void injectExtendedExecutor(CustomExtendedOperationExecutor extendedExecutor) {
-        PlannerBase plannerBase = (PlannerBase) getPlanner();
-        ExtendedOperationExecutor extendedOperationExecutor =
-                new ExtendedOperationExecutorWrapper(plannerBase.getExtendedOperationExecutor(), extendedExecutor);
-
-        ReflectUtil.setFieldValue(getPlanner(), "extendedOperationExecutor", extendedOperationExecutor);
-    }
+    public void injectExtendedExecutor(CustomExtendedOperationExecutor extendedExecutor) {}
 
     @Override
     public Configuration getRootConfiguration() {
