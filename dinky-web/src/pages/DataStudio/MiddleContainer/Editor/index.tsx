@@ -151,8 +151,8 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
           onUse={upDateTask}
         />
         <CodeEdit
-          monacoInstance={monacoInstance}
-          editorInstance={editorInstance}
+          monacoRef={monacoInstance}
+          editorRef={editorInstance}
           code={currentTab?.params?.taskData?.statement}
           language={'sql'}
           editorDidMount={editorDidMount}
