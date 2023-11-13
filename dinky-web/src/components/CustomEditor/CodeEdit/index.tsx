@@ -18,19 +18,20 @@
  */
 
 import * as monaco from 'monaco-editor';
-import { editor } from 'monaco-editor';
+import { editor,languages,Position } from 'monaco-editor';
 
 import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import { Editor, Monaco, OnChange } from '@monaco-editor/react';
+import {Editor, Monaco, OnChange} from '@monaco-editor/react';
 import { connect } from '@umijs/max';
-import { memo, useCallback, useRef } from 'react';
-import ITextModel = editor.ITextModel;
 import useMemoCallback from "rc-menu/es/hooks/useMemoCallback";
-import {useAsyncEffect, useUpdateEffect} from "ahooks";
+import {memo, useCallback, useRef} from 'react';
+import ITextModel = editor.ITextModel;
+import CompletionItem = languages.CompletionItem;
+import CompletionContext = languages.CompletionContext;
 
 
 let provider = {
@@ -87,7 +88,8 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     showFloatButton = false,
     editorDidMount,
     editorRef,
-    monacoRef
+    monacoRef,
+    tabs: { activeKey }
   } = props;
 
   const editorInstance = useRef<editor.IStandaloneCodeEditor | any>(editorRef);
@@ -98,39 +100,54 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   /**
    * build all suggestions
    */
-  const buildAllSuggestions = useCallback(async (model: ITextModel, position: monaco.Position) => {
+  const buildAllSuggestions = (model: ITextModel, position: monaco.Position) => {
     return buildAllSuggestionsToEditor(model, position, suggestionsData);
-  }, [code]);
+  };
 
+  const buildAllSuggestionsCallback = useCallback(async (model: ITextModel, position: monaco.Position) => {
+    return buildAllSuggestions(model, position);
+  } , [code,activeKey]);
 
-  /**
-   * 当code变化时，重新注册provider 以及 dispose
-   */
-  useUpdateEffect(() => {
-    provider.dispose();
-  } , [code])
+  // memo
+  const memoizedBuildAllSuggestionsCallback = useMemoCallback(buildAllSuggestionsCallback);
+
+  function reloadCompilation(monacoIns: Monaco) {
+    provider = monacoIns.languages.registerCompletionItemProvider(language, {
+      provideCompletionItems: (
+        model: editor.ITextModel,
+        position: Position,
+        context: CompletionContext,
+      ) => {
+        const allSuggestions = memoizedBuildAllSuggestionsCallback(model, position);
+        context.triggerKind =
+          monacoIns.languages.CompletionTriggerKind.TriggerForIncompleteCompletions;
+        return allSuggestions;
+      },
+      resolveCompletionItem: (item: CompletionItem) => {
+        return {
+          ...item,
+          detail: item.detail ?? `-- ${item.detail}`
+        };
+      }
+    });
+  }
 
   /**
    *  editorDidMount
    * @param {editor.IStandaloneCodeEditor} editor
    * @param monaco
    */
-  const editorDidMountChange = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
-    if (editorRef.current || monacoRef.current || editorDidMount) {
-      editorDidMount(editor, monaco);
-    } else {
-      editorInstance.current = editor;
-      monacoInstance.current = monaco;
+  const editorDidMountChange = (editor: editor.IStandaloneCodeEditor, monacoIns: Monaco) => {
+    if (editorRef?.current && monacoRef?.current && editorDidMount) {
+      editorDidMount(editor, monacoIns);
     }
+    editorInstance.current = editor;
+    monacoInstance.current = monacoIns;
     if (enableSuggestions) {
-      provider= monaco.languages.registerCompletionItemProvider(language || 'sql', {
-         provideCompletionItems: (model: ITextModel, position: monaco.Position) => {
-          return buildAllSuggestions(model, position);
-        }
-      });
+      reloadCompilation(monacoIns);
     }
     // register TypeScript language service
-    monaco.languages.register({
+    monacoIns.languages.register({
       id: language || 'typescript'
     });
 
@@ -149,8 +166,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
    *  handle scroll to bottom
    */
   const handleBackBottom = () => {
-    // @ts-ignore
-    editorInstance?.current?.revealLine(editorInstance?.current?.getModel()?.().getLineCount());
+    editorInstance?.current?.revealLine(editorInstance?.current?.getModel()?.getLineCount());
   };
 
   /**
@@ -174,8 +190,6 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   };
 
   // todo: 标记错误信息
-
-
 
   const restEditBtnProps = {
     handleBackTop,
@@ -204,17 +218,49 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     inlineSuggest: {
       enabled: true,
       showToolbar: 'always',
-      keepOnBlur: false
+      keepOnBlur: false,
+      allowQuickSuggestions: true,
+      showOnAllSymbols: true
     },
+    inlineSuggestionVisible: true,
+    quickSuggestions: true,
+    guides: {
+      bracketPairs: true
+    },
+    bracketPairColorization: {
+      enabled: true,
+      independentColorPoolPerBracketType: true
+    },
+    foldingRanges: true,
+    inlineCompletionsAccessibilityVerbose: true,
     suggest: {
+      shareSuggestSelections: true,
       quickSuggestions: true,
       showStatusBar: true,
       preview: true,
       previewMode: 'preview',
-      showVariables: true,
+      showInlineDetails: true,
+      showMethods: true,
+      showFunctions: true,
+      showConstructors: true,
       showFields: true,
+      showEvents: true,
+      showOperators: true,
+      showClasses: true,
+      showModules: true,
+      showStructs: true,
+      showInterfaces: true,
+      showProperties: true,
+      showUnits: true,
+      showValues: true,
+      showConstants: true,
+      showEnums: true,
+      showEnumMembers: true,
       showKeywords: true,
-      showWords: true
+      showWords: true,
+      showFolders: true,
+      showReferences: true,
+      showSnippets: true
     },
     scrollbar: {
       useShadows: false,
@@ -250,5 +296,6 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  suggestionsData: Studio.suggestions
+  suggestionsData: Studio.suggestions,
+  tabs: Studio.tabs,
 }))(memo(CodeEdit));

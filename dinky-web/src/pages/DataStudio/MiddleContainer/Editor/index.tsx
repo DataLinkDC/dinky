@@ -210,4 +210,4 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   footContainer: Studio.footContainer
-}))(memo(CodeEditor));
+}))(CodeEditor);
