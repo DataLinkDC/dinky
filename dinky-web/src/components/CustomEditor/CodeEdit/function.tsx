@@ -190,7 +190,7 @@ export const buildAllSuggestionsToEditor = (
       range: range,
       kind: mappingKind(item.kind),
       insertText: item.insertText,
-      insertTextRules: monaco.languages.CompletionItemInsertTextRule.KeepWhitespace
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
       // detail: item?.detail,
     };
   });
