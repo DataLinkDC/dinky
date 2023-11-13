@@ -27,7 +27,7 @@ import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
-import {memo, useCallback, useEffect, useRef} from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import ITextModel = editor.ITextModel;
 
 export type CodeEditFormProps = {
@@ -48,12 +48,7 @@ export type CodeEditFormProps = {
   editorRef?: any;
 };
 
-
 const CodeEdit = (props: CodeEditFormProps & connect) => {
-
-
-
-
   /**
    * 1. height: edit height
    * 2. width: edit width
@@ -87,34 +82,32 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     monacoRef
   } = props;
 
-
-  const editorInstance = useRef<editor.IStandaloneCodeEditor |any>(editorRef);
+  const editorInstance = useRef<editor.IStandaloneCodeEditor | any>(editorRef);
   const monacoInstance = useRef<Monaco | any>(monacoRef);
 
   const { ScrollType } = editor;
 
-  console.log(enableSuggestions, suggestionsData)
+  console.log(enableSuggestions, suggestionsData);
 
   const buildAllSuggestions = useCallback(async (model: ITextModel, position: monaco.Position) => {
     return buildAllSuggestionsToEditor(model, position, suggestionsData);
   }, []);
 
-  const reloadCompletion = () =>{
-
-   monacoInstance?.current?.languages?.registerCompletionItemProvider(language || 'sql', {
+  const reloadCompletion = () => {
+    monacoInstance?.current?.languages?.registerCompletionItemProvider(language || 'sql', {
       provideCompletionItems: (model: ITextModel, position: monaco.Position) => {
-        console.log(code)
+        console.log(code);
         return buildAllSuggestions(model, position);
       }
     });
   };
 
-
   useEffect(
     () => () => {
-
       reloadCompletion();
-    }, [code]);
+    },
+    [code]
+  );
 
   /**
    *  editorDidMount
@@ -124,18 +117,17 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   const editorDidMountChange = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     if (editorRef || monacoRef || editorDidMount) {
       editorDidMount(editor, monaco);
-    }else {
+    } else {
       editorInstance.current = editor;
       monacoInstance.current = monaco;
     }
     if (enableSuggestions) {
-      console.log('enableSuggestions', enableSuggestions)
+      console.log('enableSuggestions', enableSuggestions);
       reloadCompletion();
     }
     editor.layout();
     editor.focus();
   };
-
 
   /**
    *  handle scroll to top
@@ -157,7 +149,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
    */
   const handleDownScroll = () => {
     editorInstance?.current?.setScrollPosition(
-      { scrollTop:  editorInstance?.current?.getScrollTop() + 500 },
+      { scrollTop: editorInstance?.current?.getScrollTop() + 500 },
       ScrollType.Smooth
     );
   };
@@ -167,7 +159,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
    */
   const handleUpScroll = () => {
     editorInstance?.current?.setScrollPosition(
-      { scrollTop:  editorInstance?.current?.getScrollTop() - 500 },
+      { scrollTop: editorInstance?.current?.getScrollTop() - 500 },
       ScrollType.Smooth
     );
   };

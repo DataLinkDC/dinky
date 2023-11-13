@@ -19,14 +19,13 @@
 
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
 import { LogLanguage } from '@/components/CustomEditor/languages/javalog';
-import useThemeValue from '@/hooks/useThemeValue';
 import { Loading } from '@/pages/Other/Loading';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, useMonaco } from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
-import {CSSProperties, useEffect, useRef, useState} from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 import FullscreenBtn from '../FullscreenBtn';
 
 // loader.config({monaco});
@@ -86,7 +85,7 @@ const CodeShow = (props: CodeShowFormProps) => {
   const [stopping, setStopping] = useState<boolean>(false);
   const [autoRefresh, setAutoRefresh] = useState<boolean>(false);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
-  const editorInstance = useRef<editor.IStandaloneCodeEditor |any>();
+  const editorInstance = useRef<editor.IStandaloneCodeEditor | any>();
   const [timer, setTimer] = useState<NodeJS.Timer>();
 
   // 使用编辑器钩子, 拿到编辑器实例
@@ -151,14 +150,20 @@ const CodeShow = (props: CodeShowFormProps) => {
    *  handle scroll to down
    */
   const handleDownScroll = () => {
-    editorInstance?.current?.setScrollPosition({ scrollTop: editorInstance?.current?.getScrollTop() + 500 }, ScrollType.Smooth);
+    editorInstance?.current?.setScrollPosition(
+      { scrollTop: editorInstance?.current?.getScrollTop() + 500 },
+      ScrollType.Smooth
+    );
   };
 
   /**
    *  handle scroll to up
    */
   const handleUpScroll = () => {
-    editorInstance?.current?.setScrollPosition({ scrollTop: editorInstance?.current?.getScrollTop() - 500 }, ScrollType.Smooth);
+    editorInstance?.current?.setScrollPosition(
+      { scrollTop: editorInstance?.current?.getScrollTop() - 500 },
+      ScrollType.Smooth
+    );
   };
 
   /**
