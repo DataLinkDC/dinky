@@ -34,11 +34,11 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { connect, useRequest } from '@@/exports';
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
+import { Monaco } from '@monaco-editor/react';
 import { Button, Spin } from 'antd';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
-import {Monaco} from "@monaco-editor/react";
 
 export type EditorProps = {
   taskId: number;
@@ -65,7 +65,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [diff, setDiff] = useState<any>([]);
   const { fullscreen, setFullscreen } = useEditor();
-  const editorInstance = useRef<editor.IStandaloneCodeEditor |any>();
+  const editorInstance = useRef<editor.IStandaloneCodeEditor | any>();
   const monacoInstance = useRef<Monaco | any>();
 
   const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
@@ -107,7 +107,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
     setIsModalOpen(false);
   };
 
-  const editorDidMount = (editor: editor.IStandaloneCodeEditor , monaco: Monaco) => {
+  const editorDidMount = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editor.layout();
     editor.focus();
 
@@ -170,7 +170,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
             position: 'absolute',
             top: 15,
             right: '10%',
-            boxShadow: '0 0 10px #ccc',
+            boxShadow: '0 0 10px #ccc'
           }}
         >
           {fullscreen ? (
