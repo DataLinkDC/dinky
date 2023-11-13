@@ -28,17 +28,17 @@ import java.util.Optional;
 
 public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperationExecutor {
 
-    private Executor executor;
+    private CustomTableEnvironment tEnv;
 
-    public CustomExtendedOperationExecutorImpl(Executor executor) {
-        this.executor = executor;
+    public CustomExtendedOperationExecutorImpl(CustomTableEnvironment tEnv) {
+        this.tEnv = tEnv;
     }
 
     @Override
     public Optional<? extends TableResult> executeOperation(Operation operation) {
         if (operation instanceof ExtendOperation) {
             ExtendOperation extendOperation = (ExtendOperation) operation;
-            return extendOperation.execute(executor);
+            return extendOperation.execute(tEnv);
         }
 
         return Optional.empty();

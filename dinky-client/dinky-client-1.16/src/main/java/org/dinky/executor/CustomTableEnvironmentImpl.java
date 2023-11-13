@@ -50,7 +50,9 @@ import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.types.Row;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +102,33 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(executionEnvironment, settings);
 
         return new CustomTableEnvironmentImpl(streamTableEnvironment);
+    }
+
+    public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
+        List<Operation> operations = getParser().parse(statement);
+        for (Operation operation : operations) {
+            if (operation instanceof SetOperation) {
+                callSet((SetOperation) operation, getStreamExecutionEnvironment(), setMap);
+                return true;
+            } else if (operation instanceof ResetOperation) {
+                callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void addJar(File... jarPath) {
+        Configuration configuration = this.getRootConfiguration();
+        List<String> jars = configuration.get(PipelineOptions.JARS);
+        if (jars == null) {
+            configuration.set(
+                    PipelineOptions.JARS,
+                    Arrays.stream(jarPath).map(File::getAbsolutePath).collect(Collectors.toList()));
+        } else {
+            CollUtil.addAll(jars, jarPath);
+        }
     }
 
     public ObjectNode getStreamGraph(String statement) {
@@ -196,20 +225,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
         record.setExplain(getPlanner().explain(operations, extraDetails));
         return record;
-    }
-
-    public boolean parseAndLoadConfiguration(
-            String statement, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
-        for (Operation operation : getParser().parse(statement)) {
-            if (operation instanceof SetOperation) {
-                callSet((SetOperation) operation, environment, setMap);
-                return true;
-            } else if (operation instanceof ResetOperation) {
-                callReset((ResetOperation) operation, environment, setMap);
-                return true;
-            }
-        }
-        return false;
     }
 
     private void callSet(

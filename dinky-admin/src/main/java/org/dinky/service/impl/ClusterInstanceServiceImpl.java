@@ -45,6 +45,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.hutool.core.util.StrUtil;
@@ -205,6 +206,21 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                 clusterCfg.getName() + LocalDateTime.now(),
                 id,
                 null));
+    }
+
+    /**
+     * @param searchKeyWord
+     * @return
+     */
+    @Override
+    public List<ClusterInstance> selectListByKeyWord(String searchKeyWord) {
+        return getBaseMapper()
+                .selectList(new LambdaQueryWrapper<ClusterInstance>()
+                        .like(ClusterInstance::getName, searchKeyWord)
+                        .or()
+                        .like(ClusterInstance::getAlias, searchKeyWord)
+                        .or()
+                        .like(ClusterInstance::getNote, searchKeyWord));
     }
 
     private boolean checkHealth(ClusterInstance clusterInstance) {

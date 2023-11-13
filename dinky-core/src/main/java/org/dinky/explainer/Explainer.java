@@ -39,8 +39,8 @@ import org.dinky.job.JobManager;
 import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 import org.dinky.parser.SqlType;
-import org.dinky.parser.check.AddJarSqlParser;
 import org.dinky.trans.Operations;
+import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
@@ -116,7 +116,7 @@ public class Explainer {
             }
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParser.getAllFilePath(statement).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
+                AddJarSqlParseStrategy.getAllFilePath(statement).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
                 DinkyClassLoaderContextHolder.get()
                         .addURL(URLUtils.getURLs(FlinkUdfPathContextHolder.getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {

@@ -24,6 +24,8 @@ export default {
   'button.recovery': 'Recovery',
   'button.cancel': 'Cancel',
   'button.finish': 'Finish',
+  'button.retry': 'Retry',
+  'button.rebuild': 'Re Build',
   'button.back': 'Back',
   'button.save': 'Save',
   'button.delete': 'Delete',

@@ -33,6 +33,7 @@ import org.dinky.data.model.Menu;
 import org.dinky.data.model.Role;
 import org.dinky.data.model.RoleMenu;
 import org.dinky.data.model.RowPermissions;
+import org.dinky.data.model.SysToken;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Tenant;
 import org.dinky.data.model.User;
@@ -42,6 +43,7 @@ import org.dinky.data.params.AssignRoleParams;
 import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.UserVo;
+import org.dinky.mapper.TokenMapper;
 import org.dinky.mapper.UserMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.MenuService;
@@ -66,6 +68,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -98,6 +102,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     private final RoleMenuService roleMenuService;
 
     private final MenuService menuService;
+    private final TokenService tokenService;
+    private final TokenMapper tokenMapper;
 
     @Override
     public Result<Void> registerUser(User user) {
@@ -156,7 +162,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
      *
      * @param loginDTO a user based on the provided login credentials.
      * @return a Result object containing the user information if the login is successful, or an
-     *     appropriate error status if the login fails.
+     * appropriate error status if the login fails.
      */
     @Override
     public Result<UserDTO> loginUser(LoginDTO loginDTO) {
@@ -182,13 +188,35 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         }
 
         // Perform login using StpUtil (Assuming it handles the session management)
-        StpUtil.login(user.getId(), loginDTO.isAutoLogin());
+        Integer userId = user.getId();
+        StpUtil.login(userId, loginDTO.isAutoLogin());
 
         // save login log record
         loginLogService.saveLoginLog(user, Status.LOGIN_SUCCESS);
 
+        insertToken(userInfo);
+
         // Return the user information along with a success status
         return Result.succeed(userInfo, Status.LOGIN_SUCCESS);
+    }
+
+    private void insertToken(UserDTO userInfo) {
+        Integer userId = userInfo.getUser().getId();
+        SysToken sysToken = new SysToken();
+        String tokenValue = StpUtil.getTokenValueByLoginId(userId);
+        sysToken.setTokenValue(tokenValue);
+        sysToken.setUserId(userId);
+        // todo 权限和租户暂未接入
+        sysToken.setRoleId(1);
+        sysToken.setTenantId(1);
+        sysToken.setExpireType(3);
+        DateTime date = DateUtil.date();
+        sysToken.setExpireStartTime(date);
+        sysToken.setExpireEndTime(DateUtil.offsetDay(date, 1));
+        sysToken.setCreator(userId);
+        sysToken.setUpdator(userId);
+        sysToken.setSource(SysToken.Source.LOGIN);
+        tokenMapper.insert(sysToken);
     }
 
     private User localLogin(LoginDTO loginDTO) throws AuthException {
@@ -476,7 +504,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
      * @param userId
      * @return
      */
-    private UserDTO buildUserInfo(Integer userId) {
+    public UserDTO buildUserInfo(Integer userId) {
 
         User user = getById(userId);
         if (Asserts.isNull(user)) {

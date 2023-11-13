@@ -21,10 +21,10 @@
 <mapper namespace="org.dinky.mapper.UDFManageMapper">
 
     <select id="selectAll" resultType="org.dinky.data.vo.UDFManageVO">
-        select u.*,"develop" source,t.dialect,null file_name from
+        select u.*,'develop' source,t.dialect,null file_name from
         dinky_udf_manage u LEFT JOIN dinky_task t on t.id=u.task_id WHERE resources_id is null
         union ALL
-        select u.*,"resources" source,null dialect,t.full_name from
+        select u.*,'resources' source,null dialect,t.full_name from
         dinky_udf_manage u LEFT JOIN dinky_resources t on t.id=u.resources_id WHERE u.task_id is null
     </select>
 </mapper>

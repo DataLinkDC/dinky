@@ -19,12 +19,11 @@
 
 package org.dinky.trans.ddl;
 
-import static org.dinky.cdc.SinkBuilderFactory.buildSinkBuilder;
-
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.CDCBuilder;
 import org.dinky.cdc.CDCBuilderFactory;
 import org.dinky.cdc.SinkBuilder;
+import org.dinky.cdc.SinkBuilderFactory;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
@@ -98,7 +97,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
             config.setSchemaFieldName(cdcBuilder.getSchemaFieldName());
-            SinkBuilder sinkBuilder = buildSinkBuilder(config);
+            SinkBuilder sinkBuilder = SinkBuilderFactory.buildSinkBuilder(config);
             List<Schema> schemaList = new ArrayList<>();
             final List<String> schemaNameList = cdcBuilder.getSchemaList();
             final List<String> tableRegList = cdcBuilder.getTableList();

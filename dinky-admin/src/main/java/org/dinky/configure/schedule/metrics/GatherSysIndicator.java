@@ -21,7 +21,7 @@ package org.dinky.configure.schedule.metrics;
 
 import org.dinky.configure.schedule.BaseSchedule;
 import org.dinky.context.MetricsContextHolder;
-import org.dinky.data.annotation.GaugeM;
+import org.dinky.data.annotations.GaugeM;
 import org.dinky.data.enums.MetricsType;
 import org.dinky.data.metrics.BaseMetrics;
 import org.dinky.data.metrics.Cpu;

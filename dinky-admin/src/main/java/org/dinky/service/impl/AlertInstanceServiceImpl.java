@@ -109,6 +109,19 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         return updateById(alertInstance);
     }
 
+    /**
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<AlertInstance> selectListByKeyWord(String keyword) {
+        return getBaseMapper()
+                .selectList(new LambdaQueryWrapper<AlertInstance>()
+                        .like(AlertInstance::getName, keyword)
+                        .or()
+                        .like(AlertInstance::getType, keyword));
+    }
+
     private void writeBackGroupInformation(Map<Integer, Set<Integer>> alertGroupInformation) {
         if (MapUtils.isEmpty(alertGroupInformation)) {
             return;

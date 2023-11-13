@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
 @Data
 @TableName("dinky_alert_rules")
 @ApiModel(value = "AlertRule", description = "AlertRule")
-public class AlertRule extends SuperEntity {
+public class AlertRule extends SuperEntity<AlertRule> {
 
     @ApiModelProperty(value = "rule", required = true, dataType = "String", example = "rule")
     String rule;
