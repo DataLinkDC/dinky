@@ -186,7 +186,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
       type={'primary'}
       danger
       hidden={!onReTry}
-      disabled={onReTry && Number(steps[currentStep]?.status) !== 2}
+      disabled={steps[currentStep - 1]?.status !== 'error'}
       onClick={() => handleReTry()}
     >
       {l('button.retry')}
@@ -196,6 +196,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
       type={'dashed'}
       hidden={showLog}
       loading={currentStep !== steps.length && percent !== 99}
+      disabled={onReTry && steps[currentStep - 1]?.status === 'error'}
       onClick={() => onRebuild()}
     >
       {l('button.rebuild')}
@@ -203,6 +204,8 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     <Button
       key={'finish'}
       type={showLog ? 'default' : 'primary'}
+      danger={showLog}
+      disabled={steps[currentStep - 1]?.status === 'error' && percent !== 99}
       loading={currentStep !== steps.length && percent !== 99}
       onClick={() => handleCancel()}
     >
