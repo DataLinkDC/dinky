@@ -95,6 +95,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 
   const { ScrollType } = editor;
 
+  // todo: 已知 bug , 切换 tab 时 , 会造成buildAllSuggestions 的重复调用 , 造成建议项重复 ,但不影响原有数据, 编辑器会将建议项自动缓存,不会进行去重
   /**
    * build all suggestions
    */

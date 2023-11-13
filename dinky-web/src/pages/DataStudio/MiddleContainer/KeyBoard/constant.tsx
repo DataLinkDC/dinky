@@ -27,12 +27,12 @@ export const KEY_BOARD_MIDDLE = [
   },
   {
     key: 'alt2',
-    label: 'Alt + 2',
+    label: 'Alt / Option + 2',
     description: l('shortcut.key.check')
   },
   {
     key: 'alt3',
-    label: 'Alt + 3',
+    label: 'Alt / Option + 3',
     description: l('shortcut.key.beautify')
   }
   // {
