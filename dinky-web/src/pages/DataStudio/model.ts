@@ -425,19 +425,25 @@ const Model: ModelType = {
      * 更新工具栏高度
      */
     updateToolContentHeight(state, { payload }) {
-      return {
-        ...state,
-        toolContentHeight: payload
-      };
+      if (payload != state.toolContentHeight) {
+        return {
+          ...state,
+          toolContentHeight: payload
+        };
+      }
+      return state;
     },
     /**
      * 更新中间内容高度
      */
     updateCenterContentHeight(state, { payload }) {
-      return {
-        ...state,
-        centerContentHeight: payload
-      };
+      if (payload != state.centerContentHeight) {
+        return {
+          ...state,
+          centerContentHeight: payload
+        };
+      }
+      return state;
     },
     /**
      * 更新左侧选中key
@@ -536,13 +542,16 @@ const Model: ModelType = {
      * 更新底部高度
      */
     updateBottomHeight(state, { payload }) {
-      return {
-        ...state,
-        bottomContainer: {
-          ...state.bottomContainer,
-          height: payload
-        }
-      };
+      if (payload!=state.bottomContainer.height) {
+        return {
+          ...state,
+          bottomContainer: {
+            ...state.bottomContainer,
+            height: payload
+          }
+        };
+      }
+      return state;
     },
     /**
      * 更新数据库列表

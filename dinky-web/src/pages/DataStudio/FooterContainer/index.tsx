@@ -56,7 +56,6 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const themeValue = useThemeValue();
   const [viewJobRunning, setViewJobRunning] = useState(false);
   const [memDetailInfo, setMemDetailInfo] = useState(memDetails);
-
   const currentTab = getCurrentTab(tabs.panes ?? [], tabs.activeKey);
 
   useEffect(() => {
