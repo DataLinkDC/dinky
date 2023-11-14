@@ -241,7 +241,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     },
     foldingRanges: true,
     inlineCompletionsAccessibilityVerbose: true,
-    smartSelect:{
+    smartSelect: {
       selectLeadingAndTrailingWhitespace: true,
       selectSubwords: true
     },
@@ -291,10 +291,10 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
       <div className={'monaco-float'}>
         <Editor
           beforeMount={(monaco: Monaco) => {
-          if (!monacoInstance?.current) {
-            monacoInstance.current = monaco;
-          }
-        }}
+            if (!monacoInstance?.current) {
+              monacoInstance.current = monaco;
+            }
+          }}
           width={width}
           height={height}
           value={code}
