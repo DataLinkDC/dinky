@@ -25,22 +25,22 @@ import { ProCard } from '@ant-design/pro-components';
 import { Button, Empty, Result } from 'antd';
 import { useState } from 'react';
 import { isStatusDone } from '../../function';
+import { l } from '@/utils/intl';
 
 const JobConfigTab = (props: JobProps) => {
   const { jobDetail } = props;
   const job = jobDetail?.jobDataDto?.job;
   const [showHistory, setShowHistory] = useState<boolean>(false);
 
-  console.log(jobDetail);
   return (
     <>
       {
         isStatusDone(jobDetail?.instance?.status as string) && !showHistory ? <Result
           status="warning"
-          title="无法连接到 Flink 集群获取最新作业状态信息"
+          title={l('devops.jobinfo.unable.obtain.status')}
           extra={
             <Button type="primary" key="console" onClick={()=>{setShowHistory(true)}}>
-              查看最近保存的作业状态信息
+              {l('devops.jobinfo.recently.job.status')}
             </Button>
           }
         /> : undefined
