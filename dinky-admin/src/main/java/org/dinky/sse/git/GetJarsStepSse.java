@@ -19,6 +19,9 @@
 
 package org.dinky.sse.git;
 
+import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.model.GitProject;
+import org.dinky.service.resource.ResourcesService;
 import org.dinky.sse.StepSse;
 import org.dinky.utils.MavenUtil;
 
@@ -30,7 +33,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.extra.spring.SpringUtil;
 
 /**
  * @author ZackYoung
@@ -51,10 +56,22 @@ public class GetJarsStepSse extends StepSse {
     @Override
     public void exec() {
         List<File> jars = MavenUtil.getJars((File) params.get("pom"));
-
-        List<String> pathList = jars.stream().map(File::getAbsolutePath).collect(Collectors.toList());
+        List<String> pathList = uploadResources(jars);
         addFileMsg(pathList);
 
         params.put("jarPath", pathList);
+    }
+
+    private List<String> uploadResources(List<File> jars) {
+        GitProject gitProject = (GitProject) params.get("gitProject");
+
+        ResourcesService resourcesService = SpringUtil.getBean(ResourcesService.class);
+        TreeNodeDTO gitFolder = resourcesService.createFolderOrGet(0, "git", "");
+        TreeNodeDTO treeNodeDTO =
+                resourcesService.createFolderOrGet(Convert.toInt(gitFolder.getId()), gitProject.getName(), "");
+        return jars.stream()
+                .peek(f -> resourcesService.uploadFile(Convert.toInt(treeNodeDTO.getId()), "", f))
+                .map(x -> "rs:/git/" + gitProject.getName() + "/" + x.getName())
+                .collect(Collectors.toList());
     }
 }

@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.List;
 import java.util.function.Function;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -42,6 +43,8 @@ public interface ResourcesService extends IService<Resources> {
      * @return A {@link TreeNodeDTO} object representing the newly created folder.
      */
     TreeNodeDTO createFolder(Integer pid, String fileName, String desc);
+
+    TreeNodeDTO createFolderOrGet(Integer pid, String fileName, String desc);
 
     /**
      * Rename an existing folder with the specified parameters.
@@ -85,6 +88,9 @@ public interface ResourcesService extends IService<Resources> {
      * @return {@link File}
      */
     File getFile(Integer id);
+
+    @Transactional(rollbackFor = Exception.class)
+    void uploadFile(Integer pid, String desc, File file);
 
     /**
      * Upload a file to the specified folder.
