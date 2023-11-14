@@ -161,7 +161,7 @@ public class MavenUtil {
         settingsPath = StrUtil.wrap(settingsPath, "\"");
         List<String> commandLine = new LinkedList<>();
 
-        commandLine.add(mavenHome + "/bin/mvn");
+        commandLine.add((mavenHome + "/bin/mvn").replaceAll(" ", "\" \""));
         commandLine.add("-Dmaven.multiModuleProjectDirectory=" + projectDir);
         commandLine.add("-Dmaven.home=" + StrUtil.wrap(mavenHome, "\""));
         Opt.ofBlankAble(repositoryDir)

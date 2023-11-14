@@ -56,21 +56,22 @@ public class GetJarsStepSse extends StepSse {
     @Override
     public void exec() {
         List<File> jars = MavenUtil.getJars((File) params.get("pom"));
-        uploadResources(jars);
-
-        List<String> pathList = jars.stream().map(File::getAbsolutePath).collect(Collectors.toList());
+        List<String> pathList = uploadResources(jars);
         addFileMsg(pathList);
 
         params.put("jarPath", pathList);
     }
 
-    private void uploadResources(List<File> jars) {
+    private List<String> uploadResources(List<File> jars) {
         GitProject gitProject = (GitProject) params.get("gitProject");
 
         ResourcesService resourcesService = SpringUtil.getBean(ResourcesService.class);
         TreeNodeDTO gitFolder = resourcesService.createFolderOrGet(0, "git", "");
         TreeNodeDTO treeNodeDTO =
                 resourcesService.createFolderOrGet(Convert.toInt(gitFolder.getId()), gitProject.getName(), "");
-        jars.forEach(f -> resourcesService.uploadFile(Convert.toInt(treeNodeDTO.getId()), "", f));
+        return jars.stream()
+                .peek(f -> resourcesService.uploadFile(Convert.toInt(treeNodeDTO.getId()), "", f))
+                .map(x -> "rs:/git/" + gitProject.getName() + "/" + x.getName())
+                .collect(Collectors.toList());
     }
 }

@@ -53,6 +53,7 @@ public class AnalysisUdfPythonStepSse extends StepSse {
     @Override
     public void exec() {
         File zipFile = (File) params.get("zipFile");
+        String zipFilePath = params.getStr("zipFilePath");
         try {
             Thread.currentThread().getContextClassLoader().loadClass("org.apache.flink.table.api.ValidationException");
         } catch (ClassNotFoundException e) {
@@ -61,7 +62,7 @@ public class AnalysisUdfPythonStepSse extends StepSse {
         List<String> pythonUdfList =
                 UDFUtil.getPythonUdfList(SystemConfiguration.getInstances().getPythonHome(), zipFile.getAbsolutePath());
         GitAnalysisJarDTO gitAnalysisJarDTO = new GitAnalysisJarDTO();
-        gitAnalysisJarDTO.setJarPath(zipFile.getAbsolutePath());
+        gitAnalysisJarDTO.setJarPath(zipFilePath);
         gitAnalysisJarDTO.setClassList(pythonUdfList);
 
         List<GitAnalysisJarDTO> dataList = CollUtil.newArrayList(gitAnalysisJarDTO);
