@@ -298,7 +298,7 @@ export default {
    *
    * */
 
-  'pages.datastudio.editor.check': 'Check current FlinkSql',
+  'pages.datastudio.editor.check': 'Check',
   'pages.datastudio.editor.debug': 'Debug',
   'pages.datastudio.editor.exec': 'Execute',
   'pages.datastudio.editor.exec.error': 'Task [{jobName}] execution failed',
@@ -319,7 +319,7 @@ export default {
   'pages.datastudio.editor.notsave': 'Current changes are not saved! ',
   'pages.datastudio.editor.notsave.note':
     'Continue will discard the changes, are you sure to continue?',
-  'pages.datastudio.to.jobDetail': 'Operation Center',
+  'pages.datastudio.to.jobDetail': 'Operation',
   'pages.datastudio.explain.validate': 'Validating...',
   'pages.datastudio.explain.validate.allright': 'All Right',
   'pages.datastudio.explain.validate.error': 'There are errors, a total of {errorCount}',
