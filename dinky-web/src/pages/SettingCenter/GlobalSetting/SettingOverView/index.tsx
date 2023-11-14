@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import FadeIn from '@/components/Animation/FadeIn';
@@ -26,7 +28,6 @@ import {
   ResourceIcon
 } from '@/components/Icons/CustomIcons';
 import { TagAlignCenter } from '@/components/StyledComponents';
-import { useAccess } from '@/hooks/useAccess';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 import { DSConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/DSConfig';
 import { EnvConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/EnvConfig';
@@ -46,8 +47,6 @@ const imgSize = 25;
 
 const SettingOverView = () => {
   const [activeKey, setActiveKey] = useState(SettingConfigKeyEnum.DINKY);
-  const [tags, setTags] = useState([]);
-  const access = useAccess();
 
   const [data, setData] = useState<Settings>({
     dolphinscheduler: [],
@@ -198,12 +197,20 @@ const SettingOverView = () => {
       <div style={{ paddingBottom: '20px' }}>
         <ProCard
           ghost
+          bodyStyle={{ height: '80vh' }}
           className={'schemaTree'}
           size='small'
           bordered
           tabs={{
             activeKey: activeKey,
             type: 'card',
+            cardProps: {
+              hoverable: true,
+              bodyStyle: {
+                height: parent.innerHeight - 155
+              },
+              boxShadow: true
+            },
             animated: true,
             onChange: (key: any) => setActiveKey(key),
             // todo: 目前无法通过这种方式进行权限显示 多 Tag 的方式,待实现

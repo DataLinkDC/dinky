@@ -18,13 +18,24 @@
  */
 
 import * as monaco from 'monaco-editor';
+import { editor, languages, Position } from 'monaco-editor';
 
+import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
+import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import { Editor, OnChange } from '@monaco-editor/react';
-import { editor } from 'monaco-editor';
-import { useState } from 'react';
+import { Editor, Monaco, OnChange } from '@monaco-editor/react';
+import { connect } from '@umijs/max';
+import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
+import { memo, useCallback, useRef } from 'react';
+import ITextModel = editor.ITextModel;
+import CompletionItem = languages.CompletionItem;
+import CompletionContext = languages.CompletionContext;
+
+let provider = {
+  dispose: () => {}
+};
 
 export type CodeEditFormProps = {
   height?: string;
@@ -38,11 +49,13 @@ export type CodeEditFormProps = {
   theme?: string;
   autoWrap?: string;
   showFloatButton?: boolean;
+  editorDidMount?: (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => void;
+  enableSuggestions?: boolean;
+  monacoRef?: any;
+  editorRef?: any;
 };
 
-const CodeEdit = (props: CodeEditFormProps) => {
-  const [editorRef, setEditorRef] = useState<any>();
-
+const CodeEdit = (props: CodeEditFormProps & connect) => {
   /**
    * 1. height: edit height
    * 2. width: edit width
@@ -67,60 +80,201 @@ const CodeEdit = (props: CodeEditFormProps) => {
     code, // content
     readOnly = false, // is readOnly
     lineNumbers, // show lineNumbers
-    theme, // edit theme
+    enableSuggestions = false, // enable suggestions
+    suggestionsData, // suggestions data
     autoWrap = 'on', // auto wrap
-    showFloatButton = false
+    showFloatButton = false,
+    editorDidMount,
+    editorRef,
+    monacoRef,
+    tabs: { activeKey }
   } = props;
 
+  const editorInstance = useRef<editor.IStandaloneCodeEditor | any>(editorRef);
+  const monacoInstance = useRef<Monaco | any>(monacoRef);
+
   const { ScrollType } = editor;
+
+  // todo: 已知 bug , 切换 tab 时 , 会造成buildAllSuggestions 的重复调用 , 造成建议项重复 ,但不影响原有数据, 编辑器会将建议项自动缓存,不会进行去重
+  /**
+   * build all suggestions
+   */
+  const buildAllSuggestions = (model: ITextModel, position: monaco.Position) => {
+    return buildAllSuggestionsToEditor(model, position, suggestionsData);
+  };
+
+  const buildAllSuggestionsCallback = useCallback(
+    async (model: ITextModel, position: monaco.Position) => {
+      return buildAllSuggestions(model, position);
+    },
+    [code, activeKey]
+  );
+
+  // memo
+  const memoizedBuildAllSuggestionsCallback = useMemoCallback(buildAllSuggestionsCallback);
+
+  function reloadCompilation(monacoIns: Monaco) {
+    provider = monacoIns.languages.registerCompletionItemProvider(language, {
+      provideCompletionItems: (
+        model: editor.ITextModel,
+        position: Position,
+        context: CompletionContext
+      ) => {
+        const allSuggestions = memoizedBuildAllSuggestionsCallback(model, position);
+        context.triggerKind =
+          monacoIns.languages.CompletionTriggerKind.TriggerForIncompleteCompletions;
+        return allSuggestions;
+      },
+      resolveCompletionItem: (item: CompletionItem) => {
+        return {
+          ...item,
+          detail: item.detail ?? `-- ${item.detail}`
+        };
+      }
+    });
+  }
 
   /**
    *  editorDidMount
    * @param {editor.IStandaloneCodeEditor} editor
+   * @param monaco
    */
-  const editorDidMount = (editor: editor.IStandaloneCodeEditor) => {
-    setEditorRef(editor);
+  const editorDidMountChange = (editor: editor.IStandaloneCodeEditor, monacoIns: Monaco) => {
+    if (editorRef?.current && monacoRef?.current && editorDidMount) {
+      editorDidMount(editor, monacoIns);
+    }
+    editorInstance.current = editor;
+    monacoInstance.current = monacoIns;
+    if (enableSuggestions) {
+      reloadCompilation(monacoIns);
+    }
+    // register TypeScript language service
+    monacoIns.languages.register({
+      id: language || 'typescript'
+    });
+
     editor.layout();
     editor.focus();
   };
+
   /**
    *  handle scroll to top
    */
   const handleBackTop = () => {
-    editorRef.revealLine(1);
+    editorInstance?.current?.revealLine(1);
   };
 
   /**
    *  handle scroll to bottom
    */
   const handleBackBottom = () => {
-    editorRef.revealLine(editorRef.getModel().getLineCount());
+    editorInstance?.current?.revealLine(editorInstance?.current?.getModel()?.getLineCount());
   };
 
   /**
    *  handle scroll to down
    */
   const handleDownScroll = () => {
-    editorRef.setScrollPosition({ scrollTop: editorRef.getScrollTop() + 500 }, ScrollType.Smooth);
+    editorInstance?.current?.setScrollPosition(
+      { scrollTop: editorInstance?.current?.getScrollTop() + 500 },
+      ScrollType.Smooth
+    );
   };
 
   /**
    *  handle scroll to up
    */
   const handleUpScroll = () => {
-    editorRef?.setScrollPosition({ scrollTop: editorRef.getScrollTop() - 500 }, ScrollType.Smooth);
+    editorInstance?.current?.setScrollPosition(
+      { scrollTop: editorInstance?.current?.getScrollTop() - 500 },
+      ScrollType.Smooth
+    );
   };
 
-  // register TypeScript language service
-  monaco.languages.register({
-    id: language || 'typescript'
-  });
+  // todo: 标记错误信息
 
   const restEditBtnProps = {
     handleBackTop,
     handleBackBottom,
     handleUpScroll,
     handleDownScroll
+  };
+
+  const finalEditorOptions = {
+    ...options,
+    tabCompletion: 'on', // tab 补全
+    cursorSmoothCaretAnimation: true, // 光标动画
+    screenReaderAnnounceInlineSuggestion: true, // 屏幕阅读器提示
+    formatOnPaste: true, // 粘贴时格式化
+    mouseWheelZoom: true, // 鼠标滚轮缩放
+    autoClosingBrackets: 'always', // 自动闭合括号
+    autoClosingOvertype: 'always', // 用于在右引号或括号上键入的选项
+    autoClosingQuotes: 'always', // 自动闭合引号
+    showUnused: true, // 显示未使用的代码
+    unfoldOnClickAfterEndOfLine: true, // 控制在折叠线之后单击空内容是否会展开该线
+    showFoldingControls: 'always', // 代码折叠控件 'always' | 'mouseover' | 'never'
+    automaticLayout: true, // 自动布局
+    readOnly, // 是否只读
+    wrappingIndent:
+      language === 'yaml' || language === 'yml' || language === 'json' ? 'indent' : 'none',
+    inlineSuggest: {
+      enabled: true,
+      showToolbar: 'always',
+      keepOnBlur: false,
+      allowQuickSuggestions: true,
+      showOnAllSymbols: true
+    },
+    inlineSuggestionVisible: true,
+    quickSuggestions: true,
+    guides: {
+      bracketPairs: true
+    },
+    bracketPairColorization: {
+      enabled: true,
+      independentColorPoolPerBracketType: true
+    },
+    foldingRanges: true,
+    inlineCompletionsAccessibilityVerbose: true,
+    suggest: {
+      shareSuggestSelections: true,
+      quickSuggestions: true,
+      showStatusBar: true,
+      preview: true,
+      previewMode: 'preview',
+      showInlineDetails: true,
+      showMethods: true,
+      showFunctions: true,
+      showConstructors: true,
+      showFields: true,
+      showEvents: true,
+      showOperators: true,
+      showClasses: true,
+      showModules: true,
+      showStructs: true,
+      showInterfaces: true,
+      showProperties: true,
+      showUnits: true,
+      showValues: true,
+      showConstants: true,
+      showEnums: true,
+      showEnumMembers: true,
+      showKeywords: true,
+      showWords: true,
+      showFolders: true,
+      showReferences: true,
+      showSnippets: true
+    },
+    scrollbar: {
+      useShadows: false,
+      vertical: 'visible',
+      horizontal: 'visible',
+      verticalScrollbarSize: 8,
+      horizontalScrollbarSize: 8,
+      arrowSize: 30
+    },
+    wordWrap: autoWrap,
+    autoDetectHighContrast: true,
+    lineNumbers
   };
 
   return (
@@ -131,15 +285,9 @@ const CodeEdit = (props: CodeEditFormProps) => {
           height={height}
           value={code}
           language={language}
-          options={{
-            ...options,
-            readOnly,
-            wordWrap: autoWrap,
-            autoDetectHighContrast: true,
-            lineNumbers
-          }}
+          options={finalEditorOptions}
           className={'editor-develop'}
-          onMount={editorDidMount}
+          onMount={editorDidMountChange}
           onChange={onChange}
           theme={convertCodeEditTheme()}
         />
@@ -149,4 +297,7 @@ const CodeEdit = (props: CodeEditFormProps) => {
   );
 };
 
-export default CodeEdit;
+export default connect(({ Studio }: { Studio: StateType }) => ({
+  suggestionsData: Studio.suggestions,
+  tabs: Studio.tabs
+}))(memo(CodeEdit));

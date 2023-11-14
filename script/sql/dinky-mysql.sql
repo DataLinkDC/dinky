@@ -31,8 +31,8 @@ CREATE TABLE `dinky_alert_group`  (
                                     `alert_instance_ids` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'Alert instance IDS',
                                     `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'note',
                                     `enabled` tinyint(4) NULL DEFAULT 1 COMMENT 'is enable',
-                                    `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                    `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                     PRIMARY KEY (`id`) USING BTREE,
                                     UNIQUE INDEX `alert_group_un_idx1`(`name`, `tenant_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Alert group' ROW_FORMAT = Dynamic;
@@ -54,8 +54,8 @@ CREATE TABLE `dinky_alert_history`  (
                                       `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'content description',
                                       `status` int(11) NULL DEFAULT NULL COMMENT 'alert status',
                                       `log` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'log',
-                                      `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                      `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                      `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                      `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                       PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Alert history' ROW_FORMAT = Dynamic;
 
@@ -74,8 +74,8 @@ CREATE TABLE `dinky_alert_instance`  (
                                        `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'alert instance type such as: DingTalk,Wechat(Webhook,app) Feishu ,email',
                                        `params` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'configuration',
                                        `enabled` tinyint(4) NULL DEFAULT 1 COMMENT 'is enable',
-                                       `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                       `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                       `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                       `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                        PRIMARY KEY (`id`) USING BTREE,
                                        UNIQUE INDEX `alert_instance_un_idx1`(`name`, `tenant_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Alert instance' ROW_FORMAT = Dynamic;
@@ -97,8 +97,8 @@ CREATE TABLE `dinky_catalogue`  (
                                   `parent_id` int(11) NOT NULL DEFAULT 0 COMMENT 'parent ID',
                                   `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
                                   `is_leaf` tinyint(1) NOT NULL COMMENT 'is leaf node',
-                                  `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                  `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                   PRIMARY KEY (`id`) USING BTREE,
                                   UNIQUE INDEX `catalogue_un_idx1`(`name`, `parent_id`, `tenant_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'catalogue' ROW_FORMAT = Dynamic;
@@ -126,8 +126,8 @@ CREATE TABLE `dinky_cluster`  (
                                 `cluster_configuration_id` int(11) NULL DEFAULT NULL COMMENT 'cluster configuration id',
                                 `task_id` int(11) NULL DEFAULT NULL COMMENT 'task ID',
                                 `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                                `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                 PRIMARY KEY (`id`) USING BTREE,
                                 UNIQUE INDEX `cluster_un_idx1`(`name`, `tenant_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'cluster instance management' ROW_FORMAT = Dynamic;
@@ -149,8 +149,8 @@ CREATE TABLE `dinky_cluster_configuration`  (
                                               `is_available` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is available',
                                               `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'note',
                                               `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                                              `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                              `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                              `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                              `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                               PRIMARY KEY (`id`) USING BTREE,
                                               UNIQUE INDEX `cluster_configuration_un_idx1`(`name`, `tenant_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'cluster configuration management' ROW_FORMAT = Dynamic;
@@ -182,8 +182,8 @@ CREATE TABLE `dinky_database`  (
                                  `health_time` datetime(0) NULL DEFAULT NULL COMMENT 'last heartbeat time of trigger',
                                  `heartbeat_time` datetime(0) NULL DEFAULT NULL COMMENT 'last heartbeat time',
                                  `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                                 `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                 `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                 `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                 `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                  PRIMARY KEY (`id`) USING BTREE,
                                  UNIQUE INDEX `database_un_idx1`(`name`, `tenant_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'database management' ROW_FORMAT = Dynamic;
@@ -207,14 +207,15 @@ CREATE TABLE `dinky_flink_document`  (
                                        `version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'document version such as:(flink1.12,flink1.13,flink1.14,flink1.15)',
                                        `like_num` int(11) NULL DEFAULT 0 COMMENT 'like number',
                                        `enabled` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is enable',
-                                       `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                       `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update_time',
+                                       `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                       `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                        PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'flink document management' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of dinky_flink_document
 -- ----------------------------
+begin ;
 insert into `dinky_flink_document`  values (1, 'Variable', '优化参数', 'Batch/Streaming', 'set table.exec.async-lookup.buffer-capacity', '异步查找连接可以触发的最大异步操作的操作数。
 The max number of async i/o operation that the async lookup join can trigger.', 'Set ''table.exec.async-lookup.buffer-capacity''=''100'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2022-01-20 15:00:00');
 insert into `dinky_flink_document`  values (2, 'Variable', '优化参数', 'Batch/Streaming', 'set table.exec.async-lookup.timeout', '异步操作完成的超时时间。
@@ -1035,6 +1036,8 @@ WITH (
 )
 AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions', 0, 1, '2023-10-31 16:41:46', '2023-10-31 16:43:29');
 
+
+commit ;
 -- ----------------------------
 -- Table structure for dinky_fragment
 -- ----------------------------
@@ -1046,8 +1049,8 @@ CREATE TABLE `dinky_fragment`  (
                                  `fragment_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'fragment value',
                                  `note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'note',
                                  `enabled` tinyint(4) NULL DEFAULT 1 COMMENT 'is enable',
-                                 `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                 `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                 `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                 `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                  PRIMARY KEY (`id`) USING BTREE,
                                  UNIQUE INDEX `fragment_un_idx1`(`name`, `tenant_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'fragment management' ROW_FORMAT = Dynamic;
@@ -1103,7 +1106,7 @@ CREATE TABLE `dinky_job_history`  (
                                     `config_json` json NULL COMMENT 'configuration',
                                     `cluster_json` json NULL COMMENT 'cluster instance configuration',
                                     `cluster_configuration_json` json NULL COMMENT 'cluster config',
-                                    `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                    `update_time` datetime(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Job history details' ROW_FORMAT = Dynamic;
 
@@ -1125,8 +1128,8 @@ CREATE TABLE `dinky_job_instance`  (
                                      `jid` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Flink JobId',
                                      `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'job instance status',
                                      `history_id` int(11) NULL DEFAULT NULL COMMENT 'execution history ID',
-                                     `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                     `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                      `finish_time` datetime(0) NULL DEFAULT NULL COMMENT 'finish time',
                                      `duration` bigint(20) NULL DEFAULT NULL COMMENT 'job duration',
                                      `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'error logs',
@@ -1151,8 +1154,8 @@ CREATE TABLE `dinky_role`  (
                              `role_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'role name',
                              `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is delete',
                              `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'note',
-                             `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                             `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                             `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                             `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                              PRIMARY KEY (`id`) USING BTREE,
                              UNIQUE INDEX `role_un_idx1`(`role_code`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'role' ROW_FORMAT = Dynamic;
@@ -1174,7 +1177,7 @@ CREATE TABLE `dinky_savepoints`  (
                                    `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'task name',
                                    `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'savepoint type',
                                    `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'savepoint path',
-                                   `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
+                                   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'job savepoint management' ROW_FORMAT = Dynamic;
 
@@ -1190,8 +1193,8 @@ CREATE TABLE `dinky_sys_config`  (
                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                    `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'configuration name',
                                    `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'configuration value',
-                                   `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                   `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'system configuration' ROW_FORMAT = Dynamic;
 
@@ -1226,8 +1229,8 @@ CREATE TABLE `dinky_task`  (
                              `step` int(11) NULL DEFAULT 1 COMMENT 'Job lifecycle,',
                              `job_instance_id` bigint(20) NULL DEFAULT NULL COMMENT 'job instance id',
                              `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                             `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                             `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                             `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                             `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                              `version_id` int(11) NULL DEFAULT NULL COMMENT 'version id',
                              statement                text                 null,
                              PRIMARY KEY (`id`) USING BTREE,
@@ -1249,7 +1252,7 @@ CREATE TABLE `dinky_task_version`  (
                                      `dialect` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'dialect',
                                      `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'type',
                                      `task_configure` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'task configuration',
-                                     `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
+                                     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                      PRIMARY KEY (`id`) USING BTREE,
                                      UNIQUE INDEX `task_version_un_idx1`(`task_id`, `tenant_id`, `version_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'job history version' ROW_FORMAT = Dynamic;
@@ -1267,8 +1270,8 @@ CREATE TABLE `dinky_tenant`  (
                                `tenant_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'tenant code',
                                `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is delete',
                                `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'note',
-                               `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                               `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                               `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                               `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'tenant' ROW_FORMAT = Dynamic;
 
@@ -1297,8 +1300,8 @@ CREATE TABLE `dinky_udf`  (
                             `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'type',
                             `step` int(11) NULL DEFAULT NULL COMMENT 'job lifecycle step',
                             `enable` tinyint(1) NULL DEFAULT 1 COMMENT 'is enable',
-                            `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                            `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                            `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                            `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                             PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'udf' ROW_FORMAT = Dynamic;
 
@@ -1317,8 +1320,8 @@ CREATE TABLE `dinky_udf_template`  (
                                      `function_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'function type',
                                      `template_code` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'code',
                                      `enabled` tinyint(1) not null DEFAULT 1 COMMENT 'is enable',
-                                     `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                     `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                      PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'udf template' ROW_FORMAT = Dynamic;
 
@@ -1348,8 +1351,8 @@ CREATE TABLE `dinky_user` (
   `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'is enable',
   `super_admin_flag` tinyint DEFAULT '0' COMMENT 'is super admin(0:false,1true)',
   `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'is delete',
-  `create_time` datetime DEFAULT NULL COMMENT 'create time',
-  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='user';
 
@@ -1370,8 +1373,8 @@ CREATE TABLE `dinky_user_role`  (
                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                   `user_id` int(11) NOT NULL COMMENT 'user id',
                                   `role_id` int(11) NOT NULL COMMENT 'role id',
-                                  `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                  `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                   PRIMARY KEY (`id`) USING BTREE,
                                   UNIQUE INDEX `user_role_un_idx1`(`user_id`, `role_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Relationship between users and roles' ROW_FORMAT = Dynamic;
@@ -1390,8 +1393,8 @@ CREATE TABLE `dinky_user_tenant`  (
                                     `user_id` int(11) NOT NULL COMMENT 'user id',
                                     `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
                                     `tenant_admin_flag` tinyint DEFAULT '0' COMMENT 'tenant admin flag(0:false,1:true)',
-                                    `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                    `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                     PRIMARY KEY (`id`) USING BTREE,
                                     UNIQUE INDEX `user_tenant_un_idx1`(`user_id`, `tenant_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Relationship between users and tenants' ROW_FORMAT = Dynamic;
@@ -1413,7 +1416,7 @@ CREATE TABLE `metadata_column`  (
                                   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'column description',
                                   `table_id` int(11) NOT NULL COMMENT 'table id',
                                   `primary` bit(1) NULL DEFAULT NULL COMMENT 'table primary key',
-                                  `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                  `update_time` datetime(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                   `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time',
                                   PRIMARY KEY (`table_id`, `column_name`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'column informations' ROW_FORMAT = Dynamic;
@@ -1430,7 +1433,7 @@ CREATE TABLE `metadata_database`  (
                                     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
                                     `database_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'database name',
                                     `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'database description',
-                                    `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                    `update_time` datetime(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                     `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time',
                                     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'metadata of database information' ROW_FORMAT = Dynamic;
@@ -1447,7 +1450,7 @@ CREATE TABLE `metadata_database_property`  (
                                              `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'key',
                                              `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'value',
                                              `database_id` int(11) NOT NULL COMMENT 'database id',
-                                             `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                             `update_time` datetime(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                              `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time',
                                              PRIMARY KEY (`key`, `database_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'metadata of database configurations' ROW_FORMAT = Dynamic;
@@ -1466,7 +1469,7 @@ CREATE TABLE `metadata_function`  (
                                     `class_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'class name',
                                     `database_id` int(11) NOT NULL COMMENT 'database id',
                                     `function_language` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'function language',
-                                    `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                    `update_time` datetime(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                     `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time',
                                     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'UDF informations' ROW_FORMAT = Dynamic;
@@ -1485,7 +1488,7 @@ CREATE TABLE `metadata_table`  (
                                  `table_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'type，such as：database,table,view',
                                  `database_id` int(11) NOT NULL COMMENT 'database id',
                                  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'table description',
-                                 `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+                                 `update_time` datetime(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create time',
                                  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'metadata of table information' ROW_FORMAT = Dynamic;
@@ -1503,8 +1506,8 @@ CREATE TABLE `metadata_table_property`  (
                                           `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'key',
                                           `value` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'value',
                                           `table_id` int(11) NOT NULL COMMENT 'table id',
-                                          `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                                          `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT 'create tiime',
+                                          `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                          `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                           PRIMARY KEY (`key`, `table_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'metadata of table configurations' ROW_FORMAT = Dynamic;
 
@@ -1517,17 +1520,16 @@ CREATE TABLE `metadata_table_property`  (
 -- Table structure for dinky_row_permissions
 -- ----------------------------
 DROP TABLE IF EXISTS dinky_row_permissions;
-CREATE TABLE dinky_row_permissions
-(
-  id           int auto_increment comment 'ID'
-    primary key,
-  role_id      int      not null comment 'role id',
-  table_name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment 'table name',
-  expression varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment 'expression',
-  create_time  datetime null comment '创建时间',
-  update_time  datetime null comment '更新时间'
-)
-  COMMENT 'row permissions of select' COLLATE = utf8mb4_general_ci;
+CREATE TABLE `dinky_row_permissions` (
+                                         `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+                                         `role_id` int NOT NULL COMMENT 'role id',
+                                         `table_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'table name',
+                                         `expression` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'expression',
+                                         `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                         `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                         PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='row permissions of select';
+
 
 
 -- ----------------------------
@@ -1624,9 +1626,9 @@ CREATE TABLE `dinky_sys_login_log` (
   `ip` varchar(40) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ip addr',
   `status` int NOT NULL COMMENT 'login status',
   `msg` text COLLATE utf8mb4_general_ci NOT NULL COMMENT 'status msg',
-  `create_time` datetime NOT NULL COMMENT 'create time',
   `access_time` datetime DEFAULT NULL COMMENT 'access time',
-  `update_time` datetime NOT NULL,
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='system login log record';
@@ -1845,32 +1847,35 @@ CREATE TABLE `dinky_sys_role_menu` (
 -- Table structure dinky_sys_alert
 -- ----------------------------
 drop table if exists `dinky_alert_template`;
-create table if not exists dinky_alert_template
-(
-    id               int auto_increment
-        primary key  COMMENT 'id',
-    name             varchar(20)    unicode    COMMENT 'template name',
-    template_content text              null COMMENT 'template content',
-    enabled          tinyint default 1 null COMMENT 'is enable',
-    create_time      datetime          null COMMENT 'create time',
-    update_time      datetime          null COMMENT 'update time'
-);
+CREATE TABLE `dinky_alert_template` (
+                                        `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                        `name` varchar(20) CHARACTER SET ucs2 COLLATE ucs2_general_ci DEFAULT NULL COMMENT 'template name',
+                                        `template_content` text COLLATE utf8mb4_general_ci COMMENT 'template content',
+                                        `enabled` tinyint DEFAULT '1' COMMENT 'is enable',
+                                        `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                        `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                        PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 
 drop table if exists `dinky_alert_rules`;
-create table if not exists dinky_alert_rules
-(
-    id                 int auto_increment
-        primary key comment 'id',
-    name               varchar(40)  unique     not null comment 'rule name',
-    rule               text              null comment 'specify rule',
-    template_id        int               null comment 'template id',
-    rule_type          varchar(10)       null comment 'alert rule type',
-    trigger_conditions varchar(20)       null comment 'trigger conditions',
-    description        text              null comment 'description',
-    enabled            tinyint default 1 null comment 'is enable',
-    create_time        datetime          null comment 'create time',
-    update_time        datetime          null comment 'update time'
-);
+CREATE TABLE `dinky_alert_rules` (
+                                     `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                     `name` varchar(40) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'rule name',
+                                     `rule` text COLLATE utf8mb4_general_ci COMMENT 'specify rule',
+                                     `template_id` int DEFAULT NULL COMMENT 'template id',
+                                     `rule_type` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'alert rule type',
+                                     `trigger_conditions` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'trigger conditions',
+                                     `description` text COLLATE utf8mb4_general_ci COMMENT 'description',
+                                     `enabled` tinyint DEFAULT '1' COMMENT 'is enable',
+                                     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                     PRIMARY KEY (`id`),
+                                     UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 
 
 
@@ -1893,9 +1898,11 @@ INSERT INTO dinky_alert_template VALUES (1, 'Default', '
 - **End Time :** ${endTime}
 - **<font color=''red''>${(exceptions.rootException)?substring(0,20)}</font>**
 [Go toTask Web](http://${taskUrl})
-', 1, null, null);
+', 1, current_timestamp(), current_timestamp());
 
+commit;
 
+drop table if exists `dinky_udf_manage`;
 CREATE TABLE `dinky_udf_manage` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `name` varchar(50) DEFAULT NULL COMMENT 'udf name',
@@ -1903,8 +1910,8 @@ CREATE TABLE `dinky_udf_manage` (
                                     `task_id` int(11) DEFAULT NULL COMMENT 'task id',
                                     `resources_id` int(11) DEFAULT NULL COMMENT 'resources id',
                                     `enabled` tinyint(1) DEFAULT 1 COMMENT 'is enable',
-                                    `create_time` datetime DEFAULT NULL COMMENT 'create time',
-                                    `update_time` datetime DEFAULT NULL COMMENT 'update time',
+                                    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                     PRIMARY KEY (`id`) USING BTREE,
                                     KEY `name,resources_id` (`name`,`resources_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='udf';
@@ -1922,8 +1929,8 @@ CREATE TABLE `dinky_sys_token` (
    `expire_type` tinyint(4) NOT NULL COMMENT '1: never expire, 2: expire after a period of time, 3: expire at a certain time',
    `expire_start_time` datetime DEFAULT NULL COMMENT 'expire start time ,when expire_type = 3 , it is the start time of the period',
    `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
-   `create_time` datetime NOT NULL COMMENT 'create time',
-   `update_time` datetime NOT NULL COMMENT 'modify time',
+   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
    `creator` bigint(20) DEFAULT NULL COMMENT '创建人',
    `updator` bigint(20) DEFAULT NULL COMMENT '修改人',
    `source` tinyint(2) DEFAULT NULL COMMENT '1:login 2:custom',
@@ -1932,5 +1939,4 @@ CREATE TABLE `dinky_sys_token` (
    KEY `source` (`source`) USING HASH
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COMMENT='token management';
 
-COMMIT;
 SET FOREIGN_KEY_CHECKS = 1;

@@ -17,22 +17,27 @@
  *
  */
 
-import { getDataByParams, queryDataByParams } from '@/services/BusinessCrud';
+package org.dinky.data.vo.suggestion;
 
-export function getSessionData() {
-  return queryDataByParams('api/cluster/listSessionEnable');
-}
-export function getEnvData() {
-  return queryDataByParams('/api/task/listFlinkSQLEnv');
-}
-export function getClusterConfigurationData() {
-  return queryDataByParams('/api/clusterConfiguration/listEnabledAll');
-}
+import java.io.Serializable;
 
-export function getFlinkConfigs() {
-  return queryDataByParams('/api/flinkConf/configOptions');
-}
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-export function querySuggessionData(params: any) {
-  return getDataByParams('/api/suggestion/queryAllSuggestions', params);
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class SuggestionLabelVO implements Serializable {
+
+    private static final long serialVersionUID = 4631906403475634212L;
+
+    // label
+    private String label;
+    // value
+    private String detail;
+    // description
+    private String description;
 }
