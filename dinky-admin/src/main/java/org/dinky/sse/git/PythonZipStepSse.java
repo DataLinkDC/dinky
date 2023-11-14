@@ -64,7 +64,7 @@ public class PythonZipStepSse extends StepSse {
 
     private String uploadResources(File zipFile, GitProject gitProject) {
         ResourcesService resourcesService = SpringUtil.getBean(ResourcesService.class);
-        TreeNodeDTO gitFolder = resourcesService.createFolderOrGet(0, "git", "");
+        TreeNodeDTO gitFolder = resourcesService.createFolderOrGet(1, "git", "");
         TreeNodeDTO treeNodeDTO =
                 resourcesService.createFolderOrGet(Convert.toInt(gitFolder.getId()), gitProject.getName(), "");
         resourcesService.uploadFile(Convert.toInt(treeNodeDTO.getId()), "", zipFile);

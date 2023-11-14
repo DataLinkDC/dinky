@@ -52,7 +52,7 @@ const JsonToSql: React.FC = (props: connect) => {
             height={maxHeight + 'px'}
             code={jsonData}
             language={'json'}
-            onChange={(x:string) => {
+            onChange={(x: string) => {
               setJsonData(x ?? '');
             }}
           />

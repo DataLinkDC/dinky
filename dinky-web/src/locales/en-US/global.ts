@@ -20,6 +20,7 @@
 export default {
   'button.create': 'Create',
   'button.close': 'Close',
+  'button.daemon': 'Daemon Mode',
   'button.confirm': 'Confirm',
   'button.recovery': 'Recovery',
   'button.cancel': 'Cancel',

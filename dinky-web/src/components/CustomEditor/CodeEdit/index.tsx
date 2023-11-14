@@ -127,16 +127,21 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
       resolveCompletionItem: (item: CompletionItem) => {
         return {
           ...item,
-          detail: item.detail ?? `-- ${item.detail}`
+          detail: item.detail
         };
       }
     });
   }
 
+  // editorInstance?.current?.onDidChangeModelContent?.(() => {
+  //   console.log(editorInstance?.current, 'editorInstance')
+  //   editorInstance?.current?.trigger('action', 'editor.action.triggerSuggest');
+  // });
+
   /**
    *  editorDidMount
    * @param {editor.IStandaloneCodeEditor} editor
-   * @param monaco
+   * @param monacoIns
    */
   const editorDidMountChange = (editor: editor.IStandaloneCodeEditor, monacoIns: Monaco) => {
     if (editorRef?.current && monacoRef?.current && editorDidMount) {
@@ -214,6 +219,8 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     showFoldingControls: 'always', // 代码折叠控件 'always' | 'mouseover' | 'never'
     automaticLayout: true, // 自动布局
     readOnly, // 是否只读
+    glyphMargin: true, // 字形边缘
+    formatOnType: true, // 代码格式化
     wrappingIndent:
       language === 'yaml' || language === 'yml' || language === 'json' ? 'indent' : 'none',
     inlineSuggest: {
@@ -223,8 +230,8 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
       allowQuickSuggestions: true,
       showOnAllSymbols: true
     },
-    inlineSuggestionVisible: true,
-    quickSuggestions: true,
+    // inlineSuggestionVisible: true,
+    quickSuggestions: enableSuggestions,
     guides: {
       bracketPairs: true
     },
@@ -234,12 +241,15 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     },
     foldingRanges: true,
     inlineCompletionsAccessibilityVerbose: true,
+    smartSelect: {
+      selectLeadingAndTrailingWhitespace: true,
+      selectSubwords: true
+    },
     suggest: {
-      shareSuggestSelections: true,
-      quickSuggestions: true,
+      quickSuggestions: enableSuggestions,
       showStatusBar: true,
       preview: true,
-      previewMode: 'preview',
+      previewMode: 'subword',
       showInlineDetails: true,
       showMethods: true,
       showFunctions: true,
@@ -280,6 +290,11 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     <>
       <div className={'monaco-float'}>
         <Editor
+          beforeMount={(monaco: Monaco) => {
+            if (!monacoInstance?.current) {
+              monacoInstance.current = monaco;
+            }
+          }}
           width={width}
           height={height}
           value={code}

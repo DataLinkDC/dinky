@@ -66,7 +66,7 @@ public class GetJarsStepSse extends StepSse {
         GitProject gitProject = (GitProject) params.get("gitProject");
 
         ResourcesService resourcesService = SpringUtil.getBean(ResourcesService.class);
-        TreeNodeDTO gitFolder = resourcesService.createFolderOrGet(0, "git", "");
+        TreeNodeDTO gitFolder = resourcesService.createFolderOrGet(1, "git", "");
         TreeNodeDTO treeNodeDTO =
                 resourcesService.createFolderOrGet(Convert.toInt(gitFolder.getId()), gitProject.getName(), "");
         return jars.stream()

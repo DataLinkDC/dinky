@@ -542,7 +542,7 @@ const Model: ModelType = {
      * 更新底部高度
      */
     updateBottomHeight(state, { payload }) {
-      if (payload!=state.bottomContainer.height) {
+      if (payload != state.bottomContainer.height) {
         return {
           ...state,
           bottomContainer: {

@@ -21,12 +21,12 @@ import {
   DIFF_EDITOR_PARAMS,
   PARAM_DIFF_TABLE_COL
 } from '@/pages/DataStudio/MiddleContainer/Editor/constants';
+import { convertCodeEditTheme } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { DiffEditor } from '@monaco-editor/react';
 import { Col, Modal, Row, Space, Table, Tabs, Typography } from 'antd';
 import React from 'react';
 import styles from './index.less';
-import {convertCodeEditTheme} from "@/utils/function";
 
 const { Text, Link } = Typography;
 

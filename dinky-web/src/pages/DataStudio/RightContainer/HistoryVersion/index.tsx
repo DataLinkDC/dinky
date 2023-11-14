@@ -23,6 +23,7 @@ import { StateType } from '@/pages/DataStudio/model';
 import { handleOption, handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { TaskVersionListItem } from '@/types/Studio/data';
+import { convertCodeEditTheme } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { RocketOutlined, SyncOutlined } from '@ant-design/icons';
@@ -31,7 +32,6 @@ import { Button, Card, Modal, Tag } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import {convertCodeEditTheme} from "@/utils/function";
 
 const HistoryVersion = (props: any) => {
   const {
