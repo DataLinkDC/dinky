@@ -23,6 +23,7 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.service.resource.impl.HdfsResourceManager;
 import org.dinky.service.resource.impl.OssResourceManager;
 
+import java.io.File;
 import java.io.InputStream;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +39,7 @@ public interface BaseResourceManager {
     void rename(String path, String newPath);
 
     void putFile(String path, MultipartFile file);
+    void putFile(String path, File file);
 
     String getFileContent(String path);
 
