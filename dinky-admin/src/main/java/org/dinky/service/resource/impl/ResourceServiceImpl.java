@@ -83,7 +83,9 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         long count = count(
                 new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
         if (count > 0) {
-            resources = getOne(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
+            resources = getOne(new LambdaQueryWrapper<Resources>()
+                    .eq(Resources::getPid, pid)
+                    .eq(Resources::getFileName, fileName));
         } else {
             resources = new Resources();
             resources.setPid(pid);
@@ -218,7 +220,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
      * @param pResource pResource
      * @param size size
      */
-    private void upload(Integer pid, String desc, Consumer<String> uploadAction, String fileName, Resources pResource, long size) {
+    private void upload(
+            Integer pid, String desc, Consumer<String> uploadAction, String fileName, Resources pResource, long size) {
         Resources currentUploadResource = getOne(
                 new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
         String fullName;
@@ -267,8 +270,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     public boolean remove(Integer id) {
         Assert.isFalse(
                 Opt.ofNullable(getById(id))
-                        .orElseThrow(() -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST))
-                        .getPid()
+                                .orElseThrow(() -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST))
+                                .getPid()
                         == -1,
                 () -> new BusException(Status.ROOT_DIR_NOT_ALLOW_DELETE));
         try {

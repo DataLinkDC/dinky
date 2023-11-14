@@ -39,6 +39,7 @@ public interface BaseResourceManager {
     void rename(String path, String newPath);
 
     void putFile(String path, MultipartFile file);
+
     void putFile(String path, File file);
 
     String getFileContent(String path);

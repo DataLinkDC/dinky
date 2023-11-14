@@ -58,8 +58,8 @@ public class AnalysisUdfPythonStepSse extends StepSse {
         } catch (ClassNotFoundException e) {
             throw new DinkyException("flink dependency not found");
         }
-        List<String> pythonUdfList = UDFUtil.getPythonUdfList(
-                SystemConfiguration.getInstances().getPythonHome(), zipFile.getAbsolutePath());
+        List<String> pythonUdfList =
+                UDFUtil.getPythonUdfList(SystemConfiguration.getInstances().getPythonHome(), zipFile.getAbsolutePath());
         GitAnalysisJarDTO gitAnalysisJarDTO = new GitAnalysisJarDTO();
         gitAnalysisJarDTO.setJarPath(zipFile.getAbsolutePath());
         gitAnalysisJarDTO.setClassList(pythonUdfList);

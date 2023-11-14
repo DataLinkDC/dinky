@@ -19,15 +19,11 @@
 
 package org.dinky.sse.git;
 
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.extra.spring.SpringUtil;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.GitProject;
 import org.dinky.service.resource.ResourcesService;
 import org.dinky.sse.StepSse;
 import org.dinky.utils.MavenUtil;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.File;
 import java.util.List;
@@ -35,13 +31,25 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.extra.spring.SpringUtil;
+
 /**
  * @author ZackYoung
  * @since 0.8.0
  */
 public class GetJarsStepSse extends StepSse {
 
-    public GetJarsStepSse(int sleep, List<SseEmitter> emitterList, Dict params, AtomicInteger msgId, AtomicInteger stepAtomic, ExecutorService cachedThreadPool) {
+    public GetJarsStepSse(
+            int sleep,
+            List<SseEmitter> emitterList,
+            Dict params,
+            AtomicInteger msgId,
+            AtomicInteger stepAtomic,
+            ExecutorService cachedThreadPool) {
         super("get jars", sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
     }
 
@@ -60,9 +68,9 @@ public class GetJarsStepSse extends StepSse {
         GitProject gitProject = (GitProject) params.get("gitProject");
 
         ResourcesService resourcesService = SpringUtil.getBean(ResourcesService.class);
-        TreeNodeDTO gitFolder = resourcesService.createFolderOrGet(0, "git" , "");
-        TreeNodeDTO treeNodeDTO = resourcesService.createFolderOrGet(Convert.toInt(gitFolder.getId()), gitProject.getName() , "");
+        TreeNodeDTO gitFolder = resourcesService.createFolderOrGet(0, "git", "");
+        TreeNodeDTO treeNodeDTO =
+                resourcesService.createFolderOrGet(Convert.toInt(gitFolder.getId()), gitProject.getName(), "");
         jars.forEach(f -> resourcesService.uploadFile(Convert.toInt(treeNodeDTO.getId()), "", f));
-
     }
 }

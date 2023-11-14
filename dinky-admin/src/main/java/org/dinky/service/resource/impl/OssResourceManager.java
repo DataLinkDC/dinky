@@ -19,7 +19,6 @@
 
 package org.dinky.service.resource.impl;
 
-import cn.hutool.core.io.FileUtil;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.service.resource.BaseResourceManager;
@@ -33,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 
 public class OssResourceManager implements BaseResourceManager {
@@ -68,7 +68,8 @@ public class OssResourceManager implements BaseResourceManager {
     @Override
     public void putFile(String path, File file) {
         try {
-            getOssTemplate().putObject(getOssTemplate().getBucketName(), getFilePath(path), FileUtil.getInputStream(file));
+            getOssTemplate()
+                    .putObject(getOssTemplate().getBucketName(), getFilePath(path), FileUtil.getInputStream(file));
         } catch (Exception e) {
             throw new DinkyException(e);
         }

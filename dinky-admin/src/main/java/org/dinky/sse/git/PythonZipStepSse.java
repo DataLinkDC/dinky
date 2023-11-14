@@ -19,8 +19,6 @@
 
 package org.dinky.sse.git;
 
-import cn.hutool.core.convert.Convert;
-import cn.hutool.extra.spring.SpringUtil;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.GitProject;
 import org.dinky.service.resource.ResourcesService;
@@ -28,7 +26,6 @@ import org.dinky.sse.StepSse;
 import org.dinky.utils.GitRepository;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -36,9 +33,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.ZipUtil;
+import cn.hutool.extra.spring.SpringUtil;
 
 public class PythonZipStepSse extends StepSse {
     public PythonZipStepSse(
@@ -62,11 +61,12 @@ public class PythonZipStepSse extends StepSse {
         params.put("zipFile", zipFile);
         params.put("projectFile", file);
     }
-    private void uploadResources(List<File> jars,GitProject gitProject) {
-        ResourcesService resourcesService = SpringUtil.getBean(ResourcesService.class);
-        TreeNodeDTO gitFolder = resourcesService.createFolderOrGet(0, "git" , "");
-        TreeNodeDTO treeNodeDTO = resourcesService.createFolderOrGet(Convert.toInt(gitFolder.getId()), gitProject.getName() , "");
-        jars.forEach(f -> resourcesService.uploadFile(Convert.toInt(treeNodeDTO.getId()), "", f));
 
+    private void uploadResources(List<File> jars, GitProject gitProject) {
+        ResourcesService resourcesService = SpringUtil.getBean(ResourcesService.class);
+        TreeNodeDTO gitFolder = resourcesService.createFolderOrGet(0, "git", "");
+        TreeNodeDTO treeNodeDTO =
+                resourcesService.createFolderOrGet(Convert.toInt(gitFolder.getId()), gitProject.getName(), "");
+        jars.forEach(f -> resourcesService.uploadFile(Convert.toInt(treeNodeDTO.getId()), "", f));
     }
 }

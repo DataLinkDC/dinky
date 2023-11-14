@@ -19,7 +19,6 @@
 
 package org.dinky.service.resource.impl;
 
-import cn.hutool.core.io.FileUtil;
 import org.dinky.data.exception.BusException;
 import org.dinky.service.resource.BaseResourceManager;
 
@@ -33,6 +32,7 @@ import java.io.InputStream;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 
 public class HdfsResourceManager implements BaseResourceManager {
