@@ -23,6 +23,7 @@ export default {
   'button.create': '新建',
   'button.recovery': '恢复',
   'button.close': '关闭',
+  'button.daemon': '后台运行',
   'button.confirm': '确定',
   'button.cancel': '取消',
   'button.finish': '完成',
