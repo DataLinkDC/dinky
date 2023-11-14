@@ -46,7 +46,6 @@ export type CodeEditFormProps = {
   code: string;
   readOnly?: boolean;
   lineNumbers?: string;
-  theme?: string;
   autoWrap?: string;
   showFloatButton?: boolean;
   editorDidMount?: (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => void;

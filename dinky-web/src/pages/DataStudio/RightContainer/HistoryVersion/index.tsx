@@ -31,6 +31,7 @@ import { Button, Card, Modal, Tag } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
+import {convertCodeEditTheme} from "@/utils/function";
 
 const HistoryVersion = (props: any) => {
   const {
@@ -93,9 +94,9 @@ const HistoryVersion = (props: any) => {
               automaticLayout: true
             }}
             language={'sql'}
-            theme={'vs-dark'}
             original={originalValue}
             modified={currentValue}
+            theme={convertCodeEditTheme()}
           />
         </React.StrictMode>
       </Modal>
