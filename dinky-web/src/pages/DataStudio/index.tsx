@@ -225,7 +225,11 @@ const DataStudio = (props: any) => {
 
             <Content style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div style={{ display: 'flex' }}>
-                <LeftContainer size={size} leftContainer={leftContainer} rightContainer={rightContainer}  />
+                <LeftContainer
+                  size={size}
+                  leftContainer={leftContainer}
+                  rightContainer={rightContainer}
+                />
                 <Content
                   style={{
                     width:
