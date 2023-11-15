@@ -39,10 +39,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -55,8 +54,7 @@ import cn.hutool.core.util.StrUtil;
  *
  * @since 2022/2/2 22:22
  */
-@ControllerAdvice
-@ResponseBody
+@RestControllerAdvice
 public class WebExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(WebExceptionHandler.class);

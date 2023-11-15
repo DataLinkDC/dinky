@@ -51,7 +51,10 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import cn.hutool.core.collection.CollectionUtil;
 
 /**
  * DataBaseServiceImpl
@@ -307,5 +310,26 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         }
         result.setEndTime(LocalDateTime.now());
         return result;
+    }
+
+    /**
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<DataBase> selectListByKeyWord(String keyword) {
+
+        List<DataBase> dataBaseList = getBaseMapper()
+                .selectList(new LambdaQueryWrapper<DataBase>()
+                        .like(DataBase::getName, keyword)
+                        .or()
+                        .like(DataBase::getNote, keyword));
+
+        if (CollectionUtil.isNotEmpty(dataBaseList)) {
+            for (DataBase data : dataBaseList) {
+                data.setPassword(null);
+            }
+        }
+        return dataBaseList;
     }
 }

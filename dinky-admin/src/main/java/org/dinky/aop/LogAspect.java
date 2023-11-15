@@ -20,7 +20,7 @@
 package org.dinky.aop;
 
 import org.dinky.context.UserInfoContextHolder;
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.enums.BusinessStatus;
 import org.dinky.data.model.OperateLog;
 import org.dinky.data.model.User;
@@ -63,7 +63,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class LogAspect {
 
-    @Pointcut("@annotation(org.dinky.data.annotation.Log)")
+    @Pointcut("@annotation(org.dinky.data.annotations.Log)")
     public void logPointCut() {}
 
     /**

@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -29,15 +29,19 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { GitProject } from '@/types/RegCenter/data.d';
 import { InitGitBuildStepsState } from '@/types/RegCenter/init.d';
 import { GitBuildStepsState } from '@/types/RegCenter/state.d';
-import { Modal } from 'antd';
+import { l } from '@/utils/intl';
+import { Button, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 /**
  * props
  */
 type BuildStepsProps = {
-  onCancel: (flag?: boolean) => void;
+  onOk: (flag?: boolean) => void;
+  onReTry?: () => void;
+  onRebuild: () => void;
   title: string;
+  showLog?: boolean;
   values: Partial<GitProject>;
 };
 
@@ -45,7 +49,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
   /**
    * extract props
    */
-  const { onCancel: handleModalVisible, title, values } = props;
+  const { onOk: handleModalVisible, onReTry, showLog = false, onRebuild, title, values } = props;
   // todo: refactor this
   const [buildStepState, setBuildStepState] = useState<GitBuildStepsState>(InitGitBuildStepsState);
 
@@ -88,7 +92,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
         // type  // 1是总状态  2是log  3是部分状态
         // status // 0是失败 1是进行中 2 完成
         let result = JSON.parse(e.data);
-        const { currentStep, type, data, status, history } = result;
+        const { currentStep, type, data, status } = result;
         lastStep = currentStep;
 
         if (type === 0) {
@@ -171,18 +175,67 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     handleModalVisible();
   };
 
+  // todo: 重试需要实现在不关闭弹窗的情况下，重新构建, 目前是关闭弹窗，重新打开，重新构建
+  const handleReTry = () => {
+    onReTry?.();
+  };
+
+  const footerButtons = [
+    <Button
+      key={'retry'}
+      type={'primary'}
+      danger
+      hidden={!onReTry}
+      disabled={steps[currentStep - 1]?.status !== 'error'}
+      onClick={() => handleReTry()}
+    >
+      {l('button.retry')}
+    </Button>,
+    <Button
+      key={'rebuild'}
+      type={'dashed'}
+      hidden={showLog}
+      loading={currentStep !== steps.length && percent !== 99}
+      disabled={onReTry && steps[currentStep - 1]?.status === 'error'}
+      onClick={() => onRebuild()}
+    >
+      {l('button.rebuild')}
+    </Button>,
+    <Button
+      key={'close'}
+      type={'primary'}
+      hidden={!showLog}
+      danger={showLog}
+      onClick={() => handleCancel()}
+    >
+      {l('button.close')}
+    </Button>,
+    <Button
+      key={'finish'}
+      type={'primary'}
+      hidden={showLog}
+      disabled={steps[currentStep - 1]?.status === 'error' && percent !== 99}
+      loading={currentStep !== steps.length && percent !== 99}
+      onClick={() => handleCancel()}
+    >
+      {l('button.finish')}
+    </Button>,
+    <Button
+      key={'daemon'}
+      hidden={!(currentStep !== steps.length && percent !== 99) || showLog}
+      onClick={() => handleCancel()}
+    >
+      {steps[currentStep - 1]?.status === 'error' && percent !== 99
+        ? l('button.close')
+        : l('button.daemon')}
+    </Button>
+  ];
+
   /**
    * render
    */
   return (
-    <Modal
-      title={title}
-      width={'85%'}
-      open={true}
-      maskClosable={false}
-      onCancel={() => handleCancel()}
-      okButtonProps={{ style: { display: 'none' } }}
-    >
+    <Modal title={title} width={'85%'} open={true} maskClosable={false} footer={footerButtons}>
       <AutoSteps
         steps={steps}
         percent={percent}

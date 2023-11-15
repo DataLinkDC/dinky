@@ -378,9 +378,12 @@ public class UDFUtil {
         return getPythonUdfList(SystemConfiguration.getInstances().getPythonHome(), udfFile);
     }
 
+    private static final String PYTHON_FUNC_FILE_MD5 =
+            MD5.create().digestHex(ResourceUtil.readUtf8Str("getPyFuncList.py"));
+
     public static List<String> getPythonUdfList(String pythonPath, String udfFile) {
         File checkFile = new File(PathConstant.TMP_PATH, "getPyFuncList.py");
-        if (!checkFile.exists()) {
+        if (!checkFile.exists() || !MD5.create().digestHex(checkFile).equals(PYTHON_FUNC_FILE_MD5)) {
             FileUtil.writeUtf8String(ResourceUtil.readUtf8Str("getPyFuncList.py"), checkFile);
         }
         List<String> udfNameList = execPyAndGetUdfNameList(pythonPath, checkFile.getAbsolutePath(), udfFile);
@@ -394,7 +397,7 @@ public class UDFUtil {
                 continue;
             }
             Configuration configuration = new Configuration();
-            configuration.set(PythonOptions.PYTHON_FILES, udfFile + ".zip");
+            configuration.set(PythonOptions.PYTHON_FILES, udfFile);
             configuration.set(PythonOptions.PYTHON_CLIENT_EXECUTABLE, pythonPath);
             configuration.set(PythonOptions.PYTHON_EXECUTABLE, pythonPath);
             try {
@@ -413,7 +416,7 @@ public class UDFUtil {
             String shell =
                     StrUtil.join(" ", Arrays.asList(Opt.ofBlankAble(pyPath).orElse("python3"), pyFile, checkPyFile));
 
-            return StrUtil.split(RuntimeUtil.execForStr(shell), ",");
+            return StrUtil.split(StrUtil.trim(RuntimeUtil.execForStr(shell)), ",");
         } catch (Exception e) {
             throw new DinkyException(e);
         }

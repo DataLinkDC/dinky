@@ -18,12 +18,17 @@
  */
 
 export default {
+  'button.check': 'Check',
+  'button.graph': 'DAG',
   'button.create': 'Create',
   'button.close': 'Close',
+  'button.daemon': 'Daemon Mode',
   'button.confirm': 'Confirm',
   'button.recovery': 'Recovery',
   'button.cancel': 'Cancel',
   'button.finish': 'Finish',
+  'button.retry': 'Retry',
+  'button.rebuild': 'Re Build',
   'button.back': 'Back',
   'button.save': 'Save',
   'button.delete': 'Delete',

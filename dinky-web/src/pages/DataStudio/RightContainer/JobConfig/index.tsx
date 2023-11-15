@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -131,11 +131,21 @@ const JobConfig = (props: any) => {
   ) : (
     <ProFormSelect
       style={{ width: '100%' }}
-      placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
+      placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+        type: current?.type
+      })}
       label={l('pages.datastudio.label.jobConfig.cluster')}
       tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
         type: current?.type
       })}
+      rules={[
+        {
+          required: true,
+          message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+            type: current?.type
+          })
+        }
+      ]}
       name='clusterId'
       options={buildClusterOptions(sessionCluster)}
       fieldProps={{
@@ -150,10 +160,10 @@ const JobConfig = (props: any) => {
         size={'middle'}
         initialValues={{
           type: RUN_MODE.LOCAL,
-          envId: 0,
+          envId: -1,
           parallelism: 1,
           savePointStrategy: 0,
-          alertGroupId: 0
+          alertGroupId: -1
         }}
         className={'data-studio-form'}
         style={{ paddingInline: '15px', overflow: 'scroll' }}
@@ -166,6 +176,7 @@ const JobConfig = (props: any) => {
           name='type'
           label={l('global.table.execmode')}
           tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
+          rules={[{ required: true, message: l('pages.datastudio.label.jobConfig.execmode.tip') }]}
           options={buildRunModelOptions()}
         />
 
@@ -183,9 +194,12 @@ const JobConfig = (props: any) => {
             name='clusterConfigurationId'
             placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip2')}
             label={l('pages.datastudio.label.jobConfig.clusterConfig')}
-            tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+            tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip2', '', {
               type: current?.type
             })}
+            rules={[
+              { required: true, message: l('pages.datastudio.label.jobConfig.clusterConfig.tip2') }
+            ]}
             options={buildClusterConfigOptions(current, clusterConfiguration)}
           />
         )}
@@ -195,6 +209,9 @@ const JobConfig = (props: any) => {
           label={l('pages.datastudio.label.jobConfig.flinksql.env')}
           tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
           options={buildEnvOptions(env)}
+          rules={[
+            { required: true, message: l('pages.datastudio.label.jobConfig.flinksql.env.tip1') }
+          ]}
           showSearch
         />
 

@@ -43,7 +43,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
-/** AlertGroupServiceImpl */
+/**
+ * AlertGroupServiceImpl
+ */
 @Service
 @RequiredArgsConstructor
 public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup> implements AlertGroupService {
@@ -99,5 +101,18 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
                 .list(new LambdaQueryWrapper<AlertHistory>().eq(AlertHistory::getAlertGroupId, id))
                 .forEach(alertHistory -> alertHistoryService.removeById(alertHistory.getId()));
         return removeById(id);
+    }
+
+    /**
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<AlertGroup> selectListByKeyWord(String keyword) {
+        return getBaseMapper()
+                .selectList(new LambdaQueryWrapper<>(AlertGroup.class)
+                        .like(AlertGroup::getName, keyword)
+                        .or()
+                        .like(AlertGroup::getNote, keyword));
     }
 }

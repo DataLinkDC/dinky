@@ -19,11 +19,13 @@
 
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import { BackIcon } from '@/components/Icons/CustomIcons';
 import UDFRegisterModal from '@/pages/RegCenter/UDF/components/UDFRegister/UDFRegisterModal';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { UDFRegisterInfo, UDFRegisterInfoParent } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/plugin-request';
+import { SaveTwoTone } from '@ant-design/icons';
 import { ProColumns } from '@ant-design/pro-components';
 import ProTable, { ActionType } from '@ant-design/pro-table';
 import React, { Key, useEffect, useRef, useState } from 'react';
@@ -182,6 +184,8 @@ const UDFRegister: React.FC<UDFRegisterProps> = (props) => {
         editable={{
           deleteText: false,
           type: 'single',
+          saveText: <SaveTwoTone title={l('button.save')} />,
+          cancelText: <BackIcon title={l('button.back')} />,
           editableKeys: udfRegisterState.editableKeys,
           onChange: editableKeysChange,
           onSave: async (_, row) => handleOnSave(row),

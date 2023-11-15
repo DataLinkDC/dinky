@@ -19,7 +19,12 @@
 
 package org.dinky.utils;
 
-import org.dinky.data.vo.MetricsVO;
+import static org.dinky.data.constant.PaimonTableConstant.DINKY_DB;
+
+import org.dinky.data.annotations.paimon.Option;
+import org.dinky.data.annotations.paimon.Options;
+import org.dinky.data.annotations.paimon.PartitionKey;
+import org.dinky.data.annotations.paimon.PrimaryKey;
 import org.dinky.function.constant.PathConstant;
 
 import org.apache.paimon.catalog.Catalog;
@@ -29,6 +34,7 @@ import org.apache.paimon.catalog.Identifier;
 import org.apache.paimon.data.BinaryRow;
 import org.apache.paimon.data.BinaryRowWriter;
 import org.apache.paimon.data.BinaryString;
+import org.apache.paimon.data.BinaryWriter;
 import org.apache.paimon.data.InternalRow;
 import org.apache.paimon.data.Timestamp;
 import org.apache.paimon.fs.Path;
@@ -44,20 +50,26 @@ import org.apache.paimon.table.sink.CommitMessage;
 import org.apache.paimon.table.source.ReadBuilder;
 import org.apache.paimon.table.source.Split;
 import org.apache.paimon.table.source.TableRead;
-import org.apache.paimon.types.DataTypes;
+import org.apache.paimon.types.DataField;
+import org.apache.paimon.types.DataType;
+import org.apache.paimon.types.DataTypeRoot;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import cn.hutool.cache.Cache;
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ModifierUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
@@ -66,12 +78,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PaimonUtil {
-    private static final String DINKY_DB = "dinky_db";
-    private static final Map<Identifier, Schema> SCHEMA_MAP = new HashMap<>();
+    private static final Cache<Class<?>, Schema> SCHEMA_CACHE = CacheUtil.newLRUCache(100);
     private static final CatalogContext CONTEXT =
             CatalogContext.create(new Path(URLUtil.toURI(URLUtil.url(PathConstant.TMP_PATH + "paimon"))));
     private static final Catalog CATALOG = CatalogFactory.createCatalog(CONTEXT);
-    public static final Identifier METRICS_IDENTIFIER = Identifier.create(DINKY_DB, "dinky_metrics");
 
     static {
         try {
@@ -79,47 +89,55 @@ public class PaimonUtil {
         } catch (Catalog.DatabaseAlreadyExistException e) {
             throw new RuntimeException(e);
         }
-        Map<String, String> options = new HashMap<>();
-        options.put("partition.expiration-time", "7d");
-        options.put("partition.expiration-check-interval", "1d");
-        options.put("partition.timestamp-formatter", "yyyy-MM-dd");
-        options.put("partition.timestamp-pattern", "$date");
-        options.put("file.format", "parquet");
-        options.put("snapshot.time-retained", "10 s");
-
-        Schema.Builder schemaBuilder = Schema.newBuilder();
-        schemaBuilder.primaryKey("heart_time", "model", "date");
-        schemaBuilder.partitionKeys("model", "date");
-        schemaBuilder.column("heart_time", DataTypes.TIMESTAMP_MILLIS());
-        schemaBuilder.column("model", DataTypes.STRING());
-        schemaBuilder.column("content", DataTypes.STRING());
-        schemaBuilder.column("date", DataTypes.STRING());
-        schemaBuilder.options(options);
-        Schema schema = schemaBuilder.build();
-        SCHEMA_MAP.put(METRICS_IDENTIFIER, schema);
     }
 
-    public static synchronized void writeMetrics(List<MetricsVO> metricsList) {
-        if (CollUtil.isEmpty(metricsList)) {
+    public static void dropTable(String table) {
+        Identifier identifier = Identifier.create(DINKY_DB, table);
+        if (CATALOG.tableExists(identifier)) {
+            try {
+                CATALOG.dropTable(identifier, true);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static <T> void write(String table, List<T> dataList, Class<?> clazz) {
+        if (CollUtil.isEmpty(dataList)) {
             return;
         }
-        Table metricsTable = createOrGetMetricsTable();
-        BatchWriteBuilder writeBuilder = metricsTable.newBatchWriteBuilder();
+        Table paimonTable = createOrGetTable(table, null);
+        BatchWriteBuilder writeBuilder = paimonTable.newBatchWriteBuilder();
 
         // 2. Write records in distributed tasks
-
         try (BatchTableWrite write = writeBuilder.newWrite()) {
-            for (MetricsVO metrics : metricsList) {
-                LocalDateTime now = metrics.getHeartTime();
-
-                BinaryRow row = new BinaryRow(30);
+            Schema schema = getSchemaByClass(clazz);
+            List<DataField> fields = schema.fields();
+            for (T t : dataList) {
+                BinaryRow row = new BinaryRow(fields.size());
                 BinaryRowWriter writer = new BinaryRowWriter(row);
-                writer.writeTimestamp(0, Timestamp.fromLocalDateTime(now), 3);
-                writer.writeString(1, BinaryString.fromString(metrics.getModel()));
-                writer.writeString(2, BinaryString.fromString(JSONUtil.toJsonStr(metrics.getContent())));
-                writer.writeString(3, BinaryString.fromString(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+                for (int i = 0; i < fields.size(); i++) {
+                    DataField dataField = fields.get(i);
+                    DataType type = dataField.type();
+                    String fieldName = StrUtil.toCamelCase(dataField.name());
+                    if (type.getTypeRoot() == DataTypeRoot.VARCHAR) {
+                        BinaryWriter.write(
+                                writer,
+                                i,
+                                BinaryString.fromString(JSONUtil.toJsonStr(ReflectUtil.getFieldValue(t, fieldName))),
+                                type,
+                                null);
+                    } else if (type.getTypeRoot() == DataTypeRoot.TIME_WITHOUT_TIME_ZONE) {
+                        Timestamp timestamp =
+                                Timestamp.fromLocalDateTime((LocalDateTime) ReflectUtil.getFieldValue(t, fieldName));
+                        BinaryWriter.write(writer, i, timestamp, type, null);
+                    } else {
+                        BinaryWriter.write(writer, i, ReflectUtil.getFieldValue(t, fieldName), type, null);
+                    }
+                }
                 write.write(row);
             }
+
             List<CommitMessage> messages = write.prepareCommit();
 
             // 3. Collect all CommitMessages to a global node and commit
@@ -132,17 +150,17 @@ public class PaimonUtil {
         }
     }
 
-    public static <T> List<T> batchReadTable(Identifier identifier, Class<T> clazz) {
-        return batchReadTable(identifier, clazz, null);
+    public static <T> List<T> batchReadTable(String table, Class<T> clazz) {
+        return batchReadTable(table, clazz, null);
     }
 
     public static <T> List<T> batchReadTable(
-            Identifier identifier, Class<T> clazz, Function<PredicateBuilder, List<Predicate>> filter) {
+            String table, Class<T> clazz, Function<PredicateBuilder, List<Predicate>> filter) {
+        Identifier identifier = getIdentifier(table);
         TimeInterval timer = DateUtil.timer();
         List<T> dataList = new ArrayList<>();
 
-        PredicateBuilder builder =
-                new PredicateBuilder(SCHEMA_MAP.get(identifier).rowType());
+        PredicateBuilder builder = new PredicateBuilder(getSchemaByClass(clazz).rowType());
 
         ReadBuilder readBuilder;
         try {
@@ -167,7 +185,7 @@ public class PaimonUtil {
         TableRead read = readBuilder.newRead();
         try (RecordReader<InternalRow> reader = read.createReader(splits)) {
 
-            Schema schema = SCHEMA_MAP.get(METRICS_IDENTIFIER);
+            Schema schema = getSchemaByClass(clazz);
             reader.forEachRemaining(x -> {
                 T t = ReflectUtil.newInstance(clazz);
                 schema.fields().forEach(f -> {
@@ -192,16 +210,58 @@ public class PaimonUtil {
         return dataList;
     }
 
-    public static Table createOrGetMetricsTable() {
+    public static Table createOrGetTable(String tableName, Class<?> clazz) {
         try {
-            if (CATALOG.tableExists(METRICS_IDENTIFIER)) {
-                return CATALOG.getTable(METRICS_IDENTIFIER);
+            Identifier identifier = Identifier.create(DINKY_DB, tableName);
+            if (CATALOG.tableExists(identifier)) {
+                return CATALOG.getTable(identifier);
             }
-
-            CATALOG.createTable(METRICS_IDENTIFIER, SCHEMA_MAP.get(METRICS_IDENTIFIER), false);
-            return CATALOG.getTable(METRICS_IDENTIFIER);
+            CATALOG.createTable(identifier, getSchemaByClass(clazz), false);
+            return CATALOG.getTable(identifier);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Schema getSchemaByClass(Class<?> clazz) {
+        return SCHEMA_CACHE.get(clazz, () -> {
+            List<String> primaryKeys = new ArrayList<>();
+            List<String> partitionKeys = new ArrayList<>();
+            Schema.Builder builder = Schema.newBuilder();
+            Field[] fields = ReflectUtil.getFields(clazz, field -> !ModifierUtil.isStatic(field));
+            for (Field field : fields) {
+                String fieldName = StrUtil.toUnderlineCase(field.getName());
+                if (field.getAnnotations().length > 0) {
+                    if (AnnotationUtil.hasAnnotation(field, PartitionKey.class)) {
+                        partitionKeys.add(fieldName);
+                    }
+                    if (AnnotationUtil.hasAnnotation(field, PrimaryKey.class)) {
+                        primaryKeys.add(fieldName);
+                    }
+                }
+
+                Class<?> type = field.getType();
+                DataType dataType = PaimonTypeUtil.classToDataType(type);
+                builder.column(fieldName, dataType);
+            }
+            // get options
+            Options options = AnnotationUtil.getAnnotation(clazz, Options.class);
+            if (options != null) {
+                for (Option option : options.value()) {
+                    builder.option(option.key(), option.value());
+                }
+            } else {
+                // default options
+                Map<String, String> defaultOptions =
+                        MapUtil.builder("file.format", "parquet").build();
+                builder.options(defaultOptions);
+            }
+            // builder schema;
+            return builder.partitionKeys(partitionKeys).primaryKey(primaryKeys).build();
+        });
+    }
+
+    public static Identifier getIdentifier(String tableName) {
+        return Identifier.create(DINKY_DB, tableName);
     }
 }

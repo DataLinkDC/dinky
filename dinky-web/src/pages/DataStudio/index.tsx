@@ -225,7 +225,11 @@ const DataStudio = (props: any) => {
 
             <Content style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div style={{ display: 'flex' }}>
-                <LeftContainer size={size} />
+                <LeftContainer
+                  size={size}
+                  leftContainer={leftContainer}
+                  rightContainer={rightContainer}
+                />
                 <Content
                   style={{
                     width:
@@ -236,7 +240,7 @@ const DataStudio = (props: any) => {
                 </Content>
                 <RightContainer size={size} bottomHeight={bottomHeight} />
               </div>
-              {<BottomContainer size={size} />}
+              {<BottomContainer size={size} height={bottomHeight} />}
             </Content>
 
             <Sider collapsed collapsedWidth={40}>

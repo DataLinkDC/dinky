@@ -194,4 +194,6 @@ public interface DataBaseService extends ISuperService<DataBase> {
      * @return A {@link JobResult} object representing the execution result of the SQL statement.
      */
     JobResult executeCommonSql(SqlDTO sqlDTO);
+
+    List<DataBase> selectListByKeyWord(String keyword);
 }

@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.enums.BusinessType;
@@ -40,7 +40,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
@@ -156,12 +155,7 @@ public class ClusterInstanceController {
             required = true,
             dataTypeClass = JsonNode.class)
     public Result<List<ClusterInstance>> listClusterInstance(@RequestParam("keyword") String searchKeyWord) {
-        return Result.succeed(clusterInstanceService.list(new LambdaQueryWrapper<ClusterInstance>()
-                .like(ClusterInstance::getName, searchKeyWord)
-                .or()
-                .like(ClusterInstance::getAlias, searchKeyWord)
-                .or()
-                .like(ClusterInstance::getNote, searchKeyWord)));
+        return Result.succeed(clusterInstanceService.selectListByKeyWord(searchKeyWord));
     }
 
     /**

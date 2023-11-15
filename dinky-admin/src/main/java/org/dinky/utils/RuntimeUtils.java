@@ -29,7 +29,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.lang.Opt;
+import cn.hutool.system.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -40,11 +42,13 @@ public class RuntimeUtils {
         run(shell, log::info, log::error);
     }
 
+    public static final String SHELL = SystemUtil.getOsInfo().isWindows() ? "cmd /c " : "/bin/bash -c ";
+
     public static int run(String shell, Consumer<String> outputConsumer, Consumer<String> errorConsumer) {
         Process process;
         int waitValue = 1;
         try {
-            process = Runtime.getRuntime().exec(shell);
+            process = Runtime.getRuntime().exec(SHELL + shell);
             RUNNING.add(process);
             new Thread(() -> {
                         InputStream inputStream = process.getInputStream();
@@ -61,7 +65,8 @@ public class RuntimeUtils {
                             reader.close();
                             inputStream.close();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            errorConsumer.accept(ExceptionUtil.stacktraceToOneLineString(e));
+                            RUNNING.remove(process);
                         }
                     })
                     .start();
@@ -74,7 +79,7 @@ public class RuntimeUtils {
                 Opt.ofNullable(errorConsumer).ifPresent(x -> x.accept(errMsg));
             }
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            errorConsumer.accept(ExceptionUtil.stacktraceToOneLineString(e));
         }
         return waitValue;
     }

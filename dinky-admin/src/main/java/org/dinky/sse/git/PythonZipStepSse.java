@@ -19,7 +19,9 @@
 
 package org.dinky.sse.git;
 
+import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.GitProject;
+import org.dinky.service.resource.ResourcesService;
 import org.dinky.sse.StepSse;
 import org.dinky.utils.GitRepository;
 
@@ -30,9 +32,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.ZipUtil;
+import cn.hutool.extra.spring.SpringUtil;
 
 public class PythonZipStepSse extends StepSse {
     public PythonZipStepSse(
@@ -51,8 +55,19 @@ public class PythonZipStepSse extends StepSse {
         File file = FileUtil.file(GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch());
 
         File zipFile = ZipUtil.zip(file);
+        String zipFilePath = uploadResources(zipFile, gitProject);
         addFileMsgLog("ZipFile Path is: " + zipFile);
         params.put("zipFile", zipFile);
+        params.put("zipFilePath", zipFilePath);
         params.put("projectFile", file);
+    }
+
+    private String uploadResources(File zipFile, GitProject gitProject) {
+        ResourcesService resourcesService = SpringUtil.getBean(ResourcesService.class);
+        TreeNodeDTO gitFolder = resourcesService.createFolderOrGet(1, "git", "");
+        TreeNodeDTO treeNodeDTO =
+                resourcesService.createFolderOrGet(Convert.toInt(gitFolder.getId()), gitProject.getName(), "");
+        resourcesService.uploadFile(Convert.toInt(treeNodeDTO.getId()), "", zipFile);
+        return "rs:/git/" + gitProject.getName() + "/" + zipFile.getName();
     }
 }

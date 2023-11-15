@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
@@ -42,14 +42,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
-import cn.hutool.core.lang.UUID;
+import cn.dev33.satoken.stp.StpLogic;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** TokenController */
+/**
+ * TokenController
+ */
 @Slf4j
 @Api(tags = "Token Controller")
 @RestController
@@ -58,6 +60,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TokenController {
 
     private final TokenService tokenService;
+    private final StpLogic stpLogic;
 
     /**
      * get udf template list
@@ -86,6 +89,7 @@ public class TokenController {
             value = {PermissionConstants.AUTH_TOKEN_ADD, PermissionConstants.AUTH_TOKEN_EDIT},
             mode = SaMode.OR)
     public Result<Void> saveOrUpdateToken(@RequestBody SysToken sysToken) {
+        sysToken.setSource(SysToken.Source.CUSTOM);
         return tokenService.saveOrUpdate(sysToken)
                 ? Result.succeed(Status.SAVE_SUCCESS)
                 : Result.failed(Status.SAVE_FAILED);
@@ -113,12 +117,13 @@ public class TokenController {
 
     /**
      * delete Token by id
+     *
      * @return {@link Result} <{@link Void}>
      */
     @PostMapping("/buildToken")
     @Log(title = "Build Token", businessType = BusinessType.OTHER)
     @ApiOperation("Build Token")
     public Result<String> buildToken() {
-        return Result.succeed(UUID.fastUUID().toString(true), Status.SUCCESS);
+        return Result.succeed(stpLogic.createTokenValue(null, null, 1, null), Status.SUCCESS);
     }
 }

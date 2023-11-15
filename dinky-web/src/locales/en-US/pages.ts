@@ -160,6 +160,7 @@ export default {
   'devops.jobinfo.metrics.metricsItems': 'Metrics Items',
   'devops.jobinfo.metrics.selected': 'Selected',
   'devops.jobinfo.offline': 'Offline',
+  'devops.jobinfo.recently.job.status': 'View recently saved job status information',
   'devops.jobinfo.reonline': 'Re-Online',
   'devops.jobinfo.restart': 'Restart',
   'devops.jobinfo.savepoint.cancel': 'SavePoint Stop',
@@ -167,6 +168,8 @@ export default {
   'devops.jobinfo.savepoint.stop': 'SavePoint Pause',
   'devops.jobinfo.savepoint.trigger': 'SavePoint Triggers',
   'devops.jobinfo.smart_stop': 'Smart Stop',
+  'devops.jobinfo.unable.obtain.status':
+    'Unable to connect to Flink cluster to obtain the latest job status information',
   'devops.jobinfo.version.delete': 'Delete Version',
   'devops.jobinfo.version.delete.sure': 'Are you sure you want to remove this version？V{version}',
   'devops.jobinfo.version.latestVersion': 'Current Version',
@@ -298,7 +301,7 @@ export default {
    *
    * */
 
-  'pages.datastudio.editor.check': 'Check current FlinkSql',
+  'pages.datastudio.editor.check': 'Check',
   'pages.datastudio.editor.debug': 'Debug',
   'pages.datastudio.editor.exec': 'Execute',
   'pages.datastudio.editor.exec.error': 'Task [{jobName}] execution failed',
@@ -319,7 +322,7 @@ export default {
   'pages.datastudio.editor.notsave': 'Current changes are not saved! ',
   'pages.datastudio.editor.notsave.note':
     'Continue will discard the changes, are you sure to continue?',
-  'pages.datastudio.to.jobDetail': 'Operation Center',
+  'pages.datastudio.to.jobDetail': 'Operation',
   'pages.datastudio.explain.validate': 'Validating...',
   'pages.datastudio.explain.validate.allright': 'All Right',
   'pages.datastudio.explain.validate.error': 'There are errors, a total of {errorCount}',
@@ -438,6 +441,7 @@ export default {
   'rc.ag.management': 'Alert Group Management ',
   'rc.ag.modify': 'Modify Alert Group',
   'rc.ag.name': 'Alert Group Name',
+  'rc.ag.search': 'Search Name/Note',
   'rc.ai.accessKeyId': 'AccessKeyId',
   'rc.ai.accessKeyIdPleaseHolder': 'Please enter AccessKeyId',
   'rc.ai.accessKeySecret': 'AccessKeySecret',
@@ -500,6 +504,7 @@ export default {
   'rc.ai.mf.uni': 'Uni SMS',
   'rc.ai.mf.yunpian': 'Yunpian SMS',
   'rc.ai.modify': 'Modify Alert Instance',
+  'rc.ai.search': 'Search Name/Type',
   'rc.ai.name': 'Name',
   'rc.ai.namePleaseHolder': 'please enter Alert instance name',
   'rc.ai.password': 'Password',
@@ -634,6 +639,7 @@ export default {
   'rc.cc.management': 'Cluster Config Management',
   'rc.cc.modify': 'Modify Cluster Config',
   'rc.cc.name': 'Cluster Config Name',
+  'rc.cc.search': 'Search Name',
   'rc.cc.namePlaceholder': 'Please enter the cluster configuration name!',
   'rc.cc.spDir': 'SavePoint Path',
   'rc.cc.spDirHelp': 'Please enter the savepoint path! This parameter configuration item is',
@@ -708,6 +714,7 @@ export default {
   'rc.ds.columnName': 'Field Name',
   'rc.ds.columnType': 'Type',
   'rc.ds.comment': 'Comment',
+  'rc.ds.search': 'Search Name/Note',
   'rc.ds.console.exec': 'Execute',
   'rc.ds.console.running': 'Running...',
   'rc.ds.create': 'Create DataSource',
@@ -760,7 +767,8 @@ export default {
   'rc.gp.build.step.1': 'Check Env',
   'rc.gp.build.step.2': 'Git Clone',
   'rc.gp.build.step.3': 'Maven Build',
-  'rc.gp.build.step.4': 'Get Jars',
+  // 获取产物
+  'rc.gp.build.step.4': 'Get Artifact',
   'rc.gp.build.step.5': 'Analysis UDF',
   'rc.gp.build.step.6': 'Finish',
   'rc.gp.buildArgs': 'Build Arguments',
@@ -850,6 +858,7 @@ export default {
   'rc.udf.register.className': 'Class Name',
   'rc.udf.register.deleteConfirm': 'Are you sure you want to delete this UDF? ',
   'rc.udf.register': 'Register UDF',
+  'rc.udf.register.select': 'Please select a non-directory node',
   /**
    *
    * role

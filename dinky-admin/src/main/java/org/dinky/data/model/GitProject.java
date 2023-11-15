@@ -98,6 +98,11 @@ public class GitProject extends SuperEntity<GitProject> {
     @TableField(value = "build_state")
     private Integer buildState;
 
+    /**
+     * 区别于 java 和 Python 类型 | different from java and python;
+     * 1. 构建 java 工程时:   步骤值映射如下: 0: 环境检查 1: 克隆项目 2: 编译构建 3: 获取产物 4: 分析 UDF 5: 完成; (when build java project, the step value is as follows: 0: environment check 1: clone project 2: compile and build 3: get artifact 4: analyze UDF 5: finish)
+     * 2. 构建 python 工程时: 步骤值映射如下: 0: 环境检查 1: 克隆项目 2: 获取产物 3: 分析 UDF 4: 完成;(when build python project, the step value is as follows: 0: environment check 1: clone project 2: get artifact 3: analyze UDF 4: finish)
+     */
     @ApiModelProperty(value = "Build Step", dataType = "Integer")
     @TableField(value = "build_step")
     private Integer buildStep;

@@ -1204,10 +1204,22 @@ CREATE TABLE "public"."dinky_git_project" (
                                               "update_time" timestamp(6) NOT null
 )
 ;
+COMMENT ON COLUMN "public"."dinky_git_project"."id" IS 'ID';
+COMMENT ON COLUMN "public"."dinky_git_project"."tenant_id" IS 'tenant id';
+COMMENT ON COLUMN "public"."dinky_git_project"."name" IS 'project name';
+COMMENT ON COLUMN "public"."dinky_git_project"."url" IS 'git url';
+COMMENT ON COLUMN "public"."dinky_git_project"."branch" IS 'git branch';
+COMMENT ON COLUMN "public"."dinky_git_project"."username" IS 'username';
+COMMENT ON COLUMN "public"."dinky_git_project"."password" IS 'password';
+COMMENT ON COLUMN "public"."dinky_git_project"."pom" IS 'pom';
+COMMENT ON COLUMN "public"."dinky_git_project"."build_args" IS 'build args';
 COMMENT ON COLUMN "public"."dinky_git_project"."private_key" IS 'keypath';
 COMMENT ON COLUMN "public"."dinky_git_project"."code_type" IS 'code type(1-java,2-python)';
 COMMENT ON COLUMN "public"."dinky_git_project"."type" IS '1-http ,2-ssh';
+COMMENT ON COLUMN "public"."dinky_git_project"."last_build" IS 'last build time';
+COMMENT ON COLUMN "public"."dinky_git_project"."description" IS 'description';
 COMMENT ON COLUMN "public"."dinky_git_project"."build_state" IS '0-notStart 1-process 2-failed 3-success';
+COMMENT ON COLUMN "public"."dinky_git_project"."build_step" IS 'different from java and python, when build java project, the step value is as follows: 0: environment check 1: clone project 2: compile and build 3: get artifact 4: analyze UDF 5: finish; when build python project, the step value is as follows: 0: environment check 1: clone project 2: get artifact 3: analyze UDF 4: finish';
 COMMENT ON COLUMN "public"."dinky_git_project"."enabled" IS '0-disable 1-enable';
 COMMENT ON COLUMN "public"."dinky_git_project"."udf_class_map_list" IS 'scan udf class';
 COMMENT ON COLUMN "public"."dinky_git_project"."order_line" IS 'order';
@@ -2326,7 +2338,7 @@ COMMENT ON COLUMN "public"."dinky_resources"."update_time" IS 'update time';
 -- ----------------------------
 -- Records of dinky_resources
 -- ----------------------------
-INSERT INTO "public"."dinky_resources" VALUES (1, 'Root', 'main folder', 1, 0, 0, -1, '/', 1, '2023-06-28 20:20:13', '2023-06-28 20:20:13');
+INSERT INTO "public"."dinky_resources" VALUES (1, 'Root', 'main folder', 1, 0, 0, -1, '', 1, '2023-06-28 20:20:13', '2023-06-28 20:20:13');
 
 -- ----------------------------
 -- Indexes structure for table dinky_resources
@@ -2651,7 +2663,8 @@ create table public.dinky_sys_token (
   create_time timestamp without time zone,
   update_time timestamp without time zone,
   creator bigint,
-  updator bigint
+  updator bigint,
+  source bigint
 );
 comment on table public.dinky_sys_token is 'token table';
 comment on column public.dinky_sys_token.id is 'id';
@@ -2666,6 +2679,7 @@ comment on column public.dinky_sys_token.create_time is 'create time';
 comment on column public.dinky_sys_token.update_time is 'modify time';
 comment on column public.dinky_sys_token.creator is 'creat user';
 comment on column public.dinky_sys_token.updator is 'modify user';
+comment on column public.dinky_sys_token.source is 'source';
 
 
 -- ----------------------------
