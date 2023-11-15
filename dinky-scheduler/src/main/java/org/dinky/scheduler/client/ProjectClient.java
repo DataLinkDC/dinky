@@ -19,6 +19,8 @@
 
 package org.dinky.scheduler.client;
 
+import org.apache.commons.lang3.StringUtils;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.scheduler.constant.Constants;
 import org.dinky.scheduler.model.Project;
@@ -94,8 +96,11 @@ public class ProjectClient {
                 .timeout(5000)
                 .execute()
                 .body();
-
+        if(StringUtils.isBlank(content)){
+            throw new DinkyException("获取DolphinScheduler项目失败，请检查DolphinScheduler配置是否正确！");
+        }
         try {
+
             return MyJSONUtil.toPageBeanAndFindByName(
                     content,
                     SystemConfiguration.getInstances()
