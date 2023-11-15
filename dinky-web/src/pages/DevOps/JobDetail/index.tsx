@@ -18,6 +18,7 @@
  */
 
 import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
+import StatusTag from '@/components/JobTags/StatusTag';
 import AlertHistory from '@/pages/DevOps/JobDetail/AlertHistory';
 import CheckPoints from '@/pages/DevOps/JobDetail/CheckPointsTab';
 import JobLineage from '@/pages/DevOps/JobDetail/JobLineage';
@@ -36,7 +37,6 @@ import { useRequest } from '@umijs/max';
 import { Tag } from 'antd';
 import { useState } from 'react';
 import { connect, useLocation } from 'umi';
-import StatusTag from "@/components/JobTags/StatusTag";
 
 /**
  * Enum defining different operators for the JobDetail component.

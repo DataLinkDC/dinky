@@ -21,11 +21,11 @@ import FlinkDag from '@/components/FlinkDag';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import FlinkTable from '@/pages/DevOps/JobDetail/JobOverview/components/FlinkTable';
 import JobDesc from '@/pages/DevOps/JobDetail/JobOverview/components/JobDesc';
+import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { Button, Empty, Result } from 'antd';
 import { useState } from 'react';
 import { isStatusDone } from '../../function';
-import { l } from '@/utils/intl';
 
 const JobConfigTab = (props: JobProps) => {
   const { jobDetail } = props;
@@ -34,33 +34,41 @@ const JobConfigTab = (props: JobProps) => {
 
   return (
     <>
-      {
-        isStatusDone(jobDetail?.instance?.status as string) && !showHistory ? <Result
-          status="warning"
+      {isStatusDone(jobDetail?.instance?.status as string) && !showHistory ? (
+        <Result
+          status='warning'
           title={l('devops.jobinfo.unable.obtain.status')}
           extra={
-            <Button type="primary" key="console" onClick={()=>{setShowHistory(true)}}>
+            <Button
+              type='primary'
+              key='console'
+              onClick={() => {
+                setShowHistory(true);
+              }}
+            >
               {l('devops.jobinfo.recently.job.status')}
             </Button>
           }
-        /> : undefined
-      }
-      {(showHistory || !isStatusDone(jobDetail?.instance?.status as string)) ?
-        <><JobDesc jobDetail={jobDetail}/>
-        <ProCard
-          style={{
-            height: '40vh'
-          }}
-        >
-          {job ? (
-            <FlinkDag job={job} checkPoints={jobDetail.jobDataDto.checkpoints}/>
-          ) : (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-          )}
-        </ProCard>
+        />
+      ) : undefined}
+      {showHistory || !isStatusDone(jobDetail?.instance?.status as string) ? (
+        <>
+          <JobDesc jobDetail={jobDetail} />
+          <ProCard
+            style={{
+              height: '40vh'
+            }}
+          >
+            {job ? (
+              <FlinkDag job={job} checkPoints={jobDetail.jobDataDto.checkpoints} />
+            ) : (
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            )}
+          </ProCard>
 
-        <FlinkTable jobDetail={jobDetail} /></> : undefined
-      }
+          <FlinkTable jobDetail={jobDetail} />
+        </>
+      ) : undefined}
     </>
   );
 };
