@@ -57,9 +57,9 @@ public final class I18n {
     public static String getMessage(String key) {
         ResourceBundle bundle = ResourceBundle.getBundle(MESSAGES_BASE);
         String message = bundle.getString(key);
-        if (!JDK_ABOVE_1_8) {
+        /*if (!JDK_ABOVE_1_8) {
             message = new String(message.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-        }
+        }*/
         return message;
     }
 
