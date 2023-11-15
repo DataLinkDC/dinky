@@ -78,7 +78,7 @@ public class DataBaseController {
      * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Result}< {@link Void}>
      */
-    @PutMapping
+    @PutMapping("/saveOrUpdate")
     @Log(title = "Insert Or Update DataBase", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update DataBase")
     @ApiImplicitParam(
