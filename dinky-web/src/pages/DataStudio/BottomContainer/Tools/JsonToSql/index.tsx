@@ -22,7 +22,6 @@ import CodeShow from '@/components/CustomEditor/CodeShow';
 import useThemeValue from '@/hooks/useThemeValue';
 import { jsonToSql } from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql/service';
 import { StateType } from '@/pages/DataStudio/model';
-import { convertCodeEditTheme } from '@/utils/function';
 import { connect } from '@@/exports';
 import { Button, Space } from 'antd';
 import React, { useState } from 'react';
@@ -53,8 +52,7 @@ const JsonToSql: React.FC = (props: connect) => {
             height={maxHeight + 'px'}
             code={jsonData}
             language={'json'}
-            theme={convertCodeEditTheme()}
-            onChange={(x) => {
+            onChange={(x: string) => {
               setJsonData(x ?? '');
             }}
           />

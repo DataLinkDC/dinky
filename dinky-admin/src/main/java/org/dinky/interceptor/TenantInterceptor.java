@@ -27,6 +27,7 @@ import org.dinky.data.model.Tenant;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,9 +69,10 @@ public class TenantInterceptor implements AsyncHandlerInterceptor {
                         }
 
                         int finalTenantId = Integer.parseInt(cookie.getValue());
-                        List<Tenant> tenants = userInfo.getTenantList().stream()
-                                .filter(t -> t.getId() == finalTenantId)
-                                .collect(Collectors.toList());
+                        List<Tenant> tenants =
+                                Opt.ofNullable(userInfo.getTenantList()).orElse(new ArrayList<>()).stream()
+                                        .filter(t -> t.getId() == finalTenantId)
+                                        .collect(Collectors.toList());
                         if (CollectionUtils.isEmpty(tenants)) {
                             StpUtil.logout(StpUtil.getLoginIdAsInt());
                             return false;
