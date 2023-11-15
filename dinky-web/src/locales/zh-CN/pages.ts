@@ -818,6 +818,7 @@ export default {
   'rc.udf.register.className': '类名',
   'rc.udf.register.deleteConfirm': '确定删除该 UDF 吗？',
   'rc.udf.register': '注册 UDF',
+  'rc.udf.register.select': '请选择非目录节点！',
 
   /**
    *

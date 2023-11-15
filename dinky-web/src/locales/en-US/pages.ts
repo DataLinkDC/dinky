@@ -168,7 +168,8 @@ export default {
   'devops.jobinfo.savepoint.stop': 'SavePoint Pause',
   'devops.jobinfo.savepoint.trigger': 'SavePoint Triggers',
   'devops.jobinfo.smart_stop': 'Smart Stop',
-  'devops.jobinfo.unable.obtain.status': 'Unable to connect to Flink cluster to obtain the latest job status information',
+  'devops.jobinfo.unable.obtain.status':
+    'Unable to connect to Flink cluster to obtain the latest job status information',
   'devops.jobinfo.version.delete': 'Delete Version',
   'devops.jobinfo.version.delete.sure': 'Are you sure you want to remove this version？V{version}',
   'devops.jobinfo.version.latestVersion': 'Current Version',
@@ -857,6 +858,7 @@ export default {
   'rc.udf.register.className': 'Class Name',
   'rc.udf.register.deleteConfirm': 'Are you sure you want to delete this UDF? ',
   'rc.udf.register': 'Register UDF',
+  'rc.udf.register.select': 'Please select a non-directory node',
   /**
    *
    * role
