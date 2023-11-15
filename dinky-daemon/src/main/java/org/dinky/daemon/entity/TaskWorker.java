@@ -21,12 +21,12 @@ package org.dinky.daemon.entity;
 
 import org.dinky.daemon.task.DaemonTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+@Data
+@Slf4j
 public class TaskWorker implements Runnable {
-
-    private static final Logger log = LoggerFactory.getLogger(TaskWorker.class);
 
     private volatile boolean running = true;
 
