@@ -35,7 +35,7 @@ const JobVersionTab = (props: JobProps) => {
     type: jobDetail.history.type,
     statement: jobDetail.history.statement,
     createTime: jobDetail.history.startTime,
-    versionId: 'LATEST',
+    versionId: 'Current',
     isLatest: true
   };
 
