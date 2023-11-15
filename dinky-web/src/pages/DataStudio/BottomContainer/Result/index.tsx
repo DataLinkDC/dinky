@@ -31,7 +31,7 @@ import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { SearchOutlined } from '@ant-design/icons';
 import { Highlight } from '@ant-design/pro-layout/es/components/Help/Search';
-import { Button, Empty, Input, InputRef, Space, Table, Tag } from 'antd';
+import { Button, Empty, Input, InputRef, Space, Table } from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
 import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
