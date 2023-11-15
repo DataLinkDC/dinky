@@ -21,7 +21,7 @@ package org.dinky.service;
 
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.exception.AuthException;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
 
 import java.util.List;
 

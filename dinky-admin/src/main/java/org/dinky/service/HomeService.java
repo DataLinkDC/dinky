@@ -19,10 +19,10 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.HomeResource;
-import org.dinky.data.model.JobModelOverview;
-import org.dinky.data.model.JobStatusOverView;
-import org.dinky.data.model.JobTypeOverView;
+import org.dinky.data.model.home.HomeResource;
+import org.dinky.data.model.home.JobModelOverview;
+import org.dinky.data.model.home.JobStatusOverView;
+import org.dinky.data.model.home.JobTypeOverView;
 
 import java.util.List;
 

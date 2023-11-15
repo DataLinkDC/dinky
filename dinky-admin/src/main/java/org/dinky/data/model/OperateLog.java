@@ -36,7 +36,7 @@ import lombok.Data;
 @ApiModel(value = "OperateLog", description = "Operate Log Information")
 public class OperateLog implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -8321546342131006474L;
 
     @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value = "ID", dataType = "Long", example = "1", notes = "Unique identifier for the operate log")

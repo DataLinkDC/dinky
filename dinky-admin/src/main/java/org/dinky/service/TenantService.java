@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.Tenant;
+import org.dinky.data.model.rbac.Tenant;
 import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;

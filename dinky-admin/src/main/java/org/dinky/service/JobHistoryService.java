@@ -20,7 +20,7 @@
 package org.dinky.service;
 
 import org.dinky.data.dto.JobDataDto;
-import org.dinky.data.model.JobHistory;
+import org.dinky.data.model.job.JobHistory;
 import org.dinky.mybatis.service.ISuperService;
 
 /**

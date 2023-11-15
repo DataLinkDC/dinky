@@ -273,26 +273,6 @@ CREATE TABLE `dinky_tenant` (
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 
-CREATE TABLE `dinky_udf` (
-                           `id` int(11) NOT null AUTO_INCREMENT,
-                           `name` varchar(200) null DEFAULT null COMMENT 'udf name',
-                           `class_name` varchar(200) null DEFAULT null COMMENT 'Complete class name',
-                           `source_code` longtext null COMMENT 'source code',
-                           `compiler_code` binary(255) null DEFAULT null COMMENT 'compiler product',
-                           `version_id` int(11) null DEFAULT null COMMENT 'version',
-                           `version_description` varchar(50) null DEFAULT null COMMENT 'version description',
-                           `is_default` tinyint(1) null DEFAULT null COMMENT 'Is it default',
-                           `document_id` int(11) null DEFAULT null COMMENT 'corresponding to the document id',
-                           `from_version_id` int(11) null DEFAULT null COMMENT 'Based on udf version id',
-                           `code_md5` varchar(50) null DEFAULT null COMMENT 'source code of md5',
-                           `dialect` varchar(50) null DEFAULT null COMMENT 'dialect',
-                           `type` varchar(50) null DEFAULT null COMMENT 'type',
-                           `step` int(11) null DEFAULT null COMMENT 'job lifecycle step',
-                           `enable` tinyint(1) null DEFAULT 1 COMMENT 'is enable',
-                           `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
-                           `update_time` datetime DEFAULT null ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
-) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-
 CREATE TABLE `dinky_udf_template` (
                                     `id` int(11) NOT null AUTO_INCREMENT,
                                     `name` varchar(100) null DEFAULT null COMMENT 'template name',

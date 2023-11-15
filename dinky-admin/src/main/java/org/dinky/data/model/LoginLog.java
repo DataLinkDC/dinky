@@ -45,7 +45,7 @@ import lombok.Data;
 @TableName("dinky_sys_login_log")
 public class LoginLog implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3922488670506709018L;
 
     @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the login log")

@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.AlertRule;
+import org.dinky.data.model.alert.AlertRule;
 import org.dinky.mybatis.service.ISuperService;
 
 public interface AlertRuleService extends ISuperService<AlertRule> {}

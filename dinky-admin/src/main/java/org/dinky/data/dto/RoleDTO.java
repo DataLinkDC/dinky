@@ -19,7 +19,7 @@
 
 package org.dinky.data.dto;
 
-import org.dinky.data.model.Role;
+import org.dinky.data.model.rbac.Role;
 
 import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;

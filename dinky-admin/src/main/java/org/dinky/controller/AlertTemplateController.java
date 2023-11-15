@@ -23,7 +23,7 @@ import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.AlertTemplate;
+import org.dinky.data.model.alert.AlertTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.service.AlertTemplateService;
 
