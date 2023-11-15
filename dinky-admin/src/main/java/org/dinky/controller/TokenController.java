@@ -24,7 +24,7 @@ import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.SysToken;
-import org.dinky.data.model.UDFTemplate;
+import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.TokenService;

@@ -19,7 +19,7 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.data.model.AlertTemplate;
+import org.dinky.data.model.alert.AlertTemplate;
 import org.dinky.mapper.AlertTemplateMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.AlertTemplateService;

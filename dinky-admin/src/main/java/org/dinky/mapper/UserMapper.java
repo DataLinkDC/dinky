@@ -19,7 +19,7 @@
 
 package org.dinky.mapper;
 
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
 import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;

@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.UDFTemplate;
+import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.mybatis.service.ISuperService;
 
 public interface UDFTemplateService extends ISuperService<UDFTemplate> {

@@ -35,8 +35,10 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /** @TableName dinky_metrics */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value = "dinky_metrics")
 @Data
 @ApiModel(value = "Metrics", description = "Metrics Information")

@@ -107,7 +107,7 @@ const UserProTable = () => {
         roleIds: userState.roleIds
       })
     );
-    setUserState((prevState) => ({ ...prevState, assignRoleOpen: true }));
+    setUserState((prevState) => ({ ...prevState, assignRoleOpen: false }));
   };
 
   /**

@@ -23,7 +23,7 @@ import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.constant.FlinkTaskConstant;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
-import org.dinky.data.model.JobInfoDetail;
+import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.job.handler.JobAlertHandler;
 import org.dinky.job.handler.JobMetricsHandler;
 import org.dinky.job.handler.JobRefreshHandler;

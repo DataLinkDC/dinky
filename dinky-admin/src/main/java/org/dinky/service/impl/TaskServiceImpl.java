@@ -37,20 +37,20 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.exception.SqlExplainExcepition;
 import org.dinky.data.exception.TaskNotDoneException;
-import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.DataBase;
-import org.dinky.data.model.JobInstance;
-import org.dinky.data.model.JobModelOverview;
-import org.dinky.data.model.JobTypeOverView;
 import org.dinky.data.model.Savepoints;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
-import org.dinky.data.model.TaskExtConfig;
 import org.dinky.data.model.TaskVersion;
-import org.dinky.data.model.UDFTemplate;
+import org.dinky.data.model.alert.AlertGroup;
+import org.dinky.data.model.ext.TaskExtConfig;
+import org.dinky.data.model.home.JobModelOverview;
+import org.dinky.data.model.home.JobTypeOverView;
+import org.dinky.data.model.job.JobInstance;
+import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageBuilder;
@@ -110,6 +110,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -495,6 +496,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Task initDefaultFlinkSQLEnv(Integer tenantId) {
         TenantContextHolder.set(tenantId);
         String separator = SystemConfiguration.getInstances().getSqlSeparator();
@@ -526,6 +528,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         defaultFlinkSQLEnvTask.setFragment(true);
         defaultFlinkSQLEnvTask.setTenantId(tenantId);
         defaultFlinkSQLEnvTask.setEnabled(true);
+        defaultFlinkSQLEnvTask.setCreator(1);
+        defaultFlinkSQLEnvTask.setUpdater(1);
+        defaultFlinkSQLEnvTask.setOperator(1);
         saveOrUpdate(defaultFlinkSQLEnvTask);
 
         return defaultFlinkSQLEnvTask;

@@ -44,5 +44,11 @@ public class MybatisPlusFillProperties {
 
     private String updateTimeField = "updateTime";
 
+    private String creatorField = "creator";
+
+    private String updaterField = "updater";
+
+    private String operatorField = "operator";
+
     private String name = "name";
 }
