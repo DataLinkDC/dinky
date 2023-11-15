@@ -160,6 +160,7 @@ export default {
   'devops.jobinfo.metrics.metricsItems': 'Metrics Items',
   'devops.jobinfo.metrics.selected': 'Selected',
   'devops.jobinfo.offline': 'Offline',
+  'devops.jobinfo.recently.job.status': 'View recently saved job status information',
   'devops.jobinfo.reonline': 'Re-Online',
   'devops.jobinfo.restart': 'Restart',
   'devops.jobinfo.savepoint.cancel': 'SavePoint Stop',
@@ -167,6 +168,7 @@ export default {
   'devops.jobinfo.savepoint.stop': 'SavePoint Pause',
   'devops.jobinfo.savepoint.trigger': 'SavePoint Triggers',
   'devops.jobinfo.smart_stop': 'Smart Stop',
+  'devops.jobinfo.unable.obtain.status': 'Unable to connect to Flink cluster to obtain the latest job status information',
   'devops.jobinfo.version.delete': 'Delete Version',
   'devops.jobinfo.version.delete.sure': 'Are you sure you want to remove this version？V{version}',
   'devops.jobinfo.version.latestVersion': 'Current Version',
@@ -298,7 +300,7 @@ export default {
    *
    * */
 
-  'pages.datastudio.editor.check': 'Check current FlinkSql',
+  'pages.datastudio.editor.check': 'Check',
   'pages.datastudio.editor.debug': 'Debug',
   'pages.datastudio.editor.exec': 'Execute',
   'pages.datastudio.editor.exec.error': 'Task [{jobName}] execution failed',
@@ -319,7 +321,7 @@ export default {
   'pages.datastudio.editor.notsave': 'Current changes are not saved! ',
   'pages.datastudio.editor.notsave.note':
     'Continue will discard the changes, are you sure to continue?',
-  'pages.datastudio.to.jobDetail': 'Operation Center',
+  'pages.datastudio.to.jobDetail': 'Operation',
   'pages.datastudio.explain.validate': 'Validating...',
   'pages.datastudio.explain.validate.allright': 'All Right',
   'pages.datastudio.explain.validate.error': 'There are errors, a total of {errorCount}',

@@ -18,8 +18,11 @@
  */
 
 export default {
+  'button.check': 'Check',
+  'button.graph': 'DAG',
   'button.create': 'Create',
   'button.close': 'Close',
+  'button.daemon': 'Daemon Mode',
   'button.confirm': 'Confirm',
   'button.recovery': 'Recovery',
   'button.cancel': 'Cancel',

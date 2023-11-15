@@ -202,14 +202,32 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
       {l('button.rebuild')}
     </Button>,
     <Button
-      key={'finish'}
-      type={showLog ? 'default' : 'primary'}
+      key={'close'}
+      type={'primary'}
+      hidden={!showLog}
       danger={showLog}
+      onClick={() => handleCancel()}
+    >
+      {l('button.close')}
+    </Button>,
+    <Button
+      key={'finish'}
+      type={'primary'}
+      hidden={showLog}
       disabled={steps[currentStep - 1]?.status === 'error' && percent !== 99}
       loading={currentStep !== steps.length && percent !== 99}
       onClick={() => handleCancel()}
     >
-      {showLog ? l('button.close') : l('button.finish')}
+      {l('button.finish')}
+    </Button>,
+    <Button
+      key={'daemon'}
+      hidden={!(currentStep !== steps.length && percent !== 99) || showLog}
+      onClick={() => handleCancel()}
+    >
+      {steps[currentStep - 1]?.status === 'error' && percent !== 99
+        ? l('button.close')
+        : l('button.daemon')}
     </Button>
   ];
 

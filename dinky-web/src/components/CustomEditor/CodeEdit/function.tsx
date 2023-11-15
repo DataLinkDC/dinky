@@ -190,8 +190,8 @@ export const buildAllSuggestionsToEditor = (
       range: range,
       kind: mappingKind(item.kind),
       insertText: item.insertText,
-      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
-      // detail: item?.detail,
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      detail: item?.label?.description || ''
     };
   });
   //todo: 补充补全建议 关键词建议
