@@ -113,13 +113,14 @@ export enum API_CONSTANTS {
   CLUSTER_CONFIGURATION_START = '/api/cluster/deploySessionClusterInstance',
   // cluster configuration list
   CLUSTER_CONFIGURATION = '/api/clusterConfiguration/list',
-  CLUSTER_CONFIGURATION_ADD_OR_UPDATE = '/api/clusterConfiguration/addOrUpdate',
+  CLUSTER_CONFIGURATION_ADD_OR_UPDATE = '/api/clusterConfiguration/saveOrUpdate',
   CLUSTER_CONFIGURATION_DELETE = '/api/clusterConfiguration/delete',
   CLUSTER_CONFIGURATION_ENABLE = '/api/clusterConfiguration/enable',
   CLUSTER_CONFIGURATION_TEST = '/api/clusterConfiguration/testConnect',
 
   // datasource registries list
   DATASOURCE = '/api/database/list',
+  DATASOURCE_ADD_OR_UPDATE = '/api/database/saveOrUpdate',
   // datasource registries delete
   DATASOURCE_DELETE = '/api/database/delete',
   // datasource registries enable or disable
