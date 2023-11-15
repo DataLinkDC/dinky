@@ -21,6 +21,8 @@ import { Transfer, Tree } from 'antd';
 import type { TransferDirection, TransferItem } from 'antd/es/transfer';
 import type { DataNode } from 'antd/es/tree';
 import React, { Key } from 'react';
+import {WarningMessage} from "@/utils/messages";
+import {l} from "@/utils/intl";
 
 const { DirectoryTree } = Tree;
 interface TreeTransferProps {
@@ -75,11 +77,19 @@ export const TreeTransfer: React.FC<TreeTransferProps> = ({
               defaultExpandAll
               checkedKeys={checkedKeys}
               treeData={generateTree(dataSource, targetKeys)}
-              onCheck={(_, { node: { key } }) => {
-                onItemSelect(key as string, !isChecked(checkedKeys, key));
+              onCheck={ async (_, { node: { key,isLeaf } }) => {
+                if (isLeaf) {
+                  onItemSelect(key as string, !isChecked(checkedKeys, key));
+                }else{
+                  WarningMessage(l('rc.udf.register.select'))
+                }
               }}
-              onSelect={(_, { node: { key } }) => {
-                onItemSelect(key as string, !isChecked(checkedKeys, key));
+              onSelect={ async (_, { node :{key,isLeaf}}) => {
+                if (isLeaf) {
+                  onItemSelect(key as string, !isChecked(checkedKeys, key));
+                }else{
+                  WarningMessage(l('rc.udf.register.select'))
+                }
               }}
             />
           );

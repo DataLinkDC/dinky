@@ -120,6 +120,7 @@ export enum API_CONSTANTS {
 
   // datasource registries list
   DATASOURCE = '/api/database/list',
+  DATASOURCE_ADD_OR_UPDATE = '/api/database/saveOrUpdate',
   // datasource registries delete
   DATASOURCE_DELETE = '/api/database/delete',
   // datasource registries enable or disable

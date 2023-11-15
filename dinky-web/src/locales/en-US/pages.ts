@@ -857,6 +857,7 @@ export default {
   'rc.udf.register.className': 'Class Name',
   'rc.udf.register.deleteConfirm': 'Are you sure you want to delete this UDF? ',
   'rc.udf.register': 'Register UDF',
+  'rc.udf.register.select': 'Please select a non-directory node',
   /**
    *
    * role

@@ -35,5 +35,5 @@ export const handleTest = async (item: Partial<DataSources.DataSource>) => {
  * @param item
  */
 export const saveOrUpdateHandle = async (item: Partial<DataSources.DataSource>) => {
-  await handleAddOrUpdate(API_CONSTANTS.DATASOURCE, item);
+  await handleAddOrUpdate(API_CONSTANTS.DATASOURCE_ADD_OR_UPDATE, item);
 };
