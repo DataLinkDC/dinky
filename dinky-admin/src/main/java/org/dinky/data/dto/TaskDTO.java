@@ -21,7 +21,7 @@ package org.dinky.data.dto;
 
 import org.dinky.config.Dialect;
 import org.dinky.data.model.Task;
-import org.dinky.data.model.TaskExtConfig;
+import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.job.JobConfig;
 
 import java.util.HashMap;

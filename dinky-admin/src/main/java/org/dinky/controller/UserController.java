@@ -25,7 +25,7 @@ import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.ModifyPasswordDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
 import org.dinky.data.params.AssignRoleParams;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;

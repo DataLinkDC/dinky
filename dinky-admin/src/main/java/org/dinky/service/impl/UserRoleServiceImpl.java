@@ -19,8 +19,8 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.data.model.Role;
-import org.dinky.data.model.UserRole;
+import org.dinky.data.model.rbac.Role;
+import org.dinky.data.model.rbac.UserRole;
 import org.dinky.mapper.UserRoleMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.UserRoleService;

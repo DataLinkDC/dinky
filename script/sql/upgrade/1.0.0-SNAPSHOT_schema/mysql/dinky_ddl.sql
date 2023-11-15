@@ -312,6 +312,7 @@ drop table if exists dinky_task_statement;
 drop table if exists dinky_jar;
 drop table if exists dinky_schema_history;
 drop table if exists dinky_upload_file_record;
+drop table if exists dinky_udf;
 
 commit ;
 

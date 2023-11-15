@@ -19,7 +19,7 @@
 
 package org.dinky.data.vo;
 
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

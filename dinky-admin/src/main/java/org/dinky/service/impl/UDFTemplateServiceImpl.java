@@ -21,7 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.BusException;
-import org.dinky.data.model.UDFTemplate;
+import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.mapper.UDFTemplateMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.UDFTemplateService;

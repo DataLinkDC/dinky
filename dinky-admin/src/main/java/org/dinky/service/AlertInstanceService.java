@@ -21,7 +21,7 @@ package org.dinky.service;
 
 import org.dinky.alert.AlertResult;
 import org.dinky.data.dto.AlertInstanceDTO;
-import org.dinky.data.model.AlertInstance;
+import org.dinky.data.model.alert.AlertInstance;
 import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
 

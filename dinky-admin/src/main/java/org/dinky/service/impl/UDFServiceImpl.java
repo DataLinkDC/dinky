@@ -21,7 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.config.Dialect;
 import org.dinky.data.model.Resources;
-import org.dinky.data.model.UDFManage;
+import org.dinky.data.model.udf.UDFManage;
 import org.dinky.data.vo.UDFManageVO;
 import org.dinky.mapper.UDFManageMapper;
 import org.dinky.service.UDFService;

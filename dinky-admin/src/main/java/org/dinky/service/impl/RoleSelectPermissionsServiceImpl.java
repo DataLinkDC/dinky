@@ -19,7 +19,7 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.data.model.RowPermissions;
+import org.dinky.data.model.rbac.RowPermissions;
 import org.dinky.mapper.RowPermissionsMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.RowPermissionsService;

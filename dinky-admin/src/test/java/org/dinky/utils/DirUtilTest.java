@@ -20,7 +20,7 @@
 package org.dinky.utils;
 
 import org.dinky.data.constant.DirConstant;
-import org.dinky.data.model.FileNode;
+import org.dinky.data.model.ext.FileNode;
 
 import java.util.List;
 

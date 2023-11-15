@@ -21,9 +21,9 @@ package org.dinky.job;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
-import org.dinky.data.model.JobManagerConfiguration;
-import org.dinky.data.model.TaskContainerConfigInfo;
-import org.dinky.data.model.TaskManagerConfiguration;
+import org.dinky.data.model.devops.JobManagerConfiguration;
+import org.dinky.data.model.devops.TaskContainerConfigInfo;
+import org.dinky.data.model.devops.TaskManagerConfiguration;
 import org.dinky.utils.JsonUtils;
 
 import java.util.HashMap;

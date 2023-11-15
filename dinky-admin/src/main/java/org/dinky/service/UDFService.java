@@ -20,7 +20,7 @@
 package org.dinky.service;
 
 import org.dinky.data.model.Resources;
-import org.dinky.data.model.UDFManage;
+import org.dinky.data.model.udf.UDFManage;
 import org.dinky.data.vo.UDFManageVO;
 
 import java.util.List;

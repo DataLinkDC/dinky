@@ -33,8 +33,8 @@ import org.dinky.data.flink.config.FlinkJobConfigInfo;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.flink.job.FlinkJobDetailInfo;
 import org.dinky.data.flink.watermark.FlinkJobNodeWaterMark;
-import org.dinky.data.model.JobInfoDetail;
-import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.ext.JobInfoDetail;
+import org.dinky.data.model.job.JobInstance;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.GatewayType;
@@ -77,7 +77,7 @@ public class JobRefreshHandler {
 
     /**
      * Refresh the job
-     * It receives two parameters: {@link org.dinky.data.model.JobInfoDetail} and needSave and returns a Boolean value.
+     * It receives two parameters: {@link JobInfoDetail} and needSave and returns a Boolean value.
      * When the return value is true, the job has completed and needs to be removed from the thread pool,
      * otherwise it means that the next round of flushing continues
      *

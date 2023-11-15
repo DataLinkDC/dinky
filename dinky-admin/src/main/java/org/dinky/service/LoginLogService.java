@@ -21,7 +21,7 @@ package org.dinky.service;
 
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.LoginLog;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;

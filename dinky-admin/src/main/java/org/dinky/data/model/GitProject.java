@@ -41,7 +41,6 @@ import lombok.Data;
 @Data
 @ApiModel(value = "GitProject", description = "Git Project Information")
 public class GitProject extends SuperEntity<GitProject> {
-
     /** */
     @ApiModelProperty(value = "Tenant ID", example = "1", dataType = "Long")
     @TableField(value = "tenant_id")
@@ -116,8 +115,9 @@ public class GitProject extends SuperEntity<GitProject> {
     @TableField(value = "order_line")
     private Integer orderLine;
 
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    @ApiModelProperty(value = "Operator", dataType = "Integer")
+    @TableField(value = "operator")
+    private Integer operator;
 
     public Integer getExecState() {
         switch (getBuildState()) {

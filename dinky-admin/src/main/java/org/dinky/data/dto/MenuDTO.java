@@ -19,7 +19,7 @@
 
 package org.dinky.data.dto;
 
-import org.dinky.data.model.Menu;
+import org.dinky.data.model.rbac.Menu;
 import org.dinky.mybatis.annotation.Save;
 
 import java.util.ArrayList;

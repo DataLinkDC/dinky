@@ -19,10 +19,10 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.data.model.HomeResource;
-import org.dinky.data.model.JobModelOverview;
-import org.dinky.data.model.JobStatusOverView;
-import org.dinky.data.model.JobTypeOverView;
+import org.dinky.data.model.home.HomeResource;
+import org.dinky.data.model.home.JobModelOverview;
+import org.dinky.data.model.home.JobStatusOverView;
+import org.dinky.data.model.home.JobTypeOverView;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertInstanceService;
 import org.dinky.service.ClusterConfigurationService;
