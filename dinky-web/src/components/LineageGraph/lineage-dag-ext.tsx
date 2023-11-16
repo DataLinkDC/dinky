@@ -81,6 +81,8 @@ export default class LineageDagExt extends LineageDag {
     result.edges = result.edges.map((item) => {
       return {
         ...item,
+        // 线条的类型: Bezier/Flow/Straight/Manhattan/AdvancedBezier/Bezier2-1/Bezier2-2/Bezier2-3/BrokenLine
+        // https://github.com/zhu-mingye/butterfly/blob/master/docs/zh-CN/edge.md#shapetype--string----%E9%80%89%E5%A1%AB
         shapeType: 'AdvancedBezier'
       };
     });

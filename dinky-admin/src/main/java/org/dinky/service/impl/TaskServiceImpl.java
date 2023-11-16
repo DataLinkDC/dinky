@@ -387,9 +387,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
 
         JobManager jobManager = JobManager.build(config);
-        if (config.isJarTask()) {
-            return "";
-        }
 
         return jobManager.exportSql(task.getStatement());
     }

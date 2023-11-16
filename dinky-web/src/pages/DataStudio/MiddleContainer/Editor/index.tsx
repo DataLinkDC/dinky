@@ -39,6 +39,7 @@ import { Button, Spin } from 'antd';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
 import React, { useEffect, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
+import {DIALECT} from "@/services/constants";
 
 export type EditorProps = {
   taskId: number;
@@ -147,6 +148,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
         <DiffModal
           diffs={diff}
           open={isModalOpen}
+          language={currentTab?.params?.taskData?.dialect?.toLowerCase() === DIALECT.FLINK_SQL ? 'flinksql' : 'sql'}
           fileName={currentData?.name}
           onUse={upDateTask}
         />
@@ -154,7 +156,8 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
           monacoRef={monacoInstance}
           editorRef={editorInstance}
           code={currentTab?.params?.taskData?.statement}
-          language={'sql'}
+          language={currentTab?.params?.taskData?.dialect?.toLowerCase() === DIALECT.FLINK_SQL ? 'flinksql' : 'sql'}
+          // language={'sql'}
           editorDidMount={editorDidMount}
           onChange={handleEditChange}
           enableSuggestions={true}

@@ -67,7 +67,8 @@ const JobHistoryList = (props: HistoryProps) => {
       render: (text: any, record: Jobs.JobInstance) => [
         <a
           key={'history-detail'}
-          onClick={() => history.push(`/devops/job-detail?id=${record.id}`)}>
+          onClick={() => history.push(`/devops/job-detail?id=${record.id}`)}
+        >
           {l('devops.joblist.detail')}
         </a>
       ]
