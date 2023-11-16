@@ -51,6 +51,7 @@ import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.types.Row;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -67,6 +68,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.URLUtil;
 
 /**
  * CustomTableEnvironmentImpl
@@ -125,7 +127,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         if (jars == null) {
             configuration.set(
                     PipelineOptions.JARS,
-                    Arrays.stream(jarPath).map(File::getAbsolutePath).collect(Collectors.toList()));
+                    Arrays.stream(URLUtil.getURLs(jarPath)).map(URL::toString).collect(Collectors.toList()));
         } else {
             CollUtil.addAll(jars, jarPath);
         }

@@ -22,7 +22,7 @@ package org.dinky.service.resource.impl;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.service.resource.BaseResourceManager;
-import org.dinky.utils.OssTemplate;
+import org.dinky.oss.OssTemplate;
 
 import java.io.File;
 import java.io.InputStream;

@@ -34,6 +34,7 @@ import org.dinky.data.properties.OssProperties;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.FlinkJobTask;
+import org.dinky.oss.OssTemplate;
 import org.dinky.scheduler.client.ProjectClient;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.Project;
@@ -46,7 +47,6 @@ import org.dinky.service.resource.impl.HdfsResourceManager;
 import org.dinky.service.resource.impl.OssResourceManager;
 import org.dinky.url.RsURLStreamHandlerFactory;
 import org.dinky.utils.JsonUtils;
-import org.dinky.utils.OssTemplate;
 import org.dinky.utils.UDFUtils;
 
 import org.apache.catalina.webresources.TomcatURLStreamHandlerFactory;
@@ -98,9 +98,9 @@ public class SystemInit implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         TenantContextHolder.ignoreTenant();
         initResources();
-
         List<Tenant> tenants = tenantService.list();
         sysConfigService.initSysConfig();
+
         for (Tenant tenant : tenants) {
             taskService.initDefaultFlinkSQLEnv(tenant.getId());
         }

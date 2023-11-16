@@ -100,8 +100,8 @@ public abstract class YarnGateway extends AbstractGateway {
             configuration.set(YarnConfigOptions.APPLICATION_NAME, flinkConfig.getJobName());
         }
 
-        if (Asserts.isNotNullString(clusterConfig.getYarnConfigPath())) {
-            configuration.setString(HADOOP_CONFIG, clusterConfig.getYarnConfigPath());
+        if (Asserts.isNotNullString(clusterConfig.getHadoopConfigPath())) {
+            configuration.setString(HADOOP_CONFIG, clusterConfig.getHadoopConfigPath());
         }
 
         if (configuration.containsKey(SecurityOptions.KERBEROS_LOGIN_KEYTAB.key())) {
@@ -135,7 +135,7 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     private Path getYanConfigFilePath(String path) {
-        return new Path(URI.create(config.getClusterConfig().getYarnConfigPath() + "/" + path));
+        return new Path(URI.create(config.getClusterConfig().getHadoopConfigPath() + "/" + path));
     }
 
     public SavePointResult savepointCluster(String savePoint) {

@@ -20,18 +20,24 @@
 package org.dinky.app.util;
 
 import org.dinky.app.db.DBUtil;
-import org.dinky.constant.FlinkConstant;
-import org.dinky.data.enums.JobStatus;
+import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.data.enums.Status;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.utils.JsonUtils;
 
+import org.apache.flink.api.common.JobExecutionResult;
+import org.apache.flink.api.common.JobStatus;
 import org.apache.flink.client.deployment.StandaloneClusterId;
 import org.apache.flink.client.program.rest.RestClusterClient;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.GlobalConfiguration;
-import org.apache.flink.runtime.client.JobStatusMessage;
+import org.apache.flink.configuration.ReadableConfig;
+import org.apache.flink.core.execution.JobClient;
+import org.apache.flink.core.execution.JobListener;
+import org.apache.flink.runtime.client.JobCancellationException;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.http.HttpUtil;
@@ -46,28 +52,38 @@ public class FlinkAppUtil {
      * If the task is completed, it sends a hook notification and stops monitoring.
      */
     public static void monitorFlinkTask(int taskId) {
-        boolean isRun = true;
-        try (RestClusterClient<StandaloneClusterId> client = createClient()) {
-            while (isRun) {
-                Collection<JobStatusMessage> jobs = client.listJobs().get();
-                if (jobs.isEmpty()) {
-                    log.error("No Flink task found, try again in 2 seconds.....");
-                }
-                for (JobStatusMessage job : jobs) {
-                    if (JobStatus.isDone(job.getJobState().toString())) {
-                        sendHook(taskId, job.getJobId().toHexString(), 0);
-                        log.info("hook {} finished.", job.getJobName());
-                        // There should be only one in application mode, so stop monitoring here
-                        isRun = false;
+        StreamExecutionEnvironment streamExecutionEnvironment = CustomTableEnvironmentContext.get().getStreamExecutionEnvironment();
+        streamExecutionEnvironment.registerJobListener(new JobListener() {
+            @Override
+            public void onJobSubmitted(@Nullable JobClient jobClient, @Nullable Throwable throwable) {
+                jobClient.getJobExecutionResult().thenAccept(jobExecutionResult -> finshedHook(jobClient, taskId));
+                jobClient.getJobStatus().thenAccept(job -> {
+                    if (job == JobStatus.FINISHED) {
+                        finshedHook(jobClient, taskId);
                     }
-                }
-                Thread.sleep(5000);
+                });
             }
-        } catch (Exception e) {
-            // If an exception is thrown, it will cause the k8s pod to trigger a restart,
-            // resulting in an inability to exit normally
-            log.error("hook failed:", e);
+
+            @Override
+            public void onJobExecuted(@Nullable JobExecutionResult jobExecutionResult, @Nullable Throwable throwable) {
+                if (throwable instanceof JobCancellationException) {
+                    // todo cancel task
+                } else {
+                    // other exception
+                }
+
+            }
+        });
+    }
+
+    private static void finshedHook(@NotNull JobClient jobClient, int taskId) {
+        try {
+            sendHook(taskId, jobClient.getJobID().toHexString(), 0);
+            log.info("hook finished.");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+
     }
 
     /**
@@ -79,9 +95,9 @@ public class FlinkAppUtil {
      */
     private static void sendHook(int taskId, String jobId, int reTryCount) throws InterruptedException {
         try {
-            String dinkyAddr = DBUtil.getSysConfig(Status.SYS_ENV_SETTINGS_DINKYADDR.getKey());
+            String dinkyAddr = SystemConfiguration.getInstances().getDinkyAddr().getValue();
             String url = StrFormatter.format(
-                    "http://{}/api/jobInstance/hookJobDone?taskId={}&jobId={}", dinkyAddr, taskId, jobId);
+                "{}/api/jobInstance/hookJobDone?taskId={}&jobId={}", dinkyAddr, taskId, jobId);
             String resultStr = HttpUtil.get(url);
             // TODO 这里应该使用Result实体类，但是Result.class不在comm里，迁移改动太大，暂时不搞
             String code = JsonUtils.parseObject(resultStr).get("code").toString();
@@ -101,17 +117,14 @@ public class FlinkAppUtil {
 
     /**
      * Create a REST cluster client for Flink.
+     *
      * @return
      * @throws Exception
      */
     private static RestClusterClient<StandaloneClusterId> createClient() throws Exception {
-        Configuration config;
-        Configuration fromEnvConfig = GlobalConfiguration.loadConfiguration();
-        if (!fromEnvConfig.keySet().isEmpty()) {
-            config = fromEnvConfig;
-        } else {
-            config = GlobalConfiguration.loadConfiguration(FlinkConstant.DEFAULT_FLINK_HOME);
-        }
-        return new RestClusterClient<>(config, StandaloneClusterId.getInstance());
+        ReadableConfig config = CustomTableEnvironmentContext.get().getStreamExecutionEnvironment().getConfiguration();
+        Configuration configuration = new Configuration((Configuration) config);
+
+        return new RestClusterClient<>(configuration, StandaloneClusterId.getInstance());
     }
 }

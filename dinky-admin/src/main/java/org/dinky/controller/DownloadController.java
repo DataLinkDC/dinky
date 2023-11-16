@@ -26,6 +26,7 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.util.ZipWriter;
+import org.dinky.service.resource.BaseResourceManager;
 
 import java.io.File;
 import java.io.InputStream;
@@ -50,7 +51,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
-/** @since 0.7.0 */
+/**
+ * @since 0.7.0
+ */
 @Slf4j
 @RestController
 @Api(tags = "UDF & App Jar Controller")
@@ -70,21 +73,21 @@ public class DownloadController {
             return;
         }
         FlinkUdfManifest flinkUdfManifest =
-                JSONUtil.toBean(FileUtil.readUtf8String(depManifestFile), FlinkUdfManifest.class);
+            JSONUtil.toBean(FileUtil.readUtf8String(depManifestFile), FlinkUdfManifest.class);
         List<String> filePath =
-                flinkUdfManifest.getJars().stream().map(Convert::toStr).collect(Collectors.toList());
+            flinkUdfManifest.getJars().stream().map(Convert::toStr).collect(Collectors.toList());
         List<String> pyFilePath =
-                flinkUdfManifest.getPythonFiles().stream().map(Convert::toStr).collect(Collectors.toList());
+            flinkUdfManifest.getPythonFiles().stream().map(Convert::toStr).collect(Collectors.toList());
         String[] jarNameList =
-                filePath.stream().map(FileUtil::getName).map(x -> "jar/" + x).toArray(String[]::new);
+            filePath.stream().map(FileUtil::getName).map(x -> "jar/" + x).toArray(String[]::new);
         String[] pyFileNameList =
-                pyFilePath.stream().map(FileUtil::getName).map(x -> "py/" + x).toArray(String[]::new);
+            pyFilePath.stream().map(FileUtil::getName).map(x -> "py/" + x).toArray(String[]::new);
 
         File zipFile = FileUtil.file(udfPackagePath + PathConstant.DEP_ZIP);
         InputStream[] inputStreams =
-                filePath.stream().map(FileUtil::getInputStream).toArray(InputStream[]::new);
+            filePath.stream().map(FileUtil::getInputStream).toArray(InputStream[]::new);
         InputStream[] pyInputStreams =
-                pyFilePath.stream().map(FileUtil::getInputStream).toArray(InputStream[]::new);
+            pyFilePath.stream().map(FileUtil::getInputStream).toArray(InputStream[]::new);
         try (ZipWriter zip = new ZipWriter(zipFile, Charset.defaultCharset())) {
             if (ArrayUtil.isNotEmpty(jarNameList)) {
                 zip.add(jarNameList, inputStreams);
@@ -102,16 +105,24 @@ public class DownloadController {
      * 提供docker通过http下载dinky-app.jar
      *
      * @param version 版本
-     * @param resp resp
+     * @param resp    resp
      */
     @GetMapping("downloadAppJar/{version}")
     @Log(title = "Download App Jar", businessType = BusinessType.DOWNLOAD)
     @ApiOperation("Download App Jar")
     public void downloadAppJar(@PathVariable String version, HttpServletResponse resp) {
         List<File> files = FileUtil.loopFiles(
-                PathConstant.WORK_DIR + "/jar", pathname -> pathname.getName().contains("dinky-app-" + version));
+            PathConstant.WORK_DIR + "/jar", pathname -> pathname.getName().contains("dinky-app-" + version));
         if (CollUtil.isNotEmpty(files)) {
             ServletUtil.write(resp, files.get(0));
         }
+    }
+
+    @GetMapping("downloadFromRs")
+    @Log(title = "Download From Resource", businessType = BusinessType.DOWNLOAD)
+    @ApiOperation("Download From Resource")
+    public void downloadJavaUDF(String path, HttpServletResponse resp) {
+        InputStream inputStream = BaseResourceManager.getInstance().readFile(path);
+        ServletUtil.write(resp, inputStream);
     }
 }
