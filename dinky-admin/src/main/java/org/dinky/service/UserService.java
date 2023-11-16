@@ -19,6 +19,7 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.AssignRoleDTO;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.dto.ModifyPasswordDTO;
 import org.dinky.data.dto.UserDTO;
@@ -26,7 +27,6 @@ import org.dinky.data.model.rbac.Role;
 import org.dinky.data.model.rbac.RowPermissions;
 import org.dinky.data.model.rbac.Tenant;
 import org.dinky.data.model.rbac.User;
-import org.dinky.data.params.AssignRoleParams;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.UserVo;
 import org.dinky.mybatis.service.ISuperService;
@@ -91,10 +91,10 @@ public interface UserService extends ISuperService<User> {
     /**
      * grant role
      *
-     * @param assignRoleParams {@link AssignRoleParams}
+     * @param assignRoleDTO {@link AssignRoleDTO}
      * @return {@link Result}<{@link Void}>
      */
-    Result<Void> assignRole(AssignRoleParams assignRoleParams);
+    Result<Void> assignRole(AssignRoleDTO assignRoleDTO);
 
     /**
      * choose tenant

@@ -512,7 +512,7 @@ VALUES (1, 'Default', '
 - **End Time :** ${endTime}
 - **<font color=''red''>${(exceptions.rootException)?substring(0,20)}</font>**
 [Go toTask Web](http://${taskUrl})
-', 1, null, null);
+', 1, current_timestamp, current_timestamp,null,null);
 
 INSERT INTO `dinky_udf_template`
 VALUES ( 1, 'java_udf', 'Java', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}
@@ -524,7 +524,7 @@ public class ${className} extends ScalarFunction {
         return null;
     }
 }'
-       , 1, '2022-10-19 09:17:37', '2022-10-25 17:45:57');
+       , 1, '2022-10-19 09:17:37', '2022-10-25 17:45:57',null,null);
 INSERT INTO `dinky_udf_template`
 VALUES ( 2, 'java_udtf', 'Java', 'UDTF', '${(package=='''')?string('''',''package ''+package+'';'')}
 
@@ -540,7 +540,7 @@ public static class ${className} extends TableFunction<Row> {
     }
   }
 }'
-       , 1, '2022-10-19 09:22:58', '2022-10-25 17:49:30');
+       , 1, '2022-10-19 09:22:58', '2022-10-25 17:49:30',null,null);
 INSERT INTO `dinky_udf_template`
 VALUES ( 3, 'scala_udf', 'Scala', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}
 
@@ -553,7 +553,7 @@ class ${className} extends ScalarFunction {
     "this is scala"
   }
 }'
-       , 1, '2022-10-25 09:21:32', '2022-10-25 17:49:46');
+       , 1, '2022-10-25 09:21:32', '2022-10-25 17:49:46',null,null);
 INSERT INTO `dinky_udf_template`
 VALUES ( 4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFunction, DataTypes
 from pyflink.table.udf import udf
@@ -567,7 +567,7 @@ class ${className}(ScalarFunction):
 
 
 ${attr!''f''} = udf(${className}(), result_type=DataTypes.STRING())'
-       , 1, '2022-10-25 09:23:07', '2022-10-25 09:34:01');
+       , 1, '2022-10-25 09:23:07', '2022-10-25 09:34:01',null,null);
 INSERT INTO `dinky_udf_template`
 VALUES ( 5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes
 from pyflink.table.udf import udf
@@ -575,7 +575,7 @@ from pyflink.table.udf import udf
 @udf(result_type=DataTypes.STRING())
 def ${className}(variable1:str):
   return '''''
-       , 1, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
+       , 1, '2022-10-25 09:25:13', '2022-10-25 09:34:47',null,null);
 
 INSERT INTO `dinky_flink_document` ( `id`, `category`, `type`, `subtype`, `name`
                                    , `description`, `fill_value`, `version`, `like_num`, `enabled`
@@ -2691,7 +2691,11 @@ AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions
        , '2023-10-31 16:41:46', '2023-10-31 16:43:29');
 
 
-INSERT INTO `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time) VALUES (244, 'Reference', '建表语句', 'Batch/Streaming', 'datagen job demo', 'datagen job demo', 'DROP TABLE IF EXISTS source_table3;
+INSERT INTO `dinky_flink_document` (id, category, type, subtype, name
+	, description, fill_value, version, like_num, enabled
+	, create_time, update_time)
+VALUES (244, 'Reference', '建表语句', 'Batch/Streaming', 'datagen job demo'
+	, 'datagen job demo', 'DROP TABLE IF EXISTS source_table3;
 CREATE TABLE IF NOT EXISTS source_table3(
 --订单id
 `order_id` BIGINT,
@@ -2704,16 +2708,16 @@ CREATE TABLE IF NOT EXISTS source_table3(
 --支付时间
 `order_time` as CAST(CURRENT_TIMESTAMP AS TIMESTAMP(3)), -- `在这里插入代码片`
 --WATERMARK
-WATERMARK FOR order_time AS order_time - INTERVAL \'2\' SECOND
+WATERMARK FOR order_time AS order_time - INTERVAL ''2'' SECOND
 ) WITH(
-\'connector\' = \'datagen\',
- \'rows-per-second\' = \'1\',
- \'fields.order_id.min\' = \'1\',
- \'fields.order_id.max\' = \'2\',
- \'fields.amount.min\' = \'1\',
- \'fields.amount.max\' = \'10\',
- \'fields.product.min\' = \'1\',
- \'fields.product.max\' = \'2\'
+''connector'' = ''datagen'',
+ ''rows-per-second'' = ''1'',
+ ''fields.order_id.min'' = ''1'',
+ ''fields.order_id.max'' = ''2'',
+ ''fields.amount.min'' = ''1'',
+ ''fields.amount.max'' = ''10'',
+ ''fields.product.min'' = ''1'',
+ ''fields.product.max'' = ''2''
 );
 
 -- SELECT * FROM source_table3 LIMIT 10;
@@ -2729,7 +2733,7 @@ CREATE TABLE IF NOT EXISTS sink_table5(
 --1分钟时间聚合总数
 `one_minute_sum` BIGINT
 ) WITH(
-\'connector\'=\'print\'
+''connector''=''print''
 );
 
 INSERT INTO sink_table5
@@ -2741,18 +2745,25 @@ SUM(amount) OVER(
 PARTITION BY product
 ORDER BY order_time
 -- 标识统计范围是1个 product 的最近 1 分钟的数据
-RANGE BETWEEN INTERVAL \'1\' MINUTE PRECEDING AND CURRENT ROW
+RANGE BETWEEN INTERVAL ''1'' MINUTE PRECEDING AND CURRENT ROW
 ) as one_minute_sum
-FROM source_table3;', 'All Versions', 0, 1, '2023-11-15 15:42:16', '2023-11-15 15:42:16');
+FROM source_table3;', 'All Versions', 0, 1
+	, '2023-11-15 15:42:16', '2023-11-15 15:42:16');
 
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time) VALUES (245, 'Property', '优化参数', 'Streaming', 'checkpoint config', 'checkpoint config', '-- 声明一些调优参数 (checkpoint 等相关配置)
-set \'execution.checkpointing.checkpoints-after-tasks-finish.enabled\' =\'true\';
-SET \'pipeline.operator-chaining\' = \'false\';
-set \'state.savepoints.dir\'=\'file:///opt/data/flink_cluster/savepoints\'; -- 目录自行修改
-set \'state.checkpoints.dir\'= \'file:///opt/data/flink_cluster/checkpoints\'; -- 目录自行修改
--- set state.checkpoint-storage=\'filesystem\';
-set \'state.backend.type\'=\'rocksdb\';
-set \'execution.checkpointing.interval\'=\'60 s\';
-set \'state.checkpoints.num-retained\'=\'100\';
+
+INSERT INTO dinky_flink_document (id, category, type, subtype, name
+	, description, fill_value, version, like_num, enabled
+	, create_time, update_time)
+VALUES (245, 'Property', '优化参数', 'Streaming', 'checkpoint config'
+	, 'checkpoint config', '-- 声明一些调优参数 (checkpoint 等相关配置)
+set ''execution.checkpointing.checkpoints-after-tasks-finish.enabled'' =''true'';
+SET ''pipeline.operator-chaining'' = ''false'';
+set ''state.savepoints.dir''=''file:///opt/data/flink_cluster/savepoints''; -- 目录自行修改
+set ''state.checkpoints.dir''= ''file:///opt/data/flink_cluster/checkpoints''; -- 目录自行修改
+-- set state.checkpoint-storage=''filesystem'';
+set ''state.backend.type''=''rocksdb'';
+set ''execution.checkpointing.interval''=''60 s'';
+set ''state.checkpoints.num-retained''=''100'';
 -- 使 solt 均匀分布在 各个 TM 上
-set \'cluster.evenly-spread-out-slots\'=\'true\';', 'All Versions', 0, 1, '2023-11-15 15:57:42', '2023-11-15 15:57:42');
+set ''cluster.evenly-spread-out-slots''=''true'';', 'All Versions', 0, 1
+	, '2023-11-15 15:57:42', '2023-11-15 15:57:42');

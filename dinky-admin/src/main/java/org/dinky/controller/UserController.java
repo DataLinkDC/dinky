@@ -22,11 +22,11 @@ package org.dinky.controller;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.dto.AssignRoleDTO;
 import org.dinky.data.dto.ModifyPasswordDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.rbac.User;
-import org.dinky.data.params.AssignRoleParams;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.UserVo;
@@ -194,22 +194,22 @@ public class UserController {
     /**
      * give user assign role
      *
-     * @param assignRoleParams {@link AssignRoleParams}
+     * @param assignRoleDTO {@link AssignRoleDTO}
      * @return {@link Result} with {@link Void}
      */
     @PostMapping(value = "/assignRole")
     @ApiOperation("Assign Role")
     @Log(title = "Assign Role", businessType = BusinessType.UPDATE)
     @ApiImplicitParam(
-            name = "assignRoleParams",
-            value = "assignRoleParams",
+            name = "assignRoleDTO",
+            value = "assignRoleDTO",
             required = true,
-            dataType = "AssignRoleParams",
+            dataType = "AssignRoleDTO",
             paramType = "body",
-            dataTypeClass = AssignRoleParams.class)
+            dataTypeClass = AssignRoleDTO.class)
     @SaCheckPermission(PermissionConstants.AUTH_USER_ASSIGN_ROLE)
-    public Result<Void> assignRole(@RequestBody AssignRoleParams assignRoleParams) {
-        return userService.assignRole(assignRoleParams);
+    public Result<Void> assignRole(@RequestBody AssignRoleDTO assignRoleDTO) {
+        return userService.assignRole(assignRoleDTO);
     }
 
     /**

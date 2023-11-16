@@ -23,6 +23,8 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.context.UserInfoContextHolder;
+import org.dinky.data.dto.AssignRoleDTO;
+import org.dinky.data.dto.AssignUserToTenantDTO;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.dto.ModifyPasswordDTO;
 import org.dinky.data.dto.UserDTO;
@@ -39,8 +41,6 @@ import org.dinky.data.model.rbac.Tenant;
 import org.dinky.data.model.rbac.User;
 import org.dinky.data.model.rbac.UserRole;
 import org.dinky.data.model.rbac.UserTenant;
-import org.dinky.data.params.AssignRoleParams;
-import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.UserVo;
 import org.dinky.mapper.TokenMapper;
@@ -278,7 +278,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             List<Integer> userIds = getUserIdsByTenantId(tenant.getId());
             User user = getUserByUsername(loginDTO.getUsername());
             userIds.add(user.getId());
-            tenantService.assignUserToTenant(new AssignUserToTenantParams(tenant.getId(), userIds));
+            tenantService.assignUserToTenant(new AssignUserToTenantDTO(tenant.getId(), userIds));
             return user;
         } else if (userFromLocal.getUserType() != UserType.LDAP.getCode()) {
             loginLogService.saveLoginLog(userFromLocal, Status.LDAP_LOGIN_FORBID);
@@ -303,13 +303,12 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result<Void> assignRole(AssignRoleParams assignRoleParams) {
+    public Result<Void> assignRole(AssignRoleDTO assignRoleDTO) {
         List<UserRole> userRoleList = new ArrayList<>();
-        userRoleService.remove(
-                new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, assignRoleParams.getUserId()));
-        for (Integer roleId : assignRoleParams.getRoleIds()) {
+        userRoleService.remove(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, assignRoleDTO.getUserId()));
+        for (Integer roleId : assignRoleDTO.getRoleIds()) {
             UserRole userRole = new UserRole();
-            userRole.setUserId(assignRoleParams.getUserId());
+            userRole.setUserId(assignRoleDTO.getUserId());
             userRole.setRoleId(roleId);
             userRoleList.add(userRole);
         }
