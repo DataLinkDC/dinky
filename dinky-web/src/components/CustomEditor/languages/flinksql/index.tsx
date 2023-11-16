@@ -181,7 +181,6 @@ export function FlinkSQLLanguage(monaco: Monaco | null) {
     }
   });
 
-  // monaco-editor 自定义语言之后 注释代码的快捷键失效 如何解决
   monaco?.languages?.setLanguageConfiguration('flinksql', {
     comments: {
       lineComment: '--',
