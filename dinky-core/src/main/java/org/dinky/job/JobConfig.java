@@ -80,7 +80,6 @@ public class JobConfig {
             notes = "Cluster configuration ID")
     private Integer clusterConfigurationId;
 
-
     @ApiModelProperty(value = "Task JobLifeCycle", dataType = "Integer", example = "2", notes = "Task JobLifeCycle")
     private Integer step;
 
