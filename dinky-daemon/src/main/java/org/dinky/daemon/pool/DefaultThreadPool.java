@@ -47,33 +47,23 @@ public class DefaultThreadPool implements ThreadPool {
 
     private final TaskQueue<DaemonTask> queue = new TaskQueue<>();
 
-    private static DefaultThreadPool defaultThreadPool;
-
     private DefaultThreadPool() {
         addWorkers(DEFAULT_WORKER_NUM);
     }
 
+    private static final class DefaultThreadPoolHolder {
+        private static final DefaultThreadPool defaultThreadPool = new DefaultThreadPool();
+    }
+
     public static DefaultThreadPool getInstance() {
-        if (defaultThreadPool == null) {
-            synchronized (DefaultThreadPool.class) {
-                if (defaultThreadPool == null) {
-                    defaultThreadPool = new DefaultThreadPool();
-                }
-            }
-        }
-        return defaultThreadPool;
+        return DefaultThreadPoolHolder.defaultThreadPool;
     }
 
     @Override
     public void execute(DaemonTask daemonTask) {
         if (daemonTask != null) {
-            queue.enqueue(daemonTask);
+            queue.addTask(daemonTask);
         }
-    }
-
-    @Override
-    public DaemonTask dequeueByTask(DaemonTaskConfig daemonTask) {
-        return queue.dequeueByTask(daemonTask);
     }
 
     @Override
@@ -130,6 +120,14 @@ public class DefaultThreadPool implements ThreadPool {
     @Override
     public int getTaskSize() {
         return queue.getTaskSize();
+    }
+
+    public DaemonTask getByTaskConfig(DaemonTaskConfig daemonTask) {
+        return queue.getByTaskConfig(daemonTask);
+    }
+
+    public DaemonTask removeByTaskConfig(DaemonTaskConfig daemonTask) {
+        return queue.removeByTaskConfig(daemonTask);
     }
 
     public int getWorkCount() {

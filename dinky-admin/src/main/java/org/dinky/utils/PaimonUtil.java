@@ -69,6 +69,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ModifierUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -106,7 +107,7 @@ public class PaimonUtil {
         if (CollUtil.isEmpty(dataList)) {
             return;
         }
-        Table paimonTable = createOrGetTable(table, null);
+        Table paimonTable = createOrGetTable(table, clazz);
         BatchWriteBuilder writeBuilder = paimonTable.newBatchWriteBuilder();
 
         // 2. Write records in distributed tasks
@@ -120,19 +121,24 @@ public class PaimonUtil {
                     DataField dataField = fields.get(i);
                     DataType type = dataField.type();
                     String fieldName = StrUtil.toCamelCase(dataField.name());
-                    if (type.getTypeRoot() == DataTypeRoot.VARCHAR) {
-                        BinaryWriter.write(
-                                writer,
-                                i,
-                                BinaryString.fromString(JSONUtil.toJsonStr(ReflectUtil.getFieldValue(t, fieldName))),
-                                type,
-                                null);
-                    } else if (type.getTypeRoot() == DataTypeRoot.TIME_WITHOUT_TIME_ZONE) {
-                        Timestamp timestamp =
-                                Timestamp.fromLocalDateTime((LocalDateTime) ReflectUtil.getFieldValue(t, fieldName));
-                        BinaryWriter.write(writer, i, timestamp, type, null);
-                    } else {
-                        BinaryWriter.write(writer, i, ReflectUtil.getFieldValue(t, fieldName), type, null);
+                    Object fieldValue = ReflectUtil.getFieldValue(t, fieldName);
+                    try {
+                        if (type.getTypeRoot() == DataTypeRoot.VARCHAR) {
+                            BinaryWriter.write(
+                                    writer, i, BinaryString.fromString(JSONUtil.toJsonStr(fieldValue)), type, null);
+                        } else if (type.getTypeRoot() == DataTypeRoot.TIMESTAMP_WITHOUT_TIME_ZONE) {
+                            Timestamp timestamp = Timestamp.fromLocalDateTime((LocalDateTime) fieldValue);
+                            BinaryWriter.write(writer, i, timestamp, type, null);
+                        } else {
+                            BinaryWriter.write(writer, i, fieldValue, type, null);
+                        }
+                    } catch (Throwable e) {
+                        String err = StrFormatter.format(
+                                "write table: [{}], data filed [{}], value: [{}] error",
+                                paimonTable.name(),
+                                fieldName,
+                                fieldValue);
+                        throw new RuntimeException(err, e);
                     }
                 }
                 write.write(row);
