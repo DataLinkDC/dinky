@@ -18,7 +18,7 @@
  */
 
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
-import { LogLanguage } from '@/components/CustomEditor/languages/javalog';
+import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
 import { Loading } from '@/pages/Other/Loading';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
@@ -94,7 +94,7 @@ const CodeShow = (props: CodeShowFormProps) => {
   useEffect(() => {
     convertCodeEditTheme(monaco?.editor);
     // 需要调用 手动注册下自定义语言
-    LogLanguage(monaco);
+    LoadCustomEditorLanguage(monaco);
   }, [monaco]);
 
   /**

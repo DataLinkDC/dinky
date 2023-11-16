@@ -22,7 +22,6 @@ package org.dinky.service.impl;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.pool.DefaultThreadPool;
-import org.dinky.daemon.task.DaemonFactory;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
 import org.dinky.data.dto.ClusterConfigurationDTO;
@@ -40,7 +39,6 @@ import org.dinky.data.result.ProTableResult;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.FlinkJobTask;
-import org.dinky.job.handler.JobRefreshHandler;
 import org.dinky.mapper.JobInstanceMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.mybatis.util.ProTableUtil;
@@ -54,6 +52,7 @@ import org.dinky.utils.JsonUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
@@ -188,17 +187,23 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
     @Override
     public JobInfoDetail refreshJobInfoDetail(Integer jobInstanceId, boolean isForce) {
-        JobInfoDetail jobInfoDetail = getJobInfoDetail(jobInstanceId);
-        // Directly returns database data if the task has completed and is not a forced refresh
-        if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus()) && !isForce) {
+        DaemonTaskConfig daemonTaskConfig = DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId);
+        DaemonTask daemonTask = DefaultThreadPool.getInstance().getByTaskConfig(daemonTaskConfig);
+
+        if (daemonTask != null) {
+            daemonTask.dealTask();
+            return ((FlinkJobTask) daemonTask).getJobInfoDetail();
+        } else if (isForce) {
+            daemonTask = DaemonTask.build(daemonTaskConfig);
+            daemonTask.dealTask();
+            JobInfoDetail jobInfoDetail = ((FlinkJobTask) daemonTask).getJobInfoDetail();
+            if (!JobStatus.isDone(jobInfoDetail.getInstance().getStatus())) {
+                DefaultThreadPool.getInstance().execute(daemonTask);
+            }
             return jobInfoDetail;
+        } else {
+            return getJobInfoDetail(jobInstanceId);
         }
-        boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, true);
-        // If the task becomes incomplete after a forced refresh, it is re-queued to the task
-        if (!isDone) {
-            DaemonFactory.refeshOraddTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId));
-        }
-        return jobInfoDetail;
     }
 
     @Override
@@ -211,11 +216,11 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             // returning true to prevent retry.
             return true;
         }
+
         DaemonTaskConfig config = DaemonTaskConfig.build(FlinkJobTask.TYPE, instance.getId());
-        DaemonTask daemonTask = DefaultThreadPool.getInstance().dequeueByTask(config);
-        if (daemonTask == null) {
-            daemonTask = DaemonTask.build(config);
-        }
+        DaemonTask daemonTask = DefaultThreadPool.getInstance().removeByTaskConfig(config);
+        daemonTask = Optional.ofNullable(daemonTask).orElse(DaemonTask.build(config));
+
         boolean isDone = daemonTask.dealTask();
         // If the task is not completed, it is re-queued
         if (!isDone) {
@@ -228,6 +233,9 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     public void refreshJobByTaskIds(Integer... taskIds) {
         for (Integer taskId : taskIds) {
             JobInstance instance = getJobInstanceByTaskId(taskId);
+            DaemonTaskConfig daemonTaskConfig = DaemonTaskConfig.build(FlinkJobTask.TYPE, instance.getId());
+            DefaultThreadPool.getInstance().removeByTaskConfig(daemonTaskConfig);
+            DefaultThreadPool.getInstance().execute(DaemonTask.build(daemonTaskConfig));
             refreshJobInfoDetail(instance.getId(), false);
         }
     }

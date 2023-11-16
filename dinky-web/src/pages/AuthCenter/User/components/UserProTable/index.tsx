@@ -23,7 +23,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { BackIcon } from '@/components/Icons/CustomIcons';
-import { Authorized, useAccess } from '@/hooks/useAccess';
+import { Authorized, HasAuthority, useAccess } from '@/hooks/useAccess';
 import { UserType, USER_TYPE_ENUM } from '@/pages/AuthCenter/User/components/constants';
 import PasswordModal from '@/pages/AuthCenter/User/components/PasswordModal';
 import UserModalForm from '@/pages/AuthCenter/User/components/UserModalForm';
@@ -225,6 +225,7 @@ const UserProTable = () => {
           <EnableSwitchBtn
             key={`${record.id}_enable`}
             record={record}
+            disabled={!HasAuthority('/auth/user/edit')}
             onChange={() => handleChangeEnable(record)}
           />
           // </Authorized>

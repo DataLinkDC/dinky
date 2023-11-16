@@ -23,7 +23,7 @@ import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
 import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { Form, Modal } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 type PasswordModalFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -59,10 +59,6 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
     form.setFieldsValue(values);
   }, [modalVisible, values, form]);
 
-  const [formVals, setFormVals] = useState<Partial<UserBaseInfo.ChangePasswordParams>>({
-    ...values
-  });
-
   /**
    * handle cancel
    */
@@ -76,9 +72,8 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
    */
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({ ...formVals, ...fieldsValue });
-    await handleSubmit({ ...formVals, ...fieldsValue });
-    await handleCancel();
+    handleSubmit({ ...values, ...fieldsValue });
+    handleCancel();
   };
 
   /**
@@ -92,7 +87,7 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
       onCancel={() => handleCancel()}
       onOk={() => submitForm()}
     >
-      <PasswordForm values={values as any} form={form} />
+      <PasswordForm values={values as UserBaseInfo.User} form={form} />
     </Modal>
   );
 };

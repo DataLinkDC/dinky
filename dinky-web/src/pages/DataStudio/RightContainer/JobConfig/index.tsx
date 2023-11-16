@@ -23,7 +23,7 @@ import {
   getCurrentTab,
   isDataStudioTabsItemType
 } from '@/pages/DataStudio/function';
-import { SessionType, StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
+import { SessionType, StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import {
   buildAlertGroupOptions,
   buildClusterConfigOptions,
@@ -32,7 +32,7 @@ import {
   buildRunModelOptions,
   calculatorWidth
 } from '@/pages/DataStudio/RightContainer/JobConfig/function';
-import { AlertStateType } from '@/pages/RegCenter/Alert/AlertInstance/model';
+import { AlertStateType, ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { InfoCircleOutlined } from '@ant-design/icons';
@@ -78,7 +78,10 @@ const JobConfig = (props: any) => {
 
   useEffect(() => {
     dispatch({
-      type: 'Studio/queryFlinkConfigOptions'
+      type: STUDIO_MODEL_ASYNC.queryFlinkConfigOptions
+    });
+    dispatch({
+      type: ALERT_MODEL_ASYNC.queryAlertGroup
     });
     form.setFieldsValue(current);
   }, [current]);

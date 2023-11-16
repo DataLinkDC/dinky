@@ -63,9 +63,9 @@
     "message": "注册中心",
     "description": "The label for category 注册中心 in sidebar tutorialSidebar"
   },
-  "sidebar.tutorialSidebar.category.系统设置": {
-    "message": "系统设置",
-    "description": "The label for category 系统设置 in sidebar tutorialSidebar"
+  "sidebar.tutorialSidebar.category.配置中心": {
+    "message": "配置中心",
+    "description": "The label for category 配置中心 in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.扩展": {
     "message": "扩展",

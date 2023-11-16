@@ -141,7 +141,7 @@ export function convertCodeEditTheme(editorInstance?: any) {
     rules: [
       // 注意,默认的不做修改 因为上边继承了父主题, 只添加自己定义的 , 否则会覆盖默认的 , 导致编辑器样式不一致
       { token: 'custom-info', foreground: '#808080' },
-      { token: 'custom-thread', foreground: '#07f313' },
+      { token: 'custom-thread', foreground: '#9fa19f' },
       { token: 'custom-class', foreground: '#1060d9' },
       { token: 'custom-error', foreground: '#ff0000', fontStyle: 'bold' },
       { token: 'custom-warning', foreground: '#FFA500', fontStyle: 'bold' },
@@ -161,7 +161,7 @@ export function convertCodeEditTheme(editorInstance?: any) {
     rules: [
       // 注意,默认的不做修改 因为上边继承了父主题, 只添加自己定义的 , 否则会覆盖默认的 , 导致编辑器样式不一致
       { token: 'custom-info', foreground: '#008800' },
-      { token: 'custom-thread', foreground: '#07f313' },
+      { token: 'custom-thread', foreground: '#9fa19f' },
       { token: 'custom-class', foreground: '#1060d9' },
       { token: 'custom-error', foreground: '#ff0000', fontStyle: 'bold' },
       { token: 'custom-warning', foreground: '#FFA500', fontStyle: 'bold' },

@@ -19,7 +19,6 @@
 
 package org.dinky.data.dto;
 
-import org.dinky.config.Dialect;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.job.JobConfig;
@@ -231,7 +230,6 @@ public class TaskDTO extends AbstractStatementDTO {
         JobConfig jobConfig = new JobConfig();
         BeanUtil.copyProperties(this, jobConfig);
         jobConfig.setConfigJson(parsedConfig);
-        jobConfig.setJarTask(isJarTask());
         jobConfig.setTaskId(id);
         jobConfig.setJobName(name);
 
@@ -242,9 +240,5 @@ public class TaskDTO extends AbstractStatementDTO {
         Task task = new Task();
         BeanUtil.copyProperties(this, task);
         return task;
-    }
-
-    public boolean isJarTask() {
-        return Dialect.isJarDialect(dialect);
     }
 }

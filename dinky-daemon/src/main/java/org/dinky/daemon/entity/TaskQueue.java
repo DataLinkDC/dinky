@@ -22,7 +22,7 @@ package org.dinky.daemon.entity;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -31,20 +31,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TaskQueue<T extends DaemonTask> {
 
-    private final LinkedList<T> tasks = new LinkedList<>();
+    private final ArrayList<T> tasks = new ArrayList<>();
+    private int _next_index = 0;
 
     private final Object lock = new Object();
 
-    public void enqueue(T task) {
+    public void addTask(T task) {
         synchronized (lock) {
+            tasks.add(task);
             lock.notifyAll();
-            // prevent duplicate additions
-            dequeueByTask(task.getConfig());
-            tasks.addLast(task);
         }
     }
 
-    public T dequeue() {
+    public T getNext() {
         synchronized (lock) {
             while (tasks.isEmpty()) {
                 try {
@@ -53,11 +52,16 @@ public class TaskQueue<T extends DaemonTask> {
                     log.error(e.getMessage(), e);
                 }
             }
-            return tasks.removeFirst();
+            if (_next_index >= tasks.size()) {
+                _next_index = 0;
+            }
+            T task = tasks.get(_next_index);
+            _next_index++;
+            return task;
         }
     }
 
-    public T dequeueByTask(DaemonTaskConfig task) {
+    public T getByTaskConfig(DaemonTaskConfig task) {
         synchronized (lock) {
             T find = null;
             for (T t : tasks) {
@@ -65,10 +69,23 @@ public class TaskQueue<T extends DaemonTask> {
                     find = t;
                 }
             }
+            return find;
+        }
+    }
+
+    public T removeByTaskConfig(DaemonTaskConfig task) {
+        synchronized (lock) {
+            T find = getByTaskConfig(task);
             if (find != null) {
                 tasks.remove(find);
             }
             return find;
+        }
+    }
+
+    public void removeByTask(T task) {
+        synchronized (lock) {
+            tasks.remove(task);
         }
     }
 

@@ -21,6 +21,7 @@ import CodeShow from '@/components/CustomEditor/CodeShow';
 import VersionList from '@/components/VersionList';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { handleRemoveById } from '@/services/BusinessCrud';
+import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { TaskVersionListItem } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
@@ -85,7 +86,13 @@ const JobVersionTab = (props: JobProps) => {
               </>
             }
           >
-            <CodeShow code={currentVersion?.statement ?? ''} height={500} language={'sql'} />
+            <CodeShow
+              code={currentVersion?.statement ?? ''}
+              height={500}
+              language={
+                currentVersion?.dialect?.toLowerCase() === DIALECT.FLINK_SQL ? 'flinksql' : 'sql'
+              }
+            />
           </Card>
         </Col>
       </Row>
