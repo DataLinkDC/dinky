@@ -1010,7 +1010,7 @@ export default {
   'user.request.type': '请求类型',
   'user.reset': '您确定要重置此用户密码吗?',
   'user.resetPassword': '重置密码',
-  'user.resetPasswordSuccess': '用户',
+  'user.resetPasswordSuccess': '用户 [{username}] 重置密码成功, 新密码: {password}',
   'user.role': '角色',
   'user.status': '是否删除',
   'user.superAdminFlag': '超级管理员',

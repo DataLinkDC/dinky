@@ -19,11 +19,12 @@
 
 import { TagAlignLeft } from '@/components/StyledComponents';
 import { RUN_MODE } from '@/services/constants';
-import { Alert, Cluster } from '@/types/RegCenter/data';
+import {Alert, ALERT_TYPE, Cluster} from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import { PaperClipOutlined } from '@ant-design/icons';
 import { Badge, Tag } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
+import {getAlertIcon} from "@/pages/RegCenter/Alert/AlertInstance/function";
 
 /**
  * build job run model
@@ -150,13 +151,15 @@ export const buildEnvOptions = (env: any[]) => {
 export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
   const alertGroupOptions: DefaultOptionType[] = [
     {
-      label: l('button.disable'),
-      value: -1
+      label: <TagAlignLeft>{ getAlertIcon(ALERT_TYPE.GROUP, 20)}{l('button.disable')}</TagAlignLeft>,
+      value: -1,
+      key: -1
     }
   ];
   for (const item of alertGroups) {
+
     alertGroupOptions.push({
-      label: item.name,
+      label: <TagAlignLeft>{ getAlertIcon(ALERT_TYPE.GROUP, 20)}{item.name}</TagAlignLeft>,
       value: item.id,
       key: item.id
     });

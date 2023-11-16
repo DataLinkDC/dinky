@@ -1,4 +1,4 @@
-// todo 自定义语言不生效
+
 export function LogLanguage(monaco: any) {
   // Register a new language
   monaco?.languages.register({
@@ -7,7 +7,7 @@ export function LogLanguage(monaco: any) {
     aliases: ['javalog', 'Javalog', 'Javalog', 'jl', 'log']
   });
   monaco?.languages.setMonarchTokensProvider('javalog', {
-    // todo: 如果需要分段展示不同的颜色 则需要在这里添加规则, 且正则必须是严格模式, 否则会匹配一整行,无法达到预期效果
+
     tokenizer: {
       root: [
         // 默认不区分大小写 //

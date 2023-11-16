@@ -26,7 +26,7 @@ import { RocketOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { Descriptions, Tag, Typography } from 'antd';
 
-const { Text, Paragraph } = Typography;
+const { Text } = Typography;
 
 /**
  * Renders the JobConfigTab component.
@@ -64,13 +64,13 @@ const JobDesc = (props: JobProps) => {
    * @param {object} config - The user configuration object.
    * @returns {JSX.Element[]} - An array of Descriptions.Item components representing the user configuration.
    */
-  const getUserConfig = (config: any) => {
-    let formList = [];
-    for (let configKey in config) {
-      formList.push(<Descriptions.Item label={configKey}>{config[configKey]}</Descriptions.Item>);
-    }
-    return formList;
-  };
+  // const getUserConfig = (config: any) => {
+  //   let formList = [];
+  //   for (let configKey in config) {
+  //     formList.push(<Descriptions.Item label={configKey}>{config[configKey]}</Descriptions.Item>);
+  //   }
+  //   return formList;
+  // };
 
   return (
     <>
@@ -93,7 +93,7 @@ const JobDesc = (props: JobProps) => {
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.ClusterInstanceName')}>
-            <Link to={'/registration/cluster/instance'}>{jobDetail?.cluster?.alias}</Link>
+            <Link to={'/registration/cluster/instance'}>{jobDetail?.clusterInstance?.alias}</Link>
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.JobId')}>
@@ -118,10 +118,6 @@ const JobDesc = (props: JobProps) => {
 
           <Descriptions.Item label={l('devops.jobinfo.config.useSqlFragment')}>
             {jobDetail?.history?.config?.useSqlFragment ? l('button.enable') : l('button.disable')}
-          </Descriptions.Item>
-
-          <Descriptions.Item label={l('devops.jobinfo.config.JobType')}>
-            {jobDetail?.history?.config?.isJarTask ? 'Jar' : 'FlinkSQL'}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.execmode')}>

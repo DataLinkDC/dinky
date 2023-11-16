@@ -16,9 +16,13 @@
  */
 
 /*--- get alert instance  ---*/
-import { getData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
+import {queryDataByParams} from "@/services/BusinessCrud";
 
 export function showAlertInstance() {
-  return getData(API_CONSTANTS.ALERT_INSTANCE_LIST_ENABLE_ALL);
+  return queryDataByParams(API_CONSTANTS.ALERT_INSTANCE_LIST_ENABLE_ALL) ?? [];
+}
+
+export function showAlertGroup() {
+  return queryDataByParams(API_CONSTANTS.ALERT_GROUP_LIST_ENABLE_ALL) ?? [];
 }

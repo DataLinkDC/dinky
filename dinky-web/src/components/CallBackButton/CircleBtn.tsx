@@ -16,9 +16,9 @@
  *
  */
 
-import { TabsItemType } from '@/pages/DataStudio/types';
 import { Button } from 'antd';
 import React from 'react';
+import {TabsItemType} from "@/pages/DataStudio/model";
 
 export type CircleButtonProps = {
   icon: React.ReactNode;

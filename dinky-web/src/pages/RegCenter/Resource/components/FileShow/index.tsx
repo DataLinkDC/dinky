@@ -17,12 +17,12 @@
  *
  */
 
-import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { renderLanguage, unSupportView } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { Empty, Space, Typography } from 'antd';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import CodeShow from "@/components/CustomEditor/CodeShow";
 
 const { Text } = Typography;
 
@@ -103,7 +103,7 @@ const FileShow: React.FC<FileShowProps> = (props) => {
         </>
       );
     } else {
-      return <CodeEdit {...restCodeShowProps} {...CodeEditProps} />;
+      return <CodeShow {...restCodeShowProps} {...CodeEditProps} />;
     }
   };
 

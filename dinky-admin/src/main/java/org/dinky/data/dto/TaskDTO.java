@@ -231,7 +231,6 @@ public class TaskDTO extends AbstractStatementDTO {
         JobConfig jobConfig = new JobConfig();
         BeanUtil.copyProperties(this, jobConfig);
         jobConfig.setConfigJson(parsedConfig);
-        jobConfig.setJarTask(isJarTask());
         jobConfig.setTaskId(id);
         jobConfig.setJobName(name);
 
@@ -242,9 +241,5 @@ public class TaskDTO extends AbstractStatementDTO {
         Task task = new Task();
         BeanUtil.copyProperties(this, task);
         return task;
-    }
-
-    public boolean isJarTask() {
-        return Dialect.isJarDialect(dialect);
     }
 }

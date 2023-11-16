@@ -45,7 +45,6 @@ declare namespace Jobs {
     savePointStrategy: string;
     savePointPath: string;
     useSqlFragment: string;
-    isJarTask: string;
     useBatchModel: string;
   };
 
