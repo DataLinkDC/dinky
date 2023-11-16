@@ -50,12 +50,12 @@ public class TaskWorker implements Runnable {
     public void run() {
         log.debug("TaskWorker run:" + Thread.currentThread().getName());
         while (running) {
-            DaemonTask daemonTask = queue.dequeue();
+            DaemonTask daemonTask = queue.getNext();
             if (daemonTask != null) {
                 try {
                     boolean done = daemonTask.dealTask();
-                    if (!done) {
-                        queue.enqueue(daemonTask);
+                    if (done) {
+                        queue.removeByTask(daemonTask);
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);

@@ -20,7 +20,6 @@
 package org.dinky.daemon.pool;
 
 import org.dinky.daemon.task.DaemonTask;
-import org.dinky.daemon.task.DaemonTaskConfig;
 
 /**
  * @operate
@@ -30,8 +29,6 @@ public interface ThreadPool {
 
     // 执行任务
     void execute(DaemonTask daemonTask);
-
-    DaemonTask dequeueByTask(DaemonTaskConfig daemonTask);
 
     // 关闭连接池
     void shutdown();

@@ -33,10 +33,12 @@ import java.util.Objects;
 
 import org.springframework.context.annotation.DependsOn;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @DependsOn("springContextUtils")
 @Slf4j
+@Data
 public class FlinkJobTask implements DaemonTask {
 
     private DaemonTaskConfig config;
