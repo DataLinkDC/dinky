@@ -19,8 +19,8 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.AssignUserToTenantDTO;
 import org.dinky.data.model.rbac.Tenant;
-import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -78,8 +78,8 @@ public interface TenantService extends ISuperService<Tenant> {
     /**
      * assignUserToTenant users to tenant
      *
-     * @param assignUserToTenantParams {@link AssignUserToTenantParams}
+     * @param assignUserToTenantDTO {@link AssignUserToTenantDTO}
      * @return {@link Result} of {@link Void}
      */
-    Result<Void> assignUserToTenant(AssignUserToTenantParams assignUserToTenantParams);
+    Result<Void> assignUserToTenant(AssignUserToTenantDTO assignUserToTenantDTO);
 }

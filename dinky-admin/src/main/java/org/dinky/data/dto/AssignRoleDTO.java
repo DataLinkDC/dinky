@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.data.params;
+package org.dinky.data.dto;
 
 import java.util.List;
 
@@ -27,8 +27,8 @@ import lombok.Data;
 
 /** assign role params */
 @Data
-@ApiModel(value = "AssignRoleParams", description = "Parameters for Assigning Roles to a User")
-public class AssignRoleParams {
+@ApiModel(value = "AssignRoleDTO", description = "Parameters for Assigning Roles to a User")
+public class AssignRoleDTO {
 
     @ApiModelProperty(value = "User ID", dataType = "Integer", notes = "ID of the user to assign roles to")
     private Integer userId;

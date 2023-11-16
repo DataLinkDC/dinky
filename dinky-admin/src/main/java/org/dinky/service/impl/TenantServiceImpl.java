@@ -22,11 +22,11 @@ package org.dinky.service.impl;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.data.constant.BaseConstant;
+import org.dinky.data.dto.AssignUserToTenantDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.rbac.Role;
 import org.dinky.data.model.rbac.Tenant;
 import org.dinky.data.model.rbac.UserTenant;
-import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.Result;
 import org.dinky.mapper.TenantMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
@@ -166,11 +166,11 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result<Void> assignUserToTenant(AssignUserToTenantParams assignUserToTenantParams) {
+    public Result<Void> assignUserToTenant(AssignUserToTenantDTO assignUserToTenantDTO) {
         List<UserTenant> tenantUserList = new ArrayList<>();
-        Integer tenantId = assignUserToTenantParams.getTenantId();
+        Integer tenantId = assignUserToTenantDTO.getTenantId();
         userTenantService.remove(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, tenantId));
-        List<Integer> userIds = assignUserToTenantParams.getUserIds();
+        List<Integer> userIds = assignUserToTenantDTO.getUserIds();
         for (Integer userId : userIds) {
             UserTenant userTenant = new UserTenant();
             userTenant.setTenantId(tenantId);
