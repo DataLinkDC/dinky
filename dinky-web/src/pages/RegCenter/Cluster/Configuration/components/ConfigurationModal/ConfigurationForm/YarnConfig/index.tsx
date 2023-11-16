@@ -39,7 +39,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
           <Divider>{l('rc.cc.hadoopConfig')}</Divider>
           <ProFormGroup>
             <ProFormText
-              name={['config', 'hadoopConfigPath']}
+              name={['config','clusterConfig', 'hadoopConfigPath']}
               label={l('rc.cc.hadoopConfigPath')}
               width='md'
               rules={[
@@ -79,7 +79,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
           <Divider>{l('rc.cc.flinkConfig')}</Divider>
           <ProFormGroup>
             <ProFormText
-              name={['config', 'flinkLibPath']}
+              name={['config','clusterConfig', 'flinkLibPath']}
               label={l('rc.cc.libPath')}
               width='md'
               rules={[{ required: true, message: l('rc.cc.libPathPlaceholder') }]}
@@ -88,7 +88,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
             />
 
             <ProFormText
-              name={['config', 'flinkConfigPath']}
+              name={['config','clusterConfig', 'flinkConfigPath']}
               label={l('rc.cc.flinkConfigPath')}
               width='md'
               rules={[

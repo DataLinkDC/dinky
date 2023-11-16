@@ -32,12 +32,51 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-executor</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+                    <groupId>com.github.xiaoymin</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>docker-java-core</artifactId>
+                    <groupId>com.github.docker-java</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>docker-java-transport-httpclient5</artifactId>
+                    <groupId>com.github.docker-java</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>easy-rules-core</artifactId>
+                    <groupId>org.jeasy</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>easy-rules-spel</artifactId>
+                    <groupId>org.jeasy</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org.eclipse.jgit.archive</artifactId>
+                    <groupId>org.eclipse.jgit</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org.eclipse.jgit.ssh.jsch</artifactId>
+                    <groupId>org.eclipse.jgit</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>oshi-core</artifactId>
+                    <groupId>com.github.oshi</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -69,11 +108,6 @@
         <profile>
             <id>flink-all</id>
             <dependencies>
-                <dependency>
-                    <groupId>org.apache.hadoop</groupId>
-                    <artifactId>hadoop-common</artifactId>
-                    <version>3.1.0</version>
-                </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.14</artifactId>

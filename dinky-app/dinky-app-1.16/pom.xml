@@ -22,6 +22,12 @@
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-app-base</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>dinky-gateway</artifactId>
+                    <groupId>org.dinky</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
