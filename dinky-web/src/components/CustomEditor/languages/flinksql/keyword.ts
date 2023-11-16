@@ -16,6 +16,7 @@
  *  limitations under the License.
  *
  */
+
 export const EXTEND_SQL_KEYWORD: string[] = ['CDCSOURCE', 'EXECUTE', 'PRINT'];
 
 export const FLINK_SQL_KEYWORD: string[] = [
