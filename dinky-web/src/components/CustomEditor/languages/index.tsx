@@ -17,10 +17,9 @@
  *
  */
 
-import { FlinkSQLLanguage } from "@/components/CustomEditor/languages/flinksql";
-import { FLINK_SQL_KEYWORD } from "@/components/CustomEditor/languages/flinksql/keyword";
-import { LogLanguage } from "@/components/CustomEditor/languages/javalog";
-import { Monaco } from "@monaco-editor/react";
+import { FlinkSQLLanguage } from '@/components/CustomEditor/languages/flinksql';
+import { LogLanguage } from '@/components/CustomEditor/languages/javalog';
+import { Monaco } from '@monaco-editor/react';
 
 /**
  * 加载自定义语言 关键字
@@ -56,9 +55,8 @@ import { Monaco } from "@monaco-editor/react";
 //      })
 // }
 
-
 export function LoadCustomEditorLanguage(monaco: Monaco | null) {
-    // LoadLanguagesKeyWord(monaco);
-    LogLanguage(monaco);
-    FlinkSQLLanguage(monaco);
+  // LoadLanguagesKeyWord(monaco);
+  LogLanguage(monaco);
+  FlinkSQLLanguage(monaco);
 }

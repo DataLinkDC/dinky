@@ -18,6 +18,7 @@
  */
 
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
+import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
 import { Loading } from '@/pages/Other/Loading';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
@@ -26,7 +27,6 @@ import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import FullscreenBtn from '../FullscreenBtn';
-import {LoadCustomEditorLanguage} from "@/components/CustomEditor/languages";
 
 // loader.config({monaco});
 /**

@@ -17,7 +17,7 @@
  *
  */
 
-import { showAlertGroup,showAlertInstance } from '@/pages/RegCenter/Alert/AlertGroup/service';
+import { showAlertGroup, showAlertInstance } from '@/pages/RegCenter/Alert/AlertGroup/service';
 import { Alert } from '@/types/RegCenter/data.d';
 import { Reducer } from 'umi';
 

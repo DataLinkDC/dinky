@@ -18,8 +18,7 @@
  */
 
 import { Alert } from '@/types/RegCenter/data.d';
-import {Tag} from "antd";
-import React from "react";
+import { Tag } from 'antd';
 
 /**
  * parse alertInstanceIds to array and rebuild form data
@@ -47,14 +46,18 @@ export const buildFormData = (values: Partial<Alert.AlertGroup>, params: any) =>
   return { ...newValue, ...params };
 };
 
-
 export const buildAlertInstanceSelect = (alertInstance: Alert.AlertInstance[]) => {
   return alertInstance.map((item) => {
-    const tag = <> <Tag color='processing'>{item.type}</Tag>{item.name}</>
+    const tag = (
+      <>
+        {' '}
+        <Tag color='processing'>{item.type}</Tag>
+        {item.name}
+      </>
+    );
     return {
       label: tag,
       value: item.id.toString()
     };
-  })
-
+  });
 };

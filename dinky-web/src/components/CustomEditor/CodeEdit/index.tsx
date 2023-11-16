@@ -22,17 +22,17 @@ import { editor, languages, Position } from 'monaco-editor';
 
 import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
+import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import {Editor, Monaco, OnChange, useMonaco} from '@monaco-editor/react';
+import { Editor, Monaco, OnChange, useMonaco } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
 import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
-import {memo, useCallback, useEffect, useRef} from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
 import CompletionContext = languages.CompletionContext;
-import {LoadCustomEditorLanguage} from "@/components/CustomEditor/languages";
 
 let provider = {
   dispose: () => {}
@@ -103,8 +103,6 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     // 需要调用 手动注册下自定义语言
     LoadCustomEditorLanguage(monacoHook);
   }, [monacoHook]);
-
-
 
   // todo: 已知 bug , 切换 tab 时 , 会造成buildAllSuggestions 的重复调用 , 造成建议项重复 ,但不影响原有数据, 编辑器会将建议项自动缓存,不会进行去重
   /**

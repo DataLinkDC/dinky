@@ -21,13 +21,13 @@ import CodeShow from '@/components/CustomEditor/CodeShow';
 import VersionList from '@/components/VersionList';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { handleRemoveById } from '@/services/BusinessCrud';
+import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { TaskVersionListItem } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { Card, Col, Row, Tag } from 'antd';
 import { useState } from 'react';
-import {DIALECT} from "@/services/constants";
 
 const JobVersionTab = (props: JobProps) => {
   const { jobDetail } = props;
@@ -86,7 +86,13 @@ const JobVersionTab = (props: JobProps) => {
               </>
             }
           >
-            <CodeShow code={currentVersion?.statement ?? ''} height={500} language={currentVersion?.dialect?.toLowerCase() === DIALECT.FLINK_SQL? 'flinksql' : 'sql'} />
+            <CodeShow
+              code={currentVersion?.statement ?? ''}
+              height={500}
+              language={
+                currentVersion?.dialect?.toLowerCase() === DIALECT.FLINK_SQL ? 'flinksql' : 'sql'
+              }
+            />
           </Card>
         </Col>
       </Row>

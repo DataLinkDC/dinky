@@ -17,16 +17,16 @@
  *
  */
 
+import { TokenClassConsts } from '@/components/CustomEditor/languages/flinksql/constants';
 import {
   EXTEND_SQL_KEYWORD,
-  FLINK_SQL_BUILTIN_FUNCTIONS, FLINK_SQL_KEYWORD, FLINK_SQL_OPERATORS,
+  FLINK_SQL_BUILTIN_FUNCTIONS,
+  FLINK_SQL_KEYWORD,
+  FLINK_SQL_OPERATORS,
   FLINK_SQL_SCOPE_KEYWORDS,
   FLINK_SQL_TYPE_KEYWORDS
-} from "@/components/CustomEditor/languages/flinksql/keyword";
-import {TokenClassConsts} from "@/components/CustomEditor/languages/flinksql/constants";
-import {Monaco} from "@monaco-editor/react";
-
-
+} from '@/components/CustomEditor/languages/flinksql/keyword';
+import { Monaco } from '@monaco-editor/react';
 
 export function FlinkSQLLanguage(monaco: Monaco | null) {
   // Register a new language
@@ -36,9 +36,9 @@ export function FlinkSQLLanguage(monaco: Monaco | null) {
     aliases: ['flinksql', 'fsql', 'flinksql', 'flinkSQL', 'FlinkSQL']
   });
   monaco?.languages.setMonarchTokensProvider('flinksql', {
-    defaultToken: "",
-    tokenPostfix: ".sql",
-    keywords: [...FLINK_SQL_KEYWORD,...EXTEND_SQL_KEYWORD],
+    defaultToken: '',
+    tokenPostfix: '.sql',
+    keywords: [...FLINK_SQL_KEYWORD, ...EXTEND_SQL_KEYWORD],
     operators: FLINK_SQL_OPERATORS,
     ignoreCase: true, // 忽略大小写
     builtinFunctions: FLINK_SQL_BUILTIN_FUNCTIONS,
@@ -73,7 +73,8 @@ export function FlinkSQLLanguage(monaco: Monaco | null) {
     ],
     folding: {
       markers: {
-        start: /((create|alter|drop|rename\s+)?(TABLE|DATABASE|STREAM|FUNCTION|PROCEDURE|PACKAGE|TYPE|TRIGGER|INDEX|SCHEMA|VIEW)\b)|((EXECUTE\s+)?(JAR|CDCSOURCE)?\b)/i,
+        start:
+          /((create|alter|drop|rename\s+)?(TABLE|DATABASE|STREAM|FUNCTION|PROCEDURE|PACKAGE|TYPE|TRIGGER|INDEX|SCHEMA|VIEW)\b)|((EXECUTE\s+)?(JAR|CDCSOURCE)?\b)/i,
         end: /\)\\;\b/i
       }
     },
@@ -98,10 +99,10 @@ export function FlinkSQLLanguage(monaco: Monaco | null) {
               '@builtinFunctions': TokenClassConsts.PREDEFINED,
               '@keywords': TokenClassConsts.KEYWORD,
               '@default': TokenClassConsts.IDENTIFIER,
-              'fontWeight': 'normal'
+              fontWeight: 'normal'
             }
           }
-        ],
+        ]
       ],
       whitespace: [[/[\s\t\r\n]+/, TokenClassConsts.WHITE]],
       comments: [
@@ -110,7 +111,7 @@ export function FlinkSQLLanguage(monaco: Monaco | null) {
       ],
       comment: [
         [/[^*/]+/, TokenClassConsts.COMMENT],
-        [/\/\*/, { token: TokenClassConsts.COMMENT_QUOTE, next: '@push' }],    // nested comment not allowed :-(
+        [/\/\*/, { token: TokenClassConsts.COMMENT_QUOTE, next: '@push' }], // nested comment not allowed :-(
         [/\*\//, { token: TokenClassConsts.COMMENT_QUOTE, next: '@pop' }],
         [/./, TokenClassConsts.COMMENT]
       ],
@@ -130,9 +131,9 @@ export function FlinkSQLLanguage(monaco: Monaco | null) {
         [/[$][+-]*\d*(\.\d*)?/, TokenClassConsts.NUMBER],
         [/((\d+(\.\d*)?)|(\.\d+))([eE][\\\-+]?\d+)?/, TokenClassConsts.NUMBER]
       ],
-      strings: [[/'/, { token: "custom-error", next: '@string' }]],
+      strings: [[/'/, { token: 'custom-error', next: '@string' }]],
       string: [
-        [/[^']+/, TokenClassConsts.STRING ],
+        [/[^']+/, TokenClassConsts.STRING],
         [/''/, TokenClassConsts.STRING],
         [/'/, { token: TokenClassConsts.STRING, next: '@pop' }]
       ],
@@ -176,20 +177,20 @@ export function FlinkSQLLanguage(monaco: Monaco | null) {
             insertText: item
           };
         })
-      }
+      };
     }
-  })
+  });
 
   // monaco-editor 自定义语言之后 注释代码的快捷键失效 如何解决
   monaco?.languages?.setLanguageConfiguration('flinksql', {
     comments: {
       lineComment: '--',
-      blockComment: ['/*', '*/'],
+      blockComment: ['/*', '*/']
     },
     brackets: [
       ['{', '}'],
       ['[', ']'],
-      ['(', ')'],
+      ['(', ')']
     ],
     autoClosingPairs: [
       { open: '{', close: '}' },
@@ -197,7 +198,7 @@ export function FlinkSQLLanguage(monaco: Monaco | null) {
       { open: '(', close: ')' },
       { open: '"', close: '"' },
       { open: "'", close: "'" },
-      { open: '`', close: '`' },
+      { open: '`', close: '`' }
     ],
     indentationRules: {
       increaseIndentPattern: /^\s*(\w+\s+)+\w/,
@@ -211,26 +212,26 @@ export function FlinkSQLLanguage(monaco: Monaco | null) {
       }
     ],
     surroundingPairs: [
-        { open: '{', close: '}' },
-        { open: '[', close: ']' },
-        { open: '(', close: ')' },
-        { open: '"', close: '"' },
-        { open: "'", close: "'" },
-        { open: '`', close: '`' },
+      { open: '{', close: '}' },
+      { open: '[', close: ']' },
+      { open: '(', close: ')' },
+      { open: '"', close: '"' },
+      { open: "'", close: "'" },
+      { open: '`', close: '`' }
     ],
     colorizedBracketPairs: [
       ['{', '}'],
       ['[', ']'],
-      ['(', ')'],
+      ['(', ')']
     ],
 
     folding: {
       offSide: true,
       markers: {
-        start: /((create|alter|drop|rename\s+)?(TABLE|DATABASE|STREAM|FUNCTION|PROCEDURE|PACKAGE|TYPE|TRIGGER|INDEX|SCHEMA|VIEW)\b)|((EXECUTE\s+)?(JAR|CDCSOURCE)?\b)/i,
+        start:
+          /((create|alter|drop|rename\s+)?(TABLE|DATABASE|STREAM|FUNCTION|PROCEDURE|PACKAGE|TYPE|TRIGGER|INDEX|SCHEMA|VIEW)\b)|((EXECUTE\s+)?(JAR|CDCSOURCE)?\b)/i,
         end: /\)\\;\b/i
       }
-    },
-
+    }
   });
 }

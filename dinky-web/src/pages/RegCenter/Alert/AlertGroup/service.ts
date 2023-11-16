@@ -17,8 +17,8 @@
  *
  */
 
+import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
-import {queryDataByParams} from "@/services/BusinessCrud";
 
 export function showAlertInstance() {
   return queryDataByParams(API_CONSTANTS.ALERT_INSTANCE_LIST_ENABLE_ALL) ?? [];
