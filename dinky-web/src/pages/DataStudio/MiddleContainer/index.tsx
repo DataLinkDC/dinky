@@ -236,10 +236,9 @@ const MiddleContainer = (props: any) => {
           return TabsPageType.None;
         }
 
-        const v = item.params;
         return (
           <Editor
-            taskId={v.taskId}
+            tabsItem={item}
             height={
               activeKey === item.key
                 ? fullscreen
