@@ -17,7 +17,11 @@
  *
  */
 
-import {buildAlertInstanceSelect, buildFormData, getFormData} from '@/pages/RegCenter/Alert/AlertGroup/function';
+import {
+  buildAlertInstanceSelect,
+  buildFormData,
+  getFormData
+} from '@/pages/RegCenter/Alert/AlertGroup/function';
 import { AlertStateType } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { MODAL_FORM_STYLE, SWITCH_OPTIONS } from '@/services/constants';
 import { Alert } from '@/types/RegCenter/data';
@@ -59,7 +63,6 @@ const AlertGroupForm: React.FC<AlertGroupFormProps & connect> = (props) => {
    */
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<Alert.AlertGroup>>({ ...values });
-
 
   /**
    * submit form

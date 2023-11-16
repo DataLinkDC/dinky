@@ -25,7 +25,7 @@ import { DataAction } from '@/components/StyledComponents';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import AlertGroupForm from '@/pages/RegCenter/Alert/AlertGroup/components/AlertGroupForm';
 import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
-import {ALERT_MODEL_ASYNC} from '@/pages/RegCenter/Alert/AlertInstance/model';
+import { ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import {
   handleAddOrUpdate,
   handleRemoveById,
@@ -42,9 +42,9 @@ import { PlusOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ActionType } from '@ant-design/pro-table';
-import {connect, Dispatch} from '@umijs/max';
+import { connect, Dispatch } from '@umijs/max';
 import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
-import React, { useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const AlertGroupTableList: React.FC = (props: any) => {
   /**

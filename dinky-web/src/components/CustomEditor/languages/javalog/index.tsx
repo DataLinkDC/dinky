@@ -25,7 +25,6 @@ export function LogLanguage(monaco: any) {
     aliases: ['javalog', 'Javalog', 'Javalog', 'jl', 'log']
   });
   monaco?.languages.setMonarchTokensProvider('javalog', {
-
     tokenizer: {
       root: [
         // 默认不区分大小写 //

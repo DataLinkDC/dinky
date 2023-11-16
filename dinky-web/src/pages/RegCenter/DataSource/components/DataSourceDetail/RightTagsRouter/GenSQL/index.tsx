@@ -23,10 +23,10 @@ import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
+import { ProCardTabsProps } from '@ant-design/pro-card/es/typing';
 import { ProCard } from '@ant-design/pro-components';
 import { Empty, Typography } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
-import {ProCardTabsProps} from "@ant-design/pro-card/es/typing";
 
 const { Paragraph } = Typography;
 
@@ -111,7 +111,7 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
   ];
 
   // tab props
-  const restTabProps : ProCardTabsProps = {
+  const restTabProps: ProCardTabsProps = {
     activeKey,
     onChange: (key: string) => setActiveKey(key),
     tabPosition: 'left',
