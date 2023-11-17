@@ -129,7 +129,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
         StreamGraph streamGraph = transOperatoinsToStreamGraph(modifyOperations);
         JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
-        return JsonUtils.parseObject(json);
+        return JsonUtils.parseObject(jsonGenerator.getJSON());
     }
 
     private StreamGraph transOperatoinsToStreamGraph(List<ModifyOperation> modifyOperations) {
