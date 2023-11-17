@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.utils;
+package org.dinky.oss;
 
 import org.dinky.data.properties.OssProperties;
 

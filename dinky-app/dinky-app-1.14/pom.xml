@@ -41,10 +41,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-client-1.14</artifactId>
         </dependency>
@@ -52,14 +48,6 @@
             <groupId>org.dinky</groupId>
             <artifactId>dinky-flink-1.14</artifactId>
             <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-client-base</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-executor</artifactId>
         </dependency>
     </dependencies>
 

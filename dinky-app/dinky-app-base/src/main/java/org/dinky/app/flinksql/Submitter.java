@@ -19,19 +19,33 @@
 
 package org.dinky.app.flinksql;
 
+import static org.apache.hadoop.fs.FileSystem.getDefaultUri;
+
 import org.dinky.app.db.DBUtil;
 import org.dinky.app.model.StatementParam;
+import org.dinky.app.model.SysConfig;
+import org.dinky.app.resource.impl.HdfsResourceManager;
+import org.dinky.app.resource.impl.OssResourceManager;
+import org.dinky.app.url.RsURLStreamHandlerFactory;
+import org.dinky.app.util.FlinkAppUtil;
 import org.dinky.assertion.Asserts;
+import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
-import org.dinky.data.enums.Status;
+import org.dinky.data.exception.DinkyException;
+import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.properties.OssProperties;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
 import org.dinky.interceptor.FlinkInterceptor;
+import org.dinky.oss.OssTemplate;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
+import org.dinky.trans.dml.ExecuteJarOperation;
+import org.dinky.trans.parse.AddJarSqlParseStrategy;
+import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.ZipUtils;
 
@@ -39,6 +53,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.python.PythonOptions;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,15 +69,20 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.URLUtil;
+import lombok.SneakyThrows;
 
 /**
  * FlinkSQLFactory
@@ -71,7 +92,52 @@ import cn.hutool.core.util.URLUtil;
 public class Submitter {
     private static final Logger log = LoggerFactory.getLogger(Submitter.class);
 
+    private static void initSystemConfiguration() throws SQLException {
+        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+        List<SysConfig> sysConfigList = DBUtil.getSysConfigList();
+        Map<String, String> configMap =
+                CollUtil.toMap(sysConfigList, new HashMap<>(), SysConfig::getName, SysConfig::getValue);
+        systemConfiguration.initSetConfiguration(configMap);
+    }
+
+    private static void initResource() throws SQLException {
+        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+        switch (systemConfiguration.getResourcesModel().getValue()) {
+            case OSS:
+                OssProperties ossProperties = new OssProperties();
+                ossProperties.setAccessKey(
+                        systemConfiguration.getResourcesOssAccessKey().getValue());
+                ossProperties.setSecretKey(
+                        systemConfiguration.getResourcesOssSecretKey().getValue());
+                ossProperties.setEndpoint(
+                        systemConfiguration.getResourcesOssEndpoint().getValue());
+                ossProperties.setBucketName(
+                        systemConfiguration.getResourcesOssBucketName().getValue());
+                ossProperties.setRegion(
+                        systemConfiguration.getResourcesOssRegion().getValue());
+                Singleton.get(OssResourceManager.class).setOssTemplate(new OssTemplate(ossProperties));
+                break;
+            case HDFS:
+                final Configuration configuration = new Configuration();
+                configuration.set(
+                        "fs.defaultFS",
+                        systemConfiguration.getResourcesHdfsDefaultFS().getValue());
+                try {
+                    FileSystem fileSystem = FileSystem.get(
+                            getDefaultUri(configuration),
+                            configuration,
+                            systemConfiguration.getResourcesHdfsUser().getValue());
+                    Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
+                } catch (Exception e) {
+                    throw new DinkyException(e);
+                }
+        }
+    }
+
     public static void submit(AppParamConfig config) throws SQLException {
+        initSystemConfiguration();
+        initResource();
+        URL.setURLStreamHandlerFactory(new RsURLStreamHandlerFactory());
         log.info("{} Start Submit Job:{}", LocalDateTime.now(), config.getTaskId());
 
         AppTask appTask = DBUtil.getTask(config.getTaskId());
@@ -89,15 +155,23 @@ public class Submitter {
                 // .config(JsonUtils.toMap(appTask.getConfigJson()))
                 .build();
 
+        Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig);
+
+        log.info("Start Monitor Job");
+        FlinkAppUtil.monitorFlinkTask(config.getTaskId());
+
         // 加载第三方jar //TODO 这里有问题，需要修一修
         // loadDep(appTask.getType(),
         // config.getTaskId(),DBUtil.getSysConfig(Status.SYS_ENV_SETTINGS_DINKYADDR.getKey()), executorConfig);
-
         log.info("The job configuration is as follows: {}", executorConfig);
 
         String[] statements =
-                SqlUtil.getStatements(sql, DBUtil.getSysConfig(Status.SYS_FLINK_SETTINGS_SQLSEPARATOR.getKey()));
-        excuteJob(executorConfig, statements);
+                SqlUtil.getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
+        if (Dialect.FLINK_JAR == appTask.getDialect()) {
+            executeJarJob(appTask.getType(), executor, statements);
+        } else {
+            executeJob(executor, statements);
+        }
     }
 
     public static String buildSql(AppTask appTask) throws SQLException {
@@ -209,9 +283,24 @@ public class Submitter {
         }
     }
 
-    public static void excuteJob(ExecutorConfig executorConfig, String[] statements) {
+    @SneakyThrows
+    public static void executeJarJob(String type, Executor executor, String[] statements) {
+        for (int i = 0; i < statements.length; i++) {
+            String sqlStatement = executor.pretreatStatement(statements[i]);
+            if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
+                ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
+                executeJarOperation.execute(executor.getCustomTableEnvironment());
+                break;
+            } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD
+                    && "kubernetes-application".equals(type)) {
+                executor.addJar(AddJarSqlParseStrategy.getInfo(sqlStatement));
+            }
+        }
+    }
 
-        Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig);
+    public static void executeJob(Executor executor, String[] statements) {
+
+        ExecutorConfig executorConfig = executor.getExecutorConfig();
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
         List<StatementParam> execute = new ArrayList<>();
@@ -225,11 +314,6 @@ public class Submitter {
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
                 trans.add(new StatementParam(statement, operationType));
-                if (!executorConfig.isUseStatementSet()) {
-                    break;
-                }
-            } else if (operationType.equals(SqlType.EXECUTE)) {
-                execute.add(new StatementParam(statement, operationType));
                 if (!executorConfig.isUseStatementSet()) {
                     break;
                 }

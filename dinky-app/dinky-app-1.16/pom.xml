@@ -25,12 +25,11 @@
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
-            <artifactId>dinky-client-${dinky.flink.version}</artifactId>
-            <scope>${scope.runtime}</scope>
+            <artifactId>dinky-client-1.16</artifactId>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
-            <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
+            <artifactId>dinky-flink-1.16</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
