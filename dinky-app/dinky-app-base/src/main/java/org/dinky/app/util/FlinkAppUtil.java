@@ -34,9 +34,6 @@ import org.apache.flink.core.execution.JobListener;
 import org.apache.flink.runtime.client.JobCancellationException;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.http.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +51,7 @@ public class FlinkAppUtil {
                 CustomTableEnvironmentContext.get().getStreamExecutionEnvironment();
         streamExecutionEnvironment.registerJobListener(new JobListener() {
             @Override
-            public void onJobSubmitted(@Nullable JobClient jobClient, @Nullable Throwable throwable) {
+            public void onJobSubmitted(JobClient jobClient, Throwable throwable) {
                 jobClient.getJobExecutionResult().thenAccept(jobExecutionResult -> finshedHook(jobClient, taskId));
                 jobClient.getJobStatus().thenAccept(job -> {
                     if (job == JobStatus.FINISHED) {
@@ -64,7 +61,7 @@ public class FlinkAppUtil {
             }
 
             @Override
-            public void onJobExecuted(@Nullable JobExecutionResult jobExecutionResult, @Nullable Throwable throwable) {
+            public void onJobExecuted(JobExecutionResult jobExecutionResult, Throwable throwable) {
                 if (throwable instanceof JobCancellationException) {
                     // todo cancel task
                 } else {
@@ -74,7 +71,7 @@ public class FlinkAppUtil {
         });
     }
 
-    private static void finshedHook(@NotNull JobClient jobClient, int taskId) {
+    private static void finshedHook(JobClient jobClient, int taskId) {
         try {
             sendHook(taskId, jobClient.getJobID().toHexString(), 0);
             log.info("hook finished.");

@@ -50,10 +50,7 @@ import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.types.Row;
 
-import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -63,12 +60,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.URLUtil;
 
 /**
  * CustomTableEnvironmentImpl
@@ -120,19 +115,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return false;
     }
 
-    @Override
-    public void addJar(File... jarPath) {
-        Configuration configuration = this.getRootConfiguration();
-        List<String> pathList =
-                Arrays.stream(URLUtil.getURLs(jarPath)).map(URL::toString).collect(Collectors.toList());
-        List<String> jars = configuration.get(PipelineOptions.JARS);
-        if (jars == null) {
-            configuration.set(PipelineOptions.JARS, pathList);
-        } else {
-            CollUtil.addAll(jars, pathList);
-        }
-    }
-
     public ObjectNode getStreamGraph(String statement) {
         List<Operation> operations = super.getParser().parse(statement);
         if (operations.size() != 1) {
@@ -146,12 +128,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
         StreamGraph streamGraph = transOperatoinsToStreamGraph(modifyOperations);
         JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
-        try {
-            return (ObjectNode) mapper.readTree(jsonGenerator.getJSON());
-        } catch (JsonProcessingException e) {
-            log.error("read streamGraph configure error: ", e);
-            return mapper.createObjectNode();
-        }
+        return JsonUtils.parseObject(json);
     }
 
     private StreamGraph transOperatoinsToStreamGraph(List<ModifyOperation> modifyOperations) {

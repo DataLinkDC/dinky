@@ -22,20 +22,14 @@
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-app-base</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-gateway</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
-            <artifactId>dinky-client-${dinky.flink.version}</artifactId>
+            <artifactId>dinky-client-1.16</artifactId>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
-            <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
+            <artifactId>dinky-flink-1.16</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
