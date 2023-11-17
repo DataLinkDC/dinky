@@ -39,12 +39,45 @@ import {
   OracleIcons,
   PhoenixIcons,
   PostgresqlIcons,
-  PrestoIcons,
+  PrestoIcons, SQLIcons,
   SqlServerIcons,
   StarRocksIcons
 } from '@/components/Icons/DBIcons';
 import { DIALECT } from '@/services/constants';
 
+
+
+
+export const matchLanguage = (language = DIALECT.FLINK_SQL) => {
+  switch (language.toLowerCase()) {
+    case DIALECT.FLINK_SQL:
+    case DIALECT.FLINKSQLENV:
+    case DIALECT.FLINKJAR:
+      return DIALECT.FLINK_SQL;
+    case DIALECT.SQL:
+    case DIALECT.SQLSERVER:
+    case DIALECT.POSTGRESQL:
+    case DIALECT.HIVE:
+    case DIALECT.CLICKHOUSE:
+    case DIALECT.ORACLE:
+    case DIALECT.DORIS:
+    case DIALECT.PHOENIX:
+    case DIALECT.PRESTO:
+    case DIALECT.MYSQL:
+    case DIALECT.STARROCKS:
+      return DIALECT.SQL;
+    case DIALECT.PYTHON:
+    case DIALECT.PYTHON_LONG:
+      return DIALECT.PYTHON;
+    case DIALECT.SCALA:
+      return DIALECT.SCALA;
+    case DIALECT.JAVA:
+      return DIALECT.JAVA;
+    default:
+      return DIALECT.SQL;
+  }
+}
+//
 export const getTabIcon = (type: string, size?: number) => {
   if (!type) {
     return <FileIcon />;
@@ -78,6 +111,8 @@ export const getTabIcon = (type: string, size?: number) => {
       return <FlinkSQLSvg />;
     case DIALECT.FLINKSQLENV:
       return <FlinkSQLEnvSvg />;
+    case DIALECT.SQL:
+        return <SQLIcons size={size} />;
     case DIALECT.MYSQL:
       return <MysqlIcons size={size} />;
     case DIALECT.ORACLE:

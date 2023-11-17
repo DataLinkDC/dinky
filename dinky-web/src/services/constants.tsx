@@ -219,13 +219,12 @@ export const DIALECT = {
   ORACLE: 'oracle',
   SQLSERVER: 'sqlserver',
   POSTGRESQL: 'postgresql',
-  CLICKHOUSE: 'clickHouse',
+  CLICKHOUSE: 'clickhouse',
   DORIS: 'doris',
   HIVE: 'hive',
   PHOENIX: 'phoenix',
-  STARROCKS: 'starRocks',
+  STARROCKS: 'starrocks',
   PRESTO: 'presto',
-  KUBERNETES_APPLICATION: 'kubernetesapplication'
 };
 
 export const RUN_MODE = {

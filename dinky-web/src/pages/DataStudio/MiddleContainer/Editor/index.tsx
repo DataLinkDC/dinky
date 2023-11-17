@@ -29,7 +29,6 @@ import {
   TaskDataType
 } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
-import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { connect, useRequest } from '@@/exports';
@@ -39,6 +38,7 @@ import { Button, Spin } from 'antd';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
 import React, { useEffect, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
+import {matchLanguage} from "@/pages/DataStudio/MiddleContainer/function";
 
 export type EditorProps = {
   tabsItem: DataStudioTabsItemType;
@@ -141,11 +141,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
         <DiffModal
           diffs={diff}
           open={isModalOpen}
-          language={
-            tabsItem?.params?.taskData?.dialect?.toLowerCase() === DIALECT.FLINK_SQL
-              ? 'flinksql'
-              : 'sql'
-          }
+          language={matchLanguage(tabsItem?.params?.taskData?.dialect)}
           fileName={currentData?.name}
           onUse={upDateTask}
         />
@@ -153,12 +149,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
           monacoRef={monacoInstance}
           editorRef={editorInstance}
           code={tabsItem?.params?.taskData?.statement}
-          language={
-            tabsItem?.params?.taskData?.dialect?.toLowerCase() === DIALECT.FLINK_SQL
-              ? 'flinksql'
-              : 'sql'
-          }
-          // language={'sql'}
+          language={matchLanguage(tabsItem?.params?.taskData?.dialect)}
           editorDidMount={editorDidMount}
           onChange={handleEditChange}
           enableSuggestions={true}

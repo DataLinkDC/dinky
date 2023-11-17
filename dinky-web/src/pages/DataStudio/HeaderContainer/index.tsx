@@ -35,7 +35,7 @@ import {
   executeSql,
   getJobPlan
 } from '@/pages/DataStudio/HeaderContainer/service';
-import { StateType, TabsPageSubType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import {DataStudioTabsItemType, StateType, TabsPageSubType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { ConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
@@ -61,6 +61,7 @@ import {
 import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import { ButtonProps } from 'antd/es/button/button';
 import React, { useEffect, useState } from 'react';
+import {DIALECT} from "@/services/constants";
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -104,7 +105,7 @@ const HeaderContainer = (props: any) => {
   );
 
   const currentData = getCurrentData(panes, activeKey);
-  const currentTab = getCurrentTab(panes, activeKey);
+  const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
 
   useEffect(() => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
@@ -215,6 +216,9 @@ const HeaderContainer = (props: any) => {
     }
   };
 
+
+  console.log('currentData', props,currentData)
+
   const showExplain = async () => {
     modal.confirm({
       title: l('pages.datastudio.explain.validate.msg'),
@@ -242,7 +246,7 @@ const HeaderContainer = (props: any) => {
       // 执行图按钮
       icon: <ApartmentOutlined />,
       title: l('button.graph'),
-      isShow: projectCommonShow(currentTab?.type),
+      isShow: projectCommonShow(currentTab?.type) && currentData?.dialect?.toLowerCase() === DIALECT.FLINK_SQL || currentData?.dialect?.toLowerCase() === DIALECT.FLINKJAR,
       click: async () => showDagGraph()
     },
     {
@@ -266,7 +270,7 @@ const HeaderContainer = (props: any) => {
       // 发布按钮
       icon: isOnline(currentData) ? <MergeCellsOutlined /> : <FundOutlined />,
       title: isOnline(currentData) ? l('button.offline') : l('button.publish'),
-      isShow: currentTab?.type == TabsPageType.project,
+      isShow: currentTab?.type == TabsPageType.project && currentData?.dialect?.toLowerCase() === DIALECT.FLINK_SQL,
       click: () => handleChangeJobLife()
     },
     {
@@ -302,7 +306,7 @@ const HeaderContainer = (props: any) => {
       click: handlerDebug,
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F9',
       hotKeyDesc: 'Shift+F9',
-      isShow: currentTab?.type == TabsPageType.project && !isRunning(currentData),
+      isShow: currentTab?.type == TabsPageType.project && !isRunning(currentData) && currentData?.dialect?.toLowerCase() === DIALECT.FLINK_SQL,
       props: {
         style: { background: '#52c41a' },
         type: 'primary'
@@ -345,7 +349,7 @@ const HeaderContainer = (props: any) => {
 
     return (
       <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
-        <Breadcrumb separator={'>'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
+        <Breadcrumb separator={'/'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
       </FlexCenterDiv>
     );
   };
