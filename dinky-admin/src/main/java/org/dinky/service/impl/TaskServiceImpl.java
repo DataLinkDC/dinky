@@ -444,8 +444,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean saveOrUpdateTask(Task task) {
-
-        if (JobLifeCycle.PUBLISH.equalsValue(task.getStep())) {
+        Task byId = getById(task.getId());
+        if (byId != null && JobLifeCycle.PUBLISH.equalsValue(byId.getStep())) {
             throw new BusException(Status.TASK_IS_ONLINE.getMessage());
         }
 
