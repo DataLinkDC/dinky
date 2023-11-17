@@ -23,6 +23,7 @@ import { Loading } from '@/pages/Other/Loading';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, useMonaco } from '@monaco-editor/react';
+import { Col, Row } from 'antd';
 import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
 import { CSSProperties, useEffect, useRef, useState } from 'react';
@@ -204,72 +205,68 @@ const CodeShow = (props: CodeShowFormProps) => {
    *  render
    */
   return (
-    <div className={'monaco-float'} style={props.style}>
-      {/* fullScreen button */}
-      {fullScreenBtn && (
-        <FullscreenBtn
-          isFullscreen={fullScreen}
-          fullScreenCallBack={() => setFullScreen(!fullScreen)}
-        />
-      )}
+    <>
+      <Row wrap={false}>
+        <Col flex='auto'>
+          {/* fullScreen button */}
+          {fullScreenBtn && (
+            <FullscreenBtn
+              isFullscreen={fullScreen}
+              fullScreenCallBack={() => setFullScreen(!fullScreen)}
+            />
+          )}
 
-      {/* editor */}
-      <Editor
-        width={width}
-        height={height}
-        loading={<Loading loading={loading} />}
-        value={code ?? ''}
-        language={language}
-        options={{
-          scrollBeyondLastLine: false,
-          readOnly: true,
-          wordWrap: autoWrap,
-          autoDetectHighContrast: true,
-          selectOnLineNumbers: true,
-          fixedOverflowWidgets: true,
-          autoClosingDelete: 'always',
-          lineNumbers,
-          minimap: { enabled: false },
-          scrollbar: {
-            // Subtle shadows to the left & top. Defaults to true.
-            useShadows: false,
+          {/* editor */}
+          <Editor
+            width={width}
+            height={height}
+            loading={<Loading loading={loading} />}
+            value={code ?? ''}
+            language={language}
+            options={{
+              scrollBeyondLastLine: false,
+              readOnly: true,
+              wordWrap: autoWrap,
+              autoDetectHighContrast: true,
+              selectOnLineNumbers: true,
+              fixedOverflowWidgets: true,
+              autoClosingDelete: 'always',
+              lineNumbers,
+              minimap: { enabled: false },
+              scrollbar: {
+                // Subtle shadows to the left & top. Defaults to true.
+                useShadows: false,
 
-            // Render vertical arrows. Defaults to false.
-            // verticalHasArrows: true,
-            // Render horizontal arrows. Defaults to false.
-            // horizontalHasArrows: true,
+                // Render vertical arrows. Defaults to false.
+                // verticalHasArrows: true,
+                // Render horizontal arrows. Defaults to false.
+                // horizontalHasArrows: true,
 
-            // Render vertical scrollbar.
-            // Accepted values: 'auto', 'visible', 'hidden'.
-            // Defaults to 'auto'
-            vertical: 'visible',
-            // Render horizontal scrollbar.
-            // Accepted values: 'auto', 'visible', 'hidden'.
-            // Defaults to 'auto'
-            horizontal: 'visible',
-            verticalScrollbarSize: 8,
-            horizontalScrollbarSize: 8,
-            arrowSize: 30
-          },
-          ...options
-        }}
-        onMount={editorDidMount}
-        theme={convertCodeEditTheme()}
-      />
-
-      {/* float button */}
-      {showFloatButton && (
-        <div
-          style={{
-            width: 35,
-            height: height,
-            paddingBlock: 10
-          }}
-        >
-          <EditorFloatBtn {...restEditBtnProps} />
-        </div>
-      )}
-    </div>
+                // Render vertical scrollbar.
+                // Accepted values: 'auto', 'visible', 'hidden'.
+                // Defaults to 'auto'
+                vertical: 'visible',
+                // Render horizontal scrollbar.
+                // Accepted values: 'auto', 'visible', 'hidden'.
+                // Defaults to 'auto'
+                horizontal: 'visible',
+                verticalScrollbarSize: 8,
+                horizontalScrollbarSize: 8,
+                arrowSize: 30
+              },
+              ...options
+            }}
+            onMount={editorDidMount}
+            theme={convertCodeEditTheme()}
+          />
+        </Col>
+        {showFloatButton && (
+          <Col flex='none'>
+            <EditorFloatBtn {...restEditBtnProps} />
+          </Col>
+        )}
+      </Row>
+    </>
   );
 };
 
