@@ -67,20 +67,20 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
 
     public static StreamGraph getStreamGraph(JarSubmitParam submitParam, CustomTableEnvironment tEnv) {
         SavepointRestoreSettings savepointRestoreSettings = StrUtil.isBlank(submitParam.getSavepointPath())
-            ? SavepointRestoreSettings.none()
-            : SavepointRestoreSettings.forPath(
-            submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
+                ? SavepointRestoreSettings.none()
+                : SavepointRestoreSettings.forPath(
+                        submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
         PackagedProgram program;
         try {
             Configuration configuration = tEnv.getConfig().getConfiguration();
             File file = URLUtils.toFile(submitParam.getUri());
             program = PackagedProgram.newBuilder()
-                .setJarFile(file)
-                .setEntryPointClassName(submitParam.getMainClass())
-                .setConfiguration(configuration)
-                .setSavepointRestoreSettings(savepointRestoreSettings)
-                .setArguments(RunTimeUtil.handleCmds(submitParam.getArgs()))
-                .build();
+                    .setJarFile(file)
+                    .setEntryPointClassName(submitParam.getMainClass())
+                    .setConfiguration(configuration)
+                    .setSavepointRestoreSettings(savepointRestoreSettings)
+                    .setArguments(RunTimeUtil.handleCmds(submitParam.getArgs()))
+                    .build();
             tEnv.addJar(file);
             Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(program, configuration, 1, true);
             Assert.isTrue(pipeline instanceof StreamGraph, "can not translate");
@@ -102,8 +102,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
     @Setter
     @Getter
     public static class JarSubmitParam {
-        protected JarSubmitParam() {
-        }
+        protected JarSubmitParam() {}
 
         private String uri;
         private String mainClass;

@@ -19,8 +19,6 @@
 
 package org.dinky.app.resource.impl;
 
-import cn.hutool.core.util.URLUtil;
-
 import org.dinky.app.resource.BaseResourceManager;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.SystemConfiguration;
@@ -32,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import cn.hutool.core.util.URLUtil;
+
 public class HdfsResourceManager implements BaseResourceManager {
     FileSystem hdfs;
     SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
@@ -39,8 +39,10 @@ public class HdfsResourceManager implements BaseResourceManager {
     @Override
     public InputStream readFile(String path) {
         try {
-            if (systemConfiguration.getResourcesHdfsDefaultFS().getValue().contains("file:/")){
-                return new URL("http://"+systemConfiguration.getDinkyAddr().getValue()+"/download/downloadFromRs?path="+ URLUtil.encode(path)).openStream();
+            if (systemConfiguration.getResourcesHdfsDefaultFS().getValue().contains("file:/")) {
+                return new URL("http://" + systemConfiguration.getDinkyAddr().getValue()
+                                + "/download/downloadFromRs?path=" + URLUtil.encode(path))
+                        .openStream();
             }
             return getHdfs().open(new Path(getFilePath(path)));
         } catch (IOException e) {

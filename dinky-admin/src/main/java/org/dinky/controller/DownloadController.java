@@ -73,21 +73,21 @@ public class DownloadController {
             return;
         }
         FlinkUdfManifest flinkUdfManifest =
-            JSONUtil.toBean(FileUtil.readUtf8String(depManifestFile), FlinkUdfManifest.class);
+                JSONUtil.toBean(FileUtil.readUtf8String(depManifestFile), FlinkUdfManifest.class);
         List<String> filePath =
-            flinkUdfManifest.getJars().stream().map(Convert::toStr).collect(Collectors.toList());
+                flinkUdfManifest.getJars().stream().map(Convert::toStr).collect(Collectors.toList());
         List<String> pyFilePath =
-            flinkUdfManifest.getPythonFiles().stream().map(Convert::toStr).collect(Collectors.toList());
+                flinkUdfManifest.getPythonFiles().stream().map(Convert::toStr).collect(Collectors.toList());
         String[] jarNameList =
-            filePath.stream().map(FileUtil::getName).map(x -> "jar/" + x).toArray(String[]::new);
+                filePath.stream().map(FileUtil::getName).map(x -> "jar/" + x).toArray(String[]::new);
         String[] pyFileNameList =
-            pyFilePath.stream().map(FileUtil::getName).map(x -> "py/" + x).toArray(String[]::new);
+                pyFilePath.stream().map(FileUtil::getName).map(x -> "py/" + x).toArray(String[]::new);
 
         File zipFile = FileUtil.file(udfPackagePath + PathConstant.DEP_ZIP);
         InputStream[] inputStreams =
-            filePath.stream().map(FileUtil::getInputStream).toArray(InputStream[]::new);
+                filePath.stream().map(FileUtil::getInputStream).toArray(InputStream[]::new);
         InputStream[] pyInputStreams =
-            pyFilePath.stream().map(FileUtil::getInputStream).toArray(InputStream[]::new);
+                pyFilePath.stream().map(FileUtil::getInputStream).toArray(InputStream[]::new);
         try (ZipWriter zip = new ZipWriter(zipFile, Charset.defaultCharset())) {
             if (ArrayUtil.isNotEmpty(jarNameList)) {
                 zip.add(jarNameList, inputStreams);
@@ -112,7 +112,7 @@ public class DownloadController {
     @ApiOperation("Download App Jar")
     public void downloadAppJar(@PathVariable String version, HttpServletResponse resp) {
         List<File> files = FileUtil.loopFiles(
-            PathConstant.WORK_DIR + "/jar", pathname -> pathname.getName().contains("dinky-app-" + version));
+                PathConstant.WORK_DIR + "/jar", pathname -> pathname.getName().contains("dinky-app-" + version));
         if (CollUtil.isNotEmpty(files)) {
             ServletUtil.write(resp, files.get(0));
         }

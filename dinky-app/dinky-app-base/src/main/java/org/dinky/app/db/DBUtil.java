@@ -68,8 +68,9 @@ public class DBUtil {
         }
         return sb.toString();
     }
+
     public static List<SysConfig> getSysConfigList() throws SQLException {
         Entity option = Entity.create("dinky_sys_config");
-       return db.find(option, SysConfig.class);
+        return db.find(option, SysConfig.class);
     }
 }

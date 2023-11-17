@@ -28,7 +28,6 @@ import java.io.InputStream;
 public class OssResourceManager implements BaseResourceManager {
     OssTemplate ossTemplate;
 
-
     @Override
     public InputStream readFile(String path) {
         return getOssTemplate()

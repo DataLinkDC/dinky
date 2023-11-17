@@ -19,7 +19,6 @@
 
 package org.dinky.app.url;
 
-
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 

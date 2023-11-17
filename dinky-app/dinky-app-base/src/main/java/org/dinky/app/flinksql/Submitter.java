@@ -95,45 +95,37 @@ public class Submitter {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
         List<SysConfig> sysConfigList = DBUtil.getSysConfigList();
         Map<String, String> configMap =
-            CollUtil.toMap(sysConfigList, new HashMap<>(), SysConfig::getName, SysConfig::getValue);
+                CollUtil.toMap(sysConfigList, new HashMap<>(), SysConfig::getName, SysConfig::getValue);
         systemConfiguration.initSetConfiguration(configMap);
     }
+
     private static void initResource() throws SQLException {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
         switch (systemConfiguration.getResourcesModel().getValue()) {
             case OSS:
                 OssProperties ossProperties = new OssProperties();
-                ossProperties.setAccessKey(systemConfiguration
-                    .getResourcesOssAccessKey()
-                    .getValue());
-                ossProperties.setSecretKey(systemConfiguration
-                    .getResourcesOssSecretKey()
-                    .getValue());
-                ossProperties.setEndpoint(systemConfiguration
-                    .getResourcesOssEndpoint()
-                    .getValue());
-                ossProperties.setBucketName(systemConfiguration
-                    .getResourcesOssBucketName()
-                    .getValue());
-                ossProperties.setRegion(systemConfiguration
-                    .getResourcesOssRegion()
-                    .getValue());
+                ossProperties.setAccessKey(
+                        systemConfiguration.getResourcesOssAccessKey().getValue());
+                ossProperties.setSecretKey(
+                        systemConfiguration.getResourcesOssSecretKey().getValue());
+                ossProperties.setEndpoint(
+                        systemConfiguration.getResourcesOssEndpoint().getValue());
+                ossProperties.setBucketName(
+                        systemConfiguration.getResourcesOssBucketName().getValue());
+                ossProperties.setRegion(
+                        systemConfiguration.getResourcesOssRegion().getValue());
                 Singleton.get(OssResourceManager.class).setOssTemplate(new OssTemplate(ossProperties));
                 break;
             case HDFS:
                 final Configuration configuration = new Configuration();
                 configuration.set(
-                    "fs.defaultFS",
-                    systemConfiguration
-                        .getResourcesHdfsDefaultFS()
-                        .getValue());
+                        "fs.defaultFS",
+                        systemConfiguration.getResourcesHdfsDefaultFS().getValue());
                 try {
                     FileSystem fileSystem = FileSystem.get(
-                        getDefaultUri(configuration),
-                        configuration,
-                        systemConfiguration
-                            .getResourcesHdfsUser()
-                            .getValue());
+                            getDefaultUri(configuration),
+                            configuration,
+                            systemConfiguration.getResourcesHdfsUser().getValue());
                     Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
                 } catch (Exception e) {
                     throw new DinkyException(e);
@@ -151,16 +143,16 @@ public class Submitter {
         String sql = buildSql(appTask);
 
         ExecutorConfig executorConfig = ExecutorConfig.builder()
-            .type(appTask.getType())
-            .checkpoint(appTask.getCheckPoint())
-            .parallelism(appTask.getParallelism())
-            .useStatementSet(appTask.getStatementSet())
-            .useBatchModel(appTask.getBatchModel())
-            .savePointPath(appTask.getSavePointPath())
-            .jobName(appTask.getName())
-            // 此处不应该再设置config，否则破坏了正常配置优先级顺序
-            // .config(JsonUtils.toMap(appTask.getConfigJson()))
-            .build();
+                .type(appTask.getType())
+                .checkpoint(appTask.getCheckPoint())
+                .parallelism(appTask.getParallelism())
+                .useStatementSet(appTask.getStatementSet())
+                .useBatchModel(appTask.getBatchModel())
+                .savePointPath(appTask.getSavePointPath())
+                .jobName(appTask.getName())
+                // 此处不应该再设置config，否则破坏了正常配置优先级顺序
+                // .config(JsonUtils.toMap(appTask.getConfigJson()))
+                .build();
 
         Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig);
 
@@ -173,7 +165,7 @@ public class Submitter {
         log.info("The job configuration is as follows: {}", executorConfig);
 
         String[] statements =
-            SqlUtil.getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
+                SqlUtil.getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
         if (Dialect.FLINK_JAR == appTask.getDialect()) {
             executeJarJob(executor, statements);
         } else {
@@ -221,29 +213,29 @@ public class Submitter {
                     // move all jar
                     FileUtil.listFileNames(depPath + "/jar").forEach(f -> {
                         FileUtil.moveContent(
-                            FileUtil.file(depPath + "/jar/" + f), FileUtil.file(usrlib + "/" + f), true);
+                                FileUtil.file(depPath + "/jar/" + f), FileUtil.file(usrlib + "/" + f), true);
                     });
                     URL[] jarUrls = FileUtil.listFileNames(usrlib).stream()
-                        .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
-                        .toArray(URL[]::new);
+                            .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
+                            .toArray(URL[]::new);
                     URL[] pyUrls = FileUtil.listFileNames(depPath + "/py/").stream()
-                        .map(f -> URLUtil.getURL(FileUtil.file(depPath + "/py/", f)))
-                        .toArray(URL[]::new);
+                            .map(f -> URLUtil.getURL(FileUtil.file(depPath + "/py/", f)))
+                            .toArray(URL[]::new);
 
                     addURLs(jarUrls);
                     executorConfig
-                        .getConfig()
-                        .put(
-                            PipelineOptions.JARS.key(),
-                            Arrays.stream(jarUrls).map(URL::toString).collect(Collectors.joining(";")));
-                    if (ArrayUtil.isNotEmpty(pyUrls)) {
-                        executorConfig
                             .getConfig()
                             .put(
-                                PythonOptions.PYTHON_FILES.key(),
-                                Arrays.stream(jarUrls)
-                                    .map(URL::toString)
-                                    .collect(Collectors.joining(",")));
+                                    PipelineOptions.JARS.key(),
+                                    Arrays.stream(jarUrls).map(URL::toString).collect(Collectors.joining(";")));
+                    if (ArrayUtil.isNotEmpty(pyUrls)) {
+                        executorConfig
+                                .getConfig()
+                                .put(
+                                        PythonOptions.PYTHON_FILES.key(),
+                                        Arrays.stream(jarUrls)
+                                                .map(URL::toString)
+                                                .collect(Collectors.joining(",")));
                     }
                 }
             } catch (IOException e) {
@@ -297,10 +289,11 @@ public class Submitter {
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
                 executeJarOperation.execute(executor.getCustomTableEnvironment());
-//                String fileName = FileUtil.getName(jarSubmitParam.getUri());
-//                jarSubmitParam.setUri("file://"+ SystemUtil.getUserInfo().getCurrentDir() +fileName);
-//                StreamGraph streamGraph = ExecuteJarOperation.getStreamGraph(jarSubmitParam, executor.getCustomTableEnvironment());
-//                executor.getStreamExecutionEnvironment().execute(streamGraph);
+                //                String fileName = FileUtil.getName(jarSubmitParam.getUri());
+                //                jarSubmitParam.setUri("file://"+ SystemUtil.getUserInfo().getCurrentDir() +fileName);
+                //                StreamGraph streamGraph = ExecuteJarOperation.getStreamGraph(jarSubmitParam,
+                // executor.getCustomTableEnvironment());
+                //                executor.getStreamExecutionEnvironment().execute(streamGraph);
                 break;
             }
         }

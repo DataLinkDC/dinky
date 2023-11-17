@@ -206,10 +206,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             flinkClusterCfg.getAppConfig().setUserJarParas(buildParams(config.getTaskId()));
             flinkClusterCfg.getAppConfig().setUserJarMainAppClass(CommonConstant.DINKY_APP_MAIN_CLASS);
             config.buildGatewayConfig(flinkClusterCfg);
-//            Optional.ofNullable(task.getJobInstanceId()).ifPresent(i -> {
-//                JobInstance jobInstance = jobInstanceService.getById(i);
-//                config.setClusterId(jobInstance.getClusterId());
-//            });
+            //            Optional.ofNullable(task.getJobInstanceId()).ifPresent(i -> {
+            //                JobInstance jobInstance = jobInstanceService.getById(i);
+            //                config.setClusterId(jobInstance.getClusterId());
+            //            });
             return config;
         } else {
             Optional.ofNullable(task.getClusterId()).ifPresent(config::setClusterId);

@@ -366,13 +366,14 @@ public class JobManager {
 
                 if (gatewayResult.isSuccess()) {
                     job.setStatus(Job.JobStatus.SUCCESS);
+                    success();
                 } else {
                     job.setStatus(Job.JobStatus.FAILED);
                     job.setError(gatewayResult.getError());
+                    log.error(gatewayResult.getError());
+                    failed();
                 }
             }
-            job.setStatus(Job.JobStatus.SUCCESS);
-            success();
         } catch (Exception e) {
             String error = LogUtil.getError("Exception in executing FlinkJarSQL:\n" + addLineNumber(statement), e);
             job.setEndTime(LocalDateTime.now());

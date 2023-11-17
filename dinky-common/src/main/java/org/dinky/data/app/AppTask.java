@@ -19,10 +19,10 @@
 
 package org.dinky.data.app;
 
+import org.dinky.config.Dialect;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import org.dinky.config.Dialect;
 
 @Data
 public class AppTask {
@@ -34,6 +34,7 @@ public class AppTask {
 
     @ApiModelProperty(value = "Type", dataType = "String", notes = "Type of the task")
     private String type;
+
     @ApiModelProperty(value = "Dialect", dataType = "Dialect", notes = "Dialect")
     private Dialect dialect;
 

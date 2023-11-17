@@ -123,13 +123,13 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     @Override
     public void addJar(File... jarPath) {
         Configuration configuration = this.getRootConfiguration();
+        List<String> pathList =
+                Arrays.stream(URLUtil.getURLs(jarPath)).map(URL::toString).collect(Collectors.toList());
         List<String> jars = configuration.get(PipelineOptions.JARS);
         if (jars == null) {
-            configuration.set(
-                    PipelineOptions.JARS,
-                    Arrays.stream(URLUtil.getURLs(jarPath)).map(URL::toString).collect(Collectors.toList()));
+            configuration.set(PipelineOptions.JARS, pathList);
         } else {
-            CollUtil.addAll(jars, jarPath);
+            CollUtil.addAll(jars, pathList);
         }
     }
 

@@ -35,6 +35,7 @@
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
             <version>3.1.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -45,36 +46,36 @@
             <artifactId>dinky-executor</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
                     <groupId>com.github.xiaoymin</groupId>
+                    <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
                 </exclusion>
                 <exclusion>
+                    <groupId>com.github.docker-java</groupId>
                     <artifactId>docker-java-core</artifactId>
-                    <groupId>com.github.docker-java</groupId>
                 </exclusion>
                 <exclusion>
+                    <groupId>com.github.docker-java</groupId>
                     <artifactId>docker-java-transport-httpclient5</artifactId>
-                    <groupId>com.github.docker-java</groupId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.jeasy</groupId>
                     <artifactId>easy-rules-core</artifactId>
-                    <groupId>org.jeasy</groupId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.jeasy</groupId>
                     <artifactId>easy-rules-spel</artifactId>
-                    <groupId>org.jeasy</groupId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.eclipse.jgit</groupId>
                     <artifactId>org.eclipse.jgit.archive</artifactId>
-                    <groupId>org.eclipse.jgit</groupId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.eclipse.jgit</groupId>
                     <artifactId>org.eclipse.jgit.ssh.jsch</artifactId>
-                    <groupId>org.eclipse.jgit</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>oshi-core</artifactId>
                     <groupId>com.github.oshi</groupId>
+                    <artifactId>oshi-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

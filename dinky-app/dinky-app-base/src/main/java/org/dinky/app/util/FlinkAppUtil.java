@@ -19,9 +19,7 @@
 
 package org.dinky.app.util;
 
-import org.dinky.app.db.DBUtil;
 import org.dinky.context.CustomTableEnvironmentContext;
-import org.dinky.data.enums.Status;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.utils.JsonUtils;
 
@@ -52,7 +50,8 @@ public class FlinkAppUtil {
      * If the task is completed, it sends a hook notification and stops monitoring.
      */
     public static void monitorFlinkTask(int taskId) {
-        StreamExecutionEnvironment streamExecutionEnvironment = CustomTableEnvironmentContext.get().getStreamExecutionEnvironment();
+        StreamExecutionEnvironment streamExecutionEnvironment =
+                CustomTableEnvironmentContext.get().getStreamExecutionEnvironment();
         streamExecutionEnvironment.registerJobListener(new JobListener() {
             @Override
             public void onJobSubmitted(@Nullable JobClient jobClient, @Nullable Throwable throwable) {
@@ -71,7 +70,6 @@ public class FlinkAppUtil {
                 } else {
                     // other exception
                 }
-
             }
         });
     }
@@ -83,7 +81,6 @@ public class FlinkAppUtil {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     /**
@@ -96,8 +93,8 @@ public class FlinkAppUtil {
     private static void sendHook(int taskId, String jobId, int reTryCount) throws InterruptedException {
         try {
             String dinkyAddr = SystemConfiguration.getInstances().getDinkyAddr().getValue();
-            String url = StrFormatter.format(
-                "{}/api/jobInstance/hookJobDone?taskId={}&jobId={}", dinkyAddr, taskId, jobId);
+            String url =
+                    StrFormatter.format("{}/api/jobInstance/hookJobDone?taskId={}&jobId={}", dinkyAddr, taskId, jobId);
             String resultStr = HttpUtil.get(url);
             // TODO 这里应该使用Result实体类，但是Result.class不在comm里，迁移改动太大，暂时不搞
             String code = JsonUtils.parseObject(resultStr).get("code").toString();
@@ -122,7 +119,9 @@ public class FlinkAppUtil {
      * @throws Exception
      */
     private static RestClusterClient<StandaloneClusterId> createClient() throws Exception {
-        ReadableConfig config = CustomTableEnvironmentContext.get().getStreamExecutionEnvironment().getConfiguration();
+        ReadableConfig config = CustomTableEnvironmentContext.get()
+                .getStreamExecutionEnvironment()
+                .getConfiguration();
         Configuration configuration = new Configuration((Configuration) config);
 
         return new RestClusterClient<>(configuration, StandaloneClusterId.getInstance());
