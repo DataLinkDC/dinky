@@ -158,7 +158,13 @@ public class TaskController {
     @ApiOperation("Get Job Plan")
     @ExecuteProcess(type = ProcessType.FLINK_JOB_PLAN)
     public Result<ObjectNode> getJobPlan(@ProcessId @RequestBody TaskDTO taskDTO) {
-        return Result.succeed(taskService.getJobPlan(taskDTO), Status.EXECUTE_SUCCESS);
+        ObjectNode jobPlan = null;
+        try {
+            jobPlan = taskService.getJobPlan(taskDTO);
+        } catch (Exception e) {
+            return Result.failed(e.getMessage());
+        }
+        return Result.succeed(jobPlan, Status.EXECUTE_SUCCESS);
     }
 
     @PutMapping
