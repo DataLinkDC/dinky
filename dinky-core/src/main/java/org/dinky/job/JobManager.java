@@ -323,15 +323,21 @@ public class JobManager {
         String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
         ExecuteJarOperation executeJarOperation = null;
         for (int i = 0; i < statements.length; i++) {
-            String sqlStatement = executor.pretreatStatement(statements[i]);
+            String sql = statements[i];
+            String sqlStatement = executor.pretreatStatement(sql);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 currentSql = sqlStatement;
-                executeJarOperation = new ExecuteJarOperation(statement);
+                executeJarOperation = new ExecuteJarOperation(sqlStatement);
                 break;
             }
-            SqlType operationType = Operations.getOperationType(statement);
+            SqlType operationType = Operations.getOperationType(sqlStatement);
             if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParseStrategy.getAllFilePath(statement).forEach(executor::addJar);
+                AddJarSqlParseStrategy.getAllFilePath(sqlStatement).forEach(executor::addJar);
+                if (runMode.isApplicationMode()){
+                    AddJarSqlParseStrategy.getAllFilePath(sqlStatement).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
+                }else {
+                    AddJarSqlParseStrategy.getAllFilePath(sqlStatement).forEach(executor::addJar);
+                }
             }
         }
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));

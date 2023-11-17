@@ -44,6 +44,7 @@ import org.dinky.oss.OssTemplate;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
 import org.dinky.trans.dml.ExecuteJarOperation;
+import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.ZipUtils;
@@ -167,7 +168,7 @@ public class Submitter {
         String[] statements =
                 SqlUtil.getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
         if (Dialect.FLINK_JAR == appTask.getDialect()) {
-            executeJarJob(executor, statements);
+            executeJarJob(appTask.getType(),executor, statements);
         } else {
             executeJob(executor, statements);
         }
@@ -283,18 +284,15 @@ public class Submitter {
     }
 
     @SneakyThrows
-    public static void executeJarJob(Executor executor, String[] statements) {
+    public static void executeJarJob(String type,Executor executor, String[] statements) {
         for (int i = 0; i < statements.length; i++) {
             String sqlStatement = executor.pretreatStatement(statements[i]);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
                 executeJarOperation.execute(executor.getCustomTableEnvironment());
-                //                String fileName = FileUtil.getName(jarSubmitParam.getUri());
-                //                jarSubmitParam.setUri("file://"+ SystemUtil.getUserInfo().getCurrentDir() +fileName);
-                //                StreamGraph streamGraph = ExecuteJarOperation.getStreamGraph(jarSubmitParam,
-                // executor.getCustomTableEnvironment());
-                //                executor.getStreamExecutionEnvironment().execute(streamGraph);
                 break;
+            } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD && "kubernetes-application".equals(type)) {
+                executor.addJar(AddJarSqlParseStrategy.getInfo(sqlStatement));
             }
         }
     }

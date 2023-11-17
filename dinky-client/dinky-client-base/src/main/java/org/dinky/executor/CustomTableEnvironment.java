@@ -94,5 +94,4 @@ public interface CustomTableEnvironment
             CollUtil.addAll(jars, pathList);
         }
     }
-    ;
 }

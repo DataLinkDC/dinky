@@ -19,6 +19,9 @@
 
 package org.dinky.gateway.yarn;
 
+import cn.hutool.core.collection.CollUtil;
+import org.apache.flink.util.CollectionUtil;
+import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.model.SystemConfiguration;
@@ -36,12 +39,16 @@ import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
+import org.dinky.utils.URLUtils;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -64,7 +71,6 @@ public class YarnApplicationGateway extends YarnGateway {
 
         AppConfig appConfig = config.getAppConfig();
         configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
-
         configuration.setString(
                 "python.files",
                 FlinkUdfPathContextHolder.getPyUdfFile().stream()
