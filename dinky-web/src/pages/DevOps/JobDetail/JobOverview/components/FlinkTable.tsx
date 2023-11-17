@@ -24,7 +24,7 @@ import { l } from '@/utils/intl';
 import { ProCard, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Typography } from 'antd';
 
-const {  Link } = Typography;
+const { Link } = Typography;
 
 export type VerticesTableListItem = {
   name: string;

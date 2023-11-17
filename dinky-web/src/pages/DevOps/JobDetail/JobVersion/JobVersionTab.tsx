@@ -26,11 +26,11 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { TaskVersionListItem } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
-import { Card, Col, Row, Tag } from 'antd';
-import React, {useRef, useState} from 'react';
-import {ProCard} from "@ant-design/pro-components";
-import {SplitPane} from "@andrewray/react-multi-split-pane";
-import {Pane} from "@andrewray/react-multi-split-pane/dist/lib/Pane";
+import { SplitPane } from '@andrewray/react-multi-split-pane';
+import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
+import { ProCard } from '@ant-design/pro-components';
+import { Tag } from 'antd';
+import { useRef, useState } from 'react';
 
 const JobVersionTab = (props: JobProps) => {
   const { jobDetail } = props;
@@ -66,47 +66,71 @@ const JobVersionTab = (props: JobProps) => {
   const renderVersionList = () => {
     return (
       <>
-          <SplitPane split={'vertical'} defaultSizes={[100, 500]} minSize={150} className={'split-pane'} >
-            <Pane className={'split-pane'} forwardRef={refObject} minSize={100} size={100} split={'horizontal'}>
-              <VersionList
-                loading={versionList.loading}
-                data={versionList.data}
-                onDeleteListen={deleteVersion}
-                onSelectListen={(item) => setCurrentVersion(item)}
-                header={l('devops.jobinfo.version.versionList')}
-              />
-            </Pane>
+        <SplitPane
+          split={'vertical'}
+          defaultSizes={[100, 500]}
+          minSize={150}
+          className={'split-pane'}
+        >
+          <Pane
+            className={'split-pane'}
+            forwardRef={refObject}
+            minSize={100}
+            size={100}
+            split={'horizontal'}
+          >
+            <VersionList
+              loading={versionList.loading}
+              data={versionList.data}
+              onDeleteListen={deleteVersion}
+              onSelectListen={(item) => setCurrentVersion(item)}
+              header={l('devops.jobinfo.version.versionList')}
+            />
+          </Pane>
 
-            <Pane className={'split-pane'} forwardRef={refObject} minSize={100} size={100} split={'horizontal'}>
-              <ProCard
-                ghost hoverable bordered size={'small'}   bodyStyle={{height: parent.innerHeight }}
-                title={'V-' + currentVersion?.versionId}
-                extra={
-                  <>
-                    <Tag key={'v-type'} color='blue'>{currentVersion?.type}</Tag>
-                    <Tag key={'v-dialect'} color='success'>{currentVersion?.dialect}</Tag>
-                  </>
+          <Pane
+            className={'split-pane'}
+            forwardRef={refObject}
+            minSize={100}
+            size={100}
+            split={'horizontal'}
+          >
+            <ProCard
+              ghost
+              hoverable
+              bordered
+              size={'small'}
+              bodyStyle={{ height: parent.innerHeight }}
+              title={'V-' + currentVersion?.versionId}
+              extra={
+                <>
+                  <Tag key={'v-type'} color='blue'>
+                    {currentVersion?.type}
+                  </Tag>
+                  <Tag key={'v-dialect'} color='success'>
+                    {currentVersion?.dialect}
+                  </Tag>
+                </>
+              }
+            >
+              <CodeShow
+                showFloatButton
+                code={currentVersion?.statement ?? ''}
+                height={parent.innerHeight - 250}
+                language={
+                  currentVersion?.dialect?.toLowerCase() === DIALECT.FLINK_SQL ? 'flinksql' : 'sql'
                 }
-              >
-                  <CodeShow
-                    showFloatButton
-                    code={currentVersion?.statement ?? ''}
-                    height={parent.innerHeight - 250}
-                    language={
-                      currentVersion?.dialect?.toLowerCase() === DIALECT.FLINK_SQL ? 'flinksql' : 'sql'
-                    }
-                  />
-              </ProCard>
-            </Pane>
-          </SplitPane>
-
+              />
+            </ProCard>
+          </Pane>
+        </SplitPane>
       </>
     );
   };
 
   return (
     <>
-      <ProCard size={'small'} bodyStyle={{height: parent.innerHeight - 180, overflow: 'auto'}}>
+      <ProCard size={'small'} bodyStyle={{ height: parent.innerHeight - 180, overflow: 'auto' }}>
         {renderVersionList()}
       </ProCard>
     </>

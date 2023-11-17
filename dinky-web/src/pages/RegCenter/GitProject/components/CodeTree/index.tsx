@@ -38,8 +38,8 @@ export const CodeTree: React.FC<CodeTreeProps> = (props) => {
       styles={{
         body: {
           height: 'calc(100vh - 300px)',
-          overflow: 'auto',
-        },
+          overflow: 'auto'
+        }
       }}
       open={modalVisible}
       maskClosable={false}
