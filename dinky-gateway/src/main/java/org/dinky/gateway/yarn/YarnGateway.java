@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.yarn;
 
-import cn.hutool.core.collection.CollUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
@@ -59,17 +58,15 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
-import org.dinky.utils.URLUtils;
 
 public abstract class YarnGateway extends AbstractGateway {
 
@@ -291,7 +288,7 @@ public abstract class YarnGateway extends AbstractGateway {
         }
         Set<File> otherPluginsFiles = FlinkUdfPathContextHolder.getOtherPluginsFiles();
 
-        if (CollUtil.isNotEmpty(otherPluginsFiles)){
+        if (CollUtil.isNotEmpty(otherPluginsFiles)) {
             yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(otherPluginsFiles));
         }
         return yarnClusterDescriptor;

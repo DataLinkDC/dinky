@@ -168,7 +168,7 @@ public class Submitter {
         String[] statements =
                 SqlUtil.getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
         if (Dialect.FLINK_JAR == appTask.getDialect()) {
-            executeJarJob(appTask.getType(),executor, statements);
+            executeJarJob(appTask.getType(), executor, statements);
         } else {
             executeJob(executor, statements);
         }
@@ -284,14 +284,15 @@ public class Submitter {
     }
 
     @SneakyThrows
-    public static void executeJarJob(String type,Executor executor, String[] statements) {
+    public static void executeJarJob(String type, Executor executor, String[] statements) {
         for (int i = 0; i < statements.length; i++) {
             String sqlStatement = executor.pretreatStatement(statements[i]);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
                 executeJarOperation.execute(executor.getCustomTableEnvironment());
                 break;
-            } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD && "kubernetes-application".equals(type)) {
+            } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD
+                    && "kubernetes-application".equals(type)) {
                 executor.addJar(AddJarSqlParseStrategy.getInfo(sqlStatement));
             }
         }

@@ -333,9 +333,10 @@ public class JobManager {
             SqlType operationType = Operations.getOperationType(sqlStatement);
             if (operationType.equals(SqlType.ADD)) {
                 AddJarSqlParseStrategy.getAllFilePath(sqlStatement).forEach(executor::addJar);
-                if (runMode.isApplicationMode()){
-                    AddJarSqlParseStrategy.getAllFilePath(sqlStatement).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
-                }else {
+                if (runMode.isApplicationMode()) {
+                    AddJarSqlParseStrategy.getAllFilePath(sqlStatement)
+                            .forEach(FlinkUdfPathContextHolder::addOtherPlugins);
+                } else {
                     AddJarSqlParseStrategy.getAllFilePath(sqlStatement).forEach(executor::addJar);
                 }
             }

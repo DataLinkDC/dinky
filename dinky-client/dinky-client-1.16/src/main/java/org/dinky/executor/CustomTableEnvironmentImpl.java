@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.dag.Transformation;
