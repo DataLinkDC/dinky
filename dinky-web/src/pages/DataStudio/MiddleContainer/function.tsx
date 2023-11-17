@@ -18,7 +18,8 @@
  */
 
 import {
-  FileIcon, FlinkJarSvg,
+  FileIcon,
+  FlinkJarSvg,
   FlinkSQLEnvSvg,
   FlinkSQLSvg,
   JavaSvg,

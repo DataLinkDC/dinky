@@ -119,8 +119,6 @@ export const showBadge = (type: string) => {
   }
 };
 
-
-
 /**
  * build Catalogue tree
  * @param {Catalogue[]} data
@@ -189,4 +187,3 @@ export const buildProjectTree = (
 export const isUDF = (jobType: string): boolean => {
   return jobType === 'Scala' || jobType === 'Python' || jobType === 'Java';
 };
-
