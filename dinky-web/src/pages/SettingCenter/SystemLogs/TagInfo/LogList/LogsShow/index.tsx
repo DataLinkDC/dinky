@@ -45,7 +45,10 @@ const LogsShow: React.FC<LogsShowProps> = (props) => {
   return (
     <>
       {code ? (
-        <CodeShow {...{...restLogsShowProps,height: parent.innerHeight - 210 }} {...CodeEditProps} />
+        <CodeShow
+          {...{ ...restLogsShowProps, height: parent.innerHeight - 210 }}
+          {...CodeEditProps}
+        />
       ) : (
         <Empty className={'code-content-empty'} description={l('sys.info.logList.tips')} />
       )}

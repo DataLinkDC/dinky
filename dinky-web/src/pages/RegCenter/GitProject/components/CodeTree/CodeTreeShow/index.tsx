@@ -22,11 +22,10 @@ import { SiderTree } from '@/pages/RegCenter/GitProject/components/CodeTree/Code
 import { handleData } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { GitProject, GitProjectTreeNode } from '@/types/RegCenter/data';
-import React, {useEffect, useRef, useState} from 'react';
-import {SplitPane} from "@andrewray/react-multi-split-pane";
-import {Pane} from "@andrewray/react-multi-split-pane/dist/lib/Pane";
-import {ProCard} from "@ant-design/pro-components";
-
+import { SplitPane } from '@andrewray/react-multi-split-pane';
+import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
+import { ProCard } from '@ant-design/pro-components';
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * CodeTreeShowProps
@@ -88,10 +87,28 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
    */
   return (
     <>
-      <ProCard size={'small'} bodyStyle={{height: parent.innerHeight - 320, overflow: 'auto'}}>
-        <SplitPane split={'vertical'} defaultSizes={[100, 500]} minSize={150} className={'split-pane'} >
-          <Pane className={'split-pane'} forwardRef={refObject} minSize={100} size={100} split={'horizontal'}>
-            <ProCard ghost hoverable bordered size={'small'}  bodyStyle={{height: parent.innerHeight , overflow: 'auto' }} colSpan={'20%'}>
+      <ProCard size={'small'} bodyStyle={{ height: parent.innerHeight - 320, overflow: 'auto' }}>
+        <SplitPane
+          split={'vertical'}
+          defaultSizes={[100, 500]}
+          minSize={150}
+          className={'split-pane'}
+        >
+          <Pane
+            className={'split-pane'}
+            forwardRef={refObject}
+            minSize={100}
+            size={100}
+            split={'horizontal'}
+          >
+            <ProCard
+              ghost
+              hoverable
+              bordered
+              size={'small'}
+              bodyStyle={{ height: parent.innerHeight, overflow: 'auto' }}
+              colSpan={'20%'}
+            >
               {/* tree */}
               <SiderTree
                 treeData={treeData}
@@ -101,8 +118,20 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
             </ProCard>
           </Pane>
 
-          <Pane className={'split-pane'} forwardRef={refObject} minSize={100} size={100} split={'horizontal'}>
-            <ProCard ghost hoverable bordered size={'small'}   bodyStyle={{height: parent.innerHeight }}>
+          <Pane
+            className={'split-pane'}
+            forwardRef={refObject}
+            minSize={100}
+            size={100}
+            split={'horizontal'}
+          >
+            <ProCard
+              ghost
+              hoverable
+              bordered
+              size={'small'}
+              bodyStyle={{ height: parent.innerHeight }}
+            >
               <CodeContent code={codeValue} current={currentGitProjectTreeNode} />
             </ProCard>
           </Pane>

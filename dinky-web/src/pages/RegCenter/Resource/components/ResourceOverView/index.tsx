@@ -34,14 +34,12 @@ import { InitResourceState } from '@/types/RegCenter/init.d';
 import { ResourceState } from '@/types/RegCenter/state.d';
 import { unSupportView } from '@/utils/function';
 import { l } from '@/utils/intl';
+import { SplitPane } from '@andrewray/react-multi-split-pane';
+import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { ProCard } from '@ant-design/pro-components';
 import { useAsyncEffect } from 'ahooks';
 import { MenuInfo } from 'rc-menu/es/interface';
-import React, {useCallback, useRef, useState} from 'react';
-import {SplitPane} from "@andrewray/react-multi-split-pane";
-import {Pane} from "@andrewray/react-multi-split-pane/dist/lib/Pane";
-
-
+import React, { useCallback, useRef, useState } from 'react';
 
 const ResourceOverView: React.FC = () => {
   const [resourceState, setResourceState] = useState<ResourceState>(InitResourceState);
@@ -238,10 +236,21 @@ const ResourceOverView: React.FC = () => {
    */
   return (
     <>
-      <ProCard size={'small'} bodyStyle={{height: parent.innerHeight - 80}}>
-        <SplitPane split={'vertical'} defaultSizes={[100, 500]} minSize={150} className={'split-pane'} >
-          <Pane className={'split-pane'} forwardRef={refObject} minSize={100} size={100} split={'horizontal'}>
-            <ProCard ghost hoverable  bodyStyle={{height: parent.innerHeight}} colSpan={'18%'}>
+      <ProCard size={'small'} bodyStyle={{ height: parent.innerHeight - 80 }}>
+        <SplitPane
+          split={'vertical'}
+          defaultSizes={[100, 500]}
+          minSize={150}
+          className={'split-pane'}
+        >
+          <Pane
+            className={'split-pane'}
+            forwardRef={refObject}
+            minSize={100}
+            size={100}
+            split={'horizontal'}
+          >
+            <ProCard ghost hoverable bodyStyle={{ height: parent.innerHeight }} colSpan={'18%'}>
               <FileTree
                 selectedKeys={resourceState.selectedKeys}
                 treeData={resourceState.treeData}
@@ -260,8 +269,14 @@ const ResourceOverView: React.FC = () => {
             </ProCard>
           </Pane>
 
-          <Pane className={'split-pane'} forwardRef={refObject} minSize={100} size={100} split={'horizontal'}>
-            <ProCard ghost hoverable bodyStyle={{height: parent.innerHeight}}>
+          <Pane
+            className={'split-pane'}
+            forwardRef={refObject}
+            minSize={100}
+            size={100}
+            split={'horizontal'}
+          >
+            <ProCard ghost hoverable bodyStyle={{ height: parent.innerHeight }}>
               <FileShow
                 onChange={handleContentChange}
                 code={resourceState.content}

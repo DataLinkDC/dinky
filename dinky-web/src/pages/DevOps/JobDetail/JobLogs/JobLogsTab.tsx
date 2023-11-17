@@ -21,17 +21,15 @@ import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import ExceptionTab from '@/pages/DevOps/JobDetail/JobLogs/components/ExceptionTab';
 import JobManagerLogsTab from '@/pages/DevOps/JobDetail/JobLogs/components/JobManagerLogsTab';
 import TaskManagerLogsTab from '@/pages/DevOps/JobDetail/JobLogs/components/TaskManagerLogsTab';
-import { ProCard } from "@ant-design/pro-components";
-import { useState } from "react";
-
+import { ProCard } from '@ant-design/pro-components';
+import { useState } from 'react';
 
 const JobLogsTab = (props: JobProps) => {
   const { jobDetail } = props;
 
   const [activeKey, setActiveKey] = useState('Exception');
 
-
-  const tabsItems =[
+  const tabsItems = [
     {
       label: 'Exception',
       key: 'Exception',
@@ -48,8 +46,7 @@ const JobLogsTab = (props: JobProps) => {
       key: 'TaskManager',
       children: <TaskManagerLogsTab jobDetail={jobDetail} />
     }
-  ]
-
+  ];
 
   return (
     <>
@@ -60,7 +57,7 @@ const JobLogsTab = (props: JobProps) => {
           type: 'card',
           activeKey: activeKey,
           onChange: setActiveKey,
-          items: tabsItems,
+          items: tabsItems
         }}
       />
     </>

@@ -23,15 +23,14 @@ import { DataStudioTabsItemType, StateType } from '@/pages/DataStudio/model';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { parseMilliSecondStr } from '@/utils/function';
-import { connect, useModel, useRequest } from '@umijs/max';
+import { SplitPane } from '@andrewray/react-multi-split-pane';
+import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { CheckOutlined, CloseCircleFilled, LoadingOutlined } from '@ant-design/icons';
+import { connect, useModel, useRequest } from '@umijs/max';
 import { Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
-import {Key, useEffect, useRef, useState} from 'react';
-import {SplitPane} from "@andrewray/react-multi-split-pane";
-import {Pane} from "@andrewray/react-multi-split-pane/dist/lib/Pane";
-import * as React from "react";
+import { Key, useEffect, useRef, useState } from 'react';
 
 const { Text } = Typography;
 
@@ -75,7 +74,6 @@ const ConsoleContent = (props: ConsoleProps) => {
   const { subscribeTopic } = useModel('Sse', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
-
 
   const onUpdate = (data: ProcessStep) => {
     setProcessNode((prevState: any) => {
@@ -140,10 +138,21 @@ const ConsoleContent = (props: ConsoleProps) => {
     setExpandedKeys(expandedKeys);
   };
 
-
-  return <div style={{height: props.height - 53}}>
-      <SplitPane split={'vertical'} defaultSizes={[100, 500]} minSize={100} className={'split-pane'} >
-        <Pane className={'split-pane'} forwardRef={refObject} minSize={100} size={100} split={'horizontal'}>
+  return (
+    <div style={{ height: props.height - 53 }}>
+      <SplitPane
+        split={'vertical'}
+        defaultSizes={[100, 500]}
+        minSize={100}
+        className={'split-pane'}
+      >
+        <Pane
+          className={'split-pane'}
+          forwardRef={refObject}
+          minSize={100}
+          size={100}
+          split={'horizontal'}
+        >
           {processNode ? (
             <DirectoryTree
               className={'treeList'}
@@ -160,7 +169,13 @@ const ConsoleContent = (props: ConsoleProps) => {
           )}
         </Pane>
 
-        <Pane className={'split-pane'} forwardRef={refObject} minSize={100} size={100} split={'horizontal'}>
+        <Pane
+          className={'split-pane'}
+          forwardRef={refObject}
+          minSize={100}
+          size={100}
+          split={'horizontal'}
+        >
           <CodeShow
             code={selectNode?.log ? selectNode.log : ''}
             height={props.height - 53}
@@ -170,7 +185,7 @@ const ConsoleContent = (props: ConsoleProps) => {
         </Pane>
       </SplitPane>
     </div>
-
+  );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
