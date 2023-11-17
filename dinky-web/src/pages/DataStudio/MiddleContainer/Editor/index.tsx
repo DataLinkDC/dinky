@@ -21,6 +21,7 @@ import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { useEditor } from '@/hooks/useEditor';
 import { TASK_VAR_FILTER } from '@/pages/DataStudio/MiddleContainer/Editor/constants';
 import DiffModal from '@/pages/DataStudio/MiddleContainer/Editor/DiffModal';
+import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
 import {
   DataStudioTabsItemType,
   StateType,
@@ -38,7 +39,6 @@ import { Button, Spin } from 'antd';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
 import React, { useEffect, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
-import {matchLanguage} from "@/pages/DataStudio/MiddleContainer/function";
 
 export type EditorProps = {
   tabsItem: DataStudioTabsItemType;

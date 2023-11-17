@@ -33,7 +33,7 @@ import {
   calculatorWidth
 } from '@/pages/DataStudio/RightContainer/JobConfig/function';
 import { AlertStateType, ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
-import {DIALECT, RUN_MODE, SWITCH_OPTIONS} from '@/services/constants';
+import { DIALECT, RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import {
@@ -45,7 +45,7 @@ import {
   ProFormSwitch,
   ProFormText
 } from '@ant-design/pro-components';
-import {Badge, Form, Space, Typography} from 'antd';
+import { Badge, Space, Typography } from 'antd';
 import { debounce } from 'lodash';
 import { useEffect } from 'react';
 import { connect } from 'umi';
@@ -227,8 +227,7 @@ const JobConfig = (props: any) => {
             max={9999}
             min={1}
           />
-          {
-            current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL &&
+          {current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
             <ProFormSwitch
               label={l('pages.datastudio.label.jobConfig.insert')}
               name='statementSet'
@@ -239,7 +238,7 @@ const JobConfig = (props: any) => {
               }}
               {...SWITCH_OPTIONS()}
             />
-          }
+          )}
 
           <ProFormSwitch
             label={l('pages.datastudio.label.jobConfig.fragment')}

@@ -39,14 +39,12 @@ import {
   OracleIcons,
   PhoenixIcons,
   PostgresqlIcons,
-  PrestoIcons, SQLIcons,
+  PrestoIcons,
+  SQLIcons,
   SqlServerIcons,
   StarRocksIcons
 } from '@/components/Icons/DBIcons';
 import { DIALECT } from '@/services/constants';
-
-
-
 
 export const matchLanguage = (language = DIALECT.FLINK_SQL) => {
   switch (language.toLowerCase()) {
@@ -76,7 +74,7 @@ export const matchLanguage = (language = DIALECT.FLINK_SQL) => {
     default:
       return DIALECT.SQL;
   }
-}
+};
 //
 export const getTabIcon = (type: string, size?: number) => {
   if (!type) {
@@ -112,7 +110,7 @@ export const getTabIcon = (type: string, size?: number) => {
     case DIALECT.FLINKSQLENV:
       return <FlinkSQLEnvSvg />;
     case DIALECT.SQL:
-        return <SQLIcons size={size} />;
+      return <SQLIcons size={size} />;
     case DIALECT.MYSQL:
       return <MysqlIcons size={size} />;
     case DIALECT.ORACLE:

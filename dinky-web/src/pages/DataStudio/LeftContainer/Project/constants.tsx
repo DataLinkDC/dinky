@@ -129,7 +129,7 @@ export const JOB_TYPE: DefaultOptionType[] = [
       {
         value: 'FlinkSqlEnv',
         label: 'FlinkSqlEnv'
-      },
+      }
     ]
   },
   {

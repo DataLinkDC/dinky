@@ -19,7 +19,7 @@
 
 import { TabsPageType, TaskDataType } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
-import {EnvironmentOutlined} from '@ant-design/icons';
+import { EnvironmentOutlined } from '@ant-design/icons';
 
 /**
  * @description: 生成面包屑

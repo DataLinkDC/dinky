@@ -140,7 +140,7 @@ export const buildEnvOptions = (env: any[], isDisabled: boolean) => {
       label: tag,
       value: item.id,
       key: item.id,
-      disabled:!item.enabled || !isDisabled
+      disabled: !item.enabled || !isDisabled
     });
   }
   return envList;
