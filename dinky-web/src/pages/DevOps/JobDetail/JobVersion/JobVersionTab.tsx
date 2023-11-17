@@ -26,8 +26,11 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { TaskVersionListItem } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
-import { Card, Col, Row, Tag } from 'antd';
-import { useState } from 'react';
+import { SplitPane } from '@andrewray/react-multi-split-pane';
+import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
+import { ProCard } from '@ant-design/pro-components';
+import { Tag } from 'antd';
+import { useRef, useState } from 'react';
 
 const JobVersionTab = (props: JobProps) => {
   const { jobDetail } = props;
@@ -39,6 +42,7 @@ const JobVersionTab = (props: JobProps) => {
     versionId: 'Current',
     isLatest: true
   };
+  const refObject = useRef<HTMLDivElement>(null);
 
   const [currentVersion, setCurrentVersion] = useState<TaskVersionListItem>(latestVersion);
 
@@ -61,47 +65,74 @@ const JobVersionTab = (props: JobProps) => {
 
   const renderVersionList = () => {
     return (
-      <Row>
-        <Col span={3}>
-          <VersionList
-            loading={versionList.loading}
-            data={versionList.data}
-            onDeleteListen={deleteVersion}
-            onSelectListen={(item) => setCurrentVersion(item)}
-            header={l('devops.jobinfo.version.versionList')}
-          />
-        </Col>
-        <Col span={21}>
-          <Card
-            title={'V-' + currentVersion?.versionId}
-            bordered={false}
-            extra={
-              <>
-                <Tag key={'v-type'} color='blue'>
-                  {currentVersion?.type}
-                </Tag>
-                <Tag key={'v-dialect'} color='yellow'>
-                  {currentVersion?.dialect}
-                </Tag>
-              </>
-            }
+      <>
+        <SplitPane
+          split={'vertical'}
+          defaultSizes={[100, 500]}
+          minSize={150}
+          className={'split-pane'}
+        >
+          <Pane
+            className={'split-pane'}
+            forwardRef={refObject}
+            minSize={100}
+            size={100}
+            split={'horizontal'}
           >
-            <CodeShow
-              code={currentVersion?.statement ?? ''}
-              height={500}
-              language={
-                currentVersion?.dialect?.toLowerCase() === DIALECT.FLINK_SQL ? 'flinksql' : 'sql'
-              }
+            <VersionList
+              loading={versionList.loading}
+              data={versionList.data}
+              onDeleteListen={deleteVersion}
+              onSelectListen={(item) => setCurrentVersion(item)}
+              header={l('devops.jobinfo.version.versionList')}
             />
-          </Card>
-        </Col>
-      </Row>
+          </Pane>
+
+          <Pane
+            className={'split-pane'}
+            forwardRef={refObject}
+            minSize={100}
+            size={100}
+            split={'horizontal'}
+          >
+            <ProCard
+              ghost
+              hoverable
+              bordered
+              size={'small'}
+              bodyStyle={{ height: parent.innerHeight }}
+              title={'V-' + currentVersion?.versionId}
+              extra={
+                <>
+                  <Tag key={'v-type'} color='blue'>
+                    {currentVersion?.type}
+                  </Tag>
+                  <Tag key={'v-dialect'} color='success'>
+                    {currentVersion?.dialect}
+                  </Tag>
+                </>
+              }
+            >
+              <CodeShow
+                showFloatButton
+                code={currentVersion?.statement ?? ''}
+                height={parent.innerHeight - 250}
+                language={
+                  currentVersion?.dialect?.toLowerCase() === DIALECT.FLINK_SQL ? 'flinksql' : 'sql'
+                }
+              />
+            </ProCard>
+          </Pane>
+        </SplitPane>
+      </>
     );
   };
 
   return (
     <>
-      <Card>{renderVersionList()}</Card>
+      <ProCard size={'small'} bodyStyle={{ height: parent.innerHeight - 180, overflow: 'auto' }}>
+        {renderVersionList()}
+      </ProCard>
     </>
   );
 };

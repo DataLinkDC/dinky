@@ -35,6 +35,7 @@
     "not ie <= 10"
   ],
   "dependencies": {
+    "@andrewray/react-multi-split-pane": "^0.3.5",
     "@ant-design/charts": "^1.4.2",
     "@ant-design/icons": "^5.2.6",
     "@ant-design/pro-components": "^2.6.41",

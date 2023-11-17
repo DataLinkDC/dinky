@@ -41,16 +41,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
 
 export type EditorProps = {
-  tabsItem: DataStudioTabsItemType
+  tabsItem: DataStudioTabsItemType;
   height?: number;
 };
 
 const CodeEditor: React.FC<EditorProps & any> = (props) => {
-  const {
-    tabsItem,
-    dispatch,
-    height
-  } = props;
+  const { tabsItem, dispatch, height } = props;
 
   useEffect(() => {
     dispatch({
