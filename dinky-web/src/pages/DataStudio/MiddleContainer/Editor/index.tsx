@@ -19,7 +19,6 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { useEditor } from '@/hooks/useEditor';
-import { getCurrentTab } from '@/pages/DataStudio/function';
 import { TASK_VAR_FILTER } from '@/pages/DataStudio/MiddleContainer/Editor/constants';
 import DiffModal from '@/pages/DataStudio/MiddleContainer/Editor/DiffModal';
 import {
@@ -30,6 +29,7 @@ import {
   TaskDataType
 } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
+import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { connect, useRequest } from '@@/exports';
@@ -41,14 +41,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
 
 export type EditorProps = {
-  taskId: number;
+  tabsItem: DataStudioTabsItemType
   height?: number;
 };
 
 const CodeEditor: React.FC<EditorProps & any> = (props) => {
   const {
-    taskId,
-    tabs: { panes, activeKey },
+    tabsItem,
     dispatch,
     height
   } = props;
@@ -68,12 +67,11 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
   const editorInstance = useRef<editor.IStandaloneCodeEditor | any>();
   const monacoInstance = useRef<Monaco | any>();
 
-  const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
-  const currentData = currentTab.params.taskData;
+  const currentData = tabsItem.params.taskData;
 
   const loadTask = (cache: TaskDataType, serverParams: TaskDataType) => {
     if (!cache) {
-      currentTab.params.taskData = { ...serverParams, useResult: true, maxRowNum: 100 };
+      tabsItem.params.taskData = { ...serverParams, useResult: true, maxRowNum: 100 };
       dispatch({ type: STUDIO_MODEL.saveTabs, payload: { ...props.tabs } });
       return;
     }
@@ -92,16 +90,16 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
   };
 
   const { loading, data } = useRequest(
-    { url: API_CONSTANTS.TASK, params: { id: taskId } },
-    { onSuccess: (data: any) => loadTask(currentTab.params.taskData, data) }
+    { url: API_CONSTANTS.TASK, params: { id: tabsItem.params.taskId } },
+    { onSuccess: (data: any) => loadTask(tabsItem.params.taskData, data) }
   );
 
   const upDateTask = (useServerVersion: boolean) => {
     if (useServerVersion) {
-      currentTab.params.taskData = { ...data, useResult: true, maxRowNum: 100 };
-      currentTab.isModified = false;
+      tabsItem.params.taskData = { ...data, useResult: true, maxRowNum: 100 };
+      tabsItem.isModified = false;
     } else {
-      currentTab.isModified = true;
+      tabsItem.isModified = true;
     }
     dispatch({ type: STUDIO_MODEL.saveTabs, payload: { ...props.tabs } });
     setIsModalOpen(false);
@@ -128,13 +126,13 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
   };
 
   const handleEditChange = (v: string | undefined) => {
-    if (!currentData || !currentTab) {
+    if (!currentData || !tabsItem) {
       return;
     }
     if (typeof v === 'string') {
       currentData.statement = v;
     }
-    currentTab.isModified = true;
+    tabsItem.isModified = true;
     dispatch({
       type: STUDIO_MODEL.saveTabs,
       payload: { ...props.tabs }
@@ -147,14 +145,24 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
         <DiffModal
           diffs={diff}
           open={isModalOpen}
+          language={
+            tabsItem?.params?.taskData?.dialect?.toLowerCase() === DIALECT.FLINK_SQL
+              ? 'flinksql'
+              : 'sql'
+          }
           fileName={currentData?.name}
           onUse={upDateTask}
         />
         <CodeEdit
           monacoRef={monacoInstance}
           editorRef={editorInstance}
-          code={currentTab?.params?.taskData?.statement}
-          language={'sql'}
+          code={tabsItem?.params?.taskData?.statement}
+          language={
+            tabsItem?.params?.taskData?.dialect?.toLowerCase() === DIALECT.FLINK_SQL
+              ? 'flinksql'
+              : 'sql'
+          }
+          // language={'sql'}
           editorDidMount={editorDidMount}
           onChange={handleEditChange}
           enableSuggestions={true}

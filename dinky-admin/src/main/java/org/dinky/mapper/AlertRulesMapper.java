@@ -20,7 +20,7 @@
 package org.dinky.mapper;
 
 import org.dinky.data.dto.AlertRuleDTO;
-import org.dinky.data.model.AlertRule;
+import org.dinky.data.model.alert.AlertRule;
 import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;

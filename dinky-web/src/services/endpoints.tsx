@@ -147,7 +147,7 @@ export enum API_CONSTANTS {
   // ---- alert instance ----
   // alert instance list
   ALERT_INSTANCE = '/api/alertInstance/list',
-  ALERT_INSTANCE_ADD_OR_UPDATE = '/api/alertInstance/addOrUpdate',
+  ALERT_INSTANCE_ADD_OR_UPDATE = '/api/alertInstance/saveOrUpdate',
   // delete alert instance by id
   ALERT_INSTANCE_DELETE = '/api/alertInstance/delete',
   // alert instance enable or disable
@@ -159,6 +159,7 @@ export enum API_CONSTANTS {
 
   // ---- alert group ----
   ALERT_GROUP = '/api/alertGroup/list',
+  ALERT_GROUP_LIST_ENABLE_ALL = '/api/alertGroup/listEnabledAll',
   ALERT_GROUP_ADD_OR_UPDATE = '/api/alertGroup/addOrUpdate',
   // delete alert group by id
   ALERT_GROUP_DELETE = '/api/alertGroup/delete',

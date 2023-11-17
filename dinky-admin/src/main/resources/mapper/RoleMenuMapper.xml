@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dinky.mapper.RoleMenuMapper">
 
-	<resultMap type="org.dinky.data.model.RoleMenu" id="SysRoleMenuResult">
+	<resultMap type="org.dinky.data.model.rbac.RoleMenu" id="SysRoleMenuResult">
 		<result property="id"     	  column="id"      />
 		<result property="roleId"     column="role_id"      />
 		<result property="menuId"     column="menu_id"      />

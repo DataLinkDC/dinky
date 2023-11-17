@@ -22,7 +22,7 @@ package org.dinky.service.impl;
 import org.dinky.context.UserInfoContextHolder;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.model.SysToken;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
 import org.dinky.mapper.TenantMapper;
 import org.dinky.mapper.TokenMapper;
 

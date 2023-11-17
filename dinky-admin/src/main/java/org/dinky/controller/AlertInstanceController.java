@@ -26,7 +26,7 @@ import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.AlertInstanceDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.AlertInstance;
+import org.dinky.data.model.alert.AlertInstance;
 import org.dinky.data.result.Result;
 import org.dinky.service.AlertInstanceService;
 

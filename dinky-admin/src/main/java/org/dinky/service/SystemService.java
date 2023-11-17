@@ -20,7 +20,7 @@
 package org.dinky.service;
 
 import org.dinky.data.dto.TreeNodeDTO;
-import org.dinky.data.model.FileNode;
+import org.dinky.data.model.ext.FileNode;
 
 import java.util.List;
 

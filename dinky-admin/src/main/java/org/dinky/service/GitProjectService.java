@@ -20,9 +20,9 @@
 package org.dinky.service;
 
 import org.dinky.data.dto.GitProjectDTO;
+import org.dinky.data.dto.GitProjectSortJarDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.GitProject;
-import org.dinky.data.params.GitProjectSortJarParams;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
@@ -50,10 +50,10 @@ public interface GitProjectService extends ISuperService<GitProject> {
     /**
      * drag sort jar level
      *
-     * @param gitProjectSortJarParams
+     * @param gitProjectSortJarDTO
      * @return
      */
-    Boolean dragendSortJar(GitProjectSortJarParams gitProjectSortJarParams);
+    Boolean dragendSortJar(GitProjectSortJarDTO gitProjectSortJarDTO);
 
     /**
      * Get the Git pool as a map of strings.

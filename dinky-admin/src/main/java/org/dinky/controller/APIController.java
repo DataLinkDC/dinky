@@ -25,7 +25,7 @@ import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.model.ID;
-import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.gateway.enums.SavePointType;

@@ -53,8 +53,7 @@ public class MainApp {
             DBUtil.init(appConfig);
             Submitter.submit(appConfig);
         } catch (Exception e) {
-            log.error("exectue app failed with config: {}", appConfig);
-            throw e;
+            log.error("exectue app failed : ", e);
         }
     }
 }

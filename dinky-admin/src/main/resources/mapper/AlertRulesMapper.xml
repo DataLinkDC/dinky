@@ -20,7 +20,7 @@
     </select>
 
 
-    <select id="selectForProTable" resultType="org.dinky.data.model.AlertRule">
+    <select id="selectForProTable" resultType="org.dinky.data.model.alert.AlertRule">
         select
         a.*
         from

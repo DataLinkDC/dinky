@@ -109,7 +109,7 @@ const MiddleContainer = (props: any) => {
   };
 
   const updateActiveKey = (item: TabsItemType) => {
-    const { key, value, treeKey } = item;
+    const { key, label } = item;
     if (key === activeKey) {
       return;
     }
@@ -133,7 +133,7 @@ const MiddleContainer = (props: any) => {
 
     if (item.type === TabsPageType.metadata) {
       // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
-      const name = value.toString().replace('.', '/');
+      const name = label.replace('.', '/');
       dispatch({
         type: STUDIO_MODEL.updateDatabaseSelectKey,
         payload: [name]
@@ -236,10 +236,9 @@ const MiddleContainer = (props: any) => {
           return TabsPageType.None;
         }
 
-        const v = item.params;
         return (
           <Editor
-            taskId={v.taskId}
+            tabsItem={item}
             height={
               activeKey === item.key
                 ? fullscreen

@@ -78,6 +78,11 @@ public class MetricsContextHolder {
             metrics.setDate(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
             metrics.setContent(JSONUtil.toJsonStr(metrics.getContent()));
         });
-        PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, metricsList, MetricsVO.class);
+        try {
+            PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, metricsList, MetricsVO.class);
+        } catch (Exception e) {
+            // todo 此处最好发个告警
+            log.error("write metrics error", e);
+        }
     }
 }

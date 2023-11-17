@@ -26,7 +26,7 @@ import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.AuthException;
 import org.dinky.data.model.SystemConfiguration;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
 import org.dinky.data.result.Result;
 import org.dinky.service.LdapService;
 import org.dinky.service.UserService;

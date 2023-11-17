@@ -23,7 +23,7 @@ import org.dinky.context.UserInfoContextHolder;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.LoginLog;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
 import org.dinky.mapper.LoginLogMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.LoginLogService;

@@ -20,8 +20,8 @@
 package org.dinky.service;
 
 import org.dinky.data.dto.MenuDTO;
-import org.dinky.data.model.Menu;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.Menu;
+import org.dinky.data.model.rbac.User;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.RouterVo;
 import org.dinky.mybatis.service.ISuperService;
