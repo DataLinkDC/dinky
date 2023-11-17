@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.data.params;
+package org.dinky.data.dto;
 
 import java.util.List;
 
@@ -31,8 +31,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "AssignUserToTenantParams", description = "Parameters for Assigning Users to a Tenant")
-public class AssignUserToTenantParams {
+@ApiModel(value = "AssignUserToTenantDTO", description = "Parameters for Assigning Users to a Tenant")
+public class AssignUserToTenantDTO {
 
     @ApiModelProperty(value = "Tenant ID", dataType = "Integer", notes = "ID of the tenant to assign users to")
     private Integer tenantId;

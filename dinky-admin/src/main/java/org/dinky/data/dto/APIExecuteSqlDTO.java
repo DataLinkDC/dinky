@@ -128,7 +128,7 @@ public class APIExecuteSqlDTO extends AbstractStatementDTO {
                 .useRemote(true)
                 .address(address)
                 .jobName(jobName)
-                .fragment(isFragment())
+                .fragment(getFragment())
                 .statementSet(useStatementSet)
                 .maxRowNum(maxRowNum)
                 .checkpoint(checkPoint)

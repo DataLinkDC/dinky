@@ -21,10 +21,10 @@ package org.dinky.controller;
 
 import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.dto.AssignUserToTenantDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.rbac.Tenant;
 import org.dinky.data.model.rbac.User;
-import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.TenantService;
@@ -122,21 +122,21 @@ public class TenantController {
     /**
      * assign user to tenant
      *
-     * @param assignUserToTenantParams {@link AssignUserToTenantParams}
+     * @param assignUserToTenantDTO {@link AssignUserToTenantDTO}
      * @return {@link Result} of {@link Void}
      */
     @PutMapping(value = "/assignUserToTenant")
     @ApiOperation("Assign User To Tenant")
     @ApiImplicitParam(
-            name = "assignUserToTenantParams",
+            name = "assignUserToTenantDTO",
             value = "assign user to tenant params",
             required = true,
-            dataType = "AssignUserToTenantParams",
+            dataType = "AssignUserToTenantDTO",
             paramType = "body")
     @Log(title = "Assign User To Tenant", businessType = BusinessType.INSERT)
     @SaCheckPermission(value = PermissionConstants.AUTH_TENANT_ASSIGN_USER)
-    public Result<Void> assignUserToTenant(@RequestBody AssignUserToTenantParams assignUserToTenantParams) {
-        return tenantService.assignUserToTenant(assignUserToTenantParams);
+    public Result<Void> assignUserToTenant(@RequestBody AssignUserToTenantDTO assignUserToTenantDTO) {
+        return tenantService.assignUserToTenant(assignUserToTenantDTO);
     }
 
     /**
