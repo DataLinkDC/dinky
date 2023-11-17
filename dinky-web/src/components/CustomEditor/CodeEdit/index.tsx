@@ -73,9 +73,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     height = '100%', // if null or undefined, set default value
     width = '100%', // if null or undefined, set default value
     language, // edit language
-    options = {
-      ...MonacoEditorOptions // set default options
-    },
+    options,
     onChange, // edit change callback
     code, // content
     readOnly = false, // is readOnly
@@ -215,7 +213,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   };
 
   const finalEditorOptions = {
-    ...options,
+    ...MonacoEditorOptions, // set default options
     tabCompletion: 'on', // tab 补全
     cursorSmoothCaretAnimation: true, // 光标动画
     screenReaderAnnounceInlineSuggestion: true, // 屏幕阅读器提示
@@ -293,9 +291,9 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     },
     wordWrap: autoWrap,
     autoDetectHighContrast: true,
-    lineNumbers
+    lineNumbers,
+    ...options,
   };
-
   return (
     <>
       <div className={'monaco-float'}>
