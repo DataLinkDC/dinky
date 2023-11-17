@@ -33,7 +33,7 @@ import {
   calculatorWidth
 } from '@/pages/DataStudio/RightContainer/JobConfig/function';
 import { AlertStateType, ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
-import { RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
+import { DIALECT, RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import {
@@ -46,7 +46,6 @@ import {
   ProFormText
 } from '@ant-design/pro-components';
 import { Badge, Space, Typography } from 'antd';
-import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
 import { useEffect } from 'react';
 import { connect } from 'umi';
@@ -171,6 +170,7 @@ const JobConfig = (props: any) => {
         className={'data-studio-form'}
         style={{ paddingInline: '15px', overflow: 'scroll' }}
         form={form}
+        initialValues={current}
         submitter={false}
         layout='vertical'
         onValuesChange={debounce(onValuesChange, 500)}
@@ -211,7 +211,7 @@ const JobConfig = (props: any) => {
           name='envId'
           label={l('pages.datastudio.label.jobConfig.flinksql.env')}
           tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
-          options={buildEnvOptions(env)}
+          options={buildEnvOptions(env, current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL)}
           rules={[
             { required: true, message: l('pages.datastudio.label.jobConfig.flinksql.env.tip1') }
           ]}
@@ -227,17 +227,19 @@ const JobConfig = (props: any) => {
             max={9999}
             min={1}
           />
+          {current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
+            <ProFormSwitch
+              label={l('pages.datastudio.label.jobConfig.insert')}
+              name='statementSet'
+              valuePropName='checked'
+              tooltip={{
+                title: l('pages.datastudio.label.jobConfig.insert.tip'),
+                icon: <InfoCircleOutlined />
+              }}
+              {...SWITCH_OPTIONS()}
+            />
+          )}
 
-          <ProFormSwitch
-            label={l('pages.datastudio.label.jobConfig.insert')}
-            name='statementSet'
-            valuePropName='checked'
-            tooltip={{
-              title: l('pages.datastudio.label.jobConfig.insert.tip'),
-              icon: <InfoCircleOutlined />
-            }}
-            {...SWITCH_OPTIONS()}
-          />
           <ProFormSwitch
             label={l('pages.datastudio.label.jobConfig.fragment')}
             name='fragment'
@@ -295,22 +297,6 @@ const JobConfig = (props: any) => {
         >
           <ProFormGroup>
             <Space key={'config'} align='baseline'>
-              {/* todo: 级联组件会受组件的 name 属性一致的影响,造成相同 name 属性值自动填充一样的值, 待寻找合适解决方案 */}
-              {/*<ProFormCascader*/}
-              {/*    name={['index','key']} allowClear*/}
-              {/*    width={calculatorWidth(rightContainer.width) + 30}*/}
-              {/*    placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}*/}
-              {/*    fieldProps={{*/}
-              {/*      options: flinkConfigOptions,*/}
-              {/*      showSearch: true,*/}
-              {/*    }}*/}
-              {/*    rules={[*/}
-              {/*      {*/}
-              {/*        required: true,*/}
-              {/*        message: l('pages.datastudio.label.jobConfig.addConfig.params')*/}
-              {/*      }*/}
-              {/*    ]}*/}
-              {/*/>*/}
               <ProFormSelect
                 name='key'
                 width={calculatorWidth(rightContainer.width) + 30}

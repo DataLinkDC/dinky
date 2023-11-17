@@ -118,7 +118,7 @@ export const buildClusterConfigOptions = (current: any, clusterConfiguration: Cl
 /**
  * build env options
  */
-export const buildEnvOptions = (env: any[]) => {
+export const buildEnvOptions = (env: any[], isDisabled: boolean) => {
   const envList: DefaultOptionType[] = [
     {
       label: l('button.disable'),
@@ -139,7 +139,8 @@ export const buildEnvOptions = (env: any[]) => {
     envList.push({
       label: tag,
       value: item.id,
-      key: item.id
+      key: item.id,
+      disabled: !item.enabled || !isDisabled
     });
   }
   return envList;

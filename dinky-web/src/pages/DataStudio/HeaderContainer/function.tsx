@@ -19,7 +19,7 @@
 
 import { TabsPageType, TaskDataType } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
-import { HomeOutlined } from '@ant-design/icons';
+import { EnvironmentOutlined } from '@ant-design/icons';
 
 /**
  * @description: 生成面包屑
@@ -27,10 +27,12 @@ import { HomeOutlined } from '@ant-design/icons';
 export const buildBreadcrumbItems = (breadcrumb: string) => {
   // 如果有 activeBreadcrumbTitle, 则切割 activeBreadcrumbTitle, 生成面包屑数组, 并映射
   const activeBreadcrumbTitleList = Array.from(breadcrumb.split('/')).map((title) => ({
-    title: <>{title}</>
+    title: title,
+    // path: `/${title}`,
+    breadcrumbName: title
   }));
 
-  return [{ title: <HomeOutlined /> }, ...activeBreadcrumbTitleList];
+  return [{ title: <EnvironmentOutlined /> }, ...activeBreadcrumbTitleList];
 };
 
 export const projectCommonShow = (type?: TabsPageType) => {

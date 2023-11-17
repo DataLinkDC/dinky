@@ -126,7 +126,7 @@ export const RightSide: TabProp[] = [
     icon: <InfoCircleOutlined />,
     label: l('menu.datastudio.jobInfo'),
     children: <JobInfo />,
-    isShow: (type) => type !== TabsPageType.None
+    isShow: (type) => type === TabsPageType.project
   }
 ];
 

@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import Icon from '@ant-design/icons';
@@ -48,6 +50,36 @@ export const MysqlIcons = (props: any) => {
             <path
               d='M928.914286 768v-219.428571h-43.885715V804.571429h109.714286v-36.571429h-65.828571z m-117.028572 21.942857s7.314286-7.314286 7.314286-14.628571c14.628571-21.942857 29.257143-58.514286 29.257143-109.714286 0-87.771429-29.257143-124.342857-87.771429-124.342857-29.257143 0-51.2 14.628571-65.828571 36.571428-21.942857 21.942857-29.257143 58.514286-29.257143 102.4 0 43.885714 7.314286 80.457143 21.942857 102.4 14.628571 14.628571 36.571429 29.257143 65.828572 29.257143h29.257142l51.2 36.571429 14.628572-29.257143-36.571429-29.257143z m-51.2-21.942857c-14.628571 0-29.257143-7.314286-36.571428-21.942857-7.314286-14.628571-14.628571-36.571429-14.628572-73.142857 0-58.514286 14.628571-87.771429 43.885715-87.771429 14.628571 0 29.257143 7.314286 36.571428 21.942857 14.628571 21.942857 14.628571 36.571429 14.628572 73.142857 0 58.514286-14.628571 87.771429-43.885715 87.771429zM621.714286 680.228571S585.142857 658.285714 570.514286 650.971429c-14.628571-14.628571-21.942857-21.942857-21.942857-36.571429 0-7.314286 7.314286-14.628571 14.628571-21.942857 0-14.628571 7.314286-14.628571 21.942857-14.628572 14.628571 0 29.257143 7.314286 43.885714 14.628572l7.314286-36.571429c-14.628571-7.314286-36.571429-14.628571-58.514286-14.628571-21.942857 0-36.571429 7.314286-51.2 14.628571-14.628571 14.628571-21.942857 36.571429-21.942857 58.514286 0 29.257143 7.314286 43.885714 21.942857 58.514286 0 0 29.257143 21.942857 51.2 29.257143 14.628571 14.628571 29.257143 21.942857 29.257143 36.571428s0 21.942857-14.628571 29.257143c-7.314286 7.314286-14.628571 0-29.257143 0s-29.257143-7.314286-51.2-14.628571v36.571428c21.942857 14.628571 43.885714 21.942857 65.828571 21.942857 21.942857 0 43.885714-7.314286 58.514286-21.942857 14.628571-14.628571 21.942857-36.571429 21.942857-51.2-7.314286-29.257143-14.628571-43.885714-36.571428-58.514286z'
               fill='#E58E01'
+            ></path>
+          </svg>
+        )}
+      />
+    </>
+  );
+};
+
+export const SQLIcons = (props: any) => {
+  const size = props.size || defaultSvgSize;
+  return (
+    <>
+      <Icon
+        style={style}
+        component={() => (
+          <svg
+            className='icon'
+            viewBox='0 0 1024 1024'
+            version='1.1'
+            xmlns='http://www.w3.org/2000/svg'
+            width={size}
+            height={size}
+          >
+            <path
+              d='M841.14 36.57H182.86A146.29 146.29 0 0 0 36.57 182.86v658.28a146.29 146.29 0 0 0 146.29 146.29h658.28a146.29 146.29 0 0 0 146.29-146.29V182.86A146.29 146.29 0 0 0 841.14 36.57zM249.42 658.29a146.29 146.29 0 0 1-105.33-43.52l27.43-32.18a114.83 114.83 0 0 0 79 36.57c36.57 0 56-16.82 56-41.69s-20.11-36.57-47.54-47.54l-39.5-20.11a85.21 85.21 0 0 1-62.17-77.9 88.14 88.14 0 0 1 93.86-82q2.45 0.16 4.89 0.47a126.9 126.9 0 0 1 89.6 36.57l-24.5 29.62a94.35 94.35 0 0 0-65.1-25.6c-30.35 0-49.74 14.63-49.74 36.57s23.77 36.57 47.91 44.62l38.4 19a82.65 82.65 0 0 1 60.34 80.09c0.68 47.53-38.82 87.03-103.55 87.03z m365.71 73.14a119.59 119.59 0 0 1-115.2-73.14c-64-11-106.79-67.29-106.79-152.87 0-95.45 52.66-152.5 128.73-152.5S651 410 651 505.42c0 83.38-40.59 139-101.3 151.77a75.7 75.7 0 0 0 70.58 36.57 109.71 109.71 0 0 0 31.45-4.39l8.78 36.57a117.39 117.39 0 0 1-45.35 2.93z m269.53-76.8H712.78V355.84h46.81v256h125.07z'
+              fill='#FF5C5C'
+            ></path>
+            <path
+              d='M603.43 502.86c0-69.49-32.18-111.91-81.19-111.91s-80.82 42.42-80.82 111.91 31.82 116.3 80.82 116.3 81.19-44.62 81.19-116.3z'
+              fill='#FF5C5C'
             ></path>
           </svg>
         )}
