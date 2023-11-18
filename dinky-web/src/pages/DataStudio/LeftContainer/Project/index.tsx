@@ -164,8 +164,6 @@ const Project: React.FC = (props: connect) => {
 
   /**
    * 创建目录, 并刷新目录树
-   * @param {Catalogue} values
-   * @returns {Promise<void>}
    */
   const handleSubmit = async (values: Catalogue) => {
     const options = {
@@ -232,11 +230,12 @@ const Project: React.FC = (props: connect) => {
 
   /**
    * 删除目录, 并刷新目录树
-   * @param {MenuInfo} node
-   * @returns {Promise<void>}
    */
   const handleDeleteSubmit = async () => {
+    debugger
     const { key, isLeaf, name, type } = projectState.rightClickedNode;
+    const {taskId, task} = projectState.value
+
     handleContextCancel();
     if (!isLeaf) {
       await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
@@ -246,24 +245,19 @@ const Project: React.FC = (props: connect) => {
       return;
     }
 
-    const renderContent = () => {
-      return (
-        <Text className={'needWrap'} type='danger'>
-          {l('datastudio.project.delete.job.confirm')}
-        </Text>
-      );
-    };
-
     Modal.confirm({
       title: l('datastudio.project.delete.job', '', { type, name }),
       width: '30%',
-      content: renderContent(),
+      content:
+          <Text className={'needWrap'} type='danger'>
+            {l('datastudio.project.delete.job.confirm')}
+          </Text>,
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
           // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项
-          // dispatch({ type: STUDIO_MODEL.removeTag, payload: taskId });
+           dispatch({ type: STUDIO_MODEL.removeTag, payload: taskId });
           dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         });
       }
@@ -272,7 +266,6 @@ const Project: React.FC = (props: connect) => {
 
   /**
    * rename handle
-   * @returns {Promise<void>}
    */
   const handleRename = async () => {
     setProjectState((prevState) => ({ ...prevState, isRename: true }));
@@ -297,7 +290,6 @@ const Project: React.FC = (props: connect) => {
 
   /**
    * copy task handle and submit to server and refresh the tree
-   * @returns {Promise<void>}
    */
   const handleCopy = async () => {
     await handleOption(
@@ -311,7 +303,6 @@ const Project: React.FC = (props: connect) => {
 
   /**
    * cut task handle
-   * @returns {Promise<void>}
    */
   const handleCut = async () => {
     setProjectState((prevState) => ({
@@ -324,7 +315,6 @@ const Project: React.FC = (props: connect) => {
 
   /**
    * paste task handle and submit to server and refresh the tree
-   * @returns {Promise<void>}
    */
   const handlePaste = async () => {
     await handlePutDataByParams(
@@ -349,8 +339,6 @@ const Project: React.FC = (props: connect) => {
 
   /**
    *  all context menu click handle
-   * @param {MenuInfo} node
-   * @returns {Promise<void>}
    */
   const handleMenuClick = async (node: MenuInfo) => {
     setProjectState((prevState) => ({ ...prevState, rightActiveKey: node.key }));
