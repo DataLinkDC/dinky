@@ -29,6 +29,7 @@ import org.dinky.data.dto.AbstractStatementDTO;
 import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
+import org.dinky.data.dto.TaskSubmitDto;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.ProcessStepType;
@@ -98,6 +99,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -168,7 +170,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_PRECHECK)
-    public void preCheckTask(TaskDTO task) throws TaskNotDoneException {
+    public TaskDTO prepareTask(TaskSubmitDto submitDto) throws TaskNotDoneException {
+        TaskDTO task = this.getTaskInfoById(submitDto.getId());
+
         log.info("Start check and config task, task:{}", task.getName());
 
         Assert.notNull(task, Status.TASK_NOT_EXIST.getMessage());
@@ -181,6 +185,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 throw new BusException(Status.TASK_STATUS_IS_NOT_DONE.getMessage());
             }
         }
+
+        if (StringUtils.isNotBlank(submitDto.getSavePointPath())) {
+            task.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
+            task.setSavePointPath(submitDto.getSavePointPath());
+        }
+        task.setVariables(Optional.ofNullable(submitDto.getVariables()).orElse(new HashMap<>()));
+        return task;
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
@@ -232,7 +243,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (Asserts.isNotNullString(flinkWithSql)) {
                 sql += flinkWithSql + CommonConstant.LineSep;
             }
-            task.setVariables(fragmentVariableService.listEnabledVariables());
+            // The order cannot be wrong here,
+            // and the variables from the parameter have the highest priority
+            Map<String, String> variables = fragmentVariableService.listEnabledVariables();
+            variables.putAll(task.getVariables());
+            task.setVariables(variables);
         }
         int envId = Optional.ofNullable(task.getEnvId()).orElse(-1);
         if (envId > 0) {
@@ -248,22 +263,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public JobResult submitTask(Integer id, String savePointPath) throws Exception {
-        TaskDTO taskDTO = this.getTaskInfoById(id);
-
-        if (StringUtils.isNotBlank(savePointPath)) {
-            taskDTO.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
-            taskDTO.setSavePointPath(savePointPath);
-        }
+    public JobResult submitTask(TaskSubmitDto submitDto) throws Exception {
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
-        taskServiceBean.preCheckTask(taskDTO);
+        TaskDTO taskDTO = taskServiceBean.prepareTask(submitDto);
         // The job instance does not exist by default,
         // so that it does not affect other operations, such as checking the jobmanager address
         taskDTO.setJobInstanceId(null);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
         log.info("Job Submit success");
-        Task task = new Task(id, jobResult.getJobInstanceId());
+        Task task = new Task(submitDto.getId(), jobResult.getJobInstanceId());
         if (!this.updateById(task)) {
             throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
         }
@@ -306,7 +315,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 cancelTaskJob(task);
             }
         }
-        return submitTask(id, savePointPath);
+        return submitTask(
+                TaskSubmitDto.builder().id(id).savePointPath(savePointPath).build());
     }
 
     @Override
