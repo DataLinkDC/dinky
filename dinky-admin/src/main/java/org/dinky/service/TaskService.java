@@ -23,6 +23,7 @@ import org.dinky.data.dto.AbstractStatementDTO;
 import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
+import org.dinky.data.dto.TaskSubmitDto;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.exception.ExcuteException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
@@ -70,7 +71,7 @@ public interface TaskService extends ISuperService<Task> {
      * @return A {@link JobResult} object representing the result of the submitted task.
      * @throws ExcuteException If there is an error executing the task.
      */
-    JobResult submitTask(Integer id, String savePointPath) throws Exception;
+    JobResult submitTask(TaskSubmitDto submitDto) throws Exception;
 
     /**
      * Debug the given task and return the job result.

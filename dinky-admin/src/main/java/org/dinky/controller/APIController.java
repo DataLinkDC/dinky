@@ -21,10 +21,10 @@ package org.dinky.controller;
 
 import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.TaskDTO;
+import org.dinky.data.dto.TaskSubmitDto;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.NotSupportExplainExcepition;
-import org.dinky.data.model.ID;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
@@ -70,7 +70,8 @@ public class APIController {
     @ApiOperation("Submit Task")
     public Result<JobResult> submitTask(@RequestParam Integer id) throws Exception {
         taskService.initTenantByTaskId(id);
-        JobResult jobResult = taskService.submitTask(id, null);
+        JobResult jobResult =
+                taskService.submitTask(TaskSubmitDto.builder().id(id).build());
         if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
         } else {
@@ -81,9 +82,9 @@ public class APIController {
     @PostMapping("/submitTask")
     @ApiOperation("Submit Task")
     //    @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
-    public Result<JobResult> submitTask(@RequestBody ID id) throws Exception {
-        taskService.initTenantByTaskId(id.getId());
-        JobResult jobResult = taskService.submitTask(id.getId(), null);
+    public Result<JobResult> submitTask(@RequestBody TaskSubmitDto submitDto) throws Exception {
+        taskService.initTenantByTaskId(submitDto.getId());
+        JobResult jobResult = taskService.submitTask(submitDto);
         if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
         } else {

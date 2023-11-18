@@ -26,6 +26,7 @@ import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.dto.TaskSaveDTO;
+import org.dinky.data.dto.TaskSubmitDto;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.ProcessType;
@@ -76,7 +77,8 @@ public class TaskController {
     @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
     @ExecuteProcess(type = ProcessType.FLINK_SUBMIT)
     public Result<JobResult> submitTask(@ProcessId @RequestParam Integer id) throws Exception {
-        JobResult jobResult = taskService.submitTask(id, null);
+        JobResult jobResult =
+                taskService.submitTask(TaskSubmitDto.builder().id(id).build());
         if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
         } else {
