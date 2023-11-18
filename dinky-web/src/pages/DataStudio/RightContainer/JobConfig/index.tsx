@@ -83,7 +83,8 @@ const JobConfig = (props: any) => {
     dispatch({
       type: ALERT_MODEL_ASYNC.queryAlertGroup
     });
-    form.setFieldsValue(current);
+
+    form.setFieldsValue({...current, type: current?.type ?? RUN_MODE.LOCAL});
   }, [current]);
 
   const onValuesChange = (change: { [key in string]: any }, all: any) => {
@@ -171,7 +172,6 @@ const JobConfig = (props: any) => {
         className={'data-studio-form'}
         style={{ paddingInline: '15px', overflow: 'scroll' }}
         form={form}
-        initialValues={current}
         submitter={false}
         layout='vertical'
         onValuesChange={debounce(onValuesChange, 500)}
