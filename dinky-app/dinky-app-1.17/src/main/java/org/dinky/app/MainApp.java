@@ -22,7 +22,6 @@ package org.dinky.app;
 import org.dinky.app.constant.AppParamConstant;
 import org.dinky.app.db.DBUtil;
 import org.dinky.app.flinksql.Submitter;
-import org.dinky.app.util.FlinkAppUtil;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.utils.JsonUtils;
 
@@ -56,9 +55,6 @@ public class MainApp {
         } catch (Exception e) {
             log.error("exectue app failed with config: {}", appConfig);
             throw e;
-        } finally {
-            log.info("Start Monitor Job");
-            FlinkAppUtil.monitorFlinkTask(appConfig.getTaskId());
         }
     }
 }

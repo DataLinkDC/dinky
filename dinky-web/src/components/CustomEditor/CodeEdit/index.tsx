@@ -292,7 +292,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     wordWrap: autoWrap,
     autoDetectHighContrast: true,
     lineNumbers,
-    ...options,
+    ...options
   };
   return (
     <>
