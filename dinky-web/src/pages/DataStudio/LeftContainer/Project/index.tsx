@@ -256,7 +256,6 @@ const Project: React.FC = (props: connect) => {
       cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
-          // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项
            dispatch({ type: STUDIO_MODEL.removeTag, payload: taskId });
           dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         });
