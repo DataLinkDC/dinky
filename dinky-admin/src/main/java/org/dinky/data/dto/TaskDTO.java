@@ -56,9 +56,6 @@ public class TaskDTO extends AbstractStatementDTO {
             notes = "The execution mode for the SQL query")
     private String type;
 
-    @ApiModelProperty(value = "Check Point", dataType = "Integer", example = "1", notes = "Check point for the task")
-    private Integer checkPoint;
-
     @ApiModelProperty(
             value = "Save Point Strategy",
             dataType = "Integer",
