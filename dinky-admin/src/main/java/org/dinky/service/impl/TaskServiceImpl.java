@@ -170,7 +170,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_PRECHECK)
-    public TaskDTO preparTask(TaskSubmitDto submitDto) throws TaskNotDoneException {
+    public TaskDTO prepareTask(TaskSubmitDto submitDto) throws TaskNotDoneException {
         TaskDTO task = this.getTaskInfoById(submitDto.getId());
 
         log.info("Start check and config task, task:{}", task.getName());
@@ -266,7 +266,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public JobResult submitTask(TaskSubmitDto submitDto) throws Exception {
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
-        TaskDTO taskDTO = taskServiceBean.preparTask(submitDto);
+        TaskDTO taskDTO = taskServiceBean.prepareTask(submitDto);
         // The job instance does not exist by default,
         // so that it does not affect other operations, such as checking the jobmanager address
         taskDTO.setJobInstanceId(null);
