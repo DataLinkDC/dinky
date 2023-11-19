@@ -239,6 +239,8 @@ const MiddleContainer = (props: any) => {
         return (
           <Editor
             tabsItem={item}
+            monacoInstance={item.monacoInstance}
+            editorInstance={item.editorInstance}
             height={
               activeKey === item.key
                 ? fullscreen

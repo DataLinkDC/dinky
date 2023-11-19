@@ -222,8 +222,6 @@ const HeaderContainer = (props: any) => {
     }
   };
 
-  console.log('currentData', props, currentData);
-
   const showExplain = async () => {
     modal.confirm({
       title: l('pages.datastudio.explain.validate.msg'),

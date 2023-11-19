@@ -58,5 +58,11 @@ import { Monaco } from '@monaco-editor/react';
 export function LoadCustomEditorLanguage(monaco: Monaco | null) {
   // LoadLanguagesKeyWord(monaco);
   LogLanguage(monaco);
-  FlinkSQLLanguage(monaco);
+  FlinkSQLLanguage(monaco, false);
+}
+
+export function LoadCustomEditorLanguageWithCompletion(monaco: Monaco | null) {
+  // LoadLanguagesKeyWord(monaco);
+  LogLanguage(monaco);
+  FlinkSQLLanguage(monaco, true);
 }
