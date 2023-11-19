@@ -22,6 +22,7 @@ package org.dinky.data.model.job;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -106,6 +107,10 @@ public class History implements Serializable {
     @TableField(exist = false)
     @ApiModelProperty(hidden = true)
     private String clusterName;
+
+    @TableField(value = "count(*)", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
+    @ApiModelProperty(value = "Group by count", dataType = "Integer")
+    private Long count;
 
     @ApiModelProperty(hidden = true)
     public JobInstance buildJobInstance() {
