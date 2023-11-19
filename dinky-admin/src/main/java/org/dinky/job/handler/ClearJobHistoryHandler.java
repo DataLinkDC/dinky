@@ -64,9 +64,8 @@ public class ClearJobHistoryHandler {
                         .lt(JobInstance::getCreateTime, LocalDateTime.now().minusDays(maxRetainDays));
                 // Retrieve the list of job instances to be deleted
                 List<JobInstance> deleteList = jobInstanceService.list(deleteWrapper);
-                List<Integer> historyDeleteIds = deleteList.stream()
-                        .map(JobInstance::getHistoryId)
-                        .collect(Collectors.toList());
+                List<Integer> historyDeleteIds =
+                        deleteList.stream().map(JobInstance::getHistoryId).collect(Collectors.toList());
                 jobHistoryService.removeBatchByIds(historyDeleteIds);
                 jobInstanceService.remove(deleteWrapper);
             }
@@ -100,5 +99,4 @@ public class ClearJobHistoryHandler {
             }
         }
     }
-
 }
