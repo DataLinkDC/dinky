@@ -30,8 +30,8 @@ import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.utils.BuildConfiguration;
 import org.dinky.service.JobInstanceService;
+import org.dinky.utils.BuildConfiguration;
 
 import java.util.HashSet;
 import java.util.Set;
