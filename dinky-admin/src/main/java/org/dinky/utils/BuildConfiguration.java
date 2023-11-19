@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.job;
+package org.dinky.utils;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
@@ -34,7 +34,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-// TODO 这个类不应该存在这里，？？？？？？？？？？
+// TODO 后面优化掉
 public class BuildConfiguration {
 
     public static void buildJobManagerConfiguration(

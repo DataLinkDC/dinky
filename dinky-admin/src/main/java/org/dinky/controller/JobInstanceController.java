@@ -24,14 +24,13 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.ID;
-import org.dinky.data.model.devops.JobManagerConfiguration;
 import org.dinky.data.model.devops.TaskManagerConfiguration;
 import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.job.BuildConfiguration;
+import org.dinky.utils.BuildConfiguration;
 import org.dinky.service.JobInstanceService;
 
 import java.util.HashSet;
@@ -152,25 +151,6 @@ public class JobInstanceController {
             required = true)
     public Result<LineageResult> getLineage(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getLineage(id));
-    }
-
-    /**
-     * 获取 JobManager 的信息
-     */
-    @GetMapping("/getJobManagerInfo")
-    @ApiOperation("Get job manager info")
-    @ApiImplicitParam(
-            name = "address",
-            value = "JobManager address",
-            dataType = "String",
-            paramType = "query",
-            required = true)
-    public Result<JobManagerConfiguration> getJobManagerInfo(@RequestParam String address) {
-        JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
-        if (Asserts.isNotNullString(address)) {
-            BuildConfiguration.buildJobManagerConfiguration(jobManagerConfiguration, FlinkAPI.build(address));
-        }
-        return Result.succeed(jobManagerConfiguration);
     }
 
     @GetMapping("/getJobManagerLog")
