@@ -291,7 +291,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 return new DateType();
             case LOCALDATETIME:
             case TIMESTAMP:
-                return new TimestampType();
+                return new TimestampType(column.getLength());
             case BYTES:
                 return new VarBinaryType(Integer.MAX_VALUE);
             default:

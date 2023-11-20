@@ -244,7 +244,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
             DataStreamSource<String> dataStreamSource) {
         final String timeZone = config.getSink().get("timezone");
         config.getSink().remove("timezone");
-        if(config.getSink().containsKey("fenodes")){
+        if (config.getSink().containsKey("fenodes")) {
             config.getSink().remove("url");
         }
         if (Asserts.isNotNullString(timeZone)) {
@@ -334,7 +334,15 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
             } else if (value instanceof String) {
                 return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
             } else {
-                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
+                TimestampType logicalType1 = (TimestampType) logicalType;
+                // 转换为毫秒
+                if (logicalType1.getPrecision() == 3) {
+                    return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
+                } else if (logicalType1.getPrecision() > 3) {
+                    return Instant.ofEpochMilli(((long) value) / (long) Math.pow(10, logicalType1.getPrecision() - 3))
+                            .atZone(sinkTimeZone).toLocalDateTime();
+                }
+                return Instant.ofEpochSecond(((long) value)).atZone(sinkTimeZone).toLocalDateTime();
             }
         } else if (logicalType instanceof DecimalType) {
             return new BigDecimal((String) value);
