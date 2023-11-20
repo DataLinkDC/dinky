@@ -22,7 +22,7 @@ import { editor, languages, Position } from 'monaco-editor';
 
 import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
-import {LoadCustomEditorLanguage, LoadCustomEditorLanguageWithCompletion} from '@/components/CustomEditor/languages';
+import { LoadCustomEditorLanguageWithCompletion } from '@/components/CustomEditor/languages';
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';

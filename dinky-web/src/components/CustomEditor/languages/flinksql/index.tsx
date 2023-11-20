@@ -159,27 +159,28 @@ export function FlinkSQLLanguage(monaco: Monaco | null, registerCompletion: bool
     unicode: true
   });
 
-  registerCompletion && monaco?.languages?.registerCompletionItemProvider('flinksql', {
-    provideCompletionItems: function (model, position) {
-      const word = model.getWordUntilPosition(position);
-      const range = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endColumn: word.endColumn
-      };
-      return {
-        suggestions: FLINK_SQL_KEYWORD.map((item) => {
-          return {
-            label: item,
-            range: range,
-            kind: monaco.languages.CompletionItemKind.Keyword,
-            insertText: item
-          };
-        })
-      };
-    }
-  });
+  registerCompletion &&
+    monaco?.languages?.registerCompletionItemProvider('flinksql', {
+      provideCompletionItems: function (model, position) {
+        const word = model.getWordUntilPosition(position);
+        const range = {
+          startLineNumber: position.lineNumber,
+          endLineNumber: position.lineNumber,
+          startColumn: word.startColumn,
+          endColumn: word.endColumn
+        };
+        return {
+          suggestions: FLINK_SQL_KEYWORD.map((item) => {
+            return {
+              label: item,
+              range: range,
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: item
+            };
+          })
+        };
+      }
+    });
 
   monaco?.languages?.setLanguageConfiguration('flinksql', {
     comments: {
