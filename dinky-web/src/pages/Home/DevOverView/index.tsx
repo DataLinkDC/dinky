@@ -29,7 +29,8 @@ import React, { useState } from 'react';
 
 const noPadding = {
   paddingInline: '0',
-  paddingBlock: '0'
+  paddingBlock: '0',
+  height: parent.innerHeight / 2
 };
 
 const DevOverView: React.FC = () => {
@@ -43,6 +44,7 @@ const DevOverView: React.FC = () => {
       }}
     >
       <ProCard
+        style={{ height: '100%' }}
         title={
           <>
             <Badge status='processing' />
@@ -55,7 +57,7 @@ const DevOverView: React.FC = () => {
         split={split}
         bodyStyle={noPadding}
       >
-        <ProCard split='vertical' bodyStyle={noPadding}>
+        <ProCard split='vertical' bodyStyle={noPadding} style={{height: '100%'}}>
           <ProCard
             title={l('home.job.development')}
             split='horizontal'

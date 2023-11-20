@@ -232,9 +232,8 @@ const Project: React.FC = (props: connect) => {
    * 删除目录, 并刷新目录树
    */
   const handleDeleteSubmit = async () => {
-    debugger
     const { key, isLeaf, name, type } = projectState.rightClickedNode;
-    const {taskId, task} = projectState.value
+    const { taskId, task } = projectState.value;
 
     handleContextCancel();
     if (!isLeaf) {
@@ -248,15 +247,16 @@ const Project: React.FC = (props: connect) => {
     Modal.confirm({
       title: l('datastudio.project.delete.job', '', { type, name }),
       width: '30%',
-      content:
-          <Text className={'needWrap'} type='danger'>
-            {l('datastudio.project.delete.job.confirm')}
-          </Text>,
+      content: (
+        <Text className={'needWrap'} type='danger'>
+          {l('datastudio.project.delete.job.confirm')}
+        </Text>
+      ),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
-           dispatch({ type: STUDIO_MODEL.removeTag, payload: taskId });
+          dispatch({ type: STUDIO_MODEL.removeTag, payload: taskId });
           dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         });
       }
