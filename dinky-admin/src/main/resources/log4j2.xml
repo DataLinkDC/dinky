@@ -61,7 +61,7 @@
       <!--这个是输出日志的格式，如果对里面的参数不理解，可以去看我的这篇文章，网址是：“https://blog.csdn.net/qq_42449963/article/details/104617356”-->
       <!--<PatternLayout pattern="[dinky] %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>-->
       <PatternLayout
-              pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %c{20}(%L): %m"/>
+              pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %c{20}(%L): %m"/>
     </LogSseAppender>
 
   </appenders>

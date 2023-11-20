@@ -246,7 +246,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             // The order cannot be wrong here,
             // and the variables from the parameter have the highest priority
             Map<String, String> variables = fragmentVariableService.listEnabledVariables();
-            variables.putAll(task.getVariables());
+            variables.putAll(Optional.ofNullable(task.getVariables()).orElse(new HashMap<>()));
             task.setVariables(variables);
         }
         int envId = Optional.ofNullable(task.getEnvId()).orElse(-1);
