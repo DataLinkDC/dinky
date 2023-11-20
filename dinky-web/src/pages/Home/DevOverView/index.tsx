@@ -57,7 +57,7 @@ const DevOverView: React.FC = () => {
         split={split}
         bodyStyle={noPadding}
       >
-        <ProCard split='vertical' bodyStyle={noPadding} style={{height: '100%'}}>
+        <ProCard split='vertical' bodyStyle={noPadding} style={{ height: '100%' }}>
           <ProCard
             title={l('home.job.development')}
             split='horizontal'

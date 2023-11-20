@@ -84,7 +84,7 @@ const JobConfig = (props: any) => {
       type: ALERT_MODEL_ASYNC.queryAlertGroup
     });
 
-    form.setFieldsValue({...current, type: current?.type ?? RUN_MODE.LOCAL});
+    form.setFieldsValue({ ...current, type: current?.type ?? RUN_MODE.LOCAL });
   }, [current]);
 
   const onValuesChange = (change: { [key in string]: any }, all: any) => {

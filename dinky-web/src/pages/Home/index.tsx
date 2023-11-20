@@ -24,16 +24,20 @@ import { Col, Row } from 'antd';
 
 export default () => {
   return (
-    <PageContainer title={false} style={{height: parent.innerHeight -300}}>
+    <PageContainer title={false} style={{ height: parent.innerHeight - 300 }}>
       <Authorized path='/home/jobOverView'>
-        <Row style={{ marginTop: '5px', marginBottom: '10px' ,height: (parent.innerHeight -300) /2 }}>
+        <Row
+          style={{ marginTop: '5px', marginBottom: '10px', height: (parent.innerHeight - 300) / 2 }}
+        >
           <Col span={24}>
             <JobOverView />
           </Col>
         </Row>
       </Authorized>
       <Authorized path='/home/devOverView'>
-        <Row style={{ marginTop: '5px', marginBottom: '10px' ,height: (parent.innerHeight -300) /2 }}>
+        <Row
+          style={{ marginTop: '5px', marginBottom: '10px', height: (parent.innerHeight - 300) / 2 }}
+        >
           <Col span={24}>
             <DevOverView />
           </Col>
