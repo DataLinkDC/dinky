@@ -125,9 +125,9 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     protected SingleOutputStreamOperator<Map> shunt(
-                                                    SingleOutputStreamOperator<Map> mapOperator,
-                                                    Table table,
-                                                    String schemaFieldName) {
+            SingleOutputStreamOperator<Map> mapOperator,
+            Table table,
+            String schemaFieldName) {
         final String tableName = table.getName();
         final String schemaName = table.getSchema();
         return mapOperator.filter(new FilterFunction<Map>() {
@@ -142,18 +142,18 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     protected DataStream<Map> shunt(
-                                    SingleOutputStreamOperator<Map> processOperator,
-                                    Table table,
-                                    OutputTag<Map> tag) {
+            SingleOutputStreamOperator<Map> processOperator,
+            Table table,
+            OutputTag<Map> tag) {
 
         return processOperator.getSideOutput(tag);
     }
 
     protected DataStream<RowData> buildRowData(
-                                               SingleOutputStreamOperator<Map> filterOperator,
-                                               List<String> columnNameList,
-                                               List<LogicalType> columnTypeList,
-                                               String schemaTableName) {
+            SingleOutputStreamOperator<Map> filterOperator,
+            List<String> columnNameList,
+            List<LogicalType> columnTypeList,
+            String schemaTableName) {
         return filterOperator
                 .flatMap(new FlatMapFunction<Map, RowData>() {
 
@@ -212,17 +212,17 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     public abstract void addSink(
-                                 StreamExecutionEnvironment env,
-                                 DataStream<RowData> rowDataDataStream,
-                                 Table table,
-                                 List<String> columnNameList,
-                                 List<LogicalType> columnTypeList);
+            StreamExecutionEnvironment env,
+            DataStream<RowData> rowDataDataStream,
+            Table table,
+            List<String> columnNameList,
+            List<LogicalType> columnTypeList);
 
     public DataStreamSource build(
-                                  CDCBuilder cdcBuilder,
-                                  StreamExecutionEnvironment env,
-                                  CustomTableEnvironment customTableEnvironment,
-                                  DataStreamSource<String> dataStreamSource) {
+            CDCBuilder cdcBuilder,
+            StreamExecutionEnvironment env,
+            CustomTableEnvironment customTableEnvironment,
+            DataStreamSource<String> dataStreamSource) {
 
         final String timeZone = config.getSink().get("timezone");
         config.getSink().remove("timezone");
@@ -244,8 +244,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
 
                     buildColumn(columnNameList, columnTypeList, table.getColumns());
 
-                    DataStream<RowData> rowDataDataStream =
-                            buildRowData(filterOperator, columnNameList, columnTypeList, table.getSchemaTableName());
+                    DataStream<RowData> rowDataDataStream = buildRowData(filterOperator, columnNameList, columnTypeList,
+                            table.getSchemaTableName());
 
                     addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
                 }
@@ -297,7 +297,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 return new DateType();
             case LOCALDATETIME:
             case TIMESTAMP:
-                return new TimestampType();
+                return new TimestampType(column.getLength());
             case BYTES:
                 return new VarBinaryType(Integer.MAX_VALUE);
             default:
