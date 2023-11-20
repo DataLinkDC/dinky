@@ -22,7 +22,7 @@ import { editor, languages, Position } from 'monaco-editor';
 
 import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
-import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
+import {LoadCustomEditorLanguage, LoadCustomEditorLanguageWithCompletion} from '@/components/CustomEditor/languages';
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
@@ -97,12 +97,11 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   const monacoHook = useMonaco();
 
   useEffect(() => {
-    convertCodeEditTheme(monacoHook?.editor);
+    convertCodeEditTheme(editorInstance.current);
     // 需要调用 手动注册下自定义语言
-    LoadCustomEditorLanguage(monacoHook);
+    LoadCustomEditorLanguageWithCompletion(monacoInstance.current);
   }, [monacoHook]);
 
-  // todo: 已知 bug , 切换 tab 时 , 会造成buildAllSuggestions 的重复调用 , 造成建议项重复 ,但不影响原有数据, 编辑器会将建议项自动缓存,不会进行去重
   /**
    * build all suggestions
    */
@@ -121,6 +120,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   const memoizedBuildAllSuggestionsCallback = useMemoCallback(buildAllSuggestionsCallback);
 
   function reloadCompilation(monacoIns: Monaco) {
+    provider.dispose();
     provider = monacoIns.languages.registerCompletionItemProvider(language, {
       provideCompletionItems: (
         model: editor.ITextModel,
@@ -158,13 +158,12 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     editorInstance.current = editor;
     monacoInstance.current = monacoIns;
     if (enableSuggestions) {
-      reloadCompilation(monacoIns);
+      reloadCompilation(monacoInstance.current);
     }
     // register TypeScript language service
     monacoIns.languages.register({
       id: language || 'typescript'
     });
-
     editor.layout();
     editor.focus();
   };
@@ -215,7 +214,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   const finalEditorOptions = {
     ...MonacoEditorOptions, // set default options
     tabCompletion: 'on', // tab 补全
-    cursorSmoothCaretAnimation: true, // 光标动画
+    cursorSmoothCaretAnimation: false, // 光标动画
     screenReaderAnnounceInlineSuggestion: true, // 屏幕阅读器提示
     formatOnPaste: true, // 粘贴时格式化
     mouseWheelZoom: true, // 鼠标滚轮缩放

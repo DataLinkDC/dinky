@@ -33,6 +33,7 @@ import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
 import ICodeEditor = editor.ICodeEditor;
+import {Monaco} from "@monaco-editor/react";
 
 /**
  * 初始化布局宽高度
@@ -161,6 +162,8 @@ export interface TabsItemType {
   icon: any;
   closable: boolean;
   path: string[];
+  monacoInstance: Monaco;
+  editorInstance: editor.IStandaloneCodeEditor;
   console: ConsoleType;
   isModified: boolean;
 }

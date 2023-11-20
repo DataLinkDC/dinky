@@ -28,7 +28,7 @@ import {
 } from '@/components/CustomEditor/languages/flinksql/keyword';
 import { Monaco } from '@monaco-editor/react';
 
-export function FlinkSQLLanguage(monaco: Monaco | null) {
+export function FlinkSQLLanguage(monaco: Monaco | null, registerCompletion: boolean) {
   // Register a new language
   monaco?.languages.register({
     id: 'flinksql',
@@ -159,7 +159,7 @@ export function FlinkSQLLanguage(monaco: Monaco | null) {
     unicode: true
   });
 
-  monaco?.languages?.registerCompletionItemProvider('flinksql', {
+  registerCompletion && monaco?.languages?.registerCompletionItemProvider('flinksql', {
     provideCompletionItems: function (model, position) {
       const word = model.getWordUntilPosition(position);
       const range = {
