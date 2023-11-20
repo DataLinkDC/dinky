@@ -17,29 +17,32 @@
  *
  */
 
-package org.dinky.configure.schedule;
+package org.dinky.daemon.pool;
+
+import org.dinky.daemon.task.DaemonTask;
 
 import java.util.HashMap;
 import java.util.concurrent.ScheduledFuture;
 
-import javax.annotation.Resource;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.stereotype.Component;
 
-public abstract class BaseSchedule {
+@Component
+public class ScheduleThreadPool {
     private static final HashMap<String, ScheduledFuture<?>> SCHEDULE_MAP = new HashMap<>();
 
-    @Resource
+    @Autowired
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
-    protected void addSchedule(String key, Runnable runnable, Trigger trigger) {
-        ScheduledFuture<?> schedule = threadPoolTaskScheduler.schedule(runnable, trigger);
-        getScheduleMap().put(key, schedule);
+    public void addSchedule(DaemonTask task, Trigger trigger) {
+        ScheduledFuture<?> schedule = threadPoolTaskScheduler.schedule(task::dealTask, trigger);
+        getScheduleMap().put(task.getType(), schedule);
     }
 
-    protected void removeSchedule(String key) {
-        ScheduledFuture<?> scheduledFuture = getScheduleMap().get(key);
+    public void removeSchedule(DaemonTask task) {
+        ScheduledFuture<?> scheduledFuture = getScheduleMap().get(task.getType());
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }

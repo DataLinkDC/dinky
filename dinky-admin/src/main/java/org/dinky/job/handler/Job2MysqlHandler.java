@@ -17,11 +17,12 @@
  *
  */
 
-package org.dinky.job;
+package org.dinky.job.handler;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.SpringContextUtils;
-import org.dinky.daemon.task.DaemonFactory;
+import org.dinky.daemon.pool.FlinkJobThreadPool;
+import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
 import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.enums.JobStatus;
@@ -33,6 +34,10 @@ import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.model.mapping.ClusterConfigurationMapping;
 import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.gateway.enums.GatewayType;
+import org.dinky.job.FlinkJobTask;
+import org.dinky.job.Job;
+import org.dinky.job.JobContextHolder;
+import org.dinky.job.JobHandler;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
@@ -195,8 +200,8 @@ public class Job2MysqlHandler implements JobHandler {
                                 : null)
                 .build();
         jobHistoryService.save(jobHistory);
-
-        DaemonFactory.refeshOraddTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId()));
+        DaemonTaskConfig taskConfig = DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId());
+        FlinkJobThreadPool.getInstance().execute(DaemonTask.build(taskConfig));
         return true;
     }
 

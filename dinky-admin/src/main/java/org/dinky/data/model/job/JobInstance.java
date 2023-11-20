@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -146,4 +147,8 @@ public class JobInstance implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value = "Operator", required = true, dataType = "Integer", example = "Operator")
     private Integer operator;
+
+    @TableField(value = "count(*)", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
+    @ApiModelProperty(value = "Group by count", dataType = "Integer")
+    private Long count;
 }

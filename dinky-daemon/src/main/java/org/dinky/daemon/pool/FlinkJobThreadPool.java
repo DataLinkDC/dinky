@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @operate
  * @return
  */
-public class DefaultThreadPool implements ThreadPool {
+public class FlinkJobThreadPool implements ThreadPool {
 
     private static final int MAX_WORKER_NUM = 10;
     private static final int DEFAULT_WORKER_NUM = 5;
@@ -47,15 +47,15 @@ public class DefaultThreadPool implements ThreadPool {
 
     private final TaskQueue<DaemonTask> queue = new TaskQueue<>();
 
-    private DefaultThreadPool() {
+    private FlinkJobThreadPool() {
         addWorkers(DEFAULT_WORKER_NUM);
     }
 
     private static final class DefaultThreadPoolHolder {
-        private static final DefaultThreadPool defaultThreadPool = new DefaultThreadPool();
+        private static final FlinkJobThreadPool defaultThreadPool = new FlinkJobThreadPool();
     }
 
-    public static DefaultThreadPool getInstance() {
+    public static FlinkJobThreadPool getInstance() {
         return DefaultThreadPoolHolder.defaultThreadPool;
     }
 

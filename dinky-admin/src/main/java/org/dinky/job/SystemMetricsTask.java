@@ -17,85 +17,53 @@
  *
  */
 
-package org.dinky.configure.schedule.metrics;
+package org.dinky.job;
 
-import org.dinky.configure.schedule.BaseSchedule;
-import org.dinky.context.MetricsContextHolder;
+import org.dinky.daemon.task.DaemonTask;
+import org.dinky.daemon.task.DaemonTaskConfig;
 import org.dinky.data.annotations.GaugeM;
-import org.dinky.data.enums.MetricsType;
 import org.dinky.data.metrics.BaseMetrics;
-import org.dinky.data.metrics.Cpu;
-import org.dinky.data.metrics.Jvm;
-import org.dinky.data.metrics.Mem;
 import org.dinky.data.metrics.MetricsTotal;
-import org.dinky.data.model.SystemConfiguration;
-import org.dinky.data.vo.MetricsVO;
+import org.dinky.job.handler.SystemMetricsHandler;
 
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.scheduling.support.PeriodicTrigger;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.DependsOn;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ReflectUtil;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
-import lombok.RequiredArgsConstructor;
+import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-@Component
-@RequiredArgsConstructor
+@DependsOn("springContextUtils")
 @Slf4j
-public class GatherSysIndicator extends BaseSchedule {
-    private final MeterRegistry registry;
+@Data
+public class SystemMetricsTask implements DaemonTask {
+    private final MeterRegistry registry = new CompositeMeterRegistry();
 
-    @PostConstruct
-    public void init() {
+    private DaemonTaskConfig config;
+    public static final String TYPE = SystemMetricsTask.class.toString();
+
+    @Override
+    public DaemonTask setConfig(DaemonTaskConfig config) {
+        this.config = config;
         MetricsTotal metricsTotal = MetricsTotal.instance;
         registerMetrics(metricsTotal.getJvm());
         registerMetrics(metricsTotal.getCpu());
         registerMetrics(metricsTotal.getMem());
 
-        org.dinky.data.model.Configuration<Boolean> metricsSysEnable =
-                SystemConfiguration.getInstances().getMetricsSysEnable();
-        String key = metricsSysEnable.getKey();
-
-        metricsSysEnable.addChangeEvent(x -> {
-            if (x) {
-                addSchedule(
-                        key,
-                        this::updateState,
-                        new PeriodicTrigger(SystemConfiguration.getInstances()
-                                .getMetricsSysGatherTiming()
-                                .getValue()));
-            } else {
-                removeSchedule(key);
-                log.info("Information collection for jvm is turned off（已关闭对jvm的信息收集）");
-            }
-        });
+        return this;
     }
 
-    public void updateState() {
-        log.debug("Collecting jvm related information.");
-        MetricsTotal metricsTotal = MetricsTotal.instance;
-        LocalDateTime now = LocalDateTime.now();
-
-        metricsTotal.setJvm(Jvm.of());
-        metricsTotal.setCpu(Cpu.of());
-        metricsTotal.setMem(Mem.of());
-
-        MetricsVO metrics = new MetricsVO();
-        metrics.setContent(metricsTotal);
-        metrics.setHeartTime(now);
-        metrics.setModel(MetricsType.LOCAL.getType());
-        MetricsContextHolder.getInstances().sendAsync(metrics.getModel(), metrics);
-
-        log.debug("Collecting jvm information ends.");
+    @Override
+    public boolean dealTask() {
+        SystemMetricsHandler.refresh();
+        return false;
     }
 
     private void registerMetrics(BaseMetrics baseMetrics) {
@@ -117,5 +85,15 @@ public class GatherSysIndicator extends BaseSchedule {
                     .description(gaugeM.description())
                     .register(registry));
         }
+    }
+
+    @Override
+    public DaemonTaskConfig getConfig() {
+        return config;
+    }
+
+    @Override
+    public String getType() {
+        return TYPE;
     }
 }

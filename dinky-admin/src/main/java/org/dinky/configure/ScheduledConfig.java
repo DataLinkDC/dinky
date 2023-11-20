@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.configure.schedule;
+package org.dinky.configure;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -27,7 +27,7 @@ import org.dinky.alert.rules.ExceptionRule;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FreeMarkerHolder;
 import org.dinky.context.SpringContextUtils;
-import org.dinky.daemon.pool.DefaultThreadPool;
+import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.data.dto.AlertRuleDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.Status;
@@ -102,7 +102,7 @@ public class JobAlertHandler {
 
     public static JobAlertHandler getInstance() {
         if (defaultJobAlertHandler == null) {
-            synchronized (DefaultThreadPool.class) {
+            synchronized (FlinkJobThreadPool.class) {
                 if (defaultJobAlertHandler == null) {
                     defaultJobAlertHandler = new JobAlertHandler();
                 }
