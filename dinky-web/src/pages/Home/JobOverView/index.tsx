@@ -46,6 +46,8 @@ const JobOverView: React.FC = () => {
         }}
       >
         <ProCard
+          boxShadow={true}
+          style={{ height: '100%' }}
           title={
             <>
               <Badge status='processing' />

@@ -232,7 +232,6 @@ const Project: React.FC = (props: connect) => {
    * 删除目录, 并刷新目录树
    */
   const handleDeleteSubmit = async () => {
-    debugger
     const { key, isLeaf, name, type } = projectState.rightClickedNode;
     const {taskId, task} = projectState.value
 

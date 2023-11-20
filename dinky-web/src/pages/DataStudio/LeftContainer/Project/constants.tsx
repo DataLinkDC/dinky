@@ -136,10 +136,6 @@ export const JOB_TYPE: DefaultOptionType[] = [
     label: 'Jdbc Query Type',
     options: [
       {
-        value: 'Sql',
-        label: 'Sql'
-      },
-      {
         value: 'Mysql',
         label: 'Mysql'
       },
