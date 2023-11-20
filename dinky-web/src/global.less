@@ -237,8 +237,6 @@ ol {
 
 .siderTree {
   height: 100%;
-  min-height: 82vh;
-  max-height: 82vh;
   overflow-x: auto;
   overflow-y: auto;
 
@@ -608,3 +606,76 @@ h5 {
 .card-list-item:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+// 自定义语言会把 '' 中间的内容加粗 , 在这里重置 不加粗
+span .mtkb {
+  font-weight: inherit;
+}
+
+// =============================  layout split pane style start =============================
+.split-pane {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+}
+
+.Resizer {
+  z-index: 1;
+  box-sizing: border-box;
+  background: #000;
+  background-clip: padding-box;
+  opacity: 0.2;
+}
+
+.Resizer:hover {
+  transition: all 2s ease;
+}
+
+.Resizer.horizontal {
+  height: 11px;
+  margin: -5px 0;
+  border-top: 5px solid rgba(255, 255, 255, 0);
+  border-bottom: 5px solid rgba(255, 255, 255, 0);
+  cursor: row-resize;
+}
+
+.Resizer.horizontal:hover,
+.Resizer.horizontal.resizing {
+  border-top: 5px solid rgba(0, 0, 0, 0.5);
+  border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+}
+
+.Resizer.vertical {
+  width: 11px;
+  height: 98%;
+  margin: 0 -5px;
+  border-right: 5px solid rgba(255, 255, 255, 0);
+  border-left: 5px solid rgba(255, 255, 255, 0);
+  cursor: col-resize;
+}
+
+.Resizer.vertical:hover,
+.Resizer.vertical.resizing {
+  border-right: 5px solid rgba(0, 0, 0, 0.5);
+  border-left: 5px solid rgba(0, 0, 0, 0.5);
+}
+
+.DragLayer {
+  z-index: 1;
+  pointer-events: none;
+}
+
+.DragLayer.resizing {
+  pointer-events: auto;
+}
+
+.DragLayer.horizontal {
+  cursor: row-resize;
+}
+
+.DragLayer.vertical {
+  cursor: col-resize;
+}
+// =============================  layout split pane style end =============================

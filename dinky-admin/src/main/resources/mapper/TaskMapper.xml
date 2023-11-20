@@ -97,7 +97,7 @@
         </if>
     </select>
 
-    <select id="getTaskOnlineRate" resultType="org.dinky.data.model.JobTypeOverView">
+    <select id="getTaskOnlineRate" resultType="org.dinky.data.model.home.JobTypeOverView">
         SELECT dialect  jobType,
         round(coalesce(sum(CASE WHEN step = 5 THEN 1 ELSE 0 END) /
         CASE
@@ -112,7 +112,7 @@
     </select>
 
 
-    <select id="getJobStreamingOrBatchModelOverview" resultType="org.dinky.data.model.JobModelOverview">
+    <select id="getJobStreamingOrBatchModelOverview" resultType="org.dinky.data.model.home.JobModelOverview">
         select coalesce(sum(case when batch_model = 'streaming' then cnt else 0 end),0) as streamingJobCount,
                coalesce(sum(case when batch_model = 'batch' then cnt else 0 end) ,0)    as batchJobCount
         from (select case a.batch_model when 0 then 'streaming' when 1 then 'batch' end as batch_model,

@@ -19,9 +19,9 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.JobInfoDetail;
-import org.dinky.data.model.JobInstance;
-import org.dinky.data.model.JobInstanceStatus;
+import org.dinky.data.model.ext.JobInfoDetail;
+import org.dinky.data.model.home.JobInstanceStatus;
+import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.mybatis.service.ISuperService;

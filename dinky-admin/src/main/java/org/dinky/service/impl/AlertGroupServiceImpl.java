@@ -20,9 +20,9 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.model.AlertGroup;
-import org.dinky.data.model.AlertHistory;
-import org.dinky.data.model.AlertInstance;
+import org.dinky.data.model.alert.AlertGroup;
+import org.dinky.data.model.alert.AlertHistory;
+import org.dinky.data.model.alert.AlertInstance;
 import org.dinky.mapper.AlertGroupMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.AlertGroupService;

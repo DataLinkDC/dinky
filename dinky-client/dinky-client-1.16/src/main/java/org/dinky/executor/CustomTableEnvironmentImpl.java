@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.dag.Transformation;
@@ -50,9 +51,7 @@ import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.types.Row;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +61,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -118,19 +116,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return false;
     }
 
-    @Override
-    public void addJar(File... jarPath) {
-        Configuration configuration = this.getRootConfiguration();
-        List<String> jars = configuration.get(PipelineOptions.JARS);
-        if (jars == null) {
-            configuration.set(
-                    PipelineOptions.JARS,
-                    Arrays.stream(jarPath).map(File::getAbsolutePath).collect(Collectors.toList()));
-        } else {
-            CollUtil.addAll(jars, jarPath);
-        }
-    }
-
     public ObjectNode getStreamGraph(String statement) {
         List<Operation> operations = super.getParser().parse(statement);
         if (operations.size() != 1) {
@@ -144,12 +129,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
         StreamGraph streamGraph = transOperatoinsToStreamGraph(modifyOperations);
         JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
-        try {
-            return (ObjectNode) mapper.readTree(jsonGenerator.getJSON());
-        } catch (JsonProcessingException e) {
-            log.error("read streamGraph configure error: ", e);
-            return mapper.createObjectNode();
-        }
+        return JsonUtils.parseObject(jsonGenerator.getJSON());
     }
 
     private StreamGraph transOperatoinsToStreamGraph(List<ModifyOperation> modifyOperations) {

@@ -26,6 +26,7 @@ import JsonToSql from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import Catalog from '@/pages/DataStudio/LeftContainer/Catalog';
 import DataSource from '@/pages/DataStudio/LeftContainer/DataSource';
+import GlobalVariable from '@/pages/DataStudio/LeftContainer/GlobaleVar';
 import Project from '@/pages/DataStudio/LeftContainer/Project';
 import { TabsPageSubType, TabsPageType } from '@/pages/DataStudio/model';
 import HistoryVersion from '@/pages/DataStudio/RightContainer/HistoryVersion';
@@ -42,6 +43,7 @@ import {
   DatabaseOutlined,
   EnvironmentOutlined,
   FolderOutlined,
+  FunctionOutlined,
   HistoryOutlined,
   InfoCircleOutlined,
   InsertRowRightOutlined,
@@ -80,6 +82,13 @@ export const LeftSide = [
     icon: <DatabaseOutlined />,
     label: l('menu.datastudio.datasource'),
     children: <DataSource />
+  },
+  {
+    auth: '/datastudio/left/globalVariable',
+    key: 'menu.registration.fragment',
+    icon: <FunctionOutlined />,
+    label: l('menu.registration.fragment'),
+    children: <GlobalVariable />
   }
 ];
 
@@ -126,7 +135,7 @@ export const RightSide: TabProp[] = [
     icon: <InfoCircleOutlined />,
     label: l('menu.datastudio.jobInfo'),
     children: <JobInfo />,
-    isShow: (type) => type !== TabsPageType.None
+    isShow: (type) => type === TabsPageType.project
   }
 ];
 

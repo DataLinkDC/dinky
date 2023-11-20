@@ -19,7 +19,7 @@
 
 package org.dinky.data.dto;
 
-import org.dinky.data.model.Menu;
+import org.dinky.data.model.rbac.Menu;
 
 import java.io.Serializable;
 import java.util.List;

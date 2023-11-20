@@ -23,7 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.context.UserInfoContextHolder;
 import org.dinky.data.dto.UserDTO;
-import org.dinky.data.model.Tenant;
+import org.dinky.data.model.rbac.Tenant;
 
 import org.apache.commons.collections4.CollectionUtils;
 

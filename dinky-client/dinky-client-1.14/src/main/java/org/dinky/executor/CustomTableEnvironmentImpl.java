@@ -22,6 +22,7 @@ package org.dinky.executor;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
@@ -73,6 +74,7 @@ import org.apache.flink.types.Row;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -81,18 +83,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.URLUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 定制TableEnvironmentImpl
  *
  * @since 2021/10/22 10:02
  */
+@Slf4j
 public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     public CustomTableEnvironmentImpl(
@@ -212,18 +215,23 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                         ((DefaultExecutor) executor).getExecutionEnvironment().generateStreamGraph(trans);
                 JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
                 String json = jsonGenerator.getJSON();
-                ObjectMapper mapper = new ObjectMapper();
-                ObjectNode objectNode = mapper.createObjectNode();
-                try {
-                    objectNode = (ObjectNode) mapper.readTree(json);
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                } finally {
-                    return objectNode;
-                }
+                return JsonUtils.parseObject(json);
             } else {
                 throw new TableException("Unsupported SQL query! explainSql() need a single SQL to query.");
             }
+        }
+    }
+
+    @Override
+    public void addJar(File... jarPath) {
+        Configuration configuration = new Configuration(this.getRootConfiguration());
+        List<String> pathList =
+                Arrays.stream(URLUtil.getURLs(jarPath)).map(URL::toString).collect(Collectors.toList());
+        List<String> jars = configuration.get(PipelineOptions.JARS);
+        if (jars == null) {
+            configuration.set(PipelineOptions.JARS, pathList);
+        } else {
+            CollUtil.addAll(jars, pathList);
         }
     }
 
@@ -371,19 +379,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             CreateTableOperation createTableOperation = createTableASOperation.getCreateTableOperation();
             executeInternal(createTableOperation);
             getPlanner().translate(CollUtil.newArrayList(createTableASOperation.getInsertOperation()));
-        }
-    }
-
-    @Override
-    public void addJar(File... jarPath) {
-        Configuration configuration = this.getRootConfiguration();
-        List<String> jars = configuration.get(PipelineOptions.JARS);
-        if (jars == null) {
-            configuration.set(
-                    PipelineOptions.JARS,
-                    Arrays.stream(jarPath).map(File::getAbsolutePath).collect(Collectors.toList()));
-        } else {
-            CollUtil.addAll(jars, jarPath);
         }
     }
 

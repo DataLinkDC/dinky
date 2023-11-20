@@ -34,11 +34,12 @@ export type DiffModalProps = {
   diffs: any[];
   open: boolean;
   fileName?: string;
+  language?: string;
   onUse: (server: boolean) => void;
 };
 
 const DiffModal: React.FC<DiffModalProps> = (props) => {
-  const { diffs, open, fileName, onUse } = props;
+  const { diffs, open, fileName, language = 'sql', onUse } = props;
   // Find the diff object with key 'statement'
   const statementDiff = diffs.find((diff) => diff.key === 'statement');
   // Filter out the diff objects with key other than 'statement'
@@ -60,6 +61,7 @@ const DiffModal: React.FC<DiffModalProps> = (props) => {
             </Row>
             <DiffEditor
               {...DIFF_EDITOR_PARAMS}
+              language={language}
               original={statementDiff?.server}
               modified={statementDiff?.cache}
               theme={convertCodeEditTheme()}

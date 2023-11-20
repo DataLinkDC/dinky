@@ -35,11 +35,12 @@ import {
   executeSql,
   getJobPlan
 } from '@/pages/DataStudio/HeaderContainer/service';
-import { StateType, TabsPageSubType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import { DataStudioTabsItemType, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { ConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 import { handlePutDataJson } from '@/services/BusinessCrud';
+import { DIALECT } from '@/services/constants';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import { SuccessMessageAsync } from '@/utils/messages';
@@ -60,7 +61,7 @@ import {
 } from '@ant-design/icons';
 import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import { ButtonProps } from 'antd/es/button/button';
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -104,7 +105,7 @@ const HeaderContainer = (props: any) => {
   );
 
   const currentData = getCurrentData(panes, activeKey);
-  const currentTab = getCurrentTab(panes, activeKey);
+  const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
 
   useEffect(() => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
@@ -242,7 +243,10 @@ const HeaderContainer = (props: any) => {
       // 执行图按钮
       icon: <ApartmentOutlined />,
       title: l('button.graph'),
-      isShow: projectCommonShow(currentTab?.type),
+      isShow:
+        (projectCommonShow(currentTab?.type) &&
+          currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL) ||
+        currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR,
       click: async () => showDagGraph()
     },
     {
@@ -253,7 +257,11 @@ const HeaderContainer = (props: any) => {
       hotKeyDesc: 'Alt+2/@',
       title: l('pages.datastudio.editor.check'),
       click: () => showExplain(),
-      isShow: projectCommonShow(currentTab?.type)
+      isShow:
+        projectCommonShow(currentTab?.type) &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.JAVA &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.SCALA &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.PYTHON_LONG
     },
     {
       // 推送海豚, 此处需要将系统设置中的 ds 的配置拿出来做判断 启用才展示
@@ -266,17 +274,21 @@ const HeaderContainer = (props: any) => {
       // 发布按钮
       icon: isOnline(currentData) ? <MergeCellsOutlined /> : <FundOutlined />,
       title: isOnline(currentData) ? l('button.offline') : l('button.publish'),
-      isShow: currentTab?.type == TabsPageType.project,
+      isShow:
+        (currentTab?.type == TabsPageType.project &&
+          currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL) ||
+        currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR,
       click: () => handleChangeJobLife()
     },
     {
-      // flink jobdetail跳转
+      // flink jobdetail跳转 运维
       icon: <RotateRightOutlined />,
       title: l('pages.datastudio.to.jobDetail'),
       isShow:
         currentTab?.type == TabsPageType.project &&
         currentData?.jobInstanceId &&
-        currentTab.subType == TabsPageSubType.flinkSql,
+        (currentTab?.subType?.toLowerCase() == DIALECT.FLINK_SQL ||
+          currentTab?.subType?.toLowerCase() == DIALECT.FLINKJAR),
       props: {
         href: `/#/devops/job-detail?id=${currentData?.jobInstanceId}`,
         target: '_blank'
@@ -289,7 +301,13 @@ const HeaderContainer = (props: any) => {
       click: handlerSubmit,
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       hotKeyDesc: 'Shift+F10',
-      isShow: currentTab?.type == TabsPageType.project && !isRunning(currentData),
+      isShow:
+        currentTab?.type == TabsPageType.project &&
+        !isRunning(currentData) &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.JAVA &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.SCALA &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.FLINKSQLENV,
       props: {
         style: { background: '#52c41a' },
         type: 'primary'
@@ -302,7 +320,11 @@ const HeaderContainer = (props: any) => {
       click: handlerDebug,
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F9',
       hotKeyDesc: 'Shift+F9',
-      isShow: currentTab?.type == TabsPageType.project && !isRunning(currentData),
+      isShow:
+        currentTab?.type == TabsPageType.project &&
+        !isRunning(currentData) &&
+        (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
+          currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR),
       props: {
         style: { background: '#52c41a' },
         type: 'primary'
@@ -345,7 +367,7 @@ const HeaderContainer = (props: any) => {
 
     return (
       <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
-        <Breadcrumb separator={'>'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
+        <Breadcrumb separator={'/'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
       </FlexCenterDiv>
     );
   };
@@ -408,4 +430,4 @@ export default connect(
     dsConfig: Config.dsConfig
   }),
   mapDispatchToProps
-)(HeaderContainer);
+)(memo(HeaderContainer));

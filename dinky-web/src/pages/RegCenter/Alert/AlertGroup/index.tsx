@@ -79,7 +79,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * execute and refresh loading
    * @param callback
    */
-  const exexuteWithRefreshLoading = async (callback: any) => {
+  const executeWithRefreshLoading = async (callback: any) => {
     setAlertGroupState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     await queryAlertGroupList();
@@ -97,7 +97,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () =>
-        exexuteWithRefreshLoading(async () =>
+        executeWithRefreshLoading(async () =>
           handleRemoveById(API_CONSTANTS.ALERT_GROUP_DELETE, id)
         )
     });
@@ -108,7 +108,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * @param item
    */
   const handleEnable = async (item: Alert.AlertGroup) => {
-    await exexuteWithRefreshLoading(async () =>
+    await executeWithRefreshLoading(async () =>
       updateDataByParam(API_CONSTANTS.ALERT_GROUP_ENABLE, { id: item.id })
     );
   };
@@ -129,7 +129,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
    * handle add alert instance
    */
   const handleSubmit = async (value: Alert.AlertGroup) => {
-    await exexuteWithRefreshLoading(async () =>
+    await executeWithRefreshLoading(async () =>
       handleAddOrUpdate(
         API_CONSTANTS.ALERT_GROUP_ADD_OR_UPDATE,
         value,

@@ -64,7 +64,6 @@ public class YarnApplicationGateway extends YarnGateway {
 
         AppConfig appConfig = config.getAppConfig();
         configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
-
         configuration.setString(
                 "python.files",
                 FlinkUdfPathContextHolder.getPyUdfFile().stream()

@@ -21,10 +21,10 @@ package org.dinky.service.impl;
 
 import org.dinky.data.dto.GitAnalysisJarDTO;
 import org.dinky.data.dto.GitProjectDTO;
+import org.dinky.data.dto.GitProjectSortJarDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.GitProject;
-import org.dinky.data.params.GitProjectSortJarParams;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.mapper.GitProjectMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
@@ -93,14 +93,14 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
         }
     }
 
-    /** @param gitProjectSortJarParams */
+    /** @param gitProjectSortJarDTO */
     @Override
-    public Boolean dragendSortJar(GitProjectSortJarParams gitProjectSortJarParams) {
-        GitProject gitProject = getById(gitProjectSortJarParams.getProjectId());
+    public Boolean dragendSortJar(GitProjectSortJarDTO gitProjectSortJarDTO) {
+        GitProject gitProject = getById(gitProjectSortJarDTO.getProjectId());
         if (gitProject == null) {
             return false;
         } else {
-            String jarClasses = JSONUtil.toJsonStr(gitProjectSortJarParams.getJars());
+            String jarClasses = JSONUtil.toJsonStr(gitProjectSortJarDTO.getJars());
             gitProject.setUdfClassMapList(jarClasses);
             return updateById(gitProject);
         }

@@ -24,6 +24,7 @@ import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.RunTimeUtil;
+import org.dinky.utils.URLUtils;
 
 import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.client.program.PackagedProgram;
@@ -37,7 +38,6 @@ import org.apache.flink.table.api.TableResult;
 import java.io.File;
 import java.util.Optional;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
@@ -62,6 +62,10 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
 
     protected StreamGraph getStreamGraph(CustomTableEnvironment tEnv) {
         JarSubmitParam submitParam = JarSubmitParam.build(statement);
+        return getStreamGraph(submitParam, tEnv);
+    }
+
+    public static StreamGraph getStreamGraph(JarSubmitParam submitParam, CustomTableEnvironment tEnv) {
         SavepointRestoreSettings savepointRestoreSettings = StrUtil.isBlank(submitParam.getSavepointPath())
                 ? SavepointRestoreSettings.none()
                 : SavepointRestoreSettings.forPath(
@@ -69,7 +73,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         PackagedProgram program;
         try {
             Configuration configuration = tEnv.getConfig().getConfiguration();
-            File file = FileUtil.file(submitParam.getUri());
+            File file = URLUtils.toFile(submitParam.getUri());
             program = PackagedProgram.newBuilder()
                     .setJarFile(file)
                     .setEntryPointClassName(submitParam.getMainClass())

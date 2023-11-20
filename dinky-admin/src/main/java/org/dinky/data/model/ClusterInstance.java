@@ -39,7 +39,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_cluster")
 @ApiModel(value = "ClusterInstance", description = "ClusterInstance")
-public class ClusterInstance extends SuperEntity {
+public class ClusterInstance extends SuperEntity<ClusterInstance> {
 
     private static final long serialVersionUID = 3104721227014487321L;
 

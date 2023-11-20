@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.AlertHistory;
+import org.dinky.data.model.alert.AlertHistory;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;

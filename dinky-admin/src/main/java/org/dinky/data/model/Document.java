@@ -37,7 +37,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_flink_document")
 @ApiModel(value = "Document", description = "Document manage")
-public class Document extends SuperEntity {
+public class Document extends SuperEntity<Document> {
 
     private static final long serialVersionUID = -6340080980759236641L;
 
