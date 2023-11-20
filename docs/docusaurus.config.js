@@ -166,12 +166,12 @@ const config = {
                         position: 'left',
                         dropdownActiveClassDisabled: true,
                     },
-                    {
+                    /*{
                         to: '/download/download',
                         position: 'right',
                         label: '下载',
                         activeBaseRegex: `/download/`,
-                    },
+                    },*/
                     {
                         label: '开发者指南',
                         to: '/docs/next/developer_guide/contribution/how_contribute',

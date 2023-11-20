@@ -19,6 +19,8 @@
 
 package org.dinky.data.model;
 
+import java.io.Serializable;
+
 import javax.naming.directory.Attributes;
 
 import io.swagger.annotations.ApiModel;
@@ -31,7 +33,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "LdapUserIdentification", description = "LDAP User Identification Information")
-public class LdapUserIdentification {
+public class LdapUserIdentification implements Serializable {
+    private static final long serialVersionUID = -3784135706406493209L;
 
     @ApiModelProperty(
             value = "Absolute DN",

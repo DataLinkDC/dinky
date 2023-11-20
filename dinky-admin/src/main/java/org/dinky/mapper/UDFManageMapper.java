@@ -19,7 +19,7 @@
 
 package org.dinky.mapper;
 
-import org.dinky.data.model.UDFManage;
+import org.dinky.data.model.udf.UDFManage;
 import org.dinky.data.vo.UDFManageVO;
 import org.dinky.mybatis.mapper.SuperMapper;
 

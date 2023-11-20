@@ -37,13 +37,13 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /** @TableName dinky_resources */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value = "dinky_resources")
-@Getter
-@Setter
+@Data
 @ApiModel(value = "Resources", description = "Resource Information")
 public class Resources extends Model<Resources> {
 
@@ -132,4 +132,12 @@ public class Resources extends Model<Resources> {
             example = "false",
             notes = "Indicates whether the tree node is a leaf node (true/false)")
     private boolean isLeaf;
+
+    @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty(value = "Creator", required = true, dataType = "Integer", example = "creator")
+    private Integer creator;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty(value = "Updater", required = true, dataType = "Integer", example = "updater")
+    private Integer updater;
 }

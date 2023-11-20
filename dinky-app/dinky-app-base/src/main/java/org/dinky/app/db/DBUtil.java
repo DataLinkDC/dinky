@@ -19,6 +19,7 @@
 
 package org.dinky.app.db;
 
+import org.dinky.app.model.SysConfig;
 import org.dinky.data.app.AppDatabase;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
@@ -68,14 +69,8 @@ public class DBUtil {
         return sb.toString();
     }
 
-    public static String getSysConfig(String key) throws SQLException {
-        Entity option = Entity.create("dinky_sys_config").set("name", key);
-        List<Entity> entities = db.find(option);
-        if (entities.size() <= 0) {
-            throw new IllegalArgumentException(
-                    StrFormatter.format("The system conifg is not found: {}, please check! ", key));
-        } else {
-            return entities.get(0).getStr("value");
-        }
+    public static List<SysConfig> getSysConfigList() throws SQLException {
+        Entity option = Entity.create("dinky_sys_config");
+        return db.find(option, SysConfig.class);
     }
 }

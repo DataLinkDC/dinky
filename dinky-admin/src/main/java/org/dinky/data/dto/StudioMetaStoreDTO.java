@@ -70,7 +70,7 @@ public class StudioMetaStoreDTO extends AbstractStatementDTO {
                 .useResult(true)
                 .useChangeLog(false)
                 .useAutoCancel(false)
-                .fragment(isFragment())
+                .fragment(getFragment())
                 .statementSet(false)
                 .batchModel(false)
                 .maxRowNum(0)

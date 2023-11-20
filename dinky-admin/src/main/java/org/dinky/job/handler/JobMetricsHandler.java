@@ -21,9 +21,10 @@ package org.dinky.job.handler;
 
 import org.dinky.context.MetricsContextHolder;
 import org.dinky.data.constant.NetConstant;
-import org.dinky.data.model.JobInfoDetail;
+import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.HttpUtils;
+import org.dinky.utils.TimeUtil;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -67,6 +68,7 @@ public class JobMetricsHandler {
         metricsVO.setContent(customMetricsList);
         metricsVO.setHeartTime(LocalDateTime.now());
         metricsVO.setModel(jobId);
+        metricsVO.setDate(TimeUtil.nowStr("yyyy-MM-dd"));
         MetricsContextHolder.getInstances().sendAsync(metricsVO.getModel(), metricsVO);
     }
 

@@ -19,7 +19,7 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.data.model.History;
+import org.dinky.data.model.job.History;
 import org.dinky.data.result.ResultPool;
 import org.dinky.mapper.HistoryMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;

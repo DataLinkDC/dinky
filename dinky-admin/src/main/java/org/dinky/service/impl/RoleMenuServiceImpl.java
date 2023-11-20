@@ -21,7 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.data.dto.AssignMenuToRoleDTO;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.RoleMenu;
+import org.dinky.data.model.rbac.RoleMenu;
 import org.dinky.data.result.Result;
 import org.dinky.mapper.RoleMenuMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;

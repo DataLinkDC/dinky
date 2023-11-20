@@ -26,6 +26,7 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.util.ZipWriter;
+import org.dinky.service.resource.BaseResourceManager;
 
 import java.io.File;
 import java.io.InputStream;
@@ -50,7 +51,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
-/** @since 0.7.0 */
+/**
+ * @since 0.7.0
+ */
 @Slf4j
 @RestController
 @Api(tags = "UDF & App Jar Controller")
@@ -102,7 +105,7 @@ public class DownloadController {
      * 提供docker通过http下载dinky-app.jar
      *
      * @param version 版本
-     * @param resp resp
+     * @param resp    resp
      */
     @GetMapping("downloadAppJar/{version}")
     @Log(title = "Download App Jar", businessType = BusinessType.DOWNLOAD)
@@ -113,5 +116,13 @@ public class DownloadController {
         if (CollUtil.isNotEmpty(files)) {
             ServletUtil.write(resp, files.get(0));
         }
+    }
+
+    @GetMapping("downloadFromRs")
+    @Log(title = "Download From Resource", businessType = BusinessType.DOWNLOAD)
+    @ApiOperation("Download From Resource")
+    public void downloadJavaUDF(String path, HttpServletResponse resp) {
+        InputStream inputStream = BaseResourceManager.getInstance().readFile(path);
+        ServletUtil.write(resp, inputStream);
     }
 }

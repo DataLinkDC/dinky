@@ -42,13 +42,13 @@ public class RuntimeUtils {
         run(shell, log::info, log::error);
     }
 
-    public static final String SHELL = SystemUtil.getOsInfo().isWindows() ? "cmd /c " : "/bin/bash -c ";
+    public static final String PLATFORM_BASH_SHELL = SystemUtil.getOsInfo().isWindows() ? "cmd /c " : "";
 
     public static int run(String shell, Consumer<String> outputConsumer, Consumer<String> errorConsumer) {
         Process process;
         int waitValue = 1;
         try {
-            process = Runtime.getRuntime().exec(SHELL + shell);
+            process = Runtime.getRuntime().exec(PLATFORM_BASH_SHELL + shell);
             RUNNING.add(process);
             new Thread(() -> {
                         InputStream inputStream = process.getInputStream();

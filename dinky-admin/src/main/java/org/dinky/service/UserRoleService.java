@@ -19,8 +19,8 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.Role;
-import org.dinky.data.model.UserRole;
+import org.dinky.data.model.rbac.Role;
+import org.dinky.data.model.rbac.UserRole;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;

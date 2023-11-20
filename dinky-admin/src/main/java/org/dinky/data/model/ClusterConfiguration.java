@@ -40,7 +40,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_cluster_configuration")
 @ApiModel(value = "ClusterConfiguration", description = "if your cluster type is yarn ,the record is there")
-public class ClusterConfiguration extends SuperEntity {
+public class ClusterConfiguration extends SuperEntity<ClusterConfiguration> {
 
     private static final long serialVersionUID = 5830130188542066241L;
 

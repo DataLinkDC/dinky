@@ -42,7 +42,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @TableName(value = "dinky_database", autoResultMap = true)
 @ApiModel(value = "DataBase", description = "DataBase Register")
-public class DataBase extends SuperEntity {
+public class DataBase extends SuperEntity<DataBase> {
 
     private static final long serialVersionUID = -5002272138861566408L;
 

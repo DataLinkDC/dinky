@@ -95,6 +95,10 @@ public class Savepoints implements Serializable {
             notes = "Timestamp indicating the creation time of the savepoint")
     private LocalDateTime createTime;
 
+    @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty(value = "Creator", dataType = "String", notes = "Creator of the savepoint")
+    private Integer creator;
+
     protected Serializable pkVal() {
         return this.id;
     }

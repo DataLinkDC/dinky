@@ -1052,7 +1052,8 @@ export default {
   'user.request.type': 'Type',
   'user.reset': 'Are you sure to Reset this User Password?',
   'user.resetPassword': 'Reset your password',
-  'user.resetPasswordSuccess': 'User',
+  'user.resetPasswordSuccess':
+    'User [{username}] reset password successfully, new password: {password}',
   'user.role': 'Role',
   'user.status': 'Is Deleted',
   'user.superAdminFlag': 'Super Admin',

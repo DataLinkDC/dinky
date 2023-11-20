@@ -51,9 +51,7 @@ import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.types.Row;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -103,19 +101,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(executionEnvironment, settings);
 
         return new CustomTableEnvironmentImpl(streamTableEnvironment);
-    }
-
-    @Override
-    public void addJar(File... jarPath) {
-        Configuration configuration = this.getRootConfiguration();
-        List<String> jars = configuration.get(PipelineOptions.JARS);
-        if (jars == null) {
-            configuration.set(
-                    PipelineOptions.JARS,
-                    Arrays.stream(jarPath).map(File::getAbsolutePath).collect(Collectors.toList()));
-        } else {
-            CollUtil.addAll(jars, jarPath);
-        }
     }
 
     @Override

@@ -22,13 +22,14 @@ import { editor, languages, Position } from 'monaco-editor';
 
 import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
+import { LoadCustomEditorLanguageWithCompletion } from '@/components/CustomEditor/languages';
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import { Editor, Monaco, OnChange } from '@monaco-editor/react';
+import { Editor, Monaco, OnChange, useMonaco } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
 import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
-import { memo, useCallback, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
 import CompletionContext = languages.CompletionContext;
@@ -72,9 +73,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     height = '100%', // if null or undefined, set default value
     width = '100%', // if null or undefined, set default value
     language, // edit language
-    options = {
-      ...MonacoEditorOptions // set default options
-    },
+    options,
     onChange, // edit change callback
     code, // content
     readOnly = false, // is readOnly
@@ -94,7 +93,15 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 
   const { ScrollType } = editor;
 
-  // todo: 已知 bug , 切换 tab 时 , 会造成buildAllSuggestions 的重复调用 , 造成建议项重复 ,但不影响原有数据, 编辑器会将建议项自动缓存,不会进行去重
+  // 使用编辑器钩子, 拿到编辑器实例
+  const monacoHook = useMonaco();
+
+  useEffect(() => {
+    convertCodeEditTheme(editorInstance.current);
+    // 需要调用 手动注册下自定义语言
+    LoadCustomEditorLanguageWithCompletion(monacoInstance.current);
+  }, [monacoHook]);
+
   /**
    * build all suggestions
    */
@@ -113,6 +120,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   const memoizedBuildAllSuggestionsCallback = useMemoCallback(buildAllSuggestionsCallback);
 
   function reloadCompilation(monacoIns: Monaco) {
+    provider.dispose();
     provider = monacoIns.languages.registerCompletionItemProvider(language, {
       provideCompletionItems: (
         model: editor.ITextModel,
@@ -150,13 +158,12 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     editorInstance.current = editor;
     monacoInstance.current = monacoIns;
     if (enableSuggestions) {
-      reloadCompilation(monacoIns);
+      reloadCompilation(monacoInstance.current);
     }
     // register TypeScript language service
     monacoIns.languages.register({
       id: language || 'typescript'
     });
-
     editor.layout();
     editor.focus();
   };
@@ -205,9 +212,9 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   };
 
   const finalEditorOptions = {
-    ...options,
+    ...MonacoEditorOptions, // set default options
     tabCompletion: 'on', // tab 补全
-    cursorSmoothCaretAnimation: true, // 光标动画
+    cursorSmoothCaretAnimation: false, // 光标动画
     screenReaderAnnounceInlineSuggestion: true, // 屏幕阅读器提示
     formatOnPaste: true, // 粘贴时格式化
     mouseWheelZoom: true, // 鼠标滚轮缩放
@@ -283,9 +290,9 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     },
     wordWrap: autoWrap,
     autoDetectHighContrast: true,
-    lineNumbers
+    lineNumbers,
+    ...options
   };
-
   return (
     <>
       <div className={'monaco-float'}>

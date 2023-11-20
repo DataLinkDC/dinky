@@ -53,7 +53,7 @@ public class ClusterConfig {
             dataType = "String",
             example = "/etc/hadoop/conf/yarn-site.xml",
             notes = "Path to the YARN configuration file")
-    private String yarnConfigPath;
+    private String hadoopConfigPath;
 
     @ApiModelProperty(
             value = "YARN application ID",
@@ -68,10 +68,10 @@ public class ClusterConfig {
         this.flinkConfigPath = flinkConfigPath;
     }
 
-    public ClusterConfig(String flinkConfigPath, String flinkLibPath, String yarnConfigPath) {
+    public ClusterConfig(String flinkConfigPath, String flinkLibPath, String hadoopConfigPath) {
         this.flinkConfigPath = flinkConfigPath;
         this.flinkLibPath = flinkLibPath;
-        this.yarnConfigPath = yarnConfigPath;
+        this.hadoopConfigPath = hadoopConfigPath;
     }
 
     public static ClusterConfig build(String flinkConfigPath) {
@@ -86,6 +86,6 @@ public class ClusterConfig {
     public String toString() {
         return String.format(
                 "ClusterConfig{flinkConfigPath='%s', flinkLibPath='%s', yarnConfigPath='%s', " + "appId='%s'}",
-                flinkConfigPath, flinkLibPath, yarnConfigPath, appId);
+                flinkConfigPath, flinkLibPath, hadoopConfigPath, appId);
     }
 }

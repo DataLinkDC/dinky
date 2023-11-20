@@ -23,7 +23,7 @@ import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.constant.FlinkTaskConstant;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
-import org.dinky.data.model.JobInfoDetail;
+import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.job.handler.JobAlertHandler;
 import org.dinky.job.handler.JobMetricsHandler;
 import org.dinky.job.handler.JobRefreshHandler;
@@ -33,14 +33,17 @@ import java.util.Objects;
 
 import org.springframework.context.annotation.DependsOn;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @DependsOn("springContextUtils")
 @Slf4j
+@Data
 public class FlinkJobTask implements DaemonTask {
 
     private DaemonTaskConfig config;
-    public static final String TYPE = "jobInstance";
+    public static final String TYPE = FlinkJobTask.class.toString();
+
     private static final JobInstanceService jobInstanceService;
     private long preDealTime;
     private long refreshCount = 0;

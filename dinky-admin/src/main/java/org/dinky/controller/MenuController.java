@@ -26,7 +26,7 @@ import org.dinky.data.dto.RoleMenuDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.Menu;
+import org.dinky.data.model.rbac.Menu;
 import org.dinky.data.result.Result;
 import org.dinky.service.MenuService;
 

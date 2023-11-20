@@ -19,9 +19,8 @@
 
 package org.dinky.data.dto;
 
-import org.dinky.config.Dialect;
 import org.dinky.data.model.Task;
-import org.dinky.data.model.TaskExtConfig;
+import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.job.JobConfig;
 
 import java.util.HashMap;
@@ -56,9 +55,6 @@ public class TaskDTO extends AbstractStatementDTO {
             example = "BATCH",
             notes = "The execution mode for the SQL query")
     private String type;
-
-    @ApiModelProperty(value = "Check Point", dataType = "Integer", example = "1", notes = "Check point for the task")
-    private Integer checkPoint;
 
     @ApiModelProperty(
             value = "Save Point Strategy",
@@ -231,7 +227,6 @@ public class TaskDTO extends AbstractStatementDTO {
         JobConfig jobConfig = new JobConfig();
         BeanUtil.copyProperties(this, jobConfig);
         jobConfig.setConfigJson(parsedConfig);
-        jobConfig.setJarTask(isJarTask());
         jobConfig.setTaskId(id);
         jobConfig.setJobName(name);
 
@@ -242,9 +237,5 @@ public class TaskDTO extends AbstractStatementDTO {
         Task task = new Task();
         BeanUtil.copyProperties(this, task);
         return task;
-    }
-
-    public boolean isJarTask() {
-        return Dialect.isJarDialect(dialect);
     }
 }
