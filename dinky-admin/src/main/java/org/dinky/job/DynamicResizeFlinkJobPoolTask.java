@@ -19,7 +19,6 @@
 
 package org.dinky.job;
 
-import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
@@ -35,7 +34,6 @@ public class DynamicResizeFlinkJobPoolTask implements DaemonTask {
 
     @Override
     public boolean dealTask() {
-        TenantContextHolder.ignoreTenant();
         int taskSize = defaultThreadPool.getTaskSize();
         // Calculate the desired number of worker threads, adding one worker for every 100 tasks
         int num = taskSize / 100 + 1;

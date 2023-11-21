@@ -20,7 +20,6 @@
 package org.dinky.job;
 
 import org.dinky.context.SpringContextUtils;
-import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
 import org.dinky.job.handler.ClearJobHistoryHandler;
@@ -58,7 +57,6 @@ public class ClearJobHistoryTask implements DaemonTask {
 
     @Override
     public boolean dealTask() {
-        TenantContextHolder.ignoreTenant();
         clearJobHistoryHandler.clearDinkyHistory(30, 20);
         clearJobHistoryHandler.clearJobHistory(30, 20);
         return false;
