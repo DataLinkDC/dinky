@@ -27,11 +27,15 @@ import lombok.Getter;
 public class DaemonTaskConfig {
 
     private final String type;
-    private final Integer id;
+    private Integer id;
 
     public DaemonTaskConfig(String type, Integer id) {
         this.type = type;
         this.id = id;
+    }
+
+    public DaemonTaskConfig(String type) {
+        this.type = type;
     }
 
     public static DaemonTaskConfig build(String type, Integer id) {

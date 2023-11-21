@@ -29,6 +29,7 @@ import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect, Reducer } from '@@/plugin-dva/types';
+import { Monaco } from '@monaco-editor/react';
 import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
@@ -161,6 +162,8 @@ export interface TabsItemType {
   icon: any;
   closable: boolean;
   path: string[];
+  monacoInstance: Monaco;
+  editorInstance: editor.IStandaloneCodeEditor;
   console: ConsoleType;
   isModified: boolean;
 }

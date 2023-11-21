@@ -42,7 +42,8 @@ import lombok.extern.slf4j.Slf4j;
 public class FlinkJobTask implements DaemonTask {
 
     private DaemonTaskConfig config;
-    public static final String TYPE = "jobInstance";
+    public static final String TYPE = FlinkJobTask.class.toString();
+
     private static final JobInstanceService jobInstanceService;
     private long preDealTime;
     private long refreshCount = 0;

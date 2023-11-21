@@ -17,60 +17,19 @@
  *
  */
 
-package org.dinky.job;
+package org.dinky.utils;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
-import org.dinky.data.model.devops.JobManagerConfiguration;
 import org.dinky.data.model.devops.TaskContainerConfigInfo;
 import org.dinky.data.model.devops.TaskManagerConfiguration;
-import org.dinky.utils.JsonUtils;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+// TODO 后面优化掉
 public class BuildConfiguration {
-
-    public static void buildJobManagerConfiguration(
-            JobManagerConfiguration jobManagerConfiguration, FlinkAPI flinkAPI) {
-
-        // 获取jobManager metrics
-        Map<String, String> jobManagerMetricsMap = new HashMap<>(8);
-        List<LinkedHashMap> jobManagerMetricsItemsList =
-                JsonUtils.toList(JsonUtils.toJsonString(flinkAPI.getJobManagerMetrics()), LinkedHashMap.class);
-        jobManagerMetricsItemsList.forEach(mapItems -> {
-            String configKey = (String) mapItems.get("id");
-            String configValue = (String) mapItems.get("value");
-            if (Asserts.isNotNullString(configKey) && Asserts.isNotNullString(configValue)) {
-                jobManagerMetricsMap.put(configKey, configValue);
-            }
-        });
-        // 获取jobManager配置信息
-        Map<String, String> jobManagerConfigMap = new HashMap<>(8);
-        List<LinkedHashMap> jobManagerConfigMapItemsList =
-                JsonUtils.toList(JsonUtils.toJsonString(flinkAPI.getJobManagerConfig()), LinkedHashMap.class);
-        jobManagerConfigMapItemsList.forEach(mapItems -> {
-            String configKey = (String) mapItems.get("key");
-            String configValue = (String) mapItems.get("value");
-            if (Asserts.isNotNullString(configKey) && Asserts.isNotNullString(configValue)) {
-                jobManagerConfigMap.put(configKey, configValue);
-            }
-        });
-        // 获取jobManager日志
-        String jobMangerLog = flinkAPI.getJobManagerLog();
-        // 获取jobManager标准输出日志
-        String jobManagerStdOut = flinkAPI.getJobManagerStdOut();
-
-        jobManagerConfiguration.setMetrics(jobManagerMetricsMap);
-        jobManagerConfiguration.setJobManagerConfig(jobManagerConfigMap);
-        jobManagerConfiguration.setJobManagerLog(jobMangerLog);
-        jobManagerConfiguration.setJobManagerStdout(jobManagerStdOut);
-    }
 
     public static void buildTaskManagerConfiguration(
             Set<TaskManagerConfiguration> taskManagerConfigurationList,

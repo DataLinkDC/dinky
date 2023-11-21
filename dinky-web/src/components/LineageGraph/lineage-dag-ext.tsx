@@ -109,7 +109,6 @@ export default class LineageDagExt extends LineageDag {
           true
         );
         // this.canvas.wrapper.style.visibility = 'visible';
-        debugger;
         this.canvas.addEdges(tmpEdges, true);
 
         let minimap = _.get(this, 'props.config.minimap', {});

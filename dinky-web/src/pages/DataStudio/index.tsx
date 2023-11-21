@@ -117,7 +117,6 @@ const DataStudio = (props: any) => {
 
   useEffect(() => {
     loadData();
-    onResize();
   }, []);
 
   const access = useAccess();

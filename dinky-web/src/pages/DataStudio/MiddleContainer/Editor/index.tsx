@@ -37,16 +37,17 @@ import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { Monaco } from '@monaco-editor/react';
 import { Button, Spin } from 'antd';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from 'sql-formatter';
 
 export type EditorProps = {
   tabsItem: DataStudioTabsItemType;
+  monacoInstance: Monaco;
   height?: number;
 };
 
 const CodeEditor: React.FC<EditorProps & any> = (props) => {
-  const { tabsItem, dispatch, height } = props;
+  const { tabsItem, dispatch, height, monacoInstance, editorInstance } = props;
 
   useEffect(() => {
     dispatch({
@@ -60,8 +61,8 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [diff, setDiff] = useState<any>([]);
   const { fullscreen, setFullscreen } = useEditor();
-  const editorInstance = useRef<editor.IStandaloneCodeEditor | any>();
-  const monacoInstance = useRef<Monaco | any>();
+  // const editorInstance = useRef<editor.IStandaloneCodeEditor | any>(monacoInstance?.current?.editor);
+  // const monacoInstance = useRef<Monaco | any>();
 
   const currentData = tabsItem.params.taskData;
 

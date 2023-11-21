@@ -1,1 +1,4 @@
 org.dinky.job.FlinkJobTask
+org.dinky.job.DynamicResizeFlinkJobPoolTask
+org.dinky.job.SystemMetricsTask
+org.dinky.job.ClearJobHistoryTask

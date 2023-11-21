@@ -21,7 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
-import org.dinky.daemon.pool.DefaultThreadPool;
+import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
 import org.dinky.data.dto.ClusterConfigurationDTO;
@@ -188,7 +188,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public JobInfoDetail refreshJobInfoDetail(Integer jobInstanceId, boolean isForce) {
         DaemonTaskConfig daemonTaskConfig = DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId);
-        DaemonTask daemonTask = DefaultThreadPool.getInstance().getByTaskConfig(daemonTaskConfig);
+        DaemonTask daemonTask = FlinkJobThreadPool.getInstance().getByTaskConfig(daemonTaskConfig);
 
         if (daemonTask != null) {
             daemonTask.dealTask();
@@ -198,7 +198,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             daemonTask.dealTask();
             JobInfoDetail jobInfoDetail = ((FlinkJobTask) daemonTask).getJobInfoDetail();
             if (!JobStatus.isDone(jobInfoDetail.getInstance().getStatus())) {
-                DefaultThreadPool.getInstance().execute(daemonTask);
+                FlinkJobThreadPool.getInstance().execute(daemonTask);
             }
             return jobInfoDetail;
         } else {
@@ -218,13 +218,13 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         }
 
         DaemonTaskConfig config = DaemonTaskConfig.build(FlinkJobTask.TYPE, instance.getId());
-        DaemonTask daemonTask = DefaultThreadPool.getInstance().removeByTaskConfig(config);
+        DaemonTask daemonTask = FlinkJobThreadPool.getInstance().removeByTaskConfig(config);
         daemonTask = Optional.ofNullable(daemonTask).orElse(DaemonTask.build(config));
 
         boolean isDone = daemonTask.dealTask();
         // If the task is not completed, it is re-queued
         if (!isDone) {
-            DefaultThreadPool.getInstance().execute(daemonTask);
+            FlinkJobThreadPool.getInstance().execute(daemonTask);
         }
         return isDone;
     }
@@ -234,8 +234,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         for (Integer taskId : taskIds) {
             JobInstance instance = getJobInstanceByTaskId(taskId);
             DaemonTaskConfig daemonTaskConfig = DaemonTaskConfig.build(FlinkJobTask.TYPE, instance.getId());
-            DefaultThreadPool.getInstance().removeByTaskConfig(daemonTaskConfig);
-            DefaultThreadPool.getInstance().execute(DaemonTask.build(daemonTaskConfig));
+            FlinkJobThreadPool.getInstance().removeByTaskConfig(daemonTaskConfig);
+            FlinkJobThreadPool.getInstance().execute(DaemonTask.build(daemonTaskConfig));
             refreshJobInfoDetail(instance.getId(), false);
         }
     }
