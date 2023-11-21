@@ -20,6 +20,7 @@
 package org.dinky.job;
 
 import org.dinky.context.SpringContextUtils;
+import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.constant.FlinkTaskConstant;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
@@ -79,6 +80,7 @@ public class FlinkJobTask implements DaemonTask {
      */
     @Override
     public boolean dealTask() {
+        TenantContextHolder.ignoreTenant();
         volatilityBalance();
 
         boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, isNeedSave());
