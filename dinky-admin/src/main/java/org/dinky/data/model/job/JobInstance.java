@@ -148,7 +148,11 @@ public class JobInstance implements Serializable {
     @ApiModelProperty(value = "Operator", required = true, dataType = "Integer", example = "Operator")
     private Integer operator;
 
-    @TableField(value = "count(*)", select = false, insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
+    @TableField(
+            value = "count(*)",
+            select = false,
+            insertStrategy = FieldStrategy.NEVER,
+            updateStrategy = FieldStrategy.NEVER)
     @ApiModelProperty(value = "Group by count", dataType = "Integer")
     private Long count;
 }
