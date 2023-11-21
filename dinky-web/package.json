@@ -73,7 +73,8 @@
     "screenfull": "^6.0.2",
     "sql-formatter": "^13.1.0",
     "styled-components": "^6.1.1",
-    "use-sse": "^2.0.1"
+    "use-sse": "^2.0.1",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^3.0.1",
