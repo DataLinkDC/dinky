@@ -23,6 +23,7 @@ import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.MetricsType;
+import org.dinky.data.metrics.Jvm;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.ProTableResult;
@@ -132,5 +133,11 @@ public class MonitorController {
     @ApiImplicitParam(name = "layoutName", value = "Layout Name", required = true, dataType = "String")
     public Result<List<Metrics>> getMetricsLayoutByName(@RequestParam String layoutName) {
         return Result.succeed(monitorService.getMetricsLayoutByName(layoutName));
+    }
+
+    @GetMapping("/getJvmInfo")
+    @ApiOperation("Get Jvm Data Display")
+    public Result<Jvm> getJvmInfo() {
+        return Result.succeed(Jvm.of());
     }
 }
