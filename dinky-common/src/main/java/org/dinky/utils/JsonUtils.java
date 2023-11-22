@@ -132,11 +132,15 @@ public class JsonUtils {
     }
 
     public static Map<String, String> toMap(String json) {
-        return parseObject(json, new TypeReference<Map<String, String>>() {});
+        return parseObject(json, new TypeReference<>() {});
+    }
+
+    public static Map<String, Object> toMap(Object o) {
+        return objectMapper.convertValue(o, new TypeReference<>() {});
     }
 
     public static <K, V> Map<K, V> toMap(String json, Class<K> classK, Class<V> classV) {
-        return parseObject(json, new TypeReference<Map<K, V>>() {});
+        return parseObject(json, new TypeReference<>() {});
     }
 
     public static <T> T parseObject(String json, TypeReference<T> type) {

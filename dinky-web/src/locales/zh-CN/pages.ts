@@ -861,15 +861,18 @@ export default {
    * sys
    *
    * */
-
+  'sys.alert.rule.label.taskId': '作业ID',
+  'sys.alert.rule.label.duration': '运行时间',
+  'sys.alert.rule.label.batchModel': '批模式',
+  'sys.alert.rule.label.jobType': '执行模式',
+  'sys.alert.rule.label.jobException': '作业产生异常',
+  'sys.alert.rule.label.checkpointFailed': 'Checkpoint失败',
+  'sys.alert.rule.label.checkpointTime': 'CheckPoint时间',
+  'sys.alert.rule.label.jobStatus': '作业状态',
   'sys.alert.rule.addRule': '添加规则',
   'sys.alert.rule.allRule': '所有规则',
   'sys.alert.rule.anyRule': '任意规则',
-  'sys.alert.rule.checkpointFailed': 'Checkpoint失败',
-  'sys.alert.rule.checkpointTime': 'CheckPoint时间',
   'sys.alert.rule.delete': '你确定要删除该告警策略吗？',
-  'sys.alert.rule.jobException': '作业产生异常',
-  'sys.alert.rule.jobStatus': '作业状态',
   'sys.alert.rule.name': '告警策略名称',
   'sys.alert.rule.rule': '规则',
   'sys.alert.rule.ruleType': '规则类型',

@@ -900,15 +900,18 @@ export default {
    * sys
    *
    * */
-
+  'sys.alert.rule.label.taskId': 'Task ID',
+  'sys.alert.rule.label.duration': 'Running time',
+  'sys.alert.rule.label.batchModel': 'Batch mode',
+  'sys.alert.rule.label.jobType': 'Execution mode',
+  'sys.alert.rule.label.jobException': 'The job is abnormal',
+  'sys.alert.rule.label.checkpointFailed': 'Checkpoint Failed',
+  'sys.alert.rule.label.checkpointTime': 'CheckPoint Time',
+  'sys.alert.rule.label.jobStatus': 'Job status',
   'sys.alert.rule.addRule': 'Add Rule',
   'sys.alert.rule.allRule': 'All Rules',
   'sys.alert.rule.anyRule': 'Any Rule',
-  'sys.alert.rule.checkpointFailed': 'Checkpoint Failed',
-  'sys.alert.rule.checkpointTime': 'Checkpoint Time',
   'sys.alert.rule.delete': 'Are you sure you want to delete this alert rule?',
-  'sys.alert.rule.jobException': 'Job Exception',
-  'sys.alert.rule.jobStatus': 'Job Status',
   'sys.alert.rule.name': 'Alert Rule Name',
   'sys.alert.rule.rule': 'Rule',
   'sys.alert.rule.ruleType': 'Rule Type',
