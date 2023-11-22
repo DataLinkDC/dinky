@@ -17,6 +17,7 @@
  *
  */
 
+import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
 import {
   DIFF_EDITOR_PARAMS,
   PARAM_DIFF_TABLE_COL
@@ -27,7 +28,6 @@ import { DiffEditor } from '@monaco-editor/react';
 import { Col, Modal, Row, Space, Table, Tabs, Typography } from 'antd';
 import React from 'react';
 import styles from './index.less';
-import {LoadCustomEditorLanguage} from "@/components/CustomEditor/languages";
 
 const { Text, Link } = Typography;
 

@@ -24,6 +24,6 @@ export default {
   'shortcut.key.format': 'Format',
   'shortcut.key.formatSelection': 'Format Selection Content',
   'shortcut.key.notes': 'Notes/Cancel notes this line(area)',
-  'shortcut.key.upperCase' : 'Upper Case',
-  'shortcut.key.lowerCase' : 'Lower Case',
-  };
+  'shortcut.key.upperCase': 'Upper Case',
+  'shortcut.key.lowerCase': 'Lower Case'
+};

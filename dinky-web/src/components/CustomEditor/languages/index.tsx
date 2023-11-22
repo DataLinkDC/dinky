@@ -17,16 +17,18 @@
  *
  */
 
+import { CustomEditorLanguage } from '@/components/CustomEditor/languages/constants';
 import { FlinkSQLLanguage } from '@/components/CustomEditor/languages/flinksql';
 import { LogLanguage } from '@/components/CustomEditor/languages/javalog';
 import { Monaco } from '@monaco-editor/react';
-import {CustomEditorLanguage} from "@/components/CustomEditor/languages/constants";
-
 
 function canLoadLanguage(monaco: Monaco | undefined, language: string) {
   return !monaco?.languages?.getEncodedLanguageId(language);
 }
-export function LoadCustomEditorLanguage(monaco?: Monaco | undefined , registerCompletion: boolean = false) {
+export function LoadCustomEditorLanguage(
+  monaco?: Monaco | undefined,
+  registerCompletion: boolean = false
+) {
   // 防止重复加载
   if (canLoadLanguage(monaco, CustomEditorLanguage.FlinkSQL)) {
     FlinkSQLLanguage(monaco, registerCompletion);
@@ -36,7 +38,6 @@ export function LoadCustomEditorLanguage(monaco?: Monaco | undefined , registerC
     LogLanguage(monaco);
   }
 }
-
 
 export function LoadCustomEditorLanguageWithCompletion(monaco?: Monaco | undefined) {
   LoadCustomEditorLanguage(monaco, true);

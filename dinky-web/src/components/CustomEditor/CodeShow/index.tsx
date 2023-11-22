@@ -18,22 +18,18 @@
  */
 
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
-import {LoadCustomEditorLanguage, LoadCustomEditorLanguageWithCompletion} from '@/components/CustomEditor/languages';
+import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
 import { Loading } from '@/pages/Other/Loading';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 
-
-
-import { Col,Row } from 'antd';
+import { Col, Row } from 'antd';
 import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
 
-import { CSSProperties,useEffect,useRef,useState } from "react";
-import FullscreenBtn from "@/components/CustomEditor/FullscreenBtn";
-import {Editor, Monaco, useMonaco} from "@monaco-editor/react";
-
-
+import FullscreenBtn from '@/components/CustomEditor/FullscreenBtn';
+import { Editor, Monaco } from '@monaco-editor/react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 
 export type CodeShowFormProps = {
   height?: string | number;
@@ -89,7 +85,6 @@ const CodeShow = (props: CodeShowFormProps) => {
   const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>();
   const monacoInstance = useRef<Monaco | undefined>();
   const [timer, setTimer] = useState<NodeJS.Timer>();
-
 
   useEffect(() => {
     convertCodeEditTheme(monacoInstance?.current);
@@ -164,13 +159,12 @@ const CodeShow = (props: CodeShowFormProps) => {
     );
   };
 
-
   /**
    *  editorDidMount
    * @param {editor.IStandaloneCodeEditor} editor
    * @param monaco {Monaco}
    */
-  const editorDidMount = (editor: editor.IStandaloneCodeEditor,monaco: Monaco) => {
+  const editorDidMount = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editorInstance.current = editor;
     monacoInstance.current = monaco;
     editor.layout();

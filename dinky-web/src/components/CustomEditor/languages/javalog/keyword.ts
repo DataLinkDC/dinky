@@ -35,5 +35,5 @@ export const JAVA_LOG_KEYWORD: string[] = [
   'level',
   'additivity',
   'appender',
-  'logger',
-]
+  'logger'
+];

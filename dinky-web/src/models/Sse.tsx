@@ -22,7 +22,6 @@ import { ErrorMessage } from '@/utils/messages';
 import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-
 export type SseData = {
   topic: string;
   data: any;

@@ -35,7 +35,7 @@ export const DIFF_EDITOR_PARAMS = {
     mouseWheelZoom: true,
     automaticLayout: true
   },
-  language: 'flinksql',
+  language: 'flinksql'
 };
 
 export const TASK_VAR_FILTER = [
