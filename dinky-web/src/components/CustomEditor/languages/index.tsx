@@ -20,49 +20,28 @@
 import { FlinkSQLLanguage } from '@/components/CustomEditor/languages/flinksql';
 import { LogLanguage } from '@/components/CustomEditor/languages/javalog';
 import { Monaco } from '@monaco-editor/react';
+import {CustomEditorLanguage} from "@/components/CustomEditor/languages/constants";
 
 /**
- * 加载自定义语言 关键字
+ * 避免重复加载语言, 通过获取到 language 的 id 来判断是否已经加载过
  * @param monaco
- * @constructor
+ * @param language
  */
-//  function LoadLanguagesKeyWord(monaco: Monaco | null) {
-//      if (!monaco) {
-//          return;
-//      }
-//      monaco?.languages?.getLanguages().forEach((language) => {
-//          return monaco?.languages?.registerCompletionItemProvider(language.id , {
-//              provideCompletionItems: function (model, position) {
-//                  const word = model.getWordUntilPosition(position);
-//                  const range = {
-//                      startLineNumber: position.lineNumber,
-//                      endLineNumber: position.lineNumber,
-//                      startColumn: word.startColumn,
-//                      endColumn: word.endColumn
-//                  };
-//                  return {
-//                      suggestions: FLINK_SQL_KEYWORD.map((item) => {
-//                          return {
-//                              label: item,
-//                              range: range,
-//                              kind: monaco.languages.CompletionItemKind.Keyword,
-//                              insertText: item
-//                          };
-//                      })
-//                  };
-//              }
-//          });
-//      })
-// }
+function canLoadLanguage(monaco: Monaco | undefined, language: string) {
+  return !monaco?.languages?.getEncodedLanguageId(language);
+}
+export function LoadCustomEditorLanguage(monaco?: Monaco | undefined , registerCompletion: boolean = false) {
+  if (canLoadLanguage(monaco, CustomEditorLanguage.FlinkSQL)) {
+    FlinkSQLLanguage(monaco, registerCompletion);
+  }
 
-export function LoadCustomEditorLanguage(monaco: Monaco | null) {
-  // LoadLanguagesKeyWord(monaco);
-  LogLanguage(monaco);
-  FlinkSQLLanguage(monaco, false);
+  if (canLoadLanguage(monaco, CustomEditorLanguage.JavaLog)) {
+    LogLanguage(monaco);
+  }
 }
 
-export function LoadCustomEditorLanguageWithCompletion(monaco: Monaco | null) {
-  // LoadLanguagesKeyWord(monaco);
-  LogLanguage(monaco);
-  FlinkSQLLanguage(monaco, true);
+
+export function LoadCustomEditorLanguageWithCompletion(monaco?: Monaco | undefined) {
+  LoadCustomEditorLanguage(monaco, true);
+  console.log('LoadCustomEditorLanguageWithCompletion', monaco?.languages?.getLanguages());
 }

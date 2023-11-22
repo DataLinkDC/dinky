@@ -27,6 +27,7 @@ import { DiffEditor } from '@monaco-editor/react';
 import { Col, Modal, Row, Space, Table, Tabs, Typography } from 'antd';
 import React from 'react';
 import styles from './index.less';
+import {LoadCustomEditorLanguage} from "@/components/CustomEditor/languages";
 
 const { Text, Link } = Typography;
 
@@ -39,7 +40,7 @@ export type DiffModalProps = {
 };
 
 const DiffModal: React.FC<DiffModalProps> = (props) => {
-  const { diffs, open, fileName, language = 'sql', onUse } = props;
+  const { diffs, open, fileName, language = 'flinksql', onUse } = props;
   // Find the diff object with key 'statement'
   const statementDiff = diffs.find((diff) => diff.key === 'statement');
   // Filter out the diff objects with key other than 'statement'
@@ -62,6 +63,8 @@ const DiffModal: React.FC<DiffModalProps> = (props) => {
             <DiffEditor
               {...DIFF_EDITOR_PARAMS}
               language={language}
+              // 挂载前加载语言 | Load language before mounting
+              beforeMount={(monaco) => LoadCustomEditorLanguage(monaco)}
               original={statementDiff?.server}
               modified={statementDiff?.cache}
               theme={convertCodeEditTheme()}
