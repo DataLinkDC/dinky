@@ -30,7 +30,10 @@ import { Monaco } from '@monaco-editor/react';
 function canLoadLanguage(monaco: Monaco | undefined, language: string) {
   return !monaco?.languages?.getEncodedLanguageId(language);
 }
-export function LoadCustomEditorLanguage(monaco?: Monaco | undefined , registerCompletion: boolean = false) {
+export function LoadCustomEditorLanguage(
+  monaco?: Monaco | undefined,
+  registerCompletion: boolean = false
+) {
   if (canLoadLanguage(monaco, CustomEditorLanguage.FlinkSQL)) {
     FlinkSQLLanguage(monaco, registerCompletion);
   }
@@ -39,7 +42,6 @@ export function LoadCustomEditorLanguage(monaco?: Monaco | undefined , registerC
     LogLanguage(monaco);
   }
 }
-
 
 export function LoadCustomEditorLanguageWithCompletion(monaco?: Monaco | undefined) {
   LoadCustomEditorLanguage(monaco, true);

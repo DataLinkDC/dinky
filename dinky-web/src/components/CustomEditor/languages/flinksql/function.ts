@@ -17,16 +17,22 @@
  *
  */
 
-import {Monaco} from "@monaco-editor/react";
-import {CustomEditorLanguage, TokenClassConsts} from "@/components/CustomEditor/languages/constants";
 import {
-  EXTEND_SQL_KEYWORD, FLINK_SQL_BUILTIN_FUNCTIONS,
+  CustomEditorLanguage,
+  TokenClassConsts
+} from '@/components/CustomEditor/languages/constants';
+import {
+  EXTEND_SQL_KEYWORD,
+  FLINK_SQL_BUILTIN_FUNCTIONS,
   FLINK_SQL_KEYWORD,
-  FLINK_SQL_OPERATORS, FLINK_SQL_SCOPE_KEYWORDS, FLINK_SQL_TYPE_KEYWORDS
-} from "@/components/CustomEditor/languages/flinksql/keyword";
-import {editor, Position} from "monaco-editor";
+  FLINK_SQL_OPERATORS,
+  FLINK_SQL_SCOPE_KEYWORDS,
+  FLINK_SQL_TYPE_KEYWORDS
+} from '@/components/CustomEditor/languages/flinksql/keyword';
+import { Monaco } from '@monaco-editor/react';
+import { editor, Position } from 'monaco-editor';
 
-export function buildFlinkSQLConfiguration( monaco?: Monaco | undefined) {
+export function buildFlinkSQLConfiguration(monaco?: Monaco | undefined) {
   monaco?.languages?.setLanguageConfiguration(CustomEditorLanguage.FlinkSQL, {
     comments: {
       lineComment: '-- ',
@@ -48,7 +54,7 @@ export function buildFlinkSQLConfiguration( monaco?: Monaco | undefined) {
       { open: '"', close: '"' },
       { open: "'", close: "'" },
       { open: '`', close: '`' },
-      { open: '<', close: '>' },
+      { open: '<', close: '>' }
     ],
     indentationRules: {
       increaseIndentPattern: /^\s*(\w+\s+)+\w/,
@@ -68,7 +74,7 @@ export function buildFlinkSQLConfiguration( monaco?: Monaco | undefined) {
       { open: '"', close: '"' },
       { open: "'", close: "'" },
       { open: '`', close: '`' },
-      { open: '<', close: '>' },
+      { open: '<', close: '>' }
     ],
     colorizedBracketPairs: [
       ['{', '}'],
@@ -129,7 +135,7 @@ export function buildMonarchTokensProvider(monaco?: Monaco | undefined) {
       { open: '"', close: '"' },
       { open: "'", close: "'" },
       { open: '`', close: '`' },
-      { open: '<', close: '>' },
+      { open: '<', close: '>' }
     ],
     folding: {
       markers: {
@@ -218,15 +224,14 @@ export function buildMonarchTokensProvider(monaco?: Monaco | undefined) {
         [/WITH\s+LOCAL\s+TIME\s+ZONE\b/i, { token: TokenClassConsts.TYPE }],
         [/WITH\s+TIME\s+ZONE\b/i, { token: TokenClassConsts.TYPE }],
         [/WITH\s+TIME\s+ZONE\s+OFFSET\b/i, { token: TokenClassConsts.TYPE }],
-        [/WITH\s+LOCAL\s+TIME\s+ZONE\s+OFFSET\b/i, { token: TokenClassConsts.TYPE }],
+        [/WITH\s+LOCAL\s+TIME\s+ZONE\s+OFFSET\b/i, { token: TokenClassConsts.TYPE }]
       ]
     },
     unicode: true
   });
 }
 
-
-function buildFlinkSQLCompletionItem(monaco: Monaco ,model:editor.IModel, position: Position){
+function buildFlinkSQLCompletionItem(monaco: Monaco, model: editor.IModel, position: Position) {
   const word = model.getWordUntilPosition(position);
   const range = {
     startLineNumber: position.lineNumber,
@@ -248,6 +253,7 @@ function buildFlinkSQLCompletionItem(monaco: Monaco ,model:editor.IModel, positi
 
 export function registerFlinkSQLCompilation(monaco?: Monaco | undefined) {
   monaco?.languages?.registerCompletionItemProvider(CustomEditorLanguage.FlinkSQL, {
-    provideCompletionItems:  (model, position) => buildFlinkSQLCompletionItem(monaco, model, position)
+    provideCompletionItems: (model, position) =>
+      buildFlinkSQLCompletionItem(monaco, model, position)
   });
 }
