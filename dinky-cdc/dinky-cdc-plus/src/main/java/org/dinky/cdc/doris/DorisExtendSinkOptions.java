@@ -24,12 +24,11 @@ import org.apache.flink.configuration.ConfigOptions;
 
 public class DorisExtendSinkOptions extends DorisSinkOptions {
 
-    public static final ConfigOption<String> AdditionalColumns =
-            ConfigOptions.key("additional-columns")
-                    .stringType()
-                    .noDefaultValue()
-                    .withDescription(
-                            "Additional columns for sink, support meta column and fix value column."
-                                    + "(meta: op_ts,database_name,schema_name,table_name; "
-                                    + "fix value column type:BOOLEAN,INT,TINYINT,BIGINT,DECIMAL,FLOAT,DATE,TIMESTAMP,CHAR,VARCHAR,STRING)");
+    public static final ConfigOption<String> AdditionalColumns = ConfigOptions.key("additional-columns")
+            .stringType()
+            .noDefaultValue()
+            .withDescription(
+                    "Additional columns for sink, support meta column and fix value column."
+                            + "(meta: op_ts,database_name,schema_name,table_name; "
+                            + "fix value column type:BOOLEAN,INT,TINYINT,BIGINT,DECIMAL,FLOAT,DATE,TIMESTAMP,CHAR,VARCHAR,STRING)");
 }
