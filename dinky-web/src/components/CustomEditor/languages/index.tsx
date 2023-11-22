@@ -17,10 +17,10 @@
  *
  */
 
+import { CustomEditorLanguage } from '@/components/CustomEditor/languages/constants';
 import { FlinkSQLLanguage } from '@/components/CustomEditor/languages/flinksql';
 import { LogLanguage } from '@/components/CustomEditor/languages/javalog';
 import { Monaco } from '@monaco-editor/react';
-import {CustomEditorLanguage} from "@/components/CustomEditor/languages/constants";
 
 /**
  * 避免重复加载语言, 通过获取到 language 的 id 来判断是否已经加载过
@@ -43,5 +43,4 @@ export function LoadCustomEditorLanguage(monaco?: Monaco | undefined , registerC
 
 export function LoadCustomEditorLanguageWithCompletion(monaco?: Monaco | undefined) {
   LoadCustomEditorLanguage(monaco, true);
-  console.log('LoadCustomEditorLanguageWithCompletion', monaco?.languages?.getLanguages());
 }

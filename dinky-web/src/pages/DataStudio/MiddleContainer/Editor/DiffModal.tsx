@@ -17,6 +17,7 @@
  *
  */
 
+import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
 import {
   DIFF_EDITOR_PARAMS,
   PARAM_DIFF_TABLE_COL

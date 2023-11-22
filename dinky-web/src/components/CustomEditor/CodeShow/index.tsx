@@ -23,17 +23,13 @@ import { Loading } from '@/pages/Other/Loading';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 
-
-
-import { Col,Row } from 'antd';
+import { Col, Row } from 'antd';
 import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
 
-import { CSSProperties,useEffect,useRef,useState } from "react";
-import FullscreenBtn from "@/components/CustomEditor/FullscreenBtn";
-import {Editor, Monaco} from "@monaco-editor/react";
-
-
+import FullscreenBtn from '@/components/CustomEditor/FullscreenBtn';
+import { Editor, Monaco } from '@monaco-editor/react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 
 export type CodeShowFormProps = {
   height?: string | number;

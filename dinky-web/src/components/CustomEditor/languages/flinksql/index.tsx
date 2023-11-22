@@ -22,7 +22,7 @@ import {
   buildFlinkSQLConfiguration,
   buildMonarchTokensProvider,
   registerFlinkSQLCompilation
-} from "@/components/CustomEditor/languages/flinksql/function";
+} from '@/components/CustomEditor/languages/flinksql/function';
 import { Monaco } from '@monaco-editor/react';
 
 export function FlinkSQLLanguage(monaco?: Monaco | undefined, registerCompletion = false) {

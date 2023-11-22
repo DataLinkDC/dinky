@@ -81,6 +81,7 @@ export default {
   'button.upScroll': 'Up Scroll',
   'button.stopRefresh': 'Stop Auto Refresh',
   'button.startRefresh': 'Start Auto Refresh(5s/e)',
+  'button.autoWrap': 'Auto Wrap/Unwrap',
 
   'menu.menu': 'Menu',
   'right.menu.open': 'Open',

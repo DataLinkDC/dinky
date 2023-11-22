@@ -111,7 +111,7 @@ export function buildMonarchTokensProvider(monaco?: Monaco | undefined) {
       { open: '{', close: '}', token: 'delimiter.curly' },
       { open: '[', close: ']', token: 'delimiter.bracket' },
       { open: '(', close: ')', token: 'delimiter.parenthesis' },
-      { open: '<', close: '>', token: 'delimiter.angle' },
+      { open: '<', close: '>', token: 'delimiter.angle' }
     ],
     autoClosingPairs: [
       { open: '{', close: '}' },
@@ -120,7 +120,7 @@ export function buildMonarchTokensProvider(monaco?: Monaco | undefined) {
       { open: '"', close: '"' },
       { open: "'", close: "'" },
       { open: '`', close: '`' },
-      { open: '<', close: '>' },
+      { open: '<', close: '>' }
     ],
     surroundingPairs: [
       { open: '{', close: '}' },
