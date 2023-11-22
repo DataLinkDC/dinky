@@ -17,4 +17,4 @@
  *
  */
 
-export type Nothing = {}
+export type Nothing = {};
