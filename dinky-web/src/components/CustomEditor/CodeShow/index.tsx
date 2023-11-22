@@ -29,7 +29,7 @@ import { EditorLanguage } from 'monaco-editor/esm/metadata';
 
 import FullscreenBtn from '@/components/CustomEditor/FullscreenBtn';
 import { Editor, Monaco } from '@monaco-editor/react';
-import {CSSProperties, memo, useRef, useState} from 'react';
+import { CSSProperties, memo, useRef, useState } from 'react';
 
 export type CodeShowFormProps = {
   height?: string | number;
@@ -85,7 +85,6 @@ const CodeShow = (props: CodeShowFormProps) => {
   const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>();
   const monacoInstance = useRef<Monaco | undefined>();
   const [timer, setTimer] = useState<NodeJS.Timer>();
-
 
   /**
    *  handle sync log

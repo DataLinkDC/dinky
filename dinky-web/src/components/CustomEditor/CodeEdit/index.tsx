@@ -28,7 +28,7 @@ import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
 import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useRef } from 'react';
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
 import CompletionContext = languages.CompletionContext;
@@ -87,7 +87,6 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 
   const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>(editorRef);
   const monacoInstance = useRef<Monaco | undefined>(monacoRef);
-
 
   /**
    * build all suggestions
