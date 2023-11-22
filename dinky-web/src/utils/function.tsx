@@ -45,9 +45,9 @@ import { l } from '@/utils/intl';
 import dayjs from 'dayjs';
 import cookies from 'js-cookie';
 import { trim } from 'lodash';
-import {editor, KeyCode, KeyMod} from 'monaco-editor';
+import { editor, KeyCode, KeyMod } from 'monaco-editor';
 import path from 'path';
-import {format} from "sql-formatter";
+import { format } from 'sql-formatter';
 
 /**
  * get language by localStorage's umi_locale , if not exist , return zh-CN
@@ -136,7 +136,7 @@ function registerEditorKeyBinding(editorInstance?: editor.IStandaloneCodeEditor)
   });
   // 添加 ctrl + y 恢复
   editorInstance?.addCommand(KeyMod.CtrlCmd | KeyCode.KeyY, () => {
-    editorInstance?.trigger('anyString','redo', '');
+    editorInstance?.trigger('anyString', 'redo', '');
   });
   // 格式化所有代码
   editorInstance?.addCommand(KeyMod.Alt | KeyCode.Digit3, () => {
@@ -169,9 +169,8 @@ function registerEditorKeyBinding(editorInstance?: editor.IStandaloneCodeEditor)
  * register editor action
  * @param editorInstance editor instance
  */
- function registerEditorAction(editorInstance?: editor.IStandaloneCodeEditor) {
-
-// 格式化所有代码 添加到 右键菜单 | format document
+function registerEditorAction(editorInstance?: editor.IStandaloneCodeEditor) {
+  // 格式化所有代码 添加到 右键菜单 | format document
   editorInstance?.addAction({
     id: 'format',
     label: l('shortcut.key.format'),
@@ -180,7 +179,7 @@ function registerEditorKeyBinding(editorInstance?: editor.IStandaloneCodeEditor)
     contextMenuOrder: 1.5,
     run: () => {
       editorInstance?.trigger('anyString', 'editor.action.formatDocument', '');
-      editorInstance?.setValue(format(editorInstance?.getValue() ,{language: 'spark'}));
+      editorInstance?.setValue(format(editorInstance?.getValue(), { language: 'spark' }));
     }
   });
   // 格式化选定内容 添加到 右键菜单 | format selection
@@ -192,7 +191,7 @@ function registerEditorKeyBinding(editorInstance?: editor.IStandaloneCodeEditor)
     contextMenuOrder: 1.5,
     run: () => {
       editorInstance?.trigger('anyString', 'editor.action.formatSelection', '');
-      editorInstance?.setValue(format(editorInstance?.getValue() ,{language: 'spark'}));
+      editorInstance?.setValue(format(editorInstance?.getValue(), { language: 'spark' }));
     }
   });
   // 注释该行 添加到 右键菜单 | comment line
@@ -218,7 +217,7 @@ function registerEditorKeyBinding(editorInstance?: editor.IStandaloneCodeEditor)
     }
   });
   // 转为 小写 添加到 右键菜单 | to lowercase
-   editorInstance?.addAction({
+  editorInstance?.addAction({
     id: 'lowerCase',
     label: l('shortcut.key.lowerCase'),
     keybindings: [KeyMod.CtrlCmd | KeyCode.KeyL],
@@ -238,7 +237,6 @@ export function registerEditorKeyBindingAndAction(editorInstance?: editor.IStand
   registerEditorKeyBinding(editorInstance);
   registerEditorAction(editorInstance);
 }
-
 
 /**
  * get code edit theme by localStorage's theme

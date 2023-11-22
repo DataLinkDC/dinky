@@ -25,10 +25,10 @@ import { LoadCustomEditorLanguageWithCompletion } from '@/components/CustomEdito
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import {Editor, Monaco, OnChange} from '@monaco-editor/react';
+import { Editor, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
 import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
-import {memo, useCallback, useEffect, useRef} from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
 import CompletionContext = languages.CompletionContext;
@@ -85,9 +85,8 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     tabs: { activeKey }
   } = props;
 
-  const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined  >(editorRef);
+  const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>(editorRef);
   const monacoInstance = useRef<Monaco | undefined>(monacoRef);
-
 
   useEffect(() => {
     convertCodeEditTheme(editorInstance.current);
@@ -150,9 +149,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     editor.focus();
   };
 
-
   // todo: 标记错误信息
-
 
   const finalEditorOptions = {
     ...MonacoEditorOptions, // set default options

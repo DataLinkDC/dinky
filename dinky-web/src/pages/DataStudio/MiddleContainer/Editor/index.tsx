@@ -23,18 +23,18 @@ import { TASK_VAR_FILTER } from '@/pages/DataStudio/MiddleContainer/Editor/const
 import DiffModal from '@/pages/DataStudio/MiddleContainer/Editor/DiffModal';
 import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
 import {
-DataStudioTabsItemType,
-StateType,
-STUDIO_MODEL,
-STUDIO_MODEL_ASYNC,
-TaskDataType
+  DataStudioTabsItemType,
+  StateType,
+  STUDIO_MODEL,
+  STUDIO_MODEL_ASYNC,
+  TaskDataType
 } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { registerEditorKeyBindingAndAction } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { connect,useRequest } from '@@/exports';
-import { FullscreenExitOutlined,FullscreenOutlined } from '@ant-design/icons';
+import { connect, useRequest } from '@@/exports';
+import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { Monaco } from '@monaco-editor/react';
 import { Button, Spin } from 'antd';
 import { editor } from 'monaco-editor';

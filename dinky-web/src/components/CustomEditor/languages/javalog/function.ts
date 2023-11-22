@@ -17,9 +17,9 @@
  *
  */
 
-import {Monaco} from "@monaco-editor/react";
-import {JAVA_LOG_KEYWORD} from "@/components/CustomEditor/languages/javalog/keyword";
-import {CustomEditorLanguage} from "@/components/CustomEditor/languages/constants";
+import { CustomEditorLanguage } from '@/components/CustomEditor/languages/constants';
+import { JAVA_LOG_KEYWORD } from '@/components/CustomEditor/languages/javalog/keyword';
+import { Monaco } from '@monaco-editor/react';
 
 export function buildMonarchTokensProvider(monaco?: Monaco | undefined) {
   monaco?.languages.setMonarchTokensProvider(CustomEditorLanguage.JavaLog, {
@@ -37,7 +37,7 @@ export function buildMonarchTokensProvider(monaco?: Monaco | undefined) {
       { open: '{', close: '}', token: 'delimiter.curly' },
       { open: '[', close: ']', token: 'delimiter.bracket' },
       { open: '(', close: ')', token: 'delimiter.parenthesis' },
-      { open: '<', close: '>', token: 'delimiter.angle' },
+      { open: '<', close: '>', token: 'delimiter.angle' }
     ],
     autoClosingPairs: [
       { open: '{', close: '}' },
@@ -46,7 +46,7 @@ export function buildMonarchTokensProvider(monaco?: Monaco | undefined) {
       { open: '"', close: '"' },
       { open: "'", close: "'" },
       { open: '`', close: '`' },
-      { open: '<', close: '>' },
+      { open: '<', close: '>' }
     ],
     surroundingPairs: [
       { open: '{', close: '}' },
@@ -55,7 +55,7 @@ export function buildMonarchTokensProvider(monaco?: Monaco | undefined) {
       { open: '"', close: '"' },
       { open: "'", close: "'" },
       { open: '`', close: '`' },
-      { open: '<', close: '>' },
+      { open: '<', close: '>' }
     ],
     folding: {
       markers: {

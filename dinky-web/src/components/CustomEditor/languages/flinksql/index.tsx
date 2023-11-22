@@ -40,4 +40,3 @@ export function FlinkSQLLanguage(monaco?: Monaco | undefined, registerCompletion
   }
   buildFlinkSQLConfiguration(monaco);
 }
-
