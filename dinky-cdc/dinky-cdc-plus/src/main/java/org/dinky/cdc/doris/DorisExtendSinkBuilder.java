@@ -19,7 +19,10 @@
 
 package org.dinky.cdc.doris;
 
-import com.google.common.base.Strings;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.FlinkCDCConfig;
+
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.table.data.RowData;
@@ -36,17 +39,17 @@ import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.TinyIntType;
 import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
-import org.dinky.cdc.SinkBuilder;
-import org.dinky.data.model.Column;
-import org.dinky.data.model.FlinkCDCConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
 
 public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializable {
 
@@ -76,11 +79,7 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
 
     @SuppressWarnings("rawtypes")
     @Override
-    protected Object buildRowDataValues(
-            Map value,
-            RowKind rowKind,
-            String columnName,
-            LogicalType columnType) {
+    protected Object buildRowDataValues(Map value, RowKind rowKind, String columnName, LogicalType columnType) {
         if (additionalColumnConfigList == null) {
             return convertValue(getOriginRowData(rowKind, value).get(columnName), columnType);
         }
@@ -99,23 +98,20 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
             case "op_ts":
                 Object opVal = source.get("ts_ms");
                 if (opVal instanceof Integer) {
-                    return TimestampData.fromLocalDateTime(
-                            Instant.ofEpochMilli(((Integer) opVal).longValue())
-                                    .atZone(this.getSinkTimeZone())
-                                    .toLocalDateTime());
+                    return TimestampData.fromLocalDateTime(Instant.ofEpochMilli(((Integer) opVal).longValue())
+                            .atZone(this.getSinkTimeZone())
+                            .toLocalDateTime());
                 }
 
                 if (opVal instanceof Long) {
-                    return TimestampData.fromLocalDateTime(
-                            Instant.ofEpochMilli((long) opVal)
-                                    .atZone(this.getSinkTimeZone())
-                                    .toLocalDateTime());
+                    return TimestampData.fromLocalDateTime(Instant.ofEpochMilli((long) opVal)
+                            .atZone(this.getSinkTimeZone())
+                            .toLocalDateTime());
                 }
 
-                return TimestampData.fromLocalDateTime(
-                        Instant.parse(value.toString())
-                                .atZone(this.getSinkTimeZone())
-                                .toLocalDateTime());
+                return TimestampData.fromLocalDateTime(Instant.parse(value.toString())
+                        .atZone(this.getSinkTimeZone())
+                        .toLocalDateTime());
             case "database_name":
                 return convertValue(source.get("db"), columnType);
             case "table_name":
@@ -136,14 +132,11 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
             List<LogicalType> columnTypeList,
             String schemaTableName) {
         logger.info("sinkTimeZone:{}", this.getSinkTimeZone());
-        return filterOperator.flatMap(
-                sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName));
+        return filterOperator.flatMap(sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName));
     }
 
-
     @Override
-    protected void buildColumn(
-            List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
+    protected void buildColumn(List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
         for (Column column : columns) {
             columnNameList.add(column.getName());
             columnTypeList.add(getLogicalType(column));
@@ -151,8 +144,7 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
         if (this.additionalColumnConfigList != null && this.additionalColumnConfigList.size() > 0) {
             logger.info("Start add additional column");
             this.additionalColumnConfigList.forEach((key, value) -> {
-                logger.info(
-                        "col: { name: {}, type:{}, val: {}}", key, value.getKey(), value.getValue());
+                logger.info("col: { name: {}, type:{}, val: {}}", key, value.getKey(), value.getValue());
 
                 switch (value.getKey()) {
                     case "META":

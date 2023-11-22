@@ -17,9 +17,6 @@
  *
  */
 
-/**
- * document category
- */
 export const DOCUMENT_CATEGORY = [
   {
     text: 'Variable',
