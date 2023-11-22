@@ -814,7 +814,7 @@
                         </includes>
                         <licenseHeader>
                             <file>style/license_header</file>
-                            <delimiter>(?!(\/\*|\ \*|\/\*|\/\/))</delimiter>
+                            <delimiter>(?!(\/\*|\ \*|\/\*|\/\/|\s))</delimiter>
                         </licenseHeader>
                     </typescript>
                 </configuration>
