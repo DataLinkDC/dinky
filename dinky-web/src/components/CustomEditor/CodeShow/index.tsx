@@ -29,7 +29,7 @@ import { EditorLanguage } from 'monaco-editor/esm/metadata';
 
 import FullscreenBtn from '@/components/CustomEditor/FullscreenBtn';
 import { Editor, Monaco } from '@monaco-editor/react';
-import { CSSProperties, useEffect, useRef, useState } from 'react';
+import {CSSProperties, memo, useRef, useState} from 'react';
 
 export type CodeShowFormProps = {
   height?: string | number;
@@ -86,9 +86,6 @@ const CodeShow = (props: CodeShowFormProps) => {
   const monacoInstance = useRef<Monaco | undefined>();
   const [timer, setTimer] = useState<NodeJS.Timer>();
 
-  useEffect(() => {
-    convertCodeEditTheme(monacoInstance?.current);
-  }, [monacoInstance?.current]);
 
   /**
    *  handle sync log
@@ -214,8 +211,8 @@ const CodeShow = (props: CodeShowFormProps) => {
           <Editor
             beforeMount={(monaco) => {
               // 挂载前加载语言 | before mount load language
+              LoadCustomEditorLanguage(monacoInstance.current);
               monacoInstance.current = monaco;
-              LoadCustomEditorLanguage(monaco);
             }}
             width={width}
             height={height}
@@ -257,7 +254,7 @@ const CodeShow = (props: CodeShowFormProps) => {
               ...options
             }}
             onMount={editorDidMount}
-            theme={convertCodeEditTheme()}
+            theme={convertCodeEditTheme(editorInstance?.current)}
           />
         </Col>
         {showFloatButton && (
@@ -270,4 +267,4 @@ const CodeShow = (props: CodeShowFormProps) => {
   );
 };
 
-export default CodeShow;
+export default memo(CodeShow);

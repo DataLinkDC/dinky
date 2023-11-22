@@ -30,6 +30,13 @@ import { Monaco } from '@monaco-editor/react';
 function canLoadLanguage(monaco: Monaco | undefined, language: string) {
   return !monaco?.languages?.getEncodedLanguageId(language);
 }
+
+/**
+ * 加载自定义语言 (不带自动补全)
+ * @param monaco
+ * @param registerCompletion 是否注册自动补全 (默认不注册)
+ * @constructor
+ */
 export function LoadCustomEditorLanguage(
   monaco?: Monaco | undefined,
   registerCompletion: boolean = false
@@ -37,12 +44,17 @@ export function LoadCustomEditorLanguage(
   if (canLoadLanguage(monaco, CustomEditorLanguage.FlinkSQL)) {
     FlinkSQLLanguage(monaco, registerCompletion);
   }
-
+  console.log(canLoadLanguage(monaco, CustomEditorLanguage.JavaLog))
   if (canLoadLanguage(monaco, CustomEditorLanguage.JavaLog)) {
     LogLanguage(monaco);
   }
 }
 
+/**
+ * 加载自定义语言 (带自动补全)
+ * @param monaco
+ * @constructor
+ */
 export function LoadCustomEditorLanguageWithCompletion(monaco?: Monaco | undefined) {
   LoadCustomEditorLanguage(monaco, true);
 }

@@ -88,9 +88,6 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>(editorRef);
   const monacoInstance = useRef<Monaco | undefined>(monacoRef);
 
-  useEffect(() => {
-    convertCodeEditTheme(editorInstance.current);
-  }, [editorInstance?.current]);
 
   /**
    * build all suggestions
@@ -250,7 +247,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
           className={'editor-develop'}
           onMount={editorDidMountChange}
           onChange={onChange}
-          theme={convertCodeEditTheme()}
+          theme={convertCodeEditTheme(editorInstance?.current)}
         />
       </div>
     </>
