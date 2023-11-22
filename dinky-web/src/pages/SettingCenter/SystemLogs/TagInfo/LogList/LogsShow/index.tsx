@@ -25,7 +25,7 @@ import React from 'react';
 const CodeEditProps: any = {
   width: '100%',
   lineNumbers: 'on',
-  language: 'java'
+  language: 'javalog'
 };
 
 type LogsShowProps = {
