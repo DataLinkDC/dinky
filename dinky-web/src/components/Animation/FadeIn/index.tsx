@@ -23,8 +23,8 @@ const FadeIn = (props: any) => {
     opacity: 1,
     from: { opacity: 0 },
     config: {
-      duration: 1000,
-      delay: 1000
+      duration: 100,
+      delay: 100
     }
   });
 

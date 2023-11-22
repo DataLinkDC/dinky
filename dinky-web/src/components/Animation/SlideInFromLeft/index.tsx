@@ -24,7 +24,7 @@ const SlideInFromLeft = (props: any) => {
   const style = useSpring({
     from: { transform: 'translateX(100%)' },
     to: { transform: 'translateX(10%)' },
-    config: { duration: 1000 }
+    config: { duration: 100 }
   });
   return <animated.div style={style}>{children}</animated.div>;
 };
