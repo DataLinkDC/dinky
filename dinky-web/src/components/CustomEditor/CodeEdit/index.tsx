@@ -21,15 +21,14 @@ import * as monaco from 'monaco-editor';
 import { editor, languages, Position } from 'monaco-editor';
 
 import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
-import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
-import { LoadCustomEditorLanguageWithCompletion } from '@/components/CustomEditor/languages';
+import {LoadCustomEditorLanguageWithCompletion} from '@/components/CustomEditor/languages';
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import { Editor, Monaco, OnChange, useMonaco } from '@monaco-editor/react';
+import {Editor, Monaco, OnChange} from '@monaco-editor/react';
 import { connect } from '@umijs/max';
 import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
-import { memo, useCallback, useEffect, useRef } from 'react';
+import {memo, useCallback, useEffect, useRef} from 'react';
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
 import CompletionContext = languages.CompletionContext;
@@ -48,7 +47,6 @@ export type CodeEditFormProps = {
   readOnly?: boolean;
   lineNumbers?: string;
   autoWrap?: string;
-  showFloatButton?: boolean;
   editorDidMount?: (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => void;
   enableSuggestions?: boolean;
   monacoRef?: any;
@@ -81,26 +79,19 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     enableSuggestions = false, // enable suggestions
     suggestionsData, // suggestions data
     autoWrap = 'on', // auto wrap
-    showFloatButton = false,
     editorDidMount,
     editorRef,
     monacoRef,
     tabs: { activeKey }
   } = props;
 
-  const editorInstance = useRef<editor.IStandaloneCodeEditor | any>(editorRef);
-  const monacoInstance = useRef<Monaco | any>(monacoRef);
+  const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined  >(editorRef);
+  const monacoInstance = useRef<Monaco | undefined>(monacoRef);
 
-  const { ScrollType } = editor;
-
-  // 使用编辑器钩子, 拿到编辑器实例
-  const monacoHook = useMonaco();
 
   useEffect(() => {
     convertCodeEditTheme(editorInstance.current);
-    // 需要调用 手动注册下自定义语言
-    LoadCustomEditorLanguageWithCompletion(monacoInstance.current);
-  }, [monacoHook]);
+  }, [editorInstance?.current]);
 
   /**
    * build all suggestions
@@ -141,18 +132,13 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     });
   }
 
-  // editorInstance?.current?.onDidChangeModelContent?.(() => {
-  //   console.log(editorInstance?.current, 'editorInstance')
-  //   editorInstance?.current?.trigger('action', 'editor.action.triggerSuggest');
-  // });
-
   /**
    *  editorDidMount
    * @param {editor.IStandaloneCodeEditor} editor
    * @param monacoIns
    */
   const editorDidMountChange = (editor: editor.IStandaloneCodeEditor, monacoIns: Monaco) => {
-    if (editorRef?.current && monacoRef?.current && editorDidMount) {
+    if (editorDidMount) {
       editorDidMount(editor, monacoIns);
     }
     editorInstance.current = editor;
@@ -160,56 +146,13 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     if (enableSuggestions) {
       reloadCompilation(monacoInstance.current);
     }
-    // register TypeScript language service
-    monacoIns.languages.register({
-      id: language || 'typescript'
-    });
     editor.layout();
     editor.focus();
   };
 
-  /**
-   *  handle scroll to top
-   */
-  const handleBackTop = () => {
-    editorInstance?.current?.revealLine(1);
-  };
-
-  /**
-   *  handle scroll to bottom
-   */
-  const handleBackBottom = () => {
-    editorInstance?.current?.revealLine(editorInstance?.current?.getModel()?.getLineCount());
-  };
-
-  /**
-   *  handle scroll to down
-   */
-  const handleDownScroll = () => {
-    editorInstance?.current?.setScrollPosition(
-      { scrollTop: editorInstance?.current?.getScrollTop() + 500 },
-      ScrollType.Smooth
-    );
-  };
-
-  /**
-   *  handle scroll to up
-   */
-  const handleUpScroll = () => {
-    editorInstance?.current?.setScrollPosition(
-      { scrollTop: editorInstance?.current?.getScrollTop() - 500 },
-      ScrollType.Smooth
-    );
-  };
 
   // todo: 标记错误信息
 
-  const restEditBtnProps = {
-    handleBackTop,
-    handleBackBottom,
-    handleUpScroll,
-    handleDownScroll
-  };
 
   const finalEditorOptions = {
     ...MonacoEditorOptions, // set default options
@@ -297,10 +240,10 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     <>
       <div className={'monaco-float'}>
         <Editor
-          beforeMount={(monaco: Monaco) => {
-            if (!monacoInstance?.current) {
-              monacoInstance.current = monaco;
-            }
+          beforeMount={(monaco) => {
+            // 挂载前加载语言
+            monacoInstance.current = monaco;
+            LoadCustomEditorLanguageWithCompletion(monaco);
           }}
           width={width}
           height={height}
@@ -312,7 +255,6 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
           onChange={onChange}
           theme={convertCodeEditTheme()}
         />
-        {showFloatButton && <EditorFloatBtn {...restEditBtnProps} />}
       </div>
     </>
   );

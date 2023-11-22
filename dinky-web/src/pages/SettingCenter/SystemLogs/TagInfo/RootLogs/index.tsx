@@ -35,7 +35,7 @@ const RootLogs = () => {
 
   const queryLogs = async () => {
     const result = await queryDataByParams(API_CONSTANTS.SYSTEM_ROOT_LOG);
-    setCode(result);
+    setCode(result as string);
   };
 
   useEffect(() => {

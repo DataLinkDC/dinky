@@ -17,17 +17,23 @@
  *
  */
 
-import {CustomEditorLanguage} from "@/components/CustomEditor/languages/constants";
-import {buildMonarchTokensProvider} from "@/components/CustomEditor/languages/javalog/function";
-import {Monaco} from "@monaco-editor/react";
-
-export function LogLanguage(monaco: Monaco | undefined) {
-  // Register a new language
-  monaco?.languages.register({
-    id: CustomEditorLanguage.JavaLog,
-    extensions: ['.log'],
-    aliases: ['javalog', 'Javalog', 'jl', 'log']
-  });
-
-  buildMonarchTokensProvider(monaco);
-}
+export const JAVA_LOG_KEYWORD: string[] = [
+  'Start Process',
+  'Start Process Step',
+  'SUBMIT_PRECHECK',
+  'SUBMIT_EXECUTE',
+  'SUBMIT_BUILD_CONFIG',
+  'info',
+  'debug',
+  'error',
+  'warn',
+  'trace',
+  'fatal',
+  'log',
+  'logger',
+  'root',
+  'level',
+  'additivity',
+  'appender',
+  'logger',
+]
