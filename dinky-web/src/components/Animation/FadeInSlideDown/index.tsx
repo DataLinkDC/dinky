@@ -17,8 +17,6 @@
  *
  */
 
-// 淡入效果并从上方滑入
-
 import { animated, useSpring } from 'react-spring';
 
 const FadeInSlideDown = (props: any) => {
