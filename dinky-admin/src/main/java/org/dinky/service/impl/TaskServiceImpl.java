@@ -232,7 +232,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Optional.ofNullable(config.getClusterId()).ifPresent(i -> {
                 config.setAddress(clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), i));
             });
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("Init remote cluster error", e);
         }
         return config;
