@@ -19,7 +19,6 @@
 
 package org.dinky.aop;
 
-import cn.hutool.core.util.ObjectUtil;
 import org.dinky.context.ConsoleContextHolder;
 import org.dinky.data.annotations.ExecuteProcess;
 import org.dinky.data.annotations.ProcessId;
@@ -44,6 +43,7 @@ import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import cn.hutool.core.text.StrFormatter;
+import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Aspect
@@ -133,8 +133,8 @@ public class ProcessAspect {
         Annotation[][] annotations = method.getParameterAnnotations();
         for (int i = 0; i < annotations.length; i++) {
             Object param = params[i];
-            if (param == null)continue;
-            //Check whether the parameters on the method have the Process Id annotation
+            if (param == null) continue;
+            // Check whether the parameters on the method have the Process Id annotation
             Annotation[] paramAnn = annotations[i];
             for (Annotation annotation : paramAnn) {
                 if (annotation instanceof ProcessId) {
@@ -142,9 +142,9 @@ public class ProcessAspect {
                     break;
                 }
             }
-            //If there is no Process Id annotation on the parameter,
+            // If there is no Process Id annotation on the parameter,
             // continue to find out whether there is a variable in the object with the Process Id annotation
-            if (processIdObj == null){
+            if (processIdObj == null) {
                 Field[] fields = param.getClass().getDeclaredFields();
                 for (Field field : fields) {
                     if (field.isAnnotationPresent(ProcessId.class)) {
@@ -154,10 +154,11 @@ public class ProcessAspect {
                 }
             }
         }
-        if (ObjectUtil.isBasicType(processIdObj)){
+        if (ObjectUtil.isBasicType(processIdObj)) {
             return processIdObj;
-        }else {
-            throw new DinkyException("The type of the parameter annotated with @ProcessId must be a basic type and not null");
+        } else {
+            throw new DinkyException(
+                    "The type of the parameter annotated with @ProcessId must be a basic type and not null");
         }
     }
 }

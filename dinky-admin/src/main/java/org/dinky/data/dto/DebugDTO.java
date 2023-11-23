@@ -19,11 +19,12 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.annotations.ProcessId;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.dinky.data.annotations.ProcessId;
 
 /**
  *  Param for debug flink sql and common sql
