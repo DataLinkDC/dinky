@@ -66,8 +66,7 @@ public interface TaskService extends ISuperService<Task> {
     /**
      * Submit the given task and return the job result.
      *
-     * @param id The ID of the task to submit.
-     * @param savePointPath The path of the save point for the job execution.
+     * @param submitDto The param of the task to submit.
      * @return A {@link JobResult} object representing the result of the submitted task.
      * @throws ExcuteException If there is an error executing the task.
      */
