@@ -46,3 +46,8 @@ export const TokenClassConsts = {
   VARIABLE: 'variable',
   WHITE: 'white'
 };
+
+export enum CustomEditorLanguage {
+  JavaLog = 'javalog',
+  FlinkSQL = 'flinksql'
+}

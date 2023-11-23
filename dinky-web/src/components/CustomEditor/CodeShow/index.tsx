@@ -22,21 +22,15 @@ import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
 import { Loading } from '@/pages/Other/Loading';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import { Editor, useMonaco } from '@monaco-editor/react';
+
 import { Col, Row } from 'antd';
 import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
-import { CSSProperties, useEffect, useRef, useState } from 'react';
-import FullscreenBtn from '../FullscreenBtn';
 
-// loader.config({monaco});
-/**
- * props
- * todo:
- *  1. Realize full screen/exit full screen in the upper right corner of the editor (Visible after opening)
- *    - The full screen button is done, but the full screen is not implemented
- *  2. Callback for right-clicking to clear logs (optional, not required)
- */
+import FullscreenBtn from '@/components/CustomEditor/FullscreenBtn';
+import { Editor, Monaco } from '@monaco-editor/react';
+import { CSSProperties, memo, useRef, useState } from 'react';
+
 export type CodeShowFormProps = {
   height?: string | number;
   width?: string;
@@ -44,6 +38,7 @@ export type CodeShowFormProps = {
   options?: any;
   code: string;
   lineNumbers?: string;
+  enableMiniMap?: boolean;
   autoWrap?: string;
   showFloatButton?: boolean;
   refreshLogCallback?: () => void;
@@ -75,7 +70,8 @@ const CodeShow = (props: CodeShowFormProps) => {
     autoWrap = 'on', //  auto wrap
     showFloatButton = false,
     refreshLogCallback,
-    fullScreenBtn = false
+    fullScreenBtn = false,
+    enableMiniMap = false
   } = props;
 
   const { ScrollType } = editor;
@@ -86,28 +82,19 @@ const CodeShow = (props: CodeShowFormProps) => {
   const [stopping, setStopping] = useState<boolean>(false);
   const [autoRefresh, setAutoRefresh] = useState<boolean>(false);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
-  const editorInstance = useRef<editor.IStandaloneCodeEditor | any>();
+  const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>();
+  const monacoInstance = useRef<Monaco | undefined>();
   const [timer, setTimer] = useState<NodeJS.Timer>();
-
-  // 使用编辑器钩子, 拿到编辑器实例
-  const monaco = useMonaco();
-
-  useEffect(() => {
-    convertCodeEditTheme(monaco?.editor);
-    // 需要调用 手动注册下自定义语言
-    LoadCustomEditorLanguage(monaco);
-  }, [monaco]);
 
   /**
    *  handle sync log
-   * @returns {Promise<void>}
    */
   const handleSyncLog = async () => {
     setLoading(true);
     setInterval(() => {
       refreshLogCallback?.();
-      setLoading(false);
     }, 1000);
+    setLoading(false);
   };
 
   /**
@@ -144,6 +131,7 @@ const CodeShow = (props: CodeShowFormProps) => {
    *  handle scroll to bottom
    */
   const handleBackBottom = () => {
+    // @ts-ignore
     editorInstance?.current?.revealLine(editorInstance?.current?.getModel().getLineCount());
   };
 
@@ -170,9 +158,11 @@ const CodeShow = (props: CodeShowFormProps) => {
   /**
    *  editorDidMount
    * @param {editor.IStandaloneCodeEditor} editor
+   * @param monaco {Monaco}
    */
-  const editorDidMount = (editor: editor.IStandaloneCodeEditor) => {
+  const editorDidMount = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editorInstance.current = editor;
+    monacoInstance.current = monaco;
     editor.layout();
     editor.focus();
     if (scrollBeyondLastLine) {
@@ -218,6 +208,11 @@ const CodeShow = (props: CodeShowFormProps) => {
 
           {/* editor */}
           <Editor
+            beforeMount={(monaco) => {
+              // 挂载前加载语言 | before mount load language
+              LoadCustomEditorLanguage(monacoInstance.current);
+              monacoInstance.current = monaco;
+            }}
             width={width}
             height={height}
             loading={<Loading loading={loading} />}
@@ -226,13 +221,14 @@ const CodeShow = (props: CodeShowFormProps) => {
             options={{
               scrollBeyondLastLine: false,
               readOnly: true,
+              glyphMargin: false,
               wordWrap: autoWrap,
               autoDetectHighContrast: true,
               selectOnLineNumbers: true,
               fixedOverflowWidgets: true,
               autoClosingDelete: 'always',
               lineNumbers,
-              minimap: { enabled: false },
+              minimap: { enabled: enableMiniMap },
               scrollbar: {
                 // Subtle shadows to the left & top. Defaults to true.
                 useShadows: false,
@@ -257,7 +253,7 @@ const CodeShow = (props: CodeShowFormProps) => {
               ...options
             }}
             onMount={editorDidMount}
-            theme={convertCodeEditTheme()}
+            theme={convertCodeEditTheme(editorInstance?.current)}
           />
         </Col>
         {showFloatButton && (
@@ -270,4 +266,4 @@ const CodeShow = (props: CodeShowFormProps) => {
   );
 };
 
-export default CodeShow;
+export default memo(CodeShow);
