@@ -38,7 +38,6 @@
         <module>dinky-function</module>
         <module>dinky-metadata</module>
         <module>dinky-connectors</module>
-        <module>dinky-executor</module>
         <module>dinky-extends</module>
         <module>dinky-alert</module>
         <module>dinky-daemon</module>
@@ -505,11 +504,6 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-gateway</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
-                <artifactId>dinky-executor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

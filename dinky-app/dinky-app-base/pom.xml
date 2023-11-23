@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
-            <artifactId>dinky-executor</artifactId>
+            <artifactId>dinky-core</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>com.github.xiaoymin</groupId>
