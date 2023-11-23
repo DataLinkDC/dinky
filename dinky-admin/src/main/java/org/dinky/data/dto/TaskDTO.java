@@ -19,6 +19,7 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.job.JobConfig;
@@ -42,6 +43,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ApiModel(value = "StudioExecuteDTO", description = "DTO for executing SQL queries")
 public class TaskDTO extends AbstractStatementDTO {
+
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "6", notes = "The identifier of the execution")
+    @ProcessId
+    private Integer id;
 
     @ApiModelProperty(value = "Name", required = true, dataType = "String", example = "Name")
     private String name;
@@ -208,9 +213,6 @@ public class TaskDTO extends AbstractStatementDTO {
 
     @ApiModelProperty(value = "Job Name", dataType = "String", example = "MyJob", notes = "The name of the job")
     private String jobName;
-
-    @ApiModelProperty(value = "ID", dataType = "Integer", example = "6", notes = "The identifier of the execution")
-    private Integer id;
 
     @ApiModelProperty(
             value = "Max Row Number",
