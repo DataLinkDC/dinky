@@ -27,8 +27,8 @@ public class JobAlertRuleOptions {
      */
     public static final String FIELD_NAME_TIME = "alertTime";
 
-    public static final String FIELD_NAME_START_TIME = "startTime";
-    public static final String FIELD_NAME_END_TIME = "endTime";
+    public static final String FIELD_NAME_START_TIME = "jobStartTime";
+    public static final String FIELD_NAME_END_TIME = "jobEndTime";
     public static final String FIELD_NAME_DURATION = "duration";
     public static final String FIELD_NAME_JOB_NAME = "jobName";
     public static final String FIELD_NAME_JOB_ID = "jobId";

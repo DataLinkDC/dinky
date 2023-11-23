@@ -50,72 +50,92 @@ public class JobAlertData {
      * Time about
      */
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_TIME)
+    @Builder.Default
     private String alertTime = "";
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_START_TIME)
+    @Builder.Default
     private String jobStartTime = "";
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_END_TIME)
+    @Builder.Default
     private String jobEndTime = "";
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_DURATION)
+    @Builder.Default
     private Long duration = 0L;
 
     /**
      * Job About
      */
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_JOB_NAME)
+    @Builder.Default
     private String jobName = "";
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_JOB_ID)
+    @Builder.Default
     private String jobId = "";
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_JOB_STATUS)
+    @Builder.Default
     private String jobStatus = "";
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_TASK_ID)
+    @Builder.Default
     private Integer taskId = 0;
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_JOB_INSTANCE_ID)
+    @Builder.Default
     private Integer jobInstanceId = 0;
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_JOB_TASK_URL)
+    @Builder.Default
     private String taskUrl = "";
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_JOB_BATCH_MODEL)
+    @Builder.Default
     private boolean batchModel = false;
 
     /**
      * Cluster About
      */
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_CLUSTER_NAME)
+    @Builder.Default
     private String clusterName = "";
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_CLUSTER_TYPE)
+    @Builder.Default
     private String clusterType = "";
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_CLUSTER_HOSTS)
+    @Builder.Default
     private String clusterHosts = "";
 
     /**
      * Flink About
      */
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_EXCEPTIONS_MSG)
+    @Builder.Default
     private String errorMsg = "";
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_CHECKPOINT_COST_TIME)
+    @Builder.Default
     private Long checkpointCostTime = 0L;
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_CHECKPOINT_FAILED_COUNT)
+    @Builder.Default
     private Long checkpointFailedCount = 0L;
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_CHECKPOINT_COMPLETE_COUNT)
+    @Builder.Default
     private Long checkpointCompleteCount = 0L;
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_CHECKPOINT_FAILED)
+    @Builder.Default
     private boolean isCheckpointFailed = false;
 
     @JsonProperty(value = JobAlertRuleOptions.FIELD_NAME_IS_EXCEPTION)
+    @Builder.Default
     private boolean isException = false;
 
     private static String buildTaskUrl(JobInstance jobInstance) {
@@ -166,9 +186,11 @@ public class JobAlertData {
 
         if (checkpoints != null) {
             builder.checkpointCostTime(CheckpointsRule.checkpointTime(id, checkpoints))
-                    .checkpointFailedCount(checkpoints.getCounts().getNumberFailedCheckpoints())
-                    .checkpointCompleteCount(checkpoints.getCounts().getNumberCompletedCheckpoints())
                     .isCheckpointFailed(CheckpointsRule.checkFailed(id, checkpoints));
+            if (checkpoints.getCounts()!=null){
+                builder.checkpointFailedCount(checkpoints.getCounts().getNumberFailedCheckpoints())
+                        .checkpointCompleteCount(checkpoints.getCounts().getNumberCompletedCheckpoints());
+            }
         }
         return builder.build();
     }
