@@ -161,11 +161,7 @@ public class TaskController {
     @ExecuteProcess(type = ProcessType.FLINK_JOB_PLAN)
     public Result<ObjectNode> getJobPlan(@ProcessId @RequestBody TaskDTO taskDTO) {
         ObjectNode jobPlan = null;
-        try {
-            jobPlan = taskService.getJobPlan(taskDTO);
-        } catch (Exception e) {
-            return Result.failed(e.getMessage());
-        }
+        jobPlan = taskService.getJobPlan(taskDTO);
         return Result.succeed(jobPlan, Status.EXECUTE_SUCCESS);
     }
 

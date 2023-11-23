@@ -17,7 +17,7 @@
  *
  */
 
-export const enum ClusterType {
+export enum ClusterType {
   STANDALONE = 'standalone',
   YARN = 'yarn-application',
   YARN_SESSION = 'yarn-session',

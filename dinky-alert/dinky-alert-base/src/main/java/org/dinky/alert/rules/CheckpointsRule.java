@@ -38,28 +38,21 @@ public class CheckpointsRule {
 
     private static final Logger logger = LoggerFactory.getLogger(CheckpointsRule.class);
 
-    private final LoadingCache<String, Object> checkpointsCache;
-
-    /**
-     * Constructor for initializing the CheckpointsRule object.
-     */
-    public CheckpointsRule() {
-        checkpointsCache = CacheBuilder.newBuilder()
-                .expireAfterAccess(60, TimeUnit.SECONDS)
-                .build(CacheLoader.from(key -> null));
-    }
+    private static final LoadingCache<String, Object> checkpointsCache =
+            CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build(CacheLoader.from(key -> null));
 
     /**
      * Checks if a checkpoint has expired.
+     *
      * @param latest The latest checkpoint node.
-     * @param key The key used to identify the checkpoint.
-     * @param ckKey The checkpoint key to check for expiration.
+     * @param jobInstanceID    The key used to identify the checkpoint.
+     * @param ckKey  The checkpoint key to check for expiration.
      * @return True if the checkpoint has expired, false otherwise.
      */
-    private boolean isExpire(CheckPointOverView latest, String key, String ckKey) {
-        logger.debug("checkpointTime key: {} ,checkpoints: {}, key: {}", key, latest, ckKey);
+    private static boolean isExpire(CheckPointOverView latest, String jobInstanceID, String ckKey) {
+        logger.debug("checkpointTime key: {} ,checkpoints: {}, key: {}", jobInstanceID, latest, ckKey);
 
-        CheckPointOverView his = (CheckPointOverView) checkpointsCache.getIfPresent(key);
+        CheckPointOverView his = (CheckPointOverView) checkpointsCache.getIfPresent(jobInstanceID);
 
         switch (ckKey) {
             case "completed":
@@ -89,7 +82,7 @@ public class CheckpointsRule {
                 }
                 long latestTime =
                         latestLatestCheckpoints.getFailedCheckpointStatistics().getTriggerTimestamp();
-                checkpointsCache.put(key, latest);
+                checkpointsCache.put(jobInstanceID, latest);
                 if (his != null) {
                     long hisTime = 0;
                     if (failedCheckpointStatistics != null) {
@@ -106,18 +99,19 @@ public class CheckpointsRule {
 
     /**
      * Retrieves the checkpoint time for a specific key.
-     * @param key The key used to identify the checkpoint.
+     *
+     * @param key         The key used to identify the checkpoint.
      * @param checkpoints The checkpoints object containing relevant data.
      * @return The checkpoint time, or null if the checkpoint has expired.
      */
-    public Long checkpointTime(String key, CheckPointOverView checkpoints) {
+    public static Long checkpointTime(String key, CheckPointOverView checkpoints) {
         if (isExpire(checkpoints, key, "completed")) {
-            return null;
+            return -1L;
         }
         CheckPointOverView.LatestCheckpoints checkpointsLatestCheckpoints = checkpoints.getLatestCheckpoints();
         if (null == checkpointsLatestCheckpoints
                 || null == checkpointsLatestCheckpoints.getCompletedCheckpointStatistics()) {
-            return null;
+            return -1L;
         }
         return checkpoints
                 .getLatestCheckpoints()
@@ -127,11 +121,12 @@ public class CheckpointsRule {
 
     /**
      * Checks if a specific checkpoint has failed.
-     * @param key The key used to identify the checkpoint.
+     *
+     * @param key         The key used to identify the checkpoint.
      * @param checkpoints The checkpoints object containing relevant data.
      * @return True if the checkpoint has failed, null if it has expired.
      */
-    public Boolean checkFailed(String key, CheckPointOverView checkpoints) {
+    public static Boolean checkFailed(String key, CheckPointOverView checkpoints) {
         return !isExpire(checkpoints, key, "failed");
     }
 }

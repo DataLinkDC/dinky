@@ -472,45 +472,21 @@ VALUES (146, 10, ' 拷贝', '/registration/datasource/copy', null, 'registration
 -- ----------------------------
 -- Records of dinky_alert_rule
 -- ----------------------------
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time)
-VALUES (3, 'alert.rule.jobFail',
-        '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"''FAILED''","rulePriority":"1"}]', 1,
-        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-04 23:03:02');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time)
-VALUES (4, 'alert.rule.getJobInfoFail',
-        '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"''UNKNOWN''","rulePriority":"1"}]', 1,
-        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-05 18:03:43');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time)
-VALUES (5, 'alert.rule.jobRestart',
-        '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"''RESTARTING''","rulePriority":"1"}]', 1,
-        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:35:12');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time)
-VALUES (6, 'alert.rule.checkpointFail',
-        '[{"ruleKey":"checkpointRule.checkFailed(#key,#checkPoints)","ruleOperator":"EQ","ruleValue":"true"}]', 1,
-        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:49:03');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time)
-VALUES (7, 'alert.rule.jobRunException',
-        '[{"ruleKey":"exceptionRule.isException(#key,#exceptions)","ruleOperator":"EQ","ruleValue":"true"}]', 1,
-        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:50:12');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time)
-VALUES (8, 'alert.rule.checkpointTimeout',
-        '[{"ruleKey":"checkpointRule.checkpointTime(#key,#checkPoints)","ruleOperator":"GE","ruleValue":"1000"}]', 1,
-        'CUSTOM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 22:23:35');
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (3, 'alert.rule.jobFail', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"''FAILED''","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (4, 'alert.rule.getJobInfoFail', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"''UNKNOWN''","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (5, 'alert.rule.jobRestart', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"''RESTARTING''","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"isCheckpointFailed","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"isException","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+
 
 INSERT INTO dinky_alert_template
 VALUES (1, 'Default', '
-- **Job Name :** <font color=''gray''>${task.name}</font>
-- **Job Status :** <font color=''red''>${jobInstance.status}</font>
-- **Alert Time :** ${time}
-- **Start Time :** ${startTime}
-- **End Time :** ${endTime}
-- **<font color=''red''>${(exceptions.rootException)?substring(0,20)}</font>**
+- **Job Name :** <font color=''gray''>${jobName}</font>
+- **Job Status :** <font color=''red''>${jobStatus}</font>
+- **Alert Time :** ${alertTime}
+- **Start Time :** ${jobStartTime}
+- **End Time :** ${jobEndTime}
+- **<font color=''red''>${errorMsg}</font>**
 [Go toTask Web](http://${taskUrl})
 ', 1, current_timestamp, current_timestamp,null,null);
 

@@ -22,8 +22,6 @@ package org.dinky.job.handler;
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
-import org.dinky.alert.rules.CheckpointsRule;
-import org.dinky.alert.rules.ExceptionRule;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FreeMarkerHolder;
 import org.dinky.context.SpringContextUtils;
@@ -31,19 +29,17 @@ import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.data.dto.AlertRuleDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.alert.AlertHistory;
 import org.dinky.data.model.alert.AlertInstance;
+import org.dinky.data.model.ext.JobAlertData;
 import org.dinky.data.model.ext.JobInfoDetail;
-import org.dinky.data.model.job.JobInstance;
-import org.dinky.data.options.AlertRuleOptions;
+import org.dinky.data.options.JobAlertRuleOptions;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
 import org.dinky.service.TaskService;
 import org.dinky.service.impl.AlertRuleServiceImpl;
 import org.dinky.utils.JsonUtils;
-import org.dinky.utils.TimeUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -111,9 +107,6 @@ public class JobAlertHandler {
         return defaultJobAlertHandler;
     }
 
-    /**
-     * Initializes the JobAlerts class by refreshing rules and setting up the scheduler.
-     */
     public JobAlertHandler() {
         refreshRulesData();
     }
@@ -123,47 +116,8 @@ public class JobAlertHandler {
      */
     public void check(JobInfoDetail jobInfoDetail) {
         Facts ruleFacts = new Facts();
-        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_EXCEPTION_CHECK, new ExceptionRule());
-        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CHECKPOINT_RULES, new CheckpointsRule());
-        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_TIME, TimeUtil.nowStr());
-        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_DETAIL, jobInfoDetail);
-        if (Asserts.isNotNull(jobInfoDetail.getJobDataDto().getJob())) {
-            ruleFacts.put(
-                    AlertRuleOptions.JOB_ALERT_RULE_JOB_NAME,
-                    jobInfoDetail.getJobDataDto().getJob());
-        }
-
-        ruleFacts.put(
-                AlertRuleOptions.JOB_ALERT_RULE_KEY, jobInfoDetail.getInstance().getId());
-        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_JOB_INSTANCE, jobInfoDetail.getInstance());
-        ruleFacts.put(
-                AlertRuleOptions.JOB_ALERT_RULE_START_TIME,
-                TimeUtil.convertTimeToString(jobInfoDetail.getInstance().getCreateTime()));
-        ruleFacts.put(
-                AlertRuleOptions.JOB_ALERT_RULE_END_TIME,
-                TimeUtil.convertTimeToString(jobInfoDetail.getInstance().getFinishTime()));
-        if (Asserts.isNotNull(jobInfoDetail.getJobDataDto().getCheckpoints())) {
-            ruleFacts.put(
-                    AlertRuleOptions.JOB_ALERT_RULE_CHECK_POINTS,
-                    jobInfoDetail.getJobDataDto().getCheckpoints());
-        }
-
-        ruleFacts.put(AlertRuleOptions.JOB_ALERT_RULE_CLUSTER, jobInfoDetail.getClusterInstance());
-        ruleFacts.put(
-                AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS,
-                jobInfoDetail.getJobDataDto().getExceptions());
-        if (jobInfoDetail.getJobDataDto().isError()) {
-            ruleFacts.put(
-                    AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS_MSG,
-                    jobInfoDetail.getJobDataDto().getErrorMsg());
-        } else {
-            if (Asserts.isNotNull(jobInfoDetail.getJobDataDto().getExceptions().getRootException())) {
-                ruleFacts.put(
-                        AlertRuleOptions.JOB_ALERT_RULE_EXCEPTIONS_MSG,
-                        jobInfoDetail.getJobDataDto().getExceptions().getRootException());
-            }
-        }
-
+        JobAlertData jobAlertData = JobAlertData.buildData(jobInfoDetail);
+        JsonUtils.toMap(jobAlertData).forEach(ruleFacts::put);
         rulesEngine.fire(rules, ruleFacts);
     }
 
@@ -216,21 +170,10 @@ public class JobAlertHandler {
      * @param alertRuleDTO Alert Rule Info.
      */
     private void executeAlertAction(Facts facts, AlertRuleDTO alertRuleDTO) {
-        JobInfoDetail jobInfoDetail = facts.get(AlertRuleOptions.JOB_ALERT_RULE_JOB_DETAIL);
-        JobInstance jobInstance = jobInfoDetail.getInstance();
-        TaskDTO task = taskService.getTaskInfoById(jobInfoDetail.getInstance().getTaskId());
-
-        String taskUrl = StrFormatter.format(
-                "{}/#/devops/job-detail?id={}",
-                SystemConfiguration.getInstances().getDinkyAddr(),
-                task.getId());
+        TaskDTO task = taskService.getTaskInfoById(facts.get(JobAlertRuleOptions.FIELD_TASK_ID));
         Map<String, Object> dataModel = new HashMap<>(facts.asMap());
-        dataModel.put(AlertRuleOptions.JOB_ALERT_RULE_TASK, task);
-        dataModel.put(AlertRuleOptions.JOB_ALERT_RULE_TASK_URL, taskUrl);
-        dataModel.put(AlertRuleOptions.JOB_ALERT_RULE, alertRuleDTO);
-
+        dataModel.put(JobAlertRuleOptions.OPTIONS_JOB_ALERT_RULE, alertRuleDTO);
         String alertContent;
-
         try {
             alertContent = freeMarkerHolder.buildWithData(alertRuleDTO.getTemplateName(), dataModel);
         } catch (IOException | TemplateException e) {
@@ -247,7 +190,7 @@ public class JobAlertHandler {
                     }
                     sendAlert(
                             alertInstance,
-                            jobInstance.getId(),
+                            facts.get(JobAlertRuleOptions.FIELD_JOB_INSTANCE_ID),
                             alertGroup.getId(),
                             alertRuleDTO.getName(),
                             alertContent);
