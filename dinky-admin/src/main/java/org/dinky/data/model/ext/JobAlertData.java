@@ -187,7 +187,7 @@ public class JobAlertData {
         if (checkpoints != null) {
             builder.checkpointCostTime(CheckpointsRule.checkpointTime(id, checkpoints))
                     .isCheckpointFailed(CheckpointsRule.checkFailed(id, checkpoints));
-            if (checkpoints.getCounts()!=null){
+            if (checkpoints.getCounts() != null) {
                 builder.checkpointFailedCount(checkpoints.getCounts().getNumberFailedCheckpoints())
                         .checkpointCompleteCount(checkpoints.getCounts().getNumberCompletedCheckpoints());
             }
