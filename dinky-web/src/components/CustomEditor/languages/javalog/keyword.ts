@@ -17,19 +17,23 @@
  *
  */
 
-import SlowlyAppear from '@/components/Animation/SlowlyAppear';
-import DataSourceTable from '@/pages/RegCenter/DataSource/components/DataSourceList';
-import { PageContainer } from '@ant-design/pro-components';
-
-/**
- * render DataSource page
- */
-export default () => {
-  return (
-    <SlowlyAppear>
-      <PageContainer title={false}>
-        <DataSourceTable />
-      </PageContainer>
-    </SlowlyAppear>
-  );
-};
+export const JAVA_LOG_KEYWORD: string[] = [
+  'Start Process',
+  'Start Process Step',
+  'SUBMIT_PRECHECK',
+  'SUBMIT_EXECUTE',
+  'SUBMIT_BUILD_CONFIG',
+  'info',
+  'debug',
+  'error',
+  'warn',
+  'trace',
+  'fatal',
+  'log',
+  'logger',
+  'root',
+  'level',
+  'additivity',
+  'appender',
+  'logger'
+];

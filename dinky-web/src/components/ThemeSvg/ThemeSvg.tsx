@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -16,10 +17,6 @@
  *
  */
 
-/**
- * ThemeCloud is a svg icon  , it is used in the theme switcher of light mode
- * @constructor
- */
 export const ThemeCloud = () => {
   return (
     <>
