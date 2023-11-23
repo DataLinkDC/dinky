@@ -26,11 +26,13 @@ import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.enums.ProcessStatus;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.ProcessType;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.ProcessStepEntity;
 
 import org.apache.http.util.TextUtils;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -41,6 +43,7 @@ import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import cn.hutool.core.text.StrFormatter;
+import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Aspect
@@ -116,12 +119,13 @@ public class ProcessAspect {
         return result;
     }
 
-    private Object getProcessId(ProceedingJoinPoint joinPoint) {
+    private Object getProcessId(ProceedingJoinPoint joinPoint) throws IllegalAccessException {
         Object[] params = joinPoint.getArgs();
         if (params.length == 0) {
             throw new IllegalArgumentException("Must have ProcessId params");
         }
 
+        Object processIdObj = null;
         // Get the method, here you can convert the signature strong to MethodSignature
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
@@ -129,13 +133,32 @@ public class ProcessAspect {
         Annotation[][] annotations = method.getParameterAnnotations();
         for (int i = 0; i < annotations.length; i++) {
             Object param = params[i];
+            if (param == null) continue;
+            // Check whether the parameters on the method have the Process Id annotation
             Annotation[] paramAnn = annotations[i];
             for (Annotation annotation : paramAnn) {
                 if (annotation instanceof ProcessId) {
-                    return String.valueOf(param.hashCode());
+                    processIdObj = param;
+                    break;
+                }
+            }
+            // If there is no Process Id annotation on the parameter,
+            // continue to find out whether there is a variable in the object with the Process Id annotation
+            if (processIdObj == null) {
+                Field[] fields = param.getClass().getDeclaredFields();
+                for (Field field : fields) {
+                    if (field.isAnnotationPresent(ProcessId.class)) {
+                        field.setAccessible(true);
+                        processIdObj = field.get(param);
+                    }
                 }
             }
         }
-        throw new IllegalArgumentException("Must have ProcessId annoation params");
+        if (ObjectUtil.isBasicType(processIdObj)) {
+            return processIdObj;
+        } else {
+            throw new DinkyException(
+                    "The type of the parameter annotated with @ProcessId must be a basic type and not null");
+        }
     }
 }
