@@ -107,7 +107,7 @@ mvn clean install -Dmaven.test.skip=true -P !web,pord,scala-2.11,flink-1.14,flin
 
 ### 问题
 
-如果在打包 dlink-web 过程失败，请先单独打包前端进行问题排查。
+如果在打包 dinky-web 过程失败，请先单独打包前端进行问题排查。
 
 ```bash
 npm build
@@ -241,7 +241,7 @@ dlink--父项目
     | |-dlink-metadata-doris--元数据-doris 实现
     | |-dlink-metadata-phoenix-元数据-phoenix 实现
     | |-dlink-metadata-sqlserver-元数据-sqlserver 实现
-    |-dlink-web--React 前端
+    |-dinky-web--React 前端
     |-docs--官网文档
 ```
 
@@ -301,7 +301,7 @@ Dlink 的任务网关，负责把实现不同执行模式的任务提交与管�
 
 Dlink 的元数据中心，用于实现各种外部数据源对接到 Dlink，以此使用其各种查询、执行等能力。未来用于 Flink Catalog 的预装载等。
 
-### dlink-web
+### dinky-web
 
 Dlink 的前端项目，基于 Ant Design Pro 5.0.0。Why Not Vue ? React Who Use Who Know。（中式英语 =。=）
 

@@ -58,9 +58,9 @@ mvn clean package -Dmaven.test.skip=true
 
 **说明:**
 
-​ 1.如果不想单独编译前端，在 dlink-web 模块的 pom 下有``frontend-maven-plugins``，可直接前后端编译；
+​ 1.如果不想单独编译前端，在 dinky-web 模块的 pom 下有``frontend-maven-plugins``，可直接前后端编译；
 
-​ 2.如果要分开编译，在后端编译完成后，需要在 dlink-web 下执行 ``npm i --force ``;
+​ 2.如果要分开编译，在后端编译完成后，需要在 dinky-web 下执行 ``npm i --force ``;
 
 :::warning 注意事项
 如果不执行 install 生成的 jar安装不到本地 别的依赖就识别不到本地仓库这些包 所以可能导依赖的时候会报错 CustomTableEnvironmentImpl 这个类未定义 。
@@ -207,7 +207,7 @@ yarn-session.sh -n 2 -jm 1024 -tm 4096 -s 6 -d
 #### 方式二
 
 - 启动 dlink-admin 下的 Dlink 启动类
-- 进入到 **dlink-web** 执行 **npm start**
+- 进入到 **dinky-web** 执行 **npm start**
 - **访问:** 127.0.0.1:8000
 - **账户密码:** admin/admin
 
