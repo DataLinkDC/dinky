@@ -35,7 +35,6 @@ target/*
 */target/*
 */*/target/*
 */*/*/target/*
-dlink-web/*
 
 # Dinky Web gitignore
 dinky-web/node_modules/*
