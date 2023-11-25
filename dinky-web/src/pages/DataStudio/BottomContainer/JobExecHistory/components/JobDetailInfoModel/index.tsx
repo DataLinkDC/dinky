@@ -17,12 +17,8 @@
  *
  */
 
-import {Modal, Tag} from "antd";
-import ProDescriptions from "@ant-design/pro-descriptions";
+import {Modal} from "antd";
 import {l} from "@/utils/intl";
-import {FireOutlined} from "@ant-design/icons";
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import {CustomEditorLanguage} from "@/components/CustomEditor/languages/constants";
 import React from "react";
 import {JobExecutionHistory} from "@/types/Studio/data";
 import {
