@@ -33,9 +33,11 @@ import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.model.home.JobInstanceCount;
 import org.dinky.data.model.home.JobInstanceStatus;
+import org.dinky.data.model.home.JobModelOverview;
 import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.ProTableResult;
+import org.dinky.data.vo.task.JobInstanceVo;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.FlinkJobTask;
@@ -89,14 +91,12 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     }
 
     @Override
-    public JobInstanceStatus getStatusCount(boolean isHistory) {
+    public JobInstanceStatus getStatusCount() {
         List<JobInstanceCount> jobInstanceCounts;
-        if (isHistory) {
-            jobInstanceCounts = baseMapper.countHistoryStatus();
-        } else {
-            jobInstanceCounts = baseMapper.countStatus();
-        }
+        jobInstanceCounts = baseMapper.countStatus();
+        JobModelOverview modelOverview = baseMapper.getJobStreamingOrBatchModelOverview();
         JobInstanceStatus jobInstanceStatus = new JobInstanceStatus();
+        jobInstanceStatus.setModelOverview(modelOverview);
         int total = 0;
         for (JobInstanceCount item : jobInstanceCounts) {
             Integer counts = Asserts.isNull(item.getCounts()) ? 0 : item.getCounts();
@@ -252,16 +252,16 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     }
 
     @Override
-    public ProTableResult<JobInstance> listJobInstances(JsonNode para) {
+    public ProTableResult<JobInstanceVo> listJobInstances(JsonNode para) {
         int current = para.has("current") ? para.get("current").asInt() : 1;
         int pageSize = para.has("pageSize") ? para.get("pageSize").asInt() : 10;
-        QueryWrapper<JobInstance> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<JobInstanceVo> queryWrapper = new QueryWrapper<>();
         ProTableUtil.autoQueryDefalut(para, queryWrapper);
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> param = mapper.convertValue(para, Map.class);
-        Page<JobInstance> page = new Page<>(current, pageSize);
-        List<JobInstance> list = baseMapper.selectForProTable(page, queryWrapper, param);
-        return ProTableResult.<JobInstance>builder()
+        Page<JobInstanceVo> page = new Page<>(current, pageSize);
+        List<JobInstanceVo> list = baseMapper.selectForProTable(page, queryWrapper, param);
+        return ProTableResult.<JobInstanceVo>builder()
                 .success(true)
                 .data(list)
                 .total(page.getTotal())

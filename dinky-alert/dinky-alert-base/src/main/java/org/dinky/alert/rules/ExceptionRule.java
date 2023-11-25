@@ -29,33 +29,28 @@ import com.google.common.cache.LoadingCache;
 
 public class ExceptionRule {
 
-    private final LoadingCache<Integer, Long> hisTime;
-
-    public ExceptionRule() {
-        hisTime = CacheBuilder.newBuilder()
-                .expireAfterAccess(60, TimeUnit.SECONDS)
-                .build(CacheLoader.from(key -> null));
-    }
+    private static final LoadingCache<String, Long> hisTime =
+            CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build(CacheLoader.from(key -> null));
 
     /**
      * Executes a certain operation based on the provided key and exceptions object.
      * This method is stored within the database, is called through SPEL, and is not an executable method
-     * @param key The key used to identify the operation.
+     * @param jobinstanceId The key used to identify the operation.
      * @param exceptions The exceptions object containing relevant data.
      * @return True if the operation should be executed, false otherwise.
      */
-    public Boolean isException(Integer key, FlinkJobExceptionsDetail exceptions) {
+    public static Boolean isException(String jobinstanceId, FlinkJobExceptionsDetail exceptions) {
 
         // If the exception is the same as the previous one, it will not be reported again
         if (exceptions.getTimestamp() == null) {
             return false;
         }
         long timestamp = exceptions.getTimestamp();
-        Long hisTimeIfPresent = hisTime.getIfPresent(key);
+        Long hisTimeIfPresent = hisTime.getIfPresent(jobinstanceId);
         if (hisTimeIfPresent != null && hisTimeIfPresent == timestamp) {
             return false;
         }
-        hisTime.put(key, timestamp);
+        hisTime.put(jobinstanceId, timestamp);
         if (exceptions.getRootException() != null) {
             return !exceptions.getRootException().isEmpty();
         } else {

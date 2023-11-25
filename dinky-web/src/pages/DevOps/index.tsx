@@ -19,16 +19,28 @@
 
 import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 import JobList from '@/pages/DevOps/JobList';
+import JobOverview from '@/pages/DevOps/JobList/components/Overview';
 import { PageContainer } from '@ant-design/pro-layout';
+import { Space } from 'antd';
+import { createContext, useState } from 'react';
+
+export const DevopContext = createContext({});
 
 export default () => {
+  const [statusFilter, setStatusFilter] = useState();
+
   /**
    * breadcrumb={{style:{display:'none'}}} is used to hide the breadcrumb || 隐藏右上角的路由导航面包屑
    */
   return (
     <SlowlyAppear>
       <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
-        <JobList />
+        <DevopContext.Provider value={{ statusFilter, setStatusFilter }}>
+          <Space direction='vertical' size={16}>
+            <JobOverview />
+            <JobList />
+          </Space>
+        </DevopContext.Provider>
       </PageContainer>
     </SlowlyAppear>
   );

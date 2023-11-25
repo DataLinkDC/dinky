@@ -23,7 +23,7 @@ import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { Authorized } from '@/hooks/useAccess';
 import RuleEditForm from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm';
-import { RuleType } from '@/pages/SettingCenter/AlertRule/constants';
+import { RuleType } from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm/constants';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
