@@ -25,7 +25,10 @@ import { parseSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
+import { Typography } from 'antd';
 import { useRef } from 'react';
+
+const { Link } = Typography;
 
 type HistoryProps = {
   taskId: number;
@@ -65,12 +68,9 @@ const JobHistoryList = (props: HistoryProps) => {
       title: l('global.table.operate'),
       valueType: 'option',
       render: (text: any, record: Jobs.JobInstance) => [
-        <a
-          key={'history-detail'}
-          onClick={() => history.push(`/devops/job-detail?id=${record.id}`)}
-        >
+        <Link href={`#/devops/job-detail?id=${record.id}`} key={'history-detail'}>
           {l('devops.joblist.detail')}
-        </a>
+        </Link>
       ]
     }
   ];
