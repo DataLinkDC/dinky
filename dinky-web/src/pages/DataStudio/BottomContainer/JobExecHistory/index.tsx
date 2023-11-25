@@ -41,7 +41,7 @@ const {Link, Paragraph, Text} =  Typography;
 
 const JobExecHistory : React.FC<connect> = (props) => {
 
-  const {tabs, dispatch} = props;
+  const {tabs} = props;
 
   const currentTab = getCurrentTab(tabs.panes, tabs.activeKey) as DataStudioTabsItemType;
 

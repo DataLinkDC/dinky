@@ -24,7 +24,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 
 
 import React from 'react';
-import {Typography,Tag} from "antd";
+import {Tag} from "antd";
 
 
 
