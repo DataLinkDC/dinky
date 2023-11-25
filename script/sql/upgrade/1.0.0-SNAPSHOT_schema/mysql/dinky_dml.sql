@@ -283,6 +283,8 @@ alter table dinky_job_history drop column jar_json;
 alter table dinky_task drop column jar_id;
 UPDATE dinky_task_version SET task_configure=JSON_REMOVE(task_configure, '$.jarId');
 UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.jarId');
+UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.jarTask');
+UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.session');
 
 insert into `dinky_flink_document`
 (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)

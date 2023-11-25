@@ -35,7 +35,6 @@ public interface HistoryService extends ISuperService<History> {
      * @param id The ID of the Git project to remove the history for.
      * @return A boolean value indicating whether the removal was successful.
      */
-    @Deprecated
     boolean removeHistoryById(Integer id);
 
     /**

@@ -20,14 +20,23 @@
 package org.dinky.service.impl;
 
 import org.dinky.data.model.job.History;
+import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.ResultPool;
 import org.dinky.mapper.HistoryMapper;
+import org.dinky.mapper.JobInstanceMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.HistoryService;
 
-import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * HistoryServiceImpl
@@ -35,13 +44,26 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  * @since 2021/6/26 23:08
  */
 @Service
+@RequiredArgsConstructor
 public class HistoryServiceImpl extends SuperServiceImpl<HistoryMapper, History> implements HistoryService {
 
+    private final JobInstanceMapper jobInstanceMapper;
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean removeHistoryById(Integer id) {
         History history = getById(id);
         if (history != null) {
             ResultPool.remove(history.getJobId());
+            List<JobInstance> jobInstanceList = jobInstanceMapper.selectList(
+                    new LambdaQueryWrapper<>(JobInstance.class).eq(JobInstance::getHistoryId, id));
+            jobInstanceList.forEach(jobInstance -> {
+                if (Optional.ofNullable(jobInstance.getHistoryId()).isPresent()
+                        && jobInstance.getHistoryId().equals(id)) {
+                    jobInstance.setHistoryId(null);
+                    jobInstanceMapper.updateById(jobInstance);
+                }
+            });
         }
         return removeById(id);
     }

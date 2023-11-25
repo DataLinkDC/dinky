@@ -30,6 +30,7 @@ export function FlinkSQLLanguage(monaco?: Monaco | undefined, registerCompletion
   monaco?.languages.register({
     id: CustomEditorLanguage.FlinkSQL,
     extensions: ['.sql'],
+    mimetypes: ['text/x-flinksql', 'text/x-flinksql', 'text/x-flinksql', 'text/flinksql'],
     aliases: ['flinksql', 'fsql', 'flinkSQL', 'FlinkSQL']
   });
   buildMonarchTokensProvider(monaco);
@@ -39,4 +40,15 @@ export function FlinkSQLLanguage(monaco?: Monaco | undefined, registerCompletion
     registerFlinkSQLCompilation(monaco);
   }
   buildFlinkSQLConfiguration(monaco);
+
+  monaco?.languages.onLanguageEncountered(CustomEditorLanguage.FlinkSQL, () => {
+    monaco?.editor?.getModels().forEach((model) => {
+      model.onDidChangeLanguage(() => {
+        if (model.getLanguageId() === CustomEditorLanguage.FlinkSQL) {
+          buildFlinkSQLConfiguration(monaco);
+        }
+      });
+    });
+    buildMonarchTokensProvider(monaco);
+  });
 }

@@ -48,7 +48,6 @@ import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
-import org.dinky.utils.JsonUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -164,7 +163,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         jobInfoDetail.setClusterInstance(clusterInstance);
 
         History history = historyService.getById(jobInstance.getHistoryId());
-        history.setConfig(JsonUtils.parseObject(history.getConfigJson()));
+        history.setConfigJson(history.getConfigJson());
         jobInfoDetail.setHistory(history);
         if (Asserts.isNotNull(history.getClusterConfigurationId())) {
             ClusterConfiguration clusterConfig =

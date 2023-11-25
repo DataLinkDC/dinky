@@ -31,6 +31,7 @@ import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { ProCard } from '@ant-design/pro-components';
 import { Tag } from 'antd';
 import { useRef, useState } from 'react';
+import {matchLanguage} from "@/pages/DataStudio/MiddleContainer/function";
 
 const JobVersionTab = (props: JobProps) => {
   const { jobDetail } = props;
@@ -117,9 +118,7 @@ const JobVersionTab = (props: JobProps) => {
                 showFloatButton
                 code={currentVersion?.statement ?? ''}
                 height={parent.innerHeight - 250}
-                language={
-                  currentVersion?.dialect?.toLowerCase() === DIALECT.FLINK_SQL ? 'flinksql' : 'sql'
-                }
+                language={matchLanguage(currentVersion?.dialect)}
               />
             </ProCard>
           </Pane>

@@ -29,7 +29,6 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.options.JobAlertRuleOptions;
 import org.dinky.job.JobConfig;
-import org.dinky.utils.JsonUtils;
 import org.dinky.utils.TimeUtil;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -150,7 +149,7 @@ public class JobAlertData {
         builder.alertTime(TimeUtil.nowStr());
 
         JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
-        JobConfig job = JsonUtils.parseObject(jobInfoDetail.getHistory().getConfigJson(), JobConfig.class);
+        JobConfig job = jobInfoDetail.getHistory().getConfigJson();
         ClusterInstance clusterInstance = jobInfoDetail.getClusterInstance();
         CheckPointOverView checkpoints = jobDataDto.getCheckpoints();
         FlinkJobExceptionsDetail exceptions = jobDataDto.getExceptions();

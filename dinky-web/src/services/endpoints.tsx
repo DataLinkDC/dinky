@@ -293,5 +293,10 @@ export enum API_CONSTANTS {
   MOVE_CATALOGUE_URL = '/api/catalogue/moveCatalogue',
 
   //task
-  TASK = '/api/task'
+  TASK = '/api/task',
+
+  // history
+  HISTORY_LIST = '/api/history/list',
+  HISTORY_DELETE_BY_ID = '/api/history/deleteById',
+
 }

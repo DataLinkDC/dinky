@@ -19,11 +19,13 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.job.History;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.HistoryService;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,11 +61,21 @@ public class HistoryController {
      * @param para
      * @return
      */
-    @PostMapping
+    @PostMapping("/list")
     @ApiOperation("Query History List")
     @ApiImplicitParam(name = "para", value = "Query Parameters", dataType = "JsonNode", paramType = "body")
     public ProTableResult<History> listHistory(@RequestBody JsonNode para) {
         return historyService.selectForProTable(para);
+    }
+
+    @DeleteMapping("/deleteById")
+    @ApiOperation("Delete History By Id")
+    @ApiImplicitParam(name = "id", value = "History Id", dataType = "Integer", paramType = "query", required = true)
+    public Result<Void> deleteById(@RequestParam Integer id) {
+        if (historyService.removeHistoryById(id)) {
+            return Result.succeed(Status.DELETE_SUCCESS);
+        }
+        return Result.failed(Status.DELETE_FAILED);
     }
 
     /**

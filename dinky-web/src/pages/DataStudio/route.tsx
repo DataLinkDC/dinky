@@ -60,6 +60,7 @@ import {
 } from '@ant-design/icons';
 import { DiffEditor } from '@monaco-editor/react';
 import { ReactNode } from 'react';
+import JobExecHistory from "@/pages/DataStudio/BottomContainer/JobExecHistory";
 
 export const LeftSide = [
   {
@@ -165,8 +166,8 @@ export const LeftBottomSide = [
     auth: '/datastudio/bottom/history',
     key: 'menu.datastudio.history',
     icon: <HistoryOutlined />,
-    label: l('menu.datastudio.history')
-    // children: <JobExecHistory />
+    label: l('menu.datastudio.history'),
+    children: <JobExecHistory />
   },
   {
     auth: '/datastudio/bottom/table-data',
