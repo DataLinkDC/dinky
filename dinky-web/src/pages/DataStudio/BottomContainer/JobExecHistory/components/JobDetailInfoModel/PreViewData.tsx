@@ -44,6 +44,7 @@ export const PreViewData: React.FC<PreViewDataProps> = (props) => {
           </Tag>
         </ProDescriptions.Item>
         <ProDescriptions.Item span={2}>
+          {/*todo: 预览数据组件*/}
           {/*<StudioPreview result={result} style={{width: '100%'}}/>*/}
         </ProDescriptions.Item>
       </ProDescriptions>
