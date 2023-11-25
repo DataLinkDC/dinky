@@ -98,6 +98,13 @@ export default {
    * devops
    *
    * */
+  'devops.joblist.status.all': 'All',
+  'devops.joblist.status.running': 'running',
+  'devops.joblist.status.cancelled': 'Canceled',
+  'devops.joblist.status.failed': 'Exception job',
+  'devops.joblist.status.restarting': 'Restarting',
+  'devops.joblist.status.finished': 'completed',
+  'devops.joblist.status.unknown': 'unknown job',
 
   'devops.baseinfo.name': 'Job Name',
   'devops.baseinfo.parallelism': 'Parallelism',

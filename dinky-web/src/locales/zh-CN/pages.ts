@@ -93,6 +93,14 @@ export default {
    *
    * */
 
+  'devops.joblist.status.all': '任务总计',
+  'devops.joblist.status.running': '运行中',
+  'devops.joblist.status.cancelled': '已取消',
+  'devops.joblist.status.failed': '异常作业',
+  'devops.joblist.status.restarting': '重启中',
+  'devops.joblist.status.finished': '已完成',
+  'devops.joblist.status.unknown': '未知作业',
+
   'devops.baseinfo.name': '任务名称',
   'devops.baseinfo.parallelism': '并行度',
   'devops.baseinfo.readbytes': '接收字节',
