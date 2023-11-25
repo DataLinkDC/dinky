@@ -22,23 +22,24 @@ import { l } from '@/utils/intl';
 import { FireOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
 
-
+import { Tag } from 'antd';
 import React from 'react';
-import {Tag} from "antd";
-
-
 
 type JobDetailInfoModelProps = {
   row: JobExecutionHistory | undefined;
 };
 
 export const JobConfigInfo: React.FC<JobDetailInfoModelProps> = (props) => {
-
   const { row } = props;
 
   return (
     <>
-      <ProDescriptions bordered size={'small'} column={2} title={l('pages.datastudio.label.history.execConfig')}>
+      <ProDescriptions
+        bordered
+        size={'small'}
+        column={2}
+        title={l('pages.datastudio.label.history.execConfig')}
+      >
         <ProDescriptions.Item label='JobId'>
           <Tag color='blue' key={row?.jobId}>
             <FireOutlined /> {row?.jobId}
@@ -57,15 +58,20 @@ export const JobConfigInfo: React.FC<JobDetailInfoModelProps> = (props) => {
         </ProDescriptions.Item>
 
         <ProDescriptions.Item label={l('pages.datastudio.label.history.clusterType')}>
-          {row?.clusterId ?
-            l('pages.datastudio.label.history.clusterInstance')
-            : row?.clusterConfigurationId ?  l('pages.datastudio.label.history.clusterConfig')
+          {row?.clusterId
+            ? l('pages.datastudio.label.history.clusterInstance')
+            : row?.clusterConfigurationId
+            ? l('pages.datastudio.label.history.clusterConfig')
             : l('pages.datastudio.label.history.local')}
         </ProDescriptions.Item>
 
-        <ProDescriptions.Item label={
-          row?.clusterId ? l('pages.datastudio.label.history.clusterId') :
-          l('pages.datastudio.label.history.clusterConfigurationId')}>
+        <ProDescriptions.Item
+          label={
+            row?.clusterId
+              ? l('pages.datastudio.label.history.clusterId')
+              : l('pages.datastudio.label.history.clusterConfigurationId')
+          }
+        >
           {row?.clusterId ? row?.clusterId : row?.clusterConfigurationId ?? 'None'}
         </ProDescriptions.Item>
 

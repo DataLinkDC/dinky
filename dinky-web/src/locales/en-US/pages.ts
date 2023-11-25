@@ -439,7 +439,8 @@ export default {
   'pages.datastudio.label.history.result': 'PreView Data',
   'pages.datastudio.label.history.error': 'View Error Log',
   'pages.datastudio.label.history.deleteConfirm': 'Are you sure to delete this execution history？',
-  'pages.datastudio.label.history.notSuccess': 'The Job has not been successfully executed. It cannot be Preview data.',
+  'pages.datastudio.label.history.notSuccess':
+    'The Job has not been successfully executed. It cannot be Preview data.',
   'pages.datastudio.label.history.clusterConfigId': 'Cluster Config ID',
   'pages.datastudio.label.history.clusterId': 'Cluster Instance ID',
   'pages.datastudio.label.history.taskType': 'Job Execution Mode',

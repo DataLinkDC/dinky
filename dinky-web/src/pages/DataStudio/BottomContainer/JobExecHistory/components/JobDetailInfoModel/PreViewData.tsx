@@ -29,18 +29,14 @@ type PreViewDataProps = {
 };
 
 export const PreViewData: React.FC<PreViewDataProps> = (props) => {
-
   const { row } = props;
 
   return (
     <>
-      <ProDescriptions
-        column={2}
-        title={l('pages.datastudio.label.history.result')}
-      >
-        <ProDescriptions.Item span={2} label="JobId">
-          <Tag color={row?.jobId ? 'blue' :'red'} key={row?.jobId}>
-            <FireOutlined/> {row?.jobId ?? l('global.job.status.failed-tip')}
+      <ProDescriptions column={2} title={l('pages.datastudio.label.history.result')}>
+        <ProDescriptions.Item span={2} label='JobId'>
+          <Tag color={row?.jobId ? 'blue' : 'red'} key={row?.jobId}>
+            <FireOutlined /> {row?.jobId ?? l('global.job.status.failed-tip')}
           </Tag>
         </ProDescriptions.Item>
         <ProDescriptions.Item span={2}>

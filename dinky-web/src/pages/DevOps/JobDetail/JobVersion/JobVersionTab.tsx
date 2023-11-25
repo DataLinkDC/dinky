@@ -19,9 +19,9 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import VersionList from '@/components/VersionList';
+import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { handleRemoveById } from '@/services/BusinessCrud';
-import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { TaskVersionListItem } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
@@ -31,7 +31,6 @@ import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { ProCard } from '@ant-design/pro-components';
 import { Tag } from 'antd';
 import { useRef, useState } from 'react';
-import {matchLanguage} from "@/pages/DataStudio/MiddleContainer/function";
 
 const JobVersionTab = (props: JobProps) => {
   const { jobDetail } = props;

@@ -17,41 +17,43 @@
  *
  */
 
+import CodeShow from '@/components/CustomEditor/CodeShow';
+import { CustomEditorLanguage } from '@/components/CustomEditor/languages/constants';
 import { JobExecutionHistory } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { FireOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { Tag } from 'antd';
 import React from 'react';
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import {CustomEditorLanguage} from "@/components/CustomEditor/languages/constants";
 
 type ErrorMsgInfoProps = {
   row: JobExecutionHistory | undefined;
 };
 
 export const ErrorMsgInfo: React.FC<ErrorMsgInfoProps> = (props) => {
-
   const { row } = props;
 
   return (
     <>
-      <ProDescriptions
-        column={6}
-        title={l('pages.datastudio.label.history.error')}
-      >
-        <ProDescriptions.Item label="JobName">
-          <Tag color={row?.jobName ? 'blue' :'red'} key={row?.jobName}>
-            <FireOutlined/> {row?.jobName ?? l('global.job.status.failed-tip')}
+      <ProDescriptions column={6} title={l('pages.datastudio.label.history.error')}>
+        <ProDescriptions.Item label='JobName'>
+          <Tag color={row?.jobName ? 'blue' : 'red'} key={row?.jobName}>
+            <FireOutlined /> {row?.jobName ?? l('global.job.status.failed-tip')}
           </Tag>
         </ProDescriptions.Item>
-        <ProDescriptions.Item label="JobId">
-          <Tag color={row?.jobId ? 'blue' :'red'} key={row?.jobId}>
-            <FireOutlined/> {row?.jobId ?? l('global.job.status.failed-tip')}
+        <ProDescriptions.Item label='JobId'>
+          <Tag color={row?.jobId ? 'blue' : 'red'} key={row?.jobId}>
+            <FireOutlined /> {row?.jobId ?? l('global.job.status.failed-tip')}
           </Tag>
         </ProDescriptions.Item>
       </ProDescriptions>
-      <CodeShow showFloatButton autoWrap={'on'} height={'60vh'}  language={CustomEditorLanguage.JavaLog} code={row?.error ?? '暂无日志'}/>
+      <CodeShow
+        showFloatButton
+        autoWrap={'on'}
+        height={'60vh'}
+        language={CustomEditorLanguage.JavaLog}
+        code={row?.error ?? '暂无日志'}
+      />
     </>
   );
 };

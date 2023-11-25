@@ -17,53 +17,45 @@
  *
  */
 
-import {Modal} from "antd";
-import {l} from "@/utils/intl";
-import React from "react";
-import {JobExecutionHistory} from "@/types/Studio/data";
-import {
-  JobConfigInfo
-} from "@/pages/DataStudio/BottomContainer/JobExecHistory/components/JobDetailInfoModel/JobConfigInfo";
-import {
-  StatementInfo
-} from "@/pages/DataStudio/BottomContainer/JobExecHistory/components/JobDetailInfoModel/StatementInfo";
-import {PreViewData} from "@/pages/DataStudio/BottomContainer/JobExecHistory/components/JobDetailInfoModel/PreViewData";
-import {
-  ErrorMsgInfo
-} from "@/pages/DataStudio/BottomContainer/JobExecHistory/components/JobDetailInfoModel/ErrorMsgInfo";
-
+import { ErrorMsgInfo } from '@/pages/DataStudio/BottomContainer/JobExecHistory/components/JobDetailInfoModel/ErrorMsgInfo';
+import { JobConfigInfo } from '@/pages/DataStudio/BottomContainer/JobExecHistory/components/JobDetailInfoModel/JobConfigInfo';
+import { PreViewData } from '@/pages/DataStudio/BottomContainer/JobExecHistory/components/JobDetailInfoModel/PreViewData';
+import { StatementInfo } from '@/pages/DataStudio/BottomContainer/JobExecHistory/components/JobDetailInfoModel/StatementInfo';
+import { JobExecutionHistory } from '@/types/Studio/data';
+import { l } from '@/utils/intl';
+import { Modal } from 'antd';
+import React from 'react';
 
 type JobDetailInfoModelProps = {
   modalVisit: boolean;
   handleCancel: () => void;
   row: JobExecutionHistory | undefined;
   type: number;
-
-}
+};
 
 export const JobDetailInfoModel: React.FC<JobDetailInfoModelProps> = (props) => {
+  const { modalVisit, handleCancel, row, type } = props;
 
-  const {modalVisit, handleCancel, row, type} = props;
-
-
-  return <>
-    <Modal
-      width={'80%'}
-      open={modalVisit}
-      destroyOnClose
-      maskClosable={false}
-      okButtonProps={{
-        style: {
-          display: 'none',
-        },
-      }}
-      cancelText={l('button.close')}
-      onCancel={handleCancel}
-    >
-      {type == 1 && <JobConfigInfo row={row}/>}
-      {type == 2 && <StatementInfo row={row}/>}
-      {type == 3 && <PreViewData row={row}/>}
-      {type == 4 && <ErrorMsgInfo row={row}/>}
-    </Modal>
-  </>
-}
+  return (
+    <>
+      <Modal
+        width={'80%'}
+        open={modalVisit}
+        destroyOnClose
+        maskClosable={false}
+        okButtonProps={{
+          style: {
+            display: 'none'
+          }
+        }}
+        cancelText={l('button.close')}
+        onCancel={handleCancel}
+      >
+        {type == 1 && <JobConfigInfo row={row} />}
+        {type == 2 && <StatementInfo row={row} />}
+        {type == 3 && <PreViewData row={row} />}
+        {type == 4 && <ErrorMsgInfo row={row} />}
+      </Modal>
+    </>
+  );
+};

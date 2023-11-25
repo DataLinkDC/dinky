@@ -212,7 +212,6 @@ export default {
   'global.month.november': 'November',
   'global.month.december': 'December',
 
-
   // job status
   'global.job.status.initiating': 'Initializing',
   'global.job.status.success': 'Success',
@@ -228,7 +227,5 @@ export default {
   'global.job.status.reconciling': 'Reconciling',
   'global.job.status.reconnecting': 'Reconnecting',
   'global.job.status.unknown': 'Unknown',
-  'global.job.status.failed-tip': 'Failed to submit to the cluster, unable to get the task name',
-
-
+  'global.job.status.failed-tip': 'Failed to submit to the cluster, unable to get the task name'
 };
