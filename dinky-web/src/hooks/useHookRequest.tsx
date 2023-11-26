@@ -1,14 +1,8 @@
-import {
-  useState,
-  useEffect,
-  useRef,
-  SetStateAction,
-  useCallback,
-} from 'react';
+import { Timeout } from '@antv/l7-layers/es/tile/interface';
 import lodash from 'lodash';
-import {Timeout} from "@antv/l7-layers/es/tile/interface";
+import { SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
-interface UseRequestOptionsProps<TData extends {data:any}, TParams extends any[]> {
+interface UseRequestOptionsProps<TData extends { data: any }, TParams extends any[]> {
   /*
    * 手动开启
    */
@@ -47,10 +41,9 @@ interface UseRequestOptionsProps<TData extends {data:any}, TParams extends any[]
   onSuccess?: (res: TData) => void;
 }
 
-
-function useHookRequest<TData extends {data:any}, TParams extends any[]>(
+function useHookRequest<TData extends { data: any }, TParams extends any[]>(
   service: (...args: TParams) => Promise<TData>,
-  options: UseRequestOptionsProps<TData,TParams>,
+  options: UseRequestOptionsProps<TData, TParams>
 ) {
   const [data, setData] = useState<SetStateAction<TData>>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -59,15 +52,15 @@ function useHookRequest<TData extends {data:any}, TParams extends any[]>(
   const pollingIntervalTimer = useRef<Timeout>();
 
   const {
-    manual=false,
+    manual = false,
     defaultParams,
-    pollingInterval=null,
+    pollingInterval = null,
     ready = true,
-    debounceInterval=null,
-    throttleInterval=null,
-    loadingDelay=null,
-    refreshDeps=null,
-    onSuccess=null,
+    debounceInterval = null,
+    throttleInterval = null,
+    loadingDelay = null,
+    refreshDeps = null,
+    onSuccess = null
   } = options;
 
   useEffect(() => {
@@ -76,8 +69,8 @@ function useHookRequest<TData extends {data:any}, TParams extends any[]>(
 
   //  请求
   const run = (params?: TParams) => {
-    if (!params){
-      params = defaultParams
+    if (!params) {
+      params = defaultParams;
     }
     if (debounceInterval) {
       lodash.debounce(doRun, debounceInterval)(...params);
@@ -95,10 +88,10 @@ function useHookRequest<TData extends {data:any}, TParams extends any[]>(
       //延迟显示loading，防止刷新时闪屏
       if (loadingDelay) {
         setTimeout(() => {
-          !finish && setLoading(true)
+          !finish && setLoading(true);
         }, loadingDelay);
-      }else {
-        setLoading(true)
+      } else {
+        setLoading(true);
       }
       !status.current && (status.current = true);
       //定时刷新
@@ -107,7 +100,7 @@ function useHookRequest<TData extends {data:any}, TParams extends any[]>(
           status.current && run(...defaultParams);
         }, pollingInterval);
       }
-      const res:TData = await service(...params);
+      const res: TData = await service(...params);
       setData(res.data);
       onSuccess && onSuccess(res.data);
     } catch (err) {
@@ -129,7 +122,7 @@ function useHookRequest<TData extends {data:any}, TParams extends any[]>(
   // 缓存
   const cachedData = useCallback(() => data, [data]);
 
-  return {data, loading, error, run, cancel, cachedData};
+  return { data, loading, error, run, cancel, cachedData };
 }
 
 export default useHookRequest;
