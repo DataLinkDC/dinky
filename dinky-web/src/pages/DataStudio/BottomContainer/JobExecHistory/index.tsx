@@ -69,11 +69,6 @@ const JobExecHistory : React.FC<connect> = (props) => {
     }
   };
 
-  const removeHistory = async (row: JobExecutionHistory) => {
-     await handleRemoveById(API_CONSTANTS.HISTORY_DELETE_BY_ID, row.id);
-     await refAction.current?.reload();
-  };
-
   const handleCancel = () => {
     setModalVisit(false);
   };
@@ -134,14 +129,10 @@ const JobExecHistory : React.FC<connect> = (props) => {
 
   const renderActions = (item: JobExecutionHistory) => {
     return [
-      <a key="config" onClick={() => {
-        showDetail(item, 1)
-      }}>
+      <a key="config" onClick={() => showDetail(item, 1)}>
         {l('pages.datastudio.label.history.execConfig')}
       </a>,
-      <a key="statement" onClick={() => {
-        showDetail(item, 2)
-      }}>
+      <a key="statement" onClick={() => showDetail(item, 2)}>
         {l('pages.datastudio.label.history.statement')}
       </a>,
       <a key="result" onClick={async () => {
@@ -153,16 +144,9 @@ const JobExecHistory : React.FC<connect> = (props) => {
       }}>
         {l('pages.datastudio.label.history.result')}
       </a>,
-      <a key="error" onClick={() => {
-        showDetail(item, 4)
-      }}>
+      <a key="error" onClick={() => showDetail(item, 4)}>
         {l('pages.datastudio.label.history.error')}
-      </a>,
-      <PopconfirmDeleteBtn
-        key="delete"
-        description={l('pages.datastudio.label.history.deleteConfirm')}
-        onClick={async () => removeHistory(item)}
-      />
+      </a>
     ]
   }
 

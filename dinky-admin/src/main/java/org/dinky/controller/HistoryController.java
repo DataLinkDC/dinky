@@ -68,16 +68,6 @@ public class HistoryController {
         return historyService.selectForProTable(para);
     }
 
-    @DeleteMapping("/deleteById")
-    @ApiOperation("Delete History By Id")
-    @ApiImplicitParam(name = "id", value = "History Id", dataType = "Integer", paramType = "query", required = true)
-    public Result<Void> deleteById(@RequestParam Integer id) {
-        if (historyService.removeHistoryById(id)) {
-            return Result.succeed(Status.DELETE_SUCCESS);
-        }
-        return Result.failed(Status.DELETE_FAILED);
-    }
-
     /**
      * 获取Job实例的所有信息
      */

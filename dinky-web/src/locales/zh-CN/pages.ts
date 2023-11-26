@@ -422,7 +422,6 @@ export default {
   'pages.datastudio.label.history.statement': '执行语句',
   'pages.datastudio.label.history.result': '预览数据',
   'pages.datastudio.label.history.error': '查看错误日志',
-  'pages.datastudio.label.history.deleteConfirm': '确定删除该执行历史记录吗？',
   'pages.datastudio.label.history.notSuccess': '该任务未成功执行，无法预览数据',
   'pages.datastudio.label.history.clusterConfigId': '集群配置ID',
   'pages.datastudio.label.history.clusterId': '集群实例ID',
