@@ -59,15 +59,15 @@ function useHookRequest<TData extends {data:any}, TParams extends any[]>(
   const pollingIntervalTimer = useRef<Timeout>();
 
   const {
-    manual,
+    manual=false,
     defaultParams,
-    pollingInterval,
+    pollingInterval=null,
     ready = true,
-    debounceInterval,
-    throttleInterval,
-    loadingDelay,
-    refreshDeps,
-    onSuccess,
+    debounceInterval=null,
+    throttleInterval=null,
+    loadingDelay=null,
+    refreshDeps=null,
+    onSuccess=null,
   } = options;
 
   useEffect(() => {
@@ -75,7 +75,7 @@ function useHookRequest<TData extends {data:any}, TParams extends any[]>(
   }, [manual, ready, ...(Array.isArray(refreshDeps) ? refreshDeps : [])]);
 
   //  请求
-  const run = (...params: TParams) => {
+  const run = (params?: TParams) => {
     if (!params){
       params = defaultParams
     }
@@ -86,10 +86,6 @@ function useHookRequest<TData extends {data:any}, TParams extends any[]>(
     } else {
       doRun(...params);
     }
-  };
-
-  const refresh = () => {
-    run(...defaultParams);
   };
 
   // useRequest业务逻辑
@@ -133,7 +129,7 @@ function useHookRequest<TData extends {data:any}, TParams extends any[]>(
   // 缓存
   const cachedData = useCallback(() => data, [data]);
 
-  return {data,refresh, loading, error, run, cancel, cachedData};
+  return {data, loading, error, run, cancel, cachedData};
 }
 
 export default useHookRequest;
