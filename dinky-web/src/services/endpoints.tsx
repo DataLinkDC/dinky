@@ -296,5 +296,5 @@ export enum API_CONSTANTS {
   TASK = '/api/task',
 
   // history
-  HISTORY_LIST = '/api/history/list',
+  HISTORY_LIST = '/api/history/list'
 }
