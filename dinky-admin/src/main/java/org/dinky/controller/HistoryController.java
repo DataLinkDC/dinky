@@ -19,13 +19,11 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.enums.Status;
 import org.dinky.data.model.job.History;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.HistoryService;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
