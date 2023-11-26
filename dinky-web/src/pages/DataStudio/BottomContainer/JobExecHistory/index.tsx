@@ -30,10 +30,8 @@ import {l} from "@/utils/intl";
 import {JobDetailInfoModel} from "@/pages/DataStudio/BottomContainer/JobExecHistory/components/JobDetailInfoModel";
 import {ProListMetas} from "@ant-design/pro-list";
 import {ErrorMessage} from "@/utils/messages";
-import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
 import {useUpdateEffect} from "ahooks";
 import {formatDateToYYYYMMDDHHMMSS} from "@/utils/function";
-import {handleRemoveById} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/endpoints";
 
 const {Link, Paragraph, Text} =  Typography;
