@@ -19,6 +19,7 @@
 
 import { CircleDataStudioButtonProps } from '@/components/CallBackButton/CircleBtn';
 import Console from '@/pages/DataStudio/BottomContainer/Console';
+import JobExecHistory from '@/pages/DataStudio/BottomContainer/JobExecHistory';
 import Lineage from '@/pages/DataStudio/BottomContainer/Lineage';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
@@ -60,7 +61,6 @@ import {
 } from '@ant-design/icons';
 import { DiffEditor } from '@monaco-editor/react';
 import { ReactNode } from 'react';
-import JobExecHistory from "@/pages/DataStudio/BottomContainer/JobExecHistory";
 
 export const LeftSide = [
   {

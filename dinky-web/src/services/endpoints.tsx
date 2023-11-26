@@ -297,5 +297,4 @@ export enum API_CONSTANTS {
 
   // history
   HISTORY_LIST = '/api/history/list',
-
 }

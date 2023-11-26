@@ -28,8 +28,8 @@ import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
 
 import FullscreenBtn from '@/components/CustomEditor/FullscreenBtn';
-import {Editor, Monaco, useMonaco} from '@monaco-editor/react';
-import {CSSProperties, useCallback, useRef, useState} from 'react';
+import { Editor, Monaco } from '@monaco-editor/react';
+import { CSSProperties, useRef, useState } from 'react';
 
 export type CodeShowFormProps = {
   height?: string | number;

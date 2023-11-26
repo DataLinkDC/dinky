@@ -113,14 +113,13 @@ export type ClusterConfig = {
   flinkLibPath: string;
   hadoopConfigPath: string;
   appId: string;
-}
+};
 
 export type AppConfig = {
   userJarPath: string;
   userJarParas: string[];
   userJarMainAppClass: string;
-}
-
+};
 
 export type K8sConfig = {
   configuration: Map<string, string>;
@@ -128,7 +127,7 @@ export type K8sConfig = {
   podTemplate: string;
   jmPodTemplate: string;
   tmPodTemplate: string;
-}
+};
 
 export type FlinkConfig = {
   jobName: string;
@@ -139,38 +138,36 @@ export type FlinkConfig = {
   savePoint: string;
   configuration: AppConfig;
   flinkConfigList: Map<string, string>[];
-}
+};
 
 export type GatewayConfig = {
   taskId: number;
   jarPaths: string[];
   type: string;
   clusterConfig: ClusterConfig;
-  flinkConfig:FlinkConfig;
+  flinkConfig: FlinkConfig;
   appConfig: AppConfig;
   kubernetesConfig: K8sConfig;
-}
+};
 
-export  enum ActionType{
+export enum ActionType {
   SAVEPOINT = 'savepoint',
-  CANCEL = 'cancel',
+  CANCEL = 'cancel'
 }
-export  enum SavePointType{
+export enum SavePointType {
   TRIGGER = 'trigger',
   DISPOSE = 'dispose',
   STOP = 'stop',
-  CANCEL = 'cancel',
+  CANCEL = 'cancel'
 }
-export enum SavePointStrategy  {
+export enum SavePointStrategy {
   NONE = 0,
-  LATEST= 1,
+  LATEST = 1,
   EARLIEST = 2,
-  CUSTOM = 3,
-
-
+  CUSTOM = 3
 }
 
-export type JobConfig ={
+export type JobConfig = {
   type: string;
   checkpoint: number;
   savepointStrategy: SavePointStrategy;
@@ -194,8 +191,7 @@ export type JobConfig ={
   maxRowNum: number;
   gatewayConfig: GatewayConfig;
   variables: Map<string, string>;
-}
-
+};
 
 export type JobExecutionHistory = {
   id: number;
@@ -216,8 +212,7 @@ export type JobExecutionHistory = {
   taskId: number;
 };
 
-
-export  enum JobStatus {
+export enum JobStatus {
   INITIALIZING = 'INITIALIZING',
   CREATED = 'CREATED',
   RUNNING = 'RUNNING',
@@ -230,5 +225,5 @@ export  enum JobStatus {
   SUSPENDED = 'SUSPENDED',
   RECONCILING = 'RECONCILING',
   RECONNECTING = 'RECONNECTING',
-  UNKNOWN = 'UNKNOWN',
+  UNKNOWN = 'UNKNOWN'
 }
