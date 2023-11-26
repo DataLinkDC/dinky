@@ -117,7 +117,9 @@ const JobDesc = (props: JobProps) => {
           ) : undefined}
 
           <Descriptions.Item label={l('devops.jobinfo.config.useSqlFragment')}>
-            {jobDetail?.history?.configJson?.useSqlFragment ? l('button.enable') : l('button.disable')}
+            {jobDetail?.history?.configJson?.useSqlFragment
+              ? l('button.enable')
+              : l('button.disable')}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.execmode')}>
