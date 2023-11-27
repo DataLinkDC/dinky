@@ -17,33 +17,32 @@
  *
  */
 
-import {convertCodeEditTheme} from "@/utils/function";
-import {DiffEditor} from "@monaco-editor/react";
-
+import { convertCodeEditTheme } from '@/utils/function';
+import { DiffEditor } from '@monaco-editor/react';
 
 const TextComparison = () => {
-    return (
-      <DiffEditor
-        height={'100%'}
-        options={{
-          readOnly: false,
-          originalEditable: true,
-          selectOnLineNumbers: true,
-          lineDecorationsWidth: 20,
-          mouseWheelZoom: true,
-          automaticLayout: true,
-          scrollBeyondLastLine: false,
-          scrollbar: {
-            useShadows: false,
-            verticalScrollbarSize: 8,
-            horizontalScrollbarSize: 8,
-            arrowSize: 30
-          }
-        }}
-        language={'text'}
-        theme={convertCodeEditTheme()}
-      />
-    )
-}
+  return (
+    <DiffEditor
+      height={'100%'}
+      options={{
+        readOnly: false,
+        originalEditable: true,
+        selectOnLineNumbers: true,
+        lineDecorationsWidth: 20,
+        mouseWheelZoom: true,
+        automaticLayout: true,
+        scrollBeyondLastLine: false,
+        scrollbar: {
+          useShadows: false,
+          verticalScrollbarSize: 8,
+          horizontalScrollbarSize: 8,
+          arrowSize: 30
+        }
+      }}
+      language={'text'}
+      theme={convertCodeEditTheme()}
+    />
+  );
+};
 
 export default TextComparison;

@@ -24,6 +24,7 @@ import Lineage from '@/pages/DataStudio/BottomContainer/Lineage';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
 import JsonToSql from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql';
+import TextComparison from '@/pages/DataStudio/BottomContainer/Tools/TextComparison';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import Catalog from '@/pages/DataStudio/LeftContainer/Catalog';
 import DataSource from '@/pages/DataStudio/LeftContainer/DataSource';
@@ -59,7 +60,6 @@ import {
   ToolOutlined
 } from '@ant-design/icons';
 import { ReactNode } from 'react';
-import TextComparison from "@/pages/DataStudio/BottomContainer/Tools/TextComparison";
 
 export const LeftSide = [
   {
@@ -179,7 +179,7 @@ export const LeftBottomSide = [
     auth: '/datastudio/bottom/tool',
     key: 'menu.datastudio.tool',
     icon: <ToolOutlined />,
-    label: l('menu.datastudio.tool'),
+    label: l('menu.datastudio.tool')
   }
 ];
 
