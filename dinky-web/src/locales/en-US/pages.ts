@@ -434,6 +434,7 @@ export default {
   'pages.datastudio.catalog.openMission': 'Open Mission',
 
   'pages.datastudio.label.history.title': 'Job:【{name}】Execution History',
+  'pages.datastudio.label.history.noData': 'Please click the job to view the job execution history',
   'pages.datastudio.label.history.execConfig': 'Execution Configuration',
   'pages.datastudio.label.history.statement': 'Execution Statement',
   'pages.datastudio.label.history.result': 'PreView Data',

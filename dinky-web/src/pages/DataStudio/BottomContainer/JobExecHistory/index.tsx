@@ -30,7 +30,7 @@ import { ClusterOutlined, FireOutlined, RocketOutlined } from '@ant-design/icons
 import { ActionType, ProList } from '@ant-design/pro-components';
 import { ProListMetas } from '@ant-design/pro-list';
 import { useUpdateEffect } from 'ahooks';
-import { Badge, Divider, Space, Tag, Typography } from 'antd';
+import {Badge, Divider, Empty, Space, Tag, Typography} from 'antd';
 import React, { useRef, useState } from 'react';
 import { connect } from 'umi';
 
@@ -253,41 +253,44 @@ const JobExecHistory: React.FC<connect> = (props) => {
   console.log(currentTab);
 
   return (
-    <>
-      <ProList<JobExecutionHistory>
-        actionRef={refAction}
-        search={{
-          filterType: 'light'
-        }}
-        size={'small'}
-        rowKey='id'
-        params={{ taskId: currentTab?.task?.id }}
-        dateFormatter={'string'}
-        headerTitle={l('pages.datastudio.label.history.title', '', { name: currentTab?.label })}
-        request={(params, sorter, filter: any) =>
-          queryList(API_CONSTANTS.HISTORY_LIST, {
-            ...{ ...params, taskId: currentTab?.params?.taskId },
-            sorter: { id: 'descend' },
-            filter
-          })
-        }
-        pagination={{
-          defaultPageSize: 5,
-          showSizeChanger: true
-        }}
-        showActions='hover'
-        metas={buildMetaInfo()}
-        options={{
-          search: false,
-          setting: false
-        }}
-      />
+    <>{
+      tabs.panes.length === 0 ?  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('pages.datastudio.label.history.noData')} /> :
+        <ProList<JobExecutionHistory>
+          actionRef={refAction}
+          search={{
+            filterType: 'light'
+          }}
+          size={'small'}
+          rowKey='id'
+          params={{ taskId: currentTab?.task?.id }}
+          dateFormatter={'string'}
+          headerTitle={l('pages.datastudio.label.history.title', '', { name: currentTab?.label })}
+          request={(params, sorter, filter: any) =>
+            queryList(API_CONSTANTS.HISTORY_LIST, {
+              ...{ ...params, taskId: currentTab?.params?.taskId },
+              sorter: { id: 'descend' },
+              filter
+            })
+          }
+          pagination={{
+            defaultPageSize: 5,
+            showSizeChanger: true
+          }}
+          metas={buildMetaInfo()}
+          options={{
+            search: false,
+            setting: false,
+            density: false,
+          }}
+        />
+    }
+
       <JobDetailInfoModel
         modalVisit={modalVisit}
         handleCancel={handleCancel}
         row={historyData}
         type={type}
-      />{' '}
+      />
     </>
   );
 };

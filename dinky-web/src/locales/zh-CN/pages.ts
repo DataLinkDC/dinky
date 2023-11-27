@@ -418,6 +418,7 @@ export default {
   'pages.task.savePointPath': '保存点路径',
 
   'pages.datastudio.label.history.title': '任务:【{name}】执行历史记录',
+  'pages.datastudio.label.history.noData': '请点击作业,查看作业的执行历史记录',
   'pages.datastudio.label.history.execConfig': '执行配置',
   'pages.datastudio.label.history.statement': '执行语句',
   'pages.datastudio.label.history.result': '预览数据',
