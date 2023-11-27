@@ -30,7 +30,7 @@ import { ClusterOutlined, FireOutlined, RocketOutlined } from '@ant-design/icons
 import { ActionType, ProList } from '@ant-design/pro-components';
 import { ProListMetas } from '@ant-design/pro-list';
 import { useUpdateEffect } from 'ahooks';
-import {Badge, Divider, Empty, Space, Tag, Typography} from 'antd';
+import { Badge, Divider, Empty, Space, Tag, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import { connect } from 'umi';
 
@@ -253,8 +253,13 @@ const JobExecHistory: React.FC<connect> = (props) => {
   console.log(currentTab);
 
   return (
-    <>{
-      tabs.panes.length === 0 ?  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('pages.datastudio.label.history.noData')} /> :
+    <>
+      {tabs.panes.length === 0 ? (
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description={l('pages.datastudio.label.history.noData')}
+        />
+      ) : (
         <ProList<JobExecutionHistory>
           actionRef={refAction}
           search={{
@@ -280,10 +285,10 @@ const JobExecHistory: React.FC<connect> = (props) => {
           options={{
             search: false,
             setting: false,
-            density: false,
+            density: false
           }}
         />
-    }
+      )}
 
       <JobDetailInfoModel
         modalVisit={modalVisit}
