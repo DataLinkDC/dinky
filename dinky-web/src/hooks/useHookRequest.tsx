@@ -82,14 +82,11 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
   } = options;
 
   useEffect(() => {
-    !manual && ready && run(defaultParams);
+    !manual && ready && run(...defaultParams);
   }, [manual, ready, ...(Array.isArray(refreshDeps) ? refreshDeps : [])]);
 
   //  请求
-  const run = (params?: TParams) => {
-    if (!params) {
-      params = defaultParams;
-    }
+  const run = (...params: TParams) => {
     if (debounceInterval) {
       lodash.debounce(doRun, debounceInterval)(params);
     } else if (throttleInterval) {
@@ -99,11 +96,14 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
     }
   };
 
+  const refresh = () => {
+    run(...defaultParams);
+  };
+
   // useRequest业务逻辑
   const doRun = async (params: TParams) => {
     let finish = false;
     try {
-      console.log(pollingInterval);
       //延迟显示loading，防止刷新时闪屏
       if (loadingDelay) {
         setTimeout(() => {
@@ -116,7 +116,7 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
       //定时刷新
       if (pollingInterval && status.current) {
         pollingIntervalTimer.current = setTimeout(() => {
-          status.current && run(defaultParams);
+          status.current && run(...defaultParams);
         }, pollingInterval);
       }
       const res: TData = await service(...params);
@@ -141,7 +141,7 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
   // 缓存
   const cachedData = useCallback(() => data, [data]);
 
-  return { data, loading, error, run, cancel, cachedData };
+  return { data, loading, error, run, cancel, cachedData, refresh };
 }
 
 export default useHookRequest;
