@@ -15,7 +15,7 @@ spring:
     # If you use pgsql database, please configure pgsql database connection information in application-pgsql.yml
     # If you use the h2 database, please configure the h2 database connection information in application-h2.yml,
     # note: the h2 database is only for experience use, and the related data that has been created cannot be migrated, please use it with caution
-    active: h2 #[h2,mysql,pgsql]
+    active: ${DB_ACTIVE:h2} #[h2,mysql,pgsql]
     include: jmx
 
   # mvc config

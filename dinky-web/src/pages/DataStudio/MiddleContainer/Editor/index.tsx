@@ -31,23 +31,22 @@ import {
 } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { registerEditorKeyBindingAndAction } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { connect, useRequest } from '@@/exports';
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { Monaco } from '@monaco-editor/react';
 import { Button, Spin } from 'antd';
-import { editor, KeyCode, KeyMod } from 'monaco-editor';
+import { editor } from 'monaco-editor';
 import React, { useEffect, useState } from 'react';
-import { format } from 'sql-formatter';
 
 export type EditorProps = {
   tabsItem: DataStudioTabsItemType;
-  monacoInstance: Monaco;
   height?: number;
 };
 
-const CodeEditor: React.FC<EditorProps & any> = (props) => {
-  const { tabsItem, dispatch, height, monacoInstance, editorInstance } = props;
+const CodeEditor: React.FC<EditorProps & connect> = (props) => {
+  const { tabsItem, dispatch, height } = props;
 
   useEffect(() => {
     dispatch({
@@ -61,8 +60,6 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [diff, setDiff] = useState<any>([]);
   const { fullscreen, setFullscreen } = useEditor();
-  // const editorInstance = useRef<editor.IStandaloneCodeEditor | any>(monacoInstance?.current?.editor);
-  // const monacoInstance = useRef<Monaco | any>();
 
   const currentData = tabsItem.params.taskData;
 
@@ -105,8 +102,8 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
   const editorDidMount = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editor.layout();
     editor.focus();
-    monacoInstance.current = monaco;
-    editorInstance.current = editor;
+    tabsItem.editorInstance = editor;
+    tabsItem.monacoInstance = monaco;
 
     editor.onDidChangeCursorPosition((e) => {
       props.footContainer.codePosition = [e.position.lineNumber, e.position.column];
@@ -115,11 +112,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
         payload: { ...props.footContainer }
       });
     });
-
-    editor.addCommand(KeyMod.Alt | KeyCode.Digit3, () => {
-      editor?.trigger('anyString', 'editor.action.formatDocument', '');
-      editor.setValue(format(editor.getValue()));
-    });
+    registerEditorKeyBindingAndAction(editor);
   };
 
   const handleEditChange = (v: string | undefined) => {
@@ -142,15 +135,15 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
         <DiffModal
           diffs={diff}
           open={isModalOpen}
-          language={matchLanguage(tabsItem?.params?.taskData?.dialect)}
+          language={matchLanguage(tabsItem?.subType)}
           fileName={currentData?.name}
           onUse={upDateTask}
         />
         <CodeEdit
-          monacoRef={monacoInstance}
-          editorRef={editorInstance}
+          monacoRef={tabsItem?.monacoInstance}
+          editorRef={tabsItem?.editorInstance}
           code={tabsItem?.params?.taskData?.statement}
-          language={matchLanguage(tabsItem?.params?.taskData?.dialect)}
+          language={matchLanguage(tabsItem?.subType)}
           editorDidMount={editorDidMount}
           onChange={handleEditChange}
           enableSuggestions={true}
@@ -178,7 +171,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
               title={l('global.fullScreen.exit')}
               icon={<FullscreenExitOutlined />}
               onClick={() => {
-                editorInstance?.current?.layout();
+                tabsItem?.editorInstance?.current?.layout();
                 setFullscreen(false);
               }}
             />
@@ -191,7 +184,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
               title={l('global.fullScreen')}
               icon={<FullscreenOutlined />}
               onClick={() => {
-                editorInstance?.current?.layout();
+                tabsItem?.editorInstance?.current?.layout();
                 setFullscreen(true);
               }}
             />

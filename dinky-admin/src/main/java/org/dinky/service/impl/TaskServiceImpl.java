@@ -228,9 +228,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Optional.ofNullable(task.getClusterId()).ifPresent(config::setClusterId);
         }
         log.info("Init remote cluster");
-        Optional.ofNullable(config.getClusterId()).ifPresent(i -> {
-            config.setAddress(clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), i));
-        });
+        try {
+            Optional.ofNullable(config.getClusterId()).ifPresent(i -> {
+                config.setAddress(clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), i));
+            });
+        } catch (Exception e) {
+            log.error("Init remote cluster error", e);
+        }
         return config;
     }
 
@@ -267,9 +271,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
         TaskDTO taskDTO = taskServiceBean.prepareTask(submitDto);
-        // The job instance does not exist by default,
-        // so that it does not affect other operations, such as checking the jobmanager address
-        taskDTO.setJobInstanceId(null);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
         log.info("Job Submit success");
         Task task = new Task(submitDto.getId(), jobResult.getJobInstanceId());

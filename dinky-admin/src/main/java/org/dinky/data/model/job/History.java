@@ -108,7 +108,11 @@ public class History implements Serializable {
     @ApiModelProperty(hidden = true)
     private String clusterName;
 
-    @TableField(value = "count(*)", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
+    @TableField(
+            value = "count(*)",
+            select = false,
+            insertStrategy = FieldStrategy.NEVER,
+            updateStrategy = FieldStrategy.NEVER)
     @ApiModelProperty(value = "Group by count", dataType = "Integer")
     private Long count;
 

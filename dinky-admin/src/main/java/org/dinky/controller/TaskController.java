@@ -95,6 +95,7 @@ public class TaskController {
             required = true,
             dataType = "DebugDTO",
             paramType = "body")
+    @ExecuteProcess(type = ProcessType.FLINK_SUBMIT)
     public Result<JobResult> debugTask(@RequestBody DebugDTO debugDTO) throws Exception {
         JobResult result = taskService.debugTask(debugDTO);
         if (result.isSuccess()) {
@@ -159,13 +160,9 @@ public class TaskController {
     @PostMapping("/getJobPlan")
     @ApiOperation("Get Job Plan")
     @ExecuteProcess(type = ProcessType.FLINK_JOB_PLAN)
-    public Result<ObjectNode> getJobPlan(@ProcessId @RequestBody TaskDTO taskDTO) {
+    public Result<ObjectNode> getJobPlan(@RequestBody TaskDTO taskDTO) {
         ObjectNode jobPlan = null;
-        try {
-            jobPlan = taskService.getJobPlan(taskDTO);
-        } catch (Exception e) {
-            return Result.failed(e.getMessage());
-        }
+        jobPlan = taskService.getJobPlan(taskDTO);
         return Result.succeed(jobPlan, Status.EXECUTE_SUCCESS);
     }
 

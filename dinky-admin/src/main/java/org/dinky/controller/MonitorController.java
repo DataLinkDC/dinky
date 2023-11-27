@@ -23,11 +23,12 @@ import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.MetricsType;
+import org.dinky.data.metrics.Jvm;
 import org.dinky.data.model.Metrics;
-import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.MetricsVO;
+import org.dinky.data.vo.task.JobInstanceVo;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
 
@@ -92,9 +93,9 @@ public class MonitorController {
         ObjectNode para = nodeFactory.objectNode();
         para.put("isHistory", false);
         para.put("taskId", taskIds);
-        ProTableResult<JobInstance> jobInstanceProTableResult = jobInstanceService.listJobInstances(para);
+        ProTableResult<JobInstanceVo> jobInstanceProTableResult = jobInstanceService.listJobInstances(para);
         List<String> jids = jobInstanceProTableResult.getData().stream()
-                .map(JobInstance::getJid)
+                .map(JobInstanceVo::getJid)
                 .collect(Collectors.toList());
         return Result.succeed(monitorService.getData(
                 DateUtil.date(startTime),
@@ -132,5 +133,11 @@ public class MonitorController {
     @ApiImplicitParam(name = "layoutName", value = "Layout Name", required = true, dataType = "String")
     public Result<List<Metrics>> getMetricsLayoutByName(@RequestParam String layoutName) {
         return Result.succeed(monitorService.getMetricsLayoutByName(layoutName));
+    }
+
+    @GetMapping("/getJvmInfo")
+    @ApiOperation("Get Jvm Data Display")
+    public Result<Jvm> getJvmInfo() {
+        return Result.succeed(Jvm.of());
     }
 }

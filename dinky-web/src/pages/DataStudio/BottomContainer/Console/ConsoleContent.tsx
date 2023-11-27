@@ -180,6 +180,8 @@ const ConsoleContent = (props: ConsoleProps) => {
             code={selectNode?.log ? selectNode.log : ''}
             height={props.height - 53}
             language={'javalog'}
+            lineNumbers={'off'}
+            enableMiniMap
             showFloatButton
           />
         </Pane>

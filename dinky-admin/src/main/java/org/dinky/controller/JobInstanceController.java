@@ -26,9 +26,10 @@ import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.ID;
 import org.dinky.data.model.devops.TaskManagerConfiguration;
 import org.dinky.data.model.ext.JobInfoDetail;
-import org.dinky.data.model.job.JobInstance;
+import org.dinky.data.model.home.JobInstanceStatus;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.task.JobInstanceVo;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.service.JobInstanceService;
 import org.dinky.utils.BuildConfiguration;
@@ -78,7 +79,7 @@ public class JobInstanceController {
             paramType = "body",
             required = true,
             dataTypeClass = JsonNode.class)
-    public ProTableResult<JobInstance> listJobInstances(@RequestBody JsonNode para) {
+    public ProTableResult<JobInstanceVo> listJobInstances(@RequestBody JsonNode para) {
         return jobInstanceService.listJobInstances(para);
     }
 
@@ -87,11 +88,8 @@ public class JobInstanceController {
      */
     @GetMapping("/getStatusCount")
     @ApiOperation("Get status count")
-    public Result<Dict> getStatusCount() {
-        Dict result = Dict.create()
-                .set("history", jobInstanceService.getStatusCount(true))
-                .set("instance", jobInstanceService.getStatusCount(false));
-        return Result.succeed(result);
+    public Result<JobInstanceStatus> getStatusCount() {
+        return Result.succeed(jobInstanceService.getStatusCount());
     }
 
     /**

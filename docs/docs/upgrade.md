@@ -27,7 +27,7 @@ mysql> source /opt/dinky/sql/upgrade/${version}_schema/mysql/dinky_dml.sql  -- �
 
 ### 前端升级
 
-重新编译 `dlink-web` 模块 移到 nginx 对应目录即可
+重新编译 `dinky-web` 模块 移到 nginx 对应目录即可
 
 ### 后端升级
 

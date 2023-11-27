@@ -162,8 +162,8 @@ export interface TabsItemType {
   icon: any;
   closable: boolean;
   path: string[];
-  monacoInstance: Monaco;
-  editorInstance: editor.IStandaloneCodeEditor;
+  monacoInstance: React.RefObject<Monaco | undefined>;
+  editorInstance: React.RefObject<editor.IStandaloneCodeEditor | undefined>;
   console: ConsoleType;
   isModified: boolean;
 }

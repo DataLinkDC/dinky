@@ -81,6 +81,7 @@ export default {
   'button.upScroll': '向上滚动',
   'button.stopRefresh': '停止自动刷新',
   'button.startRefresh': '开始自动刷新(5s/次)',
+  'button.autoWrap': '自动换行/不换行',
 
   'menu.menu': '菜单',
   'right.menu.open': '打开',
