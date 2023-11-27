@@ -67,7 +67,7 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>();
   const status = useRef<boolean>(false);
-  const pollingIntervalTimer = useRef<NodeJS.Timeout|null>();
+  const pollingIntervalTimer = useRef<NodeJS.Timeout | null>();
 
   const {
     manual = false,
@@ -103,7 +103,7 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
   const doRun = async (params: TParams) => {
     let finish = false;
     try {
-      console.log(pollingInterval)
+      console.log(pollingInterval);
       //延迟显示loading，防止刷新时闪屏
       if (loadingDelay) {
         setTimeout(() => {
