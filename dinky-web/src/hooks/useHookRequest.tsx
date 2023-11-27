@@ -17,7 +17,6 @@
  *
  */
 
-import { Timeout } from '@antv/l7-layers/es/tile/interface';
 import lodash from 'lodash';
 import { SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
@@ -68,7 +67,7 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>();
   const status = useRef<boolean>(false);
-  const pollingIntervalTimer = useRef<Timeout>();
+  const pollingIntervalTimer = useRef<NodeJS.Timeout|null>();
 
   const {
     manual = false,
@@ -83,7 +82,7 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
   } = options;
 
   useEffect(() => {
-    !manual && ready && run(...defaultParams);
+    !manual && ready && run(defaultParams);
   }, [manual, ready, ...(Array.isArray(refreshDeps) ? refreshDeps : [])]);
 
   //  请求
@@ -92,18 +91,19 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
       params = defaultParams;
     }
     if (debounceInterval) {
-      lodash.debounce(doRun, debounceInterval)(...params);
+      lodash.debounce(doRun, debounceInterval)(params);
     } else if (throttleInterval) {
-      lodash.throttle(doRun, throttleInterval)(...params);
+      lodash.throttle(doRun, throttleInterval)(params);
     } else {
-      doRun(...params);
+      doRun(params);
     }
   };
 
   // useRequest业务逻辑
-  const doRun = async (...params: TParams) => {
+  const doRun = async (params: TParams) => {
     let finish = false;
     try {
+      console.log(pollingInterval)
       //延迟显示loading，防止刷新时闪屏
       if (loadingDelay) {
         setTimeout(() => {
@@ -116,7 +116,7 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
       //定时刷新
       if (pollingInterval && status.current) {
         pollingIntervalTimer.current = setTimeout(() => {
-          status.current && run(...defaultParams);
+          status.current && run(defaultParams);
         }, pollingInterval);
       }
       const res: TData = await service(...params);
