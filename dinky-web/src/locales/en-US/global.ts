@@ -210,5 +210,22 @@ export default {
   'global.month.september': 'September',
   'global.month.october': 'October',
   'global.month.november': 'November',
-  'global.month.december': 'December'
+  'global.month.december': 'December',
+
+  // job status
+  'global.job.status.initiating': 'Initializing',
+  'global.job.status.success': 'Success',
+  'global.job.status.created': 'Created',
+  'global.job.status.running': 'Running',
+  'global.job.status.failing': 'Failing',
+  'global.job.status.failed': 'Failed',
+  'global.job.status.cancelling': 'Cancelling',
+  'global.job.status.canceled': 'Canceled',
+  'global.job.status.finished': 'Finished',
+  'global.job.status.restarting': 'Restarting',
+  'global.job.status.suspended': 'Suspended',
+  'global.job.status.reconciling': 'Reconciling',
+  'global.job.status.reconnecting': 'Reconnecting',
+  'global.job.status.unknown': 'Unknown',
+  'global.job.status.failed-tip': 'Failed to submit to the cluster, unable to get the task name'
 };

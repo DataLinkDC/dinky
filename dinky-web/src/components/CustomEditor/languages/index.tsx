@@ -44,7 +44,6 @@ export function LoadCustomEditorLanguage(
   if (canLoadLanguage(monaco, CustomEditorLanguage.FlinkSQL)) {
     FlinkSQLLanguage(monaco, registerCompletion);
   }
-  console.log(canLoadLanguage(monaco, CustomEditorLanguage.JavaLog));
   if (canLoadLanguage(monaco, CustomEditorLanguage.JavaLog)) {
     LogLanguage(monaco);
   }

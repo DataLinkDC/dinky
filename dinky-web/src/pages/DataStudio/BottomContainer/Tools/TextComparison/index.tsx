@@ -17,23 +17,32 @@
  *
  */
 
-package org.dinky.service;
+import { convertCodeEditTheme } from '@/utils/function';
+import { DiffEditor } from '@monaco-editor/react';
 
-import org.dinky.data.model.job.History;
-import org.dinky.mybatis.service.ISuperService;
+const TextComparison = () => {
+  return (
+    <DiffEditor
+      height={'100%'}
+      options={{
+        readOnly: false,
+        originalEditable: true,
+        selectOnLineNumbers: true,
+        lineDecorationsWidth: 20,
+        mouseWheelZoom: true,
+        automaticLayout: true,
+        scrollBeyondLastLine: false,
+        scrollbar: {
+          useShadows: false,
+          verticalScrollbarSize: 8,
+          horizontalScrollbarSize: 8,
+          arrowSize: 30
+        }
+      }}
+      language={'text'}
+      theme={convertCodeEditTheme()}
+    />
+  );
+};
 
-/**
- * HistoryService
- *
- * @since 2021/6/26 23:07
- */
-public interface HistoryService extends ISuperService<History> {
-
-    /**
-     * Get latest history info by task id.
-     *
-     * @param id The ID of the task.
-     * @return History info.
-     */
-    History getLatestHistoryById(Integer id);
-}
+export default TextComparison;

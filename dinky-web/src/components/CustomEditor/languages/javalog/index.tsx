@@ -25,7 +25,14 @@ export function LogLanguage(monaco: Monaco | undefined) {
   // Register a new language
   monaco?.languages.register({
     id: CustomEditorLanguage.JavaLog,
-    extensions: ['.log'],
+    extensions: [],
+    mimetypes: [
+      'text/x-java-log',
+      'text/x-javalog',
+      'text/x-java-source',
+      'text/x-java',
+      'text/java'
+    ],
     aliases: ['javalog', 'Javalog', 'jl', 'log']
   });
 

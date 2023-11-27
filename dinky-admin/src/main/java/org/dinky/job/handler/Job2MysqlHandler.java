@@ -44,7 +44,6 @@ import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
-import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
 
@@ -87,12 +86,11 @@ public class Job2MysqlHandler implements JobHandler {
         }
         history.setJobManagerAddress(job.getJobManagerAddress());
         history.setJobName(job.getJobConfig().getJobName());
-        history.setSession(job.getJobConfig().getSession());
         history.setStatus(job.getStatus().ordinal());
         history.setStatement(job.getStatement());
         history.setStartTime(job.getStartTime());
         history.setTaskId(job.getJobConfig().getTaskId());
-        history.setConfigJson(JsonUtils.toJsonString(job.getJobConfig()));
+        history.setConfigJson(job.getJobConfig());
         historyService.save(history);
 
         job.setId(history.getId());

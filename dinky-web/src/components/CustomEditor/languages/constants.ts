@@ -51,3 +51,5 @@ export enum CustomEditorLanguage {
   JavaLog = 'javalog',
   FlinkSQL = 'flinksql'
 }
+
+// EditorLanguage

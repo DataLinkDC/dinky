@@ -19,10 +19,12 @@
 
 import { CircleDataStudioButtonProps } from '@/components/CallBackButton/CircleBtn';
 import Console from '@/pages/DataStudio/BottomContainer/Console';
+import JobExecHistory from '@/pages/DataStudio/BottomContainer/JobExecHistory';
 import Lineage from '@/pages/DataStudio/BottomContainer/Lineage';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
 import JsonToSql from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql';
+import TextComparison from '@/pages/DataStudio/BottomContainer/Tools/TextComparison';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import Catalog from '@/pages/DataStudio/LeftContainer/Catalog';
 import DataSource from '@/pages/DataStudio/LeftContainer/DataSource';
@@ -34,7 +36,6 @@ import JobConfig from '@/pages/DataStudio/RightContainer/JobConfig';
 import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
 import PreViewConfig from '@/pages/DataStudio/RightContainer/PreViewConfig';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
-import { convertCodeEditTheme } from '@/utils/function';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -58,7 +59,6 @@ import {
   TableOutlined,
   ToolOutlined
 } from '@ant-design/icons';
-import { DiffEditor } from '@monaco-editor/react';
 import { ReactNode } from 'react';
 
 export const LeftSide = [
@@ -165,8 +165,8 @@ export const LeftBottomSide = [
     auth: '/datastudio/bottom/history',
     key: 'menu.datastudio.history',
     icon: <HistoryOutlined />,
-    label: l('menu.datastudio.history')
-    // children: <JobExecHistory />
+    label: l('menu.datastudio.history'),
+    children: <JobExecHistory />
   },
   {
     auth: '/datastudio/bottom/table-data',
@@ -189,28 +189,7 @@ export const LeftBottomMoreTabs: { [c: string]: TabProp[] } = {
       key: 'menu.datastudio.tool.text-comparison',
       icon: <ToolOutlined />,
       label: l('menu.datastudio.tool.text-comparison'),
-      children: (
-        <DiffEditor
-          height={'100%'}
-          options={{
-            readOnly: false,
-            originalEditable: true,
-            selectOnLineNumbers: true,
-            lineDecorationsWidth: 20,
-            mouseWheelZoom: true,
-            automaticLayout: true,
-            scrollBeyondLastLine: false,
-            scrollbar: {
-              useShadows: false,
-              verticalScrollbarSize: 8,
-              horizontalScrollbarSize: 8,
-              arrowSize: 30
-            }
-          }}
-          language={'text'}
-          theme={convertCodeEditTheme()}
-        />
-      )
+      children: <TextComparison />
     },
     {
       key: 'menu.datastudio.tool.jsonToSql',

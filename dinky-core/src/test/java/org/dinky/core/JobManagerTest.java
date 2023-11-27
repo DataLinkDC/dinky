@@ -49,7 +49,6 @@ public class JobManagerTest {
                 .useResult(true)
                 .useChangeLog(true)
                 .useAutoCancel(true)
-                .session("s1")
                 .clusterId(2)
                 .jobName("Test")
                 .fragment(false)

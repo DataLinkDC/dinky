@@ -10,7 +10,7 @@
         from
         dinky_history a
         <where>
-            1=1
+            1=1 and a.task_id = #{param.taskId}
             <if test='param.jobId!=null and param.jobId!=""'>
                 and a.job_id = #{param.jobId}
             </if>
@@ -19,9 +19,6 @@
             </if>
             <if test='param.clusterId!=null and param.clusterId!=""'>
                 and a.cluster_id = #{param.clusterId}
-            </if>
-            <if test='param.session!=null and param.session!=""'>
-                and a.session = #{param.session}
             </if>
             <if test='param.status!=null and param.status!=""'>
                 and a.status = #{param.status}
