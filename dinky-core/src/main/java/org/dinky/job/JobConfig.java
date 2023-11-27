@@ -90,7 +90,6 @@ public class JobConfig {
             notes = "JSON configuration")
     private Map<String, String> configJson;
 
-    // todo: 需要删除, 且需要删除调用代码, 并需要确定是否重新处理删除后的判断逻辑
     @ApiModelProperty(
             value = "Flag indicating whether to use the result",
             dataType = "boolean",
