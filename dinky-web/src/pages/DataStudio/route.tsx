@@ -35,7 +35,6 @@ import JobConfig from '@/pages/DataStudio/RightContainer/JobConfig';
 import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
 import PreViewConfig from '@/pages/DataStudio/RightContainer/PreViewConfig';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
-import { convertCodeEditTheme } from '@/utils/function';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -59,8 +58,8 @@ import {
   TableOutlined,
   ToolOutlined
 } from '@ant-design/icons';
-import { DiffEditor } from '@monaco-editor/react';
 import { ReactNode } from 'react';
+import TextComparison from "@/pages/DataStudio/BottomContainer/Tools/TextComparison";
 
 export const LeftSide = [
   {
@@ -180,7 +179,7 @@ export const LeftBottomSide = [
     auth: '/datastudio/bottom/tool',
     key: 'menu.datastudio.tool',
     icon: <ToolOutlined />,
-    label: l('menu.datastudio.tool')
+    label: l('menu.datastudio.tool'),
   }
 ];
 
@@ -190,28 +189,7 @@ export const LeftBottomMoreTabs: { [c: string]: TabProp[] } = {
       key: 'menu.datastudio.tool.text-comparison',
       icon: <ToolOutlined />,
       label: l('menu.datastudio.tool.text-comparison'),
-      children: (
-        <DiffEditor
-          height={'100%'}
-          options={{
-            readOnly: false,
-            originalEditable: true,
-            selectOnLineNumbers: true,
-            lineDecorationsWidth: 20,
-            mouseWheelZoom: true,
-            automaticLayout: true,
-            scrollBeyondLastLine: false,
-            scrollbar: {
-              useShadows: false,
-              verticalScrollbarSize: 8,
-              horizontalScrollbarSize: 8,
-              arrowSize: 30
-            }
-          }}
-          language={'text'}
-          theme={convertCodeEditTheme()}
-        />
-      )
+      children: <TextComparison />
     },
     {
       key: 'menu.datastudio.tool.jsonToSql',
