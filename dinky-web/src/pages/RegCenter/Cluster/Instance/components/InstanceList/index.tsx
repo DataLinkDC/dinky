@@ -22,14 +22,15 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
+import useHookRequest from '@/hooks/useHookRequest';
 import { CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/Instance/components/contants';
 import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
+import { getData } from '@/services/api';
 import {
   handleAddOrUpdate,
   handleOption,
   handleRemoveById,
-  queryDataByParams,
   updateDataByParam
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
@@ -38,12 +39,7 @@ import { Cluster } from '@/types/RegCenter/data.d';
 import { InitClusterInstanceState } from '@/types/RegCenter/init.d';
 import { ClusterInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
-import {
-  CheckCircleOutlined,
-  ClearOutlined,
-  ExclamationCircleOutlined,
-  HeartTwoTone
-} from '@ant-design/icons';
+import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
 import {
   Badge,
@@ -54,14 +50,15 @@ import {
   Divider,
   Input,
   List,
-  Popconfirm,
   Row,
   Space,
+  Switch,
   Tag,
   Tooltip,
   Typography
 } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+
 const { Text, Paragraph, Link } = Typography;
 
 export default () => {
@@ -70,16 +67,18 @@ export default () => {
    */
   const [clusterInstanceStatus, setClusterInstanceStatus] =
     useState<ClusterInstanceState>(InitClusterInstanceState);
+  const [isAutoCreate, setIsAutoCreate] = useState<boolean>(false);
+  const [searchKeyWord, setSearchKeyword] = useState<string>('');
   const actionRef = useRef<ActionType>();
 
-  const queryClusterInstanceList = async (keyword = '') => {
-    queryDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_LIST, { keyword }).then((res) => {
-      setClusterInstanceStatus((prevState) => ({
-        ...prevState,
-        instanceList: res as Cluster.Instance[]
-      }));
-    });
-  };
+  const { data, loading } = useHookRequest(getData, {
+    refreshDeps: [searchKeyWord, isAutoCreate],
+    defaultParams: [
+      API_CONSTANTS.CLUSTER_INSTANCE_LIST,
+      { searchKeyWord: searchKeyWord, isAutoCreate: isAutoCreate }
+    ]
+  });
+
   /**
    * execute and callback function
    * @param {() => void} callback
@@ -88,14 +87,9 @@ export default () => {
   const executeAndCallback = async (callback: () => void) => {
     setClusterInstanceStatus((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    queryClusterInstanceList();
     setClusterInstanceStatus((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
-
-  useEffect(() => {
-    queryClusterInstanceList();
-  }, []);
 
   /**
    * cancel
@@ -158,15 +152,6 @@ export default () => {
   const handleHeartBeat = async () => {
     await executeAndCallback(async () =>
       handleOption(API_CONSTANTS.CLUSTER_INSTANCE_HEARTBEATS, l('rc.ci.heartbeat'), null)
-    );
-  };
-
-  /**
-   * recycle instance
-   */
-  const handleRecycle = async () => {
-    await executeAndCallback(async () =>
-      handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_RECYCLE, 0)
     );
   };
 
@@ -262,12 +247,10 @@ export default () => {
    * tool bar render
    */
   const toolBarRender = () => [
-    <Input.Search
-      loading={clusterInstanceStatus.loading}
-      key={`_search`}
-      allowClear
-      placeholder={l('rc.ci.search')}
-      onSearch={(value) => queryClusterInstanceList(value)}
+    <Switch
+      checkedChildren={l('rc.ci.ar')}
+      unCheckedChildren={l('rc.ci.mr')}
+      onChange={(v) => setIsAutoCreate(v)}
     />,
     <Authorized key={`_add_auth`} path='/registration/cluster/instance/add'>
       <CreateBtn
@@ -285,18 +268,6 @@ export default () => {
         {l('button.heartbeat')}
       </Button>
     </Authorized>,
-    <Authorized key={`_add_recycle`} path='/registration/cluster/instance/recovery'>
-      <Popconfirm
-        key={`_add_recycle_pop`}
-        title={l('rc.ci.recycle')}
-        description={l('rc.ci.recycleConfirm')}
-        onConfirm={handleRecycle}
-      >
-        <Button key={'recycle_btn'} type={'primary'} icon={<ClearOutlined />}>
-          {l('button.recycle')}
-        </Button>
-      </Popconfirm>
-    </Authorized>
   ];
 
   const renderListItem = (item: Cluster.Instance) => {
@@ -304,12 +275,12 @@ export default () => {
       <List.Item className={'card-list-item-wrapper'} key={item.id}>
         <Badge.Ribbon
           className={'card-list-item-wrapper'}
-          color={item.autoRegisters ? 'green' : 'yellow'}
+          color={item.autoRegisters ? '#95de64' : '#ffec3d'}
           text={
             item.autoRegisters ? (
               l('rc.ci.ar')
             ) : (
-              <span style={{ color: 'crimson' }}>{l('rc.ci.mr')}</span>
+              <span style={{ color: '#69b1ff' }}>{l('rc.ci.mr')}</span>
             )
           }
         >
@@ -334,15 +305,23 @@ export default () => {
   return (
     <>
       <ProList<Cluster.Instance>
-        headerTitle={l('rc.ci.management')}
+        headerTitle={
+          <Input.Search
+            loading={clusterInstanceStatus.loading}
+            key={`_search`}
+            allowClear
+            placeholder={l('rc.ci.search')}
+            onSearch={(v) => setSearchKeyword(v)}
+          />
+        }
         toolBarRender={toolBarRender}
         {...PROTABLE_OPTIONS_PUBLIC}
         {...(PRO_LIST_CARD_OPTIONS as any)}
         grid={{ gutter: 24, column: 4 }}
         pagination={{ size: 'small', defaultPageSize: 12, hideOnSinglePage: true }}
         actionRef={actionRef}
-        dataSource={clusterInstanceStatus.instanceList}
-        loading={clusterInstanceStatus.loading}
+        dataSource={data}
+        loading={loading}
         itemLayout={'vertical'}
         renderItem={renderListItem}
       />

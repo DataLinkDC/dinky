@@ -145,5 +145,5 @@ public interface ClusterInstanceService extends ISuperService<ClusterInstance> {
      */
     ClusterInstance deploySessionCluster(Integer id);
 
-    List<ClusterInstance> selectListByKeyWord(String searchKeyWord);
+    List<ClusterInstance> selectListByKeyWord(String searchKeyWord, boolean isAutoCreate);
 }
