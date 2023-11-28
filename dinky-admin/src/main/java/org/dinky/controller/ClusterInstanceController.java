@@ -79,8 +79,8 @@ public class ClusterInstanceController {
             dataTypeClass = ClusterInstanceDTO.class)
     @SaCheckPermission(
             value = {
-                    PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT,
-                    PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD
+                PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT,
+                PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD
             },
             mode = SaMode.OR)
     public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstanceDTO clusterInstanceDTO)
