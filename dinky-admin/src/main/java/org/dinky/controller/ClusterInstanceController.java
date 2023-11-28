@@ -79,8 +79,8 @@ public class ClusterInstanceController {
             dataTypeClass = ClusterInstanceDTO.class)
     @SaCheckPermission(
             value = {
-                PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT,
-                PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD
+                    PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT,
+                    PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD
             },
             mode = SaMode.OR)
     public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstanceDTO clusterInstanceDTO)
@@ -154,8 +154,10 @@ public class ClusterInstanceController {
             paramType = "query",
             required = true,
             dataTypeClass = JsonNode.class)
-    public Result<List<ClusterInstance>> listClusterInstance(@RequestParam("keyword") String searchKeyWord) {
-        return Result.succeed(clusterInstanceService.selectListByKeyWord(searchKeyWord));
+    public Result<List<ClusterInstance>> listClusterInstance(
+            @RequestParam(defaultValue = "") String searchKeyWord,
+            @RequestParam(defaultValue = "false") boolean isAutoCreate) {
+        return Result.succeed(clusterInstanceService.selectListByKeyWord(searchKeyWord, isAutoCreate));
     }
 
     /**

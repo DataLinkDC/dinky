@@ -21,6 +21,7 @@ package org.dinky.job.handler;
 
 import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobInstance;
+import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
@@ -38,6 +39,7 @@ public class ClearJobHistoryHandler {
     private JobInstanceService jobInstanceService;
     private JobHistoryService jobHistoryService;
     private HistoryService historyService;
+    private ClusterInstanceService clusterService;
 
     /**
      * Clears job history records based on the specified criteria.
@@ -66,6 +68,9 @@ public class ClearJobHistoryHandler {
                 List<JobInstance> deleteList = jobInstanceService.list(deleteWrapper);
                 List<Integer> historyDeleteIds =
                         deleteList.stream().map(JobInstance::getHistoryId).collect(Collectors.toList());
+                List<Integer> clusterDeleteIds =
+                        deleteList.stream().map(JobInstance::getClusterId).collect(Collectors.toList());
+                clusterService.removeBatchByIds(clusterDeleteIds);
                 jobHistoryService.removeBatchByIds(historyDeleteIds);
                 jobInstanceService.remove(deleteWrapper);
             }

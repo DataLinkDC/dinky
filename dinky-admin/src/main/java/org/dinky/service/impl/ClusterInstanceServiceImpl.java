@@ -213,14 +213,15 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
      * @return
      */
     @Override
-    public List<ClusterInstance> selectListByKeyWord(String searchKeyWord) {
+    public List<ClusterInstance> selectListByKeyWord(String searchKeyWord, boolean isAutoCreate) {
         return getBaseMapper()
                 .selectList(new LambdaQueryWrapper<ClusterInstance>()
-                        .like(ClusterInstance::getName, searchKeyWord)
-                        .or()
-                        .like(ClusterInstance::getAlias, searchKeyWord)
-                        .or()
-                        .like(ClusterInstance::getNote, searchKeyWord));
+                        .and(true, i -> i.eq(ClusterInstance::getAutoRegisters, isAutoCreate))
+                        .and(true, i -> i.like(ClusterInstance::getName, searchKeyWord)
+                                .or()
+                                .like(ClusterInstance::getAlias, searchKeyWord)
+                                .or()
+                                .like(ClusterInstance::getNote, searchKeyWord)));
     }
 
     private boolean checkHealth(ClusterInstance clusterInstance) {
