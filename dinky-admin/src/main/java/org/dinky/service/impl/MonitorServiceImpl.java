@@ -115,7 +115,9 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
         if (CollUtil.isEmpty(metricsList)) {
             return;
         }
-        saveBatch(BeanUtil.copyToList(metricsList, Metrics.class));
+        List<MetricsLayoutDTO> list =
+                metricsList.stream().peek(m -> m.setLayoutName(layout)).collect(Collectors.toList());
+        saveBatch(BeanUtil.copyToList(list, Metrics.class));
     }
 
     @Override

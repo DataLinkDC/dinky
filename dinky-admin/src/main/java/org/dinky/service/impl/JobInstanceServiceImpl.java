@@ -190,10 +190,10 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         DaemonTaskConfig daemonTaskConfig = DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId);
         DaemonTask daemonTask = FlinkJobThreadPool.getInstance().getByTaskConfig(daemonTaskConfig);
 
-        if (daemonTask != null) {
-            daemonTask.dealTask();
+        if (daemonTask != null && !isForce) {
             return ((FlinkJobTask) daemonTask).getJobInfoDetail();
         } else if (isForce) {
+            FlinkJobThreadPool.getInstance().removeByTaskConfig(daemonTaskConfig);
             daemonTask = DaemonTask.build(daemonTaskConfig);
             daemonTask.dealTask();
             JobInfoDetail jobInfoDetail = ((FlinkJobTask) daemonTask).getJobInfoDetail();

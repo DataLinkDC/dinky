@@ -18,11 +18,9 @@
  */
 
 import { MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
-import MonitorConfigForm from '@/pages/DevOps/JobDetail/JobMetrics/MetricsFilter/MetricsConfigForm';
 import { getSubMinTime } from '@/pages/Metrics/Server/function';
 import { l } from '@/utils/intl';
-import { DatePicker, Radio, Space } from 'antd';
-
+import { DatePicker, Radio } from 'antd';
 const { RangePicker } = DatePicker;
 
 type TimeSelectProps = {
@@ -60,7 +58,7 @@ const MetricsFilter = (props: TimeSelectProps) => {
   };
 
   return (
-    <Space style={{ marginBottom: 20 }}>
+    <>
       <Radio.Group defaultValue={'real'} onChange={(v) => onTimeRadioChange(v)}>
         <Radio.Button value='real'>{l('metrics.filter.real')}</Radio.Button>
         <Radio.Button value='1h'>{l('metrics.filter.1hour')}</Radio.Button>
@@ -73,8 +71,7 @@ const MetricsFilter = (props: TimeSelectProps) => {
           onTimeSelectChange(false, new Date(time[0]).getTime(), new Date(time[1]).getTime())
         }
       />
-      <MonitorConfigForm />
-    </Space>
+    </>
   );
 };
 

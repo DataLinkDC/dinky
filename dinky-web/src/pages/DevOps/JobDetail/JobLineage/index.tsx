@@ -18,7 +18,6 @@
  */
 
 import LineageGraph from '@/components/LineageGraph';
-import { DevopsType } from '@/pages/DevOps/JobDetail/model';
 import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { LineageDetailInfo } from '@/types/DevOps/data';
@@ -60,6 +59,4 @@ const JobLineage: React.FC<connect> = (props) => {
   );
 };
 
-export default connect(({ Devops }: { Devops: DevopsType }) => ({
-  jobDetail: Devops.jobInfoDetail
-}))(JobLineage);
+export default JobLineage;

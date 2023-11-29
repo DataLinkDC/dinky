@@ -18,17 +18,21 @@
  */
 
 import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
-import { getData, putDataAsArray } from '@/services/api';
-import { API_CONSTANTS } from '@/services/endpoints';
 
-export async function getMetricsLayout(params: {}) {
-  return (await getData(API_CONSTANTS.METRICS_LAYOUT_GET_BY_NAME, params)).data;
-}
-
-export async function getMetricsData(params: {}) {
-  return (await getData(API_CONSTANTS.MONITOR_GET_FLINK_DATA, params)).data;
-}
-
-export async function putMetricsLayout(layoutName: string, params: JobMetricsItem[]) {
-  return (await putDataAsArray(API_CONSTANTS.SAVE_FLINK_METRICS + layoutName, params)).data;
+/**
+ * Checks if a job status indicates that the job is done.
+ *
+ * @returns {boolean} - True if the job status indicates that the job is done, false otherwise.
+ * @param list
+ */
+export function buildMetricsTarget(list?: JobMetricsItem[]) {
+  if (!list) return {};
+  const result: Record<string, JobMetricsItem[]> = {};
+  list.forEach((metrics) => {
+    if (!(metrics.vertices in result)) {
+      result[metrics.vertices] = [];
+    }
+    result[metrics.vertices].push(metrics);
+  });
+  return result;
 }

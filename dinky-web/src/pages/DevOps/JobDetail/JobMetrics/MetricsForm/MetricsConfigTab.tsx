@@ -17,44 +17,50 @@
  *
  */
 
+import useHookRequest from '@/hooks/useHookRequest';
 import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
-import { DevopsType } from '@/pages/DevOps/JobDetail/model';
-import { API_CONSTANTS } from '@/services/endpoints';
+import { getFLinkVertices } from '@/pages/DevOps/JobDetail/srvice';
+import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
-import { connect, useRequest } from '@@/exports';
 import { Transfer } from 'antd';
+import { useState } from 'react';
 
-const MetricsConfigTab = (props: any) => {
-  const { vertice, onValueChange, jobDetail, metricsTarget } = props;
+export type ConfigTabProps = {
+  vertice: Jobs.JobVertices;
+  initSelected: JobMetricsItem[];
+  onValueChange: (vertice: Jobs.JobVertices, targetKeys: string[]) => void;
+  jobDetail: Jobs.JobInfoDetail;
+};
+const MetricsConfigTab = (props: ConfigTabProps) => {
+  const { vertice, onValueChange, initSelected, jobDetail } = props;
+
+  const [targetKeys, setTargetKeys] = useState<string[]>(initSelected?.map((i) => i.metrics));
+
   const jobManagerUrl = jobDetail.clusterInstance?.jobManagerHost;
   const jobId = jobDetail.jobDataDto.job?.jid;
 
-  const { data } = useRequest({
-    url: API_CONSTANTS.GET_JOB_METRICS_ITEMS,
-    params: { address: jobManagerUrl, jobId: jobId, verticeId: vertice.id }
+  const { data } = useHookRequest(getFLinkVertices, {
+    defaultParams: [jobManagerUrl, jobId, vertice.id]
   });
 
-  const targetKeys = (data: []) => data.map((i: JobMetricsItem) => i.metrics);
-
+  const onSelectChange = (targetKeys: string[]) => {
+    setTargetKeys(targetKeys);
+    onValueChange(vertice, targetKeys);
+  };
   return (
     <>
-      <Transfer
+      <Transfer<Jobs.JobVertices>
         showSearch={true}
         dataSource={data ?? []}
         titles={[l('devops.jobinfo.metrics.metricsItems'), l('devops.jobinfo.metrics.selected')]}
-        targetKeys={targetKeys(metricsTarget[vertice.id] ?? [])}
-        onChange={(tgk) => onValueChange(vertice, tgk)}
+        targetKeys={targetKeys}
+        onChange={onSelectChange}
         rowKey={(item) => item.id}
         render={(item) => item.id}
         listStyle={{ width: '42vh', height: '50vh' }}
-        // oneWay
       />
     </>
   );
 };
 
-export default connect(({ Devops }: { Devops: DevopsType }) => ({
-  jobDetail: Devops.jobInfoDetail,
-  metricsTarget: Devops.metrics.jobMetricsTarget,
-  layoutName: Devops.metrics.layoutName
-}))(MetricsConfigTab);
+export default MetricsConfigTab;
