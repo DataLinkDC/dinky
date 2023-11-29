@@ -20,7 +20,6 @@
 package org.dinky.configure;
 
 import org.dinky.context.TenantContextHolder;
-import org.dinky.data.annotation.ConditionalOnListProperty;
 import org.dinky.interceptor.PostgreSQLPrepareInterceptor;
 import org.dinky.interceptor.PostgreSQLQueryInterceptor;
 import org.dinky.mybatis.handler.DateMetaObjectHandler;
@@ -34,6 +33,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
@@ -80,8 +80,7 @@ public class MybatisPlusConfig {
             "dinky_task_version");
 
     @Bean
-    //    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "pgsql , jmx")
-    @ConditionalOnListProperty(name = "spring.profiles.active", havingValue = "pgsql")
+    @Profile("pgsql")
     public PostgreSQLQueryInterceptor postgreSQLQueryInterceptor() {
         return new PostgreSQLQueryInterceptor();
     }
@@ -92,8 +91,7 @@ public class MybatisPlusConfig {
      * @return {@linkplain PostgreSQLPrepareInterceptor}
      */
     @Bean
-    //    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "pgsql , jmx")
-    @ConditionalOnListProperty(name = "spring.profiles.active", havingValue = "pgsql")
+    @Profile("pgsql")
     public PostgreSQLPrepareInterceptor postgreSQLPrepareInterceptor() {
         return new PostgreSQLPrepareInterceptor();
     }
@@ -115,6 +113,9 @@ public class MybatisPlusConfig {
 
             @Override
             public boolean ignoreTable(String tableName) {
+                if (TenantContextHolder.isIgnoreTenant()) {
+                    return true;
+                }
                 return !IGNORE_TABLE_NAMES.contains(tableName);
             }
         }));

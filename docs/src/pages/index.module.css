@@ -33,16 +33,14 @@
   background-image: radial-gradient(circle at 10% 20%, rgb(97, 186, 255) 0%, rgb(166, 239, 253) 90.1%);
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
-}
+
 
 .buttons {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
+  width: 30rem;
+  height: 10rem;
 }
 
 .structure {
@@ -51,4 +49,129 @@
     flex-direction:row;
     align-items:flex-start;
     justify-content:left
+}
+
+
+.indexCtasGitHubButtonWrapper{
+  display: flex;
+  justify-content: center;
+}
+
+.indexCtasGitHubButton{
+  display: inline;
+  width: 500px;
+}
+
+.buttonLink{
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem;
+}
+
+
+.buttonLink a{
+  border-radius: 5rem;
+  border:"1px solid #42b983";
+}
+
+/* 响应式布局 */
+
+.box_container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.box {
+  margin-left: 10px;
+  margin-right: 10px;
+  flex: 1;
+}
+
+@media screen and (max-width: 900px) {
+.box {
+    flex-basis: 50%;
+}
+
+.box_container{
+  width: 100%;
+}
+
+.box_container div{
+  width: 20%;
+}
+
+.heroBanner {
+  text-align: left;
+  position: relative;
+  height: 680px;
+    /*background-image: linear-gradient(120deg, rgb(161, 196, 253) 0%, rgb(194, 233, 251) 100%);*/
+ /*background-image: linear-gradient(135deg, rgb(94, 252, 232) 10%, rgb(115, 110, 254) 100%);*/
+  background-image: radial-gradient(circle at 10% 20%, rgb(97, 186, 255) 0%, rgb(166, 239, 253) 90.1%);
+  overflow:auto;
+}
+
+
+
+.descLeft{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 100px;
+ }
+
+ /* 按钮容器 */
+ .buttons{
+  display: flex;
+  justify-content: space-around;
+  /* background-color: black; */
+  width: 20rem !important;
+ }
+
+ .buttonLink {
+  width: 25% !important;
+  height: 100%;
+  /* background-color: rebeccapurple; */
+  margin: 0px;
+}
+
+/* 按钮样式 */
+
+.buttonLink a{
+  width: 87%;
+  border-radius: 20px;
+  height: 15%;
+  font-size:xx-small;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.buttonLink iframe{
+  width: 80% !important;
+  height: 15% !important;
+ }
+
+ .descRight{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-left: 0px !important;
+ }
+
+ .descRight div{
+  display: block;
+  width: 100% !important;
+  background-color: black;
+ }
+
+ .structureDesc{
+  width: 100% !important;
+ }
+
+ .structureText{
+  width: 100% !important;
+ }
 }

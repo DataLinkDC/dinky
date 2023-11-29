@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
 import Title from '@/components/Front/Title';
 import ContentScroll from '@/components/Scroll/ContentScroll';
@@ -12,9 +31,11 @@ import React from 'react';
 
 export type BottomContainerProps = {
   size: number;
+  height: number | string;
 };
 const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
-  const { dispatch, size, bottomContainer } = props;
+  const { dispatch, size, bottomContainer, height } = props;
+  const width = document.documentElement.clientWidth - VIEW.sideWidth * 2;
 
   /**
    * 侧边栏最小化
@@ -82,17 +103,23 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
    * @param direction
    * @param {{offsetHeight: any}} elementRef
    */
-  const resizeCallback = (event: any, direction: any, elementRef: { offsetHeight: any }) => {
-    updateBottomHeight(elementRef.offsetHeight);
+  const resizeCallback = (
+    event: any,
+    direction: any,
+    elementRef: {
+      offsetHeight: any;
+    }
+  ) => {
     const centerContentHeight =
       document.documentElement.clientHeight -
       VIEW.headerHeight -
       VIEW.headerNavHeight -
       VIEW.footerHeight -
       VIEW.otherHeight -
-      bottomContainer.height;
+      elementRef.offsetHeight;
+    updateBottomHeight(elementRef.offsetHeight);
     updateCenterContentHeight(centerContentHeight);
-    updateToolContentHeight(centerContentHeight - VIEW.midMargin);
+    updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
   };
 
   const renderTabPane = () => {
@@ -140,15 +167,12 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       return {
         ...item,
         children: (
-          <ContentScroll height={props.bottomContainer.height - VIEW.midMargin}>
-            {item.children}
-          </ContentScroll>
+          <ContentScroll height={props.height - VIEW.leftMargin}>{item.children}</ContentScroll>
         )
       };
     });
   };
 
-  // @ts-ignore
   return (
     <MovableSidebar
       title={
@@ -169,14 +193,16 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
           </Space>
         </ConfigProvider>
       }
-      visible={bottomContainer.selectKey !== ''}
+      visible={bottomContainer.selectKey}
       style={{
         zIndex: 999,
-        height: bottomContainer.height,
+        height: height,
         marginTop: 0,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        position: 'fixed',
+        bottom: VIEW.footerHeight
       }}
-      defaultSize={{ width: '100%', height: bottomContainer.height }}
+      defaultSize={{ width: '100%', height: height }}
       minHeight={VIEW.midMargin}
       maxHeight={size.contentHeight - 40}
       onResize={(
@@ -189,6 +215,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       btnGroup={[<CircleBtn key={'max'} icon={<PlusOutlined />} />]}
       enable={{ top: true }}
       handlerMinimize={handleMinimize}
+      maxWidth={width}
     >
       <Tabs
         activeKey={
@@ -206,7 +233,5 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  leftContainer: Studio.leftContainer,
-  bottomContainer: Studio.bottomContainer,
-  centerContentHeight: Studio.centerContentHeight
+  bottomContainer: Studio.bottomContainer
 }))(BottomContainer);

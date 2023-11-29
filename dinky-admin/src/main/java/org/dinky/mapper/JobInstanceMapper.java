@@ -19,8 +19,9 @@
 
 package org.dinky.mapper;
 
-import org.dinky.data.model.JobInstance;
-import org.dinky.data.model.JobInstanceCount;
+import org.dinky.data.model.home.JobInstanceCount;
+import org.dinky.data.model.home.JobModelOverview;
+import org.dinky.data.model.job.JobInstance;
 import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -43,7 +44,7 @@ public interface JobInstanceMapper extends SuperMapper<JobInstance> {
 
     List<JobInstanceCount> countStatus();
 
-    List<JobInstanceCount> countHistoryStatus();
+    JobModelOverview getJobStreamingOrBatchModelOverview();
 
     @InterceptorIgnore(tenantLine = "true")
     List<JobInstance> listJobInstanceActive();

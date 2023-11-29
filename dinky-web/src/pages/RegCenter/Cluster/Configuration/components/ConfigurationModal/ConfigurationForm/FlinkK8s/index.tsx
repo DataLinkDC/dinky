@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -55,7 +55,7 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
           <ProFormText
             tooltip={item.tooltip}
             key={item.name}
-            name={['configJson', 'kubernetesConfig', 'configuration', item.name]}
+            name={['config', 'kubernetesConfig', 'configuration', item.name]}
             label={item.label}
             width={260}
             placeholder={item.placeholder}
@@ -70,11 +70,8 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
       key: 'defaultPodTemplate',
       label: <TagAlignCenter>Default Pod Template</TagAlignCenter>,
       children: (
-        <ProFormItem key='dpe' name={['configJson', 'kubernetesConfig', 'podTemplate']}>
-          <CodeEdit
-            {...CodeEditProps}
-            code={value.configJson?.kubernetesConfig?.podTemplate ?? ''}
-          />
+        <ProFormItem key='dpe' name={['config', 'kubernetesConfig', 'podTemplate']}>
+          <CodeEdit {...CodeEditProps} code={value.config?.kubernetesConfig?.podTemplate ?? ''} />
         </ProFormItem>
       )
     },
@@ -82,11 +79,8 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
       key: 'JMPodTemplate',
       label: <TagAlignCenter>JM Pod Template</TagAlignCenter>,
       children: (
-        <ProFormItem key='jmdpe' name={['configJson', 'kubernetesConfig', 'jmPodTemplate']}>
-          <CodeEdit
-            {...CodeEditProps}
-            code={value.configJson?.kubernetesConfig?.jmPodTemplate ?? ''}
-          />
+        <ProFormItem key='jmdpe' name={['config', 'kubernetesConfig', 'jmPodTemplate']}>
+          <CodeEdit {...CodeEditProps} code={value.config?.kubernetesConfig?.jmPodTemplate ?? ''} />
         </ProFormItem>
       )
     },
@@ -94,11 +88,8 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
       key: 'TMPodTemplate',
       label: <TagAlignCenter>TM Pod Template</TagAlignCenter>,
       children: (
-        <ProFormItem key='tmdpe' name={['configJson', 'kubernetesConfig', 'tmPodTemplate']}>
-          <CodeEdit
-            {...CodeEditProps}
-            code={value.configJson?.kubernetesConfig?.tmPodTemplate ?? ''}
-          />
+        <ProFormItem key='tmdpe' name={['config', 'kubernetesConfig', 'tmPodTemplate']}>
+          <CodeEdit {...CodeEditProps} code={value.config?.kubernetesConfig?.tmPodTemplate ?? ''} />
         </ProFormItem>
       )
     }
@@ -113,7 +104,7 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
             {type && type === ClusterType.KUBERNETES_NATIVE && (
               <ProFormSelect
                 name={[
-                  'configJson',
+                  'config',
                   'kubernetesConfig',
                   'configuration',
                   'kubernetes.rest-service.exposed.type'
@@ -127,7 +118,7 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
             )}
             {type && type === ClusterType.KUBERNETES_OPERATOR && (
               <ProFormSelect
-                name={['configJson', 'flinkConfig', 'flinkVersion']}
+                name={['config', 'flinkConfig', 'flinkVersion']}
                 label={l('rc.cc.k8sOp.version')}
                 width={250}
                 placeholder={l('rc.cc.k8sOp.versionHelp')}
@@ -137,7 +128,7 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
             {renderK8sConfig()}
           </ProFormGroup>
           <ProFormList
-            name={['configJson', 'flinkConfig', 'flinkConfigList']}
+            name={['config', 'flinkConfig', 'flinkConfigList']}
             copyIconProps={false}
             deleteIconProps={{ tooltipText: l('rc.cc.deleteConfig') }}
             creatorButtonProps={{

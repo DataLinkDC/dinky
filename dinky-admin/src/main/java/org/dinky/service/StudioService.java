@@ -19,25 +19,20 @@
 
 package org.dinky.service;
 
-import org.dinky.data.dto.SqlDTO;
-import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
-import org.dinky.data.dto.StudioExecuteDTO;
+import org.dinky.data.dto.StudioLineageDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
 import org.dinky.data.model.Catalog;
-import org.dinky.data.model.FlinkColumn;
+import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.SelectResult;
-import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.job.JobResult;
 import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * StudioService
@@ -46,33 +41,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public interface StudioService {
 
-    JobResult executeSql(StudioExecuteDTO studioExecuteDTO);
-
-    JobResult executeCommonSql(SqlDTO sqlDTO);
-
     IResult executeDDL(StudioDDLDTO studioDDLDTO);
-
-    List<SqlExplainResult> explainSql(StudioExecuteDTO studioExecuteDTO);
-
-    ObjectNode getStreamGraph(StudioExecuteDTO studioExecuteDTO);
-
-    ObjectNode getJobPlan(StudioExecuteDTO studioExecuteDTO);
 
     JdbcSelectResult getCommonSqlData(Integer taskId);
 
     SelectResult getJobData(String jobId);
 
-    LineageResult getLineage(StudioCADTO studioCADTO);
+    LineageResult getLineage(StudioLineageDTO studioCADTO);
 
     List<JsonNode> listFlinkJobs(Integer clusterId);
-
-    boolean cancelFlinkJob(Integer clusterId, String jobId);
-
-    boolean savepointTrigger(Integer taskId, Integer clusterId, String jobId, String savePointType, String name);
 
     List<Catalog> getMSCatalogs(StudioMetaStoreDTO studioMetaStoreDTO);
 
     Schema getMSSchemaInfo(StudioMetaStoreDTO studioMetaStoreDTO);
 
-    List<FlinkColumn> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO);
+    List<Column> getMSColumns(StudioMetaStoreDTO studioMetaStoreDTO);
 }

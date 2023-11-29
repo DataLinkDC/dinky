@@ -1,13 +1,32 @@
-import { TagJobStatus } from '@/pages/DevOps/function';
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+import StatusTag from '@/components/JobTags/StatusTag';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import { parseSecondStr } from '@/utils/function';
+import { parseMilliSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { Link } from '@@/exports';
 import { RocketOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { Descriptions, Tag, Typography } from 'antd';
 
-const { Text, Paragraph } = Typography;
+const { Text } = Typography;
 
 /**
  * Renders the JobConfigTab component.
@@ -45,20 +64,20 @@ const JobDesc = (props: JobProps) => {
    * @param {object} config - The user configuration object.
    * @returns {JSX.Element[]} - An array of Descriptions.Item components representing the user configuration.
    */
-  const getUserConfig = (config: any) => {
-    let formList = [];
-    for (let configKey in config) {
-      formList.push(<Descriptions.Item label={configKey}>{config[configKey]}</Descriptions.Item>);
-    }
-    return formList;
-  };
+  // const getUserConfig = (config: any) => {
+  //   let formList = [];
+  //   for (let configKey in config) {
+  //     formList.push(<Descriptions.Item label={configKey}>{config[configKey]}</Descriptions.Item>);
+  //   }
+  //   return formList;
+  // };
 
   return (
     <>
       <ProCard>
-        <Descriptions title={l('devops.jobinfo.config.JobBaseInfo')} bordered size='small'>
+        <Descriptions bordered size='small' column={5}>
           <Descriptions.Item label={l('global.table.status')}>
-            {TagJobStatus(jobDetail?.instance?.status)}
+            <StatusTag status={jobDetail?.instance?.status} />
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.submitType')}>
@@ -69,12 +88,12 @@ const JobDesc = (props: JobProps) => {
 
           <Descriptions.Item label={l('devops.jobinfo.config.RestartStrategy')}>
             <Tag color='blue' title={'Restart Strategy'}>
-              {jobDetail?.jobHistory?.config['execution-config']['restart-strategy']}
+              {jobDetail?.jobDataDto?.config?.executionConfig?.restartStrategy}
             </Tag>
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.ClusterInstanceName')}>
-            <Link to={'/registration/cluster/instance'}>{jobDetail?.cluster?.alias}</Link>
+            <Link to={'/registration/cluster/instance'}>{jobDetail?.clusterInstance?.alias}</Link>
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.JobId')}>
@@ -98,15 +117,13 @@ const JobDesc = (props: JobProps) => {
           ) : undefined}
 
           <Descriptions.Item label={l('devops.jobinfo.config.useSqlFragment')}>
-            {jobDetail?.history?.config?.useSqlFragment ? l('button.enable') : l('button.disable')}
-          </Descriptions.Item>
-
-          <Descriptions.Item label={l('devops.jobinfo.config.JobType')}>
-            {jobDetail?.history?.config?.isJarTask ? 'Jar' : 'FlinkSQL'}
+            {jobDetail?.history?.configJson?.useSqlFragment
+              ? l('button.enable')
+              : l('button.disable')}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.execmode')}>
-            {jobDetail?.history?.config?.useBatchModel
+            {jobDetail?.history?.configJson?.useBatchModel
               ? l('global.table.execmode.batch')
               : l('global.table.execmode.streaming')}
           </Descriptions.Item>
@@ -116,19 +133,19 @@ const JobDesc = (props: JobProps) => {
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.JobParallelism')}>
-            {jobDetail?.jobHistory?.config['execution-config']['job-parallelism']}
+            {jobDetail?.jobDataDto?.config?.executionConfig?.jobParallelism}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('global.table.useTime')}>
-            {parseSecondStr(jobDetail?.instance?.duration)}
+            {parseMilliSecondStr(jobDetail?.instance?.duration)}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.startFromSavePoint')}>
-            {getSavePointStrategy(jobDetail?.history?.config?.savePointStrategy)}
+            {getSavePointStrategy(jobDetail?.history?.configJson?.savePointStrategy)}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.savePointPath')} span={2}>
-            {jobDetail?.history?.config.savePointPath}
+            {jobDetail?.history?.configJson.savePointPath}
           </Descriptions.Item>
         </Descriptions>
       </ProCard>

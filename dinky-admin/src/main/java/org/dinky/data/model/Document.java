@@ -23,6 +23,8 @@ import org.dinky.mybatis.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -34,14 +36,59 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_flink_document")
-public class Document extends SuperEntity {
+@ApiModel(value = "Document", description = "Document manage")
+public class Document extends SuperEntity<Document> {
 
     private static final long serialVersionUID = -6340080980759236641L;
+
+    @ApiModelProperty(value = "Category Type", required = true, example = "1", notes = "Category Type description")
     private String category;
+
+    @ApiModelProperty(
+            value = "Type",
+            example = "ExampleType",
+            notes = "Type description",
+            dataType = "String",
+            required = true)
     private String type;
+
+    @ApiModelProperty(
+            value = "Subtype",
+            example = "ExampleSubtype",
+            notes = "Subtype description",
+            dataType = "String",
+            required = true)
     private String subtype;
+
+    @ApiModelProperty(
+            value = "Description",
+            example = "ExampleDescription",
+            notes = "Description description",
+            dataType = "String",
+            required = true)
     private String description;
+
+    @ApiModelProperty(
+            value = "Version",
+            example = "ExampleVersion",
+            notes = "Version description",
+            dataType = "String",
+            required = true)
     private String version;
+
+    @ApiModelProperty(
+            value = "Fill Value",
+            example = "ExampleFillValue",
+            notes = "Fill Value description",
+            dataType = "String",
+            required = true)
     private String fillValue;
+
+    @ApiModelProperty(
+            value = "Like Num",
+            example = "ExampleLikeNum",
+            notes = "Like Num description",
+            dataType = "String",
+            required = true)
     private String likeNum;
 }

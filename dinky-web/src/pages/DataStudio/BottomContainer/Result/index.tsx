@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 import {
   getCurrentData,
   getCurrentTab,
@@ -6,14 +25,13 @@ import {
 } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { StateType } from '@/pages/DataStudio/model';
-import { postAll } from '@/services/api';
-import { handleGetOption } from '@/services/BusinessCrud';
+import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { FireOutlined, SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 import { Highlight } from '@ant-design/pro-layout/es/components/Help/Search';
-import { Button, Empty, Input, InputRef, Space, Table, Tag } from 'antd';
+import { Button, Empty, Input, InputRef, Space, Table } from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
 import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
@@ -27,13 +45,12 @@ type Data = {
 };
 const Result = (props: any) => {
   const {
-    saveTabs,
     tabs: { panes, activeKey }
   } = props;
   const [data, setData] = useState<Data>({});
   const [loading, setLoading] = useState<boolean>(true);
   const currentTabs = getCurrentTab(panes, activeKey);
-  const current = getCurrentData(panes, activeKey) ?? [];
+  const current = getCurrentData(panes, activeKey) ?? {};
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -109,37 +126,39 @@ const Result = (props: any) => {
     }
 
     const params = currentTabs.params;
-
-    if (params.resultData && !isRefresh) {
-      setData(params.resultData);
+    const consoleData = currentTabs.console;
+    if (consoleData.result && !isRefresh) {
+      setData(consoleData.result);
     } else {
       if (isSql(current.dialect)) {
         // common sql
         const res = await handleGetOption('api/studio/getCommonSqlData', 'Get Data', {
           taskId: params.taskId
         });
-        if (res.datas) {
-          params.resultData = res.datas;
-          saveTabs({ ...props.tabs });
-          setData(res.datas);
+        if (res.data) {
+          consoleData.result = res.data;
+          setData(res.data);
         }
       } else {
         // flink sql
-        if (current.jobInstanceId) {
-          const res = await postAll(API_CONSTANTS.GET_JOB_BY_ID, {
-            id: current.jobInstanceId
+        // to do: get job data by history id list, not flink jid
+        if (current.id) {
+          const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
+            id: current.id
           });
-          const jobData = res.datas;
-          if ('unknown' !== jobData.status.toLowerCase()) {
-            const jid = jobData.jid;
+          const historyData = res.data;
+          if (historyData && '2' == historyData.status) {
+            const historyId = historyData.id;
             const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', {
-              jobId: jid
+              jobId: historyId
             });
-            const datas = tableData.datas;
-            datas.jid = jid;
-            if (datas.success) {
-              params.resultData = datas;
-              saveTabs({ ...props.tabs });
+            const data = tableData.data;
+            if (data.success) {
+              consoleData.result = data;
+              setData(data);
+            } else {
+              consoleData.result = {};
+              setData({});
             }
           }
         }
@@ -151,7 +170,7 @@ const Result = (props: any) => {
   useEffect(() => {
     setData({});
     loadData();
-  }, [currentTabs]);
+  }, [currentTabs, currentTabs?.console.result]);
 
   const getColumns = (columns: string[]) => {
     return columns?.map((item) => {
@@ -184,9 +203,6 @@ const Result = (props: any) => {
               >
                 {l('pages.datastudio.label.result.query.latest.data')}
               </Button>
-              <Tag color='blue' key={data.jid}>
-                <FireOutlined /> {data.jid}
-              </Tag>
             </Space>
           </>
         ) : undefined}
@@ -218,7 +234,8 @@ const Result = (props: any) => {
       {data.columns ? (
         <Table
           columns={getColumns(data.columns)}
-          dataSource={data.rowData!.map((item: any, index: number) => {
+          size='small'
+          dataSource={data.rowData?.map((item: any, index: number) => {
             return { ...item, key: index };
           })}
           loading={loading}

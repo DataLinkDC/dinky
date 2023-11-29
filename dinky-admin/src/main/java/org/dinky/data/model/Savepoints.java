@@ -31,7 +31,14 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -43,28 +50,54 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_savepoints")
+@ApiModel(value = "Savepoints", description = "Savepoints Information")
 public class Savepoints implements Serializable {
 
     private static final long serialVersionUID = 115345627846554078L;
 
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the savepoint")
     private Integer id;
 
+    @ApiModelProperty(
+            value = "Tenant ID",
+            dataType = "Integer",
+            example = "1001",
+            notes = "ID of the tenant associated with the savepoint")
     private Integer tenantId;
 
     @NotNull(
-            message = "作业ID不能为空",
+            message = "Task ID cannot be null",
             groups = {Save.class})
+    @ApiModelProperty(
+            value = "Task ID",
+            dataType = "Integer",
+            example = "2001",
+            notes = "ID of the job/task associated with the savepoint")
     private Integer taskId;
 
+    @ApiModelProperty(value = "Name", dataType = "String", notes = "Name of the savepoint")
     private String name;
 
+    @ApiModelProperty(value = "Type", dataType = "String", notes = "Type of the savepoint")
     private String type;
 
+    @ApiModelProperty(value = "Path", dataType = "String", notes = "Path to the savepoint")
     private String path;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(
+            value = "Create Time",
+            dataType = "String",
+            notes = "Timestamp indicating the creation time of the savepoint")
     private LocalDateTime createTime;
+
+    @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty(value = "Creator", dataType = "String", notes = "Creator of the savepoint")
+    private Integer creator;
 
     protected Serializable pkVal() {
         return this.id;

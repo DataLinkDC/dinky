@@ -19,8 +19,10 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.job.JobManager;
@@ -29,10 +31,12 @@ import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.ClusterConfigurationService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.hutool.core.lang.Assert;
@@ -61,16 +65,15 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
 
     @Override
     public FlinkClusterConfig getFlinkClusterCfg(Integer id) {
-        ClusterConfiguration clusterConfiguration = this.getClusterConfigById(id);
-        Assert.notNull(clusterConfiguration, "The clusterConfiguration not exists!");
-        return clusterConfiguration.getFlinkClusterCfg();
+        ClusterConfiguration cfg = this.getClusterConfigById(id);
+        Assert.notNull(cfg, "The clusterConfiguration not exists!");
+        return FlinkClusterConfig.create(cfg.getType(), cfg.getConfigJson());
     }
 
     @Override
-    public TestResult testGateway(ClusterConfiguration clusterConfiguration) {
-        FlinkClusterConfig config = clusterConfiguration.getFlinkClusterCfg();
-        GatewayConfig gatewayConfig = GatewayConfig.build(config);
-        return JobManager.testGateway(gatewayConfig);
+    public TestResult testGateway(ClusterConfigurationDTO config) {
+        config.getConfig().setType(GatewayType.get(config.getType()));
+        return JobManager.testGateway(GatewayConfig.build(config.getConfig()));
     }
 
     /**
@@ -85,5 +88,18 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
             return this.updateById(clusterConfiguration);
         }
         return false;
+    }
+
+    /**
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<ClusterConfigurationDTO> selectListByKeyWord(String keyword) {
+        return getBaseMapper()
+                .selectList(new LambdaQueryWrapper<ClusterConfiguration>().like(ClusterConfiguration::getName, keyword))
+                .stream()
+                .map(ClusterConfigurationDTO::fromBean)
+                .collect(Collectors.toList());
     }
 }

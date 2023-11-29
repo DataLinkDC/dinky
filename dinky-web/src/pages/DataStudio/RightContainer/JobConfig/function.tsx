@@ -1,25 +1,26 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
 import { TagAlignLeft } from '@/components/StyledComponents';
+import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { RUN_MODE } from '@/services/constants';
-import { Alert, Cluster } from '@/types/RegCenter/data';
+import { Alert, ALERT_TYPE, Cluster } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import { PaperClipOutlined } from '@ant-design/icons';
 import { Badge, Tag } from 'antd';
@@ -117,12 +118,12 @@ export const buildClusterConfigOptions = (current: any, clusterConfiguration: Cl
 /**
  * build env options
  */
-export const buildEnvOptions = (env: any[]) => {
+export const buildEnvOptions = (env: any[], isDisabled: boolean) => {
   const envList: DefaultOptionType[] = [
     {
       label: l('button.disable'),
-      value: 0,
-      key: 0
+      value: -1,
+      key: -1
     }
   ];
 
@@ -138,7 +139,8 @@ export const buildEnvOptions = (env: any[]) => {
     envList.push({
       label: tag,
       value: item.id,
-      key: item.id
+      key: item.id,
+      disabled: !item.enabled || !isDisabled
     });
   }
   return envList;
@@ -150,13 +152,24 @@ export const buildEnvOptions = (env: any[]) => {
 export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
   const alertGroupOptions: DefaultOptionType[] = [
     {
-      label: l('button.disable'),
-      value: 0
+      label: (
+        <TagAlignLeft>
+          {getAlertIcon(ALERT_TYPE.GROUP, 20)}
+          {l('button.disable')}
+        </TagAlignLeft>
+      ),
+      value: -1,
+      key: -1
     }
   ];
   for (const item of alertGroups) {
     alertGroupOptions.push({
-      label: item.name,
+      label: (
+        <TagAlignLeft>
+          {getAlertIcon(ALERT_TYPE.GROUP, 20)}
+          {item.name}
+        </TagAlignLeft>
+      ),
       value: item.id,
       key: item.id
     });

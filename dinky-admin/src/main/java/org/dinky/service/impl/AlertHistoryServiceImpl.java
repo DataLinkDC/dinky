@@ -19,12 +19,14 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.data.model.AlertHistory;
+import org.dinky.data.model.alert.AlertHistory;
 import org.dinky.mapper.AlertHistoryMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
+import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +40,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AlertHistoryServiceImpl extends SuperServiceImpl<AlertHistoryMapper, AlertHistory>
         implements AlertHistoryService {
+
+    private final AlertGroupService alertGroupService;
+
     /**
      * delete alert history by alert group id
      *
@@ -50,5 +55,20 @@ public class AlertHistoryServiceImpl extends SuperServiceImpl<AlertHistoryMapper
         List<AlertHistory> alertHistoryList = getBaseMapper()
                 .selectList(new LambdaQueryWrapper<AlertHistory>().eq(AlertHistory::getAlertGroupId, alertGroupId));
         return baseMapper.deleteBatchIds(alertHistoryList) > 0;
+    }
+
+    /**
+     * @param jobInstanceId
+     * @return
+     */
+    @Override
+    public List<AlertHistory> queryAlertHistoryRecordByJobInstanceId(Integer jobInstanceId) {
+
+        return baseMapper
+                .selectList(new LambdaQueryWrapper<AlertHistory>().eq(AlertHistory::getJobInstanceId, jobInstanceId))
+                .stream()
+                .peek(alertHistory ->
+                        alertHistory.setAlertGroup(alertGroupService.getById(alertHistory.getAlertGroupId())))
+                .collect(Collectors.toList());
     }
 }

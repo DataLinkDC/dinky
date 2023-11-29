@@ -19,6 +19,11 @@
 
 package org.dinky.data.model;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * LineageResult
  *
@@ -42,6 +47,12 @@ public class LineageRel {
 
     private final String targetColumn;
 
+    /**
+     * Stores the expression for data conversion,
+     * which source table fields are transformed by which expression the target field
+     */
+    private String transform;
+
     private static final String DELIMITER = ".";
 
     public LineageRel(
@@ -52,7 +63,8 @@ public class LineageRel {
             String targetCatalog,
             String targetDatabase,
             String targetTable,
-            String targetColumn) {
+            String targetColumn,
+            String transform) {
         this.sourceCatalog = sourceCatalog;
         this.sourceDatabase = sourceDatabase;
         this.sourceTable = sourceTable;
@@ -61,10 +73,32 @@ public class LineageRel {
         this.targetDatabase = targetDatabase;
         this.targetTable = targetTable;
         this.targetColumn = targetColumn;
+        this.transform = transform;
+    }
+
+    public LineageRel(
+            String catalog,
+            String database,
+            String sourceTable,
+            String sourceColumn,
+            String targetTable,
+            String targetColumn) {
+        this.sourceCatalog = catalog;
+        this.sourceDatabase = database;
+        this.sourceTable = sourceTable;
+        this.sourceColumn = sourceColumn;
+        this.targetCatalog = catalog;
+        this.targetDatabase = database;
+        this.targetTable = targetTable;
+        this.targetColumn = targetColumn;
     }
 
     public static LineageRel build(
-            String sourceTablePath, String sourceColumn, String targetTablePath, String targetColumn) {
+            String sourceTablePath,
+            String sourceColumn,
+            String targetTablePath,
+            String targetColumn,
+            String transform) {
         String[] sourceItems = sourceTablePath.split("\\.");
         String[] targetItems = targetTablePath.split("\\.");
 
@@ -76,27 +110,21 @@ public class LineageRel {
                 targetItems[0],
                 targetItems[1],
                 targetItems[2],
-                targetColumn);
+                targetColumn,
+                transform);
     }
 
-    public static LineageRel build(
-            String sourceCatalog,
-            String sourceDatabase,
-            String sourceTable,
-            String sourceColumn,
-            String targetCatalog,
-            String targetDatabase,
-            String targetTable,
-            String targetColumn) {
-        return new LineageRel(
-                sourceCatalog,
-                sourceDatabase,
-                sourceTable,
-                sourceColumn,
-                targetCatalog,
-                targetDatabase,
-                targetTable,
-                targetColumn);
+    public static List<LineageRel> build(String catalog, String database, String[][] expectedArray) {
+        return Stream.of(expectedArray)
+                .map(e -> {
+                    LineageRel lineageRel = new LineageRel(catalog, database, e[0], e[1], e[2], e[3]);
+                    // transform field is optional
+                    if (e.length == 5) {
+                        lineageRel.setTransform(e[4]);
+                    }
+                    return lineageRel;
+                })
+                .collect(Collectors.toList());
     }
 
     public String getSourceCatalog() {
@@ -137,5 +165,45 @@ public class LineageRel {
 
     public String getTargetTablePath() {
         return targetCatalog + DELIMITER + targetDatabase + DELIMITER + targetTable;
+    }
+
+    public String getTransform() {
+        return transform;
+    }
+
+    public void setTransform(String transform) {
+        this.transform = transform;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LineageRel that = (LineageRel) o;
+
+        if (!sourceCatalog.equals(that.sourceCatalog)) return false;
+        if (!sourceDatabase.equals(that.sourceDatabase)) return false;
+        if (!sourceTable.equals(that.sourceTable)) return false;
+        if (!sourceColumn.equals(that.sourceColumn)) return false;
+        if (!targetCatalog.equals(that.targetCatalog)) return false;
+        if (!targetDatabase.equals(that.targetDatabase)) return false;
+        if (!targetTable.equals(that.targetTable)) return false;
+        if (!targetColumn.equals(that.targetColumn)) return false;
+        return Objects.equals(transform, that.transform);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sourceCatalog.hashCode();
+        result = 31 * result + sourceDatabase.hashCode();
+        result = 31 * result + sourceTable.hashCode();
+        result = 31 * result + sourceColumn.hashCode();
+        result = 31 * result + targetCatalog.hashCode();
+        result = 31 * result + targetDatabase.hashCode();
+        result = 31 * result + targetTable.hashCode();
+        result = 31 * result + targetColumn.hashCode();
+        result = 31 * result + (transform != null ? transform.hashCode() : 0);
+        return result;
     }
 }

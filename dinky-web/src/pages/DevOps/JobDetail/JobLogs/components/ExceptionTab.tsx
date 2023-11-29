@@ -46,13 +46,13 @@ const ExceptionTab = (props: JobProps) => {
 
   const renderLogTab = () => {
     let logs = [];
-    const rte = jobDetail?.jobHistory?.exceptions['root-exception'];
+    const rte = jobDetail?.jobDataDto?.exceptions['root-exception'];
     logs.push({
       taskName: 'RootException',
       stacktrace: rte,
       exceptionName: rte
     });
-    logs.push(...jobDetail.jobHistory?.exceptions['exceptionHistory']['entries']);
+    logs.push(...jobDetail.jobDataDto?.exceptions['exceptionHistory']['entries']);
     return (
       <Row>
         <Col span={3}>
@@ -84,7 +84,8 @@ const ExceptionTab = (props: JobProps) => {
             </Paragraph>
             <CodeShow
               code={currentLog.stacktrace ? currentLog.stacktrace : 'No Exception'}
-              height={500}
+              height={parent.innerHeight - 300}
+              showFloatButton
             />
           </Card>
         </Col>
@@ -92,7 +93,11 @@ const ExceptionTab = (props: JobProps) => {
     );
   };
 
-  return <ProCard>{renderLogTab()}</ProCard>;
+  return (
+    <ProCard bodyStyle={{ height: parent.innerHeight - 200, overflow: 'auto' }}>
+      {renderLogTab()}
+    </ProCard>
+  );
 };
 
 export default ExceptionTab;

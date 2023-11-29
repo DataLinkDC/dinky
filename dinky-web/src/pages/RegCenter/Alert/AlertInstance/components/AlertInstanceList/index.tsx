@@ -1,23 +1,28 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
-import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
-import { Authorized } from '@/hooks/useAccess';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
+import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
+import { DataAction } from '@/components/StyledComponents';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import {
   getAlertIcon,
   getJSONData,
@@ -27,22 +32,16 @@ import {
   createOrModifyAlertInstance,
   sendTest
 } from '@/pages/RegCenter/Alert/AlertInstance/service';
-import { queryList } from '@/services/api';
-import { handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
-import {
-  PROTABLE_OPTIONS_PUBLIC,
-  PRO_LIST_CARD_OPTIONS,
-  SWITCH_OPTIONS
-} from '@/services/constants';
+import { handleRemoveById, queryDataByParams, updateDataByParam } from '@/services/BusinessCrud';
+import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert } from '@/types/RegCenter/data.d';
 import { InitAlertInstanceState } from '@/types/RegCenter/init.d';
 import { AlertInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
-import { EditTwoTone } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { ActionType } from '@ant-design/pro-table';
-import { Button, Descriptions, Modal, Space, Switch, Tag, Tooltip } from 'antd';
+import { Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
@@ -60,9 +59,12 @@ const AlertInstanceList: React.FC = () => {
    * execute query alert instance list
    * set alert instance list
    */
-  const queryAlertInstanceList = async () => {
-    queryList(API_CONSTANTS.ALERT_INSTANCE).then((res) =>
-      setAlertInstanceState((prevState) => ({ ...prevState, alertInstanceList: res.data }))
+  const queryAlertInstanceList = async (keyword = '') => {
+    queryDataByParams(API_CONSTANTS.ALERT_INSTANCE, { keyword }).then((res) =>
+      setAlertInstanceState((prevState) => ({
+        ...prevState,
+        alertInstanceList: res as Alert.AlertInstance[]
+      }))
     );
   };
 
@@ -143,22 +145,11 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderAlertInstanceActionButton = (item: Alert.AlertInstance) => {
     return [
-      <Authorized key={item.id} path='/registration/alert/instance/edit'>
-        <Button
-          className={'options-button'}
-          key={'AlertInstanceEdit'}
-          icon={<EditTwoTone />}
-          title={l('button.edit')}
-          onClick={() => editClick(item)}
-        />
+      <Authorized key={`${item.id}_auth_edit`} path='/registration/alert/instance/edit'>
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={item.id} path='/registration/alert/instance/delete'>
-        <Button
-          className={'options-button'}
-          key={'DeleteAlertInstanceIcon'}
-          icon={<DangerDeleteIcon />}
-          onClick={() => handleDeleteSubmit(item.id)}
-        />
+      <Authorized key={`${item.id}_auth_delete`} path='/registration/alert/instance/delete'>
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>
     ];
   };
@@ -179,10 +170,10 @@ const AlertInstanceList: React.FC = () => {
         <Tag color='#5BD8A6'>
           {item.type} {renderSubType(item)}
         </Tag>
-        <Switch
-          key={item.id}
-          {...SWITCH_OPTIONS()}
-          checked={item.enabled}
+        <EnableSwitchBtn
+          key={`${item.id}_enable`}
+          disabled={!HasAuthority('/registration/alert/instance/edit')}
+          record={item}
           onChange={() => handleEnable(item)}
         />
       </Space>
@@ -194,7 +185,7 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderDataSource = alertInstanceState.alertInstanceList.map((item) => ({
     subTitle: renderAlertInstanceSubTitle(item),
-    actions: renderAlertInstanceActionButton(item),
+    actions: <DataAction>{renderAlertInstanceActionButton(item)}</DataAction>,
     avatar: getAlertIcon(item.type, 60),
     content: renderAlertInstanceContent(item)
   }));
@@ -204,7 +195,14 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderToolBar = () => {
     return () => [
-      <Authorized key='create' path='/registration/alert/instance/new'>
+      <Input.Search
+        loading={alertInstanceState.loading}
+        key={`_search`}
+        allowClear
+        placeholder={l('rc.ai.search')}
+        onSearch={(value) => queryAlertInstanceList(value)}
+      />,
+      <Authorized key='create' path='/registration/alert/instance/add'>
         <CreateBtn
           key={'CreateAlertInstanceBtn'}
           onClick={() => setAlertInstanceState((prevState) => ({ ...prevState, addedOpen: true }))}

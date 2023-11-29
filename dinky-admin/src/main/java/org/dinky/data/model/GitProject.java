@@ -29,6 +29,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -37,70 +39,85 @@ import lombok.Data;
  */
 @TableName(value = "dinky_git_project")
 @Data
+@ApiModel(value = "GitProject", description = "Git Project Information")
 public class GitProject extends SuperEntity<GitProject> {
-
     /** */
+    @ApiModelProperty(value = "Tenant ID", example = "1", dataType = "Long")
     @TableField(value = "tenant_id")
     private Long tenantId;
 
-    /** */
+    @ApiModelProperty(
+            value = "URL",
+            example = "https://github.com/example/project.git",
+            dataType = "String",
+            required = true)
     @TableField(value = "url")
     private String url;
 
-    /** */
+    @ApiModelProperty(value = "Branch", example = "main", dataType = "String")
     @TableField(value = "branch")
     private String branch;
 
-    /** */
+    @ApiModelProperty(value = "Username", example = "john_doe", dataType = "String")
     @TableField(value = "username")
     private String username;
 
-    /** */
+    @ApiModelProperty(value = "Password", example = "********", dataType = "String")
     @TableField(value = "password")
     private String password;
 
+    @ApiModelProperty(value = "Private Key", dataType = "String")
     private String privateKey;
 
-    /** */
+    @ApiModelProperty(value = "POM", example = "pom.xml", dataType = "String")
     @TableField(value = "pom")
     private String pom;
 
-    /** */
+    @ApiModelProperty(value = "Build Arguments", dataType = "String")
     @TableField(value = "build_args")
     private String buildArgs;
 
-    /** */
+    @ApiModelProperty(value = "Code Type", example = "1", dataType = "Integer")
     @TableField(value = "code_type")
     private Integer codeType;
-    /** */
+
+    @ApiModelProperty(value = "Type", example = "1", dataType = "Integer")
     @TableField(value = "type")
     private Integer type;
 
-    /** */
+    @ApiModelProperty(value = "Last Build Date", dataType = "Date")
     @TableField(value = "last_build")
     private Date lastBuild;
 
-    /** */
+    @ApiModelProperty(value = "Description", dataType = "String")
     @TableField(value = "description")
     private String description;
 
-    /** */
+    @ApiModelProperty(value = "Build State", example = "1", dataType = "Integer")
     @TableField(value = "build_state")
     private Integer buildState;
 
+    /**
+     * 区别于 java 和 Python 类型 | different from java and python;
+     * 1. 构建 java 工程时:   步骤值映射如下: 0: 环境检查 1: 克隆项目 2: 编译构建 3: 获取产物 4: 分析 UDF 5: 完成; (when build java project, the step value is as follows: 0: environment check 1: clone project 2: compile and build 3: get artifact 4: analyze UDF 5: finish)
+     * 2. 构建 python 工程时: 步骤值映射如下: 0: 环境检查 1: 克隆项目 2: 获取产物 3: 分析 UDF 4: 完成;(when build python project, the step value is as follows: 0: environment check 1: clone project 2: get artifact 3: analyze UDF 4: finish)
+     */
+    @ApiModelProperty(value = "Build Step", dataType = "Integer")
     @TableField(value = "build_step")
     private Integer buildStep;
 
-    /** scan udf class */
+    @ApiModelProperty(value = "UDF Class Map List", dataType = "String")
     @TableField(value = "udf_class_map_list")
     @JsonDeserialize(using = JsonObjectDeserializer.class)
     private String udfClassMapList;
 
+    @ApiModelProperty(value = "Order Line", dataType = "Integer")
     @TableField(value = "order_line")
     private Integer orderLine;
 
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    @ApiModelProperty(value = "Operator", dataType = "Integer")
+    @TableField(value = "operator")
+    private Integer operator;
 
     public Integer getExecState() {
         switch (getBuildState()) {

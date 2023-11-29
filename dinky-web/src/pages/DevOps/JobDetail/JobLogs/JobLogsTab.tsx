@@ -21,39 +21,45 @@ import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import ExceptionTab from '@/pages/DevOps/JobDetail/JobLogs/components/ExceptionTab';
 import JobManagerLogsTab from '@/pages/DevOps/JobDetail/JobLogs/components/JobManagerLogsTab';
 import TaskManagerLogsTab from '@/pages/DevOps/JobDetail/JobLogs/components/TaskManagerLogsTab';
-import { Tabs, Typography } from 'antd';
-
-const { Text, Paragraph } = Typography;
+import { ProCard } from '@ant-design/pro-components';
+import { useState } from 'react';
 
 const JobLogsTab = (props: JobProps) => {
   const { jobDetail } = props;
 
+  const [activeKey, setActiveKey] = useState('Exception');
+
+  const tabsItems = [
+    {
+      label: 'Exception',
+      key: 'Exception',
+      children: <ExceptionTab jobDetail={jobDetail} />
+    },
+
+    {
+      label: 'JobManager',
+      key: 'JobManager',
+      children: <JobManagerLogsTab jobDetail={jobDetail} />
+    },
+    {
+      label: 'TaskManager',
+      key: 'TaskManager',
+      children: <TaskManagerLogsTab jobDetail={jobDetail} />
+    }
+  ];
+
   return (
     <>
-      {/*<ProCard>*/}
-      <Tabs
-        tabPosition={'left'}
-        size={'small'}
-        items={[
-          {
-            label: 'Exception',
-            key: 'Exception',
-            children: <ExceptionTab jobDetail={jobDetail} />
-          },
-
-          {
-            label: 'JobManager',
-            key: 'JobManager',
-            children: <JobManagerLogsTab jobDetail={jobDetail} />
-          },
-          {
-            label: 'TaskManager',
-            key: 'TaskManager',
-            children: <TaskManagerLogsTab jobDetail={jobDetail} />
-          }
-        ]}
+      <ProCard
+        tabs={{
+          size: 'small',
+          tabPosition: 'left',
+          type: 'card',
+          activeKey: activeKey,
+          onChange: setActiveKey,
+          items: tabsItems
+        }}
       />
-      {/*</ProCard>*/}
     </>
   );
 };

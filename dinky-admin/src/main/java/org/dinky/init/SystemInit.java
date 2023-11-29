@@ -23,17 +23,25 @@ import static org.apache.hadoop.fs.FileSystem.getDefaultUri;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
-import org.dinky.daemon.task.DaemonFactory;
+import org.dinky.daemon.constant.FlinkTaskConstant;
+import org.dinky.daemon.pool.FlinkJobThreadPool;
+import org.dinky.daemon.pool.ScheduleThreadPool;
+import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
-import org.dinky.data.model.JobInstance;
+import org.dinky.data.exception.DinkyException;
+import org.dinky.data.model.Configuration;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
-import org.dinky.data.model.Tenant;
+import org.dinky.data.model.job.JobInstance;
+import org.dinky.data.model.rbac.Tenant;
 import org.dinky.data.properties.OssProperties;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
+import org.dinky.job.ClearJobHistoryTask;
+import org.dinky.job.DynamicResizeFlinkJobPoolTask;
 import org.dinky.job.FlinkJobTask;
-import org.dinky.process.exception.DinkyException;
+import org.dinky.job.SystemMetricsTask;
+import org.dinky.oss.OssTemplate;
 import org.dinky.scheduler.client.ProjectClient;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.Project;
@@ -44,22 +52,23 @@ import org.dinky.service.TaskService;
 import org.dinky.service.TenantService;
 import org.dinky.service.resource.impl.HdfsResourceManager;
 import org.dinky.service.resource.impl.OssResourceManager;
-import org.dinky.utils.JSONUtil;
-import org.dinky.utils.OssTemplate;
+import org.dinky.url.RsURLStreamHandlerFactory;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.UDFUtils;
 
-import org.apache.hadoop.conf.Configuration;
+import org.apache.catalina.webresources.TomcatURLStreamHandlerFactory;
 import org.apache.hadoop.fs.FileSystem;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -70,6 +79,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * SystemInit
@@ -79,31 +89,40 @@ import lombok.RequiredArgsConstructor;
 @Component
 @Order(value = 1)
 @RequiredArgsConstructor
+@Profile("!test")
+@Slf4j
 public class SystemInit implements ApplicationRunner {
     private final SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
 
-    private static final Logger log = LoggerFactory.getLogger(SystemInit.class);
     private final ProjectClient projectClient;
     private final SysConfigService sysConfigService;
     private final JobInstanceService jobInstanceService;
     private final TaskService taskService;
     private final TenantService tenantService;
     private final GitProjectService gitProjectService;
+    private final ScheduleThreadPool schedule;
+
     private static Project project;
 
     @Override
     public void run(ApplicationArguments args) {
+        TenantContextHolder.ignoreTenant();
         initResources();
-
         List<Tenant> tenants = tenantService.list();
         sysConfigService.initSysConfig();
+
         for (Tenant tenant : tenants) {
             taskService.initDefaultFlinkSQLEnv(tenant.getId());
         }
-        initTaskMonitor();
+        initDaemon();
         initDolphinScheduler();
         registerUDF();
         updateGitBuildState();
+        registerURL();
+    }
+
+    private void registerURL() {
+        TomcatURLStreamHandlerFactory.getInstance().addUserFactory(new RsURLStreamHandlerFactory());
     }
 
     private void initResources() {
@@ -116,72 +135,101 @@ public class SystemInit implements ApplicationRunner {
                         systemConfiguration.getResourcesHdfsDefaultFS(),
                         systemConfiguration.getResourcesOssAccessKey(),
                         systemConfiguration.getResourcesOssRegion())
-                .forEach(x -> {
-                    x.addParameterCheck((y) -> {
-                        if (systemConfiguration.getResourcesEnable().getValue()) {
-                            switch (systemConfiguration.getResourcesModel().getValue()) {
-                                case OSS:
-                                    OssProperties ossProperties = new OssProperties();
-                                    ossProperties.setAccessKey(systemConfiguration
-                                            .getResourcesOssAccessKey()
-                                            .getValue());
-                                    ossProperties.setSecretKey(systemConfiguration
-                                            .getResourcesOssSecretKey()
-                                            .getValue());
-                                    ossProperties.setEndpoint(systemConfiguration
-                                            .getResourcesOssEndpoint()
-                                            .getValue());
-                                    ossProperties.setBucketName(systemConfiguration
-                                            .getResourcesOssBucketName()
-                                            .getValue());
-                                    ossProperties.setRegion(systemConfiguration
-                                            .getResourcesOssRegion()
-                                            .getValue());
-                                    Singleton.get(OssResourceManager.class)
-                                            .setOssTemplate(new OssTemplate(ossProperties));
-                                    break;
-                                case HDFS:
-                                    final Configuration configuration = new Configuration();
-                                    configuration.set(
-                                            "fs.defaultFS",
+                .forEach(x -> x.addParameterCheck(y -> {
+                    if (Boolean.TRUE.equals(
+                            systemConfiguration.getResourcesEnable().getValue())) {
+                        switch (systemConfiguration.getResourcesModel().getValue()) {
+                            case OSS:
+                                OssProperties ossProperties = new OssProperties();
+                                ossProperties.setAccessKey(systemConfiguration
+                                        .getResourcesOssAccessKey()
+                                        .getValue());
+                                ossProperties.setSecretKey(systemConfiguration
+                                        .getResourcesOssSecretKey()
+                                        .getValue());
+                                ossProperties.setEndpoint(systemConfiguration
+                                        .getResourcesOssEndpoint()
+                                        .getValue());
+                                ossProperties.setBucketName(systemConfiguration
+                                        .getResourcesOssBucketName()
+                                        .getValue());
+                                ossProperties.setRegion(systemConfiguration
+                                        .getResourcesOssRegion()
+                                        .getValue());
+                                Singleton.get(OssResourceManager.class).setOssTemplate(new OssTemplate(ossProperties));
+                                break;
+                            case HDFS:
+                                final org.apache.hadoop.conf.Configuration configuration =
+                                        new org.apache.hadoop.conf.Configuration();
+                                configuration.set(
+                                        "fs.defaultFS",
+                                        systemConfiguration
+                                                .getResourcesHdfsDefaultFS()
+                                                .getValue());
+                                try {
+                                    FileSystem fileSystem = FileSystem.get(
+                                            getDefaultUri(configuration),
+                                            configuration,
                                             systemConfiguration
-                                                    .getResourcesHdfsDefaultFS()
+                                                    .getResourcesHdfsUser()
                                                     .getValue());
-                                    try {
-                                        FileSystem fileSystem = FileSystem.get(
-                                                getDefaultUri(configuration),
-                                                configuration,
-                                                systemConfiguration
-                                                        .getResourcesHdfsUser()
-                                                        .getValue());
-                                        Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
-                                    } catch (Exception e) {
-                                        throw new DinkyException(e);
-                                    }
-                            }
+                                    Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
+                                } catch (Exception e) {
+                                    throw new DinkyException(e);
+                                }
                         }
-                    });
-                });
+                    }
+                }));
     }
 
-    /** init task monitor */
-    private void initTaskMonitor() {
+    /**
+     * init task monitor
+     */
+    private void initDaemon() {
+        SystemConfiguration sysConfig = SystemConfiguration.getInstances();
+
+        // Init system metrics task
+        DaemonTask sysMetricsTask = DaemonTask.build(new DaemonTaskConfig(SystemMetricsTask.TYPE));
+        Configuration<Boolean> metricsSysEnable = sysConfig.getMetricsSysEnable();
+        Configuration<Integer> sysGatherTiming = sysConfig.getMetricsSysGatherTiming();
+        Consumer<Configuration<?>> metricsListener = c -> {
+            c.addChangeEvent(x -> {
+                schedule.removeSchedule(sysMetricsTask);
+                PeriodicTrigger trigger = new PeriodicTrigger(sysGatherTiming.getValue());
+                if (metricsSysEnable.getValue()) schedule.addSchedule(sysMetricsTask, trigger);
+            });
+        };
+        metricsListener.accept(metricsSysEnable);
+        metricsListener.accept(sysGatherTiming);
+
+        // Init clear job history task
+        DaemonTask clearJobHistoryTask = DaemonTask.build(new DaemonTaskConfig(ClearJobHistoryTask.TYPE));
+        schedule.addSchedule(clearJobHistoryTask, new PeriodicTrigger(1, TimeUnit.HOURS));
+
+        // Init flink job dynamic pool task
+        DaemonTask flinkJobPoolTask = DaemonTask.build(new DaemonTaskConfig(DynamicResizeFlinkJobPoolTask.TYPE));
+        schedule.addSchedule(flinkJobPoolTask, new PeriodicTrigger(FlinkTaskConstant.POLLING_GAP));
+
+        // Add flink running job task to flink job thread pool
         List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
-        List<DaemonTaskConfig> configList = new ArrayList<>();
+        FlinkJobThreadPool flinkJobThreadPool = FlinkJobThreadPool.getInstance();
         for (JobInstance jobInstance : jobInstances) {
-            configList.add(new DaemonTaskConfig(FlinkJobTask.TYPE, jobInstance.getId()));
+            DaemonTaskConfig config = new DaemonTaskConfig(FlinkJobTask.TYPE, jobInstance.getId());
+            DaemonTask daemonTask = DaemonTask.build(config);
+            flinkJobThreadPool.execute(daemonTask);
         }
-        log.info("Number of tasks started: " + configList.size());
-        DaemonFactory.start(configList);
     }
 
-    /** init DolphinScheduler */
+    /**
+     * init DolphinScheduler
+     */
     private void initDolphinScheduler() {
         systemConfiguration
                 .getAllConfiguration()
                 .get("dolphinscheduler")
                 .forEach(c -> c.addParameterCheck(v -> {
-                    if (systemConfiguration.getDolphinschedulerEnable().getValue()) {
+                    if (Boolean.TRUE.equals(
+                            systemConfiguration.getDolphinschedulerEnable().getValue())) {
                         if (StrUtil.isEmpty(Convert.toStr(v))) {
                             sysConfigService.updateSysConfigByKv(
                                     systemConfiguration
@@ -218,21 +266,17 @@ public class SystemInit implements ApplicationRunner {
     }
 
     public void registerUDF() {
-        // 设置admin用户 ，获取全部的udf代码，此地方没有租户隔离
-        TenantContextHolder.set(1);
         List<Task> allUDF = taskService.getAllUDF();
         if (CollUtil.isNotEmpty(allUDF)) {
             UdfCodePool.registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
         }
         UdfCodePool.updateGitPool(gitProjectService.getGitPool());
-
-        TenantContextHolder.set(null);
     }
 
     public void updateGitBuildState() {
         String path = PathConstant.TMP_PATH + "/build.list";
         if (FileUtil.exist(path)) {
-            List<Integer> runningList = JSONUtil.toList(FileUtil.readUtf8String(path), Integer.class);
+            List<Integer> runningList = JsonUtils.toList(FileUtil.readUtf8String(path), Integer.class);
             gitProjectService.list().stream()
                     .filter(x -> x.getBuildState().equals(1))
                     .filter(x -> runningList.contains(x.getId()))

@@ -23,6 +23,8 @@ import org.dinky.mybatis.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,9 +40,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_fragment")
-public class FragmentVariable extends SuperEntity {
+@ApiModel(value = "FragmentVariable", description = "Fragment Variable Information")
+public class FragmentVariable extends SuperEntity<FragmentVariable> {
 
+    @ApiModelProperty(value = "Tenant ID", required = true, example = "1", dataType = "Integer")
     private Integer tenantId;
+
+    @ApiModelProperty(value = "Fragment Value", required = true, example = "exampleValue", dataType = "String")
     private String fragmentValue;
+
+    @ApiModelProperty(value = "Note", example = "This is a note about the variable", dataType = "String")
     private String note;
 }

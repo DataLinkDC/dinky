@@ -26,10 +26,13 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 
 public class HdfsResourceManager implements BaseResourceManager {
@@ -38,7 +41,7 @@ public class HdfsResourceManager implements BaseResourceManager {
     @Override
     public void remove(String path) {
         try {
-            getHdfs().delete(new Path(getFile(path)), true);
+            getHdfs().delete(new Path(getFilePath(path)), true);
         } catch (IOException e) {
             throw BusException.valueOf("file.delete.failed", e);
         }
@@ -47,7 +50,7 @@ public class HdfsResourceManager implements BaseResourceManager {
     @Override
     public void rename(String path, String newPath) {
         try {
-            getHdfs().rename(new Path(getFile(path)), new Path(getFile(newPath)));
+            getHdfs().rename(new Path(getFilePath(path)), new Path(getFilePath(newPath)));
         } catch (IOException e) {
             throw BusException.valueOf("file.rename.failed", e);
         }
@@ -56,7 +59,7 @@ public class HdfsResourceManager implements BaseResourceManager {
     @Override
     public void putFile(String path, MultipartFile file) {
         try {
-            FSDataOutputStream stream = getHdfs().create(new Path(getFile(path)), true);
+            FSDataOutputStream stream = getHdfs().create(new Path(getFilePath(path)), true);
             stream.write(file.getBytes());
             stream.flush();
             stream.close();
@@ -66,9 +69,26 @@ public class HdfsResourceManager implements BaseResourceManager {
     }
 
     @Override
-    public String getFileContent(String path) {
+    public void putFile(String path, File file) {
         try {
-            return IoUtil.readUtf8(getHdfs().open(new Path(getFile(path))));
+            FSDataOutputStream stream = getHdfs().create(new Path(getFilePath(path)), true);
+            stream.write(FileUtil.readBytes(file));
+            stream.flush();
+            stream.close();
+        } catch (IOException e) {
+            throw BusException.valueOf("file.upload.failed", e);
+        }
+    }
+
+    @Override
+    public String getFileContent(String path) {
+        return IoUtil.readUtf8(readFile(path));
+    }
+
+    @Override
+    public InputStream readFile(String path) {
+        try {
+            return getHdfs().open(new Path(getFilePath(path)));
         } catch (IOException e) {
             throw BusException.valueOf("file.read.failed", e);
         }

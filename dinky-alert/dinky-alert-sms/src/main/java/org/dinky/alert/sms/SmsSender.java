@@ -39,7 +39,6 @@ import cn.hutool.json.JSONUtil;
 
 /** SmsSender todo: https://wind.kim/doc/start/springboot.html */
 public class SmsSender {
-
     private static final Logger logger = LoggerFactory.getLogger(SmsSender.class);
     private static SupplierConfig configLoader = null;
     private static BaseProviderFactory providerFactory = null;

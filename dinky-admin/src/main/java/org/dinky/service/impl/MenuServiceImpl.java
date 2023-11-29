@@ -20,10 +20,11 @@
 package org.dinky.service.impl;
 
 import org.dinky.data.constant.BaseConstant;
+import org.dinky.data.dto.MenuDTO;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.Menu;
-import org.dinky.data.model.RoleMenu;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.Menu;
+import org.dinky.data.model.rbac.RoleMenu;
+import org.dinky.data.model.rbac.User;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.MetaVo;
 import org.dinky.data.vo.RouterVo;
@@ -47,6 +48,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
@@ -283,6 +285,25 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
             }
         }
         return permsSet;
+    }
+
+    /**
+     * save or update menu
+     *
+     * @param menuDTO
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean saveOrUpdateMenu(MenuDTO menuDTO) {
+        Menu menu = menuDTO.toBean();
+
+        if (StrUtil.isNotEmpty(menu.getPath())) {
+            // replace first / and replace other / to : for router
+            String replacedPerms = menu.getPath().replaceFirst("/", "").replaceAll("/", ":");
+            menu.setPerms(replacedPerms);
+        }
+        return this.saveOrUpdate(menu);
     }
 
     /**

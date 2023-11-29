@@ -21,7 +21,8 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky-app</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>dinky-app-1.14</artifactId>
 
@@ -40,10 +41,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-client-1.14</artifactId>
         </dependency>
@@ -51,14 +48,6 @@
             <groupId>org.dinky</groupId>
             <artifactId>dinky-flink-1.14</artifactId>
             <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-client-base</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-executor</artifactId>
         </dependency>
     </dependencies>
 

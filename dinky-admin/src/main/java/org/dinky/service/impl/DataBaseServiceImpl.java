@@ -20,7 +20,12 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.dto.DataBaseDTO;
+import org.dinky.data.dto.SqlDTO;
+import org.dinky.data.dto.TaskDTO;
+import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
@@ -28,6 +33,8 @@ import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
 import org.dinky.data.model.Table;
+import org.dinky.data.result.SqlExplainResult;
+import org.dinky.job.JobResult;
 import org.dinky.mapper.DataBaseMapper;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -38,12 +45,16 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import cn.hutool.core.collection.CollectionUtil;
 
 /**
  * DataBaseServiceImpl
@@ -54,8 +65,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBase> implements DataBaseService {
 
     @Override
-    public String testConnect(DataBase dataBase) {
-        return Driver.buildUnconnected(dataBase.getDriverConfig()).test();
+    public String testConnect(DataBaseDTO dataBaseDTO) {
+        return Driver.buildUnconnected(dataBaseDTO.toBean().getDriverConfig()).test();
     }
 
     @Override
@@ -79,7 +90,9 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
-    public Boolean saveOrUpdateDataBase(DataBase dataBase) {
+    public Boolean saveOrUpdateDataBase(DataBaseDTO dataBaseDTO) {
+        DataBase dataBase = dataBaseDTO.toBean();
+
         if (Asserts.isNull(dataBase)) {
             return false;
         }
@@ -231,7 +244,9 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
-    public Boolean copyDatabase(DataBase database) {
+    public Boolean copyDatabase(DataBaseDTO dataBaseDTO) {
+        DataBase database = dataBaseDTO.toBean();
+
         String name = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
         database.setId(null);
         database.setName((database.getName().length() > 10 ? database.getName().substring(0, 10) : database.getName())
@@ -239,5 +254,82 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
                 + name);
         database.setCreateTime(null);
         return this.save(database);
+    }
+
+    @Override
+    public List<SqlExplainResult> explainCommonSql(TaskDTO task) {
+        if (Asserts.isNull(task.getDatabaseId())) {
+            return Collections.singletonList(SqlExplainResult.fail(task.getStatement(), "please assign data source."));
+        }
+
+        DataBase dataBase = getById(task.getDatabaseId());
+        if (Asserts.isNull(dataBase)) {
+            return Collections.singletonList(SqlExplainResult.fail(task.getStatement(), "data source not exist."));
+        }
+
+        List<SqlExplainResult> sqlExplainResults;
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            sqlExplainResults = driver.explain(task.getStatement());
+        }
+        return sqlExplainResults;
+    }
+
+    @Override
+    @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE_COMMON_SQL)
+    public JobResult executeCommonSql(SqlDTO sqlDTO) {
+        JobResult result = new JobResult();
+        result.setStatement(sqlDTO.getStatement());
+        result.setStartTime(LocalDateTime.now());
+
+        if (Asserts.isNull(sqlDTO.getDatabaseId())) {
+            result.setSuccess(false);
+            result.setError("please assign data source");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
+
+        DataBase dataBase = getById(sqlDTO.getDatabaseId());
+        if (Asserts.isNull(dataBase)) {
+            result.setSuccess(false);
+            result.setError("data source not exist.");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
+
+        JdbcSelectResult selectResult;
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
+        }
+
+        result.setResult(selectResult);
+        if (selectResult.isSuccess()) {
+            result.setSuccess(true);
+        } else {
+            result.setSuccess(false);
+            result.setError(selectResult.getError());
+        }
+        result.setEndTime(LocalDateTime.now());
+        return result;
+    }
+
+    /**
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<DataBase> selectListByKeyWord(String keyword) {
+
+        List<DataBase> dataBaseList = getBaseMapper()
+                .selectList(new LambdaQueryWrapper<DataBase>()
+                        .like(DataBase::getName, keyword)
+                        .or()
+                        .like(DataBase::getNote, keyword));
+
+        if (CollectionUtil.isNotEmpty(dataBaseList)) {
+            for (DataBase data : dataBaseList) {
+                data.setPassword(null);
+            }
+        }
+        return dataBaseList;
     }
 }

@@ -19,11 +19,12 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
+import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.ClusterConfiguration;
-import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.service.ClusterConfigurationService;
@@ -39,9 +40,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,14 +66,26 @@ public class ClusterConfigurationController {
      * @param clusterConfiguration
      * @return
      */
-    @PutMapping
+    @PutMapping("/saveOrUpdate")
     @Log(title = "Insert Or Update Cluster Config", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Cluster Config")
-    public Result<Void> saveOrUpdateClusterConfig(@RequestBody ClusterConfiguration clusterConfiguration) {
-        Integer id = clusterConfiguration.getId();
+    @ApiImplicitParam(
+            name = "clusterConfiguration",
+            value = "Cluster Configuration",
+            dataType = "ClusterConfiguration",
+            paramType = "body",
+            required = true,
+            dataTypeClass = ClusterConfiguration.class)
+    @SaCheckPermission(
+            value = {
+                PermissionConstants.REGISTRATION_CLUSTER_CONFIG_ADD,
+                PermissionConstants.REGISTRATION_CLUSTER_CONFIG_EDIT
+            },
+            mode = SaMode.OR)
+    public Result<Void> saveOrUpdateClusterConfig(@RequestBody ClusterConfigurationDTO clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
         clusterConfiguration.setIsAvailable(testResult.isAvailable());
-        if (clusterConfigurationService.saveOrUpdate(clusterConfiguration)) {
+        if (clusterConfigurationService.saveOrUpdate(clusterConfiguration.toBean())) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
@@ -80,14 +94,13 @@ public class ClusterConfigurationController {
 
     /**
      * query cluster config list
-     *
-     * @param para
+     * @param keyword
      * @return
      */
-    @PostMapping
+    @GetMapping("/list")
     @ApiOperation("Cluster Config List")
-    public ProTableResult<ClusterConfiguration> listClusterConfigList(@RequestBody JsonNode para) {
-        return clusterConfigurationService.selectForProTable(para);
+    public Result<List<ClusterConfigurationDTO>> listClusterConfigList(@RequestParam String keyword) {
+        return Result.succeed(clusterConfigurationService.selectListByKeyWord(keyword));
     }
 
     /**
@@ -97,6 +110,12 @@ public class ClusterConfigurationController {
      */
     @GetMapping("/listEnabledAll")
     @ApiOperation("Cluster Config List Enabled All")
+    @ApiImplicitParam(
+            name = "para",
+            value = "Cluster Configuration",
+            dataType = "JsonNode",
+            paramType = "body",
+            required = true)
     public Result<List<ClusterConfiguration>> listEnabledAllClusterConfig() {
         return Result.succeed(clusterConfigurationService.listEnabledAllClusterConfig());
     }
@@ -110,6 +129,8 @@ public class ClusterConfigurationController {
     @DeleteMapping("/delete")
     @Log(title = "Cluster Config Delete by id", businessType = BusinessType.DELETE)
     @ApiOperation("Cluster Config Delete by id")
+    @ApiImplicitParam(name = "id", value = "id", dataType = "Integer", paramType = "query", required = true)
+    @SaCheckPermission(value = PermissionConstants.REGISTRATION_CLUSTER_CONFIG_DELETE)
     public Result<Void> deleteById(@RequestParam("id") Integer id) {
         boolean removeById = clusterConfigurationService.removeById(id);
         if (removeById) {
@@ -128,6 +149,8 @@ public class ClusterConfigurationController {
     @PutMapping("/enable")
     @Log(title = "Modify Cluster Config Status", businessType = BusinessType.UPDATE)
     @ApiOperation("Modify Cluster Config Status")
+    @ApiImplicitParam(name = "id", value = "id", dataType = "Integer", paramType = "query", required = true)
+    @SaCheckPermission(value = PermissionConstants.REGISTRATION_CLUSTER_CONFIG_EDIT)
     public Result<Void> modifyClusterConfigStatus(@RequestParam("id") Integer id) {
         if (clusterConfigurationService.modifyClusterConfigStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -145,7 +168,15 @@ public class ClusterConfigurationController {
     @PostMapping("/testConnect")
     @Log(title = "Test Connection", businessType = BusinessType.TEST)
     @ApiOperation("Test Connection")
-    public Result<Void> testConnect(@RequestBody ClusterConfiguration clusterConfiguration) {
+    @ApiImplicitParam(
+            name = "clusterConfiguration",
+            value = "Cluster Configuration",
+            dataType = "ClusterConfiguration",
+            paramType = "body",
+            required = true,
+            dataTypeClass = ClusterConfiguration.class)
+    @SaCheckPermission(value = PermissionConstants.REGISTRATION_CLUSTER_CONFIG_HEARTBEATS)
+    public Result<Void> testConnect(@RequestBody ClusterConfigurationDTO clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
         if (testResult.isAvailable()) {
             return Result.succeed(Status.TEST_CONNECTION_SUCCESS);

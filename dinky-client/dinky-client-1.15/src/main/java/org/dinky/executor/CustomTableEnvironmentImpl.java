@@ -24,7 +24,6 @@ import static org.apache.flink.table.api.bridge.internal.AbstractStreamTableEnvi
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
@@ -59,19 +58,28 @@ import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
+import org.apache.flink.table.operations.SinkModifyOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
-import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
+import org.apache.flink.table.operations.ddl.CreateTableASOperation;
+import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.types.Row;
 
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.URLUtil;
 
 /**
  * CustomTableEnvironmentImpl
@@ -79,8 +87,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @since 2022/05/08
  */
 public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
-
-    private final FlinkChainedProgram flinkChainedProgram;
 
     public CustomTableEnvironmentImpl(
             CatalogManager catalogManager,
@@ -102,8 +108,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 executor,
                 isStreamingMode,
                 userClassLoader));
-        this.flinkChainedProgram = FlinkStreamProgramWithoutPhysical.buildProgram(
-                (Configuration) getStreamExecutionEnvironment().getConfiguration());
     }
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
@@ -194,6 +198,19 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
+    public void addJar(File... jarPath) {
+        Configuration configuration = new Configuration(this.getRootConfiguration());
+        List<String> pathList =
+                Arrays.stream(URLUtil.getURLs(jarPath)).map(URL::toString).collect(Collectors.toList());
+        List<String> jars = configuration.get(PipelineOptions.JARS);
+        if (jars == null) {
+            configuration.set(PipelineOptions.JARS, pathList);
+        } else {
+            CollUtil.addAll(jars, pathList);
+        }
+    }
+
+    @Override
     public JobPlanInfo getJobPlanInfo(List<String> statements) {
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(getJobGraphFromInserts(statements)));
     }
@@ -255,15 +272,14 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return record;
     }
 
-    public boolean parseAndLoadConfiguration(
-            String statement, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
+    public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
         for (Operation operation : operations) {
             if (operation instanceof SetOperation) {
-                callSet((SetOperation) operation, environment, setMap);
+                callSet((SetOperation) operation, getStreamExecutionEnvironment(), setMap);
                 return true;
             } else if (operation instanceof ResetOperation) {
-                callReset((ResetOperation) operation, environment, setMap);
+                callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
                 return true;
             }
         }
@@ -319,14 +335,24 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     @Override
     public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext =
-                new LineageContext(flinkChainedProgram, (TableEnvironmentImpl) streamTableEnvironment);
-        return lineageContext.getLineage(statement);
+        LineageContext lineageContext = new LineageContext((TableEnvironmentImpl) streamTableEnvironment);
+        return lineageContext.analyzeLineage(statement);
     }
 
     @Override
     public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
         createTemporaryView(s, fromChangelogStream(dataStream));
+    }
+
+    @Override
+    public void executeCTAS(Operation operation) {
+        if (operation instanceof CreateTableASOperation) {
+            CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
+            CreateTableOperation createTableOperation = createTableASOperation.getCreateTableOperation();
+            executeInternal(createTableOperation);
+            SinkModifyOperation sinkModifyOperation = createTableASOperation.toSinkModifyOperation(getCatalogManager());
+            getPlanner().translate(CollUtil.newArrayList(sinkModifyOperation));
+        }
     }
 
     @Override

@@ -20,10 +20,10 @@
 package org.dinky.aop;
 
 import org.dinky.context.UserInfoContextHolder;
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.enums.BusinessStatus;
 import org.dinky.data.model.OperateLog;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
 import org.dinky.data.result.Result;
 import org.dinky.service.impl.OperateLogServiceImpl;
 import org.dinky.utils.IpUtils;
@@ -33,7 +33,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,7 +63,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class LogAspect {
 
-    @Pointcut("@annotation(org.dinky.data.annotation.Log)")
+    @Pointcut("@annotation(org.dinky.data.annotations.Log)")
     public void logPointCut() {}
 
     /**
@@ -71,7 +73,7 @@ public class LogAspect {
      */
     @AfterReturning(pointcut = "logPointCut()", returning = "jsonResult")
     public void doAfterReturning(JoinPoint joinPoint, Object jsonResult) {
-        handleLog(joinPoint, null, jsonResult);
+        handleCommonLogic(joinPoint, null, jsonResult);
     }
 
     /**
@@ -82,10 +84,10 @@ public class LogAspect {
      */
     @AfterThrowing(value = "logPointCut()", throwing = "e")
     public void doAfterThrowing(JoinPoint joinPoint, Exception e) {
-        handleLog(joinPoint, e, null);
+        handleCommonLogic(joinPoint, e, null);
     }
 
-    protected void handleLog(final JoinPoint joinPoint, final Exception e, Object jsonResult) {
+    protected void handleCommonLogic(final JoinPoint joinPoint, final Exception e, Object jsonResult) {
         try {
             // 获得注解
             Log controllerLog = getAnnotationLog(joinPoint);
@@ -115,7 +117,6 @@ public class LogAspect {
 
             if (e != null) {
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());
-                log.error("pre doAfterThrowing Exception:{}", e.getMessage());
                 operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
             }
             operLog.setStatus(BusinessStatus.SUCCESS.ordinal());
@@ -135,8 +136,7 @@ public class LogAspect {
 
         } catch (Exception exp) {
             // 记录本地异常日志
-            log.error("pre doAfterThrowing Exception:{}", exp.getMessage());
-            exp.printStackTrace();
+            log.error("pre doAfterThrowing Exception:", exp);
         }
     }
 
@@ -165,7 +165,7 @@ public class LogAspect {
      * @param operLog 操作日志
      * @throws Exception 异常
      */
-    private void setRequestValue(JoinPoint joinPoint, OperateLog operLog) throws Exception {
+    private void setRequestValue(JoinPoint joinPoint, OperateLog operLog) {
         String requestMethod = operLog.getRequestMethod();
         if (HttpMethod.PUT.name().equals(requestMethod)
                 || HttpMethod.POST.name().equals(requestMethod)) {
@@ -192,16 +192,10 @@ public class LogAspect {
 
     /** 参数拼装 */
     private String argsArrayToString(Object[] paramsArray) {
-        String params = "";
-        if (paramsArray != null && paramsArray.length > 0) {
-            for (int i = 0; i < paramsArray.length; i++) {
-                if (!isFilterObject(paramsArray[i])) {
-                    String jsonObj = JSONUtil.toJsonStr(paramsArray[i]);
-                    params += jsonObj + " ";
-                }
-            }
-        }
-        return params.trim();
+        return Arrays.stream(paramsArray)
+                .filter(o -> !isFilterObject(o))
+                .map(JSONUtil::toJsonStr)
+                .collect(Collectors.joining(" "));
     }
 
     /**

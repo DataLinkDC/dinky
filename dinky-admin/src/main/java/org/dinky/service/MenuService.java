@@ -19,8 +19,9 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.Menu;
-import org.dinky.data.model.User;
+import org.dinky.data.dto.MenuDTO;
+import org.dinky.data.model.rbac.Menu;
+import org.dinky.data.model.rbac.User;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.RouterVo;
 import org.dinky.mybatis.service.ISuperService;
@@ -44,7 +45,8 @@ public interface MenuService extends ISuperService<Menu> {
      * @param user login user
      * @return {@link List<Menu>} menu list
      */
-    public List<Menu> selectMenuList(User user);
+    @Deprecated
+    List<Menu> selectMenuList(User user);
 
     /**
      * query menu list by menu and user
@@ -52,8 +54,9 @@ public interface MenuService extends ISuperService<Menu> {
      * @param menu menu
      * @return {@link List<Menu>} menu list
      */
-    public List<Menu> selectMenuList(Menu menu, User user);
+    List<Menu> selectMenuList(Menu menu, User user);
 
+    @Deprecated
     List<Menu> listMenusBySuperFlag(Integer superFlag);
 
     /**
@@ -70,6 +73,7 @@ public interface MenuService extends ISuperService<Menu> {
      * @param user login user
      * @return {@link Menu} menu
      */
+    @Deprecated
     List<Menu> selectMenuTreeByUserId(User user);
 
     /**
@@ -127,4 +131,11 @@ public interface MenuService extends ISuperService<Menu> {
      * @return permission List
      */
     Set<String> selectMenuPermsByRoleId(Integer roleId);
+
+    /**
+     * save or update menu
+     * @param menuDTO
+     * @return
+     */
+    boolean saveOrUpdateMenu(MenuDTO menuDTO);
 }

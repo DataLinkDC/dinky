@@ -21,6 +21,8 @@ package org.dinky.data.dto;
 
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,15 +37,50 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@ApiModel(value = "TreeNodeDTO", description = "DTO for tree nodes")
 public class TreeNodeDTO {
-    private Integer id;
+
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "The ID of the tree node")
+    private Object id;
+
+    @ApiModelProperty(value = "Name", dataType = "String", example = "Node 1", notes = "The name of the tree node")
     private String name;
+
+    @ApiModelProperty(value = "Path", dataType = "String", example = "/node/1", notes = "The path of the tree node")
     private String path;
+
+    @ApiModelProperty(
+            value = "Content",
+            dataType = "String",
+            example = "Node content",
+            notes = "The content of the tree node")
     private String content;
-    private Integer parentId;
+
+    @ApiModelProperty(
+            value = "Parent ID",
+            dataType = "Integer",
+            example = "0",
+            notes = "The ID of the parent tree node (0 for root)")
+    private Object parentId;
+
+    @ApiModelProperty(value = "Size", dataType = "Long", example = "1024", notes = "The size of the tree node")
     private Long size;
+
+    @ApiModelProperty(
+            value = "Is Leaf",
+            dataType = "boolean",
+            example = "false",
+            notes = "Indicates whether the tree node is a leaf node (true/false)")
     private boolean isLeaf;
+
+    @ApiModelProperty(
+            value = "Description",
+            dataType = "String",
+            example = "Node description",
+            notes = "Additional description for the tree node")
     private String desc;
+
+    @ApiModelProperty(value = "Children", dataType = "List<TreeNodeDTO>", notes = "List of child tree nodes")
     private List<TreeNodeDTO> children;
 
     public TreeNodeDTO(String name, String path, boolean isLeaf, List<TreeNodeDTO> children, Long size) {
@@ -56,6 +93,16 @@ public class TreeNodeDTO {
 
     public TreeNodeDTO(
             Integer id, String name, String path, Integer parentId, String desc, List<TreeNodeDTO> children) {
+        this.id = id;
+        this.name = name;
+        this.path = path;
+        this.parentId = parentId;
+        this.desc = desc;
+        this.children = children;
+        this.isLeaf = (children == null || children.size() == 0);
+    }
+
+    public TreeNodeDTO(String id, String name, String path, String parentId, String desc, List<TreeNodeDTO> children) {
         this.id = id;
         this.name = name;
         this.path = path;

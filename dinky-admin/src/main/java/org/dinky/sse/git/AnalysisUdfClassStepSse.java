@@ -20,12 +20,12 @@
 package org.dinky.sse.git;
 
 import org.dinky.data.dto.GitAnalysisJarDTO;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.GitProject;
 import org.dinky.function.util.UDFUtil;
-import org.dinky.process.exception.DinkyException;
 import org.dinky.sse.StepSse;
+import org.dinky.utils.URLUtils;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -70,7 +70,7 @@ public class AnalysisUdfClassStepSse extends StepSse {
             throw new DinkyException("flink dependency not found");
         }
         pathList.parallelStream().forEach(jar -> {
-            List<Class<?>> udfClassByJar = UDFUtil.getUdfClassByJar(new File(jar));
+            List<Class<?>> udfClassByJar = UDFUtil.getUdfClassByJar(URLUtils.toFile(jar));
             udfMap.put(jar, udfClassByJar);
             sendMsg(Dict.create().set(jar, udfClassByJar));
         });

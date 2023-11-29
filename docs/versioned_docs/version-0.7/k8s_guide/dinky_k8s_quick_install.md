@@ -303,7 +303,7 @@ FROM test1;
     ENV FLINK_BIG_VERSION=1.17
     
     # 更改启动命令为新命令
-    ["/bin/sh","-c","./auto.sh restart ${FLINK_BIG_VERSION}"]
+    ENTRYPOINT ["/bin/sh","-c","rm -rf /opt/dinky/run/dinky.pid && /opt/dinky/auto.sh restart ${FLINK_BIG_VERSION} && tail -f /opt/dinky/logs/dlink.log"]
     ```
 
 - 若MySQL是部署在同一个K8S集群中，k8s集群如果重启，dinky可能会无法自动重新启动
@@ -316,3 +316,70 @@ FROM test1;
 - dinky安装位置在镜像中的：`/opt/dinky`，其相关jar包依赖存放于该目录下的`plugins`下，推荐通过`Dockerfile`方式修改镜像，将常用`Jar`，如`Paimon`、`CDC`等相关依赖，复制进该目录或该目录下的版本目录，再编译打包提交私有仓库，添加于上方配置文件中
 
   - Dockerfile打包文件进镜像请自行搜索相关教程
+
+- 如果想实现日志持久化以及动态添加jar依赖，可通过`nfs-storage`创建pvc，也可以直接在 nfs共享文件夹下创建个文件夹，只要能保证k8s集群中各个主机都能访问到该路径及其文件中的内容即可，然后将pvc映射到dinky pod容器内，实现外部挂载，nfs-storage安装部署教程可见`dinky官网/k8s集成手册/Dinky集成Flink on K8S文档中的注意事项`，如果是通过非pvc的方式，那么每次添加依赖后需要重启下pod容器
+
+  - 两种方式首次映射后pvc的文件夹都是空的，需要手动将二进制包下的plugins下的内容移动到路径或者 pvc的路径下，之后只在此路径下添加或更改依赖即可
+
+  - 日志创建pvc后可直接持久化到外部路径进行查看
+
+  - pvc创建
+
+    ```SH
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: dinky-plugins  # pvc名称
+      namespace: dinky
+    spec:
+      storageClassName: nfs-storage   #sc名称
+      accessModes:
+        - ReadOnlyMany   #采用ReadOnlyMany的访问模式
+      resources:
+        requests:
+          storage: 50Gi    #存储容量，根据实际需要更改
+    ```
+
+  - 映射
+
+    ```sh
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app: flink-dinky
+      name: dinky
+      namespace: dinky
+    spec:
+      selector:
+        matchLabels:
+          app: flink-dinky
+      template:
+        metadata:
+          labels:
+            app: flink-dinky
+        spec:
+          containers:
+          - image: dinkydocker/dinky-standalone-server:0.7.3-flink16
+            imagePullPolicy: IfNotPresent
+            name: dinky
+            volumeMounts: 
+            - mountPath: /opt/dinky/config/application.yml
+              name: admin-config
+              subPath: application.yml
+              #把plugins文件夹映射到本地来，方便添加jar
+            - name: plugins-data
+              mountPath: /opt/dinky/plugins   #映射的容器内的监控路径
+          volumes:
+          - name: admin-config
+            configMap:
+              name: dinky-config
+          - name: plugins-data
+            persistentVolumeClaim:
+              claimName: dinky-plugins  #【方式一】指定nfs共享的pvc，可动态添加依赖，无序重启,首次需要手动复制文件到此目录
+            # hostPath:
+            #   path: /data/nfs/dinky/plugins #【方式二】映射到nfs共享目录下，每次添加依赖需重启pod生效，首次需要手动复制文件到此目录
+    ```
+
+![image-20230923155056343](https://ylw-typora-img.oss-cn-chengdu.aliyuncs.com/img/202309231550459.png)

@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.History;
+import org.dinky.data.model.job.History;
 import org.dinky.mybatis.service.ISuperService;
 
 /**
@@ -29,5 +29,11 @@ import org.dinky.mybatis.service.ISuperService;
  */
 public interface HistoryService extends ISuperService<History> {
 
-    boolean removeHistoryById(Integer id);
+    /**
+     * Get latest history info by task id.
+     *
+     * @param id The ID of the task.
+     * @return History info.
+     */
+    History getLatestHistoryById(Integer id);
 }

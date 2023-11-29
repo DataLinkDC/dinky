@@ -72,6 +72,11 @@ public enum JobStatus {
     /** The job is currently reconciling and waits for task execution report to recover state. */
     RECONCILING("RECONCILING"),
 
+    /**
+     * The job is reconnecting.
+     */
+    RECONNECTING("RECONNECTING"),
+
     /** The job can't get any info. */
     UNKNOWN("UNKNOWN");
 
@@ -104,6 +109,16 @@ public enum JobStatus {
         }
     }
 
+    public static boolean isTransition(String value) {
+        switch (get(value)) {
+            case FAILED:
+            case RECONNECTING:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public boolean isDone() {
         switch (this) {
             case FAILED:
@@ -118,5 +133,9 @@ public enum JobStatus {
 
     public static List<JobStatus> getAllDoneStatus() {
         return Lists.newArrayList(FAILED, CANCELED, FINISHED, UNKNOWN);
+    }
+
+    public boolean equalVal(String value) {
+        return this.equals(get(value));
     }
 }

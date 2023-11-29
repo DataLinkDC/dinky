@@ -19,6 +19,7 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.model.TaskVersion;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -32,4 +33,12 @@ public interface TaskVersionService extends ISuperService<TaskVersion> {
      * @return java.util.List<org.dinky.data.model.TaskVersion>
      */
     List<TaskVersion> getTaskVersionByTaskId(Integer taskId);
+
+    /**
+     * Create a snapshot of a task version.
+     *
+     * @param task A {@link TaskDTO} object representing the task to create a snapshot for.
+     * @return
+     */
+    Integer createTaskVersionSnapshot(TaskDTO task);
 }

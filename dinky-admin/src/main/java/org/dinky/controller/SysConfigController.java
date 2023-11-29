@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Configuration;
@@ -37,9 +37,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +69,7 @@ public class SysConfigController {
     @PostMapping("/modifyConfig")
     @ApiOperation("Modify System Config")
     @Log(title = "Modify System Config", businessType = BusinessType.UPDATE)
+    @ApiImplicitParam(name = "params", value = "System Config", dataType = "Dict")
     public Result<Void> modifyConfig(@RequestBody Dict params) {
         sysConfigService.updateSysConfigByKv(params.getStr("key"), params.getStr("value"));
         return Result.succeed(Status.MODIFY_SUCCESS);
@@ -79,6 +82,7 @@ public class SysConfigController {
      */
     @GetMapping("/getAll")
     @ApiOperation("Query All System Config List")
+    @SaIgnore
     public Result<Map<String, List<Configuration<?>>>> getAll() {
         Map<String, List<Configuration<?>>> all = sysConfigService.getAll();
         Map<String, List<Configuration<?>>> map =
@@ -88,9 +92,15 @@ public class SysConfigController {
 
     @GetMapping("/getConfigByType")
     @ApiOperation("Query One Type System Config List By Key")
+    @ApiImplicitParam(
+            name = "type",
+            value = "System Config Type",
+            dataType = "String",
+            required = true,
+            example = "sys")
     public Result<List<Configuration<?>>> getOneTypeByKey(@RequestParam("type") String type) {
         Map<String, List<Configuration<?>>> all = sysConfigService.getAll();
-        // 过滤出 以 type 开头的配置 返回 list
+        // Filter out configurations starting with type and return a list
         List<Configuration<?>> configList = all.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(type))
                 .map(Map.Entry::getValue)

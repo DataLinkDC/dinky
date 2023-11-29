@@ -20,6 +20,7 @@
  SET NAMES utf8mb4;
  SET FOREIGN_KEY_CHECKS = 0;
 
+begin ;
 -- rename table
 ALTER TABLE dlink_alert_group RENAME dinky_alert_group;
 ALTER TABLE dlink_alert_history RENAME dinky_alert_history;
@@ -97,7 +98,7 @@ CREATE TABLE `dinky_git_project` (
                                      `last_build` datetime DEFAULT NULL,
                                      `description` varchar(255) DEFAULT NULL,
                                      `build_state` tinyint(2) NOT NULL DEFAULT '0' COMMENT '0-notStart 1-process 2-failed 3-success',
-                                     `build_step` tinyint(2) NOT NULL DEFAULT '0',
+                                     `build_step` tinyint(2) NOT NULL DEFAULT '0' COMMENT 'different from java and python, when build java project, the step value is as follows: 0: environment check 1: clone project 2: compile and build 3: get artifact 4: analyze UDF 5: finish; when build python project, the step value is as follows: 0: environment check 1: clone project 2: get artifact 3: analyze UDF 4: finish',
                                      `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0-disable 1-enable',
                                      `udf_class_map_list` text COMMENT 'scan udf class',
                                      `order_line` int(11) NOT NULL DEFAULT '1' COMMENT 'order',
@@ -178,30 +179,31 @@ CREATE TABLE `dinky_sys_login_log` (
 -- ----------------------------
 -- Table structure for dinky_sys_operate_log
 -- ----------------------------
-CREATE TABLE `dinky_sys_operate_log`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `module_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'module name',
-  `business_type` int NULL DEFAULT 0 COMMENT 'business type',
-  `method` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'method name',
-  `request_method` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request method',
-  `operate_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate name',
-  `operate_user_id` int NOT NULL COMMENT 'operate user id',
-  `operate_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate url',
-  `operate_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'ip',
-  `operate_location` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate location',
-  `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'request param',
-  `json_result` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT 'return json result',
-  `status` int DEFAULT NULL COMMENT 'operate status',
-  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT 'error msg',
-  `operate_time` datetime(0) NULL DEFAULT NULL COMMENT 'operate time',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'operate log record' ROW_FORMAT = Dynamic;
+CREATE TABLE `dinky_sys_operate_log` (
+                                         `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                         `module_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'module name',
+                                         `business_type` int DEFAULT '0' COMMENT 'business type',
+                                         `method` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'method name',
+                                         `request_method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'request method',
+                                         `operate_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'operate name',
+                                         `operate_user_id` int NOT NULL COMMENT 'operate user id',
+                                         `operate_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'operate url',
+                                         `operate_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'ip',
+                                         `operate_location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'operate location',
+                                         `operate_param` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'request param',
+                                         `json_result` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'return json result',
+                                         `status` int DEFAULT NULL COMMENT 'operate status',
+                                         `error_msg` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'error msg',
+                                         `operate_time` datetime DEFAULT NULL COMMENT 'operate time',
+                                         PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='operate log record';
 
 alter table dinky_user
     add super_admin_flag tinyint default 0 comment 'is super admin(0:false,1true)' after enabled;
 
 alter table dinky_user_tenant add tenant_admin_flag tinyint default 0  comment 'tenant admin flag(0:false,1:true)' after tenant_id;
 
+alter table dinky_task add column `statement` longtext DEFAULT NULL COMMENT 'job statement';
 
 drop table dinky_namespace;
 drop table dinky_role_namespace;
@@ -274,21 +276,44 @@ create table if not exists dinky_alert_rules
 -- Table structure dinky_sys_token
 -- ----------------------------
 CREATE TABLE `dinky_sys_token` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `token_value` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'token value',
-  `user_id` bigint NOT NULL COMMENT 'user id',
-  `role_id` bigint NOT NULL COMMENT 'role id',
-  `tenant_id` bigint NOT NULL COMMENT 'tenant id',
-  `expire_type` tinyint NOT NULL COMMENT '1: never expire, 2: expire after a period of time, 3: expire at a certain time',
-  `expire_start_time` datetime DEFAULT NULL COMMENT 'expire start time ,when expire_type = 3 , it is the start time of the period',
-  `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
-  `create_time` datetime NOT NULL COMMENT 'create time',
-  `update_time` datetime NOT NULL COMMENT 'modify time',
-  `creator` bigint DEFAULT NULL COMMENT '创建人',
-  `updator` bigint DEFAULT NULL COMMENT '修改人',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='token management';
+   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+   `token_value` varchar(255) NOT NULL COMMENT 'token value',
+   `user_id` bigint(20) NOT NULL COMMENT 'user id',
+   `role_id` bigint(20) NOT NULL COMMENT 'role id',
+   `tenant_id` bigint(20) NOT NULL COMMENT 'tenant id',
+   `expire_type` tinyint(4) NOT NULL COMMENT '1: never expire, 2: expire after a period of time, 3: expire at a certain time',
+   `expire_start_time` datetime DEFAULT NULL COMMENT 'expire start time ,when expire_type = 3 , it is the start time of the period',
+   `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
+   `create_time` datetime NOT NULL COMMENT 'create time',
+   `update_time` datetime NOT NULL COMMENT 'modify time',
+   `creator` bigint(20) DEFAULT NULL COMMENT '创建人',
+   `updator` bigint(20) DEFAULT NULL COMMENT '修改人',
+   `source` tinyint(2) DEFAULT NULL COMMENT '1:login 2:custom',
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `token_value` (`token_value`) USING BTREE,
+   KEY `source` (`source`) USING HASH
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COMMENT='token management';
+
+CREATE TABLE `dinky_udf_manage` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                                    `name` varchar(50) DEFAULT NULL COMMENT 'udf name',
+                                    `class_name` varchar(50) DEFAULT NULL COMMENT 'Complete class name',
+                                    `task_id` int(11) DEFAULT NULL COMMENT 'task id',
+                                    `resources_id` int(11) DEFAULT NULL COMMENT 'resources id',
+                                    `enabled` tinyint(1) DEFAULT 1 COMMENT 'is enable',
+                                    `create_time` datetime DEFAULT NULL COMMENT 'create time',
+                                    `update_time` datetime DEFAULT NULL COMMENT 'update time',
+                                    PRIMARY KEY (`id`) USING BTREE,
+                                    KEY `name,resources_id` (`name`,`resources_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='udf';
 
 
+drop table if exists dinky_task_statement;
+drop table if exists dinky_jar;
+drop table if exists dinky_schema_history;
+drop table if exists dinky_upload_file_record;
+drop table if exists dinky_udf;
+
+commit ;
 
 SET FOREIGN_KEY_CHECKS = 1;

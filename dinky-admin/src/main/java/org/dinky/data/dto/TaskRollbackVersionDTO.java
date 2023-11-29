@@ -21,12 +21,22 @@ package org.dinky.data.dto;
 
 import java.io.Serializable;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /** @description: 任务回滚DTO */
 @Data
+@ApiModel(value = "TaskRollbackVersionDTO", description = "DTO for rolling back a task to a specific version")
 public class TaskRollbackVersionDTO implements Serializable {
 
-    private Integer id;
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "The identifier of the task")
+    private Integer taskId;
+
+    @ApiModelProperty(
+            value = "Version ID",
+            dataType = "Integer",
+            example = "2",
+            notes = "The identifier of the version to rollback to")
     private Integer versionId;
 }

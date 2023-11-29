@@ -5,7 +5,8 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky-cdc</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>dinky-cdc-plus</artifactId>
@@ -46,11 +47,11 @@
     <build>
         <resources>
             <resource>
+                <filtering>true</filtering>
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>**/*.*</include>
                 </includes>
-                <filtering>true</filtering>
             </resource>
         </resources>
     </build>

@@ -21,7 +21,8 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky-connectors</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>dinky-connector-pulsar-1.14</artifactId>
 
@@ -31,7 +32,6 @@
 
     <properties>
         <fastjson.version>1.2.7</fastjson.version>
-        <flink.version>1.14.6</flink.version>
         <hadoop.version>2.4.1</hadoop.version>
         <hbase.version>1.4.3</hbase.version>
         <pulsar.version>2.10.2</pulsar.version>
@@ -41,8 +41,7 @@
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-common</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
 
         <dependency>

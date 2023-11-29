@@ -20,9 +20,9 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.model.AlertGroup;
-import org.dinky.data.model.AlertHistory;
-import org.dinky.data.model.AlertInstance;
+import org.dinky.data.model.alert.AlertGroup;
+import org.dinky.data.model.alert.AlertHistory;
+import org.dinky.data.model.alert.AlertInstance;
 import org.dinky.mapper.AlertGroupMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.AlertGroupService;
@@ -43,7 +43,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
-/** AlertGroupServiceImpl */
+/**
+ * AlertGroupServiceImpl
+ */
 @Service
 @RequiredArgsConstructor
 public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup> implements AlertGroupService {
@@ -99,5 +101,18 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
                 .list(new LambdaQueryWrapper<AlertHistory>().eq(AlertHistory::getAlertGroupId, id))
                 .forEach(alertHistory -> alertHistoryService.removeById(alertHistory.getId()));
         return removeById(id);
+    }
+
+    /**
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<AlertGroup> selectListByKeyWord(String keyword) {
+        return getBaseMapper()
+                .selectList(new LambdaQueryWrapper<>(AlertGroup.class)
+                        .like(AlertGroup::getName, keyword)
+                        .or()
+                        .like(AlertGroup::getNote, keyword));
     }
 }

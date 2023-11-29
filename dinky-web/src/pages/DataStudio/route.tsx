@@ -1,57 +1,64 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
-import { CircleButtonProps } from '@/components/CallBackButton/CircleBtn';
+import { CircleDataStudioButtonProps } from '@/components/CallBackButton/CircleBtn';
 import Console from '@/pages/DataStudio/BottomContainer/Console';
+import JobExecHistory from '@/pages/DataStudio/BottomContainer/JobExecHistory';
+import Lineage from '@/pages/DataStudio/BottomContainer/Lineage';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
-import MetaData from '@/pages/DataStudio/LeftContainer/MetaData';
+import JsonToSql from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql';
+import TextComparison from '@/pages/DataStudio/BottomContainer/Tools/TextComparison';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
+import Catalog from '@/pages/DataStudio/LeftContainer/Catalog';
+import DataSource from '@/pages/DataStudio/LeftContainer/DataSource';
+import GlobalVariable from '@/pages/DataStudio/LeftContainer/GlobaleVar';
 import Project from '@/pages/DataStudio/LeftContainer/Project';
 import { TabsPageSubType, TabsPageType } from '@/pages/DataStudio/model';
-import ExecuteConfig from '@/pages/DataStudio/RightContainer/ExecuteConfig';
 import HistoryVersion from '@/pages/DataStudio/RightContainer/HistoryVersion';
 import JobConfig from '@/pages/DataStudio/RightContainer/JobConfig';
 import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
+import PreViewConfig from '@/pages/DataStudio/RightContainer/PreViewConfig';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
   ArrowsAltOutlined,
-  BarChartOutlined,
-  CalendarOutlined,
   ConsoleSqlOutlined,
   DatabaseOutlined,
-  DesktopOutlined,
+  EnvironmentOutlined,
   FolderOutlined,
+  FunctionOutlined,
   HistoryOutlined,
   InfoCircleOutlined,
+  InsertRowRightOutlined,
   MonitorOutlined,
-  PlayCircleOutlined,
   PlusCircleOutlined,
+  PlusOutlined,
   ReloadOutlined,
   RightSquareOutlined,
+  RotateRightOutlined,
   SettingOutlined,
   ShrinkOutlined,
   TableOutlined,
   ToolOutlined
 } from '@ant-design/icons';
-import { DiffEditor } from '@monaco-editor/react';
 import { ReactNode } from 'react';
 
 export const LeftSide = [
@@ -63,18 +70,25 @@ export const LeftSide = [
     children: <Project />
   },
   {
-    auth: '/datastudio/left/structure',
-    key: 'menu.datastudio.structure',
+    auth: '/datastudio/left/catalog',
+    key: 'menu.datastudio.catalog',
     icon: <TableOutlined />,
-    label: l('menu.datastudio.structure'),
-    children: <div>structure</div>
+    label: l('menu.datastudio.catalog'),
+    children: <Catalog />
   },
   {
-    auth: '/datastudio/left/metadata',
-    key: 'menu.datastudio.metadata',
+    auth: '/datastudio/left/datasource',
+    key: 'menu.datastudio.datasource',
     icon: <DatabaseOutlined />,
-    label: l('menu.datastudio.metadata'),
-    children: <MetaData />
+    label: l('menu.datastudio.datasource'),
+    children: <DataSource />
+  },
+  {
+    auth: '/datastudio/left/globalVariable',
+    key: 'menu.registration.fragment',
+    icon: <FunctionOutlined />,
+    label: l('menu.registration.fragment'),
+    children: <GlobalVariable />
   }
 ];
 
@@ -85,15 +99,19 @@ export const RightSide: TabProp[] = [
     icon: <SettingOutlined />,
     label: l('menu.datastudio.jobConfig'),
     children: <JobConfig />,
-    isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
+    isShow: (type, subType) =>
+      type === TabsPageType.project &&
+      (TabsPageSubType.flinkSql === subType || TabsPageSubType.flinkJar === subType)
   },
   {
-    auth: '/datastudio/right/executeConfig',
-    key: 'menu.datastudio.executeConfig',
-    icon: <PlayCircleOutlined />,
-    label: l('menu.datastudio.executeConfig'),
-    children: <ExecuteConfig />,
-    isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
+    auth: '/datastudio/right/previewConfig',
+    key: 'menu.datastudio.previewConfig',
+    icon: <InsertRowRightOutlined />,
+    label: l('menu.datastudio.previewConfig'),
+    children: <PreViewConfig />,
+    isShow: (type, subType) =>
+      (type === TabsPageType.project && TabsPageSubType.flinkSql === subType) ||
+      isSql(subType ?? '')
   },
   {
     auth: '/datastudio/right/savePoint',
@@ -117,7 +135,7 @@ export const RightSide: TabProp[] = [
     icon: <InfoCircleOutlined />,
     label: l('menu.datastudio.jobInfo'),
     children: <JobInfo />,
-    isShow: (type) => type !== TabsPageType.None
+    isShow: (type) => type === TabsPageType.project
   }
 ];
 
@@ -137,28 +155,18 @@ export const LeftBottomSide = [
     children: <Result />
   },
   {
-    auth: '/datastudio/bottom/bi',
-    key: 'menu.datastudio.bi',
-    icon: <BarChartOutlined />,
-    label: l('menu.datastudio.bi')
-  },
-  {
     auth: '/datastudio/bottom/lineage',
     key: 'menu.datastudio.lineage',
     icon: <ApartmentOutlined />,
-    label: l('menu.datastudio.lineage')
-  },
-  {
-    auth: '/datastudio/bottom/process',
-    key: 'menu.datastudio.process',
-    icon: <DesktopOutlined />,
-    label: l('menu.datastudio.process')
+    label: l('menu.datastudio.lineage'),
+    children: <Lineage />
   },
   {
     auth: '/datastudio/bottom/history',
     key: 'menu.datastudio.history',
-    icon: <CalendarOutlined />,
-    label: l('menu.datastudio.history')
+    icon: <HistoryOutlined />,
+    label: l('menu.datastudio.history'),
+    children: <JobExecHistory />
   },
   {
     auth: '/datastudio/bottom/table-data',
@@ -181,68 +189,32 @@ export const LeftBottomMoreTabs: { [c: string]: TabProp[] } = {
       key: 'menu.datastudio.tool.text-comparison',
       icon: <ToolOutlined />,
       label: l('menu.datastudio.tool.text-comparison'),
-      children: (
-        <DiffEditor
-          height={'100%'}
-          options={{
-            readOnly: false,
-            originalEditable: true,
-            selectOnLineNumbers: true,
-            lineDecorationsWidth: 20,
-            mouseWheelZoom: true,
-            automaticLayout: true,
-            scrollBeyondLastLine: false,
-            scrollbar: {
-              useShadows: false,
-              verticalScrollbarSize: 8,
-              horizontalScrollbarSize: 8,
-              arrowSize: 30
-            }
-          }}
-          language={'text'}
-        />
-      )
+      children: <TextComparison />
     },
     {
-      key: 'menu.datastudio.tool.datax2',
-      icon: <ToolOutlined />,
-      label: 'menu.datastudio.tool.datax2',
-      children: <div>datax2</div>
-    }
-  ],
-  'menu.datastudio.tool2': [
-    {
-      key: 'menu.datastudio.tool.text-comparison',
-      icon: <ToolOutlined />,
-      label: 'menu.datastudio.tool.text-comparison',
-      children: (
-        <DiffEditor
-          height={'95%'}
-          options={{
-            readOnly: true,
-            selectOnLineNumbers: true,
-            lineDecorationsWidth: 20,
-            mouseWheelZoom: true,
-            automaticLayout: true
-          }}
-          language={'sql'}
-          original={''}
-          modified={''}
-        />
-      )
-    },
-    {
-      key: 'menu.datastudio.tool.datax2',
-      icon: <ToolOutlined />,
-      label: 'menu.datastudio.tool.datax2',
-      children: <div>datax2</div>
+      key: 'menu.datastudio.tool.jsonToSql',
+      icon: <RotateRightOutlined />,
+      label: l('menu.datastudio.tool.jsonToSql'),
+      children: <JsonToSql />
     }
   ]
 };
 
 // btn route
-export const BtnRoute: { [c: string]: CircleButtonProps[] } = {
-  'menu.datastudio.metadata': [
+export const BtnRoute: { [c: string]: CircleDataStudioButtonProps[] } = {
+  'menu.datastudio.datasource': [
+    {
+      icon: <PlusOutlined />,
+      title: l('button.create'),
+      onClick: () => {}
+    },
+    {
+      icon: <ReloadOutlined />,
+      title: l('button.refresh'),
+      onClick: () => {}
+    }
+  ],
+  'menu.datastudio.catalog': [
     {
       icon: <ReloadOutlined />,
       title: l('button.refresh'),
@@ -266,6 +238,12 @@ export const BtnRoute: { [c: string]: CircleButtonProps[] } = {
       icon: <ShrinkOutlined />,
       title: l('button.collapse-all'),
       key: 'button.collapse-all',
+      onClick: () => {}
+    },
+    {
+      icon: <EnvironmentOutlined />,
+      title: l('button.position'),
+      key: 'button.position',
       onClick: () => {}
     }
   ]

@@ -27,28 +27,18 @@ import java.util.Arrays;
  * @since 2022/2/1 16:37
  */
 public enum JobLifeCycle {
-    UNKNOWN(0, "未知"),
-    CREATE(1, "创建"),
-    DEVELOP(2, "开发"),
-    DEBUG(3, "调试"),
-    RELEASE(4, "发布"),
-    ONLINE(5, "上线"),
-    CANCEL(6, "注销");
+    UNKNOWN(0),
+    DEVELOP(1),
+    PUBLISH(2);
 
     private Integer value;
-    private String label;
 
-    JobLifeCycle(Integer value, String label) {
+    JobLifeCycle(Integer value) {
         this.value = value;
-        this.label = label;
     }
 
     public Integer getValue() {
         return value;
-    }
-
-    public String getLabel() {
-        return label;
     }
 
     public static JobLifeCycle get(Integer value) {

@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 export default {
@@ -31,6 +33,7 @@ export default {
   'menu.account.tenant': 'Tenant: {tenantCode}',
   'menu.account.center': 'Account Center',
   'menu.account.logout': 'Logout',
+  'menu.account.clearPageCache': 'Clear Page Cache',
   'menu.account.changePassword': 'Change Password',
   'menu.account.checkTenant': 'Switch Tenant',
   'menu.account.checkTenantConfirm': 'Are you sure to switch  tenant [ {tenantCode} ] ?',
@@ -48,15 +51,15 @@ export default {
   'menu.registration.cluster.cluster-instance': 'Flink Instance',
   'menu.registration.cluster.cluster-config': 'Cluster Config',
   'menu.registration.jar': 'Jar',
-  'menu.registration.database': 'Data Source',
+  'menu.registration.datasource': 'Data Source',
   'menu.registration.alert': 'Alarm',
   'menu.registration.alert.instance': 'Alert Instance',
   'menu.registration.alert.group': 'Alert Group',
   'menu.registration.alert.template': 'Alert Template',
   'menu.registration.document': 'Document',
   'menu.registration.fragment': 'Global Variable',
-  'menu.registration.gitprojects': 'Git Project(Beta)',
-  'menu.registration.udf': 'UDF Template',
+  'menu.registration.gitproject': 'Git Project(Beta)',
+  'menu.registration.udf': 'UDF',
   'menu.registration.resource': 'Resource',
   'menu.auth': 'Auth Center',
   'menu.auth.user': 'User',
@@ -77,11 +80,11 @@ export default {
   'menu.version': 'Version: {version}',
 
   'menu.datastudio.project': 'Project',
-  'menu.datastudio.structure': 'Structure',
-  'menu.datastudio.metadata': 'Metadata',
+  'menu.datastudio.catalog': 'Catalog',
+  'menu.datastudio.datasource': 'Data Source',
   'menu.datastudio.console': 'Console',
   'menu.datastudio.jobConfig': 'Job Config',
-  'menu.datastudio.executeConfig': 'Execute Config',
+  'menu.datastudio.previewConfig': 'PreView Config',
   'menu.datastudio.savePoint': 'Save Point',
   'menu.datastudio.historyVision': 'History Vision',
   'menu.datastudio.jobInfo': 'Job Info',
@@ -91,8 +94,9 @@ export default {
   'menu.datastudio.bi': 'BI',
   'menu.datastudio.lineage': 'Lineage',
   'menu.datastudio.process': 'Process',
-  'menu.datastudio.history': 'History',
+  'menu.datastudio.history': 'Execution History',
   'menu.datastudio.table-data': 'Table Data',
 
-  'menu.datastudio.tool.text-comparison': 'Text Comparison'
+  'menu.datastudio.tool.text-comparison': 'Text Comparison',
+  'menu.datastudio.tool.jsonToSql': 'JSON TO Flink-SQL'
 };

@@ -22,7 +22,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import CodeShow from '@/components/CustomEditor/CodeShow';
-import { Authorized } from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import GlobalVarDrawer from '@/pages/RegCenter/GlobalVar/components/GlobalVarDrawer';
 import GlobalVarModal from '@/pages/RegCenter/GlobalVar/components/GlobalVarModal';
 import { queryList } from '@/services/api';
@@ -138,16 +138,15 @@ const GlobalVarProTable = () => {
       dataIndex: 'enabled',
       hideInSearch: true,
       width: '15vh',
+      hideInDescriptions: true,
       render: (_, record) => {
         return (
-          <Authorized key={record.id} path='/registration/fragment/enable'>
-            <EnableSwitchBtn
-              key={`${record.id}_enable`}
-              disabled={globalVarState.drawerOpen}
-              record={record}
-              onChange={() => handleChangeEnable(record)}
-            />
-          </Authorized>
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            disabled={!HasAuthority('/registration/fragment/edit')}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
         );
       },
       filters: STATUS_MAPPING(),
@@ -172,8 +171,10 @@ const GlobalVarProTable = () => {
     },
     {
       title: l('global.table.operate'),
-      width: '10vh',
+      width: '8%',
+      fixed: 'right',
       valueType: 'option',
+      hideInDescriptions: true,
       render: (_, record) => [
         <Authorized key={`${record.id}_edit`} path='/registration/fragment/edit'>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />
@@ -201,7 +202,7 @@ const GlobalVarProTable = () => {
         loading={globalVarState.loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
-          <Authorized key='create' path='/registration/fragment/new'>
+          <Authorized key='create' path='/registration/fragment/add'>
             <CreateBtn
               key={'vartable'}
               onClick={() => setGlobalVarState((prevState) => ({ ...prevState, addedOpen: true }))}

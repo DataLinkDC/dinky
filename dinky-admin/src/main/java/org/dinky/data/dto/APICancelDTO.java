@@ -22,6 +22,8 @@ package org.dinky.data.dto;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.job.JobConfig;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,10 +35,23 @@ import lombok.Setter;
 @SuppressWarnings("AlibabaClassNamingShouldBeCamel")
 @Getter
 @Setter
+@ApiModel(value = "APICancelDTO", description = "API Cancel Data Transfer Object")
 public class APICancelDTO {
 
+    @ApiModelProperty(value = "Job ID", dataType = "String", example = "12345", notes = "The ID of the job to cancel")
     private String jobId;
+
+    @ApiModelProperty(
+            value = "Address",
+            dataType = "String",
+            example = "http://example.com/api/cancel",
+            notes = "The address of the cancel API endpoint")
     private String address;
+
+    @ApiModelProperty(
+            value = "Gateway Configuration",
+            dataType = "GatewayConfig",
+            notes = "The configuration for the gateway")
     private GatewayConfig gatewayConfig;
 
     public JobConfig getJobConfig() {

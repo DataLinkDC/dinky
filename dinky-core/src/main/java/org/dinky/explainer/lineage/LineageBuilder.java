@@ -20,7 +20,7 @@
 package org.dinky.explainer.lineage;
 
 import org.dinky.data.model.LineageRel;
-import org.dinky.executor.Executor;
+import org.dinky.executor.ExecutorFactory;
 import org.dinky.explainer.Explainer;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import java.util.Map;
 public class LineageBuilder {
 
     public static LineageResult getColumnLineageByLogicalPlan(String statement) {
-        Explainer explainer = new Explainer(Executor.build(), false);
+        Explainer explainer = new Explainer(ExecutorFactory.getDefaultExecutor(), false);
         List<LineageRel> lineageRelList = explainer.getLineage(statement);
         List<LineageRelation> relations = new ArrayList<>();
         Map<String, LineageTable> tableMap = new HashMap<>();

@@ -1,11 +1,35 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
-import { getFlinkConfigs } from '@/pages/DataStudio/RightContainer/JobConfig/service';
+import {
+  getFlinkConfigs,
+  querySuggessionData
+} from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+import { SuggestionInfo } from '@/types/Public/data';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect, Reducer } from '@@/plugin-dva/types';
+import { Monaco } from '@monaco-editor/react';
 import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
@@ -16,7 +40,7 @@ import ICodeEditor = editor.ICodeEditor;
  */
 export const VIEW = {
   headerHeight: 32,
-  headerNavHeight: 55,
+  headerNavHeight: 56,
   footerHeight: 25,
   sideWidth: 40,
   leftToolWidth: 180,
@@ -26,7 +50,7 @@ export const VIEW = {
   rightMargin: 32,
   leftMargin: 36,
   midMargin: 44,
-  otherHeight: 1,
+  otherHeight: 0,
   paddingInline: 50
 };
 
@@ -71,7 +95,6 @@ export type TaskType = {
   clusterConfigurationName?: string;
   databaseId?: number;
   databaseName?: string;
-  jarId?: number;
   envId?: number;
   jobInstanceId?: number;
   note?: string;
@@ -82,7 +105,6 @@ export type TaskType = {
   session: string;
   maxRowNum: number;
   jobName: string;
-  useResult: boolean;
   useChangeLog: boolean;
   useAutoCancel: boolean;
 };
@@ -103,6 +125,11 @@ export type TaskDataBaseType = {
   id: number;
   name: string;
   statement: string;
+  dialect: string;
+  step: number;
+  // Only common sql has(只有普通sql才有)
+  databaseId?: number;
+  envId?: number;
 };
 
 export type TaskDataType = TaskDataBaseType & Record<string, any>;
@@ -110,7 +137,6 @@ export type TaskDataType = TaskDataBaseType & Record<string, any>;
 export type DataStudioParams = {
   taskId: number;
   taskData: TaskDataType;
-  resultData: Record<string, any>;
 };
 
 export enum TabsPageType {
@@ -120,7 +146,8 @@ export enum TabsPageType {
 }
 
 export enum TabsPageSubType {
-  flinkSql = 'flinksql'
+  flinkSql = 'FlinkSql',
+  flinkJar = 'FlinkJar'
 }
 
 export interface TabsItemType {
@@ -130,10 +157,13 @@ export interface TabsItemType {
   type: TabsPageType;
   subType?: TabsPageSubType;
   key: string;
+  treeKey: number;
   value: string;
   icon: any;
   closable: boolean;
   path: string[];
+  monacoInstance: React.RefObject<Monaco | undefined>;
+  editorInstance: React.RefObject<editor.IStandaloneCodeEditor | undefined>;
   console: ConsoleType;
   isModified: boolean;
 }
@@ -261,6 +291,7 @@ export type StateType = {
   tabs: TabsType;
   bottomContainerContent: BottomContainerContent;
   footContainer: FooterType;
+  suggestions: SuggestionInfo[];
 };
 
 export type ModelType = {
@@ -269,6 +300,7 @@ export type ModelType = {
   effects: {
     queryProject: Effect;
     queryFlinkConfigOptions: Effect;
+    querySuggestions: Effect;
   };
   reducers: {
     updateToolContentHeight: Reducer<StateType>;
@@ -282,6 +314,8 @@ export type ModelType = {
     updateBottomHeight: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
     saveProject: Reducer<StateType>;
+    updateProjectExpandKey: Reducer<StateType>;
+    updateProjectSelectKey: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
     closeTab: Reducer<StateType>;
     removeTag: Reducer<StateType>;
@@ -299,6 +333,7 @@ export type ModelType = {
     saveFooterValue: Reducer<StateType>;
     updateJobRunningMsg: Reducer<StateType>;
     saveFlinkConfigOptions: Reducer<StateType>;
+    updateSuggestions: Reducer<StateType>;
   };
 };
 
@@ -362,7 +397,8 @@ const Model: ModelType = {
         jobState: '',
         runningLog: ''
       }
-    }
+    },
+    suggestions: []
   },
   effects: {
     *queryProject({ payload }, { call, put }) {
@@ -378,6 +414,13 @@ const Model: ModelType = {
         type: 'saveFlinkConfigOptions',
         payload: response
       });
+    },
+    *querySuggestions({ payload }, { call, put }) {
+      const response: SuggestionInfo[] = yield call(querySuggessionData, payload);
+      yield put({
+        type: 'updateSuggestions',
+        payload: response
+      });
     }
   },
   reducers: {
@@ -385,19 +428,25 @@ const Model: ModelType = {
      * 更新工具栏高度
      */
     updateToolContentHeight(state, { payload }) {
-      return {
-        ...state,
-        toolContentHeight: payload
-      };
+      if (payload != state.toolContentHeight) {
+        return {
+          ...state,
+          toolContentHeight: payload
+        };
+      }
+      return state;
     },
     /**
      * 更新中间内容高度
      */
     updateCenterContentHeight(state, { payload }) {
-      return {
-        ...state,
-        centerContentHeight: payload
-      };
+      if (payload != state.centerContentHeight) {
+        return {
+          ...state,
+          centerContentHeight: payload
+        };
+      }
+      return state;
     },
     /**
      * 更新左侧选中key
@@ -496,13 +545,16 @@ const Model: ModelType = {
      * 更新底部高度
      */
     updateBottomHeight(state, { payload }) {
-      return {
-        ...state,
-        bottomContainer: {
-          ...state.bottomContainer,
-          height: payload
-        }
-      };
+      if (payload != state.bottomContainer.height) {
+        return {
+          ...state,
+          bottomContainer: {
+            ...state.bottomContainer,
+            height: payload
+          }
+        };
+      }
+      return state;
     },
     /**
      * 更新数据库列表
@@ -519,6 +571,20 @@ const Model: ModelType = {
         project: { ...state.project, data: payload }
       };
     },
+
+    updateProjectExpandKey(state, { payload }) {
+      return {
+        ...state,
+        project: { ...state.project, expandKeys: payload }
+      };
+    },
+    updateProjectSelectKey(state, { payload }) {
+      return {
+        ...state,
+        project: { ...state.project, selectKey: payload }
+      };
+    },
+
     /**
      * flink config options
      */
@@ -789,6 +855,12 @@ const Model: ModelType = {
           ...state.footContainer,
           jobRunningMsg: payload
         }
+      };
+    },
+    updateSuggestions(state, { payload }) {
+      return {
+        ...state,
+        suggestions: payload
       };
     }
   }

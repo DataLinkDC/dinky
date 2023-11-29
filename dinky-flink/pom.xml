@@ -21,7 +21,8 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>dinky-flink</artifactId>
     <packaging>pom</packaging>
@@ -37,11 +38,11 @@
         <profile>
             <id>flink-all</id>
             <modules>
-                <module>dinky-flink-1.13</module>
                 <module>dinky-flink-1.14</module>
                 <module>dinky-flink-1.15</module>
                 <module>dinky-flink-1.16</module>
                 <module>dinky-flink-1.17</module>
+                <module>dinky-flink-1.18</module>
             </modules>
         </profile>
     </profiles>

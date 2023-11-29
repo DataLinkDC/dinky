@@ -19,14 +19,25 @@
 
 package org.dinky.data.vo;
 
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
+@ApiModel(value = "UserVo", description = "User Value Object")
 public class UserVo {
+
+    @ApiModelProperty(value = "User object", dataType = "User", notes = "User information.")
     private User user;
+
+    @ApiModelProperty(
+            value = "Original password",
+            dataType = "String",
+            notes = "Original password of the user.",
+            example = "originalPassword123")
     private String originalPassword;
 }

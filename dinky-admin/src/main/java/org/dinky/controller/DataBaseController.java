@@ -20,8 +20,10 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.dto.DataBaseDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Column;
@@ -29,7 +31,6 @@ import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
-import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.metadata.driver.DriverPool;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -48,9 +49,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,15 +75,26 @@ public class DataBaseController {
     /**
      * save or update database
      *
-     * @param database {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Result}< {@link Void}>
      */
-    @PutMapping
+    @PutMapping("/saveOrUpdate")
     @Log(title = "Insert Or Update DataBase", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update DataBase")
-    public Result<Void> saveOrUpdateDataBase(@RequestBody DataBase database) {
-        if (databaseService.saveOrUpdateDataBase(database)) {
-            DriverPool.remove(database.getName());
+    @ApiImplicitParam(
+            name = "databaseDTO",
+            value = "DataBaseDTO",
+            required = true,
+            dataType = "DataBaseDTO",
+            paramType = "body",
+            dataTypeClass = DataBaseDTO.class)
+    @SaCheckPermission(
+            value = {PermissionConstants.REGISTRATION_DATA_SOURCE_ADD, PermissionConstants.REGISTRATION_DATA_SOURCE_EDIT
+            },
+            mode = SaMode.OR)
+    public Result<Void> saveOrUpdateDataBase(@RequestBody DataBaseDTO dataBaseDTO) {
+        if (databaseService.saveOrUpdateDataBase(dataBaseDTO)) {
+            DriverPool.remove(dataBaseDTO.getName());
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
@@ -90,20 +104,13 @@ public class DataBaseController {
     /**
      * get all database
      *
-     * @param para {@link JsonNode}
-     * @return {@link ProTableResult}< {@link DataBase}>
+     * @param keyword {@link String}
+     * @return {@link Result}< {@link DataBase}>
      */
-    @PostMapping
+    @GetMapping("/list")
     @ApiOperation("DataBase Get All")
-    public ProTableResult<DataBase> listDataBases(@RequestBody JsonNode para) {
-        final ProTableResult<DataBase> result = databaseService.selectForProTable(para);
-        // 密码不返回
-        if (result != null && result.getData() != null) {
-            for (DataBase data : result.getData()) {
-                data.setPassword(null);
-            }
-        }
-        return result;
+    public Result<List<DataBase>> listDataBases(@RequestParam(value = "keyword") String keyword) {
+        return Result.succeed(databaseService.selectListByKeyWord(keyword));
     }
 
     /**
@@ -115,6 +122,14 @@ public class DataBaseController {
     @DeleteMapping("/delete")
     @Log(title = "DataBase Delete By Id", businessType = BusinessType.DELETE)
     @ApiOperation("DataBase Delete By Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "DataBase Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_DELETE)
     public Result<Void> deleteDataBaseById(@RequestParam Integer id) {
         if (databaseService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -131,6 +146,14 @@ public class DataBaseController {
     @PutMapping("/enable")
     @Log(title = "DataBase Enable Or Disable By Id", businessType = BusinessType.UPDATE)
     @ApiOperation("DataBase Enable Or Disable By Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "DataBase Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_EDIT)
     public Result<Void> modifyDataSourceStatus(@RequestParam Integer id) {
         if (databaseService.modifyDataSourceStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -153,14 +176,21 @@ public class DataBaseController {
     /**
      * test connect database
      *
-     * @param database {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Result}< {@link Void}>
      */
     @PostMapping("/testConnect")
     @Log(title = "DataBase Test Connect", businessType = BusinessType.TEST)
     @ApiOperation("DataBase Test Connect")
-    public Result<Void> testConnect(@RequestBody DataBase database) {
-        String msg = databaseService.testConnect(database);
+    @ApiImplicitParam(
+            name = "dataBaseDTO",
+            value = "DataBaseDTO",
+            required = true,
+            dataType = "DataBaseDTO",
+            paramType = "body",
+            dataTypeClass = DataBaseDTO.class)
+    public Result<Void> testConnect(@RequestBody DataBaseDTO dataBaseDTO) {
+        String msg = databaseService.testConnect(dataBaseDTO);
         boolean isHealthy = Asserts.isEquals(CommonConstant.HEALTHY, msg);
         if (isHealthy) {
             return Result.succeed(Status.DATASOURCE_CONNECT_SUCCESS);
@@ -178,6 +208,15 @@ public class DataBaseController {
     @PutMapping("/checkHeartBeatByDataSourceId")
     @Log(title = "DataBase Check Heart Beat By Id", businessType = BusinessType.TEST)
     @ApiOperation("DataBase Check Heart Beat By Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "DataBase Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class,
+            example = "1")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_CHECK_HEARTBEAT)
     public Result<Void> checkHeartBeatByDataSourceId(@RequestParam Integer id) {
         DataBase dataBase = databaseService.getById(id);
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
@@ -203,6 +242,14 @@ public class DataBaseController {
     @Cacheable(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/getSchemasAndTables")
     @ApiOperation("Get All Schemas And Tables")
+    @ApiImplicitParam(
+            name = "id",
+            value = "DataBase Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class,
+            example = "1")
     public Result<List<Schema>> getSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(databaseService.getSchemasAndTables(id));
     }
@@ -216,6 +263,14 @@ public class DataBaseController {
     @CacheEvict(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/unCacheSchemasAndTables")
     @ApiOperation("Clear Cache Of Schemas And Tables")
+    @ApiImplicitParam(
+            name = "id",
+            value = "DataBase Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class,
+            example = "1")
     public Result<String> unCacheSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(Status.DATASOURCE_CLEAR_CACHE_SUCCESS);
     }
@@ -223,13 +278,40 @@ public class DataBaseController {
     /**
      * get columns of table
      *
-     * @param id {@link Integer}
+     * @param id         {@link Integer}
      * @param schemaName {@link String}
-     * @param tableName {@link String}
+     * @param tableName  {@link String}
      * @return {@link Result}< {@link List}< {@link Column}>>
      */
     @GetMapping("/listColumns")
     @ApiOperation("Get Columns Of Table")
+    @ApiImplicitParams(
+            value = {
+                @ApiImplicitParam(
+                        name = "id",
+                        value = "DataBase Id",
+                        required = true,
+                        dataType = "Integer",
+                        paramType = "path",
+                        dataTypeClass = Integer.class,
+                        example = "1"),
+                @ApiImplicitParam(
+                        name = "schemaName",
+                        value = "Schema Name",
+                        required = true,
+                        dataType = "String",
+                        paramType = "query",
+                        dataTypeClass = String.class,
+                        example = "public"),
+                @ApiImplicitParam(
+                        name = "tableName",
+                        value = "Table Name",
+                        required = true,
+                        dataType = "String",
+                        paramType = "query",
+                        dataTypeClass = String.class,
+                        example = "user")
+            })
     public Result<List<Column>> listColumns(
             @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
         return Result.succeed(databaseService.listColumns(id, schemaName, tableName));
@@ -243,6 +325,13 @@ public class DataBaseController {
      */
     @PostMapping("/queryData")
     @ApiOperation("Query Data Of Table")
+    @ApiImplicitParam(
+            name = "queryData",
+            value = "Query Data",
+            required = true,
+            dataType = "QueryData",
+            paramType = "body",
+            dataTypeClass = QueryData.class)
     public Result<JdbcSelectResult> queryData(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.queryData(queryData);
         if (jdbcSelectResult.isSuccess()) {
@@ -261,6 +350,14 @@ public class DataBaseController {
     @PostMapping("/execSql")
     @Log(title = "Exec Sql", businessType = BusinessType.EXECUTE)
     @ApiOperation("Exec Sql")
+    @ApiImplicitParam(
+            name = "queryData",
+            value = "Query Data",
+            required = true,
+            dataType = "QueryData",
+            paramType = "body",
+            dataTypeClass = QueryData.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_EXEC_SQL)
     public Result<JdbcSelectResult> execSql(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.execSql(queryData);
         if (jdbcSelectResult.isSuccess()) {
@@ -273,13 +370,40 @@ public class DataBaseController {
     /**
      * get sql generation
      *
-     * @param id {@link Integer}
+     * @param id         {@link Integer}
      * @param schemaName {@link String}
-     * @param tableName {@link String}
+     * @param tableName  {@link String}
      * @return {@link Result}< {@link SqlGeneration}>
      */
     @GetMapping("/getSqlGeneration")
     @ApiOperation("Get Sql Generation")
+    @ApiImplicitParams(
+            value = {
+                @ApiImplicitParam(
+                        name = "id",
+                        value = "DataBase Id",
+                        required = true,
+                        dataType = "Integer",
+                        paramType = "path",
+                        dataTypeClass = Integer.class,
+                        example = "1"),
+                @ApiImplicitParam(
+                        name = "schemaName",
+                        value = "Schema Name",
+                        required = true,
+                        dataType = "String",
+                        paramType = "query",
+                        dataTypeClass = String.class,
+                        example = "public"),
+                @ApiImplicitParam(
+                        name = "tableName",
+                        value = "Table Name",
+                        required = true,
+                        dataType = "String",
+                        paramType = "query",
+                        dataTypeClass = String.class,
+                        example = "user")
+            })
     public Result<SqlGeneration> getSqlGeneration(
             @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
         return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName));
@@ -288,14 +412,15 @@ public class DataBaseController {
     /**
      * copy database
      *
-     * @param database {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Result}< {@link Void}>
      */
     @PostMapping("/copyDatabase")
     @Log(title = "Copy Database", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Copy Database")
-    public Result<Void> copyDatabase(@RequestBody DataBase database) {
-        if (databaseService.copyDatabase(database)) {
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_COPY)
+    public Result<Void> copyDatabase(@RequestBody DataBaseDTO dataBaseDTO) {
+        if (databaseService.copyDatabase(dataBaseDTO)) {
             return Result.succeed(Status.COPY_SUCCESS);
         } else {
             return Result.failed(Status.COPY_FAILED);

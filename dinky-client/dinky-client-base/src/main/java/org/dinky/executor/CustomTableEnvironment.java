@@ -23,6 +23,7 @@ import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -32,13 +33,21 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentInternal;
 import org.apache.flink.table.delegation.Planner;
+import org.apache.flink.table.operations.Operation;
 import org.apache.flink.types.Row;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.URLUtil;
 
 /**
  * CustomTableEnvironment
@@ -58,7 +67,7 @@ public interface CustomTableEnvironment
 
     SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
 
-    boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment config, Map<String, Object> setMap);
+    boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap);
 
     StreamExecutionEnvironment getStreamExecutionEnvironment();
 
@@ -71,4 +80,18 @@ public interface CustomTableEnvironment
     }
 
     <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList);
+
+    void executeCTAS(Operation operation);
+
+    default void addJar(File... jarPath) {
+        Configuration configuration = this.getRootConfiguration();
+        List<String> pathList =
+                Arrays.stream(URLUtil.getURLs(jarPath)).map(URL::toString).collect(Collectors.toList());
+        List<String> jars = configuration.get(PipelineOptions.JARS);
+        if (jars == null) {
+            configuration.set(PipelineOptions.JARS, pathList);
+        } else {
+            CollUtil.addAll(jars, pathList);
+        }
+    }
 }

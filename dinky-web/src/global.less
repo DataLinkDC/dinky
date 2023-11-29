@@ -117,6 +117,7 @@ body,
 ::-webkit-scrollbar-corner {
   background-color: #f5f5f5;
 }
+
 .monaco-scrollable-element > .scrollbar > .slider {
   background: #8db7fd !important;
 }
@@ -205,8 +206,8 @@ ol {
 }
 
 .ant-table-wrapper {
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow-x: hidden;
+  overflow-y: hidden;
   overflow-block: auto;
 }
 
@@ -236,8 +237,6 @@ ol {
 
 .siderTree {
   height: 100%;
-  min-height: 82vh;
-  max-height: 82vh;
   overflow-x: auto;
   overflow-y: auto;
 
@@ -249,9 +248,11 @@ ol {
     }
   }
 }
+
 .ant-tree-node-content-wrapper {
   display: flex;
 }
+
 .gitCodeTree {
   min-height: 70vh;
   max-height: 70vh;
@@ -277,6 +278,8 @@ ol {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 100%;
+  box-shadow: 0 0 2px 1px rgba(171, 165, 165, 0.32);
 
   .float-button {
     position: absolute;
@@ -344,10 +347,12 @@ h5 {
   opacity: 1;
   animation: show-anim 0.5s;
 }
+
 .hide {
   opacity: 0;
   animation: hide-anim 0.5s;
 }
+
 @keyframes show-anim {
   0% {
     opacity: 0;
@@ -356,6 +361,7 @@ h5 {
     opacity: 1;
   }
 }
+
 @keyframes hide-anim {
   0% {
     opacity: 1;
@@ -366,10 +372,14 @@ h5 {
 }
 
 .title {
+  overflow: visible;
   font-weight: 500;
   font-size: 15px;
   font-family: 'SimHei', serif;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
+
 .container-header {
   display: flex;
   align-items: center;
@@ -387,8 +397,11 @@ h5 {
   scrollbar-color: #d4aa70 #e4e4e4;
   scrollbar-width: thin;
 }
-.monaco-float {
-  height: 100%;
+
+.editor-full-screen {
+  .ant-tabs-tabpane {
+    height: 100vh;
+  }
 }
 
 .data-studio-tabs {
@@ -397,6 +410,7 @@ h5 {
       .ant-tabs-tab {
         padding: 4px 8px;
       }
+
       .ant-tabs-tab-active {
         box-sizing: content-box;
         border-block-end: 3px solid #8db7fd;
@@ -416,3 +430,252 @@ h5 {
   display: flex !important;
   align-items: baseline !important;
 }
+
+.ant-pro-checkcard {
+  overflow: hidden;
+
+  .ant-pro-checkcard-body {
+    width: 100vw;
+  }
+}
+
+// ====================  lineage style start ====================
+
+.butterfly-lineage-dag .table-node.focus {
+  border-width: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 5px #0d74e8;
+}
+
+.butterfly-lineage-dag .table-node:hover {
+  border-width: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 5px #0d74e8;
+}
+
+.butterfly-lineage-dag .table-node .field {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  height: 20px;
+  border-width: 10px;
+  border-radius: 4px;
+}
+
+.field.hover-chain {
+  width: 97%;
+  background: #0d74e8 !important;
+}
+
+.butterfly-lineage-dag .table-node .title-con {
+  .title {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+    max-height: 4vh;
+    padding-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    background: #63e0e0;
+    border-radius: 4px;
+    box-shadow: #0d74e8;
+
+    .ant-typography {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}
+
+.butterfly-lineage-dag .table-node .field .point.left-point {
+  left: -10px;
+  z-index: 9999;
+}
+
+.butterfly-lineage-dag .table-node .field .point.right-point {
+  right: -10px;
+  z-index: 9999;
+}
+
+.butterfly-lineage-dag .table-node .title-con {
+  position: relative;
+  display: flex;
+  min-width: 40%;
+}
+
+.butterfly-lineage-dag .butterflies-link.hover-chain {
+  transition: all 0.5s ease-in-out;
+  // 线条缓慢流动
+  animation: 30s linear 0s infinite normal none running running-line;
+  stroke: #02f657;
+  stop-opacity: 1;
+}
+
+.butterfly-lineage-dag .butterflies-arrow.hover-chain {
+  transition: all 0.5s ease-in-out;
+  animation: 30s linear 0s infinite normal none running running-line;
+  fill: #28da8f;
+  stroke: #28da8f;
+}
+
+.butterfly-lineage-dag .table-node .field.hover-chain .point {
+  background: #0095ff;
+  transition: all 0.5s ease-in-out;
+}
+
+.butterfly-lineage-dag .table-node .field {
+  position: relative;
+  align-items: center;
+  height: 26px !important;
+  margin: 0 6px;
+  padding: 4px 4px 4px 6px;
+  white-space: nowrap;
+}
+.butterfly-lineage-dag .table-node .field.hover-chain {
+  color: #fff;
+  transition: all 0.5s ease-in-out;
+}
+
+.butterfly-lineage-dag .table-node .title-con .operator {
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  height: 100%;
+  max-height: 4vh;
+  margin: 0 20px;
+  .operator-item {
+    margin-left: 15px;
+  }
+}
+
+.butterflies-link {
+  transition: all 0.5s ease-in-out; // 线条缓慢流动
+  fill: none; // 线条填充色
+  stroke: #04671f; // 线条颜色
+  stroke-width: 1.5px; // 线条宽度
+  stroke-dasharray: 5, 8; // 线条样式 5px实线 8px空白
+  stroke-dashoffset: -2px; // 线条偏移量
+  stroke-linecap: round; // 线条两端样式
+  stroke-linejoin: round; // 线条连接样式 miter-clip斜角 miter斜角 round圆角 bevel斜角
+}
+
+.butterflies-link:hover {
+  right: 0; // 激活连接线 右边距
+}
+
+.butterflies-arrow {
+  padding-right: 10px !important; // 箭头右边距
+  transition: all 0.5s ease-in-out; // 线条缓慢流动
+  fill: #04671f; // 箭头颜色
+  stroke: #04671f; // 箭头颜色
+  stroke-width: 4px; // 箭头宽度
+}
+
+.butterflies-arrow:hover {
+  right: 0;
+  background: #0366d6;
+}
+// ====================  lineage style end ====================
+
+.card-list-item-wrapper {
+  display: flex;
+}
+.card-list-item {
+  width: 100%;
+  margin: 0;
+}
+.card-list-item {
+  transition: 0.3s;
+}
+
+.card-button-list {
+  display: none;
+}
+
+.card-list-item:hover .card-button-list {
+  display: block;
+}
+
+.card-list-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+// 自定义语言会把 '' 中间的内容加粗 , 在这里重置 不加粗
+span .mtkb {
+  font-weight: inherit;
+}
+
+// =============================  layout split pane style start =============================
+.split-pane {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+}
+
+.Resizer {
+  z-index: 1;
+  box-sizing: border-box;
+  background: #000;
+  background-clip: padding-box;
+  opacity: 0.2;
+}
+
+.Resizer:hover {
+  transition: all 2s ease;
+}
+
+.Resizer.horizontal {
+  height: 11px;
+  margin: -5px 0;
+  border-top: 5px solid rgba(255, 255, 255, 0);
+  border-bottom: 5px solid rgba(255, 255, 255, 0);
+  cursor: row-resize;
+}
+
+.Resizer.horizontal:hover,
+.Resizer.horizontal.resizing {
+  border-top: 5px solid rgba(0, 0, 0, 0.5);
+  border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+}
+
+.Resizer.vertical {
+  width: 11px;
+  height: 98%;
+  margin: 0 -5px;
+  border-right: 5px solid rgba(255, 255, 255, 0);
+  border-left: 5px solid rgba(255, 255, 255, 0);
+  cursor: col-resize;
+}
+
+.Resizer.vertical:hover,
+.Resizer.vertical.resizing {
+  border-right: 5px solid rgba(0, 0, 0, 0.5);
+  border-left: 5px solid rgba(0, 0, 0, 0.5);
+}
+
+.DragLayer {
+  z-index: 1;
+  pointer-events: none;
+}
+
+.DragLayer.resizing {
+  pointer-events: auto;
+}
+
+.DragLayer.horizontal {
+  cursor: row-resize;
+}
+
+.DragLayer.vertical {
+  cursor: col-resize;
+}
+// =============================  layout split pane style end =============================

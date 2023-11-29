@@ -20,9 +20,7 @@
 package org.dinky.assertion;
 
 import org.dinky.data.exception.BusException;
-import org.dinky.data.model.Cluster;
-import org.dinky.data.model.Jar;
-import org.dinky.data.model.Statement;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Task;
 
 /**
@@ -32,9 +30,9 @@ import org.dinky.data.model.Task;
  */
 public interface Assert {
 
-    static void check(Cluster cluster) {
-        if (cluster.getId() == null) {
-            throw new BusException("Flink 集群【" + cluster.getId() + "】不存在");
+    static void check(ClusterInstance clusterInstance) {
+        if (clusterInstance.getId() == null) {
+            throw new BusException("Flink 集群【" + clusterInstance.getId() + "】不存在");
         }
     }
 
@@ -44,21 +42,9 @@ public interface Assert {
         }
     }
 
-    static void check(Statement statement) {
-        if (statement == null) {
-            throw new BusException("FlinkSql语句不存在");
-        }
-    }
-
     static void checkHost(String host) {
         if (host == null || "".equals(host)) {
             throw new BusException("集群地址暂不可用");
-        }
-    }
-
-    static void check(Jar jar) {
-        if (jar == null) {
-            throw new BusException("自定义Jar不存在");
         }
     }
 }

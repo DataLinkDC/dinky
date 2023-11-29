@@ -22,6 +22,8 @@ package org.dinky.data.result;
 import java.io.Serializable;
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,13 +38,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(value = "PageResult", description = "Page Result with Pagination Information")
 public class PageResult<T> implements Serializable {
 
-    private static final long serialVersionUID = -5143774412936881374L;
-    /** 总数 */
+    @ApiModelProperty(value = "Total Count", dataType = "Long", notes = "Total number of items")
     private Long count;
-    /** 是否成功：0 成功、1 失败 */
+
+    @ApiModelProperty(value = "Status Code", dataType = "int", notes = "0 for success, 1 for failure")
     private int code;
-    /** 当前页结果集 */
+
+    @ApiModelProperty(value = "Data", dataType = "List<T>", notes = "Current page result set")
     private List<T> data;
 }

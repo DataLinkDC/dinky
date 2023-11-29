@@ -1,5 +1,24 @@
-import { API } from '@/services/data';
-import { SysMenu } from '@/types/RegCenter/data';
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+import { API } from '@/services/data.d';
+import { SysMenu } from '@/types/AuthCenter/data.d';
 import React, { createContext, ReactElement, useContext } from 'react';
 
 /***
@@ -21,6 +40,20 @@ type AuthorizedProps = {
   path: string;
   denied?: ReactElement | null;
   children?: ReactElement | null;
+};
+
+/**
+ *  判断用户是否有某一个权限 有返回true 没有返回false
+ *    <p>
+ *      主要针对按钮级别的禁用 ,在按钮禁用属性中需要使用(取反) !HasAuthority('xxx')来判断
+ *      使用: <Button disabled={!HasAuthority('xxx')}>Test</Button>
+ * @param path
+ * @constructor
+ */
+export const HasAuthority = (path: string): boolean => {
+  const { isAdmin, blocks = [] } = useContext(AccessContext);
+  if (isAdmin) return true;
+  return blocks.some((block) => block.path === path);
 };
 
 export function Authorized({ path, denied = null, children = null }: AuthorizedProps) {
@@ -73,7 +106,7 @@ export function AuthorizedObject({ path, denied = null, children = null, access 
 
   if (!blocks.length) return denied;
 
-  const authority = blocks.some((block) => block.path === path);
+  const authority = blocks.some((block: { path: string }) => block.path === path);
 
   return authority ? children : denied;
 }

@@ -19,9 +19,9 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.data.dto.AssignMenuToRoleDto;
+import org.dinky.data.dto.AssignMenuToRoleDTO;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.RoleMenu;
+import org.dinky.data.model.rbac.RoleMenu;
 import org.dinky.data.result.Result;
 import org.dinky.mapper.RoleMenuMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
@@ -38,7 +38,7 @@ import cn.hutool.core.collection.CollUtil;
 @Service
 public class RoleMenuServiceImpl extends SuperServiceImpl<RoleMenuMapper, RoleMenu> implements RoleMenuService {
     @Override
-    public Result<Void> assignMenuToRole(AssignMenuToRoleDto assignMenuToRoleDto) {
+    public Result<Void> assignMenuToRole(AssignMenuToRoleDTO assignMenuToRoleDto) {
 
         if (CollUtil.isEmpty(assignMenuToRoleDto.getMenuIds())) {
             return Result.failed(Status.SELECT_MENU);

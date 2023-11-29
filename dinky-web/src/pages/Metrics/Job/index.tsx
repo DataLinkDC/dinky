@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -75,6 +75,7 @@ const Job = () => {
   useEffect(() => {
     Object.keys(timers)
       .filter((x) => !jobMetricsList.map((x) => x.metrics).includes(x))
+      // @ts-ignore
       .forEach((x) => clearInterval(timers[x]));
   }, [jobMetricsList]);
 
@@ -84,7 +85,7 @@ const Job = () => {
    * @returns {Promise<any>}
    */
   const getFlinkTaskDetail = async (id: number) => {
-    return await getData(API_CONSTANTS.GET_JOB_DETAIL, { id: id });
+    return await getData(API_CONSTANTS.REFRESH_JOB_DETAIL, { id: id });
   };
 
   /**
@@ -124,7 +125,7 @@ const Job = () => {
     const {
       cluster: { hosts: url },
       instance: { name: flinkJobName, jid: flinkJobId }
-    } = taskDetail.datas;
+    } = taskDetail.data;
     setMetricsData((prevState) => ({
       ...prevState,
       url: url,
@@ -179,7 +180,7 @@ const Job = () => {
         showType: 'Chart'
       };
     });
-    d.map((j) => {
+    d.forEach((j) => {
       const data: ChartData[] = [];
       chartData[j.taskId + j.subTaskId + j.metrics] = data;
       setChartData(chartData);
@@ -204,6 +205,7 @@ const Job = () => {
           {metricsList.map((j) => {
             return (
               <FlinkChart
+                key={j.taskId + j.subTaskId + j.metrics}
                 chartSize={j.showSize}
                 chartType={j.showType}
                 onChangeJobState={(chartSize, chartType) => {
@@ -239,7 +241,7 @@ const Job = () => {
         extra={
           <Button
             size='small'
-            onClick={(e) => {
+            onClick={() => {
               const saveThisLayout = () => {
                 const metricsLayouts: MetricsLayout[] = jobMetricsList.map((job, index) => {
                   return {
@@ -264,7 +266,7 @@ const Job = () => {
               saveThisLayout();
             }}
           >
-            提交
+            {l('button.submit')}
           </Button>
         }
       >
@@ -273,7 +275,7 @@ const Job = () => {
           label={l('metrics.flink.job.name')}
           placeholder={l('metrics.flink.job.placeholder')}
           options={buildRunningJobList(taskData)}
-          fieldProps={{ onChange: (value) => handleRunningJobChange(value) }}
+          fieldProps={{ onChange: (value) => handleRunningJobChange(value as number) }}
         />
         {metricsData.selectTaskId !== 0 && (
           <ProFormSelect
@@ -281,7 +283,7 @@ const Job = () => {
             label={l('metrics.flink.subTask')}
             placeholder={l('metrics.flink.subTask.placeholder')}
             options={buildSubTaskList(subTaskList)}
-            fieldProps={{ onChange: (value) => handleSubTaskChange(value) }}
+            fieldProps={{ onChange: (value) => handleSubTaskChange(value as string) }}
           />
         )}
         {metricsData.selectSubTask !== '' && (
@@ -291,7 +293,7 @@ const Job = () => {
             placeholder={l('metrics.flink.metrics.placeholder')}
             options={buildMetricsList(metrics)}
             mode='multiple'
-            fieldProps={{ onChange: (value) => handleMetricsChange(value) }}
+            fieldProps={{ onChange: (value) => handleMetricsChange(value as string[]) }}
           />
         )}
         {/* render metrics list */}

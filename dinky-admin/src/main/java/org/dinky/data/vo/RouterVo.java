@@ -23,35 +23,53 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * 路由配置信息
  *
  * @author ruoyi
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@ApiModel(value = "RouterVo", description = "Router Value Object")
 public class RouterVo {
-    /** 路由名字 */
+
+    @ApiModelProperty(value = "Route name", dataType = "String", notes = "Name of the route.")
     private String name;
 
-    /** 路由地址 */
+    @ApiModelProperty(value = "Route path", dataType = "String", notes = "Path of the route.")
     private String path;
 
-    /** 是否隐藏路由，当设置 true 的时候该路由不会再侧边栏出现 */
+    @ApiModelProperty(
+            value = "Hide route",
+            dataType = "boolean",
+            notes = "Set to true to hide the route in the sidebar.",
+            example = "false")
     private boolean hidden;
 
-    /** 重定向地址，当设置 noRedirect 的时候该路由在面包屑导航中不可被点击 */
+    @ApiModelProperty(
+            value = "Redirect path",
+            dataType = "String",
+            notes =
+                    "Redirect path for the route. If 'noRedirect' is set, the route cannot be clicked in breadcrumb navigation.")
     private String redirect;
 
-    /** 组件地址 */
+    @ApiModelProperty(value = "Component path", dataType = "String", notes = "Path to the route's component.")
     private String component;
 
-    /** 当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式--如组件页面 */
+    @ApiModelProperty(
+            value = "Always show sub-routes",
+            dataType = "Boolean",
+            notes =
+                    "Automatically becomes nested mode when more than one route is declared under a route, such as a component page.",
+            example = "true")
     private Boolean alwaysShow;
 
-    /** 其他元素 */
+    @ApiModelProperty(value = "Metadata for the route", dataType = "MetaVo", notes = "Metadata for the route.")
     private MetaVo meta;
 
-    /** 子路由 */
+    @ApiModelProperty(value = "Child routes", dataType = "List<RouterVo>", notes = "Child routes of the route.")
     private List<RouterVo> children;
 
     public String getName() {

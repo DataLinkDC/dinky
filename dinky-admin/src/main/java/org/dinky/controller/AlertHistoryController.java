@@ -19,20 +19,23 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.enums.BusinessType;
-import org.dinky.data.model.AlertHistory;
-import org.dinky.data.result.ProTableResult;
+import org.dinky.data.enums.Status;
+import org.dinky.data.model.alert.AlertHistory;
+import org.dinky.data.result.Result;
 import org.dinky.service.AlertHistoryService;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,11 +54,45 @@ public class AlertHistoryController {
 
     private final AlertHistoryService alertHistoryService;
 
-    /** 动态查询列表 */
-    @PostMapping
+    /**
+     * Query Alert History By Job Instance Id
+     * @param jobInstanceId
+     * @return List<AlertHistory>
+     */
+    @GetMapping("/list")
     @ApiOperation("Query Alert History")
+    @ApiImplicitParam(
+            name = "jobInstanceId",
+            value = "Query Alert History By Job Instance Id",
+            dataTypeClass = Integer.class,
+            required = true,
+            dataType = "Integer")
     @Log(title = "Query Alert History", businessType = BusinessType.QUERY)
-    public ProTableResult<AlertHistory> listAlertHistoryRecord(@RequestBody JsonNode para) {
-        return alertHistoryService.selectForProTable(para);
+    public Result<List<AlertHistory>> listAlertHistoryRecord(@RequestParam("jobInstanceId") Integer jobInstanceId) {
+        return Result.succeed(alertHistoryService.queryAlertHistoryRecordByJobInstanceId(jobInstanceId));
+    }
+
+    /**
+     * delete AlertInstance by id
+     *
+     * @param id {@link Integer}
+     * @return {@link Result} of {@link Void}
+     */
+    @DeleteMapping("/delete")
+    @Log(title = "Delete Alert History By Id", businessType = BusinessType.DELETE)
+    @ApiOperation("Delete Alert History By Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Alert History Id",
+            dataType = "Integer",
+            paramType = "query",
+            required = true,
+            dataTypeClass = Integer.class)
+    public Result<Void> deleteAlertInstanceById(@RequestParam("id") Integer id) {
+        if (alertHistoryService.removeById(id)) {
+            return Result.succeed(Status.DELETE_SUCCESS);
+        } else {
+            return Result.failed(Status.DELETE_FAILED);
+        }
     }
 }

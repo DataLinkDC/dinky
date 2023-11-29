@@ -25,6 +25,8 @@ import org.dinky.gateway.model.JobInfo;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,9 +37,22 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ApiModel(value = "SavePointResult", description = "Result of SavePoint operation")
 public class SavePointResult extends AbstractGatewayResult {
 
+    @ApiModelProperty(
+            value = "Application ID",
+            dataType = "String",
+            example = "app123",
+            notes = "Unique identifier for the application")
     private String appId;
+
+    @ApiModelProperty(
+            value = "List of Job Information",
+            dataType = "List<JobInfo>",
+            example =
+                    "[{\"jobId\":\"job1\",\"savePoint\":\"savepoint1\",\"status\":\"RUNNING\"},{\"jobId\":\"job2\",\"savePoint\":\"savepoint2\",\"status\":\"COMPLETED\"}]",
+            notes = "List of job information associated with the SavePoint operation")
     private List<JobInfo> jobInfos;
 
     public SavePointResult(GatewayType type, LocalDateTime startTime) {
@@ -54,8 +69,9 @@ public class SavePointResult extends AbstractGatewayResult {
     }
 
     @Override
-    public void setId(String id) {
+    public GatewayResult setId(String id) {
         this.appId = id;
+        return this;
     }
 
     @Override

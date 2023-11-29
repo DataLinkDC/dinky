@@ -55,21 +55,19 @@ import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 
-/**
- * YarnSubmiter
- *
- * @since 2021/10/29
- */
 public abstract class YarnGateway extends AbstractGateway {
 
     public static final String HADOOP_CONFIG = "fs.hdfs.hadoopconf";
@@ -105,8 +103,8 @@ public abstract class YarnGateway extends AbstractGateway {
             configuration.set(YarnConfigOptions.APPLICATION_NAME, flinkConfig.getJobName());
         }
 
-        if (Asserts.isNotNullString(clusterConfig.getYarnConfigPath())) {
-            configuration.setString(HADOOP_CONFIG, clusterConfig.getYarnConfigPath());
+        if (Asserts.isNotNullString(clusterConfig.getHadoopConfigPath())) {
+            configuration.setString(HADOOP_CONFIG, clusterConfig.getHadoopConfigPath());
         }
 
         if (configuration.containsKey(SecurityOptions.KERBEROS_LOGIN_KEYTAB.key())) {
@@ -122,7 +120,7 @@ public abstract class YarnGateway extends AbstractGateway {
 
         if (getType().isApplicationMode()) {
             configuration.set(YarnConfigOptions.APPLICATION_TYPE, "Dinky Flink");
-            resetCheckpointInApplicationMode();
+            resetCheckpointInApplicationMode(flinkConfig.getJobName());
         }
 
         YarnLogConfigUtil.setLogConfigFileInConfig(configuration, clusterConfig.getFlinkConfigPath());
@@ -140,7 +138,7 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     private Path getYanConfigFilePath(String path) {
-        return new Path(URI.create(config.getClusterConfig().getYarnConfigPath() + "/" + path));
+        return new Path(URI.create(config.getClusterConfig().getHadoopConfigPath() + "/" + path));
     }
 
     public SavePointResult savepointCluster(String savePoint) {
@@ -254,14 +252,17 @@ public abstract class YarnGateway extends AbstractGateway {
                 case KILLED:
                     return JobStatus.CANCELED;
                 case SUBMITTED:
+                case ACCEPTED:
+                case NEW:
+                case NEW_SAVING:
                     return JobStatus.CREATED;
                 default:
-                    return JobStatus.INITIALIZING;
+                    return JobStatus.UNKNOWN;
             }
         } catch (YarnException | IOException e) {
             logger.error(e.getMessage());
+            return JobStatus.UNKNOWN;
         }
-        return JobStatus.UNKNOWN;
     }
 
     @Override
@@ -284,6 +285,11 @@ public abstract class YarnGateway extends AbstractGateway {
             yarnClusterDescriptor.addShipFiles(
                     Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
             yarnClusterDescriptor.addShipFiles(new ArrayList<>(FlinkUdfPathContextHolder.getPyUdfFile()));
+        }
+        Set<File> otherPluginsFiles = FlinkUdfPathContextHolder.getOtherPluginsFiles();
+
+        if (CollUtil.isNotEmpty(otherPluginsFiles)) {
+            yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(otherPluginsFiles));
         }
         return yarnClusterDescriptor;
     }

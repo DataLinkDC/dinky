@@ -18,6 +18,18 @@
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:dinky;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;INIT=runscript from 'classpath:db/db-h2.sql'
+#    url: jdbc:h2:mem:dinky;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;
+    url: jdbc:h2:./tmp/db/h2;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092;
+    druid:
+      initial-size: 1
     username: dinky
     password: dinky
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  sql:
+    init:
+      schema-locations: classpath:db/db-h2-ddl.sql
+      data-locations: classpath:db/db-h2-dml.sql
+      mode: always

@@ -19,7 +19,8 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.FragmentVariable;
@@ -38,7 +39,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +66,16 @@ public class FragmentController {
     @PutMapping
     @Log(title = "Insert Or Update Fragment", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Fragment")
+    @ApiImplicitParam(
+            name = "fragmentVariable",
+            value = "FragmentVariable",
+            required = true,
+            dataType = "FragmentVariable",
+            paramType = "body",
+            dataTypeClass = FragmentVariable.class)
+    @SaCheckPermission(
+            value = {PermissionConstants.REGISTRATION_FRAGMENT_ADD, PermissionConstants.REGISTRATION_FRAGMENT_EDIT},
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdateFragment(@RequestBody FragmentVariable fragmentVariable) {
         if (fragmentVariableService.saveOrUpdate(fragmentVariable)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -79,6 +93,13 @@ public class FragmentController {
     @PostMapping
     @Log(title = "FragmentVariable List", businessType = BusinessType.QUERY)
     @ApiOperation("FragmentVariable List")
+    @ApiImplicitParam(
+            name = "para",
+            value = "JsonNode",
+            required = true,
+            dataType = "JsonNode",
+            paramType = "body",
+            dataTypeClass = JsonNode.class)
     public ProTableResult<FragmentVariable> listFragmentVariable(@RequestBody JsonNode para) {
         final ProTableResult<FragmentVariable> result = fragmentVariableService.selectForProTable(para);
         // 敏感值不返回
@@ -101,6 +122,14 @@ public class FragmentController {
     @DeleteMapping("/delete")
     @Log(title = "FragmentVariable Delete", businessType = BusinessType.DELETE)
     @ApiOperation("FragmentVariable Delete")
+    @ApiImplicitParam(
+            name = "id",
+            value = "FragmentVariable Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_FRAGMENT_DELETE)
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (fragmentVariableService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -118,6 +147,14 @@ public class FragmentController {
     @PutMapping("/enable")
     @Log(title = "Update FragmentVariable Status", businessType = BusinessType.UPDATE)
     @ApiOperation("Update FragmentVariable Status")
+    @ApiImplicitParam(
+            name = "id",
+            value = "FragmentVariable Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_FRAGMENT_EDIT)
     public Result<Void> modifyFragmentStatus(@RequestParam Integer id) {
         if (fragmentVariableService.modifyFragmentStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);

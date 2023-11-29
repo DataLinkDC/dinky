@@ -25,98 +25,90 @@ import {
   RocketOutlined,
   SyncOutlined
 } from '@ant-design/icons';
-import { Descriptions, Tag } from 'antd';
+import { Descriptions, Space, Tag } from 'antd';
 
 const CkDesc = (props: JobProps) => {
   const { jobDetail } = props;
 
-  let counts = jobDetail?.jobHistory?.checkpoints.counts;
-  let latest = jobDetail?.jobHistory?.checkpoints.latest;
-  let checkpointsConfigInfo = jobDetail?.jobHistory?.checkpointsConfig;
+  const { counts, latest } = jobDetail?.jobDataDto?.checkpoints;
+  const { checkpointsConfigInfo } = jobDetail?.jobDataDto?.checkpointsConfig;
   return (
     <>
-      <Descriptions bordered size='small' column={3}>
-        <Descriptions.Item label='Checkpointing Mode'>
-          <Tag color='blue' title={'Checkpointing Mode'}>
-            {checkpointsConfigInfo.mode.toUpperCase()}
+      <Descriptions bordered size='small' column={4}>
+        <Descriptions.Item label='Checkpoint Mode'>
+          <Tag color='blue' title={'Checkpoint Mode'}>
+            {checkpointsConfigInfo?.mode?.toUpperCase() ?? 'None'}
           </Tag>
         </Descriptions.Item>
 
         <Descriptions.Item label='Interval'>
           <Tag color='blue' title={'Interval'}>
-            {checkpointsConfigInfo.interval}
+            {checkpointsConfigInfo?.interval ?? 'None'}
           </Tag>
         </Descriptions.Item>
 
         <Descriptions.Item label='Timeout'>
           <Tag color='blue' title={'Timeout'}>
-            {checkpointsConfigInfo.timeout}
+            {checkpointsConfigInfo?.timeout ?? 'None'}
           </Tag>
         </Descriptions.Item>
 
         <Descriptions.Item label='Unaligned Checkpoints '>
           <Tag color='blue' title={'Unaligned Checkpoints'}>
-            {checkpointsConfigInfo.unaligned_checkpoints ? 'Enabled' : 'Disabled'}
+            {checkpointsConfigInfo?.unaligned_checkpoints ? 'Enabled' : 'Disabled'}
+          </Tag>
+        </Descriptions.Item>
+
+        <Descriptions.Item label='Latest Restored'>
+          <Tag color='cyan' title={'Latest Restored'}>
+            {latest?.restored?.external_path ?? 'None'}
+          </Tag>
+        </Descriptions.Item>
+
+        <Descriptions.Item label='Latest Failed CheckPoint'>
+          <Tag color='red' title={'Latest Failed CheckPoint'}>
+            id: {latest?.failed?.id ?? 'None'}
+          </Tag>
+          {/*<Tag color='red' title={'Latest Failed CheckPoint'}>*/}
+          {/*  {'Cause： ' + latest?.failed?.failure_message ?? 'None'}*/}
+          {/*</Tag>*/}
+        </Descriptions.Item>
+
+        <Descriptions.Item label='Latest Completed CheckPoint'>
+          <Tag color='green' title={'Latest Completed CheckPoint'}>
+            {latest?.completed?.external_path ?? 'None'}
           </Tag>
         </Descriptions.Item>
 
         <Descriptions.Item label='Persist Checkpoints Externally Enabled'>
           <Tag color='blue' title={'Persist Checkpoints Externally Enabled'}>
-            {checkpointsConfigInfo.externalization.enabled ? 'Enabled' : 'Disabled'}
+            {checkpointsConfigInfo?.externalization.enabled ? 'Enabled' : 'Disabled'}
+          </Tag>
+        </Descriptions.Item>
+        <Descriptions.Item label='Latest Savepoint'>
+          <Tag color='purple' title={'Latest Savepoint'}>
+            {latest?.savepoint?.external_path ?? 'None'}
           </Tag>
         </Descriptions.Item>
 
         <Descriptions.Item label='CheckPoint Counts'>
-          <Tag color='blue' title={'Total'}>
-            <RocketOutlined /> Total: {counts.total}
-          </Tag>
-          <Tag color='red' title={'Failed'}>
-            <CloseCircleOutlined /> Failed: {counts.failed}
-          </Tag>
-          <Tag color='cyan' title={'Restored'}>
-            <ExclamationCircleOutlined /> Restored: {counts.restored}
-          </Tag>
-          <Tag color='green' title={'Completed'}>
-            <CheckCircleOutlined /> Completed: {counts.completed}
-          </Tag>
-          <Tag color='orange' title={'In Progress'}>
-            <SyncOutlined spin /> In Progress: {counts.in_progress}
-          </Tag>
-        </Descriptions.Item>
-
-        <Descriptions.Item label='Latest Failed CheckPoint'>
-          {latest.failed === null ? (
-            <Tag color='red' title={'Latest Failed CheckPoint'}>
-              {'None'}
+          <Space direction={'horizontal'}>
+            <Tag color='blue' title={'Total'}>
+              <RocketOutlined /> Total: {counts?.total ?? 0}
             </Tag>
-          ) : (
-            <>
-              <Tag color='red' title={'Latest Failed CheckPoint'}>
-                {'id： ' + latest.failed.id}
-              </Tag>
-              <Tag color='red' title={'Latest Failed CheckPoint'}>
-                {'Cause： ' + latest.failed.failure_message}
-              </Tag>
-            </>
-          )}
-        </Descriptions.Item>
-
-        <Descriptions.Item label='Latest Restored'>
-          <Tag color='cyan' title={'Latest Restored'}>
-            {latest.restored === null ? 'None' : latest.restored.external_path}
-          </Tag>
-        </Descriptions.Item>
-
-        <Descriptions.Item label='Latest Savepoint'>
-          <Tag color='purple' title={'Latest Savepoint'}>
-            {latest.savepoint === null ? 'None' : latest.savepoint.external_path}
-          </Tag>
-        </Descriptions.Item>
-
-        <Descriptions.Item label='Latest Completed CheckPoint'>
-          <Tag color='green' title={'Latest Completed CheckPoint'}>
-            {latest.completed === null ? 'None' : latest.completed.external_path}
-          </Tag>
+            <Tag color='red' title={'Failed'}>
+              <CloseCircleOutlined /> Failed: {counts?.failed ?? 0}
+            </Tag>
+            <Tag color='cyan' title={'Restored'}>
+              <ExclamationCircleOutlined /> Restored: {counts?.restored ?? 0}
+            </Tag>
+            <Tag color='green' title={'Completed'}>
+              <CheckCircleOutlined /> Completed: {counts?.completed ?? 0}
+            </Tag>
+            <Tag color='orange' title={'In Progress'}>
+              <SyncOutlined spin /> In Progress: {counts?.in_progress ?? 0}
+            </Tag>
+          </Space>
         </Descriptions.Item>
       </Descriptions>
     </>

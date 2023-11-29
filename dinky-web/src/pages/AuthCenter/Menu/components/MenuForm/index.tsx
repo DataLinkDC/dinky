@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -115,9 +115,13 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
   const submitForm = async (formData: any) => {
     await form.validateFields();
     // 获取 parentId 的值
-    const parentId: number[] = formData.parentId;
-    const middleResult: SysMenu = { ...formData, parentId: parentId.pop() }; // 转换 parentId 的值
-    (await handleSubmit({ ...values, ...middleResult })) && handleCancel();
+    const parentId = formData.parentId;
+    const middleResult: SysMenu = {
+      ...formData,
+      parentId: parentId.length ? parentId.pop() : parentId
+    }; // 转换 parentId 的值
+    await handleSubmit({ ...values, ...middleResult });
+    handleCancel();
   };
 
   /**
@@ -181,6 +185,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
         <ProFormText
           name='perms'
           label={l('menu.perms')}
+          disabled
           placeholder={l('menu.permsPlaceholder')}
         />
 
@@ -203,7 +208,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
 
         <ProFormDigit
           name='orderNum'
-          disabled
+          // disabled
           label={l('menu.orderNum')}
           initialValue={getMaxOrderNumToNextOrderNum(sortTreeData(treeData)) + 1}
         />

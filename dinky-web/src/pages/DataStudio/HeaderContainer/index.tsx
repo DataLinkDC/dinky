@@ -1,65 +1,67 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
+
+import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import { FlexCenterDiv } from '@/components/StyledComponents';
 import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
-import { buildGraphData } from '@/pages/DataStudio/HeaderContainer/FlinkGraph/function';
 import {
   buildBreadcrumbItems,
+  isOnline,
+  isRunning,
   projectCommonShow
 } from '@/pages/DataStudio/HeaderContainer/function';
 import {
+  cancelTask,
+  changeTaskLife,
+  debugTask,
   executeSql,
-  getJobPlan,
-  isOnline,
-  isSql,
-  offLineTask
+  getJobPlan
 } from '@/pages/DataStudio/HeaderContainer/service';
-import {
-  DataStudioParams,
-  DataStudioTabsItemType,
-  StateType,
-  TabsPageType,
-  TaskDataType,
-  VIEW
-} from '@/pages/DataStudio/model';
+import { DataStudioTabsItemType, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { ConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 import { handlePutDataJson } from '@/services/BusinessCrud';
+import { DIALECT } from '@/services/constants';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
-import { ErrorNotification } from '@/utils/messages';
+import { SuccessMessageAsync } from '@/utils/messages';
 import { connect } from '@@/exports';
 import {
+  ApartmentOutlined,
+  BugOutlined,
+  CaretRightFilled,
   EnvironmentOutlined,
-  FlagTwoTone,
+  FundOutlined,
+  MergeCellsOutlined,
   MoreOutlined,
-  PauseCircleTwoTone,
-  PlayCircleTwoTone,
-  SafetyCertificateTwoTone,
-  SaveTwoTone,
-  SendOutlined,
-  SmileOutlined
+  PauseOutlined,
+  RotateRightOutlined,
+  SaveOutlined,
+  ScheduleOutlined,
+  SendOutlined
 } from '@ant-design/icons';
-import { Breadcrumb, Button, Descriptions, message, Modal, notification, Space } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
+import { ButtonProps } from 'antd/es/button/button';
+import React, { memo, useEffect, useState } from 'react';
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -72,12 +74,13 @@ const headerStyle: React.CSSProperties = {
 };
 
 type ButtonRoute = {
-  icon: React.ReactNode;
-  title: string;
-  click: () => void;
+  icon?: React.ReactNode;
+  title?: string;
+  click?: () => void;
   hotKey?: (e: KeyboardEvent) => boolean;
   hotKeyDesc?: string;
-  isShow?: (type?: TabsPageType, subType?: string, data?: any) => boolean;
+  isShow: boolean;
+  props?: ButtonProps;
 };
 
 const HeaderContainer = (props: any) => {
@@ -92,228 +95,259 @@ const HeaderContainer = (props: any) => {
   } = props;
 
   const [modal, contextHolder] = Modal.useModal();
-  const [notificationApi, notificationContextHolder] = notification.useNotification();
-  const [messageApi, messageContextHolder] = message.useMessage();
-  const [enableDs, setEnableDs] = useState<boolean>(false);
+
+  // 检查是否开启 ds 配置 & 如果
+  const [enableDs] = useState<boolean>(
+    dsConfig.some(
+      (item: BaseConfigProperties) =>
+        item.key === 'dolphinscheduler.settings.enable' && item.value === 'true'
+    )
+  );
+
+  const currentData = getCurrentData(panes, activeKey);
+  const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
 
   useEffect(() => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
   }, []);
 
-  useEffect(() => {
-    // 检查是否开启 ds 配置 & 如果
-    if (!dsConfig) {
-      dsConfig.map((item: BaseConfigProperties) => {
-        if (item.key === 'dolphinscheduler.settings.enable') {
-          setEnableDs(item.value === 'true');
-        }
-      });
-    }
-  }, [dsConfig]);
+  const handleSave = async () => {
+    const saved = await handlePutDataJson('/api/task', currentData);
+    saveTabs({ ...props.tabs });
+    if (currentTab) currentTab.isModified = false;
+    return saved;
+  };
 
   const handlerStop = () => {
-    const current = getCurrentData(panes, activeKey);
-    if (!current) {
-      return;
-    }
+    if (!currentData) return;
 
     modal.confirm({
       title: l('pages.datastudio.editor.stop.job'),
       content: l('pages.datastudio.editor.stop.jobConfirm', '', {
-        jobName: current.name
+        jobName: currentData.name
       }),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
-        offLineTask(l('pages.datastudio.editor.stop.job'), current.id, 'canceljob').then(
-          (result) => {
-            (
-              getCurrentTab(panes, activeKey)?.params as DataStudioParams
-            ).taskData.jobInstanceId = 0;
-            saveTabs({ ...props.tabs });
-          }
-        );
+        cancelTask(l('pages.datastudio.editor.stop.job'), currentData.id).then(() => {
+          currentData.status = JOB_STATUS.CANCELED;
+          saveTabs({ ...props.tabs });
+        });
       }
     });
   };
-  const handlerExec = () => {
-    const current = getCurrentData(panes, activeKey);
-    if (!current) {
-      return;
-    }
 
-    if (!isSql(current.dialect) && !isOnline(current.type)) {
-      messageApi.warning(l('pages.datastudio.editor.execute.warn', '', { type: current.type }));
-      return;
-    }
+  const handlerDebug = async () => {
+    if (!currentData) return;
 
-    const param: TaskDataType = {
-      ...current,
-      jobName: current.name,
-      taskId: current.id
-    };
-
-    const taskKey = Math.random() * 1000 + '';
-
-    notificationApi.success({
-      message: l('pages.datastudio.editor.submitting', '', {
-        jobName: param.name
-      }),
-      description: param.statement.substring(0, 40) + '...',
-      duration: null,
-      key: taskKey,
-      icon: <SmileOutlined style={{ color: '#108ee9' }} />
-    });
-
-    executeSql(l('pages.datastudio.editor.submitting', '', { jobName: param.name }), param).then(
-      (res) => {
-        notificationApi.destroy(taskKey);
-        if (!res) {
-          return;
-        }
-        updateJobRunningMsg({
-          taskId: current.id,
-          jobName: current.name,
-          jobState: res.datas.status,
-          runningLog: res.msg
-        });
-        if (res.datas.success) {
-          messageApi.success(l('pages.datastudio.editor.exec.success'));
-          (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId =
-            res.datas.jobInstanceId;
-          saveTabs({ ...props.tabs });
-        } else {
-          ErrorNotification(
-            res.datas.error,
-            l('pages.datastudio.editor.exec.error', '', { jobName: param.name }),
-            null
-          );
-        }
-
-        // let newTabs = tabs;
-        // for (const element of newTabs.panes) {
-        //   if (element.key == key) {
-        //     element.console.result = res.datas;
-        //     break;
-        //   }
-        // }
-        // props.saveTabs(newTabs);
-        // useSession && showTables(currentSession.session, dispatch);
-      }
+    const res = await debugTask(
+      l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
+      currentData
     );
+
+    if (!res) return;
+    updateJobRunningMsg({
+      taskId: currentData.id,
+      jobName: currentData.name,
+      jobState: res.data.status,
+      runningLog: res.msg
+    });
+    await SuccessMessageAsync(l('pages.datastudio.editor.debug.success'));
+    currentData.status = JOB_STATUS.RUNNING;
+    if (currentTab) currentTab.console.result = res.data.result;
+    saveTabs({ ...props.tabs });
+  };
+
+  const handlerSubmit = async () => {
+    if (!currentData) return;
+    const saved = currentData.step == JOB_LIFE_CYCLE.PUBLISH ? true : await handleSave();
+    if (!saved) return;
+
+    const res = await executeSql(
+      l('pages.datastudio.editor.submitting', '', { jobName: currentData.name }),
+      currentData.id
+    );
+
+    if (!res) return;
+    updateJobRunningMsg({
+      taskId: currentData.id,
+      jobName: currentData.name,
+      jobState: res.data.status,
+      runningLog: res.msg
+    });
+    await SuccessMessageAsync(l('pages.datastudio.editor.exec.success'));
+    currentData.status = JOB_STATUS.RUNNING;
+    saveTabs({ ...props.tabs });
+  };
+
+  const handleChangeJobLife = async () => {
+    if (!currentData) return;
+    if (isOnline(currentData)) {
+      await changeTaskLife(
+        l('global.table.lifecycle.offline'),
+        currentData.id,
+        JOB_LIFE_CYCLE.DEVELOP
+      );
+      currentData.step = JOB_LIFE_CYCLE.DEVELOP;
+    } else {
+      const saved = await handleSave();
+      if (saved) {
+        await changeTaskLife(
+          l('global.table.lifecycle.publishing'),
+          currentData.id,
+          JOB_LIFE_CYCLE.PUBLISH
+        );
+        currentData.step = JOB_LIFE_CYCLE.PUBLISH;
+      }
+    }
+    saveTabs({ ...props.tabs });
+  };
+
+  const showDagGraph = async () => {
+    const result = await getJobPlan(l('pages.datastudio.editor.explan.tip'), currentData);
+    if (result) {
+      modal.confirm({
+        title: l('pages.datastudio.editor.explan.tip'),
+        width: '100%',
+        icon: null,
+        content: <FlinkGraph data={result.data} />,
+        cancelButtonProps: { style: { display: 'none' } }
+      });
+    }
+  };
+
+  const showExplain = async () => {
+    modal.confirm({
+      title: l('pages.datastudio.explain.validate.msg'),
+      width: '100%',
+      icon: null,
+      content: <Explain />,
+      cancelButtonProps: { style: { display: 'none' } }
+    });
   };
 
   const routes: ButtonRoute[] = [
     // 保存按钮 icon
     {
-      icon: <SaveTwoTone />,
+      hotKey: (e: KeyboardEvent) => (e.ctrlKey && e.key === 's') || (e.metaKey && e.key === 's'),
+      hotKeyDesc: 'Ctrl/Command +S',
+      isShow: projectCommonShow(currentTab?.type),
+      icon: <SaveOutlined />,
       title: l('button.save'),
-      click: () => {
-        const current = getCurrentData(panes, activeKey);
-        handlePutDataJson('/api/task', current).then(() => saveTabs({ ...props.tabs }));
-      },
-      hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
-      hotKeyDesc: 'Ctrl+S',
-      isShow: projectCommonShow
-    },
-    {
-      // 检查 sql按钮
-      icon: <SafetyCertificateTwoTone />,
-      title: l('pages.datastudio.editor.check'),
-      click: () => {
-        modal.confirm({
-          title: l('pages.datastudio.explain.validate.msg'),
-          width: '100%',
-          icon: null,
-          content: <Explain />,
-          cancelButtonProps: { style: { display: 'none' } }
-        });
-      },
-      isShow: projectCommonShow
-      // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
+      click: () => handleSave(),
+      props: {
+        disabled: isOnline(currentData)
+      }
     },
     {
       // 执行图按钮
-      icon: <FlagTwoTone />,
+      icon: <ApartmentOutlined />,
       title: l('button.graph'),
-      click: () => {
-        const currentData = getCurrentData(panes, activeKey);
-        const res = getJobPlan(l('pages.datastudio.editor.explan.tip'), currentData);
-        res.then((result) => {
-          if (result) {
-            modal.confirm({
-              title: l('pages.datastudio.editor.explan.tip'),
-              width: '100%',
-              icon: null,
-              content: <FlinkGraph data={buildGraphData(result.datas)} />,
-              cancelButtonProps: { style: { display: 'none' } }
-            });
-          }
-        });
-      },
-      // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-      isShow: projectCommonShow
+      isShow:
+        (projectCommonShow(currentTab?.type) &&
+          currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL) ||
+        currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR,
+      click: async () => showDagGraph()
     },
     {
-      // 执行按钮
-      icon: <PlayCircleTwoTone />,
-      title: l('pages.datastudio.editor.exec'),
-      click: handlerExec,
-      hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
-      hotKeyDesc: 'Shift+F10',
-      isShow: (type?: TabsPageType, subType?: string, data?: any) =>
-        type === TabsPageType.project && !data?.jobInstanceId
+      // 检查 sql按钮
+      icon: <ScheduleOutlined />,
+      hotKey: (e: KeyboardEvent) =>
+        (e.altKey && e.code === 'Digit2') || (e.altKey && e.key === '@'),
+      hotKeyDesc: 'Alt+2/@',
+      title: l('pages.datastudio.editor.check'),
+      click: () => showExplain(),
+      isShow:
+        projectCommonShow(currentTab?.type) &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.JAVA &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.SCALA &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.PYTHON_LONG
     },
-    {
-      // 停止按钮
-      icon: <PauseCircleTwoTone />,
-      title: l('pages.datastudio.editor.stop'),
-      click: handlerStop,
-      isShow: (type?: TabsPageType, subType?: string, data?: any) =>
-        type === TabsPageType.project && data?.jobInstanceId
-      // hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
-      // hotKeyDesc: "Shift+F10"
-    },
-    // {
-    //   // 异步提交按钮
-    //   icon: <RocketTwoTone/>,
-    //   title: l('button.async'),
-    //   click: () => {
-    //     console.log("ctrl+s")
-    //   },
-    //   // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-    // },
     {
       // 推送海豚, 此处需要将系统设置中的 ds 的配置拿出来做判断 启用才展示
       icon: <SendOutlined className={'blue-icon'} />,
       title: l('button.push'),
-      click: () => {},
       hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
-      isShow: () => enableDs
+      isShow: enableDs
     },
-    // {
-    //   // 发布按钮
-    //   icon: <PauseCircleTwoTone/>,
-    //   title: l('button.publish'),
-    //   click: () => {
-    //     console.log("ctrl+s")
-    //   },
-    //   // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-    // }, {
-    //   // api 按钮
-    //   icon: <ApiTwoTone/>,
-    //   title: l('button.api'),
-    //   click: () => {
-    //     console.log("ctrl+s")
-    //   },
-    //   // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-    // },
     {
-      //
+      // 发布按钮
+      icon: isOnline(currentData) ? <MergeCellsOutlined /> : <FundOutlined />,
+      title: isOnline(currentData) ? l('button.offline') : l('button.publish'),
+      isShow:
+        (currentTab?.type == TabsPageType.project &&
+          currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL) ||
+        currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR,
+      click: () => handleChangeJobLife()
+    },
+    {
+      // flink jobdetail跳转 运维
+      icon: <RotateRightOutlined />,
+      title: l('pages.datastudio.to.jobDetail'),
+      isShow:
+        currentTab?.type == TabsPageType.project &&
+        currentData?.jobInstanceId &&
+        (currentTab?.subType?.toLowerCase() == DIALECT.FLINK_SQL ||
+          currentTab?.subType?.toLowerCase() == DIALECT.FLINKJAR),
+      props: {
+        href: `/#/devops/job-detail?id=${currentData?.jobInstanceId}`,
+        target: '_blank'
+      }
+    },
+    {
+      // 执行按钮
+      icon: <CaretRightFilled />,
+      title: l('pages.datastudio.editor.exec'),
+      click: handlerSubmit,
+      hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
+      hotKeyDesc: 'Shift+F10',
+      isShow:
+        currentTab?.type == TabsPageType.project &&
+        !isRunning(currentData) &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.JAVA &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.SCALA &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
+        currentTab?.subType?.toLowerCase() !== DIALECT.FLINKSQLENV,
+      props: {
+        style: { background: '#52c41a' },
+        type: 'primary'
+      }
+    },
+    {
+      // Debug button
+      icon: <BugOutlined />,
+      title: l('pages.datastudio.editor.debug'),
+      click: handlerDebug,
+      hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F9',
+      hotKeyDesc: 'Shift+F9',
+      isShow:
+        currentTab?.type == TabsPageType.project &&
+        !isRunning(currentData) &&
+        (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
+          currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR),
+      props: {
+        style: { background: '#52c41a' },
+        type: 'primary'
+      }
+    },
+    {
+      // 停止按钮
+      icon: <PauseOutlined />,
+      title: l('pages.datastudio.editor.stop'),
+      click: handlerStop,
+      isShow: currentTab?.type == TabsPageType.project && isRunning(currentData),
+      hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
+      hotKeyDesc: 'Shift+F10',
+      props: {
+        type: 'primary',
+        danger: true
+      }
+    },
+    {
       icon: <MoreOutlined />,
-      title: 'More',
+      title: '',
       click: () => {},
-      isShow: () => true
+      isShow: true
       // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
     }
   ];
@@ -333,61 +367,47 @@ const HeaderContainer = (props: any) => {
 
     return (
       <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
-        <Breadcrumb separator={'>'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
+        <Breadcrumb separator={'/'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
       </FlexCenterDiv>
     );
   };
-  const renderHotkey = () => {
-    document.onkeydown = (e) => {
-      routes
-        .filter((r) => r.hotKey?.(e))
-        .forEach((r) => {
-          r.click();
-          e.preventDefault();
-        });
-    };
+
+  document.onkeydown = (e) => {
+    routes
+      .filter((r) => r.hotKey?.(e))
+      .forEach((r) => {
+        r.click?.();
+        e.preventDefault();
+      });
   };
-  renderHotkey();
 
   /**
    * @description: 渲染右侧按钮
    */
   const renderRightButtons = () => {
     return (
-      <>
-        <Space size={'middle'} align={'center'} direction={'horizontal'} wrap>
+      <div style={{ padding: '4px' }}>
+        <Space size={'small'} align={'center'} direction={'horizontal'} wrap>
           {routes
-            .filter((x) => {
-              if (x.isShow) {
-                const currentTab = getCurrentTab(panes, activeKey);
-                if (currentTab) {
-                  return x.isShow(
-                    currentTab?.type,
-                    currentTab?.subType,
-                    (currentTab as DataStudioTabsItemType)?.params.taskData
-                  );
-                }
-              }
-              return false;
-            })
+            .filter((x) => x.isShow)
             .map((route) => {
-              const { icon, title, click, hotKeyDesc } = route;
               return (
-                <Button
-                  key={title}
+                <LoadingBtn
+                  key={route.title}
                   size={'small'}
                   type={'text'}
-                  icon={icon}
-                  title={title + (hotKeyDesc ? ' ' + hotKeyDesc : '')}
-                  onClick={click}
-                />
+                  icon={route.icon}
+                  onClick={route.click}
+                  title={route.hotKeyDesc}
+                  {...route.props}
+                >
+                  {route.title}
+                </LoadingBtn>
               );
             })}
         </Space>
         {contextHolder}
-        {notificationContextHolder}
-        {messageContextHolder}
-      </>
+      </div>
     );
   };
 
@@ -410,4 +430,4 @@ export default connect(
     dsConfig: Config.dsConfig
   }),
   mapDispatchToProps
-)(HeaderContainer);
+)(memo(HeaderContainer));

@@ -27,53 +27,103 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
 @TableName("dinky_sys_operate_log")
+@ApiModel(value = "OperateLog", description = "Operate Log Information")
 public class OperateLog implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -8321546342131006474L;
 
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(value = "ID", dataType = "Long", example = "1", notes = "Unique identifier for the operate log")
     private Long id;
 
-    /** 操作模块 */
+    @ApiModelProperty(
+            value = "Module Name",
+            dataType = "String",
+            example = "User Management",
+            notes = "Name of the operation module")
     private String moduleName;
 
+    @ApiModelProperty(
+            value = "Business Type",
+            dataType = "Integer",
+            example = "1",
+            notes = "Type of business operation")
     private Integer businessType;
 
-    /** 请求方法 */
+    @ApiModelProperty(value = "Method", dataType = "String", example = "GET", notes = "HTTP request method")
     private String method;
 
-    /** 请求方式 */
+    @ApiModelProperty(
+            value = "Request Method",
+            dataType = "String",
+            example = "GET",
+            notes = "Type of HTTP request (e.g., GET, POST)")
     private String requestMethod;
 
+    @ApiModelProperty(
+            value = "Operate Name",
+            dataType = "String",
+            example = "Create User",
+            notes = "Name of the operation")
     private String operateName;
+
+    @ApiModelProperty(
+            value = "Operate User ID",
+            dataType = "Integer",
+            example = "1001",
+            notes = "ID of the user who performed the operation")
     private Integer operateUserId;
 
-    /** 请求url */
+    @ApiModelProperty(
+            value = "Operate URL",
+            dataType = "String",
+            example = "/api/user/create",
+            notes = "URL where the operation was performed")
     private String operateUrl;
 
-    /** 操作地址 */
+    @ApiModelProperty(
+            value = "Operate IP",
+            dataType = "String",
+            example = "192.168.0.1",
+            notes = "IP address from which the operation was performed")
     private String operateIp;
 
-    /** 操作地点 */
+    @ApiModelProperty(
+            value = "Operate Location",
+            dataType = "String",
+            example = "New York, USA",
+            notes = "Location where the operation was performed")
     private String operateLocation;
 
-    /** 请求参数 */
+    @ApiModelProperty(value = "Operate Parameters", dataType = "String", notes = "Parameters of the operation request")
     private String operateParam;
 
-    /** 返回参数 */
+    @ApiModelProperty(value = "JSON Result", dataType = "String", notes = "JSON result or response of the operation")
     private String jsonResult;
 
-    /** 操作状态（0正常 1异常） */
+    @ApiModelProperty(
+            value = "Status",
+            dataType = "Integer",
+            example = "0",
+            notes = "Status of the operation (0 for normal, 1 for exception)")
     private Integer status;
 
-    /** 错误消息 */
+    @ApiModelProperty(
+            value = "Error Message",
+            dataType = "String",
+            notes = "Error message if the operation encountered an exception")
     private String errorMsg;
 
-    /** 操作时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(
+            value = "Operate Time",
+            dataType = "String",
+            notes = "Timestamp indicating the time of the operation")
     private LocalDateTime operateTime;
 }

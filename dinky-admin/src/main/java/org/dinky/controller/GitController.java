@@ -19,13 +19,14 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.GitProjectDTO;
+import org.dinky.data.dto.GitProjectSortJarDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.GitProject;
-import org.dinky.data.params.GitProjectSortJarParams;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.GitProjectService;
@@ -52,10 +53,13 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 
@@ -79,6 +83,17 @@ public class GitController {
     @PutMapping("/saveOrUpdate")
     @Log(title = "Insert Or Update GitProject", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update GitProject")
+    @ApiImplicitParam(
+            name = "gitProject",
+            value = "GitProject",
+            required = true,
+            dataType = "GitProject",
+            paramType = "body",
+            dataTypeClass = GitProject.class)
+    @SaCheckPermission(
+            value = {PermissionConstants.REGISTRATION_GIT_PROJECT_ADD, PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT
+            },
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdateGitProject(@Validated @RequestBody GitProjectDTO gitProject) {
         gitProjectService.saveOrUpdate(gitProject);
         GitRepository gitRepository = new GitRepository(BeanUtil.copyProperties(gitProject, GitProjectDTO.class));
@@ -95,6 +110,14 @@ public class GitController {
     @PostMapping("/dragendSortProject")
     @Log(title = "GitProject Sort", businessType = BusinessType.UPDATE)
     @ApiOperation("GitProject Sort")
+    @ApiImplicitParam(
+            name = "sortList",
+            value = "after sorter data",
+            required = true,
+            dataType = "Map",
+            paramType = "body",
+            dataTypeClass = Map.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT)
     public Result<Void> dragendSortProject(@RequestBody Map sortList) {
         if (sortList == null) {
             return Result.failed(Status.GIT_PROJECT_NOT_FOUND);
@@ -106,18 +129,26 @@ public class GitController {
     /**
      * drag sort jar level
      *
-     * @param gitProjectSortJarParams
+     * @param gitProjectSortJarDTO
      * @return {@link Result}<{@link Void}>
      */
     @PostMapping("/dragendSortJar")
     @Log(title = "GitProject Jar Sort", businessType = BusinessType.UPDATE)
     @ApiOperation("GitProject Jar Sort")
-    public Result<Void> dragendSortJar(@RequestBody GitProjectSortJarParams gitProjectSortJarParams) {
-        GitProject gitProjectServiceById = gitProjectService.getById(gitProjectSortJarParams.getProjectId());
+    @ApiImplicitParam(
+            name = "gitProjectSortJarDTO",
+            value = "after sorter data",
+            required = true,
+            dataType = "GitProjectSortJarDTO",
+            paramType = "body",
+            dataTypeClass = GitProjectSortJarDTO.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT)
+    public Result<Void> dragendSortJar(@RequestBody GitProjectSortJarDTO gitProjectSortJarDTO) {
+        GitProject gitProjectServiceById = gitProjectService.getById(gitProjectSortJarDTO.getProjectId());
         if (gitProjectServiceById == null) {
             return Result.failed(Status.GIT_PROJECT_NOT_FOUND);
         } else {
-            if (gitProjectService.dragendSortJar(gitProjectSortJarParams)) {
+            if (gitProjectService.dragendSortJar(gitProjectSortJarDTO)) {
                 return Result.succeed(Status.GIT_SORT_SUCCESS);
             } else {
                 return Result.failed(Status.GIT_SORT_FAILED);
@@ -133,6 +164,13 @@ public class GitController {
      */
     @PostMapping("/getBranchList")
     @ApiOperation("GitProject Get Branch List")
+    @ApiImplicitParam(
+            name = "gitProjectDTO",
+            value = "GitProjectDTO",
+            required = true,
+            dataType = "GitProjectDTO",
+            paramType = "body",
+            dataTypeClass = GitProjectDTO.class)
     public Result<List<String>> getBranchList(@RequestBody GitProjectDTO gitProjectDTO) {
         GitRepository gitRepository = new GitRepository(gitProjectDTO);
         return Result.succeed(gitRepository.getBranchList());
@@ -147,6 +185,14 @@ public class GitController {
     @DeleteMapping("/deleteProject")
     @Log(title = "Delete GitProject by id", businessType = BusinessType.DELETE)
     @ApiOperation("Delete GitProject by id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_DELETE)
     public Result<Void> deleteProject(@RequestParam("id") Integer id) {
         gitProjectService.removeProjectAndCodeCascade(id);
         return Result.succeed();
@@ -161,6 +207,14 @@ public class GitController {
     @PutMapping("/updateEnable")
     @Log(title = "Enable or Disable GitProject by id", businessType = BusinessType.UPDATE)
     @ApiOperation("Enable or Disable GitProject by id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT)
     public Result<Void> modifyGitProjectStatus(@RequestParam("id") Integer id) {
         if (gitProjectService.modifyGitProjectStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -176,6 +230,13 @@ public class GitController {
      */
     @PostMapping("/getProjectList")
     @ApiOperation("Get GitProject List")
+    @ApiImplicitParam(
+            name = "params",
+            value = "params",
+            required = true,
+            dataType = "JsonNode",
+            paramType = "body",
+            dataTypeClass = JsonNode.class)
     public ProTableResult<GitProject> getAllProject(@RequestBody JsonNode params) {
         return gitProjectService.selectForProTable(params);
     }
@@ -188,6 +249,13 @@ public class GitController {
      */
     @PostMapping("/getOneDetails")
     @ApiOperation("Get GitProject Details by id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
     public Result<GitProject> getOneDetails(@RequestParam("id") Integer id) {
         return Result.succeed(gitProjectService.getById(id));
     }
@@ -199,6 +267,16 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping("/build")
+    @Log(title = "Build GitProject by id", businessType = BusinessType.UPDATE)
+    @ApiOperation("Build GitProject by id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_BUILD)
     public Result<Void> buildGitProject(@RequestParam("id") Integer id) {
 
         GitProject gitProject = gitProjectService.getById(id);
@@ -223,6 +301,14 @@ public class GitController {
     @GetMapping(path = "/build-step-logs", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Log(title = "GitProject Build Step Logs", businessType = BusinessType.QUERY)
     @ApiOperation("GitProject Build Step Logs")
+    @ApiImplicitParam(
+            name = "id",
+            value = "id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_SHOW_LOG)
     public SseEmitter buildStepLogs(@RequestParam("id") Integer id) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         GitProject gitProject = gitProjectService.getById(id);
@@ -243,6 +329,13 @@ public class GitController {
      */
     @GetMapping("/getProjectCode")
     @ApiOperation("Get GitProject Code")
+    @ApiImplicitParam(
+            name = "id",
+            value = "id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class)
     public Result<List<TreeNodeDTO>> getProjectCode(@RequestParam("id") Integer id) {
         return Result.succeed(gitProjectService.getProjectCode(id));
     }

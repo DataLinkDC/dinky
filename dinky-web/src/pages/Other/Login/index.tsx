@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import Footer from '@/components/Footer';
@@ -41,6 +43,8 @@ const Login: React.FC = () => {
   const [tenant, setTenant] = useState<UserBaseInfo.Tenant[]>([]);
 
   const [localStorageOfToken, setLocalStorageOfToken] = useLocalStorage('token', '');
+
+  const { reconnectSse } = useModel('Sse', (model: any) => ({ reconnectSse: model.reconnectSse }));
 
   const containerClassName = useEmotionCss(() => {
     return {
@@ -86,16 +90,18 @@ const Login: React.FC = () => {
       await SuccessMessageAsync(
         l('login.chooseTenantSuccess', '', {
           msg: chooseTenantResult.msg,
-          tenantCode: chooseTenantResult.datas.tenantCode
+          tenantCode: chooseTenantResult.data.tenantCode
         })
       );
       /**
        * After the selection is complete, refresh all user information
        */
       await fetchUserInfo();
+
       /**
-       * Redirect to home page
+       * Redirect to home page && reconnect Global Sse
        */
+      reconnectSse();
       gotoRedirectUrl();
     } else {
       ErrorMessage(l('login.chooseTenantFailed'));
@@ -139,12 +145,12 @@ const Login: React.FC = () => {
           setLocalStorageOfToken(JSON.stringify(res))
         );
       }
-      setInitialState((s) => ({ ...s, currentUser: result.datas }));
+      setInitialState((s) => ({ ...s, currentUser: result.data }));
       await SuccessMessageAsync(l('login.result', '', { msg: result.msg, time: result.time }));
       /**
        * After successful login, set the tenant list
        */
-      const tenantList: UserBaseInfo.Tenant[] = result.datas.tenantList;
+      const tenantList: UserBaseInfo.Tenant[] = result.data.tenantList;
       await assertTenant(tenantList);
       /**
        * Determine whether the current tenant list is multiple

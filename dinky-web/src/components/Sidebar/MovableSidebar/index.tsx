@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
 import useThemeValue from '@/hooks/useThemeValue';
 import { MinusOutlined } from '@ant-design/icons';
@@ -15,11 +34,13 @@ export type MovableSidebarProps = {
   contentHeight?: number;
   defaultSize?: Size;
   visible?: boolean;
+  headerVisible?: boolean;
   children?: React.ReactNode;
   handlerMinimize?: () => void;
   handlerMaxsize?: () => void;
   btnGroup?: React.ReactNode[];
   onResize?: ResizeCallback;
+  onResizeStop?: ResizeCallback;
   style?: React.CSSProperties;
   tagList?: TabPaneProps[];
 };
@@ -32,12 +53,14 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
     style,
     visible,
     onResize,
+    onResizeStop,
     defaultSize,
     minWidth,
     maxWidth,
     minHeight,
     maxHeight,
     enable,
+    headerVisible = true,
     children,
     title,
     contentHeight,
@@ -57,6 +80,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
           borderRadius: 5
         }}
         onResize={onResize}
+        onResizeStop={onResizeStop}
         defaultSize={defaultSize}
         minWidth={minWidth}
         maxWidth={maxWidth}
@@ -64,43 +88,24 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
         maxHeight={maxHeight}
         enable={enable}
       >
-        {/*<PageContainer*/}
-        {/*    title={title}*/}
-        {/*    tabProps={{*/}
-        {/*        type: "editable-card",*/}
-        {/*        hideAdd: true,*/}
-        {/*        size: "small",*/}
-        {/*        animated: true,*/}
-        {/*        tabBarStyle: {margin: 0, padding: 0},*/}
-        {/*    }}*/}
-        {/*    tabList={tagList}*/}
-        {/*    extra={[*/}
-        {/*      <Button title={l('global.mini')} key={"minimize"} icon={<MinusOutlined/>} block type={"text"} shape={"circle"}*/}
-        {/*              onClick={props.handlerMinimize}/>*/}
-        {/*        // <MinusSquareOutlined size={15}  title={l('global.mini')} key={"minimize"} onClick={handlerMinimize}/>,*/}
-        {/*        // <MinusOutlined size={35}  title={l('global.mini')} key={"minimize"} onClick={handlerMinimize}/>,*/}
-        {/*        // <PlusSquareOutlined size={15} title={l('global.max')} key={"maximize"} onClick={handlerMaxsize}/>*/}
-        {/*    ]}*/}
-        {/*    fixedHeader*/}
-        {/*>*/}
-        {/*    <div style={{height: contentHeight,marginBlock:-5,marginInline:-10}}>{children}</div>*/}
-        {/*</PageContainer>*/}
         <>
-          <div
-            style={{
-              backgroundColor: token.colorBgBase,
-              borderBlockColor: themeValue.borderColor
-            }}
-            className={'container-header'}
-          >
-            <div>{title}</div>
-            <div className={showBtn ? 'show' : 'hide'}>
-              <Space size={5}>
-                {props.btnGroup}
-                <CircleBtn onClick={props.handlerMinimize} icon={<MinusOutlined />} />
-              </Space>
+          {headerVisible && (
+            <div
+              style={{
+                backgroundColor: token.colorBgBase,
+                borderBlockColor: themeValue.borderColor
+              }}
+              className={'container-header'}
+            >
+              <div>{title}</div>
+              <div className={showBtn ? 'show' : 'hide'}>
+                <Space size={1}>
+                  {props.btnGroup}
+                  <CircleBtn onClick={props.handlerMinimize} icon={<MinusOutlined />} />
+                </Space>
+              </div>
             </div>
-          </div>
+          )}
           <div
             style={{
               height: contentHeight,

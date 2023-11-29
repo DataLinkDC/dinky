@@ -19,7 +19,9 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.TaskVersionHistoryDTO;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.TaskVersion;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +64,7 @@ public class TaskVersionController {
      */
     @GetMapping
     @ApiOperation("Query Task Version list")
+    @ApiImplicitParam(name = "taskId", value = "Task Id", dataType = "int", paramType = "query", required = true)
     public Result<List<TaskVersionHistoryDTO>> listTaskVersions(@RequestParam int taskId) {
         List<TaskVersion> taskVersions = versionService.getTaskVersionByTaskId(taskId);
         List<TaskVersionHistoryDTO> collect = taskVersions.stream()
@@ -71,6 +75,8 @@ public class TaskVersionController {
 
     @DeleteMapping
     @ApiOperation("Delete Task Version")
+    @ApiImplicitParam(name = "id", value = "Task Version Id", dataType = "int", paramType = "query", required = true)
+    @Log(title = "Delete Task Version", businessType = BusinessType.DELETE)
     public Result<Boolean> deleteVersion(@RequestParam int id) {
         boolean b = versionService.removeById(id);
         return Result.succeed(b);

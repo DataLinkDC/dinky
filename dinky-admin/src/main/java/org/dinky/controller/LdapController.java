@@ -19,14 +19,14 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.AuthException;
 import org.dinky.data.model.SystemConfiguration;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
 import org.dinky.data.result.Result;
 import org.dinky.service.LdapService;
 import org.dinky.service.UserService;
@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -97,6 +98,7 @@ public class LdapController {
     @PostMapping("/importUsers")
     @ApiOperation("Import users from LDAP server")
     @Log(title = "Import users from LDAP server", businessType = BusinessType.IMPORT)
+    @ApiImplicitParam(name = "users", value = "User list", required = true, dataType = "List<User>")
     public Result<Void> importUsers(@RequestBody List<User> users) {
         boolean b = userService.saveBatch(users);
         if (b) {
@@ -114,6 +116,7 @@ public class LdapController {
     @PostMapping("/testLogin")
     @ApiOperation("Test login to LDAP server")
     @Log(title = "Test login to LDAP server", businessType = BusinessType.TEST)
+    @ApiImplicitParam(name = "loginDTO", value = "Login information", required = true, dataType = "LoginDTO")
     public Result<User> login(@RequestBody LoginDTO loginDTO) {
         try {
             return Result.succeed(ldapService.authenticate(loginDTO));

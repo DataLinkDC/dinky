@@ -25,8 +25,6 @@ import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.function.util.ZipWriter;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.model.ProcessEntity;
 
 import org.apache.flink.client.python.PythonFunctionFactory;
 import org.apache.flink.configuration.Configuration;
@@ -66,9 +64,9 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
     @Override
     public boolean compiler(UDF udf, ReadableConfig conf, Integer missionId) {
         Asserts.checkNull(udf, "flink-config 不能为空");
-        ProcessEntity process = ProcessContextHolder.getProcess();
+        // TODO 改为ProcessStep注释
 
-        process.info("正在编译 python 代码 , class: " + udf.getClassName());
+        log.info("正在编译 python 代码 , class: " + udf.getClassName());
         File pyFile = FileUtil.writeUtf8String(
                 udf.getCode(),
                 PathConstant.getUdfCompilerPythonPath(missionId, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
@@ -85,9 +83,9 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
                     SystemConfiguration.getInstances().getPythonHome());
 
             PythonFunctionFactory.getPythonFunction(udf.getClassName(), configuration, null);
-            process.info("Python udf编译成功 ; className:" + udf.getClassName());
+            log.info("Python udf编译成功 ; className:" + udf.getClassName());
         } catch (Exception e) {
-            process.error("Python udf编译失败 ; className:"
+            log.error("Python udf编译失败 ; className:"
                     + udf.getClassName()
                     + " 。 原因： "
                     + ExceptionUtil.getRootCauseMessage(e));

@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -16,6 +17,7 @@
  *
  */
 
+import { TabsItemType } from '@/pages/DataStudio/model';
 import { Button } from 'antd';
 import React from 'react';
 
@@ -23,6 +25,13 @@ export type CircleButtonProps = {
   icon: React.ReactNode;
   loading?: boolean;
   onClick?: () => void;
+  title?: string;
+  key?: string;
+};
+export type CircleDataStudioButtonProps = {
+  icon: React.ReactNode;
+  loading?: boolean;
+  onClick?: (panes: TabsItemType[], activeKey: string) => void;
   title?: string;
   key?: string;
 };

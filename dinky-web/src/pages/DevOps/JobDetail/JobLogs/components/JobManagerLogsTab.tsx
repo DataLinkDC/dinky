@@ -22,13 +22,14 @@ import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { useRequest } from '@@/exports';
 import { ProCard } from '@ant-design/pro-components';
-import { Spin, Tabs, Typography } from 'antd';
-
-const { Text, Paragraph } = Typography;
+import { Spin } from 'antd';
+import { useState } from 'react';
 
 const JobManagerLogsTab = (props: JobProps) => {
   const { jobDetail } = props;
   const jmaddr = jobDetail?.history?.jobManagerAddress;
+
+  const [activeKey, setActiveKey] = useState('LOG');
 
   const log = useRequest({
     url: API_CONSTANTS.GET_JOBMANAGER_LOG,
@@ -45,25 +46,59 @@ const JobManagerLogsTab = (props: JobProps) => {
     params: { address: jmaddr }
   });
 
-  const getLog = (ur: any) => {
+  const getLog = (ur: any, language?: string) => {
     return (
       <Spin spinning={ur.loading}>
-        <CodeShow code={ur.data ? ur.data : 'No Log'} height={600} />
+        <CodeShow
+          showFloatButton
+          language={language}
+          code={ur.data ? ur.data : 'No Log'}
+          height={parent.innerHeight - 300}
+        />
+      </Spin>
+    );
+  };
+
+  const buildDumpLog = (ur: any) => {
+    if (!ur.data) {
+      return;
+    } else {
+      return (JSON.parse(ur.data)['threadInfos'] as any[])
+        .map((x) => x['stringifiedThreadInfo'])
+        .join('');
+    }
+  };
+
+  const getDump = (ur: any, language?: string) => {
+    return (
+      <Spin spinning={ur.loading}>
+        <CodeShow
+          showFloatButton
+          language={language}
+          code={buildDumpLog(ur) ?? 'No Log'}
+          height={parent.innerHeight - 300}
+        />
       </Spin>
     );
   };
 
   return (
-    <ProCard>
-      <Tabs
-        size={'small'}
-        items={[
-          { label: 'Log', key: 'LOG', children: getLog(log) },
-          { label: 'Std Out', key: 'STDOUT', children: getLog(stdout) },
-          { label: 'Thread Dump', key: 'DUMP', children: getLog(dump) }
-        ]}
-      />
-    </ProCard>
+    <ProCard
+      headerBordered
+      bordered
+      bodyStyle={{ height: parent.innerHeight, overflow: 'auto' }}
+      tabs={{
+        size: 'small',
+        tabPosition: 'top',
+        activeKey: activeKey,
+        onChange: setActiveKey,
+        items: [
+          { label: 'Log', key: 'LOG', children: getLog(log, 'javalog') },
+          { label: 'Std Out', key: 'STDOUT', children: getLog(stdout, 'javalog') },
+          { label: 'Thread Dump', key: 'DUMP', children: getDump(dump, 'java') }
+        ]
+      }}
+    />
   );
 };
 

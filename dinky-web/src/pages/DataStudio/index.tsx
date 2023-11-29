@@ -1,42 +1,34 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
+import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
-import { getConsoleData } from '@/pages/DataStudio/BottomContainer/Console/service';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import {
-  getCurrentTab,
-  isDataStudioTabsItemType,
-  mapDispatchToProps
-} from '@/pages/DataStudio/function';
+import { mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
-import { getDataBase } from '@/pages/DataStudio/LeftContainer/MetaData/service';
-import { getTaskData, getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
+import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
+import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import {
-  StateType,
-  TabsItemType,
-  TabsPageType,
-  TaskDataType,
-  VIEW
-} from '@/pages/DataStudio/model';
+import { StateType, TabsItemType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
   getClusterConfigurationData,
@@ -44,14 +36,11 @@ import {
   getSessionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide } from '@/pages/DataStudio/route';
-import { l } from '@/utils/intl';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Layout, Menu, Modal, theme, Typography } from 'antd';
+import { Layout, Menu, theme } from 'antd';
 import { useEffect, useState } from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
 import { connect, getDvaApp } from 'umi';
-
-const { Text } = Typography;
 
 const { Sider, Content } = Layout;
 
@@ -65,10 +54,8 @@ const DataStudio = (props: any) => {
     saveDataBase,
     saveProject,
     updateToolContentHeight,
-    updateBottomConsole,
     saveSession,
     saveEnv,
-    saveTabs,
     updateCenterContentHeight,
     updateSelectLeftKey,
     updateSelectRightKey,
@@ -80,19 +67,19 @@ const DataStudio = (props: any) => {
   } = props;
   const { token } = useToken();
   const themeValue = useThemeValue();
-  const [isModalUpdateTabContentOpen, setIsModalUpdateTabContentOpen] = useState(false);
-  const [newTabData, setNewTabData] = useState<TaskDataType>();
   const app = getDvaApp(); // 获取dva的实例
   const persist = app._store.persist;
   const bottomHeight = bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
+
+  const { fullscreen } = useEditor();
 
   const getClientSize = () => ({
     width: document.documentElement.clientWidth,
     height: document.documentElement.clientHeight,
     contentHeight:
       document.documentElement.clientHeight -
-      VIEW.headerHeight -
       VIEW.headerNavHeight -
+      VIEW.headerHeight -
       VIEW.footerHeight -
       VIEW.otherHeight
   });
@@ -103,7 +90,7 @@ const DataStudio = (props: any) => {
     setSize(getClientSize());
     const centerContentHeight = getClientSize().contentHeight - bottomHeight;
     updateCenterContentHeight(centerContentHeight);
-    updateToolContentHeight(centerContentHeight - VIEW.midMargin);
+    updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
   };
 
   useEffect(() => {
@@ -112,92 +99,25 @@ const DataStudio = (props: any) => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  useEffect(() => {
-    if (isModalUpdateTabContentOpen) {
-      Modal.confirm({
-        title: l('pages.datastudio.help.sqlChanged'),
-        keyboard: true,
-        content: (
-          <>
-            {' '}
-            <Text type={'danger'}>{l('pages.datastudio.help.sqlChangedPrompt')}</Text>
-          </>
-        ),
-        onOk: updateTabContent,
-        onCancel: () => setIsModalUpdateTabContentOpen(false)
-      });
-    }
-  }, [isModalUpdateTabContentOpen]);
-
   const loadData = async () => {
     Promise.all([
-      getDataBase(),
-      getConsoleData(),
+      getDataSourceList(),
       getTaskData(),
       getSessionData(),
       getEnvData(),
       getClusterConfigurationData()
     ]).then((res) => {
       saveDataBase(res[0]);
-      updateBottomConsole(res[1]);
-      saveProject(res[2]);
-      saveSession(res[3]);
-      saveEnv(res[4]);
-      saveClusterConfiguration(res[5]);
+      saveProject(res[1]);
+      saveSession(res[2]);
+      saveEnv(res[3]);
+      saveClusterConfiguration(res[4]);
     });
-
-    // 判断是否需要更新tab内容
-    if (!tabs.activeKey) {
-      return;
-    }
-
-    const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
-    if (!isDataStudioTabsItemType(currentTab)) {
-      return;
-    }
-
-    const params = currentTab.params;
-    const res = await getTaskDetails(params.taskId);
-    if (!res) {
-      return true;
-    }
-
-    const info = res as { [key: string]: any };
-    const changed = Object.keys(params.taskData).some((key) => {
-      // ignore this property
-      if (['updateTime', 'createTime', 'jobInstanceId'].includes(key)) {
-        return false;
-      }
-
-      if (JSON.stringify(info[key]) !== JSON.stringify(params.taskData[key])) {
-        console.log('changed', key, info[key], params.taskData[key]);
-        return true;
-      }
-    });
-
-    if (changed) {
-      setIsModalUpdateTabContentOpen(true);
-      setNewTabData(res);
-    }
   };
 
   useEffect(() => {
     loadData();
-    onResize();
   }, []);
-
-  const updateTabContent = () => {
-    const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
-    if (!isDataStudioTabsItemType(currentTab)) {
-      return;
-    }
-
-    if (!newTabData) return;
-
-    currentTab.params.taskData = newTabData;
-    saveTabs({ ...tabs });
-    setIsModalUpdateTabContentOpen(false);
-  };
 
   const access = useAccess();
 
@@ -280,12 +200,21 @@ const DataStudio = (props: any) => {
     />
   );
 
-  return (
+  return fullscreen ? (
+    <MiddleContainer />
+  ) : (
     <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
       <PersistGate loading={null} persistor={persist}>
         <div style={{ marginInline: -10, marginTop: -6, width: size.width }}>
           <SecondHeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
-          <Layout hasSider style={{ minHeight: size.contentHeight, paddingInline: 0 }}>
+          <Layout
+            hasSider
+            style={{
+              minHeight: size.contentHeight,
+              maxHeight: size.contentHeight,
+              paddingInline: 0
+            }}
+          >
             <Sider collapsed collapsedWidth={40}>
               <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                 {LeftTopMenu}
@@ -293,9 +222,13 @@ const DataStudio = (props: any) => {
               </div>
             </Sider>
 
-            <Content style={{ display: 'flex', flexDirection: 'column' }}>
+            <Content style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div style={{ display: 'flex' }}>
-                <LeftContainer size={size} />
+                <LeftContainer
+                  size={size}
+                  leftContainer={leftContainer}
+                  rightContainer={rightContainer}
+                />
                 <Content
                   style={{
                     width:
@@ -306,7 +239,7 @@ const DataStudio = (props: any) => {
                 </Content>
                 <RightContainer size={size} bottomHeight={bottomHeight} />
               </div>
-              {<BottomContainer size={size} />}
+              {<BottomContainer size={size} height={bottomHeight} />}
             </Content>
 
             <Sider collapsed collapsedWidth={40}>

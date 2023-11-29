@@ -19,27 +19,58 @@
 
 package org.dinky.data.vo;
 
-import org.dinky.configure.schedule.metrics.FlinkMetricsIndicator;
-import org.dinky.data.metrics.MetricsTotal;
+import org.dinky.data.annotations.paimon.Option;
+import org.dinky.data.annotations.paimon.Options;
+import org.dinky.data.annotations.paimon.PartitionKey;
+import org.dinky.data.annotations.paimon.PrimaryKey;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
-@Getter
-@Setter
-public class MetricsVO {
-    private Object content;
-    private MetricsTotal metricsTotal;
-    private String model;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ApiModel(value = "MetricsVO", description = "Metrics Value Object")
+@Options({
+    @Option(key = "file.format", value = "parquet"),
+    @Option(key = "snapshot.time-retained", value = "10 s"),
+    @Option(key = "partition.expiration-time", value = "7d"),
+    @Option(key = "partition.expiration-check-interval", value = "1d"),
+    @Option(key = "partition.timestamp-formatter", value = "yyyy-MM-dd"),
+    @Option(key = "partition.timestamp-pattern", value = "$date"),
+})
+public class MetricsVO implements Serializable {
+
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @PrimaryKey
+    @ApiModelProperty(
+            value = "Timestamp of heartbeart",
+            dataType = "LocalDateTime",
+            notes = "Timestamp of the heartbeat data.",
+            example = "2023-09-15 14:30:00")
     private LocalDateTime heartTime;
 
-    public FlinkMetricsIndicator.FlinkMetrics flinkContent() {
-        if (content instanceof FlinkMetricsIndicator.FlinkMetrics) {
-            return (FlinkMetricsIndicator.FlinkMetrics) content;
-        } else {
-            return new FlinkMetricsIndicator.FlinkMetrics();
-        }
-    }
+    @ApiModelProperty(value = "Model name", dataType = "String", notes = "Name of the model.")
+    @PartitionKey
+    private String model;
+
+    @ApiModelProperty(value = "Content of metrics", dataType = "Object", notes = "Content of the metrics data.")
+    private Object content;
+
+    @PartitionKey
+    private String date;
 }

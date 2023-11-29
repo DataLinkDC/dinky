@@ -19,13 +19,15 @@
 
 package org.dinky.data.model;
 
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.data.typehandler.JSONObjectHandler;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.mybatis.model.SuperEntity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import cn.hutool.json.JSONObject;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -37,23 +39,39 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_cluster_configuration")
-public class ClusterConfiguration extends SuperEntity {
+@ApiModel(value = "ClusterConfiguration", description = "if your cluster type is yarn ,the record is there")
+public class ClusterConfiguration extends SuperEntity<ClusterConfiguration> {
 
     private static final long serialVersionUID = 5830130188542066241L;
 
+    @ApiModelProperty(value = "tenantId", required = true, dataType = "String", example = "1", notes = "the Tenant Id")
     private Integer tenantId;
 
+    @ApiModelProperty(
+            value = "type",
+            required = true,
+            dataType = "String",
+            example = "test",
+            notes = "cluster type, such as: yarn ,k8s-native ,k8s-session")
     private String type;
-    private String configJson;
 
+    @ApiModelProperty(
+            value = "configJson",
+            required = true,
+            dataType = "String",
+            example = "test",
+            notes = "cluster config json")
+    @TableField(typeHandler = JSONObjectHandler.class)
+    private FlinkClusterConfig configJson;
+
+    @ApiModelProperty(
+            value = "isAvailable",
+            required = true,
+            dataType = "Boolean",
+            example = "true",
+            notes = "cluster is available, 0: not available, 1: available")
     private Boolean isAvailable;
 
+    @ApiModelProperty(value = "note", required = true, dataType = "String", example = "test", notes = "cluster note")
     private String note;
-
-    public FlinkClusterConfig getFlinkClusterCfg() {
-        JSONObject json = new JSONObject(getConfigJson());
-        FlinkClusterConfig flinkClusterConfig = json.toBean(FlinkClusterConfig.class);
-        flinkClusterConfig.setType(GatewayType.get(type));
-        return flinkClusterConfig;
-    }
 }

@@ -19,17 +19,22 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.context.SseSessionContextHolder;
+import org.dinky.data.enums.SseTopic;
+import org.dinky.data.vo.PrintTableVo;
+import org.dinky.explainer.print_table.PrintStatementExplainer;
+import org.dinky.parser.SqlType;
 import org.dinky.service.PrintTableService;
+import org.dinky.trans.Operations;
+import org.dinky.utils.SqlUtil;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
-import java.text.MessageFormat;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -38,15 +43,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class PrintTableServiceImpl implements PrintTableService {
-
-    private final Map<String, Set<Target>> registerTableMap = new ConcurrentHashMap<>();
 
     private static final Pattern FULL_TABLE_NAME_PATTERN = Pattern.compile("^`(\\w+)`\\.`(\\w+)`\\.`(\\w+)`$");
 
@@ -55,66 +58,26 @@ public class PrintTableServiceImpl implements PrintTableService {
         printer.start();
     }
 
+    @Override
+    public List<PrintTableVo> getPrintTables(String statement) {
+        // TODO: 2023/4/7 this function not support variable sql, because, JobManager and executor
+        // couple function
+        //  and status and task execute.
+        final String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement));
+        return Arrays.stream(statements)
+                .filter(t -> SqlType.PRINT.equals(Operations.getOperationType(t)))
+                .flatMap(t -> Arrays.stream(PrintStatementExplainer.splitTableNames(t)))
+                .map(t -> new PrintTableVo(t, getFullTableName(t)))
+                .collect(Collectors.toList());
+    }
+
     public void send(String message) {
         try {
             String[] data = message.split("\n", 2);
-            final Set<Target> targets = registerTableMap.get(data[0]);
-            if (targets != null) {
-                targets.forEach(d -> d.send(data[1], "data"));
-            }
+            String topic = StrFormatter.format("{}/{}", SseTopic.PRINT_TABLE.getValue(), data[0]);
+            SseSessionContextHolder.sendTopic(topic, data[1]);
         } catch (Exception e) {
             log.error("send message failed: {}", e.getMessage());
-        }
-    }
-
-    @Override
-    public SseEmitter registerListenEntry(String table) {
-
-        String fullName = getFullTableName(table);
-        String destination = getDestinationByFullName(fullName);
-        Set<Target> targets = registerTableMap.get(fullName);
-
-        SseEmitter emitter = getSseEmitter(targets, fullName);
-
-        Set<Target> newTargets = new HashSet<>();
-        newTargets.add(Target.of(emitter, destination));
-        if (targets != null) {
-            newTargets.addAll(targets);
-        }
-        registerTableMap.put(fullName, newTargets);
-        return emitter;
-    }
-
-    private SseEmitter getSseEmitter(Set<Target> targets, String fullName) {
-        SseEmitter emitter = new SseEmitter();
-        emitter.onCompletion(() -> {
-            log.info(MessageFormat.format("SseEmitter {0} complete", emitter));
-            Set<Target> remains = targets.stream()
-                    .filter(t -> !t.getEmitter().equals(emitter))
-                    .collect(Collectors.toSet());
-            registerTableMap.put(fullName, remains);
-        });
-
-        emitter.onError(e -> {
-            log.error("SseEmitter error: {}", e.getMessage());
-            emitter.complete();
-        });
-
-        emitter.onTimeout(() -> {
-            log.debug("SseEmitter timeout: {}", emitter.getTimeout());
-            emitter.complete();
-        });
-        return emitter;
-    }
-
-    @Override
-    public void unRegisterListenEntry(String table) {
-        String fullName = getFullTableName(table);
-        String destination = getDestination(fullName);
-        Set<Target> destinations = registerTableMap.get(fullName);
-        if (destinations != null) {
-            destinations.stream().filter(d -> d.destination.equals(destination)).forEach(Target::complete);
-            destinations.removeIf(d -> d.destination.equals(destination));
         }
     }
 
@@ -124,71 +87,9 @@ public class PrintTableServiceImpl implements PrintTableService {
         }
 
         Matcher matcher = FULL_TABLE_NAME_PATTERN.matcher(table);
-        String result = "";
-        if (matcher.matches()) {
-            result = matcher.replaceAll("`$1`.`$2`.`print_$3`");
-        } else {
-            result = String.format("`default_catalog`.`default_database`.`print_%s`", table);
-        }
-        return result;
-    }
-
-    public static String getDestination(String table) {
-        String fn = getFullTableName(table);
-        return String.format("/topic/table/%s", fn);
-    }
-
-    public static String getDestinationByFullName(String tableFullName) {
-        return String.format("/topic/table/%s", tableFullName);
-    }
-
-    public static final class Target {
-        private final String destination;
-        public final SseEmitter emitter;
-
-        public Target(String destination, SseEmitter emitter) {
-            this.destination = destination;
-            this.emitter = emitter;
-        }
-
-        public static Target of(SseEmitter emitter, String destination) {
-            return new Target(destination, emitter);
-        }
-
-        public void send(String message, String type) {
-            try {
-                SseEmitter.SseEventBuilder builder =
-                        SseEmitter.event().data(message).name("pt_" + type);
-                emitter.send(builder);
-            } catch (Exception e) {
-                log.debug("SseEmitter {}, send message failed: {}", emitter, e.getMessage());
-            }
-        }
-
-        public String getDestination() {
-            return destination;
-        }
-
-        public SseEmitter getEmitter() {
-            return emitter;
-        }
-
-        public void complete() {
-            emitter.complete();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Target target = (Target) o;
-            return Objects.equals(destination, target.destination) && Objects.equals(emitter, target.emitter);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(destination, emitter);
-        }
+        return matcher.matches()
+                ? matcher.replaceAll("`$1`.`$2`.`print_$3`")
+                : String.format("`default_catalog`.`default_database`.`print_%s`", table);
     }
 
     public static class PrintTableListener {
@@ -211,10 +112,16 @@ public class PrintTableServiceImpl implements PrintTableService {
         }
 
         private static DatagramSocket getDatagramSocket(int port) {
+            InetAddress host = null;
             try {
-                return new DatagramSocket(port);
-            } catch (SocketException e) {
-                log.error("PrintTableListener:DatagramSocket init failed, port {}: {}", PORT, e.getMessage());
+                host = InetAddress.getLocalHost();
+                return new DatagramSocket(port, host);
+            } catch (SocketException | UnknownHostException e) {
+                log.error(
+                        "PrintTableListener:DatagramSocket init failed, host: {}, port {}: {}",
+                        host == null ? null : host.getHostAddress(),
+                        PORT,
+                        e.getMessage());
             }
             return null;
         }
@@ -236,10 +143,6 @@ public class PrintTableServiceImpl implements PrintTableService {
                     log.error("print table receive data:" + e.getMessage());
                 }
             }
-        }
-
-        public ExecutorService getExecutor() {
-            return executor;
         }
     }
 }

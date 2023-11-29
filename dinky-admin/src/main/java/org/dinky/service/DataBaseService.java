@@ -19,11 +19,16 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.DataBaseDTO;
+import org.dinky.data.dto.SqlDTO;
+import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
+import org.dinky.data.result.SqlExplainResult;
+import org.dinky.job.JobResult;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -39,10 +44,10 @@ public interface DataBaseService extends ISuperService<DataBase> {
     /**
      * test connect database
      *
-     * @param dataBase {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link String}
      */
-    String testConnect(DataBase dataBase);
+    String testConnect(DataBaseDTO dataBaseDTO);
 
     /**
      * check heart beat
@@ -55,10 +60,10 @@ public interface DataBaseService extends ISuperService<DataBase> {
     /**
      * save or update database
      *
-     * @param dataBase {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Boolean}
      */
-    Boolean saveOrUpdateDataBase(DataBase dataBase);
+    Boolean saveOrUpdateDataBase(DataBaseDTO dataBaseDTO);
 
     /**
      * enable or disable database
@@ -93,10 +98,37 @@ public interface DataBaseService extends ISuperService<DataBase> {
      */
     List<Column> listColumns(Integer id, String schemaName, String tableName);
 
+    /**
+     * Get the Flink table SQL for the given ID, schema name, and table name.
+     *
+     * @param id The ID of the Flink table to get the SQL for.
+     * @param schemaName The name of the schema for the Flink table.
+     * @param tableName The name of the table for the Flink table.
+     * @return A string representing the Flink table SQL.
+     */
+    @Deprecated
     String getFlinkTableSql(Integer id, String schemaName, String tableName);
 
+    /**
+     * Get the SQL select statement for the given ID, schema name, and table name.
+     *
+     * @param id The ID of the table to get the SQL select statement for.
+     * @param schemaName The name of the schema for the table.
+     * @param tableName The name of the table for the SQL select statement.
+     * @return A string representing the SQL select statement.
+     */
+    @Deprecated
     String getSqlSelect(Integer id, String schemaName, String tableName);
 
+    /**
+     * Get the SQL create statement for the given ID, schema name, and table name.
+     *
+     * @param id The ID of the table to get the SQL create statement for.
+     * @param schemaName The name of the schema for the table.
+     * @param tableName The name of the table for the SQL create statement.
+     * @return A string representing the SQL create statement.
+     */
+    @Deprecated
     String getSqlCreate(Integer id, String schemaName, String tableName);
 
     /**
@@ -125,15 +157,43 @@ public interface DataBaseService extends ISuperService<DataBase> {
      */
     SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName);
 
+    /**
+     * List all enabled Flink with statements.
+     *
+     * @return A list of strings representing all enabled Flink with statements.
+     */
     List<String> listEnabledFlinkWith();
 
+    /**
+     * Get the SQL for enabling Flink with statements.
+     *
+     * @return A string representing the SQL for enabling Flink with statements.
+     */
     String getEnabledFlinkWithSql();
 
     /**
      * copy database
      *
-     * @param database {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Boolean}
      */
-    Boolean copyDatabase(DataBase database);
+    Boolean copyDatabase(DataBaseDTO dataBaseDTO);
+
+    /**
+     * Explain common SQL statements for the given task.
+     *
+     * @param task A {@link TaskDTO} object representing the task to explain.
+     * @return A list of {@link SqlExplainResult} objects representing the explanation results of common SQL statements.
+     */
+    List<SqlExplainResult> explainCommonSql(TaskDTO task);
+
+    /**
+     * Execute the given SQL DTO and return the job result.
+     *
+     * @param sqlDTO A {@link SqlDTO} object representing the SQL statement to execute.
+     * @return A {@link JobResult} object representing the execution result of the SQL statement.
+     */
+    JobResult executeCommonSql(SqlDTO sqlDTO);
+
+    List<DataBase> selectListByKeyWord(String keyword);
 }

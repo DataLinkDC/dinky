@@ -20,9 +20,9 @@
 package org.dinky.service;
 
 import org.dinky.data.dto.GitProjectDTO;
+import org.dinky.data.dto.GitProjectSortJarDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.GitProject;
-import org.dinky.data.params.GitProjectSortJarParams;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
@@ -34,9 +34,9 @@ import java.util.Map;
  */
 public interface GitProjectService extends ISuperService<GitProject> {
     /**
-     * 保存或更新
+     * Save or update the given Git project.
      *
-     * @param gitProjectDTO gitProjectDTO
+     * @param gitProjectDTO A {@link GitProjectDTO} object representing the Git project to save or update.
      */
     void saveOrUpdate(GitProjectDTO gitProjectDTO);
 
@@ -50,17 +50,23 @@ public interface GitProjectService extends ISuperService<GitProject> {
     /**
      * drag sort jar level
      *
-     * @param gitProjectSortJarParams
+     * @param gitProjectSortJarDTO
      * @return
      */
-    Boolean dragendSortJar(GitProjectSortJarParams gitProjectSortJarParams);
+    Boolean dragendSortJar(GitProjectSortJarDTO gitProjectSortJarDTO);
 
+    /**
+     * Get the Git pool as a map of strings.
+     *
+     * @return A map of strings representing the Git pool.
+     */
     Map<String, String> getGitPool();
 
     /**
-     * 更新状态
+     * Modify the status of a Git project based on its ID.
      *
-     * @param id id
+     * @param id The ID of the Git project to modify the status for.
+     * @return A boolean value indicating whether the modification was successful.
      */
     Boolean modifyGitProjectStatus(Integer id);
 

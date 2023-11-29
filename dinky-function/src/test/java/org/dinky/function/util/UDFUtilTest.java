@@ -22,7 +22,7 @@ package org.dinky.function.util;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.dinky.process.exception.DinkyException;
+import org.dinky.data.exception.DinkyException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

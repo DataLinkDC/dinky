@@ -22,14 +22,16 @@ package org.dinky.data.model;
 import org.dinky.data.dto.TaskVersionConfigureDTO;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
-import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,44 +43,69 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "dinky_task_version", autoResultMap = true)
+@ApiModel(value = "TaskVersion", description = "Task Version Information")
 public class TaskVersion implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    /** ID */
-    @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(value = "ID", dataType = "Integer", notes = "Unique identifier for the task version")
     private Integer id;
 
-    /** tenant id */
+    @ApiModelProperty(value = "Tenant ID", dataType = "Integer", notes = "ID of the tenant")
     private Integer tenantId;
 
-    /** 作业ID */
+    @ApiModelProperty(value = "Task ID", dataType = "Integer", notes = "ID of the task associated with this version")
     @TableField(value = "task_id")
     private Integer taskId;
 
-    /** 版本ID */
+    @ApiModelProperty(value = "Version ID", dataType = "Integer", notes = "ID of the version")
     @TableField(value = "version_id")
     private Integer versionId;
 
-    /** flink sql 内容 */
+    @ApiModelProperty(value = "Flink SQL Content", dataType = "String", notes = "Flink SQL content")
     @TableField(value = "`statement`")
     private String statement;
 
-    /** 名称 */
+    @ApiModelProperty(value = "Name", dataType = "String", notes = "Name of the version")
     @TableField(value = "`name`")
     private String name;
 
-    /** 方言 */
+    @ApiModelProperty(value = "Dialect", dataType = "String", notes = "SQL dialect")
     @TableField(value = "dialect")
     private String dialect;
 
-    /** 类型 */
+    @ApiModelProperty(value = "Type", dataType = "String", notes = "Type of the version")
     @TableField(value = "`type`")
     private String type;
 
+    @ApiModelProperty(
+            value = "Task Configure",
+            dataType = "TaskVersionConfigureDTO",
+            notes = "Task version configuration")
     @TableField(value = "task_configure", typeHandler = JacksonTypeHandler.class)
     private TaskVersionConfigureDTO taskConfigure;
 
-    /** 创建时间 */
+    @ApiModelProperty(value = "Create Time", dataType = "Date", notes = "Timestamp when the version was created")
     @TableField(value = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
+
+    @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty(value = "Creator", required = true, dataType = "Integer", example = "Creator")
+    private Integer creator;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskVersion that = (TaskVersion) o;
+        return Objects.equals(taskId, that.taskId)
+                && Objects.equals(versionId, that.versionId)
+                && Objects.equals(statement, that.statement)
+                && Objects.equals(dialect, that.dialect)
+                && Objects.equals(type, that.type)
+                && Objects.equals(taskConfigure, that.taskConfigure);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskId, versionId, statement, dialect, type, taskConfigure);
+    }
 }

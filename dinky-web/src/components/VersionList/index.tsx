@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -52,7 +53,7 @@ const VersionList = (props: VersionListProps) => {
             title={
               <a>
                 {!item.isLatest ? (
-                  `V${item.versionId}`
+                  `V-${item.versionId}`
                 ) : (
                   <Tag key={'v-latest'} color='green'>
                     {l('devops.jobinfo.version.latestVersion')}

@@ -27,6 +27,7 @@ import java.util.List;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -38,21 +39,27 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_catalogue")
-public class Catalogue extends SuperEntity {
+public class Catalogue extends SuperEntity<Catalogue> {
 
     private static final long serialVersionUID = 4659379420249868394L;
 
+    @ApiModelProperty(value = "Tenant ID", required = true, dataType = "Integer", example = "1")
     private Integer tenantId;
 
+    @ApiModelProperty(value = "Task ID", required = true, dataType = "Integer", example = "1")
     private Integer taskId;
 
+    @ApiModelProperty(value = "Type", required = true, dataType = "String", example = "Flinksql")
     private String type;
 
+    @ApiModelProperty(value = "Parent ID", required = true, dataType = "Integer", example = "1")
     private Integer parentId;
 
+    @ApiModelProperty(value = "Is Leaf", required = true, dataType = "Boolean", example = "true")
     private Boolean isLeaf;
 
     @TableField(exist = false)
+    @ApiModelProperty(value = "Children", required = true, dataType = "List<Catalogue>", example = "[]")
     private List<Catalogue> children = new ArrayList<>();
 
     @TableField(exist = false)

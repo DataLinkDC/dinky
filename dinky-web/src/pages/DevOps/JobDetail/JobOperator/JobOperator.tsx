@@ -1,3 +1,23 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+import { cancelTask } from '@/pages/DataStudio/HeaderContainer/service';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { isStatusDone } from '@/pages/DevOps/function';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
@@ -16,7 +36,7 @@ const operatorType = {
 };
 const JobOperator = (props: JobProps) => {
   const { jobDetail } = props;
-  const webUri = `/api/flink/${jobDetail?.history?.jobManagerAddress}/#/job/${jobDetail?.instance?.jid}/overview`;
+  const webUri = `/api/flink/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`;
 
   const handleJobOperator = (key: string) => {
     Modal.confirm({
@@ -36,7 +56,7 @@ const JobOperator = (props: JobProps) => {
             isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE
           });
         } else {
-          getData(API_CONSTANTS.OFFLINE_TASK, { id: jobDetail?.instance?.taskId, type: key });
+          cancelTask('', jobDetail?.instance?.taskId);
         }
         message.success(l('devops.jobinfo.job.key.success', '', { key: key }));
       }
@@ -90,10 +110,6 @@ const JobOperator = (props: JobProps) => {
                 {
                   key: operatorType.SAVEPOINT_CANCEL,
                   label: l('devops.jobinfo.savepoint.cancel')
-                },
-                {
-                  key: operatorType.CANCEL_JOB,
-                  label: l('devops.jobinfo.savepoint.canceljob')
                 }
               ]
             }}

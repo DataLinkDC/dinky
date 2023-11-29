@@ -20,6 +20,7 @@
 package org.dinky.cdc;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.cdc.kafka.KafkaSinkBuilder;
 import org.dinky.cdc.sql.SQLSinkBuilder;
 import org.dinky.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import org.dinky.data.model.FlinkCDCConfig;
@@ -28,7 +29,6 @@ import org.dinky.exception.FlinkClientException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -60,20 +60,13 @@ public class SinkBuilderFactory {
         Map<String, Supplier<SinkBuilder>> map = new HashMap<>();
         map.put(SQLSinkBuilder.KEY_WORD, SQLSinkBuilder::new);
         map.put(SQLCatalogSinkBuilder.KEY_WORD, SQLCatalogSinkBuilder::new);
+        map.put(KafkaSinkBuilder.KEY_WORD, KafkaSinkBuilder::new);
 
         final ServiceLoader<SinkBuilder> loader = ServiceLoader.load(SinkBuilder.class);
 
         final List<SinkBuilder> sinkBuilders = new ArrayList<>();
-        final Iterator<SinkBuilder> factories = loader.iterator();
-        while (factories.hasNext()) {
-            try {
-                final SinkBuilder factory = factories.next();
-                if (factory != null) {
-                    sinkBuilders.add(factory);
-                }
-            } catch (Throwable e) {
-                logger.warn("Could not load service provider class : {}", e.getMessage());
-            }
+        for (SinkBuilder factory : loader) {
+            sinkBuilders.add(factory);
         }
 
         Map<String, Supplier<SinkBuilder>> plusSinkBuilder = sinkBuilders.stream()

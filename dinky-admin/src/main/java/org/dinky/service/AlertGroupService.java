@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.AlertGroup;
+import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public interface AlertGroupService extends ISuperService<AlertGroup> {
      * alert group enable or disable by id
      *
      * @param id
-     * @return
+     * @return {@link Boolean}
      */
     Boolean modifyAlertGroupStatus(Integer id);
 
@@ -57,4 +57,6 @@ public interface AlertGroupService extends ISuperService<AlertGroup> {
      * @return {@link Boolean}
      */
     Boolean deleteGroupById(Integer id);
+
+    List<AlertGroup> selectListByKeyWord(String keyword);
 }

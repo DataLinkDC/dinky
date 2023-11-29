@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -142,15 +142,29 @@ export function getCurrentTab(
   activeKey: string
 ): DataStudioTabsItemType | MetadataTabsItemType | undefined {
   const item = panes.find((item) => item.key === activeKey);
-  if (item?.type === 'project') {
-    return item as DataStudioTabsItemType;
+  switch (item?.type) {
+    case 'project':
+      return item as DataStudioTabsItemType;
+    case 'metadata':
+      return item as MetadataTabsItemType;
+    default:
+      return undefined;
   }
+}
 
-  if (item?.type === 'metadata') {
-    return item as MetadataTabsItemType;
+export function getTabByTaskId(
+  panes: TabsItemType[],
+  id: number
+): DataStudioTabsItemType | MetadataTabsItemType | undefined {
+  const item = panes.find((item) => item.treeKey === id);
+  switch (item?.type) {
+    case 'project':
+      return item as DataStudioTabsItemType;
+    case 'metadata':
+      return item as MetadataTabsItemType;
+    default:
+      return undefined;
   }
-
-  return undefined;
 }
 
 export const getCurrentData = (
@@ -158,19 +172,15 @@ export const getCurrentData = (
   activeKey: string
 ): TaskDataType | undefined => {
   const item = getCurrentTab(panes, activeKey);
-  if (isDataStudioTabsItemType(item)) {
-    return item.params.taskData;
-  }
-  return undefined;
+  return isDataStudioTabsItemType(item) ? item.params.taskData : undefined;
 };
 
 export const getFooterValue = (panes: any, activeKey: string): Partial<FooterType> => {
   const currentTab = getCurrentTab(panes, activeKey);
-  if (isDataStudioTabsItemType(currentTab)) {
-    return {
-      codePosition: [1, 1],
-      codeType: currentTab.params.taskData.dialect
-    };
-  }
-  return {};
+  return isDataStudioTabsItemType(currentTab)
+    ? {
+        codePosition: [1, 1],
+        codeType: currentTab.subType
+      }
+    : {};
 };

@@ -21,11 +21,10 @@ package org.dinky.core;
 
 import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
-
-import java.util.HashMap;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,30 +43,20 @@ public class JobManagerTest {
 
     @Ignore
     @Test
-    public void cancelJobSelect() {
-
-        JobConfig config = new JobConfig(
-                "session-yarn",
-                true,
-                true,
-                true,
-                true,
-                "s1",
-                2,
-                null,
-                null,
-                null,
-                "测试",
-                false,
-                false,
-                false,
-                100,
-                0,
-                1,
-                0,
-                null,
-                new HashMap<>(),
-                new HashMap<>());
+    public void cancelJobSelect() throws Exception {
+        JobConfig config = JobConfig.builder()
+                .type(GatewayType.YARN_SESSION.getLongValue())
+                .useResult(true)
+                .useChangeLog(true)
+                .useAutoCancel(true)
+                .clusterId(2)
+                .jobName("Test")
+                .fragment(false)
+                .statementSet(false)
+                .batchModel(false)
+                .maxRowNum(100)
+                .parallelism(1)
+                .build();
         if (config.isUseRemote()) {
             config.setAddress("192.168.123.157:8081");
         }

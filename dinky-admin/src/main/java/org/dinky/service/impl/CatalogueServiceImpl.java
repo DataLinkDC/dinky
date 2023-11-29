@@ -26,11 +26,10 @@ import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
-import org.dinky.data.model.History;
-import org.dinky.data.model.JobHistory;
-import org.dinky.data.model.JobInstance;
-import org.dinky.data.model.Statement;
 import org.dinky.data.model.Task;
+import org.dinky.data.model.job.History;
+import org.dinky.data.model.job.JobHistory;
+import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.Result;
 import org.dinky.mapper.CatalogueMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
@@ -38,7 +37,6 @@ import org.dinky.service.CatalogueService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
-import org.dinky.service.StatementService;
 import org.dinky.service.TaskService;
 
 import java.io.BufferedReader;
@@ -79,8 +77,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private final HistoryService historyService;
 
     private final JobHistoryService jobHistoryService;
-
-    private final StatementService statementService;
 
     /**
      * @return
@@ -304,13 +300,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         newTask.setStep(JobLifeCycle.DEVELOP.getValue());
         taskService.save(newTask);
 
-        Statement statementServiceById = statementService.getById(catalogue.getTaskId());
-        // 新建作业的sql语句
-        Statement statement = new Statement();
-        statement.setStatement(statementServiceById.getStatement());
-        statement.setId(newTask.getId());
-        statementService.save(statement);
-
         Catalogue singleCatalogue =
                 this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
 
@@ -420,8 +409,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             // doing: cascade delete jobInstance && jobHistory && history && statement
             // 获取 task 表中的作业
             Task task = taskService.getById(catalogue.getTaskId());
-            // 获取 statement 表中的作业
-            Statement statement = statementService.getById(catalogue.getTaskId());
             // 获取 job instance 表中的作业
             List<JobInstance> jobInstanceList = jobInstanceService.list(
                     new LambdaQueryWrapper<JobInstance>().eq(JobInstance::getTaskId, catalogue.getTaskId()));
@@ -442,10 +429,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             // 删除 task 表中的作业
             if (task != null) {
                 taskService.removeById(task.getId());
-            }
-            // 删除 statement 表中的作业
-            if (statement != null) {
-                statementService.removeById(statement.getId());
             }
         }
 

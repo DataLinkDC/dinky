@@ -19,30 +19,28 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.AlertGroup;
-import org.dinky.data.model.AlertHistory;
-import org.dinky.data.result.ProTableResult;
+import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.result.Result;
 import org.dinky.service.AlertGroupService;
-import org.dinky.service.AlertHistoryService;
 
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,19 +54,27 @@ import lombok.extern.slf4j.Slf4j;
 public class AlertGroupController {
 
     private final AlertGroupService alertGroupService;
-    private final AlertHistoryService alertHistoryService;
 
     /**
      * save or update alert Group
      *
      * @param alertGroup {@link AlertGroup}
      * @return {@link Result} with {@link Void}
-     * @throws Exception {@link Exception}
      */
-    @PutMapping
+    @PutMapping("/addOrUpdate")
+    @SaCheckPermission(
+            value = {PermissionConstants.REGISTRATION_ALERT_GROUP_ADD, PermissionConstants.REGISTRATION_ALERT_GROUP_EDIT
+            },
+            mode = SaMode.OR)
     @Log(title = "Insert OR Update AlertGroup ", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiImplicitParam(
+            name = "alertGroup",
+            value = "AlertGroup",
+            required = true,
+            dataType = "AlertGroup",
+            dataTypeClass = AlertGroup.class)
     @ApiOperation("Insert OR Update AlertGroup")
-    public Result<Void> saveOrUpdateAlertGroup(@RequestBody AlertGroup alertGroup) throws Exception {
+    public Result<Void> saveOrUpdateAlertGroup(@RequestBody AlertGroup alertGroup) {
         if (alertGroupService.saveOrUpdate(alertGroup)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
@@ -79,13 +85,13 @@ public class AlertGroupController {
     /**
      * list alert groups
      *
-     * @param para {@link JsonNode}
-     * @return {@link ProTableResult} with {@link AlertGroup}
+     * @param keyword {@link String}
+     * @return {@link Result} with {@link AlertGroup}
      */
-    @PostMapping
+    @GetMapping("/list")
     @ApiOperation("Query AlertGroup List")
-    public ProTableResult<AlertGroup> listAlertGroups(@RequestBody JsonNode para) {
-        return alertGroupService.selectForProTable(para);
+    public Result<List<AlertGroup>> listAlertGroups(@RequestParam String keyword) {
+        return Result.succeed(alertGroupService.selectListByKeyWord(keyword));
     }
 
     /**
@@ -106,8 +112,15 @@ public class AlertGroupController {
      */
     @PutMapping("/enable")
     @ApiOperation("Update AlertGroup Status")
+    @ApiImplicitParam(
+            name = "id",
+            value = "AlertGroup Id",
+            required = true,
+            dataTypeClass = Integer.class,
+            dataType = "Integer")
     @Log(title = "Update AlertGroup Status", businessType = BusinessType.UPDATE)
-    public Result<List<AlertGroup>> modifyAlertGroupStatus(@RequestParam("id") Integer id) {
+    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_ALERT_GROUP_EDIT})
+    public Result<Void> modifyAlertGroupStatus(@RequestParam("id") Integer id) {
         if (alertGroupService.modifyAlertGroupStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
@@ -123,24 +136,19 @@ public class AlertGroupController {
      */
     @DeleteMapping("/delete")
     @ApiOperation("Delete AlertGroup By Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "AlertGroup Id",
+            required = true,
+            dataTypeClass = Integer.class,
+            dataType = "Integer")
     @Log(title = "Delete AlertGroup By Id", businessType = BusinessType.DELETE)
+    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_ALERT_GROUP_DELETE})
     public Result<Void> deleteGroupById(@RequestParam("id") Integer id) {
         if (alertGroupService.deleteGroupById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
         } else {
             return Result.failed(Status.DELETE_FAILED);
         }
-    }
-
-    /**
-     * list alert history
-     *
-     * @param para {@link JsonNode}
-     * @return {@link ProTableResult} with {@link AlertHistory}
-     */
-    @PostMapping("/history")
-    @ApiOperation("Query AlertHistory List")
-    public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {
-        return alertHistoryService.selectForProTable(para);
     }
 }

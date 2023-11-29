@@ -19,24 +19,24 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.UDFTemplate;
+import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.mybatis.service.ISuperService;
 
 public interface UDFTemplateService extends ISuperService<UDFTemplate> {
 
     /**
-     * 保存
+     * Save or update a UDF template.
      *
-     * @param udfTemplate udf模板
-     * @return boolean
+     * @param udfTemplate A {@link UDFTemplate} object to save or update.
+     * @return A boolean value indicating whether the save or update operation was successful.
      */
     boolean saveOrUpdate(UDFTemplate udfTemplate);
 
     /**
-     * enable or disable udf template
+     * Modify the status of a UDF template.
      *
-     * @param id udf template id {@link UDFTemplate#id}
-     * @return {@link Boolean}
+     * @param id The ID of the UDF template to modify.
+     * @return A {@link Boolean} value indicating whether the modification was successful.
      */
     Boolean modifyUDFTemplateStatus(Integer id);
 }

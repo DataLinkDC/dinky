@@ -19,10 +19,17 @@
 
 package org.dinky.service;
 
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.dinky.data.vo.PrintTableVo;
+
+import java.util.List;
 
 public interface PrintTableService {
-    SseEmitter registerListenEntry(String table);
 
-    void unRegisterListenEntry(String table);
+    /**
+     * Get the print tables for the given SQL statement.
+     *
+     * @param statement The SQL statement to get the print tables for.
+     * @return A list of strings representing the print tables.
+     */
+    List<PrintTableVo> getPrintTables(String statement);
 }

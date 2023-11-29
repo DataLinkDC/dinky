@@ -17,21 +17,24 @@
  *
  */
 
-import { buildFormData, getFormData } from '@/pages/RegCenter/Alert/AlertGroup/function';
+import {
+  buildAlertInstanceSelect,
+  buildFormData,
+  getFormData
+} from '@/pages/RegCenter/Alert/AlertGroup/function';
 import { AlertStateType } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { MODAL_FORM_STYLE, SWITCH_OPTIONS } from '@/services/constants';
 import { Alert } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import {
   ModalForm,
-  ProForm,
   ProFormSelect,
   ProFormSwitch,
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
 import { connect } from '@umijs/max';
-import { Button, Form, Tag } from 'antd';
+import { Button, Form } from 'antd';
 import React, { useState } from 'react';
 
 /**
@@ -42,10 +45,9 @@ type AlertGroupFormProps = {
   onSubmit: (values: Partial<Alert.AlertGroup>) => void;
   modalVisible: boolean;
   values: Partial<Alert.AlertGroup>;
-  instance: Alert.AlertInstance[];
 };
 
-const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
+const AlertGroupForm: React.FC<AlertGroupFormProps & connect> = (props) => {
   /**
    * extract props
    */
@@ -53,7 +55,7 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
     onSubmit: handleSubmit,
     onCancel: handleModalVisible,
     modalVisible,
-    instance,
+    alertInstance,
     values
   } = props;
   /**
@@ -61,26 +63,6 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
    */
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<Alert.AlertGroup>>({ ...values });
-
-  /**
-   * build alert instance select options
-   */
-  const buildAlertInstanceSelect = () => {
-    const itemList = [];
-    for (const item of instance) {
-      const tag = (
-        <>
-          <Tag color='processing'>{item.type}</Tag>
-          {item.name}
-        </>
-      );
-      itemList.push({
-        label: tag,
-        value: item.id.toString()
-      });
-    }
-    return itemList;
-  };
 
   /**
    * submit form
@@ -109,7 +91,7 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
           label={l('rc.ag.alertInstanceIds')}
           rules={[{ required: true, message: l('rc.ag.chooseAlertInstanceIds') }]}
           mode='multiple'
-          options={buildAlertInstanceSelect()}
+          options={buildAlertInstanceSelect(alertInstance ?? [])}
         />
 
         <ProFormTextArea
@@ -145,15 +127,19 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
       title={formVals.id ? l('rc.ag.modify') : l('rc.ag.create')}
       open={modalVisible}
       {...MODAL_FORM_STYLE}
+      form={form}
+      initialValues={getFormData(formVals)}
       submitter={{ render: () => [...renderFooter()] }}
+      modalProps={{
+        destroyOnClose: true,
+        onCancel: () => handleModalVisible(false)
+      }}
     >
-      <ProForm form={form} initialValues={getFormData(formVals)} submitter={false}>
-        {renderAlertGroupForm()}
-      </ProForm>
+      {renderAlertGroupForm()}
     </ModalForm>
   );
 };
 
 export default connect(({ Alert }: { Alert: AlertStateType }) => ({
-  instance: Alert.instance
+  alertInstance: Alert.instance
 }))(AlertGroupForm);

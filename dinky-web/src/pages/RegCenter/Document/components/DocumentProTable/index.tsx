@@ -22,7 +22,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import CodeShow from '@/components/CustomEditor/CodeShow';
-import { Authorized } from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import DocumentDrawer from '@/pages/RegCenter/Document/components/DocumentDrawer';
 import DocumentModalForm from '@/pages/RegCenter/Document/components/DocumentModal';
 import {
@@ -150,7 +150,7 @@ const DocumentTableList: React.FC = () => {
       hideInTable: true,
       hideInSearch: true,
       render: (_, record) => {
-        return <CodeShow width={'85vh'} code={record.fillValue} />;
+        return <CodeShow language={'sql'} width={'40vw'} code={record.fillValue} />;
       }
     },
     {
@@ -167,17 +167,16 @@ const DocumentTableList: React.FC = () => {
       hideInSearch: true,
       filters: STATUS_MAPPING(),
       filterMultiple: false,
+      hideInDescriptions: true,
       valueEnum: STATUS_ENUM(),
       render: (_, record) => {
         return (
-          <Authorized key={record.id} path='/registration/document/enable'>
-            <EnableSwitchBtn
-              key={`${record.id}_enable`}
-              disabled={documentState.drawerOpen}
-              record={record}
-              onChange={() => handleChangeEnable(record)}
-            />
-          </Authorized>
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            disabled={!HasAuthority('/registration/document/edit')}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
         );
       }
     },
@@ -200,7 +199,9 @@ const DocumentTableList: React.FC = () => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      width: '10vh',
+      width: '10%',
+      fixed: 'right',
+      hideInDescriptions: true,
       render: (_, record) => [
         <Authorized key={`${record.id}_edit`} path='/registration/document/edit'>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />
@@ -225,7 +226,7 @@ const DocumentTableList: React.FC = () => {
         headerTitle={l('rc.doc.management')}
         actionRef={actionRef}
         toolBarRender={() => [
-          <Authorized key='create' path='/registration/document/new'>
+          <Authorized key='create' path='/registration/document/add'>
             <CreateBtn
               key={'doctable'}
               onClick={() =>

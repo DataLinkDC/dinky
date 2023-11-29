@@ -26,7 +26,7 @@ logs.zip
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 .idea/*
-!.idea/icon.png
+!.idea/icon.svg
 !.idea/vcs.xml
 build
 target/*
@@ -35,7 +35,6 @@ target/*
 */target/*
 */*/target/*
 */*/*/target/*
-dlink-web/*
 
 # Dinky Web gitignore
 dinky-web/node_modules/*
@@ -58,3 +57,4 @@ docs/yarn.lock
 docs/*.log
 tmp/*
 extends/*
+/.run/

@@ -24,25 +24,42 @@ import org.dinky.gateway.enums.GatewayType;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+
 /**
  * KubernetesResult
  *
  * @since 2021/12/26 15:06
  */
+@Getter
+@ApiModel(value = "KubernetesResult", description = "Result of Kubernetes operation")
 public class KubernetesResult extends AbstractGatewayResult {
 
+    @ApiModelProperty(
+            value = "Cluster ID",
+            dataType = "String",
+            example = "cluster123",
+            notes = "Unique identifier for the Kubernetes cluster")
     private String clusterId;
+
+    @ApiModelProperty(
+            value = "Web URL",
+            dataType = "String",
+            example = "https://k8s-dashboard.example.com",
+            notes = "URL for accessing the Kubernetes web dashboard")
     private String webURL;
+
+    @ApiModelProperty(
+            value = "Job IDs",
+            dataType = "List<String>",
+            example = "[\"job1\", \"job2\"]",
+            notes = "List of job identifiers associated with the Kubernetes cluster")
     private List<String> jids;
 
     public KubernetesResult(GatewayType type, LocalDateTime startTime) {
         super(type, startTime);
-    }
-
-    public KubernetesResult(
-            String clusterId, LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess, String exceptionMsg) {
-        super(startTime, endTime, isSuccess, exceptionMsg);
-        this.clusterId = clusterId;
     }
 
     @Override
@@ -51,16 +68,14 @@ public class KubernetesResult extends AbstractGatewayResult {
     }
 
     @Override
-    public void setId(String id) {
+    public KubernetesResult setId(String id) {
         this.clusterId = id;
+        return this;
     }
 
-    public void setWebURL(String webURL) {
+    public KubernetesResult setWebURL(String webURL) {
         this.webURL = webURL;
-    }
-
-    public String getWebURL() {
-        return webURL;
+        return this;
     }
 
     @Override
@@ -68,8 +83,9 @@ public class KubernetesResult extends AbstractGatewayResult {
         return jids;
     }
 
-    public void setJids(List<String> jids) {
+    public KubernetesResult setJids(List<String> jids) {
         this.jids = jids;
+        return this;
     }
 
     public static KubernetesResult build(GatewayType type) {

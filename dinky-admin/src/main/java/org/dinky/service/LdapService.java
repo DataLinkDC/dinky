@@ -21,7 +21,7 @@ package org.dinky.service;
 
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.exception.AuthException;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
 
 import java.util.List;
 
@@ -29,6 +29,11 @@ import javax.naming.NamingException;
 
 public interface LdapService {
 
+    /**
+     * List all users.
+     *
+     * @return A list of {@link User} objects representing all users.
+     */
     List<User> listUsers();
 
     /**

@@ -21,6 +21,7 @@ package org.dinky.daemon.task;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.daemon.exception.DaemonTaskException;
+import org.dinky.data.enums.Status;
 
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -28,7 +29,7 @@ import java.util.ServiceLoader;
 public interface DaemonTask {
 
     static Optional<DaemonTask> get(DaemonTaskConfig config) {
-        Asserts.checkNotNull(config, "线程任务配置不能为空");
+        Asserts.checkNotNull(config, Status.DAEMON_TASK_CONFIG_NOT_EXIST.getMessage());
         ServiceLoader<DaemonTask> daemonTasks = ServiceLoader.load(DaemonTask.class);
         for (DaemonTask daemonTask : daemonTasks) {
             if (daemonTask.canHandle(config.getType())) {
@@ -41,13 +42,14 @@ public interface DaemonTask {
     static DaemonTask build(DaemonTaskConfig config) {
         Optional<DaemonTask> optionalDaemonTask = DaemonTask.get(config);
         if (!optionalDaemonTask.isPresent()) {
-            throw new DaemonTaskException("不支持线程任务类型【" + config.getType() + "】");
+            throw new DaemonTaskException(Status.DAEMON_TASK_NOT_SUPPORT.getMessage() + config.getType());
         }
-        DaemonTask daemonTask = optionalDaemonTask.get();
-        return daemonTask;
+        return optionalDaemonTask.get();
     }
 
     DaemonTask setConfig(DaemonTaskConfig config);
+
+    DaemonTaskConfig getConfig();
 
     default boolean canHandle(String type) {
         return Asserts.isEqualsIgnoreCase(getType(), type);
@@ -55,5 +57,5 @@ public interface DaemonTask {
 
     String getType();
 
-    void dealTask();
+    boolean dealTask();
 }
