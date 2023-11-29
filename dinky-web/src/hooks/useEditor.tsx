@@ -44,12 +44,10 @@ export const FullScreenProvider: FC = memo(({ children }: any) => {
   const { initialState, setInitialState } = useModel('@@initialState');
 
   useEffect(() => {
-    flushSync(() => {
-      setInitialState((s) => ({
-        ...s,
-        fullscreen
-      }));
-    });
+    setInitialState((s) => ({
+      ...s,
+      fullscreen
+    }));
   }, [fullscreen]);
   return (
     <FullScreenContext.Provider value={{ fullscreen, setFullscreen }}>
