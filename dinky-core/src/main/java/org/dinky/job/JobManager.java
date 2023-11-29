@@ -292,8 +292,8 @@ public class JobManager {
             throw new Exception(error, e);
         } finally {
             close();
+            return job.getJobResult();
         }
-        return job.getJobResult();
     }
 
     public IResult executeDDL(String statement) {
