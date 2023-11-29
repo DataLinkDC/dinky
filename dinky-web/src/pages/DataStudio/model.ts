@@ -506,7 +506,6 @@ const Model: ModelType = {
       if (payload === '') {
         centerContentHeight = state.centerContentHeight + (state.bottomContainer.height as number);
         toolContentHeight = state.toolContentHeight + (state.bottomContainer.height as number);
-        console.log(2);
       } else if (
         state.bottomContainer.selectKey !== '' &&
         payload !== state.bottomContainer.selectKey
@@ -516,7 +515,6 @@ const Model: ModelType = {
       } else {
         centerContentHeight = state.centerContentHeight - (state.bottomContainer.height as number);
         toolContentHeight = state.toolContentHeight - (state.bottomContainer.height as number);
-        console.log(3);
       }
 
       return {

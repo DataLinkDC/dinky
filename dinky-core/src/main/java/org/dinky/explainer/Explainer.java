@@ -38,6 +38,7 @@ import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
+import org.dinky.job.builder.JobUDFBuilder;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
@@ -99,7 +100,13 @@ public class Explainer {
     public Explainer initialize(JobManager jobManager, JobConfig config, String statement) {
         DinkyClassLoaderUtil.initClassLoader(config);
         String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement), sqlSeparator);
-        jobManager.initUDF(parseUDFFromStatements(statements));
+        List<UDF> udfs = parseUDFFromStatements(statements);
+        jobManager.setJobParam(new JobParam(udfs));
+        try {
+            JobUDFBuilder.build(jobManager).run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return this;
     }
 

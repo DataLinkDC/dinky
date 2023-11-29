@@ -86,4 +86,16 @@ public class SqlUtil {
         }
         return sql;
     }
+
+    public static String addLineNumber(String input) {
+        String[] lines = input.split("\n");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < lines.length; i++) {
+            sb.append(String.format("%-4d", i + 1));
+            sb.append("  ");
+            sb.append(lines[i]);
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 }

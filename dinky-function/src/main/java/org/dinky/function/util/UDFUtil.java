@@ -21,9 +21,11 @@ package org.dinky.function.util;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
+import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.exception.DinkyException;
+import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
@@ -37,6 +39,7 @@ import org.dinky.pool.ClassPool;
 
 import org.apache.flink.client.python.PythonFunctionFactory;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.python.PythonOptions;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.catalog.FunctionLanguage;
@@ -45,6 +48,7 @@ import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +59,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,10 +80,12 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.digest.MD5;
 import cn.hutool.extra.template.TemplateConfig;
 import cn.hutool.extra.template.TemplateEngine;
 import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
+import cn.hutool.json.JSONUtil;
 
 /**
  * UDFUtil
@@ -420,5 +427,28 @@ public class UDFUtil {
         } catch (Exception e) {
             throw new DinkyException(e);
         }
+    }
+
+    public static void addConfigurationClsAndJars(List<URL> jarList, List<URL> classpaths) {
+        Configuration configuration = (Configuration) CustomTableEnvironmentContext.get()
+                .getStreamExecutionEnvironment()
+                .getConfiguration();
+        configuration.set(
+                PipelineOptions.CLASSPATHS,
+                classpaths.stream().map(URL::toString).collect(Collectors.toList()));
+        configuration.set(
+                PipelineOptions.JARS, jarList.stream().map(URL::toString).collect(Collectors.toList()));
+    }
+
+    public static void writeManifest(Integer taskId, List<URL> jarPaths) {
+        FlinkUdfManifest flinkUdfManifest = new FlinkUdfManifest();
+        flinkUdfManifest.setJars(jarPaths);
+        flinkUdfManifest.setPythonFiles(FlinkUdfPathContextHolder.getPyUdfFile().stream()
+                .map(URLUtil::getURL)
+                .collect(Collectors.toList()));
+
+        FileUtil.writeUtf8String(
+                JSONUtil.toJsonStr(flinkUdfManifest),
+                PathConstant.getUdfPackagePath(taskId) + PathConstant.DEP_MANIFEST);
     }
 }

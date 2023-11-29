@@ -19,6 +19,8 @@
 
 package org.dinky.utils;
 
+import org.dinky.assertion.Asserts;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -92,5 +94,13 @@ public class URLUtils {
 
     public static String toString(URL[] urls) {
         return Arrays.stream(urls).map(URL::toString).collect(Collectors.joining(","));
+    }
+
+    public static String formatAddress(String webURL) {
+        if (Asserts.isNotNullString(webURL)) {
+            return webURL.replaceAll("http://", "");
+        } else {
+            return "";
+        }
     }
 }
