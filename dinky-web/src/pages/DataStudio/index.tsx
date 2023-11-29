@@ -22,13 +22,13 @@ import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import { mapDispatchToProps } from '@/pages/DataStudio/function';
+import {isProjectTabs, mapDispatchToProps} from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import { StateType, TabsItemType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import {StateType, STUDIO_MODEL, TabsItemType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
   getClusterConfigurationData,
@@ -54,6 +54,7 @@ const DataStudio = (props: any) => {
     saveDataBase,
     saveProject,
     updateToolContentHeight,
+    updateBottomHeight,
     saveSession,
     saveEnv,
     updateCenterContentHeight,
@@ -63,14 +64,14 @@ const DataStudio = (props: any) => {
     saveClusterConfiguration,
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
-    tabs
+    tabs: { panes, activeKey },
   } = props;
+  const isProject = isProjectTabs(panes, activeKey);
   const { token } = useToken();
   const themeValue = useThemeValue();
   const app = getDvaApp(); // 获取dva的实例
   const persist = app._store.persist;
-  const bottomHeight = bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
-
+  let bottomHeight = !isProject ? 0 : bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
   const { fullscreen } = useEditor();
 
   const getClientSize = () => ({
@@ -114,6 +115,13 @@ const DataStudio = (props: any) => {
       saveClusterConfiguration(res[4]);
     });
   };
+
+  useEffect(() => {
+    bottomHeight = !isProject ? 0 : bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
+    const centerContentHeight = size.contentHeight - bottomHeight;
+    updateCenterContentHeight(centerContentHeight);
+    updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
+  }, [activeKey]);
 
   useEffect(() => {
     loadData();
@@ -185,10 +193,10 @@ const DataStudio = (props: any) => {
           if (!x.isShow) {
             return true;
           }
-          if (parseInt(tabs.activeKey) < 0) {
+          if (parseInt(activeKey) < 0) {
             return TabsPageType.None;
           }
-          const v = (tabs.panes as TabsItemType[]).find((item) => item.key === tabs.activeKey);
+          const v = (panes as TabsItemType[]).find((item) => item.key === activeKey);
           return x.isShow(v?.type ?? TabsPageType.None, v?.subType);
         })
         .map((x) => {
@@ -218,7 +226,7 @@ const DataStudio = (props: any) => {
             <Sider collapsed collapsedWidth={40}>
               <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                 {LeftTopMenu}
-                {LeftBottomMenu}
+                {isProject && LeftBottomMenu}
               </div>
             </Sider>
 
@@ -239,7 +247,7 @@ const DataStudio = (props: any) => {
                 </Content>
                 <RightContainer size={size} bottomHeight={bottomHeight} />
               </div>
-              {<BottomContainer size={size} height={bottomHeight} />}
+              {isProject && <BottomContainer size={size} height={bottomHeight} />}
             </Content>
 
             <Sider collapsed collapsedWidth={40}>
