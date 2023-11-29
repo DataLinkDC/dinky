@@ -267,7 +267,7 @@ export default () => {
       >
         {l('button.heartbeat')}
       </Button>
-    </Authorized>,
+    </Authorized>
   ];
 
   const renderListItem = (item: Cluster.Instance) => {
