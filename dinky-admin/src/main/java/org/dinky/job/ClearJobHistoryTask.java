@@ -23,10 +23,12 @@ import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
 import org.dinky.job.handler.ClearJobHistoryHandler;
+import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 
+import org.dinky.service.impl.ClusterInstanceServiceImpl;
 import org.springframework.context.annotation.DependsOn;
 
 import lombok.Data;
@@ -43,15 +45,18 @@ public class ClearJobHistoryTask implements DaemonTask {
     private static final JobHistoryService jobHistoryService;
     private static final HistoryService historyService;
     private static final ClearJobHistoryHandler clearJobHistoryHandler;
+    private static final ClusterInstanceService clusterService;
 
     static {
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
         jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
         historyService = SpringContextUtils.getBean("historyServiceImpl", HistoryService.class);
+        clusterService = SpringContextUtils.getBean("clusterInstanceServiceImpl", ClusterInstanceServiceImpl.class);
         clearJobHistoryHandler = ClearJobHistoryHandler.builder()
                 .historyService(historyService)
                 .jobInstanceService(jobInstanceService)
                 .jobHistoryService(jobHistoryService)
+                .clusterService(clusterService)
                 .build();
     }
 
