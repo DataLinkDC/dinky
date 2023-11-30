@@ -63,6 +63,7 @@ public class Job {
         FAILED(4),
         CANCEL(5);
         final int code;
+
         JobStatus(int code) {
             this.code = code;
         }
