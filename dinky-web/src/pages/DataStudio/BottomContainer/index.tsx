@@ -28,14 +28,16 @@ import { connect } from '@@/exports';
 import { PlusOutlined } from '@ant-design/icons';
 import { ConfigProvider, Space, Tabs } from 'antd';
 import React from 'react';
+import {isProjectTabs} from "@/pages/DataStudio/function";
 
 export type BottomContainerProps = {
   size: number;
   height: number | string;
 };
 const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
-  const { dispatch, size, bottomContainer, height } = props;
+  const { dispatch, size, bottomContainer, height, tabs: { panes, activeKey }, } = props;
   const width = document.documentElement.clientWidth - VIEW.sideWidth * 2;
+  const isProject = isProjectTabs(panes, activeKey);
 
   /**
    * 侧边栏最小化
@@ -200,7 +202,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
         marginTop: 0,
         backgroundColor: '#fff',
         position: 'fixed',
-        bottom: VIEW.footerHeight
+        // bottom: VIEW.footerHeight
       }}
       defaultSize={{ width: '100%', height: height }}
       minHeight={VIEW.midMargin}
@@ -217,21 +219,24 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       handlerMinimize={handleMinimize}
       maxWidth={width}
     >
-      <Tabs
+      {!isProject &&
+        < Tabs
         activeKey={
-          bottomContainer.selectKey +
-          '/' +
-          (bottomContainer.selectSubKey[bottomContainer.selectKey]
-            ? bottomContainer.selectSubKey[bottomContainer.selectKey]
-            : '')
-        }
+        bottomContainer.selectKey +
+        '/' +
+        (bottomContainer.selectSubKey[bottomContainer.selectKey]
+        ? bottomContainer.selectSubKey[bottomContainer.selectKey]
+        : '')
+      }
         items={renderItems()}
-        tabBarStyle={{ display: 'none' }}
-      />
+        tabBarStyle={{display: 'none'}}
+        />
+      }
     </MovableSidebar>
   );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  bottomContainer: Studio.bottomContainer
+  bottomContainer: Studio.bottomContainer,
+  tabs: Studio.tabs
 }))(BottomContainer);

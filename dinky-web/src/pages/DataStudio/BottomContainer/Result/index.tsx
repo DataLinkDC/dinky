@@ -170,7 +170,7 @@ const Result = (props: any) => {
   useEffect(() => {
     setData({});
     loadData();
-  }, [currentTabs, currentTabs?.console.result]);
+  }, [currentTabs, currentTabs?.console?.result]);
 
   const getColumns = (columns: string[]) => {
     return columns?.map((item) => {
