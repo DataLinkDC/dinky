@@ -27,8 +27,8 @@ import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
-
 import org.dinky.service.impl.ClusterInstanceServiceImpl;
+
 import org.springframework.context.annotation.DependsOn;
 
 import lombok.Data;
