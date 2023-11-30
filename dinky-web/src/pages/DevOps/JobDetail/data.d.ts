@@ -24,16 +24,16 @@ export type JobProps = {
 };
 
 export type JobMetricsItem = {
-  id: number;
+  id?: string;
   taskId: number;
   vertices: string;
   metrics: string;
-  position: string;
+  position?: string;
   showType: string;
   showSize: string;
   title: string;
-  createTime: string;
-  updateTime: string;
+  createTime?: string;
+  updateTime?: string;
 };
 
 export type MetricsTimeFilter = {

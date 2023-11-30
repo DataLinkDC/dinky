@@ -93,7 +93,7 @@ export default {
    *
    * */
 
-  'devops.joblist.status.all': '任务总计',
+  'devops.joblist.status.all': '总计',
   'devops.joblist.status.running': '运行中',
   'devops.joblist.status.cancelled': '已取消',
   'devops.joblist.status.failed': '异常作业',

@@ -108,14 +108,6 @@ const JobDesc = (props: JobProps) => {
             </Text>
           </Descriptions.Item>
 
-          {jobDetail?.clusterConfiguration ? (
-            <Descriptions.Item label={l('devops.jobinfo.config.clusterConfiguration')}>
-              <Link to={'/registration/cluster/instance'}>
-                {jobDetail?.clusterConfiguration?.name}
-              </Link>
-            </Descriptions.Item>
-          ) : undefined}
-
           <Descriptions.Item label={l('devops.jobinfo.config.useSqlFragment')}>
             {jobDetail?.history?.configJson?.useSqlFragment
               ? l('button.enable')
