@@ -202,7 +202,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
         marginTop: 0,
         backgroundColor: '#fff',
         position: 'fixed',
-        // bottom: VIEW.footerHeight
+        bottom: VIEW.footerHeight
       }}
       defaultSize={{ width: '100%', height: height }}
       minHeight={VIEW.midMargin}
