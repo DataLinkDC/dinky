@@ -55,12 +55,18 @@ public class Job {
     private boolean useGateway;
     private List<String> jids;
 
+    @Getter
     public enum JobStatus {
-        INITIALIZE,
-        RUNNING,
-        SUCCESS,
-        FAILED,
-        CANCEL
+        INITIALIZE(1),
+        RUNNING(2),
+        SUCCESS(3),
+        FAILED(4),
+        CANCEL(5);
+        final int code;
+
+        JobStatus(int code) {
+            this.code = code;
+        }
     }
 
     public Job(

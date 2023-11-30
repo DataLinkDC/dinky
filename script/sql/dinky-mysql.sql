@@ -1158,6 +1158,7 @@ CREATE TABLE `dinky_history`  (
                                 `job_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Job Name',
                                 `job_manager_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'JJobManager Address',
                                 `status` int(11) NOT NULL DEFAULT 0 COMMENT 'status',
+                                `batch_model` boolean NOT NULL DEFAULT false COMMENT 'is batch model',
                                 `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'job type',
                                 `statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'statement set',
                                 `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'error message',

@@ -158,6 +158,7 @@ CREATE TABLE `dinky_history` (
                                `job_id` varchar(50) null DEFAULT null COMMENT 'Job ID',
                                `job_name` varchar(255) null DEFAULT null COMMENT 'Job Name',
                                `job_manager_address` varchar(255) null DEFAULT null COMMENT 'JJobManager Address',
+                               `batch_model` boolean null DEFAULT false COMMENT 'is batch model',
                                `status` int(11) NOT null DEFAULT 0 COMMENT 'status',
                                `type` varchar(50) null DEFAULT null COMMENT 'job type',
                                `statement` text null COMMENT 'statement set',
