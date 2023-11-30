@@ -1351,6 +1351,7 @@ CREATE TABLE "public"."dinky_history" (
                                           "job_id" varchar(50) COLLATE "pg_catalog"."default",
                                           "job_name" varchar(255) COLLATE "pg_catalog"."default",
                                           "job_manager_address" varchar(255) COLLATE "pg_catalog"."default",
+                                          "batch_model" boolean COLLATE "pg_catalog"."default",
                                           "status" int4 NOT null,
                                           "type" varchar(50) COLLATE "pg_catalog"."default",
                                           "statement" text COLLATE "pg_catalog"."default",

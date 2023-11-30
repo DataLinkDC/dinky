@@ -86,7 +86,7 @@ public class Job2MysqlHandler implements JobHandler {
         }
         history.setJobManagerAddress(job.getJobManagerAddress());
         history.setJobName(job.getJobConfig().getJobName());
-        history.setStatus(job.getStatus().ordinal());
+        history.setStatus(job.getStatus().getCode());
         history.setStatement(job.getStatement());
         history.setStartTime(job.getStartTime());
         history.setTaskId(job.getJobConfig().getTaskId());
@@ -115,9 +115,10 @@ public class Job2MysqlHandler implements JobHandler {
 
         History history = new History();
         history.setId(job.getId());
+        history.setBatchModel(job.getJobConfig().isBatchModel());
         if (job.isUseGateway() && Asserts.isNullString(job.getJobId())) {
             job.setJobId("unknown");
-            history.setStatus(JobStatus.FAILED.ordinal());
+            history.setStatus(Job.JobStatus.FAILED.getCode());
             history.setJobId(job.getJobId());
             history.setEndTime(job.getEndTime());
             history.setError("没有获取到任何JID，请自行排查原因");
@@ -125,7 +126,7 @@ public class Job2MysqlHandler implements JobHandler {
             return false;
         }
 
-        history.setStatus(job.getStatus().ordinal());
+        history.setStatus(job.getStatus().getCode());
         history.setJobId(job.getJobId());
         history.setEndTime(job.getEndTime());
         history.setJobManagerAddress(job.isUseGateway() ? job.getJobManagerAddress() : null);
@@ -207,9 +208,10 @@ public class Job2MysqlHandler implements JobHandler {
     public boolean failed() {
         Job job = JobContextHolder.getJob();
         History history = new History();
+        history.setBatchModel(job.getJobConfig().isBatchModel());
         history.setId(job.getId());
         history.setJobId(job.getJobId());
-        history.setStatus(job.getStatus().ordinal());
+        history.setStatus(job.getStatus().getCode());
         history.setJobManagerAddress(job.getJobManagerAddress());
         history.setEndTime(job.getEndTime());
         history.setError(job.getError());

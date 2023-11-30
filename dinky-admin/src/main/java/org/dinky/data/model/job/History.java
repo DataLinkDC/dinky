@@ -76,6 +76,9 @@ public class History implements Serializable {
     @ApiModelProperty(value = "Job Manager Address", dataType = "String")
     private String jobManagerAddress;
 
+    @ApiModelProperty(value = "batchModel", dataType = "Boolean")
+    private Boolean batchModel;
+
     @ApiModelProperty(value = "Status", dataType = "Integer")
     private Integer status;
 

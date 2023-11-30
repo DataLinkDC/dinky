@@ -286,7 +286,7 @@ UPDATE dinky_task_version SET task_configure=JSON_REMOVE(task_configure, '$.jarI
 UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.jarId');
 UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.jarTask');
 UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.session');
-
+alter table dinky_history add batch_model boolean default false null after job_manager_address;
 insert into `dinky_flink_document`
 (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
 values (218, 'Reference', '建表语句', 'Streaming', 'EXECUTE CDCSOURCE print', 'Whole library synchronization print', 'EXECUTE CDCSOURCE demo_print WITH (
