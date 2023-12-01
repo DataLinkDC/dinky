@@ -80,7 +80,7 @@ public interface Driver extends AutoCloseable {
 
     static <T> Driver build(DriverConfig<T> config) {
         if (DriverPool.exist(config.getName())) {
-            return getHealthDriver(config.getType());
+            return getHealthDriver(config.getName());
         }
         Driver driver = getDriver(config.getType())
                 .buildDriverConfig(config.getName(), config.getType(), config.getConnectConfig())
