@@ -71,7 +71,6 @@ const DataStudio = (props: any) => {
   const themeValue = useThemeValue();
   const app = getDvaApp(); // 获取dva的实例
   const persist = app._store.persist;
-  let bottomHeight = !isProject ? 0 : bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
   const { fullscreen } = useEditor();
 
   const getClientSize = () => ({
@@ -89,7 +88,8 @@ const DataStudio = (props: any) => {
 
   const onResize = () => {
     setSize(getClientSize());
-    const centerContentHeight = getClientSize().contentHeight - bottomHeight;
+    const newBottomHeight = !isProject ? 0 : bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
+    const centerContentHeight = getClientSize().contentHeight - newBottomHeight;
     updateCenterContentHeight(centerContentHeight);
     updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
   };
@@ -117,8 +117,8 @@ const DataStudio = (props: any) => {
   };
 
   useEffect(() => {
-    bottomHeight = !isProject ? 0 : bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
-    const centerContentHeight = size.contentHeight - bottomHeight;
+    const newBottomHeight = !isProject ? 0 : bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
+    const centerContentHeight = size.contentHeight - newBottomHeight;
     updateCenterContentHeight(centerContentHeight);
     updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
   }, [activeKey]);
@@ -245,9 +245,9 @@ const DataStudio = (props: any) => {
                 >
                   <MiddleContainer />
                 </Content>
-                <RightContainer size={size} bottomHeight={bottomHeight} />
+                <RightContainer size={size} bottomHeight={bottomContainer.height} />
               </div>
-              {isProject && <BottomContainer size={size} height={bottomHeight} />}
+              {isProject && <BottomContainer size={size} height={bottomContainer.height} />}
             </Content>
 
             <Sider collapsed collapsedWidth={40}>

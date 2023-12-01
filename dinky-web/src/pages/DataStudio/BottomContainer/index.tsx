@@ -21,7 +21,6 @@ import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
 import Title from '@/components/Front/Title';
 import ContentScroll from '@/components/Scroll/ContentScroll';
 import MovableSidebar from '@/components/Sidebar/MovableSidebar';
-import { isProjectTabs } from '@/pages/DataStudio/function';
 import { StateType, STUDIO_MODEL, VIEW } from '@/pages/DataStudio/model';
 import { LeftBottomMoreTabs, LeftBottomSide } from '@/pages/DataStudio/route';
 import { l } from '@/utils/intl';
@@ -29,19 +28,14 @@ import { connect } from '@@/exports';
 import { PlusOutlined } from '@ant-design/icons';
 import { ConfigProvider, Space, Tabs } from 'antd';
 import React from 'react';
+import {isProjectTabs} from "@/pages/DataStudio/function";
 
 export type BottomContainerProps = {
   size: number;
   height: number | string;
 };
 const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
-  const {
-    dispatch,
-    size,
-    bottomContainer,
-    height,
-    tabs: { panes, activeKey }
-  } = props;
+  const { dispatch, size, bottomContainer, height, tabs: { panes, activeKey }, } = props;
   const width = document.documentElement.clientWidth - VIEW.sideWidth * 2;
   const isProject = isProjectTabs(panes, activeKey);
 
@@ -207,8 +201,8 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
         height: height,
         marginTop: 0,
         backgroundColor: '#fff',
-        position: 'fixed'
-        // bottom: VIEW.footerHeight
+        position: 'fixed',
+        bottom: VIEW.footerHeight
       }}
       defaultSize={{ width: '100%', height: height }}
       minHeight={VIEW.midMargin}
@@ -225,19 +219,19 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       handlerMinimize={handleMinimize}
       maxWidth={width}
     >
-      {!isProject && (
-        <Tabs
-          activeKey={
-            bottomContainer.selectKey +
-            '/' +
-            (bottomContainer.selectSubKey[bottomContainer.selectKey]
-              ? bottomContainer.selectSubKey[bottomContainer.selectKey]
-              : '')
-          }
-          items={renderItems()}
-          tabBarStyle={{ display: 'none' }}
+      {!isProject &&
+        < Tabs
+        activeKey={
+        bottomContainer.selectKey +
+        '/' +
+        (bottomContainer.selectSubKey[bottomContainer.selectKey]
+        ? bottomContainer.selectSubKey[bottomContainer.selectKey]
+        : '')
+      }
+        items={renderItems()}
+        tabBarStyle={{display: 'none'}}
         />
-      )}
+      }
     </MovableSidebar>
   );
 };
