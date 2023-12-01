@@ -24,6 +24,7 @@ import org.dinky.data.model.Column;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.metadata.ast.Clickhouse20CreateTableStatement;
+import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.convert.ClickHouseTypeConvert;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.parser.Clickhouse20StatementParser;
@@ -67,7 +68,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert getTypeConvert() {
+    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
         return new ClickHouseTypeConvert();
     }
 

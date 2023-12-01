@@ -22,6 +22,7 @@ package org.dinky.metadata.driver;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Table;
+import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.constant.PhoenixConstant;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.PhoenixTypeConvert;
@@ -45,7 +46,7 @@ public class PhoenixDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert getTypeConvert() {
+    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
         return new PhoenixTypeConvert();
     }
 
@@ -91,17 +92,17 @@ public class PhoenixDriver extends AbstractJdbcDriver {
     public String getCreateTableSql(Table table) {
         StringBuilder sql = new StringBuilder();
         List<Column> columns = table.getColumns();
-        sql.append(" CREATE VIEW IF NOT EXISTS \"" + table.getName() + "\" ( ");
+        sql.append(" CREATE VIEW IF NOT EXISTS \"").append(table.getName()).append("\" ( ");
         sql.append("    rowkey varchar primary key ");
         PhoenixTypeConvert phoenixTypeConvert = new PhoenixTypeConvert();
         if (columns != null) {
             for (Column column : columns) {
-                sql.append(", \""
-                        + column.getColumnFamily()
-                        + "\".\""
-                        + column.getName()
-                        + "\"  "
-                        + phoenixTypeConvert.convertToDB(column));
+                sql.append(", \"")
+                        .append(column.getColumnFamily())
+                        .append("\".\"")
+                        .append(column.getName())
+                        .append("\"  ")
+                        .append(phoenixTypeConvert.convertToDB(column));
             }
         }
         sql.append(" ) ");
@@ -116,7 +117,8 @@ public class PhoenixDriver extends AbstractJdbcDriver {
             Properties properties = new Properties();
             properties.put("phoenix.schema.isNamespaceMappingEnabled", "true");
             properties.put("phoenix.schema.mapSystemTablesToNamespac", "true");
-            Connection connection = DriverManager.getConnection(config.getUrl(), properties);
+            Connection connection =
+                    DriverManager.getConnection(config.getConnectConfig().getUrl(), properties);
             conn.set(connection);
             // 设置为自动提交，否则upsert语句不生效
             connection.setAutoCommit(true);

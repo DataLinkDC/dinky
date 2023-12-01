@@ -91,14 +91,14 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
           />
 
           <ProFormText
-            name='username'
+            name={['connectConfig', 'username']}
             width={'sm'}
             label={l('rc.ds.username')}
             rules={[{ required: true, message: l('rc.ds.usernamePlaceholder') }]}
             placeholder={l('rc.ds.usernamePlaceholder')}
           />
           <ProFormText.Password
-            name='password'
+            name={['connectConfig', 'password']}
             width={'sm'}
             label={l('rc.ds.password')}
             rules={[
@@ -119,7 +119,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
 
         <ProForm.Group>
           <Form.Item
-            name='url'
+            name={['connectConfig', 'url']}
             label={l('rc.ds.url')}
             rules={[{ required: true, message: l('rc.ds.urlPlaceholder') }]}
           >

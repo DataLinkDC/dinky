@@ -17,9 +17,10 @@
  *
  */
 
-package org.dinky.metadata.driver;
+package org.dinky.metadata.config;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.utils.JsonUtils;
 
 import java.util.Map;
 
@@ -36,7 +37,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel(value = "DriverConfig", description = "Configuration for the driver component")
-public class DriverConfig {
+public class DriverConfig<T> {
 
     @ApiModelProperty(
             value = "Name of the driver",
@@ -53,57 +54,22 @@ public class DriverConfig {
     private String type;
 
     @ApiModelProperty(
-            value = "IP address of the driver",
+            value = "Type of the driver",
             dataType = "String",
-            example = "192.168.1.100",
-            notes = "IP address of the driver component")
-    private String ip;
-
-    @ApiModelProperty(
-            value = "Port number for communication",
-            dataType = "Integer",
-            example = "8081",
-            notes = "Port number for communication with the driver")
-    private Integer port;
-
-    @ApiModelProperty(
-            value = "URL for the driver",
-            dataType = "String",
-            example = "http://192.168.1.100:8081",
-            notes = "URL for accessing the driver component")
-    private String url;
-
-    @ApiModelProperty(
-            value = "Username for authentication",
-            dataType = "String",
-            example = "user123",
-            notes = "Username for authentication (if applicable)")
-    private String username;
-
-    @ApiModelProperty(
-            value = "Password for authentication",
-            dataType = "String",
-            example = "password123",
-            notes = "Password for authentication (if applicable)")
-    private String password;
+            example = "Flink",
+            notes = "Type of the driver component")
+    private T connectConfig;
 
     public DriverConfig() {}
 
-    public DriverConfig(String name, String type, String url, String username, String password) {
+    public DriverConfig(String name, String type, T connectConfig) {
         this.name = name;
         this.type = type;
-        this.url = url;
-        this.username = username;
-        this.password = password;
+        this.connectConfig = connectConfig;
     }
 
-    public static DriverConfig build(Map<String, String> confMap) {
+    public static <T extends IConnectConfig> DriverConfig<T> build(Map<String, String> confMap, Class<T> clazz) {
         Asserts.checkNull(confMap, "数据源配置不能为空");
-        return new DriverConfig(
-                confMap.get("name"),
-                confMap.get("type"),
-                confMap.get("url"),
-                confMap.get("username"),
-                confMap.get("password"));
+        return new DriverConfig<T>(confMap.get("name"), confMap.get("type"), JsonUtils.convertValue(confMap, clazz));
     }
 }

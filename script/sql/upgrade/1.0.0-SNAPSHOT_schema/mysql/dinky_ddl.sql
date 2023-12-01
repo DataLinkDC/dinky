@@ -316,4 +316,23 @@ drop table if exists dinky_udf;
 
 commit ;
 
+alter table dinky_database
+    add connect_config text null after type;
+
+alter table dinky_database
+    drop column ip;
+
+alter table dinky_database
+    drop column port;
+
+alter table dinky_database
+    drop column url;
+
+alter table dinky_database
+    drop column username;
+
+alter table dinky_database
+    drop column password;
+
+
 SET FOREIGN_KEY_CHECKS = 1;

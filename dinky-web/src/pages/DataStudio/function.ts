@@ -152,10 +152,7 @@ export function getCurrentTab(
   }
 }
 
-export function isProjectTabs(
-  panes: TabsItemType[],
-  activeKey: string
-): boolean {
+export function isProjectTabs(panes: TabsItemType[], activeKey: string): boolean {
   const item = panes.find((item) => item.key === activeKey);
   switch (item?.type) {
     case 'project':

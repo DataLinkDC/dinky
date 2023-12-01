@@ -21,8 +21,9 @@ package org.dinky.metadata;
 
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
+import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.util.List;
@@ -46,27 +47,31 @@ public class OracleTest {
     private static final String IP = "127.0.0.1";
 
     public Driver getDriver() {
-        DriverConfig config = new DriverConfig();
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setName(UUID.randomUUID().toString());
         config.setType("Oracle");
-        config.setIp(IP);
-        config.setPort(1521);
-        config.setUsername("cdr");
-        config.setPassword("cdr");
-        config.setUrl("jdbc:oracle:thin:@" + IP + ":1521:orcl");
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .ip(IP)
+                .port(3306)
+                .username("dca")
+                .password("dca")
+                .url("jdbc:oracle:thin:@" + IP + ":1521:orcl")
+                .build());
         return Driver.build(config);
     }
 
     @Ignore
     @Test
     public void connectTest() {
-        DriverConfig config = new DriverConfig();
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setType("Oracle");
-        config.setIp(IP);
-        config.setPort(1521);
-        config.setUsername("cdr");
-        config.setPassword("cdr");
-        config.setUrl("jdbc:oracle:thin:@" + IP + ":1521:orcl");
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .ip(IP)
+                .port(3306)
+                .username("dca")
+                .password("dca")
+                .url("jdbc:oracle:thin:@" + IP + ":1521:orcl")
+                .build());
         String test = Driver.build(config).test();
         LOGGER.info(test);
         LOGGER.info("end...");

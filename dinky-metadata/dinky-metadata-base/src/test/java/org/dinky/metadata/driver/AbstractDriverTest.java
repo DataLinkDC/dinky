@@ -28,6 +28,7 @@ import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -102,7 +103,7 @@ class AbstractDriverTest {
                         + " FROM SchemaOrigin.TableNameOrigin;\n"));
     }
 
-    private static class SubAbstractDriver extends AbstractDriver {
+    private static class SubAbstractDriver extends AbstractDriver<AbstractJdbcConfig> {
         @Override
         public IDBQuery getDBQuery() {
             return null;
@@ -110,6 +111,11 @@ class AbstractDriverTest {
 
         @Override
         public ITypeConvert getTypeConvert() {
+            return null;
+        }
+
+        @Override
+        public <T> Driver buildDriverConfig(String name, String type, T config) {
             return null;
         }
 
