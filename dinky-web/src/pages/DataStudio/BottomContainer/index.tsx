@@ -28,16 +28,14 @@ import { connect } from '@@/exports';
 import { PlusOutlined } from '@ant-design/icons';
 import { ConfigProvider, Space, Tabs } from 'antd';
 import React from 'react';
-import {isProjectTabs} from "@/pages/DataStudio/function";
 
 export type BottomContainerProps = {
   size: number;
   height: number | string;
 };
 const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
-  const { dispatch, size, bottomContainer, height, tabs: { panes, activeKey }, } = props;
+  const { dispatch, size, bottomContainer, height } = props;
   const width = document.documentElement.clientWidth - VIEW.sideWidth * 2;
-  const isProject = isProjectTabs(panes, activeKey);
 
   /**
    * 侧边栏最小化
@@ -236,5 +234,4 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   bottomContainer: Studio.bottomContainer,
-  tabs: Studio.tabs
 }))(BottomContainer);
