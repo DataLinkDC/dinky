@@ -96,18 +96,12 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         if (Asserts.isNull(dataBase)) {
             return false;
         }
-        if (Asserts.isNull(dataBase.getId())) {
-            try {
-                checkHeartBeat(dataBase);
-            } finally {
+        try {
+            checkHeartBeat(dataBase);
+        } finally {
+            if (Asserts.isNull(dataBase.getId())) {
                 return save(dataBase);
-            }
-        } else {
-            DataBase dataBaseInfo = getById(dataBase.getId());
-            dataBase.setConnectConfig(dataBaseInfo.getConnectConfig());
-            try {
-                checkHeartBeat(dataBase);
-            } finally {
+            } else {
                 return updateById(dataBase);
             }
         }

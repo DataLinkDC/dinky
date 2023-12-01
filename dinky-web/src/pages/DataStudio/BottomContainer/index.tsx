@@ -219,19 +219,17 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       handlerMinimize={handleMinimize}
       maxWidth={width}
     >
-      {!isProject &&
-        < Tabs
+      < Tabs
         activeKey={
-        bottomContainer.selectKey +
-        '/' +
-        (bottomContainer.selectSubKey[bottomContainer.selectKey]
-        ? bottomContainer.selectSubKey[bottomContainer.selectKey]
-        : '')
-      }
+          bottomContainer.selectKey +
+          '/' +
+          (bottomContainer.selectSubKey[bottomContainer.selectKey]
+            ? bottomContainer.selectSubKey[bottomContainer.selectKey]
+            : '')
+        }
         items={renderItems()}
         tabBarStyle={{display: 'none'}}
-        />
-      }
+      />
     </MovableSidebar>
   );
 };
