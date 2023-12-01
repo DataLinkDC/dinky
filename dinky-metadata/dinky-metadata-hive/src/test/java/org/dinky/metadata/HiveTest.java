@@ -60,26 +60,19 @@ public class HiveTest {
         DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setType(hive);
         config.setName(hive);
-        config.setConnectConfig(AbstractJdbcConfig.builder().ip(IP).port(PORT).build());
-        config.setIp(IP);
-        config.setPort(PORT);
-        config.setUsername(username);
-        config.setPassword(passwd);
-        config.setUrl(url);
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .ip(IP).port(PORT).username(username).password(passwd).url(url).build());
         return Driver.build(config);
     }
 
     @Ignore
     @Test
     public void connectTest() {
-        DriverConfig config = new DriverConfig();
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setType(hive);
         config.setName(hive);
-        config.setIp(IP);
-        config.setPort(PORT);
-        config.setUsername(username);
-        config.setPassword(passwd);
-        config.setUrl(url);
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .ip(IP).port(PORT).username(username).password(passwd).url(url).build());
         String test = Driver.build(config).test();
         LOGGER.info(test);
         LOGGER.info("end...");
