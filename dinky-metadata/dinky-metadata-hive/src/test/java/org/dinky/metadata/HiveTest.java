@@ -61,7 +61,12 @@ public class HiveTest {
         config.setType(hive);
         config.setName(hive);
         config.setConnectConfig(AbstractJdbcConfig.builder()
-                .ip(IP).port(PORT).username(username).password(passwd).url(url).build());
+                .ip(IP)
+                .port(PORT)
+                .username(username)
+                .password(passwd)
+                .url(url)
+                .build());
         return Driver.build(config);
     }
 
@@ -72,7 +77,12 @@ public class HiveTest {
         config.setType(hive);
         config.setName(hive);
         config.setConnectConfig(AbstractJdbcConfig.builder()
-                .ip(IP).port(PORT).username(username).password(passwd).url(url).build());
+                .ip(IP)
+                .port(PORT)
+                .username(username)
+                .password(passwd)
+                .url(url)
+                .build());
         String test = Driver.build(config).test();
         LOGGER.info(test);
         LOGGER.info("end...");
@@ -134,7 +144,6 @@ public class HiveTest {
 
     /**
      * @Author: zhumingye
-     *
      * @return:
      */
     @Ignore
