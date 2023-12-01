@@ -22,7 +22,8 @@ package org.dinky.metadata.convert;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
-import org.dinky.metadata.driver.DriverConfig;
+import org.dinky.metadata.config.DriverConfig;
+import org.dinky.metadata.config.IConnectConfig;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,7 +33,7 @@ import java.sql.SQLException;
  *
  * @since 2021/7/20 14:39
  */
-public interface ITypeConvert {
+public interface ITypeConvert<T extends IConnectConfig> {
 
     default String convertToDB(Column column) {
         return convertToDB(column.getJavaType());
@@ -40,7 +41,7 @@ public interface ITypeConvert {
 
     ColumnType convert(Column column);
 
-    default ColumnType convert(Column column, DriverConfig driverConfig) {
+    default ColumnType convert(Column column, DriverConfig<T> driverConfig) {
         return convert(column);
     }
 

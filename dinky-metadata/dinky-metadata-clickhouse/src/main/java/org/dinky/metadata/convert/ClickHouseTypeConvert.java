@@ -26,7 +26,7 @@ import org.dinky.data.enums.ColumnType;
  *
  * @since 2021/7/21 17:15
  */
-public class ClickHouseTypeConvert extends AbstractTypeConvert {
+public class ClickHouseTypeConvert extends AbstractJdbcTypeConvert {
 
     // Use mysql now,and welcome to fix it.
     public ClickHouseTypeConvert() {

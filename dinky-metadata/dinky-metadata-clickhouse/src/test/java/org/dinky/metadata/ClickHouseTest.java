@@ -21,9 +21,10 @@ package org.dinky.metadata;
 
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
+import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.driver.ClickHouseDriver;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.util.List;
@@ -32,6 +33,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import cn.hutool.core.text.StrFormatter;
 
 /**
  * ClickhouseTest
@@ -44,16 +47,17 @@ public class ClickHouseTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClickHouseTest.class);
 
     private static final String IP = "127.0.0.1";
-    private static String url = "jdbc:clickhouse://" + IP + ":8123/default";
-    private ClickHouseDriver clickHouseDriver = new ClickHouseDriver();
+    private static final int PORT = 8123;
+    private static final String url = StrFormatter.format("jdbc:clickhouse://{}:{}/default", IP, PORT);
+
+    private final ClickHouseDriver clickHouseDriver = new ClickHouseDriver();
 
     public Driver getDriver() {
-        DriverConfig config = new DriverConfig();
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setType(clickHouseDriver.getType());
         config.setName(clickHouseDriver.getName());
-        config.setIp(IP);
-        config.setPort(8123);
-        config.setUrl(url);
+        config.setConnectConfig(
+                AbstractJdbcConfig.builder().ip(IP).port(PORT).url(url).build());
         return Driver.build(config);
     }
 

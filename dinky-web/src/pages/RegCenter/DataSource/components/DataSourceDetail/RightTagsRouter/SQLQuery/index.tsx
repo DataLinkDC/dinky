@@ -17,7 +17,6 @@
  *
  */
 
-import { Height80VHDiv } from '@/components/StyledComponents';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import QueryForm from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery/QueryForm';
 import { buildColumnsQueryKeyWord } from '@/pages/RegCenter/DataSource/components/function';

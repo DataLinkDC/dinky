@@ -19,11 +19,12 @@
 
 package org.dinky.data.model;
 
-import org.dinky.metadata.driver.DriverConfig;
-import org.dinky.mybatis.crypto.CryptoTypeHandler;
+import org.dinky.data.typehandler.JSONObjectHandler;
+import org.dinky.metadata.config.DriverConfig;
 import org.dinky.mybatis.model.SuperEntity;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -55,15 +56,9 @@ public class DataBase extends SuperEntity<DataBase> {
     @ApiModelProperty(value = "type", required = true, dataType = "String", example = "MySQL")
     private String type;
 
-    @ApiModelProperty(value = "url", required = true, dataType = "String", example = "jdbc:mysql://localhost:3306/test")
-    private String url;
-
-    @ApiModelProperty(value = "username", required = true, dataType = "String", example = "root")
-    private String username;
-
-    @TableField(typeHandler = CryptoTypeHandler.class)
-    @ApiModelProperty(value = "password", required = true, dataType = "String", example = "123456")
-    private String password;
+    @ApiModelProperty(value = "connectConfig", required = true, dataType = "String", example = "{}")
+    @TableField(typeHandler = JSONObjectHandler.class)
+    private Map<String, Object> connectConfig;
 
     @ApiModelProperty(value = "note", dataType = "String", example = "note")
     private String note;
@@ -86,7 +81,7 @@ public class DataBase extends SuperEntity<DataBase> {
     @ApiModelProperty(value = "heartbeatTime", dataType = "LocalDateTime", example = "2021-07-20 20:53:00")
     private LocalDateTime heartbeatTime;
 
-    public DriverConfig getDriverConfig() {
-        return new DriverConfig(getName(), type, url, username, password);
+    public DriverConfig<Map<String, Object>> getDriverConfig() {
+        return new DriverConfig<Map<String, Object>>(getName(), getType(), connectConfig);
     }
 }

@@ -34,6 +34,8 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 
+import java.util.Map;
+
 import com.alibaba.fastjson2.JSONValidator;
 
 import cn.hutool.json.JSONUtil;
@@ -51,7 +53,8 @@ import lombok.extern.slf4j.Slf4j;
     ClusterConfigurationMapping.class,
     FlinkClusterConfig.class,
     TaskExtConfig.class,
-    JobConfig.class
+    JobConfig.class,
+    Map.class
 })
 public class JSONObjectHandler<T> extends AbstractJsonTypeHandler<T> {
 
