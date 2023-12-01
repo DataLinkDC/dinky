@@ -61,7 +61,7 @@ public interface Driver extends AutoCloseable {
     static Driver getDriver(String type) {
         synchronized (Driver.class) {
             Optional<Driver> optionalDriver = Driver.get(type);
-            if (optionalDriver.isEmpty()) {
+            if (!optionalDriver.isPresent()) {
                 throw new MetaDataException(
                         StrFormatter.format("Missing {} dependency package: dinky-metadata-{}.jar", type, type));
             }
