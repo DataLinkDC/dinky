@@ -36,7 +36,6 @@ import { stringify } from 'querystring';
 import { ItemType } from 'rc-menu/es/interface';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import { useCallback } from 'react';
-import { flushSync } from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
 
 export const loginOut = async () => {
@@ -124,9 +123,7 @@ const AvatarDropdown = () => {
   const loginOutHandler = useCallback(
     async (event: MenuInfo) => {
       const { key } = event;
-      flushSync(() => {
-        setInitialState((s) => ({ ...s, currentUser: undefined }));
-      });
+      setInitialState((s) => ({ ...s, currentUser: undefined }));
       await loginOut();
       return;
     },

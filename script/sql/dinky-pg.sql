@@ -113,7 +113,7 @@ CREATE TABLE "public"."dinky_alert_instance" (
                                                  "name" varchar(50) COLLATE "pg_catalog"."default" NOT null,
                                                  "tenant_id" int4 NOT null,
                                                  "type" varchar(50) COLLATE "pg_catalog"."default",
-                                                 "params" text COLLATE "pg_catalog"."default",
+                                                 "params" json COLLATE "pg_catalog"."default",
                                                  "enabled" int2,
                                                  "create_time" timestamp(6),
                                                  "update_time" timestamp(6),

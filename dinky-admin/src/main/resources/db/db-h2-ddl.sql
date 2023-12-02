@@ -34,7 +34,7 @@ CREATE TABLE `dinky_alert_instance` (
                                       `name` varchar(50) NOT null COMMENT 'alert instance name',
                                       `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
                                       `type` varchar(50) null DEFAULT null COMMENT 'alert instance type such as: DingTalk,Wechat(Webhook,app) Feishu ,email',
-                                      `params` text null COMMENT 'configuration',
+                                      `params` json null COMMENT 'configuration',
                                       `enabled` tinyint(4) null DEFAULT 1 COMMENT 'is enable',
                                       `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                                       `update_time` datetime(0) null DEFAULT null COMMENT 'update time',

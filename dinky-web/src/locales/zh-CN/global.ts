@@ -18,6 +18,7 @@
  */
 
 export default {
+  'button.add': '添加',
   'button.check': '检查',
   'button.graph': 'DAG',
   'button.create': '新建',

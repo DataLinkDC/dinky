@@ -74,7 +74,7 @@ CREATE TABLE `dinky_alert_instance`  (
                                        `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'alert instance name',
                                        `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
                                        `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'alert instance type such as: DingTalk,Wechat(Webhook,app) Feishu ,email',
-                                       `params` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'configuration',
+                                       `params` json NULL COMMENT 'configuration',
                                        `enabled` tinyint(4) NULL DEFAULT 1 COMMENT 'is enable',
                                        `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                        `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',

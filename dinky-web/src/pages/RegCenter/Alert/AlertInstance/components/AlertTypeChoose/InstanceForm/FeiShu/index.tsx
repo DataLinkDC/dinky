@@ -17,7 +17,9 @@
  *
  */
 
+import { FormSingleColumnList } from '@/components/FormSingleColumnList';
 import { SWITCH_OPTIONS } from '@/services/constants';
+import { Alert } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import {
   ProForm,
@@ -26,10 +28,35 @@ import {
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
+import { Rule } from 'rc-field-form/lib/interface';
 
-const FeiShu = (props: any) => {
-  const { values } = props;
-  console.log('FeiShu props', props);
+type FeiShuProps = {
+  values: Partial<Alert.AlertInstance>;
+  form: FormInstance<Values>;
+};
+const FeiShu = (props: FeiShuProps) => {
+  const { values, form } = props;
+
+  const params = values.params as Alert.AlertInstanceParamsFeiShu;
+
+  const validateRules = [
+    {
+      required: true,
+      validator: async (rule: Rule, value: string) => {
+        if (!value) {
+          return Promise.reject('请输入@用户ID');
+        }
+        // 校验手机号码是否重复
+        const fieldValue = form.getFieldValue(['params', 'atUsers']);
+        const filterField = fieldValue.filter((item: string) => item === value);
+        if (filterField.length > 1) {
+          return Promise.reject('@用户ID重复');
+        }
+      }
+    }
+  ];
 
   /**
    * render
@@ -40,21 +67,21 @@ const FeiShu = (props: any) => {
         <ProFormTextArea
           width='lg'
           allowClear
-          name='webhook'
+          name={['params', 'webhook']}
           label={l('rc.ai.webhook')}
           rules={[{ required: true, message: l('rc.ai.webhookPleaseHolder') }]}
           placeholder={l('rc.ai.webhookPleaseHolder')}
         />
         <ProFormTextArea
           width='md'
-          name='keyword'
+          name={['params', 'keyword']}
           label={l('rc.ai.keyword')}
           placeholder={l('rc.ai.keywordPleaseHolder')}
         />
         <ProFormText.Password
           width='lg'
           allowClear
-          name='secret'
+          name={['params', 'secret']}
           label={l('rc.ai.secret')}
           placeholder={l('rc.ai.secretPleaseHolder')}
         />
@@ -64,38 +91,31 @@ const FeiShu = (props: any) => {
       <ProForm.Group>
         <ProFormSwitch
           width='xs'
-          name='isEnableProxy'
+          name={['params', 'isEnableProxy']}
           label={l('rc.ai.isEnableProxy')}
           {...SWITCH_OPTIONS()}
         />
-        <ProFormSwitch width='xs' name='isAtAll' label={l('rc.ai.isAtAll')} {...SWITCH_OPTIONS()} />
+        <ProFormSwitch
+          width='xs'
+          name={['params', 'isAtAll']}
+          label={l('rc.ai.isAtAll')}
+          {...SWITCH_OPTIONS()}
+        />
         <ProFormSwitch
           width='xs'
           name='enabled'
           label={l('global.table.isEnable')}
           {...SWITCH_OPTIONS()}
         />
-        {/* if not Enable At All this group do render */}
-        {!values.isAtAll && (
-          <>
-            <ProFormTextArea
-              width='xl'
-              name='users'
-              label={l('rc.ai.atUsers')}
-              rules={[{ required: true, message: l('rc.ai.atUsersPleaseHolder') }]}
-              placeholder={l('rc.ai.atUsersPleaseHolder')}
-            />
-          </>
-        )}
       </ProForm.Group>
 
       {/* if Enable Proxy this group do render */}
       <ProForm.Group>
-        {values.isEnableProxy && (
+        {params.isEnableProxy && (
           <>
             <ProFormText
               width='lg'
-              name='proxy'
+              name={['params', 'proxy']}
               label={l('rc.ai.proxy')}
               rules={[{ required: true, message: l('rc.ai.proxyPleaseHolder') }]}
               placeholder={l('rc.ai.proxyPleaseHolder')}
@@ -103,21 +123,21 @@ const FeiShu = (props: any) => {
 
             <ProFormDigit
               width='md'
-              name='port'
+              name={['params', 'port']}
               label={l('rc.ai.port')}
               rules={[{ required: true, message: l('rc.ai.portPleaseHolder') }]}
               placeholder={l('rc.ai.portPleaseHolder')}
             />
             <ProFormText
               width='lg'
-              name='user'
+              name={['params', 'user']}
               label={l('rc.ai.user')}
               rules={[{ required: true, message: l('rc.ai.userPleaseHolder') }]}
               placeholder={l('rc.ai.userPleaseHolder')}
             />
             <ProFormText.Password
               width={'md'}
-              name='password'
+              name={['params', 'password']}
               label={l('rc.ai.password')}
               rules={[{ required: true, message: l('rc.ai.passwordPleaseHolder') }]}
               placeholder={l('rc.ai.passwordPleaseHolder')}
@@ -125,6 +145,21 @@ const FeiShu = (props: any) => {
           </>
         )}
       </ProForm.Group>
+      {/* if not Enable At All this group do render */}
+      {!params.isAtAll && (
+        <>
+          <FormSingleColumnList
+            form={form}
+            namePath={['params', 'atUsers']}
+            rules={validateRules}
+            inputPlaceholder={l('rc.ai.atUsersPleaseHolder')}
+            title={`@用户(最多填写 [${20}] 个)`}
+            max={20}
+            min={1}
+            plain={true}
+          />
+        </>
+      )}
     </>
   );
 };
