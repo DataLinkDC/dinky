@@ -103,7 +103,7 @@ public final class EmailSender {
             email.setFrom(emailParams.getUser(), emailParams.getSender());
             email.setCharset(EmailConstants.CHARSET);
             email.setSubject(title);
-            email.setHtmlMsg(content);
+            email.setMsg(content);
             email.setDebug(true);
 
             if (CollectionUtils.isNotEmpty(emailParams.getReceivers())) {
