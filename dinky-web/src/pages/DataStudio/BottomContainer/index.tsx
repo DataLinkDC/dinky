@@ -217,7 +217,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       handlerMinimize={handleMinimize}
       maxWidth={width}
     >
-      < Tabs
+      <Tabs
         activeKey={
           bottomContainer.selectKey +
           '/' +
@@ -226,12 +226,12 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
             : '')
         }
         items={renderItems()}
-        tabBarStyle={{display: 'none'}}
+        tabBarStyle={{ display: 'none' }}
       />
     </MovableSidebar>
   );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  bottomContainer: Studio.bottomContainer,
+  bottomContainer: Studio.bottomContainer
 }))(BottomContainer);
