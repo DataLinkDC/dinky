@@ -44,14 +44,14 @@ public class EmailSenderTest {
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_HOST, "smtp.163.com");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_PORT, "465");
         emailConfig.put(EmailConstants.NAME_MAIL_SENDER, "zzz");
-        emailConfig.put(EmailConstants.NAME_MAIL_USER, "z17729752675@163.com");
-        emailConfig.put(EmailConstants.NAME_MAIL_PASSWD, "RKXYOYBLBVMFGGWB");
+        emailConfig.put(EmailConstants.NAME_MAIL_USER, "11111111@163.com");
+        emailConfig.put(EmailConstants.NAME_MAIL_PASSWD, "1111111111");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_AUTH, "true");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_STARTTLS_ENABLE, "true");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_SSL_ENABLE, "true");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_SSL_TRUST, "*");
-        emailConfig.put(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS, Arrays.asList("934230207@qq.com"));
-        emailConfig.put(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERCCS, Arrays.asList("z17729752675@163.com"));
+        emailConfig.put(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS, Arrays.asList("111111111@qq.com"));
+        emailConfig.put(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERCCS, Arrays.asList("111111111111@163.com"));
         //        emailConfig.put(EmailConstants.MSG_TYPE, ShowType.TEXT.getValue());
         emailSender = new EmailSender(emailConfig);
     }

@@ -41,24 +41,23 @@ const DingTalk = (props: DingTalkProps) => {
 
   const params = values.params as Alert.AlertInstanceParamsDingTalk;
 
-  const validateRules = [
+  const validateDingTalkRules = [
     {
       required: true,
       validator: async (rule: Rule, value: string) => {
         if (!value) {
-          return Promise.reject('请输入手机号码');
+          return Promise.reject(l('rc.ai.atMobiles'));
         }
-        // 校验手机号码是否重复
         const fieldValue = form.getFieldValue(['params', 'atMobiles']);
         const filterField = fieldValue.filter((item: string) => item === value);
         if (filterField.length > 1) {
-          return Promise.reject('手机号码重复');
+          return Promise.reject(l('rc.ai.atMobilesRepeat'));
         }
       }
     },
     {
       pattern: /^1[3456789]\d{9}$/,
-      message: '手机号码格式不正确'
+      message: l('rc.ai.atMobilesFormat')
     }
   ];
 
@@ -152,10 +151,10 @@ const DingTalk = (props: DingTalkProps) => {
           <FormSingleColumnList
             form={form}
             namePath={['params', 'atMobiles']}
-            rules={validateRules}
+            rules={validateDingTalkRules}
             inputPlaceholder={l('rc.ai.atMobilesPleaseHolder')}
-            title={`手机号码(最多填写 [${5}] 个)`}
-            max={5}
+            title={l('rc.ai.atMobilesMax','', { max: 10 })}
+            max={10}
             min={1}
             plain={true}
           />

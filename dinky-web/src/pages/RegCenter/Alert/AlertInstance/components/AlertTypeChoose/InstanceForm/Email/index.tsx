@@ -40,14 +40,13 @@ const Email = (props: EmailProps) => {
   const { values, form } = props;
   const params = values.params as Alert.AlertInstanceParamsEmail;
 
-  const validateRules = (namePath: string | string[], nullTips: string, repeatTips: string) => [
+  const validateEmailRules = (namePath: string | string[], nullTips: string, repeatTips: string) => [
     {
       required: true,
       validator: async (rule: Rule, value: string) => {
         if (!value) {
           return Promise.reject(nullTips);
         }
-        // 校验手机号码是否重复
         const fieldValue = form.getFieldValue(namePath);
         const filterField = fieldValue.filter((item: string) => item === value);
         if (filterField.length > 1) {
@@ -57,7 +56,7 @@ const Email = (props: EmailProps) => {
     },
     {
       pattern: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/,
-      message: '请输入正确的邮箱地址'
+      message: l('rc.ai.emailPleaseHolderFormat')
     }
   ];
 
@@ -95,9 +94,9 @@ const Email = (props: EmailProps) => {
             <FormSingleColumnList
               form={form}
               namePath={['params', 'receivers']}
-              rules={validateRules(['params', 'receivers'], '请输入收件人邮箱', '收件人邮箱重复')}
+              rules={validateEmailRules(['params', 'receivers'], l('rc.ai.receiversPleaseHolder'), l('rc.ai.receiversRepeat'))}
               inputPlaceholder={l('rc.ai.receiversPleaseHolder')}
-              title={`收件人邮箱(最多填写 [${5}] 个)`}
+              title={l('rc.ai.receiversMax','',{max: 5})}
               max={5}
               min={1}
               plain={true}
@@ -108,10 +107,10 @@ const Email = (props: EmailProps) => {
             <FormSingleColumnList
               form={form}
               namePath={['params', 'receiverCcs']}
-              rules={validateRules(['params', 'receiverCcs'], '请输入抄送人邮箱', '抄送人邮箱重复')}
+              rules={validateEmailRules(['params', 'receiverCcs'], l('rc.ai.receiverCcsPleaseHolder'), l('rc.ai.receiverCcsRepeat'))}
               inputPlaceholder={l('rc.ai.receiverCcsPleaseHolder')}
-              title={`抄送人邮箱(最多填写 [${5}] 个)`}
-              max={5}
+              title={l('rc.ai.receiverCcsMax','',{max: 10})}
+              max={10}
               min={1}
               plain={true}
             />

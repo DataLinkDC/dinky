@@ -50,13 +50,12 @@ const WeChat = (props: WeChatProps) => {
       required: true,
       validator: async (rule: Rule, value: string) => {
         if (!value) {
-          return Promise.reject('请输入@用户ID');
+          return Promise.reject(l('rc.ai.atUsersPleaseHolder'));
         }
-        // 校验手机号码是否重复
         const fieldValue = form.getFieldValue(['params', 'atUsers']);
         const filterField = fieldValue.filter((item: string) => item === value);
         if (filterField.length > 1) {
-          return Promise.reject('@用户ID重复');
+          return Promise.reject(l('rc.ai.atUsersRepeat'));
         }
       }
     }
@@ -153,8 +152,8 @@ const WeChat = (props: WeChatProps) => {
             namePath={['params', 'atUsers']}
             rules={validateRulesWeChat}
             inputPlaceholder={l('rc.ai.atUsersPleaseHolder')}
-            title={`@用户(最多填写 [${20}] 个)`}
-            max={20}
+            title={l('rc.ai.atUsersMax', '',{ max: 10 })}
+            max={10}
             min={1}
             plain={true}
           />

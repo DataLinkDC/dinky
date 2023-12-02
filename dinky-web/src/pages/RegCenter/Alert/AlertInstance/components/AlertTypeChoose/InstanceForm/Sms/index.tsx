@@ -77,24 +77,23 @@ const Sms = (props: SmsProps) => {
     [suppliers]
   );
 
-  const validateRules = [
+  const validateSmsPhoneRules = [
     {
       required: true,
       validator: async (rule: Rule, value: string) => {
         if (!value) {
-          return Promise.reject('请输入手机号码');
+          return Promise.reject(l('rc.ai.atMobilesPleaseHolder'));
         }
-        // 校验手机号码是否重复
         const fieldValue = form.getFieldValue(['params', 'phoneNumbers']);
         const filterField = fieldValue.filter((item: string) => item === value);
         if (filterField.length > 1) {
-          return Promise.reject('手机号码重复');
+          return Promise.reject(l('rc.ai.atMobilesRepeat'));
         }
       }
     },
     {
       pattern: /^1[3456789]\d{9}$/,
-      message: '手机号码格式不正确'
+      message: l('rc.ai.atMobilesFormat')
     }
   ];
 
@@ -121,10 +120,10 @@ const Sms = (props: SmsProps) => {
       <FormSingleColumnList
         form={form}
         namePath={['params', 'phoneNumbers']}
-        rules={validateRules}
-        inputPlaceholder={'请输入手机号码'}
-        title={`手机号码(最多填写 [${5}] 个)`}
-        max={5}
+        rules={validateSmsPhoneRules}
+        inputPlaceholder={l('rc.ai.atMobilesPleaseHolder')}
+        title={l('rc.ai.atMobilesMax', '', { max: 10 })}
+        max={10}
         min={1}
         plain={true}
       />

@@ -28,12 +28,12 @@ import { Rule } from 'rc-field-form/lib/interface';
 import React from 'react';
 
 interface FormSingleColumnListProps {
-  max: number; // 最多能有多少个
-  min: number; // 最少能有多少个
-  namePath: string | string[]; // 字段
-  rules?: Rule[]; // 校验
-  title?: React.ReactNode | string; // 标签
-  inputPlaceholder: string; // 输入框提示信息
+  max: number;
+  min: number;
+  namePath: string | string[];
+  rules?: Rule[];
+  title?: React.ReactNode | string;
+  inputPlaceholder: string;
   form: FormInstance<Values>;
   plain: boolean;
 }
@@ -86,7 +86,7 @@ export const FormSingleColumnList = (props: FormSingleColumnListProps) => {
                     <DangerDeleteIcon
                       onClick={async () => {
                         if (fields.length <= min) {
-                          await ErrorMessageAsync(`最少必须有[${min}]个`);
+                          await ErrorMessageAsync(l('rc.ai.atLeast','',{min}));
                           return;
                         }
                         remove(field.name);
@@ -108,11 +108,11 @@ export const FormSingleColumnList = (props: FormSingleColumnListProps) => {
                     const lastItem = fields[fields.length === 0 ? 0 : fields.length - 1];
                     const addBeforePreItem = form.getFieldValue([...namePath, lastItem.name]);
                     if (!addBeforePreItem) {
-                      await ErrorMessageAsync('前一项必须输入,才能添加下一项');
+                      await ErrorMessageAsync(l('rc.ai.previousItemRequired'));
                       return;
                     } else if (fields.length >= max) {
                       console.log(fields.length);
-                      await ErrorMessageAsync(`最多只能有[${max}]个`);
+                      await ErrorMessageAsync(l('rc.ai.atMost','',{max}));
                       return;
                     } else {
                       add();
