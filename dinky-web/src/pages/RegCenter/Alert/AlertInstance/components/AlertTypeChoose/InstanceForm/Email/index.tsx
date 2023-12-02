@@ -40,7 +40,11 @@ const Email = (props: EmailProps) => {
   const { values, form } = props;
   const params = values.params as Alert.AlertInstanceParamsEmail;
 
-  const validateEmailRules = (namePath: string | string[], nullTips: string, repeatTips: string) => [
+  const validateEmailRules = (
+    namePath: string | string[],
+    nullTips: string,
+    repeatTips: string
+  ) => [
     {
       required: true,
       validator: async (rule: Rule, value: string) => {
@@ -94,9 +98,13 @@ const Email = (props: EmailProps) => {
             <FormSingleColumnList
               form={form}
               namePath={['params', 'receivers']}
-              rules={validateEmailRules(['params', 'receivers'], l('rc.ai.receiversPleaseHolder'), l('rc.ai.receiversRepeat'))}
+              rules={validateEmailRules(
+                ['params', 'receivers'],
+                l('rc.ai.receiversPleaseHolder'),
+                l('rc.ai.receiversRepeat')
+              )}
               inputPlaceholder={l('rc.ai.receiversPleaseHolder')}
-              title={l('rc.ai.receiversMax','',{max: 5})}
+              title={l('rc.ai.receiversMax', '', { max: 5 })}
               max={5}
               min={1}
               plain={true}
@@ -107,9 +115,13 @@ const Email = (props: EmailProps) => {
             <FormSingleColumnList
               form={form}
               namePath={['params', 'receiverCcs']}
-              rules={validateEmailRules(['params', 'receiverCcs'], l('rc.ai.receiverCcsPleaseHolder'), l('rc.ai.receiverCcsRepeat'))}
+              rules={validateEmailRules(
+                ['params', 'receiverCcs'],
+                l('rc.ai.receiverCcsPleaseHolder'),
+                l('rc.ai.receiverCcsRepeat')
+              )}
               inputPlaceholder={l('rc.ai.receiverCcsPleaseHolder')}
-              title={l('rc.ai.receiverCcsMax','',{max: 10})}
+              title={l('rc.ai.receiverCcsMax', '', { max: 10 })}
               max={10}
               min={1}
               plain={true}

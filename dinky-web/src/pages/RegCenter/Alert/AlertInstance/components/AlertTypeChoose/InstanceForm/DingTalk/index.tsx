@@ -153,7 +153,7 @@ const DingTalk = (props: DingTalkProps) => {
             namePath={['params', 'atMobiles']}
             rules={validateDingTalkRules}
             inputPlaceholder={l('rc.ai.atMobilesPleaseHolder')}
-            title={l('rc.ai.atMobilesMax','', { max: 10 })}
+            title={l('rc.ai.atMobilesMax', '', { max: 10 })}
             max={10}
             min={1}
             plain={true}
