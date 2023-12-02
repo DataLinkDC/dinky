@@ -152,7 +152,7 @@ const WeChat = (props: WeChatProps) => {
             namePath={['params', 'atUsers']}
             rules={validateRulesWeChat}
             inputPlaceholder={l('rc.ai.atUsersPleaseHolder')}
-            title={l('rc.ai.atUsersMax', '',{ max: 10 })}
+            title={l('rc.ai.atUsersMax', '', { max: 10 })}
             max={10}
             min={1}
             plain={true}

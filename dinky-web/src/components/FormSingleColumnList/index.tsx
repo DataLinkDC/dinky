@@ -86,7 +86,7 @@ export const FormSingleColumnList = (props: FormSingleColumnListProps) => {
                     <DangerDeleteIcon
                       onClick={async () => {
                         if (fields.length <= min) {
-                          await ErrorMessageAsync(l('rc.ai.atLeast','',{min}));
+                          await ErrorMessageAsync(l('rc.ai.atLeast', '', { min }));
                           return;
                         }
                         remove(field.name);
@@ -112,7 +112,7 @@ export const FormSingleColumnList = (props: FormSingleColumnListProps) => {
                       return;
                     } else if (fields.length >= max) {
                       console.log(fields.length);
-                      await ErrorMessageAsync(l('rc.ai.atMost','',{max}));
+                      await ErrorMessageAsync(l('rc.ai.atMost', '', { max }));
                       return;
                     } else {
                       add();
