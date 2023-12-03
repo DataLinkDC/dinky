@@ -25,10 +25,10 @@ import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEdi
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import {Editor, Monaco, OnChange} from '@monaco-editor/react';
+import { Editor, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
 import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
-import {memo, useCallback, useRef} from 'react';
+import { memo, useCallback, useRef } from 'react';
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
 import CompletionContext = languages.CompletionContext;
@@ -234,7 +234,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     <>
       <div className={'monaco-float'}>
         <Editor
-          beforeMount={(monaco) => handleInitEditorAndLanguageOnBeforeMount(monaco,true)}
+          beforeMount={(monaco) => handleInitEditorAndLanguageOnBeforeMount(monaco, true)}
           width={width}
           height={height}
           value={code}
@@ -253,6 +253,8 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   suggestionsData: Studio.suggestions,
   tabs: Studio.tabs
-}))(memo(CodeEdit, (prevProps, nextProps) => {
-  return prevProps.code === nextProps.code;
-}));
+}))(
+  memo(CodeEdit, (prevProps, nextProps) => {
+    return prevProps.code === nextProps.code;
+  })
+);
