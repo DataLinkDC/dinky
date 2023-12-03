@@ -17,24 +17,21 @@
  *
  */
 
-import { CustomEditorLanguage } from '@/components/CustomEditor/languages/constants';
-import { buildMonarchTokensProvider } from '@/components/CustomEditor/languages/javalog/function';
+import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
+import { convertCodeEditTheme } from '@/utils/function';
 import { Monaco } from '@monaco-editor/react';
 
-export function LogLanguage(monacoLanguages: Monaco['languages'] | undefined) {
-  // Register a new language
-  monacoLanguages?.register({
-    id: CustomEditorLanguage.JavaLog,
-    extensions: [],
-    mimetypes: [
-      'text/x-java-log',
-      'text/x-javalog',
-      'text/x-java-source',
-      'text/x-java',
-      'text/java'
-    ],
-    aliases: ['javalog', 'Javalog', 'jl', 'log']
-  });
-
-  buildMonarchTokensProvider(monacoLanguages);
+/**
+ * 初始化编辑器 | init editor
+ *  - 加载自定义语言 | load custom language
+ *  - 转换主题 | convert theme
+ * @param monaco
+ * @param registerCompletion
+ */
+export function handleInitEditorAndLanguageOnBeforeMount(
+  monaco: Monaco,
+  registerCompletion: boolean = false
+) {
+  convertCodeEditTheme(monaco.editor);
+  LoadCustomEditorLanguage(monaco.languages, monaco.editor, registerCompletion);
 }
