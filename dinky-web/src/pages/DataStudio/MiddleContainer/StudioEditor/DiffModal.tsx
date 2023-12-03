@@ -21,12 +21,12 @@ import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
 import {
   DIFF_EDITOR_PARAMS,
   PARAM_DIFF_TABLE_COL
-} from '@/pages/DataStudio/MiddleContainer/Editor/constants';
+} from '@/pages/DataStudio/MiddleContainer/StudioEditor/constants';
 import { convertCodeEditTheme } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { DiffEditor } from '@monaco-editor/react';
 import { Col, Modal, Row, Space, Table, Tabs, Typography } from 'antd';
-import React from 'react';
+import React, {memo} from 'react';
 import styles from './index.less';
 
 const { Text, Link } = Typography;
@@ -133,4 +133,4 @@ const DiffModal: React.FC<DiffModalProps> = (props) => {
     </Modal>
   );
 };
-export default DiffModal;
+export default memo(DiffModal);

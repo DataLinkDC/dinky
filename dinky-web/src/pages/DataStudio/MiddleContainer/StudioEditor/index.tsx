@@ -19,8 +19,8 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { useEditor } from '@/hooks/useEditor';
-import { TASK_VAR_FILTER } from '@/pages/DataStudio/MiddleContainer/Editor/constants';
-import DiffModal from '@/pages/DataStudio/MiddleContainer/Editor/DiffModal';
+import { TASK_VAR_FILTER } from '@/pages/DataStudio/MiddleContainer/StudioEditor/constants';
+import DiffModal from '@/pages/DataStudio/MiddleContainer/StudioEditor/DiffModal';
 import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
 import {
   DataStudioTabsItemType,
@@ -38,15 +38,15 @@ import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { Monaco } from '@monaco-editor/react';
 import { Button, Spin } from 'antd';
 import { editor } from 'monaco-editor';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {memo, useEffect, useRef, useState} from 'react';
 
 export type EditorProps = {
   tabsItem: DataStudioTabsItemType;
   height?: number;
 };
 
-const CodeEditor: React.FC<EditorProps & connect> = (props) => {
-  const { tabsItem, dispatch, height } = props;
+const StudioEditor: React.FC<EditorProps & connect> = (props) => {
+  const { tabsItem, dispatch, height,tabs } = props;
 
   const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>();
 
@@ -200,4 +200,4 @@ const CodeEditor: React.FC<EditorProps & connect> = (props) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   footContainer: Studio.footContainer
-}))(CodeEditor);
+}))(memo(StudioEditor, (prevProps, nextProps) => prevProps.tabsItem.params.taskId === nextProps.tabsItem.params.taskId));
