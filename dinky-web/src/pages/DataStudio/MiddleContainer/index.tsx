@@ -29,6 +29,7 @@ import {
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
+import StudioEditor from '@/pages/DataStudio/MiddleContainer/StudioEditor';
 import { StateType, STUDIO_MODEL, TabsItemType, TabsPageType } from '@/pages/DataStudio/model';
 import { RightSide } from '@/pages/DataStudio/route';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
@@ -37,8 +38,7 @@ import { connect } from '@@/exports';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { ConfigProvider, Divider, Dropdown, Modal, Space, Tabs, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
-import React, {memo, useState} from 'react';
-import StudioEditor from "@/pages/DataStudio/MiddleContainer/StudioEditor";
+import React, { memo, useState } from 'react';
 
 const { Text } = Typography;
 const { confirm } = Modal;
