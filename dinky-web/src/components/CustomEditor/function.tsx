@@ -28,7 +28,10 @@ import { Monaco } from '@monaco-editor/react';
  * @param monaco
  * @param registerCompletion
  */
-export function handleInitEditorAndLanguageOnBeforeMount(monaco: Monaco, registerCompletion: boolean = false) {
+export function handleInitEditorAndLanguageOnBeforeMount(
+  monaco: Monaco,
+  registerCompletion: boolean = false
+) {
   convertCodeEditTheme(monaco.editor);
   LoadCustomEditorLanguage(monaco.languages, monaco.editor, registerCompletion);
 }
