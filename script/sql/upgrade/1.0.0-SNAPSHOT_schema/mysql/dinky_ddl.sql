@@ -416,6 +416,16 @@ alter table dinky_alert_instance  modify params json null comment 'configuration
 alter table dinky_database
     add connect_config text null after type;
 
+-- 顺序执行问题 只能放在这里 不能放在 dml 语句中
+update dinky_database set connect_config = json_object(
+        'ip', ip,
+        'port', port,
+        'url', url,
+        'username', username,
+        'password', password
+);
+
+
 alter table dinky_database
     drop column ip;
 
