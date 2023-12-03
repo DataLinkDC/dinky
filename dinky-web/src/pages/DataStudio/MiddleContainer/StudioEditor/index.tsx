@@ -19,9 +19,9 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { useEditor } from '@/hooks/useEditor';
+import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
 import { TASK_VAR_FILTER } from '@/pages/DataStudio/MiddleContainer/StudioEditor/constants';
 import DiffModal from '@/pages/DataStudio/MiddleContainer/StudioEditor/DiffModal';
-import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
 import {
   DataStudioTabsItemType,
   StateType,
@@ -38,7 +38,7 @@ import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { Monaco } from '@monaco-editor/react';
 import { Button, Spin } from 'antd';
 import { editor } from 'monaco-editor';
-import React, {memo, useEffect, useRef, useState} from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 
 export type EditorProps = {
   tabsItem: DataStudioTabsItemType;
@@ -46,7 +46,7 @@ export type EditorProps = {
 };
 
 const StudioEditor: React.FC<EditorProps & connect> = (props) => {
-  const { tabsItem, dispatch, height,tabs } = props;
+  const { tabsItem, dispatch, height, tabs } = props;
 
   const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>();
 
@@ -200,4 +200,9 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   footContainer: Studio.footContainer
-}))(memo(StudioEditor, (prevProps, nextProps) => prevProps.tabsItem.params.taskId === nextProps.tabsItem.params.taskId));
+}))(
+  memo(
+    StudioEditor,
+    (prevProps, nextProps) => prevProps.tabsItem.params.taskId === nextProps.tabsItem.params.taskId
+  )
+);
