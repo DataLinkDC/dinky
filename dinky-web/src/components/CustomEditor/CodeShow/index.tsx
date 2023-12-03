@@ -18,7 +18,6 @@
  */
 
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
-import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
 import { Loading } from '@/pages/Other/Loading';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
@@ -28,8 +27,9 @@ import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
 
 import FullscreenBtn from '@/components/CustomEditor/FullscreenBtn';
+import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEditor/function';
 import { Editor, Monaco } from '@monaco-editor/react';
-import { CSSProperties, useRef, useState } from 'react';
+import { CSSProperties, memo, useRef, useState } from 'react';
 
 export type CodeShowFormProps = {
   height?: string | number;
@@ -208,11 +208,7 @@ const CodeShow = (props: CodeShowFormProps) => {
 
           {/* editor */}
           <Editor
-            beforeMount={(monaco) => {
-              // 挂载前加载语言 | before mount load language
-              LoadCustomEditorLanguage(monacoInstance.current);
-              monacoInstance.current = monaco;
-            }}
+            beforeMount={(monaco) => handleInitEditorAndLanguageOnBeforeMount(monaco)}
             width={width}
             height={height}
             loading={<Loading loading={loading} />}
@@ -253,7 +249,7 @@ const CodeShow = (props: CodeShowFormProps) => {
               ...options
             }}
             onMount={editorDidMount}
-            theme={convertCodeEditTheme(editorInstance?.current)}
+            theme={convertCodeEditTheme(monacoInstance?.current?.editor)}
           />
         </Col>
         {showFloatButton && (
@@ -266,4 +262,6 @@ const CodeShow = (props: CodeShowFormProps) => {
   );
 };
 
-export default CodeShow;
+export default memo(CodeShow, (prevProps, nextProps) => {
+  return prevProps.code === nextProps.code;
+});

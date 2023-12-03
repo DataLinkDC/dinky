@@ -21,14 +21,14 @@ import * as monaco from 'monaco-editor';
 import { editor, languages, Position } from 'monaco-editor';
 
 import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
-import { LoadCustomEditorLanguageWithCompletion } from '@/components/CustomEditor/languages';
+import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEditor/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import { Editor, Monaco, OnChange } from '@monaco-editor/react';
+import {Editor, Monaco, OnChange} from '@monaco-editor/react';
 import { connect } from '@umijs/max';
 import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
-import { memo, useCallback, useRef } from 'react';
+import {memo, useCallback, useRef} from 'react';
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
 import CompletionContext = languages.CompletionContext;
@@ -50,7 +50,7 @@ export type CodeEditFormProps = {
   editorDidMount?: (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => void;
   enableSuggestions?: boolean;
   monacoRef?: any;
-  editorRef?: any;
+  // editorRef?: any;
 };
 
 const CodeEdit = (props: CodeEditFormProps & connect) => {
@@ -229,15 +229,12 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     lineNumbers,
     ...options
   };
+
   return (
     <>
       <div className={'monaco-float'}>
         <Editor
-          beforeMount={(monaco) => {
-            // 挂载前加载语言 | before mount load language
-            monacoInstance.current = monaco;
-            LoadCustomEditorLanguageWithCompletion(monaco);
-          }}
+          beforeMount={(monaco) => handleInitEditorAndLanguageOnBeforeMount(monaco,true)}
           width={width}
           height={height}
           value={code}
@@ -246,7 +243,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
           className={'editor-develop'}
           onMount={editorDidMountChange}
           onChange={onChange}
-          theme={convertCodeEditTheme(editorInstance?.current)}
+          theme={convertCodeEditTheme(monacoInstance?.current?.editor)}
         />
       </div>
     </>
@@ -256,4 +253,6 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   suggestionsData: Studio.suggestions,
   tabs: Studio.tabs
-}))(memo(CodeEdit));
+}))(memo(CodeEdit, (prevProps, nextProps) => {
+  return prevProps.code === nextProps.code;
+}));

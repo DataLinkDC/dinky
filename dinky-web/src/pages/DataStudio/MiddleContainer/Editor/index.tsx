@@ -38,7 +38,7 @@ import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { Monaco } from '@monaco-editor/react';
 import { Button, Spin } from 'antd';
 import { editor } from 'monaco-editor';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export type EditorProps = {
   tabsItem: DataStudioTabsItemType;
@@ -47,6 +47,8 @@ export type EditorProps = {
 
 const CodeEditor: React.FC<EditorProps & connect> = (props) => {
   const { tabsItem, dispatch, height } = props;
+
+  const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>();
 
   useEffect(() => {
     dispatch({
@@ -102,7 +104,7 @@ const CodeEditor: React.FC<EditorProps & connect> = (props) => {
   const editorDidMount = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editor.layout();
     editor.focus();
-    tabsItem.editorInstance = editor;
+    editorInstance.current = editor;
     tabsItem.monacoInstance = monaco;
 
     editor.onDidChangeCursorPosition((e) => {
@@ -141,7 +143,7 @@ const CodeEditor: React.FC<EditorProps & connect> = (props) => {
         />
         <CodeEdit
           monacoRef={tabsItem?.monacoInstance}
-          editorRef={tabsItem?.editorInstance}
+          editorRef={editorInstance}
           code={tabsItem?.params?.taskData?.statement}
           language={matchLanguage(tabsItem?.subType)}
           editorDidMount={editorDidMount}
@@ -171,7 +173,7 @@ const CodeEditor: React.FC<EditorProps & connect> = (props) => {
               title={l('global.fullScreen.exit')}
               icon={<FullscreenExitOutlined />}
               onClick={() => {
-                tabsItem?.editorInstance?.current?.layout();
+                editorInstance?.current?.layout();
                 setFullscreen(false);
               }}
             />
@@ -184,7 +186,7 @@ const CodeEditor: React.FC<EditorProps & connect> = (props) => {
               title={l('global.fullScreen')}
               icon={<FullscreenOutlined />}
               onClick={() => {
-                tabsItem?.editorInstance?.current?.layout();
+                editorInstance?.current?.layout();
                 setFullscreen(true);
               }}
             />

@@ -64,7 +64,7 @@ const DiffModal: React.FC<DiffModalProps> = (props) => {
               {...DIFF_EDITOR_PARAMS}
               language={language}
               // 挂载前加载语言 | Load language before mounting
-              beforeMount={(monaco) => LoadCustomEditorLanguage(monaco)}
+              beforeMount={(monaco) => LoadCustomEditorLanguage(monaco.languages, monaco.editor)}
               original={statementDiff?.server}
               modified={statementDiff?.cache}
               theme={convertCodeEditTheme()}

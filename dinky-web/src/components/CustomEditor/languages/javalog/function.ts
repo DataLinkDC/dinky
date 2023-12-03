@@ -21,8 +21,8 @@ import { CustomEditorLanguage } from '@/components/CustomEditor/languages/consta
 import { JAVA_LOG_KEYWORD } from '@/components/CustomEditor/languages/javalog/keyword';
 import { Monaco } from '@monaco-editor/react';
 
-export function buildMonarchTokensProvider(monaco?: Monaco | undefined) {
-  monaco?.languages.setMonarchTokensProvider(CustomEditorLanguage.JavaLog, {
+export function buildMonarchTokensProvider(monacoLanguages?: Monaco['languages'] | undefined) {
+  monacoLanguages?.setMonarchTokensProvider(CustomEditorLanguage.JavaLog, {
     defaultToken: '',
     tokenPostfix: '.log',
     keywords: JAVA_LOG_KEYWORD,
