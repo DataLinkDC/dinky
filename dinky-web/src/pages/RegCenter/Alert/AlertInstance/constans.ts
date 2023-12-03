@@ -45,57 +45,78 @@ export const ALERT_TYPE_LIST_OPTIONS: DefaultOptionType[] = [
   {
     label: l('rc.ai.sms'),
     value: ALERT_TYPE.SMS,
-    disabled: true // todo: 短信功能暂时不实现, 禁用, 后续实现后再打开
-  }
-];
-
-export const MANU_FACTURERS = [
-  {
-    label: l('rc.ai.mf.alibaba'),
-    value: 1
-  },
-  {
-    label: l('rc.ai.mf.huawei'),
-    value: 2
-  },
-  {
-    label: l('rc.ai.mf.yunpian'),
-    value: 3
-  },
-  {
-    label: l('rc.ai.mf.tencent'),
-    value: 4
-  },
-  {
-    label: l('rc.ai.mf.uni'),
-    value: 5
-  },
-  {
-    label: l('rc.ai.mf.jdcloud'),
-    value: 6
-  },
-  {
-    label: l('rc.ai.mf.cloopen'),
-    value: 7
-  },
-  {
-    label: l('rc.ai.mf.emay'),
-    value: 8
-  },
-  {
-    label: l('rc.ai.mf.ctyun'),
-    value: 9
+    disabled: false
   }
 ];
 
 export enum SMS_TYPE {
-  ALIBABA = 1,
-  HUAWEI = 2,
-  YUNPIAN = 3,
-  TENCENT = 4,
-  UNI = 5,
-  JDCLOUD = 6,
-  CLOOPEN = 7,
-  EMAY = 8,
-  CTYUN = 9
+  ALIBABA = 'alibaba',
+  CLOOPEN = 'cloopen',
+  CTYUN = 'ctyun',
+  EMAY = 'emay',
+  HUAWEI = 'huawei',
+  JDCLOUD = 'jdcloud',
+  NETEASE = 'netease',
+  TENCENT = 'tencent',
+  UNISMS = 'unisms',
+  YUNPIAN = 'yunpian',
+  ZHUTONG = 'zhutong'
 }
+
+export const MANU_FRACTURES = [
+  {
+    label: l('rc.ai.mf.alibaba'),
+    value: SMS_TYPE.ALIBABA
+  },
+  {
+    label: l('rc.ai.mf.tencent'),
+    value: SMS_TYPE.TENCENT,
+    disabled: true
+  }
+  // todo: 以下短信暂不实现
+  // {
+  //   label: l('rc.ai.mf.huawei'),
+  //   value: SMS_TYPE.HUAWEI,
+  //   disabled: true
+  // },
+  // {
+  //   label: l('rc.ai.mf.uni'),
+  //   value: SMS_TYPE.UNISMS,
+  //   disabled: true
+  // },
+  // {
+  //   label: l('rc.ai.mf.yunpian'),
+  //   value: SMS_TYPE.YUNPIAN,
+  //   disabled: true
+  // },
+  // {
+  //   label: l('rc.ai.mf.jdcloud'),
+  //   value: SMS_TYPE.JDCLOUD,
+  //   disabled: true
+  // },
+  // {
+  //   label: l('rc.ai.mf.cloopen'),
+  //   value: SMS_TYPE.CLOOPEN,
+  //   disabled: true
+  // },
+  // {
+  //   label: l('rc.ai.mf.emay'),
+  //   value: SMS_TYPE.EMAY,
+  //   disabled: true
+  // },
+  // {
+  //   label: l('rc.ai.mf.ctyun'),
+  //   value: SMS_TYPE.CTYUN,
+  //   disabled: true
+  // },
+  // {
+  //   label: l('rc.ai.mf.netease'),
+  //   value: SMS_TYPE.NETEASE,
+  //   disabled: true
+  // },
+  // {
+  //   label: l('rc.ai.mf.zhutong'),
+  //   value: SMS_TYPE.ZHUTONG,
+  //   disabled: true
+  // }
+];

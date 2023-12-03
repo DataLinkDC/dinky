@@ -19,8 +19,14 @@
 
 package org.dinky.data.model.alert;
 
+import org.dinky.data.typehandler.JSONObjectHandler;
 import org.dinky.mybatis.model.SuperEntity;
 
+import org.apache.ibatis.type.JdbcType;
+
+import java.util.Map;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -61,5 +67,6 @@ public class AlertInstance extends SuperEntity<AlertInstance> {
             required = true,
             dataType = "String",
             example = "{\"webhook\":\"https://oapi.dingtalk.com/robot/send?access_token=xxxxxx\"}")
-    private String params;
+    @TableField(jdbcType = JdbcType.VARCHAR, typeHandler = JSONObjectHandler.class)
+    private Map<String, Object> params;
 }

@@ -210,8 +210,8 @@ public class JobAlertHandler {
      */
     private void sendAlert(
             AlertInstance alertInstance, int jobInstanceId, int alertGid, String title, String alertMsg) {
-        Map<String, String> params = JsonUtils.toMap(alertInstance.getParams());
-        AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(), params);
+        AlertConfig alertConfig =
+                AlertConfig.build(alertInstance.getName(), alertInstance.getType(), alertInstance.getParams());
         Alert alert = Alert.build(alertConfig);
         AlertResult alertResult = alert.send(title, alertMsg);
 
