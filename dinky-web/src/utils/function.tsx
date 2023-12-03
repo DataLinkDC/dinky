@@ -503,7 +503,7 @@ export function parseNumStr(num: number) {
  * @param {number} second_time
  * @returns {any}
  */
-export function parseMilliSecondStr(second_time: number | undefined): any {
+export function parseMilliSecondStr(second_time: number | undefined): string {
   if (second_time == null) {
     return 'None';
   }
