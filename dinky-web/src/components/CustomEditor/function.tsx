@@ -32,6 +32,8 @@ export function handleInitEditorAndLanguageOnBeforeMount(
   monaco: Monaco,
   registerCompletion: boolean = false
 ) {
+  // 此处调用需要在编辑器初始化时 进行渲染自定义的高亮规则(token) 否则会出现编辑器闪烁的问题 | This call needs to be rendered when the editor is initialized. Custom highlight rules (token) will cause the editor to flash
   convertCodeEditTheme(monaco.editor);
+  // 加载自定义语言 | load custom language
   LoadCustomEditorLanguage(monaco.languages, monaco.editor, registerCompletion);
 }

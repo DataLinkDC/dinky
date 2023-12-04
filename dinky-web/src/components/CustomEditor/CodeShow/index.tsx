@@ -22,14 +22,17 @@ import { Loading } from '@/pages/Other/Loading';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 
-import { Col, Row } from 'antd';
+import { Col,Row } from 'antd';
 import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
 
 import FullscreenBtn from '@/components/CustomEditor/FullscreenBtn';
 import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEditor/function';
-import { Editor, Monaco } from '@monaco-editor/react';
-import { CSSProperties, memo, useRef, useState } from 'react';
+import { Editor,Monaco } from '@monaco-editor/react';
+import { debounce } from "lodash";
+import {CSSProperties, memo, useRef, useState} from 'react';
+import CodeEdit from "@/components/CustomEditor/CodeEdit";
+
 
 export type CodeShowFormProps = {
   height?: string | number;
@@ -249,7 +252,9 @@ const CodeShow = (props: CodeShowFormProps) => {
               ...options
             }}
             onMount={editorDidMount}
-            theme={convertCodeEditTheme(monacoInstance?.current?.editor)}
+            //zh-CN: 因为在 handleInitEditorAndLanguageOnBeforeMount 中已经注册了自定义语言，所以这里的作用仅仅是用来切换主题 不需要重新加载自定义语言的 token 样式 , 所以这里入参需要为空, 否则每次任意的 props 改变时(包括高度等),会出现编辑器闪烁的问题
+            //en-US: because the custom language has been registered in handleInitEditorAndLanguageOnBeforeMount, so the only purpose here is to switch the theme, and there is no need to reload the token style of the custom language, so the incoming parameters here need to be empty, otherwise any props change (including height, etc.) will cause the editor to flash
+            theme={convertCodeEditTheme()}
           />
         </Col>
         {showFloatButton && (
@@ -262,6 +267,4 @@ const CodeShow = (props: CodeShowFormProps) => {
   );
 };
 
-export default memo(CodeShow, (prevProps, nextProps) => {
-  return prevProps.code === nextProps.code;
-});
+export default memo(CodeShow);

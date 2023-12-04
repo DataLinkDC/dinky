@@ -50,7 +50,6 @@ export type CodeEditFormProps = {
   editorDidMount?: (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => void;
   enableSuggestions?: boolean;
   monacoRef?: any;
-  // editorRef?: any;
 };
 
 const CodeEdit = (props: CodeEditFormProps & connect) => {
@@ -80,12 +79,11 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     suggestionsData, // suggestions data
     autoWrap = 'on', // auto wrap
     editorDidMount,
-    editorRef,
     monacoRef,
     tabs: { activeKey }
   } = props;
 
-  const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>(editorRef);
+  const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>(monacoRef?.current?.editor);
   const monacoInstance = useRef<Monaco | undefined>(monacoRef);
 
   /**
@@ -243,7 +241,9 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
           className={'editor-develop'}
           onMount={editorDidMountChange}
           onChange={onChange}
-          theme={convertCodeEditTheme(monacoInstance?.current?.editor)}
+          //zh-CN: 因为在 handleInitEditorAndLanguageOnBeforeMount 中已经注册了自定义语言，所以这里的作用仅仅是用来切换主题 不需要重新加载自定义语言的 token 样式 , 所以这里入参需要为空, 否则每次任意的 props 改变时(包括高度等),会出现编辑器闪烁的问题
+          //en-US: because the custom language has been registered in handleInitEditorAndLanguageOnBeforeMount, so the only purpose here is to switch the theme, and there is no need to reload the token style of the custom language, so the incoming parameters here need to be empty, otherwise any props change (including height, etc.) will cause the editor to flash
+          theme={convertCodeEditTheme()}
         />
       </div>
     </>
@@ -253,8 +253,4 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   suggestionsData: Studio.suggestions,
   tabs: Studio.tabs
-}))(
-  memo(CodeEdit, (prevProps, nextProps) => {
-    return prevProps.code === nextProps.code;
-  })
-);
+}))(memo(CodeEdit));

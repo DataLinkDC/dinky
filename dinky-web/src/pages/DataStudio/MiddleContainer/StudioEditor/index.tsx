@@ -200,9 +200,4 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   footContainer: Studio.footContainer
-}))(
-  memo(
-    StudioEditor,
-    (prevProps, nextProps) => prevProps.tabsItem.params.taskId === nextProps.tabsItem.params.taskId
-  )
-);
+}))(memo(StudioEditor));
