@@ -83,7 +83,9 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     tabs: { activeKey }
   } = props;
 
-  const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>(monacoRef?.current?.editor);
+  const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>(
+    monacoRef?.current?.editor
+  );
   const monacoInstance = useRef<Monaco | undefined>(monacoRef);
 
   /**
