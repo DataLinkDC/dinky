@@ -31,6 +31,9 @@ import org.dinky.data.options.JobAlertRuleOptions;
 import org.dinky.job.JobConfig;
 import org.dinky.utils.TimeUtil;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import cn.hutool.core.text.StrFormatter;
@@ -38,9 +41,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Data
 @Builder
@@ -188,7 +188,9 @@ public class JobAlertData {
         } else if (exceptions != null && ExceptionRule.isException(id, exceptions)) {
             // The error message is too long to send an alarm,
             // and only the first line of abnormal information is used
-            String err = Optional.ofNullable(exceptions.getRootException()).orElse("dinky didn't get any ERROR!").split("\n")[0];
+            String err = Optional.ofNullable(exceptions.getRootException())
+                    .orElse("dinky didn't get any ERROR!")
+                    .split("\n")[0];
             if (err.length() > 100) {
                 err = err.substring(0, 100) + "...";
             }

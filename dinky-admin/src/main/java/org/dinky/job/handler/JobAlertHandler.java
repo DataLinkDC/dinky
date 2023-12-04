@@ -28,6 +28,7 @@ import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.data.dto.AlertRuleDTO;
 import org.dinky.data.dto.TaskDTO;
+import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.alert.AlertGroup;
@@ -46,6 +47,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jeasy.rules.api.Facts;
@@ -118,8 +120,8 @@ public class JobAlertHandler {
     public void check(JobInfoDetail jobInfoDetail) {
         Facts ruleFacts = new Facts();
         JobAlertData jobAlertData = JobAlertData.buildData(jobInfoDetail);
-        JsonUtils.toMap(jobAlertData).forEach((k,v)->{
-            if (v == null){
+        JsonUtils.toMap(jobAlertData).forEach((k, v) -> {
+            if (v == null) {
                 throw new DinkyException(StrFormatter.format(
                         "When deal alert job data, the key [{}] value is null, its maybe dinky bug,please report", k));
             }
@@ -178,6 +180,10 @@ public class JobAlertHandler {
      */
     private void executeAlertAction(Facts facts, AlertRuleDTO alertRuleDTO) {
         TaskDTO task = taskService.getTaskInfoById(facts.get(JobAlertRuleOptions.FIELD_TASK_ID));
+        if (!Objects.equals(task.getStep(), JobLifeCycle.PUBLISH.getValue())) {
+            // Only publish job can be alerted
+            return;
+        }
         Map<String, Object> dataModel = new HashMap<>(facts.asMap());
         dataModel.put(JobAlertRuleOptions.OPTIONS_JOB_ALERT_RULE, alertRuleDTO);
         String alertContent;
