@@ -97,7 +97,6 @@ public final class EmailSender {
             }
         } catch (GeneralSecurityException e) {
             handleException(alertResult, e);
-            return alertResult;
         }
 
         return alertResult;
