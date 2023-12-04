@@ -24,23 +24,23 @@ import { DefaultOptionType } from 'rc-select/es/Select';
 export const ALERT_TYPE_LIST_OPTIONS: DefaultOptionType[] = [
   {
     label: l('rc.ai.dingTalk'),
-    value: ALERT_TYPE.DINGTALK,
+    value: ALERT_TYPE.DINGTALK
   },
   {
     label: l('rc.ai.wechat'),
-    value: ALERT_TYPE.WECHAT,
+    value: ALERT_TYPE.WECHAT
   },
   {
     label: l('rc.ai.feishu'),
-    value: ALERT_TYPE.FEISHU,
+    value: ALERT_TYPE.FEISHU
   },
   {
     label: l('rc.ai.email'),
-    value: ALERT_TYPE.EMAIL,
+    value: ALERT_TYPE.EMAIL
   },
   {
     label: l('rc.ai.sms'),
-    value: ALERT_TYPE.SMS,
+    value: ALERT_TYPE.SMS
   }
 ];
 
@@ -65,7 +65,7 @@ export const MANU_FRACTURES = [
   },
   {
     label: l('rc.ai.mf.tencent'),
-    value: SMS_TYPE.TENCENT,
+    value: SMS_TYPE.TENCENT
   }
   // todo: 以下短信暂不实现
   // {

@@ -160,14 +160,14 @@ export const renderTencentSmsForm = (smsType: string) => {
     <>
       {renderCommonSmsForm(smsType)}
       <ProFormText
-        name={['params','sdkAppId']}
+        name={['params', 'sdkAppId']}
         label={l('rc.ai.sdkAppId')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.sdkAppIdPleaseHolder') }]}
         placeholder={l('rc.ai.sdkAppIdPleaseHolder')}
       />
       <ProFormSelect
-        name={['params','territory']}
+        name={['params', 'territory']}
         label={l('rc.ai.regionId')}
         width={'sm'}
         options={TencentArea}
@@ -175,7 +175,7 @@ export const renderTencentSmsForm = (smsType: string) => {
         placeholder={l('rc.ai.regionIdPleaseHolder')}
       />
       <ProFormDigit
-        name={['params','connTimeout']}
+        name={['params', 'connTimeout']}
         label={l('rc.ai.connTimeout')}
         width={'xs'}
         rules={[{ required: true, message: l('rc.ai.connTimeoutPleaseHolder') }]}
@@ -183,7 +183,7 @@ export const renderTencentSmsForm = (smsType: string) => {
         initialValue={60}
       />
       <ProFormText
-        name={['params','requestUrl']}
+        name={['params', 'requestUrl']}
         label={l('rc.ai.requestUrl')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
@@ -192,19 +192,21 @@ export const renderTencentSmsForm = (smsType: string) => {
       />
       <ProForm.Group>
         <ProFormText
-          name={['params','action']}
+          name={['params', 'action']}
           label={l('rc.ai.action')}
           width={'sm'}
-          disabled hidden
+          disabled
+          hidden
           initialValue={'SendSms'}
           placeholder={l('rc.ai.actionPleaseHolder')}
         />
 
         <ProFormText
-          name={['params','version']}
+          name={['params', 'version']}
           label={l('rc.ai.version')}
           width={'sm'}
-          disabled hidden
+          disabled
+          hidden
           initialValue={'2021-01-11'}
           placeholder={l('rc.ai.versionPleaseHolder')}
         />

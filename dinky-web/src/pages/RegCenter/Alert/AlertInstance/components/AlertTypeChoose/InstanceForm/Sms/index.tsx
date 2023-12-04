@@ -48,34 +48,31 @@ const Sms = (props: SmsProps) => {
   /**
    * render form by sms type
    */
-  const renderFormBySmsType = useCallback(
-    () => {
-      switch (suppliers) {
-        case SMS_TYPE.ALIBABA:
-          return renderAlibabaSmsForm(suppliers);
-        case SMS_TYPE.TENCENT:
-          return renderTencentSmsForm(suppliers);
-        // case SMS_TYPE.HUAWEI:
-        //   return renderHuaWeiSmsForm();
-        // case SMS_TYPE.YUNPIAN:
-        //   return renderYunpianSmsForm();
-        //
-        // case SMS_TYPE.UNISMS:
-        //   return renderUniSmsForm();
-        // case SMS_TYPE.JDCLOUD:
-        //   return renderJDSmsForm();
-        // case SMS_TYPE.CLOOPEN:
-        //   return renderCloopenSmsForm();
-        // case SMS_TYPE.EMAY:
-        //   return renderEmaySmsForm();
-        // case SMS_TYPE.CTYUN:
-        //   return renderCtyunForm();
-        default:
-          return <></>;
-      }
-    },
-    [suppliers]
-  );
+  const renderFormBySmsType = useCallback(() => {
+    switch (suppliers) {
+      case SMS_TYPE.ALIBABA:
+        return renderAlibabaSmsForm(suppliers);
+      case SMS_TYPE.TENCENT:
+        return renderTencentSmsForm(suppliers);
+      // case SMS_TYPE.HUAWEI:
+      //   return renderHuaWeiSmsForm();
+      // case SMS_TYPE.YUNPIAN:
+      //   return renderYunpianSmsForm();
+      //
+      // case SMS_TYPE.UNISMS:
+      //   return renderUniSmsForm();
+      // case SMS_TYPE.JDCLOUD:
+      //   return renderJDSmsForm();
+      // case SMS_TYPE.CLOOPEN:
+      //   return renderCloopenSmsForm();
+      // case SMS_TYPE.EMAY:
+      //   return renderEmaySmsForm();
+      // case SMS_TYPE.CTYUN:
+      //   return renderCtyunForm();
+      default:
+        return <></>;
+    }
+  }, [suppliers]);
 
   const validateSmsPhoneRules = [
     {

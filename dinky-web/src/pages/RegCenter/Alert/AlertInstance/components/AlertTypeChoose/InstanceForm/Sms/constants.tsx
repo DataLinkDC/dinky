@@ -128,18 +128,17 @@ export const AliYunArea = [
   }
 ];
 
-
 export const TencentArea = [
   {
     label: '华北地区（北京）',
-    value: 'ap-beijing',
+    value: 'ap-beijing'
   },
   {
     label: '华南地区（广州）',
-    value: 'ap-guangzhou',
+    value: 'ap-guangzhou'
   },
   {
     label: '华东地区（南京）',
-    value: 'ap-nanjing',
-  },
-]
+    value: 'ap-nanjing'
+  }
+];
