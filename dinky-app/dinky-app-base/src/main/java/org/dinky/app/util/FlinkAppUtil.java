@@ -19,19 +19,15 @@
 
 package org.dinky.app.util;
 
-import org.apache.flink.configuration.ReadableConfig;
-import org.dinky.app.db.DBUtil;
-import org.dinky.constant.FlinkConstant;
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.data.enums.JobStatus;
-import org.dinky.data.enums.Status;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.utils.JsonUtils;
 
 import org.apache.flink.client.deployment.StandaloneClusterId;
 import org.apache.flink.client.program.rest.RestClusterClient;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.GlobalConfiguration;
+import org.apache.flink.configuration.ReadableConfig;
 import org.apache.flink.runtime.client.JobStatusMessage;
 
 import java.util.Collection;
@@ -89,7 +85,8 @@ public class FlinkAppUtil {
             // TODO 这里应该使用Result实体类，但是Result.class不在comm里，迁移改动太大，暂时不搞
             String code = JsonUtils.parseObject(resultStr).get("code").toString();
             if (!"0".equals(code)) {
-                throw new RuntimeException(StrFormatter.format("Send Hook Job Done result failed,url:{},err:{} ",url,resultStr));
+                throw new RuntimeException(
+                        StrFormatter.format("Send Hook Job Done result failed,url:{},err:{} ", url, resultStr));
             }
         } catch (Exception e) {
             if (reTryCount < 30) {

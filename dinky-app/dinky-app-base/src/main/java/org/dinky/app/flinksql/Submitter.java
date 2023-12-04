@@ -27,7 +27,6 @@ import org.dinky.app.model.SysConfig;
 import org.dinky.app.resource.impl.HdfsResourceManager;
 import org.dinky.app.resource.impl.OssResourceManager;
 import org.dinky.app.url.RsURLStreamHandlerFactory;
-import org.dinky.app.util.FlinkAppUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;

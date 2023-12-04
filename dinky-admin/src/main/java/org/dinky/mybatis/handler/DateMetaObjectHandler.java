@@ -19,7 +19,6 @@
 
 package org.dinky.mybatis.handler;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.mybatis.properties.MybatisPlusFillProperties;
 
 import org.apache.ibatis.reflection.MetaObject;
@@ -28,8 +27,8 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
-import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * DateMeta Object Handler
@@ -73,8 +72,8 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
         try {
             int loginIdAsInt = StpUtil.getLoginIdAsInt();
             setFillFieldValue(metaObject, loginIdAsInt);
-        }catch (Exception e){
-            log.debug("Ignore set creater filed, because userId cant't get",e);
+        } catch (Exception e) {
+            log.debug("Ignore set creater filed, because userId cant't get", e);
         }
     }
 
@@ -101,8 +100,8 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
             setFieldValByName(mybatisPlusFillProperties.getUpdaterField(), loginIdAsInt, metaObject);
             setFieldValByName(mybatisPlusFillProperties.getOperatorField(), loginIdAsInt, metaObject);
             setFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), LocalDateTime.now(), metaObject);
-        }catch (Exception e){
-            log.debug("Ignore set update,operator filed, because userId cant't get",e);
+        } catch (Exception e) {
+            log.debug("Ignore set update,operator filed, because userId cant't get", e);
         }
     }
 }
