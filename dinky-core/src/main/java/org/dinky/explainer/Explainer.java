@@ -228,35 +228,8 @@ public class Explainer {
             if (useStatementSet) {
                 List<String> inserts = new ArrayList<>();
                 for (StatementParam item : jobParam.getTrans()) {
-                    if (item.getType().equals(SqlType.INSERT)) {
+                    if (item.getType().equals(SqlType.INSERT) || item.getType().equals(SqlType.CTAS)) {
                         inserts.add(item.getValue());
-                    } else if (item.getType().equals(SqlType.CTAS)) {
-                        SqlExplainResult record = new SqlExplainResult();
-
-                        try {
-                            record.setParseTrue(true);
-                            record.setExplainTrue(true);
-                            record.setSql(item.getValue());
-                            executor.getCustomTableEnvironment()
-                                    .getParser()
-                                    .parse(item.getValue())
-                                    .forEach(x -> {
-                                        executor.getCustomTableEnvironment().executeCTAS(x);
-                                    });
-                        } catch (Exception e) {
-                            String error = LogUtil.getError(e);
-                            record.setError(error);
-                            record.setParseTrue(false);
-                            record.setExplainTrue(false);
-                            correct = false;
-                            log.error(error);
-                            break;
-                        } finally {
-                            record.setType("Modify DML");
-                            record.setExplainTime(LocalDateTime.now());
-                            record.setIndex(index);
-                            sqlExplainRecords.add(record);
-                        }
                     }
                 }
                 if (!inserts.isEmpty()) {
