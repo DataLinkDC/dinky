@@ -39,10 +39,12 @@ import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The Job Metrics Handler class is used to process operations related to job metrics。
  */
+@Slf4j
 public class JobMetricsHandler {
 
     /**
@@ -63,13 +65,17 @@ public class JobMetricsHandler {
                         () -> fetchFlinkMetrics(e.getKey(), e.getValue(), jobManagerUrls, jobId)))
                 .toArray(CompletableFuture[]::new);
         // Wait for all Completable Future executions to finish
-        AsyncUtil.waitAll(array);
-        MetricsVO metricsVO = new MetricsVO();
-        metricsVO.setContent(customMetricsList);
-        metricsVO.setHeartTime(LocalDateTime.now());
-        metricsVO.setModel(jobId);
-        metricsVO.setDate(TimeUtil.nowStr("yyyy-MM-dd"));
-        MetricsContextHolder.getInstances().sendAsync(metricsVO.getModel(), metricsVO);
+        try {
+            AsyncUtil.waitAll(array);
+            MetricsVO metricsVO = new MetricsVO();
+            metricsVO.setContent(customMetricsList);
+            metricsVO.setHeartTime(LocalDateTime.now());
+            metricsVO.setModel(jobId);
+            metricsVO.setDate(TimeUtil.nowStr("yyyy-MM-dd"));
+            MetricsContextHolder.getInstances().sendAsync(metricsVO.getModel(), metricsVO);
+        } catch (Exception e) {
+            log.error("Get and save Flink metrics error", e);
+        }
     }
 
     /**
