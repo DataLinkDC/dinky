@@ -17,7 +17,7 @@
  *
  */
 
-export const YunArea = [
+export const AliYunArea = [
   {
     value: 'cn-hangzhou',
     label: '华东1（杭州）'
@@ -127,3 +127,19 @@ export const YunArea = [
     label: '阿联酋（迪拜）'
   }
 ];
+
+
+export const TencentArea = [
+  {
+    label: '华北地区（北京）',
+    value: 'ap-beijing',
+  },
+  {
+    label: '华南地区（广州）',
+    value: 'ap-guangzhou',
+  },
+  {
+    label: '华东地区（南京）',
+    value: 'ap-nanjing',
+  },
+]

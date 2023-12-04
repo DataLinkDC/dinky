@@ -43,18 +43,18 @@ const Sms = (props: SmsProps) => {
 
   const params = values.params as Alert.AlertInstanceParamsSms;
 
-  const [suppliers, setSuppliers] = useState<string>(params.suppliers ?? 'alibaba');
+  const [suppliers, setSuppliers] = useState<string>(params.suppliers ?? SMS_TYPE.ALIBABA);
 
   /**
    * render form by sms type
    */
   const renderFormBySmsType = useCallback(
-    (smsType: string) => {
-      switch (smsType) {
+    () => {
+      switch (suppliers) {
         case SMS_TYPE.ALIBABA:
-          return renderAlibabaSmsForm(smsType);
+          return renderAlibabaSmsForm(suppliers);
         case SMS_TYPE.TENCENT:
-          return renderTencentSmsForm(smsType);
+          return renderTencentSmsForm(suppliers);
         // case SMS_TYPE.HUAWEI:
         //   return renderHuaWeiSmsForm();
         // case SMS_TYPE.YUNPIAN:
@@ -115,7 +115,7 @@ const Sms = (props: SmsProps) => {
         />
         <ProFormSwitch name='enabled' label={l('global.table.isEnable')} {...SWITCH_OPTIONS()} />
       </ProForm.Group>
-      <ProForm.Group>{renderFormBySmsType(suppliers)}</ProForm.Group>
+      <ProForm.Group>{renderFormBySmsType()}</ProForm.Group>
 
       <FormSingleColumnList
         form={form}
