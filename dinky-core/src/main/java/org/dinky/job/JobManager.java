@@ -285,6 +285,7 @@ public class JobManager {
         } catch (Exception e) {
             String error = StrFormatter.format(
                     "Exception in executing FlinkSQL:\n{}\n{}", SqlUtil.addLineNumber(currentSql), e.getMessage());
+            e.printStackTrace();
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
