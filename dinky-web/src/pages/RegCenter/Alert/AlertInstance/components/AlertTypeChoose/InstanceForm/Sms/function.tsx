@@ -17,89 +17,134 @@
  *
  */
 
+import { YunArea } from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/constants';
 import { l } from '@/utils/intl';
-import { ProForm, ProFormDigit, ProFormSwitch, ProFormTextArea } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormDigit,
+  ProFormSelect,
+  ProFormSwitch,
+  ProFormTextArea
+} from '@ant-design/pro-components';
 import { ProFormText } from '@ant-design/pro-form';
+import { randomStr } from '@antfu/utils';
 
-export const renderCommonSmsForm = () => {
+export const renderCommonSmsForm = (smsType: string) => {
   return (
     <>
       <ProFormText
-        name='accessKeyId'
+        name={['params', 'accessKeyId']}
         label={l('rc.ai.accessKeyId')}
         width={'md'}
         rules={[{ required: true, message: l('rc.ai.accessKeyIdPleaseHolder') }]}
         placeholder={l('rc.ai.accessKeyIdPleaseHolder')}
       />
       <ProFormText.Password
-        name='accessKeySecret'
+        name={['params', 'accessKeySecret']}
         label={l('rc.ai.accessKeySecret')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.accessKeyIdPleaseHolder') }]}
         placeholder={l('rc.ai.accessKeyIdPleaseHolder')}
       />
-
       <ProFormText
-        name='templateId'
-        label={l('rc.ai.templateId')}
-        width={'sm'}
-        rules={[{ required: true, message: l('rc.ai.templateIdPleaseHolder') }]}
-        placeholder={l('rc.ai.templateIdPleaseHolder')}
-      />
-    </>
-  );
-};
-
-export const renderAlibabaSmsForm = () => {
-  return (
-    <>
-      {renderCommonSmsForm()}
-      <ProFormTextArea
-        name='requestUrl'
-        label={l('rc.ai.requestUrl')}
-        width={'md'}
-        rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
-        placeholder={l('rc.ai.requestUrlPleaseHolder')}
-      />
-      <ProFormTextArea
-        name='templateName'
-        label={l('rc.ai.templateName')}
-        width={'sm'}
-        rules={[{ required: true, message: l('rc.ai.templateNamePleaseHolder') }]}
-        placeholder={l('rc.ai.templateNamePleaseHolder')}
-      />
-
-      <ProFormTextArea
-        name='signature'
+        name={['params', 'signature']}
         label={l('rc.ai.signature')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.signaturePleaseHolder') }]}
         placeholder={l('rc.ai.signaturePleaseHolder')}
       />
-
       <ProFormText
-        name='regionId'
+        name={['params', 'templateId']}
+        label={l('rc.ai.templateId')}
+        width={'md'}
+        rules={[{ required: true, message: l('rc.ai.templateIdPleaseHolder') }]}
+        placeholder={l('rc.ai.templateIdPleaseHolder')}
+      />
+      <ProFormText
+        name={['params', 'configId']}
+        label={l('rc.ai.configId')}
+        width={'md'}
+        disabled
+        hidden
+        initialValue={randomStr(32)}
+        rules={[{ required: true, message: l('rc.ai.configIdPleaseHolder') }]}
+        placeholder={l('rc.ai.configIdPleaseHolder')}
+      />
+      <ProFormDigit
+        name={['params', 'weight']}
+        label={l('rc.ai.weight')}
+        width={'xs'}
+        initialValue={1}
+        rules={[{ required: true, message: l('rc.ai.weightPleaseHolder') }]}
+        placeholder={l('rc.ai.weightPleaseHolder')}
+      />
+      <ProFormDigit
+        name={['params', 'retryInterval']}
+        label={l('rc.ai.retryInterval')}
+        width={'xs'}
+        initialValue={5}
+        rules={[{ required: true, message: l('rc.ai.retryInterval') }]}
+        placeholder={l('rc.ai.retryInterval')}
+      />
+      <ProFormDigit
+        name={['params', 'maxRetries']}
+        label={l('rc.ai.maxRetries')}
+        width={'xs'}
+        initialValue={5}
+        rules={[{ required: true, message: l('rc.ai.maxRetriesPleaseHolder') }]}
+        placeholder={l('rc.ai.maxRetriesPleaseHolder')}
+      />
+    </>
+  );
+};
+
+export const renderAlibabaSmsForm = (smsType: string) => {
+  // let area = YunArea[0].value;
+  return (
+    <>
+      {renderCommonSmsForm(smsType)}
+      <ProFormText
+        name={['params', 'requestUrl']}
+        label={l('rc.ai.requestUrl')}
+        width={'lg'}
+        initialValue={'dysmsapi.aliyuncs.com'}
+        rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
+        placeholder={l('rc.ai.requestUrlPleaseHolder')}
+      />
+      <ProFormSelect
+        name={['params', 'regionId']}
         label={l('rc.ai.regionId')}
         width={'md'}
-        initialValue={'cn-hangzhou'}
+        options={YunArea}
         rules={[{ required: true, message: l('rc.ai.regionIdPleaseHolder') }]}
         placeholder={l('rc.ai.regionIdPleaseHolder')}
       />
-
       <ProFormText
-        name='action'
+        name={['params', 'templateName']}
+        label={l('rc.ai.templateName')}
+        width={'md'}
+        initialValue={'content'}
+        disabled
+        hidden
+        rules={[{ required: true, message: l('rc.ai.templateNamePleaseHolder') }]}
+        placeholder={l('rc.ai.templateNamePleaseHolder')}
+      />
+      <ProFormText
+        name={['params', 'action']}
         label={l('rc.ai.action')}
         width={'sm'}
         disabled
+        hidden
         initialValue={'SendSms'}
         placeholder={l('rc.ai.actionPleaseHolder')}
       />
 
       <ProFormText
-        name='version'
+        name={['params', 'version']}
         label={l('rc.ai.version')}
         width={'sm'}
         disabled
+        hidden
         initialValue={'2017-05-25'}
         placeholder={l('rc.ai.versionPleaseHolder')}
       />
@@ -107,6 +152,71 @@ export const renderAlibabaSmsForm = () => {
   );
 };
 
+export const renderTencentSmsForm = (smsType: string) => {
+  return (
+    <>
+      {renderCommonSmsForm(smsType)}
+      <ProFormText
+        name='sdkAppId'
+        label={l('rc.ai.sdkAppId')}
+        width={'md'}
+        rules={[{ required: true, message: l('rc.ai.sdkAppIdPleaseHolder') }]}
+        placeholder={l('rc.ai.sdkAppIdPleaseHolder')}
+      />
+      <ProFormText
+        name='signature'
+        label={l('rc.ai.signature')}
+        width={'sm'}
+        rules={[{ required: true, message: l('rc.ai.signaturePleaseHolder') }]}
+        placeholder={l('rc.ai.signaturePleaseHolder')}
+      />
+      <ProFormText
+        name='territory'
+        label={l('rc.ai.regionId')}
+        width={'sm'}
+        rules={[{ required: true, message: l('rc.ai.regionIdPleaseHolder') }]}
+        placeholder={l('rc.ai.regionIdPleaseHolder')}
+      />
+
+      <ProFormTextArea
+        name='requestUrl'
+        label={l('rc.ai.requestUrl')}
+        width={'xl'}
+        rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
+        placeholder={l('rc.ai.requestUrlPleaseHolder')}
+        initialValue={'https://sms.tencentcloudapi.com/'}
+      />
+      <ProForm.Group>
+        <ProFormDigit
+          name='connTimeout'
+          label={l('rc.ai.connTimeout')}
+          width={'md'}
+          rules={[{ required: true, message: l('rc.ai.connTimeoutPleaseHolder') }]}
+          placeholder={l('rc.ai.connTimeoutPleaseHolder')}
+          initialValue={60}
+        />
+
+        <ProFormText
+          name='action'
+          label={l('rc.ai.action')}
+          width={'sm'}
+          disabled
+          initialValue={'SendSms'}
+          placeholder={l('rc.ai.actionPleaseHolder')}
+        />
+
+        <ProFormText
+          name='version'
+          label={l('rc.ai.version')}
+          width={'sm'}
+          disabled
+          initialValue={'2021-01-11'}
+          placeholder={l('rc.ai.versionPleaseHolder')}
+        />
+      </ProForm.Group>
+    </>
+  );
+};
 export const renderHuaWeiSmsForm = () => {
   return (
     <>
@@ -202,76 +312,10 @@ export const renderYunpianSmsForm = () => {
   );
 };
 
-export const renderTencentSmsForm = () => {
+export const renderUniSmsForm = (smsType: string) => {
   return (
     <>
-      {renderCommonSmsForm()}
-      <ProFormText
-        name='sdkAppId'
-        label={l('rc.ai.sdkAppId')}
-        width={'md'}
-        rules={[{ required: true, message: l('rc.ai.sdkAppIdPleaseHolder') }]}
-        placeholder={l('rc.ai.sdkAppIdPleaseHolder')}
-      />
-      <ProFormText
-        name='signature'
-        label={l('rc.ai.signature')}
-        width={'sm'}
-        rules={[{ required: true, message: l('rc.ai.signaturePleaseHolder') }]}
-        placeholder={l('rc.ai.signaturePleaseHolder')}
-      />
-      <ProFormText
-        name='territory'
-        label={l('rc.ai.regionId')}
-        width={'sm'}
-        rules={[{ required: true, message: l('rc.ai.regionIdPleaseHolder') }]}
-        placeholder={l('rc.ai.regionIdPleaseHolder')}
-      />
-
-      <ProFormTextArea
-        name='requestUrl'
-        label={l('rc.ai.requestUrl')}
-        width={'xl'}
-        rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
-        placeholder={l('rc.ai.requestUrlPleaseHolder')}
-        initialValue={'https://sms.tencentcloudapi.com/'}
-      />
-      <ProForm.Group>
-        <ProFormDigit
-          name='connTimeout'
-          label={l('rc.ai.connTimeout')}
-          width={'md'}
-          rules={[{ required: true, message: l('rc.ai.connTimeoutPleaseHolder') }]}
-          placeholder={l('rc.ai.connTimeoutPleaseHolder')}
-          initialValue={60}
-        />
-
-        <ProFormText
-          name='action'
-          label={l('rc.ai.action')}
-          width={'sm'}
-          disabled
-          initialValue={'SendSms'}
-          placeholder={l('rc.ai.actionPleaseHolder')}
-        />
-
-        <ProFormText
-          name='version'
-          label={l('rc.ai.version')}
-          width={'sm'}
-          disabled
-          initialValue={'2021-01-11'}
-          placeholder={l('rc.ai.versionPleaseHolder')}
-        />
-      </ProForm.Group>
-    </>
-  );
-};
-
-export const renderUniSmsForm = () => {
-  return (
-    <>
-      {renderCommonSmsForm()}
+      {renderCommonSmsForm(smsType)}
       <ProFormTextArea
         name='templateName'
         label={l('rc.ai.templateName')}
@@ -299,10 +343,10 @@ export const renderUniSmsForm = () => {
   );
 };
 
-export const renderJDSmsForm = () => {
+export const renderJDSmsForm = (smsType: string) => {
   return (
     <>
-      {renderCommonSmsForm()}
+      {renderCommonSmsForm(smsType)}
       <ProFormText
         name='signature'
         label={l('rc.ai.signature')}
@@ -384,10 +428,10 @@ export const renderEmaySmsForm = () => {
   );
 };
 
-export const renderCtyunForm = () => {
+export const renderCtyunForm = (smsType: string) => {
   return (
     <>
-      {renderCommonSmsForm()}
+      {renderCommonSmsForm(smsType)}
       <ProFormText
         name='signature'
         label={l('rc.ai.signature')}

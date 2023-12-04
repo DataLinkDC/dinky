@@ -22,13 +22,13 @@ import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import {isProjectTabs, mapDispatchToProps} from '@/pages/DataStudio/function';
+import { isProjectTabs, mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import {StateType, STUDIO_MODEL, TabsItemType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
+import { StateType, TabsItemType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
   getClusterConfigurationData,
@@ -64,7 +64,7 @@ const DataStudio = (props: any) => {
     saveClusterConfiguration,
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
-    tabs: { panes, activeKey },
+    tabs: { panes, activeKey }
   } = props;
   const isProject = isProjectTabs(panes, activeKey);
   const { token } = useToken();
@@ -88,7 +88,11 @@ const DataStudio = (props: any) => {
 
   const onResize = () => {
     setSize(getClientSize());
-    const newBottomHeight = !isProject ? 0 : bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
+    const newBottomHeight = !isProject
+      ? 0
+      : bottomContainer.selectKey === ''
+      ? 0
+      : bottomContainer.height;
     const centerContentHeight = getClientSize().contentHeight - newBottomHeight;
     updateCenterContentHeight(centerContentHeight);
     updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
@@ -117,7 +121,11 @@ const DataStudio = (props: any) => {
   };
 
   useEffect(() => {
-    const newBottomHeight = !isProject ? 0 : bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
+    const newBottomHeight = !isProject
+      ? 0
+      : bottomContainer.selectKey === ''
+      ? 0
+      : bottomContainer.height;
     const centerContentHeight = size.contentHeight - newBottomHeight;
     updateCenterContentHeight(centerContentHeight);
     updateToolContentHeight(centerContentHeight - VIEW.leftMargin);

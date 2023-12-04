@@ -21,9 +21,9 @@ import { CustomEditorLanguage } from '@/components/CustomEditor/languages/consta
 import { buildMonarchTokensProvider } from '@/components/CustomEditor/languages/javalog/function';
 import { Monaco } from '@monaco-editor/react';
 
-export function LogLanguage(monaco: Monaco | undefined) {
+export function LogLanguage(monacoLanguages: Monaco['languages'] | undefined) {
   // Register a new language
-  monaco?.languages.register({
+  monacoLanguages?.register({
     id: CustomEditorLanguage.JavaLog,
     extensions: [],
     mimetypes: [
@@ -36,5 +36,5 @@ export function LogLanguage(monaco: Monaco | undefined) {
     aliases: ['javalog', 'Javalog', 'jl', 'log']
   });
 
-  buildMonarchTokensProvider(monaco);
+  buildMonarchTokensProvider(monacoLanguages);
 }

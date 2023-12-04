@@ -26,10 +26,10 @@ import {
   isDataStudioTabsItemType,
   isMetadataTabsItemType
 } from '@/pages/DataStudio/function';
-import Editor from '@/pages/DataStudio/MiddleContainer/Editor';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
+import StudioEditor from '@/pages/DataStudio/MiddleContainer/StudioEditor';
 import { StateType, STUDIO_MODEL, TabsItemType, TabsPageType } from '@/pages/DataStudio/model';
 import { RightSide } from '@/pages/DataStudio/route';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
@@ -38,7 +38,7 @@ import { connect } from '@@/exports';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { ConfigProvider, Divider, Dropdown, Modal, Space, Tabs, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 
 const { Text } = Typography;
 const { confirm } = Modal;
@@ -237,10 +237,9 @@ const MiddleContainer = (props: any) => {
         }
 
         return (
-          <Editor
+          <StudioEditor
             tabsItem={item}
             monacoInstance={item.monacoInstance}
-            editorInstance={item.editorInstance}
             height={
               activeKey === item.key
                 ? fullscreen
@@ -378,4 +377,4 @@ export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   centerContentHeight: Studio.centerContentHeight,
   rightKey: Studio.rightContainer.selectKey
-}))(MiddleContainer);
+}))(memo(MiddleContainer));

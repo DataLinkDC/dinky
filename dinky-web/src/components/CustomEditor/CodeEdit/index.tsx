@@ -21,7 +21,7 @@ import * as monaco from 'monaco-editor';
 import { editor, languages, Position } from 'monaco-editor';
 
 import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
-import { LoadCustomEditorLanguageWithCompletion } from '@/components/CustomEditor/languages';
+import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEditor/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
@@ -50,7 +50,6 @@ export type CodeEditFormProps = {
   editorDidMount?: (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => void;
   enableSuggestions?: boolean;
   monacoRef?: any;
-  editorRef?: any;
 };
 
 const CodeEdit = (props: CodeEditFormProps & connect) => {
@@ -80,12 +79,13 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     suggestionsData, // suggestions data
     autoWrap = 'on', // auto wrap
     editorDidMount,
-    editorRef,
     monacoRef,
     tabs: { activeKey }
   } = props;
 
-  const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>(editorRef);
+  const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>(
+    monacoRef?.current?.editor
+  );
   const monacoInstance = useRef<Monaco | undefined>(monacoRef);
 
   /**
@@ -229,15 +229,12 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     lineNumbers,
     ...options
   };
+
   return (
     <>
       <div className={'monaco-float'}>
         <Editor
-          beforeMount={(monaco) => {
-            // 挂载前加载语言 | before mount load language
-            monacoInstance.current = monaco;
-            LoadCustomEditorLanguageWithCompletion(monaco);
-          }}
+          beforeMount={(monaco) => handleInitEditorAndLanguageOnBeforeMount(monaco, true)}
           width={width}
           height={height}
           value={code}
@@ -246,7 +243,9 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
           className={'editor-develop'}
           onMount={editorDidMountChange}
           onChange={onChange}
-          theme={convertCodeEditTheme(editorInstance?.current)}
+          //zh-CN: 因为在 handleInitEditorAndLanguageOnBeforeMount 中已经注册了自定义语言，所以这里的作用仅仅是用来切换主题 不需要重新加载自定义语言的 token 样式 , 所以这里入参需要为空, 否则每次任意的 props 改变时(包括高度等),会出现编辑器闪烁的问题
+          //en-US: because the custom language has been registered in handleInitEditorAndLanguageOnBeforeMount, so the only purpose here is to switch the theme, and there is no need to reload the token style of the custom language, so the incoming parameters here need to be empty, otherwise any props change (including height, etc.) will cause the editor to flash
+          theme={convertCodeEditTheme()}
         />
       </div>
     </>

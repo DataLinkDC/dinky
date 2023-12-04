@@ -18,6 +18,7 @@
  */
 
 export default {
+  'button.add': 'Add',
   'button.check': 'Check',
   'button.graph': 'DAG',
   'button.create': 'Create',

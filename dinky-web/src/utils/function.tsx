@@ -42,6 +42,7 @@ import {
 } from '@/services/constants';
 import { CODE_EDIT_THEME, THEME } from '@/types/Public/data';
 import { l } from '@/utils/intl';
+import { Monaco } from '@monaco-editor/react';
 import dayjs from 'dayjs';
 import cookies from 'js-cookie';
 import { trim } from 'lodash';
@@ -242,7 +243,7 @@ export function registerEditorKeyBindingAndAction(editorInstance?: editor.IStand
  * get code edit theme by localStorage's theme
  * @constructor
  */
-export function convertCodeEditTheme(editorInstance?: any) {
+export function convertCodeEditTheme(editorInstance?: Monaco['editor']) {
   if (!editorInstance) {
     editorInstance = editor;
   }
@@ -502,7 +503,7 @@ export function parseNumStr(num: number) {
  * @param {number} second_time
  * @returns {any}
  */
-export function parseMilliSecondStr(second_time: number | undefined) {
+export function parseMilliSecondStr(second_time: number | undefined): string {
   if (second_time == null) {
     return 'None';
   }

@@ -30,8 +30,9 @@ import static org.mockito.Mockito.spy;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
+import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.driver.MySqlDriver;
 import org.dinky.metadata.result.JdbcSelectResult;
 
@@ -62,33 +63,37 @@ public class MysqlTest {
     private static final String IP = "127.0.0.1";
 
     public Driver getDriver() {
-        DriverConfig config = new DriverConfig();
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setName(UUID.randomUUID().toString());
         config.setType("Mysql");
-        config.setIp(IP);
-        config.setPort(3306);
-        config.setUsername("dca");
-        config.setPassword("dca");
-        config.setUrl("jdbc:mysql://"
-                + IP
-                + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8"
-                + "&serverTimezone=UTC&autoReconnect=true");
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .ip(IP)
+                .port(3306)
+                .username("dca")
+                .password("dca")
+                .url("jdbc:mysql://"
+                        + IP
+                        + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8"
+                        + "&serverTimezone=UTC&autoReconnect=true")
+                .build());
         return Driver.build(config);
     }
 
     @Test
     public void connectTest() throws SQLException {
-        DriverConfig config = new DriverConfig();
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setType("Mysql");
         config.setName("name");
-        config.setIp(IP);
-        config.setPort(3306);
-        config.setUsername("root");
-        config.setPassword("123456");
-        config.setUrl(
-                "jdbc:mysql://"
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .ip(IP)
+                .port(3306)
+                .username("dca")
+                .password("dca")
+                .url("jdbc:mysql://"
                         + IP
-                        + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true");
+                        + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8"
+                        + "&serverTimezone=UTC&autoReconnect=true")
+                .build());
 
         String test;
         try (MockedStatic<DriverManager> driverManager = Mockito.mockStatic(DriverManager.class)) {
@@ -102,7 +107,7 @@ public class MysqlTest {
                 DruidDataSource druidDataSource = mock(DruidDataSource.class);
                 MySqlDriver spySqlDriver = spy(sqlDriver);
                 doReturn(druidDataSource).when(spySqlDriver).createDataSource();
-                spySqlDriver.setDriverConfig(config);
+                spySqlDriver.buildDriverConfig(config.getName(), config.getType(), config.getConnectConfig());
                 driver.when(() -> Driver.build(config)).thenReturn(spySqlDriver);
                 test = Driver.build(config).test();
             }

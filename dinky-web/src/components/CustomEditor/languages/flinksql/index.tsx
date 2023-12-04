@@ -25,30 +25,34 @@ import {
 } from '@/components/CustomEditor/languages/flinksql/function';
 import { Monaco } from '@monaco-editor/react';
 
-export function FlinkSQLLanguage(monaco?: Monaco | undefined, registerCompletion = false) {
+export function FlinkSQLLanguage(
+  monacoLanguages?: Monaco['languages'] | undefined,
+  monacoEditor?: Monaco['editor'] | undefined,
+  registerCompletion = false
+) {
   // Register a new language
-  monaco?.languages.register({
+  monacoLanguages?.register({
     id: CustomEditorLanguage.FlinkSQL,
     extensions: ['.sql'],
     mimetypes: ['text/x-flinksql', 'text/x-flinksql', 'text/x-flinksql', 'text/flinksql'],
     aliases: ['flinksql', 'fsql', 'flinkSQL', 'FlinkSQL']
   });
-  buildMonarchTokensProvider(monaco);
+  buildMonarchTokensProvider(monacoLanguages);
 
   // Register a completion item provider for the new language
   if (registerCompletion) {
-    registerFlinkSQLCompilation(monaco);
+    registerFlinkSQLCompilation(monacoLanguages);
   }
-  buildFlinkSQLConfiguration(monaco);
+  buildFlinkSQLConfiguration(monacoLanguages);
 
-  monaco?.languages.onLanguageEncountered(CustomEditorLanguage.FlinkSQL, () => {
-    monaco?.editor?.getModels().forEach((model) => {
+  monacoLanguages?.onLanguageEncountered(CustomEditorLanguage.FlinkSQL, () => {
+    monacoEditor?.getModels().forEach((model) => {
       model.onDidChangeLanguage(() => {
         if (model.getLanguageId() === CustomEditorLanguage.FlinkSQL) {
-          buildFlinkSQLConfiguration(monaco);
+          buildFlinkSQLConfiguration(monacoLanguages);
         }
       });
     });
-    buildMonarchTokensProvider(monaco);
+    buildMonarchTokensProvider(monacoLanguages);
   });
 }

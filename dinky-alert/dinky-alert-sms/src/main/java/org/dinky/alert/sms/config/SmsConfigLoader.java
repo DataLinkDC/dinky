@@ -19,157 +19,125 @@
 
 package org.dinky.alert.sms.config;
 
+import static java.util.Objects.requireNonNull;
+
 import org.dinky.alert.sms.SmsConstants;
-import org.dinky.alert.sms.enums.ManuFacturers;
+
+import java.util.List;
+import java.util.Map;
 
 import org.dromara.sms4j.aliyun.config.AlibabaConfig;
-import org.dromara.sms4j.api.SmsBlend;
-import org.dromara.sms4j.api.universal.SupplierConfig;
+import org.dromara.sms4j.aliyun.config.AlibabaFactory;
 import org.dromara.sms4j.cloopen.config.CloopenConfig;
-import org.dromara.sms4j.core.factory.SmsFactory;
+import org.dromara.sms4j.cloopen.config.CloopenFactory;
+import org.dromara.sms4j.comm.constant.SupplierConstant;
 import org.dromara.sms4j.ctyun.config.CtyunConfig;
+import org.dromara.sms4j.ctyun.config.CtyunFactory;
 import org.dromara.sms4j.emay.config.EmayConfig;
+import org.dromara.sms4j.emay.config.EmayFactory;
 import org.dromara.sms4j.huawei.config.HuaweiConfig;
+import org.dromara.sms4j.huawei.config.HuaweiFactory;
 import org.dromara.sms4j.jdcloud.config.JdCloudConfig;
-import org.dromara.sms4j.provider.enumerate.SupplierType;
+import org.dromara.sms4j.jdcloud.config.JdCloudFactory;
+import org.dromara.sms4j.provider.config.BaseConfig;
+import org.dromara.sms4j.provider.factory.BaseProviderFactory;
 import org.dromara.sms4j.tencent.config.TencentConfig;
+import org.dromara.sms4j.tencent.config.TencentFactory;
 import org.dromara.sms4j.unisms.config.UniConfig;
+import org.dromara.sms4j.unisms.config.UniFactory;
+import org.dromara.sms4j.yunpian.config.YunPianFactory;
 import org.dromara.sms4j.yunpian.config.YunpianConfig;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/** The type Sms config loader. */
+/**
+ * The type Sms config loader.
+ */
 @Slf4j
 public class SmsConfigLoader {
 
-    public static SupplierConfig getConfigLoader(String config, Integer manufacturersType) {
-        JSONObject fullConfigParams = JSONUtil.parseObj(config);
-        switch (manufacturersType) {
-            case 1:
-                AlibabaConfig alibabaConfig = AlibabaConfig.builder()
-                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                        .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
-                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                        .templateName(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
-                        .requestUrl(fullConfigParams.getStr(SmsConstants.REQUEST_URL))
-                        .action(fullConfigParams.getStr(SmsConstants.ACTION))
-                        .version(fullConfigParams.getStr(SmsConstants.VERSION))
-                        .regionId(fullConfigParams.getStr(SmsConstants.REGION_ID))
-                        .build();
-                return alibabaConfig;
-            case 2:
-                HuaweiConfig huaweiConfig = HuaweiConfig.builder()
-                        .appKey(fullConfigParams.getStr(SmsConstants.APP_KEY))
-                        .appSecret(fullConfigParams.getStr(SmsConstants.APP_SECRET))
-                        .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
-                        .sender(fullConfigParams.getStr(SmsConstants.SENDER))
-                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                        .statusCallBack(fullConfigParams.getStr(SmsConstants.STATUS_CALLBACK))
-                        .url(fullConfigParams.getStr(SmsConstants.URL))
-                        .build();
-                return huaweiConfig;
-            case 3:
-                YunpianConfig yunpianConfig = YunpianConfig.builder()
-                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                        .signature(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
-                        .callbackUrl(fullConfigParams.getStr(SmsConstants.STATUS_CALLBACK))
-                        .templateName(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
-                        .build();
-                return yunpianConfig;
-            case 4:
-                TencentConfig tencentConfig = TencentConfig.builder()
-                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                        .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
-                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                        .sdkAppId(fullConfigParams.getStr(SmsConstants.SDK_APP_ID))
-                        .territory(fullConfigParams.getStr(SmsConstants.TERRITORY))
-                        .connTimeout(fullConfigParams.getInt(SmsConstants.CONN_TIMEOUT))
-                        .requestUrl(fullConfigParams.getStr(SmsConstants.REQUEST_URL))
-                        .action(fullConfigParams.getStr(SmsConstants.ACTION))
-                        .version(fullConfigParams.getStr(SmsConstants.VERSION))
-                        .build();
-                return tencentConfig;
-            case 5:
-                UniConfig uniConfig = UniConfig.builder()
-                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                        .isSimple(fullConfigParams.getBool(SmsConstants.IS_SIMPLE))
-                        .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
-                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                        .templateName(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
-                        .build();
-                return uniConfig;
-            case 6:
-                JdCloudConfig jdCloudConfig = JdCloudConfig.builder()
-                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                        .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
-                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                        .region(fullConfigParams.getStr(SmsConstants.REGION))
-                        .build();
-                return jdCloudConfig;
-            case 7:
-                CloopenConfig cloopenConfig = CloopenConfig.builder()
-                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                        .appId(fullConfigParams.getStr(SmsConstants.APP_ID))
-                        .baseUrl(fullConfigParams.getStr(SmsConstants.BASE_URL))
-                        .build();
-                return cloopenConfig;
-            case 8:
-                EmayConfig emayConfig = EmayConfig.builder()
-                        .appId(fullConfigParams.getStr(SmsConstants.APP_ID))
-                        .secretKey(fullConfigParams.getStr(SmsConstants.SECRET_KEY))
-                        .requestUrl(fullConfigParams.getStr(SmsConstants.REQUEST_URL))
-                        .build();
-                return emayConfig;
-            case 9:
-                CtyunConfig ctyunConfig = CtyunConfig.builder()
-                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                        .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
-                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                        .templateName(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
-                        .requestUrl(fullConfigParams.getStr(SmsConstants.REQUEST_URL))
-                        .action(fullConfigParams.getStr(SmsConstants.ACTION))
-                        .build();
-                return ctyunConfig;
+    /**
+     * 获取 phone number list
+     */
+    public static List<String> getPhoneNumberList(Map<String, Object> params) {
+        List<String> phoneNumbers = (List<String>) params.get(SmsConstants.PHONE_NUMBERS);
+        requireNonNull(phoneNumbers, "phoneNumbers is null");
+        return phoneNumbers;
+    }
+
+    /**
+     * Parse config params json object.
+     *
+     * @param config
+     * @return
+     */
+    public static JSONObject parseConfigParams(String config) {
+        return JSONUtil.parseObj(config);
+    }
+
+    /**
+     * Gets config supplier config.
+     *
+     * @param params the config params
+     * @return the config supplier config {@link BaseConfig }
+     */
+    public static BaseConfig getConfigSupplierConfig(Map<String, Object> params) {
+        JSONObject fullConfigParams = parseConfigParams(JSONUtil.toJsonStr(params));
+
+        String suppliersId = fullConfigParams.getStr(SmsConstants.SUPPLIERS);
+        requireNonNull(suppliersId, "suppliers is null");
+
+        switch (suppliersId) {
+            case SupplierConstant.ALIBABA:
+                return JSONUtil.toBean(fullConfigParams, AlibabaConfig.class);
+            case SupplierConstant.TENCENT:
+                return JSONUtil.toBean(fullConfigParams, TencentConfig.class);
+            case SupplierConstant.HUAWEI:
+                return JSONUtil.toBean(fullConfigParams, HuaweiConfig.class);
+            case SupplierConstant.YUNPIAN:
+                return JSONUtil.toBean(fullConfigParams, YunpianConfig.class);
+            case SupplierConstant.UNISMS:
+                return JSONUtil.toBean(fullConfigParams, UniConfig.class);
+            case SupplierConstant.JDCLOUD:
+                return JSONUtil.toBean(fullConfigParams, JdCloudConfig.class);
+            case SupplierConstant.CLOOPEN:
+                return JSONUtil.toBean(fullConfigParams, CloopenConfig.class);
+            case SupplierConstant.EMAY:
+                return JSONUtil.toBean(fullConfigParams, EmayConfig.class);
+            case SupplierConstant.CTYUN:
+                return JSONUtil.toBean(fullConfigParams, CtyunConfig.class);
             default:
-                throw new IllegalArgumentException(
-                        "Unsupported manufacturers type: " + ManuFacturers.getManuFacturers(manufacturersType));
+                throw new IllegalArgumentException(String.format("Unsupported supplier type: [%s]", suppliersId));
         }
     }
 
-    public static SmsBlend getSmsFactory(Integer manufacturersType) {
-        switch (manufacturersType) {
-            case 1:
-                return SmsFactory.createSmsBlend(SupplierType.ALIBABA);
-            case 2:
-                return SmsFactory.createSmsBlend(SupplierType.HUAWEI);
-            case 3:
-                return SmsFactory.createSmsBlend(SupplierType.YUNPIAN);
-            case 4:
-                return SmsFactory.createSmsBlend(SupplierType.TENCENT);
-            case 5:
-                return SmsFactory.createSmsBlend(SupplierType.UNI_SMS);
-            case 6:
-                return SmsFactory.createSmsBlend(SupplierType.JD_CLOUD);
-            case 7:
-                return SmsFactory.createSmsBlend(SupplierType.CLOOPEN);
-            case 8:
-                return SmsFactory.createSmsBlend(SupplierType.EMAY);
-            case 9:
-                return SmsFactory.createSmsBlend(SupplierType.CTYUN);
+    /**
+     * 获取 BaseProviderFactory 实例
+     */
+    public static BaseProviderFactory getBaseProviderFactory(String supplier) {
+        switch (supplier) {
+            case SupplierConstant.ALIBABA:
+                return AlibabaFactory.instance();
+            case SupplierConstant.HUAWEI:
+                return HuaweiFactory.instance();
+            case SupplierConstant.YUNPIAN:
+                return YunPianFactory.instance();
+            case SupplierConstant.TENCENT:
+                return TencentFactory.instance();
+            case SupplierConstant.JDCLOUD:
+                return JdCloudFactory.instance();
+            case SupplierConstant.CLOOPEN:
+                return CloopenFactory.instance();
+            case SupplierConstant.EMAY:
+                return EmayFactory.instance();
+            case SupplierConstant.CTYUN:
+                return CtyunFactory.instance();
+            case SupplierConstant.UNISMS:
+                return UniFactory.instance();
             default:
-                throw new IllegalArgumentException(
-                        "Unsupported manufacturers type: " + ManuFacturers.getManuFacturers(manufacturersType));
+                throw new IllegalArgumentException(String.format("Unsupported supplier type: [%s]", supplier));
         }
     }
 }

@@ -17,7 +17,6 @@
  *
  */
 
-import { Height80VHDiv } from '@/components/StyledComponents';
 import ColumnInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/ColumnInfo';
 import TableInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/TableInfo';
 import { DataSources } from '@/types/RegCenter/data';

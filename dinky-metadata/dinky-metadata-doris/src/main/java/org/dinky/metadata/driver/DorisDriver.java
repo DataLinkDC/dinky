@@ -19,6 +19,7 @@
 
 package org.dinky.metadata.driver;
 
+import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.convert.DorisTypeConvert;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.query.DorisQuery;
@@ -44,7 +45,7 @@ public class DorisDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert getTypeConvert() {
+    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
         return new DorisTypeConvert();
     }
 

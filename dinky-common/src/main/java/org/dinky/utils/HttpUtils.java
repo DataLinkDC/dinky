@@ -79,8 +79,17 @@ public class HttpUtils {
             CloseableHttpResponse response = httpClient.execute(httpPost);
 
             int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode != HttpStatus.SC_OK) {
-                logger.error("post data error, return http status code: {} ", statusCode);
+
+            if (statusCode == HttpStatus.SC_OK) {
+                logger.info(
+                        "post data success, return http status code: {} , msg: {}",
+                        statusCode,
+                        response.getStatusLine().getReasonPhrase());
+            } else {
+                logger.warn(
+                        "post data error, return http status code: {}, msg: {} ",
+                        statusCode,
+                        response.getStatusLine().getReasonPhrase());
             }
             String resp;
             try {
@@ -98,6 +107,7 @@ public class HttpUtils {
 
     /**
      * build HttpPost
+     *
      * @param httpUrl
      * @param msg
      * @return

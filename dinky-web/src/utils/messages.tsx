@@ -26,8 +26,8 @@ const { Paragraph } = Typography;
 /**
  * default params
  */
-const defaultDuration = 2;
-const AsyncDuration = 0.5;
+const defaultDuration = 1;
+const AsyncDuration = 1;
 
 // ================================ About Notification Component ================================
 
