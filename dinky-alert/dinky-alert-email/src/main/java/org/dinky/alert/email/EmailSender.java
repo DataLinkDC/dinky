@@ -27,23 +27,18 @@ import org.dinky.alert.email.params.EmailParams;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.mail.HtmlEmail;
 
+import java.security.GeneralSecurityException;
 import java.util.Map;
-import java.util.Properties;
-
-import javax.activation.CommandMap;
-import javax.activation.MailcapCommandMap;
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.mail.smtp.SMTPSSLProvider;
+import com.sun.mail.util.MailSSLSocketFactory;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.extra.mail.MailAccount;
+import cn.hutool.extra.mail.MailUtil;
 import cn.hutool.json.JSONUtil;
 
 /**
@@ -69,112 +64,71 @@ public final class EmailSender {
     }
 
     /**
-     * send mail
+     * Sends an email with the given title and content.
      *
-     * @param title   title
-     * @param content content
+     * @param  title   the title of the email
+     * @param  content the content of the email
+     * @return         an AlertResult object representing the result of the email sending
      */
     public AlertResult send(String title, String content) {
         AlertResult alertResult = new AlertResult();
-        alertResult.setSuccess(false);
-
         // if there is no receivers && no receiversCc, no need to process
-        if (CollectionUtils.isEmpty(emailParams.getReceivers())
-                && CollectionUtils.isEmpty(emailParams.getReceiverCcs())) {
-            logger.error("no receivers && no receiversCc");
+        if (CollectionUtils.isEmpty(emailParams.getReceivers())) {
+            logger.error("no receivers , you must set receivers");
             return alertResult;
         }
 
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
-        HtmlEmail email = new HtmlEmail();
         try {
-            Session session = getSession();
-            email.setHostName(emailParams.getServerHost());
-            email.setSmtpPort(emailParams.getServerPort());
-            email.setSSLOnConnect(emailParams.isSslEnable());
-            email.setSslSmtpPort(String.valueOf(emailParams.getServerPort()));
-            email.setStartTLSEnabled(emailParams.isStarttlsEnable());
-            email.setSSLCheckServerIdentity(emailParams.isSslEnable());
-            if (emailParams.isEnableSmtpAuth()) {
-                email.setAuthentication(emailParams.getUser(), emailParams.getPassword());
+            String sendResult = MailUtil.send(
+                    getMailAccount(),
+                    emailParams.getReceivers(),
+                    emailParams.getReceiverCcs(),
+                    null,
+                    title,
+                    content,
+                    true);
+            if (StringUtils.isNotBlank(sendResult)) {
+                logger.info("Send email info: {}", sendResult);
+                alertResult.setSuccess(true);
+                alertResult.setMessage(sendResult);
+                return alertResult;
             }
-            email.setMailSession(session);
-            email.setFrom(emailParams.getUser(), emailParams.getSender());
-            email.setCharset(EmailConstants.CHARSET);
-            email.setSubject(title);
-            email.setMsg(content);
-            email.setDebug(true);
-
-            if (CollectionUtils.isNotEmpty(emailParams.getReceivers())) {
-                // receivers mail
-                for (String receiver : emailParams.getReceivers()) {
-                    email.addTo(receiver);
-                }
-            }
-
-            if (CollectionUtils.isNotEmpty(emailParams.getReceiverCcs())) {
-                // cc
-                for (String receiverCc : emailParams.getReceiverCcs()) {
-                    email.addCc(receiverCc);
-                }
-            }
-            // sender mail
-            String sendResult = email.send();
-            logger.info("Send email info: {}", sendResult);
-            alertResult.setSuccess(true);
-            return alertResult;
-        } catch (Exception e) {
+        } catch (GeneralSecurityException e) {
             handleException(alertResult, e);
         }
+
         return alertResult;
     }
 
     /**
-     * get session
+     * Retrieves the MailAccount object for sending emails.
      *
-     * @return the new Session
+     * @return          the MailAccount object containing the email server configuration
+     * @throws GeneralSecurityException    if there is a security exception during the process
      */
-    private Session getSession() {
-        // support multilple email format
-        MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
-        mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
-        mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-        mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-        mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-        mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
-        CommandMap.setDefaultCommandMap(mc);
-
-        Properties props = new Properties();
-        props.put(EmailConstants.NAME_MAIL_PROTOCOL, "smtp");
-        props.setProperty(EmailConstants.MAIL_SMTP_HOST, emailParams.getServerHost());
-        props.setProperty(EmailConstants.MAIL_SMTP_PORT, String.valueOf(emailParams.getServerPort()));
-        props.setProperty(EmailConstants.MAIL_SMTP_AUTH, String.valueOf(emailParams.isEnableSmtpAuth()));
-        if (StringUtils.isNotEmpty(emailParams.getMailProtocol())) {
-            props.setProperty(EmailConstants.MAIL_TRANSPORT_PROTOCOL, emailParams.getMailProtocol());
+    private MailAccount getMailAccount() throws GeneralSecurityException {
+        MailAccount mailAccount = new MailAccount();
+        mailAccount.setHost(emailParams.getServerHost());
+        mailAccount.setPort(emailParams.getServerPort());
+        String userNameFrom = emailParams.getUser();
+        if (emailParams.getUser() != null && emailParams.getSender() != null) {
+            userNameFrom = emailParams.getSender() + "<" + emailParams.getUser() + ">";
         }
-        props.setProperty(EmailConstants.MAIL_SMTP_SSL_ENABLE, String.valueOf(emailParams.isSslEnable()));
-        props.setProperty(EmailConstants.MAIL_SMTP_STARTTLS_ENABLE, String.valueOf(emailParams.isStarttlsEnable()));
-        props.setProperty(EmailConstants.MAIL_SENDER, emailParams.getSender());
-        props.setProperty(EmailConstants.MAIL_USER, emailParams.getUser());
-        props.setProperty(EmailConstants.MAIL_PASSWD, emailParams.getPassword());
-
-        if (StringUtils.isNotEmpty(emailParams.getSmtpSslTrust())) {
-            props.setProperty(EmailConstants.MAIL_SMTP_SSL_TRUST, emailParams.getSmtpSslTrust());
+        mailAccount.setFrom(userNameFrom);
+        if (emailParams.isEnableSmtpAuth()) {
+            mailAccount.setAuth(emailParams.isEnableSmtpAuth());
+            mailAccount.setUser(emailParams.getUser());
+            mailAccount.setPass(emailParams.getPassword());
         }
-
-        Authenticator auth = new Authenticator() {
-
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                // mail username and password
-                return new PasswordAuthentication(emailParams.getUser(), emailParams.getPassword());
-            }
-        };
-
-        Session session = Session.getInstance(props, auth);
-        session.addProvider(new SMTPSSLProvider());
-        return session;
+        mailAccount.setStarttlsEnable(emailParams.isStarttlsEnable());
+        mailAccount.setSslEnable(emailParams.isSslEnable());
+        mailAccount.setSocketFactoryClass("javax.net.ssl.SSLSocketFactory");
+        MailSSLSocketFactory sf = new MailSSLSocketFactory();
+        sf.setTrustedHosts(emailParams.getSmtpSslTrust().split(","));
+        mailAccount.setCustomProperty("mail.smtp.ssl.socketFactory", sf);
+        return mailAccount;
     }
 
     /**
@@ -182,6 +136,7 @@ public final class EmailSender {
      */
     private void handleException(AlertResult alertResult, Exception e) {
         logger.error("Send email to {} failed", emailParams.getReceivers(), e);
+        alertResult.setSuccess(false);
         alertResult.setMessage(
                 "Send email to {" + String.join(",", emailParams.getReceivers()) + "} failed，" + e.toString());
     }
