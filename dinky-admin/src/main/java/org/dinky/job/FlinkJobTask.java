@@ -79,12 +79,17 @@ public class FlinkJobTask implements DaemonTask {
      */
     @Override
     public boolean dealTask() {
-        volatilityBalance();
+        try {
+            volatilityBalance();
 
-        boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, isNeedSave());
-        JobAlertHandler.getInstance().check(jobInfoDetail);
-        JobMetricsHandler.writeFlinkMetrics(jobInfoDetail);
-        return isDone;
+            boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, isNeedSave());
+            JobAlertHandler.getInstance().check(jobInfoDetail);
+            JobMetricsHandler.writeFlinkMetrics(jobInfoDetail);
+            return isDone;
+        }catch (Exception e){
+            log.error("Deal Flink Job daemon refesh failed,", e);
+            return true;
+        }
     }
 
     /**

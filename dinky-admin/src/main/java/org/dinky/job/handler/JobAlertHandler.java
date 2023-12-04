@@ -29,6 +29,7 @@ import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.data.dto.AlertRuleDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.Status;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.alert.AlertHistory;
 import org.dinky.data.model.alert.AlertInstance;
@@ -117,7 +118,13 @@ public class JobAlertHandler {
     public void check(JobInfoDetail jobInfoDetail) {
         Facts ruleFacts = new Facts();
         JobAlertData jobAlertData = JobAlertData.buildData(jobInfoDetail);
-        JsonUtils.toMap(jobAlertData).forEach(ruleFacts::put);
+        JsonUtils.toMap(jobAlertData).forEach((k,v)->{
+            if (v == null){
+                throw new DinkyException(StrFormatter.format(
+                        "When deal alert job data, the key [{}] value is null, its maybe dinky bug,please report", k));
+            }
+            ruleFacts.put(k, v);
+        });
         rulesEngine.fire(rules, ruleFacts);
     }
 

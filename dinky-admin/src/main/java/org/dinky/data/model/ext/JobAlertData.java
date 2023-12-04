@@ -39,6 +39,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -144,6 +147,10 @@ public class JobAlertData {
                 jobInstance.getTaskId());
     }
 
+    private static String getTime(LocalDateTime time) {
+        return time == null ? "" : TimeUtil.convertTimeToString(time);
+    }
+
     public static JobAlertData buildData(JobInfoDetail jobInfoDetail) {
         JobAlertDataBuilder builder = JobAlertData.builder();
         builder.alertTime(TimeUtil.nowStr());
@@ -163,12 +170,13 @@ public class JobAlertData {
                 .taskUrl(buildTaskUrl(jobInstance))
                 .jobName(jobInstance.getName())
                 .jobId(jobInstance.getJid())
-                .duration(jobInstance.getDuration())
-                .jobStartTime(TimeUtil.convertTimeToString(jobInstance.getCreateTime()))
-                .jobEndTime(TimeUtil.convertTimeToString(jobInstance.getFinishTime()));
+                .duration(Optional.ofNullable(jobInstance.getDuration()).orElse(0L))
+                .jobStartTime(getTime(jobInstance.getCreateTime()))
+                .jobEndTime(getTime(jobInstance.getFinishTime()));
         if (job != null) {
             builder.batchModel(job.isBatchModel());
         }
+
         if (clusterInstance != null) {
             builder.clusterName(clusterInstance.getName())
                     .clusterType(clusterInstance.getType())
@@ -180,7 +188,11 @@ public class JobAlertData {
         } else if (exceptions != null && ExceptionRule.isException(id, exceptions)) {
             // The error message is too long to send an alarm,
             // and only the first line of abnormal information is used
-            builder.isException(true).errorMsg(exceptions.getRootException().split("\n")[0]);
+            String err = Optional.ofNullable(exceptions.getRootException()).orElse("dinky didn't get any ERROR!").split("\n")[0];
+            if (err.length() > 100) {
+                err = err.substring(0, 100) + "...";
+            }
+            builder.isException(true).errorMsg(err);
         }
 
         if (checkpoints != null) {
