@@ -22,17 +22,14 @@ import { Loading } from '@/pages/Other/Loading';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 
-import { Col,Row } from 'antd';
+import { Col, Row } from 'antd';
 import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
 
 import FullscreenBtn from '@/components/CustomEditor/FullscreenBtn';
 import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEditor/function';
-import { Editor,Monaco } from '@monaco-editor/react';
-import { debounce } from "lodash";
-import {CSSProperties, memo, useRef, useState} from 'react';
-import CodeEdit from "@/components/CustomEditor/CodeEdit";
-
+import { Editor, Monaco } from '@monaco-editor/react';
+import { CSSProperties, memo, useRef, useState } from 'react';
 
 export type CodeShowFormProps = {
   height?: string | number;
