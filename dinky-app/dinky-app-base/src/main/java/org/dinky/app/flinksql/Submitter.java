@@ -157,9 +157,6 @@ public class Submitter {
 
         Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig);
 
-        log.info("Start Monitor Job");
-        FlinkAppUtil.monitorFlinkTask(config.getTaskId());
-
         // 加载第三方jar //TODO 这里有问题，需要修一修
         // loadDep(appTask.getType(),
         // config.getTaskId(),DBUtil.getSysConfig(Status.SYS_ENV_SETTINGS_DINKYADDR.getKey()), executorConfig);
