@@ -93,8 +93,9 @@ public class JobTransBuilder extends JobBuilder {
 
     private List<String> collectInserts() {
         List<String> inserts = new ArrayList<>();
-        List<StatementParam> statementParams = useStatementSet ? jobParam.getTrans() :
-                Collections.singletonList(jobParam.getTrans().get(0));
+        List<StatementParam> statementParams = useStatementSet
+                ? jobParam.getTrans()
+                : Collections.singletonList(jobParam.getTrans().get(0));
         for (StatementParam item : statementParams) {
             if (!useGateway && !item.getType().equals(SqlType.INSERT)) {
                 handleNonInsertType(item);
@@ -134,7 +135,7 @@ public class JobTransBuilder extends JobBuilder {
     }
 
     private void processFirstStatement() throws Exception {
-        if(jobParam.getTrans().isEmpty()) {
+        if (jobParam.getTrans().isEmpty()) {
             return;
         }
         // Only process the first statement when not using statement set
