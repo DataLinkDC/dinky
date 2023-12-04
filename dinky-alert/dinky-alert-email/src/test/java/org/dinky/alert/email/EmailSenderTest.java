@@ -22,6 +22,7 @@ package org.dinky.alert.email;
 import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertResult;
 
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,9 +59,9 @@ public class EmailSenderTest {
 
     @Ignore
     @Test
-    public void testTextSendMails() {
+    public void testTextSendMails() throws GeneralSecurityException {
         AlertResult alertResult =
                 emailSender.send(AlertBaseConstant.ALERT_TEMPLATE_TITLE, AlertBaseConstant.ALERT_TEMPLATE_MSG);
-        Assert.assertEquals(true, alertResult.getSuccess()); // 格式需要调整
+        Assert.assertEquals(true, alertResult.getSuccess());
     }
 }
