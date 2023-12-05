@@ -84,7 +84,7 @@ class TableTest {
         table = new Table("TableNameOrigin", "SchemaOrigin", columns);
         tableWithoutKey = new Table("TableNameOrigin", "SchemaOrigin", columnWithoutKey);
 
-        flinkConfig = "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc, ${}=null, bcd=bcd";
+        flinkConfig = "#{schemaName}=schemaName, #{tableName}=tableName, #{abc}=abc, #{}=null, bcd=bcd";
     }
 
     @Test
@@ -98,8 +98,8 @@ class TableTest {
                         + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc',\n"
                         + "    PRIMARY KEY ( `column1`,`column2` ) NOT ENFORCED\n"
                         + ") WITH (\n"
-                        + "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc,"
-                        + " ${}=null, bcd=bcd)\n"));
+                        + "#{schemaName}=schemaName, #{tableName}=tableName, #{abc}=abc,"
+                        + " #{}=null, bcd=bcd)\n"));
 
         result = tableWithoutKey.getFlinkDDL(flinkConfig, "NewTableNameWithoutKey");
         assertThat(
@@ -108,8 +108,8 @@ class TableTest {
                         + "    `column1` INT NOT NULL COMMENT 'comment abc',\n"
                         + "    `column2` STRING COMMENT 'comment abc',\n"
                         + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc') WITH (\n"
-                        + "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc,"
-                        + " ${}=null, bcd=bcd)\n"));
+                        + "#{schemaName}=schemaName, #{tableName}=tableName, #{abc}=abc,"
+                        + " #{}=null, bcd=bcd)\n"));
     }
 
     @Test
@@ -117,7 +117,7 @@ class TableTest {
         String result = table.getFlinkTableWith(flinkConfig);
         assertThat(
                 result,
-                equalTo("SchemaOrigin=schemaName, TableNameOrigin=tableName, ${abc}=abc, ${}=null, " + "bcd=bcd"));
+                equalTo("SchemaOrigin=schemaName, TableNameOrigin=tableName, #{abc}=abc, #{}=null, " + "bcd=bcd"));
     }
 
     @Test
@@ -132,7 +132,7 @@ class TableTest {
                         + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc',\n"
                         + "    PRIMARY KEY ( `column1`,`column2` ) NOT ENFORCED\n"
                         + ") WITH (\n"
-                        + "SchemaOrigin=schemaName, TableNameOrigin=tableName, ${abc}=abc,"
-                        + " ${}=null, bcd=bcd)\n"));
+                        + "SchemaOrigin=schemaName, TableNameOrigin=tableName, #{abc}=abc,"
+                        + " #{}=null, bcd=bcd)\n"));
     }
 }
