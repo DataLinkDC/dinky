@@ -115,6 +115,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
             disabled={!!values.id}
             placeholder={l('catalog.type.placeholder')}
             rules={[{ required: true, message: l('catalog.type.placeholder') }]}
+            allowClear={false}
           />
         )}
         <ProFormText
@@ -166,7 +167,6 @@ const JobModal: React.FC<JobModalProps> = (props) => {
   };
 
   return (
-    <>
       <ModalForm<Catalogue>
         title={title}
         form={form}
@@ -185,7 +185,6 @@ const JobModal: React.FC<JobModalProps> = (props) => {
       >
         {renderForm()}
       </ModalForm>
-    </>
   );
 };
 
