@@ -19,6 +19,7 @@
 
 package org.dinky.job;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.constant.FlinkTaskConstant;
 import org.dinky.daemon.task.DaemonTask;
@@ -82,8 +83,10 @@ public class FlinkJobTask implements DaemonTask {
         volatilityBalance();
 
         boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, isNeedSave());
-        JobAlertHandler.getInstance().check(jobInfoDetail);
-        JobMetricsHandler.writeFlinkMetrics(jobInfoDetail);
+        if (Asserts.isAllNotNull(jobInfoDetail.getInstance(), jobInfoDetail.getClusterInstance())) {
+            JobAlertHandler.getInstance().check(jobInfoDetail);
+            JobMetricsHandler.writeFlinkMetrics(jobInfoDetail);
+        }
         return isDone;
     }
 
