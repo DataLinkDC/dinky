@@ -27,6 +27,7 @@ import org.dinky.utils.HttpUtils;
 import org.dinky.utils.TimeUtil;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -93,7 +94,8 @@ public class JobMetricsHandler {
         String metricsName = StrUtil.join(",", m.keySet());
         String urlParam =
                 StrFormatter.format("/jobs/{}/vertices/{}/metrics?get={}", jid, v, URLUtil.encode(metricsName));
-        HttpUtils.asyncRequest(Arrays.asList(urlList), urlParam, NetConstant.READ_TIME_OUT, x -> {
+        ArrayList<String> list = new ArrayList<String>(Arrays.asList(urlList));
+        HttpUtils.asyncRequest(list, urlParam, NetConstant.READ_TIME_OUT, x -> {
             JSONArray array = JSONUtil.parseArray(x.body());
             array.forEach(y -> {
                 JSONObject jsonObject = JSONUtil.parseObj(y);
