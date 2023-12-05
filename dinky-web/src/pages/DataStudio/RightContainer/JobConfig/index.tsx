@@ -182,6 +182,7 @@ const JobConfig = (props: any) => {
           tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
           rules={[{ required: true, message: l('pages.datastudio.label.jobConfig.execmode.tip') }]}
           options={buildRunModelOptions()}
+          allowClear={false}
         />
 
         {[RUN_MODE.YARN_SESSION, RUN_MODE.KUBERNETES_SESSION, RUN_MODE.STANDALONE].includes(
@@ -205,6 +206,7 @@ const JobConfig = (props: any) => {
               { required: true, message: l('pages.datastudio.label.jobConfig.clusterConfig.tip2') }
             ]}
             options={buildClusterConfigOptions(current, clusterConfiguration)}
+            allowClear={false}
           />
         )}
 
@@ -217,6 +219,7 @@ const JobConfig = (props: any) => {
             { required: true, message: l('pages.datastudio.label.jobConfig.flinksql.env.tip1') }
           ]}
           showSearch
+          allowClear={false}
         />
 
         <ProFormGroup>
@@ -268,6 +271,7 @@ const JobConfig = (props: any) => {
           name='savePointStrategy'
           tooltip={l('pages.datastudio.label.jobConfig.savePointStrategy.tip')}
           options={SAVE_POINT_TYPE}
+          allowClear={false}
         />
 
         {current?.savePointStrategy === 3 && (
@@ -284,6 +288,7 @@ const JobConfig = (props: any) => {
           name='alertGroupId'
           placeholder={l('pages.datastudio.label.jobConfig.alertGroup.tip')}
           options={buildAlertGroupOptions(group)}
+          allowClear={false}
         />
 
         <ProFormList
