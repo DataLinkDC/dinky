@@ -18,12 +18,18 @@
  */
 
 import {
-AliYunArea,
-TencentArea
+  AliYunArea,
+  TencentArea
 } from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/constants';
-import { SMS_TYPE } from "@/pages/RegCenter/Alert/AlertInstance/constans";
+import { SMS_TYPE } from '@/pages/RegCenter/Alert/AlertInstance/constans';
 import { l } from '@/utils/intl';
-import { ProForm,ProFormDigit,ProFormSelect,ProFormSwitch,ProFormTextArea } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormDigit,
+  ProFormSelect,
+  ProFormSwitch,
+  ProFormTextArea
+} from '@ant-design/pro-components';
 import { ProFormText } from '@ant-design/pro-form';
 import { randomStr } from '@antfu/utils';
 
@@ -31,7 +37,7 @@ import { randomStr } from '@antfu/utils';
  * 匹配平台请求地址 | match platform request url
  * @param smsType
  */
-export function matchPlatFormRequestUrl(smsType: string) :string {
+export function matchPlatFormRequestUrl(smsType: string): string {
   switch (smsType) {
     case SMS_TYPE.ALIBABA:
       return 'dysmsapi.aliyuncs.com';

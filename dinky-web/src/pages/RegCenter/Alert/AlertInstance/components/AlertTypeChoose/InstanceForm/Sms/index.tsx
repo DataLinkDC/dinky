@@ -18,23 +18,24 @@
  */
 
 import {
-  matchPlatFormRequestUrl, matchPlatVersion,
+  matchPlatFormRequestUrl,
+  matchPlatVersion,
   renderAlibabaSmsForm,
   renderTencentSmsForm
 } from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/function';
-import {MANU_FRACTURES, SMS_TYPE} from '@/pages/RegCenter/Alert/AlertInstance/constans';
-import {SWITCH_OPTIONS} from '@/services/constants';
-import {Alert} from '@/types/RegCenter/data';
-import {l} from '@/utils/intl';
+import { MANU_FRACTURES, SMS_TYPE } from '@/pages/RegCenter/Alert/AlertInstance/constans';
+import { SWITCH_OPTIONS } from '@/services/constants';
+import { Alert } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
 
-import {useCallback, useEffect, useState} from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import {FormSingleColumnList} from '@/components/FormSingleColumnList';
-import {ProForm, ProFormSelect, ProFormSwitch} from '@ant-design/pro-components';
-import {FormInstance} from 'antd/es/form/hooks/useForm';
-import {Values} from 'async-validator';
-import {Rule} from 'rc-field-form/lib/interface';
-import {randomStr} from "@antfu/utils";
+import { FormSingleColumnList } from '@/components/FormSingleColumnList';
+import { ProForm, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
+import { randomStr } from '@antfu/utils';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
+import { Rule } from 'rc-field-form/lib/interface';
 
 type SmsProps = {
   values: Partial<Alert.AlertInstance>;

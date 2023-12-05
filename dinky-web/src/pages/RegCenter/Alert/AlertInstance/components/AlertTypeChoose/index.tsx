@@ -17,8 +17,8 @@
  *
  */
 
-import { Button,Form } from 'antd';
-import React,{ useEffect,useState } from 'react';
+import { Button, Form } from 'antd';
+import React, { useEffect, useState } from 'react';
 
 import { FormContextValue } from '@/components/Context/FormContext';
 import InstanceForm from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm';
@@ -118,7 +118,7 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
         form={form}
         initialValues={formValues}
         onValuesChange={(changedValues, allValues) =>
-          setFormValues((prevState) => ({ ...prevState, ...allValues,...changedValues }))
+          setFormValues((prevState) => ({ ...prevState, ...allValues, ...changedValues }))
         }
         modalProps={{ onCancel: handleCancel, ...NORMAL_MODAL_OPTIONS }}
         submitter={{ render: () => [...renderFooter()] }}

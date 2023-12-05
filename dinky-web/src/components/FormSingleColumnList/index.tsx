@@ -40,7 +40,7 @@ interface FormSingleColumnListProps {
 }
 
 export const FormSingleColumnList = (props: FormSingleColumnListProps) => {
-  const { max, min, namePath, rules, title,phonePrefix, inputPlaceholder, plain, form } = props;
+  const { max, min, namePath, rules, title, phonePrefix, inputPlaceholder, plain, form } = props;
 
   return (
     <>
@@ -77,7 +77,6 @@ export const FormSingleColumnList = (props: FormSingleColumnListProps) => {
                     style={{ width: '100%' }}
                     rules={rules}
                     isListField
-
                   >
                     <Input addonBefore={phonePrefix} placeholder={inputPlaceholder} />
                   </Form.Item>
