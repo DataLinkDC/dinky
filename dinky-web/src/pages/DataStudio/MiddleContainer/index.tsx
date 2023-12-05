@@ -181,7 +181,7 @@ const MiddleContainer = (props: any) => {
       position: 'fixed',
       cursor: 'context-menu',
       width: '10vw',
-      zIndex: 9999,
+      zIndex: 999,
       left: info.clientX + 10, // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
       top: info.clientY + 10 // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
     });

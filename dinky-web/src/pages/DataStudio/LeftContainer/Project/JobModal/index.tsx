@@ -115,6 +115,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
             disabled={!!values.id}
             placeholder={l('catalog.type.placeholder')}
             rules={[{ required: true, message: l('catalog.type.placeholder') }]}
+            allowClear={false}
           />
         )}
         <ProFormText
@@ -166,26 +167,24 @@ const JobModal: React.FC<JobModalProps> = (props) => {
   };
 
   return (
-    <>
-      <ModalForm<Catalogue>
-        title={title}
-        form={form}
-        width={'30%'}
-        initialValues={{ ...values }}
-        open={modalVisible}
-        layout={'horizontal'}
-        autoFocusFirstInput
-        onValuesChange={onValuesChange}
-        modalProps={{
-          destroyOnClose: true,
-          maskClosable: false,
-          onCancel: handleCancel
-        }}
-        onFinish={async (values) => submitForm(values)}
-      >
-        {renderForm()}
-      </ModalForm>
-    </>
+    <ModalForm<Catalogue>
+      title={title}
+      form={form}
+      width={'30%'}
+      initialValues={{ ...values }}
+      open={modalVisible}
+      layout={'horizontal'}
+      autoFocusFirstInput
+      onValuesChange={onValuesChange}
+      modalProps={{
+        destroyOnClose: true,
+        maskClosable: false,
+        onCancel: handleCancel
+      }}
+      onFinish={async (values) => submitForm(values)}
+    >
+      {renderForm()}
+    </ModalForm>
   );
 };
 
