@@ -29,13 +29,16 @@ import java.util.Optional;
 
 import org.dromara.sms4j.api.SmsBlend;
 import org.dromara.sms4j.api.entity.SmsResponse;
+import org.dromara.sms4j.comm.constant.SupplierConstant;
 import org.dromara.sms4j.provider.config.BaseConfig;
 import org.dromara.sms4j.provider.factory.BaseProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SmsSender todo: https://wind.kim/doc/start/springboot.html
+ * SmsSender
+ * <p>
+ *    SMS sending service, use SMS4J <<a href="https://sms4j.com/doc3/supplierConfig.html">sms4j</a>> implement, currently only implements Aliyun and Tencent Cloud SMS alert
  */
 public class SmsSender {
     private static final Logger logger = LoggerFactory.getLogger(SmsSender.class);
@@ -52,18 +55,46 @@ public class SmsSender {
         this.phoneNumbers = SmsConfigLoader.getPhoneNumberList(config);
     }
 
+    /**
+     * Sends the specified content via SMS and returns the result.
+     *
+     * @param  content    the content to be sent
+     * @return            the result of the SMS send operation
+     */
     public synchronized AlertResult send(String content) {
         SmsResponse smsResponse;
         if (supplierConfigLoader.isPresent() && supplierConfigLoader.get().getTemplateId() != null) {
             String templateId = supplierConfigLoader.get().getTemplateId();
-            LinkedHashMap<String, String> smsParams = new LinkedHashMap<>();
-            smsParams.put(SmsConstants.ALERT_TEMPLATE_CONTENT, content);
-
-            smsResponse = smsSendFactory.massTexting(phoneNumbers, templateId, smsParams);
+            smsResponse = smsSendFactory.massTexting(phoneNumbers, templateId, buildPlatFormVariableOfContent(content));
         } else {
             throw new RuntimeException("sms templateId is null");
         }
         return validateSendResult(smsResponse);
+    }
+
+    /**
+     * Builds a platform variable of the content for an SMS alert template.
+     * <p>
+     *     zh-CN:因为不同的厂商有不同的模板变量，所以这里需要根据不同的厂商来构建不同的模板变量
+     *     en-US:Because different manufacturers have different template variables, so here you need to build different template variables according to different manufacturers
+     *
+     * @param  content  the content of the alert template
+     * @return          a LinkedHashMap containing the platform variable for the content
+     */
+    private LinkedHashMap<String, String> buildPlatFormVariableOfContent(String content) {
+        LinkedHashMap<String, String> smsParams = new LinkedHashMap<>();
+        String templateVariableKey = "";
+        switch (baseProviderFactory.getSupplier()) {
+            case SupplierConstant.ALIBABA:
+                templateVariableKey = SmsConstants.ALIYUNM_SMS_TEMPLATE_VARIABLES;
+                break;
+            case SupplierConstant.TENCENT:
+                templateVariableKey = SmsConstants.TENCENT_SMS_TEMPLATE_VARIABLES_1;
+                break;
+        }
+
+        smsParams.put(templateVariableKey, content);
+        return smsParams;
     }
 
     private AlertResult validateSendResult(SmsResponse smsResponse) {

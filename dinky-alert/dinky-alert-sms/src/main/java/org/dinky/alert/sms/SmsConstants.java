@@ -68,4 +68,8 @@ public class SmsConstants {
 
     public static final String REGION = "region";
     public static final String PHONE_NUMBERS = "phoneNumbers";
+
+    // =============== variables ==================
+    public static final String ALIYUNM_SMS_TEMPLATE_VARIABLES = "content";
+    public static final String TENCENT_SMS_TEMPLATE_VARIABLES_1 = "1";
 }

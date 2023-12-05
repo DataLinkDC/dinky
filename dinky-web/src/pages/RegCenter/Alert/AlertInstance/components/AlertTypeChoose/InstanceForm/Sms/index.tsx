@@ -18,21 +18,23 @@
  */
 
 import {
+  matchPlatFormRequestUrl, matchPlatVersion,
   renderAlibabaSmsForm,
   renderTencentSmsForm
 } from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/function';
-import { MANU_FRACTURES, SMS_TYPE } from '@/pages/RegCenter/Alert/AlertInstance/constans';
-import { SWITCH_OPTIONS } from '@/services/constants';
-import { Alert } from '@/types/RegCenter/data';
-import { l } from '@/utils/intl';
+import {MANU_FRACTURES, SMS_TYPE} from '@/pages/RegCenter/Alert/AlertInstance/constans';
+import {SWITCH_OPTIONS} from '@/services/constants';
+import {Alert} from '@/types/RegCenter/data';
+import {l} from '@/utils/intl';
 
-import { useCallback, useState } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 
-import { FormSingleColumnList } from '@/components/FormSingleColumnList';
-import { ProForm, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
-import { FormInstance } from 'antd/es/form/hooks/useForm';
-import { Values } from 'async-validator';
-import { Rule } from 'rc-field-form/lib/interface';
+import {FormSingleColumnList} from '@/components/FormSingleColumnList';
+import {ProForm, ProFormSelect, ProFormSwitch} from '@ant-design/pro-components';
+import {FormInstance} from 'antd/es/form/hooks/useForm';
+import {Values} from 'async-validator';
+import {Rule} from 'rc-field-form/lib/interface';
+import {randomStr} from "@antfu/utils";
 
 type SmsProps = {
   values: Partial<Alert.AlertInstance>;
@@ -44,6 +46,21 @@ const Sms = (props: SmsProps) => {
   const params = values.params as Alert.AlertInstanceParamsSms;
 
   const [suppliers, setSuppliers] = useState<string>(params.suppliers ?? SMS_TYPE.ALIBABA);
+
+  useEffect(() => {
+    if (suppliers) {
+      // 厂商改变时 重新设置requestUrl, version, configId 等一些参数  | if suppliers change, reset some params like requestUrl, version, configId
+      form.setFieldsValue({
+        params: {
+          ...params,
+          suppliers: suppliers,
+          requestUrl: matchPlatFormRequestUrl(suppliers),
+          configId: randomStr(32),
+          version: matchPlatVersion(suppliers)
+        }
+      });
+    }
+  }, [suppliers]);
 
   /**
    * render form by sms type
@@ -123,6 +140,7 @@ const Sms = (props: SmsProps) => {
         max={10}
         min={1}
         plain={true}
+        phonePrefix={'+86'}
       />
     </>
   );

@@ -18,19 +18,44 @@
  */
 
 import {
-  AliYunArea,
-  TencentArea
+AliYunArea,
+TencentArea
 } from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/constants';
+import { SMS_TYPE } from "@/pages/RegCenter/Alert/AlertInstance/constans";
 import { l } from '@/utils/intl';
-import {
-  ProForm,
-  ProFormDigit,
-  ProFormSelect,
-  ProFormSwitch,
-  ProFormTextArea
-} from '@ant-design/pro-components';
+import { ProForm,ProFormDigit,ProFormSelect,ProFormSwitch,ProFormTextArea } from '@ant-design/pro-components';
 import { ProFormText } from '@ant-design/pro-form';
 import { randomStr } from '@antfu/utils';
+
+/**
+ * 匹配平台请求地址 | match platform request url
+ * @param smsType
+ */
+export function matchPlatFormRequestUrl(smsType: string) :string {
+  switch (smsType) {
+    case SMS_TYPE.ALIBABA:
+      return 'dysmsapi.aliyuncs.com';
+    case SMS_TYPE.TENCENT:
+      return 'sms.tencentcloudapi.com';
+    default:
+      return '';
+  }
+}
+
+/**
+ * 匹配平台版本号 | match platform version
+ * @param smsType
+ */
+export function matchPlatVersion(smsType: string): string {
+  switch (smsType) {
+    case SMS_TYPE.ALIBABA:
+      return '2017-05-25';
+    case SMS_TYPE.TENCENT:
+      return '2021-01-11';
+    default:
+      return '';
+  }
+}
 
 export const renderCommonSmsForm = (smsType: string) => {
   return (
@@ -110,7 +135,6 @@ export const renderAlibabaSmsForm = (smsType: string) => {
         name={['params', 'requestUrl']}
         label={l('rc.ai.requestUrl')}
         width={'lg'}
-        initialValue={'dysmsapi.aliyuncs.com'}
         rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
         placeholder={l('rc.ai.requestUrlPleaseHolder')}
       />
@@ -188,7 +212,6 @@ export const renderTencentSmsForm = (smsType: string) => {
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
         placeholder={l('rc.ai.requestUrlPleaseHolder')}
-        initialValue={'sms.tencentcloudapi.com'}
       />
       <ProForm.Group>
         <ProFormText

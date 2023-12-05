@@ -36,10 +36,11 @@ interface FormSingleColumnListProps {
   inputPlaceholder: string;
   form: FormInstance<Values>;
   plain: boolean;
+  phonePrefix?: string;
 }
 
 export const FormSingleColumnList = (props: FormSingleColumnListProps) => {
-  const { max, min, namePath, rules, title, inputPlaceholder, plain, form } = props;
+  const { max, min, namePath, rules, title,phonePrefix, inputPlaceholder, plain, form } = props;
 
   return (
     <>
@@ -54,9 +55,7 @@ export const FormSingleColumnList = (props: FormSingleColumnListProps) => {
             align={{
               autoArrow: true
             }}
-            title={'1'}
           >
-            {' '}
             {title}
           </Tooltip>
         </Divider>
@@ -77,8 +76,10 @@ export const FormSingleColumnList = (props: FormSingleColumnListProps) => {
                     name={[field.name]}
                     style={{ width: '100%' }}
                     rules={rules}
+                    isListField
+
                   >
-                    <Input placeholder={inputPlaceholder} />
+                    <Input addonBefore={phonePrefix} placeholder={inputPlaceholder} />
                   </Form.Item>
                   {fields.length === min ? (
                     <></>

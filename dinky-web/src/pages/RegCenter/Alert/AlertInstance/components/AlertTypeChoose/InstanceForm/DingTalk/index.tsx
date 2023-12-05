@@ -157,6 +157,7 @@ const DingTalk = (props: DingTalkProps) => {
             max={10}
             min={1}
             plain={true}
+            phonePrefix={'+86'}
           />
         </>
       )}

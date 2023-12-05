@@ -81,8 +81,8 @@ export const InitAlertInstanceParamsEmail: Alert.AlertInstanceParamsEmail = {
   starttlsEnable: false,
   sslEnable: false,
   smtpSslTrust: undefined,
-  User: undefined,
-  Password: undefined
+  user: undefined,
+  password: undefined
 };
 
 export const InitAlertInstanceParamsWeChat: Alert.AlertInstanceParamsWeChat = {
