@@ -27,7 +27,6 @@ import org.dinky.app.model.SysConfig;
 import org.dinky.app.resource.impl.HdfsResourceManager;
 import org.dinky.app.resource.impl.OssResourceManager;
 import org.dinky.app.url.RsURLStreamHandlerFactory;
-import org.dinky.app.util.FlinkAppUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;
@@ -156,9 +155,6 @@ public class Submitter {
                 .build();
 
         Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig);
-
-        log.info("Start Monitor Job");
-        FlinkAppUtil.monitorFlinkTask(config.getTaskId());
 
         // 加载第三方jar //TODO 这里有问题，需要修一修
         // loadDep(appTask.getType(),

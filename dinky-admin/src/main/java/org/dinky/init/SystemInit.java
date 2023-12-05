@@ -201,6 +201,7 @@ public class SystemInit implements ApplicationRunner {
         };
         metricsListener.accept(metricsSysEnable);
         metricsListener.accept(sysGatherTiming);
+        metricsSysEnable.runChangeEvent();
 
         // Init clear job history task
         DaemonTask clearJobHistoryTask = DaemonTask.build(new DaemonTaskConfig(ClearJobHistoryTask.TYPE));
