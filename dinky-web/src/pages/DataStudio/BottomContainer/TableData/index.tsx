@@ -99,7 +99,8 @@ const TableData = (props: any) => {
       ),
       onOk() {
         onOk(selectTable);
-      }
+      },
+      zIndex: 1000
     });
   };
 
