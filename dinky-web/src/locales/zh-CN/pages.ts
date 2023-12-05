@@ -496,7 +496,7 @@ export default {
   'rc.ai.callbackUrlPleaseHolder': '请输入官方回调地址',
   'rc.ai.choosetype': '请选择告警类型',
   'rc.ai.connTimeout': '请求超时时间',
-  'rc.ai.connTimeoutPleaseHolder': '请输入请求超时时间',
+  'rc.ai.connTimeoutPleaseHolder': '输入请求超时时间(s)',
   'rc.ai.corpId': '企业Id',
   'rc.ai.corpIdPleaseHolder': '请输入 企业Id',
   'rc.ai.create': '创建告警实例',

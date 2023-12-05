@@ -514,7 +514,7 @@ export default {
   'rc.ai.callbackUrlPleaseHolder': 'Please enter the official callback address',
   'rc.ai.choosetype': 'Select the alarm type',
   'rc.ai.connTimeout': 'Request timeout',
-  'rc.ai.connTimeoutPleaseHolder': 'Please enter the request timeout',
+  'rc.ai.connTimeoutPleaseHolder': 'enter the request timeout(s)',
   'rc.ai.corpId': 'CorpId',
   'rc.ai.corpIdPleaseHolder': 'Please enter CorpId',
   'rc.ai.create': 'Create Alert Instance',

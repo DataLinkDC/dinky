@@ -18,6 +18,8 @@
  */
 
 import {
+  matchPlatFormRequestUrl,
+  matchPlatVersion,
   renderAlibabaSmsForm,
   renderTencentSmsForm
 } from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/function';
@@ -26,10 +28,11 @@ import { SWITCH_OPTIONS } from '@/services/constants';
 import { Alert } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { FormSingleColumnList } from '@/components/FormSingleColumnList';
 import { ProForm, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
+import { randomStr } from '@antfu/utils';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import { Rule } from 'rc-field-form/lib/interface';
@@ -43,39 +46,51 @@ const Sms = (props: SmsProps) => {
 
   const params = values.params as Alert.AlertInstanceParamsSms;
 
-  const [suppliers, setSuppliers] = useState<string>(params.suppliers ?? 'alibaba');
+  const [suppliers, setSuppliers] = useState<string>(params.suppliers ?? SMS_TYPE.ALIBABA);
+
+  useEffect(() => {
+    if (suppliers) {
+      // 厂商改变时 重新设置requestUrl, version, configId 等一些参数  | if suppliers change, reset some params like requestUrl, version, configId
+      form.setFieldsValue({
+        params: {
+          ...params,
+          suppliers: suppliers,
+          requestUrl: matchPlatFormRequestUrl(suppliers),
+          configId: randomStr(32),
+          version: matchPlatVersion(suppliers)
+        }
+      });
+    }
+  }, [suppliers]);
 
   /**
    * render form by sms type
    */
-  const renderFormBySmsType = useCallback(
-    (smsType: string) => {
-      switch (smsType) {
-        case SMS_TYPE.ALIBABA:
-          return renderAlibabaSmsForm(smsType);
-        case SMS_TYPE.TENCENT:
-          return renderTencentSmsForm(smsType);
-        // case SMS_TYPE.HUAWEI:
-        //   return renderHuaWeiSmsForm();
-        // case SMS_TYPE.YUNPIAN:
-        //   return renderYunpianSmsForm();
-        //
-        // case SMS_TYPE.UNISMS:
-        //   return renderUniSmsForm();
-        // case SMS_TYPE.JDCLOUD:
-        //   return renderJDSmsForm();
-        // case SMS_TYPE.CLOOPEN:
-        //   return renderCloopenSmsForm();
-        // case SMS_TYPE.EMAY:
-        //   return renderEmaySmsForm();
-        // case SMS_TYPE.CTYUN:
-        //   return renderCtyunForm();
-        default:
-          return <></>;
-      }
-    },
-    [suppliers]
-  );
+  const renderFormBySmsType = useCallback(() => {
+    switch (suppliers) {
+      case SMS_TYPE.ALIBABA:
+        return renderAlibabaSmsForm(suppliers);
+      case SMS_TYPE.TENCENT:
+        return renderTencentSmsForm(suppliers);
+      // case SMS_TYPE.HUAWEI:
+      //   return renderHuaWeiSmsForm();
+      // case SMS_TYPE.YUNPIAN:
+      //   return renderYunpianSmsForm();
+      //
+      // case SMS_TYPE.UNISMS:
+      //   return renderUniSmsForm();
+      // case SMS_TYPE.JDCLOUD:
+      //   return renderJDSmsForm();
+      // case SMS_TYPE.CLOOPEN:
+      //   return renderCloopenSmsForm();
+      // case SMS_TYPE.EMAY:
+      //   return renderEmaySmsForm();
+      // case SMS_TYPE.CTYUN:
+      //   return renderCtyunForm();
+      default:
+        return <></>;
+    }
+  }, [suppliers]);
 
   const validateSmsPhoneRules = [
     {
@@ -115,7 +130,7 @@ const Sms = (props: SmsProps) => {
         />
         <ProFormSwitch name='enabled' label={l('global.table.isEnable')} {...SWITCH_OPTIONS()} />
       </ProForm.Group>
-      <ProForm.Group>{renderFormBySmsType(suppliers)}</ProForm.Group>
+      <ProForm.Group>{renderFormBySmsType()}</ProForm.Group>
 
       <FormSingleColumnList
         form={form}
@@ -126,6 +141,7 @@ const Sms = (props: SmsProps) => {
         max={10}
         min={1}
         plain={true}
+        phonePrefix={'+86'}
       />
     </>
   );

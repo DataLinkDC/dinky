@@ -118,7 +118,7 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
         form={form}
         initialValues={formValues}
         onValuesChange={(changedValues, allValues) =>
-          setFormValues((prevState) => ({ ...prevState, ...allValues }))
+          setFormValues((prevState) => ({ ...prevState, ...allValues, ...changedValues }))
         }
         modalProps={{ onCancel: handleCancel, ...NORMAL_MODAL_OPTIONS }}
         submitter={{ render: () => [...renderFooter()] }}

@@ -17,7 +17,11 @@
  *
  */
 
-import { YunArea } from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/constants';
+import {
+  AliYunArea,
+  TencentArea
+} from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/constants';
+import { SMS_TYPE } from '@/pages/RegCenter/Alert/AlertInstance/constans';
 import { l } from '@/utils/intl';
 import {
   ProForm,
@@ -28,6 +32,36 @@ import {
 } from '@ant-design/pro-components';
 import { ProFormText } from '@ant-design/pro-form';
 import { randomStr } from '@antfu/utils';
+
+/**
+ * 匹配平台请求地址 | match platform request url
+ * @param smsType
+ */
+export function matchPlatFormRequestUrl(smsType: string): string {
+  switch (smsType) {
+    case SMS_TYPE.ALIBABA:
+      return 'dysmsapi.aliyuncs.com';
+    case SMS_TYPE.TENCENT:
+      return 'sms.tencentcloudapi.com';
+    default:
+      return '';
+  }
+}
+
+/**
+ * 匹配平台版本号 | match platform version
+ * @param smsType
+ */
+export function matchPlatVersion(smsType: string): string {
+  switch (smsType) {
+    case SMS_TYPE.ALIBABA:
+      return '2017-05-25';
+    case SMS_TYPE.TENCENT:
+      return '2021-01-11';
+    default:
+      return '';
+  }
+}
 
 export const renderCommonSmsForm = (smsType: string) => {
   return (
@@ -107,7 +141,6 @@ export const renderAlibabaSmsForm = (smsType: string) => {
         name={['params', 'requestUrl']}
         label={l('rc.ai.requestUrl')}
         width={'lg'}
-        initialValue={'dysmsapi.aliyuncs.com'}
         rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
         placeholder={l('rc.ai.requestUrlPleaseHolder')}
       />
@@ -115,7 +148,7 @@ export const renderAlibabaSmsForm = (smsType: string) => {
         name={['params', 'regionId']}
         label={l('rc.ai.regionId')}
         width={'md'}
-        options={YunArea}
+        options={AliYunArea}
         rules={[{ required: true, message: l('rc.ai.regionIdPleaseHolder') }]}
         placeholder={l('rc.ai.regionIdPleaseHolder')}
       />
@@ -157,59 +190,52 @@ export const renderTencentSmsForm = (smsType: string) => {
     <>
       {renderCommonSmsForm(smsType)}
       <ProFormText
-        name='sdkAppId'
+        name={['params', 'sdkAppId']}
         label={l('rc.ai.sdkAppId')}
-        width={'md'}
+        width={'sm'}
         rules={[{ required: true, message: l('rc.ai.sdkAppIdPleaseHolder') }]}
         placeholder={l('rc.ai.sdkAppIdPleaseHolder')}
       />
-      <ProFormText
-        name='signature'
-        label={l('rc.ai.signature')}
-        width={'sm'}
-        rules={[{ required: true, message: l('rc.ai.signaturePleaseHolder') }]}
-        placeholder={l('rc.ai.signaturePleaseHolder')}
-      />
-      <ProFormText
-        name='territory'
+      <ProFormSelect
+        name={['params', 'territory']}
         label={l('rc.ai.regionId')}
         width={'sm'}
+        options={TencentArea}
         rules={[{ required: true, message: l('rc.ai.regionIdPleaseHolder') }]}
         placeholder={l('rc.ai.regionIdPleaseHolder')}
       />
-
-      <ProFormTextArea
-        name='requestUrl'
+      <ProFormDigit
+        name={['params', 'connTimeout']}
+        label={l('rc.ai.connTimeout')}
+        width={'xs'}
+        rules={[{ required: true, message: l('rc.ai.connTimeoutPleaseHolder') }]}
+        placeholder={l('rc.ai.connTimeoutPleaseHolder')}
+        initialValue={60}
+      />
+      <ProFormText
+        name={['params', 'requestUrl']}
         label={l('rc.ai.requestUrl')}
-        width={'xl'}
+        width={'sm'}
         rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
         placeholder={l('rc.ai.requestUrlPleaseHolder')}
-        initialValue={'https://sms.tencentcloudapi.com/'}
       />
       <ProForm.Group>
-        <ProFormDigit
-          name='connTimeout'
-          label={l('rc.ai.connTimeout')}
-          width={'md'}
-          rules={[{ required: true, message: l('rc.ai.connTimeoutPleaseHolder') }]}
-          placeholder={l('rc.ai.connTimeoutPleaseHolder')}
-          initialValue={60}
-        />
-
         <ProFormText
-          name='action'
+          name={['params', 'action']}
           label={l('rc.ai.action')}
           width={'sm'}
           disabled
+          hidden
           initialValue={'SendSms'}
           placeholder={l('rc.ai.actionPleaseHolder')}
         />
 
         <ProFormText
-          name='version'
+          name={['params', 'version']}
           label={l('rc.ai.version')}
           width={'sm'}
           disabled
+          hidden
           initialValue={'2021-01-11'}
           placeholder={l('rc.ai.versionPleaseHolder')}
         />
