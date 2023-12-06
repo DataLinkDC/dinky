@@ -125,6 +125,10 @@ export function getLocalTheme(): string {
   return localStorage.getItem(THEME.NAV_THEME) ?? THEME.light;
 }
 
+export function setLocalThemeToStorage(defaultTheme?: string) {
+  localStorage.setItem(THEME.NAV_THEME,defaultTheme ?? getLocalTheme()) ;
+}
+
 /**
  * register editor key binding | 注册编辑器快捷键
  *
