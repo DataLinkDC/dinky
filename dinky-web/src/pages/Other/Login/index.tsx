@@ -26,7 +26,7 @@ import { API } from '@/services/data';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { THEME } from '@/types/Public/data';
-import {getLocalTheme, setTenantStorageAndCookie} from '@/utils/function';
+import { getLocalTheme, setTenantStorageAndCookie } from '@/utils/function';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
 import { ErrorMessage, SuccessMessageAsync } from '@/utils/messages';
