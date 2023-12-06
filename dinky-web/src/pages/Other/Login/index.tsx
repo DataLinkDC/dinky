@@ -25,7 +25,7 @@ import { chooseTenantSubmit, login, queryDataByParams } from '@/services/Busines
 import { API } from '@/services/data';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data';
-import { setLocalThemeToStorage, setTenantStorageAndCookie} from '@/utils/function';
+import { setLocalThemeToStorage, setTenantStorageAndCookie } from '@/utils/function';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
 import { ErrorMessage, SuccessMessageAsync } from '@/utils/messages';
@@ -84,7 +84,6 @@ const Login: React.FC = () => {
 
   const handleChooseTenant = async (chooseTenantResult: API.Result) => {
     if (chooseTenantResult.code === 0) {
-
       await SuccessMessageAsync(
         l('login.chooseTenantSuccess', '', {
           msg: chooseTenantResult.msg,

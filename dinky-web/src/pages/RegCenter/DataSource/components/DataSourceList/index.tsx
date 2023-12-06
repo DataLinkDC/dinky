@@ -22,32 +22,36 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { DataAction } from '@/components/StyledComponents';
-import { Authorized,HasAuthority } from '@/hooks/useAccess';
-import { StateType,STUDIO_MODEL } from '@/pages/DataStudio/model';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
+import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import DataSourceDetail from '@/pages/RegCenter/DataSource/components/DataSourceDetail';
 import { renderDBIcon } from '@/pages/RegCenter/DataSource/components/function';
-import { handleTest,saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
+import { handleTest, saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
 import {
-handleOption,
-handlePutDataByParams,
-handleRemoveById,
-queryDataByParams,
-updateDataByParam
+  handleOption,
+  handlePutDataByParams,
+  handleRemoveById,
+  queryDataByParams,
+  updateDataByParam
 } from '@/services/BusinessCrud';
-import { PROTABLE_OPTIONS_PUBLIC,PRO_LIST_CARD_OPTIONS } from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { DataSources } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import { WarningMessage } from '@/utils/messages';
-import { useNavigate } from '@@/exports';
-import { CheckCircleOutlined,CopyTwoTone,ExclamationCircleOutlined,HeartTwoTone } from '@ant-design/icons';
-import { ActionType,ProList } from '@ant-design/pro-components';
-import { Button,Descriptions,Input,Modal,Space,Tag,Tooltip } from 'antd';
+import {
+  CheckCircleOutlined,
+  CopyTwoTone,
+  ExclamationCircleOutlined,
+  HeartTwoTone
+} from '@ant-design/icons';
+import { ActionType, ProList } from '@ant-design/pro-components';
+import { history } from '@umijs/max';
+import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
-import React,{ useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DataSourceModal from '../DataSourceModal';
-import {history} from "@umijs/max";
 
 const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const { dispatch, database } = props;

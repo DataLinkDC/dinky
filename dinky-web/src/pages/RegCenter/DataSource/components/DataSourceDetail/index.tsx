@@ -29,16 +29,15 @@ import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { BackwardOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Key, ProCard } from '@ant-design/pro-components';
+import { connect, history } from '@umijs/max';
 import { Button, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import {connect,history} from "@umijs/max";
 
 interface DataSourceDetailProps {
   dataSource: DataSources.DataSource;
   backClick: () => void;
 }
 const DataSourceDetail = (props: DataSourceDetailProps & connect) => {
-
   const {
     dataSource,
     backClick,
