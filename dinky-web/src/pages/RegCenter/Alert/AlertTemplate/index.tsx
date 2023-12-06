@@ -32,6 +32,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Card, List, Modal, Typography } from 'antd';
 import { useState } from 'react';
+import Markdown from "react-markdown";
+import CodeShow from "@/components/CustomEditor/CodeShow";
 const { Paragraph } = Typography;
 
 export default () => {
@@ -120,7 +122,7 @@ export default () => {
             <Card.Meta
               style={{ width: '100%', height: '15vh' }}
               title={<a>{item.name}</a>}
-              description={<Paragraph ellipsis={{ rows: 3 }}>{item.templateContent}</Paragraph>}
+              description={ <Markdown skipHtml={true} unwrapDisallowed>{item.templateContent}</Markdown>}
             />
           </Card>
         </List.Item>
