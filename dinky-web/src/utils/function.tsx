@@ -122,7 +122,11 @@ export function parseJsonStr(jsonStr: string) {
  * get theme by localStorage's theme
  */
 export function getLocalTheme(): string {
-  return localStorage.getItem(THEME.NAV_THEME) ?? THEME.dark;
+  return localStorage.getItem(THEME.NAV_THEME) ?? THEME.light;
+}
+
+export function setLocalThemeToStorage(defaultTheme?: string) {
+  localStorage.setItem(THEME.NAV_THEME,defaultTheme ?? getLocalTheme()) ;
 }
 
 /**
@@ -248,12 +252,12 @@ export function convertCodeEditTheme(editorInstance?: Monaco['editor']) {
     editorInstance = editor;
   }
   if (editorInstance === undefined) {
-    return CODE_EDIT_THEME.VS;
+    return CODE_EDIT_THEME.LIGHT;
   } else {
     /**
      * 定义亮色 覆盖vs主题,增加扩展规则
      */
-    editorInstance?.defineTheme?.(CODE_EDIT_THEME.VS, {
+    editorInstance?.defineTheme?.(CODE_EDIT_THEME.LIGHT, {
       base: 'vs', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
       inherit: true, // 是否继承主题配置
       rules: [
@@ -296,9 +300,9 @@ export function convertCodeEditTheme(editorInstance?: Monaco['editor']) {
     case THEME.dark:
       return CODE_EDIT_THEME.DARK;
     case THEME.light:
-      return CODE_EDIT_THEME.VS;
+      return CODE_EDIT_THEME.LIGHT;
     default:
-      return CODE_EDIT_THEME.VS;
+      return CODE_EDIT_THEME.LIGHT;
   }
 }
 
