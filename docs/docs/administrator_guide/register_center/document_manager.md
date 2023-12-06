@@ -1,5 +1,5 @@
 ---
-position: 3
+position: 4
 id: document_manager
 title: 文档管理
 ---

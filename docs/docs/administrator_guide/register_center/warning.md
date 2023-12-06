@@ -1,5 +1,5 @@
 ---
-position: 5
+position: 3
 id: warning
 title: 报警管理
 ---
