@@ -28,7 +28,7 @@ export const THEME = {
  */
 export const CODE_EDIT_THEME = {
   LIGHT: 'light',
-  DARK: 'vs-dark',
+  DARK: 'vs-dark'
 };
 
 export const MonacoEditorOptions = {
