@@ -29,7 +29,7 @@ import { EditorLanguage } from 'monaco-editor/esm/metadata';
 import FullscreenBtn from '@/components/CustomEditor/FullscreenBtn';
 import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEditor/function';
 import { Editor, Monaco } from '@monaco-editor/react';
-import { CSSProperties, memo, useRef, useState } from 'react';
+import { CSSProperties, useRef, useState } from 'react';
 
 export type CodeShowFormProps = {
   height?: string | number;
@@ -264,4 +264,4 @@ const CodeShow = (props: CodeShowFormProps) => {
   );
 };
 
-export default memo(CodeShow);
+export default CodeShow;

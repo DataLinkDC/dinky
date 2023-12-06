@@ -27,10 +27,8 @@ export const THEME = {
  * MonacoEditor of CodeEdit's theme
  */
 export const CODE_EDIT_THEME = {
-  VS: 'vs',
+  LIGHT: 'light',
   DARK: 'vs-dark',
-  HC_BLACK: 'hc-black',
-  VS_CUSTOME: 'vs-custom'
 };
 
 export const MonacoEditorOptions = {

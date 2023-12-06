@@ -25,7 +25,8 @@ import { chooseTenantSubmit, login, queryDataByParams } from '@/services/Busines
 import { API } from '@/services/data';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data';
-import { setTenantStorageAndCookie } from '@/utils/function';
+import { THEME } from '@/types/Public/data';
+import {getLocalTheme, setTenantStorageAndCookie} from '@/utils/function';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
 import { ErrorMessage, SuccessMessageAsync } from '@/utils/messages';
@@ -99,6 +100,8 @@ const Login: React.FC = () => {
        * Redirect to home page && reconnect Global Sse
        */
       reconnectSse();
+      //  补偿设置,设置主题色
+      localStorage.setItem(THEME.NAV_THEME, getLocalTheme());
       gotoRedirectUrl();
     } else {
       ErrorMessage(l('login.chooseTenantFailed'));
