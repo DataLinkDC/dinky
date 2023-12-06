@@ -126,7 +126,7 @@ export function getLocalTheme(): string {
 }
 
 export function setLocalThemeToStorage(defaultTheme?: string) {
-  localStorage.setItem(THEME.NAV_THEME,defaultTheme ?? getLocalTheme()) ;
+  localStorage.setItem(THEME.NAV_THEME, defaultTheme ?? getLocalTheme());
 }
 
 /**
