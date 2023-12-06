@@ -107,7 +107,7 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setSubmitting(true);
-    await onSubmit({ ...values, ...fieldsValue });
+    onSubmit({ ...values, ...fieldsValue });
     handleCancel();
   };
 
