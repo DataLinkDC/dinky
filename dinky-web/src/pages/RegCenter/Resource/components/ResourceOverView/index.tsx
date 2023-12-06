@@ -250,7 +250,12 @@ const ResourceOverView: React.FC = () => {
             size={100}
             split={'horizontal'}
           >
-            <ProCard hoverable boxShadow bodyStyle={{ height: parent.innerHeight - 80 }} colSpan={'18%'}>
+            <ProCard
+              hoverable
+              boxShadow
+              bodyStyle={{ height: parent.innerHeight - 80 }}
+              colSpan={'18%'}
+            >
               <FileTree
                 selectedKeys={resourceState.selectedKeys}
                 treeData={resourceState.treeData}
