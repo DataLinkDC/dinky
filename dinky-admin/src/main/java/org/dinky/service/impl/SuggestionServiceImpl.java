@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.data.flink.config.FlinkConfigOption;
 import org.dinky.data.model.Document;
 import org.dinky.data.model.FragmentVariable;
 import org.dinky.data.vo.suggestion.SuggestionLabelVO;
@@ -26,13 +27,16 @@ import org.dinky.data.vo.suggestion.SuggestionVO;
 import org.dinky.service.DocumentService;
 import org.dinky.service.FragmentVariableService;
 import org.dinky.service.SuggestionService;
+import org.dinky.utils.FlinkConfigOptionsUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import cn.hutool.core.text.StrFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,7 +69,8 @@ public class SuggestionServiceImpl implements SuggestionService {
         }
         // 4. 自定义关键词提示
         buildCustomSuggestions(new HashSet<>(), suggestionVOS);
-
+        // flink config提示
+        buildFlinkConfSuggestions(suggestionVOS);
         return suggestionVOS;
     }
 
@@ -142,6 +147,25 @@ public class SuggestionServiceImpl implements SuggestionService {
                             .build();
                 })
                 .forEach(suggestionVOS::add);
+    }
+
+    private static void buildFlinkConfSuggestions(Set<SuggestionVO> suggestionVOS) {
+        for (String name : FlinkConfigOptionsUtils.getConfigOptionsClass()) {
+            List<FlinkConfigOption> flinkConfigOptions = FlinkConfigOptionsUtils.loadOptionsByClassName(name);
+            flinkConfigOptions.stream()
+                    .map(conf -> {
+                        SuggestionLabelVO suggestionLabelVO = SuggestionLabelVO.builder()
+                                .label("set " + conf.getKey())
+                                .build();
+                        return SuggestionVO.builder()
+                                .key(conf.getKey() + "_flink_conf")
+                                .insertText(StrFormatter.format("set '{}'='{}'", conf.getKey(), conf.getDefaultValue()))
+                                .kind(4)
+                                .label(suggestionLabelVO)
+                                .build();
+                    })
+                    .forEach(suggestionVOS::add);
+        }
     }
 
     /**
