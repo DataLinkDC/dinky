@@ -38,6 +38,7 @@ const FileTree: React.FC<FileTreeProps> = (props) => {
     <>
       {treeData.length > 0 ? (
         <DirectoryTree
+          className={'treeList'}
           selectedKeys={selectedKeys}
           onSelect={(_, info) => onNodeClick(info)}
           onRightClick={(info) => onRightClick(info)}
