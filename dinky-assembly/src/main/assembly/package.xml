@@ -41,6 +41,7 @@
                 <include>**/*.yaml</include>
                 <include>**/log4j2.xml</include>
                 <include>**/DinkyFlinkDockerfile</include>
+                <include>**/FlinkConfClass</include>
             </includes>
         </fileSet>
         <fileSet>

@@ -19,7 +19,7 @@
 
 package org.dinky.utils;
 
-import org.dinky.data.vo.CascaderVO;
+import org.dinky.data.flink.config.FlinkConfigOption;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -29,26 +29,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.ClassLoaderUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 
-public class CascaderOptionsUtils {
-    private static final Logger logger = Logger.getLogger(CascaderOptionsUtils.class.getName());
+public class FlinkConfigOptionsUtils {
+    private static final Logger logger = Logger.getLogger(FlinkConfigOptionsUtils.class.getName());
 
     private static final String FLINK_CONFIG_REPLACE_SUFFIX = "Options";
 
-    private static final Map<String, List<CascaderVO>> cache = new HashMap<>();
+    private static final Map<String, List<FlinkConfigOption>> cache = new HashMap<>();
     /**
      * build flink config cascade options
      * * @param name
      */
-    public static List<CascaderVO> buildCascadeOptions(String name) {
+    public static List<FlinkConfigOption> loadOptionsByClassName(String name) {
 
         if (cache.containsKey(name) && cache.get(name) != null) {
             return cache.get(name);
         }
 
-        List<CascaderVO> dataList = new ArrayList<>();
+        List<FlinkConfigOption> configList = new ArrayList<>();
         try {
             Class<?> loadClass = ClassLoaderUtil.getContextClassLoader().loadClass(name);
             Field[] fields = ReflectUtil.getFields(loadClass, f -> {
@@ -59,31 +61,26 @@ public class CascaderOptionsUtils {
                     return false;
                 }
             });
-            List<CascaderVO> configList = new ArrayList<>();
             for (Field field : fields) {
-                CascaderVO config = new CascaderVO();
+                FlinkConfigOption config = new FlinkConfigOption();
                 Object fieldValue = ReflectUtil.getStaticFieldValue(field);
                 String key = ReflectUtil.invoke(fieldValue, "key");
-                config.setValue(key);
-                config.setLabel(key);
+                Object defaultValue = ReflectUtil.invoke(fieldValue, "defaultValue");
+                config.setKey(key);
+                if (ObjectUtil.isBasicType(defaultValue)) {
+                    config.setDefaultValue(String.valueOf(defaultValue));
+                } else {
+                    config.setDefaultValue("");
+                }
                 configList.add(config);
             }
-            CascaderVO cascaderVO = new CascaderVO();
-            cascaderVO.setChildren(configList);
-            // parsed binlog group
-            String parsedBinlogGroup = parsedBinlogGroup(name);
-
-            cascaderVO.setLabel(parsedBinlogGroup);
-            cascaderVO.setValue(parsedBinlogGroup);
-            dataList.add(cascaderVO);
-            cache.put(name, dataList);
         } catch (ClassNotFoundException ignored) {
             logger.warning("get config option error, class not found: " + name);
         }
-        return dataList;
+        return configList;
     }
 
-    private static String parsedBinlogGroup(String name) {
+    public static String parsedBinlogGroup(String name) {
         String[] names = name.split("\\.");
         // delete Option suffix and return
         String lastName = names[names.length - 1];
@@ -91,5 +88,9 @@ public class CascaderOptionsUtils {
             return lastName.replace(FLINK_CONFIG_REPLACE_SUFFIX, "");
         }
         return lastName;
+    }
+
+    public static String[] getConfigOptionsClass() {
+        return ResourceUtil.readUtf8Str("FlinkConfClass").replace("\r", "").split("\n");
     }
 }
