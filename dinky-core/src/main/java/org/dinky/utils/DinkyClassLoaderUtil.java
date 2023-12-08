@@ -28,6 +28,8 @@ import org.dinky.job.JobConfig;
 import org.apache.flink.configuration.PipelineOptions;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
@@ -35,6 +37,8 @@ import cn.hutool.core.io.FileUtil;
 public class DinkyClassLoaderUtil {
 
     public static void initClassLoader(JobConfig config, DinkyClassLoader dinkyClassLoader) {
+
+        FlinkUdfPathContextHolder udfPathContextHolder = dinkyClassLoader.getUdfPathContextHolder();
         if (CollUtil.isNotEmpty(config.getConfigJson())) {
             String pipelineJars = config.getConfigJson().get(PipelineOptions.JARS.key());
             String classpaths = config.getConfigJson().get(PipelineOptions.CLASSPATHS.key());
@@ -46,7 +50,7 @@ public class DinkyClassLoaderUtil {
                     if (!file.exists()) {
                         throw new DinkyException("file: " + path + " not exists!");
                     }
-                    FlinkUdfPathContextHolder.addUdfPath(file);
+                    udfPathContextHolder.addUdfPath(file);
                 }
             }
             // add custom classpath
@@ -57,12 +61,12 @@ public class DinkyClassLoaderUtil {
                     if (!file.exists()) {
                         throw new DinkyException("file: " + path + " not exists!");
                     }
-                    FlinkUdfPathContextHolder.addOtherPlugins(file);
+                    udfPathContextHolder.addOtherPlugins(file);
                 }
             }
         }
 
-        dinkyClassLoader.addURL(CollUtil.addAll(
-                        FlinkUdfPathContextHolder.getUdfFile(), FlinkUdfPathContextHolder.getOtherPluginsFiles()));
+        dinkyClassLoader.addURLs(CollUtil.addAll(
+                udfPathContextHolder.getUdfFile(), udfPathContextHolder.getOtherPluginsFiles()));
     }
 }

@@ -315,10 +315,11 @@ public class UDFUtil {
                 return null;
             }
 
+            FlinkUdfPathContextHolder udfPathContextHolder = classLoader.getUdfPathContextHolder();
             if (ClassLoaderUtil.isPresent(className)) {
                 // 获取已经加载在java的类，对应的包路径
                 try {
-                    FlinkUdfPathContextHolder.addUdfPath(FileUtil.file(classLoader
+                    udfPathContextHolder.addUdfPath(FileUtil.file(classLoader
                             .loadClass(className)
                             .getProtectionDomain()
                             .getCodeSource()
@@ -343,14 +344,38 @@ public class UDFUtil {
 
             if (StrUtil.isNotBlank(gitPackage) && FileUtil.exist(gitPackage)) {
                 if (FileUtil.getSuffix(gitPackage).equals("jar")) {
-                    FlinkUdfPathContextHolder.addUdfPath(new File(gitPackage));
+                    udfPathContextHolder.addUdfPath(new File(gitPackage));
                 } else {
-                    FlinkUdfPathContextHolder.addPyUdfPath(new File(gitPackage));
+                    udfPathContextHolder.addPyUdfPath(new File(gitPackage));
                 }
             }
         }
         return null;
     }
+
+    //create FlinkUdfPathContextHolder from UdfCodePool
+    public static FlinkUdfPathContextHolder createFlinkUdfPathContextHolder() {
+        FlinkUdfPathContextHolder udfPathContextHolder = new FlinkUdfPathContextHolder();
+        UdfCodePool.getUdfCodePool().values().forEach(udf -> {
+            if (udf.getFunctionLanguage() == FunctionLanguage.PYTHON) {
+                udfPathContextHolder.addPyUdfPath(new File(udf.getCode()));
+            } else {
+                udfPathContextHolder.addUdfPath(new File(udf.getCode()));
+            }
+        });
+
+        UdfCodePool.getGitPool().values().forEach(gitPackage -> {
+            if (FileUtil.getSuffix(gitPackage).equals("jar")) {
+                udfPathContextHolder.addUdfPath(new File(gitPackage));
+            } else {
+                udfPathContextHolder.addPyUdfPath(new File(gitPackage));
+            }
+        });
+        return udfPathContextHolder;
+    }
+
+
+
 
     public static List<Class<?>> getUdfClassByJar(File jarPath) {
         Assert.notNull(jarPath);
@@ -440,10 +465,10 @@ public class UDFUtil {
                 PipelineOptions.JARS, jarList.stream().map(URL::toString).collect(Collectors.toList()));
     }
 
-    public static void writeManifest(Integer taskId, List<URL> jarPaths) {
+    public static void writeManifest(Integer taskId, List<URL> jarPaths, FlinkUdfPathContextHolder udfPathContextHolder) {
         FlinkUdfManifest flinkUdfManifest = new FlinkUdfManifest();
         flinkUdfManifest.setJars(jarPaths);
-        flinkUdfManifest.setPythonFiles(FlinkUdfPathContextHolder.getPyUdfFile().stream()
+        flinkUdfManifest.setPythonFiles(udfPathContextHolder.getPyUdfFile().stream()
                 .map(URLUtil::getURL)
                 .collect(Collectors.toList()));
 

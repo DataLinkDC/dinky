@@ -35,6 +35,7 @@ import org.dinky.utils.URLUtils;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -70,9 +71,9 @@ public class JobUDFBuilder extends JobBuilder {
             taskId = -RandomUtil.randomInt(0, 1000);
         }
         // 1. Obtain the path of the jar package and inject it into the remote environment
-        Set<File> jarFiles = FlinkUdfPathContextHolder.getUdfFile();
+        List<File> jarFiles = new ArrayList<>(jobManager.getUdfPathContextHolder().getUdfFile());
 
-        Set<File> otherPluginsFiles = FlinkUdfPathContextHolder.getOtherPluginsFiles();
+        Set<File> otherPluginsFiles = jobManager.getUdfPathContextHolder().getOtherPluginsFiles();
         jarFiles.addAll(otherPluginsFiles);
 
         List<File> udfJars = Arrays.stream(UDFUtil.initJavaUDF(udfList, runMode, taskId))
@@ -92,16 +93,17 @@ public class JobUDFBuilder extends JobBuilder {
         String[] pyPaths = UDFUtil.initPythonUDF(
                 udfList, runMode, config.getTaskId(), executor.getTableConfig().getConfiguration());
 
-        executor.initUDF(jobManager.getDinkyClassLoader(), jarPaths);
+        executor.initUDF(jarPaths);
+
         if (ArrayUtil.isNotEmpty(pyPaths)) {
             for (String pyPath : pyPaths) {
                 if (StrUtil.isNotBlank(pyPath)) {
-                    FlinkUdfPathContextHolder.addPyUdfPath(new File(pyPath));
+                    jobManager.getUdfPathContextHolder().addPyUdfPath(new File(pyPath));
                 }
             }
         }
 
-        Set<File> pyUdfFile = FlinkUdfPathContextHolder.getPyUdfFile();
+        Set<File> pyUdfFile = jobManager.getUdfPathContextHolder().getPyUdfFile();
         executor.initPyUDF(
                 SystemConfiguration.getInstances().getPythonHome(),
                 pyUdfFile.stream().map(File::getAbsolutePath).toArray(String[]::new));
@@ -112,7 +114,7 @@ public class JobUDFBuilder extends JobBuilder {
         try {
             List<URL> jarList = CollUtil.newArrayList(URLUtils.getURLs(jarFiles));
             // 3.Write the required files for UDF
-            UDFUtil.writeManifest(taskId, jarList);
+            UDFUtil.writeManifest(taskId, jarList, jobManager.getUdfPathContextHolder());
 
             UDFUtil.addConfigurationClsAndJars(jarList, CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
         } catch (Exception e) {

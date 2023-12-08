@@ -22,7 +22,6 @@ package org.dinky.explainer;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.constant.FlinkSQLConstant;
-import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.ExplainResult;
@@ -76,7 +75,7 @@ public class Explainer {
     private boolean useStatementSet;
     private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
     private ObjectMapper mapper = new ObjectMapper();
-    private DinkyClassLoader dinkyClassLoader;
+    private JobManager jobManager;
 
     public Explainer(Executor executor, boolean useStatementSet) {
         this.executor = executor;
@@ -84,22 +83,22 @@ public class Explainer {
         init();
     }
 
-    public Explainer(Executor executor, boolean useStatementSet, String sqlSeparator, DinkyClassLoader dinkyClassLoader) {
+    public Explainer(Executor executor, boolean useStatementSet, String sqlSeparator, JobManager jobManager) {
         this.executor = executor;
         this.useStatementSet = useStatementSet;
         this.sqlSeparator = sqlSeparator;
-        this.dinkyClassLoader = dinkyClassLoader;
+        this.jobManager = jobManager;
     }
 
     public void init() {
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
     }
 
-    public static Explainer build(Executor executor, boolean useStatementSet, String sqlSeparator, DinkyClassLoader dinkyClassLoader) {
-        return new Explainer(executor, useStatementSet, sqlSeparator, dinkyClassLoader);
+    public static Explainer build(Executor executor, boolean useStatementSet, String sqlSeparator, JobManager jobManager) {
+        return new Explainer(executor, useStatementSet, sqlSeparator, jobManager);
     }
 
-    public Explainer initialize(JobManager jobManager, JobConfig config, String statement) {
+    public Explainer initialize(JobConfig config, String statement) {
         DinkyClassLoaderUtil.initClassLoader(config, jobManager.getDinkyClassLoader());
         String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement), sqlSeparator);
         List<UDF> udfs = parseUDFFromStatements(statements);
@@ -125,9 +124,10 @@ public class Explainer {
             }
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParseStrategy.getAllFilePath(statement).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
+                AddJarSqlParseStrategy.getAllFilePath(statement).forEach(t ->
+                        jobManager.getUdfPathContextHolder().addOtherPlugins(t));
                 ((DinkyClassLoader)executor.getCustomTableEnvironment().getUserClassLoader())
-                        .addURL(URLUtils.getURLs(FlinkUdfPathContextHolder.getOtherPluginsFiles()));
+                        .addURLs(URLUtils.getURLs(jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
                 Configuration combinationConfig = getCombinationConfig();
                 FileSystem.initialize(combinationConfig, null);
@@ -159,7 +159,7 @@ public class Explainer {
                             PrintStatementExplainer.getCreateStatement(tableName, host, port), SqlType.CTAS));
                 }
             } else {
-                UDF udf = UDFUtil.toUDF(statement, dinkyClassLoader);
+                UDF udf = UDFUtil.toUDF(statement, jobManager.getDinkyClassLoader());
                 if (Asserts.isNotNull(udf)) {
                     udfList.add(udf);
                 }
@@ -186,7 +186,7 @@ public class Explainer {
             if (statement.isEmpty()) {
                 continue;
             }
-            UDF udf = UDFUtil.toUDF(statement, dinkyClassLoader);
+            UDF udf = UDFUtil.toUDF(statement, jobManager.getDinkyClassLoader());
             if (Asserts.isNotNull(udf)) {
                 udfList.add(udf);
             }
@@ -381,7 +381,7 @@ public class Explainer {
                 .parallelism(1)
                 .configJson(executor.getTableConfig().getConfiguration().toMap())
                 .build();
-        this.initialize(JobManager.buildPlanMode(jobConfig), jobConfig, statement);
+        this.initialize(jobConfig, statement);
 
         List<LineageRel> lineageRelList = new ArrayList<>();
         for (String item : SqlUtil.getStatements(statement, sqlSeparator)) {

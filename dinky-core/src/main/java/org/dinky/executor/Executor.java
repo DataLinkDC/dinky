@@ -85,11 +85,18 @@ public abstract class Executor {
     // The config of Dinky executor.
     protected ExecutorConfig executorConfig;
 
+    protected DinkyClassLoader dinkyClassLoader;
+
     // Flink configuration, such as set rest.port = 8086
     protected Map<String, Object> setConfig = new HashMap<>();
 
     // Dinky variable manager
     protected VariableManager variableManager = new VariableManager();
+
+    // return dinkyClassLoader
+    public DinkyClassLoader getDinkyClassLoader() {
+        return dinkyClassLoader;
+    }
 
     public VariableManager getVariableManager() {
         return variableManager;
@@ -127,8 +134,8 @@ public abstract class Executor {
         return getTableConfig().getLocalTimeZone().getId();
     }
 
-    protected void init(ClassLoader classLoader) {
-
+    protected void init(DinkyClassLoader classLoader) {
+        this.dinkyClassLoader = classLoader;
         if (executorConfig.isValidParallelism()) {
             environment.setParallelism(executorConfig.getParallelism());
         }
@@ -191,8 +198,9 @@ public abstract class Executor {
         return tableEnvironment.executeSql(statement);
     }
 
-    public void initUDF(DinkyClassLoader dinkyClassLoader, String... udfFilePath) {
-        dinkyClassLoader.addURL(udfFilePath);
+    public void initUDF(String... udfFilePath) {
+        List<File> jarFiles = DinkyClassLoader.getJarFiles(udfFilePath, null);
+        dinkyClassLoader.addURLs(jarFiles);
     }
 
     public void initPyUDF(String executable, String... udfPyFilePath) {
@@ -217,20 +225,6 @@ public abstract class Executor {
 
     public void addJar(File... jarPath) {
         addJar(Arrays.stream(jarPath).map(URLUtil::getURL).map(URL::toString).toArray(String[]::new));
-    }
-
-    public void addJar(Collection<File> jarPath) {
-        addJar(jarPath.stream().map(URLUtil::getURL).map(URL::toString).toArray(String[]::new));
-    }
-
-    public <T> void updateConfiguration(ConfigOption<T> configOption, T value) {
-        Configuration configuration = tableEnvironment.getConfig().getConfiguration();
-        configuration.set(configOption, value);
-    }
-
-    public <T> void updateConfiguration(Consumer<Configuration> configurationConsumer) {
-        Configuration configuration = tableEnvironment.getConfig().getConfiguration();
-        configurationConsumer.accept(configuration);
     }
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {

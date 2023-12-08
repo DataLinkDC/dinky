@@ -19,6 +19,8 @@
 
 package org.dinky.executor;
 
+import org.dinky.classloader.DinkyClassLoader;
+
 /**
  * ExecutorFactory
  *
@@ -30,10 +32,10 @@ public final class ExecutorFactory {
     private ExecutorFactory() {}
 
     public static Executor getDefaultExecutor() {
-        return new LocalStreamExecutor(ExecutorConfig.DEFAULT, ExecutorFactory.class.getClassLoader());
+        return new LocalStreamExecutor(ExecutorConfig.DEFAULT, DinkyClassLoader.getDefaultClassLoader());
     }
 
-    public static Executor buildExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
+    public static Executor buildExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         if (executorConfig.isRemote()) {
             return buildRemoteExecutor(executorConfig, classLoader);
         } else {
@@ -41,7 +43,7 @@ public final class ExecutorFactory {
         }
     }
 
-    public static Executor buildLocalExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
+    public static Executor buildLocalExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         if (executorConfig.isUseBatchModel()) {
             return new LocalBatchExecutor(executorConfig, classLoader);
         } else {
@@ -49,7 +51,7 @@ public final class ExecutorFactory {
         }
     }
 
-    public static Executor buildAppStreamExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
+    public static Executor buildAppStreamExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         if (executorConfig.isUseBatchModel()) {
             return new AppBatchExecutor(executorConfig, classLoader);
         } else {
@@ -57,7 +59,7 @@ public final class ExecutorFactory {
         }
     }
 
-    public static Executor buildRemoteExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
+    public static Executor buildRemoteExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         if (executorConfig.isUseBatchModel()) {
             return new RemoteBatchExecutor(executorConfig, classLoader);
         } else {

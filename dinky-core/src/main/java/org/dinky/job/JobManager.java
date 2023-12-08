@@ -38,9 +38,9 @@ import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
-import org.dinky.executor.ExecutorContext;
 import org.dinky.executor.ExecutorFactory;
 import org.dinky.explainer.Explainer;
+import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
@@ -99,7 +99,8 @@ public class JobManager {
 
     private JobParam jobParam = null;
     private String currentSql = "";
-    private DinkyClassLoader dinkyClassLoader = null;
+    private DinkyClassLoader dinkyClassLoader = DinkyClassLoader.build();
+
 
     public JobManager() {}
 
@@ -151,9 +152,18 @@ public class JobManager {
         return useGateway;
     }
 
+    // return dinkyclassloader
+    public DinkyClassLoader getDinkyClassLoader() {
+        return dinkyClassLoader;
+    }
+
+    // return udfPathContextHolder
+    public FlinkUdfPathContextHolder getUdfPathContextHolder() {
+        return dinkyClassLoader.getUdfPathContextHolder();
+    }
+
     private JobManager(JobConfig config) {
         this.config = config;
-        this.dinkyClassLoader = DinkyClassLoader.build();
     }
 
     public static JobManager build(JobConfig config) {
@@ -181,7 +191,6 @@ public class JobManager {
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
         executorConfig = config.getExecutorSetting();
         executor = ExecutorFactory.buildExecutor(executorConfig, this.dinkyClassLoader);
-        ExecutorContext.setExecutor(executor);
     }
 
     private boolean ready() {
@@ -200,8 +209,6 @@ public class JobManager {
         JobContextHolder.clear();
         CustomTableEnvironmentContext.clear();
         RowLevelPermissionsContext.clear();
-        FlinkUdfPathContextHolder.clear();
-        ExecutorContext.clear();
         return true;
     }
 
@@ -221,7 +228,7 @@ public class JobManager {
                 GatewayResult gatewayResult = null;
                 config.addGatewayConfig(executor.getSetConfig());
                 if (runMode.isApplicationMode()) {
-                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
+                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar(getUdfPathContextHolder());
                 } else {
                     streamGraph.setJobName(config.getJobName());
                     JobGraph jobGraph = streamGraph.getJobGraph();
@@ -266,7 +273,7 @@ public class JobManager {
         ready();
 
         DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);
-        jobParam = Explainer.build(executor, useStatementSet, sqlSeparator, dinkyClassLoader)
+        jobParam = Explainer.build(executor, useStatementSet, sqlSeparator, this)
                 .pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         try {
             // step 1: init udf
@@ -332,20 +339,20 @@ public class JobManager {
     }
 
     public ExplainResult explainSql(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator, dinkyClassLoader)
-                .initialize(this, config, statement)
+        return Explainer.build(executor, useStatementSet, sqlSeparator, this)
+                .initialize(config, statement)
                 .explainSql(statement);
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator, dinkyClassLoader)
-                .initialize(this, config, statement)
+        return Explainer.build(executor, useStatementSet, sqlSeparator, this)
+                .initialize(config, statement)
                 .getStreamGraph(statement);
     }
 
     public String getJobPlanJson(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator, dinkyClassLoader)
-                .initialize(this, config, statement)
+        return Explainer.build(executor, useStatementSet, sqlSeparator, this)
+                .initialize(config, statement)
                 .getJobPlanInfo(statement)
                 .getJsonPlan();
     }
@@ -391,45 +398,7 @@ public class JobManager {
     }
 
     public static GatewayResult deploySessionCluster(GatewayConfig gatewayConfig) {
-        return Gateway.build(gatewayConfig).deployCluster();
-    }
-
-    @Deprecated
-    public JobResult executeJar() {
-        // TODO 改为ProcessStep注释
-        Job job = Job.init(runMode, config, executorConfig, executor, null, useGateway);
-        ready();
-        try {
-            GatewayResult gatewayResult =
-                    Gateway.build(config.getGatewayConfig()).submitJar();
-            job.setResult(InsertResult.success(gatewayResult.getId()));
-            job.setJobId(gatewayResult.getId());
-            job.setJids(gatewayResult.getJids());
-            job.setJobManagerAddress(URLUtils.formatAddress(gatewayResult.getWebURL()));
-            job.setEndTime(LocalDateTime.now());
-
-            if (gatewayResult.isSuccess()) {
-                job.setStatus(Job.JobStatus.SUCCESS);
-                success();
-            } else {
-                job.setError(gatewayResult.getError());
-                job.setStatus(Job.JobStatus.FAILED);
-                failed();
-            }
-        } catch (Exception e) {
-            String error = LogUtil.getError(
-                    "Exception in executing Jar：\n"
-                            + config.getGatewayConfig().getAppConfig().getUserJarPath(),
-                    e);
-            job.setEndTime(LocalDateTime.now());
-            job.setStatus(Job.JobStatus.FAILED);
-            job.setError(error);
-            failed();
-            log.error(error);
-        } finally {
-            close();
-        }
-        return job.getJobResult();
+        return Gateway.build(gatewayConfig).deployCluster(UDFUtil.createFlinkUdfPathContextHolder());
     }
 
     public static TestResult testGateway(GatewayConfig gatewayConfig) {
@@ -495,10 +464,5 @@ public class JobManager {
         }
         sb.append(statement);
         return sb.toString();
-    }
-
-    // return dinkyclassloader
-    public DinkyClassLoader getDinkyClassLoader() {
-        return dinkyClassLoader;
     }
 }

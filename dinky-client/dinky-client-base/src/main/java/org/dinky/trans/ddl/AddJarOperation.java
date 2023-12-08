@@ -45,7 +45,6 @@ public class AddJarOperation extends AbstractOperation implements ExtendOperatio
 
     @Override
     public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
-        Arrays.stream(AddJarSqlParseStrategy.getInfo(statement)).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
         return Optional.of(TABLE_RESULT_OK);
     }
 

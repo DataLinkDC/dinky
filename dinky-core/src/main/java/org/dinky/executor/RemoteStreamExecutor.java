@@ -21,6 +21,7 @@ package org.dinky.executor;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.dinky.classloader.DinkyClassLoader;
 
 /**
  * RemoteStreamExecutor
@@ -29,7 +30,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class RemoteStreamExecutor extends Executor {
 
-    public RemoteStreamExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
+    public RemoteStreamExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidConfig()) {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());

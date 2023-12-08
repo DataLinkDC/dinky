@@ -278,15 +278,15 @@ public abstract class YarnGateway extends AbstractGateway {
         }
     }
 
-    protected YarnClusterDescriptor createYarnClusterDescriptorWithJar() {
+    protected YarnClusterDescriptor createYarnClusterDescriptorWithJar(FlinkUdfPathContextHolder udfPathContextHolder) {
         YarnClusterDescriptor yarnClusterDescriptor = createInitYarnClusterDescriptor();
 
         if (Asserts.isNotNull(config.getJarPaths())) {
             yarnClusterDescriptor.addShipFiles(
                     Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
-            yarnClusterDescriptor.addShipFiles(new ArrayList<>(FlinkUdfPathContextHolder.getPyUdfFile()));
+            yarnClusterDescriptor.addShipFiles(new ArrayList<>(udfPathContextHolder.getPyUdfFile()));
         }
-        Set<File> otherPluginsFiles = FlinkUdfPathContextHolder.getOtherPluginsFiles();
+        Set<File> otherPluginsFiles = udfPathContextHolder.getOtherPluginsFiles();
 
         if (CollUtil.isNotEmpty(otherPluginsFiles)) {
             yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(otherPluginsFiles));

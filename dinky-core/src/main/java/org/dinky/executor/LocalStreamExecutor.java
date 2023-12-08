@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import cn.hutool.core.io.FileUtil;
+import org.dinky.classloader.DinkyClassLoader;
 
 /**
  * LocalStreamExecutor
@@ -36,7 +37,7 @@ import cn.hutool.core.io.FileUtil;
  */
 public class LocalStreamExecutor extends Executor {
 
-    public LocalStreamExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
+    public LocalStreamExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidJarFiles()) {
             executorConfig

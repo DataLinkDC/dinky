@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import cn.hutool.core.io.FileUtil;
+import org.dinky.classloader.DinkyClassLoader;
 
 /**
  * LocalBatchExecutor
@@ -36,7 +37,7 @@ import cn.hutool.core.io.FileUtil;
  */
 public class LocalBatchExecutor extends Executor {
 
-    public LocalBatchExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
+    public LocalBatchExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidJarFiles()) {
             executorConfig

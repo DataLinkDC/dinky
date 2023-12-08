@@ -36,6 +36,10 @@ import org.apache.flink.streaming.api.graph.StreamGraph;
 
 import cn.hutool.core.lang.Assert;
 
+import java.io.File;
+import java.util.List;
+import java.util.Set;
+
 /**
  * JobJarStreamGraphBuilder
  *
@@ -65,13 +69,9 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
             }
             SqlType operationType = Operations.getOperationType(sqlStatement);
             if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParseStrategy.getAllFilePath(sqlStatement).forEach(executor::addJar);
-                if (runMode.isApplicationMode()) {
-                    AddJarSqlParseStrategy.getAllFilePath(sqlStatement)
-                            .forEach(FlinkUdfPathContextHolder::addOtherPlugins);
-                } else {
-                    AddJarSqlParseStrategy.getAllFilePath(sqlStatement).forEach(executor::addJar);
-                }
+                Set<File> files = AddJarSqlParseStrategy.getAllFilePath(sqlStatement);
+                files.forEach(executor::addJar);
+                files.forEach(jobManager.getUdfPathContextHolder()::addOtherPlugins);
             }
         }
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));
