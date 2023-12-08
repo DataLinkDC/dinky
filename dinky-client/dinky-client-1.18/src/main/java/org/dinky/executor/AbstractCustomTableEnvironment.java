@@ -33,7 +33,7 @@ public abstract class AbstractCustomTableEnvironment
         implements CustomTableEnvironment, DefaultTableEnvironmentInternal, DefaultStreamTableEnvironment {
 
     protected StreamTableEnvironment streamTableEnvironment;
-    protected ClassLoader classLoader;
+    protected ClassLoader userClassLoader;
 
     protected AbstractCustomTableEnvironment() {}
 
