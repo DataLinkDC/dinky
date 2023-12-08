@@ -43,7 +43,7 @@ public abstract class JobBuilder {
         this.useStatementSet = jobManager.isUseStatementSet();
         this.useGateway = jobManager.isUseGateway();
         this.sqlSeparator = jobManager.getSqlSeparator();
-        this.job = JobContextHolder.getJob();
+        this.job = jobManager.getJob();
     }
 
     public abstract void run() throws Exception;
