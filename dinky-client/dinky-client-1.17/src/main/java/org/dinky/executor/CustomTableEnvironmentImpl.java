@@ -20,7 +20,6 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.utils.LineageContext;
@@ -82,12 +81,11 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         super(streamTableEnvironment);
     }
 
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
+    public static CustomTableEnvironmentImpl create(
+            StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
         return create(
                 executionEnvironment,
-                EnvironmentSettings.newInstance()
-                        .withClassLoader(classLoader)
-                        .build());
+                EnvironmentSettings.newInstance().withClassLoader(classLoader).build());
     }
 
     public static CustomTableEnvironmentImpl createBatch(StreamExecutionEnvironment executionEnvironment) {
