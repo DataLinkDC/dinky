@@ -76,7 +76,11 @@ export const LeftSide: TabProp[] = [
     icon: <TableOutlined />,
     label: l('menu.datastudio.catalog'),
     children: <Catalog />,
-    isShow: (type, subType) =>   type === TabsPageType.project && !isSql(subType ?? '') && subType !== TabsPageSubType.flinkJar && subType !== DIALECT.FLINKSQLENV
+    isShow: (type, subType) =>
+      type === TabsPageType.project
+      && !isSql(subType ?? '')
+      && subType !== TabsPageSubType.flinkJar
+      && subType !== DIALECT.FLINKSQLENV
   },
   {
     auth: '/datastudio/left/datasource',
@@ -91,7 +95,12 @@ export const LeftSide: TabProp[] = [
     icon: <FunctionOutlined />,
     label: l('menu.registration.fragment'),
     children: <GlobalVariable />,
-    isShow: (type, subType) =>   type === TabsPageType.project && !isSql(subType ?? '') && subType !== TabsPageSubType.flinkJar
+    isShow: (type, subType) =>
+      type === TabsPageType.project
+      && !isSql(subType ?? '')
+      && subType !== DIALECT.SCALA
+      && subType !== DIALECT.PYTHON_LONG
+      && subType !== DIALECT.JAVA
   }
 ];
 
