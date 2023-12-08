@@ -82,11 +82,11 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         super(streamTableEnvironment);
     }
 
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
+    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
         return create(
                 executionEnvironment,
                 EnvironmentSettings.newInstance()
-                        .withClassLoader(DinkyClassLoaderContextHolder.get())
+                        .withClassLoader(classLoader)
                         .build());
     }
 
