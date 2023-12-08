@@ -128,6 +128,10 @@ public class DinkyClassLoader extends URLClassLoader {
                         throw new RuntimeException(e);
                     }
                 })
-                .forEach(super::addURL);
+                .forEach(this::addURL);
+    }
+
+    public void addURL(URL url) {
+        super.addURL(url);
     }
 }
