@@ -36,7 +36,7 @@ import cn.hutool.core.io.FileUtil;
  */
 public class LocalBatchExecutor extends Executor {
 
-    public LocalBatchExecutor(ExecutorConfig executorConfig) {
+    public LocalBatchExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidJarFiles()) {
             executorConfig
@@ -57,11 +57,11 @@ public class LocalBatchExecutor extends Executor {
         } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         }
-        init();
+        init(classLoader);
     }
 
     @Override
-    CustomTableEnvironment createCustomTableEnvironment() {
+    CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader) {
         return CustomTableEnvironmentImpl.createBatch(environment);
     }
 }

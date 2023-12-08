@@ -20,7 +20,7 @@
 package org.dinky.utils;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.context.DinkyClassLoaderContextHolder;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.job.JobConfig;
@@ -34,7 +34,7 @@ import cn.hutool.core.io.FileUtil;
 
 public class DinkyClassLoaderUtil {
 
-    public static void initClassLoader(JobConfig config) {
+    public static void initClassLoader(JobConfig config, DinkyClassLoader dinkyClassLoader) {
         if (CollUtil.isNotEmpty(config.getConfigJson())) {
             String pipelineJars = config.getConfigJson().get(PipelineOptions.JARS.key());
             String classpaths = config.getConfigJson().get(PipelineOptions.CLASSPATHS.key());
@@ -62,8 +62,7 @@ public class DinkyClassLoaderUtil {
             }
         }
 
-        DinkyClassLoaderContextHolder.get()
-                .addURL(CollUtil.addAll(
+        dinkyClassLoader.addURL(CollUtil.addAll(
                         FlinkUdfPathContextHolder.getUdfFile(), FlinkUdfPathContextHolder.getOtherPluginsFiles()));
     }
 }

@@ -20,8 +20,8 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.CustomTableEnvironmentContext;
-import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.interceptor.FlinkInterceptor;
@@ -127,13 +127,13 @@ public abstract class Executor {
         return getTableConfig().getLocalTimeZone().getId();
     }
 
-    protected void init() {
+    protected void init(ClassLoader classLoader) {
 
         if (executorConfig.isValidParallelism()) {
             environment.setParallelism(executorConfig.getParallelism());
         }
 
-        tableEnvironment = createCustomTableEnvironment();
+        tableEnvironment = createCustomTableEnvironment(classLoader);
         CustomTableEnvironmentContext.set(tableEnvironment);
         tableEnvironment.injectParser(
                 new CustomParserImpl(tableEnvironment.getPlanner().getParser()));
@@ -158,7 +158,7 @@ public abstract class Executor {
         ReflectUtil.setFieldValue(environment, "userClassloader", contextClassLoader);
     }
 
-    abstract CustomTableEnvironment createCustomTableEnvironment();
+    abstract CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader);
 
     public String pretreatStatement(String statement) {
         return FlinkInterceptor.pretreatStatement(this, statement);
@@ -191,8 +191,8 @@ public abstract class Executor {
         return tableEnvironment.executeSql(statement);
     }
 
-    public void initUDF(String... udfFilePath) {
-        DinkyClassLoaderContextHolder.get().addURL(udfFilePath);
+    public void initUDF(DinkyClassLoader dinkyClassLoader, String... udfFilePath) {
+        dinkyClassLoader.addURL(udfFilePath);
     }
 
     public void initPyUDF(String executable, String... udfPyFilePath) {

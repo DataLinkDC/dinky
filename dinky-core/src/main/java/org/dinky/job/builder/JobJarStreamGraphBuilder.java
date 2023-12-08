@@ -19,6 +19,7 @@
 
 package org.dinky.job.builder;
 
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.job.JobBuilder;
@@ -52,12 +53,11 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
     @Override
     public void run() throws Exception {}
 
-    public StreamGraph getJarStreamGraph(String statement) {
-        DinkyClassLoaderUtil.initClassLoader(config);
+    public StreamGraph getJarStreamGraph(String statement, DinkyClassLoader dinkyClassLoader) {
+        DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);
         String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
         ExecuteJarOperation executeJarOperation = null;
-        for (int i = 0; i < statements.length; i++) {
-            String sql = statements[i];
+        for (String sql : statements) {
             String sqlStatement = executor.pretreatStatement(sql);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 executeJarOperation = new ExecuteJarOperation(sqlStatement);

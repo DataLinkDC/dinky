@@ -92,7 +92,7 @@ public class JobUDFBuilder extends JobBuilder {
         String[] pyPaths = UDFUtil.initPythonUDF(
                 udfList, runMode, config.getTaskId(), executor.getTableConfig().getConfiguration());
 
-        executor.initUDF(jarPaths);
+        executor.initUDF(jobManager.getDinkyClassLoader(), jarPaths);
         if (ArrayUtil.isNotEmpty(pyPaths)) {
             for (String pyPath : pyPaths) {
                 if (StrUtil.isNotBlank(pyPath)) {

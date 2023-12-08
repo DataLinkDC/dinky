@@ -21,6 +21,7 @@ package org.dinky.job;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.FlinkUdfPathContextHolder;
@@ -98,6 +99,7 @@ public class JobManager {
 
     private JobParam jobParam = null;
     private String currentSql = "";
+    private DinkyClassLoader dinkyClassLoader = null;
 
     public JobManager() {}
 
@@ -151,6 +153,7 @@ public class JobManager {
 
     private JobManager(JobConfig config) {
         this.config = config;
+        this.dinkyClassLoader = DinkyClassLoader.build();
     }
 
     public static JobManager build(JobConfig config) {
@@ -177,7 +180,7 @@ public class JobManager {
         useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
         executorConfig = config.getExecutorSetting();
-        executor = ExecutorFactory.buildExecutor(executorConfig);
+        executor = ExecutorFactory.buildExecutor(executorConfig, this.dinkyClassLoader);
         ExecutorContext.setExecutor(executor);
     }
 
@@ -203,14 +206,14 @@ public class JobManager {
     }
 
     public ObjectNode getJarStreamGraphJson(String statement) {
-        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement);
+        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, dinkyClassLoader);
         return JsonUtils.parseObject(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
         Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);
-        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement);
+        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, dinkyClassLoader);
         try {
             if (!useGateway) {
                 executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
@@ -262,8 +265,8 @@ public class JobManager {
         Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
 
-        DinkyClassLoaderUtil.initClassLoader(config);
-        jobParam = Explainer.build(executor, useStatementSet, sqlSeparator)
+        DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);
+        jobParam = Explainer.build(executor, useStatementSet, sqlSeparator, dinkyClassLoader)
                 .pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         try {
             // step 1: init udf
@@ -329,19 +332,19 @@ public class JobManager {
     }
 
     public ExplainResult explainSql(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator)
+        return Explainer.build(executor, useStatementSet, sqlSeparator, dinkyClassLoader)
                 .initialize(this, config, statement)
                 .explainSql(statement);
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator)
+        return Explainer.build(executor, useStatementSet, sqlSeparator, dinkyClassLoader)
                 .initialize(this, config, statement)
                 .getStreamGraph(statement);
     }
 
     public String getJobPlanJson(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator)
+        return Explainer.build(executor, useStatementSet, sqlSeparator, dinkyClassLoader)
                 .initialize(this, config, statement)
                 .getJobPlanInfo(statement)
                 .getJsonPlan();
@@ -492,5 +495,10 @@ public class JobManager {
         }
         sb.append(statement);
         return sb.toString();
+    }
+
+    // return dinkyclassloader
+    public DinkyClassLoader getDinkyClassLoader() {
+        return dinkyClassLoader;
     }
 }

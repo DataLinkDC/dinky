@@ -28,6 +28,7 @@ import org.dinky.app.resource.impl.HdfsResourceManager;
 import org.dinky.app.resource.impl.OssResourceManager;
 import org.dinky.app.url.RsURLStreamHandlerFactory;
 import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.app.AppParamConfig;
@@ -154,7 +155,7 @@ public class Submitter {
                 // .config(JsonUtils.toMap(appTask.getConfigJson()))
                 .build();
 
-        Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig);
+        Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig, DinkyClassLoader.build());
 
         // 加载第三方jar //TODO 这里有问题，需要修一修
         // loadDep(appTask.getType(),

@@ -29,7 +29,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class RemoteStreamExecutor extends Executor {
 
-    public RemoteStreamExecutor(ExecutorConfig executorConfig) {
+    public RemoteStreamExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidConfig()) {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
@@ -39,11 +39,11 @@ public class RemoteStreamExecutor extends Executor {
             this.environment = StreamExecutionEnvironment.createRemoteEnvironment(
                     executorConfig.getHost(), executorConfig.getPort(), executorConfig.getJarFiles());
         }
-        init();
+        init(classLoader);
     }
 
     @Override
-    CustomTableEnvironment createCustomTableEnvironment() {
-        return CustomTableEnvironmentImpl.create(environment);
+    CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader) {
+        return CustomTableEnvironmentImpl.create(environment, classLoader);
     }
 }

@@ -29,7 +29,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class RemoteBatchExecutor extends Executor {
 
-    public RemoteBatchExecutor(ExecutorConfig executorConfig) {
+    public RemoteBatchExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidConfig()) {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
@@ -39,11 +39,11 @@ public class RemoteBatchExecutor extends Executor {
             this.environment = StreamExecutionEnvironment.createRemoteEnvironment(
                     executorConfig.getHost(), executorConfig.getPort(), executorConfig.getJarFiles());
         }
-        init();
+        init(classLoader);
     }
 
     @Override
-    CustomTableEnvironment createCustomTableEnvironment() {
+    CustomTableEnvironment createCustomTableEnvironment( ClassLoader classLoader) {
         return CustomTableEnvironmentImpl.createBatch(environment);
     }
 }

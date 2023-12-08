@@ -53,6 +53,16 @@ public class DinkyClassLoader extends URLClassLoader {
         super(new URL[] {}, parent, factory);
     }
 
+    // this class factory method
+    public static DinkyClassLoader build() {
+        return new DinkyClassLoader(new URL[] {});
+    }
+
+    // class factory method with urls parameters
+    public static DinkyClassLoader build(URL... urls) {
+        return new DinkyClassLoader(urls);
+    }
+
     public void addURL(URL... urls) {
         for (URL url : urls) {
             super.addURL(url);

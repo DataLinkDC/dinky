@@ -30,38 +30,38 @@ public final class ExecutorFactory {
     private ExecutorFactory() {}
 
     public static Executor getDefaultExecutor() {
-        return new LocalStreamExecutor(ExecutorConfig.DEFAULT);
+        return new LocalStreamExecutor(ExecutorConfig.DEFAULT, ExecutorFactory.class.getClassLoader());
     }
 
-    public static Executor buildExecutor(ExecutorConfig executorConfig) {
+    public static Executor buildExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
         if (executorConfig.isRemote()) {
-            return buildRemoteExecutor(executorConfig);
+            return buildRemoteExecutor(executorConfig, classLoader);
         } else {
-            return buildLocalExecutor(executorConfig);
+            return buildLocalExecutor(executorConfig, classLoader);
         }
     }
 
-    public static Executor buildLocalExecutor(ExecutorConfig executorConfig) {
+    public static Executor buildLocalExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
         if (executorConfig.isUseBatchModel()) {
-            return new LocalBatchExecutor(executorConfig);
+            return new LocalBatchExecutor(executorConfig, classLoader);
         } else {
-            return new LocalStreamExecutor(executorConfig);
+            return new LocalStreamExecutor(executorConfig, classLoader);
         }
     }
 
-    public static Executor buildAppStreamExecutor(ExecutorConfig executorConfig) {
+    public static Executor buildAppStreamExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
         if (executorConfig.isUseBatchModel()) {
-            return new AppBatchExecutor(executorConfig);
+            return new AppBatchExecutor(executorConfig, classLoader);
         } else {
-            return new AppStreamExecutor(executorConfig);
+            return new AppStreamExecutor(executorConfig, classLoader);
         }
     }
 
-    public static Executor buildRemoteExecutor(ExecutorConfig executorConfig) {
+    public static Executor buildRemoteExecutor(ExecutorConfig executorConfig, ClassLoader classLoader) {
         if (executorConfig.isUseBatchModel()) {
-            return new RemoteBatchExecutor(executorConfig);
+            return new RemoteBatchExecutor(executorConfig, classLoader);
         } else {
-            return new RemoteStreamExecutor(executorConfig);
+            return new RemoteStreamExecutor(executorConfig, classLoader);
         }
     }
 }

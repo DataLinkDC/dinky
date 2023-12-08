@@ -20,7 +20,6 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.utils.JsonUtils;
@@ -61,7 +60,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
@@ -75,17 +73,15 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     private static final Logger log = LoggerFactory.getLogger(CustomTableEnvironmentImpl.class);
 
-    private static final ObjectMapper mapper = new ObjectMapper();
-
     public CustomTableEnvironmentImpl(StreamTableEnvironment streamTableEnvironment) {
         super(streamTableEnvironment);
     }
 
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
+    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
         return create(
                 executionEnvironment,
                 EnvironmentSettings.newInstance()
-                        .withClassLoader(DinkyClassLoaderContextHolder.get())
+                        .withClassLoader(classLoader)
                         .build());
     }
 
@@ -123,8 +119,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         }
 
         List<ModifyOperation> modifyOperations = operations.stream()
-                .filter(operation -> operation instanceof ModifyOperation)
-                .map(operation -> (ModifyOperation) operation)
+                .filter(ModifyOperation.class::isInstance)
+                .map(ModifyOperation.class::cast)
                 .collect(Collectors.toList());
 
         StreamGraph streamGraph = transOperatoinsToStreamGraph(modifyOperations);

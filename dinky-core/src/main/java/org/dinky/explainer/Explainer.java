@@ -20,8 +20,8 @@
 package org.dinky.explainer;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.constant.FlinkSQLConstant;
-import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.model.SystemConfiguration;
@@ -76,6 +76,7 @@ public class Explainer {
     private boolean useStatementSet;
     private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
     private ObjectMapper mapper = new ObjectMapper();
+    private DinkyClassLoader dinkyClassLoader;
 
     public Explainer(Executor executor, boolean useStatementSet) {
         this.executor = executor;
@@ -83,22 +84,23 @@ public class Explainer {
         init();
     }
 
-    public Explainer(Executor executor, boolean useStatementSet, String sqlSeparator) {
+    public Explainer(Executor executor, boolean useStatementSet, String sqlSeparator, DinkyClassLoader dinkyClassLoader) {
         this.executor = executor;
         this.useStatementSet = useStatementSet;
         this.sqlSeparator = sqlSeparator;
+        this.dinkyClassLoader = dinkyClassLoader;
     }
 
     public void init() {
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
     }
 
-    public static Explainer build(Executor executor, boolean useStatementSet, String sqlSeparator) {
-        return new Explainer(executor, useStatementSet, sqlSeparator);
+    public static Explainer build(Executor executor, boolean useStatementSet, String sqlSeparator, DinkyClassLoader dinkyClassLoader) {
+        return new Explainer(executor, useStatementSet, sqlSeparator, dinkyClassLoader);
     }
 
     public Explainer initialize(JobManager jobManager, JobConfig config, String statement) {
-        DinkyClassLoaderUtil.initClassLoader(config);
+        DinkyClassLoaderUtil.initClassLoader(config, jobManager.getDinkyClassLoader());
         String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement), sqlSeparator);
         List<UDF> udfs = parseUDFFromStatements(statements);
         jobManager.setJobParam(new JobParam(udfs));
@@ -124,7 +126,7 @@ public class Explainer {
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.ADD)) {
                 AddJarSqlParseStrategy.getAllFilePath(statement).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
-                DinkyClassLoaderContextHolder.get()
+                ((DinkyClassLoader)executor.getCustomTableEnvironment().getUserClassLoader())
                         .addURL(URLUtils.getURLs(FlinkUdfPathContextHolder.getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
                 Configuration combinationConfig = getCombinationConfig();
@@ -157,7 +159,7 @@ public class Explainer {
                             PrintStatementExplainer.getCreateStatement(tableName, host, port), SqlType.CTAS));
                 }
             } else {
-                UDF udf = UDFUtil.toUDF(statement);
+                UDF udf = UDFUtil.toUDF(statement, dinkyClassLoader);
                 if (Asserts.isNotNull(udf)) {
                     udfList.add(udf);
                 }
@@ -184,7 +186,7 @@ public class Explainer {
             if (statement.isEmpty()) {
                 continue;
             }
-            UDF udf = UDFUtil.toUDF(statement);
+            UDF udf = UDFUtil.toUDF(statement, dinkyClassLoader);
             if (Asserts.isNotNull(udf)) {
                 udfList.add(udf);
             }

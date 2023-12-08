@@ -19,8 +19,7 @@
 
 package org.dinky.aop;
 
-import org.dinky.classloader.DinkyClassLoader;
-import org.dinky.context.DinkyClassLoaderContextHolder;
+
 import org.dinky.data.exception.DinkyException;
 import org.dinky.job.JobResult;
 
@@ -64,10 +63,6 @@ public class UdfClassLoaderAspect {
             throw (DinkyException) e;
         } finally {
             if (proceed instanceof JobResult) {
-                ClassLoader lastContextClassLoader = Thread.currentThread().getContextClassLoader();
-                if (lastContextClassLoader instanceof DinkyClassLoader) {
-                    DinkyClassLoaderContextHolder.clear();
-                }
             }
         }
         return proceed;

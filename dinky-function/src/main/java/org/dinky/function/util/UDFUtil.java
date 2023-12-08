@@ -20,9 +20,9 @@
 package org.dinky.function.util;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
 import org.dinky.context.CustomTableEnvironmentContext;
-import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.FlinkUdfManifest;
@@ -303,7 +303,7 @@ public class UDFUtil {
         return !StrUtil.isBlank(statement) && CollUtil.isNotEmpty(ReUtil.findAll(pattern, statement, 0));
     }
 
-    public static UDF toUDF(String statement) {
+    public static UDF toUDF(String statement, DinkyClassLoader classLoader) {
         if (isUdfStatement(PATTERN, statement)) {
             List<String> groups = CollUtil.removeEmpty(ReUtil.getAllGroups(PATTERN, statement));
             String udfName = groups.get(1);
@@ -318,7 +318,7 @@ public class UDFUtil {
             if (ClassLoaderUtil.isPresent(className)) {
                 // 获取已经加载在java的类，对应的包路径
                 try {
-                    FlinkUdfPathContextHolder.addUdfPath(FileUtil.file(DinkyClassLoaderContextHolder.get()
+                    FlinkUdfPathContextHolder.addUdfPath(FileUtil.file(classLoader
                             .loadClass(className)
                             .getProtectionDomain()
                             .getCodeSource()
