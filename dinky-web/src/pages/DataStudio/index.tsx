@@ -22,7 +22,7 @@ import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import {isProjectTabs, mapDispatchToProps} from '@/pages/DataStudio/function';
+import { isProjectTabs, mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
@@ -72,7 +72,6 @@ const DataStudio = (props: any) => {
   const app = getDvaApp(); // 获取dva的实例
   const persist = app._store.persist;
   const { fullscreen } = useEditor();
-
 
   const getClientSize = () => ({
     width: document.documentElement.clientWidth,
@@ -157,15 +156,13 @@ const DataStudio = (props: any) => {
           if (x.key === leftContainer.selectKey && !show && panes.length > 0) {
             updateSelectLeftKey(LeftSide[0].key);
           }
-          return show
+          return show;
         })
-        .map(
-        (x) => ({
+        .map((x) => ({
           key: x.key,
           label: x.label,
           icon: x.icon
-        })
-      )}
+        }))}
       style={{
         flexGrow: 1,
         borderBlockStart: `1px solid ${themeValue.borderColor}`,

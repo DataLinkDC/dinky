@@ -36,6 +36,7 @@ import JobConfig from '@/pages/DataStudio/RightContainer/JobConfig';
 import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
 import PreViewConfig from '@/pages/DataStudio/RightContainer/PreViewConfig';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
+import { DIALECT } from '@/services/constants';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -60,7 +61,6 @@ import {
   ToolOutlined
 } from '@ant-design/icons';
 import { ReactNode } from 'react';
-import {DIALECT} from "@/services/constants";
 
 export const LeftSide: TabProp[] = [
   {
@@ -68,7 +68,7 @@ export const LeftSide: TabProp[] = [
     key: 'menu.datastudio.project',
     icon: <ConsoleSqlOutlined />,
     label: l('menu.datastudio.project'),
-    children: <Project />,
+    children: <Project />
   },
   {
     auth: '/datastudio/left/catalog',
@@ -77,10 +77,10 @@ export const LeftSide: TabProp[] = [
     label: l('menu.datastudio.catalog'),
     children: <Catalog />,
     isShow: (type, subType) =>
-      type === TabsPageType.project
-      && !isSql(subType ?? '')
-      && subType !== TabsPageSubType.flinkJar
-      && subType !== DIALECT.FLINKSQLENV
+      type === TabsPageType.project &&
+      !isSql(subType ?? '') &&
+      subType !== TabsPageSubType.flinkJar &&
+      subType !== DIALECT.FLINKSQLENV
   },
   {
     auth: '/datastudio/left/datasource',
@@ -96,11 +96,11 @@ export const LeftSide: TabProp[] = [
     label: l('menu.registration.fragment'),
     children: <GlobalVariable />,
     isShow: (type, subType) =>
-      type === TabsPageType.project
-      && !isSql(subType ?? '')
-      && subType !== DIALECT.SCALA
-      && subType !== DIALECT.PYTHON_LONG
-      && subType !== DIALECT.JAVA
+      type === TabsPageType.project &&
+      !isSql(subType ?? '') &&
+      subType !== DIALECT.SCALA &&
+      subType !== DIALECT.PYTHON_LONG &&
+      subType !== DIALECT.JAVA
   }
 ];
 

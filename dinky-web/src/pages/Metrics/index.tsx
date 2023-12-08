@@ -197,7 +197,7 @@ export default () => {
       <Job />
 
       {layoutData != undefined &&
-        Object.keys(layoutData).map((name,index) => {
+        Object.keys(layoutData).map((name, index) => {
           return (
             <ProCard
               key={index}
