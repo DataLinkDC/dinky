@@ -22,7 +22,7 @@ import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import { isProjectTabs, mapDispatchToProps } from '@/pages/DataStudio/function';
+import {isProjectTabs, mapDispatchToProps} from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
@@ -72,6 +72,7 @@ const DataStudio = (props: any) => {
   const app = getDvaApp(); // 获取dva的实例
   const persist = app._store.persist;
   const { fullscreen } = useEditor();
+
 
   const getClientSize = () => ({
     width: document.documentElement.clientWidth,
@@ -141,7 +142,24 @@ const DataStudio = (props: any) => {
     <Menu
       mode='inline'
       selectedKeys={[leftContainer.selectKey]}
-      items={LeftSide.filter((x) => AuthorizedObject({ path: x.auth, children: x, access })).map(
+      items={LeftSide.filter((x) => AuthorizedObject({ path: x.auth, children: x, access }))
+        .filter((x) => {
+          if (!x.isShow) {
+            return true;
+          }
+          if (parseInt(activeKey) < 0) {
+            return TabsPageType.None;
+          }
+          const v = (panes as TabsItemType[]).find((item) => item.key === activeKey);
+          const show = x.isShow(v?.type ?? TabsPageType.None, v?.subType);
+          // 如果当前打开的菜单等于 状态存的菜单 且 菜单不显示状态下，先切换到项目key(因为项目key 不可能不显示) 在关闭这个
+          // if current open menu equal status menu and menu is not show status, first switch to project key(because project key is not show) and close this
+          if (x.key === leftContainer.selectKey && !show && panes.length > 0) {
+            updateSelectLeftKey(LeftSide[0].key);
+          }
+          return show
+        })
+        .map(
         (x) => ({
           key: x.key,
           label: x.label,
