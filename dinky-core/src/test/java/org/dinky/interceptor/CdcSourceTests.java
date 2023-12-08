@@ -19,6 +19,7 @@
 
 package org.dinky.interceptor;
 
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
@@ -49,7 +50,7 @@ public class CdcSourceTests {
                 .toString();
 
         ExecutorConfig executorConfig = ExecutorConfig.DEFAULT;
-        Executor executor = ExecutorFactory.buildLocalExecutor(executorConfig);
+        Executor executor = ExecutorFactory.buildLocalExecutor(executorConfig, DinkyClassLoader.getDefaultClassLoader());
         executor.executeSql(statement);
         executor.execute("");
     }
