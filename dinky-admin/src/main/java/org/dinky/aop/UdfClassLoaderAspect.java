@@ -19,7 +19,6 @@
 
 package org.dinky.aop;
 
-
 import org.dinky.data.exception.DinkyException;
 import org.dinky.job.JobResult;
 
@@ -62,8 +61,7 @@ public class UdfClassLoaderAspect {
             e.printStackTrace();
             throw (DinkyException) e;
         } finally {
-            if (proceed instanceof JobResult) {
-            }
+            if (proceed instanceof JobResult) {}
         }
         return proceed;
     }

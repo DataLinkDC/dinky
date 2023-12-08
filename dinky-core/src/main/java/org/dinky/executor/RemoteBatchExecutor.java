@@ -19,9 +19,10 @@
 
 package org.dinky.executor;
 
+import org.dinky.classloader.DinkyClassLoader;
+
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.dinky.classloader.DinkyClassLoader;
 
 /**
  * RemoteBatchExecutor
@@ -44,7 +45,7 @@ public class RemoteBatchExecutor extends Executor {
     }
 
     @Override
-    CustomTableEnvironment createCustomTableEnvironment( ClassLoader classLoader) {
+    CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader) {
         return CustomTableEnvironmentImpl.createBatch(environment);
     }
 }

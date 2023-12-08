@@ -24,7 +24,6 @@ import static org.dinky.function.util.UDFUtil.SESSION;
 import static org.dinky.function.util.UDFUtil.YARN;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
@@ -71,7 +70,8 @@ public class JobUDFBuilder extends JobBuilder {
             taskId = -RandomUtil.randomInt(0, 1000);
         }
         // 1. Obtain the path of the jar package and inject it into the remote environment
-        List<File> jarFiles = new ArrayList<>(jobManager.getUdfPathContextHolder().getUdfFile());
+        List<File> jarFiles =
+                new ArrayList<>(jobManager.getUdfPathContextHolder().getUdfFile());
 
         Set<File> otherPluginsFiles = jobManager.getUdfPathContextHolder().getOtherPluginsFiles();
         jarFiles.addAll(otherPluginsFiles);

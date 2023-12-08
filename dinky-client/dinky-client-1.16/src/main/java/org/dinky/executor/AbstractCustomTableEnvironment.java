@@ -57,7 +57,6 @@ public abstract class AbstractCustomTableEnvironment
         return ((StreamTableEnvironmentImpl) streamTableEnvironment).getPlanner();
     }
 
-
     @Override
     public ClassLoader getUserClassLoader() {
         return userClassLoader;

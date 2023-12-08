@@ -101,7 +101,6 @@ public class JobManager {
     private String currentSql = "";
     private DinkyClassLoader dinkyClassLoader = DinkyClassLoader.build();
 
-
     public JobManager() {}
 
     public JobParam getJobParam() {

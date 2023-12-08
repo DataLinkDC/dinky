@@ -19,15 +19,12 @@
 
 package org.dinky.trans.ddl;
 
-import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
-import org.dinky.trans.parse.AddJarSqlParseStrategy;
 
 import org.apache.flink.table.api.TableResult;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 /**

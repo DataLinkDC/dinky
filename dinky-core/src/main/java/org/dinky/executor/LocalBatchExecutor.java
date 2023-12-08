@@ -19,6 +19,8 @@
 
 package org.dinky.executor;
 
+import org.dinky.classloader.DinkyClassLoader;
+
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.RestOptions;
@@ -28,7 +30,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import cn.hutool.core.io.FileUtil;
-import org.dinky.classloader.DinkyClassLoader;
 
 /**
  * LocalBatchExecutor

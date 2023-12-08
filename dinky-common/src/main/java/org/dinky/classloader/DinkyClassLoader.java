@@ -19,19 +19,19 @@
 
 package org.dinky.classloader;
 
+import org.dinky.context.FlinkUdfPathContextHolder;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandlerFactory;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.dinky.context.FlinkUdfPathContextHolder;
 
 /**
  * @since 0.7.0
@@ -42,25 +42,25 @@ public class DinkyClassLoader extends URLClassLoader {
     FlinkUdfPathContextHolder udfPathContextHolder = new FlinkUdfPathContextHolder();
 
     public DinkyClassLoader(URL[] urls, ClassLoader parent) {
-        super(new URL[]{}, parent);
+        super(new URL[] {}, parent);
     }
 
     public DinkyClassLoader(Collection<File> fileSet, ClassLoader parent) {
-        super(new URL[]{}, parent);
+        super(new URL[] {}, parent);
         addURLs(fileSet);
     }
 
     public DinkyClassLoader(URL[] urls) {
-        super(new URL[]{});
+        super(new URL[] {});
     }
 
     public DinkyClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
-        super(new URL[]{}, parent, factory);
+        super(new URL[] {}, parent, factory);
     }
 
     // this class factory method
     public static DinkyClassLoader build() {
-        return new DinkyClassLoader(new URL[]{});
+        return new DinkyClassLoader(new URL[] {});
     }
 
     // class factory method with urls parameters
@@ -120,12 +120,14 @@ public class DinkyClassLoader extends URLClassLoader {
     }
 
     public void addURLs(List<File> files) {
-        files.stream().map(x -> {
-            try {
-                return x.toURI().toURL();
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
-        }).forEach(super::addURL);
+        files.stream()
+                .map(x -> {
+                    try {
+                        return x.toURI().toURL();
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .forEach(super::addURL);
     }
 }

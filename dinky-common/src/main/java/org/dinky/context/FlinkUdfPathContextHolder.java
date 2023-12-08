@@ -20,10 +20,8 @@
 package org.dinky.context;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /** @since 0.7.0 */
 public class FlinkUdfPathContextHolder {
@@ -55,5 +53,4 @@ public class FlinkUdfPathContextHolder {
     public Set<File> getOtherPluginsFiles() {
         return OTHER_PLUGINS_PATH_CONTEXT;
     }
-
 }

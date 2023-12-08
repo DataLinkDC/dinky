@@ -353,7 +353,7 @@ public class UDFUtil {
         return null;
     }
 
-    //create FlinkUdfPathContextHolder from UdfCodePool
+    // create FlinkUdfPathContextHolder from UdfCodePool
     public static FlinkUdfPathContextHolder createFlinkUdfPathContextHolder() {
         FlinkUdfPathContextHolder udfPathContextHolder = new FlinkUdfPathContextHolder();
         UdfCodePool.getUdfCodePool().values().forEach(udf -> {
@@ -373,9 +373,6 @@ public class UDFUtil {
         });
         return udfPathContextHolder;
     }
-
-
-
 
     public static List<Class<?>> getUdfClassByJar(File jarPath) {
         Assert.notNull(jarPath);
@@ -465,7 +462,8 @@ public class UDFUtil {
                 PipelineOptions.JARS, jarList.stream().map(URL::toString).collect(Collectors.toList()));
     }
 
-    public static void writeManifest(Integer taskId, List<URL> jarPaths, FlinkUdfPathContextHolder udfPathContextHolder) {
+    public static void writeManifest(
+            Integer taskId, List<URL> jarPaths, FlinkUdfPathContextHolder udfPathContextHolder) {
         FlinkUdfManifest flinkUdfManifest = new FlinkUdfManifest();
         flinkUdfManifest.setJars(jarPaths);
         flinkUdfManifest.setPythonFiles(udfPathContextHolder.getPyUdfFile().stream()

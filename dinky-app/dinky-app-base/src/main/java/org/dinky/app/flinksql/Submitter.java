@@ -31,7 +31,6 @@ import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;
-import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
 import org.dinky.data.exception.DinkyException;
@@ -292,7 +291,7 @@ public class Submitter {
             } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD) {
                 File[] info = AddJarSqlParseStrategy.getInfo(sqlStatement);
                 Arrays.stream(info).forEach(executor.getDinkyClassLoader().getUdfPathContextHolder()::addOtherPlugins);
-                if("kubernetes-application".equals(type)) {
+                if ("kubernetes-application".equals(type)) {
                     executor.addJar(info);
                 }
             }

@@ -28,8 +28,6 @@ import org.dinky.job.JobConfig;
 import org.apache.flink.configuration.PipelineOptions;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.List;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
@@ -66,7 +64,7 @@ public class DinkyClassLoaderUtil {
             }
         }
 
-        dinkyClassLoader.addURLs(CollUtil.addAll(
-                udfPathContextHolder.getUdfFile(), udfPathContextHolder.getOtherPluginsFiles()));
+        dinkyClassLoader.addURLs(
+                CollUtil.addAll(udfPathContextHolder.getUdfFile(), udfPathContextHolder.getOtherPluginsFiles()));
     }
 }

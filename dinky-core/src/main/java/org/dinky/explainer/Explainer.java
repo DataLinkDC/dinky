@@ -94,7 +94,8 @@ public class Explainer {
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
     }
 
-    public static Explainer build(Executor executor, boolean useStatementSet, String sqlSeparator, JobManager jobManager) {
+    public static Explainer build(
+            Executor executor, boolean useStatementSet, String sqlSeparator, JobManager jobManager) {
         return new Explainer(executor, useStatementSet, sqlSeparator, jobManager);
     }
 
@@ -124,10 +125,11 @@ public class Explainer {
             }
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParseStrategy.getAllFilePath(statement).forEach(t ->
-                        jobManager.getUdfPathContextHolder().addOtherPlugins(t));
-                ((DinkyClassLoader)executor.getCustomTableEnvironment().getUserClassLoader())
-                        .addURLs(URLUtils.getURLs(jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
+                AddJarSqlParseStrategy.getAllFilePath(statement)
+                        .forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
+                ((DinkyClassLoader) executor.getCustomTableEnvironment().getUserClassLoader())
+                        .addURLs(URLUtils.getURLs(
+                                jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
                 Configuration combinationConfig = getCombinationConfig();
                 FileSystem.initialize(combinationConfig, null);

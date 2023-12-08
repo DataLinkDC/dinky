@@ -74,5 +74,4 @@ public class UdfCodePool {
     public static Map<String, String> getGitPool() {
         return GIT_POOL;
     }
-
 }

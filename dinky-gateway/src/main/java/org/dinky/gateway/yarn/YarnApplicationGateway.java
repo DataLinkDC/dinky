@@ -66,9 +66,7 @@ public class YarnApplicationGateway extends YarnGateway {
         configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
         configuration.setString(
                 "python.files",
-                udfPathContextHolder.getPyUdfFile().stream()
-                        .map(File::getName)
-                        .collect(Collectors.joining(",")));
+                udfPathContextHolder.getPyUdfFile().stream().map(File::getName).collect(Collectors.joining(",")));
 
         String[] userJarParas =
                 Asserts.isNotNull(appConfig.getUserJarParas()) ? appConfig.getUserJarParas() : new String[0];
