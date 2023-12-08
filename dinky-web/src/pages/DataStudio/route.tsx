@@ -60,21 +60,23 @@ import {
   ToolOutlined
 } from '@ant-design/icons';
 import { ReactNode } from 'react';
+import {DIALECT} from "@/services/constants";
 
-export const LeftSide = [
+export const LeftSide: TabProp[] = [
   {
     auth: '/datastudio/left/project',
     key: 'menu.datastudio.project',
     icon: <ConsoleSqlOutlined />,
     label: l('menu.datastudio.project'),
-    children: <Project />
+    children: <Project />,
   },
   {
     auth: '/datastudio/left/catalog',
     key: 'menu.datastudio.catalog',
     icon: <TableOutlined />,
     label: l('menu.datastudio.catalog'),
-    children: <Catalog />
+    children: <Catalog />,
+    isShow: (type, subType) =>   type === TabsPageType.project && !isSql(subType ?? '') && subType !== TabsPageSubType.flinkJar && subType !== DIALECT.FLINKSQLENV
   },
   {
     auth: '/datastudio/left/datasource',
@@ -88,7 +90,8 @@ export const LeftSide = [
     key: 'menu.registration.fragment',
     icon: <FunctionOutlined />,
     label: l('menu.registration.fragment'),
-    children: <GlobalVariable />
+    children: <GlobalVariable />,
+    isShow: (type, subType) =>   type === TabsPageType.project && !isSql(subType ?? '') && subType !== TabsPageSubType.flinkJar
   }
 ];
 
