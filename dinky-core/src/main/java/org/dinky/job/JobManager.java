@@ -162,6 +162,11 @@ public class JobManager {
         return dinkyClassLoader.getUdfPathContextHolder();
     }
 
+    // return job
+    public Job getJob() {
+        return job;
+    }
+
     private JobManager(JobConfig config) {
         this.config = config;
     }
@@ -194,7 +199,7 @@ public class JobManager {
     }
 
     private boolean ready() {
-        return handler.init();
+        return handler.init(job);
     }
 
     private boolean success() {
@@ -206,7 +211,6 @@ public class JobManager {
     }
 
     public boolean close() {
-        JobContextHolder.clear();
         CustomTableEnvironmentContext.clear();
         RowLevelPermissionsContext.clear();
         return true;
@@ -219,7 +223,7 @@ public class JobManager {
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
-        Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);
+        job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, dinkyClassLoader);
         try {
             if (!useGateway) {
@@ -269,7 +273,7 @@ public class JobManager {
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeSql(String statement) throws Exception {
-        Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);
+        job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
 
         DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);
