@@ -47,6 +47,9 @@ import { Modal, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { Key, useEffect, useState } from 'react';
 import { connect } from 'umi';
+import {
+  getRightSelectKeyFromNodeClickJobType,
+} from "@/pages/DataStudio/LeftContainer/Project/function";
 
 const { Text } = Typography;
 
@@ -126,6 +129,11 @@ const Project: React.FC = (props: connect) => {
     if (!isLeaf) {
       dispatch({ type: STUDIO_MODEL.updateProjectExpandKey, payload: [...expandKeys, key] });
       return;
+    }else{
+      dispatch({
+        type: STUDIO_MODEL.updateSelectRightKey,
+        payload: getRightSelectKeyFromNodeClickJobType(type)
+      });
     }
 
     path.pop();

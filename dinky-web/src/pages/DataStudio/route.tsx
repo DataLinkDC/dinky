@@ -61,39 +61,39 @@ import {
 } from '@ant-design/icons';
 import { ReactNode } from 'react';
 import {DIALECT} from "@/services/constants";
+import {LeftBottomKey, LeftMenuKey, RightMenuKey} from "@/pages/DataStudio/data.d";
 
 export const LeftSide: TabProp[] = [
   {
     auth: '/datastudio/left/project',
-    key: 'menu.datastudio.project',
+    key: LeftMenuKey.PROJECT_KEY,
     icon: <ConsoleSqlOutlined />,
-    label: l('menu.datastudio.project'),
+    label: l(LeftMenuKey.PROJECT_KEY),
     children: <Project />,
   },
   {
     auth: '/datastudio/left/catalog',
-    key: 'menu.datastudio.catalog',
+    key: LeftMenuKey.CATALOG_KEY,
     icon: <TableOutlined />,
-    label: l('menu.datastudio.catalog'),
+    label: l(LeftMenuKey.CATALOG_KEY),
     children: <Catalog />,
     isShow: (type, subType) =>
-      type === TabsPageType.project
-      && !isSql(subType ?? '')
+      (type === TabsPageType.project || type === TabsPageType.metadata)
       && subType !== TabsPageSubType.flinkJar
-      && subType !== DIALECT.FLINKSQLENV
+      && subType?.toLowerCase() !== DIALECT.FLINKSQLENV
   },
   {
     auth: '/datastudio/left/datasource',
-    key: 'menu.datastudio.datasource',
+    key: LeftMenuKey.DATASOURCE_KEY,
     icon: <DatabaseOutlined />,
-    label: l('menu.datastudio.datasource'),
+    label: l(LeftMenuKey.DATASOURCE_KEY),
     children: <DataSource />
   },
   {
     auth: '/datastudio/left/globalVariable',
-    key: 'menu.registration.fragment',
+    key: LeftMenuKey.FRAGMENT_KEY,
     icon: <FunctionOutlined />,
-    label: l('menu.registration.fragment'),
+    label: l(LeftMenuKey.FRAGMENT_KEY),
     children: <GlobalVariable />,
     isShow: (type, subType) =>
       type === TabsPageType.project
@@ -107,9 +107,9 @@ export const LeftSide: TabProp[] = [
 export const RightSide: TabProp[] = [
   {
     auth: '/datastudio/right/jobConfig',
-    key: 'menu.datastudio.jobConfig',
+    key: RightMenuKey.JOB_CONFIG_KEY,
     icon: <SettingOutlined />,
-    label: l('menu.datastudio.jobConfig'),
+    label: l(RightMenuKey.JOB_CONFIG_KEY),
     children: <JobConfig />,
     isShow: (type, subType) =>
       type === TabsPageType.project &&
@@ -117,9 +117,9 @@ export const RightSide: TabProp[] = [
   },
   {
     auth: '/datastudio/right/previewConfig',
-    key: 'menu.datastudio.previewConfig',
+    key: RightMenuKey.PREVIEW_CONFIG_KEY,
     icon: <InsertRowRightOutlined />,
-    label: l('menu.datastudio.previewConfig'),
+    label: l(RightMenuKey.PREVIEW_CONFIG_KEY),
     children: <PreViewConfig />,
     isShow: (type, subType) =>
       (type === TabsPageType.project && TabsPageSubType.flinkSql === subType) ||
@@ -127,25 +127,25 @@ export const RightSide: TabProp[] = [
   },
   {
     auth: '/datastudio/right/savePoint',
-    key: 'menu.datastudio.savePoint',
+    key: RightMenuKey.SAVEPOINT_KEY,
     icon: <FolderOutlined />,
-    label: l('menu.datastudio.savePoint'),
+    label: l(RightMenuKey.SAVEPOINT_KEY),
     children: <SavePoints />,
     isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
   },
   {
     auth: '/datastudio/right/historyVision',
-    key: 'menu.datastudio.historyVision',
+    key: RightMenuKey.HISTORY_VISION_KEY,
     icon: <HistoryOutlined />,
-    label: l('menu.datastudio.historyVision'),
+    label: l(RightMenuKey.HISTORY_VISION_KEY),
     children: <HistoryVersion />,
     isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
   },
   {
     auth: '/datastudio/right/jobInfo',
-    key: 'menu.datastudio.jobInfo',
+    key: RightMenuKey.JOB_INFO_KEY,
     icon: <InfoCircleOutlined />,
-    label: l('menu.datastudio.jobInfo'),
+    label: l(RightMenuKey.JOB_INFO_KEY),
     children: <JobInfo />,
     isShow: (type) => type === TabsPageType.project
   }
@@ -154,44 +154,44 @@ export const RightSide: TabProp[] = [
 export const LeftBottomSide = [
   {
     auth: '/datastudio/bottom/console',
-    key: 'menu.datastudio.console',
+    key: LeftBottomKey.CONSOLE_KEY,
     icon: <RightSquareOutlined />,
-    label: l('menu.datastudio.console'),
+    label: l(LeftBottomKey.CONSOLE_KEY),
     children: <Console />
   },
   {
     auth: '/datastudio/bottom/result',
-    key: 'menu.datastudio.result',
+    key: LeftBottomKey.RESULT_KEY,
     icon: <MonitorOutlined />,
-    label: l('menu.datastudio.result'),
+    label: l(LeftBottomKey.RESULT_KEY),
     children: <Result />
   },
   {
     auth: '/datastudio/bottom/lineage',
-    key: 'menu.datastudio.lineage',
+    key: LeftBottomKey.LINEAGE_KEY,
     icon: <ApartmentOutlined />,
-    label: l('menu.datastudio.lineage'),
+    label: l(LeftBottomKey.LINEAGE_KEY),
     children: <Lineage />
   },
   {
     auth: '/datastudio/bottom/history',
-    key: 'menu.datastudio.history',
+    key: LeftBottomKey.HISTORY_KEY,
     icon: <HistoryOutlined />,
-    label: l('menu.datastudio.history'),
+    label: l(LeftBottomKey.HISTORY_KEY),
     children: <JobExecHistory />
   },
   {
     auth: '/datastudio/bottom/table-data',
-    key: 'menu.datastudio.table-data',
+    key: LeftBottomKey.TABLE_DATA_KEY,
     icon: <TableOutlined />,
-    label: l('menu.datastudio.table-data'),
+    label: l(LeftBottomKey.TABLE_DATA_KEY),
     children: <TableData />
   },
   {
     auth: '/datastudio/bottom/tool',
-    key: 'menu.datastudio.tool',
+    key: LeftBottomKey.TOOLS_KEY,
     icon: <ToolOutlined />,
-    label: l('menu.datastudio.tool')
+    label: l(LeftBottomKey.TOOLS_KEY)
   }
 ];
 

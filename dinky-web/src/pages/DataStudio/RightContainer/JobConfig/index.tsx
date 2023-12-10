@@ -210,17 +210,20 @@ const JobConfig = (props: any) => {
           />
         )}
 
-        <ProFormSelect
-          name='envId'
-          label={l('pages.datastudio.label.jobConfig.flinksql.env')}
-          tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
-          options={buildEnvOptions(env, current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL)}
-          rules={[
-            { required: true, message: l('pages.datastudio.label.jobConfig.flinksql.env.tip1') }
-          ]}
-          showSearch
-          allowClear={false}
-        />
+        {
+          current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL &&
+          <ProFormSelect
+            name='envId'
+            label={l('pages.datastudio.label.jobConfig.flinksql.env')}
+            tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
+            options={buildEnvOptions(env)}
+            rules={[
+              { required: true, message: l('pages.datastudio.label.jobConfig.flinksql.env.tip1') }
+            ]}
+            showSearch
+            allowClear={false}
+          />
+        }
 
         <ProFormGroup>
           <ProFormDigit
