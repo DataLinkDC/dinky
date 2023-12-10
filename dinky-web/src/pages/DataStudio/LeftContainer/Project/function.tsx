@@ -17,6 +17,8 @@
  *
  */
 
+import { RightMenuKey } from '@/pages/DataStudio/data.d';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { DIALECT } from '@/services/constants';
 import { Catalogue } from '@/types/Studio/data.d';
@@ -25,8 +27,6 @@ import { l } from '@/utils/intl';
 import { Badge, Space } from 'antd';
 import { PresetStatusColorType } from 'antd/es/_util/colors';
 import { Key } from 'react';
-import {RightMenuKey} from "@/pages/DataStudio/data.d";
-import {isSql} from "@/pages/DataStudio/HeaderContainer/service";
 
 export const generateList = (data: any, list: any[]) => {
   for (const element of data) {
@@ -187,15 +187,21 @@ export const buildProjectTree = (
     : [];
 
 export const isUDF = (jobType: string): boolean => {
-  return jobType.toLowerCase() === DIALECT.SCALA || jobType.toLowerCase() === DIALECT.PYTHON_LONG || jobType.toLowerCase() === DIALECT.JAVA;
+  return (
+    jobType.toLowerCase() === DIALECT.SCALA ||
+    jobType.toLowerCase() === DIALECT.PYTHON_LONG ||
+    jobType.toLowerCase() === DIALECT.JAVA
+  );
 };
 
 export const isFlinkJob = (jobType: string): boolean => {
   return jobType.toLowerCase() === DIALECT.FLINK_SQL || jobType.toLowerCase() === DIALECT.FLINKJAR;
 };
 
-export  function getRightSelectKeyFromNodeClickJobType(jobType: string): string {
-  return  isFlinkJob(jobType) ?
-    RightMenuKey.JOB_CONFIG_KEY :
-    isSql(jobType) ? RightMenuKey.PREVIEW_CONFIG_KEY : RightMenuKey.JOB_INFO_KEY
+export function getRightSelectKeyFromNodeClickJobType(jobType: string): string {
+  return isFlinkJob(jobType)
+    ? RightMenuKey.JOB_CONFIG_KEY
+    : isSql(jobType)
+    ? RightMenuKey.PREVIEW_CONFIG_KEY
+    : RightMenuKey.JOB_INFO_KEY;
 }

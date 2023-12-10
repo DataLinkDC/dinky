@@ -25,6 +25,7 @@ import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
 import JsonToSql from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql';
 import TextComparison from '@/pages/DataStudio/BottomContainer/Tools/TextComparison';
+import { LeftBottomKey, LeftMenuKey, RightMenuKey } from '@/pages/DataStudio/data.d';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import Catalog from '@/pages/DataStudio/LeftContainer/Catalog';
 import DataSource from '@/pages/DataStudio/LeftContainer/DataSource';
@@ -36,6 +37,7 @@ import JobConfig from '@/pages/DataStudio/RightContainer/JobConfig';
 import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
 import PreViewConfig from '@/pages/DataStudio/RightContainer/PreViewConfig';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
+import { DIALECT } from '@/services/constants';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -60,8 +62,6 @@ import {
   ToolOutlined
 } from '@ant-design/icons';
 import { ReactNode } from 'react';
-import {DIALECT} from "@/services/constants";
-import {LeftBottomKey, LeftMenuKey, RightMenuKey} from "@/pages/DataStudio/data.d";
 
 export const LeftSide: TabProp[] = [
   {
@@ -69,7 +69,7 @@ export const LeftSide: TabProp[] = [
     key: LeftMenuKey.PROJECT_KEY,
     icon: <ConsoleSqlOutlined />,
     label: l(LeftMenuKey.PROJECT_KEY),
-    children: <Project />,
+    children: <Project />
   },
   {
     auth: '/datastudio/left/catalog',
@@ -78,9 +78,9 @@ export const LeftSide: TabProp[] = [
     label: l(LeftMenuKey.CATALOG_KEY),
     children: <Catalog />,
     isShow: (type, subType) =>
-      (type === TabsPageType.project || type === TabsPageType.metadata)
-      && subType !== TabsPageSubType.flinkJar
-      && subType?.toLowerCase() !== DIALECT.FLINKSQLENV
+      (type === TabsPageType.project || type === TabsPageType.metadata) &&
+      subType !== TabsPageSubType.flinkJar &&
+      subType?.toLowerCase() !== DIALECT.FLINKSQLENV
   },
   {
     auth: '/datastudio/left/datasource',
@@ -96,11 +96,11 @@ export const LeftSide: TabProp[] = [
     label: l(LeftMenuKey.FRAGMENT_KEY),
     children: <GlobalVariable />,
     isShow: (type, subType) =>
-      type === TabsPageType.project
-      && !isSql(subType ?? '')
-      && subType !== DIALECT.SCALA
-      && subType !== DIALECT.PYTHON_LONG
-      && subType !== DIALECT.JAVA
+      type === TabsPageType.project &&
+      !isSql(subType ?? '') &&
+      subType !== DIALECT.SCALA &&
+      subType !== DIALECT.PYTHON_LONG &&
+      subType !== DIALECT.JAVA
   }
 ];
 

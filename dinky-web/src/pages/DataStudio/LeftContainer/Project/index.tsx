@@ -24,6 +24,7 @@ import {
   JOB_RIGHT_MENU
 } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
+import { getRightSelectKeyFromNodeClickJobType } from '@/pages/DataStudio/LeftContainer/Project/function';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
 import {
@@ -47,9 +48,6 @@ import { Modal, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { Key, useEffect, useState } from 'react';
 import { connect } from 'umi';
-import {
-  getRightSelectKeyFromNodeClickJobType,
-} from "@/pages/DataStudio/LeftContainer/Project/function";
 
 const { Text } = Typography;
 
@@ -129,7 +127,7 @@ const Project: React.FC = (props: connect) => {
     if (!isLeaf) {
       dispatch({ type: STUDIO_MODEL.updateProjectExpandKey, payload: [...expandKeys, key] });
       return;
-    }else{
+    } else {
       dispatch({
         type: STUDIO_MODEL.updateSelectRightKey,
         payload: getRightSelectKeyFromNodeClickJobType(type)
