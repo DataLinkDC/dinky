@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -102,5 +103,10 @@ public class URLUtils {
         } else {
             return "";
         }
+    }
+
+    public static int getRandomPort() {
+        Random random = new Random();
+        return random.nextInt(65536);
     }
 }
