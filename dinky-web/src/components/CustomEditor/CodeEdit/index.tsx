@@ -164,6 +164,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     readOnly, // 是否只读
     glyphMargin: true, // 字形边缘
     formatOnType: true, // 代码格式化
+    columnSelection: true, // 列选择
     wrappingIndent:
       language === 'yaml' || language === 'yml' || language === 'json' ? 'indent' : 'none',
     inlineSuggest: {

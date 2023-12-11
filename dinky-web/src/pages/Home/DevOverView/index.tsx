@@ -24,25 +24,18 @@ import TaskDialectRadar from '@/pages/Home/DevOverView/TaskDialectRadar';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { Badge } from 'antd';
-import RcResizeObserver from 'rc-resize-observer';
-import React, { useState } from 'react';
+import React from 'react';
 
 const noPadding = {
   paddingInline: '0',
   paddingBlock: '0',
-  height: parent.innerHeight / 2
+  height: '100%',
 };
 
 const DevOverView: React.FC = () => {
-  const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
 
   return (
-    <RcResizeObserver
-      key='resize-observer'
-      onResize={(offset) => {
-        setSplit(offset.width < 596 ? 'horizontal' : 'vertical');
-      }}
-    >
+
       <ProCard
         style={{ height: '100%' }}
         title={
@@ -54,7 +47,7 @@ const DevOverView: React.FC = () => {
         headerBordered
         bordered
         size='small'
-        split={split}
+        split={'vertical'}
         bodyStyle={noPadding}
       >
         <ProCard split='vertical' bodyStyle={noPadding} style={{ height: '100%' }}>
@@ -80,7 +73,6 @@ const DevOverView: React.FC = () => {
           </ProCard>
         </ProCard>
       </ProCard>
-    </RcResizeObserver>
   );
 };
 
