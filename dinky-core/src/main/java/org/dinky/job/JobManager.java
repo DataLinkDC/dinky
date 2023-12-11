@@ -75,6 +75,7 @@ import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
 
+import java.lang.ref.WeakReference;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
@@ -99,7 +100,7 @@ public class JobManager {
 
     private JobParam jobParam = null;
     private String currentSql = "";
-    private DinkyClassLoader dinkyClassLoader = DinkyClassLoader.build();
+    private final WeakReference<DinkyClassLoader> dinkyClassLoader = new WeakReference<>(DinkyClassLoader.build());
     private Job job;
 
     public JobManager() {}
@@ -154,12 +155,12 @@ public class JobManager {
 
     // return dinkyclassloader
     public DinkyClassLoader getDinkyClassLoader() {
-        return dinkyClassLoader;
+        return dinkyClassLoader.get();
     }
 
     // return udfPathContextHolder
     public FlinkUdfPathContextHolder getUdfPathContextHolder() {
-        return dinkyClassLoader.getUdfPathContextHolder();
+        return getDinkyClassLoader().getUdfPathContextHolder();
     }
 
     // return job
@@ -195,7 +196,7 @@ public class JobManager {
         useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
         executorConfig = config.getExecutorSetting();
-        executor = ExecutorFactory.buildExecutor(executorConfig, this.dinkyClassLoader);
+        executor = ExecutorFactory.buildExecutor(executorConfig, getDinkyClassLoader());
     }
 
     private boolean ready() {
@@ -217,14 +218,14 @@ public class JobManager {
     }
 
     public ObjectNode getJarStreamGraphJson(String statement) {
-        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, dinkyClassLoader);
+        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, getDinkyClassLoader());
         return JsonUtils.parseObject(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
-        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, dinkyClassLoader);
+        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, getDinkyClassLoader());
         try {
             if (!useGateway) {
                 executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
@@ -276,7 +277,7 @@ public class JobManager {
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
 
-        DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);
+        DinkyClassLoaderUtil.initClassLoader(config, getDinkyClassLoader());
         jobParam = Explainer.build(executor, useStatementSet, sqlSeparator, this)
                 .pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         try {

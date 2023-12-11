@@ -73,10 +73,6 @@ public class DinkyClassLoader extends URLClassLoader {
         return udfPathContextHolder;
     }
 
-    public static DinkyClassLoader getDefaultClassLoader() {
-        return DinkyClassLoader.build();
-    }
-
     public void addURLs(URL... urls) {
         for (URL url : urls) {
             super.addURL(url);
@@ -95,6 +91,45 @@ public class DinkyClassLoader extends URLClassLoader {
                 .toArray(URL[]::new);
         addURLs(urls);
     }
+
+    public void addURLs(List<File> files) {
+        files.stream()
+                .map(x -> {
+                    try {
+                        return x.toURI().toURL();
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .forEach(this::addURL);
+    }
+
+    public void addURL(URL url) {
+        super.addURL(url);
+    }
+
+    @Override
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        synchronized (getClassLoadingLock(name)) {
+            Class<?> loadedClass = findLoadedClass(name);
+
+            if (loadedClass == null) {
+                try {
+                    // try to use this classloader to load
+                    loadedClass = this.findClass(name);
+                }catch (ClassNotFoundException e) {
+                    // maybe is system class, try parents delegate
+                    return super.loadClass(name, false);
+                }
+            }
+
+            if (resolve) {
+                resolveClass(loadedClass);
+            }
+            return loadedClass;
+        }
+    }
+
 
     public static List<File> getJarFiles(String[] paths, List<String> notExistsFiles) {
         List<File> result = new LinkedList<>();
@@ -119,19 +154,4 @@ public class DinkyClassLoader extends URLClassLoader {
         return result;
     }
 
-    public void addURLs(List<File> files) {
-        files.stream()
-                .map(x -> {
-                    try {
-                        return x.toURI().toURL();
-                    } catch (MalformedURLException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .forEach(this::addURL);
-    }
-
-    public void addURL(URL url) {
-        super.addURL(url);
-    }
 }

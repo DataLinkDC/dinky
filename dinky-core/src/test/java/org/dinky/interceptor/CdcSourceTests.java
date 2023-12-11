@@ -50,8 +50,7 @@ public class CdcSourceTests {
                 .toString();
 
         ExecutorConfig executorConfig = ExecutorConfig.DEFAULT;
-        Executor executor =
-                ExecutorFactory.buildLocalExecutor(executorConfig, DinkyClassLoader.getDefaultClassLoader());
+        Executor executor = ExecutorFactory.buildLocalExecutor(executorConfig, DinkyClassLoader.build());
         executor.executeSql(statement);
         executor.execute("");
     }
