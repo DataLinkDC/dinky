@@ -93,11 +93,7 @@ const ExceptionTab = (props: JobProps) => {
     );
   };
 
-  return (
-    <ProCard bodyStyle={{ height: '100%', overflow: 'auto' }}>
-      {renderLogTab()}
-    </ProCard>
-  );
+  return <ProCard bodyStyle={{ height: '100%', overflow: 'auto' }}>{renderLogTab()}</ProCard>;
 };
 
 export default ExceptionTab;

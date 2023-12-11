@@ -19,6 +19,7 @@
 
 import { Badge, Tooltip, Typography } from 'antd';
 
+import LineageDagExt from '@/components/LineageGraph/lineage-dag-ext';
 import {
   LineageDetailInfo,
   LineageRelations,
@@ -28,14 +29,15 @@ import {
 import { l } from '@/utils/intl';
 import { SuccessNotification, WarningNotification } from '@/utils/messages';
 import {
-  ArrowsAltOutlined, ColumnHeightOutlined,
+  ArrowsAltOutlined,
+  ColumnHeightOutlined,
   CompassOutlined,
   InsertRowAboveOutlined,
-  ReloadOutlined, ShrinkOutlined
+  ReloadOutlined,
+  ShrinkOutlined
 } from '@ant-design/icons';
 import React, { useEffect } from 'react';
 import 'react-lineage-dag/dist/index.css';
-import LineageDagExt from '@/components/LineageGraph/lineage-dag-ext';
 
 interface LineageState {
   lineageData: LineageDetailInfo;
@@ -324,7 +326,7 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
             shapeType: 'line',
             gap: 30,
             lineWidth: 0.2,
-            circleRadiu: 5,
+            circleRadiu: 5
           }
         }
       }}
