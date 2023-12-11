@@ -29,50 +29,48 @@ import React from 'react';
 const noPadding = {
   paddingInline: '0',
   paddingBlock: '0',
-  height: '100%',
+  height: '100%'
 };
 
 const DevOverView: React.FC = () => {
-
   return (
-
-      <ProCard
-        style={{ height: '100%' }}
-        title={
-          <>
-            <Badge status='processing' />
-            {l('home.develop')}
-          </>
-        }
-        headerBordered
-        bordered
-        size='small'
-        split={'vertical'}
-        bodyStyle={noPadding}
-      >
-        <ProCard split='vertical' bodyStyle={noPadding} style={{ height: '100%' }}>
-          <ProCard
-            title={l('home.job.development')}
-            split='horizontal'
-            colSpan={'40%'}
-            bodyStyle={noPadding}
-          >
-            <ProCard>
-              <BatchStreamProportion />
-            </ProCard>
-            <ProCard>
-              <DevHeatmap />
-            </ProCard>
+    <ProCard
+      style={{ height: '100%' }}
+      title={
+        <>
+          <Badge status='processing' />
+          {l('home.develop')}
+        </>
+      }
+      headerBordered
+      bordered
+      size='small'
+      split={'vertical'}
+      bodyStyle={noPadding}
+    >
+      <ProCard split='vertical' bodyStyle={noPadding} style={{ height: '100%' }}>
+        <ProCard
+          title={l('home.job.development')}
+          split='horizontal'
+          colSpan={'40%'}
+          bodyStyle={noPadding}
+        >
+          <ProCard>
+            <BatchStreamProportion />
           </ProCard>
-
-          <ProCard title={l('home.job.onlineRate')} colSpan={'30%'} bodyStyle={noPadding}>
-            <TaskDialectRadar />
-          </ProCard>
-          <ProCard title={l('home.develop.re')} bodyStyle={noPadding}>
-            <ResourceView />
+          <ProCard>
+            <DevHeatmap />
           </ProCard>
         </ProCard>
+
+        <ProCard title={l('home.job.onlineRate')} colSpan={'30%'} bodyStyle={noPadding}>
+          <TaskDialectRadar />
+        </ProCard>
+        <ProCard title={l('home.develop.re')} bodyStyle={noPadding}>
+          <ResourceView />
+        </ProCard>
       </ProCard>
+    </ProCard>
   );
 };
 

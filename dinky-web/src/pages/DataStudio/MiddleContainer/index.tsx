@@ -17,6 +17,7 @@
  *
  */
 
+import RightContextMenu from '@/components/RightContextMenu';
 import ContentScroll from '@/components/Scroll/ContentScroll';
 import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
@@ -33,14 +34,13 @@ import StudioEditor from '@/pages/DataStudio/MiddleContainer/StudioEditor';
 import { StateType, STUDIO_MODEL, TabsItemType, TabsPageType } from '@/pages/DataStudio/model';
 import { RightSide } from '@/pages/DataStudio/route';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
+import { ContextMenuPosition, InitContextMenuPosition } from '@/types/Public/state.d';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { ConfigProvider, Divider, Modal, Space, Tabs, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { memo, useState } from 'react';
-import RightContextMenu from "@/components/RightContextMenu";
-import {ContextMenuPosition, InitContextMenuPosition} from "@/types/Public/state.d";
 
 const { Text } = Typography;
 const { confirm } = Modal;
@@ -57,7 +57,8 @@ const MiddleContainer = (props: any) => {
 
   const { fullscreen } = useEditor();
 
-  const [contextMenuPosition, setContextMenuPosition] = useState<ContextMenuPosition>(InitContextMenuPosition);
+  const [contextMenuPosition, setContextMenuPosition] =
+    useState<ContextMenuPosition>(InitContextMenuPosition);
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
   const [includeTab, setIncludeTab] = useState({});
 
@@ -179,7 +180,7 @@ const MiddleContainer = (props: any) => {
     // 设置选中的值
     setIncludeTab(item);
     setContextMenuVisible(true);
-    setContextMenuPosition(prevState => ({
+    setContextMenuPosition((prevState) => ({
       ...prevState,
       width: '6vw',
       left: info.clientX + 10,
@@ -343,13 +344,13 @@ const MiddleContainer = (props: any) => {
           onEdit={closeTab}
           items={tabItems}
         />
-       <RightContextMenu
-         onClick={handleMenuClick}
-         items={STUDIO_TAG_RIGHT_CONTEXT_MENU}
-         contextMenuPosition={contextMenuPosition}
-         open={contextMenuVisible}
-         openChange={() => setContextMenuVisible(false)}
-       />
+        <RightContextMenu
+          onClick={handleMenuClick}
+          items={STUDIO_TAG_RIGHT_CONTEXT_MENU}
+          contextMenuPosition={contextMenuPosition}
+          open={contextMenuVisible}
+          openChange={() => setContextMenuVisible(false)}
+        />
       </ConfigProvider>
     );
   };
