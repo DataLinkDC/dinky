@@ -176,7 +176,7 @@ const CheckpointTable = (props: JobProps) => {
   return (
     <ProTable<CheckPointsDetailInfo>
       columns={columns}
-      style={{ width: '100%' ,height: 'calc(100vh - 450px)'}}
+      style={{ width: '100%', height: 'calc(100vh - 450px)' }}
       dataSource={checkpoints?.history}
       onDataSourceChange={() => actionRef.current?.reload()}
       actionRef={actionRef}
