@@ -218,14 +218,16 @@ public class JobManager {
     }
 
     public ObjectNode getJarStreamGraphJson(String statement) {
-        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, getDinkyClassLoader());
+        StreamGraph streamGraph =
+                JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, getDinkyClassLoader());
         return JsonUtils.parseObject(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
-        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, getDinkyClassLoader());
+        StreamGraph streamGraph =
+                JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, getDinkyClassLoader());
         try {
             if (!useGateway) {
                 executor.getStreamExecutionEnvironment().executeAsync(streamGraph);

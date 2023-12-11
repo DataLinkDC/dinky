@@ -117,7 +117,7 @@ public class DinkyClassLoader extends URLClassLoader {
                 try {
                     // try to use this classloader to load
                     loadedClass = this.findClass(name);
-                }catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException e) {
                     // maybe is system class, try parents delegate
                     return super.loadClass(name, false);
                 }
@@ -129,7 +129,6 @@ public class DinkyClassLoader extends URLClassLoader {
             return loadedClass;
         }
     }
-
 
     public static List<File> getJarFiles(String[] paths, List<String> notExistsFiles) {
         List<File> result = new LinkedList<>();
@@ -153,5 +152,4 @@ public class DinkyClassLoader extends URLClassLoader {
         }
         return result;
     }
-
 }

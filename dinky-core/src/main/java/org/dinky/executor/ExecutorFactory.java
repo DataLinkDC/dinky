@@ -34,8 +34,7 @@ public final class ExecutorFactory {
     private ExecutorFactory() {}
 
     public static Executor getDefaultExecutor() {
-        return new LocalStreamExecutor(ExecutorConfig.DEFAULT,
-                new WeakReference<>(DinkyClassLoader.build()).get());
+        return new LocalStreamExecutor(ExecutorConfig.DEFAULT, new WeakReference<>(DinkyClassLoader.build()).get());
     }
 
     public static Executor buildExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {

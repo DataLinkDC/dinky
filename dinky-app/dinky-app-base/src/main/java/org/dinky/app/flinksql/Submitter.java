@@ -156,8 +156,8 @@ public class Submitter {
                 // .config(JsonUtils.toMap(appTask.getConfigJson()))
                 .build();
 
-        Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig,
-                new WeakReference<>(DinkyClassLoader.build()).get());
+        Executor executor = ExecutorFactory.buildAppStreamExecutor(
+                executorConfig, new WeakReference<>(DinkyClassLoader.build()).get());
 
         // 加载第三方jar //TODO 这里有问题，需要修一修
         // loadDep(appTask.getType(),
