@@ -177,6 +177,7 @@ public class JobManager {
         useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
         executorConfig = config.getExecutorSetting();
+        executorConfig.setPlan(isPlanMode);
         executor = ExecutorFactory.buildExecutor(executorConfig);
         ExecutorContext.setExecutor(executor);
     }

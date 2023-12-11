@@ -224,14 +224,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
                 config.setClusterId(jobInstance.getClusterId());
             }
+        } else if (GatewayType.LOCAL.equalsValue(task.getType())) {
+            config.setClusterId(null);
+            config.setClusterConfigurationId(null);
         } else {
             Optional.ofNullable(task.getClusterId()).ifPresent(config::setClusterId);
         }
         log.info("Init remote cluster");
         try {
-            Optional.ofNullable(config.getClusterId()).ifPresent(i -> {
-                config.setAddress(clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), i));
-            });
+            config.setAddress(clusterInstanceService.buildEnvironmentAddress(config));
         } catch (Exception e) {
             log.error("Init remote cluster error", e);
         }
