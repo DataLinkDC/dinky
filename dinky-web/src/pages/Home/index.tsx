@@ -25,20 +25,16 @@ import { Col, Row } from 'antd';
 
 export default () => {
   return (
-    <PageContainer className={'home'} title={false} style={{ height: 'calc(100% - 300px)'}}>
+    <PageContainer className={'home'} title={false} style={{ height: 'calc(100% - 300px)' }}>
       <Authorized path='/home/jobOverView'>
-        <Row
-          style={{ marginTop: '5px', marginBottom: '10px', height: 'calc(100% - 50%)' }}
-        >
+        <Row style={{ marginTop: '5px', marginBottom: '10px', height: 'calc(100% - 50%)' }}>
           <Col span={24}>
             <JobOverView />
           </Col>
         </Row>
       </Authorized>
       <Authorized path='/home/devOverView'>
-        <Row
-          style={{ marginTop: '5px', marginBottom: '10px',height: 'calc(100% - 50%)' }}
-        >
+        <Row style={{ marginTop: '5px', marginBottom: '10px', height: 'calc(100% - 50%)' }}>
           <Col span={24}>
             <DevOverView />
           </Col>
