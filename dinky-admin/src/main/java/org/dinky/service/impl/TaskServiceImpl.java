@@ -225,7 +225,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 config.setClusterId(jobInstance.getClusterId());
             }
         } else if (GatewayType.LOCAL.equalsValue(task.getType())) {
-            config.setClusterId(null);
+            if (task.getJobInstanceId() == null) {
+                config.setClusterId(null);
+            } else {
+                JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
+                config.setClusterId(jobInstance.getClusterId());
+                config.setUseRemote(true);
+            }
             config.setClusterConfigurationId(null);
         } else {
             Optional.ofNullable(task.getClusterId()).ifPresent(config::setClusterId);
