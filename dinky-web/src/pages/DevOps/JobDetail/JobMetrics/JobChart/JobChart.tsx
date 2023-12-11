@@ -98,7 +98,7 @@ const JobChart = (props: JobChartProps) => {
         );
       });
     }
-    return <Empty />;
+    return <Empty className={"code-content-empty"} />;
   };
   return (
     <Spin spinning={loading} delay={500}>

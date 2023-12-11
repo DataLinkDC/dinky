@@ -28,19 +28,14 @@ import {
 import { l } from '@/utils/intl';
 import { SuccessNotification, WarningNotification } from '@/utils/messages';
 import {
+  ArrowsAltOutlined, ColumnHeightOutlined,
   CompassOutlined,
-  ExpandAltOutlined,
-  FullscreenExitOutlined,
   InsertRowAboveOutlined,
-  PlusCircleOutlined,
-  ReloadOutlined
+  ReloadOutlined, ShrinkOutlined
 } from '@ant-design/icons';
-import _ from 'lodash';
 import React, { useEffect } from 'react';
 import 'react-lineage-dag/dist/index.css';
-// import LineageDag from "react-lineage-dag";
 import LineageDagExt from '@/components/LineageGraph/lineage-dag-ext';
-// import LineageDagExt from "@/components/LineageGraph/lineage-dag-ext";
 
 interface LineageState {
   lineageData: LineageDetailInfo;
@@ -50,7 +45,7 @@ interface LineageState {
   relations: LineageRelations[];
   columns: any[];
   operator: any[];
-  centerId: string;
+  centerId?: string;
   showMinimap: boolean;
   refresh: boolean;
   expandField: boolean;
@@ -69,7 +64,7 @@ type JobLineageProps = {
 type ITable = {
   id: string;
   name: string;
-  isCollapse: boolean;
+  isCollapse?: boolean;
   fields: LineageTableColumn[];
 };
 
@@ -188,10 +183,10 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
           <Tooltip
             title={lineageState.expandField ? l('lineage.expandField') : l('lineage.expandField')}
           >
-            <FullscreenExitOutlined width={300} />
+            <ColumnHeightOutlined />
           </Tooltip>
         ),
-        onClick: (nodeData: any) => handleExpandField(nodeData, _.clone(data))
+        onClick: (nodeData: any) => handleExpandField(nodeData, data)
       },
       {
         id: 'expandDownstream',
@@ -206,7 +201,7 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
                 : l('lineage.collapseDownstream')
             }
           >
-            <PlusCircleOutlined />
+            <ShrinkOutlined />
           </Tooltip>
         ),
         onClick: (nodeData: { id: string }) => {
@@ -235,7 +230,7 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
                 : l('lineage.collapseUpstream')
             }
           >
-            <ExpandAltOutlined />
+            <ArrowsAltOutlined />
           </Tooltip>
         ),
         onClick: (nodeData: { id: string }) => {
@@ -327,11 +322,9 @@ const LineageGraph: React.FC<JobLineageProps> = (props) => {
           isAdsorb: true,
           theme: {
             shapeType: 'line',
-            gap: 20,
-            lineWidth: 1,
-            lineColor: '#e8e8e8',
+            gap: 30,
+            lineWidth: 0.2,
             circleRadiu: 5,
-            circleColor: '#e8e8e8'
           }
         }
       }}

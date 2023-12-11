@@ -1123,12 +1123,12 @@ export default {
   'user.usernamePlaceholder': 'Please enter user name',
 
   'lineage.getError': 'Cannot Get Lineage',
-  'lineage.expandField': 'Expand Field',
-  'lineage.collapseField': 'Collapse Field',
-  'lineage.expandDownstream': 'Expand Downstream',
-  'lineage.collapseDownstream': 'Collapse Downstream',
-  'lineage.expandUpstream': 'Expand Upstream',
-  'lineage.collapseUpstream': 'Collapse Upstream',
+  'lineage.expandField': 'Expand Field(UnSupported)',
+  'lineage.collapseField': 'Collapse Field(UnSupported)',
+  'lineage.expandDownstream': 'Expand Downstream(UnSupported)',
+  'lineage.collapseDownstream': 'Collapse Downstream(UnSupported)',
+  'lineage.expandUpstream': 'Expand Upstream(UnSupported)',
+  'lineage.collapseUpstream': 'Collapse Upstream(UnSupported)',
   'lineage.showMap': 'Show Map',
   'lineage.hideMap': 'Hide Map',
   'lineage.refresh': 'Refresh'

@@ -28,7 +28,6 @@ export default (props: JobProps) => {
   return (
     <SlowlyAppear>
       <Card>
-        {' '}
         <AlertHistoryList jobDetail={jobDetail} />
       </Card>
     </SlowlyAppear>
