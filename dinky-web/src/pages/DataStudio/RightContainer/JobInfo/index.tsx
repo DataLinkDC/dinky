@@ -20,9 +20,9 @@
 import { getCurrentData } from '@/pages/DataStudio/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
+import { connect } from '@umijs/max';
 import { Descriptions } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
-import {connect} from "@umijs/max";
 
 const JobInfo = (props: any) => {
   const {

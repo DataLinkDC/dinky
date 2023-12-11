@@ -18,19 +18,19 @@
  */
 
 import {
-DataStudioTabsItemType,
-EnvType,
-FooterType,
-JobRunningMsgType,
-MetadataTabsItemType,
-STUDIO_MODEL,
-TabsItemType,
-TabsPageType,
-TaskDataType
+  DataStudioTabsItemType,
+  EnvType,
+  FooterType,
+  JobRunningMsgType,
+  MetadataTabsItemType,
+  STUDIO_MODEL,
+  TabsItemType,
+  TabsPageType,
+  TaskDataType
 } from '@/pages/DataStudio/model';
 import { CONFIG_MODEL_ASYNC } from '@/pages/SettingCenter/GlobalSetting/model';
-import { DIALECT } from "@/services/constants";
-import { Cluster,DataSources } from '@/types/RegCenter/data';
+import { DIALECT } from '@/services/constants';
+import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { Dispatch } from '@@/plugin-dva/types';
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({

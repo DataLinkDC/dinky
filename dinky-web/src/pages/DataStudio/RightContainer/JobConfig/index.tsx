@@ -210,8 +210,7 @@ const JobConfig = (props: any) => {
           />
         )}
 
-        {
-          current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL &&
+        {current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
           <ProFormSelect
             name='envId'
             label={l('pages.datastudio.label.jobConfig.flinksql.env')}
@@ -223,7 +222,7 @@ const JobConfig = (props: any) => {
             showSearch
             allowClear={false}
           />
-        }
+        )}
 
         <ProFormGroup>
           <ProFormDigit

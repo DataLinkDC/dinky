@@ -17,31 +17,37 @@
  *
  */
 
-import { AuthorizedObject,useAccess } from '@/hooks/useAccess';
+import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
-import { LeftMenuKey } from "@/pages/DataStudio/data.d";
+import { LeftMenuKey } from '@/pages/DataStudio/data.d';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import { isProjectTabs,mapDispatchToProps } from '@/pages/DataStudio/function';
+import { isProjectTabs, mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import { StateType,TabsItemType,TabsPageSubType,TabsPageType,VIEW } from '@/pages/DataStudio/model';
+import {
+  StateType,
+  TabsItemType,
+  TabsPageSubType,
+  TabsPageType,
+  VIEW
+} from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
-getClusterConfigurationData,
-getEnvData,
-getSessionData
+  getClusterConfigurationData,
+  getEnvData,
+  getSessionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
-import { LeftBottomMoreTabs,LeftBottomSide,LeftSide,RightSide } from '@/pages/DataStudio/route';
+import { LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide } from '@/pages/DataStudio/route';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Layout,Menu,theme } from 'antd';
-import { useEffect,useState } from 'react';
+import { Layout, Menu, theme } from 'antd';
+import { useEffect, useState } from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
-import { connect,getDvaApp } from 'umi';
+import { connect, getDvaApp } from 'umi';
 
 const { Sider, Content } = Layout;
 
@@ -73,7 +79,6 @@ const DataStudio = (props: any) => {
   const app = getDvaApp(); // 获取dva的实例
   const persist = app._store.persist;
   const { fullscreen } = useEditor();
-
 
   const getClientSize = () => ({
     width: document.documentElement.clientWidth,
@@ -152,21 +157,22 @@ const DataStudio = (props: any) => {
             return TabsPageType.None;
           }
           const currentTab = (panes as TabsItemType[]).find((item) => item.key === activeKey);
-          const show = tab.isShow(currentTab?.type ?? TabsPageType.None, currentTab?.subType ?? TabsPageSubType.None);
+          const show = tab.isShow(
+            currentTab?.type ?? TabsPageType.None,
+            currentTab?.subType ?? TabsPageSubType.None
+          );
           // 如果当前打开的菜单等于 状态存的菜单 且 菜单不显示状态下，先切换到项目key(因为项目key 不可能不显示) 在关闭这个
           // if current open menu equal status menu and menu is not show status, first switch to project key(because project key is not show) and close this
           if (tab.key === leftContainer.selectKey && !show && panes.length > 0) {
             updateSelectLeftKey(LeftMenuKey.PROJECT_KEY);
           }
-          return show
+          return show;
         })
-        .map(
-        (x) => ({
+        .map((x) => ({
           key: x.key,
           label: x.label,
           icon: x.icon
-        })
-      )}
+        }))}
       style={{
         flexGrow: 1,
         borderBlockStart: `1px solid ${themeValue.borderColor}`,
