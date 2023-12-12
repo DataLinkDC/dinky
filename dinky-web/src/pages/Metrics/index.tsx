@@ -193,10 +193,14 @@ export default () => {
           <Server chartConfig={commonChartConfig} data={jvmData} />
         </ProCard>
       )}
+
+      <Job />
+
       {layoutData != undefined &&
-        Object.keys(layoutData).map((name) => {
+        Object.keys(layoutData).map((name, index) => {
           return (
             <ProCard
+              key={index}
               collapsible
               title={name}
               ghost
@@ -210,6 +214,7 @@ export default () => {
                   // return <></>
                   return (
                     <FlinkChart
+                      key={j.taskId + j.vertices + j.metrics}
                       chartSize={j.showSize}
                       chartType={j.showType}
                       onChangeJobState={(chartSize, chartType) => {
@@ -226,7 +231,6 @@ export default () => {
             </ProCard>
           );
         })}
-      <Job />
     </PageContainer>
   );
 };

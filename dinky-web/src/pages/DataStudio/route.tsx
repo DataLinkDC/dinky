@@ -25,6 +25,7 @@ import Result from '@/pages/DataStudio/BottomContainer/Result';
 import TableData from '@/pages/DataStudio/BottomContainer/TableData';
 import JsonToSql from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql';
 import TextComparison from '@/pages/DataStudio/BottomContainer/Tools/TextComparison';
+import { LeftBottomKey, LeftMenuKey, RightMenuKey } from '@/pages/DataStudio/data.d';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import Catalog from '@/pages/DataStudio/LeftContainer/Catalog';
 import DataSource from '@/pages/DataStudio/LeftContainer/DataSource';
@@ -36,6 +37,7 @@ import JobConfig from '@/pages/DataStudio/RightContainer/JobConfig';
 import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
 import PreViewConfig from '@/pages/DataStudio/RightContainer/PreViewConfig';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
+import { DIALECT } from '@/services/constants';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -61,43 +63,57 @@ import {
 } from '@ant-design/icons';
 import { ReactNode } from 'react';
 
-export const LeftSide = [
+export const LeftSide: TabProp[] = [
   {
     auth: '/datastudio/left/project',
-    key: 'menu.datastudio.project',
+    key: LeftMenuKey.PROJECT_KEY,
     icon: <ConsoleSqlOutlined />,
-    label: l('menu.datastudio.project'),
+    label: l(LeftMenuKey.PROJECT_KEY),
     children: <Project />
   },
   {
     auth: '/datastudio/left/catalog',
-    key: 'menu.datastudio.catalog',
+    key: LeftMenuKey.CATALOG_KEY,
     icon: <TableOutlined />,
-    label: l('menu.datastudio.catalog'),
-    children: <Catalog />
+    label: l(LeftMenuKey.CATALOG_KEY),
+    children: <Catalog />,
+    isShow: (type, subType) =>
+      (type === TabsPageType.project || type === TabsPageType.metadata) &&
+      subType?.toLowerCase() !== DIALECT.FLINKJAR &&
+      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
+      subType?.toLowerCase() !== DIALECT.SCALA &&
+      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
+      subType?.toLowerCase() !== DIALECT.JAVA &&
+      subType?.toLowerCase() !== DIALECT.FLINKSQLENV
   },
   {
     auth: '/datastudio/left/datasource',
-    key: 'menu.datastudio.datasource',
+    key: LeftMenuKey.DATASOURCE_KEY,
     icon: <DatabaseOutlined />,
-    label: l('menu.datastudio.datasource'),
+    label: l(LeftMenuKey.DATASOURCE_KEY),
     children: <DataSource />
   },
   {
     auth: '/datastudio/left/globalVariable',
-    key: 'menu.registration.fragment',
+    key: LeftMenuKey.FRAGMENT_KEY,
     icon: <FunctionOutlined />,
-    label: l('menu.registration.fragment'),
-    children: <GlobalVariable />
+    label: l(LeftMenuKey.FRAGMENT_KEY),
+    children: <GlobalVariable />,
+    isShow: (type, subType) =>
+      type === TabsPageType.project &&
+      !isSql(subType ?? '') &&
+      subType?.toLowerCase() !== DIALECT.SCALA &&
+      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
+      subType?.toLowerCase() !== DIALECT.JAVA
   }
 ];
 
 export const RightSide: TabProp[] = [
   {
     auth: '/datastudio/right/jobConfig',
-    key: 'menu.datastudio.jobConfig',
+    key: RightMenuKey.JOB_CONFIG_KEY,
     icon: <SettingOutlined />,
-    label: l('menu.datastudio.jobConfig'),
+    label: l(RightMenuKey.JOB_CONFIG_KEY),
     children: <JobConfig />,
     isShow: (type, subType) =>
       type === TabsPageType.project &&
@@ -105,9 +121,9 @@ export const RightSide: TabProp[] = [
   },
   {
     auth: '/datastudio/right/previewConfig',
-    key: 'menu.datastudio.previewConfig',
+    key: RightMenuKey.PREVIEW_CONFIG_KEY,
     icon: <InsertRowRightOutlined />,
-    label: l('menu.datastudio.previewConfig'),
+    label: l(RightMenuKey.PREVIEW_CONFIG_KEY),
     children: <PreViewConfig />,
     isShow: (type, subType) =>
       (type === TabsPageType.project && TabsPageSubType.flinkSql === subType) ||
@@ -115,71 +131,102 @@ export const RightSide: TabProp[] = [
   },
   {
     auth: '/datastudio/right/savePoint',
-    key: 'menu.datastudio.savePoint',
+    key: RightMenuKey.SAVEPOINT_KEY,
     icon: <FolderOutlined />,
-    label: l('menu.datastudio.savePoint'),
+    label: l(RightMenuKey.SAVEPOINT_KEY),
     children: <SavePoints />,
     isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
   },
   {
     auth: '/datastudio/right/historyVision',
-    key: 'menu.datastudio.historyVision',
+    key: RightMenuKey.HISTORY_VISION_KEY,
     icon: <HistoryOutlined />,
-    label: l('menu.datastudio.historyVision'),
+    label: l(RightMenuKey.HISTORY_VISION_KEY),
     children: <HistoryVersion />,
     isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
   },
   {
     auth: '/datastudio/right/jobInfo',
-    key: 'menu.datastudio.jobInfo',
+    key: RightMenuKey.JOB_INFO_KEY,
     icon: <InfoCircleOutlined />,
-    label: l('menu.datastudio.jobInfo'),
+    label: l(RightMenuKey.JOB_INFO_KEY),
     children: <JobInfo />,
     isShow: (type) => type === TabsPageType.project
   }
 ];
 
-export const LeftBottomSide = [
+export const LeftBottomSide: TabProp[] = [
   {
     auth: '/datastudio/bottom/console',
-    key: 'menu.datastudio.console',
+    key: LeftBottomKey.CONSOLE_KEY,
     icon: <RightSquareOutlined />,
-    label: l('menu.datastudio.console'),
-    children: <Console />
+    label: l(LeftBottomKey.CONSOLE_KEY),
+    children: <Console />,
+    isShow: (type, subType) =>
+      type === TabsPageType.project &&
+      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
+      subType?.toLowerCase() !== DIALECT.SCALA &&
+      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
+      subType?.toLowerCase() !== DIALECT.JAVA
   },
   {
     auth: '/datastudio/bottom/result',
-    key: 'menu.datastudio.result',
+    key: LeftBottomKey.RESULT_KEY,
     icon: <MonitorOutlined />,
-    label: l('menu.datastudio.result'),
-    children: <Result />
+    label: l(LeftBottomKey.RESULT_KEY),
+    children: <Result />,
+    isShow: (type, subType) =>
+      type === TabsPageType.project &&
+      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
+      subType?.toLowerCase() !== DIALECT.FLINKJAR &&
+      subType?.toLowerCase() !== DIALECT.SCALA &&
+      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
+      subType?.toLowerCase() !== DIALECT.JAVA
   },
   {
     auth: '/datastudio/bottom/lineage',
-    key: 'menu.datastudio.lineage',
+    key: LeftBottomKey.LINEAGE_KEY,
     icon: <ApartmentOutlined />,
-    label: l('menu.datastudio.lineage'),
-    children: <Lineage />
+    label: l(LeftBottomKey.LINEAGE_KEY),
+    children: <Lineage />,
+    isShow: (type, subType) =>
+      type === TabsPageType.project &&
+      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
+      subType?.toLowerCase() !== DIALECT.FLINKJAR &&
+      subType?.toLowerCase() !== DIALECT.SCALA &&
+      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
+      subType?.toLowerCase() !== DIALECT.JAVA
   },
   {
     auth: '/datastudio/bottom/history',
-    key: 'menu.datastudio.history',
+    key: LeftBottomKey.HISTORY_KEY,
     icon: <HistoryOutlined />,
-    label: l('menu.datastudio.history'),
-    children: <JobExecHistory />
+    label: l(LeftBottomKey.HISTORY_KEY),
+    children: <JobExecHistory />,
+    isShow: (type, subType) =>
+      type === TabsPageType.project &&
+      !isSql(subType ?? '') &&
+      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
+      subType?.toLowerCase() !== DIALECT.FLINKJAR &&
+      subType?.toLowerCase() !== DIALECT.SCALA &&
+      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
+      subType?.toLowerCase() !== DIALECT.JAVA
   },
   {
     auth: '/datastudio/bottom/table-data',
-    key: 'menu.datastudio.table-data',
+    key: LeftBottomKey.TABLE_DATA_KEY,
     icon: <TableOutlined />,
-    label: l('menu.datastudio.table-data'),
-    children: <TableData />
+    label: l(LeftBottomKey.TABLE_DATA_KEY),
+    children: <TableData />,
+    isShow: (type, subType) =>
+      type === TabsPageType.project && subType?.toLowerCase() === DIALECT.FLINK_SQL
   },
   {
     auth: '/datastudio/bottom/tool',
-    key: 'menu.datastudio.tool',
+    key: LeftBottomKey.TOOLS_KEY,
     icon: <ToolOutlined />,
-    label: l('menu.datastudio.tool')
+    label: l(LeftBottomKey.TOOLS_KEY),
+    children: <></>
   }
 ];
 

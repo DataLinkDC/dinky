@@ -167,7 +167,6 @@ const ResourceOverView: React.FC = () => {
   const handleRightClick = (info: any) => {
     // 获取右键点击的节点信息
     const { node, event } = info;
-    console.log('node', node);
     setResourceState((prevState) => ({
       ...prevState,
       selectedKeys: [node.key],

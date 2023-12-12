@@ -240,7 +240,7 @@ const Job = () => {
         }
         extra={
           <Button
-            size='small'
+            size='middle'
             onClick={() => {
               const saveThisLayout = () => {
                 const metricsLayouts: MetricsLayout[] = jobMetricsList.map((job, index) => {

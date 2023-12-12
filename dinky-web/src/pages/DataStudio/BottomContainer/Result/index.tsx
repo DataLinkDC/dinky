@@ -132,7 +132,7 @@ const Result = (props: any) => {
     } else {
       if (isSql(current.dialect)) {
         // common sql
-        const res = await handleGetOption('api/studio/getCommonSqlData', 'Get Data', {
+        const res = await handleGetOption('api/studio/getCommonSqlData', l('global.getdata.tips'), {
           taskId: params.taskId
         });
         if (res.data) {
@@ -149,9 +149,13 @@ const Result = (props: any) => {
           const historyData = res.data;
           if (historyData && '2' == historyData.status) {
             const historyId = historyData.id;
-            const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', {
-              jobId: historyId
-            });
+            const tableData = await handleGetOption(
+              'api/studio/getJobData',
+              l('global.getdata.tips'),
+              {
+                jobId: historyId
+              }
+            );
             const data = tableData.data;
             if (data.success) {
               consoleData.result = data;

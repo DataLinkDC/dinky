@@ -21,7 +21,13 @@ import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
 import Title from '@/components/Front/Title';
 import ContentScroll from '@/components/Scroll/ContentScroll';
 import MovableSidebar from '@/components/Sidebar/MovableSidebar';
-import { StateType, STUDIO_MODEL, VIEW } from '@/pages/DataStudio/model';
+import {
+  StateType,
+  STUDIO_MODEL,
+  TabsItemType,
+  TabsPageType,
+  VIEW
+} from '@/pages/DataStudio/model';
 import { LeftBottomMoreTabs, LeftBottomSide } from '@/pages/DataStudio/route';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
@@ -34,7 +40,13 @@ export type BottomContainerProps = {
   height: number | string;
 };
 const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
-  const { dispatch, size, bottomContainer, height } = props;
+  const {
+    dispatch,
+    size,
+    bottomContainer,
+    height,
+    tabs: { activeKey, panes }
+  } = props;
   const width = document.documentElement.clientWidth - VIEW.sideWidth * 2;
 
   /**
@@ -72,6 +84,13 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
   const updateSelectBottomSubKey = (key: string) => {
     dispatch({
       type: STUDIO_MODEL.updateSelectBottomSubKey,
+      payload: key
+    });
+  };
+
+  const updateSelectBottomKey = (key: string) => {
+    dispatch({
+      type: STUDIO_MODEL.updateSelectBottomKey,
       payload: key
     });
   };
@@ -159,7 +178,32 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
   };
   const renderItems = () => {
     return [
-      ...LeftBottomSide.map((x) => {
+      ...LeftBottomSide.filter((tab) => {
+        if (!tab.isShow) {
+          return true;
+        }
+        if (parseInt(activeKey) < 0) {
+          return TabsPageType.None;
+        }
+        const currentTab = (panes as TabsItemType[]).find((item) => item.key === activeKey);
+        const show = tab.isShow(currentTab?.type ?? TabsPageType.None, currentTab?.subType);
+        // 如果当前打开的菜单等于 状态存的菜单 且 菜单不显示状态下，先切换到项目key(因为项目key 不可能不显示) 在关闭这个
+        // if current open menu equal status menu and menu is not show status, first switch to project key(because project key is not show) and close this
+        // if (tab.key === bottomContainer.selectKey && !show) {
+        //   updateSelectBottomKey(
+        //     currentTab?.subType?.toLowerCase() === DIALECT.FLINKSQLENV
+        //     || currentTab?.subType?.toLowerCase() === DIALECT.SCALA
+        //     || currentTab?.subType?.toLowerCase() === DIALECT.JAVA
+        //     || currentTab?.subType?.toLowerCase() === DIALECT.PYTHON_LONG
+        //       ? LeftBottomKey.TOOLS_KEY // 如果当前打开的是flinksql环境，scala，java，python，切换到工具栏
+        //       : currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL
+        //       || currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR
+        //       || isSql(currentTab?.subType  ?? '')
+        //     ? LeftBottomKey.CONSOLE_KEY : LeftBottomKey.TOOLS_KEY // 如果当前打开的是flinksql，flinkjar，切换到控制台
+        //   );
+        // }
+        return show;
+      }).map((x) => {
         return { ...x, key: x.key + '/' };
       }),
       ...getSubTabs()
@@ -233,5 +277,6 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  bottomContainer: Studio.bottomContainer
+  bottomContainer: Studio.bottomContainer,
+  tabs: Studio.tabs
 }))(BottomContainer);

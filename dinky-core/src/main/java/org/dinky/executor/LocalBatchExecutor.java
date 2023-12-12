@@ -47,13 +47,12 @@ public class LocalBatchExecutor extends Executor {
                                     .map(FileUtil::getAbsolutePath)
                                     .collect(Collectors.joining(",")));
         }
-        if (executorConfig.isValidConfig()) {
+        if (!executorConfig.isPlan()) {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
-            if (configuration.contains(RestOptions.PORT)) {
-                this.environment = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
-            } else {
-                this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
+            if (!configuration.contains(RestOptions.PORT)) {
+                configuration.set(RestOptions.PORT, executorConfig.getPort());
             }
+            this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
         } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         }
