@@ -23,9 +23,11 @@ import cn.hutool.core.lang.Singleton;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
-public class MetricsTotal {
+public class MetricsTotal implements Serializable {
 
     public static volatile MetricsTotal instance = Singleton.get(MetricsTotal.class);
 
