@@ -237,7 +237,7 @@ public class JobConfig {
     }
 
     public boolean isUseRemote() {
-        return !GatewayType.LOCAL.equalsValue(type);
+        return useRemote || !GatewayType.LOCAL.equalsValue(type);
     }
 
     public void buildLocal() {

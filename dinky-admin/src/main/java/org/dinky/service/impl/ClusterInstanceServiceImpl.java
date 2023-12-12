@@ -100,6 +100,9 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                 port = Integer.valueOf(flinkConfig.get("rest.port"));
             } else {
                 port = URLUtils.getRandomPort();
+                while (!IpUtils.isPortAvailable(port)) {
+                    port = URLUtils.getRandomPort();
+                }
             }
             return buildLocalEnvironmentAddress(port);
         }

@@ -129,7 +129,7 @@ public class Job2MysqlHandler implements JobHandler {
         history.setStatus(job.getStatus().getCode());
         history.setJobId(job.getJobId());
         history.setEndTime(job.getEndTime());
-        history.setJobManagerAddress(job.isUseGateway() ? job.getJobManagerAddress() : null);
+        history.setJobManagerAddress(job.getJobManagerAddress());
 
         Integer clusterId = job.getJobConfig().getClusterId();
         ClusterInstance clusterInstance;

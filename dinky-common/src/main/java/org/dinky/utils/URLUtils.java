@@ -107,6 +107,6 @@ public class URLUtils {
 
     public static int getRandomPort() {
         Random random = new Random();
-        return random.nextInt(65536);
+        return 30000 + random.nextInt(35536);
     }
 }
