@@ -40,12 +40,36 @@ import java.util.Optional;
  *
  * @since 2021/10/21 19:56
  */
-public class SetOperation extends AbstractOperation implements ExtendOperation {
+public class CustomSetOperation extends AbstractOperation implements ExtendOperation {
 
-    public SetOperation() {}
+    private String key;
+    private String value;
 
-    public SetOperation(String statement) {
+    public CustomSetOperation() {}
+
+    public CustomSetOperation(String statement) {
         super(statement);
+        parseConfig();
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public boolean isValid() {
+        return Asserts.isAllNotNullString(key, value);
+    }
+
+    private void parseConfig() {
+        Map<String, List<String>> map = SetSqlParseStrategy.getInfo(statement);
+        if (Asserts.isNotNullMap(map) && map.size() == 2) {
+            key = StringUtils.join(map.get("SET"), ".");
+            value = StringUtils.join(map.get("="), ",");
+        }
     }
 
     @Override
@@ -58,10 +82,9 @@ public class SetOperation extends AbstractOperation implements ExtendOperation {
         } catch (ClassNotFoundException e) {
             logger.error("Class not found: org.apache.log4j.Logger");
         }
-        Map<String, List<String>> map = SetSqlParseStrategy.getInfo(statement);
-        if (Asserts.isNotNullMap(map) && map.size() == 2) {
+        if (Asserts.isAllNotNullString(key, value)) {
             Map<String, String> confMap = new HashMap<>();
-            confMap.put(StringUtils.join(map.get("SET"), "."), StringUtils.join(map.get("="), ","));
+            confMap.put(key, value);
             TableConfig config = tEnv.getConfig();
             config.addConfiguration(Configuration.fromMap(confMap));
             Configuration configuration = Configuration.fromMap(confMap);
