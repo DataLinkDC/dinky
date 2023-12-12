@@ -24,7 +24,10 @@ import {
   JOB_RIGHT_MENU
 } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
-import { getRightSelectKeyFromNodeClickJobType } from '@/pages/DataStudio/LeftContainer/Project/function';
+import {
+  getBottomSelectKeyFromNodeClickJobType,
+  getRightSelectKeyFromNodeClickJobType
+} from '@/pages/DataStudio/LeftContainer/Project/function';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
 import {
@@ -48,6 +51,8 @@ import { Modal, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { Key, useEffect, useState } from 'react';
 import { connect } from 'umi';
+import {LeftBottomKey} from "@/pages/DataStudio/data.d";
+import {LeftBottomMoreTabs} from "@/pages/DataStudio/route";
 
 const { Text } = Typography;
 
@@ -132,6 +137,17 @@ const Project: React.FC = (props: connect) => {
         type: STUDIO_MODEL.updateSelectRightKey,
         payload: getRightSelectKeyFromNodeClickJobType(type)
       });
+      const bottomKey = getBottomSelectKeyFromNodeClickJobType(type);
+      dispatch({
+        type: STUDIO_MODEL.updateSelectBottomKey,
+        payload: bottomKey
+      });
+      if(bottomKey === LeftBottomKey.TOOLS_KEY){
+        dispatch({
+          type: STUDIO_MODEL.updateSelectBottomSubKey,
+          payload: LeftBottomMoreTabs[bottomKey][0].key
+        });
+      }
     }
 
     path.pop();

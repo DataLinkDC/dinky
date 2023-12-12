@@ -250,8 +250,6 @@ const JobExecHistory: React.FC<connect> = (props) => {
     };
   };
 
-  console.log(currentTab);
-
   return (
     <>
       {tabs.panes.length === 0 ? (

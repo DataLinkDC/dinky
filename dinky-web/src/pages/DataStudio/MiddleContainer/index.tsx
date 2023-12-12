@@ -41,6 +41,10 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 import { ConfigProvider, Divider, Modal, Space, Tabs, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { memo, useState } from 'react';
+import {
+  getBottomSelectKeyFromNodeClickJobType,
+  getRightSelectKeyFromNodeClickJobType
+} from "@/pages/DataStudio/LeftContainer/Project/function";
 
 const { Text } = Typography;
 const { confirm } = Modal;
@@ -112,7 +116,7 @@ const MiddleContainer = (props: any) => {
   };
 
   const updateActiveKey = (item: TabsItemType) => {
-    const { key, label } = item;
+    const { key, label,subType } = item;
     if (key === activeKey) {
       return;
     }
@@ -120,10 +124,26 @@ const MiddleContainer = (props: any) => {
     setContextMenuVisible(false);
     updateRightKey(key);
 
+    // 更新当前选中的 tab key
     dispatch({
       type: STUDIO_MODEL.updateTabsActiveKey,
       payload: key
     });
+
+    // 根据 作业类型渲染 右侧选中菜单 key
+    dispatch({
+      type: STUDIO_MODEL.updateSelectRightKey,
+      payload: getRightSelectKeyFromNodeClickJobType(subType ?? '')
+    });
+
+
+    // 根据 作业类型渲染 左下角选中菜单 key
+    dispatch({
+      type: STUDIO_MODEL.updateSelectBottomKey,
+      payload: getBottomSelectKeyFromNodeClickJobType(subType ?? '')
+    });
+
+
 
     // 这里如果加此项功能和定位功能重复 , 暂时注释
     // if (item.type === TabsPageType.project) {
@@ -182,7 +202,7 @@ const MiddleContainer = (props: any) => {
     setContextMenuVisible(true);
     setContextMenuPosition((prevState) => ({
       ...prevState,
-      width: '6vw',
+      width: '10vw',
       left: info.clientX + 10,
       top: info.clientY + 10
     }));

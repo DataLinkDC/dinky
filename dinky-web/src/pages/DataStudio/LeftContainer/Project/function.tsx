@@ -17,7 +17,7 @@
  *
  */
 
-import { RightMenuKey } from '@/pages/DataStudio/data.d';
+import {LeftBottomKey, RightMenuKey} from '@/pages/DataStudio/data.d';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { DIALECT } from '@/services/constants';
@@ -204,4 +204,12 @@ export function getRightSelectKeyFromNodeClickJobType(jobType: string): string {
     : isSql(jobType)
     ? RightMenuKey.PREVIEW_CONFIG_KEY
     : RightMenuKey.JOB_INFO_KEY;
+}
+
+export function getBottomSelectKeyFromNodeClickJobType(jobType: string): string {
+  return isFlinkJob(jobType) || isSql(jobType)
+    ? LeftBottomKey.CONSOLE_KEY
+    : isUDF(jobType) || jobType.toLowerCase() === DIALECT.FLINKSQLENV
+      ? LeftBottomKey.TOOLS_KEY
+      : LeftBottomKey.TOOLS_KEY;
 }
