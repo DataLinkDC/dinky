@@ -177,11 +177,11 @@ export const LeftBottomSide: TabProp[] = [
     children: <Result />,
     isShow: (type, subType) =>
       type === TabsPageType.project &&
-      subType?.toLowerCase()!== DIALECT.FLINKSQLENV &&
-      subType?.toLowerCase()!== DIALECT.FLINKJAR &&
-      subType?.toLowerCase()!== DIALECT.SCALA &&
-      subType?.toLowerCase()!== DIALECT.PYTHON_LONG &&
-      subType?.toLowerCase()!== DIALECT.JAVA
+      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
+      subType?.toLowerCase() !== DIALECT.FLINKJAR &&
+      subType?.toLowerCase() !== DIALECT.SCALA &&
+      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
+      subType?.toLowerCase() !== DIALECT.JAVA
   },
   {
     auth: '/datastudio/bottom/lineage',
@@ -191,11 +191,11 @@ export const LeftBottomSide: TabProp[] = [
     children: <Lineage />,
     isShow: (type, subType) =>
       type === TabsPageType.project &&
-      subType?.toLowerCase()!== DIALECT.FLINKSQLENV &&
-      subType?.toLowerCase()!== DIALECT.FLINKJAR &&
-      subType?.toLowerCase()!== DIALECT.SCALA &&
-      subType?.toLowerCase()!== DIALECT.PYTHON_LONG &&
-      subType?.toLowerCase()!== DIALECT.JAVA
+      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
+      subType?.toLowerCase() !== DIALECT.FLINKJAR &&
+      subType?.toLowerCase() !== DIALECT.SCALA &&
+      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
+      subType?.toLowerCase() !== DIALECT.JAVA
   },
   {
     auth: '/datastudio/bottom/history',
@@ -206,11 +206,11 @@ export const LeftBottomSide: TabProp[] = [
     isShow: (type, subType) =>
       type === TabsPageType.project &&
       !isSql(subType ?? '') &&
-      subType?.toLowerCase()!== DIALECT.FLINKSQLENV &&
-      subType?.toLowerCase()!== DIALECT.FLINKJAR &&
-      subType?.toLowerCase()!== DIALECT.SCALA &&
-      subType?.toLowerCase()!== DIALECT.PYTHON_LONG &&
-      subType?.toLowerCase()!== DIALECT.JAVA
+      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
+      subType?.toLowerCase() !== DIALECT.FLINKJAR &&
+      subType?.toLowerCase() !== DIALECT.SCALA &&
+      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
+      subType?.toLowerCase() !== DIALECT.JAVA
   },
   {
     auth: '/datastudio/bottom/table-data',
@@ -219,8 +219,7 @@ export const LeftBottomSide: TabProp[] = [
     label: l(LeftBottomKey.TABLE_DATA_KEY),
     children: <TableData />,
     isShow: (type, subType) =>
-      type === TabsPageType.project &&
-      subType?.toLowerCase() === DIALECT.FLINK_SQL
+      type === TabsPageType.project && subType?.toLowerCase() === DIALECT.FLINK_SQL
   },
   {
     auth: '/datastudio/bottom/tool',
