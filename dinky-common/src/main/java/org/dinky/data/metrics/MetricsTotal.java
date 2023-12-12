@@ -19,11 +19,11 @@
 
 package org.dinky.data.metrics;
 
+import java.io.Serializable;
+
 import cn.hutool.core.lang.Singleton;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
 
 @Getter
 @Setter

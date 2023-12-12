@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import cn.hutool.core.text.StrFormatter;
-import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -56,20 +55,21 @@ public class MetricsContextHolder {
 
     public void sendAsync(String key, MetricsVO o) {
         CompletableFuture.runAsync(() -> {
-            metricsVOS.add(o);
-            long duration = System.currentTimeMillis() - lastDumpTime;
-            synchronized (metricsVOS) {
-                if (metricsVOS.size() > 1000 || duration > 1000 * 5) {
-                    PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, metricsVOS, MetricsVO.class);
-                    metricsVOS.clear();
-                }
-            }
-            String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
-            SseSessionContextHolder.sendTopic(topic, o);
-        }).whenComplete((v, t) -> {
-            if (t!= null) {
-                log.error("send metrics async error", t);
-            }
-        });
+                    metricsVOS.add(o);
+                    long duration = System.currentTimeMillis() - lastDumpTime;
+                    synchronized (metricsVOS) {
+                        if (metricsVOS.size() > 1000 || duration > 1000 * 5) {
+                            PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, metricsVOS, MetricsVO.class);
+                            metricsVOS.clear();
+                        }
+                    }
+                    String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
+                    SseSessionContextHolder.sendTopic(topic, o);
+                })
+                .whenComplete((v, t) -> {
+                    if (t != null) {
+                        log.error("send metrics async error", t);
+                    }
+                });
     }
 }
