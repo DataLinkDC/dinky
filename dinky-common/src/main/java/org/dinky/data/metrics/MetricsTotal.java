@@ -19,13 +19,15 @@
 
 package org.dinky.data.metrics;
 
+import java.io.Serializable;
+
 import cn.hutool.core.lang.Singleton;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class MetricsTotal {
+public class MetricsTotal implements Serializable {
 
     public static volatile MetricsTotal instance = Singleton.get(MetricsTotal.class);
 

@@ -24,16 +24,12 @@ import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.PaimonUtil;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import cn.hutool.core.text.StrFormatter;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -59,30 +55,21 @@ public class MetricsContextHolder {
 
     public void sendAsync(String key, MetricsVO o) {
         CompletableFuture.runAsync(() -> {
-            metricsVOS.add(o);
-            long duration = System.currentTimeMillis() - lastDumpTime;
-            synchronized (metricsVOS) {
-                if (metricsVOS.size() > 1000 || duration > 1000 * 5) {
-                    writeMetrics(metricsVOS);
-                    metricsVOS.clear();
-                }
-            }
-            String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
-            SseSessionContextHolder.sendTopic(topic, o);
-        });
-    }
-
-    private static synchronized void writeMetrics(List<MetricsVO> metricsList) {
-        ObjectUtil.clone(metricsList).forEach(metrics -> {
-            LocalDateTime now = metrics.getHeartTime();
-            metrics.setDate(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-            metrics.setContent(JSONUtil.toJsonStr(metrics.getContent()));
-        });
-        try {
-            PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, metricsList, MetricsVO.class);
-        } catch (Exception e) {
-            // todo 此处最好发个告警
-            log.error("write metrics error", e);
-        }
+                    metricsVOS.add(o);
+                    long duration = System.currentTimeMillis() - lastDumpTime;
+                    synchronized (metricsVOS) {
+                        if (metricsVOS.size() > 1000 || duration > 1000 * 5) {
+                            PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, metricsVOS, MetricsVO.class);
+                            metricsVOS.clear();
+                        }
+                    }
+                    String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
+                    SseSessionContextHolder.sendTopic(topic, o);
+                })
+                .whenComplete((v, t) -> {
+                    if (t != null) {
+                        log.error("send metrics async error", t);
+                    }
+                });
     }
 }

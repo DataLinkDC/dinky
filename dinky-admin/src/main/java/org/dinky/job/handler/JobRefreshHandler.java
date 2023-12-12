@@ -95,8 +95,10 @@ public class JobRefreshHandler {
         JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
         String oldStatus = jobInstance.getStatus();
 
-        // Local mode without rest port parameter unable to monitor
+        // Cluster information is missing and cannot be monitored
         if (Asserts.isNull(jobInfoDetail.getClusterInstance())) {
+            jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
+            jobInstanceService.updateById(jobInstance);
             return true;
         }
         // Update the value of JobData from the flink api while ignoring the null value to prevent

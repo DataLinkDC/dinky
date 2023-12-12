@@ -65,7 +65,7 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
     private final Executor scheduleRefreshMonitorDataExecutor;
 
     @Override
-    public List<MetricsVO> getData(Date startTime, Date endTime, List<String> jobIds) {
+    public List<MetricsVO> getData(Date startTime, Date endTime, List<String> models) {
         endTime = Opt.ofNullable(endTime).orElse(DateUtil.date());
         Timestamp startTS = Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(startTime));
         Timestamp endTS = Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(endTime));
@@ -78,7 +78,7 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
             Predicate greaterOrEqual = p.greaterOrEqual(0, startTS);
             Predicate lessOrEqual = p.lessOrEqual(0, endTS);
             Predicate local =
-                    p.in(1, jobIds.stream().map(BinaryString::fromString).collect(Collectors.toList()));
+                    p.in(1, models.stream().map(BinaryString::fromString).collect(Collectors.toList()));
             return CollUtil.newArrayList(local, greaterOrEqual, lessOrEqual);
         };
         List<MetricsVO> metricsVOList =
