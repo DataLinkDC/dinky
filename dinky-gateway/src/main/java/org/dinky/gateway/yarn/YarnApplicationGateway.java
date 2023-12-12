@@ -57,7 +57,7 @@ public class YarnApplicationGateway extends YarnGateway {
     }
 
     @Override
-    public GatewayResult submitJar() {
+    public GatewayResult submitJar(FlinkUdfPathContextHolder udfPathContextHolder) {
         if (Asserts.isNull(yarnClient)) {
             init();
         }
@@ -66,9 +66,7 @@ public class YarnApplicationGateway extends YarnGateway {
         configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
         configuration.setString(
                 "python.files",
-                FlinkUdfPathContextHolder.getPyUdfFile().stream()
-                        .map(File::getName)
-                        .collect(Collectors.joining(",")));
+                udfPathContextHolder.getPyUdfFile().stream().map(File::getName).collect(Collectors.joining(",")));
 
         String[] userJarParas =
                 Asserts.isNotNull(appConfig.getUserJarParas()) ? appConfig.getUserJarParas() : new String[0];
@@ -79,7 +77,7 @@ public class YarnApplicationGateway extends YarnGateway {
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
 
         YarnResult result = YarnResult.build(getType());
-        try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar()) {
+        try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar(udfPathContextHolder)) {
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
                     clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();

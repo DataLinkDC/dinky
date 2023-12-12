@@ -27,14 +27,19 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandlerFactory;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/** @since 0.7.0 */
+/**
+ * @since 0.7.0
+ */
 @Slf4j
 public class DinkyClassLoader extends URLClassLoader {
+
+    FlinkUdfPathContextHolder udfPathContextHolder = new FlinkUdfPathContextHolder();
 
     public DinkyClassLoader(URL[] urls, ClassLoader parent) {
         super(new URL[] {}, parent);
@@ -42,7 +47,7 @@ public class DinkyClassLoader extends URLClassLoader {
 
     public DinkyClassLoader(Collection<File> fileSet, ClassLoader parent) {
         super(new URL[] {}, parent);
-        addURL(fileSet);
+        addURLs(fileSet);
     }
 
     public DinkyClassLoader(URL[] urls) {
@@ -53,13 +58,28 @@ public class DinkyClassLoader extends URLClassLoader {
         super(new URL[] {}, parent, factory);
     }
 
-    public void addURL(URL... urls) {
+    // this class factory method
+    public static DinkyClassLoader build() {
+        return new DinkyClassLoader(new URL[] {});
+    }
+
+    // class factory method with urls parameters
+    public static DinkyClassLoader build(URL... urls) {
+        return new DinkyClassLoader(urls);
+    }
+
+    // return udfPathContextHolder
+    public FlinkUdfPathContextHolder getUdfPathContextHolder() {
+        return udfPathContextHolder;
+    }
+
+    public void addURLs(URL... urls) {
         for (URL url : urls) {
             super.addURL(url);
         }
     }
 
-    public void addURL(Collection<File> fileSet) {
+    public void addURLs(Collection<File> fileSet) {
         URL[] urls = fileSet.stream()
                 .map(x -> {
                     try {
@@ -69,40 +89,67 @@ public class DinkyClassLoader extends URLClassLoader {
                     }
                 })
                 .toArray(URL[]::new);
-        addURL(urls);
+        addURLs(urls);
     }
 
-    public void addURL(String[] paths, List<String> notExistsFiles) {
-        for (String path : paths) {
-            File file = new File(path);
-            try {
-                if (file.isDirectory()) {
-                    FileUtil.walkFiles(file, f -> {
-                        if (FileUtil.getSuffix(f).equals("jar")) {
-                            try {
-                                super.addURL(f.toURI().toURL());
-                            } catch (MalformedURLException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    });
-                    continue;
-                }
-                if (!file.exists()) {
-                    if (notExistsFiles != null && !notExistsFiles.isEmpty()) {
-                        notExistsFiles.add(file.getAbsolutePath());
+    public void addURLs(List<File> files) {
+        files.stream()
+                .map(x -> {
+                    try {
+                        return x.toURI().toURL();
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
                     }
-                    continue;
+                })
+                .forEach(this::addURL);
+    }
+
+    public void addURL(URL url) {
+        super.addURL(url);
+    }
+
+    @Override
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        synchronized (getClassLoadingLock(name)) {
+            Class<?> loadedClass = findLoadedClass(name);
+
+            if (loadedClass == null) {
+                try {
+                    // try to use this classloader to load
+                    loadedClass = this.findClass(name);
+                } catch (ClassNotFoundException e) {
+                    // maybe is system class, try parents delegate
+                    return super.loadClass(name, false);
                 }
-                super.addURL(file.toURI().toURL());
-                FlinkUdfPathContextHolder.addOtherPlugins(file);
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
             }
+
+            if (resolve) {
+                resolveClass(loadedClass);
+            }
+            return loadedClass;
         }
     }
 
-    public void addURL(String... paths) {
-        this.addURL(paths, null);
+    public static List<File> getJarFiles(String[] paths, List<String> notExistsFiles) {
+        List<File> result = new LinkedList<>();
+        for (String path : paths) {
+            File file = new File(path);
+            if (file.isDirectory()) {
+                FileUtil.walkFiles(file, f -> {
+                    if (FileUtil.getSuffix(f).equals("jar")) {
+                        result.add(f);
+                    }
+                });
+                continue;
+            }
+            if (!file.exists()) {
+                if (notExistsFiles != null && !notExistsFiles.isEmpty()) {
+                    notExistsFiles.add(file.getAbsolutePath());
+                }
+                continue;
+            }
+            result.add(file);
+        }
+        return result;
     }
 }

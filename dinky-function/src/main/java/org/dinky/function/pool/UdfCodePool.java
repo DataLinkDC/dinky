@@ -64,4 +64,14 @@ public class UdfCodePool {
     public static String getGitPackage(String className) {
         return GIT_POOL.get(className);
     }
+
+    // return CODE_POOL
+    public static Map<String, UDF> getUdfCodePool() {
+        return CODE_POOL;
+    }
+
+    // return GIT_POOL
+    public static Map<String, String> getGitPool() {
+        return GIT_POOL;
+    }
 }

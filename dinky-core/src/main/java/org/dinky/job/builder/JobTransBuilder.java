@@ -200,7 +200,8 @@ public class JobTransBuilder extends JobBuilder {
 
         if (runMode.isApplicationMode()) {
             // Application mode need to submit dinky-app.jar that in the hdfs or image.
-            gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
+            gatewayResult = Gateway.build(config.getGatewayConfig())
+                    .submitJar(executor.getDinkyClassLoader().getUdfPathContextHolder());
         } else {
             JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
             // Perjob mode need to set savepoint restore path, when recovery from savepoint.

@@ -19,6 +19,8 @@
 
 package org.dinky.executor;
 
+import org.dinky.classloader.DinkyClassLoader;
+
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.RestOptions;
@@ -36,7 +38,7 @@ import cn.hutool.core.io.FileUtil;
  */
 public class LocalBatchExecutor extends Executor {
 
-    public LocalBatchExecutor(ExecutorConfig executorConfig) {
+    public LocalBatchExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidJarFiles()) {
             executorConfig
@@ -56,11 +58,11 @@ public class LocalBatchExecutor extends Executor {
         } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         }
-        init();
+        init(classLoader);
     }
 
     @Override
-    CustomTableEnvironment createCustomTableEnvironment() {
+    CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader) {
         return CustomTableEnvironmentImpl.createBatch(environment);
     }
 }

@@ -110,7 +110,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 userClassLoader));
     }
 
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
+    public static CustomTableEnvironmentImpl create(
+            StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
         return create(executionEnvironment, EnvironmentSettings.newInstance().build());
     }
 

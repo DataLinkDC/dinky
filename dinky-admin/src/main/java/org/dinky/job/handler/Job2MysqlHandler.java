@@ -36,8 +36,6 @@ import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.job.FlinkJobTask;
 import org.dinky.job.Job;
-import org.dinky.job.JobContextHolder;
-import org.dinky.job.JobHandler;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
@@ -55,7 +53,7 @@ import org.springframework.context.annotation.DependsOn;
  * @since 2021/6/27 0:04
  */
 @DependsOn("springContextUtils")
-public class Job2MysqlHandler implements JobHandler {
+public class Job2MysqlHandler extends AbsJobHandler {
 
     private static final HistoryService historyService;
     private static final ClusterInstanceService clusterInstanceService;
@@ -75,8 +73,8 @@ public class Job2MysqlHandler implements JobHandler {
     }
 
     @Override
-    public boolean init() {
-        Job job = JobContextHolder.getJob();
+    public boolean init(Job job) {
+        this.job = job;
         History history = new History();
         history.setType(job.getType().getLongValue());
         if (job.isUseGateway()) {
@@ -110,7 +108,6 @@ public class Job2MysqlHandler implements JobHandler {
 
     @Override
     public boolean success() {
-        Job job = JobContextHolder.getJob();
         Integer taskId = job.getJobConfig().getTaskId();
 
         History history = new History();
@@ -206,7 +203,6 @@ public class Job2MysqlHandler implements JobHandler {
 
     @Override
     public boolean failed() {
-        Job job = JobContextHolder.getJob();
         History history = new History();
         history.setBatchModel(job.getJobConfig().isBatchModel());
         history.setId(job.getId());

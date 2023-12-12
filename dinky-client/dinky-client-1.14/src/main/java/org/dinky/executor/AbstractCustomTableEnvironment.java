@@ -31,6 +31,8 @@ public abstract class AbstractCustomTableEnvironment
         implements CustomTableEnvironment, DefaultTableEnvironmentInternal, DefaultStreamTableEnvironment {
 
     protected StreamTableEnvironment streamTableEnvironment;
+    protected ClassLoader userClassLoader;
+
     protected Executor executor;
 
     protected AbstractCustomTableEnvironment() {}
@@ -46,6 +48,11 @@ public abstract class AbstractCustomTableEnvironment
 
     public StreamExecutionEnvironment getStreamExecutionEnvironment() {
         return ((StreamTableEnvironmentImpl) streamTableEnvironment).execEnv();
+    }
+
+    @Override
+    public ClassLoader getUserClassLoader() {
+        return userClassLoader;
     }
 
     public Planner getPlanner() {

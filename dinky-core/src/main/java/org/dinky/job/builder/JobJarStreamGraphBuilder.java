@@ -19,7 +19,7 @@
 
 package org.dinky.job.builder;
 
-import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.job.JobBuilder;
 import org.dinky.job.JobManager;
@@ -32,6 +32,9 @@ import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.SqlUtil;
 
 import org.apache.flink.streaming.api.graph.StreamGraph;
+
+import java.io.File;
+import java.util.Set;
 
 import cn.hutool.core.lang.Assert;
 
@@ -52,12 +55,11 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
     @Override
     public void run() throws Exception {}
 
-    public StreamGraph getJarStreamGraph(String statement) {
-        DinkyClassLoaderUtil.initClassLoader(config);
+    public StreamGraph getJarStreamGraph(String statement, DinkyClassLoader dinkyClassLoader) {
+        DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);
         String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
         ExecuteJarOperation executeJarOperation = null;
-        for (int i = 0; i < statements.length; i++) {
-            String sql = statements[i];
+        for (String sql : statements) {
             String sqlStatement = executor.pretreatStatement(sql);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 executeJarOperation = new ExecuteJarOperation(sqlStatement);
@@ -65,13 +67,9 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
             }
             SqlType operationType = Operations.getOperationType(sqlStatement);
             if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParseStrategy.getAllFilePath(sqlStatement).forEach(executor::addJar);
-                if (runMode.isApplicationMode()) {
-                    AddJarSqlParseStrategy.getAllFilePath(sqlStatement)
-                            .forEach(FlinkUdfPathContextHolder::addOtherPlugins);
-                } else {
-                    AddJarSqlParseStrategy.getAllFilePath(sqlStatement).forEach(executor::addJar);
-                }
+                Set<File> files = AddJarSqlParseStrategy.getAllFilePath(sqlStatement);
+                files.forEach(executor::addJar);
+                files.forEach(jobManager.getUdfPathContextHolder()::addOtherPlugins);
             }
         }
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));

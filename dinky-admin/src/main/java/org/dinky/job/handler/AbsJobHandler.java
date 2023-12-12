@@ -17,21 +17,11 @@
  *
  */
 
-package org.dinky.executor;
+package org.dinky.job.handler;
 
-public class ExecutorContext {
+import org.dinky.job.Job;
+import org.dinky.job.JobHandler;
 
-    private static final ThreadLocal<Executor> EXECUTOR = new ThreadLocal<>();
-
-    public static void setExecutor(Executor executor) {
-        EXECUTOR.set(executor);
-    }
-
-    public static Executor getExecutor() {
-        return EXECUTOR.get();
-    }
-
-    public static void clear() {
-        EXECUTOR.remove();
-    }
+public abstract class AbsJobHandler implements JobHandler {
+    protected Job job;
 }

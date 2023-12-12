@@ -87,7 +87,7 @@ public class Job {
         this.useGateway = useGateway;
     }
 
-    public static Job init(
+    public static Job build(
             GatewayType type,
             JobConfig jobConfig,
             ExecutorConfig executorConfig,
@@ -98,7 +98,6 @@ public class Job {
         if (!useGateway) {
             job.setJobManagerAddress(executorConfig.getJobManagerAddress());
         }
-        JobContextHolder.setJob(job);
         return job;
     }
 

@@ -21,6 +21,7 @@ package org.dinky.job;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.FlinkUdfPathContextHolder;
@@ -37,9 +38,9 @@ import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
-import org.dinky.executor.ExecutorContext;
 import org.dinky.executor.ExecutorFactory;
 import org.dinky.explainer.Explainer;
+import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
@@ -74,6 +75,7 @@ import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
 
+import java.lang.ref.WeakReference;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
@@ -98,6 +100,8 @@ public class JobManager {
 
     private JobParam jobParam = null;
     private String currentSql = "";
+    private final WeakReference<DinkyClassLoader> dinkyClassLoader = new WeakReference<>(DinkyClassLoader.build());
+    private Job job;
 
     public JobManager() {}
 
@@ -149,6 +153,21 @@ public class JobManager {
         return useGateway;
     }
 
+    // return dinkyclassloader
+    public DinkyClassLoader getDinkyClassLoader() {
+        return dinkyClassLoader.get();
+    }
+
+    // return udfPathContextHolder
+    public FlinkUdfPathContextHolder getUdfPathContextHolder() {
+        return getDinkyClassLoader().getUdfPathContextHolder();
+    }
+
+    // return job
+    public Job getJob() {
+        return job;
+    }
+
     private JobManager(JobConfig config) {
         this.config = config;
     }
@@ -178,12 +197,11 @@ public class JobManager {
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
         executorConfig = config.getExecutorSetting();
         executorConfig.setPlan(isPlanMode);
-        executor = ExecutorFactory.buildExecutor(executorConfig);
-        ExecutorContext.setExecutor(executor);
+        executor = ExecutorFactory.buildExecutor(executorConfig, getDinkyClassLoader());
     }
 
     private boolean ready() {
-        return handler.init();
+        return handler.init(job);
     }
 
     private boolean success() {
@@ -195,23 +213,22 @@ public class JobManager {
     }
 
     public boolean close() {
-        JobContextHolder.clear();
         CustomTableEnvironmentContext.clear();
         RowLevelPermissionsContext.clear();
-        FlinkUdfPathContextHolder.clear();
-        ExecutorContext.clear();
         return true;
     }
 
     public ObjectNode getJarStreamGraphJson(String statement) {
-        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement);
+        StreamGraph streamGraph =
+                JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, getDinkyClassLoader());
         return JsonUtils.parseObject(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
-        Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);
-        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement);
+        job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
+        StreamGraph streamGraph =
+                JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, getDinkyClassLoader());
         try {
             if (!useGateway) {
                 executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
@@ -219,7 +236,7 @@ public class JobManager {
                 GatewayResult gatewayResult = null;
                 config.addGatewayConfig(executor.getSetConfig());
                 if (runMode.isApplicationMode()) {
-                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
+                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar(getUdfPathContextHolder());
                 } else {
                     streamGraph.setJobName(config.getJobName());
                     JobGraph jobGraph = streamGraph.getJobGraph();
@@ -260,11 +277,11 @@ public class JobManager {
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeSql(String statement) throws Exception {
-        Job job = Job.init(runMode, config, executorConfig, executor, statement, useGateway);
+        job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
 
-        DinkyClassLoaderUtil.initClassLoader(config);
-        jobParam = Explainer.build(executor, useStatementSet, sqlSeparator)
+        DinkyClassLoaderUtil.initClassLoader(config, getDinkyClassLoader());
+        jobParam = Explainer.build(executor, useStatementSet, sqlSeparator, this)
                 .pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         try {
             // step 1: init udf
@@ -330,20 +347,20 @@ public class JobManager {
     }
 
     public ExplainResult explainSql(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator)
-                .initialize(this, config, statement)
+        return Explainer.build(executor, useStatementSet, sqlSeparator, this)
+                .initialize(config, statement)
                 .explainSql(statement);
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator)
-                .initialize(this, config, statement)
+        return Explainer.build(executor, useStatementSet, sqlSeparator, this)
+                .initialize(config, statement)
                 .getStreamGraph(statement);
     }
 
     public String getJobPlanJson(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator)
-                .initialize(this, config, statement)
+        return Explainer.build(executor, useStatementSet, sqlSeparator, this)
+                .initialize(config, statement)
                 .getJobPlanInfo(statement)
                 .getJsonPlan();
     }
@@ -389,45 +406,7 @@ public class JobManager {
     }
 
     public static GatewayResult deploySessionCluster(GatewayConfig gatewayConfig) {
-        return Gateway.build(gatewayConfig).deployCluster();
-    }
-
-    @Deprecated
-    public JobResult executeJar() {
-        // TODO 改为ProcessStep注释
-        Job job = Job.init(runMode, config, executorConfig, executor, null, useGateway);
-        ready();
-        try {
-            GatewayResult gatewayResult =
-                    Gateway.build(config.getGatewayConfig()).submitJar();
-            job.setResult(InsertResult.success(gatewayResult.getId()));
-            job.setJobId(gatewayResult.getId());
-            job.setJids(gatewayResult.getJids());
-            job.setJobManagerAddress(URLUtils.formatAddress(gatewayResult.getWebURL()));
-            job.setEndTime(LocalDateTime.now());
-
-            if (gatewayResult.isSuccess()) {
-                job.setStatus(Job.JobStatus.SUCCESS);
-                success();
-            } else {
-                job.setError(gatewayResult.getError());
-                job.setStatus(Job.JobStatus.FAILED);
-                failed();
-            }
-        } catch (Exception e) {
-            String error = LogUtil.getError(
-                    "Exception in executing Jar：\n"
-                            + config.getGatewayConfig().getAppConfig().getUserJarPath(),
-                    e);
-            job.setEndTime(LocalDateTime.now());
-            job.setStatus(Job.JobStatus.FAILED);
-            job.setError(error);
-            failed();
-            log.error(error);
-        } finally {
-            close();
-        }
-        return job.getJobResult();
+        return Gateway.build(gatewayConfig).deployCluster(UDFUtil.createFlinkUdfPathContextHolder());
     }
 
     public static TestResult testGateway(GatewayConfig gatewayConfig) {
