@@ -149,9 +149,13 @@ const Result = (props: any) => {
           const historyData = res.data;
           if (historyData && '2' == historyData.status) {
             const historyId = historyData.id;
-            const tableData = await handleGetOption('api/studio/getJobData', l('global.getdata.tips'), {
-              jobId: historyId
-            });
+            const tableData = await handleGetOption(
+              'api/studio/getJobData',
+              l('global.getdata.tips'),
+              {
+                jobId: historyId
+              }
+            );
             const data = tableData.data;
             if (data.success) {
               consoleData.result = data;

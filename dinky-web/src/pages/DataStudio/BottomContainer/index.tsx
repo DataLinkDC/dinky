@@ -21,23 +21,32 @@ import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
 import Title from '@/components/Front/Title';
 import ContentScroll from '@/components/Scroll/ContentScroll';
 import MovableSidebar from '@/components/Sidebar/MovableSidebar';
-import {StateType, STUDIO_MODEL, TabsItemType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
+import {
+  StateType,
+  STUDIO_MODEL,
+  TabsItemType,
+  TabsPageType,
+  VIEW
+} from '@/pages/DataStudio/model';
 import { LeftBottomMoreTabs, LeftBottomSide } from '@/pages/DataStudio/route';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { PlusOutlined } from '@ant-design/icons';
 import { ConfigProvider, Space, Tabs } from 'antd';
 import React from 'react';
-import {LeftBottomKey} from "@/pages/DataStudio/data.d";
-import {DIALECT} from "@/services/constants";
-import {isSql} from "@/pages/DataStudio/HeaderContainer/service";
 
 export type BottomContainerProps = {
   size: number;
   height: number | string;
 };
 const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
-  const { dispatch, size, bottomContainer, height,tabs:{activeKey,panes} } = props;
+  const {
+    dispatch,
+    size,
+    bottomContainer,
+    height,
+    tabs: { activeKey, panes }
+  } = props;
   const width = document.documentElement.clientWidth - VIEW.sideWidth * 2;
 
   /**
@@ -169,7 +178,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
   };
   const renderItems = () => {
     return [
-      ...LeftBottomSide .filter((tab) => {
+      ...LeftBottomSide.filter((tab) => {
         if (!tab.isShow) {
           return true;
         }
@@ -177,7 +186,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
           return TabsPageType.None;
         }
         const currentTab = (panes as TabsItemType[]).find((item) => item.key === activeKey);
-        const show = tab.isShow(currentTab?.type ?? TabsPageType.None, currentTab?.subType)
+        const show = tab.isShow(currentTab?.type ?? TabsPageType.None, currentTab?.subType);
         // 如果当前打开的菜单等于 状态存的菜单 且 菜单不显示状态下，先切换到项目key(因为项目key 不可能不显示) 在关闭这个
         // if current open menu equal status menu and menu is not show status, first switch to project key(because project key is not show) and close this
         // if (tab.key === bottomContainer.selectKey && !show) {

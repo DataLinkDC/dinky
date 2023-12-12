@@ -17,31 +17,37 @@
  *
  */
 
-import { AuthorizedObject,useAccess } from '@/hooks/useAccess';
+import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
 import { LeftMenuKey } from '@/pages/DataStudio/data.d';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import { isProjectTabs,mapDispatchToProps } from '@/pages/DataStudio/function';
+import { isProjectTabs, mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import { StateType,TabsItemType,TabsPageSubType,TabsPageType,VIEW } from '@/pages/DataStudio/model';
+import {
+  StateType,
+  TabsItemType,
+  TabsPageSubType,
+  TabsPageType,
+  VIEW
+} from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
-getClusterConfigurationData,
-getEnvData,
-getSessionData
+  getClusterConfigurationData,
+  getEnvData,
+  getSessionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
-import { LeftBottomMoreTabs,LeftBottomSide,LeftSide,RightSide } from '@/pages/DataStudio/route';
+import { LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide } from '@/pages/DataStudio/route';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Layout,Menu,theme } from 'antd';
-import { useEffect,useState } from 'react';
+import { Layout, Menu, theme } from 'antd';
+import { useEffect, useState } from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
-import { connect,getDvaApp } from 'umi';
+import { connect, getDvaApp } from 'umi';
 
 const { Sider, Content } = Layout;
 
@@ -182,22 +188,22 @@ const DataStudio = (props: any) => {
       mode='inline'
       selectedKeys={[bottomContainer.selectKey]}
       activeKey={bottomContainer.selectKey}
-      items={LeftBottomSide.filter((x) =>
-        AuthorizedObject({ path: x.auth, children: x, access })
-      ) .filter((tab) => {
-        if (!tab.isShow) {
-          return true;
-        }
-        if (parseInt(activeKey) < 0) {
-          return TabsPageType.None;
-        }
-        const currentTab = (panes as TabsItemType[]).find((item) => item.key === activeKey);
-        return tab.isShow(currentTab?.type ?? TabsPageType.None, currentTab?.subType);
-      }).map((x) => ({
-        key: x.key,
-        label: x.label,
-        icon: x.icon
-      }))}
+      items={LeftBottomSide.filter((x) => AuthorizedObject({ path: x.auth, children: x, access }))
+        .filter((tab) => {
+          if (!tab.isShow) {
+            return true;
+          }
+          if (parseInt(activeKey) < 0) {
+            return TabsPageType.None;
+          }
+          const currentTab = (panes as TabsItemType[]).find((item) => item.key === activeKey);
+          return tab.isShow(currentTab?.type ?? TabsPageType.None, currentTab?.subType);
+        })
+        .map((x) => ({
+          key: x.key,
+          label: x.label,
+          icon: x.icon
+        }))}
       style={{
         display: 'flex',
         flexDirection: 'column',
