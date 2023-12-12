@@ -24,7 +24,7 @@ import {
   mapDispatchToProps
 } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
-import { StateType } from '@/pages/DataStudio/model';
+import {DataStudioParams, StateType} from '@/pages/DataStudio/model';
 import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { transformTableDataToCsv } from '@/utils/function';
@@ -50,7 +50,7 @@ const Result = (props: any) => {
   const [data, setData] = useState<Data>({});
   const [loading, setLoading] = useState<boolean>(true);
   const currentTabs = getCurrentTab(panes, activeKey);
-  const current = getCurrentData(panes, activeKey) ?? {};
+  const current = getCurrentData(panes, activeKey) ;
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -125,12 +125,12 @@ const Result = (props: any) => {
       return;
     }
 
-    const params = currentTabs.params;
+    const params = currentTabs.params as DataStudioParams;
     const consoleData = currentTabs.console;
     if (consoleData.result && !isRefresh) {
       setData(consoleData.result);
     } else {
-      if (isSql(current.dialect)) {
+      if (isSql(current?.dialect ?? '')) {
         // common sql
         const res = await handleGetOption('api/studio/getCommonSqlData', l('global.getdata.tips'), {
           taskId: params.taskId
@@ -142,9 +142,9 @@ const Result = (props: any) => {
       } else {
         // flink sql
         // to do: get job data by history id list, not flink jid
-        if (current.id) {
+        if (current?.id) {
           const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
-            id: current.id
+            id: current?.id
           });
           const historyData = res.data;
           if (historyData && '2' == historyData.status) {
@@ -196,7 +196,7 @@ const Result = (props: any) => {
   const renderFlinkSQLContent = () => {
     return (
       <>
-        {current.jobInstanceId ? (
+        {current?.jobInstanceId ? (
           <>
             <Space>
               <Button

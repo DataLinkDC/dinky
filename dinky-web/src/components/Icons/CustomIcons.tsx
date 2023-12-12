@@ -17,7 +17,7 @@
  *
  */
 
-import Icon, { DeleteTwoTone } from '@ant-design/icons';
+import Icon,{ DeleteTwoTone } from '@ant-design/icons';
 
 const IconStyle = {
   height: '16px',
@@ -32,6 +32,34 @@ export const DangerDeleteIcon = (props: any) => {
   return (
     <>
       <DeleteTwoTone {...props} twoToneColor={'red'} />
+    </>
+  );
+};
+
+export const PushpinIcon = (props: any) => {
+  return (
+    <>
+      <Icon
+        {...props}
+        style={{ ...IconStyle }}
+        component={() => (
+          <svg
+            className='icon'
+            viewBox='0 0 1293 1024'
+            version='1.1'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path
+              d='M304.061663 1024l-10.075639-558.583565 673.072886-298.727501 37.527055 84.565975-616.984683 273.834748 4.307805 239.256659 131.89401-166.298629 199.358866 217.963381L1116.921383 123.047108 189.774722 276.899361l105.06419 107.911966-66.293943 64.5448L0 214.595197 1293.252283 0l-552.497706 972.320793-211.935344-231.710773-224.75757 283.38998z'
+              fill='#1262B3'
+            ></path>
+            <path
+              d='M304.061663 1024l-10.075639-558.583565 673.072886-298.727501 37.527055 84.565975-616.984683 273.834748 4.307805 239.256659 98.154354-123.769894 72.480992 57.490407-258.48277 325.933171z'
+              fill='#FF584D'
+            ></path>
+          </svg>
+        )}
+      />
     </>
   );
 };

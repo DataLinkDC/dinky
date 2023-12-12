@@ -57,7 +57,6 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -143,30 +142,8 @@ public class SchedulerController {
     /** 创建任务定义 */
     @PostMapping("/task")
     @ApiOperation("Create Task Definition")
-    @ApiImplicitParams({
-        @ApiImplicitParam(
-                name = "dinkyTaskId",
-                value = "Dinky Task id",
-                required = true,
-                dataType = "Long",
-                paramType = "query",
-                example = "1"),
-        @ApiImplicitParam(
-                name = "upstreamCodes",
-                value = "Upstream Task Codes",
-                required = false,
-                dataType = "String",
-                paramType = "query",
-                example = "1,2,3"),
-        @ApiImplicitParam(
-                name = "taskRequest",
-                value = "Task Request",
-                required = true,
-                dataType = "TaskRequest",
-                paramType = "body"),
-    })
     public Result<String> createTaskDefinition(
-            @ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
+            @ApiParam(value = "前置任务编号 列表") @RequestParam(required = false) List<String> upstreamCodes,
             @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId,
             @Valid @RequestBody TaskRequest taskRequest) {
         DinkyTaskParams dinkyTaskParams = new DinkyTaskParams();
@@ -219,41 +196,11 @@ public class SchedulerController {
     /** 更新任务定义 */
     @PutMapping("/task")
     @ApiOperation("Update Task Definition")
-    @ApiImplicitParams({
-        @ApiImplicitParam(
-                name = "projectCode",
-                value = "Project Code",
-                required = true,
-                dataType = "Long",
-                paramType = "query",
-                example = "1"),
-        @ApiImplicitParam(
-                name = "processCode",
-                value = "Process Code",
-                required = true,
-                dataType = "Long",
-                paramType = "query",
-                example = "1"),
-        @ApiImplicitParam(
-                name = "taskCode",
-                value = "Task Code",
-                required = true,
-                dataType = "Long",
-                paramType = "query",
-                example = "1"),
-        @ApiImplicitParam(
-                name = "upstreamCodes",
-                value = "Upstream Task Codes",
-                required = false,
-                dataType = "String",
-                paramType = "query",
-                example = "1,2,3")
-    })
     public Result<String> updateTaskDefinition(
             @ApiParam(value = "项目编号") @RequestParam long projectCode,
             @ApiParam(value = "工作流定义编号") @RequestParam long processCode,
             @ApiParam(value = "任务定义编号") @RequestParam long taskCode,
-            @ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
+            @ApiParam(value = "前置任务编号 ") @RequestParam(required = false) List<String> upstreamCodes,
             @Valid @RequestBody TaskRequest taskRequest) {
 
         TaskDefinition taskDefinition = taskClient.getTaskDefinition(projectCode, taskCode);
