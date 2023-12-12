@@ -91,6 +91,8 @@ public class FlinkConfigOptionsUtils {
     }
 
     public static String[] getConfigOptionsClass() {
-        return ResourceUtil.readUtf8Str("FlinkConfClass").replace("\r", "").split("\n");
+        return ResourceUtil.readUtf8Str("dinky-loader/FlinkConfClass")
+                .replace("\r", "")
+                .split("\n");
     }
 }
