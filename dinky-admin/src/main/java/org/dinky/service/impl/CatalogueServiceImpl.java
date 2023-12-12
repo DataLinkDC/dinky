@@ -416,7 +416,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             List<History> historyList = historyService.list(
                     new LambdaQueryWrapper<History>().eq(History::getTaskId, catalogue.getTaskId()));
             historyList.forEach(history -> {
-                // 查询 job history 表中的作业 通过 id 关联查询
+                // 查询 job history 表中的作业 通过 id 关联查询 // TODO npe
                 JobHistory historyServiceById = jobHistoryService.getById(history.getId());
                 // 删除 job history 表中的作业
                 jobHistoryService.removeById(historyServiceById.getId());
