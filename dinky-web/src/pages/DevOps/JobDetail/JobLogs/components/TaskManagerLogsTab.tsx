@@ -95,7 +95,7 @@ const TaskManagerLogsTab = (props: JobProps) => {
                 showFloatButton
                 code={tmLog.data}
                 language={'javalog'}
-                height={parent.innerHeight - 300}
+                height={'calc(100vh - 340px)'}
               />
             </Spin>
           </Card>

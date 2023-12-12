@@ -142,6 +142,7 @@ const AlertHistoryList = (props: JobProps) => {
     <>
       <ProTable<AlertHistory>
         rowKey={'id'}
+        style={{ height: 'calc(100vh - 240px)' }}
         dataSource={alertHistory.alertHistory}
         loading={alertHistory.loading}
         pagination={{

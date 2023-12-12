@@ -107,7 +107,7 @@ const JobList = () => {
   }, []);
 
   return (
-    <ProCard boxShadow={true} style={{ height: '73vh' }}>
+    <ProCard boxShadow={true} style={{ height: 'calc(100vh - 250px)' }}>
       <ProTable<Jobs.JobInstance>
         {...PROTABLE_OPTIONS_PUBLIC}
         search={false}
