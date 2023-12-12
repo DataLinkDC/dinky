@@ -45,7 +45,6 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -100,8 +99,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }
 
         List<Catalogue> returnList = new ArrayList<>();
-        for (Iterator<Catalogue> iterator = catalogueList.iterator(); iterator.hasNext(); ) {
-            Catalogue catalogue = iterator.next();
+        for (Catalogue catalogue : catalogueList) {
             //  get all child catalogue of parent catalogue id , the 0 is root catalogue
             if (catalogue.getParentId() == 0) {
                 recursionBuildCatalogueAndChildren(catalogueList, catalogue);
@@ -147,7 +145,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
      * @return
      */
     private boolean hasChild(List<Catalogue> list, Catalogue catalogue) {
-        return getChildList(list, catalogue).size() > 0;
+        return !getChildList(list, catalogue).isEmpty();
     }
 
     /**
@@ -341,7 +339,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         File file = new File(sourcePath);
         File[] fs = file.listFiles();
         if (fs == null) {
-            throw new RuntimeException("目录层级有误");
+            throw new RuntimeException("the dir is error");
         }
         for (File fl : fs) {
             if (fl.isFile()) {
@@ -373,7 +371,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("read file error, {} ", e);
         }
         return sb.toString();
     }
@@ -416,10 +414,12 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             List<History> historyList = historyService.list(
                     new LambdaQueryWrapper<History>().eq(History::getTaskId, catalogue.getTaskId()));
             historyList.forEach(history -> {
-                // 查询 job history 表中的作业 通过 id 关联查询
+                // 查询 job history 表中的作业 通过 id 关联查询 // TODO npe
                 JobHistory historyServiceById = jobHistoryService.getById(history.getId());
-                // 删除 job history 表中的作业
-                jobHistoryService.removeById(historyServiceById.getId());
+                if (historyServiceById != null) {
+                    // 删除 job history 表中的作业
+                    jobHistoryService.removeById(historyServiceById.getId());
+                }
                 // 删除 history 表中的作业
                 historyService.removeById(history.getId());
             });
@@ -446,6 +446,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean saveOrUpdateOrRename(Catalogue catalogue) {
         if (taskService.getById(catalogue.getTaskId()) != null) {
             toRename(catalogue);
