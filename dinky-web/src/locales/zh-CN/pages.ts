@@ -45,7 +45,7 @@ export default {
    *
    * */
 
-  'button.push': '提交',
+  'button.push': '推送',
   /**
    *
    * catalog

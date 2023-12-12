@@ -48,7 +48,7 @@ export default {
    *
    * */
 
-  'button.push': 'submit',
+  'button.push': 'Push',
   /**
    *
    * catalog
