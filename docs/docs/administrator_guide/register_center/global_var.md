@@ -111,23 +111,24 @@ SHOW FRAGMENT var1;
 
 如您升级到 `1.0.0` 及以上版本, 请修改引用 `${_CURRENT_DATE_}` `${_CURRENT_TIMESTAMP_}` 变量的相关作业
 
-新的表达式变量无需声明, 已由程序启动时自动加载初始化 ,直接使用即可
+新的表达式变量无需声明 ,直接使用即可,
+请注意: 表达式变量调用时请使用小驼峰命名法
 :::
 
 ### 日期时间类表达式变量
 
-> 日期相关: `date` 为实例名用来调用方法`(必须固定)`,使用 [DateUtil](https://doc.hutool.cn/pages/DateUtil/)工具类实现,且支持此工具类的所有方法调用
+> 日期相关: `dateUtil` 为实例名用来调用方法`(必须固定)`,使用 [DateUtil](https://doc.hutool.cn/pages/DateUtil/)工具类实现,且支持此工具类的所有方法调用
 
 
 ```sql
 -- 获取当前秒
-select '${date.currentSeconds()}';
+select '${dateUtil.currentSeconds()}';
 
 # 获取日期 减去 10 天
-select '${date.offsetDay(date.date(), -10)}';
+select '${dateUtil.offsetDay(date.date(), -10)}';
 
 # 获取当前日期 标准格式 yyyy-MM-dd HH:mm:ss
-select '${date.now()}';
+select '${dateUtil.now()}';
 
 # etc .....
 
@@ -138,30 +139,30 @@ select '${date.now()}';
 
 ### 随机串相关表达式变量
 
-> `random` 为实例名用来调用方法`(必须固定)`, 使用 [RandomUtil](https://doc.hutool.cn/pages/RandomUtil/)工具类实现,且支持此工具类的所有方法调用
+> `randomUtil` 为实例名用来调用方法`(必须固定)`, 使用 [RandomUtil](https://doc.hutool.cn/pages/RandomUtil/)工具类实现,且支持此工具类的所有方法调用
 
 ```sql
 # 产生一个[10, 100)的随机数
-select '${random.randomInt(10, 100)}';
+select '${randomUtil.randomInt(10, 100)}';
 
 # 随机字符串(只包含数字和字符）
-select '${random.randomString()}';
+select '${randomUtil.randomString()}';
 
 # 获得一个只包含数字的字符串
-select '${random.randomNumbers()}';
+select '${randomUtil.randomNumbers()}';
 
 ```
 
 ### 唯一 ID 相关表达式变量
 
-> id 为实例名用来调用方法`(必须固定)` , 使用 [IdUtil](https://doc.hutool.cn/pages/IdUtil/) 工具类实现
+> idUtil 为实例名用来调用方法`(必须固定)` , 使用 [IdUtil](https://doc.hutool.cn/pages/IdUtil/) 工具类实现
 
 ```sql
 # 生成的UUID是带-的字符串，类似于：a5c8a5e8-df2b-4706-bea4-08d0939410e3
-select '${id.randomUUID()}';
+select '${idUtil.randomUUID()}';
 
 # 生成的是不带-的字符串，类似于：b17f24ff026d40949c85a24f4f375d42
-select '${id.simpleUUID()}';
+select '${idUtil.simpleUUID()}';
 ```
 
 :::tip 扩展
