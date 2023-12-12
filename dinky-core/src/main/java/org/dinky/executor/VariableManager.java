@@ -19,12 +19,22 @@
 
 package org.dinky.executor;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.resource.ResourceUtil;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.Opt;
-import cn.hutool.extra.expression.engine.jexl.JexlEngine;
+import static java.lang.String.format;
+import static org.apache.flink.util.Preconditions.checkArgument;
+import static org.apache.flink.util.Preconditions.checkNotNull;
+
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.data.exception.DinkyException;
+import org.dinky.utils.StringUtil;
+
+import org.apache.flink.table.api.DataTypes;
+import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.catalog.exceptions.CatalogException;
+import org.apache.flink.types.Row;
+import org.apache.flink.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,20 +43,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.extra.expression.engine.jexl.JexlEngine;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.flink.table.api.DataTypes;
-import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.catalog.exceptions.CatalogException;
-import org.apache.flink.types.Row;
-import org.apache.flink.util.StringUtils;
-import org.dinky.assertion.Asserts;
-import org.dinky.constant.FlinkSQLConstant;
-import org.dinky.data.exception.DinkyException;
-import org.dinky.utils.StringUtil;
-import static java.lang.String.format;
-import static org.apache.flink.util.Preconditions.checkArgument;
-import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
  * Flink Sql Variable Manager
@@ -62,7 +65,6 @@ public final class VariableManager {
     public static final JexlEngine ENGINE = new JexlEngine();
 
     public static final Dict ENGINE_CONTEXT = Dict.create();
-
 
     /**
      * load expression variable class
@@ -80,7 +82,11 @@ public final class VariableManager {
                 ENGINE_CONTEXT.set(snakeCaseClassName, Class.forName(fullClassName));
                 log.info("load class : {}", fullClassName);
             } catch (ClassNotFoundException e) {
-                log.error("The class [{}] that needs to be loaded may not be loaded by dinky or there is no jar file of this class under dinky's lib/plugins. Please check, and try again. {}", fullClassName, e.getMessage(), e);
+                log.error(
+                        "The class [{}] that needs to be loaded may not be loaded by dinky or there is no jar file of this class under dinky's lib/plugins. Please check, and try again. {}",
+                        fullClassName,
+                        e.getMessage(),
+                        e);
             }
         });
     }
