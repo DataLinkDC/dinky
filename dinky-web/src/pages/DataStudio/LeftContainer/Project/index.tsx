@@ -206,7 +206,7 @@ const Project: React.FC = (props: connect) => {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL;
     }
 
-   await handleAddOrUpdate(
+    await handleAddOrUpdate(
       options.url,
       {
         ...values,
