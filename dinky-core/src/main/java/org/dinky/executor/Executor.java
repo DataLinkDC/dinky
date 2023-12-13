@@ -26,7 +26,6 @@ import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
-import org.dinky.parser.CustomParserImpl;
 import org.dinky.utils.KerberosUtil;
 
 import org.apache.flink.api.common.ExecutionConfig;
@@ -139,12 +138,6 @@ public abstract class Executor {
 
         tableEnvironment = createCustomTableEnvironment(classLoader);
         CustomTableEnvironmentContext.set(tableEnvironment);
-
-        // after 1.18 version, this two injection should be removed
-        tableEnvironment.injectParser(
-                new CustomParserImpl(tableEnvironment.getPlanner().getParser()));
-        tableEnvironment.injectExtendedExecutor(
-                new CustomExtendedOperationExecutorImpl(this.getCustomTableEnvironment()));
 
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
         if (executorConfig.isValidJobName()) {

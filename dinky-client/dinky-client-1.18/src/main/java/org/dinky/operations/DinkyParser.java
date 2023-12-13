@@ -17,41 +17,30 @@
  *
  */
 
-package org.dinky.trans.show;
+package org.dinky.operations;
 
-import org.dinky.executor.Executor;
-import org.dinky.trans.AbstractOperation;
-import org.dinky.trans.Operation;
+import org.dinky.parser.DinkyExtendedParser;
 
-import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.api.TableEnvironment;
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.planner.parse.ExtendedParseStrategy;
 
-/**
- * ShowFragmentsOperation
- *
- * @since 2022/2/17 16:31
- */
-public class ShowFragmentsOperation extends AbstractOperation implements Operation {
+import java.util.Optional;
 
-    private static final String KEY_WORD = "SHOW FRAGMENTS";
+public class DinkyParser extends DinkyExtendedParser {
+    private final TableEnvironment tableEnvironment;
 
-    public ShowFragmentsOperation() {}
-
-    public ShowFragmentsOperation(String statement) {
-        super(statement);
+    public DinkyParser(TableEnvironment tableEnvironment) {
+        this.tableEnvironment = tableEnvironment;
     }
 
     @Override
-    public String getHandle() {
-        return KEY_WORD;
-    }
-
-    @Override
-    public Operation create(String statement) {
-        return new ShowFragmentsOperation(statement);
-    }
-
-    @Override
-    public TableResult execute(Executor executor) {
-        return executor.getVariableManager().getVariables();
+    public Optional<Operation> parse(String statement) {
+        for (ExtendedParseStrategy strategy : PARSE_STRATEGIES) {
+            if (strategy.match(statement)) {
+                return Optional.of(new DinkyExecutableOperation(this.tableEnvironment, strategy.convert(statement)));
+            }
+        }
+        return Optional.empty();
     }
 }
