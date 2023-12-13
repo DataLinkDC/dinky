@@ -54,7 +54,8 @@ export default {
 
   'catalog.name': '作业名称',
   'catalog.name.placeholder': '请输入作业名称',
-  'catalog.name.tip': '此名称可作为 FlinkSql 任务的 JobName ([配置项',
+  'catalog.name.validate.error': '作业名称不允许出现 _ 字符,K8s 命名规范',
+  'catalog.name.tip': '此名称可作为 FlinkSql 任务的 JobName',
   'catalog.note': '作业描述',
   'catalog.note.placeholder': '请输入作业描述',
   'catalog.type': '作业类型',
