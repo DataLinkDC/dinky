@@ -26,8 +26,6 @@ import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobInstance;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

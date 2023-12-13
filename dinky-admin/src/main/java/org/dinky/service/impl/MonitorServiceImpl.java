@@ -40,7 +40,6 @@ import org.apache.paimon.predicate.PredicateBuilder;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -59,7 +58,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -68,11 +66,11 @@ import lombok.RequiredArgsConstructor;
 public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> implements MonitorService {
 
     private final Executor scheduleRefreshMonitorDataExecutor;
-    private final JobInstanceService  jobInstanceService;
+    private final JobInstanceService jobInstanceService;
 
     @Override
     public List<MetricsVO> getData(Date startTime, Date endTime, List<String> models) {
-        if (models.isEmpty()){
+        if (models.isEmpty()) {
             throw new DinkyException("Please provide at least one monitoring ID");
         }
         endTime = Opt.ofNullable(endTime).orElse(DateUtil.date());
@@ -133,18 +131,19 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
     public List<MetricsLayoutVo> getMetricsLayout() {
         Map<String, List<Metrics>> collect = list().stream().collect(Collectors.groupingBy(Metrics::getLayoutName));
 
-        List<MetricsLayoutVo> result= new ArrayList<>();
+        List<MetricsLayoutVo> result = new ArrayList<>();
         for (Map.Entry<String, List<Metrics>> entry : collect.entrySet()) {
-            //It is derived from a group, so the value must have a value,
+            // It is derived from a group, so the value must have a value,
             // and a layout name only corresponds to a task ID, so only the first one can be taken
             Integer taskId = entry.getValue().get(0).getTaskId();
             JobInstance jobInstance = jobInstanceService.getJobInstanceByTaskId(taskId);
             MetricsLayoutVo metricsLayoutVo = MetricsLayoutVo.builder()
                     .layoutName(entry.getKey())
                     .metrics(entry.getValue())
-                    .flinkJobId(jobInstance==null?null:jobInstance.getJid())
+                    .flinkJobId(jobInstance == null ? null : jobInstance.getJid())
                     .taskId(taskId)
-                    .showInDashboard(true).build();
+                    .showInDashboard(true)
+                    .build();
             result.add(metricsLayoutVo);
         }
         return result;

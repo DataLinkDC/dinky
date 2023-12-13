@@ -29,12 +29,12 @@ import org.dinky.job.handler.JobAlertHandler;
 import org.dinky.job.handler.JobMetricsHandler;
 import org.dinky.job.handler.JobRefreshHandler;
 import org.dinky.service.JobInstanceService;
+import org.dinky.service.MonitorService;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.dinky.service.MonitorService;
 import org.springframework.context.annotation.DependsOn;
 
 import lombok.Data;
@@ -71,10 +71,12 @@ public class FlinkJobTask implements DaemonTask {
         this.config = config;
         this.jobInfoDetail = jobInstanceService.getJobInfoDetail(config.getId());
         // Get a list of metrics and deduplicate them based on vertices and metrics
-        monitorService.getMetricsLayoutByTaskId(jobInfoDetail.getInstance().getTaskId()).forEach(m -> {
-            verticesAndMetricsMap.putIfAbsent(m.getVertices(), new ConcurrentHashMap<>());
-            verticesAndMetricsMap.get(m.getVertices()).put(m.getMetrics(), "");
-        });
+        monitorService
+                .getMetricsLayoutByTaskId(jobInfoDetail.getInstance().getTaskId())
+                .forEach(m -> {
+                    verticesAndMetricsMap.putIfAbsent(m.getVertices(), new ConcurrentHashMap<>());
+                    verticesAndMetricsMap.get(m.getVertices()).put(m.getMetrics(), "");
+                });
         return this;
     }
 

@@ -26,17 +26,13 @@ import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.MetricsType;
 import org.dinky.data.metrics.Jvm;
 import org.dinky.data.model.Metrics;
-import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.MetricsVO;
-import org.dinky.data.vo.task.JobInstanceVo;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,9 +41,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
@@ -72,8 +65,8 @@ public class MonitorController {
     @GetMapping("/getSysData")
     @ApiOperation("Get System Data")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
-            @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long")
+        @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
+        @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long")
     })
     public Result<List<MetricsVO>> getData(@RequestParam Long startTime, Long endTime) {
         List<MetricsVO> data = monitorService.getData(
@@ -86,9 +79,9 @@ public class MonitorController {
     @GetMapping("/getFlinkData")
     @ApiOperation("Get Flink Data")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
-            @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long"),
-            @ApiImplicitParam(name = "taskIds", value = "Task Ids", required = true, dataType = "String")
+        @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
+        @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long"),
+        @ApiImplicitParam(name = "taskIds", value = "Task Ids", required = true, dataType = "String")
     })
     public Result<List<MetricsVO>> getFlinkData(@RequestParam Long startTime, Long endTime, String flinkJobIds) {
         return Result.succeed(monitorService.getData(
@@ -101,12 +94,12 @@ public class MonitorController {
     @ApiOperation("Save Flink Metrics")
     @Log(title = "Save Flink Metrics", businessType = BusinessType.INSERT)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "layout", value = "Layout Name", required = true, dataType = "String"),
-            @ApiImplicitParam(
-                    name = "metricsList",
-                    value = "Metrics List",
-                    required = true,
-                    dataType = "List<MetricsLayoutDTO>")
+        @ApiImplicitParam(name = "layout", value = "Layout Name", required = true, dataType = "String"),
+        @ApiImplicitParam(
+                name = "metricsList",
+                value = "Metrics List",
+                required = true,
+                dataType = "List<MetricsLayoutDTO>")
     })
     public Result<Void> saveFlinkMetricLayout(
             @PathVariable(value = "layout") String layoutName, @RequestBody List<MetricsLayoutDTO> metricsList) {
