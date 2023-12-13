@@ -21,6 +21,7 @@ package org.dinky.executor;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.configuration.RestOptions;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.util.stream.Collectors;
@@ -48,9 +49,9 @@ public class LocalStreamExecutor extends Executor {
         }
         if (!executorConfig.isPlan()) {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
-            //            if (!configuration.contains(RestOptions.PORT)) {
-            //                configuration.set(RestOptions.PORT, executorConfig.getPort());
-            //            }
+            if (!configuration.contains(RestOptions.PORT)) {
+                configuration.set(RestOptions.PORT, executorConfig.getPort());
+            }
             this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
         } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();
