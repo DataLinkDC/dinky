@@ -162,7 +162,7 @@ export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
       key: -1
     }
   ];
-  for (const item of alertGroups) {
+  alertGroups?.forEach((item) => {
     alertGroupOptions.push({
       label: (
         <TagAlignLeft>
@@ -173,7 +173,7 @@ export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
       value: item.id,
       key: item.id
     });
-  }
+  });
   return alertGroupOptions;
 };
 

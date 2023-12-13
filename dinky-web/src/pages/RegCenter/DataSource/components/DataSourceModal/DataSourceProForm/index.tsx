@@ -30,11 +30,13 @@ import { AutoComplete, Form } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import TextArea from 'antd/es/input/TextArea';
 import { Values } from 'async-validator';
-import React, { useState } from 'react';
+import React from 'react';
 
 type DataSourceProFormProps = {
   values: Partial<DataSources.DataSource>;
   form: FormInstance<Values>;
+  dbType: string;
+  excludeFormItem: boolean;
   flinkConfigChange: (value: string) => void;
   flinkTemplateChange: (value: string) => void;
 };
@@ -47,19 +49,7 @@ const CodeEditProps = {
 };
 
 const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
-  const { values, form, flinkTemplateChange, flinkConfigChange } = props;
-  const [excludeFormItem, setExcludeFormItem] = useState<boolean>(false);
-
-  const [dbType, setDbType] = useState<string>(values.type ?? 'MySQL');
-
-  const handleTypeChange = (value: any) => {
-    if (value.type) setDbType(value.type);
-    if (value.type === 'Hive' || value.type === 'Presto') {
-      setExcludeFormItem(true);
-    } else {
-      setExcludeFormItem(false);
-    }
-  };
+  const { values, form, dbType, excludeFormItem, flinkTemplateChange, flinkConfigChange } = props;
 
   const renderDataSourceForm = () => {
     return (

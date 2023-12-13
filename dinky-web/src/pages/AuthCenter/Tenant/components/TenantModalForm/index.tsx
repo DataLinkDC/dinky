@@ -81,6 +81,10 @@ const TenantModalForm: React.FC<TenantModalFormProps> = (props) => {
       title={values.id ? l('tenant.update') : l('tenant.create')}
       open={modalVisible}
       onOk={() => submitForm()}
+      okButtonProps={{
+        htmlType: 'submit',
+        autoFocus: true
+      }}
       onCancel={() => handleCancel()}
     >
       <TenantForm values={values} form={form} />
