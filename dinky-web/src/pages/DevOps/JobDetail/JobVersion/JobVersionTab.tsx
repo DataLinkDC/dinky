@@ -128,7 +128,7 @@ const JobVersionTab = (props: JobProps) => {
 
   return (
     <>
-      <ProCard size={'small'} bodyStyle={{ height: parent.innerHeight - 180, overflow: 'auto' }}>
+      <ProCard size={'small'} bodyStyle={{ height: 'calc(100vh - 180px)', overflow: 'auto' }}>
         {renderVersionList()}
       </ProCard>
     </>

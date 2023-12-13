@@ -93,7 +93,7 @@ const AlertTemplateForm: React.FC<AlertTemplateFormProps> = (props) => {
           <CodeEdit
             {...CodeEditProps}
             code={codeValue}
-            onChange={(value) => setCodeValue(value ?? '')}
+            onChange={(value: string) => setCodeValue(value ?? '')}
           />
         </ProForm.Item>
       </>
@@ -108,7 +108,13 @@ const AlertTemplateForm: React.FC<AlertTemplateFormProps> = (props) => {
       <Button key={'AlertTemplateCancel'} onClick={() => handleModalVisible(false)}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'AlertTemplateFinish'} type='primary' onClick={() => submitForm()}>
+      <Button
+        key={'AlertTemplateFinish'}
+        type='primary'
+        htmlType={'submit'}
+        autoFocus
+        onClick={() => submitForm()}
+      >
         {l('button.finish')}
       </Button>
     ];

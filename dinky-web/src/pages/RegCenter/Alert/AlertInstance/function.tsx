@@ -54,5 +54,5 @@ export const getAlertIcon = (type: string, size?: number) => {
 };
 
 export const getSmsType = (type: string) => {
-  return MANU_FRACTURES.find((item) => item.value === type)?.label;
+  return MANU_FRACTURES.find((item) => item.value === type)?.key || '';
 };

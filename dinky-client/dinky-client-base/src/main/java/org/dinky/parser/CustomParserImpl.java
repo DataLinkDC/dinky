@@ -20,10 +20,6 @@
 package org.dinky.parser;
 
 import org.dinky.executor.CustomParser;
-import org.dinky.trans.parse.AddJarSqlParseStrategy;
-import org.dinky.trans.parse.CreateAggTableSelectSqlParseStrategy;
-import org.dinky.trans.parse.CreateTemporalTableFunctionParseStrategy;
-import org.dinky.trans.parse.SetSqlParseStrategy;
 
 import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.table.delegation.Parser;
@@ -31,10 +27,8 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.planner.calcite.FlinkPlannerImpl;
 import org.apache.flink.table.planner.delegation.ParserImpl;
 import org.apache.flink.table.planner.parse.CalciteParser;
-import org.apache.flink.table.planner.parse.ExtendedParseStrategy;
 import org.apache.flink.table.planner.parse.ExtendedParser;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +38,6 @@ import cn.hutool.core.util.ReflectUtil;
 
 public class CustomParserImpl implements CustomParser {
 
-    private static final DinkyExtendedParser DINKY_EXTENDED_PARSER = DinkyExtendedParser.INSTANCE;
     private final Parser parser;
     private final Supplier<FlinkPlannerImpl> validatorSupplier;
     private final Supplier<CalciteParser> calciteParserSupplier;
@@ -77,7 +70,7 @@ public class CustomParserImpl implements CustomParser {
 
     @Override
     public List<Operation> parse(String statement) {
-        Optional<Operation> command = DINKY_EXTENDED_PARSER.parse(statement);
+        Optional<Operation> command = getDinkyParser().parse(statement);
 
         // note: null represent not custom parser;
         return command.map(Collections::singletonList).orElse(null);
@@ -86,6 +79,11 @@ public class CustomParserImpl implements CustomParser {
     @Override
     public Parser getParser() {
         return parser;
+    }
+
+    @Override
+    public ExtendedParser getDinkyParser() {
+        return DinkyExtendedParser.INSTANCE;
     }
 
     @Override
@@ -102,25 +100,5 @@ public class CustomParserImpl implements CustomParser {
     public SqlNode validate(SqlNode sqlNode) {
         FlinkPlannerImpl flinkPlanner = validatorSupplier.get();
         return flinkPlanner.validate(sqlNode);
-    }
-
-    public static class DinkyExtendedParser extends ExtendedParser {
-        public static final DinkyExtendedParser INSTANCE = new DinkyExtendedParser();
-
-        private static final List<ExtendedParseStrategy> PARSE_STRATEGIES = Arrays.asList(
-                AddJarSqlParseStrategy.INSTANCE,
-                CreateAggTableSelectSqlParseStrategy.INSTANCE,
-                SetSqlParseStrategy.INSTANCE,
-                CreateTemporalTableFunctionParseStrategy.INSTANCE);
-
-        @Override
-        public Optional<Operation> parse(String statement) {
-            for (ExtendedParseStrategy strategy : PARSE_STRATEGIES) {
-                if (strategy.match(statement)) {
-                    return Optional.of(strategy.convert(statement));
-                }
-            }
-            return Optional.empty();
-        }
     }
 }

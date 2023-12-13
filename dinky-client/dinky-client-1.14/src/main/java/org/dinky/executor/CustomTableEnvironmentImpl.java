@@ -22,6 +22,7 @@ package org.dinky.executor;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.parser.CustomParserImpl;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LineageContext;
 
@@ -119,6 +120,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 isStreamingMode,
                 userClassLoader));
         this.executor = executor;
+        injectParser(new CustomParserImpl(getPlanner().getParser()));
+        injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
     }
 
     public static CustomTableEnvironmentImpl create(

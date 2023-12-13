@@ -84,6 +84,10 @@ const RoleModalForm: React.FC<RoleModalProps> = (props) => {
       title={values.id ? l('role.update') : l('role.create')}
       open={modalVisible}
       onCancel={() => handleCancel()}
+      okButtonProps={{
+        htmlType: 'submit',
+        autoFocus: true
+      }}
       onOk={() => submitForm()}
     >
       <RoleProForm form={form} values={values} />

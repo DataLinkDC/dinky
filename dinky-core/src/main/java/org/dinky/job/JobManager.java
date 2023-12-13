@@ -117,6 +117,10 @@ public class JobManager {
         return config;
     }
 
+    public void setConfig(JobConfig config) {
+        this.config = config;
+    }
+
     public GatewayType getRunMode() {
         return runMode;
     }
@@ -127,6 +131,10 @@ public class JobManager {
 
     public Executor getExecutor() {
         return executor;
+    }
+
+    public void setExecutor(Executor executor) {
+        this.executor = executor;
     }
 
     public void setPlanMode(boolean planMode) {
@@ -166,6 +174,11 @@ public class JobManager {
     // return job
     public Job getJob() {
         return job;
+    }
+
+    // set job
+    public void setJob(Job job) {
+        this.job = job;
     }
 
     private JobManager(JobConfig config) {

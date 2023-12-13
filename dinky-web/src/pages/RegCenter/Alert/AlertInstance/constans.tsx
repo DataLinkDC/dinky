@@ -17,29 +17,59 @@
  *
  */
 
+import {
+  AliYunSmsSvg,
+  DingTalkSvg,
+  EmailSvg,
+  FeiShuSvg,
+  SmsSvg,
+  TencentSmsSvg,
+  WeChatSvg
+} from '@/components/Icons/AlertIcon';
 import { ALERT_TYPE } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
+import { Space } from 'antd';
 import { DefaultOptionType } from 'rc-select/es/Select';
 
 export const ALERT_TYPE_LIST_OPTIONS: DefaultOptionType[] = [
   {
-    label: l('rc.ai.dingTalk'),
+    label: (
+      <Space align={'baseline'} size={5}>
+        <DingTalkSvg size={16} /> {l('rc.ai.dingTalk')}
+      </Space>
+    ),
     value: ALERT_TYPE.DINGTALK
   },
   {
-    label: l('rc.ai.wechat'),
+    label: (
+      <Space align={'baseline'} size={5}>
+        <WeChatSvg size={16} /> {l('rc.ai.wechat')}
+      </Space>
+    ),
     value: ALERT_TYPE.WECHAT
   },
   {
-    label: l('rc.ai.feishu'),
+    label: (
+      <Space align={'baseline'} size={5}>
+        <FeiShuSvg size={16} /> {l('rc.ai.feishu')}
+      </Space>
+    ),
     value: ALERT_TYPE.FEISHU
   },
   {
-    label: l('rc.ai.email'),
+    label: (
+      <Space align={'baseline'} size={5}>
+        <EmailSvg size={16} /> {l('rc.ai.email')}
+      </Space>
+    ),
     value: ALERT_TYPE.EMAIL
   },
   {
-    label: l('rc.ai.sms'),
+    label: (
+      <Space align={'baseline'} size={5}>
+        <SmsSvg size={16} /> {l('rc.ai.sms')}
+      </Space>
+    ),
     value: ALERT_TYPE.SMS
   }
 ];
@@ -60,12 +90,22 @@ export enum SMS_TYPE {
 
 export const MANU_FRACTURES = [
   {
-    label: l('rc.ai.mf.alibaba'),
-    value: SMS_TYPE.ALIBABA
+    label: (
+      <Space align={'baseline'} size={5}>
+        <AliYunSmsSvg size={16} /> {l('rc.ai.mf.alibaba')}
+      </Space>
+    ),
+    value: SMS_TYPE.ALIBABA,
+    key: l('rc.ai.mf.alibaba')
   },
   {
-    label: l('rc.ai.mf.tencent'),
-    value: SMS_TYPE.TENCENT
+    label: (
+      <Space align={'baseline'} size={5}>
+        <TencentSmsSvg size={16} /> {l('rc.ai.mf.tencent')}
+      </Space>
+    ),
+    value: SMS_TYPE.TENCENT,
+    key: l('rc.ai.mf.tencent')
   }
   // todo: 以下短信暂不实现
   // {
