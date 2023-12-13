@@ -102,7 +102,7 @@ export const PermissionsModal: React.FC<RolePermissionsFormProps> = (props) => {
       open={modalVisible}
       onOk={() => submitForm()}
       okButtonProps={{
-        htmlType: 'submit',
+        htmlType: 'submit'
       }}
       onCancel={() => handleCancel()}
     >

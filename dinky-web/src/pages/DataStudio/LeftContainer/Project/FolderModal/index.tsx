@@ -83,7 +83,7 @@ const FolderModal: React.FC<JobModalProps> = (props) => {
           destroyOnClose: true,
           maskClosable: false,
           okButtonProps: {
-            htmlType: 'submit',
+            htmlType: 'submit'
           },
           onCancel: handleCancel
         }}

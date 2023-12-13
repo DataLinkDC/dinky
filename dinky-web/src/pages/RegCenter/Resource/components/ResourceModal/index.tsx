@@ -18,10 +18,10 @@
  */
 
 import { FormContextValue } from '@/components/Context/FormContext';
+import { ResourceInfo } from '@/types/RegCenter/data.d';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import React, { useEffect } from 'react';
-import {ResourceInfo} from "@/types/RegCenter/data.d";
 
 type ResourceModalProps = {
   title: string;
@@ -78,7 +78,11 @@ const ResourceModal: React.FC<ResourceModalProps> = (props) => {
     <>
       <ModalForm<ResourceInfo>
         title={title}
-        modalProps={{ destroyOnClose: true, onCancel: handleModalVisible ,okButtonProps: {htmlType: 'submit'}}}
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: handleModalVisible,
+          okButtonProps: { htmlType: 'submit' }
+        }}
         onFinish={submitForm}
         form={form}
         open={visible}

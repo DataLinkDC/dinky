@@ -122,7 +122,13 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
       <Button key={'test'} loading={submitting} type='primary' onClick={handleTestConnect}>
         {l('button.test')}
       </Button>,
-      <Button key={'finish'} loading={submitting} type='primary' htmlType={'submit'} onClick={() => submitForm()}>
+      <Button
+        key={'finish'}
+        loading={submitting}
+        type='primary'
+        htmlType={'submit'}
+        onClick={() => submitForm()}
+      >
         {l('button.finish')}
       </Button>
     ];
