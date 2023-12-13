@@ -20,7 +20,6 @@
 package org.dinky.explainer;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.model.SystemConfiguration;
@@ -127,7 +126,7 @@ public class Explainer {
             if (operationType.equals(SqlType.ADD)) {
                 AddJarSqlParseStrategy.getAllFilePath(statement)
                         .forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
-                ((DinkyClassLoader) executor.getCustomTableEnvironment().getUserClassLoader())
+                (executor.getDinkyClassLoader())
                         .addURLs(URLUtils.getURLs(
                                 jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {

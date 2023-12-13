@@ -139,6 +139,8 @@ public abstract class Executor {
 
         tableEnvironment = createCustomTableEnvironment(classLoader);
         CustomTableEnvironmentContext.set(tableEnvironment);
+
+        // after 1.18 version, this two injection should be removed
         tableEnvironment.injectParser(
                 new CustomParserImpl(tableEnvironment.getPlanner().getParser()));
         tableEnvironment.injectExtendedExecutor(
@@ -284,10 +286,6 @@ public abstract class Executor {
         StatementSet statementSet = tableEnvironment.createStatementSet();
         statements.forEach(statementSet::addInsertSql);
         return statementSet.explain();
-    }
-
-    public boolean parseAndLoadConfiguration(String statement) {
-        return tableEnvironment.parseAndLoadConfiguration(statement, setConfig);
     }
 
     public List<LineageRel> getLineage(String statement) {
