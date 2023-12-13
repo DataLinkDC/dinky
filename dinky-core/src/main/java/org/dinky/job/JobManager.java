@@ -268,7 +268,7 @@ public class JobManager {
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
             failed();
-            throw new Exception(error,e);
+            throw new Exception(error, e);
         } finally {
             close();
         }
@@ -336,7 +336,7 @@ public class JobManager {
             }
             return result;
         } catch (Exception e) {
-            log.error("executeDDL failed:",e);
+            log.error("executeDDL failed:", e);
         }
         return new ErrorResult();
     }
