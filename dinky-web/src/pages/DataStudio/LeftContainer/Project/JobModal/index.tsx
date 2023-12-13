@@ -105,7 +105,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
    */
   const submitForm = async (formData: Catalogue) => {
     await form.validateFields();
-    if (isUDF(formData.type) && formData.configJson) {
+    if (isUDF(formData.type ?? '') && formData.configJson) {
       const { selectKeys } = formData.configJson.udfConfig;
       formData.configJson.udfConfig.templateId = selectKeys[selectKeys.length - 1];
     }
