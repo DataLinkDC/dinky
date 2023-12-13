@@ -28,6 +28,7 @@ import { ModalForm, ProFormSelect, ProFormText, ProFormTextArea } from '@ant-des
 import { ProFormCascader } from '@ant-design/pro-form/lib';
 import { Form } from 'antd';
 import React, { useEffect } from 'react';
+import {DefaultOptionType} from "antd/es/select";
 
 type JobModalProps = {
   onCancel: () => void;
@@ -39,7 +40,7 @@ type JobModalProps = {
 const JobModal: React.FC<JobModalProps> = (props) => {
   const { onCancel, onSubmit, modalVisible, title, values } = props;
   const [jobType, setJobType] = React.useState<string>(values.type || 'FlinkSql');
-  const [udfTemplate, setUdfTemplate] = React.useState<any[]>([]);
+  const [udfTemplate, setUdfTemplate] = React.useState<DefaultOptionType[]>([]);
   const [form] = Form.useForm<Catalogue>();
 
   /**
@@ -60,34 +61,43 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     form.setFieldsValue(newValues);
   }, [open, values, form]);
 
-  const queryUdfTemplate = async () => {
-    await queryDataByParams(API_CONSTANTS.UDF_TEMPLATE_TREE).then((res) => {
-      res.map((item: any) => {
-        if (item.value === jobType) res = item.children.map((item: any) => item);
+  const queryUdfTemplate =  () => {
+    queryDataByParams<DefaultOptionType[]>(API_CONSTANTS.UDF_TEMPLATE_TREE).then((res) => {
+     const newRes : DefaultOptionType[] = []
+      res?.forEach((item: any) => {
+        if (item.value === jobType){
+          item.children.forEach((item: any) => {
+            newRes.push(item);
+          });
+        }
       });
-      setUdfTemplate(res);
+      setUdfTemplate(newRes );
     });
   };
 
   useEffect(() => {
-    if (isUDF(jobType)) queryUdfTemplate();
+    if (isUDF(jobType)) {
+      queryUdfTemplate();
+    }
   }, [jobType, form]);
 
   /**
    * handle cancel
    */
   const handleCancel = () => {
-    onCancel();
     formContext.resetForm();
+    onCancel();
   };
 
   /**
    * form values change
    * @param changedValues
-   * @param allValues
    */
-  const onValuesChange = (changedValues: any, allValues: any) => {
-    if (allValues.type) setJobType(allValues.type);
+  const onValuesChange = (changedValues: any) => {
+    if (changedValues.type && isUDF(changedValues.type)) {
+      setJobType(changedValues.type)
+      form.resetFields(['configJson']); // 如果是UDF，重置configJson, 否则 模版id 会有渲染问题
+    }
   };
 
   /**
