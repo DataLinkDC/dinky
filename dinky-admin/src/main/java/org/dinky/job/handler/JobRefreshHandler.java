@@ -145,22 +145,25 @@ public class JobRefreshHandler {
 
         if (JobStatus.isTransition(jobInstance.getStatus())) {
             Long finishTime = TimeUtil.localDateTimeToLong(jobInstance.getFinishTime());
-            long duration = Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes();
+            long duration = Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
+                    .toMinutes();
             if (finishTime > 0 && duration < 1) {
                 log.debug("Job is transition: {}->{}", jobInstance.getId(), jobInstance.getName());
                 isTransition = true;
             } else if (JobStatus.RECONNECTING.getValue().equals(jobInstance.getStatus())) {
-                log.debug("Job is not reconnected success at the specified time,set as UNKNOWN: {}->{}",
-                        jobInstance.getId(), jobInstance.getName());
+                log.debug(
+                        "Job is not reconnected success at the specified time,set as UNKNOWN: {}->{}",
+                        jobInstance.getId(),
+                        jobInstance.getName());
                 jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
             }
         }
 
         boolean isDone = (JobStatus.isDone(jobInstance.getStatus()))
                 || (TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) > 0
-                && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
-                .toMinutes()
-                >= 1);
+                        && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
+                                        .toMinutes()
+                                >= 1);
 
         isDone = !isTransition && isDone;
 
