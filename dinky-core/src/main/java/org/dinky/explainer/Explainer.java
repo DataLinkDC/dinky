@@ -127,7 +127,7 @@ public class Explainer {
             if (operationType.equals(SqlType.ADD)) {
                 AddJarSqlParseStrategy.getAllFilePath(statement)
                         .forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
-                ((DinkyClassLoader) executor.getCustomTableEnvironment().getUserClassLoader())
+                (executor.getDinkyClassLoader())
                         .addURLs(URLUtils.getURLs(
                                 jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
