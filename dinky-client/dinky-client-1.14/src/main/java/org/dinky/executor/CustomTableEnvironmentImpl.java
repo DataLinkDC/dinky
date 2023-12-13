@@ -89,6 +89,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.URLUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.dinky.parser.CustomParserImpl;
 
 /**
  * 定制TableEnvironmentImpl
@@ -119,6 +120,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 isStreamingMode,
                 userClassLoader));
         this.executor = executor;
+        injectParser(new CustomParserImpl(getPlanner().getParser()));
+        injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
     }
 
     public static CustomTableEnvironmentImpl create(

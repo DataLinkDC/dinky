@@ -139,10 +139,6 @@ public abstract class Executor {
 
         tableEnvironment = createCustomTableEnvironment(classLoader);
         CustomTableEnvironmentContext.set(tableEnvironment);
-        tableEnvironment.injectParser(
-                new CustomParserImpl(tableEnvironment.getPlanner().getParser()));
-        tableEnvironment.injectExtendedExecutor(
-                new CustomExtendedOperationExecutorImpl(this.getCustomTableEnvironment()));
 
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
         if (executorConfig.isValidJobName()) {
@@ -284,10 +280,6 @@ public abstract class Executor {
         StatementSet statementSet = tableEnvironment.createStatementSet();
         statements.forEach(statementSet::addInsertSql);
         return statementSet.explain();
-    }
-
-    public boolean parseAndLoadConfiguration(String statement) {
-        return tableEnvironment.parseAndLoadConfiguration(statement, setConfig);
     }
 
     public List<LineageRel> getLineage(String statement) {

@@ -80,6 +80,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.URLUtil;
+import org.dinky.parser.CustomParserImpl;
 
 /**
  * CustomTableEnvironmentImpl
@@ -108,6 +109,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 executor,
                 isStreamingMode,
                 userClassLoader));
+        injectParser(new CustomParserImpl(getPlanner().getParser()));
+        injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
     }
 
     public static CustomTableEnvironmentImpl create(
