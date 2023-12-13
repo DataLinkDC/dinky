@@ -153,7 +153,7 @@ const JarList: React.FC<JarListProps> = (props) => {
         expandedRowRender: (record) => renderUdf(record)
       }}
       dragSortKey={'orderLine'}
-      onDragSortEnd={(beforeIndex, afterIndex, newDataSource) =>handleDragSortEnd(newDataSource)}
+      onDragSortEnd={(beforeIndex, afterIndex, newDataSource) => handleDragSortEnd(newDataSource)}
     />
   );
 };
