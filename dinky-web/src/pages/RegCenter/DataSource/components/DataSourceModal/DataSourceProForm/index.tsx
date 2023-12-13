@@ -49,8 +49,7 @@ const CodeEditProps = {
 };
 
 const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
-  const { values, form,dbType,excludeFormItem , flinkTemplateChange, flinkConfigChange } = props;
-
+  const { values, form, dbType, excludeFormItem, flinkTemplateChange, flinkConfigChange } = props;
 
   const renderDataSourceForm = () => {
     return (
