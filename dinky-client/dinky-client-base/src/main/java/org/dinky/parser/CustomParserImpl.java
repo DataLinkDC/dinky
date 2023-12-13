@@ -19,7 +19,6 @@
 
 package org.dinky.parser;
 
-import org.apache.flink.table.planner.parse.ExtendedParser;
 import org.dinky.executor.CustomParser;
 
 import org.apache.calcite.sql.SqlNode;
@@ -28,6 +27,7 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.planner.calcite.FlinkPlannerImpl;
 import org.apache.flink.table.planner.delegation.ParserImpl;
 import org.apache.flink.table.planner.parse.CalciteParser;
+import org.apache.flink.table.planner.parse.ExtendedParser;
 
 import java.util.Collections;
 import java.util.List;
@@ -101,6 +101,4 @@ public class CustomParserImpl implements CustomParser {
         FlinkPlannerImpl flinkPlanner = validatorSupplier.get();
         return flinkPlanner.validate(sqlNode);
     }
-
-
 }

@@ -24,6 +24,7 @@ import static org.apache.flink.table.api.bridge.internal.AbstractStreamTableEnvi
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.parser.CustomParserImpl;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
@@ -80,7 +81,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.URLUtil;
-import org.dinky.parser.CustomParserImpl;
 
 /**
  * CustomTableEnvironmentImpl
