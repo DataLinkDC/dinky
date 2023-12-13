@@ -21,7 +21,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { Authorized } from '@/hooks/useAccess';
 import AlertTemplateForm from '@/pages/RegCenter/Alert/AlertTemplate/components/AlertTemplateForm';
-import { handleAddOrUpdate,handleRemoveById } from '@/services/BusinessCrud';
+import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert } from '@/types/RegCenter/data';
 import { InitAlertTemplateState } from '@/types/RegCenter/init.d';
@@ -30,7 +30,7 @@ import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Button,Card,List,Modal } from 'antd';
+import { Button, Card, List, Modal } from 'antd';
 import { useState } from 'react';
 import Markdown from 'react-markdown';
 

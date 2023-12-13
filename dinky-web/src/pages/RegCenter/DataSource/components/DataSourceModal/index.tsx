@@ -23,7 +23,7 @@ import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { ModalForm } from '@ant-design/pro-components';
 import { Button, Form } from 'antd';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 type DataSourceModalProps = {
   visible: boolean;
@@ -42,7 +42,6 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
   );
   const [dbType, setDbType] = useState<string>(values.type ?? 'MySQL');
   const [excludeFormItem, setExcludeFormItem] = useState<boolean>(false);
-
 
   /**
    * init form
