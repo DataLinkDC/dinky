@@ -72,13 +72,12 @@ public class Explainer {
 
     private Executor executor;
     private boolean useStatementSet;
-    private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
+    private String sqlSeparator;
     private ObjectMapper mapper = new ObjectMapper();
     private JobManager jobManager;
 
-    public Explainer(Executor executor, boolean useStatementSet) {
-        this.executor = executor;
-        this.useStatementSet = useStatementSet;
+    public Explainer(Executor executor, boolean useStatementSet, JobManager jobManager) {
+        this(executor, useStatementSet, FlinkSQLConstant.SEPARATOR, jobManager);
         init();
     }
 
@@ -382,6 +381,8 @@ public class Explainer {
                 .parallelism(1)
                 .configJson(executor.getTableConfig().getConfiguration().toMap())
                 .build();
+        jobManager.setConfig(jobConfig);
+        jobManager.setExecutor(executor);
         this.initialize(jobConfig, statement);
 
         List<LineageRel> lineageRelList = new ArrayList<>();

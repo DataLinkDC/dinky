@@ -19,6 +19,8 @@
 
 package org.dinky.executor;
 
+import cn.hutool.core.lang.Opt;
+import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 
 import org.apache.flink.configuration.Configuration;
@@ -26,6 +28,7 @@ import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.RestOptions;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
+import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -50,9 +53,12 @@ public class LocalStreamExecutor extends Executor {
                                     .collect(Collectors.joining(",")));
         }
         if (!executorConfig.isPlan()) {
-            Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
+            Configuration configuration = Configuration.fromMap(
+                    Opt.ofNullable(executorConfig.getConfig()).orElse(new HashMap<>()));
             if (!configuration.contains(RestOptions.PORT)) {
-                configuration.set(RestOptions.PORT, executorConfig.getPort());
+                if (Asserts.isNotNull(executorConfig.getPort())) {
+                    configuration.set(RestOptions.PORT, executorConfig.getPort());
+                }
             }
             this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
         } else {
