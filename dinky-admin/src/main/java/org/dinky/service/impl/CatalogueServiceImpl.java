@@ -294,7 +294,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         newTask.setType(oldTask.getType());
         // 设置复制后的作业名称为：原名称+自增序列
         size = size + 1;
-        newTask.setName(oldTask.getName() + "_" + size);
+        newTask.setName(oldTask.getName() + "-" + size);
         newTask.setStep(JobLifeCycle.DEVELOP.getValue());
         taskService.save(newTask);
 
