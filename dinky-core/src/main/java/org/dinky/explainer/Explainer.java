@@ -20,7 +20,6 @@
 package org.dinky.explainer;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.model.SystemConfiguration;
