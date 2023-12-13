@@ -268,7 +268,7 @@ public class JobManager {
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
             failed();
-            throw e;
+            throw new Exception(error,e);
         } finally {
             close();
         }
@@ -303,7 +303,6 @@ public class JobManager {
         } catch (Exception e) {
             String error = StrFormatter.format(
                     "Exception in executing FlinkSQL:\n{}\n{}", SqlUtil.addLineNumber(currentSql), e.getMessage());
-            e.printStackTrace();
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
@@ -311,8 +310,8 @@ public class JobManager {
             throw new Exception(error, e);
         } finally {
             close();
-            return job.getJobResult();
         }
+        return job.getJobResult();
     }
 
     public IResult executeDDL(String statement) {
@@ -337,7 +336,7 @@ public class JobManager {
             }
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("executeDDL failed:",e);
         }
         return new ErrorResult();
     }

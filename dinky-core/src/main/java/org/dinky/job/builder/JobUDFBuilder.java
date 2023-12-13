@@ -118,8 +118,7 @@ public class JobUDFBuilder extends JobBuilder {
 
             UDFUtil.addConfigurationClsAndJars(jarList, CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
         } catch (Exception e) {
-            log.error("add configuration failed;reason:{}", LogUtil.getError(e));
-            throw new RuntimeException(e);
+            throw new RuntimeException("add configuration failed: ",e);
         }
 
         log.info(StrUtil.format("A total of {} UDF have been Init.", udfList.size() + pyUdfFile.size()));
