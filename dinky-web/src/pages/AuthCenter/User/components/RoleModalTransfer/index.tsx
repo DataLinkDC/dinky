@@ -53,7 +53,8 @@ const RoleModalTransfer = (props: RoleTransferFromProps) => {
       width={'75%'}
       onCancel={() => handleCancel()}
       okButtonProps={{
-        htmlType: 'submit'
+        htmlType: 'submit',
+        autoFocus: true,
       }}
       onOk={() => handleSubmit(targetKeys)}
     >

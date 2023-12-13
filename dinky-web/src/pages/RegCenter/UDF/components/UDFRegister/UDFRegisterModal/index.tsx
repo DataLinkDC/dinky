@@ -46,7 +46,7 @@ const UDFRegisterModal: React.FC<UDFRegisterModalProps> = (props) => {
         destroyOnClose
         closable
         maskClosable={false}
-        okButtonProps={{ htmlType: 'submit' }}
+        okButtonProps={{ htmlType: 'submit',autoFocus: true }}
         onCancel={() => openChange(false)}
         onOk={() => onOk()}
       >

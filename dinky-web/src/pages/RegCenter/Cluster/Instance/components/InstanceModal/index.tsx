@@ -89,7 +89,7 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
         key={'finish'}
         loading={submitting}
         type='primary'
-        htmlType={'submit'}
+        htmlType={'submit'} autoFocus
         onClick={() => submitForm()}
       >
         {l('button.finish')}

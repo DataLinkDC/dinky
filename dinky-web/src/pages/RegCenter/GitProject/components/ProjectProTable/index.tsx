@@ -304,7 +304,7 @@ const ProjectProTable: React.FC = () => {
             <Button
               title={l('button.build')}
               key={`${record.id}_buildbtn`}
-              htmlType={'submit'}
+              htmlType={'submit'} autoFocus
               icon={<BuildTwoTone />}
             />
           </Popconfirm>

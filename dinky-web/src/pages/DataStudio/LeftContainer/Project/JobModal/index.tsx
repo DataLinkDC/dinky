@@ -94,7 +94,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
    * @param changedValues
    */
   const onValuesChange = (changedValues: any) => {
-    if (changedValues.type && isUDF(changedValues.type)) {
+    if (changedValues.type) {
       setJobType(changedValues.type)
       form.resetFields(['configJson']); // 如果是UDF，重置configJson, 否则 模版id 会有渲染问题
     }
@@ -190,7 +190,8 @@ const JobModal: React.FC<JobModalProps> = (props) => {
         destroyOnClose: true,
         maskClosable: false,
         okButtonProps: {
-          htmlType: 'submit'
+          htmlType: 'submit',
+          autoFocus: true
         },
         onCancel: handleCancel
       }}

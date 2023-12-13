@@ -139,6 +139,7 @@ const TokenModalForm: React.FC<TokenModalFormProps & connect> = (props) => {
         loading={loading}
         type='primary'
         htmlType={'submit'}
+        autoFocus
         onClick={() => submitForm()}
       >
         {l('button.finish')}

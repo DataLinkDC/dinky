@@ -106,7 +106,7 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
       <Button
         key={'AlertFinish'}
         type='primary'
-        htmlType={'submit'}
+        htmlType={'submit'} autoFocus
         loading={loading}
         onClick={submit}
       >

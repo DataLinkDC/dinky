@@ -49,7 +49,8 @@ const TenantModalTransfer: React.FC<TableTransferFromProps> = (props) => {
       width={'75%'}
       onCancel={() => onCancel()}
       okButtonProps={{
-        htmlType: 'submit'
+        htmlType: 'submit',
+        autoFocus: true,
       }}
       onOk={() => handleSubmit(targetKeys)}
     >

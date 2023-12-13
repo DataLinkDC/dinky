@@ -81,7 +81,7 @@ const ResourceModal: React.FC<ResourceModalProps> = (props) => {
         modalProps={{
           destroyOnClose: true,
           onCancel: handleModalVisible,
-          okButtonProps: { htmlType: 'submit' }
+          okButtonProps: { htmlType: 'submit' ,autoFocus: true},
         }}
         onFinish={submitForm}
         form={form}

@@ -77,7 +77,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
       <Button key={'RuleCancel'} onClick={() => handleModalVisible(false)}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'RuleFinish'} type='primary' htmlType={'submit'} onClick={() => submit()}>
+      <Button key={'RuleFinish'} type='primary' htmlType={'submit'}  autoFocus onClick={() => submit()}>
         {l('button.finish')}
       </Button>
     ];
