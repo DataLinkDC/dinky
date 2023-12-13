@@ -54,7 +54,7 @@ const RoleModalTransfer = (props: RoleTransferFromProps) => {
       onCancel={() => handleCancel()}
       okButtonProps={{
         htmlType: 'submit',
-        autoFocus: true,
+        autoFocus: true
       }}
       onOk={() => handleSubmit(targetKeys)}
     >

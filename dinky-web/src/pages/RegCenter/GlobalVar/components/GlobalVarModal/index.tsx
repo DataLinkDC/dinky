@@ -79,7 +79,7 @@ const GlobalVarModal: React.FC<GlobalVarModalProps> = (props) => {
       {...NORMAL_MODAL_OPTIONS}
       title={values.id ? l('rc.gv.modify') : l('rc.gv.create')}
       open={modalVisible}
-      okButtonProps={{ htmlType: 'submit',autoFocus: true }}
+      okButtonProps={{ htmlType: 'submit', autoFocus: true }}
       onOk={() => submitForm()}
       onCancel={() => handleModalVisible()}
     >

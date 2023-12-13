@@ -37,7 +37,10 @@ export const TestLogin = () => {
         width={400}
         onFinish={testLogin}
         form={form}
-        modalProps={{ onCancel: () => form.resetFields(), okButtonProps: { htmlType: 'submit',autoFocus: true } }}
+        modalProps={{
+          onCancel: () => form.resetFields(),
+          okButtonProps: { htmlType: 'submit', autoFocus: true }
+        }}
         trigger={
           <Tag icon={<LoginOutlined />} color='#108ee9'>
             {l('sys.ldap.settings.testLogin')}

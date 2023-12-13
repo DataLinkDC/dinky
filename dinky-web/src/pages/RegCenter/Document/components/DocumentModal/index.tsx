@@ -74,7 +74,7 @@ const DocumentModalForm: React.FC<DocumentModalProps> = (props) => {
       open={modalVisible}
       okButtonProps={{
         htmlType: 'submit',
-        autoFocus: true,
+        autoFocus: true
       }}
       onOk={() => submitForm()}
       onCancel={() => handleModalVisible()}
