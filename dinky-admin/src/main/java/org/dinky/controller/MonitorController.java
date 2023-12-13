@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.MetricsLayoutVo;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.enums.BusinessType;
@@ -32,6 +33,7 @@ import org.dinky.data.vo.task.JobInstanceVo;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,8 +72,8 @@ public class MonitorController {
     @GetMapping("/getSysData")
     @ApiOperation("Get System Data")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
-        @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long")
+            @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
+            @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long")
     })
     public Result<List<MetricsVO>> getData(@RequestParam Long startTime, Long endTime) {
         List<MetricsVO> data = monitorService.getData(
@@ -84,35 +86,27 @@ public class MonitorController {
     @GetMapping("/getFlinkData")
     @ApiOperation("Get Flink Data")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
-        @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long"),
-        @ApiImplicitParam(name = "taskIds", value = "Task Ids", required = true, dataType = "String")
+            @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
+            @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long"),
+            @ApiImplicitParam(name = "taskIds", value = "Task Ids", required = true, dataType = "String")
     })
-    public Result<List<MetricsVO>> getFlinkData(@RequestParam Long startTime, Long endTime, String taskIds) {
-        JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
-        ObjectNode para = nodeFactory.objectNode();
-        para.put("isHistory", false);
-        para.put("taskId", taskIds);
-        ProTableResult<JobInstanceVo> jobInstanceProTableResult = jobInstanceService.listJobInstances(para);
-        List<String> jids = jobInstanceProTableResult.getData().stream()
-                .map(JobInstanceVo::getJid)
-                .collect(Collectors.toList());
+    public Result<List<MetricsVO>> getFlinkData(@RequestParam Long startTime, Long endTime, String flinkJobIds) {
         return Result.succeed(monitorService.getData(
                 DateUtil.date(startTime),
                 DateUtil.date(Opt.ofNullable(endTime).orElse(DateUtil.date().getTime())),
-                jids));
+                Arrays.asList(flinkJobIds.split(","))));
     }
 
     @PutMapping("/saveFlinkMetrics/{layout}")
     @ApiOperation("Save Flink Metrics")
     @Log(title = "Save Flink Metrics", businessType = BusinessType.INSERT)
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "layout", value = "Layout Name", required = true, dataType = "String"),
-        @ApiImplicitParam(
-                name = "metricsList",
-                value = "Metrics List",
-                required = true,
-                dataType = "List<MetricsLayoutDTO>")
+            @ApiImplicitParam(name = "layout", value = "Layout Name", required = true, dataType = "String"),
+            @ApiImplicitParam(
+                    name = "metricsList",
+                    value = "Metrics List",
+                    required = true,
+                    dataType = "List<MetricsLayoutDTO>")
     })
     public Result<Void> saveFlinkMetricLayout(
             @PathVariable(value = "layout") String layoutName, @RequestBody List<MetricsLayoutDTO> metricsList) {
@@ -124,7 +118,7 @@ public class MonitorController {
 
     @GetMapping("/getMetricsLayout")
     @ApiOperation("Get Metrics Layout to Display")
-    public Result<Map<String, List<Metrics>>> getMetricsLayout() {
+    public Result<List<MetricsLayoutVo>> getMetricsLayout() {
         return Result.succeed(monitorService.getMetricsLayout());
     }
 

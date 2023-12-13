@@ -17,16 +17,16 @@
  *
  */
 
-import DagDataNode from '@/components/FlinkDag/component/DagDataNode';
-import DagPlanNode from '@/components/FlinkDag/component/DagPlanNode';
+import DagDataNode from '@/components/Flink/FlinkDag/component/DagDataNode';
+import DagPlanNode from '@/components/Flink/FlinkDag/component/DagPlanNode';
 import {
   edgeConfig,
   graphConfig,
   layoutConfig,
   portConfig,
   zoomOptions
-} from '@/components/FlinkDag/config';
-import { buildDag, regConnect, updateDag } from '@/components/FlinkDag/functions';
+} from '@/components/Flink/FlinkDag/config';
+import { buildDag, regConnect, updateDag } from '@/components/Flink/FlinkDag/functions';
 import { getData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';

@@ -17,7 +17,7 @@
  *
  */
 
-import FlinkDag from '@/components/FlinkDag';
+import FlinkDag from '@/components/Flink/FlinkDag';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import FlinkTable from '@/pages/DevOps/JobDetail/JobOverview/components/FlinkTable';
 import JobDesc from '@/pages/DevOps/JobDetail/JobOverview/components/JobDesc';

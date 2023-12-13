@@ -49,9 +49,9 @@ public class LocalStreamExecutor extends Executor {
         }
         if (!executorConfig.isPlan()) {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
-            if (!configuration.contains(RestOptions.PORT)) {
-                configuration.set(RestOptions.PORT, executorConfig.getPort());
-            }
+//            if (!configuration.contains(RestOptions.PORT)) {
+//                configuration.set(RestOptions.PORT, executorConfig.getPort());
+//            }
             this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
         } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();

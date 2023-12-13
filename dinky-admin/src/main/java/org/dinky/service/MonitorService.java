@@ -19,6 +19,7 @@
 
 package org.dinky.service;
 
+import org.dinky.data.MetricsLayoutVo;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
@@ -65,7 +66,7 @@ public interface MonitorService extends IService<Metrics> {
      *
      * @return A map where the keys are layout names and the values are lists of {@link Metrics} objects representing the metrics in each layout.
      */
-    Map<String, List<Metrics>> getMetricsLayout();
+    List<MetricsLayoutVo> getMetricsLayout();
 
     /**
      * Get the metrics layout by name.
@@ -81,5 +82,5 @@ public interface MonitorService extends IService<Metrics> {
      * @param taskId The ID of the task to get the job metrics for.
      * @return A list of {@link Metrics} objects representing the job metrics for the specified task ID.
      */
-    List<Metrics> getJobMetrics(Integer taskId);
+    List<Metrics> getMetricsLayoutByTaskId(Integer taskId);
 }

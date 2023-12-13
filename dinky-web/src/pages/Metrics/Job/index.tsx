@@ -18,19 +18,13 @@
  */
 
 import { ChartData, JobMetrics, MetricsLayout, SubTask, Task } from '@/pages/Metrics/Job/data';
-import {
-  buildMetricsList,
-  buildRunningJobList,
-  buildSubTaskList
-} from '@/pages/Metrics/Job/function';
 import { getFlinkRunTask, saveFlinkMetrics } from '@/pages/Metrics/Job/service';
 import { getData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
-import { ProCard, ProFormSelect } from '@ant-design/pro-components';
+import { ProCard } from '@ant-design/pro-components';
 import { Button, Input, Row } from 'antd';
 import { useEffect, useState } from 'react';
-import FlinkChart from '../../../components/FlinkChart';
 
 const getJobMetrics = async (job: JobMetrics) => {
   const url =
@@ -202,22 +196,22 @@ const Job = () => {
     return (
       <>
         <Row gutter={[8, 16]}>
-          {metricsList.map((j) => {
-            return (
-              <FlinkChart
-                key={j.taskId + j.subTaskId + j.metrics}
-                chartSize={j.showSize}
-                chartType={j.showType}
-                onChangeJobState={(chartSize, chartType) => {
-                  j.showSize = chartSize;
-                  j.showType = chartType;
-                }}
-                data={chartData[j.taskId + j.subTaskId + j.metrics]}
-                title={j.metrics}
-                extraType={'size'}
-              />
-            );
-          })}
+          {/*{metricsList.map((j) => {*/}
+          {/*  return (*/}
+          {/*    <FlinkChart*/}
+          {/*      key={j.taskId + j.subTaskId + j.metrics}*/}
+          {/*      chartSize={j.showSize}*/}
+          {/*      chartType={j.showType}*/}
+          {/*      onChangeJobState={(chartSize, chartType) => {*/}
+          {/*        j.showSize = chartSize;*/}
+          {/*        j.showType = chartType;*/}
+          {/*      }}*/}
+          {/*      data={chartData[j.taskId + j.subTaskId + j.metrics]}*/}
+          {/*      title={j.metrics}*/}
+          {/*      extraType={'size'}*/}
+          {/*    />*/}
+          {/*  );*/}
+          {/*})}*/}
         </Row>
       </>
     );
@@ -270,34 +264,34 @@ const Job = () => {
           </Button>
         }
       >
-        <ProFormSelect
-          name='job'
-          label={l('metrics.flink.job.name')}
-          placeholder={l('metrics.flink.job.placeholder')}
-          options={buildRunningJobList(taskData)}
-          fieldProps={{ onChange: (value) => handleRunningJobChange(value as number) }}
-        />
-        {metricsData.selectTaskId !== 0 && (
-          <ProFormSelect
-            name='vertices'
-            label={l('metrics.flink.subTask')}
-            placeholder={l('metrics.flink.subTask.placeholder')}
-            options={buildSubTaskList(subTaskList)}
-            fieldProps={{ onChange: (value) => handleSubTaskChange(value as string) }}
-          />
-        )}
-        {metricsData.selectSubTask !== '' && (
-          <ProFormSelect
-            name='metrics'
-            label={l('metrics.flink.metrics.name')}
-            placeholder={l('metrics.flink.metrics.placeholder')}
-            options={buildMetricsList(metrics)}
-            mode='multiple'
-            fieldProps={{ onChange: (value) => handleMetricsChange(value as string[]) }}
-          />
-        )}
+        {/*<ProFormSelect*/}
+        {/*  name='job'*/}
+        {/*  label={l('metrics.flink.job.name')}*/}
+        {/*  placeholder={l('metrics.flink.job.placeholder')}*/}
+        {/*  options={buildRunningJobList(taskData)}*/}
+        {/*  fieldProps={{ onChange: (value) => handleRunningJobChange(value as number) }}*/}
+        {/*/>*/}
+        {/*{metricsData.selectTaskId !== 0 && (*/}
+        {/*  <ProFormSelect*/}
+        {/*    name='vertices'*/}
+        {/*    label={l('metrics.flink.subTask')}*/}
+        {/*    placeholder={l('metrics.flink.subTask.placeholder')}*/}
+        {/*    options={buildSubTaskList(subTaskList)}*/}
+        {/*    fieldProps={{ onChange: (value) => handleSubTaskChange(value as string) }}*/}
+        {/*  />*/}
+        {/*)}*/}
+        {/*{metricsData.selectSubTask !== '' && (*/}
+        {/*  <ProFormSelect*/}
+        {/*    name='metrics'*/}
+        {/*    label={l('metrics.flink.metrics.name')}*/}
+        {/*    placeholder={l('metrics.flink.metrics.placeholder')}*/}
+        {/*    options={buildMetricsList(metrics)}*/}
+        {/*    mode='multiple'*/}
+        {/*    fieldProps={{ onChange: (value) => handleMetricsChange(value as string[]) }}*/}
+        {/*  />*/}
+        {/*)}*/}
         {/* render metrics list */}
-        {jobMetricsList.length > 0 && renderMetricsCardList(jobMetricsList)}
+        {/*{jobMetricsList.length > 0 && renderMetricsCardList(jobMetricsList)}*/}
       </ProCard>
     </>
   );

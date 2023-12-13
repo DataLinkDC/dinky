@@ -23,3 +23,6 @@ import { API_CONSTANTS } from '@/services/endpoints';
 export async function getMetricsLayout() {
   return getData(API_CONSTANTS.GET_METRICS_LAYOUT);
 }
+export async function getAllConfig() {
+  return getData(API_CONSTANTS.SYSTEM_GET_ALL_CONFIG);
+}
