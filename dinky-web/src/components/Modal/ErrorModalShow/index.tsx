@@ -88,7 +88,7 @@ const ErrorShowModal = (props: ShowModalProps) => {
       title={title}
       closable={closable}
       footer={
-        <Button type='primary' onClick={() => setShowModal(false)}>
+        <Button type='primary' htmlType={'submit'} onClick={() => setShowModal(false)}>
           {l('global.notification.iknow')}
         </Button>
       }

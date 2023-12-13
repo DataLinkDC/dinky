@@ -52,6 +52,9 @@ const RoleModalTransfer = (props: RoleTransferFromProps) => {
       maskClosable={false}
       width={'75%'}
       onCancel={() => handleCancel()}
+      okButtonProps={{
+        htmlType: 'submit',
+      }}
       onOk={() => handleSubmit(targetKeys)}
     >
       <RoleTransfer role={user} onChange={(value) => handleValueChange(value)} />

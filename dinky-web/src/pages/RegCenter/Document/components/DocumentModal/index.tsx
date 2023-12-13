@@ -72,6 +72,9 @@ const DocumentModalForm: React.FC<DocumentModalProps> = (props) => {
       {...NORMAL_MODAL_OPTIONS}
       title={values.id ? l('rc.doc.modify') : l('rc.doc.create')}
       open={modalVisible}
+      okButtonProps={{
+        htmlType: 'submit',
+      }}
       onOk={() => submitForm()}
       onCancel={() => handleModalVisible()}
     >

@@ -18,17 +18,17 @@
  */
 
 import { FormContextValue } from '@/components/Context/FormContext';
-import { Resource } from '@/pages/RegCenter/Resource/components/ResourceOverView';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import React, { useEffect } from 'react';
+import {ResourceInfo} from "@/types/RegCenter/data.d";
 
 type ResourceModalProps = {
   title: string;
   visible: boolean;
   onClose: () => void;
-  onOk: (value: Partial<Resource>) => void;
-  formValues: Partial<Resource>;
+  onOk: (value: Partial<ResourceInfo>) => void;
+  formValues: Partial<ResourceInfo>;
 };
 
 const ResourceModal: React.FC<ResourceModalProps> = (props) => {
@@ -70,15 +70,15 @@ const ResourceModal: React.FC<ResourceModalProps> = (props) => {
    */
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    await handleSubmit({ ...formValues, ...fieldsValue });
-    await handleCancel();
+    handleSubmit({ ...formValues, ...fieldsValue });
+    handleCancel();
   };
 
   return (
     <>
-      <ModalForm<Resource>
+      <ModalForm<ResourceInfo>
         title={title}
-        modalProps={{ destroyOnClose: true, onCancel: handleModalVisible }}
+        modalProps={{ destroyOnClose: true, onCancel: handleModalVisible ,okButtonProps: {htmlType: 'submit'}}}
         onFinish={submitForm}
         form={form}
         open={visible}

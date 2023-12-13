@@ -61,6 +61,7 @@ const ChooseModal: React.FC<ChooseModalProps> = (props) => {
       okText={l('button.confirm')}
       okButtonProps={{
         disabled: check,
+        htmlType: 'submit',
         loading: submitting
       }}
     >

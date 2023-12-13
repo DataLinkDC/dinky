@@ -82,6 +82,9 @@ const FolderModal: React.FC<JobModalProps> = (props) => {
         modalProps={{
           destroyOnClose: true,
           maskClosable: false,
+          okButtonProps: {
+            htmlType: 'submit',
+          },
           onCancel: handleCancel
         }}
         onFinish={async (values) => submitForm(values)}

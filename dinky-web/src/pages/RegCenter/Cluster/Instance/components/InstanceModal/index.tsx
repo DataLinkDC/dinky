@@ -85,7 +85,7 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
       <Button key={'cancel'} onClick={() => handleCancel()}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'finish'} loading={submitting} type='primary' onClick={() => submitForm()}>
+      <Button key={'finish'} loading={submitting} type='primary' htmlType={'submit'} onClick={() => submitForm()}>
         {l('button.finish')}
       </Button>
     ];

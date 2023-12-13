@@ -85,6 +85,9 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
       title={l('button.changePassword')}
       open={modalVisible}
       onCancel={() => handleCancel()}
+      okButtonProps={{
+        htmlType: 'submit',
+      }}
       onOk={() => submitForm()}
     >
       <PasswordForm values={values as UserBaseInfo.User} form={form} />

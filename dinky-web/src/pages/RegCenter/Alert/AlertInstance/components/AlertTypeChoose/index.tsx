@@ -103,7 +103,7 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
       <Button key={'AlertTest'} type='primary' loading={loading} onClick={testSend}>
         {l('button.test')}
       </Button>,
-      <Button key={'AlertFinish'} type='primary' loading={loading} onClick={submit}>
+      <Button key={'AlertFinish'} type='primary' htmlType={'submit'} loading={loading} onClick={submit}>
         {l('button.finish')}
       </Button>
     ];

@@ -46,6 +46,7 @@ export const PopconfirmDeleteBtn: React.FC<PopconfirmProps> = (props) => {
           {...options}
           title={l('button.delete')}
           key={'DeleteIcon'}
+          htmlType={'submit'}
           icon={<DangerDeleteIcon />}
         />
       </Popconfirm>
