@@ -29,11 +29,11 @@ export async function getMetricsLayout(layoutName: string) {
   return getData(API_CONSTANTS.METRICS_LAYOUT_GET_BY_NAME, { layoutName: layoutName });
 }
 
-export async function getMetricsData(time: MetricsTimeFilter, taskids: string | number) {
+export async function getMetricsData(time: MetricsTimeFilter, flinkJobIds: string) {
   return getData(API_CONSTANTS.MONITOR_GET_FLINK_DATA, {
     startTime: time.startTime,
     endTime: time.endTime,
-    taskIds: taskids
+    flinkJobIds: flinkJobIds
   });
 }
 

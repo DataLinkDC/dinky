@@ -22,17 +22,15 @@ import { differenceDays } from '@/utils/function';
 import { Line } from '@ant-design/charts';
 import { ExpandOutlined } from '@ant-design/icons';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
-import { Col, Modal, Radio } from 'antd';
+import { Col, Modal, Radio, Segmented, Space } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
 import { useState } from 'react';
 
-type extraRenderType = 'size' | 'agrandir';
 type FlinkChartProps = {
   title: string;
   data?: ChartData[];
   chartType?: string;
   chartSize?: string;
-  extraType?: extraRenderType;
   onChangeJobState?: (chartSize: string, chartType: string) => void;
   chartOptions?: any;
 };
@@ -43,7 +41,6 @@ const FlinkChart = (props: FlinkChartProps) => {
     title,
     chartType = 'Chart',
     chartSize = '25%',
-    extraType = 'agrandir',
     chartOptions = {},
     onChangeJobState = () => {}
   } = props;
@@ -51,9 +48,10 @@ const FlinkChart = (props: FlinkChartProps) => {
   const [chartProps, setChartProps] = useState({
     chartType: chartType,
     chartSize: chartSize,
-    titleWidth: '100%',
-    extraType: extraType
+    titleWidth: '60%'
   });
+
+  const [showExtra, setShowExtra] = useState<boolean>(false);
 
   const getLineTimeMask = (charData: ChartData[]) => {
     if (!charData || charData.length <= 1) {
@@ -109,7 +107,7 @@ const FlinkChart = (props: FlinkChartProps) => {
 
   const renderMetricsChartTitle = (metricsId: string, titleWidth: string | number) => {
     return (
-      <Paragraph style={{ width: titleWidth }} code ellipsis={{ tooltip: true }}>
+      <Paragraph style={{ width: titleWidth, position: 'absolute' }} ellipsis={{ tooltip: true }}>
         {metricsId}
       </Paragraph>
     );
@@ -120,30 +118,31 @@ const FlinkChart = (props: FlinkChartProps) => {
    * @returns {JSX.Element}
    */
   const renderChartExtra = () => {
-    if (chartProps.extraType == 'size') {
-      return (
-        <Radio.Group
-          className={'radio-group-chart'}
-          size='small'
-          buttonStyle='solid'
+    return (
+      <Space
+        direction={'horizontal'}
+        className={'radio-group-chart'}
+        style={{ display: showExtra ? 'inline-flex' : 'none' }}
+      >
+        <Segmented
+          options={[
+            { label: 'Big', value: '50%' },
+            { label: 'Small', value: '25%' }
+          ]}
+          size={'small'}
           value={chartProps.chartSize}
-          onChange={(e) => {
+          onChange={(v) => {
             setChartProps((prevState) => ({
               ...prevState,
-              titleWidth: e.target.value == '25%' ? '50%' : '100%',
-              chartSize: e.target.value
+              titleWidth: v == '25%' ? '50%' : '100%',
+              chartSize: v.toString()
             }));
-            onChangeJobState(e.target.value, chartProps.chartType);
+            onChangeJobState(v.toString(), chartProps.chartType);
           }}
-          style={{ paddingRight: '5%', paddingTop: '2%' }}
-        >
-          <Radio.Button value={'50%'}>Big</Radio.Button>
-          <Radio.Button value={'25%'}>Small</Radio.Button>
-        </Radio.Group>
-      );
-    } else {
-      return <ExpandOutlined onClick={() => setIsModalOpen(true)} />;
-    }
+        />
+        <ExpandOutlined onClick={() => setIsModalOpen(true)} />
+      </Space>
+    );
   };
 
   return (
@@ -156,6 +155,8 @@ const FlinkChart = (props: FlinkChartProps) => {
         extra={renderChartExtra()}
         actions={renderChartNumericRadio()}
         style={{ height: 240 }}
+        onMouseEnter={() => setShowExtra(true)}
+        onMouseLeave={() => setShowExtra(false)}
       >
         {chartProps.chartType == 'Chart' ? (
           <Line {...config} />

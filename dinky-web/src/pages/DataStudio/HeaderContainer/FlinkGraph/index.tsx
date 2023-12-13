@@ -17,7 +17,7 @@
  *
  */
 
-import FlinkDag from '@/components/FlinkDag';
+import FlinkDag from '@/components/Flink/FlinkDag';
 import { Jobs } from '@/types/DevOps/data';
 import { Empty } from 'antd';
 import { StateType } from 'rmc-input-number';

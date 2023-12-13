@@ -29,8 +29,11 @@ import org.dinky.job.handler.JobAlertHandler;
 import org.dinky.job.handler.JobMetricsHandler;
 import org.dinky.job.handler.JobRefreshHandler;
 import org.dinky.service.JobInstanceService;
+import org.dinky.service.MonitorService;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.context.annotation.DependsOn;
 
@@ -43,14 +46,22 @@ import lombok.extern.slf4j.Slf4j;
 public class FlinkJobTask implements DaemonTask {
 
     private DaemonTaskConfig config;
+
     public static final String TYPE = FlinkJobTask.class.toString();
 
     private static final JobInstanceService jobInstanceService;
+
+    private static final MonitorService monitorService;
+
     private long preDealTime;
+
     private long refreshCount = 0;
+
+    private Map<String, Map<String, String>> verticesAndMetricsMap = new ConcurrentHashMap<>();
 
     static {
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
+        monitorService = SpringContextUtils.getBean("monitorServiceImpl", MonitorService.class);
     }
 
     private JobInfoDetail jobInfoDetail;
@@ -59,6 +70,13 @@ public class FlinkJobTask implements DaemonTask {
     public DaemonTask setConfig(DaemonTaskConfig config) {
         this.config = config;
         this.jobInfoDetail = jobInstanceService.getJobInfoDetail(config.getId());
+        // Get a list of metrics and deduplicate them based on vertices and metrics
+        monitorService
+                .getMetricsLayoutByTaskId(jobInfoDetail.getInstance().getTaskId())
+                .forEach(m -> {
+                    verticesAndMetricsMap.putIfAbsent(m.getVertices(), new ConcurrentHashMap<>());
+                    verticesAndMetricsMap.get(m.getVertices()).put(m.getMetrics(), "");
+                });
         return this;
     }
 
@@ -83,9 +101,9 @@ public class FlinkJobTask implements DaemonTask {
         volatilityBalance();
 
         boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, isNeedSave());
-        if (Asserts.isAllNotNull(jobInfoDetail.getInstance(), jobInfoDetail.getClusterInstance())) {
+        if (Asserts.isAllNotNull(jobInfoDetail.getClusterInstance())) {
             JobAlertHandler.getInstance().check(jobInfoDetail);
-            JobMetricsHandler.writeFlinkMetrics(jobInfoDetail);
+            JobMetricsHandler.refeshAndWriteFlinkMetrics(jobInfoDetail, verticesAndMetricsMap);
         }
         return isDone;
     }

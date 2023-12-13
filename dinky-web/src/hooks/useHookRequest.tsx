@@ -20,7 +20,7 @@
 import lodash from 'lodash';
 import { SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
-interface UseRequestOptionsProps<TData extends { data: any }, TParams extends any[]> {
+interface UseRequestOptionsProps<TData, TParams extends any[]> {
   /*
    * 手动开启
    */
@@ -56,11 +56,11 @@ interface UseRequestOptionsProps<TData extends { data: any }, TParams extends an
   /*
    * 请求成功回调
    */
-  onSuccess?: (res: TData) => void;
+  onSuccess?: (res: TData) => any;
 }
 
-function useHookRequest<TData extends { data: any }, TParams extends any[]>(
-  service: (...args: TParams) => Promise<TData>,
+function useHookRequest<TData, TParams extends any[]>(
+  service: (...args: TParams) => Promise<{ data: TData }>,
   options: UseRequestOptionsProps<TData, TParams>
 ) {
   const [data, setData] = useState<SetStateAction<TData>>();
@@ -119,9 +119,9 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
       } else {
         setLoading(true);
       }
-      const res: TData = await service(...params);
+      const res: { data: any } = await service(...params);
       setData(res.data);
-      onSuccess && onSuccess(res.data);
+      onSuccess && setData(onSuccess(res.data));
     } catch (err) {
       err && setError(JSON.stringify(err));
     } finally {
