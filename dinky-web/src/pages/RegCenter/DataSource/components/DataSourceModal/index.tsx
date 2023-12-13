@@ -23,7 +23,7 @@ import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { ModalForm } from '@ant-design/pro-components';
 import { Button, Form } from 'antd';
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 
 type DataSourceModalProps = {
   visible: boolean;
@@ -40,6 +40,9 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
   const [flinkTemplateValue, setFlinkTemplateValue] = React.useState<string>(
     values.flinkTemplate || ''
   );
+  const [dbType, setDbType] = useState<string>(values.type ?? 'MySQL');
+  const [excludeFormItem, setExcludeFormItem] = useState<boolean>(false);
+
 
   /**
    * init form
@@ -134,6 +137,15 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
     ];
   };
 
+  const handleTypeChange = (value: any) => {
+    if (value.type) setDbType(value.type);
+    if (value.type === 'Hive' || value.type === 'Presto') {
+      setExcludeFormItem(true);
+    } else {
+      setExcludeFormItem(false);
+    }
+  };
+
   /**
    * render
    */
@@ -145,6 +157,7 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
         modalProps={{ onCancel: handleCancel }}
         title={values.id ? l('rc.ds.modify') : l('rc.ds.create')}
         form={form}
+        onValuesChange={handleTypeChange}
         submitter={{ render: () => [...renderFooter()] }}
         initialValues={{
           ...values,
@@ -154,6 +167,8 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
       >
         <DataSourceProForm
           values={values}
+          excludeFormItem={excludeFormItem}
+          dbType={dbType}
           form={form}
           flinkConfigChange={handleFlinkConfigValueChange}
           flinkTemplateChange={handleFlinkTemplateValueChange}
