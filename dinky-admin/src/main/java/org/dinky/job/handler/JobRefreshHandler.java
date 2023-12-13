@@ -117,7 +117,7 @@ public class JobRefreshHandler {
             jobInstance.setError(jobDataDto.getErrorMsg());
             jobInfoDetail.getJobDataDto().setError(true);
             jobInfoDetail.getJobDataDto().setErrorMsg(jobDataDto.getErrorMsg());
-            if (TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) < 1) {
+            if (jobInstance.getFinishTime()==null || TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) < 1) {
                 jobInstance.setFinishTime(LocalDateTime.now());
             }
         } else {
