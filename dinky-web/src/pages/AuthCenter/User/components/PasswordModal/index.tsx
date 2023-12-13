@@ -86,7 +86,7 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
       open={modalVisible}
       onCancel={() => handleCancel()}
       okButtonProps={{
-        htmlType: 'submit',
+        htmlType: 'submit'
       }}
       onOk={() => submitForm()}
     >
