@@ -240,7 +240,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         try {
             config.setAddress(clusterInstanceService.buildEnvironmentAddress(config));
         } catch (Exception e) {
-            log.error("Init remote cluster error", e);
+            log.error("Init remote cluster error:{}", e.getMessage());
         }
         return config;
     }

@@ -17,11 +17,11 @@
  *
  */
 
+import MetricsFilter from '@/components/Flink/MetricsFilter/MetricsFilter';
 import useHookRequest from '@/hooks/useHookRequest';
 import { JOB_STATUS } from '@/pages/DevOps/constants';
 import { JobMetricsItem, JobProps, MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
 import { buildMetricsTarget } from '@/pages/DevOps/JobDetail/JobMetrics/function';
-import MetricsFilter from '@/pages/DevOps/JobDetail/JobMetrics/MetricsFilter/MetricsFilter';
 import MonitorConfigForm from '@/pages/DevOps/JobDetail/JobMetrics/MetricsForm/MetricsConfigForm';
 import { getMetricsLayout, putMetricsLayout } from '@/pages/DevOps/JobDetail/srvice';
 import { Space } from 'antd';

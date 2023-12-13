@@ -17,7 +17,7 @@
  *
  */
 
-import FlinkChart from '@/components/FlinkChart';
+import FlinkChart from '@/components/Flink/FlinkChart';
 import useHookRequest from '@/hooks/useHookRequest';
 import { SseData } from '@/models/Sse';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
@@ -45,7 +45,7 @@ const JobChart = (props: JobChartProps) => {
   }));
 
   const { loading } = useHookRequest(getMetricsData, {
-    defaultParams: [timeRange, jobDetail.instance.taskId],
+    defaultParams: [timeRange, jobDetail.instance.jid],
     refreshDeps: [timeRange, metricsList],
     onSuccess: (result) => {
       const chData = {};

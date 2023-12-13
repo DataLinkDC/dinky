@@ -54,8 +54,8 @@ public class JobMetricsHandler {
      * Send to MetricsContextHolder asynchronously at the end of the method.  </br>
      * Thus, the operation of writing the Flink indicator is completed. </br>
      */
-    public static void writeFlinkMetrics(JobInfoDetail jobInfoDetail) {
-        Map<String, Map<String, String>> customMetricsList = jobInfoDetail.getCustomMetricsMap();
+    public static void refeshAndWriteFlinkMetrics(
+            JobInfoDetail jobInfoDetail, Map<String, Map<String, String>> customMetricsList) {
         String[] jobManagerUrls =
                 jobInfoDetail.getClusterInstance().getJobManagerHost().split(",");
         String jobId = jobInfoDetail.getInstance().getJid();

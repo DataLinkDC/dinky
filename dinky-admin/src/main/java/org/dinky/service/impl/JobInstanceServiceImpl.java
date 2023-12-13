@@ -49,12 +49,10 @@ import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
-import org.dinky.service.MonitorService;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
@@ -82,7 +80,6 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterConfigurationService;
     private final JobHistoryService jobHistoryService;
-    private final MonitorService monitorService;
 
     @Override
     public JobInstance getByIdWithoutTenant(Integer id) {
@@ -174,13 +171,6 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         JobDataDto jobDataDto = jobHistoryService.getJobHistoryDto(jobInstance.getId());
         jobInfoDetail.setJobDataDto(jobDataDto);
 
-        // Get a list of metrics and deduplicate them based on vertices and metrics
-        Map<String, Map<String, String>> verticesAndMetricsMap = new ConcurrentHashMap<>();
-        monitorService.getJobMetrics(jobInstance.getTaskId()).forEach(m -> {
-            verticesAndMetricsMap.putIfAbsent(m.getVertices(), new ConcurrentHashMap<>());
-            verticesAndMetricsMap.get(m.getVertices()).put(m.getMetrics(), "");
-        });
-        jobInfoDetail.setCustomMetricsMap(verticesAndMetricsMap);
         return jobInfoDetail;
     }
 
