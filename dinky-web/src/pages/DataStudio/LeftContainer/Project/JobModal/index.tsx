@@ -27,8 +27,8 @@ import { l } from '@/utils/intl';
 import { ModalForm, ProFormSelect, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { ProFormCascader } from '@ant-design/pro-form/lib';
 import { Form } from 'antd';
+import { DefaultOptionType } from 'antd/es/select';
 import React, { useEffect } from 'react';
-import {DefaultOptionType} from "antd/es/select";
 
 type JobModalProps = {
   onCancel: () => void;
@@ -61,17 +61,17 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     form.setFieldsValue(newValues);
   }, [open, values, form]);
 
-  const queryUdfTemplate =  () => {
+  const queryUdfTemplate = () => {
     queryDataByParams<DefaultOptionType[]>(API_CONSTANTS.UDF_TEMPLATE_TREE).then((res) => {
-     const newRes : DefaultOptionType[] = []
+      const newRes: DefaultOptionType[] = [];
       res?.forEach((item: any) => {
-        if (item.value === jobType){
+        if (item.value === jobType) {
           item.children.forEach((item: any) => {
             newRes.push(item);
           });
         }
       });
-      setUdfTemplate(newRes );
+      setUdfTemplate(newRes);
     });
   };
 
