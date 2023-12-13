@@ -102,7 +102,6 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     onSubmit({ ...values, ...formData } as Catalogue);
   };
 
-
   /**
    * validate name field value, contains '_'
    * because k8s job name not contains '_'
@@ -112,13 +111,12 @@ const JobModal: React.FC<JobModalProps> = (props) => {
   const validateName = async (rule: any, value: string) => {
     if (/_/g.test(value)) {
       return Promise.reject(l('catalog.name.validate.error'));
-    }else if (!value) {
+    } else if (!value) {
       return Promise.reject(l('catalog.name.placeholder'));
-    }else {
+    } else {
       return Promise.resolve();
     }
   };
-
 
   const renderForm = () => {
     return (
@@ -141,8 +139,8 @@ const JobModal: React.FC<JobModalProps> = (props) => {
           label={l('catalog.name')}
           tooltip={l('catalog.name.tip')}
           placeholder={l('catalog.name.placeholder')}
-          validateTrigger={['onBlur', 'onChange','onSubmit']}
-          rules={[{required: true, validator: validateName}]}
+          validateTrigger={['onBlur', 'onChange', 'onSubmit']}
+          rules={[{ required: true, validator: validateName }]}
         />
         <ProFormTextArea
           name='note'
