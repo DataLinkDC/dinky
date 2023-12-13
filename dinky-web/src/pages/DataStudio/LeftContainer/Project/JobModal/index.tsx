@@ -95,7 +95,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
    */
   const onValuesChange = (changedValues: any) => {
     if (changedValues.type) {
-      setJobType(changedValues.type)
+      setJobType(changedValues.type);
       form.resetFields(['configJson']); // 如果是UDF，重置configJson, 否则 模版id 会有渲染问题
     }
   };

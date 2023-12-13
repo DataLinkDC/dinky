@@ -88,7 +88,8 @@ const TemplateModal: React.FC<TemplateModalProps> = (props) => {
         key={'finish'}
         loading={submitting}
         type='primary'
-        htmlType={'submit'} autoFocus
+        htmlType={'submit'}
+        autoFocus
         onClick={() => submitForm()}
       >
         {l('button.finish')}

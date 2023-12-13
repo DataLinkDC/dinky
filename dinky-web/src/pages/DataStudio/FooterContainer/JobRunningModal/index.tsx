@@ -47,7 +47,15 @@ const JobRunningModal: React.FC<JobRunningModalProps> = (props) => {
             <Progress
               showInfo
               strokeLinecap={'round'}
-              percent={value?.taskId ? value?.jobState==='RUNNING'? 50 : value?.jobState==='FINISHED'? 100 : 0 : 0}
+              percent={
+                value?.taskId
+                  ? value?.jobState === 'RUNNING'
+                    ? 50
+                    : value?.jobState === 'FINISHED'
+                    ? 100
+                    : 0
+                  : 0
+              }
               status='active'
               strokeColor={{ from: '#108ee9', to: '#87d068' }}
             />

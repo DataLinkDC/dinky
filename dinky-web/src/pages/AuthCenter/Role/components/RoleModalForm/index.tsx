@@ -86,7 +86,7 @@ const RoleModalForm: React.FC<RoleModalProps> = (props) => {
       onCancel={() => handleCancel()}
       okButtonProps={{
         htmlType: 'submit',
-        autoFocus: true,
+        autoFocus: true
       }}
       onOk={() => submitForm()}
     >

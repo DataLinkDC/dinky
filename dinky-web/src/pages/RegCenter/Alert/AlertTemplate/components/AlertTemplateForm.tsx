@@ -111,7 +111,8 @@ const AlertTemplateForm: React.FC<AlertTemplateFormProps> = (props) => {
       <Button
         key={'AlertTemplateFinish'}
         type='primary'
-        htmlType={'submit'} autoFocus
+        htmlType={'submit'}
+        autoFocus
         onClick={() => submitForm()}
       >
         {l('button.finish')}
