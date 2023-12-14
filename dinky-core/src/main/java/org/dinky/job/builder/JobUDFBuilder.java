@@ -114,8 +114,10 @@ public class JobUDFBuilder extends JobBuilder {
             List<URL> jarList = CollUtil.newArrayList(URLUtils.getURLs(jarFiles));
             // 3.Write the required files for UDF
             UDFUtil.writeManifest(taskId, jarList, jobManager.getUdfPathContextHolder());
-
-            UDFUtil.addConfigurationClsAndJars(jarList, CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
+            UDFUtil.addConfigurationClsAndJars(
+                    jobManager.getExecutor().getCustomTableEnvironment(),
+                    jarList,
+                    CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
         } catch (Exception e) {
             throw new RuntimeException("add configuration failed: ", e);
         }
