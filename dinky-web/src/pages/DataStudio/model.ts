@@ -512,9 +512,15 @@ const Model: ModelType = {
       ) {
         centerContentHeight = state.centerContentHeight;
         toolContentHeight = state.toolContentHeight;
-      } else {
-        centerContentHeight = state.centerContentHeight - (state.bottomContainer.height as number);
-        toolContentHeight = state.toolContentHeight - (state.bottomContainer.height as number);
+      }
+      else {
+        if (state.centerContentHeight>state.bottomContainer.height){
+          centerContentHeight = state.centerContentHeight - (state.bottomContainer.height as number);
+          toolContentHeight = state.toolContentHeight - (state.bottomContainer.height as number);
+        }else {
+          centerContentHeight = state.centerContentHeight;
+          toolContentHeight = state.toolContentHeight;
+        }
       }
 
       return {
