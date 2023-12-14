@@ -310,7 +310,7 @@ export default {
    * */
 
   'pages.datastudio.editor.check': 'Check',
-  'pages.datastudio.editor.debug': 'Debug',
+  'pages.datastudio.editor.debug': 'Preview',
   'pages.datastudio.editor.exec': 'Execute',
   'pages.datastudio.editor.exec.error': 'Task [{jobName}] execution failed',
   'pages.datastudio.editor.debug.error': 'Task [{jobName}] debug failed',

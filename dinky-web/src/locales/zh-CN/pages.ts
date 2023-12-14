@@ -303,7 +303,7 @@ export default {
    * */
 
   'pages.datastudio.editor.check': '检查',
-  'pages.datastudio.editor.debug': '调试',
+  'pages.datastudio.editor.debug': '预览',
   'pages.datastudio.editor.exec': '运行',
   'pages.datastudio.editor.exec.error': '任务【{jobName}】执行失败',
   'pages.datastudio.editor.debug.error': '任务【{jobName}】调试失败',
