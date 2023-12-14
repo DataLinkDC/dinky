@@ -19,6 +19,7 @@
 
 package org.apache.calcite.sql;
 
+import org.apache.flink.table.delegation.Parser;
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.executor.ExtendedParser;
@@ -133,9 +134,9 @@ public class SqlSelect extends SqlCall {
         if (permissionsMap != null) {
             String permissionsStatement = permissionsMap.get(tableName);
             if (permissionsStatement != null && !"".equals(permissionsStatement)) {
-                if (CustomTableEnvironmentContext.get().getParser() instanceof ExtendedParser) {
-                    ExtendedParser extendedParser =
-                            (ExtendedParser) CustomTableEnvironmentContext.get().getParser();
+                Parser parser = CustomTableEnvironmentContext.get().getParser();
+                if (parser instanceof ExtendedParser) {
+                    ExtendedParser extendedParser =(ExtendedParser) parser;
                     permissions =
                             (SqlBasicCall) (extendedParser.getCustomParser()).parseExpression(permissionsStatement);
                 } else {

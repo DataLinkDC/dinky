@@ -27,6 +27,7 @@ import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.compiler.CustomStringScalaCompiler;
@@ -451,8 +452,9 @@ public class UDFUtil {
         }
     }
 
-    public static void addConfigurationClsAndJars(List<URL> jarList, List<URL> classpaths) {
-        Configuration configuration = (Configuration) CustomTableEnvironmentContext.get()
+    public static void addConfigurationClsAndJars(CustomTableEnvironment customTableEnvironment, List<URL> jarList,
+                                                  List<URL> classpaths) {
+        Configuration configuration = (Configuration) customTableEnvironment
                 .getStreamExecutionEnvironment()
                 .getConfiguration();
         configuration.set(

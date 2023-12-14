@@ -25,6 +25,7 @@ import static org.dinky.function.util.UDFUtil.YARN;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.job.JobBuilder;
@@ -115,8 +116,8 @@ public class JobUDFBuilder extends JobBuilder {
             List<URL> jarList = CollUtil.newArrayList(URLUtils.getURLs(jarFiles));
             // 3.Write the required files for UDF
             UDFUtil.writeManifest(taskId, jarList, jobManager.getUdfPathContextHolder());
-
-            UDFUtil.addConfigurationClsAndJars(jarList, CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
+            UDFUtil.addConfigurationClsAndJars(jobManager.getExecutor().getCustomTableEnvironment(), jarList,
+                    CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
         } catch (Exception e) {
             log.error("add configuration failed;reason:{}", LogUtil.getError(e));
             throw new RuntimeException(e);

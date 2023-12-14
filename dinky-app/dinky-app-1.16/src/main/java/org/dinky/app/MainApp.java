@@ -24,6 +24,7 @@ import org.dinky.app.db.DBUtil;
 import org.dinky.app.flinksql.Submitter;
 import org.dinky.app.util.FlinkAppUtil;
 import org.dinky.data.app.AppParamConfig;
+import org.dinky.executor.Executor;
 import org.dinky.utils.JsonUtils;
 
 import org.apache.flink.api.java.utils.ParameterTool;
@@ -57,7 +58,7 @@ public class MainApp {
             log.error("exectue app failed : ", e);
         } finally {
             log.info("Start Monitor Job");
-            FlinkAppUtil.monitorFlinkTask(appConfig.getTaskId());
+            FlinkAppUtil.monitorFlinkTask(Submitter.executor, appConfig.getTaskId());
         }
     }
 }
