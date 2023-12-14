@@ -22,7 +22,6 @@ package org.dinky.function.util;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
-import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.FlinkUdfManifest;
@@ -452,11 +451,10 @@ public class UDFUtil {
         }
     }
 
-    public static void addConfigurationClsAndJars(CustomTableEnvironment customTableEnvironment, List<URL> jarList,
-                                                  List<URL> classpaths) {
-        Configuration configuration = (Configuration) customTableEnvironment
-                .getStreamExecutionEnvironment()
-                .getConfiguration();
+    public static void addConfigurationClsAndJars(
+            CustomTableEnvironment customTableEnvironment, List<URL> jarList, List<URL> classpaths) {
+        Configuration configuration = (Configuration)
+                customTableEnvironment.getStreamExecutionEnvironment().getConfiguration();
         configuration.set(
                 PipelineOptions.CLASSPATHS,
                 classpaths.stream().map(URL::toString).collect(Collectors.toList()));

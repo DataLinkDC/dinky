@@ -19,8 +19,6 @@
 
 package org.dinky.utils;
 
-import org.apache.flink.table.delegation.Parser;
-import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.data.model.FunctionResult;
 import org.dinky.data.model.LineageRel;
 import org.dinky.executor.CustomParser;
@@ -39,6 +37,7 @@ import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.catalog.ContextResolvedFunction;
 import org.apache.flink.table.catalog.FunctionCatalog;
 import org.apache.flink.table.catalog.UnresolvedIdentifier;
+import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.functions.FunctionIdentifier;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.SinkModifyOperation;

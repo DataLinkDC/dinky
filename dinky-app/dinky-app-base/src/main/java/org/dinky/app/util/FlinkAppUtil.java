@@ -19,7 +19,6 @@
 
 package org.dinky.app.util;
 
-import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.executor.Executor;
