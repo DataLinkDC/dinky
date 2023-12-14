@@ -512,12 +512,12 @@ const Model: ModelType = {
       ) {
         centerContentHeight = state.centerContentHeight;
         toolContentHeight = state.toolContentHeight;
-      }
-      else {
-        if (state.centerContentHeight>state.bottomContainer.height){
-          centerContentHeight = state.centerContentHeight - (state.bottomContainer.height as number);
+      } else {
+        if (state.centerContentHeight > state.bottomContainer.height) {
+          centerContentHeight =
+            state.centerContentHeight - (state.bottomContainer.height as number);
           toolContentHeight = state.toolContentHeight - (state.bottomContainer.height as number);
-        }else {
+        } else {
           centerContentHeight = state.centerContentHeight;
           toolContentHeight = state.toolContentHeight;
         }
@@ -677,7 +677,12 @@ const Model: ModelType = {
         for (const [index, pane] of panes.entries()) {
           if (pane.key === needCloseKey) {
             const nextPane = panes[(index + 1) % panes.length];
-            const height = document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight;
+            const height =
+              document.documentElement.clientHeight -
+              VIEW.headerHeight -
+              VIEW.headerNavHeight -
+              VIEW.footerHeight -
+              VIEW.otherHeight;
             return {
               ...state,
               tabs: {
@@ -692,8 +697,9 @@ const Model: ModelType = {
                 ...state.footContainer,
                 ...getFooterValue(panes, nextPane.key)
               },
-              toolContentHeight: panes.length < 2? height-VIEW.leftMargin : state.toolContentHeight,
-              centerContentHeight: panes.length < 2? height : state.toolContentHeight,
+              toolContentHeight:
+                panes.length < 2 ? height - VIEW.leftMargin : state.toolContentHeight,
+              centerContentHeight: panes.length < 2 ? height : state.toolContentHeight
             };
           }
         }
