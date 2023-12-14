@@ -291,6 +291,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Task newTask = new Task();
         BeanUtil.copyProperties(oldTask, newTask);
         newTask.setId(null);
+        newTask.setJobInstanceId(null);
         newTask.setType(oldTask.getType());
         // 设置复制后的作业名称为：原名称+自增序列
         size = size + 1;
