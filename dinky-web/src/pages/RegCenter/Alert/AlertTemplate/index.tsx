@@ -17,6 +17,7 @@
  *
  */
 
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { Authorized } from '@/hooks/useAccess';
@@ -29,12 +30,11 @@ import { AlertTemplateState } from '@/types/RegCenter/state';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { PlusOutlined } from '@ant-design/icons';
+import { ProList } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-layout';
-import {Button, Card, Input, List, Modal} from 'antd';
-import React, { useState } from 'react';
+import { Button, Card, List, Modal } from 'antd';
+import { useState } from 'react';
 import Markdown from 'react-markdown';
-import {ProList} from "@ant-design/pro-components";
-import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 
 export default () => {
   const [alertTemplateState, setAlertTemplateState] =
@@ -115,10 +115,12 @@ export default () => {
       <Authorized key='create' path='/registration/alert/template/add'>
         <CreateBtn
           key={'CreateAlertTemplateBtn'}
-          onClick={() => setAlertTemplateState((prevState) => ({
-            ...prevState,
-            addedOpen: true
-          }))}
+          onClick={() =>
+            setAlertTemplateState((prevState) => ({
+              ...prevState,
+              addedOpen: true
+            }))
+          }
         />
       </Authorized>
     ];
