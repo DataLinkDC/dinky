@@ -671,6 +671,7 @@ const Model: ModelType = {
         for (const [index, pane] of panes.entries()) {
           if (pane.key === needCloseKey) {
             const nextPane = panes[(index + 1) % panes.length];
+            const height = document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight;
             return {
               ...state,
               tabs: {
@@ -684,7 +685,9 @@ const Model: ModelType = {
               footContainer: {
                 ...state.footContainer,
                 ...getFooterValue(panes, nextPane.key)
-              }
+              },
+              toolContentHeight: panes.length < 2? height-VIEW.leftMargin : state.toolContentHeight,
+              centerContentHeight: panes.length < 2? height : state.toolContentHeight,
             };
           }
         }
