@@ -44,6 +44,8 @@ export const JobDetailInfoModel: React.FC<JobDetailInfoModelProps> = (props) => 
         destroyOnClose
         maskClosable={false}
         okButtonProps={{
+          htmlType: 'submit',
+          autoFocus: true,
           style: {
             display: 'none'
           }

@@ -113,7 +113,13 @@ const AlertGroupForm: React.FC<AlertGroupFormProps & connect> = (props) => {
       <Button key={'GroupCancel'} onClick={() => handleModalVisible(false)}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'GroupFinish'} type='primary' onClick={() => submitForm()}>
+      <Button
+        key={'GroupFinish'}
+        type='primary'
+        htmlType={'submit'}
+        autoFocus
+        onClick={() => submitForm()}
+      >
         {l('button.finish')}
       </Button>
     ];

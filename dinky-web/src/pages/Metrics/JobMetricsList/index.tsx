@@ -115,7 +115,7 @@ const JobMetricsList = (props: MetricsProps) => {
       {data != undefined &&
         data.map((lo: any) => {
           return (
-            <Spin spinning={loading}>
+            <Spin spinning={loading} key={`spin-${lo.layoutName}`}>
               <ProCard key={lo.layoutName} title={lo.layoutName} collapsible ghost gutter={[0, 8]}>
                 <Row gutter={[8, 16]}>{renderFlinkChartGroup(lo.flinkJobId, lo.metrics)}</Row>
               </ProCard>

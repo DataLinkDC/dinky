@@ -30,17 +30,17 @@ import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Button, Card, List, Modal, Typography } from 'antd';
-import { useState } from 'react';
+import {Button, Card, Input, List, Modal} from 'antd';
+import React, { useState } from 'react';
 import Markdown from 'react-markdown';
-const { Paragraph } = Typography;
+import {ProList} from "@ant-design/pro-components";
+import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 
 export default () => {
   const [alertTemplateState, setAlertTemplateState] =
     useState<AlertTemplateState>(InitAlertTemplateState);
 
   const { data, loading, run } = useRequest({ url: API_CONSTANTS.ALERT_TEMPLATE });
-  const nullData: Partial<Alert.AlertTemplate> = {};
 
   /**
    * edit click callback
@@ -110,6 +110,20 @@ export default () => {
     ];
   };
 
+  const renderToolBar = () => {
+    return () => [
+      <Authorized key='create' path='/registration/alert/template/add'>
+        <CreateBtn
+          key={'CreateAlertTemplateBtn'}
+          onClick={() => setAlertTemplateState((prevState) => ({
+            ...prevState,
+            addedOpen: true
+          }))}
+        />
+      </Authorized>
+    ];
+  };
+
   /**
    * Draw a template Card
    */
@@ -150,13 +164,15 @@ export default () => {
   };
 
   return (
-    <PageContainer>
-      <List<Alert.AlertTemplate>
+    <PageContainer title={false}>
+      <ProList<Alert.AlertTemplate>
+        headerTitle={l('menu.registration.alert.template')}
         rowKey='id'
         loading={loading}
         grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
-        dataSource={[nullData, ...(data ?? [])]}
+        dataSource={data ?? []}
         renderItem={(item) => renderTemplateCard(item)}
+        toolBarRender={renderToolBar()}
       />
 
       <AlertTemplateForm

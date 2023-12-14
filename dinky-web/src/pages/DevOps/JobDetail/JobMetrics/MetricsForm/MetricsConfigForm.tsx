@@ -78,6 +78,12 @@ const MetricsConfigForm = (props: MetricsConfigFormProps) => {
       layout={'horizontal'}
       title={l('devops.jobinfo.metrics.configMetrics')}
       trigger={<Button type='primary'>{l('devops.jobinfo.metrics.configMetrics')}</Button>}
+      modalProps={{
+        okButtonProps: {
+          htmlType: 'submit',
+          autoFocus: true
+        }
+      }}
       onFinish={async () => await saveJobMetrics()}
     >
       <Tabs items={itemTabs} />

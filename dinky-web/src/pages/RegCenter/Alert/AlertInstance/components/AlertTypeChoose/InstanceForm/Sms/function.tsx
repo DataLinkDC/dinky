@@ -94,16 +94,6 @@ export const renderCommonSmsForm = (smsType: string) => {
         rules={[{ required: true, message: l('rc.ai.templateIdPleaseHolder') }]}
         placeholder={l('rc.ai.templateIdPleaseHolder')}
       />
-      <ProFormText
-        name={['params', 'configId']}
-        label={l('rc.ai.configId')}
-        width={'md'}
-        disabled
-        hidden
-        initialValue={randomStr(32)}
-        rules={[{ required: true, message: l('rc.ai.configIdPleaseHolder') }]}
-        placeholder={l('rc.ai.configIdPleaseHolder')}
-      />
       <ProFormDigit
         name={['params', 'weight']}
         label={l('rc.ai.weight')}
@@ -128,6 +118,16 @@ export const renderCommonSmsForm = (smsType: string) => {
         rules={[{ required: true, message: l('rc.ai.maxRetriesPleaseHolder') }]}
         placeholder={l('rc.ai.maxRetriesPleaseHolder')}
       />
+      <ProFormText
+        name={['params', 'configId']}
+        label={l('rc.ai.configId')}
+        width={'md'}
+        disabled
+        hidden
+        initialValue={randomStr(32)}
+        rules={[{ required: true, message: l('rc.ai.configIdPleaseHolder') }]}
+        placeholder={l('rc.ai.configIdPleaseHolder')}
+      />
     </>
   );
 };
@@ -140,14 +140,14 @@ export const renderAlibabaSmsForm = (smsType: string) => {
       <ProFormText
         name={['params', 'requestUrl']}
         label={l('rc.ai.requestUrl')}
-        width={'lg'}
+        width={'md'}
         rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
         placeholder={l('rc.ai.requestUrlPleaseHolder')}
       />
       <ProFormSelect
         name={['params', 'regionId']}
         label={l('rc.ai.regionId')}
-        width={'md'}
+        width={'sm'}
         options={AliYunArea}
         rules={[{ required: true, message: l('rc.ai.regionIdPleaseHolder') }]}
         placeholder={l('rc.ai.regionIdPleaseHolder')}
@@ -171,7 +171,6 @@ export const renderAlibabaSmsForm = (smsType: string) => {
         initialValue={'SendSms'}
         placeholder={l('rc.ai.actionPleaseHolder')}
       />
-
       <ProFormText
         name={['params', 'version']}
         label={l('rc.ai.version')}

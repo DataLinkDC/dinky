@@ -17,41 +17,25 @@
  *
  */
 
-package org.dinky.trans.show;
+package org.dinky.operations;
 
-import org.dinky.executor.Executor;
-import org.dinky.trans.AbstractOperation;
-import org.dinky.trans.Operation;
+import org.dinky.parser.CustomParserImpl;
 
-import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.api.TableEnvironment;
+import org.apache.flink.table.delegation.Parser;
+import org.apache.flink.table.planner.parse.ExtendedParser;
 
-/**
- * ShowFragmentsOperation
- *
- * @since 2022/2/17 16:31
- */
-public class ShowFragmentsOperation extends AbstractOperation implements Operation {
+public class CustomNewParserImpl extends CustomParserImpl {
 
-    private static final String KEY_WORD = "SHOW FRAGMENTS";
+    private final DinkyParser dinkyParser;
 
-    public ShowFragmentsOperation() {}
-
-    public ShowFragmentsOperation(String statement) {
-        super(statement);
+    public CustomNewParserImpl(TableEnvironment tableEnvironment, Parser parser) {
+        super(parser);
+        this.dinkyParser = new DinkyParser(tableEnvironment);
     }
 
     @Override
-    public String getHandle() {
-        return KEY_WORD;
-    }
-
-    @Override
-    public Operation create(String statement) {
-        return new ShowFragmentsOperation(statement);
-    }
-
-    @Override
-    public TableResult execute(Executor executor) {
-        return executor.getVariableManager().getVariables();
+    public ExtendedParser getDinkyParser() {
+        return this.dinkyParser;
     }
 }

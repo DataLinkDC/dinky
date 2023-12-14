@@ -101,6 +101,10 @@ export const PermissionsModal: React.FC<RolePermissionsFormProps> = (props) => {
       title={values.id ? l('rowPermissions.update') : l('rowPermissions.create')}
       open={modalVisible}
       onOk={() => submitForm()}
+      okButtonProps={{
+        htmlType: 'submit',
+        autoFocus: true
+      }}
       onCancel={() => handleCancel()}
     >
       <PermissionsForm form={form} values={values} roles={roleList} />

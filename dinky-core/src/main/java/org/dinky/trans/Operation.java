@@ -34,7 +34,7 @@ public interface Operation extends org.apache.flink.table.operations.Operation {
 
     Operation create(String statement);
 
-    TableResult build(Executor executor);
+    TableResult execute(Executor executor);
 
     boolean noExecute();
 

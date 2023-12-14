@@ -19,9 +19,9 @@
 
 package org.dinky.app.util;
 
-import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.Executor;
 import org.dinky.utils.JsonUtils;
 
 import org.apache.flink.client.deployment.StandaloneClusterId;
@@ -44,9 +44,9 @@ public class FlinkAppUtil {
      * This method creates a Flink REST client and continuously checks the status of the task until it is completed.
      * If the task is completed, it sends a hook notification and stops monitoring.
      */
-    public static void monitorFlinkTask(int taskId) {
+    public static void monitorFlinkTask(Executor executor, int taskId) {
         boolean isRun = true;
-        try (RestClusterClient<StandaloneClusterId> client = createClient()) {
+        try (RestClusterClient<StandaloneClusterId> client = createClient(executor)) {
             while (isRun) {
                 Collection<JobStatusMessage> jobs = client.listJobs().get();
                 if (jobs.isEmpty()) {
@@ -104,10 +104,8 @@ public class FlinkAppUtil {
      * @return
      * @throws Exception
      */
-    private static RestClusterClient<StandaloneClusterId> createClient() throws Exception {
-        ReadableConfig config = CustomTableEnvironmentContext.get()
-                .getStreamExecutionEnvironment()
-                .getConfiguration();
+    private static RestClusterClient<StandaloneClusterId> createClient(Executor executor) throws Exception {
+        ReadableConfig config = executor.getStreamExecutionEnvironment().getConfiguration();
         Configuration configuration = new Configuration((Configuration) config);
 
         return new RestClusterClient<>(configuration, StandaloneClusterId.getInstance());

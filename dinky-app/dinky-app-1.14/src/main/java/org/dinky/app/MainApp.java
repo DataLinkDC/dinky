@@ -57,7 +57,7 @@ public class MainApp {
             log.error("exectue app failed : ", e);
         } finally {
             log.info("Start Monitor Job");
-            FlinkAppUtil.monitorFlinkTask(appConfig.getTaskId());
+            FlinkAppUtil.monitorFlinkTask(Submitter.executor, appConfig.getTaskId());
         }
     }
 }

@@ -20,7 +20,6 @@
 package org.dinky.explainer;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.model.SystemConfiguration;
@@ -73,13 +72,12 @@ public class Explainer {
 
     private Executor executor;
     private boolean useStatementSet;
-    private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
+    private String sqlSeparator;
     private ObjectMapper mapper = new ObjectMapper();
     private JobManager jobManager;
 
-    public Explainer(Executor executor, boolean useStatementSet) {
-        this.executor = executor;
-        this.useStatementSet = useStatementSet;
+    public Explainer(Executor executor, boolean useStatementSet, JobManager jobManager) {
+        this(executor, useStatementSet, FlinkSQLConstant.SEPARATOR, jobManager);
         init();
     }
 
@@ -127,7 +125,7 @@ public class Explainer {
             if (operationType.equals(SqlType.ADD)) {
                 AddJarSqlParseStrategy.getAllFilePath(statement)
                         .forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
-                ((DinkyClassLoader) executor.getCustomTableEnvironment().getUserClassLoader())
+                (executor.getDinkyClassLoader())
                         .addURLs(URLUtils.getURLs(
                                 jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
@@ -383,6 +381,8 @@ public class Explainer {
                 .parallelism(1)
                 .configJson(executor.getTableConfig().getConfiguration().toMap())
                 .build();
+        jobManager.setConfig(jobConfig);
+        jobManager.setExecutor(executor);
         this.initialize(jobConfig, statement);
 
         List<LineageRel> lineageRelList = new ArrayList<>();

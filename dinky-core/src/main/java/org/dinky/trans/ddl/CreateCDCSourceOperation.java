@@ -72,7 +72,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
     }
 
     @Override
-    public TableResult build(Executor executor) {
+    public TableResult execute(Executor executor) {
         logger.info("Start build CDCSOURCE Task...");
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = new FlinkCDCConfig(
