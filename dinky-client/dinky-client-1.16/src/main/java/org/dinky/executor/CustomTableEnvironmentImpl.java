@@ -165,14 +165,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 throw new TableException("Only single statement is supported.");
             }
             Operation operation = operations.get(0);
-            if (operation instanceof CreateTableASOperation) {
-                CreateTableASOperation createTableAsOperation = (CreateTableASOperation) operation;
-                CreateTableOperation createTableOperation = createTableAsOperation.getCreateTableOperation();
-                executeInternal(createTableOperation);
-                SinkModifyOperation sinkModifyOperation =
-                        createTableAsOperation.toSinkModifyOperation(getCatalogManager());
-                getPlanner().translate(CollUtil.newArrayList(sinkModifyOperation));
-            } else if (operation instanceof ModifyOperation) {
+            if (operation instanceof ModifyOperation) {
                 modifyOperations.add((ModifyOperation) operation);
             } else {
                 throw new TableException("Only insert statement is supported now.");
@@ -266,14 +259,4 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         createTemporaryView(s, fromChangelogStream(dataStream));
     }
 
-    @Override
-    public void executeCTAS(Operation operation) {
-        if (operation instanceof CreateTableASOperation) {
-            CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
-            CreateTableOperation createTableOperation = createTableASOperation.getCreateTableOperation();
-            executeInternal(createTableOperation);
-            SinkModifyOperation sinkModifyOperation = createTableASOperation.toSinkModifyOperation(getCatalogManager());
-            getPlanner().translate(CollUtil.newArrayList(sinkModifyOperation));
-        }
-    }
 }

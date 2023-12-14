@@ -349,17 +349,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
-    public void executeCTAS(Operation operation) {
-        if (operation instanceof CreateTableASOperation) {
-            CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
-            CreateTableOperation createTableOperation = createTableASOperation.getCreateTableOperation();
-            executeInternal(createTableOperation);
-            SinkModifyOperation sinkModifyOperation = createTableASOperation.toSinkModifyOperation(getCatalogManager());
-            getPlanner().translate(CollUtil.newArrayList(sinkModifyOperation));
-        }
-    }
-
-    @Override
     public <T> void createTemporaryView(String path, DataStream<T> dataStream, Expression... fields) {
         createTemporaryView(path, fromDataStream(dataStream, fields));
     }

@@ -83,8 +83,6 @@ public interface CustomTableEnvironment
 
     <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList);
 
-    void executeCTAS(Operation operation);
-
     default void addJar(File... jarPath) {
         Configuration configuration = this.getRootConfiguration();
         List<String> pathList =
