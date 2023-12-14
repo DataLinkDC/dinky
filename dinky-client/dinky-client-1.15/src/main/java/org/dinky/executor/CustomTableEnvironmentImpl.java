@@ -59,11 +59,8 @@ import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
-import org.apache.flink.table.operations.SinkModifyOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
-import org.apache.flink.table.operations.ddl.CreateTableASOperation;
-import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.types.Row;
 
 import java.io.File;
@@ -346,17 +343,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     @Override
     public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
         createTemporaryView(s, fromChangelogStream(dataStream));
-    }
-
-    @Override
-    public void executeCTAS(Operation operation) {
-        if (operation instanceof CreateTableASOperation) {
-            CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
-            CreateTableOperation createTableOperation = createTableASOperation.getCreateTableOperation();
-            executeInternal(createTableOperation);
-            SinkModifyOperation sinkModifyOperation = createTableASOperation.toSinkModifyOperation(getCatalogManager());
-            getPlanner().translate(CollUtil.newArrayList(sinkModifyOperation));
-        }
     }
 
     @Override

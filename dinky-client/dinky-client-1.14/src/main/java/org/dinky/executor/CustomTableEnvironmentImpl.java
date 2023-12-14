@@ -66,8 +66,6 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
-import org.apache.flink.table.operations.ddl.CreateTableASOperation;
-import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.table.planner.delegation.DefaultExecutor;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
 import org.apache.flink.types.Row;
@@ -374,16 +372,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     @Override
     public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
         createTemporaryView(s, fromChangelogStream(dataStream));
-    }
-
-    @Override
-    public void executeCTAS(Operation operation) {
-        if (operation instanceof CreateTableASOperation) {
-            CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
-            CreateTableOperation createTableOperation = createTableASOperation.getCreateTableOperation();
-            executeInternal(createTableOperation);
-            getPlanner().translate(CollUtil.newArrayList(createTableASOperation.getInsertOperation()));
-        }
     }
 
     @Override
