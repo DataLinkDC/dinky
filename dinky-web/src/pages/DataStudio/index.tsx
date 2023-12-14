@@ -136,7 +136,7 @@ const DataStudio = (props: any) => {
     const centerContentHeight = size.contentHeight - newBottomHeight;
     updateCenterContentHeight(centerContentHeight);
     updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
-  }, [activeKey]);
+  }, [activeKey,panes]);
 
   useEffect(() => {
     loadData();
