@@ -68,7 +68,7 @@ public class SqlUtil {
     }
 
     public static String replaceAllParam(String sql, String name, String value) {
-        return sql.replaceAll("\\$\\{" + name + "\\}", value);
+        return sql.replaceAll("#\\{" + name + "\\}", value);
     }
 
     /**
@@ -85,5 +85,17 @@ public class SqlUtil {
             sql = replaceAllParam(sql, entry.getKey(), entry.getValue());
         }
         return sql;
+    }
+
+    public static String addLineNumber(String input) {
+        String[] lines = input.split("\n");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < lines.length; i++) {
+            sb.append(String.format("%-4d", i + 1));
+            sb.append("  ");
+            sb.append(lines[i]);
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 }

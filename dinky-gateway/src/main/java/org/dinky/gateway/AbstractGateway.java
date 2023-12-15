@@ -20,6 +20,7 @@
 package org.dinky.gateway;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
@@ -182,7 +183,7 @@ public abstract class AbstractGateway implements Gateway {
     }
 
     @Override
-    public GatewayResult submitJar() {
+    public GatewayResult submitJar(FlinkUdfPathContextHolder udfPathContextHolder) {
         throw new GatewayException("Couldn't deploy Flink Cluster with User Application Jar.");
     }
 
@@ -207,7 +208,7 @@ public abstract class AbstractGateway implements Gateway {
     }
 
     @Override
-    public GatewayResult deployCluster() {
+    public GatewayResult deployCluster(FlinkUdfPathContextHolder udfPathContextHolder) {
         logger.error("Could not deploy the Flink cluster");
         return null;
     }

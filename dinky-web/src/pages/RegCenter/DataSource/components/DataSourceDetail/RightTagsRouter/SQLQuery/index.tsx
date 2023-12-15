@@ -17,7 +17,6 @@
  *
  */
 
-import { Height80VHDiv } from '@/components/StyledComponents';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import QueryForm from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery/QueryForm';
 import { buildColumnsQueryKeyWord } from '@/pages/RegCenter/DataSource/components/function';
@@ -140,7 +139,7 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
    * render
    */
   return (
-    <Height80VHDiv>
+    <>
       {dbId && tableName && schemaName ? (
         <ProTable
           bordered
@@ -166,7 +165,7 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
       ) : (
         <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')} />
       )}
-    </Height80VHDiv>
+    </>
   );
 };
 

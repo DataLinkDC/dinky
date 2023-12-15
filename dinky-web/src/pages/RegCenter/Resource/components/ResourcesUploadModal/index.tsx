@@ -59,7 +59,13 @@ const ResourcesUploadModal: React.FC<ResourcesUploadModalProps> = (props) => {
     }
   };
   return (
-    <Modal title={l('rc.resource.upload')} onOk={onOk} onCancel={onClose} open={visible}>
+    <Modal
+      title={l('rc.resource.upload')}
+      okButtonProps={{ htmlType: 'submit', autoFocus: true }}
+      onOk={onOk}
+      onCancel={onClose}
+      open={visible}
+    >
       <Dragger {...uploadProps}>
         <p className='ant-upload-drag-icon'>
           <InboxOutlined />

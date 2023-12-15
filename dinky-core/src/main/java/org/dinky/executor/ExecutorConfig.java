@@ -91,6 +91,13 @@ public class ExecutorConfig {
     private boolean useBatchModel;
 
     @ApiModelProperty(
+            value = "Whether to only build plans",
+            dataType = "boolean",
+            example = "true",
+            notes = "Build plan only")
+    private boolean isPlan;
+
+    @ApiModelProperty(
             value = "Checkpoint interval",
             dataType = "Integer",
             example = "5000",
@@ -261,6 +268,14 @@ public class ExecutorConfig {
 
     public boolean isValidJarFiles() {
         return Asserts.isNotNull(this.getJarFiles());
+    }
+
+    public boolean isPlan() {
+        return isPlan;
+    }
+
+    public void setPlan(boolean plan) {
+        isPlan = plan;
     }
 
     @Override

@@ -22,8 +22,9 @@ package org.dinky.metadata;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
+import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.util.LinkedHashMap;
@@ -44,10 +45,12 @@ public class PhoenixTest {
 
     @Before
     public void init() {
-        DriverConfig config = new DriverConfig();
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setName("phoenix");
         config.setType("Phoenix");
-        config.setUrl("jdbc:phoenix:zxbd-test-hbase:2181");
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .url("jdbc:phoenix:zxbd-test-hbase:2181")
+                .build());
         try {
             driver = Driver.build(config);
         } catch (Exception e) {

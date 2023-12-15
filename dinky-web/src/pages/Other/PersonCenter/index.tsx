@@ -35,7 +35,6 @@ import { SecurityScanTwoTone } from '@ant-design/icons';
 import { PageContainer, PageLoading, ProCard } from '@ant-design/pro-components';
 import { Descriptions, Divider, Form, Tag } from 'antd';
 import { useEffect, useState } from 'react';
-import { flushSync } from 'react-dom';
 
 const PersonCenter = () => {
   const [form] = Form.useForm();
@@ -47,12 +46,10 @@ const PersonCenter = () => {
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
-      flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo
-        }));
-      });
+      setInitialState((s) => ({
+        ...s,
+        currentUser: userInfo
+      }));
     }
   };
 

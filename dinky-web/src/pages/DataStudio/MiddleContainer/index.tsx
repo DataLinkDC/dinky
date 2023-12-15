@@ -17,6 +17,7 @@
  *
  */
 
+import RightContextMenu from '@/components/RightContextMenu';
 import ContentScroll from '@/components/Scroll/ContentScroll';
 import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
@@ -26,19 +27,24 @@ import {
   isDataStudioTabsItemType,
   isMetadataTabsItemType
 } from '@/pages/DataStudio/function';
-import Editor from '@/pages/DataStudio/MiddleContainer/Editor';
+import {
+  getBottomSelectKeyFromNodeClickJobType,
+  getRightSelectKeyFromNodeClickJobType
+} from '@/pages/DataStudio/LeftContainer/Project/function';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
+import StudioEditor from '@/pages/DataStudio/MiddleContainer/StudioEditor';
 import { StateType, STUDIO_MODEL, TabsItemType, TabsPageType } from '@/pages/DataStudio/model';
 import { RightSide } from '@/pages/DataStudio/route';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
+import { ContextMenuPosition, InitContextMenuPosition } from '@/types/Public/state.d';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { ExclamationCircleFilled } from '@ant-design/icons';
-import { ConfigProvider, Divider, Dropdown, Modal, Space, Tabs, Typography } from 'antd';
+import { ConfigProvider, Divider, Modal, Space, Tabs, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 
 const { Text } = Typography;
 const { confirm } = Modal;
@@ -55,7 +61,8 @@ const MiddleContainer = (props: any) => {
 
   const { fullscreen } = useEditor();
 
-  const [contextMenuPosition, setContextMenuPosition] = useState({});
+  const [contextMenuPosition, setContextMenuPosition] =
+    useState<ContextMenuPosition>(InitContextMenuPosition);
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
   const [includeTab, setIncludeTab] = useState({});
 
@@ -109,7 +116,7 @@ const MiddleContainer = (props: any) => {
   };
 
   const updateActiveKey = (item: TabsItemType) => {
-    const { key, label } = item;
+    const { key, label, subType } = item;
     if (key === activeKey) {
       return;
     }
@@ -117,9 +124,22 @@ const MiddleContainer = (props: any) => {
     setContextMenuVisible(false);
     updateRightKey(key);
 
+    // 更新当前选中的 tab key
     dispatch({
       type: STUDIO_MODEL.updateTabsActiveKey,
       payload: key
+    });
+
+    // 根据 作业类型渲染 右侧选中菜单 key
+    dispatch({
+      type: STUDIO_MODEL.updateSelectRightKey,
+      payload: getRightSelectKeyFromNodeClickJobType(subType ?? '')
+    });
+
+    // 根据 作业类型渲染 左下角选中菜单 key
+    dispatch({
+      type: STUDIO_MODEL.updateSelectBottomKey,
+      payload: getBottomSelectKeyFromNodeClickJobType(subType ?? '')
     });
 
     // 这里如果加此项功能和定位功能重复 , 暂时注释
@@ -177,14 +197,12 @@ const MiddleContainer = (props: any) => {
     // 设置选中的值
     setIncludeTab(item);
     setContextMenuVisible(true);
-    setContextMenuPosition({
-      position: 'fixed',
-      cursor: 'context-menu',
+    setContextMenuPosition((prevState) => ({
+      ...prevState,
       width: '10vw',
-      zIndex: 9999,
-      left: info.clientX + 10, // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
-      top: info.clientY + 10 // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
-    });
+      left: info.clientX + 10,
+      top: info.clientY + 10
+    }));
   };
 
   /**
@@ -205,28 +223,6 @@ const MiddleContainer = (props: any) => {
   };
 
   /**
-   * 右键菜单
-   */
-  const renderRightClickMenu = () => {
-    return (
-      <Dropdown
-        arrow
-        trigger={['contextMenu']}
-        overlayStyle={{ ...contextMenuPosition }}
-        menu={{
-          items: STUDIO_TAG_RIGHT_CONTEXT_MENU,
-          onClick: handleMenuClick
-        }}
-        open={contextMenuVisible}
-        onOpenChange={setContextMenuVisible}
-      >
-        {/*占位*/}
-        <div style={{ ...contextMenuPosition }} />
-      </Dropdown>
-    );
-  };
-
-  /**
    * render tabs
    */
   const tabItems = panes.map((item: TabsItemType) => {
@@ -237,10 +233,9 @@ const MiddleContainer = (props: any) => {
         }
 
         return (
-          <Editor
+          <StudioEditor
             tabsItem={item}
             monacoInstance={item.monacoInstance}
-            editorInstance={item.editorInstance}
             height={
               activeKey === item.key
                 ? fullscreen
@@ -366,7 +361,13 @@ const MiddleContainer = (props: any) => {
           onEdit={closeTab}
           items={tabItems}
         />
-        {renderRightClickMenu()}
+        <RightContextMenu
+          onClick={handleMenuClick}
+          items={STUDIO_TAG_RIGHT_CONTEXT_MENU}
+          contextMenuPosition={contextMenuPosition}
+          open={contextMenuVisible}
+          openChange={() => setContextMenuVisible(false)}
+        />
       </ConfigProvider>
     );
   };
@@ -378,4 +379,4 @@ export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   centerContentHeight: Studio.centerContentHeight,
   rightKey: Studio.rightContainer.selectKey
-}))(MiddleContainer);
+}))(memo(MiddleContainer));

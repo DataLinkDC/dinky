@@ -36,6 +36,8 @@ public abstract class AbstractCustomTableEnvironment
 
     protected StreamTableEnvironment streamTableEnvironment;
 
+    protected ClassLoader userClassLoader;
+
     protected AbstractCustomTableEnvironment() {}
 
     protected AbstractCustomTableEnvironment(StreamTableEnvironment streamTableEnvironment) {
@@ -53,6 +55,11 @@ public abstract class AbstractCustomTableEnvironment
 
     public Planner getPlanner() {
         return ((StreamTableEnvironmentImpl) streamTableEnvironment).getPlanner();
+    }
+
+    @Override
+    public ClassLoader getUserClassLoader() {
+        return userClassLoader;
     }
 
     @Override

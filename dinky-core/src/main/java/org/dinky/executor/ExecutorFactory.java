@@ -19,6 +19,10 @@
 
 package org.dinky.executor;
 
+import org.dinky.classloader.DinkyClassLoader;
+
+import java.lang.ref.WeakReference;
+
 /**
  * ExecutorFactory
  *
@@ -30,38 +34,38 @@ public final class ExecutorFactory {
     private ExecutorFactory() {}
 
     public static Executor getDefaultExecutor() {
-        return new LocalStreamExecutor(ExecutorConfig.DEFAULT);
+        return new LocalStreamExecutor(ExecutorConfig.DEFAULT, new WeakReference<>(DinkyClassLoader.build()).get());
     }
 
-    public static Executor buildExecutor(ExecutorConfig executorConfig) {
+    public static Executor buildExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         if (executorConfig.isRemote()) {
-            return buildRemoteExecutor(executorConfig);
+            return buildRemoteExecutor(executorConfig, classLoader);
         } else {
-            return buildLocalExecutor(executorConfig);
+            return buildLocalExecutor(executorConfig, classLoader);
         }
     }
 
-    public static Executor buildLocalExecutor(ExecutorConfig executorConfig) {
+    public static Executor buildLocalExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         if (executorConfig.isUseBatchModel()) {
-            return new LocalBatchExecutor(executorConfig);
+            return new LocalBatchExecutor(executorConfig, classLoader);
         } else {
-            return new LocalStreamExecutor(executorConfig);
+            return new LocalStreamExecutor(executorConfig, classLoader);
         }
     }
 
-    public static Executor buildAppStreamExecutor(ExecutorConfig executorConfig) {
+    public static Executor buildAppStreamExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         if (executorConfig.isUseBatchModel()) {
-            return new AppBatchExecutor(executorConfig);
+            return new AppBatchExecutor(executorConfig, classLoader);
         } else {
-            return new AppStreamExecutor(executorConfig);
+            return new AppStreamExecutor(executorConfig, classLoader);
         }
     }
 
-    public static Executor buildRemoteExecutor(ExecutorConfig executorConfig) {
+    public static Executor buildRemoteExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         if (executorConfig.isUseBatchModel()) {
-            return new RemoteBatchExecutor(executorConfig);
+            return new RemoteBatchExecutor(executorConfig, classLoader);
         } else {
-            return new RemoteStreamExecutor(executorConfig);
+            return new RemoteStreamExecutor(executorConfig, classLoader);
         }
     }
 }

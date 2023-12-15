@@ -30,11 +30,13 @@ import { AutoComplete, Form } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import TextArea from 'antd/es/input/TextArea';
 import { Values } from 'async-validator';
-import React, { useState } from 'react';
+import React from 'react';
 
 type DataSourceProFormProps = {
   values: Partial<DataSources.DataSource>;
   form: FormInstance<Values>;
+  dbType: string;
+  excludeFormItem: boolean;
   flinkConfigChange: (value: string) => void;
   flinkTemplateChange: (value: string) => void;
 };
@@ -47,19 +49,7 @@ const CodeEditProps = {
 };
 
 const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
-  const { values, form, flinkTemplateChange, flinkConfigChange } = props;
-  const [excludeFormItem, setExcludeFormItem] = useState<boolean>(false);
-
-  const [dbType, setDbType] = useState<string>(values.type ?? 'MySQL');
-
-  const handleTypeChange = (value: any) => {
-    if (value.type) setDbType(value.type);
-    if (value.type === 'Hive' || value.type === 'Presto') {
-      setExcludeFormItem(true);
-    } else {
-      setExcludeFormItem(false);
-    }
-  };
+  const { values, form, dbType, excludeFormItem, flinkTemplateChange, flinkConfigChange } = props;
 
   const renderDataSourceForm = () => {
     return (
@@ -91,14 +81,14 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
           />
 
           <ProFormText
-            name='username'
+            name={['connectConfig', 'username']}
             width={'sm'}
             label={l('rc.ds.username')}
             rules={[{ required: true, message: l('rc.ds.usernamePlaceholder') }]}
             placeholder={l('rc.ds.usernamePlaceholder')}
           />
           <ProFormText.Password
-            name='password'
+            name={['connectConfig', 'password']}
             width={'sm'}
             label={l('rc.ds.password')}
             rules={[
@@ -119,7 +109,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
 
         <ProForm.Group>
           <Form.Item
-            name='url'
+            name={['connectConfig', 'url']}
             label={l('rc.ds.url')}
             rules={[{ required: true, message: l('rc.ds.urlPlaceholder') }]}
           >

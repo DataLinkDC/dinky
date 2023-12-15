@@ -72,8 +72,8 @@ const UserModalForm: React.FC<UserModalFormProps> = (props) => {
    */
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    await handleSubmit({ ...values, ...fieldsValue });
-    await handleCancel();
+    handleSubmit({ ...values, ...fieldsValue });
+    handleCancel();
   };
 
   return (
@@ -82,6 +82,10 @@ const UserModalForm: React.FC<UserModalFormProps> = (props) => {
       title={values.id ? l('user.update') : l('user.create')}
       open={modalVisible}
       onCancel={() => handleCancel()}
+      okButtonProps={{
+        htmlType: 'submit',
+        autoFocus: true
+      }}
       onOk={() => submitForm()}
     >
       <UserForm values={values} form={form} />

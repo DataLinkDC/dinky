@@ -31,6 +31,7 @@ export type StatusCountOverView = {
   suspended: number;
   reconciling: number;
   unknown: number;
+  modelOverview: BatchStreamingOverView;
 };
 
 export type PieItem = {

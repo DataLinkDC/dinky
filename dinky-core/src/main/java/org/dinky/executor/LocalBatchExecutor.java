@@ -19,6 +19,8 @@
 
 package org.dinky.executor;
 
+import org.dinky.classloader.DinkyClassLoader;
+
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.RestOptions;
@@ -36,7 +38,7 @@ import cn.hutool.core.io.FileUtil;
  */
 public class LocalBatchExecutor extends Executor {
 
-    public LocalBatchExecutor(ExecutorConfig executorConfig) {
+    public LocalBatchExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidJarFiles()) {
             executorConfig
@@ -47,21 +49,20 @@ public class LocalBatchExecutor extends Executor {
                                     .map(FileUtil::getAbsolutePath)
                                     .collect(Collectors.joining(",")));
         }
-        if (executorConfig.isValidConfig()) {
+        if (!executorConfig.isPlan()) {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
-            if (configuration.contains(RestOptions.PORT)) {
-                this.environment = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
-            } else {
-                this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
+            if (!configuration.contains(RestOptions.PORT)) {
+                configuration.set(RestOptions.PORT, executorConfig.getPort());
             }
+            this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
         } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         }
-        init();
+        init(classLoader);
     }
 
     @Override
-    CustomTableEnvironment createCustomTableEnvironment() {
+    CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader) {
         return CustomTableEnvironmentImpl.createBatch(environment);
     }
 }

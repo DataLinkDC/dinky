@@ -26,7 +26,7 @@ import org.dinky.data.enums.ColumnType;
  *
  * @since 2021/7/22 9:33
  */
-public class PostgreSqlTypeConvert extends AbstractTypeConvert {
+public class PostgreSqlTypeConvert extends AbstractJdbcTypeConvert {
 
     public PostgreSqlTypeConvert() {
         this.convertMap.clear();

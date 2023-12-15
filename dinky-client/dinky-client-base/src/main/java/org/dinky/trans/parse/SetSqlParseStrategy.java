@@ -20,7 +20,7 @@
 package org.dinky.trans.parse;
 
 import org.dinky.parser.SqlSegment;
-import org.dinky.trans.ddl.SetOperation;
+import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.utils.SqlSegmentUtil;
 
 import org.apache.flink.table.operations.Operation;
@@ -51,13 +51,13 @@ public class SetSqlParseStrategy extends AbstractRegexParseStrategy {
         // SET(\s+(\S+)\s*=(.*))?
         List<SqlSegment> segments = new ArrayList<>();
         segments.add(new SqlSegment("(set)\\s+(.+)(\\s*=)", "[.]"));
-        segments.add(new SqlSegment("(=)\\s*(.*)( ENDOFSQL)", ","));
+        segments.add(new SqlSegment("(=)\\s*(.*)($)", ","));
         return SqlSegmentUtil.splitSql2Segment(segments, statement);
     }
 
     @Override
     public Operation convert(String statement) {
-        return new SetOperation(statement);
+        return new CustomSetOperation(statement);
     }
 
     @Override

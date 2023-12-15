@@ -21,6 +21,7 @@ package org.dinky.data.model.home;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * JobInstanceStatus
@@ -28,6 +29,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2022/2/28 22:25
  */
 @ApiModel(value = "JobInstanceStatus", description = "Job Instance Status Information")
+@Data
 public class JobInstanceStatus {
 
     @ApiModelProperty(value = "All", dataType = "Integer", example = "10", notes = "Total count of job instances")
@@ -117,109 +119,6 @@ public class JobInstanceStatus {
             notes = "Count of job instances in the Unknown state")
     private Integer unknown = 0;
 
-    public JobInstanceStatus() {}
-
-    public Integer getAll() {
-        return all;
-    }
-
-    public void setAll(Integer all) {
-        this.all = all;
-    }
-
-    public Integer getInitializing() {
-        return initializing;
-    }
-
-    public void setInitializing(Integer initializing) {
-        this.initializing = initializing;
-    }
-
-    public Integer getRunning() {
-        return running;
-    }
-
-    public void setRunning(Integer running) {
-        this.running = running;
-    }
-
-    public Integer getFinished() {
-        return finished;
-    }
-
-    public void setFinished(Integer finished) {
-        this.finished = finished;
-    }
-
-    public Integer getFailed() {
-        return failed;
-    }
-
-    public void setFailed(Integer failed) {
-        this.failed = failed;
-    }
-
-    public Integer getCanceled() {
-        return canceled;
-    }
-
-    public void setCanceled(Integer canceled) {
-        this.canceled = canceled;
-    }
-
-    public Integer getRestarting() {
-        return restarting;
-    }
-
-    public void setRestarting(Integer restarting) {
-        this.restarting = restarting;
-    }
-
-    public Integer getCreated() {
-        return created;
-    }
-
-    public void setCreated(Integer created) {
-        this.created = created;
-    }
-
-    public Integer getFailing() {
-        return failing;
-    }
-
-    public void setFailing(Integer failing) {
-        this.failing = failing;
-    }
-
-    public Integer getCancelling() {
-        return cancelling;
-    }
-
-    public void setCancelling(Integer cancelling) {
-        this.cancelling = cancelling;
-    }
-
-    public Integer getSuspended() {
-        return suspended;
-    }
-
-    public void setSuspended(Integer suspended) {
-        this.suspended = suspended;
-    }
-
-    public Integer getReconciling() {
-        return reconciling;
-    }
-
-    public void setReconciling(Integer reconciling) {
-        this.reconciling = reconciling;
-    }
-
-    public Integer getUnknown() {
-        return unknown;
-    }
-
-    public void setUnknown(Integer unknown) {
-        this.unknown = unknown;
-    }
+    @ApiModelProperty(value = "modelOverview", dataType = "JobModelOverview", notes = "batch and steamng count")
+    private JobModelOverview modelOverview;
 }

@@ -36,15 +36,12 @@ import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.job.FlinkJobTask;
 import org.dinky.job.Job;
-import org.dinky.job.JobContextHolder;
-import org.dinky.job.JobHandler;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
-import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
 
@@ -56,7 +53,7 @@ import org.springframework.context.annotation.DependsOn;
  * @since 2021/6/27 0:04
  */
 @DependsOn("springContextUtils")
-public class Job2MysqlHandler implements JobHandler {
+public class Job2MysqlHandler extends AbsJobHandler {
 
     private static final HistoryService historyService;
     private static final ClusterInstanceService clusterInstanceService;
@@ -76,8 +73,8 @@ public class Job2MysqlHandler implements JobHandler {
     }
 
     @Override
-    public boolean init() {
-        Job job = JobContextHolder.getJob();
+    public boolean init(Job job) {
+        this.job = job;
         History history = new History();
         history.setType(job.getType().getLongValue());
         if (job.isUseGateway()) {
@@ -87,12 +84,11 @@ public class Job2MysqlHandler implements JobHandler {
         }
         history.setJobManagerAddress(job.getJobManagerAddress());
         history.setJobName(job.getJobConfig().getJobName());
-        history.setSession(job.getJobConfig().getSession());
-        history.setStatus(job.getStatus().ordinal());
+        history.setStatus(job.getStatus().getCode());
         history.setStatement(job.getStatement());
         history.setStartTime(job.getStartTime());
         history.setTaskId(job.getJobConfig().getTaskId());
-        history.setConfigJson(JsonUtils.toJsonString(job.getJobConfig()));
+        history.setConfigJson(job.getJobConfig());
         historyService.save(history);
 
         job.setId(history.getId());
@@ -112,14 +108,14 @@ public class Job2MysqlHandler implements JobHandler {
 
     @Override
     public boolean success() {
-        Job job = JobContextHolder.getJob();
         Integer taskId = job.getJobConfig().getTaskId();
 
         History history = new History();
         history.setId(job.getId());
+        history.setBatchModel(job.getJobConfig().isBatchModel());
         if (job.isUseGateway() && Asserts.isNullString(job.getJobId())) {
             job.setJobId("unknown");
-            history.setStatus(JobStatus.FAILED.ordinal());
+            history.setStatus(Job.JobStatus.FAILED.getCode());
             history.setJobId(job.getJobId());
             history.setEndTime(job.getEndTime());
             history.setError("没有获取到任何JID，请自行排查原因");
@@ -127,10 +123,10 @@ public class Job2MysqlHandler implements JobHandler {
             return false;
         }
 
-        history.setStatus(job.getStatus().ordinal());
+        history.setStatus(job.getStatus().getCode());
         history.setJobId(job.getJobId());
         history.setEndTime(job.getEndTime());
-        history.setJobManagerAddress(job.isUseGateway() ? job.getJobManagerAddress() : null);
+        history.setJobManagerAddress(job.getJobManagerAddress());
 
         Integer clusterId = job.getJobConfig().getClusterId();
         ClusterInstance clusterInstance;
@@ -207,11 +203,11 @@ public class Job2MysqlHandler implements JobHandler {
 
     @Override
     public boolean failed() {
-        Job job = JobContextHolder.getJob();
         History history = new History();
+        history.setBatchModel(job.getJobConfig().isBatchModel());
         history.setId(job.getId());
         history.setJobId(job.getJobId());
-        history.setStatus(job.getStatus().ordinal());
+        history.setStatus(job.getStatus().getCode());
         history.setJobManagerAddress(job.getJobManagerAddress());
         history.setEndTime(job.getEndTime());
         history.setError(job.getError());

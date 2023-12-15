@@ -58,7 +58,7 @@ public enum GatewayType {
                 return type;
             }
         }
-        return GatewayType.YARN_APPLICATION;
+        return GatewayType.LOCAL;
     }
 
     public static GatewayType getSessionType(String value) {

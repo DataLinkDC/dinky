@@ -9,7 +9,7 @@
         limit 1
     </select>
 
-    <select id="selectForProTable" resultType="org.dinky.data.model.job.JobInstance">
+    <select id="selectForProTable" resultType="org.dinky.data.vo.task.JobInstanceVo">
         select
         a.*,
         dh.type as type,
@@ -72,11 +72,14 @@
         group by status
     </select>
 
-    <select id="countHistoryStatus" resultType="org.dinky.data.model.home.JobInstanceCount">
-        select status,
-               count(1) as counts
-        from dinky_job_instance
-        group by status
+    <select id="getJobStreamingOrBatchModelOverview" resultType="org.dinky.data.model.home.JobModelOverview">
+        select sum(case when b.batch then 1 else 0 end ) as batchJobCount,
+               sum(case when b.batch then 0 else 1 end ) as streamingJobCount
+        from (select batch_model as batch
+                 from (select max(ji.id) as id from dinky_job_instance ji group by ji.task_id) as a
+        left join dinky_job_instance dji on dji.id = a.id
+        left join dinky_history dh on dji.history_id = dh.id) b
+        group by b.batch;
     </select>
 
     <select id="listJobInstanceActive" resultType="org.dinky.data.model.job.JobInstance">

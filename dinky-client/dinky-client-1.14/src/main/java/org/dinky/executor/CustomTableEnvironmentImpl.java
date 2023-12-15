@@ -22,6 +22,7 @@ package org.dinky.executor;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.parser.CustomParserImpl;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LineageContext;
 
@@ -65,8 +66,6 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
-import org.apache.flink.table.operations.ddl.CreateTableASOperation;
-import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.table.planner.delegation.DefaultExecutor;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
 import org.apache.flink.types.Row;
@@ -119,9 +118,12 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 isStreamingMode,
                 userClassLoader));
         this.executor = executor;
+        injectParser(new CustomParserImpl(getPlanner().getParser()));
+        injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
     }
 
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
+    public static CustomTableEnvironmentImpl create(
+            StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
         return create(executionEnvironment, EnvironmentSettings.newInstance().build(), TableConfig.getDefault());
     }
 
@@ -370,16 +372,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     @Override
     public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
         createTemporaryView(s, fromChangelogStream(dataStream));
-    }
-
-    @Override
-    public void executeCTAS(Operation operation) {
-        if (operation instanceof CreateTableASOperation) {
-            CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
-            CreateTableOperation createTableOperation = createTableASOperation.getCreateTableOperation();
-            executeInternal(createTableOperation);
-            getPlanner().translate(CollUtil.newArrayList(createTableASOperation.getInsertOperation()));
-        }
     }
 
     @Override

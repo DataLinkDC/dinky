@@ -17,7 +17,6 @@
  *
  */
 
-import { Height80VHDiv } from '@/components/StyledComponents';
 import ColumnInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/ColumnInfo';
 import TableInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/TableInfo';
 import { DataSources } from '@/types/RegCenter/data';
@@ -34,7 +33,7 @@ const SchemaDesc: React.FC<SchemaDescProps> = (props) => {
   const { tableInfo, tableColumns } = props;
 
   return (
-    <Height80VHDiv>
+    <>
       {!(Object.keys(tableInfo).length === 0 && tableColumns.length === 0) ? (
         <>
           <TableInfo tableInfo={tableInfo} />
@@ -43,7 +42,7 @@ const SchemaDesc: React.FC<SchemaDescProps> = (props) => {
       ) : (
         <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')} />
       )}
-    </Height80VHDiv>
+    </>
   );
 };
 

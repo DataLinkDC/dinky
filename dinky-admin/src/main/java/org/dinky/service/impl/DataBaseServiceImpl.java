@@ -54,8 +54,6 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
-import cn.hutool.core.collection.CollectionUtil;
-
 /**
  * DataBaseServiceImpl
  *
@@ -65,26 +63,28 @@ import cn.hutool.core.collection.CollectionUtil;
 public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBase> implements DataBaseService {
 
     @Override
-    public String testConnect(DataBaseDTO dataBaseDTO) {
-        return Driver.buildUnconnected(dataBaseDTO.toBean().getDriverConfig()).test();
+    public String testConnect(DataBaseDTO db) {
+        return Driver.buildUnconnected(db.getName(), db.getType(), db.getConnectConfig())
+                .test();
     }
 
     @Override
-    public Boolean checkHeartBeat(DataBase dataBase) {
+    public Boolean checkHeartBeat(DataBase db) {
         boolean isHealthy = false;
-        dataBase.setHeartbeatTime(LocalDateTime.now());
+        db.setHeartbeatTime(LocalDateTime.now());
         try {
             isHealthy = Asserts.isEquals(
                     CommonConstant.HEALTHY,
-                    Driver.buildUnconnected(dataBase.getDriverConfig()).test());
+                    Driver.buildUnconnected(db.getName(), db.getType(), db.getConnectConfig())
+                            .test());
             if (isHealthy) {
-                dataBase.setHealthTime(LocalDateTime.now());
+                db.setHealthTime(LocalDateTime.now());
             }
         } catch (Exception e) {
             isHealthy = false;
             throw e;
         } finally {
-            dataBase.setStatus(isHealthy);
+            db.setStatus(isHealthy);
         }
         return isHealthy;
     }
@@ -96,26 +96,12 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         if (Asserts.isNull(dataBase)) {
             return false;
         }
-        if (Asserts.isNull(dataBase.getId())) {
-            try {
-                checkHeartBeat(dataBase);
-            } finally {
+        try {
+            checkHeartBeat(dataBase);
+        } finally {
+            if (Asserts.isNull(dataBase.getId())) {
                 return save(dataBase);
-            }
-        } else {
-            DataBase dataBaseInfo = getById(dataBase.getId());
-            if (Asserts.isNull(dataBase.getUrl())) {
-                dataBase.setUrl(dataBaseInfo.getUrl());
-            }
-            if (Asserts.isNull(dataBase.getUsername())) {
-                dataBase.setUsername(dataBaseInfo.getUsername());
-            }
-            if (Asserts.isNull(dataBase.getPassword())) {
-                dataBase.setPassword(dataBaseInfo.getPassword());
-            }
-            try {
-                checkHeartBeat(dataBase);
-            } finally {
+            } else {
                 return updateById(dataBase);
             }
         }
@@ -319,17 +305,10 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public List<DataBase> selectListByKeyWord(String keyword) {
 
-        List<DataBase> dataBaseList = getBaseMapper()
+        return getBaseMapper()
                 .selectList(new LambdaQueryWrapper<DataBase>()
                         .like(DataBase::getName, keyword)
                         .or()
                         .like(DataBase::getNote, keyword));
-
-        if (CollectionUtil.isNotEmpty(dataBaseList)) {
-            for (DataBase data : dataBaseList) {
-                data.setPassword(null);
-            }
-        }
-        return dataBaseList;
     }
 }

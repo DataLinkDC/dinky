@@ -29,9 +29,9 @@ import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.executor.Executor;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.Operation;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.SplitUtil;
 import org.dinky.utils.SqlUtil;
 
@@ -72,7 +72,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
     }
 
     @Override
-    public TableResult build(Executor executor) {
+    public TableResult execute(Executor executor) {
         logger.info("Start build CDCSOURCE Task...");
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = new FlinkCDCConfig(
@@ -103,8 +103,9 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             final List<String> tableRegList = cdcBuilder.getTableList();
             final List<String> schemaTableNameList = new ArrayList<>();
             if (SplitUtil.isEnabled(cdcSource.getSplit())) {
-                DriverConfig driverConfig = DriverConfig.build(cdcBuilder.parseMetaDataConfig());
-                Driver driver = Driver.buildNewConnection(driverConfig);
+                Map<String, String> confMap = cdcBuilder.parseMetaDataConfig();
+                Driver driver =
+                        Driver.buildWithOutPool(confMap.get("name"), confMap.get("type"), JsonUtils.toMap(confMap));
 
                 // 这直接传正则过去
                 schemaTableNameList.addAll(tableRegList.stream()
@@ -142,9 +143,9 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     }
 
                     Driver sinkDriver = checkAndCreateSinkSchema(config, schemaName);
+                    Map<String, String> confMap = allConfigMap.get(schemaName);
+                    Driver driver = Driver.build(confMap.get("name"), confMap.get("type"), JsonUtils.toMap(confMap));
 
-                    DriverConfig driverConfig = DriverConfig.build(allConfigMap.get(schemaName));
-                    Driver driver = Driver.build(driverConfig);
                     final List<Table> tables = driver.listTables(schemaName);
                     for (Table table : tables) {
                         if (!Asserts.isEquals(table.getType(), "VIEW")) {

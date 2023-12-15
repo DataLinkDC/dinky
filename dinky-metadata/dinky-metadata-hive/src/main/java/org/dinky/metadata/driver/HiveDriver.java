@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
+import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.constant.HiveConstant;
 import org.dinky.metadata.convert.HiveTypeConvert;
 import org.dinky.metadata.convert.ITypeConvert;
@@ -287,7 +288,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
     }
 
     @Override
-    public ITypeConvert getTypeConvert() {
+    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
         return new HiveTypeConvert();
     }
 

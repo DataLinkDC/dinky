@@ -70,7 +70,7 @@ const CheckpointTable = (props: JobProps) => {
       onOk: async () => {
         const param = {
           id: jobDetail?.instance?.taskId,
-          isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE,
+          isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.PUBLISH,
           savePointPath: row.external_path
         };
         const result = await getData(API_CONSTANTS.RESTART_TASK_FROM_CHECKPOINT, param);
@@ -176,7 +176,7 @@ const CheckpointTable = (props: JobProps) => {
   return (
     <ProTable<CheckPointsDetailInfo>
       columns={columns}
-      style={{ width: '100%' }}
+      style={{ width: '100%', height: 'calc(100vh - 450px)' }}
       dataSource={checkpoints?.history}
       onDataSourceChange={() => actionRef.current?.reload()}
       actionRef={actionRef}

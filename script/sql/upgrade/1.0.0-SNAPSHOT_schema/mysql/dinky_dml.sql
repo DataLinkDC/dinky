@@ -220,15 +220,16 @@ INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_c
 INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"isCheckpointFailed","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
 INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"isException","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
 
-INSERT INTO dinky_alert_template  VALUES (1, 'Default', '
-- **Job Name :** <font color=''gray''>${task.name}</font>
-- **Job Status :** <font color=''red''>${jobInstance.status}</font>
-- **Alert Time :** ${time}
-- **Start Time :** ${startTime}
-- **End Time :** ${endTime}
-- **<font color=''red''>${(exceptions.rootException)?substring(0,20)}</font>**
+
+INSERT INTO dinky_alert_template (id, name, template_content, enabled, create_time, update_time, creator, updater) VALUES (1, 'Default', '
+- **Job Name :** <font color=\'gray\'>${jobName}</font>
+- **Job Status :** <font color=\'red\'>${jobStatus}</font>
+- **Alert Time :** ${alertTime}
+- **Start Time :** ${jobStartTime}
+- **End Time :** ${jobEndTime}
+- **<font color=\'red\'>${errorMsg}</font>**
 [Go toTask Web](http://${taskUrl})
-', 1, null, null,null,null);
+', 1, '2023-11-20 17:45:48', '2023-11-23 00:14:22', null, 1);
 
 COMMIT;
 
@@ -283,7 +284,9 @@ alter table dinky_job_history drop column jar_json;
 alter table dinky_task drop column jar_id;
 UPDATE dinky_task_version SET task_configure=JSON_REMOVE(task_configure, '$.jarId');
 UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.jarId');
-
+UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.jarTask');
+UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.session');
+alter table dinky_history add batch_model boolean default false null after job_manager_address;
 insert into `dinky_flink_document`
 (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
 values (218, 'Reference', '建表语句', 'Streaming', 'EXECUTE CDCSOURCE print', 'Whole library synchronization print', 'EXECUTE CDCSOURCE demo_print WITH (
@@ -783,94 +786,6 @@ set \'cluster.evenly-spread-out-slots\'=\'true\';', 'All Versions', 0, 1, '2023-
 
 -- 修改 dinky_udf_template 表的 enable 字段 不允许为空 默认为 1
 alter table dinky_udf_template modify column `enabled` tinyint(1) not null default 1 comment 'is enable, 0:no 1:yes';
-
-commit ;
-
--- 增加 创建人/修改人/操作人字段 相关 | added creator/updater/operator field
-
-begin ;
--- 增加 dinky_alert_group 表的 创建人和修改人字段 字段类型 int 为创建人/修改人 id | added creator/updater field
-alter table dinky_alert_group add column `creator` int(11) default null comment 'create user id';
-alter table dinky_alert_group add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_alert_instance 表的 创建人和修改人字段 字段类型 int 为创建人/修改人 id | added creator/updater field
-alter table dinky_alert_instance add column `creator` int(11) default null comment 'create user id';
-alter table dinky_alert_instance add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_alert_template 表的 创建人和修改人字段 字段类型 int 为创建人/修改人 id | added creator/updater field
-alter table dinky_alert_template add column `creator` int(11) default null comment 'create user id';
-alter table dinky_alert_template add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_alert_rules 表的 创建人和修改人字段 字段类型 int 为创建人/修改人 id | added creator/updater field
-alter table dinky_alert_rules add column `creator` int(11) default null comment 'create user id';
-alter table dinky_alert_rules add column `updater` int(11) default null comment 'update user id';
-
-
--- 增加 dinky_catalogue 表的 creator 和 updater 字段 | added creator/updater field
-alter table dinky_catalogue add column `creator` int(11) default null comment 'create user id';
-alter table dinky_catalogue add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_task 表的 creator 和 updater 字段 operator 字段 | added creator/updater/operator field
-alter table dinky_task add column `creator` int(11) default null comment 'create user id';
-alter table dinky_task add column `updater` int(11) default null comment 'update user id';
-alter table dinky_task add column `operator` int(11) default null comment 'operator user id';
-
--- 增加 dinky_task_version 表的 creator  | added creator field
-alter table dinky_task_version add column `creator` int(11) default null comment 'create user id';
-
--- 增减 dinky_cluster_configuration 表的 creator 和 updater 字段 | added creator/updater field
-alter table dinky_cluster_configuration add column `creator` int(11) default null comment 'create user id';
-alter table dinky_cluster_configuration add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_cluster 表的 creator 和 updater 字段 | added creator/updater field
-alter table dinky_cluster add column `creator` int(11) default null comment 'create user id';
-alter table dinky_cluster add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_database 表的 creator 和 updater 字段 | added creator/updater field
-alter table dinky_database add column `creator` int(11) default null comment 'create user id';
-alter table dinky_database add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_flink_document 表的 creator 和 updater 字段 | added creator/updater field
-alter table dinky_flink_document add column `creator` int(11) default null comment 'create user id';
-alter table dinky_flink_document add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_fragment 表的 creator 和 updater 字段 | added creator/updater field
-alter table dinky_fragment add column `creator` int(11) default null comment 'create user id';
-alter table dinky_fragment add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_git_project 表的 creator 和 updater 字段 operator 字段 | added creator/updater/operator field
-alter table dinky_git_project add column `creator` int(11) default null comment 'create user id';
-alter table dinky_git_project add column `updater` int(11) default null comment 'update user id';
-alter table dinky_git_project add column `operator` int(11) default null comment 'operator user id';
-
--- 增加 dinky_udf_manager 表的 creator 和 updater 字段 operator 字段 | added creator/updater/operator field
-alter table dinky_udf_manage add column `creator` int(11) default null comment 'create user id';
-alter table dinky_udf_manage add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_udf_template 表的 creator 和 updater 字段 | added creator/updater field
-alter table dinky_udf_template add column `creator` int(11) default null comment 'create user id';
-alter table dinky_udf_template add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_savepoints 表的 creator 字段 | added creator field
-alter table dinky_savepoints add column `creator` int(11) default null comment 'create user id';
-
--- 增加dinky_resources 表的 creator 字段 updater 字段 | added creator/updater field
-alter table dinky_resources add column `creator` int(11) default null comment 'create user id';
-alter table dinky_resources add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_row_permissions 表的 creator 字段 updater 字段 | added creator/updater field
-alter table dinky_row_permissions add column `creator` int(11) default null comment 'create user id';
-alter table dinky_row_permissions add column `updater` int(11) default null comment 'update user id';
-
--- 增加 dinky_job_instance 表的 creator 字段 updater 字段 operator 字段 | added creator/updater/operator field
-alter table dinky_job_instance add column `creator` int(11) default null comment 'create user id';
-alter table dinky_job_instance add column `updater` int(11) default null comment 'update user id';
-alter table dinky_job_instance add column `operator` int(11) default null comment 'operator user id';
-
--- 增加 dinky_sys_token 表的 creator 字段 updater 字段 | added creator/updater field
-alter table dinky_sys_token add column `creator` int(11) default null comment 'create user id';
-alter table dinky_sys_token add column `updater` int(11) default null comment 'update user id';
-
 
 commit ;
 

@@ -27,7 +27,6 @@ import {
   useEffect,
   useState
 } from 'react';
-import { flushSync } from 'react-dom';
 import { useModel } from 'umi';
 export interface FullScreenContextProps {
   fullscreen: boolean;
@@ -44,12 +43,10 @@ export const FullScreenProvider: FC = memo(({ children }: any) => {
   const { initialState, setInitialState } = useModel('@@initialState');
 
   useEffect(() => {
-    flushSync(() => {
-      setInitialState((s) => ({
-        ...s,
-        fullscreen
-      }));
-    });
+    setInitialState((s) => ({
+      ...s,
+      fullscreen
+    }));
   }, [fullscreen]);
   return (
     <FullScreenContext.Provider value={{ fullscreen, setFullscreen }}>

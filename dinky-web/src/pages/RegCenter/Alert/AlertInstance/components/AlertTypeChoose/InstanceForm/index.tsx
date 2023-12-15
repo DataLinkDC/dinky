@@ -22,7 +22,6 @@ import FeiShu from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeCh
 import Sms from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms';
 import WeChat from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/WeChat';
 import { ALERT_TYPE_LIST_OPTIONS } from '@/pages/RegCenter/Alert/AlertInstance/constans';
-import { getJSONData } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
@@ -39,8 +38,7 @@ type InstanceFormProps = {
 const InstanceForm: React.FC<InstanceFormProps> = (props) => {
   const { values, form } = props;
 
-  const [alertType, setAlertType] = useState<string>(values.type || ALERT_TYPE.DINGTALK);
-  const [data, setData] = useState<any>(values ? getJSONData(values) : {}); // 保存表单数据
+  const [alertType, setAlertType] = useState<string>(values.type ?? ALERT_TYPE.DINGTALK);
 
   const renderPreForm = () => {
     return (
@@ -55,52 +53,41 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
         <ProFormSelect
           width='md'
           name='type'
+          allowClear={false}
           label={l('rc.ai.type')}
           rules={[{ required: true, message: l('rc.ai.choosetype') }]}
           placeholder={l('rc.ai.choosetype')}
           options={ALERT_TYPE_LIST_OPTIONS}
-          initialValue={alertType}
+          onChange={(value: string) => setAlertType(value)}
+          initialValue={values.type ?? ALERT_TYPE.DINGTALK}
         />
       </>
     );
   };
 
-  const renderFormByType = () => {
-    switch (alertType) {
+  const renderFormByType = (value: Partial<Alert.AlertInstance>, platform: string) => {
+    switch (platform) {
       case ALERT_TYPE.DINGTALK:
-        return <DingTalk values={getJSONData(data)} />;
+        return <DingTalk values={value} form={form} />;
       case ALERT_TYPE.FEISHU:
-        return <FeiShu values={getJSONData(data)} />;
+        return <FeiShu values={value} form={form} />;
       case ALERT_TYPE.WECHAT:
-        return <WeChat values={getJSONData(data)} />;
+        return <WeChat values={value} form={form} />;
       case ALERT_TYPE.EMAIL:
-        return <Email values={getJSONData(data)} />;
+        return <Email values={value} form={form} />;
       case ALERT_TYPE.SMS:
-        return <Sms values={getJSONData(data)} />;
-    }
-  };
-
-  const handleValuesChange = async (changedValues: any) => {
-    const fields = await form.getFieldsValue();
-    setData(fields);
-    if (changedValues.type) {
-      setAlertType(changedValues.type);
+        return <Sms values={value} form={form} />;
+      default:
+        return <></>;
     }
   };
 
   return (
     <>
-      <ProForm
-        form={form}
-        submitter={false}
-        initialValues={getJSONData(values)}
-        onValuesChange={handleValuesChange}
-      >
-        <ProForm.Group>
-          {renderPreForm()}
-          {renderFormByType()}
-        </ProForm.Group>
-      </ProForm>
+      <ProForm.Group>
+        {renderPreForm()}
+        {renderFormByType(values, alertType)}
+      </ProForm.Group>
     </>
   );
 };

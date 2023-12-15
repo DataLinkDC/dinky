@@ -48,7 +48,7 @@ public class SinkBuilderFactory {
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
 
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
-            throw new FlinkClientException("set Sink connector。");
+            throw new FlinkClientException("set Sink connector.");
         }
         return SINK_BUILDER_MAP
                 .getOrDefault(config.getSink().get("connector"), SQLSinkBuilder::new)

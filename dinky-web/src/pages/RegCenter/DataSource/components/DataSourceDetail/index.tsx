@@ -27,16 +27,17 @@ import { RESPONSE_CODE } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import { connect } from '@@/exports';
 import { BackwardOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Key, ProCard } from '@ant-design/pro-components';
-import { useNavigate } from '@umijs/max';
+import { connect, history } from '@umijs/max';
 import { Button, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 
-const DataSourceDetail = (props: any) => {
-  const navigate = useNavigate();
-
+interface DataSourceDetailProps {
+  dataSource: DataSources.DataSource;
+  backClick: () => void;
+}
+const DataSourceDetail = (props: DataSourceDetailProps & connect) => {
   const {
     dataSource,
     backClick,
@@ -56,9 +57,7 @@ const DataSourceDetail = (props: any) => {
 
   const handleBackClick = () => {
     // go back
-    navigate('/registration/database', {
-      state: { from: `/registration/database/detail/${dataSource.id}` }
-    });
+    history.push(`/registration/datasource`);
     // back click callback
     backClick();
   };

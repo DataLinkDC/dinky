@@ -24,6 +24,7 @@ import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
+import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.constant.PrestoConstant;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.PrestoTypeConvert;
@@ -323,7 +324,7 @@ public class PrestoDriver extends AbstractJdbcDriver implements Driver {
     }
 
     @Override
-    public ITypeConvert getTypeConvert() {
+    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
         return new PrestoTypeConvert();
     }
 

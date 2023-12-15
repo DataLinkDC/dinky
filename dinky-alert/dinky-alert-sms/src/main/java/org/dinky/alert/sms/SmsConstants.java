@@ -22,30 +22,54 @@ package org.dinky.alert.sms;
 /** SmsConstants */
 public class SmsConstants {
     public static final String TYPE = "Sms";
+    public static final String SUPPLIERS = "suppliers";
+    public static final String ALERT_TEMPLATE_TITLE = "title";
+    public static final String ALERT_TEMPLATE_CONTENT = "content";
 
-    public static final String MANU_FACTURERS = "manufacturers";
+    //  ==================== common config ====================
     public static final String ACCESS_KEY_ID = "accessKeyId";
+    public static final String SDK_APP_ID = "sdkAppId";
     public static final String ACCESS_KEY_SECRET = "accessKeySecret";
-    public static final String TEMPLATE_ID = "templateId";
     public static final String SIGNATURE = "signature";
-    public static final String TEMPLATE_NAME = "templateName";
-    public static final String REQUEST_URL = "requestUrl";
-    public static final String REGION_ID = "regionId";
-    public static final String ACTION = "action";
-    public static final String VERSION = "version";
+    public static final String TEMPLATE_ID = "templateId";
+    public static final String WEIGHT = "weight";
+    public static final String CONFIG_ID = "configId";
+    public static final String RETRY_INTERVAL = "retryInterval";
+    public static final String MAX_RETRY = "maxRetries";
 
-    public static final String APP_KEY = "appKey";
-    public static final String APP_SECRET = "appSecret";
+    // =================== aliyun config ====================
+    public static final String TEMPLATE_NAME = "templateName"; // EXTEND YUM PIAN
+    public static final String REQUEST_URL = "requestUrl"; // extend tencent
+    public static final String REGION_ID = "regionId";
+    public static final String ACTION = "action"; // extend tencent
+    public static final String VERSION = "version"; // extend tencent
+
+    // =================== huawei config ====================
     public static final String SENDER = "sender";
     public static final String STATUS_CALLBACK = "statusCallBack";
     public static final String URL = "url";
 
-    public static final String SDK_APP_ID = "sdkAppId";
+    // =================== yun pian config ====================
+    public static final String CALLBACK_URL = "callbackUrl";
+
+    // ===================  tencent config ====================
     public static final String TERRITORY = "territory";
     public static final String CONN_TIMEOUT = "connTimeout";
-    public static final String IS_SIMPLE = "is-simple";
-    public static final String REGION = "region";
-    public static final String APP_ID = "appId";
+    // service
+    public static final String SERVICE = "service";
+
+    // ===================  uni config ====================
+    public static final String IS_SIMPLE = "isSimple";
+
+    // ===================  Cloopen config ====================
     public static final String BASE_URL = "baseUrl";
-    public static final String SECRET_KEY = "secretKey";
+
+    // ===================  other config ====================
+
+    public static final String REGION = "region";
+    public static final String PHONE_NUMBERS = "phoneNumbers";
+
+    // =============== variables ==================
+    public static final String ALIYUNM_SMS_TEMPLATE_VARIABLES = "content";
+    public static final String TENCENT_SMS_TEMPLATE_VARIABLES_1 = "1";
 }

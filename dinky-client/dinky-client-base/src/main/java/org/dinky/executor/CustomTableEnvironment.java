@@ -33,7 +33,6 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentInternal;
 import org.apache.flink.table.delegation.Planner;
-import org.apache.flink.table.operations.Operation;
 import org.apache.flink.types.Row;
 
 import java.io.File;
@@ -73,6 +72,8 @@ public interface CustomTableEnvironment
 
     Planner getPlanner();
 
+    ClassLoader getUserClassLoader();
+
     Configuration getRootConfiguration();
 
     default List<LineageRel> getLineage(String statement) {
@@ -80,8 +81,6 @@ public interface CustomTableEnvironment
     }
 
     <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList);
-
-    void executeCTAS(Operation operation);
 
     default void addJar(File... jarPath) {
         Configuration configuration = this.getRootConfiguration();

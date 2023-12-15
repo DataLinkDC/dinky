@@ -20,6 +20,7 @@
 package org.dinky.alert.dingtalk;
 
 import org.dinky.alert.Alert;
+import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.ShowType;
@@ -40,18 +41,7 @@ import org.junit.Test;
 @Ignore
 public class DingTalkTest {
 
-    private static final Map<String, String> config = new HashMap<>();
-
-    String msg =
-            "> The Dinky platform has detected an abnormality in your task. Please go to the Dinky Task page to check the task status.\n"
-                    + "- **Job Name : <font color='#0000FF'>Test Job</font>**\n"
-                    + "- **Job Status : <font color='#FF0000'>FAILED</font>**\n"
-                    + "- **Alert Time : 2023-01-01  12:00:00**\n"
-                    + "- **Start Time : 2023-01-01  12:00:00**\n"
-                    + "- **End Time : 2023-01-01  12:00:00**\n"
-                    + "> **<font color='#FF0000'>The test exception, your job exception will pass here</font>**\n"
-                    + "\n"
-                    + "> Dinky Team  [Go toTask Web](https://github.com/DataLinkDC/dinky)";
+    private static final Map<String, Object> config = new HashMap<>();
 
     @Before
     public void initDingTalkConfig() {
@@ -59,13 +49,13 @@ public class DingTalkTest {
         config.put(DingTalkConstants.KEYWORD, "Dinky");
         config.put(DingTalkConstants.WEB_HOOK, "https://oapi.dingtalk.com/robot/send?access_token=key");
         config.put(DingTalkConstants.MSG_TYPE, ShowType.MARKDOWN.getValue());
-        config.put(DingTalkConstants.AT_ALL, "false");
+        config.put(DingTalkConstants.AT_ALL, false);
         config.put(DingTalkConstants.AT_MOBILES, "");
         //        config.put(DingTalkConstants.SECRET, "");
 
-        config.put(DingTalkConstants.PROXY_ENABLE, "false");
+        config.put(DingTalkConstants.PROXY_ENABLE, false);
         config.put(DingTalkConstants.PASSWORD, "password");
-        config.put(DingTalkConstants.PORT, "9988");
+        config.put(DingTalkConstants.PORT, 9988);
         config.put(DingTalkConstants.USER, "user1,user2");
     }
 
@@ -74,7 +64,7 @@ public class DingTalkTest {
     public void sendMarkDownMsgTest() {
         AlertConfig config = AlertConfig.build("MarkDownTest", "DingTalk", DingTalkTest.config);
         Alert alert = Alert.build(config);
-        AlertResult result = alert.send("Dinky", msg);
+        AlertResult result = alert.send(AlertBaseConstant.ALERT_TEMPLATE_TITLE, AlertBaseConstant.ALERT_TEMPLATE_MSG);
         Assert.assertEquals(true, result.getSuccess());
     }
 }
