@@ -67,8 +67,6 @@ public class SuggestionServiceImpl implements SuggestionService {
         if (enableSchemaSuggestion) {
             buildSchemaSuggestions(new HashSet<>(), suggestionVOS);
         }
-        // 4. 自定义关键词提示
-        buildCustomSuggestions(new HashSet<>(), suggestionVOS);
         // flink config提示
         buildFlinkConfSuggestions(suggestionVOS);
         return suggestionVOS;
@@ -108,18 +106,6 @@ public class SuggestionServiceImpl implements SuggestionService {
      */
     private static void buildSchemaSuggestions(Set<Object> buildingSchemaList, Set<SuggestionVO> suggestionVOS) {
         // todo: 构建schema的建议列表 , 包含 库名 、表名、字段名、.... , 能做到根据库名点出表名，根据表名点出字段名
-    }
-
-    /**
-     * build custom suggestions
-     *
-     * @param customKeyWordList custom keyword list
-     * @param suggestionVOS     suggestion list
-     */
-    private static void buildCustomSuggestions(Set<Object> customKeyWordList, Set<SuggestionVO> suggestionVOS) {
-        // todo: 自定义关键词提示,
-        //      1. 此处自定义是属于 dinky 内部自定义语法关键词提示, 如果有片段, 将片段的建议列表加入到文档中进行提示
-        //      2. 可以加入 yml 语法的关键词提示 , 因为在集群配置中会有 yml 的配置文件写法 , 获取方式待定
     }
 
     /**

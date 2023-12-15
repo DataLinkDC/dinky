@@ -173,7 +173,7 @@ public class SseSessionContextHolder {
      * @param content    The SSE data to send.
      * @throws IOException If an I/O error occurs while sending the data.
      */
-    public static void sendSse(String sessionKey, SseDataVo content) throws IOException {
+    public static void sendSse(String sessionKey, SseDataVo content) throws Exception {
         if (exists(sessionKey)) {
             sessionMap.get(sessionKey).getEmitter().send(content);
         } else {
