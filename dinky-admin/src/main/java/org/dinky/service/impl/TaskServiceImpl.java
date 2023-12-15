@@ -201,6 +201,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return jobResult;
     }
 
+    // Submit and export task
     @ProcessStep(type = ProcessStepType.SUBMIT_BUILD_CONFIG)
     public JobConfig buildJobSubmitConfig(TaskDTO task) {
         task.setStatement(buildEnvSql(task) + task.getStatement());
@@ -234,6 +235,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return config;
     }
 
+    // Savepoint and cancel task
     @ProcessStep(type = ProcessStepType.SUBMIT_BUILD_CONFIG)
     public JobConfig buildJobConfig(TaskDTO task) {
         JobConfig config = task.getJobConfig();

@@ -33,7 +33,6 @@ import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.DDLResult;
 import org.dinky.data.result.IResult;
-import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.explainer.lineage.LineageBuilder;
@@ -42,7 +41,6 @@ import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.StudioService;
@@ -85,11 +83,6 @@ public class StudioServiceImpl implements StudioService {
         IResult jobResult = jobManager.executeDDL(studioMetaStoreDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
         return jobResult;
-    }
-
-    @Override
-    public JdbcSelectResult getCommonSqlData(Integer taskId) {
-        return (JdbcSelectResult) ResultPool.getCommonSqlCache(taskId);
     }
 
     @Override

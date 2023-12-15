@@ -57,11 +57,11 @@ public class Job {
 
     @Getter
     public enum JobStatus {
-        INITIALIZE(1),
-        RUNNING(2),
-        SUCCESS(3),
-        FAILED(4),
-        CANCEL(5);
+        INITIALIZE(0),
+        RUNNING(1),
+        SUCCESS(2),
+        FAILED(3),
+        CANCEL(4);
         final int code;
 
         JobStatus(int code) {
