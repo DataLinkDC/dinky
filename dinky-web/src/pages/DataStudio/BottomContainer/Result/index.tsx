@@ -37,6 +37,7 @@ import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
 import { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
+import {DIALECT} from "@/services/constants";
 
 type Data = {
   [c: string]: any;
@@ -130,7 +131,7 @@ const Result = (props: any) => {
     if (consoleData.result && !isRefresh) {
       setData(consoleData.result);
     } else {
-      if (!isSql(current.dialect)) {
+      if (current.dialect == DIALECT.FLINK_SQL) {
         // flink sql
         // to do: get job data by history id list, not flink jid
         if (current.id) {
