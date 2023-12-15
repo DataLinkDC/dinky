@@ -37,6 +37,7 @@ import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
 import { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
+import {DIALECT} from "@/services/constants";
 
 type Data = {
   [c: string]: any;
@@ -130,16 +131,7 @@ const Result = (props: any) => {
     if (consoleData.result && !isRefresh) {
       setData(consoleData.result);
     } else {
-      if (isSql(current.dialect)) {
-        // common sql
-        const res = await handleGetOption('api/studio/getCommonSqlData', l('global.getdata.tips'), {
-          taskId: params.taskId
-        });
-        if (res.data) {
-          consoleData.result = res.data;
-          setData(res.data);
-        }
-      } else {
+      if (current.dialect == DIALECT.FLINK_SQL) {
         // flink sql
         // to do: get job data by history id list, not flink jid
         if (current.id) {
@@ -147,7 +139,7 @@ const Result = (props: any) => {
             id: current.id
           });
           const historyData = res.data;
-          if (historyData && '2' == historyData.status) {
+          if (historyData) {
             const historyId = historyData.id;
             const tableData = await handleGetOption(
               'api/studio/getJobData',

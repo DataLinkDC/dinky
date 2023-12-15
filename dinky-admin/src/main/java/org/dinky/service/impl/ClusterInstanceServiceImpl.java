@@ -113,8 +113,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     }
 
     private String buildLocalEnvironmentAddress(int port) {
-        String host = IpUtils.getHostIp();
-        return host + ":" + port;
+        return "0.0.0.0:" + port;
     }
 
     @Override
