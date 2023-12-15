@@ -43,19 +43,19 @@ const GlobalHeaderRight: React.FC = () => {
   useEffect(() => {
     setLangCache(language);
     (async () =>
-      await setInitialState((initialStateType:any) => ({
+      await setInitialState((initialStateType: any) => ({
         ...initialStateType,
         locale: language,
         settings: {
           ...initialStateType?.settings,
           navTheme: theme,
-          token:{
+          token: {
             ...initialStateType?.settings?.token,
             sider: {
               ...initialStateType?.settings?.token?.sider,
-              colorMenuBackground: theme === THEME.dark ? '#000' : '#fff',
+              colorMenuBackground: theme === THEME.dark ? '#000' : '#fff'
             }
-          },
+          }
         }
       })))();
   }, [theme, language]);

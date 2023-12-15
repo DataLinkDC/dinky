@@ -97,22 +97,10 @@ public class JobTransBuilder extends JobBuilder {
                 ? jobParam.getTrans()
                 : Collections.singletonList(jobParam.getTrans().get(0));
         for (StatementParam item : statementParams) {
-            if (!useGateway && !item.getType().equals(SqlType.INSERT)) {
-                handleNonInsertType(item);
-                continue;
-            }
+
             inserts.add(item.getValue());
         }
         return inserts;
-    }
-
-    private void handleNonInsertType(StatementParam item) {
-        if (item.getType().equals(SqlType.CTAS)) {
-            executor.getCustomTableEnvironment()
-                    .getParser()
-                    .parse(item.getValue())
-                    .forEach(executor.getCustomTableEnvironment()::executeCTAS);
-        }
     }
 
     private void processWithGateway(List<String> inserts) throws Exception {

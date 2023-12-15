@@ -90,7 +90,7 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "boolean",
             example = "false",
             notes = "Flag indicating whether to use a statement set")
-    private boolean statementSet;
+    private boolean statementSet = true;
 
     @ApiModelProperty(
             value = "Batch Model",

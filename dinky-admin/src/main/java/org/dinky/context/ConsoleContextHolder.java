@@ -94,20 +94,21 @@ public class ConsoleContextHolder {
      *
      * @param processName process name
      * @param stepPid     process step type
-     * @param log         messages
+     * @param logLine         messages
      * @throws BusException Throws an exception if the process does not exist
      */
-    public void appendLog(String processName, String stepPid, String log, boolean recordGlobal) {
+    public void appendLog(String processName, String stepPid, String logLine, boolean recordGlobal) {
         if (!logPross.containsKey(processName)) {
-            throw new BusException(StrFormatter.format("process {} does not exist", processName));
+            log.debug("Process {} does not exist, This log was abandoned", processName);
+            return;
         }
         ProcessEntity process = logPross.get(processName);
         if (recordGlobal) {
-            process.appendLog(log);
+            process.appendLog(logLine);
         }
         if (stepPid != null) {
             ProcessStepEntity stepNode = getStepNode(stepPid, getStepsMap(processName));
-            stepNode.appendLog(log);
+            stepNode.appendLog(logLine);
             process.setLastUpdateStep(stepNode);
         }
         //   /TOPIC/PROCESS_CONSOLE/FlinkSubmit/12
