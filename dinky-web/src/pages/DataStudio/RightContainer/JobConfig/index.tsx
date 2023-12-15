@@ -233,7 +233,7 @@ const JobConfig = (props: any) => {
             max={9999}
             min={1}
           />
-          {current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
+          {/*{current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
             <ProFormSwitch
               label={l('pages.datastudio.label.jobConfig.insert')}
               name='statementSet'
@@ -244,7 +244,7 @@ const JobConfig = (props: any) => {
               }}
               {...SWITCH_OPTIONS()}
             />
-          )}
+          )}*/}
 
           <ProFormSwitch
             label={l('pages.datastudio.label.jobConfig.fragment')}
