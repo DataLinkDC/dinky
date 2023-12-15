@@ -172,13 +172,13 @@ CREATE TABLE `dinky_history` (
 CREATE TABLE `dinky_job_history` (
                                    `id` int(11) NOT null COMMENT 'id',
                                    `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
-                                   `job_json` json null COMMENT 'Job information json',
-                                   `exceptions_json` json null COMMENT 'error message json',
-                                   `checkpoints_json` json null COMMENT 'checkpoints json',
-                                   `checkpoints_config_json` json null COMMENT 'checkpoints configuration json',
+                                   `job_json` text null COMMENT 'Job information json',
+                                   `exceptions_json` text null COMMENT 'error message json',
+                                   `checkpoints_json` text null COMMENT 'checkpoints json',
+                                   `checkpoints_config_json` text null COMMENT 'checkpoints configuration json',
                                    `config_json` text null COMMENT 'configuration',
                                    `cluster_json` text null COMMENT 'cluster instance configuration',
-                                   `cluster_configuration_json` json null COMMENT 'cluster config',
+                                   `cluster_configuration_json` text null COMMENT 'cluster config',
                                    `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
