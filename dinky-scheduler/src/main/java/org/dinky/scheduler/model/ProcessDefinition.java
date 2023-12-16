@@ -23,6 +23,7 @@ import org.dinky.scheduler.enums.Flag;
 import org.dinky.scheduler.enums.ProcessExecutionTypeEnum;
 import org.dinky.scheduler.enums.ReleaseState;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,7 @@ public class ProcessDefinition {
     private String projectName;
 
     @ApiModelProperty(value = "位置")
-    private String locations;
+    private List<DagNodeLocation> locations = new ArrayList<>();
 
     @ApiModelProperty(value = "计划发布状态 online/offline")
     private ReleaseState scheduleReleaseState;
