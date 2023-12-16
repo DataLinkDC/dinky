@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.MetricsLayoutVo;
 import org.dinky.data.constant.PaimonTableConstant;
 import org.dinky.data.dto.MetricsLayoutDTO;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -58,7 +60,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -98,16 +99,18 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
     }
 
     @Override
-    public SseEmitter sendJvmInfo(SseEmitter sseEmitter) {
+    public SseEmitter sendJvmInfo() {
+        String sessionKey = UUID.randomUUID().toString();
+        SseEmitter sseEmitter = SseSessionContextHolder.connectSession(sessionKey);
+        SseSessionContextHolder.subscribeTopic(sessionKey, CollUtil.newArrayList(sessionKey));
         scheduleRefreshMonitorDataExecutor.execute(() -> {
             try {
                 while (true) {
-                    sseEmitter.send(JSONUtil.toJsonStr(Jvm.of()));
+                    SseSessionContextHolder.sendTopic(sessionKey, Jvm.of());
                     ThreadUtil.sleep(10000);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
-                sseEmitter.complete();
+                log.error("send jvm info failed, complete sse emiter :" + e.getMessage());
             }
         });
         return sseEmitter;

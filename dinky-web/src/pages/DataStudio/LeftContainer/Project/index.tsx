@@ -156,7 +156,7 @@ const Project: React.FC = (props: connect) => {
         icon: type,
         id: parentId + name,
         treeKey: key,
-        breadcrumbLabel: path.slice(0,path.length-1).join('/'),
+        breadcrumbLabel: path.slice(0, path.length - 1).join('/'),
         label: name,
         params: {
           taskId: taskId
