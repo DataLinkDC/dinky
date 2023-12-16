@@ -19,6 +19,7 @@
 
 package org.dinky.job;
 
+import org.apache.flink.runtime.util.EnvironmentInformation;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
@@ -183,6 +184,11 @@ public class JobManager {
 
     private JobManager(JobConfig config) {
         this.config = config;
+        String version =
+                EnvironmentInformation.getVersion().substring(0, EnvironmentInformation.getVersion().lastIndexOf('.'));
+        if (Float.parseFloat(version) < 16) {
+            Thread.currentThread().setContextClassLoader(getDinkyClassLoader());
+        }
     }
 
     public static JobManager build(JobConfig config) {

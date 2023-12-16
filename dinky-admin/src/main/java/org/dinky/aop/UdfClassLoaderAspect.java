@@ -51,7 +51,7 @@ public class UdfClassLoaderAspect {
     @Around("allPointcut()")
     public Object round(ProceedingJoinPoint proceedingJoinPoint) {
         Object proceed = null;
-
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             proceed = proceedingJoinPoint.proceed();
         } catch (Throwable e) {
@@ -61,7 +61,9 @@ public class UdfClassLoaderAspect {
             e.printStackTrace();
             throw (DinkyException) e;
         } finally {
-            if (proceed instanceof JobResult) {}
+            if(contextClassLoader != Thread.currentThread().getContextClassLoader()) {
+                Thread.currentThread().setContextClassLoader(contextClassLoader);
+            }
         }
         return proceed;
     }
