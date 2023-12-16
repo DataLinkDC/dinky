@@ -59,6 +59,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -209,7 +210,10 @@ public class Explainer {
                 }
                 executor.executeSql(item.getValue());
             } catch (Exception e) {
-                String error = LogUtil.getError(e);
+                String error = StrFormatter.format(
+                        "Exception in executing FlinkSQL:\n{}\n{}",
+                        SqlUtil.addLineNumber(item.getValue()),
+                        e.getMessage());
                 record.setError(error);
                 record.setExplainTrue(false);
                 record.setExplainTime(LocalDateTime.now());
@@ -264,7 +268,10 @@ public class Explainer {
                         record.setParseTrue(true);
                         record.setExplainTrue(true);
                     } catch (Exception e) {
-                        String error = LogUtil.getError(e);
+                        String error = StrFormatter.format(
+                                "Exception in executing FlinkSQL:\n{}\n{}",
+                                SqlUtil.addLineNumber(item.getValue()),
+                                e.getMessage());
                         record.setError(error);
                         record.setParseTrue(false);
                         record.setExplainTrue(false);
@@ -292,7 +299,10 @@ public class Explainer {
                 record.setType("DATASTREAM");
                 record.setParseTrue(true);
             } catch (Exception e) {
-                String error = LogUtil.getError(e);
+                String error = StrFormatter.format(
+                        "Exception in executing FlinkSQL:\n{}\n{}",
+                        SqlUtil.addLineNumber(item.getValue()),
+                        e.getMessage());
                 record.setError(error);
                 record.setExplainTrue(false);
                 record.setExplainTime(LocalDateTime.now());
