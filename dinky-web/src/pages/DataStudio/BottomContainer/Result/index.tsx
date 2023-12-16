@@ -26,6 +26,7 @@ import {
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { StateType } from '@/pages/DataStudio/model';
 import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
+import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
@@ -37,7 +38,6 @@ import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
 import { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
-import {DIALECT} from "@/services/constants";
 
 type Data = {
   [c: string]: any;
