@@ -131,7 +131,7 @@ const Result = (props: any) => {
     if (consoleData.result && !isRefresh) {
       setData(consoleData.result);
     } else {
-      if (current.dialect == DIALECT.FLINK_SQL) {
+      if (current.dialect && current.dialect.toLowerCase() == DIALECT.FLINK_SQL) {
         // flink sql
         // to do: get job data by history id list, not flink jid
         if (current.id) {

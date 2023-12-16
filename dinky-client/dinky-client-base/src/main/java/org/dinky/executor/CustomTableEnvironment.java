@@ -22,6 +22,7 @@ package org.dinky.executor;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 
+import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
@@ -92,5 +93,11 @@ public interface CustomTableEnvironment
         } else {
             CollUtil.addAll(jars, pathList);
         }
+    }
+
+    default <T> void addConfiguration(ConfigOption<T> option, T value) {
+        Configuration configuration =
+                (Configuration) getStreamExecutionEnvironment().getConfiguration();
+        configuration.set(option, value);
     }
 }

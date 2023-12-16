@@ -453,12 +453,10 @@ public class UDFUtil {
 
     public static void addConfigurationClsAndJars(
             CustomTableEnvironment customTableEnvironment, List<URL> jarList, List<URL> classpaths) {
-        Configuration configuration = (Configuration)
-                customTableEnvironment.getStreamExecutionEnvironment().getConfiguration();
-        configuration.set(
+        customTableEnvironment.addConfiguration(
                 PipelineOptions.CLASSPATHS,
                 classpaths.stream().map(URL::toString).collect(Collectors.toList()));
-        configuration.set(
+        customTableEnvironment.addConfiguration(
                 PipelineOptions.JARS, jarList.stream().map(URL::toString).collect(Collectors.toList()));
     }
 
