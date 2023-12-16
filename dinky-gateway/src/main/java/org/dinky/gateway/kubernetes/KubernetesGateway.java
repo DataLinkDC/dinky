@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.kubernetes;
 
-import org.apache.flink.configuration.CoreOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.Status;
 import org.dinky.gateway.AbstractGateway;
@@ -31,6 +30,7 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.utils.TextUtil;
 
 import org.apache.flink.configuration.ConfigOption;
+import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.configuration.PipelineOptions;
