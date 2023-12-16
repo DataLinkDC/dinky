@@ -150,14 +150,13 @@ const Project: React.FC = (props: connect) => {
       }
     }
 
-    path.pop();
     dispatch({
       type: STUDIO_MODEL.addTab,
       payload: {
         icon: type,
         id: parentId + name,
         treeKey: key,
-        breadcrumbLabel: path.join('/'),
+        breadcrumbLabel: path.slice(0,path.length-1).join('/'),
         label: name,
         params: {
           taskId: taskId
