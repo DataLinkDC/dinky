@@ -184,11 +184,6 @@ public class JobManager {
 
     private JobManager(JobConfig config) {
         this.config = config;
-        String version = EnvironmentInformation.getVersion()
-                .substring(0, EnvironmentInformation.getVersion().lastIndexOf('.'));
-        if (Float.parseFloat(version) < 16) {
-            Thread.currentThread().setContextClassLoader(getDinkyClassLoader());
-        }
     }
 
     public static JobManager build(JobConfig config) {

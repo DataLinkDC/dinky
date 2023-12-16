@@ -119,6 +119,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 executor,
                 isStreamingMode,
                 userClassLoader));
+        Thread.currentThread().setContextClassLoader(userClassLoader);
         this.executor = executor;
         injectParser(new CustomParserImpl(getPlanner().getParser()));
         injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
