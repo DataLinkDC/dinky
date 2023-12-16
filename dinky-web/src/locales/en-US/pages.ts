@@ -89,15 +89,19 @@ export default {
   'datastudio.header.pushdolphin.title': 'Push task [ {name} ] to DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky task encoding',
   'datastudio.header.pushdolphin.taskName': 'Task name: {name}',
-  'datastudio.header.pushdolphin.taskNameExt': 'Task type: {type} Process definition: {processDefinitionName}',
+  'datastudio.header.pushdolphin.taskNameExt':
+    'Task type: {type} Process definition: {processDefinitionName}',
   'datastudio.header.pushdolphin.upstreamCodes': 'pre-task',
-  'datastudio.header.pushdolphin.upstreamCodesTip': 'After selecting the pre-task, the task will not be executed until the pre-task is successfully executed. Please choose wisely to avoid task circular dependencies. This platform does not do dependency checking',
+  'datastudio.header.pushdolphin.upstreamCodesTip':
+    'After selecting the pre-task, the task will not be executed until the pre-task is successfully executed. Please choose wisely to avoid task circular dependencies. This platform does not do dependency checking',
   'datastudio.header.pushdolphin.taskPriority': 'Task Priority',
   'datastudio.header.pushdolphin.failRetryTimes': 'Number of retries',
   'datastudio.header.pushdolphin.failRetryInterval': 'Failure retry interval (minutes)',
-  'datastudio.header.pushdolphin.failRetryIntervalPlaceholder': 'Please enter the failure retry interval (minutes)',
+  'datastudio.header.pushdolphin.failRetryIntervalPlaceholder':
+    'Please enter the failure retry interval (minutes)',
   'datastudio.header.pushdolphin.delayTime': 'Delayed execution time (minutes)',
-  'datastudio.header.pushdolphin.delayTimePlaceholder': 'Please enter the delay execution time (minutes)',
+  'datastudio.header.pushdolphin.delayTimePlaceholder':
+    'Please enter the delay execution time (minutes)',
   'datastudio.header.pushdolphin.timeoutFlag': 'Timeout alarm',
   'datastudio.header.pushdolphin.timeoutFlag.warn': 'Timeout warning',
   'datastudio.header.pushdolphin.timeoutFlag.failed': 'Timeout failed',
@@ -105,7 +109,8 @@ export default {
   'datastudio.header.pushdolphin.flag': 'Run flag',
   'datastudio.header.pushdolphin.flagTip': 'Please select the run flag',
   'datastudio.header.pushdolphin.timeoutNotifyStrategy': 'Timeout notification strategy',
-  'datastudio.header.pushdolphin.timeoutNotifyStrategyTip': 'Please select a timeout notification strategy',
+  'datastudio.header.pushdolphin.timeoutNotifyStrategyTip':
+    'Please select a timeout notification strategy',
   'datastudio.header.pushdolphin.timeout': 'Timeout (minutes)',
   'datastudio.header.pushdolphin.timeoutPlaceholder': 'Please enter the timeout time (minutes)',
   'datastudio.project.create.folder.name': 'Folder Name',

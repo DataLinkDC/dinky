@@ -24,20 +24,23 @@ export const transformPushDolphinParams = (
   pushDolphinParams: PushDolphinParams,
   toFormValues: boolean
 ) => {
-
-
   if (toFormValues && dolphinTaskDefinition) {
-    const transformValue : PushDolphinParams  = {
+    const transformValue: PushDolphinParams = {
       ...pushDolphinParams,
       description: dolphinTaskDefinition.description,
       timeoutFlag: dolphinTaskDefinition.timeoutFlag === 'OPEN',
       flag: dolphinTaskDefinition.flag === 'YES',
-      upstreamCodes: dolphinTaskDefinition.upstreamTaskMap ? Object.keys(dolphinTaskDefinition.upstreamTaskMap) : [],
-      timeoutNotifyStrategy: dolphinTaskDefinition.timeoutNotifyStrategy === 'WARNFAILED' ? ['WARN', 'FAILED'] : [dolphinTaskDefinition.timeoutNotifyStrategy]
+      upstreamCodes: dolphinTaskDefinition.upstreamTaskMap
+        ? Object.keys(dolphinTaskDefinition.upstreamTaskMap)
+        : [],
+      timeoutNotifyStrategy:
+        dolphinTaskDefinition.timeoutNotifyStrategy === 'WARNFAILED'
+          ? ['WARN', 'FAILED']
+          : [dolphinTaskDefinition.timeoutNotifyStrategy]
     };
     return transformValue;
   } else {
-    const falseTransformValue : DolphinTaskDefinition = {
+    const falseTransformValue: DolphinTaskDefinition = {
       ...dolphinTaskDefinition,
       ...pushDolphinParams,
       description: pushDolphinParams.description,

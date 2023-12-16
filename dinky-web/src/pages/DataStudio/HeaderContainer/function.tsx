@@ -17,11 +17,11 @@
  *
  */
 
+import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { TabsPageType, TaskDataType } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
+import { DIALECT } from '@/services/constants';
 import { EnvironmentOutlined } from '@ant-design/icons';
-import {isSql} from "@/pages/DataStudio/HeaderContainer/service";
-import {DIALECT} from "@/services/constants";
 
 /**
  * @description: 生成面包屑
@@ -50,13 +50,12 @@ export const isRunning = (data: TaskDataType | undefined) => {
 };
 
 export const isCanPushDolphin = (data: TaskDataType | undefined) => {
-  return data?
-    JOB_LIFE_CYCLE.PUBLISH === data.step
-    && !isSql(data?.dialect)
-    && data?.dialect?.toLowerCase() !== DIALECT.FLINKSQLENV
-    && data?.dialect?.toLowerCase() !== DIALECT.SCALA
-    && data?.dialect?.toLowerCase() !== DIALECT.JAVA
-    && data?.dialect?.toLowerCase()!== DIALECT.PYTHON_LONG
+  return data
+    ? JOB_LIFE_CYCLE.PUBLISH === data.step &&
+        !isSql(data?.dialect) &&
+        data?.dialect?.toLowerCase() !== DIALECT.FLINKSQLENV &&
+        data?.dialect?.toLowerCase() !== DIALECT.SCALA &&
+        data?.dialect?.toLowerCase() !== DIALECT.JAVA &&
+        data?.dialect?.toLowerCase() !== DIALECT.PYTHON_LONG
     : false;
-
 };

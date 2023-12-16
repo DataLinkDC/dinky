@@ -81,7 +81,6 @@ const ConfigModel: ConfigModelType = {
         ...state,
         enabledDs: payload
       };
-
     }
   }
 };

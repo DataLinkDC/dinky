@@ -84,9 +84,11 @@ export default {
   'datastudio.header.pushdolphin.title': '将任务 [ {name} ]推送至 DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky任务编码',
   'datastudio.header.pushdolphin.taskName': 'Task名称: {name}',
-  'datastudio.header.pushdolphin.taskNameExt': 'Task类型: {type} 所属进程定义: {processDefinitionName}',
+  'datastudio.header.pushdolphin.taskNameExt':
+    'Task类型: {type} 所属进程定义: {processDefinitionName}',
   'datastudio.header.pushdolphin.upstreamCodes': '前置任务',
-  'datastudio.header.pushdolphin.upstreamCodesTip': '选择前置任务后，任务将会在前置任务执行成功后才会执行,请合理选择,避免任务循环依赖,本平台不做依赖检查',
+  'datastudio.header.pushdolphin.upstreamCodesTip':
+    '选择前置任务后，任务将会在前置任务执行成功后才会执行,请合理选择,避免任务循环依赖,本平台不做依赖检查',
   'datastudio.header.pushdolphin.taskPriority': '任务优先级',
   'datastudio.header.pushdolphin.failRetryTimes': '重试次数',
   'datastudio.header.pushdolphin.failRetryInterval': '失败重试间隔(分钟)',
