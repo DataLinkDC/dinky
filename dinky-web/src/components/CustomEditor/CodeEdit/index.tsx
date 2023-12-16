@@ -23,7 +23,7 @@ import { editor, languages, Position } from 'monaco-editor';
 import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
 import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEditor/function';
 import { StateType } from '@/pages/DataStudio/model';
-import { MonacoEditorOptions } from '@/types/Public/data';
+import { MonacoEditorOptions, SuggestionInfo } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
@@ -32,6 +32,8 @@ import { memo, useCallback, useRef } from 'react';
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
 import CompletionContext = languages.CompletionContext;
+import CompletionList = languages.CompletionList;
+import ProviderResult = languages.ProviderResult;
 
 let provider = {
   dispose: () => {}
@@ -105,7 +107,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   // memo
   const memoizedBuildAllSuggestionsCallback = useMemoCallback(buildAllSuggestionsCallback);
 
-  function reloadCompilation(monacoIns: Monaco) {
+  function reloadCompilation(monacoIns: Monaco, segmentedWords: string[]) {
     provider.dispose();
     provider = monacoIns.languages.registerCompletionItemProvider(language, {
       provideCompletionItems: (
@@ -114,9 +116,35 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
         context: CompletionContext
       ) => {
         const allSuggestions = memoizedBuildAllSuggestionsCallback(model, position);
+
+        // editor context
+        const wordSuggestions: SuggestionInfo[] = segmentedWords.map((word) => ({
+          key: word,
+          label: {
+            label: word,
+            detail: '',
+            description: ''
+          },
+          kind: monaco.languages.CompletionItemKind.Text,
+          insertText: word
+        }));
+        let completionList: ProviderResult<CompletionList> = buildAllSuggestionsToEditor(
+          model,
+          position,
+          wordSuggestions
+        );
+        const suggestions: Promise<languages.CompletionList> = allSuggestions.then((res) => {
+          return {
+            suggestions: [
+              ...(res?.suggestions ?? []),
+              ...(completionList as CompletionList)?.suggestions
+            ]
+          };
+        });
+
         context.triggerKind =
           monacoIns.languages.CompletionTriggerKind.TriggerForIncompleteCompletions;
-        return allSuggestions;
+        return suggestions;
       },
       resolveCompletionItem: (item: CompletionItem) => {
         return {
@@ -138,8 +166,35 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     }
     editorInstance.current = editor;
     monacoInstance.current = monacoIns;
+
+    let timeoutId: NodeJS.Timeout | null = null;
+    editor.onDidChangeModelContent((e) => {
+      if (timeoutId !== null) {
+        return;
+      }
+
+      timeoutId = setTimeout(() => {
+        timeoutId = null;
+      }, 3000);
+
+      const model = editor.getModel();
+      if (model) {
+        const segmenter = new Intl.Segmenter('en', { granularity: 'word' });
+        const segments = segmenter.segment(model.getValue());
+        const segmentedWords = [];
+        for (const segment of segments) {
+          const trimmedSegment = segment.segment.trim().replace(/\n/g, '');
+          if (trimmedSegment.length > 1) {
+            segmentedWords.push(segment.segment);
+          }
+        }
+        const uniqueSegmentedWords = Array.from(new Set(segmentedWords));
+        reloadCompilation(monacoIns, uniqueSegmentedWords);
+      }
+    });
+
     if (enableSuggestions) {
-      reloadCompilation(monacoInstance.current);
+      reloadCompilation(monacoInstance.current, []);
     }
     editor.layout();
     editor.focus();
