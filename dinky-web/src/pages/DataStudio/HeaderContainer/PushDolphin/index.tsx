@@ -18,32 +18,39 @@
  */
 
 import { FormContextValue } from '@/components/Context/FormContext';
-import { NORMAL_MODAL_OPTIONS,SWITCH_OPTIONS } from '@/services/constants';
+import { NORMAL_MODAL_OPTIONS, SWITCH_OPTIONS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import {
-ModalForm,
-ProFormCheckbox,
-ProFormDigit,
-ProFormGroup,
-ProFormSelect,
-ProFormSwitch,
-ProFormText,
-ProFormTextArea
+  ModalForm,
+  ProFormCheckbox,
+  ProFormDigit,
+  ProFormGroup,
+  ProFormSelect,
+  ProFormSwitch,
+  ProFormText,
+  ProFormTextArea
 } from '@ant-design/pro-components';
 
-import { PriorityList,TimeoutNotifyStrategy } from '@/pages/DataStudio/HeaderContainer/PushDolphin/constants';
-import { transformPushDolphinParams } from "@/pages/DataStudio/HeaderContainer/PushDolphin/function";
-import { DolphinTaskDefinition,DolphinTaskMinInfo,PushDolphinParams } from '@/types/Studio/data.d';
-import {Button, Form, Tag} from 'antd';
+import {
+  PriorityList,
+  TimeoutNotifyStrategy
+} from '@/pages/DataStudio/HeaderContainer/PushDolphin/constants';
+import { transformPushDolphinParams } from '@/pages/DataStudio/HeaderContainer/PushDolphin/function';
+import { TaskDataType } from '@/pages/DataStudio/model';
+import {
+  DolphinTaskDefinition,
+  DolphinTaskMinInfo,
+  PushDolphinParams
+} from '@/types/Studio/data.d';
+import { InitPushDolphinParams } from '@/types/Studio/init.d';
+import { Button, Form, Tag } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import React from 'react';
-import {InitPushDolphinParams} from "@/types/Studio/init.d";
-import {TaskDataType} from "@/pages/DataStudio/model";
 
 type PushDolphinProps = {
   onCancel: () => void;
   dolphinTaskList: DolphinTaskMinInfo[];
-  dolphinDefinitionTask : Partial<DolphinTaskDefinition>;
+  dolphinDefinitionTask: Partial<DolphinTaskDefinition>;
   modalVisible: boolean;
   currentDinkyTaskValue: Partial<TaskDataType>;
   loading: boolean;
@@ -51,9 +58,23 @@ type PushDolphinProps = {
 };
 
 export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
-  const { onCancel,onSubmit, modalVisible,dolphinTaskList,dolphinDefinitionTask,currentDinkyTaskValue, loading } = props;
+  const {
+    onCancel,
+    onSubmit,
+    modalVisible,
+    dolphinTaskList,
+    dolphinDefinitionTask,
+    currentDinkyTaskValue,
+    loading
+  } = props;
 
-  const [formValues, setFormValues] = React.useState<PushDolphinParams>(transformPushDolphinParams(dolphinDefinitionTask as DolphinTaskDefinition,{...InitPushDolphinParams,taskId: currentDinkyTaskValue?.id ?? ''},true) as PushDolphinParams);
+  const [formValues, setFormValues] = React.useState<PushDolphinParams>(
+    transformPushDolphinParams(
+      dolphinDefinitionTask as DolphinTaskDefinition,
+      { ...InitPushDolphinParams, taskId: currentDinkyTaskValue?.id ?? '' },
+      true
+    ) as PushDolphinParams
+  );
 
   /**
    * init form
@@ -83,9 +104,13 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
     if (!values) {
       return;
     }
-    const transformPushDolphinParamsValue : DolphinTaskDefinition = transformPushDolphinParams(dolphinDefinitionTask as DolphinTaskDefinition, formValues, false) as DolphinTaskDefinition;
+    const transformPushDolphinParamsValue: DolphinTaskDefinition = transformPushDolphinParams(
+      dolphinDefinitionTask as DolphinTaskDefinition,
+      formValues,
+      false
+    ) as DolphinTaskDefinition;
     onSubmit(transformPushDolphinParamsValue);
-    console.log('transformPushDolphinParamsValue',transformPushDolphinParamsValue)
+    console.log('transformPushDolphinParamsValue', transformPushDolphinParamsValue);
   };
 
   const renderFooter = () => {
@@ -113,10 +138,10 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
         const label = (
           <>
             <Tag color={'purple'}>
-              {l('datastudio.header.pushdolphin.taskName','',{name: item.taskName})}
+              {l('datastudio.header.pushdolphin.taskName', '', { name: item.taskName })}
             </Tag>
             <span style={{ color: '#8a8a8a' }}>
-              {l('datastudio.header.pushdolphin.taskNameExt','',{
+              {l('datastudio.header.pushdolphin.taskNameExt', '', {
                 type: item.taskType,
                 processDefinitionName: item.processDefinitionName
               })}
@@ -135,7 +160,7 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
 
   const handleValueChange = (changedValues: any, allValues: any) => {
     if (allValues) {
-      setFormValues({...formValues,...allValues});
+      setFormValues({ ...formValues, ...allValues });
     }
   };
 
@@ -148,20 +173,20 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
           name={'upstreamCodes'}
           showSearch
           mode={'multiple'}
-          extra={l('datastudio.header.pushdolphin.upstreamCodesTip') }
+          extra={l('datastudio.header.pushdolphin.upstreamCodesTip')}
           options={buildUpstreamTaskOptions(dolphinTaskList)}
         />
 
         <ProFormGroup>
           <ProFormSelect
-            label={l('datastudio.header.pushdolphin.taskPriority') }
+            label={l('datastudio.header.pushdolphin.taskPriority')}
             name={'taskPriority'}
             width={'sm'}
             options={PriorityList}
           />
 
           <ProFormDigit
-            label={l('datastudio.header.pushdolphin.failRetryTimes') }
+            label={l('datastudio.header.pushdolphin.failRetryTimes')}
             name={'failRetryTimes'}
             initialValue={formValues.failRetryTimes}
             width={'sm'}
@@ -173,10 +198,15 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
           />
 
           <ProFormDigit
-            label={l('datastudio.header.pushdolphin.failRetryInterval') }
+            label={l('datastudio.header.pushdolphin.failRetryInterval')}
             name={'failRetryInterval'}
             width={'sm'}
-            rules={[{ required: true, message: l('datastudio.header.pushdolphin.failRetryIntervalPlaceholder') }]}
+            rules={[
+              {
+                required: true,
+                message: l('datastudio.header.pushdolphin.failRetryIntervalPlaceholder')
+              }
+            ]}
             min={0}
             fieldProps={{
               precision: 0
@@ -184,10 +214,12 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
           />
 
           <ProFormDigit
-            label={l('datastudio.header.pushdolphin.delayTime') }
+            label={l('datastudio.header.pushdolphin.delayTime')}
             name={'delayTime'}
             width={'sm'}
-            rules={[{ required: true, message: l('datastudio.header.pushdolphin.delayTimePlaceholder') }]}
+            rules={[
+              { required: true, message: l('datastudio.header.pushdolphin.delayTimePlaceholder') }
+            ]}
             min={0}
             fieldProps={{
               precision: 0
@@ -195,14 +227,14 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
           />
 
           <ProFormSwitch
-            label={l('datastudio.header.pushdolphin.timeoutFlag') }
+            label={l('datastudio.header.pushdolphin.timeoutFlag')}
             rules={[{ required: true, message: l('datastudio.header.pushdolphin.timeoutFlagTip') }]}
             {...SWITCH_OPTIONS()}
             name={'timeoutFlag'}
           />
 
           <ProFormSwitch
-            label={l('datastudio.header.pushdolphin.flag') }
+            label={l('datastudio.header.pushdolphin.flag')}
             rules={[{ required: true, message: l('datastudio.header.pushdolphin.flagTip') }]}
             {...SWITCH_OPTIONS()}
             name={'flag'}
@@ -213,17 +245,24 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
           <>
             <ProFormGroup>
               <ProFormCheckbox.Group
-                label={l('datastudio.header.pushdolphin.timeoutNotifyStrategy') }
+                label={l('datastudio.header.pushdolphin.timeoutNotifyStrategy')}
                 name={'timeoutNotifyStrategy'}
-                rules={[{ required: true, message: l('datastudio.header.pushdolphin.timeoutNotifyStrategyTip') }]}
+                rules={[
+                  {
+                    required: true,
+                    message: l('datastudio.header.pushdolphin.timeoutNotifyStrategyTip')
+                  }
+                ]}
                 width={'sm'}
                 options={TimeoutNotifyStrategy}
               />
               <ProFormDigit
-                label={l('datastudio.header.pushdolphin.timeout') }
+                label={l('datastudio.header.pushdolphin.timeout')}
                 name={'timeout'}
                 width={'sm'}
-                rules={[{ required: true, message: l('datastudio.header.pushdolphin.timeoutPlaceholder') }]}
+                rules={[
+                  { required: true, message: l('datastudio.header.pushdolphin.timeoutPlaceholder') }
+                ]}
                 min={0}
                 max={30}
                 fieldProps={{
@@ -242,7 +281,9 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
   return (
     <ModalForm<PushDolphinParams>
       {...NORMAL_MODAL_OPTIONS}
-      title={l('datastudio.header.pushdolphin.title','', {name : currentDinkyTaskValue?.name ?? ''})}
+      title={l('datastudio.header.pushdolphin.title', '', {
+        name: currentDinkyTaskValue?.name ?? ''
+      })}
       open={modalVisible}
       form={form}
       initialValues={formValues}

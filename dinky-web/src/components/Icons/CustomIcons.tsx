@@ -17,7 +17,7 @@
  *
  */
 
-import Icon,{ DeleteTwoTone } from '@ant-design/icons';
+import Icon, { DeleteTwoTone } from '@ant-design/icons';
 
 const IconStyle = {
   height: '16px',

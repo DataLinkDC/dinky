@@ -17,10 +17,10 @@
  *
  */
 
+import { l } from '@/utils/intl';
 import { Badge, Space } from 'antd';
 import { CheckboxOptionType } from 'antd/es/checkbox/Group';
 import { DefaultOptionType } from 'antd/es/select';
-import {l} from "@/utils/intl";
 
 /**
  * priority list for select | 优先级列表

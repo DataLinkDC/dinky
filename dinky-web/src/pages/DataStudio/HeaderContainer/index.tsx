@@ -39,14 +39,21 @@ import {
   getJobPlan,
   isSql
 } from '@/pages/DataStudio/HeaderContainer/service';
-import {DataStudioTabsItemType, StateType, TabsPageType, TaskDataType, VIEW} from '@/pages/DataStudio/model';
+import {
+  DataStudioTabsItemType,
+  StateType,
+  TabsPageType,
+  TaskDataType,
+  VIEW
+} from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
-import {handleOption, handlePutDataJson, queryDataByParams} from '@/services/BusinessCrud';
+import { handleOption, handlePutDataJson, queryDataByParams } from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
+import { DolphinTaskDefinition, DolphinTaskMinInfo } from '@/types/Studio/data.d';
 import { l } from '@/utils/intl';
-import {SuccessMessageAsync} from '@/utils/messages';
+import { SuccessMessageAsync } from '@/utils/messages';
 import {
   ApartmentOutlined,
   BugOutlined,
@@ -64,7 +71,6 @@ import { connect } from '@umijs/max';
 import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import { ButtonProps } from 'antd/es/button/button';
 import React, { memo, useEffect, useState } from 'react';
-import {DolphinTaskDefinition, DolphinTaskMinInfo} from "@/types/Studio/data.d";
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -119,16 +125,18 @@ const HeaderContainer = (props: connect) => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
   }, []);
 
-
-
-
   const currentData = getCurrentData(panes, activeKey);
   const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
 
   const handlePushDolphinOpen = async () => {
-    const dinkyTaskId = currentData?.id
-    const dolphinTaskList: DolphinTaskMinInfo[] | undefined = await queryDataByParams<DolphinTaskMinInfo[]>('/api/scheduler/queryUpstreamTasks', {dinkyTaskId});
-    const dolphinTaskDefinition: DolphinTaskDefinition | undefined = await queryDataByParams<DolphinTaskDefinition>('/api/scheduler/queryTaskDefinition', {dinkyTaskId});
+    const dinkyTaskId = currentData?.id;
+    const dolphinTaskList: DolphinTaskMinInfo[] | undefined = await queryDataByParams<
+      DolphinTaskMinInfo[]
+    >('/api/scheduler/queryUpstreamTasks', { dinkyTaskId });
+    const dolphinTaskDefinition: DolphinTaskDefinition | undefined =
+      await queryDataByParams<DolphinTaskDefinition>('/api/scheduler/queryTaskDefinition', {
+        dinkyTaskId
+      });
     setPushDolphinState((prevState) => ({
       ...prevState,
       buttonLoading: true,
@@ -136,13 +144,9 @@ const HeaderContainer = (props: connect) => {
       modalVisible: true,
       dolphinTaskList: dolphinTaskList ?? [],
       dolphinDefinitionTask: dolphinTaskDefinition ?? {},
-      currentDinkyTaskValue: currentData as TaskDataType,
+      currentDinkyTaskValue: currentData as TaskDataType
     }));
   };
-
-
-
-
 
   const handlePushDolphinCancel = async () => {
     setPushDolphinState((prevState) => ({
@@ -462,13 +466,12 @@ const HeaderContainer = (props: connect) => {
     );
   };
 
-
-  const handlePushDolphinSubmit = async (value : DolphinTaskDefinition) => {
+  const handlePushDolphinSubmit = async (value: DolphinTaskDefinition) => {
     setPushDolphinState((prevState) => ({ ...prevState, loading: true }));
     await handleOption(
       '/api/scheduler/createOrUpdateTaskDefinition',
       `推送任务[${currentData?.name}]至 DolphinScheduler`,
-       value,
+      value
     );
     await handlePushDolphinCancel();
   };

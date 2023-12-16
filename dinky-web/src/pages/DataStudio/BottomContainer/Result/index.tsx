@@ -24,7 +24,7 @@ import {
   mapDispatchToProps
 } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
-import {DataStudioParams, StateType} from '@/pages/DataStudio/model';
+import { DataStudioParams, StateType } from '@/pages/DataStudio/model';
 import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { transformTableDataToCsv } from '@/utils/function';
@@ -50,7 +50,7 @@ const Result = (props: any) => {
   const [data, setData] = useState<Data>({});
   const [loading, setLoading] = useState<boolean>(true);
   const currentTabs = getCurrentTab(panes, activeKey);
-  const current = getCurrentData(panes, activeKey) ;
+  const current = getCurrentData(panes, activeKey);
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
