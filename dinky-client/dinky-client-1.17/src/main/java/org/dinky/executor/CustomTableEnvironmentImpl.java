@@ -86,10 +86,14 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 EnvironmentSettings.newInstance().withClassLoader(classLoader).build());
     }
 
-    public static CustomTableEnvironmentImpl createBatch(StreamExecutionEnvironment executionEnvironment) {
+    public static CustomTableEnvironmentImpl createBatch(
+            StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
         return create(
                 executionEnvironment,
-                EnvironmentSettings.newInstance().inBatchMode().build());
+                EnvironmentSettings.newInstance()
+                        .withClassLoader(classLoader)
+                        .inBatchMode()
+                        .build());
     }
 
     public static CustomTableEnvironmentImpl create(

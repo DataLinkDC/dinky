@@ -19,6 +19,7 @@
 
 package org.dinky.executor;
 
+import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableEnvironment;
@@ -61,4 +62,6 @@ public abstract class AbstractCustomTableEnvironment
     public Configuration getRootConfiguration() {
         return (Configuration) this.getConfig().getRootConfiguration();
     }
+
+    public abstract <T> void addConfiguration(ConfigOption<T> option, T value);
 }

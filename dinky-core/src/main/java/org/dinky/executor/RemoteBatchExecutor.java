@@ -46,6 +46,6 @@ public class RemoteBatchExecutor extends Executor {
 
     @Override
     CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader) {
-        return CustomTableEnvironmentImpl.createBatch(environment);
+        return CustomTableEnvironmentImpl.createBatch(environment, classLoader);
     }
 }
