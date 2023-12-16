@@ -26,4 +26,5 @@ export type FormConfig = {
   help?: string;
   showOnSubmitType?: string;
   showType?: string;
+  rules?: any[];
 };

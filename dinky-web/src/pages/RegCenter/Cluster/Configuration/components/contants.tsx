@@ -133,19 +133,22 @@ export const KUBERNETES_CONFIG_LIST: FormConfig[] = [
     name: 'kubernetes.namespace',
     label: l('rc.cc.k8s.namespace'),
     placeholder: l('rc.cc.k8s.namespaceHelp'),
-    tooltip: l('rc.cc.k8s.namespaceHelp')
+    tooltip: l('rc.cc.k8s.namespaceHelp'),
+    rules: [{ required: true }]
   },
   {
     name: 'kubernetes.service.account',
     label: l('rc.cc.k8s.account'),
     placeholder: l('rc.cc.k8s.accountHelp'),
-    tooltip: l('rc.cc.k8s.accountHelp')
+    tooltip: l('rc.cc.k8s.accountHelp'),
+    rules: [{ required: true }]
   },
   {
     name: 'kubernetes.container.image',
     label: l('rc.cc.k8s.image'),
     placeholder: l('rc.cc.k8s.imageHelp'),
-    tooltip: l('rc.cc.k8s.imageHelp')
+    tooltip: l('rc.cc.k8s.imageHelp'),
+    rules: [{ required: true }]
   },
   {
     name: 'kubernetes.jobmanager.cpu',
@@ -158,11 +161,5 @@ export const KUBERNETES_CONFIG_LIST: FormConfig[] = [
     label: l('rc.cc.k8s.tmCpu'),
     placeholder: l('rc.cc.k8s.tmCpuHelp'),
     tooltip: l('rc.cc.k8s.tmCpuHelp')
-  },
-  {
-    name: 'kubernetes.config.file',
-    label: l('rc.cc.k8s.configFile'),
-    placeholder: l('rc.cc.k8s.configFileHelp'),
-    tooltip: l('rc.cc.k8s.configFileHelp')
   }
 ];

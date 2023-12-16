@@ -28,6 +28,7 @@ import { KUBERNETES_CONFIG_LIST } from '@/pages/RegCenter/Cluster/Configuration/
 import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
+import { UploadOutlined } from '@ant-design/icons';
 import {
   ProCard,
   ProFormGroup,
@@ -36,17 +37,29 @@ import {
   ProFormSelect,
   ProFormText
 } from '@ant-design/pro-components';
-import { Col, Divider, Row, Space } from 'antd';
+import { Button, Col, Divider, Row, Space, Typography, Upload, UploadProps } from 'antd';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { RcFile } from 'antd/es/upload/interface';
+import { Values } from 'async-validator';
+import { useState } from 'react';
+
+const { Text } = Typography;
 
 const CodeEditProps = {
-  height: '40vh',
+  height: '30vh',
   width: '90vh',
   lineNumbers: 'on',
   language: 'yaml'
 };
 
-const FlinkK8s = (props: { type: string; value: any } & connect) => {
-  const { type, value, flinkConfigOptions } = props;
+const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> } & connect) => {
+  const { type, value, form, flinkConfigOptions } = props;
+  const k8sConfig = value.config?.kubernetesConfig;
+
+  const [kubeConfig, setKubeConfig] = useState<string>(k8sConfig?.kubeConfig);
+  const [podTemplate, setPodTemplate] = useState<string>(k8sConfig?.podTemplate);
+  const [jmPodTemplate, setJmPodTemplate] = useState<string>(k8sConfig?.jmPodTemplate);
+  const [tmPodTemplate, setTmPodTemplate] = useState<string>(k8sConfig?.tmPodTemplate);
 
   const renderK8sConfig = () => {
     return (
@@ -58,6 +71,7 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
             name={['config', 'kubernetesConfig', 'configuration', item.name]}
             label={item.label}
             width={260}
+            rules={item.rules ?? []}
             placeholder={item.placeholder}
           />
         ))}
@@ -65,32 +79,81 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
     );
   };
 
+  const renderEdit = (
+    name: string[],
+    onChange: (value: string) => void,
+    key: string,
+    value?: string,
+    tips?: string
+  ) => {
+    const uploadProp: UploadProps = {
+      beforeUpload: (file: RcFile) => {
+        const reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = () => {
+          form.setFieldValue(name, reader.result as string);
+          onChange(reader.result as string);
+        };
+      },
+      showUploadList: false
+    };
+    return (
+      <Space direction={'vertical'}>
+        <Upload {...uploadProp}>
+          <Button icon={<UploadOutlined />}>{l('rc.cc.loadFromLocal')}</Button>
+          <Text type={'secondary'}> {tips}</Text>
+        </Upload>
+        <ProFormItem key={key} name={name}>
+          <CodeEdit {...CodeEditProps} code={value ?? ''} />
+        </ProFormItem>
+      </Space>
+    );
+  };
+
   const configTags = [
     {
+      key: 'kubeConfig',
+      forceRender: true,
+      label: <TagAlignCenter>K8s KubeConfig</TagAlignCenter>,
+      children: renderEdit(
+        ['config', 'kubernetesConfig', 'kubeConfig'],
+        (value) => setKubeConfig(value),
+        'k8s-kubeconfig-item',
+        kubeConfig,
+        l('rc.cc.k8s.defaultKubeConfigHelp')
+      )
+    },
+    {
       key: 'defaultPodTemplate',
+      forceRender: true,
       label: <TagAlignCenter>Default Pod Template</TagAlignCenter>,
-      children: (
-        <ProFormItem key='dpe' name={['config', 'kubernetesConfig', 'podTemplate']}>
-          <CodeEdit {...CodeEditProps} code={value.config?.kubernetesConfig?.podTemplate ?? ''} />
-        </ProFormItem>
+      children: renderEdit(
+        ['config', 'kubernetesConfig', 'podTemplate'],
+        (value) => setPodTemplate(value),
+        'k8s-podTemplate-item',
+        podTemplate
       )
     },
     {
       key: 'JMPodTemplate',
+      forceRender: true,
       label: <TagAlignCenter>JM Pod Template</TagAlignCenter>,
-      children: (
-        <ProFormItem key='jmdpe' name={['config', 'kubernetesConfig', 'jmPodTemplate']}>
-          <CodeEdit {...CodeEditProps} code={value.config?.kubernetesConfig?.jmPodTemplate ?? ''} />
-        </ProFormItem>
+      children: renderEdit(
+        ['config', 'kubernetesConfig', 'jmPodTemplate'],
+        (value) => setJmPodTemplate(value),
+        'k8s-jmPodTemplate-item',
+        jmPodTemplate
       )
     },
     {
       key: 'TMPodTemplate',
+      forceRender: true,
       label: <TagAlignCenter>TM Pod Template</TagAlignCenter>,
-      children: (
-        <ProFormItem key='tmdpe' name={['config', 'kubernetesConfig', 'tmPodTemplate']}>
-          <CodeEdit {...CodeEditProps} code={value.config?.kubernetesConfig?.tmPodTemplate ?? ''} />
-        </ProFormItem>
+      children: renderEdit(
+        ['config', 'kubernetesConfig', 'tmPodTemplate'],
+        (value) => setTmPodTemplate(value),
+        'k8s-tmPodTemplate-item',
+        tmPodTemplate
       )
     }
   ];
@@ -113,6 +176,7 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
                 tooltip={l('rc.cc.k8s.exposedHelp')}
                 placeholder={l('rc.cc.k8s.exposedHelp')}
                 options={ExposedTypeOptions}
+                rules={[{ required: true }]}
                 width={250}
               />
             )}
@@ -123,9 +187,16 @@ const FlinkK8s = (props: { type: string; value: any } & connect) => {
                 width={250}
                 placeholder={l('rc.cc.k8sOp.versionHelp')}
                 options={versionOptions}
+                rules={[{ required: true }]}
               />
             )}
             {renderK8sConfig()}
+            <ProFormText
+              name={['config', 'clusterConfig', 'flinkConfigPath']}
+              label={l('rc.cc.flinkConfigPath')}
+              placeholder={l('rc.cc.flinkConfigPathPlaceholder')}
+              tooltip={l('rc.cc.flinkConfigPathHelp')}
+            />
           </ProFormGroup>
           <ProFormList
             name={['config', 'flinkConfig', 'flinkConfigList']}

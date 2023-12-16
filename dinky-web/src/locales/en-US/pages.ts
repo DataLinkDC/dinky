@@ -656,7 +656,7 @@ export default {
   'rc.cc.flinkConfig': 'Flink Config',
   'rc.cc.flinkConfigPath': 'Flink Config File Path',
   'rc.cc.flinkConfigPathHelp':
-    'Please enter flink-conf.yaml path! Values such as /opt/module/flink/conf ',
+    'Only specify to the folder, dinky will auto read the configuration, this parameter is optional in K8S mode',
   'rc.cc.flinkConfigPathPlaceholder':
     'Please enter the flink-conf.yaml path! Values such as /opt/module/flink/conf ',
   'rc.cc.hadoop.defineConfig': 'Hadoop Custom Config (high priority)',
@@ -685,6 +685,8 @@ export default {
   'rc.cc.k8s.tmCpu': 'TaskManager CPU Config',
   'rc.cc.k8s.tmCpuHelp': 'TaskManager CPU configuration! eg',
   'rc.cc.k8sConfig': 'Kubernetes Config',
+  'rc.cc.k8s.defaultKubeConfigHelp':
+    'If you do not fill in this field, the `~/.kube/config` file will be used by default',
   'rc.cc.k8sOp.version': 'Flink Version',
   'rc.cc.k8sOp.versionHelp': 'Please select the Flink version!',
   'rc.cc.key': 'Config Key',
@@ -714,6 +716,8 @@ export default {
   'rc.cc.type': 'Type',
   'rc.cc.typePlaceholder': 'Please select the cluster configuration type!',
   'rc.cc.value': 'Config Value',
+  'rc.cc.loadFromLocal': 'Load from a local file',
+
   'rc.ci.alias': 'Alias',
   'rc.ci.aliasPlaceholder': 'Please enter an alias!',
   'rc.ci.ar': 'Auto Registration',
