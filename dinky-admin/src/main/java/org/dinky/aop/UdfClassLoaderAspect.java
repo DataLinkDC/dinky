@@ -20,7 +20,6 @@
 package org.dinky.aop;
 
 import org.dinky.data.exception.DinkyException;
-import org.dinky.job.JobResult;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -61,7 +60,7 @@ public class UdfClassLoaderAspect {
             e.printStackTrace();
             throw (DinkyException) e;
         } finally {
-            if(contextClassLoader != Thread.currentThread().getContextClassLoader()) {
+            if (contextClassLoader != Thread.currentThread().getContextClassLoader()) {
                 Thread.currentThread().setContextClassLoader(contextClassLoader);
             }
         }

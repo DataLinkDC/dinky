@@ -19,7 +19,6 @@
 
 package org.dinky.job;
 
-import org.apache.flink.runtime.util.EnvironmentInformation;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
@@ -71,6 +70,7 @@ import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
+import org.apache.flink.runtime.util.EnvironmentInformation;
 import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
@@ -184,8 +184,8 @@ public class JobManager {
 
     private JobManager(JobConfig config) {
         this.config = config;
-        String version =
-                EnvironmentInformation.getVersion().substring(0, EnvironmentInformation.getVersion().lastIndexOf('.'));
+        String version = EnvironmentInformation.getVersion()
+                .substring(0, EnvironmentInformation.getVersion().lastIndexOf('.'));
         if (Float.parseFloat(version) < 16) {
             Thread.currentThread().setContextClassLoader(getDinkyClassLoader());
         }
