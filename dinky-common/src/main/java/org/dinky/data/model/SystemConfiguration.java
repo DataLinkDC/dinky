@@ -104,6 +104,16 @@ public class SystemConfiguration {
             .defaultValue(System.getProperty("dinkyAddr"))
             .note(Status.SYS_ENV_SETTINGS_DINKYADDR_NOTE);
 
+    private final Configuration<Integer> jobMaxRetainCount = key(Status.SYS_ENV_SETTINGS_MAX_RETAIN_COUNT)
+            .intType()
+            .defaultValue(10)
+            .note(Status.SYS_ENV_SETTINGS_MAX_RETAIN_COUNT_NOTE);
+
+    private final Configuration<Integer> jobMaxRetainDays = key(Status.SYS_ENV_SETTINGS_MAX_RETAIN_DAYS)
+            .intType()
+            .defaultValue(30)
+            .note(Status.SYS_ENV_SETTINGS_MAX_RETAIN_DAYS_NOTE);
+
     private final Configuration<Boolean> dolphinschedulerEnable = key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE)
             .booleanType()
             .defaultValue(false)
