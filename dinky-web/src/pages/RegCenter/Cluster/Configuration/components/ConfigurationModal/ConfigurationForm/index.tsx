@@ -44,7 +44,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
         {type && type === ClusterType.YARN ? (
           <YarnConfig />
         ) : (
-          <FlinkK8s type={type} value={value} />
+          <FlinkK8s type={type} value={value} form={form} />
         )}
         <HighPriorityConfig />
         <ApplicationConfig />

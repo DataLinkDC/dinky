@@ -35,6 +35,7 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.utils.TextUtil;
 
 import org.apache.flink.configuration.CoreOptions;
+import org.apache.http.util.TextUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -61,21 +62,28 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
     private FlinkDeployment flinkDeployment = new FlinkDeployment();
     private FlinkDeploymentSpec flinkDeploymentSpec = new FlinkDeploymentSpec();
     private KubernetesClient kubernetesClient;
-    // TODO 改为ProcessStep注释
 
     private static final Logger logger = LoggerFactory.getLogger(KubernetsOperatorGateway.class);
 
     @Override
     protected void init() {
-        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
-        flinkConfig = config.getFlinkConfig();
-        k8sConfig = config.getKubernetesConfig();
-        kubernetesClient = new DefaultKubernetesClient();
+        initKubeClient();
         initBase();
         initMetadata();
         initSpec();
         initResource(kubernetesClient);
         initJob();
+    }
+
+    private void initKubeClient() {
+        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
+        flinkConfig = config.getFlinkConfig();
+        k8sConfig = config.getKubernetesConfig();
+        if (TextUtils.isEmpty(k8sConfig.getKubeConfig())) {
+            kubernetesClient = new DefaultKubernetesClient();
+        } else {
+            kubernetesClient = DefaultKubernetesClient.fromConfig(k8sConfig.getKubeConfig());
+        }
     }
 
     @Override
@@ -84,7 +92,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
         kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
         flinkConfig = config.getFlinkConfig();
         config.getFlinkConfig().setJobName("test");
-        kubernetesClient = new DefaultKubernetesClient();
+        initKubeClient();
         initBase();
         initMetadata();
         initSpec();
@@ -97,8 +105,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
     public boolean onJobFinishCallback(String status) {
 
         kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
-        kubernetesClient = new DefaultKubernetesClient();
-
+        initKubeClient();
         String jobName = config.getFlinkConfig().getJobName();
         if (status.equals(JobStatus.FINISHED.getValue())) {
             logger.info(

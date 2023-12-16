@@ -124,6 +124,7 @@ export type AppConfig = {
 export type K8sConfig = {
   configuration: Map<string, string>;
   dockerConfig: Map<string, string>;
+  kubeConfig: string;
   podTemplate: string;
   jmPodTemplate: string;
   tmPodTemplate: string;
