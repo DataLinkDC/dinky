@@ -122,7 +122,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         tableConfig.addConfiguration(configuration);
         return create(
                 executionEnvironment,
-                EnvironmentSettings.newInstance().inBatchMode().build(), Thread.currentThread().getContextClassLoader());
+                EnvironmentSettings.newInstance().inBatchMode().build(),
+                Thread.currentThread().getContextClassLoader());
     }
 
     public static CustomTableEnvironmentImpl create(

@@ -124,7 +124,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     public static CustomTableEnvironmentImpl create(
             StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
-        return create(executionEnvironment, EnvironmentSettings.newInstance().build(), TableConfig.getDefault(), classLoader);
+        return create(
+                executionEnvironment, EnvironmentSettings.newInstance().build(), TableConfig.getDefault(), classLoader);
     }
 
     public static CustomTableEnvironmentImpl createBatch(StreamExecutionEnvironment executionEnvironment) {
@@ -132,11 +133,18 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         configuration.set(ExecutionOptions.RUNTIME_MODE, RuntimeExecutionMode.BATCH);
         TableConfig tableConfig = new TableConfig();
         tableConfig.addConfiguration(configuration);
-        return create(executionEnvironment, EnvironmentSettings.inBatchMode(), tableConfig,  Thread.currentThread().getContextClassLoader());
+        return create(
+                executionEnvironment,
+                EnvironmentSettings.inBatchMode(),
+                tableConfig,
+                Thread.currentThread().getContextClassLoader());
     }
 
     public static CustomTableEnvironmentImpl create(
-            StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings, TableConfig tableConfig, ClassLoader classLoader) {
+            StreamExecutionEnvironment executionEnvironment,
+            EnvironmentSettings settings,
+            TableConfig tableConfig,
+            ClassLoader classLoader) {
 
         final ModuleManager moduleManager = new ModuleManager();
 
