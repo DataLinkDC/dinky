@@ -23,25 +23,30 @@ import { createModelTypes } from '@/utils/modelUtils';
 import { Effect } from '@@/plugin-dva/types';
 import { Reducer } from 'umi';
 
-export type ConfigStateType = {
+const SYS_CONFIG = 'SysConfig';
+
+export type SysConfigStateType = {
   dsConfig: BaseConfigProperties[];
+  enabledDs: boolean;
 };
 
 export type ConfigModelType = {
   namespace: string;
-  state: ConfigStateType;
+  state: SysConfigStateType;
   effects: {
     queryDsConfig: Effect;
   };
   reducers: {
-    saveDsConfig: Reducer<ConfigStateType>;
+    saveDsConfig: Reducer<SysConfigStateType>;
+    updateEnabledDs: Reducer<SysConfigStateType>;
   };
 };
 
 const ConfigModel: ConfigModelType = {
-  namespace: 'Config',
+  namespace: SYS_CONFIG,
   state: {
-    dsConfig: []
+    dsConfig: [],
+    enabledDs: false
   },
 
   effects: {
@@ -51,6 +56,16 @@ const ConfigModel: ConfigModelType = {
         type: 'saveDsConfig',
         payload: response || []
       });
+      if (response && response.length > 0) {
+        const enabledDs = response.some(
+          (item: BaseConfigProperties) =>
+            item.key === 'sys.dolphinscheduler.settings.enable' && item.value === true
+        );
+        yield put({
+          type: 'updateEnabledDs',
+          payload: enabledDs
+        });
+      }
     }
   },
 
@@ -59,6 +74,12 @@ const ConfigModel: ConfigModelType = {
       return {
         ...state,
         dsConfig: payload
+      };
+    },
+    updateEnabledDs(state, { payload }) {
+      return {
+        ...state,
+        enabledDs: payload
       };
     }
   }

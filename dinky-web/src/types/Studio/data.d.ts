@@ -228,3 +228,83 @@ export enum JobStatus {
   RECONNECTING = 'RECONNECTING',
   UNKNOWN = 'UNKNOWN'
 }
+
+/**
+ * DolphinTaskMinInfo
+ */
+export interface DolphinTaskMinInfo {
+  id: number;
+  taskName: string;
+  taskCode: number;
+  taskVersion: number;
+  taskType: string;
+  taskCreateTime: Date;
+  taskUpdateTime: Date;
+  processDefinitionCode: number;
+  processDefinitionVersion: number;
+  processDefinitionName: string;
+  processReleaseState: string;
+  upstreamTaskMap: Map<number, string>;
+  upstreamTaskCode: number;
+  upstreamTaskName: string;
+}
+
+export interface TaskParamProperty {
+  prop: string;
+  direct: string;
+  type: string;
+  value: string;
+}
+
+export interface DolphinTaskDefinition {
+  id: number;
+  code: number;
+  name: string;
+  version: number;
+  description: string;
+  projectCode: number;
+  userId: number;
+  taskType: string;
+  taskParams: Map<string, string>;
+  taskParamList: TaskParamProperty[];
+  taskParamMap: Map<string, string>;
+  flag: string; // 0 no 1 yes
+  taskPriority: string; // 0 highest 1 high 2 medium 3 low 4 lowest
+  userName: string;
+  projectName: string;
+  workerGroup: string;
+  environmentCode: number;
+  failRetryTimes: number;
+  failRetryInterval: number;
+  timeoutFlag: string; // 0 close 1 open
+  timeoutNotifyStrategy: string; // 0 warning 1 failure 2 warning and failure
+  timeout: number;
+  delayTime: number;
+  resourceIds: string;
+  createTime: Date;
+  updateTime: Date;
+  modifyBy: string;
+  taskGroupId: number;
+  taskGroupPriority: number;
+  cpuQuota: number;
+  memoryMax: number;
+  taskExecuteType: number; // 0 batch 1 stream
+  processDefinitionCode: number;
+  processDefinitionVersion: number;
+  processDefinitionName: string;
+  upstreamTaskMap: Map<number, string>;
+}
+
+export interface PushDolphinParams {
+  taskId: number | string;
+  upstreamCodes: string[];
+  taskPriority: string;
+  failRetryTimes: number;
+  failRetryInterval: number;
+  delayTime: number;
+  timeout: number;
+  timeoutFlag: boolean | string;
+  flag: boolean | string;
+  timeoutNotifyStrategy: string[] | string;
+  description: string;
+}

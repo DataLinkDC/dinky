@@ -18,16 +18,19 @@
  */
 
 import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
+import { PushpinIcon } from '@/components/Icons/CustomIcons';
 import { FlexCenterDiv } from '@/components/StyledComponents';
 import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
 import {
   buildBreadcrumbItems,
+  isCanPushDolphin,
   isOnline,
   isRunning,
   projectCommonShow
 } from '@/pages/DataStudio/HeaderContainer/function';
+import PushDolphin from '@/pages/DataStudio/HeaderContainer/PushDolphin';
 import {
   cancelTask,
   changeTaskLife,
@@ -36,16 +39,21 @@ import {
   getJobPlan,
   isSql
 } from '@/pages/DataStudio/HeaderContainer/service';
-import { DataStudioTabsItemType, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import {
+  DataStudioTabsItemType,
+  StateType,
+  TabsPageType,
+  TaskDataType,
+  VIEW
+} from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
-import { ConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
+import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
-import { handlePutDataJson } from '@/services/BusinessCrud';
+import { handleOption, handlePutDataJson, queryDataByParams } from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
-import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import { DolphinTaskDefinition, DolphinTaskMinInfo } from '@/types/Studio/data.d';
 import { l } from '@/utils/intl';
 import { SuccessMessageAsync } from '@/utils/messages';
-import { connect } from '@@/exports';
 import {
   ApartmentOutlined,
   BugOutlined,
@@ -57,9 +65,9 @@ import {
   PauseOutlined,
   RotateRightOutlined,
   SaveOutlined,
-  ScheduleOutlined,
-  SendOutlined
+  ScheduleOutlined
 } from '@ant-design/icons';
+import { connect } from '@umijs/max';
 import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import { ButtonProps } from 'antd/es/button/button';
 import React, { memo, useEffect, useState } from 'react';
@@ -84,7 +92,7 @@ type ButtonRoute = {
   props?: ButtonProps;
 };
 
-const HeaderContainer = (props: any) => {
+const HeaderContainer = (props: connect) => {
   const {
     size,
     activeBreadcrumbTitle,
@@ -92,25 +100,65 @@ const HeaderContainer = (props: any) => {
     saveTabs,
     updateJobRunningMsg,
     queryDsConfig,
-    dsConfig
+    enabledDs
   } = props;
 
   const [modal, contextHolder] = Modal.useModal();
 
-  // 检查是否开启 ds 配置 & 如果
-  const [enableDs] = useState<boolean>(
-    dsConfig.some(
-      (item: BaseConfigProperties) =>
-        item.key === 'dolphinscheduler.settings.enable' && item.value === 'true'
-    )
-  );
-
-  const currentData = getCurrentData(panes, activeKey);
-  const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
+  const [pushDolphinState, setPushDolphinState] = useState<{
+    modalVisible: boolean;
+    buttonLoading: boolean;
+    confirmLoading: boolean;
+    dolphinTaskList: DolphinTaskMinInfo[];
+    dolphinDefinitionTask: Partial<DolphinTaskDefinition>;
+    currentDinkyTaskValue: Partial<TaskDataType>;
+  }>({
+    modalVisible: false,
+    buttonLoading: false,
+    confirmLoading: false,
+    dolphinTaskList: [],
+    dolphinDefinitionTask: {},
+    currentDinkyTaskValue: {}
+  });
 
   useEffect(() => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
   }, []);
+
+  const currentData = getCurrentData(panes, activeKey);
+  const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
+
+  const handlePushDolphinOpen = async () => {
+    const dinkyTaskId = currentData?.id;
+    const dolphinTaskList: DolphinTaskMinInfo[] | undefined = await queryDataByParams<
+      DolphinTaskMinInfo[]
+    >('/api/scheduler/queryUpstreamTasks', { dinkyTaskId });
+    const dolphinTaskDefinition: DolphinTaskDefinition | undefined =
+      await queryDataByParams<DolphinTaskDefinition>('/api/scheduler/queryTaskDefinition', {
+        dinkyTaskId
+      });
+    setPushDolphinState((prevState) => ({
+      ...prevState,
+      buttonLoading: true,
+      confirmLoading: false,
+      modalVisible: true,
+      dolphinTaskList: dolphinTaskList ?? [],
+      dolphinDefinitionTask: dolphinTaskDefinition ?? {},
+      currentDinkyTaskValue: currentData as TaskDataType
+    }));
+  };
+
+  const handlePushDolphinCancel = async () => {
+    setPushDolphinState((prevState) => ({
+      ...prevState,
+      modalVisible: false,
+      buttonLoading: false,
+      dolphinTaskList: [],
+      confirmLoading: false,
+      dolphinDefinitionTask: {},
+      currentDinkyTaskValue: {}
+    }));
+  };
 
   const handleSave = async () => {
     const saved = await handlePutDataJson('/api/task', currentData);
@@ -271,10 +319,11 @@ const HeaderContainer = (props: any) => {
     },
     {
       // 推送海豚, 此处需要将系统设置中的 ds 的配置拿出来做判断 启用才展示
-      icon: <SendOutlined className={'blue-icon'} />,
+      icon: <PushpinIcon loading={pushDolphinState.buttonLoading} className={'blue-icon'} />,
       title: l('button.push'),
       hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
-      isShow: enableDs
+      isShow: enabledDs && isCanPushDolphin(currentData),
+      click: () => handlePushDolphinOpen()
     },
     {
       // 发布按钮
@@ -417,6 +466,16 @@ const HeaderContainer = (props: any) => {
     );
   };
 
+  const handlePushDolphinSubmit = async (value: DolphinTaskDefinition) => {
+    setPushDolphinState((prevState) => ({ ...prevState, loading: true }));
+    await handleOption(
+      '/api/scheduler/createOrUpdateTaskDefinition',
+      `推送任务[${currentData?.name}]至 DolphinScheduler`,
+      value
+    );
+    await handlePushDolphinCancel();
+  };
+
   /**
    * render
    */
@@ -425,15 +484,27 @@ const HeaderContainer = (props: any) => {
       <Descriptions.Item>{renderBreadcrumbItems()}</Descriptions.Item>
       <Descriptions.Item contentStyle={{ display: 'flex', flexDirection: 'row-reverse' }}>
         {renderRightButtons()}
+        {pushDolphinState.modalVisible && (
+          <PushDolphin
+            onCancel={() => handlePushDolphinCancel()}
+            currentDinkyTaskValue={pushDolphinState.currentDinkyTaskValue}
+            modalVisible={pushDolphinState.modalVisible}
+            loading={pushDolphinState.confirmLoading}
+            dolphinDefinitionTask={pushDolphinState.dolphinDefinitionTask}
+            dolphinTaskList={pushDolphinState.dolphinTaskList}
+            onSubmit={(values) => handlePushDolphinSubmit(values)}
+          />
+        )}
       </Descriptions.Item>
     </Descriptions>
   );
 };
 
 export default connect(
-  ({ Studio, Config }: { Studio: StateType; Config: ConfigStateType }) => ({
+  ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
     tabs: Studio.tabs,
-    dsConfig: Config.dsConfig
+    dsConfig: SysConfig.dsConfig,
+    enabledDs: SysConfig.enabledDs
   }),
   mapDispatchToProps
 )(memo(HeaderContainer));
