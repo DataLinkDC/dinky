@@ -167,7 +167,16 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     editorInstance.current = editor;
     monacoInstance.current = monacoIns;
 
+    let timeoutId: NodeJS.Timeout | null = null;
     editor.onDidChangeModelContent((e) => {
+      if (timeoutId !== null) {
+        return;
+      }
+
+      timeoutId = setTimeout(() => {
+        timeoutId = null;
+      }, 3000);
+
       const model = editor.getModel();
       if (model) {
         const segmenter = new Intl.Segmenter('en', { granularity: 'word' });
