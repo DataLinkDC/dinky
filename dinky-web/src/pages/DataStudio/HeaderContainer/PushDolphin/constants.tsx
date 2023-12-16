@@ -17,51 +17,74 @@
  *
  */
 
-import {Badge, Space} from "antd";
-import React from "react";
-import {DefaultOptionType} from "antd/es/select";
-import {CheckboxOptionType} from "antd/es/checkbox/Group";
-
+import { Badge, Space } from 'antd';
+import { CheckboxOptionType } from 'antd/es/checkbox/Group';
+import { DefaultOptionType } from 'antd/es/select';
+import {l} from "@/utils/intl";
 
 /**
  * priority list for select | 优先级列表
  */
-export const PriorityList :DefaultOptionType[] = [
+export const PriorityList: DefaultOptionType[] = [
   {
-    label: <Space><Badge color={'red'}/>Highest</Space>,
-    value: 0,
-    key: 0,
+    label: (
+      <Space>
+        <Badge color={'red'} />
+        Highest
+      </Space>
+    ),
+    value: 'HIGHEST',
+    key: 'HIGHEST'
   },
   {
-    label: <Space><Badge color={'orange'}/>High</Space>,
-    value: 1,
-    key: 1,
+    label: (
+      <Space>
+        <Badge color={'orange'} />
+        High
+      </Space>
+    ),
+    value: 'HIGH',
+    key: 'HIGH'
   },
   {
-    label: <Space><Badge color={'blue'}/>Medium</Space>,
-    value: 2,
-    key: 2,
+    label: (
+      <Space>
+        <Badge color={'blue'} />
+        Medium
+      </Space>
+    ),
+    value: 'MEDIUM',
+    key: 'MEDIUM'
   },
   {
-    label: <Space><Badge color={'cyan'}/>Low</Space>,
-    value: 3,
-    key: 3,
+    label: (
+      <Space>
+        <Badge color={'cyan'} />
+        Low
+      </Space>
+    ),
+    value: 'LOW',
+    key: 'LOW'
   },
   {
-    label: <Space><Badge color={'purple'}/>Lowest</Space>,
-    value: 4,
-    key: 4,
+    label: (
+      <Space>
+        <Badge color={'purple'} />
+        Lowest
+      </Space>
+    ),
+    value: 'LOWEST',
+    key: 'LOWEST'
   }
-]
+];
 
-
-export const TimeoutNotifyStrategy:CheckboxOptionType[] = [
+export const TimeoutNotifyStrategy: CheckboxOptionType[] = [
   {
-    label: '失败告警',
-    value: 'WARN',
+    label: l('datastudio.header.pushdolphin.timeoutFlag.warn'),
+    value: 'WARN'
   },
   {
-    label: '失败报错',
-    value: 'FAILED',
-  },
-]
+    label: l('datastudio.header.pushdolphin.timeoutFlag.failed'),
+    value: 'FAILED'
+  }
+];

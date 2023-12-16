@@ -19,7 +19,11 @@
 
 package org.dinky.scheduler.model;
 
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.scheduler.enums.TaskExecuteType;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -27,7 +31,21 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-public class TaskRequest {
+public class DinkyTaskRequest {
+
+    @ApiModelProperty(value = "自定义参数")
+    private List<Property> localParams;
+
+    @ApiModelProperty(value = "dinky地址")
+    @NotNull
+    private String address = SystemConfiguration.getInstances().getDinkyAddr().getValue();
+
+    @ApiModelProperty(value = "上游任务编号")
+    List<String> upstreamCodes = Arrays.asList();
+
+    @ApiModelProperty(value = "dinky任务id", required = true)
+    @NotNull
+    private String taskId;
 
     @ApiModelProperty(value = "编号")
     private Long code;

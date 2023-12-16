@@ -248,7 +248,6 @@ export interface DolphinTaskMinInfo {
   upstreamTaskName: string;
 }
 
-
 export interface TaskParamProperty {
   prop: string;
   direct: string;
@@ -265,19 +264,19 @@ export interface DolphinTaskDefinition {
   projectCode: number;
   userId: number;
   taskType: string;
-  taskParams: string;
+  taskParams: Map<string, string>;
   taskParamList: TaskParamProperty[];
   taskParamMap: Map<string, string>;
-  flag: number; // 0 no 1 yes
-  taskPriority: number; // 0 highest 1 high 2 medium 3 low 4 lowest
+  flag: string; // 0 no 1 yes
+  taskPriority: string; // 0 highest 1 high 2 medium 3 low 4 lowest
   userName: string;
   projectName: string;
   workerGroup: string;
   environmentCode: number;
   failRetryTimes: number;
   failRetryInterval: number;
-  timeoutFlag: number; // 0 close 1 open
-  timeoutNotifyStrategy: number; // 0 warning 1 failure 2 warning and failure
+  timeoutFlag: string; // 0 close 1 open
+  timeoutNotifyStrategy: string; // 0 warning 1 failure 2 warning and failure
   timeout: number;
   delayTime: number;
   resourceIds: string;
@@ -288,9 +287,23 @@ export interface DolphinTaskDefinition {
   taskGroupPriority: number;
   cpuQuota: number;
   memoryMax: number;
-  taskExecuteType: number;// 0 batch 1 stream
+  taskExecuteType: number; // 0 batch 1 stream
   processDefinitionCode: number;
   processDefinitionVersion: number;
   processDefinitionName: string;
   upstreamTaskMap: Map<number, string>;
+}
+
+export interface PushDolphinParams {
+  taskId: number | string;
+  upstreamCodes: string[];
+  taskPriority: string;
+  failRetryTimes: number;
+  failRetryInterval: number;
+  delayTime: number;
+  timeout: number;
+  timeoutFlag: boolean | string;
+  flag: boolean | string;
+  timeoutNotifyStrategy: string[] | string;
+  description: string;
 }

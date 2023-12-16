@@ -18,31 +18,35 @@
  */
 
 import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
+import { PushpinIcon } from '@/components/Icons/CustomIcons';
 import { FlexCenterDiv } from '@/components/StyledComponents';
 import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
 import {
-  buildBreadcrumbItems, isCanPushDolphin,
+  buildBreadcrumbItems,
+  isCanPushDolphin,
   isOnline,
   isRunning,
   projectCommonShow
 } from '@/pages/DataStudio/HeaderContainer/function';
+import PushDolphin from '@/pages/DataStudio/HeaderContainer/PushDolphin';
 import {
   cancelTask,
   changeTaskLife,
   debugTask,
   executeSql,
-  getJobPlan
+  getJobPlan,
+  isSql
 } from '@/pages/DataStudio/HeaderContainer/service';
-import { DataStudioTabsItemType, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import {DataStudioTabsItemType, StateType, TabsPageType, TaskDataType, VIEW} from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
-import {SysConfigStateType} from '@/pages/SettingCenter/GlobalSetting/model';
+import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
-import { handlePutDataJson } from '@/services/BusinessCrud';
+import {handleOption, handlePutDataJson, queryDataByParams} from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
 import { l } from '@/utils/intl';
-import { SuccessMessageAsync } from '@/utils/messages';
+import {SuccessMessageAsync} from '@/utils/messages';
 import {
   ApartmentOutlined,
   BugOutlined,
@@ -54,14 +58,13 @@ import {
   PauseOutlined,
   RotateRightOutlined,
   SaveOutlined,
-  ScheduleOutlined,
+  ScheduleOutlined
 } from '@ant-design/icons';
+import { connect } from '@umijs/max';
 import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import { ButtonProps } from 'antd/es/button/button';
-import React, {memo, useEffect, useState} from 'react';
-import {PushpinIcon} from "@/components/Icons/CustomIcons";
-import PushDolphin from "@/pages/DataStudio/HeaderContainer/PushDolphin";
-import {connect} from "@umijs/max";
+import React, { memo, useEffect, useState } from 'react';
+import {DolphinTaskDefinition, DolphinTaskMinInfo} from "@/types/Studio/data.d";
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -91,21 +94,25 @@ const HeaderContainer = (props: connect) => {
     saveTabs,
     updateJobRunningMsg,
     queryDsConfig,
-    enabledDs,
+    enabledDs
   } = props;
-
 
   const [modal, contextHolder] = Modal.useModal();
 
   const [pushDolphinState, setPushDolphinState] = useState<{
     modalVisible: boolean;
-    loading: boolean;
-    value: any;
-
+    buttonLoading: boolean;
+    confirmLoading: boolean;
+    dolphinTaskList: DolphinTaskMinInfo[];
+    dolphinDefinitionTask: Partial<DolphinTaskDefinition>;
+    currentDinkyTaskValue: Partial<TaskDataType>;
   }>({
     modalVisible: false,
-    loading: false,
-    value: {},
+    buttonLoading: false,
+    confirmLoading: false,
+    dolphinTaskList: [],
+    dolphinDefinitionTask: {},
+    currentDinkyTaskValue: {}
   });
 
   useEffect(() => {
@@ -113,17 +120,40 @@ const HeaderContainer = (props: connect) => {
   }, []);
 
 
+
+
   const currentData = getCurrentData(panes, activeKey);
   const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
 
+  const handlePushDolphinOpen = async () => {
+    const dinkyTaskId = currentData?.id
+    const dolphinTaskList: DolphinTaskMinInfo[] | undefined = await queryDataByParams<DolphinTaskMinInfo[]>('/api/scheduler/queryUpstreamTasks', {dinkyTaskId});
+    const dolphinTaskDefinition: DolphinTaskDefinition | undefined = await queryDataByParams<DolphinTaskDefinition>('/api/scheduler/queryTaskDefinition', {dinkyTaskId});
+    setPushDolphinState((prevState) => ({
+      ...prevState,
+      buttonLoading: true,
+      confirmLoading: false,
+      modalVisible: true,
+      dolphinTaskList: dolphinTaskList ?? [],
+      dolphinDefinitionTask: dolphinTaskDefinition ?? {},
+      currentDinkyTaskValue: currentData as TaskDataType,
+    }));
+  };
+
+
+
+
 
   const handlePushDolphinCancel = async () => {
-    setPushDolphinState(prevState => ({
+    setPushDolphinState((prevState) => ({
       ...prevState,
       modalVisible: false,
-      loading: false,
-      value: {}
-    }))
+      buttonLoading: false,
+      dolphinTaskList: [],
+      confirmLoading: false,
+      dolphinDefinitionTask: {},
+      currentDinkyTaskValue: {}
+    }));
   };
 
   const handleSave = async () => {
@@ -192,6 +222,11 @@ const HeaderContainer = (props: connect) => {
     });
     await SuccessMessageAsync(l('pages.datastudio.editor.exec.success'));
     currentData.status = JOB_STATUS.RUNNING;
+    // Common sql task is synchronized, so it needs to automatically update the status to finished.
+    if (isSql(currentData.dialect)) {
+      currentData.status = JOB_STATUS.FINISHED;
+    }
+    if (currentTab) currentTab.console.result = res.data.result;
     saveTabs({ ...props.tabs });
   };
 
@@ -280,17 +315,11 @@ const HeaderContainer = (props: connect) => {
     },
     {
       // 推送海豚, 此处需要将系统设置中的 ds 的配置拿出来做判断 启用才展示
-      icon: <PushpinIcon className={'blue-icon'} />,
+      icon: <PushpinIcon loading={pushDolphinState.buttonLoading} className={'blue-icon'} />,
       title: l('button.push'),
       hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
       isShow: enabledDs && isCanPushDolphin(currentData),
-      click: () => {
-        setPushDolphinState(prevState => ({
-          ...prevState,
-          modalVisible: true,
-          value: currentData
-        }))
-      },
+      click: () => handlePushDolphinOpen()
     },
     {
       // 发布按钮
@@ -433,6 +462,17 @@ const HeaderContainer = (props: connect) => {
     );
   };
 
+
+  const handlePushDolphinSubmit = async (value : DolphinTaskDefinition) => {
+    setPushDolphinState((prevState) => ({ ...prevState, loading: true }));
+    await handleOption(
+      '/api/scheduler/createOrUpdateTaskDefinition',
+      `推送任务[${currentData?.name}]至 DolphinScheduler`,
+       value,
+    );
+    await handlePushDolphinCancel();
+  };
+
   /**
    * render
    */
@@ -441,7 +481,17 @@ const HeaderContainer = (props: connect) => {
       <Descriptions.Item>{renderBreadcrumbItems()}</Descriptions.Item>
       <Descriptions.Item contentStyle={{ display: 'flex', flexDirection: 'row-reverse' }}>
         {renderRightButtons()}
-        {pushDolphinState.modalVisible && <PushDolphin onCancel={()=>handlePushDolphinCancel()} value={pushDolphinState.value} modalVisible={pushDolphinState.modalVisible} loading={pushDolphinState.loading} />}
+        {pushDolphinState.modalVisible && (
+          <PushDolphin
+            onCancel={() => handlePushDolphinCancel()}
+            currentDinkyTaskValue={pushDolphinState.currentDinkyTaskValue}
+            modalVisible={pushDolphinState.modalVisible}
+            loading={pushDolphinState.confirmLoading}
+            dolphinDefinitionTask={pushDolphinState.dolphinDefinitionTask}
+            dolphinTaskList={pushDolphinState.dolphinTaskList}
+            onSubmit={(values) => handlePushDolphinSubmit(values)}
+          />
+        )}
       </Descriptions.Item>
     </Descriptions>
   );

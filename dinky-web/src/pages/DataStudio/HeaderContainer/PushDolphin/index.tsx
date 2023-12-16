@@ -17,66 +17,43 @@
  *
  */
 
-import { FormContextValue } from "@/components/Context/FormContext";
-import { NORMAL_MODAL_OPTIONS,SWITCH_OPTIONS } from "@/services/constants";
-import { l } from "@/utils/intl";
+import { FormContextValue } from '@/components/Context/FormContext';
+import { NORMAL_MODAL_OPTIONS,SWITCH_OPTIONS } from '@/services/constants';
+import { l } from '@/utils/intl';
 import {
-  ModalForm, ProFormCheckbox,
-  ProFormDigit,
-  ProFormGroup,
-  ProFormRadio,
-  ProFormSelect,
-  ProFormSwitch,
-  ProFormTextArea
-} from "@ant-design/pro-components";
+ModalForm,
+ProFormCheckbox,
+ProFormDigit,
+ProFormGroup,
+ProFormSelect,
+ProFormSwitch,
+ProFormText,
+ProFormTextArea
+} from '@ant-design/pro-components';
 
-import { PriorityList,TimeoutNotifyStrategy } from "@/pages/DataStudio/HeaderContainer/PushDolphin/constants";
-import { queryDataByParams } from "@/services/BusinessCrud";
-import {DolphinTaskDefinition, DolphinTaskMinInfo} from "@/types/Studio/data.d";
-import { Button,Form,Space } from "antd";
-import { DefaultOptionType } from "antd/es/select";
-import React,{ useEffect } from "react";
+import { PriorityList,TimeoutNotifyStrategy } from '@/pages/DataStudio/HeaderContainer/PushDolphin/constants';
+import { transformPushDolphinParams } from "@/pages/DataStudio/HeaderContainer/PushDolphin/function";
+import { DolphinTaskDefinition,DolphinTaskMinInfo,PushDolphinParams } from '@/types/Studio/data.d';
+import {Button, Form, Tag} from 'antd';
+import { DefaultOptionType } from 'antd/es/select';
+import React from 'react';
+import {InitPushDolphinParams} from "@/types/Studio/init.d";
+import {TaskDataType} from "@/pages/DataStudio/model";
 
 type PushDolphinProps = {
   onCancel: () => void;
-  value: any;
+  dolphinTaskList: DolphinTaskMinInfo[];
+  dolphinDefinitionTask : Partial<DolphinTaskDefinition>;
   modalVisible: boolean;
+  currentDinkyTaskValue: Partial<TaskDataType>;
   loading: boolean;
+  onSubmit: (values: DolphinTaskDefinition) => void;
 };
 
-interface PushDolphinParams {
-  upstreamCodes: string[];
-  taskPriority: number;
-  failRetryTimes: number;
-  failRetryInterval: number;
-  delayTime: number;
-  timeout: number;
-  timeoutFlag: boolean;
-  flag: boolean;
-  timeoutNotifyStrategy: string[];
-  description: string;
-  timeoutNotifyStrategyType: string;
-}
-
 export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
-  const { onCancel, value, modalVisible, loading } = props;
+  const { onCancel,onSubmit, modalVisible,dolphinTaskList,dolphinDefinitionTask,currentDinkyTaskValue, loading } = props;
 
-  const [dolphinTaskList, setDolphinTaskList] = React.useState<DolphinTaskMinInfo[]>([]);
-
-  const [formValues, setFormValues] = React.useState<PushDolphinParams>({
-    upstreamCodes: [],
-    taskPriority: 0,
-    failRetryTimes: 0,
-    failRetryInterval: 0,
-    delayTime: 0,
-    timeout: 0,
-    timeoutFlag: false,
-    flag: false,
-    timeoutNotifyStrategy: [],
-    description: '',
-    timeoutNotifyStrategyType: 'WARN',
-  })
-
+  const [formValues, setFormValues] = React.useState<PushDolphinParams>(transformPushDolphinParams(dolphinDefinitionTask as DolphinTaskDefinition,{...InitPushDolphinParams,taskId: currentDinkyTaskValue?.id ?? ''},true) as PushDolphinParams);
 
   /**
    * init form
@@ -101,28 +78,32 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
     formContext.resetForm();
   };
 
+  const handlePushDolphinSubmit = async () => {
+    const values = form.validateFields();
+    if (!values) {
+      return;
+    }
+    const transformPushDolphinParamsValue : DolphinTaskDefinition = transformPushDolphinParams(dolphinDefinitionTask as DolphinTaskDefinition, formValues, false) as DolphinTaskDefinition;
+    onSubmit(transformPushDolphinParamsValue);
+    console.log('transformPushDolphinParamsValue',transformPushDolphinParamsValue)
+  };
+
   const renderFooter = () => {
     return [
       <Button key={'pushCancel'} onClick={handleCancel}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'push'} type='primary' htmlType={'submit'} loading={loading} onClick={() => {}}>
+      <Button
+        key={'push'}
+        type='primary'
+        htmlType={'submit'}
+        loading={loading}
+        onClick={() => handlePushDolphinSubmit()}
+      >
         {l('button.finish')}
       </Button>
     ];
   };
-
-  useEffect(() => {
-    queryDataByParams<DolphinTaskMinInfo[]>('/api/scheduler/upstream/tasks', {
-      dinkyTaskId: value.id
-    }).then((res) => setDolphinTaskList(res as DolphinTaskMinInfo[]));
-    queryDataByParams<DolphinTaskDefinition>('/api/scheduler/task', {
-      dinkyTaskId: value.id
-    }).then((res) => {
-      console.log(res)
-    });
-
-  }, [modalVisible]);
 
   const buildUpstreamTaskOptions = (
     data: DolphinTaskMinInfo[] | undefined
@@ -130,17 +111,22 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
     if (data && data.length > 0) {
       return data.map((item) => {
         const label = (
-          <Space>
-            {item.taskName} <span>{item.taskType}</span>
-            <span>
-              {item.processDefinitionName} [{item.taskVersion}]
+          <>
+            <Tag color={'purple'}>
+              {l('datastudio.header.pushdolphin.taskName','',{name: item.taskName})}
+            </Tag>
+            <span style={{ color: '#8a8a8a' }}>
+              {l('datastudio.header.pushdolphin.taskNameExt','',{
+                type: item.taskType,
+                processDefinitionName: item.processDefinitionName
+              })}
             </span>
-          </Space>
+          </>
         );
         return {
           label: label,
-          value: item.id,
-          key: item.id
+          value: item.taskCode.toString(),
+          key: item.taskCode
         };
       });
     }
@@ -148,95 +134,127 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
   };
 
   const handleValueChange = (changedValues: any, allValues: any) => {
-    setFormValues({...formValues,...allValues});
-    console.log(changedValues, allValues);
+    if (allValues) {
+      setFormValues({...formValues,...allValues});
+    }
   };
 
+  const pushDolphinForm = () => {
+    return (
+      <>
+        <ProFormText name={'taskId'} label={l('datastudio.header.pushdolphin.taskId')} disabled />
+        <ProFormSelect
+          label={l('datastudio.header.pushdolphin.upstreamCodes')}
+          name={'upstreamCodes'}
+          showSearch
+          mode={'multiple'}
+          extra={l('datastudio.header.pushdolphin.upstreamCodesTip') }
+          options={buildUpstreamTaskOptions(dolphinTaskList)}
+        />
+
+        <ProFormGroup>
+          <ProFormSelect
+            label={l('datastudio.header.pushdolphin.taskPriority') }
+            name={'taskPriority'}
+            width={'sm'}
+            options={PriorityList}
+          />
+
+          <ProFormDigit
+            label={l('datastudio.header.pushdolphin.failRetryTimes') }
+            name={'failRetryTimes'}
+            initialValue={formValues.failRetryTimes}
+            width={'sm'}
+            min={0}
+            max={99}
+            fieldProps={{
+              precision: 0
+            }}
+          />
+
+          <ProFormDigit
+            label={l('datastudio.header.pushdolphin.failRetryInterval') }
+            name={'failRetryInterval'}
+            width={'sm'}
+            rules={[{ required: true, message: l('datastudio.header.pushdolphin.failRetryIntervalPlaceholder') }]}
+            min={0}
+            fieldProps={{
+              precision: 0
+            }}
+          />
+
+          <ProFormDigit
+            label={l('datastudio.header.pushdolphin.delayTime') }
+            name={'delayTime'}
+            width={'sm'}
+            rules={[{ required: true, message: l('datastudio.header.pushdolphin.delayTimePlaceholder') }]}
+            min={0}
+            fieldProps={{
+              precision: 0
+            }}
+          />
+
+          <ProFormSwitch
+            label={l('datastudio.header.pushdolphin.timeoutFlag') }
+            rules={[{ required: true, message: l('datastudio.header.pushdolphin.timeoutFlagTip') }]}
+            {...SWITCH_OPTIONS()}
+            name={'timeoutFlag'}
+          />
+
+          <ProFormSwitch
+            label={l('datastudio.header.pushdolphin.flag') }
+            rules={[{ required: true, message: l('datastudio.header.pushdolphin.flagTip') }]}
+            {...SWITCH_OPTIONS()}
+            name={'flag'}
+          />
+        </ProFormGroup>
+        {/*如果是失败告警，则需要设置告警策略*/}
+        {formValues.timeoutFlag && (
+          <>
+            <ProFormGroup>
+              <ProFormCheckbox.Group
+                label={l('datastudio.header.pushdolphin.timeoutNotifyStrategy') }
+                name={'timeoutNotifyStrategy'}
+                rules={[{ required: true, message: l('datastudio.header.pushdolphin.timeoutNotifyStrategyTip') }]}
+                width={'sm'}
+                options={TimeoutNotifyStrategy}
+              />
+              <ProFormDigit
+                label={l('datastudio.header.pushdolphin.timeout') }
+                name={'timeout'}
+                width={'sm'}
+                rules={[{ required: true, message: l('datastudio.header.pushdolphin.timeoutPlaceholder') }]}
+                min={0}
+                max={30}
+                fieldProps={{
+                  precision: 0
+                }}
+              />
+            </ProFormGroup>
+          </>
+        )}
+
+        <ProFormTextArea label={l('global.table.note')} name={'description'} />
+      </>
+    );
+  };
 
   return (
     <ModalForm<PushDolphinParams>
       {...NORMAL_MODAL_OPTIONS}
-      title={`将任务 [ ${value.name} ]推送至 DolphinScheduler`}
+      title={l('datastudio.header.pushdolphin.title','', {name : currentDinkyTaskValue?.name ?? ''})}
       open={modalVisible}
       form={form}
       initialValues={formValues}
-      modalProps={{ onCancel: handleCancel, ...NORMAL_MODAL_OPTIONS }}
+      modalProps={{
+        onCancel: handleCancel,
+        destroyOnClose: true
+      }}
       submitter={{ render: () => [...renderFooter()] }}
-      syncToInitialValues
       onValuesChange={handleValueChange}
       loading={loading}
     >
-      <ProFormSelect
-        label={'前置任务'}
-        name={'upstreamCodes'}
-        showSearch
-        mode={'multiple'}
-        extra={'选择前置任务后，任务将会在前置任务执行成功后才会执行'}
-        options={buildUpstreamTaskOptions(dolphinTaskList)}
-      />
-
-      <ProFormGroup>
-        <ProFormSelect
-          label={'优先级'}
-          name={'taskPriority'} width={'sm'}
-          options={PriorityList}
-        />
-
-        <ProFormDigit
-          label={'重试次数'}
-          name={'failRetryTimes'}
-          width={'sm'}
-          min={0}
-          max={99}
-          fieldProps={{
-            precision: 0 ,
-          }}
-        />
-
-        <ProFormDigit
-          label={'重试间隔(分钟)'}
-          name={'failRetryInterval'}
-          width={'sm'}
-          min={0}
-          fieldProps={{
-            precision: 0 ,
-          }}
-        />
-
-        <ProFormDigit
-          label={'延时执行(分钟)'}
-          name={'delayTime'}
-          width={'sm'}
-          min={0}
-          fieldProps={{
-            precision: 0 ,
-          }}
-        />
-        <ProFormDigit
-          label={'超时时间(分钟)'}
-          name={'timeout'}
-          width={'sm'}
-          min={0}
-          max={30}
-          fieldProps={{
-            precision: 0 ,
-          }}
-        />
-
-        <ProFormSwitch initialValue={false} label={'超时警告'} {...SWITCH_OPTIONS()} name={'timeoutFlag'} />
-
-        <ProFormSwitch initialValue={false} label={'运行标志'} {...SWITCH_OPTIONS()} name={'flag'} />
-      </ProFormGroup>
-
-      {/*如果是失败告警，则需要设置告警策略*/}
-      <ProFormCheckbox.Group
-        label={'超时策略'}
-        name={'timeoutNotifyStrategy'}
-        width={'sm'}
-        options={TimeoutNotifyStrategy}
-      />
-
-      <ProFormTextArea label={l('global.table.note')} name={'description'} />
+      {pushDolphinForm()}
     </ModalForm>
   );
 };
