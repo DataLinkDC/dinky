@@ -110,7 +110,7 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
       false
     ) as DolphinTaskDefinition;
     onSubmit(transformPushDolphinParamsValue);
-    console.log('transformPushDolphinParamsValue', transformPushDolphinParamsValue);
+    handleCancel();
   };
 
   const renderFooter = () => {

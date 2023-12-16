@@ -22,6 +22,7 @@ package org.dinky.scheduler.client;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.scheduler.constant.Constants;
 import org.dinky.scheduler.model.DagData;
+import org.dinky.scheduler.model.DagNodeLocation;
 import org.dinky.scheduler.model.ProcessDefinition;
 import org.dinky.scheduler.result.PageInfo;
 import org.dinky.scheduler.result.Result;
@@ -43,9 +44,12 @@ import org.springframework.stereotype.Component;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 
-/** 工作流定义 */
+/**
+ * 工作流定义
+ */
 @Component
 public class ProcessClient {
 
@@ -133,14 +137,20 @@ public class ProcessClient {
     /**
      * Create a new process definition.
      *
-     * @param projectCode The ID of the project to create the process definition for.
-     * @param processName The name of the process definition to create.
-     * @param taskCode The ID of the task to associate with the process definition.
+     * @param projectCode        The ID of the project to create the process definition for.
+     * @param processName        The name of the process definition to create.
+     * @param taskCode           The ID of the task to associate with the process definition.
      * @param taskDefinitionJson A JSON string representing the task definition to associate with the process definition.
      * @return A {@link ProcessDefinition} object representing the newly created process definition.
      */
-    public ProcessDefinition createProcessDefinition(
-            Long projectCode, String processName, Long taskCode, String taskDefinitionJson) {
+    public ProcessDefinition createOrUpdateProcessDefinition(
+            Long projectCode,
+            Long processCode,
+            String processName,
+            Long taskCode,
+            String taskDefinitionJson,
+            List<DagNodeLocation> locations,
+            boolean isModify) {
         String format = StrUtil.format(
                 SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
                         + "/projects/{projectCode}/process-definition",
@@ -150,11 +160,18 @@ public class ProcessClient {
         params.put("name", processName);
         params.put("description", "系统添加");
         params.put("tenantCode", "default");
+        params.put("locations", locations);
         params.put("taskRelationJson", ReadFileUtil.taskRelation(Collections.singletonMap("code", taskCode)));
         params.put("taskDefinitionJson", taskDefinitionJson);
         params.put("executionType", "PARALLEL");
 
-        String content = HttpRequest.post(format)
+        HttpRequest httpRequest;
+        if (!isModify) {
+            httpRequest = HttpRequest.post(format);
+        } else {
+            httpRequest = HttpRequest.put(format + "/" + processCode);
+        }
+        HttpResponse httpResponse = httpRequest
                 .header(
                         Constants.TOKEN,
                         SystemConfiguration.getInstances()
@@ -162,9 +179,8 @@ public class ProcessClient {
                                 .getValue())
                 .form(params)
                 .timeout(5000)
-                .execute()
-                .body();
-
+                .execute();
+        String content = httpResponse.body();
         return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<ProcessDefinition>>() {}));
     }
 }
