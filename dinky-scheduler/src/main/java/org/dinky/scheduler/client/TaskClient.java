@@ -41,10 +41,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 
 /** 任务定义 */
 @Component
@@ -60,8 +62,8 @@ public class TaskClient {
      * @param taskName 任务定义名称
      * @return {@link TaskMainInfo}
      */
-    public TaskMainInfo getTaskMainInfo(Long projectCode, String processName, String taskName) {
-        List<TaskMainInfo> lists = getTaskMainInfos(projectCode, processName, taskName);
+    public TaskMainInfo getTaskMainInfo(Long projectCode, String processName, String taskName, String taskType) {
+        List<TaskMainInfo> lists = getTaskMainInfos(projectCode, processName, taskName, taskType);
         for (TaskMainInfo list : lists) {
             if (list.getTaskName().equalsIgnoreCase(taskName)) {
                 return list;
@@ -78,7 +80,7 @@ public class TaskClient {
      * @param taskName 任务定义名称
      * @return {@link List<TaskMainInfo>}
      */
-    public List<TaskMainInfo> getTaskMainInfos(Long projectCode, String processName, String taskName) {
+    public List<TaskMainInfo> getTaskMainInfos(Long projectCode, String processName, String taskName, String taskType) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
         String format = StrUtil.format(
@@ -89,7 +91,7 @@ public class TaskClient {
         Map<String, Object> pageParams = ParamUtil.getPageParams();
         pageParams.put("searchTaskName", taskName);
         pageParams.put("searchWorkflowName", processName);
-        pageParams.put("taskType", "DINKY");
+        pageParams.put("taskType", taskType);
 
         String content = HttpRequest.get(format)
                 .header(
@@ -109,9 +111,7 @@ public class TaskClient {
         }
 
         for (JSONObject jsonObject : data.getTotalList()) {
-            if (processName.equalsIgnoreCase(jsonObject.getStr("processDefinitionName"))) {
-                lists.add(MyJSONUtil.toBean(jsonObject, TaskMainInfo.class));
-            }
+            lists.add(JSONUtil.toBean(jsonObject, TaskMainInfo.class));
         }
         return lists;
     }
@@ -153,7 +153,7 @@ public class TaskClient {
      * @return {@link TaskDefinitionLog}
      */
     public TaskDefinitionLog createTaskDefinition(
-            Long projectCode, Long processCode, String upstreamCodes, String taskDefinitionJsonObj) {
+            Long projectCode, Long processCode, List<String> upstreamCodes, String taskDefinitionJsonObj) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
         String format = StrUtil.format(
@@ -163,8 +163,8 @@ public class TaskClient {
 
         Map<String, Object> pageParams = new HashMap<>();
         pageParams.put("processDefinitionCode", processCode);
-        if (StringUtils.isNotBlank(upstreamCodes)) {
-            pageParams.put("upstreamCodes", upstreamCodes);
+        if (CollUtil.isNotEmpty(upstreamCodes)) {
+            pageParams.put("upstreamCodes", StringUtils.join(upstreamCodes, ","));
         }
 
         pageParams.put("taskDefinitionJsonObj", taskDefinitionJsonObj);
@@ -192,7 +192,7 @@ public class TaskClient {
      * @return {@link Long}
      */
     public Long updateTaskDefinition(
-            long projectCode, long taskCode, String upstreamCodes, String taskDefinitionJsonObj) {
+            long projectCode, long taskCode, List<String> upstreamCodes, String taskDefinitionJsonObj) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
         map.put("code", taskCode);
@@ -202,7 +202,9 @@ public class TaskClient {
                 map);
 
         Map<String, Object> params = new HashMap<>();
-        params.put("upstreamCodes", upstreamCodes);
+        if (CollUtil.isNotEmpty(upstreamCodes)) {
+            params.put("upstreamCodes", StringUtils.join(upstreamCodes, ","));
+        }
         params.put("taskDefinitionJsonObj", taskDefinitionJsonObj);
 
         String content = HttpRequest.put(format)
