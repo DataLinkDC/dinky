@@ -23,7 +23,7 @@ import { editor, languages, Position } from 'monaco-editor';
 import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
 import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEditor/function';
 import { StateType } from '@/pages/DataStudio/model';
-import {MonacoEditorOptions, SuggestionInfo} from '@/types/Public/data';
+import { MonacoEditorOptions, SuggestionInfo } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
@@ -128,9 +128,18 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
           kind: monaco.languages.CompletionItemKind.Text,
           insertText: word
         }));
-        let completionList: ProviderResult<CompletionList> = buildAllSuggestionsToEditor(model, position, wordSuggestions);
-        const suggestions: Promise<languages.CompletionList>  = allSuggestions.then((res) => {
-          return  {suggestions: [...(res?.suggestions ?? []), ...(completionList as CompletionList)?.suggestions]};
+        let completionList: ProviderResult<CompletionList> = buildAllSuggestionsToEditor(
+          model,
+          position,
+          wordSuggestions
+        );
+        const suggestions: Promise<languages.CompletionList> = allSuggestions.then((res) => {
+          return {
+            suggestions: [
+              ...(res?.suggestions ?? []),
+              ...(completionList as CompletionList)?.suggestions
+            ]
+          };
         });
 
         context.triggerKind =
@@ -161,7 +170,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     editor.onDidChangeModelContent((e) => {
       const model = editor.getModel();
       if (model) {
-        const segmenter = new Intl.Segmenter("en", {granularity: "word"});
+        const segmenter = new Intl.Segmenter('en', { granularity: 'word' });
         const segments = segmenter.segment(model.getValue());
         const segmentedWords = [];
         for (const segment of segments) {
@@ -172,7 +181,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
         }
         const uniqueSegmentedWords = Array.from(new Set(segmentedWords));
         reloadCompilation(monacoIns, uniqueSegmentedWords);
-        }
+      }
     });
 
     if (enableSuggestions) {

@@ -115,7 +115,6 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
       });
     });
     registerEditorKeyBindingAndAction(editor);
-
   };
 
   const handleEditChange = (v: string | undefined) => {

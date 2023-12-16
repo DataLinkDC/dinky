@@ -19,7 +19,7 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { SseData } from '@/models/Sse';
-import {DataStudioTabsItemType, StateType, VIEW} from '@/pages/DataStudio/model';
+import { DataStudioTabsItemType, StateType, VIEW } from '@/pages/DataStudio/model';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { parseMilliSecondStr } from '@/utils/function';
