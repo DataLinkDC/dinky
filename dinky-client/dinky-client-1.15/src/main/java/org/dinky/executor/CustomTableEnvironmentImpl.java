@@ -112,7 +112,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     public static CustomTableEnvironmentImpl create(
             StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
-        return create(executionEnvironment, EnvironmentSettings.newInstance().build());
+        return create(executionEnvironment, EnvironmentSettings.newInstance().build(), classLoader);
     }
 
     public static CustomTableEnvironmentImpl createBatch(StreamExecutionEnvironment executionEnvironment) {
@@ -122,14 +122,11 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         tableConfig.addConfiguration(configuration);
         return create(
                 executionEnvironment,
-                EnvironmentSettings.newInstance().inBatchMode().build());
+                EnvironmentSettings.newInstance().inBatchMode().build(), Thread.currentThread().getContextClassLoader());
     }
 
     public static CustomTableEnvironmentImpl create(
-            StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
-
-        // temporary solution until FLINK-15635 is fixed
-        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings, ClassLoader classLoader) {
 
         final Executor executor = lookupExecutor(classLoader, executionEnvironment);
 
