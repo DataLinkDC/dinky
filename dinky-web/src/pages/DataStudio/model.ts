@@ -724,7 +724,7 @@ const Model: ModelType = {
             tabs: {
               ...state.tabs,
               activeKey: item.key,
-              activeBreadcrumbTitle: [item.type, item.breadcrumbLabel, item.label].join('/'),
+              activeBreadcrumbTitle: [item.type, item.breadcrumbLabel, item.label].join('/')
             },
             footContainer: {
               ...state.footContainer,

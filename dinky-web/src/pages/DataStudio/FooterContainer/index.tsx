@@ -21,8 +21,7 @@ import useThemeValue from '@/hooks/useThemeValue';
 import JobRunningModal from '@/pages/DataStudio/FooterContainer/JobRunningModal';
 import { getCurrentTab } from '@/pages/DataStudio/function';
 import { StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
-import { getData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/endpoints';
+import { getSseData } from '@/services/api';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { Button, GlobalToken, Space } from 'antd';
@@ -60,20 +59,18 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const currentTab = getCurrentTab(tabs.panes ?? [], tabs.activeKey);
 
   useEffect(() => {
-    const t = setInterval(() => {
-      getData(API_CONSTANTS.MONITOR_GET_JVM_INFO)
-        .then((res) => {
-          setMemDetailInfo(
-            Number(res.data['heapUsed'] / 1024 / 1024).toFixed(0) +
-              '/' +
-              Number(res.data['max'] / 1024 / 1024).toFixed(0) +
-              'M'
-          );
-        })
-        .catch((e) => {});
-    }, 3000);
+    const eventSource = getSseData('/api/monitor/getJvmInfo');
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data).data;
+      setMemDetailInfo(
+        Number(data['heapUsed'] / 1024 / 1024).toFixed(0) +
+          '/' +
+          Number(data['max'] / 1024 / 1024).toFixed(0) +
+          'M'
+      );
+    };
     return () => {
-      clearTimeout(t);
+      eventSource.close();
     };
   }, []);
 

@@ -24,7 +24,6 @@ import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.MetricsType;
-import org.dinky.data.metrics.Jvm;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.MetricsVO;
@@ -41,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
@@ -124,7 +124,7 @@ public class MonitorController {
 
     @GetMapping("/getJvmInfo")
     @ApiOperation("Get Jvm Data Display")
-    public Result<Jvm> getJvmInfo() {
-        return Result.succeed(Jvm.of());
+    public SseEmitter getJvmInfo() {
+        return monitorService.sendJvmInfo();
     }
 }

@@ -33,7 +33,8 @@ import {
   changeTaskLife,
   debugTask,
   executeSql,
-  getJobPlan, isSql
+  getJobPlan,
+  isSql
 } from '@/pages/DataStudio/HeaderContainer/service';
 import { DataStudioTabsItemType, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
@@ -178,7 +179,7 @@ const HeaderContainer = (props: any) => {
     await SuccessMessageAsync(l('pages.datastudio.editor.exec.success'));
     currentData.status = JOB_STATUS.RUNNING;
     // Common sql task is synchronized, so it needs to automatically update the status to finished.
-    if(isSql(currentData.dialect)){
+    if (isSql(currentData.dialect)) {
       currentData.status = JOB_STATUS.FINISHED;
     }
     if (currentTab) currentTab.console.result = res.data.result;

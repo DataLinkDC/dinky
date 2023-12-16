@@ -65,6 +65,9 @@ public class FlinkConfigOptionsUtils {
                 FlinkConfigOption config = new FlinkConfigOption();
                 Object fieldValue = ReflectUtil.getStaticFieldValue(field);
                 String key = ReflectUtil.invoke(fieldValue, "key");
+                if (!key.contains(".")) {
+                    continue;
+                }
                 Object defaultValue = ReflectUtil.invoke(fieldValue, "defaultValue");
                 config.setKey(key);
                 if (ObjectUtil.isBasicType(defaultValue)) {

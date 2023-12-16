@@ -46,10 +46,9 @@ public interface MonitorService extends IService<Metrics> {
     /**
      * Send the JVM information to the specified SSE emitter.
      *
-     * @param sseEmitter The SSE emitter to send the JVM information to.
      * @return {@link SseEmitter}
      */
-    SseEmitter sendJvmInfo(SseEmitter sseEmitter);
+    SseEmitter sendJvmInfo();
 
     /**
      * Save the Flink metric layout.
