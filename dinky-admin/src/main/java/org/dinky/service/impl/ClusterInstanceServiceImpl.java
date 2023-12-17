@@ -201,6 +201,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         }
         GatewayConfig gatewayConfig =
                 GatewayConfig.build(FlinkClusterConfig.create(clusterCfg.getType(), clusterCfg.getConfigJson()));
+        gatewayConfig.setType(gatewayConfig.getType().getSessionType());
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
         return registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
                 gatewayResult.getWebURL().replace("http://", ""),
