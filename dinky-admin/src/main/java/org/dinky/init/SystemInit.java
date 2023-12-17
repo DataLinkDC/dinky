@@ -247,7 +247,7 @@ public class SystemInit implements ApplicationRunner {
             }
             try {
                 project = projectClient.getDinkyProject();
-                if (Asserts.isNull(project)) {
+                if (project == null) {
                     project = projectClient.createDinkyProject();
                 }
             } catch (Exception e) {
