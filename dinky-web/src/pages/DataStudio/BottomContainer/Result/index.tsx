@@ -32,7 +32,7 @@ import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { SearchOutlined } from '@ant-design/icons';
 import { Highlight } from '@ant-design/pro-layout/es/components/Help/Search';
-import { Button, Empty, Input, InputRef, Space, Table } from 'antd';
+import {Button, Empty, Input, InputRef, Space, Table, Tabs} from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
 import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
@@ -44,14 +44,19 @@ type Data = {
   columns?: string[];
   rowData?: object[];
 };
+type DataList = Data[]
+
 const Result = (props: any) => {
+
   const {
     tabs: { panes, activeKey }
   } = props;
   const [data, setData] = useState<Data>({});
+  let [DataList, setDataList] = useState<Data>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const currentTabs = getCurrentTab(panes, activeKey);
   const current = getCurrentData(panes, activeKey) ?? {};
+
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -59,6 +64,7 @@ const Result = (props: any) => {
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText('');
+
   };
   const handleSearch = (
     selectedKeys: string[],
@@ -121,11 +127,14 @@ const Result = (props: any) => {
       )
   });
 
+
   const loadData = async (isRefresh?: boolean) => {
+
+
+
     if (!isDataStudioTabsItemType(currentTabs)) {
       return;
     }
-
     const params = currentTabs.params;
     const consoleData = currentTabs.console;
     if (consoleData.result && !isRefresh) {
@@ -160,13 +169,15 @@ const Result = (props: any) => {
         }
       }
     }
+
     setLoading(false);
   };
 
   useEffect(() => {
     setData({});
     loadData();
-  }, [currentTabs, currentTabs?.console?.result]);
+  }, [currentTabs, currentTabs?.console?.result,currentTabs?.console?.resultList]);
+
 
   const getColumns = (columns: string[]) => {
     return columns?.map((item) => {
@@ -220,27 +231,44 @@ const Result = (props: any) => {
     }
     return undefined;
   };
+  if(!isDataStudioTabsItemType(currentTabs)){
+    return
+  }
+  else {
+    DataList=currentTabs?.console.resultList
+    return (
+      <div style={{ width: '100%' }}>
+        <div style={{ direction: 'rtl' }}>
+          {renderDownloadButton()}
+          {current ? isSql(current.dialect) ? <></> : renderFlinkSQLContent() : undefined}
+        </div>
 
-  return (
-    <div style={{ width: '100%' }}>
-      <div style={{ direction: 'rtl' }}>
-        {renderDownloadButton()}
-        {current ? isSql(current.dialect) ? <></> : renderFlinkSQLContent() : undefined}
+        {DataList? (
+          <Tabs defaultActiveKey="1">
+            {DataList.map((item, index) => (
+              <Tabs.TabPane tab={`${l('global.result')} ${index+1}`} key={index}>
+                <Table
+                  columns={getColumns(item.columns)}
+                  size='small'
+                  dataSource={item.rowData?.map((rowDataItem: any, rowIndex: number) => ({
+                    ...rowDataItem,
+                    key: `${index}-${rowIndex}`,
+                  }))}
+                  loading={loading}
+                />
+              </Tabs.TabPane>
+            ))}
+          </Tabs>
+
+        ) : (
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        )}
       </div>
-      {data.columns ? (
-        <Table
-          columns={getColumns(data.columns)}
-          size='small'
-          dataSource={data.rowData?.map((item: any, index: number) => {
-            return { ...item, key: index };
-          })}
-          loading={loading}
-        />
-      ) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-      )}
-    </div>
-  );
+    );
+
+  }
+
+
 };
 
 export default connect(

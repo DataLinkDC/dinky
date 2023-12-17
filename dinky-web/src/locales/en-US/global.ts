@@ -18,6 +18,7 @@
  */
 
 export default {
+  'return.resul':'结果 {{result}}',
   'button.add': 'Add',
   'button.check': 'Check',
   'button.graph': 'DAG',

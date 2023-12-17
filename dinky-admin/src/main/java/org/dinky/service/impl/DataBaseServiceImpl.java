@@ -282,17 +282,19 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             return result;
         }
 
-        JdbcSelectResult selectResult;
+        List<JdbcSelectResult> selectResultList;
         try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
-            selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
+            selectResultList = driver.executeSql2(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
         }
+        result.setResultList(selectResultList);
 
-        result.setResult(selectResult);
-        if (selectResult.isSuccess()) {
+
+
+        if (selectResultList.get(selectResultList.size()-1).isSuccess()) {
             result.setSuccess(true);
         } else {
             result.setSuccess(false);
-            result.setError(selectResult.getError());
+            result.setError(selectResultList.get(selectResultList.size()-1).getError());
         }
         result.setEndTime(LocalDateTime.now());
         return result;

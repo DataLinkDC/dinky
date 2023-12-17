@@ -219,6 +219,8 @@ public interface Driver extends AutoCloseable {
 
     JdbcSelectResult executeSql(String sql, Integer limit);
 
+    List<JdbcSelectResult> executeSql2(String sql, Integer limit);
+
     List<SqlExplainResult> explain(String sql);
 
     Map<String, String> getFlinkColumnTypeConversion();

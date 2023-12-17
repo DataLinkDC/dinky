@@ -243,6 +243,11 @@ class AbstractDriverTest {
         }
 
         @Override
+        public List<JdbcSelectResult> executeSql2(String sql, Integer limit) {
+            return null;
+        }
+
+        @Override
         public List<SqlExplainResult> explain(String sql) {
             return null;
         }

@@ -128,6 +128,7 @@ const HeaderContainer = (props: connect) => {
   const currentData = getCurrentData(panes, activeKey);
   const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
 
+
   const handlePushDolphinOpen = async () => {
     const dinkyTaskId = currentData?.id;
     const dolphinTaskList: DolphinTaskMinInfo[] | undefined = await queryDataByParams<
@@ -216,6 +217,7 @@ const HeaderContainer = (props: connect) => {
       l('pages.datastudio.editor.submitting', '', { jobName: currentData.name }),
       currentData.id
     );
+    console.log(currentData)
 
     if (!res) return;
     updateJobRunningMsg({
@@ -229,8 +231,11 @@ const HeaderContainer = (props: connect) => {
     // Common sql task is synchronized, so it needs to automatically update the status to finished.
     if (isSql(currentData.dialect)) {
       currentData.status = JOB_STATUS.FINISHED;
+      if (currentTab) currentTab.console.resultList = res.data.resultList;
     }
-    if (currentTab) currentTab.console.result = res.data.result;
+    else {
+      if (currentTab) currentTab.console.result = res.data.result;
+    }
     saveTabs({ ...props.tabs });
   };
 

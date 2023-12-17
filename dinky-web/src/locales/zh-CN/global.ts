@@ -18,6 +18,7 @@
  */
 
 export default {
+  'return.result':'结果 {{index}}',
   'button.add': '添加',
   'button.check': '检查',
   'button.graph': 'DAG',
