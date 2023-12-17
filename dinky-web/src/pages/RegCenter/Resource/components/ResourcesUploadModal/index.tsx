@@ -42,14 +42,18 @@ const ResourcesUploadModal: React.FC<ResourcesUploadModalProps> = (props) => {
     multiple: true,
     action: url + '?pid=' + pid,
     onChange: async (info) => {
-      const { status } = info.file;
+      const { status, response } = info.file;
       if (status !== 'uploading') {
         console.log(info.file, info.fileList);
       }
       if (status === 'done') {
-        await SuccessMessageAsync(
-          l('rc.resource.upload.success', '', { fileName: info.file.name })
-        );
+        if (response.success) {
+          await SuccessMessageAsync(
+            l('rc.resource.upload.success', '', { fileName: info.file.name })
+          );
+        } else {
+          await ErrorMessageAsync(response.msg);
+        }
       } else if (status === 'error') {
         await ErrorMessageAsync(l('rc.resource.upload.fail', '', { fileName: info.file.name }));
       }

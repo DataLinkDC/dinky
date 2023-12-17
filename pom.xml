@@ -50,6 +50,7 @@
 
     <properties>
         <assertj.version>3.21.0</assertj.version>
+        <aws-java-sdk-s3.version>1.12.589</aws-java-sdk-s3.version>
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
         <clickhouse.version>0.2.6</clickhouse.version>
         <commons-email>1.5</commons-email>
@@ -124,6 +125,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-s3</artifactId>
+                <version>${aws-java-sdk-s3.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.commonmark</groupId>
                 <artifactId>commonmark</artifactId>
@@ -275,6 +281,7 @@
                 <artifactId>protobuf-java</artifactId>
                 <version>${protobuf-java.version}</version>
             </dependency>
+
             <!-- hutool java工具类库  -->
             <dependency>
                 <groupId>cn.hutool</groupId>
@@ -490,6 +497,12 @@
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-metadata-phoenix</artifactId>
                 <version>${project.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>joda-time</groupId>
+                        <artifactId>joda-time</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>

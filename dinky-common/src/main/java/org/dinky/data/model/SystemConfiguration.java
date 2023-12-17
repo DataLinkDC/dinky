@@ -241,6 +241,10 @@ public class SystemConfiguration {
             .stringType()
             .defaultValue("file:///")
             .note(Status.SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS_NOTE);
+    private final Configuration<Boolean> resourcesPathStyleAccess = key(Status.SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS)
+            .booleanType()
+            .defaultValue(true)
+            .note(Status.SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS_NOTE);
 
     /**
      * Initialize after spring bean startup

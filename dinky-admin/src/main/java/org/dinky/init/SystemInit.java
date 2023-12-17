@@ -134,7 +134,8 @@ public class SystemInit implements ApplicationRunner {
                         systemConfiguration.getResourcesHdfsUser(),
                         systemConfiguration.getResourcesHdfsDefaultFS(),
                         systemConfiguration.getResourcesOssAccessKey(),
-                        systemConfiguration.getResourcesOssRegion())
+                        systemConfiguration.getResourcesOssRegion(),
+                        systemConfiguration.getResourcesPathStyleAccess())
                 .forEach(x -> x.addParameterCheck(y -> {
                     if (Boolean.TRUE.equals(
                             systemConfiguration.getResourcesEnable().getValue())) {
@@ -155,6 +156,9 @@ public class SystemInit implements ApplicationRunner {
                                         .getValue());
                                 ossProperties.setRegion(systemConfiguration
                                         .getResourcesOssRegion()
+                                        .getValue());
+                                ossProperties.setPathStyleAccess(systemConfiguration
+                                        .getResourcesPathStyleAccess()
                                         .getValue());
                                 Singleton.get(OssResourceManager.class).setOssTemplate(new OssTemplate(ossProperties));
                                 break;
