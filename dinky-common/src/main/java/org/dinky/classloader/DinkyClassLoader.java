@@ -67,7 +67,7 @@ public class DinkyClassLoader extends URLClassLoader {
     }
 
     public static DinkyClassLoader build(ClassLoader parent) {
-        return new DinkyClassLoader(new URL[]{}, parent);
+        return new DinkyClassLoader(new URL[] {}, parent);
     }
 
     // return udfPathContextHolder
