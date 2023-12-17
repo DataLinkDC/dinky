@@ -39,6 +39,7 @@ public class RunTimeUtil {
         obj = null;
         System.gc();
     }
+
     /**
      * 处理命令，多行命令原样返回，单行命令拆分处理
      *
@@ -47,14 +48,14 @@ public class RunTimeUtil {
      */
     public static String[] handleCmds(String... cmds) {
         if (ArrayUtil.isEmpty(cmds)) {
-            throw new NullPointerException("Command is empty !");
+            return new String[] {};
         }
 
         // 单条命令的情况
         if (1 == cmds.length) {
             final String cmd = cmds[0];
             if (StrUtil.isBlank(cmd)) {
-                throw new NullPointerException("Command is blank !");
+                return new String[] {};
             }
             cmds = cmdSplit(cmd);
         }

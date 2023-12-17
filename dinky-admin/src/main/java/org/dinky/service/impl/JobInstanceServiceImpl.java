@@ -160,12 +160,14 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         jobInfoDetail.setClusterInstance(clusterInstance);
 
         History history = historyService.getById(jobInstance.getHistoryId());
-        history.setConfigJson(history.getConfigJson());
-        jobInfoDetail.setHistory(history);
-        if (Asserts.isNotNull(history.getClusterConfigurationId())) {
-            ClusterConfiguration clusterConfig =
-                    clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId());
-            jobInfoDetail.setClusterConfiguration(ClusterConfigurationDTO.fromBean(clusterConfig));
+        if (history != null) {
+            history.setConfigJson(history.getConfigJson());
+            jobInfoDetail.setHistory(history);
+            if (Asserts.isNotNull(history.getClusterConfigurationId())) {
+                ClusterConfiguration clusterConfig =
+                        clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId());
+                jobInfoDetail.setClusterConfiguration(ClusterConfigurationDTO.fromBean(clusterConfig));
+            }
         }
 
         JobDataDto jobDataDto = jobHistoryService.getJobHistoryDto(jobInstance.getId());
