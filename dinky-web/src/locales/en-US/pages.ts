@@ -351,6 +351,7 @@ export default {
   'pages.datastudio.editor.stop.job': 'Stop job',
   'pages.datastudio.editor.stop.jobConfirm': 'Are you sure to stop the job [{jobName}]? ',
   'pages.datastudio.editor.submitting': 'The new task [{jobName}] is executing',
+  'pages.datastudio.editor.checking': 'The task [{jobName}] is checking',
   'pages.datastudio.editor.debugging': 'The new task [{jobName}] is debugging',
   'pages.datastudio.editor.onlyread':
     'Task has been published, modification is prohibited, please go offline first',

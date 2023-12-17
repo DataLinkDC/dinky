@@ -240,6 +240,7 @@ public class JobManager {
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
+        ready();
         StreamGraph streamGraph =
                 JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, getDinkyClassLoader());
         try {

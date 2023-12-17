@@ -341,6 +341,7 @@ export default {
   'pages.datastudio.editor.stop.job': '停止作业',
   'pages.datastudio.editor.stop.jobConfirm': '确定停止作业【{jobName}】吗？',
   'pages.datastudio.editor.submitting': '新任务【{jobName}】正在执行',
+  'pages.datastudio.editor.checking': '任务【{jobName}】正在检查',
   'pages.datastudio.editor.debugging': '新任务【{jobName}】正在调试',
   'pages.datastudio.editor.onlyread': '任务已发布，禁止修改，请先下线任务',
   'pages.datastudio.editor.notsave': '当前修改内容未保存！',

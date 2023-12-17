@@ -19,6 +19,7 @@
 
 package org.dinky.job.handler;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobInstance;
@@ -81,22 +82,25 @@ public class ClearJobHistoryHandler {
 
                 // Retrieve the list of job instances to be deleted
                 List<JobInstance> deleteList = jobInstanceService.list(deleteWrapper);
-
                 List<Integer> historyDeleteIds =
                         deleteList.stream().map(JobInstance::getHistoryId).collect(Collectors.toList());
-
-                // Delete the cluster from the instance to be deleted, but filter the manually registered clusters
-                QueryWrapper<ClusterInstance> clusterDeleteWrapper = new QueryWrapper<>();
                 List<Integer> clusterDeleteIds =
                         deleteList.stream().map(JobInstance::getClusterId).collect(Collectors.toList());
-                clusterDeleteWrapper
-                        .lambda()
-                        .in(true, ClusterInstance::getId, clusterDeleteIds)
-                        .eq(ClusterInstance::getAutoRegisters, true);
-
-                jobInstanceService.remove(deleteWrapper);
-                jobHistoryService.removeBatchByIds(historyDeleteIds);
-                clusterService.remove(clusterDeleteWrapper);
+                if (Asserts.isNotNullCollection(deleteList)) {
+                    jobInstanceService.remove(deleteWrapper);
+                }
+                if (Asserts.isNotNullCollection(historyDeleteIds)) {
+                    jobHistoryService.removeBatchByIds(historyDeleteIds);
+                }
+                if (Asserts.isNotNullCollection(clusterDeleteIds)) {
+                    // Delete the cluster from the instance to be deleted, but filter the manually registered clusters
+                    QueryWrapper<ClusterInstance> clusterDeleteWrapper = new QueryWrapper<>();
+                    clusterDeleteWrapper
+                            .lambda()
+                            .in(true, ClusterInstance::getId, clusterDeleteIds)
+                            .eq(ClusterInstance::getAutoRegisters, true);
+                    clusterService.remove(clusterDeleteWrapper);
+                }
             }
         }
     }

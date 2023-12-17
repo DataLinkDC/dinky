@@ -62,7 +62,14 @@ public enum GatewayType {
     }
 
     public static GatewayType getSessionType(String value) {
-        if (value.equals("Kubernetes")) {
+        if (value.contains("kubernetes")) {
+            return GatewayType.KUBERNETES_SESSION;
+        }
+        return GatewayType.YARN_SESSION;
+    }
+
+    public GatewayType getSessionType() {
+        if (longValue.contains("kubernetes")) {
             return GatewayType.KUBERNETES_SESSION;
         }
         return GatewayType.YARN_SESSION;
