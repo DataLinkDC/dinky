@@ -233,6 +233,7 @@ public enum Status {
     DS_TASK_NOT_EXIST(17007, "ds.task.not.exist"),
     DS_TASK_TYPE_NOT_SUPPORT(17008, "ds.task.type.not.support"),
     DS_WORK_FLOW_DEFINITION_NOT_EXIST(17009, "ds.work.flow.definition.not.exist"),
+    DS_PROCESS_DEFINITION_UPDATE(17010, "ds.work.flow.definition.process.update"),
 
     /**
      * LDAP About *

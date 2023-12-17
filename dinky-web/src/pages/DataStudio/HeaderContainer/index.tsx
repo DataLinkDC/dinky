@@ -321,7 +321,8 @@ const HeaderContainer = (props: connect) => {
       // 推送海豚, 此处需要将系统设置中的 ds 的配置拿出来做判断 启用才展示
       icon: <PushpinIcon loading={pushDolphinState.buttonLoading} className={'blue-icon'} />,
       title: l('button.push'),
-      hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
+      hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 'e',
+      hotKeyDesc: 'Ctrl+E',
       isShow: enabledDs && isCanPushDolphin(currentData),
       click: () => handlePushDolphinOpen()
     },
