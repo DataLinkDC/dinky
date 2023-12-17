@@ -60,7 +60,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.URLUtil;
 
 /**
@@ -152,9 +151,6 @@ public abstract class Executor {
         if (executorConfig.isValidVariables()) {
             variableManager.registerVariable(executorConfig.getVariables());
         }
-        // Fix the Classloader in the env above Flink1.16 to appClassLoader, causing ckp to fail to compile
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        ReflectUtil.setFieldValue(environment, "userClassloader", contextClassLoader);
     }
 
     abstract CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader);

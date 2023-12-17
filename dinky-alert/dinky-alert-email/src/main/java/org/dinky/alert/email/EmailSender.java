@@ -78,8 +78,6 @@ public final class EmailSender {
             return alertResult;
         }
 
-        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-
         try {
             String sendResult = MailUtil.send(
                     getMailAccount(),
