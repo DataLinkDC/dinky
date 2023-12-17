@@ -22,6 +22,8 @@ package org.dinky.job;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.model.Configuration;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.job.handler.ClearJobHistoryHandler;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
@@ -47,6 +49,9 @@ public class ClearJobHistoryTask implements DaemonTask {
     private static final ClearJobHistoryHandler clearJobHistoryHandler;
     private static final ClusterInstanceService clusterService;
 
+    private static Configuration<Integer> maxRetainDays;
+    private static Configuration<Integer> maxRetainCount;
+
     static {
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
         jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
@@ -58,12 +63,16 @@ public class ClearJobHistoryTask implements DaemonTask {
                 .jobHistoryService(jobHistoryService)
                 .clusterService(clusterService)
                 .build();
+        maxRetainDays = SystemConfiguration.getInstances().getJobMaxRetainDays();
+        maxRetainCount = SystemConfiguration.getInstances().getJobMaxRetainCount();
     }
 
     @Override
     public boolean dealTask() {
-        clearJobHistoryHandler.clearDinkyHistory(30, 20);
-        clearJobHistoryHandler.clearJobHistory(30, 20);
+        if (maxRetainCount.getValue() > 0) {
+            clearJobHistoryHandler.clearDinkyHistory(maxRetainDays.getValue(), maxRetainCount.getValue());
+            clearJobHistoryHandler.clearJobHistory(maxRetainDays.getValue(), maxRetainCount.getValue());
+        }
         return false;
     }
 
