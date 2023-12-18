@@ -61,6 +61,20 @@ const WeChat = (props: WeChatProps) => {
     }
   ];
 
+  const validateRulesWeChatSendUrl = [
+    {
+      required: true,
+      validator: async (rule: Rule, value: string) => {
+        if (!value) {
+          return Promise.reject(l('rc.ai.sendUrlPleaseHolder'));
+        }
+        if(value.endsWith('/')){
+          return Promise.reject(l('rc.ai.sendUrlValidate'));
+        }
+      }
+    }
+  ];
+
   /**
    * render
    */
@@ -120,25 +134,34 @@ const WeChat = (props: WeChatProps) => {
             // if sendType is app
             <>
               <ProFormText
-                width='md'
+                width='sm'
                 name={['params', 'corpId']}
                 label={l('rc.ai.corpId')}
                 rules={[{ required: true, message: l('rc.ai.corpIdPleaseHolder') }]}
                 placeholder={l('rc.ai.corpIdPleaseHolder')}
               />
               <ProFormText.Password
-                width='lg'
+                width='xl'
                 name={['params', 'secret']}
                 label={l('rc.ai.secret')}
                 rules={[{ required: true, message: l('rc.ai.secretPleaseHolder') }]}
                 placeholder={l('rc.ai.secretPleaseHolder')}
               />
               <ProFormDigit
-                width='md'
+                width='sm'
                 name={['params', 'agentId']}
                 label={l('rc.ai.agentId')}
                 rules={[{ required: true, message: l('rc.ai.agentIdPleaseHolder') }]}
                 placeholder={l('rc.ai.agentIdPleaseHolder')}
+              />
+              <ProFormText
+                  width='xl'
+                  name={['params', 'sendUrl']}
+                  label={l('rc.ai.sendUrl')}
+                  tooltip={l('rc.ai.sendUrlTooltip')}
+                  initialValue={'https://qyapi.weixin.qq.com/cgi-bin'}
+                  rules={validateRulesWeChatSendUrl}
+                  placeholder={l('rc.ai.sendUrlPleaseHolder')}
               />
             </>
           )
