@@ -495,6 +495,11 @@ export default {
   'rc.ai.actionPleaseHolder': '请输入接口方法',
   'rc.ai.agentId': '代理ID',
   'rc.ai.agentIdPleaseHolder': '请输入 AgentId',
+  'rc.ai.sendUrl': '企微发送地址',
+  'rc.ai.sendUrlPleaseHolder': '请输入发送地址可输入代理地址',
+  'rc.ai.sendUrlValidate': '请输入正确的发送地址,末尾不需要带 /',
+  'rc.ai.sendUrlTooltip':
+    '发送地址可输入代理地址,如:http://127.0.0.1:8080/cgi-bin ,默认为:https://qyapi.weixin.qq.com/cgi-bin',
   'rc.ai.apikey': '账号唯一标识',
   'rc.ai.apikeyPleaseHolder': '请输入账号唯一标识',
   'rc.ai.appId': '应用 ID',
