@@ -403,8 +403,7 @@
                         <exclude>/application*.yml</exclude>
                         <exclude>/mybatis*.xml</exclude>
                         <exclude>/DinkyFlinkDockerfile</exclude>
-                        <exclude>/dinky-loader/FlinkConfClass</exclude>
-                        <exclude>/dinky-loader/ExpressionVariableClass</exclude>
+                        <exclude>/dinky-loader/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
