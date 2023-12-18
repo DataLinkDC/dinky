@@ -70,7 +70,7 @@ export default () => {
   const [isAutoCreate, setIsAutoCreate] = useState<boolean>(false);
   const [searchKeyWord, setSearchKeyword] = useState<string>('');
 
-  const { data, loading,refresh } = useHookRequest(getData, {
+  const { data, loading, refresh } = useHookRequest(getData, {
     refreshDeps: [searchKeyWord, isAutoCreate],
     defaultParams: [
       API_CONSTANTS.CLUSTER_INSTANCE_LIST,
