@@ -19,6 +19,7 @@
 
 import { getCurrentData } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
+import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import { TableDataNode } from '@/pages/DataStudio/LeftContainer/Catalog/data';
 import { StateType } from '@/pages/DataStudio/model';
 import ColumnInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/ColumnInfo';
@@ -38,9 +39,8 @@ import { Button, Col, Empty, Modal, Row, Select, Spin, Tabs } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { DefaultOptionType } from 'rc-select/lib/Select';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { getMSCatalogs, getMSColumns, getMSSchemaInfo } from './service';
-import {BtnRoute, useTasksDispatch} from "@/pages/DataStudio/LeftContainer/BtnContext";
 
 const Catalog: React.FC = (props: connect) => {
   const { tabs } = props;
@@ -86,7 +86,7 @@ const Catalog: React.FC = (props: connect) => {
     type: 'change',
     selectKey: currentTabName,
     payload: btnEvent
-  })
+  });
 
   useEffect(() => {
     getCatalogs();

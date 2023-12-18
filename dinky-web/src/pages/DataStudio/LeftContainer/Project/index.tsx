@@ -20,6 +20,7 @@
 import RightContextMenu from '@/components/RightContextMenu';
 import { LeftBottomKey } from '@/pages/DataStudio/data.d';
 import { getTabByTaskId } from '@/pages/DataStudio/function';
+import { useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import {
   FOLDER_RIGHT_MENU,
   JOB_RIGHT_MENU
@@ -53,7 +54,6 @@ import { Modal, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { Key, useEffect, useState } from 'react';
 import { connect } from 'umi';
-import {useTasksDispatch} from "@/pages/DataStudio/LeftContainer/BtnContext";
 
 const { Text } = Typography;
 
@@ -66,7 +66,6 @@ const Project: React.FC = (props: connect) => {
 
   const [projectState, setProjectState] = useState<ProjectState>(InitProjectState);
   const btnDispatch = useTasksDispatch();
-
 
   useEffect(() => {
     setProjectState((prevState) => ({
