@@ -18,6 +18,7 @@
  */
 
 import { TagAlignLeft } from '@/components/StyledComponents';
+import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
 import DataSourceModal from '@/pages/RegCenter/DataSource/components/DataSourceModal';
 import { handleTest, saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
@@ -30,7 +31,6 @@ import { Spin, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { StateType, STUDIO_MODEL } from '../../model';
 import { clearDataSourceTable, getDataSourceList, showDataSourceTable } from './service';
-import {BtnRoute, useTasksDispatch} from "@/pages/DataStudio/LeftContainer/BtnContext";
 
 const DataSource = (props: any) => {
   const {
@@ -106,7 +106,7 @@ const DataSource = (props: any) => {
     type: 'change',
     selectKey: currentTabName,
     payload: btnEvent
-  })
+  });
 
   /**
    * 构建数据库列表 下拉框

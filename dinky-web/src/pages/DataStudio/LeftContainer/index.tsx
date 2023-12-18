@@ -20,13 +20,13 @@
 import { CircleBtn, CircleDataStudioButtonProps } from '@/components/CallBackButton/CircleBtn';
 import MovableSidebar, { MovableSidebarProps } from '@/components/Sidebar/MovableSidebar';
 import useThemeValue from '@/hooks/useThemeValue';
+import { BtnContext } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import ProjectTitle from '@/pages/DataStudio/LeftContainer/Project/ProjectTitle';
 import { StateType, STUDIO_MODEL, VIEW } from '@/pages/DataStudio/model';
 import { LeftSide } from '@/pages/DataStudio/route';
 import { connect } from '@@/exports';
 import { Tabs } from 'antd';
-import React, {useContext} from 'react';
-import {BtnContext} from "@/pages/DataStudio/LeftContainer/BtnContext";
+import React, { useContext } from 'react';
 
 export type LeftContainerProps = {
   size: number;

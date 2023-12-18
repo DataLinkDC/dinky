@@ -18,6 +18,7 @@
  */
 
 import Title from '@/components/Front/Title';
+import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import { StateType, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import { handleAddOrUpdate } from '@/services/BusinessCrud';
@@ -27,7 +28,6 @@ import { l } from '@/utils/intl';
 import { connect } from '@umijs/max';
 import { Space } from 'antd';
 import React, { useState } from 'react';
-import {BtnRoute, useTasksDispatch} from "@/pages/DataStudio/LeftContainer/BtnContext";
 
 const ProjectTitle: React.FC<StateType & connect> = (props) => {
   const {
@@ -72,9 +72,9 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
   btn[0].onClick = () => handleCreateClick();
   btnDispatch({
     type: 'change',
-    selectKey:currentTabName,
+    selectKey: currentTabName,
     payload: btn
-  })
+  });
 
   /**
    * 渲染侧边栏标题

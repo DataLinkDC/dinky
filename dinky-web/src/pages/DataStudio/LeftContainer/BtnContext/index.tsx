@@ -17,110 +17,97 @@
  *
  */
 
-import {CircleDataStudioButtonProps} from "@/components/CallBackButton/CircleBtn";
+import { CircleDataStudioButtonProps } from '@/components/CallBackButton/CircleBtn';
+import { l } from '@/utils/intl';
 import {
-    ArrowsAltOutlined,
-    EnvironmentOutlined,
-    PlusCircleOutlined,
-    PlusOutlined,
-    ReloadOutlined,
-    ShrinkOutlined
-} from "@ant-design/icons";
-import {l} from "@/utils/intl";
-import React, {createContext, useContext, useReducer} from "react";
+  ArrowsAltOutlined,
+  EnvironmentOutlined,
+  PlusCircleOutlined,
+  PlusOutlined,
+  ReloadOutlined,
+  ShrinkOutlined
+} from '@ant-design/icons';
+import { createContext, useContext, useReducer } from 'react';
 
 export const BtnRoute: { [c: string]: CircleDataStudioButtonProps[] } = {
-    'menu.datastudio.datasource': [
-        {
-            icon: <PlusOutlined/>,
-            title: l('button.create'),
-            onClick: () => {
-            }
-        },
-        {
-            icon: <ReloadOutlined/>,
-            title: l('button.refresh'),
-            onClick: () => {
-            }
-        }
-    ],
-    'menu.datastudio.catalog': [
-        {
-            icon: <ReloadOutlined/>,
-            title: l('button.refresh'),
-            onClick: () => {
-            }
-        }
-    ],
-    'menu.datastudio.project': [
-        {
-            icon: <PlusCircleOutlined/>,
-            title: l('right.menu.createRoot'),
-            key: 'right.menu.createRoot',
-            onClick: () => {
-            }
-        },
-        {
-            icon: <ArrowsAltOutlined/>,
-            title: l('button.expand-all'),
-            key: 'button.expand-all',
-            onClick: () => {
-            }
-        },
-        {
-            icon: <ShrinkOutlined/>,
-            title: l('button.collapse-all'),
-            key: 'button.collapse-all',
-            onClick: () => {
-            }
-        },
-        {
-            icon: <EnvironmentOutlined/>,
-            title: l('button.position'),
-            key: 'button.position',
-            onClick: () => {
-            }
-        }
-    ]
+  'menu.datastudio.datasource': [
+    {
+      icon: <PlusOutlined />,
+      title: l('button.create'),
+      onClick: () => {}
+    },
+    {
+      icon: <ReloadOutlined />,
+      title: l('button.refresh'),
+      onClick: () => {}
+    }
+  ],
+  'menu.datastudio.catalog': [
+    {
+      icon: <ReloadOutlined />,
+      title: l('button.refresh'),
+      onClick: () => {}
+    }
+  ],
+  'menu.datastudio.project': [
+    {
+      icon: <PlusCircleOutlined />,
+      title: l('right.menu.createRoot'),
+      key: 'right.menu.createRoot',
+      onClick: () => {}
+    },
+    {
+      icon: <ArrowsAltOutlined />,
+      title: l('button.expand-all'),
+      key: 'button.expand-all',
+      onClick: () => {}
+    },
+    {
+      icon: <ShrinkOutlined />,
+      title: l('button.collapse-all'),
+      key: 'button.collapse-all',
+      onClick: () => {}
+    },
+    {
+      icon: <EnvironmentOutlined />,
+      title: l('button.position'),
+      key: 'button.position',
+      onClick: () => {}
+    }
+  ]
 };
 
 type BtnAction = {
-    type: 'change',
-    selectKey: string,
-    payload: CircleDataStudioButtonProps[]
-}
+  type: 'change';
+  selectKey: string;
+  payload: CircleDataStudioButtonProps[];
+};
 
 export const BtnContext = createContext(BtnRoute);
 
-const BtnDispatchContext = createContext((params: BtnAction) => {
-});
+const BtnDispatchContext = createContext((params: BtnAction) => {});
 
 export function useTasksDispatch() {
-    return useContext(BtnDispatchContext);
+  return useContext(BtnDispatchContext);
 }
 
 function BtnReducer(state = BtnRoute, action: BtnAction) {
-    switch (action.type) {
-        case 'change': {
-            return {...state, [action.selectKey]: action.payload}
-        }
-        default:
-            return {...state}
+  switch (action.type) {
+    case 'change': {
+      return { ...state, [action.selectKey]: action.payload };
     }
+    default:
+      return { ...state };
+  }
 }
 
 // @ts-ignore
-export function BtnProvider({children}) {
-    const [btn, dispatch] = useReducer(
-        BtnReducer,
-        BtnRoute
-    );
+export function BtnProvider({ children }) {
+  const [btn, dispatch] = useReducer(BtnReducer, BtnRoute);
 
-    return (
-        <BtnContext.Provider value={btn}>
-            <BtnDispatchContext.Provider value={dispatch}>
-                {children}
-            </BtnDispatchContext.Provider>
-        </BtnContext.Provider>
-    );
+  return (
+    <BtnContext.Provider value={btn}>
+      <BtnDispatchContext.Provider value={dispatch}>{children}</BtnDispatchContext.Provider>
+    </BtnContext.Provider>
+  );
 }

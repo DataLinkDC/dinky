@@ -65,8 +65,11 @@ public class WeChatSender {
         if (wechatParams.getSendType().equals(WeChatType.CHAT.getValue())) {
             requireNonNull(wechatParams.getWebhook(), WeChatConstants.WEB_HOOK + " must not null");
         }
-        weChatTokenUrlReplace =
-                String.format(WeChatConstants.WECHAT_TOKEN_URL, wechatParams.getCorpId(), wechatParams.getSecret());
+        weChatTokenUrlReplace = String.format(
+                WeChatConstants.WECHAT_TOKEN_URL,
+                wechatParams.getSendUrl(),
+                wechatParams.getCorpId(),
+                wechatParams.getSecret());
     }
 
     /**
@@ -99,7 +102,7 @@ public class WeChatSender {
             if (WeChatType.APP.getValue().equals(wechatParams.getSendType())) {
                 String token = getToken();
                 assert token != null;
-                url = String.format(WeChatConstants.WECHAT_PUSH_URL, token);
+                url = String.format(WeChatConstants.WECHAT_PUSH_URL, wechatParams.getSendUrl(), token);
             } else {
                 url = wechatParams.getWebhook();
             }

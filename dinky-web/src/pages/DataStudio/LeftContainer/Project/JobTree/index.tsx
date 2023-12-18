@@ -31,7 +31,7 @@ import { Key } from '@ant-design/pro-components';
 import { Empty, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
 import React, { useEffect, useState } from 'react';
-import {BtnRoute, useTasksDispatch} from '../../BtnContext';
+import { BtnRoute, useTasksDispatch } from '../../BtnContext';
 
 const { DirectoryTree } = Tree;
 
@@ -61,7 +61,6 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   const [searchValue, setSearchValueValue] = useState('');
   const [data, setData] = useState<any[]>(buildProjectTree(projectData, searchValue));
   const btnDispatch = useTasksDispatch();
-
 
   useEffect(() => {
     setData(buildProjectTree(projectData, searchValue));
@@ -138,7 +137,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     type: 'change',
     selectKey: currentTabName,
     payload: btnEvent
-  })
+  });
 
   return (
     <>
