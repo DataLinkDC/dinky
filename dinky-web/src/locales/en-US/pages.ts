@@ -519,7 +519,8 @@ export default {
   'rc.ai.sendUrl': 'QiWei Send Addr',
   'rc.ai.sendUrlPleaseHolder': 'Please enter the sending address or the proxy address',
   'rc.ai.sendUrlValidate': 'Please enter the correct sending address, no / is required at the end',
-  'rc.ai.sendUrlTooltip': 'You can enter the proxy address for the sending address, such as: http://127.0.0.1:8080/cgi-bin, the default is: https://qyapi.weixin.qq.com/cgi-bin ',
+  'rc.ai.sendUrlTooltip':
+    'You can enter the proxy address for the sending address, such as: http://127.0.0.1:8080/cgi-bin, the default is: https://qyapi.weixin.qq.com/cgi-bin ',
   'rc.ai.apikey': 'Account unique identifier',
   'rc.ai.apikeyPleaseHolder': 'Please enter the unique ID of the account',
   'rc.ai.appId': 'App ID',

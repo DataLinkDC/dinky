@@ -27,8 +27,7 @@ public class WeChatConstants extends AlertBaseConstant {
     /** WeChat alert baseconstant */
     public static final String WECHAT_PUSH_URL = "%s/message/send?access_token=%s";
 
-    public static final String WECHAT_TOKEN_URL =
-            "%s/gettoken?corpid=%s&corpsecret=%s";
+    public static final String WECHAT_TOKEN_URL = "%s/gettoken?corpid=%s&corpsecret=%s";
     public static final String CORP_ID = "corpId";
     public static final String TEAM_SEND_MSG = "teamSendMsg";
     public static final String AGENT_ID = "agentId";

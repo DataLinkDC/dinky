@@ -68,7 +68,7 @@ const WeChat = (props: WeChatProps) => {
         if (!value) {
           return Promise.reject(l('rc.ai.sendUrlPleaseHolder'));
         }
-        if(value.endsWith('/')){
+        if (value.endsWith('/')) {
           return Promise.reject(l('rc.ai.sendUrlValidate'));
         }
       }
@@ -155,13 +155,13 @@ const WeChat = (props: WeChatProps) => {
                 placeholder={l('rc.ai.agentIdPleaseHolder')}
               />
               <ProFormText
-                  width='xl'
-                  name={['params', 'sendUrl']}
-                  label={l('rc.ai.sendUrl')}
-                  tooltip={l('rc.ai.sendUrlTooltip')}
-                  initialValue={'https://qyapi.weixin.qq.com/cgi-bin'}
-                  rules={validateRulesWeChatSendUrl}
-                  placeholder={l('rc.ai.sendUrlPleaseHolder')}
+                width='xl'
+                name={['params', 'sendUrl']}
+                label={l('rc.ai.sendUrl')}
+                tooltip={l('rc.ai.sendUrlTooltip')}
+                initialValue={'https://qyapi.weixin.qq.com/cgi-bin'}
+                rules={validateRulesWeChatSendUrl}
+                placeholder={l('rc.ai.sendUrlPleaseHolder')}
               />
             </>
           )
