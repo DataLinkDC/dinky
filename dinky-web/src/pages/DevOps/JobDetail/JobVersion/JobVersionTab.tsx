@@ -19,9 +19,9 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import VersionList from '@/components/VersionList';
+import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { handleRemoveById } from '@/services/BusinessCrud';
-import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { TaskVersionListItem } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
@@ -117,9 +117,7 @@ const JobVersionTab = (props: JobProps) => {
                 showFloatButton
                 code={currentVersion?.statement ?? ''}
                 height={parent.innerHeight - 250}
-                language={
-                  currentVersion?.dialect?.toLowerCase() === DIALECT.FLINK_SQL ? 'flinksql' : 'sql'
-                }
+                language={matchLanguage(currentVersion?.dialect)}
               />
             </ProCard>
           </Pane>
@@ -130,7 +128,7 @@ const JobVersionTab = (props: JobProps) => {
 
   return (
     <>
-      <ProCard size={'small'} bodyStyle={{ height: parent.innerHeight - 180, overflow: 'auto' }}>
+      <ProCard size={'small'} bodyStyle={{ height: 'calc(100vh - 180px)', overflow: 'auto' }}>
         {renderVersionList()}
       </ProCard>
     </>

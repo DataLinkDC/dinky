@@ -94,7 +94,7 @@ export default {
   'menu.datastudio.bi': 'BI',
   'menu.datastudio.lineage': 'Lineage',
   'menu.datastudio.process': 'Process',
-  'menu.datastudio.history': 'History',
+  'menu.datastudio.history': 'Execution History',
   'menu.datastudio.table-data': 'Table Data',
 
   'menu.datastudio.tool.text-comparison': 'Text Comparison',

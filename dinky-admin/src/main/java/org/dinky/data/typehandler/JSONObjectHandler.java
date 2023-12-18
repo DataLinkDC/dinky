@@ -28,10 +28,13 @@ import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.model.mapping.ClusterConfigurationMapping;
 import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.gateway.model.FlinkClusterConfig;
+import org.dinky.job.JobConfig;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
+
+import java.util.Map;
 
 import com.alibaba.fastjson2.JSONValidator;
 
@@ -49,7 +52,9 @@ import lombok.extern.slf4j.Slf4j;
     ClusterInstanceMapping.class,
     ClusterConfigurationMapping.class,
     FlinkClusterConfig.class,
-    TaskExtConfig.class
+    TaskExtConfig.class,
+    JobConfig.class,
+    Map.class
 })
 public class JSONObjectHandler<T> extends AbstractJsonTypeHandler<T> {
 

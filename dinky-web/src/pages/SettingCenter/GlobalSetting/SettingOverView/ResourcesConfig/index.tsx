@@ -65,7 +65,6 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
     if (currentModel) {
       setModel(currentModel);
     }
-    console.log('data', data, 'filterData', currentModel, 'currentModel');
   }, [data]);
 
   const modelKey: string = 'sys.resource.settings.base.model';

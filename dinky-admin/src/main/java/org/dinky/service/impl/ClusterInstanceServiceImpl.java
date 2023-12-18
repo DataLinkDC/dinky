@@ -23,7 +23,6 @@ import org.dinky.assertion.Assert;
 import org.dinky.assertion.Asserts;
 import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
-import org.dinky.constant.FlinkConstant;
 import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
@@ -31,16 +30,18 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.GatewayResult;
+import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.mapper.ClusterInstanceMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
+import org.dinky.utils.IpUtils;
+import org.dinky.utils.URLUtils;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,30 +88,32 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     }
 
     @Override
-    public String buildEnvironmentAddress(boolean useRemote, Integer id) {
-        if (useRemote && id != 0) {
+    public String buildEnvironmentAddress(JobConfig config) {
+        Integer id = config.getClusterId();
+        Boolean useRemote = config.isUseRemote();
+        if (useRemote && id != null && id != 0) {
             return buildRemoteEnvironmentAddress(id);
         } else {
-            return buildLocalEnvironmentAddress();
+            Map<String, String> flinkConfig = config.getConfigJson();
+            int port;
+            if (Asserts.isNotNull(flinkConfig) && flinkConfig.containsKey("rest.port")) {
+                port = Integer.valueOf(flinkConfig.get("rest.port"));
+            } else {
+                port = URLUtils.getRandomPort();
+                while (!IpUtils.isPortAvailable(port)) {
+                    port = URLUtils.getRandomPort();
+                }
+            }
+            return buildLocalEnvironmentAddress(port);
         }
     }
 
-    @Override
-    public String buildRemoteEnvironmentAddress(Integer id) {
+    private String buildRemoteEnvironmentAddress(Integer id) {
         return getJobManagerAddress(getById(id));
     }
 
-    @Override
-    public String buildLocalEnvironmentAddress() {
-        try {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            if (inetAddress != null) {
-                return inetAddress.getHostAddress();
-            }
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        return FlinkConstant.LOCAL_HOST;
+    private String buildLocalEnvironmentAddress(int port) {
+        return "0.0.0.0:" + port;
     }
 
     @Override
@@ -198,6 +201,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         }
         GatewayConfig gatewayConfig =
                 GatewayConfig.build(FlinkClusterConfig.create(clusterCfg.getType(), clusterCfg.getConfigJson()));
+        gatewayConfig.setType(gatewayConfig.getType().getSessionType());
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
         return registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
                 gatewayResult.getWebURL().replace("http://", ""),
@@ -213,14 +217,15 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
      * @return
      */
     @Override
-    public List<ClusterInstance> selectListByKeyWord(String searchKeyWord) {
+    public List<ClusterInstance> selectListByKeyWord(String searchKeyWord, boolean isAutoCreate) {
         return getBaseMapper()
                 .selectList(new LambdaQueryWrapper<ClusterInstance>()
-                        .like(ClusterInstance::getName, searchKeyWord)
-                        .or()
-                        .like(ClusterInstance::getAlias, searchKeyWord)
-                        .or()
-                        .like(ClusterInstance::getNote, searchKeyWord));
+                        .and(true, i -> i.eq(ClusterInstance::getAutoRegisters, isAutoCreate))
+                        .and(true, i -> i.like(ClusterInstance::getName, searchKeyWord)
+                                .or()
+                                .like(ClusterInstance::getAlias, searchKeyWord)
+                                .or()
+                                .like(ClusterInstance::getNote, searchKeyWord)));
     }
 
     private boolean checkHealth(ClusterInstance clusterInstance) {

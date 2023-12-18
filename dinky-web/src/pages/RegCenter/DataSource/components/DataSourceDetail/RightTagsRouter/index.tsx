@@ -104,6 +104,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
           {l('rc.ds.detail.tag.console')}
         </Space>
       ),
+      disabled: true,
       children: <SQLConsole />
     }
   ];

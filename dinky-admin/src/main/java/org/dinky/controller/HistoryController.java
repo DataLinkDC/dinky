@@ -59,7 +59,7 @@ public class HistoryController {
      * @param para
      * @return
      */
-    @PostMapping
+    @PostMapping("/list")
     @ApiOperation("Query History List")
     @ApiImplicitParam(name = "para", value = "Query Parameters", dataType = "JsonNode", paramType = "body")
     public ProTableResult<History> listHistory(@RequestBody JsonNode para) {

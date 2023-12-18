@@ -19,11 +19,15 @@
 
 package org.dinky.utils;
 
+import org.dinky.assertion.Asserts;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -86,11 +90,28 @@ public class URLUtils {
      * @param files URL对应的文件对象
      * @return URL
      */
+    public static URL[] getURLs(List<File> files) {
+        return getURLs(files.stream().filter(File::exists).toArray(File[]::new));
+    }
+
     public static URL[] getURLs(Set<File> files) {
         return getURLs(files.stream().filter(File::exists).toArray(File[]::new));
     }
 
     public static String toString(URL[] urls) {
         return Arrays.stream(urls).map(URL::toString).collect(Collectors.joining(","));
+    }
+
+    public static String formatAddress(String webURL) {
+        if (Asserts.isNotNullString(webURL)) {
+            return webURL.replaceAll("http://", "");
+        } else {
+            return "";
+        }
+    }
+
+    public static int getRandomPort() {
+        Random random = new Random();
+        return 30000 + random.nextInt(35536);
     }
 }

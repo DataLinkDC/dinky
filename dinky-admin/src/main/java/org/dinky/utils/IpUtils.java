@@ -22,6 +22,7 @@ package org.dinky.utils;
 import org.dinky.assertion.Asserts;
 
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.UnknownHostException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -169,6 +170,16 @@ public class IpUtils {
         } catch (UnknownHostException e) {
         }
         return "127.0.0.1";
+    }
+
+    public static boolean isPortAvailable(int port) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            // If the code reaches this point, the port is available
+            return true;
+        } catch (Exception e) {
+            // Port is not available
+            return false;
+        }
     }
 
     public static String getHostName() {

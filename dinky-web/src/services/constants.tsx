@@ -154,7 +154,9 @@ export const PROTABLE_OPTIONS_PUBLIC: any = {
  */
 export const NORMAL_MODAL_OPTIONS = {
   width: '50%',
-  bodyStyle: { padding: '20px 10px 10px' },
+  styles: {
+    body: { padding: '20px 10px 10px' }
+  },
   destroyOnClose: true,
   maskClosable: false
 };

@@ -30,7 +30,7 @@ import java.util.ServiceLoader;
  */
 public interface JobHandler {
 
-    boolean init();
+    boolean init(Job job);
 
     boolean ready();
 

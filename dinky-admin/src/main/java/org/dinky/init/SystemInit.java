@@ -134,7 +134,8 @@ public class SystemInit implements ApplicationRunner {
                         systemConfiguration.getResourcesHdfsUser(),
                         systemConfiguration.getResourcesHdfsDefaultFS(),
                         systemConfiguration.getResourcesOssAccessKey(),
-                        systemConfiguration.getResourcesOssRegion())
+                        systemConfiguration.getResourcesOssRegion(),
+                        systemConfiguration.getResourcesPathStyleAccess())
                 .forEach(x -> x.addParameterCheck(y -> {
                     if (Boolean.TRUE.equals(
                             systemConfiguration.getResourcesEnable().getValue())) {
@@ -155,6 +156,9 @@ public class SystemInit implements ApplicationRunner {
                                         .getValue());
                                 ossProperties.setRegion(systemConfiguration
                                         .getResourcesOssRegion()
+                                        .getValue());
+                                ossProperties.setPathStyleAccess(systemConfiguration
+                                        .getResourcesPathStyleAccess()
                                         .getValue());
                                 Singleton.get(OssResourceManager.class).setOssTemplate(new OssTemplate(ossProperties));
                                 break;
@@ -201,6 +205,7 @@ public class SystemInit implements ApplicationRunner {
         };
         metricsListener.accept(metricsSysEnable);
         metricsListener.accept(sysGatherTiming);
+        metricsSysEnable.runChangeEvent();
 
         // Init clear job history task
         DaemonTask clearJobHistoryTask = DaemonTask.build(new DaemonTaskConfig(ClearJobHistoryTask.TYPE));
@@ -224,33 +229,32 @@ public class SystemInit implements ApplicationRunner {
      * init DolphinScheduler
      */
     private void initDolphinScheduler() {
-        systemConfiguration
-                .getAllConfiguration()
-                .get("dolphinscheduler")
-                .forEach(c -> c.addParameterCheck(v -> {
-                    if (Boolean.TRUE.equals(
-                            systemConfiguration.getDolphinschedulerEnable().getValue())) {
-                        if (StrUtil.isEmpty(Convert.toStr(v))) {
-                            sysConfigService.updateSysConfigByKv(
-                                    systemConfiguration
-                                            .getDolphinschedulerEnable()
-                                            .getKey(),
-                                    "false");
-                            throw new DinkyException("Before starting DolphinScheduler"
-                                    + " docking, please fill in the"
-                                    + " relevant configuration");
-                        }
-                        try {
-                            project = projectClient.getDinkyProject();
-                            if (Asserts.isNull(project)) {
-                                project = projectClient.createDinkyProject();
-                            }
-                        } catch (Exception e) {
-                            log.error("Error in DolphinScheduler: ", e);
-                            throw new DinkyException(e);
-                        }
-                    }
-                }));
+        List<Configuration<?>> configurationList =
+                systemConfiguration.getAllConfiguration().get("dolphinscheduler");
+        configurationList.forEach(c -> c.addParameterCheck(this::aboutDolphinSchedulerInitOperation));
+        // init call for once
+        aboutDolphinSchedulerInitOperation("init");
+    }
+
+    private void aboutDolphinSchedulerInitOperation(Object v) {
+        if (Boolean.TRUE.equals(systemConfiguration.getDolphinschedulerEnable().getValue())) {
+            if (StrUtil.isEmpty(Convert.toStr(v))) {
+                sysConfigService.updateSysConfigByKv(
+                        systemConfiguration.getDolphinschedulerEnable().getKey(), "false");
+                throw new DinkyException("Before starting DolphinScheduler"
+                        + " docking, please fill in the"
+                        + " relevant configuration");
+            }
+            try {
+                project = projectClient.getDinkyProject();
+                if (project == null) {
+                    project = projectClient.createDinkyProject();
+                }
+            } catch (Exception e) {
+                log.error("Error in DolphinScheduler: ", e);
+                throw new DinkyException(e);
+            }
+        }
     }
 
     /**

@@ -65,7 +65,7 @@ const FolderModal: React.FC<JobModalProps> = (props) => {
    */
   const submitForm = async (formData: Catalogue) => {
     await form.validateFields();
-    const newValue = await form.getFieldsValue();
+    const newValue = form.getFieldsValue();
     onSubmit({ ...values, name: newValue.name } as Catalogue);
   };
 
@@ -82,6 +82,10 @@ const FolderModal: React.FC<JobModalProps> = (props) => {
         modalProps={{
           destroyOnClose: true,
           maskClosable: false,
+          okButtonProps: {
+            htmlType: 'submit',
+            autoFocus: true
+          },
           onCancel: handleCancel
         }}
         onFinish={async (values) => submitForm(values)}

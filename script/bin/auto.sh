@@ -5,7 +5,7 @@ FLINK_VERSION=${2:-1.14}
 JAR_NAME="dinky-admin"
 
 # Use FLINK_HOME:
-CLASS_PATH=".:./lib/*:config:./plugins/*:./customJar/*:./plugins/flink${FLINK_VERSION}/*"
+CLASS_PATH=".:./lib/*:config:./plugins/*:./customJar/*:./plugins/flink${FLINK_VERSION}/dinky/*:./plugins/flink${FLINK_VERSION}/*"
 
 PID_FILE="dinky.pid"
 
@@ -44,7 +44,7 @@ updatePid() {
 start() {
   updatePid
   if [ -z "$pid" ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  &
+    nohup java -Ddruid.mysql.usePingMethod=false -Dlog4j2.isThreadContextMapInheritable=true -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  &
     echo $! >"${PID_PATH}"/${PID_FILE}
     echo "FLINK VERSION : $FLINK_VERSION"
     echo "........................................Start Dinky Successfully........................................"

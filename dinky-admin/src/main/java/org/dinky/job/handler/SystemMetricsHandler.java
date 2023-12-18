@@ -28,6 +28,7 @@ import org.dinky.data.metrics.MetricsTotal;
 import org.dinky.data.vo.MetricsVO;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,6 +48,7 @@ public class SystemMetricsHandler {
         metrics.setContent(metricsTotal);
         metrics.setHeartTime(now);
         metrics.setModel(MetricsType.LOCAL.getType());
+        metrics.setDate(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         MetricsContextHolder.getInstances().sendAsync(metrics.getModel(), metrics);
 
         log.debug("Collecting jvm information ends.");

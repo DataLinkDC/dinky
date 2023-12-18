@@ -27,8 +27,8 @@ import org.dinky.app.model.SysConfig;
 import org.dinky.app.resource.impl.HdfsResourceManager;
 import org.dinky.app.resource.impl.OssResourceManager;
 import org.dinky.app.url.RsURLStreamHandlerFactory;
-import org.dinky.app.util.FlinkAppUtil;
 import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.app.AppParamConfig;
@@ -60,6 +60,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -91,6 +92,7 @@ import lombok.SneakyThrows;
  */
 public class Submitter {
     private static final Logger log = LoggerFactory.getLogger(Submitter.class);
+    public static Executor executor = null;
 
     private static void initSystemConfiguration() throws SQLException {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
@@ -155,10 +157,8 @@ public class Submitter {
                 // .config(JsonUtils.toMap(appTask.getConfigJson()))
                 .build();
 
-        Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig);
-
-        log.info("Start Monitor Job");
-        FlinkAppUtil.monitorFlinkTask(config.getTaskId());
+        executor = ExecutorFactory.buildAppStreamExecutor(
+                executorConfig, new WeakReference<>(DinkyClassLoader.build()).get());
 
         // 加载第三方jar //TODO 这里有问题，需要修一修
         // loadDep(appTask.getType(),
@@ -291,9 +291,12 @@ public class Submitter {
                 ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
                 executeJarOperation.execute(executor.getCustomTableEnvironment());
                 break;
-            } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD
-                    && "kubernetes-application".equals(type)) {
-                executor.addJar(AddJarSqlParseStrategy.getInfo(sqlStatement));
+            } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD) {
+                File[] info = AddJarSqlParseStrategy.getInfo(sqlStatement);
+                Arrays.stream(info).forEach(executor.getDinkyClassLoader().getUdfPathContextHolder()::addOtherPlugins);
+                if ("kubernetes-application".equals(type)) {
+                    executor.addJar(info);
+                }
             }
         }
     }

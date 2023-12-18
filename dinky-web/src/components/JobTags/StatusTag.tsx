@@ -79,8 +79,8 @@ const StatusTag = (props: StatusTagProps) => {
         };
       case JOB_STATUS.RECONNECTING:
         return {
-          icon: <ClockCircleOutlined />,
-          color: 'default',
+          icon: <SyncOutlined spin />,
+          color: 'warning',
           text: 'RECONNECTING'
         };
       case JOB_STATUS.UNKNOWN:

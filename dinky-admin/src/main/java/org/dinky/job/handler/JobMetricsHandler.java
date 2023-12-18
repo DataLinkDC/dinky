@@ -27,6 +27,7 @@ import org.dinky.utils.HttpUtils;
 import org.dinky.utils.TimeUtil;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -39,10 +40,12 @@ import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The Job Metrics Handler class is used to process operations related to job metrics。
  */
+@Slf4j
 public class JobMetricsHandler {
 
     /**
@@ -51,8 +54,8 @@ public class JobMetricsHandler {
      * Send to MetricsContextHolder asynchronously at the end of the method.  </br>
      * Thus, the operation of writing the Flink indicator is completed. </br>
      */
-    public static void writeFlinkMetrics(JobInfoDetail jobInfoDetail) {
-        Map<String, Map<String, String>> customMetricsList = jobInfoDetail.getCustomMetricsMap();
+    public static void refeshAndWriteFlinkMetrics(
+            JobInfoDetail jobInfoDetail, Map<String, Map<String, String>> customMetricsList) {
         String[] jobManagerUrls =
                 jobInfoDetail.getClusterInstance().getJobManagerHost().split(",");
         String jobId = jobInfoDetail.getInstance().getJid();
@@ -63,13 +66,17 @@ public class JobMetricsHandler {
                         () -> fetchFlinkMetrics(e.getKey(), e.getValue(), jobManagerUrls, jobId)))
                 .toArray(CompletableFuture[]::new);
         // Wait for all Completable Future executions to finish
-        AsyncUtil.waitAll(array);
-        MetricsVO metricsVO = new MetricsVO();
-        metricsVO.setContent(customMetricsList);
-        metricsVO.setHeartTime(LocalDateTime.now());
-        metricsVO.setModel(jobId);
-        metricsVO.setDate(TimeUtil.nowStr("yyyy-MM-dd"));
-        MetricsContextHolder.getInstances().sendAsync(metricsVO.getModel(), metricsVO);
+        try {
+            AsyncUtil.waitAll(array);
+            MetricsVO metricsVO = new MetricsVO();
+            metricsVO.setContent(customMetricsList);
+            metricsVO.setHeartTime(LocalDateTime.now());
+            metricsVO.setModel(jobId);
+            metricsVO.setDate(TimeUtil.nowStr("yyyy-MM-dd"));
+            MetricsContextHolder.getInstances().sendAsync(metricsVO.getModel(), metricsVO);
+        } catch (Exception e) {
+            log.error("Get and save Flink metrics error", e);
+        }
     }
 
     /**
@@ -87,7 +94,8 @@ public class JobMetricsHandler {
         String metricsName = StrUtil.join(",", m.keySet());
         String urlParam =
                 StrFormatter.format("/jobs/{}/vertices/{}/metrics?get={}", jid, v, URLUtil.encode(metricsName));
-        HttpUtils.asyncRequest(Arrays.asList(urlList), urlParam, NetConstant.READ_TIME_OUT, x -> {
+        ArrayList<String> list = new ArrayList<String>(Arrays.asList(urlList));
+        HttpUtils.asyncRequest(list, urlParam, NetConstant.READ_TIME_OUT, x -> {
             JSONArray array = JSONUtil.parseArray(x.body());
             array.forEach(y -> {
                 JSONObject jsonObject = JSONUtil.parseObj(y);

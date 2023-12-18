@@ -21,7 +21,7 @@ package org.dinky.metadata.convert;
 
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
-import org.dinky.metadata.driver.DriverConfig;
+import org.dinky.metadata.config.DriverConfig;
 
 import java.util.Optional;
 
@@ -30,7 +30,7 @@ import java.util.Optional;
  *
  * @since 2021/7/21 16:00
  */
-public class OracleTypeConvert extends AbstractTypeConvert {
+public class OracleTypeConvert extends AbstractJdbcTypeConvert {
 
     public OracleTypeConvert() {
         this.convertMap.clear();

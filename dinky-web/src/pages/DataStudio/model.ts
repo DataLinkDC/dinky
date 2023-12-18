@@ -147,7 +147,8 @@ export enum TabsPageType {
 
 export enum TabsPageSubType {
   flinkSql = 'FlinkSql',
-  flinkJar = 'FlinkJar'
+  flinkJar = 'FlinkJar',
+  None = ''
 }
 
 export interface TabsItemType {
@@ -163,7 +164,6 @@ export interface TabsItemType {
   closable: boolean;
   path: string[];
   monacoInstance: React.RefObject<Monaco | undefined>;
-  editorInstance: React.RefObject<editor.IStandaloneCodeEditor | undefined>;
   console: ConsoleType;
   isModified: boolean;
 }
@@ -506,17 +506,12 @@ const Model: ModelType = {
       if (payload === '') {
         centerContentHeight = state.centerContentHeight + (state.bottomContainer.height as number);
         toolContentHeight = state.toolContentHeight + (state.bottomContainer.height as number);
-        console.log(2);
-      } else if (
-        state.bottomContainer.selectKey !== '' &&
-        payload !== state.bottomContainer.selectKey
-      ) {
+      } else if (state.bottomContainer.selectKey !== '') {
         centerContentHeight = state.centerContentHeight;
         toolContentHeight = state.toolContentHeight;
       } else {
         centerContentHeight = state.centerContentHeight - (state.bottomContainer.height as number);
         toolContentHeight = state.toolContentHeight - (state.bottomContainer.height as number);
-        console.log(3);
       }
 
       return {
@@ -673,6 +668,12 @@ const Model: ModelType = {
         for (const [index, pane] of panes.entries()) {
           if (pane.key === needCloseKey) {
             const nextPane = panes[(index + 1) % panes.length];
+            const height =
+              document.documentElement.clientHeight -
+              VIEW.headerHeight -
+              VIEW.headerNavHeight -
+              VIEW.footerHeight -
+              VIEW.otherHeight;
             return {
               ...state,
               tabs: {
@@ -686,7 +687,10 @@ const Model: ModelType = {
               footContainer: {
                 ...state.footContainer,
                 ...getFooterValue(panes, nextPane.key)
-              }
+              },
+              toolContentHeight:
+                panes.length < 2 ? height - VIEW.leftMargin : state.toolContentHeight,
+              centerContentHeight: panes.length < 2 ? height : state.toolContentHeight
             };
           }
         }
@@ -719,7 +723,8 @@ const Model: ModelType = {
             ...state,
             tabs: {
               ...state.tabs,
-              activeKey: item.key
+              activeKey: item.key,
+              activeBreadcrumbTitle: [item.type, item.breadcrumbLabel, item.label].join('/')
             },
             footContainer: {
               ...state.footContainer,

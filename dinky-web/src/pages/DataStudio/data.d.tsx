@@ -31,3 +31,26 @@ export type StudioParam = {
   checkPoint?: number;
   savePointPath?: string;
 };
+
+export enum LeftMenuKey {
+  PROJECT_KEY = 'menu.datastudio.project',
+  CATALOG_KEY = 'menu.datastudio.catalog',
+  DATASOURCE_KEY = 'menu.datastudio.datasource',
+  FRAGMENT_KEY = 'menu.registration.fragment'
+}
+export enum RightMenuKey {
+  JOB_CONFIG_KEY = 'menu.datastudio.jobConfig',
+  PREVIEW_CONFIG_KEY = 'menu.datastudio.previewConfig',
+  SAVEPOINT_KEY = 'menu.datastudio.savePoint',
+  HISTORY_VISION_KEY = 'menu.datastudio.historyVision',
+  JOB_INFO_KEY = 'menu.datastudio.jobInfo'
+}
+
+export enum LeftBottomKey {
+  CONSOLE_KEY = 'menu.datastudio.console',
+  RESULT_KEY = 'menu.datastudio.result',
+  LINEAGE_KEY = 'menu.datastudio.lineage',
+  HISTORY_KEY = 'menu.datastudio.history',
+  TABLE_DATA_KEY = 'menu.datastudio.table-data',
+  TOOLS_KEY = 'menu.datastudio.tool'
+}

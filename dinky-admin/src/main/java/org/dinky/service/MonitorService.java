@@ -19,13 +19,13 @@
 
 package org.dinky.service;
 
+import org.dinky.data.MetricsLayoutVo;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -46,10 +46,9 @@ public interface MonitorService extends IService<Metrics> {
     /**
      * Send the JVM information to the specified SSE emitter.
      *
-     * @param sseEmitter The SSE emitter to send the JVM information to.
      * @return {@link SseEmitter}
      */
-    SseEmitter sendJvmInfo(SseEmitter sseEmitter);
+    SseEmitter sendJvmInfo();
 
     /**
      * Save the Flink metric layout.
@@ -65,7 +64,7 @@ public interface MonitorService extends IService<Metrics> {
      *
      * @return A map where the keys are layout names and the values are lists of {@link Metrics} objects representing the metrics in each layout.
      */
-    Map<String, List<Metrics>> getMetricsLayout();
+    List<MetricsLayoutVo> getMetricsLayout();
 
     /**
      * Get the metrics layout by name.
@@ -81,5 +80,5 @@ public interface MonitorService extends IService<Metrics> {
      * @param taskId The ID of the task to get the job metrics for.
      * @return A list of {@link Metrics} objects representing the job metrics for the specified task ID.
      */
-    List<Metrics> getJobMetrics(Integer taskId);
+    List<Metrics> getMetricsLayoutByTaskId(Integer taskId);
 }

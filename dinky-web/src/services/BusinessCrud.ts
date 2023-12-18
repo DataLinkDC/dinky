@@ -246,6 +246,7 @@ export const handlePutData = async (url: string, fields: any) => {
     return false;
   }
 };
+
 export const handlePutDataJson = async (url: string, fields: any) => {
   const tipsTitle = fields?.id ? l('app.request.update') : l('app.request.add');
   await LoadingMessageAsync(l('app.request.running') + tipsTitle);

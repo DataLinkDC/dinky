@@ -49,13 +49,10 @@ import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
-import org.dinky.service.MonitorService;
-import org.dinky.utils.JsonUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
@@ -83,7 +80,6 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterConfigurationService;
     private final JobHistoryService jobHistoryService;
-    private final MonitorService monitorService;
 
     @Override
     public JobInstance getByIdWithoutTenant(Integer id) {
@@ -164,24 +160,19 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         jobInfoDetail.setClusterInstance(clusterInstance);
 
         History history = historyService.getById(jobInstance.getHistoryId());
-        history.setConfig(JsonUtils.parseObject(history.getConfigJson()));
-        jobInfoDetail.setHistory(history);
-        if (Asserts.isNotNull(history.getClusterConfigurationId())) {
-            ClusterConfiguration clusterConfig =
-                    clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId());
-            jobInfoDetail.setClusterConfiguration(ClusterConfigurationDTO.fromBean(clusterConfig));
+        if (history != null) {
+            history.setConfigJson(history.getConfigJson());
+            jobInfoDetail.setHistory(history);
+            if (Asserts.isNotNull(history.getClusterConfigurationId())) {
+                ClusterConfiguration clusterConfig =
+                        clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId());
+                jobInfoDetail.setClusterConfiguration(ClusterConfigurationDTO.fromBean(clusterConfig));
+            }
         }
 
         JobDataDto jobDataDto = jobHistoryService.getJobHistoryDto(jobInstance.getId());
         jobInfoDetail.setJobDataDto(jobDataDto);
 
-        // Get a list of metrics and deduplicate them based on vertices and metrics
-        Map<String, Map<String, String>> verticesAndMetricsMap = new ConcurrentHashMap<>();
-        monitorService.getJobMetrics(jobInstance.getTaskId()).forEach(m -> {
-            verticesAndMetricsMap.putIfAbsent(m.getVertices(), new ConcurrentHashMap<>());
-            verticesAndMetricsMap.get(m.getVertices()).put(m.getMetrics(), "");
-        });
-        jobInfoDetail.setCustomMetricsMap(verticesAndMetricsMap);
         return jobInfoDetail;
     }
 
@@ -190,10 +181,10 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         DaemonTaskConfig daemonTaskConfig = DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId);
         DaemonTask daemonTask = FlinkJobThreadPool.getInstance().getByTaskConfig(daemonTaskConfig);
 
-        if (daemonTask != null) {
-            daemonTask.dealTask();
+        if (daemonTask != null && !isForce) {
             return ((FlinkJobTask) daemonTask).getJobInfoDetail();
         } else if (isForce) {
+            FlinkJobThreadPool.getInstance().removeByTaskConfig(daemonTaskConfig);
             daemonTask = DaemonTask.build(daemonTaskConfig);
             daemonTask.dealTask();
             JobInfoDetail jobInfoDetail = ((FlinkJobTask) daemonTask).getJobInfoDetail();

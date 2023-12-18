@@ -76,7 +76,7 @@ const JobManagerLogsTab = (props: JobProps) => {
           showFloatButton
           language={language}
           code={buildDumpLog(ur) ?? 'No Log'}
-          height={parent.innerHeight - 300}
+          height={'calc(100vh - 250px)'}
         />
       </Spin>
     );

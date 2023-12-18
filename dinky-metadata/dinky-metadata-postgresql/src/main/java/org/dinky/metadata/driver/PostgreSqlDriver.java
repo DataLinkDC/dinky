@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Table;
+import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.PostgreSqlTypeConvert;
 import org.dinky.metadata.query.IDBQuery;
@@ -52,7 +53,7 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert getTypeConvert() {
+    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
         return new PostgreSqlTypeConvert();
     }
 

@@ -42,11 +42,6 @@ const HighPriorityConfig = () => {
       <Divider>{l('rc.cc.defineConfig')}</Divider>
       <ProFormGroup direction={'horizontal'} align={'baseline'}>
         {renderHighPriorityConfig()}
-        <ProFormText
-          name={['config', 'clusterConfig', 'flinkConfigPath']}
-          label={'Flink Conf Yaml Path'}
-          width={400}
-        />
       </ProFormGroup>
     </>
   );

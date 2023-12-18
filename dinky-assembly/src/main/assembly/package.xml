@@ -41,6 +41,15 @@
                 <include>**/*.yaml</include>
                 <include>**/log4j2.xml</include>
                 <include>**/DinkyFlinkDockerfile</include>
+
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dinky-admin/target/classes</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>**/dinky-loader/FlinkConfClass</include>
+                <include>**/dinky-loader/ExpressionVariableClass</include>
             </includes>
         </fileSet>
         <fileSet>

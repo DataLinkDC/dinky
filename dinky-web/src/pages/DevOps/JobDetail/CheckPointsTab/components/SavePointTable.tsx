@@ -70,7 +70,7 @@ const SavepointTable = (props: JobProps) => {
   return (
     <ProTable<SavePoint>
       columns={columns}
-      style={{ width: '100%' }}
+      style={{ width: '100%', height: 'calc(100vh - 450px)' }}
       request={(params, sorter, filter) =>
         queryList(API_CONSTANTS.GET_SAVEPOINTS, {
           ...params,

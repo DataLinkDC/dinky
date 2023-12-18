@@ -63,7 +63,7 @@ public class FlinkSqlTask extends BaseTask {
 
     protected JobManager getJobManager() {
         TaskServiceImpl taskService = SpringUtil.getBean(TaskServiceImpl.class);
-        return JobManager.build(taskService.buildJobConfig(task));
+        return JobManager.build(taskService.buildJobSubmitConfig(task));
     }
 
     @Override

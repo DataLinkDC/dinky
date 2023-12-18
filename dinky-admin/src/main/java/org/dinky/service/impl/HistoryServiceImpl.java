@@ -20,14 +20,15 @@
 package org.dinky.service.impl;
 
 import org.dinky.data.model.job.History;
-import org.dinky.data.result.ResultPool;
 import org.dinky.mapper.HistoryMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.HistoryService;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * HistoryServiceImpl
@@ -35,22 +36,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  * @since 2021/6/26 23:08
  */
 @Service
+@RequiredArgsConstructor
 public class HistoryServiceImpl extends SuperServiceImpl<HistoryMapper, History> implements HistoryService {
-
-    @Override
-    public boolean removeHistoryById(Integer id) {
-        History history = getById(id);
-        if (history != null) {
-            ResultPool.remove(history.getJobId());
-        }
-        return removeById(id);
-    }
-
     @Override
     public History getLatestHistoryById(Integer id) {
-        return baseMapper.selectOne(new QueryWrapper<History>()
-                .eq("task_id", id)
-                .orderByDesc("start_time")
+        return baseMapper.selectOne(new LambdaQueryWrapper<>(History.class)
+                .eq(History::getTaskId, id)
+                .orderByDesc(History::getStartTime)
                 .last("limit 1"));
     }
 }

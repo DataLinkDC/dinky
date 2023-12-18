@@ -20,6 +20,7 @@
 package org.dinky.gateway;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.GatewayType;
@@ -70,7 +71,7 @@ public interface Gateway {
 
     GatewayResult submitJobGraph(JobGraph jobGraph);
 
-    GatewayResult submitJar();
+    GatewayResult submitJar(FlinkUdfPathContextHolder udfPathContextHolder);
 
     SavePointResult savepointCluster();
 
@@ -88,5 +89,5 @@ public interface Gateway {
 
     boolean onJobFinishCallback(String status);
 
-    GatewayResult deployCluster();
+    GatewayResult deployCluster(FlinkUdfPathContextHolder udfPathContextHolder);
 }

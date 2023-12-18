@@ -22,10 +22,14 @@ package org.dinky.job;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.model.Configuration;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.job.handler.ClearJobHistoryHandler;
+import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
+import org.dinky.service.impl.ClusterInstanceServiceImpl;
 
 import org.springframework.context.annotation.DependsOn;
 
@@ -43,22 +47,32 @@ public class ClearJobHistoryTask implements DaemonTask {
     private static final JobHistoryService jobHistoryService;
     private static final HistoryService historyService;
     private static final ClearJobHistoryHandler clearJobHistoryHandler;
+    private static final ClusterInstanceService clusterService;
+
+    private static Configuration<Integer> maxRetainDays;
+    private static Configuration<Integer> maxRetainCount;
 
     static {
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
         jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
         historyService = SpringContextUtils.getBean("historyServiceImpl", HistoryService.class);
+        clusterService = SpringContextUtils.getBean("clusterInstanceServiceImpl", ClusterInstanceServiceImpl.class);
         clearJobHistoryHandler = ClearJobHistoryHandler.builder()
                 .historyService(historyService)
                 .jobInstanceService(jobInstanceService)
                 .jobHistoryService(jobHistoryService)
+                .clusterService(clusterService)
                 .build();
+        maxRetainDays = SystemConfiguration.getInstances().getJobMaxRetainDays();
+        maxRetainCount = SystemConfiguration.getInstances().getJobMaxRetainCount();
     }
 
     @Override
     public boolean dealTask() {
-        clearJobHistoryHandler.clearDinkyHistory(30, 20);
-        clearJobHistoryHandler.clearJobHistory(30, 20);
+        if (maxRetainCount.getValue() > 0) {
+            clearJobHistoryHandler.clearDinkyHistory(maxRetainDays.getValue(), maxRetainCount.getValue());
+            clearJobHistoryHandler.clearJobHistory(maxRetainDays.getValue(), maxRetainCount.getValue());
+        }
         return false;
     }
 

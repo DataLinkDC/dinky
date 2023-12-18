@@ -17,28 +17,41 @@
  *
  */
 
-import FlinkChart from '@/components/FlinkChart';
+import FlinkChart from '@/components/Flink/FlinkChart';
+import useHookRequest from '@/hooks/useHookRequest';
 import { SseData } from '@/models/Sse';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
-import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
-import { getMetricsData } from '@/pages/DevOps/JobDetail/JobMetrics/service';
-import { DevopsType } from '@/pages/DevOps/JobDetail/model';
+import { JobMetricsItem, MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
+import { getMetricsData } from '@/pages/DevOps/JobDetail/srvice';
 import { ChartData } from '@/pages/Metrics/Job/data';
 import { MetricsDataType } from '@/pages/Metrics/Server/data';
-import { connect } from '@@/exports';
-import { Row, Spin } from 'antd';
+import { Jobs } from '@/types/DevOps/data';
+import { Empty, Row, Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import { useModel } from 'umi';
 
-const JobChart = (props: any) => {
-  const { jobDetail, metricsTarget, timeRange } = props;
+export type JobChartProps = {
+  jobDetail: Jobs.JobInfoDetail;
+  metricsList: JobMetricsItem[];
+  timeRange: MetricsTimeFilter;
+};
+const JobChart = (props: JobChartProps) => {
+  const { jobDetail, metricsList, timeRange } = props;
 
   const [chartDatas, setChartDatas] = useState<Record<string, ChartData[]>>({});
-  const [loading, setLoading] = useState<boolean>(false);
 
   const { subscribeTopic } = useModel('Sse', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
+
+  const { loading } = useHookRequest(getMetricsData, {
+    defaultParams: [timeRange, jobDetail.instance.jid],
+    refreshDeps: [timeRange, metricsList],
+    onSuccess: (result) => {
+      const chData = {};
+      (result as MetricsDataType[]).forEach((d) => dataProcess(chData, d));
+    }
+  });
 
   const dataProcess = (chData: Record<string, ChartData[]>, data: MetricsDataType) => {
     const verticesMap = data.content as Record<string, Record<string, string>>;
@@ -59,55 +72,39 @@ const JobChart = (props: any) => {
   };
 
   useEffect(() => {
-    setLoading(true);
-    getMetricsData({
-      startTime: timeRange.startTime,
-      endTime: timeRange.endTime,
-      taskIds: jobDetail.instance.taskId
-    }).then((result) => {
-      const chData = {};
-      (result as MetricsDataType[]).forEach((d) => dataProcess(chData, d));
-      setLoading(false);
-    });
-
     if (timeRange.isReal) {
       const topic = `${SSE_TOPIC.METRICS}/${jobDetail.instance.jid}`;
       return subscribeTopic([topic], (data: SseData) => {
         dataProcess(chartDatas, data.data);
       });
     }
-  }, [timeRange]);
+  }, [timeRange, metricsList]);
 
   const renderMetricsCardList = (
-    metricsList: Record<string, JobMetricsItem[]>,
+    metricsList: JobMetricsItem[],
     chartData: Record<string, ChartData[]>
   ) => {
-    let data: JobMetricsItem[] = [];
-    for (let [key, value] of Object.entries(metricsList)) {
-      data = [...data, ...value];
+    if (metricsList && metricsList.length > 0) {
+      return metricsList?.map((metricsItem) => {
+        const key = `${metricsItem.vertices}-${metricsItem.metrics}`;
+        return (
+          <FlinkChart
+            key={key}
+            chartSize={metricsItem.showSize}
+            chartType={metricsItem.showType}
+            title={metricsItem.metrics}
+            data={chartData[key] ?? []}
+          />
+        );
+      });
     }
-    return data?.map((metricsItem) => {
-      const key = `${metricsItem.vertices}-${metricsItem.metrics}`;
-      return (
-        <FlinkChart
-          key={key}
-          chartSize={metricsItem.showSize}
-          chartType={metricsItem.showType}
-          title={metricsItem.metrics}
-          data={chartData[key] ?? []}
-        />
-      );
-    });
+    return <Empty className={'code-content-empty'} />;
   };
   return (
-    <Spin spinning={loading}>
-      <Row gutter={[8, 16]}>{renderMetricsCardList(metricsTarget ?? {}, chartDatas)}</Row>
+    <Spin spinning={loading} delay={500}>
+      <Row gutter={[8, 16]}>{renderMetricsCardList(metricsList ?? {}, chartDatas)}</Row>
     </Spin>
   );
 };
 
-export default connect(({ Devops }: { Devops: DevopsType }) => ({
-  jobDetail: Devops.jobInfoDetail,
-  metricsTarget: Devops.metrics.jobMetricsTarget,
-  layoutName: Devops.metrics.layoutName
-}))(JobChart);
+export default JobChart;

@@ -30,17 +30,17 @@ public class AlertConfig {
 
     private String name;
     private String type;
-    private Map<String, String> param;
+    private Map<String, Object> param;
 
     public AlertConfig() {}
 
-    public AlertConfig(String name, String type, Map<String, String> param) {
+    public AlertConfig(String name, String type, Map<String, Object> param) {
         this.name = name;
         this.type = type;
         this.param = param;
     }
 
-    public static AlertConfig build(String name, String type, Map<String, String> param) {
+    public static AlertConfig build(String name, String type, Map<String, Object> param) {
         return new AlertConfig(name, type, param);
     }
 
@@ -60,11 +60,11 @@ public class AlertConfig {
         this.type = type;
     }
 
-    public Map<String, String> getParam() {
+    public Map<String, Object> getParam() {
         return param;
     }
 
-    public void setParam(Map<String, String> param) {
+    public void setParam(Map<String, Object> param) {
         this.param = param;
     }
 }

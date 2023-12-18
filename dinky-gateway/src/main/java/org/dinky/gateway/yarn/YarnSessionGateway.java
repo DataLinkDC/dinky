@@ -20,6 +20,7 @@
 package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
@@ -44,7 +45,7 @@ public class YarnSessionGateway extends YarnGateway {
     }
 
     @Override
-    public GatewayResult deployCluster() {
+    public GatewayResult deployCluster(FlinkUdfPathContextHolder udfPathContextHolder) {
         if (Asserts.isNull(yarnClient)) {
             init();
         }
@@ -53,7 +54,7 @@ public class YarnSessionGateway extends YarnGateway {
                 createClusterSpecificationBuilder();
 
         YarnResult result = YarnResult.build(getType());
-        try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar()) {
+        try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar(udfPathContextHolder)) {
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deploySessionCluster(
                     clusterSpecificationBuilder.createClusterSpecification());
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();

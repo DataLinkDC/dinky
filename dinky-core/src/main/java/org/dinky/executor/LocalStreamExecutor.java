@@ -19,15 +19,20 @@
 
 package org.dinky.executor;
 
+import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
+
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.RestOptions;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
+import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Opt;
 
 /**
  * LocalStreamExecutor
@@ -36,7 +41,7 @@ import cn.hutool.core.io.FileUtil;
  */
 public class LocalStreamExecutor extends Executor {
 
-    public LocalStreamExecutor(ExecutorConfig executorConfig) {
+    public LocalStreamExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidJarFiles()) {
             executorConfig
@@ -47,21 +52,23 @@ public class LocalStreamExecutor extends Executor {
                                     .map(FileUtil::getAbsolutePath)
                                     .collect(Collectors.joining(",")));
         }
-        if (executorConfig.isValidConfig()) {
-            Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
-            if (configuration.contains(RestOptions.PORT)) {
-                this.environment = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
-            } else {
-                this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
+        if (!executorConfig.isPlan()) {
+            Configuration configuration = Configuration.fromMap(
+                    Opt.ofNullable(executorConfig.getConfig()).orElse(new HashMap<>()));
+            if (!configuration.contains(RestOptions.PORT)) {
+                if (Asserts.isNotNull(executorConfig.getPort())) {
+                    configuration.set(RestOptions.PORT, executorConfig.getPort());
+                }
             }
+            this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
         } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         }
-        init();
+        init(classLoader);
     }
 
     @Override
-    CustomTableEnvironment createCustomTableEnvironment() {
-        return CustomTableEnvironmentImpl.create(environment);
+    CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader) {
+        return CustomTableEnvironmentImpl.create(environment, classLoader);
     }
 }

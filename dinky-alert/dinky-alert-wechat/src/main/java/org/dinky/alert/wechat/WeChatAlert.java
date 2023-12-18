@@ -46,7 +46,7 @@ public class WeChatAlert extends AbstractAlert {
 
     @Override
     public String getTemplate() {
-        String sendType = getConfig().getParam().get(WeChatConstants.SEND_TYPE);
+        String sendType = (String) getConfig().getParam().get(WeChatConstants.SEND_TYPE);
         return ResourceUtil.readUtf8Str(
                 StrFormatter.format("{}-{}.ftl", getConfig().getType(), sendType));
     }
@@ -55,11 +55,21 @@ public class WeChatAlert extends AbstractAlert {
     public AlertResult send(String title, String content) {
         WeChatSender sender = new WeChatSender(getConfig().getParam());
         try {
-            String built = buildContent(sender.buildTemplateParams(title, content));
+            String built = buildContent(sender.buildTemplateParams(title, replaceContent(content)));
             return sender.send(built);
         } catch (TemplateException | IOException e) {
             logger.error("{}'message send error, Reason:{}", getType(), e.getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * remove - from  string
+     *
+     * @param  content      input string with line breaks (new lines)
+     * @return string with lines removed
+     */
+    private String replaceContent(String content) {
+        return content.replaceAll("\\n-\\s", "\n");
     }
 }

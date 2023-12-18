@@ -45,7 +45,7 @@ const LangSwitch = () => {
       top: 10,
       right: 10,
       borderRadius: token.borderRadius,
-      zIndex: 9999,
+      zIndex: 999,
       ':hover': {
         backgroundColor: token.colorBgTextHover
       }
