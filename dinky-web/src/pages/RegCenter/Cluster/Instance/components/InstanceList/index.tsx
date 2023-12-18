@@ -71,7 +71,7 @@ export default () => {
   const [searchKeyWord, setSearchKeyword] = useState<string>('');
   const actionRef = useRef<ActionType>();
 
-  const { data, loading,refresh } = useHookRequest(getData, {
+  const { data, loading, refresh } = useHookRequest(getData, {
     refreshDeps: [searchKeyWord, isAutoCreate],
     defaultParams: [
       API_CONSTANTS.CLUSTER_INSTANCE_LIST,
@@ -88,7 +88,7 @@ export default () => {
     setClusterInstanceStatus((prevState) => ({ ...prevState, loading: true }));
     await callback();
     setClusterInstanceStatus((prevState) => ({ ...prevState, loading: false }));
-    await refresh()
+    await refresh();
     actionRef.current?.reload?.();
   };
 
