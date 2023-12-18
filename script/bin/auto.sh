@@ -37,6 +37,11 @@ tips() {
 }
 
 updatePid() {
+  # if pid file is exist, remove this file
+  if [ -f "${PID_PATH}/${PID_FILE}" ];then
+    rm -f "${PID_PATH}/${PID_FILE}"
+  fi
+
   pid=$(ps -ef | grep [d]inky  | awk '{print $2}' | head -1)
   echo $pid >"${PID_PATH}"/${PID_FILE}
 }
