@@ -40,7 +40,7 @@ import { InitClusterInstanceState } from '@/types/RegCenter/init.d';
 import { ClusterInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
-import { ActionType, ProList } from '@ant-design/pro-components';
+import { ProList } from '@ant-design/pro-components';
 import {
   Badge,
   Button,
@@ -69,7 +69,6 @@ export default () => {
     useState<ClusterInstanceState>(InitClusterInstanceState);
   const [isAutoCreate, setIsAutoCreate] = useState<boolean>(false);
   const [searchKeyWord, setSearchKeyword] = useState<string>('');
-  const actionRef = useRef<ActionType>();
 
   const { data, loading,refresh } = useHookRequest(getData, {
     refreshDeps: [searchKeyWord, isAutoCreate],
@@ -89,7 +88,6 @@ export default () => {
     await callback();
     setClusterInstanceStatus((prevState) => ({ ...prevState, loading: false }));
     await refresh();
-    actionRef.current?.reload?.();
   };
 
   /**
@@ -320,7 +318,6 @@ export default () => {
         {...(PRO_LIST_CARD_OPTIONS as any)}
         grid={{ gutter: 24, column: 4 }}
         pagination={{ size: 'small', defaultPageSize: 12, hideOnSinglePage: true }}
-        actionRef={actionRef}
         dataSource={data}
         loading={loading}
         itemLayout={'vertical'}
