@@ -18,8 +18,7 @@
  */
 
 import {
-    CircleBottomButtonProps,
-    CircleDataStudioButtonProps
+    CircleBottomButtonProps
 } from '@/components/CallBackButton/CircleBtn';
 import Console from '@/pages/DataStudio/BottomContainer/Console';
 import JobExecHistory from '@/pages/DataStudio/BottomContainer/JobExecHistory';
@@ -43,23 +42,17 @@ import {DIALECT} from '@/services/constants';
 import {l} from '@/utils/intl';
 import {
     ApartmentOutlined,
-    ArrowsAltOutlined,
     ConsoleSqlOutlined,
     DatabaseOutlined,
-    EnvironmentOutlined,
     FolderOutlined,
     FunctionOutlined,
     HistoryOutlined,
     InfoCircleOutlined,
     InsertRowRightOutlined,
     MonitorOutlined,
-    PlusCircleOutlined,
-    PlusOutlined,
-    ReloadOutlined,
     RightSquareOutlined,
     RotateRightOutlined,
     SettingOutlined,
-    ShrinkOutlined,
     TableOutlined,
     ToolOutlined
 } from '@ant-design/icons';
@@ -250,61 +243,6 @@ export const LeftBottomMoreTabs: { [c: string]: TabProp[] } = {
     ]
 };
 
-// btn route
-export const BtnRoute: { [c: string]: CircleDataStudioButtonProps[] } = {
-    'menu.datastudio.datasource': [
-        {
-            icon: <PlusOutlined/>,
-            title: l('button.create'),
-            onClick: () => {
-            }
-        },
-        {
-            icon: <ReloadOutlined/>,
-            title: l('button.refresh'),
-            onClick: () => {
-            }
-        }
-    ],
-    'menu.datastudio.catalog': [
-        {
-            icon: <ReloadOutlined/>,
-            title: l('button.refresh'),
-            onClick: () => {
-            }
-        }
-    ],
-    'menu.datastudio.project': [
-        {
-            icon: <PlusCircleOutlined/>,
-            title: l('right.menu.createRoot'),
-            key: 'right.menu.createRoot',
-            onClick: () => {
-            }
-        },
-        {
-            icon: <ArrowsAltOutlined/>,
-            title: l('button.expand-all'),
-            key: 'button.expand-all',
-            onClick: () => {
-            }
-        },
-        {
-            icon: <ShrinkOutlined/>,
-            title: l('button.collapse-all'),
-            key: 'button.collapse-all',
-            onClick: () => {
-            }
-        },
-        {
-            icon: <EnvironmentOutlined/>,
-            title: l('button.position'),
-            key: 'button.position',
-            onClick: () => {
-            }
-        }
-    ]
-};
 export const BottomBtnRoute: { [c: string]: CircleBottomButtonProps[] } = {
     // todo 右边按钮功能有待完善
     // [LeftBottomKey.TABLE_DATA_KEY]: [

@@ -22,10 +22,11 @@ import MovableSidebar, { MovableSidebarProps } from '@/components/Sidebar/Movabl
 import useThemeValue from '@/hooks/useThemeValue';
 import ProjectTitle from '@/pages/DataStudio/LeftContainer/Project/ProjectTitle';
 import { StateType, STUDIO_MODEL, VIEW } from '@/pages/DataStudio/model';
-import { BtnRoute, LeftSide } from '@/pages/DataStudio/route';
+import { LeftSide } from '@/pages/DataStudio/route';
 import { connect } from '@@/exports';
 import { Tabs } from 'antd';
-import React from 'react';
+import React, {useContext} from 'react';
+import {BtnContext} from "@/pages/DataStudio/LeftContainer/BtnContext";
 
 export type LeftContainerProps = {
   size: number;
@@ -41,6 +42,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
     rightContainer,
     tabs: { panes, activeKey }
   } = props;
+  const btn = useContext(BtnContext);
   const themeValue = useThemeValue();
   const MAX_WIDTH = size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700;
   /**
@@ -87,8 +89,8 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
     minWidth: 160,
     maxWidth: MAX_WIDTH,
     enable: { right: true },
-    btnGroup: BtnRoute[leftContainer.selectKey]
-      ? BtnRoute[leftContainer.selectKey].map((item: CircleDataStudioButtonProps) => (
+    btnGroup: btn[leftContainer.selectKey]
+      ? btn[leftContainer.selectKey].map((item: CircleDataStudioButtonProps) => (
           <CircleBtn
             title={item.title}
             icon={item.icon}

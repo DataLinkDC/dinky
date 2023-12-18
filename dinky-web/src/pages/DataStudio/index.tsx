@@ -48,6 +48,8 @@ import { Layout, Menu, theme } from 'antd';
 import { useEffect, useState } from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
 import { connect, getDvaApp } from 'umi';
+import {BtnProvider} from "@/pages/DataStudio/LeftContainer/BtnContext";
+import {useAsyncEffect} from "ahooks";
 
 const { Sider, Content } = Layout;
 
@@ -138,8 +140,8 @@ const DataStudio = (props: any) => {
     updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
   }, [activeKey, panes]);
 
-  useEffect(() => {
-    loadData();
+  useAsyncEffect(async () => {
+    await loadData();
   }, []);
 
   const access = useAccess();
@@ -277,11 +279,13 @@ const DataStudio = (props: any) => {
 
             <Content style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div style={{ display: 'flex' }}>
-                <LeftContainer
-                  size={size}
-                  leftContainer={leftContainer}
-                  rightContainer={rightContainer}
-                />
+                  <BtnProvider>
+                    <LeftContainer
+                      size={size}
+                      leftContainer={leftContainer}
+                      rightContainer={rightContainer}
+                    />
+                  </BtnProvider>
                 <Content
                   style={{
                     width:

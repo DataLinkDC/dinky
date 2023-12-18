@@ -21,7 +21,6 @@ import { getCurrentData } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { TableDataNode } from '@/pages/DataStudio/LeftContainer/Catalog/data';
 import { StateType } from '@/pages/DataStudio/model';
-import { BtnRoute } from '@/pages/DataStudio/route';
 import ColumnInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/ColumnInfo';
 import TableInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/TableInfo';
 import { DIALECT } from '@/services/constants';
@@ -39,8 +38,9 @@ import { Button, Col, Empty, Modal, Row, Select, Spin, Tabs } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { DefaultOptionType } from 'rc-select/lib/Select';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { getMSCatalogs, getMSColumns, getMSSchemaInfo } from './service';
+import {BtnRoute, useTasksDispatch} from "@/pages/DataStudio/LeftContainer/BtnContext";
 
 const Catalog: React.FC = (props: connect) => {
   const { tabs } = props;
@@ -75,10 +75,18 @@ const Catalog: React.FC = (props: connect) => {
   const [row, setRow] = useState<TableDataNode>();
   const [loading, setLoading] = useState<boolean>(false);
   const [columnData, setColumnData] = useState([]);
+  const btnDispatch = useTasksDispatch();
+  const currentTabName = 'menu.datastudio.catalog';
+  const btnEvent = [...BtnRoute[currentTabName]];
 
-  BtnRoute['menu.datastudio.catalog'][0].onClick = () => {
+  btnEvent[0].onClick = () => {
     refreshMetaStoreTables();
   };
+  btnDispatch({
+    type: 'change',
+    selectKey: currentTabName,
+    payload: btnEvent
+  })
 
   useEffect(() => {
     getCatalogs();
