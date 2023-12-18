@@ -57,7 +57,7 @@ import {
   Tooltip,
   Typography
 } from 'antd';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 const { Text, Paragraph, Link } = Typography;
 
