@@ -22,6 +22,7 @@ package org.dinky.executor;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 
+import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
@@ -33,7 +34,6 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentInternal;
 import org.apache.flink.table.delegation.Planner;
-import org.apache.flink.table.operations.Operation;
 import org.apache.flink.types.Row;
 
 import java.io.File;
@@ -73,6 +73,8 @@ public interface CustomTableEnvironment
 
     Planner getPlanner();
 
+    ClassLoader getUserClassLoader();
+
     Configuration getRootConfiguration();
 
     default List<LineageRel> getLineage(String statement) {
@@ -80,8 +82,6 @@ public interface CustomTableEnvironment
     }
 
     <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList);
-
-    void executeCTAS(Operation operation);
 
     default void addJar(File... jarPath) {
         Configuration configuration = this.getRootConfiguration();
@@ -93,5 +93,11 @@ public interface CustomTableEnvironment
         } else {
             CollUtil.addAll(jars, pathList);
         }
+    }
+
+    default <T> void addConfiguration(ConfigOption<T> option, T value) {
+        Configuration configuration =
+                (Configuration) getStreamExecutionEnvironment().getConfiguration();
+        configuration.set(option, value);
     }
 }

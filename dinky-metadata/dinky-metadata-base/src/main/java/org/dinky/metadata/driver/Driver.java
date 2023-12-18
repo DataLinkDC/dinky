@@ -27,13 +27,18 @@ import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.utils.JsonUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
+
+import cn.hutool.core.text.StrFormatter;
 
 /**
  * Driver
@@ -42,51 +47,55 @@ import java.util.Set;
  */
 public interface Driver extends AutoCloseable {
 
-    static Optional<Driver> get(DriverConfig config) {
-        Asserts.checkNotNull(config, "数据源配置不能为空");
+    static Optional<Driver> get(String type) {
+        Asserts.checkNotNull(type, "数据源Type配置不能为空");
         ServiceLoader<Driver> drivers = ServiceLoader.load(Driver.class);
         for (Driver driver : drivers) {
-            if (driver.canHandle(config.getType())) {
-                return Optional.of(driver.setDriverConfig(config));
+            if (driver.canHandle(type)) {
+                return Optional.of(driver);
             }
         }
         return Optional.empty();
     }
 
-    static Driver build(DriverConfig config) {
-        String key = config.getName();
-        if (DriverPool.exist(key)) {
-            return getHealthDriver(key);
-        }
-
+    static Driver getDriver(String type) {
         synchronized (Driver.class) {
-            Optional<Driver> optionalDriver = Driver.get(config);
+            Optional<Driver> optionalDriver = Driver.get(type);
             if (!optionalDriver.isPresent()) {
-                throw new MetaDataException("缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
-            }
-            Driver driver = optionalDriver.get().connect();
-            DriverPool.push(key, driver);
-            return driver;
-        }
-    }
-
-    static Driver buildNewConnection(DriverConfig config) {
-        Optional<Driver> optionalDriver = Driver.get(config);
-        if (!optionalDriver.isPresent()) {
-            throw new MetaDataException("Missing " + config.getType() + " dependency package: dinky-metadata-"
-                    + config.getType().toLowerCase() + ".jar");
-        }
-        return optionalDriver.get().connect();
-    }
-
-    static Driver buildUnconnected(DriverConfig config) {
-        synchronized (Driver.class) {
-            Optional<Driver> optionalDriver = Driver.get(config);
-            if (!optionalDriver.isPresent()) {
-                throw new MetaDataException("缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
+                throw new MetaDataException(
+                        StrFormatter.format("Missing {} dependency package: dinky-metadata-{}.jar", type, type));
             }
             return optionalDriver.get();
         }
+    }
+
+    static Driver build(String name, String type, Map<String, Object> config) {
+        if (DriverPool.exist(name)) {
+            return getHealthDriver(name);
+        }
+        Driver driver = getDriver(type).buildDriverConfig(name, type, config).connect();
+        DriverPool.push(name, driver);
+        return driver;
+    }
+
+    static <T> Driver build(DriverConfig<T> config) {
+        if (DriverPool.exist(config.getName())) {
+            return getHealthDriver(config.getName());
+        }
+        Driver driver = getDriver(config.getType())
+                .buildDriverConfig(config.getName(), config.getType(), config.getConnectConfig())
+                .connect();
+        DriverPool.push(config.getName(), driver);
+        return driver;
+    }
+
+    static Driver buildWithOutPool(String name, String type, Map<String, Object> config) {
+        Driver driver = getDriver(type);
+        return driver.buildDriverConfig(name, type, config).connect();
+    }
+
+    static Driver buildUnconnected(String name, String type, Map<String, Object> config) {
+        return getDriver(type).buildDriverConfig(name, type, config);
     }
 
     static Driver getHealthDriver(String key) {
@@ -123,14 +132,17 @@ public interface Driver extends AutoCloseable {
         }
 
         if (Asserts.isNull(type)) {
-            throw new MetaDataException("缺少数据源类型:【" + connector + "】");
+            throw new MetaDataException("Missing DataSource Type:【" + connector + "】");
         }
-
-        DriverConfig driverConfig = new DriverConfig(url, type, url, username, password);
-        return build(driverConfig);
+        AbstractJdbcConfig config = AbstractJdbcConfig.builder()
+                .url(url)
+                .username(username)
+                .password(password)
+                .build();
+        return build(connector, type, JsonUtils.toMap(config));
     }
 
-    Driver setDriverConfig(DriverConfig config);
+    <T> Driver buildDriverConfig(String name, String type, T config);
 
     boolean canHandle(String type);
 

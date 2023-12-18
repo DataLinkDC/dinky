@@ -26,8 +26,6 @@ import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobInstance;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -60,12 +58,6 @@ public class JobInfoDetail implements Serializable {
 
     @ApiModelProperty(value = "JobDataDto", notes = "Details about the job")
     private JobDataDto jobDataDto;
-
-    /**
-     * jobId -> metricsId -> metricsValue
-     */
-    @ApiModelProperty(value = "Metrics Map", notes = "Details about the metrics map")
-    private Map<String, Map<String, String>> customMetricsMap = new HashMap<>();
 
     public JobInfoDetail(Integer id) {
         this.id = id;

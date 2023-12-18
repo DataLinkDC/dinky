@@ -304,6 +304,8 @@ const ProjectProTable: React.FC = () => {
             <Button
               title={l('button.build')}
               key={`${record.id}_buildbtn`}
+              htmlType={'submit'}
+              autoFocus
               icon={<BuildTwoTone />}
             />
           </Popconfirm>
@@ -391,7 +393,7 @@ const ProjectProTable: React.FC = () => {
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.GIT_PROJECT, { ...params, sorter, filter })
         }
-        onDragSortEnd={handleDragSortEnd}
+        onDragSortEnd={(beforeIndex, afterIndex, newDataSource) => handleDragSortEnd(newDataSource)}
       />
       {/* added modal form */}
       <ProjectModal

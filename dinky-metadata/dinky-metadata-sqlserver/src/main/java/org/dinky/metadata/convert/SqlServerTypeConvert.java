@@ -21,7 +21,7 @@ package org.dinky.metadata.convert;
 
 import org.dinky.data.enums.ColumnType;
 
-public class SqlServerTypeConvert extends AbstractTypeConvert {
+public class SqlServerTypeConvert extends AbstractJdbcTypeConvert {
 
     public SqlServerTypeConvert() {
         this.convertMap.clear();

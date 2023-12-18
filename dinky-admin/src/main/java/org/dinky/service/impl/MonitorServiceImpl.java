@@ -19,14 +19,19 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.context.SseSessionContextHolder;
+import org.dinky.data.MetricsLayoutVo;
 import org.dinky.data.constant.PaimonTableConstant;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.metrics.Jvm;
 import org.dinky.data.model.Metrics;
+import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.mapper.MetricsMapper;
+import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.PaimonUtil;
 
 import org.apache.paimon.data.BinaryString;
@@ -36,9 +41,9 @@ import org.apache.paimon.predicate.PredicateBuilder;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -55,17 +60,20 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> implements MonitorService {
+
     private final Executor scheduleRefreshMonitorDataExecutor;
+    private final JobInstanceService jobInstanceService;
 
     @Override
-    public List<MetricsVO> getData(Date startTime, Date endTime, List<String> jobIds) {
+    public List<MetricsVO> getData(Date startTime, Date endTime, List<String> models) {
+        if (models.isEmpty()) {
+            throw new DinkyException("Please provide at least one monitoring ID");
+        }
         endTime = Opt.ofNullable(endTime).orElse(DateUtil.date());
         Timestamp startTS = Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(startTime));
         Timestamp endTS = Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(endTime));
@@ -78,7 +86,7 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
             Predicate greaterOrEqual = p.greaterOrEqual(0, startTS);
             Predicate lessOrEqual = p.lessOrEqual(0, endTS);
             Predicate local =
-                    p.in(1, jobIds.stream().map(BinaryString::fromString).collect(Collectors.toList()));
+                    p.in(1, models.stream().map(BinaryString::fromString).collect(Collectors.toList()));
             return CollUtil.newArrayList(local, greaterOrEqual, lessOrEqual);
         };
         List<MetricsVO> metricsVOList =
@@ -86,21 +94,23 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
         return metricsVOList.stream()
                 .filter(x -> x.getHeartTime().isAfter(startTS.toLocalDateTime()))
                 .filter(x -> x.getHeartTime().isBefore(endTS.toLocalDateTime()))
-                .peek(vo -> vo.setContent(new JSONObject(vo.getContent().toString())))
+                .peek(vo -> vo.setContent(JsonUtils.parseObject(vo.getContent().toString())))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public SseEmitter sendJvmInfo(SseEmitter sseEmitter) {
+    public SseEmitter sendJvmInfo() {
+        String sessionKey = UUID.randomUUID().toString();
+        SseEmitter sseEmitter = SseSessionContextHolder.connectSession(sessionKey);
+        SseSessionContextHolder.subscribeTopic(sessionKey, CollUtil.newArrayList(sessionKey));
         scheduleRefreshMonitorDataExecutor.execute(() -> {
             try {
                 while (true) {
-                    sseEmitter.send(JSONUtil.toJsonStr(Jvm.of()));
+                    SseSessionContextHolder.sendTopic(sessionKey, Jvm.of());
                     ThreadUtil.sleep(10000);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
-                sseEmitter.complete();
+                log.error("send jvm info failed, complete sse emiter :" + e.getMessage());
             }
         });
         return sseEmitter;
@@ -115,18 +125,30 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
         if (CollUtil.isEmpty(metricsList)) {
             return;
         }
-        saveBatch(BeanUtil.copyToList(metricsList, Metrics.class));
+        List<MetricsLayoutDTO> list =
+                metricsList.stream().peek(m -> m.setLayoutName(layout)).collect(Collectors.toList());
+        saveBatch(BeanUtil.copyToList(list, Metrics.class));
     }
 
     @Override
-    public Map<String, List<Metrics>> getMetricsLayout() {
-        List<Metrics> list = list();
-        Map<String, List<Metrics>> result = new HashMap<>();
-        list.forEach(x -> {
-            String layoutName = x.getLayoutName();
-            result.computeIfAbsent(layoutName, (k) -> new ArrayList<>());
-            result.get(layoutName).add(x);
-        });
+    public List<MetricsLayoutVo> getMetricsLayout() {
+        Map<String, List<Metrics>> collect = list().stream().collect(Collectors.groupingBy(Metrics::getLayoutName));
+
+        List<MetricsLayoutVo> result = new ArrayList<>();
+        for (Map.Entry<String, List<Metrics>> entry : collect.entrySet()) {
+            // It is derived from a group, so the value must have a value,
+            // and a layout name only corresponds to a task ID, so only the first one can be taken
+            Integer taskId = entry.getValue().get(0).getTaskId();
+            JobInstance jobInstance = jobInstanceService.getJobInstanceByTaskId(taskId);
+            MetricsLayoutVo metricsLayoutVo = MetricsLayoutVo.builder()
+                    .layoutName(entry.getKey())
+                    .metrics(entry.getValue())
+                    .flinkJobId(jobInstance == null ? null : jobInstance.getJid())
+                    .taskId(taskId)
+                    .showInDashboard(true)
+                    .build();
+            result.add(metricsLayoutVo);
+        }
         return result;
     }
 
@@ -138,7 +160,7 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
     }
 
     @Override
-    public List<Metrics> getJobMetrics(Integer taskId) {
+    public List<Metrics> getMetricsLayoutByTaskId(Integer taskId) {
         QueryWrapper<Metrics> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(Metrics::getTaskId, taskId);
         return this.baseMapper.selectList(wrapper);

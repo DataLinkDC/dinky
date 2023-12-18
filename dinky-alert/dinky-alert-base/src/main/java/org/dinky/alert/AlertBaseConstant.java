@@ -32,13 +32,21 @@ public class AlertBaseConstant {
     public static final String SECRET = "secret";
     public static final String MSG_TYPE = "msgtype";
     public static final String AT_MOBILES = "atMobiles";
-    public static final String AT_USERIDS = "atUserIds";
     public static final String AT_ALL = "isAtAll";
     public static final String PROXY = "proxy";
     public static final String PORT = "port";
     public static final String USER = "user";
-    public static final String AT_USERS = "users";
+    public static final String AT_USERS = "atUsers";
     public static final String PASSWORD = "password";
+
+    public static final String ALERT_TEMPLATE_TITLE = "Job Alert Test Title";
+    public static final String ALERT_TEMPLATE_MSG = "\n- **Job Name:** <font color='gray'>Test Job</font>\n"
+            + "- **Job Status:** <font color='red'>FAILED</font>\n"
+            + "- **Alert Time:** 2023-01-01 12:00:00\n"
+            + "- **Start Time:** 2023-01-01 12:00:00\n"
+            + "- **End Time:** 2023-01-01 12:00:00\n"
+            + "- **<font color='red'>The test exception, your job exception will pass here</font>**\n"
+            + "[Go to Task Web](https://github.com/DataLinkDC/dinky)";
 
     public AlertBaseConstant() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");

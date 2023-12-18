@@ -95,6 +95,12 @@ public class JobRefreshHandler {
         JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
         String oldStatus = jobInstance.getStatus();
 
+        // Cluster information is missing and cannot be monitored
+        if (Asserts.isNull(jobInfoDetail.getClusterInstance())) {
+            jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
+            jobInstanceService.updateById(jobInstance);
+            return true;
+        }
         // Update the value of JobData from the flink api while ignoring the null value to prevent
         // some other configuration from being overwritten
         BeanUtil.copyProperties(
@@ -107,11 +113,13 @@ public class JobRefreshHandler {
 
         if (Asserts.isNull(jobDataDto.getJob()) || jobDataDto.isError()) {
             // If the job fails to get it, the default Finish Time is the current time
-            jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
-            jobInstance.setFinishTime(LocalDateTime.now());
+            jobInstance.setStatus(JobStatus.RECONNECTING.getValue());
             jobInstance.setError(jobDataDto.getErrorMsg());
             jobInfoDetail.getJobDataDto().setError(true);
             jobInfoDetail.getJobDataDto().setErrorMsg(jobDataDto.getErrorMsg());
+            if (jobInstance.getFinishTime() == null || TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) < 1) {
+                jobInstance.setFinishTime(LocalDateTime.now());
+            }
         } else {
             jobInfoDetail.setJobDataDto(jobDataDto);
             FlinkJobDetailInfo flinkJobDetailInfo = jobDataDto.getJob();
@@ -133,15 +141,22 @@ public class JobRefreshHandler {
         // If the job status is transition and the status fails to be updated for 1 minute, set to true and discard the
         // update
 
-        boolean isTransition = JobStatus.isTransition(jobInstance.getStatus())
-                && (TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) > 0
-                        && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
-                                        .toMinutes()
-                                < 1);
+        boolean isTransition = false;
 
-        if (isTransition) {
-            log.debug("Job is transition: {}->{}", jobInstance.getId(), jobInstance.getName());
-            return false;
+        if (JobStatus.isTransition(jobInstance.getStatus())) {
+            Long finishTime = TimeUtil.localDateTimeToLong(jobInstance.getFinishTime());
+            long duration = Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
+                    .toMinutes();
+            if (finishTime > 0 && duration < 1) {
+                log.debug("Job is transition: {}->{}", jobInstance.getId(), jobInstance.getName());
+                isTransition = true;
+            } else if (JobStatus.RECONNECTING.getValue().equals(jobInstance.getStatus())) {
+                log.debug(
+                        "Job is not reconnected success at the specified time,set as UNKNOWN: {}->{}",
+                        jobInstance.getId(),
+                        jobInstance.getName());
+                jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
+            }
         }
 
         boolean isDone = (JobStatus.isDone(jobInstance.getStatus()))
@@ -149,6 +164,8 @@ public class JobRefreshHandler {
                         && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
                                         .toMinutes()
                                 >= 1);
+
+        isDone = !isTransition && isDone;
 
         if (!oldStatus.equals(jobInstance.getStatus()) || isDone || needSave) {
             log.debug("Dump JobInfo to database: {}->{}", jobInstance.getId(), jobInstance.getName());

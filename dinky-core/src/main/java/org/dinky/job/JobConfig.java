@@ -112,13 +112,6 @@ public class JobConfig {
     private boolean useAutoCancel;
 
     @ApiModelProperty(
-            value = "Session information",
-            dataType = "String",
-            example = "session-123",
-            notes = "Session information")
-    private String session;
-
-    @ApiModelProperty(
             value = "Flag indicating whether to use remote execution",
             dataType = "boolean",
             example = "false",
@@ -244,7 +237,7 @@ public class JobConfig {
     }
 
     public boolean isUseRemote() {
-        return !GatewayType.LOCAL.equalsValue(type);
+        return useRemote || !GatewayType.LOCAL.equalsValue(type);
     }
 
     public void buildLocal() {

@@ -53,7 +53,6 @@ declare namespace Jobs {
     tenantId: number;
     clusterId: number;
     clusterConfigurationId: number;
-    session: string;
     jobId: string;
     jobName: string;
     jobManagerAddress: string;
@@ -62,8 +61,7 @@ declare namespace Jobs {
     type: string;
     error: string;
     result: string;
-    config: JobConfig;
-    configJson: string;
+    configJson: JobConfig;
     startTime: string;
     endTime: string;
     taskId: number;

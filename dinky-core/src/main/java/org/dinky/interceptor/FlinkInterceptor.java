@@ -50,7 +50,7 @@ public class FlinkInterceptor {
         TableResult tableResult = null;
         Operation operation = Operations.buildOperation(statement);
         if (Asserts.isNotNull(operation)) {
-            tableResult = operation.build(executor);
+            tableResult = operation.execute(executor);
             noExecute = operation.noExecute();
         }
         return FlinkInterceptorResult.build(noExecute, tableResult);

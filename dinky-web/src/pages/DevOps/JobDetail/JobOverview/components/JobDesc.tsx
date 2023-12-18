@@ -108,20 +108,14 @@ const JobDesc = (props: JobProps) => {
             </Text>
           </Descriptions.Item>
 
-          {jobDetail?.clusterConfiguration ? (
-            <Descriptions.Item label={l('devops.jobinfo.config.clusterConfiguration')}>
-              <Link to={'/registration/cluster/instance'}>
-                {jobDetail?.clusterConfiguration?.name}
-              </Link>
-            </Descriptions.Item>
-          ) : undefined}
-
           <Descriptions.Item label={l('devops.jobinfo.config.useSqlFragment')}>
-            {jobDetail?.history?.config?.useSqlFragment ? l('button.enable') : l('button.disable')}
+            {jobDetail?.history?.configJson?.useSqlFragment
+              ? l('button.enable')
+              : l('button.disable')}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.execmode')}>
-            {jobDetail?.history?.config?.useBatchModel
+            {jobDetail?.history?.configJson?.useBatchModel
               ? l('global.table.execmode.batch')
               : l('global.table.execmode.streaming')}
           </Descriptions.Item>
@@ -139,11 +133,11 @@ const JobDesc = (props: JobProps) => {
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.startFromSavePoint')}>
-            {getSavePointStrategy(jobDetail?.history?.config?.savePointStrategy)}
+            {getSavePointStrategy(jobDetail?.history?.configJson?.savePointStrategy)}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.savePointPath')} span={2}>
-            {jobDetail?.history?.config.savePointPath}
+            {jobDetail?.history?.configJson.savePointPath}
           </Descriptions.Item>
         </Descriptions>
       </ProCard>

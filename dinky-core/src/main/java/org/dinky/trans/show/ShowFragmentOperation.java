@@ -57,7 +57,7 @@ public class ShowFragmentOperation extends AbstractOperation implements Operatio
     }
 
     @Override
-    public TableResult build(Executor executor) {
+    public TableResult execute(Executor executor) {
         Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
         if (Asserts.isNotNullMap(map)) {
             if (map.containsKey("FRAGMENT")) {

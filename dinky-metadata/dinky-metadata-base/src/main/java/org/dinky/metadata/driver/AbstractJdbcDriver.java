@@ -31,8 +31,11 @@ import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.TextUtil;
 
@@ -71,7 +74,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 2021/7/20 14:09
  */
 @Slf4j
-public abstract class AbstractJdbcDriver extends AbstractDriver {
+public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConfig> {
 
     protected ThreadLocal<Connection> conn = new ThreadLocal<>();
 
@@ -85,7 +88,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         Asserts.checkNotNull(config, "无效的数据源配置");
         try {
             Class.forName(getDriverClass());
-            DriverManager.getConnection(config.getUrl(), config.getUsername(), config.getPassword())
+            DriverManager.getConnection(
+                            config.getConnectConfig().getUrl(),
+                            config.getConnectConfig().getUsername(),
+                            config.getConnectConfig().getPassword())
                     .close();
         } catch (Exception e) {
             log.error("Jdbc链接测试失败！错误信息为：" + e.getMessage(), e);
@@ -99,7 +105,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             synchronized (this.getClass()) {
                 if (null == dataSource) {
                     DruidDataSource ds = new DruidDataSource();
-                    createDataSource(ds, config);
+                    createDataSource(ds, config.getConnectConfig());
                     ds.init();
                     this.dataSource = ds;
                 }
@@ -109,22 +115,18 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
-    public Driver setDriverConfig(DriverConfig config) {
-        this.config = config;
-        try {
-            this.dataSource = createDataSource();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public <T> Driver buildDriverConfig(String name, String type, T config) {
+        AbstractJdbcConfig connectConfig = JsonUtils.convertValue(config, AbstractJdbcConfig.class);
+        this.config = new DriverConfig<>(name, type, connectConfig);
         return this;
     }
 
-    protected void createDataSource(DruidDataSource ds, DriverConfig config) {
+    protected void createDataSource(DruidDataSource ds, AbstractJdbcConfig connectConfig) {
         ds.setName(config.getName().replaceAll("[^\\w]", ""));
-        ds.setUrl(config.getUrl());
+        ds.setUrl(connectConfig.getUrl());
         ds.setDriverClassName(getDriverClass());
-        ds.setUsername(config.getUsername());
-        ds.setPassword(config.getPassword());
+        ds.setUsername(connectConfig.getUsername());
+        ds.setPassword(connectConfig.getPassword());
         ds.setValidationQuery(validationQuery);
         ds.setTestWhileIdle(true);
         ds.setBreakAfterAcquireFailure(true);
@@ -156,7 +158,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             }
             return false;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("check is health errr:", e);
             return false;
         }
     }
@@ -169,7 +171,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 conn.remove();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("close error:", e);
         }
     }
 
@@ -182,7 +184,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 preparedStatement.close();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("close jdbc error:", e);
         }
     }
 
@@ -203,7 +205,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("ListSchemas failed", e);
         } finally {
             close(preparedStatement, results);
         }
@@ -227,9 +229,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public String generateCreateSchemaSql(String schemaName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CREATE DATABASE ").append(schemaName);
-        return sb.toString();
+        return "CREATE DATABASE " + schemaName;
     }
 
     @Override
@@ -281,7 +281,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("ListTables Failed", e);
         } finally {
             close(preparedStatement, results);
         }
@@ -375,7 +375,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 columns.add(field);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("ListColumns error", e);
         } finally {
             close(preparedStatement, results);
         }
@@ -453,7 +453,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("GetCreateTableSql Failed", e);
         } finally {
             close(preparedStatement, results);
         }
@@ -465,7 +465,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         StringBuilder sb = new StringBuilder();
         sb.append("DROP TABLE ");
         if (Asserts.isNotNullString(table.getSchema())) {
-            sb.append(table.getSchema() + ".");
+            sb.append(table.getSchema()).append(".");
         }
         sb.append(table.getName());
         return sb.toString();
@@ -476,7 +476,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         StringBuilder sb = new StringBuilder();
         sb.append("TRUNCATE TABLE ");
         if (Asserts.isNotNullString(table.getSchema())) {
-            sb.append(table.getSchema() + ".");
+            sb.append(table.getSchema()).append(".");
         }
         sb.append(table.getName());
         return sb.toString();
@@ -485,8 +485,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     // todu impl by subclass
     @Override
     public String generateCreateTableSql(Table table) {
-        StringBuilder sb = new StringBuilder();
-        return sb.toString();
+        return "";
     }
 
     @Override
@@ -528,10 +527,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 .append(".")
                 .append(queryData.getTableName());
 
-        if (where != null && !where.equals("")) {
+        if (where != null && !where.isEmpty()) {
             optionBuilder.append(" where ").append(where);
         }
-        if (order != null && !order.equals("")) {
+        if (order != null && !order.isEmpty()) {
             optionBuilder.append(" order by ").append(order);
         }
 
@@ -548,7 +547,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public JdbcSelectResult query(String sql, Integer limit) {
-        // TODO 改为ProcessStep注释
         if (Asserts.isNull(limit)) {
             limit = 100;
         }
@@ -574,7 +572,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 column.setName(metaData.getColumnLabel(i));
                 column.setType(metaData.getColumnTypeName(i));
                 column.setAutoIncrement(metaData.isAutoIncrement(i));
-                column.setNullable(metaData.isNullable(i) == 0 ? false : true);
+                column.setNullable(metaData.isNullable(i) != 0);
                 column.setJavaType(getTypeConvert().convert(column, config));
                 columns.add(column);
             }
@@ -601,20 +599,16 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         } catch (Exception e) {
             result.setError(LogUtil.getError(e));
             result.setSuccess(false);
-            log.error(e.getMessage());
-        } finally {
-            close(preparedStatement, results);
-            result.setRowData(datas);
-            return result;
+            log.error("Query failed", e);
         }
+        close(preparedStatement, results);
+        result.setRowData(datas);
+        return result;
     }
 
     /**
      * 如果执行多条语句返回最后一条语句执行结果
      *
-     * @param sql
-     * @param limit
-     * @return
      */
     @Override
     public JdbcSelectResult executeSql(String sql, Integer limit) {
@@ -669,7 +663,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public List<SqlExplainResult> explain(String sql) {
-        // TODO 改为ProcessStep注释
         List<SqlExplainResult> sqlExplainResults = new ArrayList<>();
         String current = null;
         log.info("Start check sql...");
@@ -684,10 +677,9 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             log.info("Sql is correct.");
         } catch (Exception e) {
             sqlExplainResults.add(SqlExplainResult.fail(current, LogUtil.getError(e)));
-            log.error(e.getMessage());
-        } finally {
-            return sqlExplainResults;
+            log.error("explain failed", e);
         }
+        return sqlExplainResults;
     }
 
     @Override
@@ -722,7 +714,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 schemas.add(map);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("GetSplitSchemaList failed", e);
         } finally {
             close(preparedStatement, results);
         }

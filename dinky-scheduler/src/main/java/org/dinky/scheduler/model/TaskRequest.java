@@ -19,11 +19,7 @@
 
 package org.dinky.scheduler.model;
 
-import org.dinky.scheduler.enums.Flag;
-import org.dinky.scheduler.enums.Priority;
 import org.dinky.scheduler.enums.TaskExecuteType;
-import org.dinky.scheduler.enums.TaskTimeoutStrategy;
-import org.dinky.scheduler.enums.TimeoutFlag;
 
 import javax.validation.constraints.NotNull;
 
@@ -55,14 +51,14 @@ public class TaskRequest {
     private Integer failRetryTimes;
 
     @ApiModelProperty(value = "运行标志 yes 正常/no 禁止执行")
-    private Flag flag;
+    private String flag;
 
     @ApiModelProperty(value = "任务参数 默认DINKY参数")
     private String taskParams;
 
     @NotNull
     @ApiModelProperty(value = "优先级")
-    private Priority taskPriority;
+    private String taskPriority;
 
     @ApiModelProperty(value = "任务类型 默认DINKY")
     private String taskType = "DINKY";
@@ -71,10 +67,10 @@ public class TaskRequest {
     private Integer timeout;
 
     @ApiModelProperty(value = "超时告警")
-    private TimeoutFlag timeoutFlag;
+    private String timeoutFlag;
 
     @ApiModelProperty(value = "超时通知策略")
-    private TaskTimeoutStrategy timeoutNotifyStrategy;
+    private String timeoutNotifyStrategy;
 
     @ApiModelProperty(value = "worker分组 默认default")
     private String workerGroup = "default";

@@ -25,6 +25,8 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.data.exception.DinkyException;
+import org.dinky.utils.StringUtil;
 
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.Table;
@@ -34,6 +36,7 @@ import org.apache.flink.types.Row;
 import org.apache.flink.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -41,17 +44,19 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.extra.expression.engine.jexl.JexlEngine;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Flink Sql Variable Manager
  *
  * @since 2021/6/7 22:06
  */
+@Slf4j
 public final class VariableManager {
     public static final String VARIABLE = "variable";
     static final String SHOW_VARIABLES = "SHOW VARIABLES";
@@ -59,22 +64,41 @@ public final class VariableManager {
 
     public static final JexlEngine ENGINE = new JexlEngine();
 
+    public static final Dict ENGINE_CONTEXT = Dict.create();
+
     /**
-     * <p>
-     *      engine , key is variable name , value is class .
-     *      for example:
-     *          random -> RandomUtil -> about random operation
-     *          date -> DateUtil -> about date operation
-     *          id -> IdUtil  -> to generate random uuid
-     *          ...
+     * load expression variable class
      */
-    public static final Dict ENGINE_CONTEXT = Dict.create()
-            .set("random", RandomUtil.class)
-            .set("date", DateUtil.class)
-            .set("id", IdUtil.class);
+    private static void loadExpressionVariableClass() {
+        List<String> classLoaderVariableJexlClass = getClassLoaderVariableJexlClass();
+        if (CollUtil.isEmpty(classLoaderVariableJexlClass)) {
+            return;
+        }
+        classLoaderVariableJexlClass.forEach(fullClassName -> {
+            try {
+                String classSimpleName =
+                        BeanUtil.getBeanDesc(Class.forName(fullClassName)).getSimpleName();
+                String snakeCaseClassName = StringUtil.toSnakeCase(true, classSimpleName);
+                ENGINE_CONTEXT.set(snakeCaseClassName, Class.forName(fullClassName));
+                log.info("load class : {}", fullClassName);
+            } catch (ClassNotFoundException e) {
+                log.error(
+                        "The class [{}] that needs to be loaded may not be loaded by dinky or there is no jar file of this class under dinky's lib/plugins. Please check, and try again. {}",
+                        fullClassName,
+                        e.getMessage(),
+                        e);
+            }
+        });
+    }
 
     public VariableManager() {
         variables = new HashMap<>();
+    }
+
+    public static List<String> getClassLoaderVariableJexlClass() {
+        return Arrays.asList(ResourceUtil.readUtf8Str("dinky-loader/ExpressionVariableClass")
+                .replace("\r", "")
+                .split("\n"));
     }
 
     /**
@@ -140,15 +164,18 @@ public final class VariableManager {
      */
     public Object getVariable(String variableName) {
         checkArgument(
-                !StringUtils.isNullOrWhitespaceOnly(variableName), "sql variableName name cannot be null or empty.");
+                !StringUtils.isNullOrWhitespaceOnly(variableName),
+                "sql variable name or jexl key cannot be null or empty.");
         try {
             if (variables.containsKey(variableName)) {
                 return variables.get(variableName);
             }
+            // load expression variable class
+            loadExpressionVariableClass();
             // use jexl to parse variable value
             return ENGINE.eval(variableName, ENGINE_CONTEXT, null);
         } catch (Exception e) {
-            throw new CatalogException(format("The variable of sql %s does not exist.", variableName));
+            throw new DinkyException(format("The variable name or jexl key of sql %s does not exist.", variableName));
         }
     }
 

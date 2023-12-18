@@ -91,7 +91,14 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
       <Button key={'cancel'} onClick={() => handleCancel()}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'finish'} loading={submitting} type='primary' onClick={() => submitForm()}>
+      <Button
+        key={'finish'}
+        loading={submitting}
+        type='primary'
+        htmlType={'submit'}
+        autoFocus
+        onClick={() => submitForm()}
+      >
         {l('button.finish')}
       </Button>
     ];

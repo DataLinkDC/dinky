@@ -22,12 +22,14 @@ package org.dinky.executor;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.parser.CustomParserImpl;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
+import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.ExecutionOptions;
 import org.apache.flink.configuration.PipelineOptions;
@@ -65,13 +67,12 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
-import org.apache.flink.table.operations.ddl.CreateTableASOperation;
-import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.table.planner.delegation.DefaultExecutor;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
 import org.apache.flink.types.Row;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -118,26 +119,35 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 executor,
                 isStreamingMode,
                 userClassLoader));
+        Thread.currentThread().setContextClassLoader(userClassLoader);
         this.executor = executor;
+        injectParser(new CustomParserImpl(getPlanner().getParser()));
+        injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
     }
 
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
-        return create(executionEnvironment, EnvironmentSettings.newInstance().build(), TableConfig.getDefault());
+    public static CustomTableEnvironmentImpl create(
+            StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
+        return create(
+                executionEnvironment, EnvironmentSettings.newInstance().build(), TableConfig.getDefault(), classLoader);
     }
 
-    public static CustomTableEnvironmentImpl createBatch(StreamExecutionEnvironment executionEnvironment) {
+    public static CustomTableEnvironmentImpl createBatch(
+            StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
         Configuration configuration = new Configuration();
         configuration.set(ExecutionOptions.RUNTIME_MODE, RuntimeExecutionMode.BATCH);
         TableConfig tableConfig = new TableConfig();
         tableConfig.addConfiguration(configuration);
-        return create(executionEnvironment, EnvironmentSettings.inBatchMode(), tableConfig);
+        return create(executionEnvironment, EnvironmentSettings.inBatchMode(), tableConfig, classLoader);
     }
 
     public static CustomTableEnvironmentImpl create(
-            StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings, TableConfig tableConfig) {
+            StreamExecutionEnvironment executionEnvironment,
+            EnvironmentSettings settings,
+            TableConfig tableConfig,
+            ClassLoader classLoader) {
 
         // temporary solution until FLINK-15635 is fixed
-        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        //        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
         final ModuleManager moduleManager = new ModuleManager();
 
@@ -224,14 +234,36 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     @Override
     public void addJar(File... jarPath) {
-        Configuration configuration = new Configuration(this.getRootConfiguration());
+        Configuration configuration =
+                (Configuration) getStreamExecutionEnvironment().getConfiguration();
         List<String> pathList =
                 Arrays.stream(URLUtil.getURLs(jarPath)).map(URL::toString).collect(Collectors.toList());
         List<String> jars = configuration.get(PipelineOptions.JARS);
-        if (jars == null) {
-            configuration.set(PipelineOptions.JARS, pathList);
-        } else {
+        if (jars != null) {
             CollUtil.addAll(jars, pathList);
+        }
+        Map<String, Object> flinkConfigurationMap = getFlinkConfigurationMap();
+        flinkConfigurationMap.put(PipelineOptions.JARS.key(), jars);
+    }
+
+    @Override
+    public <T> void addConfiguration(ConfigOption<T> option, T value) {
+        Map<String, Object> flinkConfigurationMap = getFlinkConfigurationMap();
+        flinkConfigurationMap.put(option.key(), value);
+    }
+
+    private Map<String, Object> getFlinkConfigurationMap() {
+        Field configuration = null;
+        try {
+            configuration = StreamExecutionEnvironment.class.getDeclaredField("configuration");
+            configuration.setAccessible(true);
+            Configuration o = (Configuration) configuration.get(getStreamExecutionEnvironment());
+            Field confData = Configuration.class.getDeclaredField("confData");
+            confData.setAccessible(true);
+            Map<String, Object> temp = (Map<String, Object>) confData.get(o);
+            return temp;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -370,16 +402,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     @Override
     public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
         createTemporaryView(s, fromChangelogStream(dataStream));
-    }
-
-    @Override
-    public void executeCTAS(Operation operation) {
-        if (operation instanceof CreateTableASOperation) {
-            CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
-            CreateTableOperation createTableOperation = createTableASOperation.getCreateTableOperation();
-            executeInternal(createTableOperation);
-            getPlanner().translate(CollUtil.newArrayList(createTableASOperation.getInsertOperation()));
-        }
     }
 
     @Override

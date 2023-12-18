@@ -19,7 +19,7 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { SseData } from '@/models/Sse';
-import { DataStudioTabsItemType, StateType } from '@/pages/DataStudio/model';
+import { DataStudioTabsItemType, StateType, VIEW } from '@/pages/DataStudio/model';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { parseMilliSecondStr } from '@/utils/function';
@@ -139,7 +139,7 @@ const ConsoleContent = (props: ConsoleProps) => {
   };
 
   return (
-    <div style={{ height: props.height - 53 }}>
+    <div style={{ height: props.height - VIEW.leftMargin }}>
       <SplitPane
         split={'vertical'}
         defaultSizes={[100, 500]}
@@ -178,7 +178,7 @@ const ConsoleContent = (props: ConsoleProps) => {
         >
           <CodeShow
             code={selectNode?.log ? selectNode.log : ''}
-            height={props.height - 53}
+            height={props.height - VIEW.leftMargin}
             language={'javalog'}
             lineNumbers={'off'}
             enableMiniMap

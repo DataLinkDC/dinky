@@ -20,51 +20,37 @@
 package org.dinky.context;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /** @since 0.7.0 */
 public class FlinkUdfPathContextHolder {
 
-    private static final ThreadLocal<Set<File>> UDF_PATH_CONTEXT = new ThreadLocal<>();
-    private static final ThreadLocal<Set<File>> OTHER_PLUGINS_PATH_CONTEXT = new ThreadLocal<>();
-    private static final ThreadLocal<Set<File>> PYTHON_UDF_FILE = new ThreadLocal<>();
+    private final Set<File> UDF_PATH_CONTEXT = new HashSet<>();
+    private final Set<File> OTHER_PLUGINS_PATH_CONTEXT = new HashSet<>();
+    private final Set<File> PYTHON_UDF_FILE = new HashSet<>();
 
-    public static void addUdfPath(File file) {
+    public void addUdfPath(File file) {
         getUdfFile().add(file);
     }
 
-    public static void addPyUdfPath(File file) {
+    public void addPyUdfPath(File file) {
         getPyUdfFile().add(file);
     }
 
-    public static void addOtherPlugins(File file) {
+    public void addOtherPlugins(File file) {
         getOtherPluginsFiles().add(file);
     }
 
-    public static Set<File> getUdfFile() {
-        if (UDF_PATH_CONTEXT.get() == null) {
-            UDF_PATH_CONTEXT.set(new CopyOnWriteArraySet<>());
-        }
-        return UDF_PATH_CONTEXT.get();
+    public Set<File> getUdfFile() {
+        return UDF_PATH_CONTEXT;
     }
 
-    public static Set<File> getPyUdfFile() {
-        if (PYTHON_UDF_FILE.get() == null) {
-            PYTHON_UDF_FILE.set(new CopyOnWriteArraySet<>());
-        }
-        return PYTHON_UDF_FILE.get();
+    public Set<File> getPyUdfFile() {
+        return PYTHON_UDF_FILE;
     }
 
-    public static Set<File> getOtherPluginsFiles() {
-        if (OTHER_PLUGINS_PATH_CONTEXT.get() == null) {
-            OTHER_PLUGINS_PATH_CONTEXT.set(new CopyOnWriteArraySet<>());
-        }
-        return OTHER_PLUGINS_PATH_CONTEXT.get();
-    }
-
-    public static void clear() {
-        UDF_PATH_CONTEXT.remove();
-        OTHER_PLUGINS_PATH_CONTEXT.remove();
+    public Set<File> getOtherPluginsFiles() {
+        return OTHER_PLUGINS_PATH_CONTEXT;
     }
 }

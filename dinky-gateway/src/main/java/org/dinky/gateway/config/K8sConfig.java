@@ -64,4 +64,7 @@ public class K8sConfig {
             example = "tm-pod-template.yaml",
             notes = "YAML file containing the pod template for TaskManagers in Flink jobs")
     private String tmPodTemplate;
+
+    @ApiModelProperty(value = "KubeConfig", dataType = "String", example = "kubeconfig.yaml", notes = "KubeConfig file")
+    private String kubeConfig;
 }

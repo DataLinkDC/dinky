@@ -27,7 +27,6 @@ public class DingTalkConstants extends AlertBaseConstant {
     public static final String ALERT_TEMPLATE_TITLE = "title";
     public static final String ALERT_TEMPLATE_CONTENT = "content";
     public static final String ALERT_TEMPLATE_KEYWORD = "keyword";
-    public static final String ALERT_TEMPLATE_AT_MOBILE = "atMobile";
     public static final String ALERT_TEMPLATE_AT_MOBILES = "atMobiles";
-    public static final String ALERT_TEMPLATE_AT_ALL = "atAll";
+    public static final String ALERT_TEMPLATE_AT_ALL = "isAtAll";
 }

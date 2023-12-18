@@ -19,6 +19,8 @@
 
 package org.dinky.executor;
 
+import org.dinky.classloader.DinkyClassLoader;
+
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -29,7 +31,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class AppStreamExecutor extends Executor {
 
-    public AppStreamExecutor(ExecutorConfig executorConfig) {
+    public AppStreamExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidConfig()) {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
@@ -37,11 +39,11 @@ public class AppStreamExecutor extends Executor {
         } else {
             this.environment = StreamExecutionEnvironment.getExecutionEnvironment();
         }
-        init();
+        init(classLoader);
     }
 
     @Override
-    CustomTableEnvironment createCustomTableEnvironment() {
-        return CustomTableEnvironmentImpl.create(environment);
+    CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader) {
+        return CustomTableEnvironmentImpl.create(environment, classLoader);
     }
 }

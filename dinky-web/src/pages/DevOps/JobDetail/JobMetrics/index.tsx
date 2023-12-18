@@ -17,15 +17,20 @@
  *
  */
 
-import { MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
-import MetricsFilter from '@/pages/DevOps/JobDetail/JobMetrics/MetricsFilter/MetricsFilter';
-import { DevopsType } from '@/pages/DevOps/JobDetail/model';
-import { useEffect, useState } from 'react';
-import { connect } from 'umi';
+import MetricsFilter from '@/components/Flink/MetricsFilter/MetricsFilter';
+import useHookRequest from '@/hooks/useHookRequest';
+import { JOB_STATUS } from '@/pages/DevOps/constants';
+import { JobMetricsItem, JobProps, MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
+import { buildMetricsTarget } from '@/pages/DevOps/JobDetail/JobMetrics/function';
+import MonitorConfigForm from '@/pages/DevOps/JobDetail/JobMetrics/MetricsForm/MetricsConfigForm';
+import { getMetricsLayout, putMetricsLayout } from '@/pages/DevOps/JobDetail/srvice';
+import { Space } from 'antd';
+import { useState } from 'react';
 import JobChart from './JobChart/JobChart';
 
-const JobMetrics = (props: any) => {
-  const { layoutName, dispatch } = props;
+const JobMetrics = (props: JobProps) => {
+  const { jobDetail } = props;
+  const layoutName = `${jobDetail.instance.name}-${jobDetail.instance.taskId}`;
 
   const [timeRange, setTimeRange] = useState<MetricsTimeFilter>({
     startTime: new Date().getTime() - 60000,
@@ -33,26 +38,41 @@ const JobMetrics = (props: any) => {
     isReal: true
   });
 
-  useEffect(() => {
-    dispatch({
-      type: 'Devops/queryMetricsTarget',
-      payload: { layoutName: layoutName }
-    });
-  }, []);
+  const layoutData = useHookRequest(getMetricsLayout, { defaultParams: [layoutName] });
+  const saveLayout = useHookRequest(putMetricsLayout, {
+    manual: true,
+    defaultParams: [layoutName, []]
+  });
 
   const onTimeSelectChange = (filter: MetricsTimeFilter) => {
     setTimeRange(filter);
   };
 
+  const onSelectMetricsChange = async (targetKeys: Record<string, JobMetricsItem[]>) => {
+    let params: JobMetricsItem[] = [];
+    Object.values(targetKeys).forEach((i) => params.push(...i));
+    await saveLayout.run(layoutName, params);
+    layoutData.run(layoutName);
+    return true;
+  };
+
   return (
     <>
-      <MetricsFilter onTimeSelect={onTimeSelectChange} />
-      <JobChart timeRange={timeRange} />
+      <Space style={{ marginBottom: 20 }}>
+        <MetricsFilter onTimeSelect={onTimeSelectChange} />
+        {jobDetail.instance.status == JOB_STATUS.RUNNING ? (
+          <MonitorConfigForm
+            onSelectChange={onSelectMetricsChange}
+            jobDetail={jobDetail}
+            initSelected={buildMetricsTarget(layoutData.data)}
+          />
+        ) : (
+          <></>
+        )}
+      </Space>
+      <JobChart metricsList={layoutData.data} jobDetail={jobDetail} timeRange={timeRange} />
     </>
   );
 };
 
-export default connect(({ Devops }: { Devops: DevopsType }) => ({
-  jobDetail: Devops.jobInfoDetail,
-  layoutName: Devops.metrics.layoutName
-}))(JobMetrics);
+export default JobMetrics;

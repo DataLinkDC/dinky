@@ -233,6 +233,7 @@ public enum Status {
     DS_TASK_NOT_EXIST(17007, "ds.task.not.exist"),
     DS_TASK_TYPE_NOT_SUPPORT(17008, "ds.task.type.not.support"),
     DS_WORK_FLOW_DEFINITION_NOT_EXIST(17009, "ds.work.flow.definition.not.exist"),
+    DS_PROCESS_DEFINITION_UPDATE(17010, "ds.work.flow.definition.process.update"),
 
     /**
      * LDAP About *
@@ -298,10 +299,16 @@ public enum Status {
     SYS_MAVEN_SETTINGS_REPOSITORYUSER_NOTE(111, "sys.maven.settings.repositoryUser.note"),
     SYS_MAVEN_SETTINGS_REPOSITORYPASSWORD(112, "sys.maven.settings.repositoryPassword"),
     SYS_MAVEN_SETTINGS_REPOSITORYPASSWORD_NOTE(113, "sys.maven.settings.repositoryPassword.note"),
+
     SYS_ENV_SETTINGS_PYTHONHOME(114, "sys.env.settings.pythonHome"),
     SYS_ENV_SETTINGS_PYTHONHOME_NOTE(115, "sys.env.settings.pythonHome.note"),
     SYS_ENV_SETTINGS_DINKYADDR(116, "sys.env.settings.dinkyAddr"),
     SYS_ENV_SETTINGS_DINKYADDR_NOTE(117, "sys.env.settings.dinkyAddr.note"),
+    SYS_ENV_SETTINGS_MAX_RETAIN_DAYS(1171, "sys.env.settings.maxRetainDays"),
+    SYS_ENV_SETTINGS_MAX_RETAIN_DAYS_NOTE(1172, "sys.env.settings.maxRetainDays.note"),
+    SYS_ENV_SETTINGS_MAX_RETAIN_COUNT(1173, "sys.env.settings.maxRetainCount"),
+    SYS_ENV_SETTINGS_MAX_RETAIN_COUNT_NOTE(1174, "sys.env.settings.maxRetainCount.note"),
+
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE(118, "sys.dolphinscheduler.settings.enable"),
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE_NOTE(119, "sys.dolphinscheduler.settings.enable.note"),
     SYS_DOLPHINSCHEDULER_SETTINGS_URL(120, "sys.dolphinscheduler.settings.url"),
@@ -360,6 +367,8 @@ public enum Status {
     SYS_RESOURCE_SETTINGS_HDFS_ROOT_USER_NOTE(173, "sys.resource.settings.hdfs.root.user.note"),
     SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS(174, "sys.resource.settings.hdfs.fs.defaultFS"),
     SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS_NOTE(175, "sys.resource.settings.hdfs.fs.defaultFS.note"),
+    SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS(176, "sys.resource.settings.oss.path.style.access"),
+    SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS_NOTE(177, "sys.resource.settings.oss.path.style.access.note"),
 
     /**
      * gateway config

@@ -20,18 +20,16 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.CustomTableEnvironmentContext;
-import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
-import org.dinky.parser.CustomParserImpl;
 import org.dinky.utils.KerberosUtil;
 
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
-import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.core.execution.JobClient;
@@ -50,11 +48,9 @@ import org.apache.flink.table.api.TableResult;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +60,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.URLUtil;
 
 /**
@@ -85,11 +80,18 @@ public abstract class Executor {
     // The config of Dinky executor.
     protected ExecutorConfig executorConfig;
 
+    protected DinkyClassLoader dinkyClassLoader;
+
     // Flink configuration, such as set rest.port = 8086
     protected Map<String, Object> setConfig = new HashMap<>();
 
     // Dinky variable manager
     protected VariableManager variableManager = new VariableManager();
+
+    // return dinkyClassLoader
+    public DinkyClassLoader getDinkyClassLoader() {
+        return dinkyClassLoader;
+    }
 
     public VariableManager getVariableManager() {
         return variableManager;
@@ -127,18 +129,14 @@ public abstract class Executor {
         return getTableConfig().getLocalTimeZone().getId();
     }
 
-    protected void init() {
-
+    protected void init(DinkyClassLoader classLoader) {
+        this.dinkyClassLoader = classLoader;
         if (executorConfig.isValidParallelism()) {
             environment.setParallelism(executorConfig.getParallelism());
         }
 
-        tableEnvironment = createCustomTableEnvironment();
+        tableEnvironment = createCustomTableEnvironment(classLoader);
         CustomTableEnvironmentContext.set(tableEnvironment);
-        tableEnvironment.injectParser(
-                new CustomParserImpl(tableEnvironment.getPlanner().getParser()));
-        tableEnvironment.injectExtendedExecutor(
-                new CustomExtendedOperationExecutorImpl(this.getCustomTableEnvironment()));
 
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
         if (executorConfig.isValidJobName()) {
@@ -153,12 +151,9 @@ public abstract class Executor {
         if (executorConfig.isValidVariables()) {
             variableManager.registerVariable(executorConfig.getVariables());
         }
-        // Fix the Classloader in the env above Flink1.16 to appClassLoader, causing ckp to fail to compile
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        ReflectUtil.setFieldValue(environment, "userClassloader", contextClassLoader);
     }
 
-    abstract CustomTableEnvironment createCustomTableEnvironment();
+    abstract CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader);
 
     public String pretreatStatement(String statement) {
         return FlinkInterceptor.pretreatStatement(this, statement);
@@ -192,7 +187,8 @@ public abstract class Executor {
     }
 
     public void initUDF(String... udfFilePath) {
-        DinkyClassLoaderContextHolder.get().addURL(udfFilePath);
+        List<File> jarFiles = DinkyClassLoader.getJarFiles(udfFilePath, null);
+        dinkyClassLoader.addURLs(jarFiles);
     }
 
     public void initPyUDF(String executable, String... udfPyFilePath) {
@@ -217,20 +213,6 @@ public abstract class Executor {
 
     public void addJar(File... jarPath) {
         addJar(Arrays.stream(jarPath).map(URLUtil::getURL).map(URL::toString).toArray(String[]::new));
-    }
-
-    public void addJar(Collection<File> jarPath) {
-        addJar(jarPath.stream().map(URLUtil::getURL).map(URL::toString).toArray(String[]::new));
-    }
-
-    public <T> void updateConfiguration(ConfigOption<T> configOption, T value) {
-        Configuration configuration = tableEnvironment.getConfig().getConfiguration();
-        configuration.set(configOption, value);
-    }
-
-    public <T> void updateConfiguration(Consumer<Configuration> configurationConsumer) {
-        Configuration configuration = tableEnvironment.getConfig().getConfiguration();
-        configurationConsumer.accept(configuration);
     }
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
@@ -293,10 +275,6 @@ public abstract class Executor {
         StatementSet statementSet = tableEnvironment.createStatementSet();
         statements.forEach(statementSet::addInsertSql);
         return statementSet.explain();
-    }
-
-    public boolean parseAndLoadConfiguration(String statement) {
-        return tableEnvironment.parseAndLoadConfiguration(statement, setConfig);
     }
 
     public List<LineageRel> getLineage(String statement) {

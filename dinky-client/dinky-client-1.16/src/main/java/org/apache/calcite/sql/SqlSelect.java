@@ -27,6 +27,7 @@ import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.calcite.sql.validate.SqlValidator;
 import org.apache.calcite.sql.validate.SqlValidatorScope;
 import org.apache.calcite.util.ImmutableNullableList;
+import org.apache.flink.table.delegation.Parser;
 
 import java.util.List;
 import java.util.Objects;
@@ -133,9 +134,9 @@ public class SqlSelect extends SqlCall {
         if (permissionsMap != null) {
             String permissionsStatement = permissionsMap.get(tableName);
             if (permissionsStatement != null && !"".equals(permissionsStatement)) {
-                if (CustomTableEnvironmentContext.get().getParser() instanceof ExtendedParser) {
-                    ExtendedParser extendedParser =
-                            (ExtendedParser) CustomTableEnvironmentContext.get().getParser();
+                Parser parser = CustomTableEnvironmentContext.get().getParser();
+                if (parser instanceof ExtendedParser) {
+                    ExtendedParser extendedParser = (ExtendedParser) parser;
                     permissions =
                             (SqlBasicCall) (extendedParser.getCustomParser()).parseExpression(permissionsStatement);
                 } else {

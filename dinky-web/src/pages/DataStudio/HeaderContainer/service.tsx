@@ -17,12 +17,11 @@
  *
  */
 
-import { postAll } from '@/services/api';
 import { handleGetOption, handleOption } from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
 
-export async function explainSql(params: any) {
-  return postAll('/api/task/explainSql', params);
+export async function explainSql(title: string, params: any) {
+  return handleOption('/api/task/explainSql', title, params);
 }
 
 export async function getJobPlan(title: string, params: any) {
@@ -30,7 +29,7 @@ export async function getJobPlan(title: string, params: any) {
 }
 
 export async function debugTask(title: string, params: any) {
-  return postAll('/api/task/debugTask', params);
+  return handleOption('/api/task/debugTask', title, params);
 }
 
 export async function executeSql(title: string, id: number) {

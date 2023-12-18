@@ -121,7 +121,7 @@ public class LineageContextTest {
     }
 
     private void analyzeFunction(String sql, String[] expectedArray) {
-        Set<FunctionResult> actualSet = context.analyzeFunction(sql);
+        Set<FunctionResult> actualSet = context.analyzeFunction(tableEnv, sql);
         Set<FunctionResult> expectedSet = FunctionResult.build(CATALOG_NAME, DEFAULT_DATABASE, expectedArray);
         assertEquals(expectedSet, actualSet);
     }

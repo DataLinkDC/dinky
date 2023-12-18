@@ -42,6 +42,7 @@ import {
 } from '@/services/constants';
 import { CODE_EDIT_THEME, THEME } from '@/types/Public/data';
 import { l } from '@/utils/intl';
+import { Monaco } from '@monaco-editor/react';
 import dayjs from 'dayjs';
 import cookies from 'js-cookie';
 import { trim } from 'lodash';
@@ -121,7 +122,11 @@ export function parseJsonStr(jsonStr: string) {
  * get theme by localStorage's theme
  */
 export function getLocalTheme(): string {
-  return localStorage.getItem(THEME.NAV_THEME) ?? THEME.dark;
+  return localStorage.getItem(THEME.NAV_THEME) ?? THEME.light;
+}
+
+export function setLocalThemeToStorage(defaultTheme?: string) {
+  localStorage.setItem(THEME.NAV_THEME, defaultTheme ?? getLocalTheme());
 }
 
 /**
@@ -242,17 +247,17 @@ export function registerEditorKeyBindingAndAction(editorInstance?: editor.IStand
  * get code edit theme by localStorage's theme
  * @constructor
  */
-export function convertCodeEditTheme(editorInstance?: any) {
+export function convertCodeEditTheme(editorInstance?: Monaco['editor']) {
   if (!editorInstance) {
     editorInstance = editor;
   }
   if (editorInstance === undefined) {
-    return CODE_EDIT_THEME.VS;
+    return CODE_EDIT_THEME.LIGHT;
   } else {
     /**
      * 定义亮色 覆盖vs主题,增加扩展规则
      */
-    editorInstance?.defineTheme?.(CODE_EDIT_THEME.VS, {
+    editorInstance?.defineTheme?.(CODE_EDIT_THEME.LIGHT, {
       base: 'vs', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
       inherit: true, // 是否继承主题配置
       rules: [
@@ -295,9 +300,9 @@ export function convertCodeEditTheme(editorInstance?: any) {
     case THEME.dark:
       return CODE_EDIT_THEME.DARK;
     case THEME.light:
-      return CODE_EDIT_THEME.VS;
+      return CODE_EDIT_THEME.LIGHT;
     default:
-      return CODE_EDIT_THEME.VS;
+      return CODE_EDIT_THEME.LIGHT;
   }
 }
 
@@ -502,7 +507,7 @@ export function parseNumStr(num: number) {
  * @param {number} second_time
  * @returns {any}
  */
-export function parseMilliSecondStr(second_time: number | undefined) {
+export function parseMilliSecondStr(second_time: number | undefined): string {
   if (second_time == null) {
     return 'None';
   }
