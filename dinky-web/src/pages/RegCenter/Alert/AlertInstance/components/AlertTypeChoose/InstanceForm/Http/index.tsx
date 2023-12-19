@@ -17,22 +17,27 @@
  *
  */
 
-import { RequestMethod } from "@/pages/RegCenter/Alert/AlertInstance/constans";
-import { Alert } from "@/types/RegCenter/data.d";
-import { l } from "@/utils/intl";
-import { ProForm,ProFormGroup,ProFormList,ProFormSelect,ProFormText } from "@ant-design/pro-components";
-import { Space} from "antd";
-import { FormInstance } from "antd/es/form/hooks/useForm";
-import { Values } from "async-validator";
-import React from "react";
+import { RequestMethod } from '@/pages/RegCenter/Alert/AlertInstance/constans';
+import { Alert } from '@/types/RegCenter/data.d';
+import { l } from '@/utils/intl';
+import {
+  ProForm,
+  ProFormGroup,
+  ProFormList,
+  ProFormSelect,
+  ProFormText
+} from '@ant-design/pro-components';
+import { Space } from 'antd';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
+import React from 'react';
 
 type HttpProps = {
   values: Partial<Alert.AlertInstance>;
   form: FormInstance<Values>;
 };
 const Http: React.FC<HttpProps> = (props) => {
-
-  const {values, form} = props;
+  const { values, form } = props;
 
   const params = values.params as Alert.AlertInstanceParamsHttp;
 

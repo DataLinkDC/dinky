@@ -18,7 +18,7 @@
  */
 
 import { BaseBeanColumns } from '@/types/Public/data';
-import {ConfigItem} from "@/types/Studio/data.d";
+import { ConfigItem } from '@/types/Studio/data.d';
 
 /**
  * about alert
@@ -60,7 +60,6 @@ declare namespace Alert {
     user: string;
     password: string;
   };
-
 
   export type AlertInstanceParamsHttp = {
     url: string;
