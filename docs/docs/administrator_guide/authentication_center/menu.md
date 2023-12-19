@@ -1,5 +1,5 @@
 ---
-position: 1
+position: 3
 id: menu_add
 title: 菜单
 ---

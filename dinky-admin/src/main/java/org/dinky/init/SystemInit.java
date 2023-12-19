@@ -28,6 +28,7 @@ import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.daemon.pool.ScheduleThreadPool;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.Configuration;
 import org.dinky.data.model.SystemConfiguration;
@@ -252,7 +253,8 @@ public class SystemInit implements ApplicationRunner {
                 }
             } catch (Exception e) {
                 log.error("Error in DolphinScheduler: ", e);
-                throw new DinkyException(e);
+                throw new BusException(
+                        "get or create DolphinScheduler project failed, please check the config of DolphinScheduler!");
             }
         }
     }
