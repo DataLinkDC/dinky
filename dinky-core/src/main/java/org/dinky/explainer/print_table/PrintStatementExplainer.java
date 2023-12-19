@@ -36,13 +36,11 @@ public class PrintStatementExplainer {
     public static final String PATTERN_STR = "PRINT (.+)";
     public static final Pattern PATTERN = Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE);
 
-    public static final String CREATE_SQL_TEMPLATE =
-            "CREATE TABLE print_{0} WITH (''connector'' = ''printnet'', "
-                    + "''port''=''{2,number,#}'', ''hostName'' = ''{1}'')\n"
-                    + "LIKE {0};";
+    public static final String CREATE_SQL_TEMPLATE = "CREATE TABLE print_{0} WITH (''connector'' = ''printnet'', "
+            + "''port''=''{2,number,#}'', ''hostName'' = ''{1}'')\n"
+            + "LIKE {0};";
     public static final String INSERT_SQL_TEMPLATE = "insert into print_{0} select * from {0};";
     public static final int DEFAULT_PORT = 7125;
-
 
     public static String[] getTableNames(String statement) {
         return splitTableNames(statement);

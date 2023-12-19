@@ -154,14 +154,10 @@ public class Explainer {
                 int port = Integer.parseInt(config.getOrDefault("dinky.dinkyPrintPort", "7125"));
                 String[] tableNames = PrintStatementExplainer.getTableNames(statement);
                 for (String tableName : tableNames) {
-                    ddl.add(
-                            new StatementParam(
-                                    PrintStatementExplainer.getCreateStatement(tableName, host, port),
-                                    SqlType.CREATE));
+                    ddl.add(new StatementParam(
+                            PrintStatementExplainer.getCreateStatement(tableName, host, port), SqlType.CREATE));
                     trans.add(
-                            new StatementParam(
-                                    PrintStatementExplainer.getInsertStatement(tableName),
-                                    SqlType.INSERT));
+                            new StatementParam(PrintStatementExplainer.getInsertStatement(tableName), SqlType.INSERT));
                 }
             } else {
                 UDF udf = UDFUtil.toUDF(statement, jobManager.getDinkyClassLoader());
