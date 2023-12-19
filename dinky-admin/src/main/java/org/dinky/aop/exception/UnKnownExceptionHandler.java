@@ -17,11 +17,23 @@
  *
  */
 
-export default {
-  'app.response.response-error': '响应出错',
-  'app.response.sucess': '成功',
-  'app.response.error': '操作未成功',
-  'app.response.exception': '服务端错误',
-  'app.response.notlogin': '身份认证失败',
-  'app.response.notexist': '你访问的页面/接口不存在'
-};
+package org.dinky.aop.exception;
+
+import org.dinky.data.result.Result;
+
+import org.springframework.core.annotation.Order;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@ControllerAdvice
+@Order
+public class UnKnownExceptionHandler {
+
+    @ExceptionHandler
+    public Result<Exception> unknownException(Exception e) {
+        return Result.exception(e.getMessage(), e);
+    }
+}

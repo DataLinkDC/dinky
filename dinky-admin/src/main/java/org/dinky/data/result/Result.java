@@ -24,6 +24,7 @@ import org.dinky.data.enums.Status;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
+import java.util.Objects;
 
 import cn.hutool.core.date.DateTime;
 import io.swagger.annotations.ApiModel;
@@ -43,7 +44,9 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "Result", description = "Return Result")
 public class Result<T> implements Serializable {
 
-    /** result data */
+    /**
+     * result data
+     */
     @ApiModelProperty(
             value = "Result Data",
             name = "data",
@@ -59,7 +62,7 @@ public class Result<T> implements Serializable {
             dataType = "Integer",
             required = true,
             example = "0",
-            notes = "0: success, 1: fail")
+            notes = "CodeEnum")
     private Integer code;
 
     @ApiModelProperty(
@@ -70,7 +73,10 @@ public class Result<T> implements Serializable {
             example = "success",
             notes = "success: success, fail: fail")
     private String msg;
-    /** result time */
+
+    /**
+     * result time
+     */
     @ApiModelProperty(
             value = "Result Time",
             name = "time",
@@ -79,7 +85,10 @@ public class Result<T> implements Serializable {
             example = "2021-05-03 19:56:00",
             notes = "yyyy-MM-dd HH:mm:ss")
     private String time;
-    /** result success */
+
+    /**
+     * result success
+     */
     @ApiModelProperty(
             value = "Result is Success",
             name = "success",
@@ -148,11 +157,17 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> of(T data, Integer code, String msg) {
-        return new Result<>(data, code, msg, new DateTime().toString(), code == 0);
+        return new Result<>(
+                data, code, msg, new DateTime().toString(), Objects.equals(code, CodeEnum.SUCCESS.getCode()));
     }
 
     public static <T> Result<T> of(T data, Integer code, Status status) {
-        return new Result<>(data, code, status.getMessage(), new DateTime().toString(), code == 0);
+        return new Result<>(
+                data,
+                code,
+                status.getMessage(),
+                new DateTime().toString(),
+                Objects.equals(code, CodeEnum.SUCCESS.getCode()));
     }
 
     public static <T> Result<T> failed() {
@@ -183,11 +198,27 @@ public class Result<T> implements Serializable {
         return of(model, CodeEnum.ERROR.getCode(), status.getMessage());
     }
 
+    public static <T> Result<T> authorizeFailed(Status status) {
+        return of(null, CodeEnum.AUTHORIZE_ERROR.getCode(), status.getMessage());
+    }
+
+    public static <T> Result<T> authorizeFailed(String msg) {
+        return of(null, CodeEnum.AUTHORIZE_ERROR.getCode(), msg);
+    }
+
+    public static Result<Exception> exception(String msg, Exception e) {
+        return of(e, CodeEnum.EXCEPTION.getCode(), msg);
+    }
+
+    public static <T> Result<T> paramsError(Status status, Object... args) {
+        return of(null, CodeEnum.PARAMS_ERROR.getCode(), MessageFormat.format(status.getMessage(), args));
+    }
+
     /**
      * Call this function if there is any error
      *
      * @param status status
-     * @param args args
+     * @param args   args
      * @return result
      */
     public static <T> Result<T> errorWithArgs(Status status, Object... args) {
