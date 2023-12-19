@@ -32,6 +32,7 @@ class PrintStatementExplainerTest {
 
         sql = "print VersionT, Buyers, r, rr, vvv";
 
-        assertArrayEquals(new String[] {"VersionT", "Buyers", "r", "rr", "vvv"}, PrintStatementExplainer.getTableNames(sql));
+        assertArrayEquals(
+                new String[] {"VersionT", "Buyers", "r", "rr", "vvv"}, PrintStatementExplainer.getTableNames(sql));
     }
 }
