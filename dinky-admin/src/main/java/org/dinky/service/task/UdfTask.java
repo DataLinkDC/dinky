@@ -19,6 +19,8 @@
 
 package org.dinky.service.task;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
@@ -30,9 +32,6 @@ import org.dinky.job.JobResult;
 import org.dinky.utils.UDFUtils;
 
 import java.util.Collections;
-
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.exceptions.ExceptionUtil;
 
 @SupportDialect({Dialect.JAVA, Dialect.PYTHON, Dialect.SCALA})
 public class UdfTask extends BaseTask {
@@ -54,6 +53,11 @@ public class UdfTask extends BaseTask {
             jobResult.setStatus(Job.JobStatus.FAILED);
         }
         return jobResult;
+    }
+
+    @Override
+    public JobResult execute2() {
+        return null;
     }
 
     @Override

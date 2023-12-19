@@ -19,6 +19,13 @@
 
 package org.dinky.service.task;
 
+import cn.hutool.cache.Cache;
+import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.core.text.StrFormatter;
+import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.ReflectUtil;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.AllArgsConstructor;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
@@ -31,15 +38,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import cn.hutool.cache.Cache;
-import cn.hutool.cache.impl.TimedCache;
-import cn.hutool.core.text.StrFormatter;
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ReflectUtil;
-import lombok.AllArgsConstructor;
-
 @AllArgsConstructor
 public abstract class BaseTask {
 
@@ -47,6 +45,8 @@ public abstract class BaseTask {
     final TaskDTO task;
 
     public abstract JobResult execute() throws Exception;
+
+    public abstract JobResult execute2();
 
     public abstract boolean stop();
 

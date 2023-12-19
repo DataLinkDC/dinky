@@ -19,14 +19,18 @@
 
 package org.dinky.controller;
 
+import cn.hutool.core.lang.tree.Tree;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.annotations.ExecuteProcess;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.annotations.ProcessId;
-import org.dinky.data.dto.DebugDTO;
-import org.dinky.data.dto.TaskDTO;
-import org.dinky.data.dto.TaskRollbackVersionDTO;
-import org.dinky.data.dto.TaskSaveDTO;
-import org.dinky.data.dto.TaskSubmitDto;
+import org.dinky.data.dto.*;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.ProcessType;
@@ -41,27 +45,10 @@ import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
 import org.dinky.service.TaskService;
-
-import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import cn.hutool.core.lang.tree.Tree;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -78,7 +65,21 @@ public class TaskController {
     @ExecuteProcess(type = ProcessType.FLINK_SUBMIT)
     public Result<JobResult> submitTask(@ProcessId @RequestParam Integer id) throws Exception {
         JobResult jobResult =
-                taskService.submitTask(TaskSubmitDto.builder().id(id).build());
+                taskService.submitTask2(TaskSubmitDto.builder().id(id).build());
+        if (jobResult.isSuccess()) {
+            return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
+        } else {
+            return Result.failed(jobResult, jobResult.getError());
+        }
+    }
+
+    @GetMapping("/submitTask2")
+    @ApiOperation("Submit Task")
+    @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
+    @ExecuteProcess(type = ProcessType.SQL_SUBMIT)
+    public Result<JobResult> submitTask2(@ProcessId @RequestParam Integer id) throws Exception {
+        JobResult jobResult =
+                taskService.submitTask2(TaskSubmitDto.builder().id(id).build());
         if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
         } else {

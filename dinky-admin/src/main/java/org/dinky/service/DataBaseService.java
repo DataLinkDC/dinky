@@ -195,5 +195,7 @@ public interface DataBaseService extends ISuperService<DataBase> {
      */
     JobResult executeCommonSql(SqlDTO sqlDTO);
 
+    JobResult executeCommonSql2(SqlDTO sqlDTO);
+
     List<DataBase> selectListByKeyWord(String keyword);
 }

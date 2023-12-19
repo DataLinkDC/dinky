@@ -19,10 +19,12 @@
 
 package org.dinky.metadata.driver;
 
-import static org.dinky.utils.SplitUtil.contains;
-import static org.dinky.utils.SplitUtil.getReValue;
-import static org.dinky.utils.SplitUtil.isSplit;
-
+import cn.hutool.core.text.CharSequenceUtil;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.TableType;
@@ -39,34 +41,14 @@ import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.TextUtil;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-
-import cn.hutool.core.text.CharSequenceUtil;
-import lombok.extern.slf4j.Slf4j;
+import static org.dinky.utils.SplitUtil.*;
 
 /**
  * AbstractJdbcDriver
@@ -659,6 +641,61 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
         }
         result.success();
         return result;
+    }
+    /**
+     * 如果执行多条语句返回最后一条语句执行结果
+     */
+    @Override
+    public Stream<JdbcSelectResult> executeSql2(String sql, Integer limit) {
+        // TODO 改为ProcessStep注释
+        log.info("Start parse sql...");
+        List<SQLStatement> stmtList =
+                SQLUtils.parseStatements(sql, config.getType().toLowerCase());
+        log.info(CharSequenceUtil.format("A total of {} statement have been Parsed.", stmtList.size()));
+        List<Object> resList = new ArrayList<>();
+        log.info("Start execute sql...");
+        return stmtList.stream().map(item->
+                {   JdbcSelectResult result = JdbcSelectResult.buildResult();
+                    String type = item.getClass().getSimpleName();
+                    if (type.toUpperCase().contains("SELECT")
+                            || type.toUpperCase().contains("SHOW")
+                            || type.toUpperCase().contains("DESC")
+                            || type.toUpperCase().contains("SQLEXPLAINSTATEMENT")) {
+                        log.info("Execute query.");
+                        result = query(item.toString(), limit);
+
+                    }
+                    else if (type.toUpperCase().contains("INSERT")
+                            || type.toUpperCase().contains("UPDATE")
+                            || type.toUpperCase().contains("DELETE")) {
+                        try {
+                            log.info("Execute update.");
+                            resList.add(executeUpdate(item.toString()));
+                            result.setStatusList(resList);
+                        } catch (Exception e) {
+                            resList.add(0);
+                            result.setStatusList(resList);
+                            result.error(LogUtil.getError(e));
+                            log.error(e.getMessage());
+                            return result;
+                        }
+                    }else {
+                        try {
+                            log.info("Execute DDL.");
+                            execute(item.toString());
+                            resList.add(1);
+                            result.setStatusList(resList);
+                        } catch (Exception e) {
+                            resList.add(0);
+                            result.setStatusList(resList);
+                            result.error(LogUtil.getError(e));
+                            log.error(e.getMessage());
+                            return result;
+                        }
+                    }
+                    return result;
+                }
+        );
     }
 
     @Override

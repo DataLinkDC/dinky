@@ -19,11 +19,10 @@
 
 package org.dinky.service;
 
-import org.dinky.data.dto.AbstractStatementDTO;
-import org.dinky.data.dto.DebugDTO;
-import org.dinky.data.dto.TaskDTO;
-import org.dinky.data.dto.TaskRollbackVersionDTO;
-import org.dinky.data.dto.TaskSubmitDto;
+import cn.hutool.core.lang.tree.Tree;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.dinky.data.dto.*;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.exception.ExcuteException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
@@ -38,15 +37,9 @@ import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
 import org.dinky.mybatis.service.ISuperService;
-
-import java.util.List;
-
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import cn.hutool.core.lang.tree.Tree;
+import java.util.List;
 
 /**
  * 作业 服务类
@@ -71,6 +64,14 @@ public interface TaskService extends ISuperService<Task> {
      * @throws ExcuteException If there is an error executing the task.
      */
     JobResult submitTask(TaskSubmitDto submitDto) throws Exception;
+    /**
+     * Submit the given task and return the job result.
+     *
+     * @param submitDto The param of the task to submit.
+     * @return A {@link JobResult} object representing the result of the submitted task.
+     * @throws ExcuteException If there is an error executing the task.
+     */
+    JobResult submitTask2(TaskSubmitDto submitDto) throws Exception;
 
     /**
      * Debug the given task and return the job result.
