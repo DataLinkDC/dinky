@@ -19,6 +19,7 @@
 
 import Email from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Email';
 import FeiShu from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/FeiShu';
+import Http from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Http';
 import Sms from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms';
 import WeChat from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/WeChat';
 import { ALERT_TYPE_LIST_OPTIONS } from '@/pages/RegCenter/Alert/AlertInstance/constans';
@@ -29,7 +30,6 @@ import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React, { useState } from 'react';
 import DingTalk from './DingTalk';
-import Http from "@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Http";
 
 type InstanceFormProps = {
   values: Partial<Alert.AlertInstance>;

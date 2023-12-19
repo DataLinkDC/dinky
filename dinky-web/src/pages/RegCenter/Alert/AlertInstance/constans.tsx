@@ -21,7 +21,8 @@ import {
   AliYunSmsSvg,
   DingTalkSvg,
   EmailSvg,
-  FeiShuSvg, HttpSvg,
+  FeiShuSvg,
+  HttpSvg,
   SmsSvg,
   TencentSmsSvg,
   WeChatSvg
@@ -84,8 +85,8 @@ export const ALERT_TYPE_LIST_OPTIONS: DefaultOptionType[] = [
 
 export const RequestMethod = [
   { label: 'POST', value: 'POST' },
-  { label: 'GET', value: 'GET' },
-]
+  { label: 'GET', value: 'GET' }
+];
 export enum SMS_TYPE {
   ALIBABA = 'alibaba',
   CLOOPEN = 'cloopen',
