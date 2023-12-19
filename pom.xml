@@ -80,6 +80,7 @@
         <jgit.version>5.13.1.202206130422-r</jgit.version>
         <junit5.version>5.9.1</junit5.version>
         <knife4j.version>4.1.0</knife4j.version>
+        <kubernetes-client.version>5.12.4</kubernetes-client.version>
         <log4j.version>2.19.0</log4j.version>
         <lombok.version>1.18.24</lombok.version>
         <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
@@ -125,6 +126,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>io.fabric8</groupId>
+                <artifactId>kubernetes-client</artifactId>
+                <version>${kubernetes-client.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-s3</artifactId>
