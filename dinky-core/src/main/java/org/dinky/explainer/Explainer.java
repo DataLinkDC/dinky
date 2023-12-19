@@ -41,6 +41,7 @@ import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
+import org.dinky.utils.IpUtil;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
@@ -152,7 +153,7 @@ public class Explainer {
                 PrintStatementExplainer printStatementExplainer = new PrintStatementExplainer(statement);
 
                 Map<String, String> config = this.executor.getExecutorConfig().getConfig();
-                String host = config.getOrDefault("dinky.dinkyHost", "127.0.0.1");
+                String host = config.getOrDefault("dinky.dinkyHost", IpUtil.getHostIp());
                 int port = Integer.parseInt(config.getOrDefault("dinky.dinkyPrintPort", "7125"));
                 String[] tableNames = printStatementExplainer.getTableNames();
                 for (String tableName : tableNames) {

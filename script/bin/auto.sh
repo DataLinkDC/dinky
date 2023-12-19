@@ -10,11 +10,11 @@ CLASS_PATH=".:./lib/*:config:./plugins/*:./customJar/*:./plugins/flink${FLINK_VE
 PID_FILE="dinky.pid"
 
 # JMX path
-APP_HOME="$(cd `dirname $0`; pwd)"
+APP_HOME="$(cd "$(dirname "$0")" || exit; pwd)"
 JMX="-javaagent:$APP_HOME/lib/jmx_prometheus_javaagent-0.16.1.jar=10087:$APP_HOME/config/jmx/jmx_exporter_config.yaml"
 
 # Check whether the pid path exists
-PID_PATH="$(cd "$(dirname "$0")";pwd)/run"
+PID_PATH="$(cd "$(dirname "$0")" || exit;pwd)/run"
 
 if [ -d "${PID_PATH}" ];then
     echo "${PID_PATH} is already exist." >> /dev/null
