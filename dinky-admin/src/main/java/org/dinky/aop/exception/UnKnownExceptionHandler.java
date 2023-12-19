@@ -17,22 +17,23 @@
  *
  */
 
-package org.dinky.explainer.print_table;
+package org.dinky.aop.exception;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import org.dinky.data.result.Result;
 
-import org.junit.jupiter.api.Test;
+import org.springframework.core.annotation.Order;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-class PrintStatementExplainerTest {
+import lombok.extern.slf4j.Slf4j;
 
-    @Test
-    void getTableNames() {
-        String sql = "print VersionT";
-        assertArrayEquals(new String[] {"VersionT"}, PrintStatementExplainer.getTableNames(sql));
+@Slf4j
+@ControllerAdvice
+@Order
+public class UnKnownExceptionHandler {
 
-        sql = "print VersionT, Buyers, r, rr, vvv";
-
-        assertArrayEquals(
-                new String[] {"VersionT", "Buyers", "r", "rr", "vvv"}, PrintStatementExplainer.getTableNames(sql));
+    @ExceptionHandler
+    public Result<Exception> unknownException(Exception e) {
+        return Result.exception(e.getMessage(), e);
     }
 }

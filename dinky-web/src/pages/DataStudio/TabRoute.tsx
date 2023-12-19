@@ -17,25 +17,29 @@
  *
  */
 
-import React from "react";
-import {Tab} from "@/pages/DataStudio/route";
-import {TaskDataType} from "@/pages/DataStudio/model";
-import {LeftBottomKey} from "@/pages/DataStudio/data.d";
-import {onAdd} from "@/pages/DataStudio/BottomContainer/TableData";
+import { onAdd } from '@/pages/DataStudio/BottomContainer/TableData';
+import { LeftBottomKey } from '@/pages/DataStudio/data.d';
+import { TaskDataType } from '@/pages/DataStudio/model';
+import { Tab } from '@/pages/DataStudio/route';
+import React from 'react';
 
 export type BottomTabProps = {
-    icon?: React.ReactNode;
-    onAdd: (tabs: Tab[], key: string, data: TaskDataType | undefined, operator: any) => Promise<void>;
-    onRemove?: (tabs: Tab[], key: string, data: TaskDataType | undefined, tabKey: string, refresh: any) => Promise<void>;
-    key: string;
+  icon?: React.ReactNode;
+  onAdd: (tabs: Tab[], key: string, data: TaskDataType | undefined, operator: any) => Promise<void>;
+  onRemove?: (
+    tabs: Tab[],
+    key: string,
+    data: TaskDataType | undefined,
+    tabKey: string,
+    refresh: any
+  ) => Promise<void>;
+  key: string;
 };
 export const BottomTabRoute: { [c: string]: BottomTabProps } = {
-    [LeftBottomKey.TABLE_DATA_KEY]:
-        {
-            key: 'add table data',
-            onAdd: async (tabs, key, data, operator) => {
-                await onAdd(tabs, key, data, operator);
-            }
-        }
-
-}
+  [LeftBottomKey.TABLE_DATA_KEY]: {
+    key: 'add table data',
+    onAdd: async (tabs, key, data, operator) => {
+      await onAdd(tabs, key, data, operator);
+    }
+  }
+};

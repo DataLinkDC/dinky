@@ -25,13 +25,13 @@ import {
   getParentKey
 } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { StateType, STUDIO_MODEL, TabsItemType } from '@/pages/DataStudio/model';
-import { BtnRoute } from '@/pages/DataStudio/route';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { Key } from '@ant-design/pro-components';
 import { Empty, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
 import React, { useEffect, useState } from 'react';
+import { BtnRoute, useTasksDispatch } from '../../BtnContext';
 
 const { DirectoryTree } = Tree;
 
@@ -60,6 +60,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
   const [searchValue, setSearchValueValue] = useState('');
   const [data, setData] = useState<any[]>(buildProjectTree(projectData, searchValue));
+  const btnDispatch = useTasksDispatch();
 
   useEffect(() => {
     setData(buildProjectTree(projectData, searchValue));
@@ -101,7 +102,8 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     });
   };
 
-  const btn = BtnRoute['menu.datastudio.project'];
+  const currentTabName = 'menu.datastudio.project';
+  const btnEvent = [...BtnRoute[currentTabName]];
   const positionKey = (panes: TabsItemType[], activeKey: string) => {
     const treeKey = getCurrentTab(panes, activeKey)?.treeKey;
     if (treeKey) {
@@ -123,14 +125,19 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     }
   };
 
-  btn[1].onClick = expandAll;
+  btnEvent[1].onClick = expandAll;
 
-  btn[2].onClick = () =>
+  btnEvent[2].onClick = () =>
     dispatch({
       type: STUDIO_MODEL.updateProjectExpandKey,
       payload: []
     });
-  btn[3].onClick = positionKey;
+  btnEvent[3].onClick = positionKey;
+  btnDispatch({
+    type: 'change',
+    selectKey: currentTabName,
+    payload: btnEvent
+  });
 
   return (
     <>

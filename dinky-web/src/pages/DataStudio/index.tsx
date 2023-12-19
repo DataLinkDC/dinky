@@ -26,6 +26,7 @@ import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import { isProjectTabs, mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
+import { BtnProvider } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
@@ -44,6 +45,7 @@ import {
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide } from '@/pages/DataStudio/route';
 import { PageContainer } from '@ant-design/pro-layout';
+import { useAsyncEffect } from 'ahooks';
 import { Layout, Menu, theme } from 'antd';
 import { useEffect, useState } from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -138,8 +140,8 @@ const DataStudio = (props: any) => {
     updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
   }, [activeKey, panes]);
 
-  useEffect(() => {
-    loadData();
+  useAsyncEffect(async () => {
+    await loadData();
   }, []);
 
   const access = useAccess();
@@ -277,11 +279,13 @@ const DataStudio = (props: any) => {
 
             <Content style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div style={{ display: 'flex' }}>
-                <LeftContainer
-                  size={size}
-                  leftContainer={leftContainer}
-                  rightContainer={rightContainer}
-                />
+                <BtnProvider>
+                  <LeftContainer
+                    size={size}
+                    leftContainer={leftContainer}
+                    rightContainer={rightContainer}
+                  />
+                </BtnProvider>
                 <Content
                   style={{
                     width:

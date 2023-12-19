@@ -18,7 +18,7 @@
  */
 
 import { TagAlignLeft } from '@/components/StyledComponents';
-import { BtnRoute } from '@/pages/DataStudio/route';
+import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
 import DataSourceModal from '@/pages/RegCenter/DataSource/components/DataSourceModal';
 import { handleTest, saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
@@ -42,6 +42,7 @@ const DataSource = (props: any) => {
   const [isLoadingDatabase, setIsLoadingDatabase] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const selectDb = (dbData as DataSources.DataSource[]).filter((x) => x.id === selectDatabaseId)[0];
+  const btnDispatch = useTasksDispatch();
 
   /**
    * @description: 刷新树数据
@@ -87,17 +88,25 @@ const DataSource = (props: any) => {
   const onChangeDataBase = (value: number) => {
     onRefreshTreeData(value);
   };
+  const currentTabName = 'menu.datastudio.datasource';
 
-  BtnRoute['menu.datastudio.datasource'][0].onClick = () => {
+  const btnEvent = [...BtnRoute[currentTabName]];
+
+  btnEvent[0].onClick = () => {
     setShowCreate(true);
   };
-  BtnRoute['menu.datastudio.datasource'][1].onClick = () => {
+  btnEvent[1].onClick = () => {
     if (!selectDatabaseId) return;
     setIsLoadingDatabase(true);
     clearDataSourceTable(selectDatabaseId).then(() => {
       onChangeDataBase(selectDatabaseId);
     });
   };
+  btnDispatch({
+    type: 'change',
+    selectKey: currentTabName,
+    payload: btnEvent
+  });
 
   /**
    * 构建数据库列表 下拉框

@@ -17,9 +17,8 @@
  *
  */
 
-package org.dinky.aop;
+package org.dinky.aop.exception;
 
-import org.dinky.data.enums.CodeEnum;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.result.Result;
@@ -32,8 +31,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -55,9 +54,8 @@ import cn.hutool.core.util.StrUtil;
  * @since 2022/2/2 22:22
  */
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class WebExceptionHandler {
-
-    private static final Logger logger = LoggerFactory.getLogger(WebExceptionHandler.class);
 
     @ExceptionHandler
     public Result<Void> busException(BusException e) {
@@ -83,12 +81,12 @@ public class WebExceptionHandler {
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse response = servletRequestAttributes.getResponse();
         if (response != null) {
-            response.setStatus(CodeEnum.NOTLOGIN.getCode());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
         }
 
         String type = notLoginException.getType();
         Status status = ERR_CODE_MAPPING.getOrDefault(type, Status.NOT_TOKEN);
-        return Result.failed(status);
+        return Result.authorizeFailed(status);
     }
 
     /**
@@ -108,19 +106,13 @@ public class WebExceptionHandler {
                 // 这里列出了全部错误参数，按正常逻辑，只需要第一条错误即可
                 FieldError fieldError = (FieldError) errors.get(0);
                 if (StringUtils.isNotBlank(fieldError.getDefaultMessage())) {
-                    return Result.failed(
+                    return Result.paramsError(
                             Status.GLOBAL_PARAMS_CHECK_ERROR, fieldError.getField(), fieldError.getDefaultMessage());
                 }
-                return Result.failed(
+                return Result.paramsError(
                         Status.GLOBAL_PARAMS_CHECK_ERROR_VALUE, fieldError.getField(), fieldError.getRejectedValue());
             }
         }
-        return Result.failed(Status.REQUEST_PARAMS_ERROR);
-    }
-
-    @ExceptionHandler
-    public Result<Void> unknownException(Exception e) {
-        logger.error("ERROR:", e);
-        return Result.failed(Status.UNKNOWN_ERROR, (Object) e.getMessage());
+        return Result.paramsError(Status.REQUEST_PARAMS_ERROR);
     }
 }
