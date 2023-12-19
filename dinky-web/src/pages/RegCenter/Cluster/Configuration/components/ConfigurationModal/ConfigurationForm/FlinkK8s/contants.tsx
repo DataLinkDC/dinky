@@ -23,9 +23,8 @@ export const ExposedTypeOptions = [
 ];
 
 export const versionOptions = [
-  { label: '1.14', value: 'v1_14' },
   { label: '1.15', value: 'v1_15' },
   { label: '1.16', value: 'v1_16' },
   { label: '1.17', value: 'v1_17' },
-  { label: '1.18', value: 'v1_18', disabled: true }
+  { label: '1.18', value: 'v1_18' }
 ];

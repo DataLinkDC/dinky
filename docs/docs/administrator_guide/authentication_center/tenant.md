@@ -1,5 +1,5 @@
 ---
-position: 1
+position: 5
 id: tenant
 title: 租户
 ---
