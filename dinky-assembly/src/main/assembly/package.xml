@@ -46,7 +46,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/dinky-admin/target/classes</directory>
-            <outputDirectory>dinky-loader</outputDirectory>
+            <outputDirectory>/</outputDirectory>
             <includes>
                 <include>**/dinky-loader/FlinkConfClass</include>
                 <include>**/dinky-loader/ExpressionVariableClass</include>

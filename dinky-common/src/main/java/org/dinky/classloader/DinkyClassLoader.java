@@ -42,30 +42,32 @@ public class DinkyClassLoader extends URLClassLoader {
     FlinkUdfPathContextHolder udfPathContextHolder = new FlinkUdfPathContextHolder();
 
     public DinkyClassLoader(URL[] urls, ClassLoader parent) {
-        super(new URL[] {}, parent);
+        this(urls, parent, null);
     }
 
     public DinkyClassLoader(Collection<File> fileSet, ClassLoader parent) {
-        super(new URL[] {}, parent);
-        addURLs(fileSet);
+        this(convertFilesToUrls(fileSet), parent, null);
     }
 
     public DinkyClassLoader(URL[] urls) {
-        super(new URL[] {});
+        this(urls, Thread.currentThread().getContextClassLoader(), null);
     }
 
     public DinkyClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
-        super(new URL[] {}, parent, factory);
-    }
-
-    // this class factory method
-    public static DinkyClassLoader build() {
-        return new DinkyClassLoader(new URL[] {});
+        super(urls, parent, factory);
     }
 
     // class factory method with urls parameters
     public static DinkyClassLoader build(URL... urls) {
         return new DinkyClassLoader(urls);
+    }
+
+    public static DinkyClassLoader build(URL[] urls, ClassLoader parent) {
+        return new DinkyClassLoader(urls, parent);
+    }
+
+    public static DinkyClassLoader build(ClassLoader parent) {
+        return new DinkyClassLoader(new URL[] {}, parent);
     }
 
     // return udfPathContextHolder
@@ -80,7 +82,12 @@ public class DinkyClassLoader extends URLClassLoader {
     }
 
     public void addURLs(Collection<File> fileSet) {
-        URL[] urls = fileSet.stream()
+        URL[] urls = convertFilesToUrls(fileSet);
+        addURLs(urls);
+    }
+
+    private static URL[] convertFilesToUrls(Collection<File> fileSet) {
+        return fileSet.stream()
                 .map(x -> {
                     try {
                         return x.toURI().toURL();
@@ -89,21 +96,9 @@ public class DinkyClassLoader extends URLClassLoader {
                     }
                 })
                 .toArray(URL[]::new);
-        addURLs(urls);
     }
 
-    public void addURLs(List<File> files) {
-        files.stream()
-                .map(x -> {
-                    try {
-                        return x.toURI().toURL();
-                    } catch (MalformedURLException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .forEach(this::addURL);
-    }
-
+    @Override
     public void addURL(URL url) {
         super.addURL(url);
     }

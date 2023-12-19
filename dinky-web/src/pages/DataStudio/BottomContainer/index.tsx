@@ -21,6 +21,7 @@ import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
 import Title from '@/components/Front/Title';
 import ContentScroll from '@/components/Scroll/ContentScroll';
 import MovableSidebar from '@/components/Sidebar/MovableSidebar';
+import { getCurrentData } from '@/pages/DataStudio/function';
 import {
   StateType,
   STUDIO_MODEL,
@@ -28,17 +29,18 @@ import {
   TabsPageType,
   VIEW
 } from '@/pages/DataStudio/model';
-import { LeftBottomMoreTabs, LeftBottomSide } from '@/pages/DataStudio/route';
+import { BottomBtnRoute, LeftBottomMoreTabs, LeftBottomSide, Tab } from '@/pages/DataStudio/route';
+import { BottomTabRoute } from '@/pages/DataStudio/TabRoute';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
-import { PlusOutlined } from '@ant-design/icons';
 import { ConfigProvider, Space, Tabs } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 export type BottomContainerProps = {
   size: number;
   height: number | string;
 };
+
 const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
   const {
     dispatch,
@@ -47,6 +49,32 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
     height,
     tabs: { activeKey, panes }
   } = props;
+  const currentData = getCurrentData(panes, activeKey);
+  const taskId = currentData?.id ?? 0;
+  const [tabState, setTabState] = useState<Record<string, Tab[]>>(
+    Object.keys(BottomTabRoute)
+      .map((x) => ({ [x]: [] }))
+      .reduce((a, b) => ({ ...a, ...b }), {})
+  );
+  const tabItems = (LeftBottomMoreTabs[bottomContainer.selectKey] ?? []).map((item: any) => {
+    return {
+      key: bottomContainer.selectKey + '/' + item.key,
+      label: (
+        <span>
+          {item.icon}
+          {item.label}
+        </span>
+      )
+    };
+  });
+  useEffect(() => {
+    setTabState({ ...tabState, [bottomContainer.selectKey]: [] });
+  }, [taskId, bottomContainer.selectKey]);
+  const refresh = () => {
+    const tabs = tabState?.[bottomContainer.selectKey] ?? [];
+    setTabState({ ...tabState, [bottomContainer.selectKey]: [...tabs] });
+  };
+
   const width = document.documentElement.clientWidth - VIEW.sideWidth * 2;
 
   /**
@@ -142,24 +170,35 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
   };
 
   const renderTabPane = () => {
-    // @ts-ignore
-    const leftBottomMoreTab = LeftBottomMoreTabs[bottomContainer.selectKey];
-    if (leftBottomMoreTab) {
-      const items = leftBottomMoreTab.map((item: any) => {
-        return {
-          key: bottomContainer.selectKey + '/' + item.key,
-          label: (
-            <span>
-              {item.icon}
-              {item.label}
-            </span>
-          )
-        };
-      });
-      return (
+    const onChange = (activeKey: string) => {
+      updateSelectBottomSubKey(activeKey.split('/')[1]);
+    };
+    const onEdit = async (
+      targetKey: React.MouseEvent | React.KeyboardEvent | string,
+      action: 'add' | 'remove'
+    ) => {
+      switch (action) {
+        case 'add':
+          await BottomTabRoute[bottomContainer.selectKey].onAdd(
+            tabState?.[bottomContainer.selectKey] ?? [],
+            bottomContainer.selectKey,
+            currentData,
+            refresh
+          );
+          break;
+        case 'remove':
+          const newPanes = tabState?.[bottomContainer.selectKey].filter(
+            (pane) => pane.key !== targetKey
+          );
+          setTabState({ ...tabState, [bottomContainer.selectKey]: newPanes });
+          break;
+      }
+    };
+    return (
+      <>
         <Tabs
           style={{ height: '32px', display: '-webkit-box' }}
-          items={items}
+          items={tabItems}
           type='card'
           onChange={(key: string) => {
             updateSelectBottomSubKey(key.split('/')[1]);
@@ -172,9 +211,27 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
           size='small'
           tabPosition='top'
         />
-      );
-    }
-    return <></>;
+        {BottomTabRoute[bottomContainer.selectKey] && (
+          <Tabs
+            style={{ height: '32px', display: '-webkit-box' }}
+            items={tabState?.[bottomContainer.selectKey].map((x) => ({
+              key: x.key,
+              label: x.label
+            }))}
+            onEdit={onEdit}
+            activeKey={
+              bottomContainer.selectKey +
+              '/' +
+              bottomContainer.selectSubKey[bottomContainer.selectKey]
+            }
+            onChange={onChange}
+            type='editable-card'
+            size='small'
+            tabPosition='top'
+          />
+        )}
+      </>
+    );
   };
   const renderItems = () => {
     return [
@@ -206,7 +263,8 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       }).map((x) => {
         return { ...x, key: x.key + '/' };
       }),
-      ...getSubTabs()
+      ...getSubTabs(),
+      ...(tabState?.[bottomContainer.selectKey] ?? [])
     ].map((item) => {
       return {
         ...item,
@@ -256,7 +314,17 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
           offsetHeight: any;
         }
       ) => resizeCallback(event, direction, elementRef)}
-      btnGroup={[<CircleBtn key={'max'} icon={<PlusOutlined />} />]}
+      btnGroup={BottomBtnRoute[bottomContainer.selectKey]?.map((x) => (
+        <CircleBtn
+          key={x.key}
+          icon={x.icon}
+          onClick={async () => {
+            const tabs = tabState?.[bottomContainer.selectKey] ?? [];
+            await x.onClick?.(tabs, bottomContainer.selectKey, currentData, refresh);
+            refresh();
+          }}
+        />
+      ))}
       enable={{ top: true }}
       handlerMinimize={handleMinimize}
       maxWidth={width}

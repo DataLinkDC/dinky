@@ -40,5 +40,6 @@ public class WechatParams {
     private int agentId;
     private List<String> atUsers = new ArrayList<>();
     private String webhook;
+    private String sendUrl = "https://qyapi.weixin.qq.com/cgi-bin";
     private String keyword;
 }

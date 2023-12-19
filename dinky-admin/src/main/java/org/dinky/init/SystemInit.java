@@ -134,7 +134,8 @@ public class SystemInit implements ApplicationRunner {
                         systemConfiguration.getResourcesHdfsUser(),
                         systemConfiguration.getResourcesHdfsDefaultFS(),
                         systemConfiguration.getResourcesOssAccessKey(),
-                        systemConfiguration.getResourcesOssRegion())
+                        systemConfiguration.getResourcesOssRegion(),
+                        systemConfiguration.getResourcesPathStyleAccess())
                 .forEach(x -> x.addParameterCheck(y -> {
                     if (Boolean.TRUE.equals(
                             systemConfiguration.getResourcesEnable().getValue())) {
@@ -155,6 +156,9 @@ public class SystemInit implements ApplicationRunner {
                                         .getValue());
                                 ossProperties.setRegion(systemConfiguration
                                         .getResourcesOssRegion()
+                                        .getValue());
+                                ossProperties.setPathStyleAccess(systemConfiguration
+                                        .getResourcesPathStyleAccess()
                                         .getValue());
                                 Singleton.get(OssResourceManager.class).setOssTemplate(new OssTemplate(ossProperties));
                                 break;
@@ -243,7 +247,7 @@ public class SystemInit implements ApplicationRunner {
             }
             try {
                 project = projectClient.getDinkyProject();
-                if (Asserts.isNull(project)) {
+                if (project == null) {
                     project = projectClient.createDinkyProject();
                 }
             } catch (Exception e) {

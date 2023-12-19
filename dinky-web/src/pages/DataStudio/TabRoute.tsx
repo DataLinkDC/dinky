@@ -17,51 +17,29 @@
  *
  */
 
-import { TabsItemType, TaskDataType } from '@/pages/DataStudio/model';
+import { onAdd } from '@/pages/DataStudio/BottomContainer/TableData';
+import { LeftBottomKey } from '@/pages/DataStudio/data.d';
+import { TaskDataType } from '@/pages/DataStudio/model';
 import { Tab } from '@/pages/DataStudio/route';
-import { Button } from 'antd';
 import React from 'react';
 
-export type CircleButtonProps = {
-  icon: React.ReactNode;
-  loading?: boolean;
-  onClick?: () => void;
-  title?: string;
-  key?: string;
-};
-export type CircleBottomButtonProps = {
-  icon: React.ReactNode;
-  loading?: boolean;
-  onClick?: (
+export type BottomTabProps = {
+  icon?: React.ReactNode;
+  onAdd: (tabs: Tab[], key: string, data: TaskDataType | undefined, operator: any) => Promise<void>;
+  onRemove?: (
     tabs: Tab[],
     key: string,
     data: TaskDataType | undefined,
+    tabKey: string,
     refresh: any
   ) => Promise<void>;
-  title?: string;
-  key?: string;
+  key: string;
 };
-export type CircleDataStudioButtonProps = {
-  icon: React.ReactNode;
-  loading?: boolean;
-  onClick?: (panes: TabsItemType[], activeKey: string) => void;
-  title?: string;
-  key?: string;
-  isShow?: boolean;
-};
-
-export const CircleBtn: React.FC<CircleButtonProps> = (props) => {
-  const { onClick, title, icon, loading } = props;
-
-  return (
-    <Button
-      title={title}
-      loading={loading}
-      icon={icon}
-      block
-      type={'text'}
-      shape={'circle'}
-      onClick={onClick}
-    />
-  );
+export const BottomTabRoute: { [c: string]: BottomTabProps } = {
+  [LeftBottomKey.TABLE_DATA_KEY]: {
+    key: 'add table data',
+    onAdd: async (tabs, key, data, operator) => {
+      await onAdd(tabs, key, data, operator);
+    }
+  }
 };

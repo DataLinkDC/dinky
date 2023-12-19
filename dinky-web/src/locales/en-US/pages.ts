@@ -351,6 +351,7 @@ export default {
   'pages.datastudio.editor.stop.job': 'Stop job',
   'pages.datastudio.editor.stop.jobConfirm': 'Are you sure to stop the job [{jobName}]? ',
   'pages.datastudio.editor.submitting': 'The new task [{jobName}] is executing',
+  'pages.datastudio.editor.checking': 'The task [{jobName}] is checking',
   'pages.datastudio.editor.debugging': 'The new task [{jobName}] is debugging',
   'pages.datastudio.editor.onlyread':
     'Task has been published, modification is prohibited, please go offline first',
@@ -515,6 +516,11 @@ export default {
   'rc.ai.actionPleaseHolder': 'Please enter the interface method',
   'rc.ai.agentId': 'AgentId',
   'rc.ai.agentIdPleaseHolder': 'Please enter AgentId',
+  'rc.ai.sendUrl': 'QiWei Send Addr',
+  'rc.ai.sendUrlPleaseHolder': 'Please enter the sending address or the proxy address',
+  'rc.ai.sendUrlValidate': 'Please enter the correct sending address, no / is required at the end',
+  'rc.ai.sendUrlTooltip':
+    'You can enter the proxy address for the sending address, such as: http://127.0.0.1:8080/cgi-bin, the default is: https://qyapi.weixin.qq.com/cgi-bin ',
   'rc.ai.apikey': 'Account unique identifier',
   'rc.ai.apikeyPleaseHolder': 'Please enter the unique ID of the account',
   'rc.ai.appId': 'App ID',

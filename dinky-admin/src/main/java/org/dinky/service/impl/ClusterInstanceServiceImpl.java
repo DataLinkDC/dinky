@@ -36,7 +36,7 @@ import org.dinky.mapper.ClusterInstanceMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
-import org.dinky.utils.IpUtils;
+import org.dinky.utils.IpUtil;
 import org.dinky.utils.URLUtils;
 
 import java.time.LocalDateTime;
@@ -100,7 +100,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                 port = Integer.valueOf(flinkConfig.get("rest.port"));
             } else {
                 port = URLUtils.getRandomPort();
-                while (!IpUtils.isPortAvailable(port)) {
+                while (!IpUtil.isPortAvailable(port)) {
                     port = URLUtils.getRandomPort();
                 }
             }
@@ -201,6 +201,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         }
         GatewayConfig gatewayConfig =
                 GatewayConfig.build(FlinkClusterConfig.create(clusterCfg.getType(), clusterCfg.getConfigJson()));
+        gatewayConfig.setType(gatewayConfig.getType().getSessionType());
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
         return registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
                 gatewayResult.getWebURL().replace("http://", ""),

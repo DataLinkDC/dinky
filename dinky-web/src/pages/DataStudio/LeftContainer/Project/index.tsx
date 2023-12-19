@@ -20,6 +20,7 @@
 import RightContextMenu from '@/components/RightContextMenu';
 import { LeftBottomKey } from '@/pages/DataStudio/data.d';
 import { getTabByTaskId } from '@/pages/DataStudio/function';
+import { useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import {
   FOLDER_RIGHT_MENU,
   JOB_RIGHT_MENU
@@ -64,6 +65,7 @@ const Project: React.FC = (props: connect) => {
   } = props;
 
   const [projectState, setProjectState] = useState<ProjectState>(InitProjectState);
+  const btnDispatch = useTasksDispatch();
 
   useEffect(() => {
     setProjectState((prevState) => ({

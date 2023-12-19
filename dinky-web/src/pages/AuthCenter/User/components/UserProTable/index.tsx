@@ -276,7 +276,7 @@ const UserProTable = () => {
         </Authorized>,
         <Authorized key={`${record.id}_delete_auth`} path='/auth/user/delete'>
           <>
-            {access.isAdmin && !record.isDelete && (
+            {access.isAdmin && !record.isDelete && !record.superAdminFlag && (
               <PopconfirmDeleteBtn
                 key={`${record.id}_delete`}
                 onClick={() => handleDeleteUser(record)}
