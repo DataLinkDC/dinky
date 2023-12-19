@@ -149,15 +149,19 @@ public class Explainer {
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
             } else if (operationType.equals(SqlType.PRINT)) {
-                PrintStatementExplainer printStatementExplainer = new PrintStatementExplainer(statement);
-
                 Map<String, String> config = this.executor.getExecutorConfig().getConfig();
                 String host = config.getOrDefault("dinky.dinkyHost", "127.0.0.1");
                 int port = Integer.parseInt(config.getOrDefault("dinky.dinkyPrintPort", "7125"));
-                String[] tableNames = printStatementExplainer.getTableNames();
+                String[] tableNames = PrintStatementExplainer.getTableNames(statement);
                 for (String tableName : tableNames) {
-                    trans.add(new StatementParam(
-                            PrintStatementExplainer.getCreateStatement(tableName, host, port), SqlType.CTAS));
+                    ddl.add(
+                            new StatementParam(
+                                    PrintStatementExplainer.getCreateStatement(tableName, host, port),
+                                    SqlType.CREATE));
+                    trans.add(
+                            new StatementParam(
+                                    PrintStatementExplainer.getInsertStatement(tableName),
+                                    SqlType.INSERT));
                 }
             } else {
                 UDF udf = UDFUtil.toUDF(statement, jobManager.getDinkyClassLoader());
