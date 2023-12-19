@@ -21,7 +21,7 @@ import {
   AliYunSmsSvg,
   DingTalkSvg,
   EmailSvg,
-  FeiShuSvg,
+  FeiShuSvg, HttpSvg,
   SmsSvg,
   TencentSmsSvg,
   WeChatSvg
@@ -71,9 +71,21 @@ export const ALERT_TYPE_LIST_OPTIONS: DefaultOptionType[] = [
       </Space>
     ),
     value: ALERT_TYPE.SMS
+  },
+  {
+    label: (
+      <Space align={'baseline'} size={5}>
+        <HttpSvg size={16} /> {l('rc.ai.http')}
+      </Space>
+    ),
+    value: ALERT_TYPE.HTTP
   }
 ];
 
+export const RequestMethod = [
+  { label: 'POST', value: 'POST' },
+  { label: 'GET', value: 'GET' },
+]
 export enum SMS_TYPE {
   ALIBABA = 'alibaba',
   CLOOPEN = 'cloopen',

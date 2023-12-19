@@ -17,47 +17,48 @@
  *
  */
 
-package org.dinky.alert.feishu;
+package org.dinky.alert.http;
 
 import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
+import org.dinky.alert.http.params.HttpParams;
+import org.dinky.data.ext.ConfigItem;
+import org.dinky.utils.JsonUtils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-/** @Author: zhumingye */
-@Ignore
-public class FeiShuSenderTest {
+import cn.hutool.json.JSONUtil;
 
-    private static Map<String, Object> feiShuConfig = new HashMap<>();
+public class HttpSenderTest {
+
+    private static Map<String, Object> httpConfig = new HashMap<>();
 
     @Before
     public void initFeiShuConfig() {
-        feiShuConfig.put(FeiShuConstants.WEB_HOOK, "https://open.feishu.cn/open-apis/bot/v2/hook/key");
-        feiShuConfig.put(FeiShuConstants.KEYWORD, "Dinky");
-        feiShuConfig.put(FeiShuConstants.AT_ALL, "false");
-        feiShuConfig.put(FeiShuConstants.AT_USERS, "gaoyan");
+        HttpParams httpParams = new HttpParams();
+        httpParams.setUrl("http://127.0.0.1:8080/alert");
+        httpParams.setMethod(HttpConstants.REQUEST_TYPE_POST);
+        ConfigItem configItem = new ConfigItem("Content-Type", "application/json");
+        httpParams.setHeaders(Arrays.asList(configItem));
+        httpConfig = JsonUtils.toMap(JSONUtil.toJsonStr(httpParams), String.class, Object.class);
     }
 
-    @Ignore
     @Test
-    public void testSend() {
-
-        FeiShuAlert feiShuAlert = new FeiShuAlert();
+    public void sendTest() {
+        HttpAlert httpAlert = new HttpAlert();
         AlertConfig alertConfig = new AlertConfig();
-
-        alertConfig.setType(FeiShuConstants.TYPE);
-        alertConfig.setParam(feiShuConfig);
-        feiShuAlert.setConfig(alertConfig);
-
+        alertConfig.setType(HttpConstants.TYPE);
+        alertConfig.setParam(httpConfig);
+        httpAlert.setConfig(alertConfig);
         AlertResult alertResult =
-                feiShuAlert.send(AlertBaseConstant.ALERT_TEMPLATE_TITLE, AlertBaseConstant.ALERT_TEMPLATE_MSG);
+                httpAlert.send(AlertBaseConstant.ALERT_TEMPLATE_TITLE, AlertBaseConstant.ALERT_TEMPLATE_MSG);
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 }

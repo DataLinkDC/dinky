@@ -29,6 +29,7 @@ import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React, { useState } from 'react';
 import DingTalk from './DingTalk';
+import Http from "@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Http";
 
 type InstanceFormProps = {
   values: Partial<Alert.AlertInstance>;
@@ -77,6 +78,8 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
         return <Email values={value} form={form} />;
       case ALERT_TYPE.SMS:
         return <Sms values={value} form={form} />;
+      case ALERT_TYPE.HTTP:
+        return <Http values={value} form={form} />;
       default:
         return <></>;
     }
