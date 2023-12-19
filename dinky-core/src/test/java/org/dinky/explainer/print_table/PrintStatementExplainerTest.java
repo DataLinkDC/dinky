@@ -28,12 +28,11 @@ class PrintStatementExplainerTest {
     @Test
     void getTableNames() {
         String sql = "print VersionT";
-        PrintStatementExplainer printStatementExplainer = new PrintStatementExplainer(sql);
-        assertArrayEquals(new String[] {"VersionT"}, printStatementExplainer.getTableNames());
+        assertArrayEquals(new String[] {"VersionT"}, PrintStatementExplainer.getTableNames(sql));
 
         sql = "print VersionT, Buyers, r, rr, vvv";
-        PrintStatementExplainer wse = new PrintStatementExplainer(sql);
 
-        assertArrayEquals(new String[] {"VersionT", "Buyers", "r", "rr", "vvv"}, wse.getTableNames());
+        assertArrayEquals(
+                new String[] {"VersionT", "Buyers", "r", "rr", "vvv"}, PrintStatementExplainer.getTableNames(sql));
     }
 }
