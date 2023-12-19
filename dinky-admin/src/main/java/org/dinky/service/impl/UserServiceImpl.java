@@ -31,6 +31,7 @@ import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.enums.UserType;
 import org.dinky.data.exception.AuthException;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.SysToken;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.rbac.Menu;
@@ -152,6 +153,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public Boolean removeUser(Integer id) {
+        User user = getById(id);
+        if (user.getSuperAdminFlag()) {
+            throw new BusException(Status.USER_SUPERADMIN_CANNOT_DELETE);
+        }
         return baseMapper.deleteById(id) > 0;
     }
 

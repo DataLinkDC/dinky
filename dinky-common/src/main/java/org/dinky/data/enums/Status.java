@@ -124,6 +124,7 @@ public enum Status {
     KICK_OUT(10024, "kick.out"),
     TOKEN_FREEZED(10025, "token.freezed"),
     NO_PREFIX(10026, "no.prefix"),
+    USER_SUPERADMIN_CANNOT_DELETE(10027, "user.superadmin.cannot.delete"),
 
     // role
     ROLE_ALREADY_EXISTS(10101, "role.already.exists"),
