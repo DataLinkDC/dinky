@@ -36,6 +36,7 @@ import org.dinky.metadata.result.JdbcSelectResult;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -243,7 +244,7 @@ class AbstractDriverTest {
         }
 
         @Override
-        public List<JdbcSelectResult> executeSql2(String sql, Integer limit) {
+        public Stream<JdbcSelectResult> executeSql2(String sql, Integer limit) {
             return null;
         }
 

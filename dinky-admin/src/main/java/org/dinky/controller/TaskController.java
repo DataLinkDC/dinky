@@ -59,11 +59,11 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @GetMapping("/submitTask")
+    @GetMapping("/submitTask2")
     @ApiOperation("Submit Task")
     @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
     @ExecuteProcess(type = ProcessType.FLINK_SUBMIT)
-    public Result<JobResult> submitTask(@ProcessId @RequestParam Integer id) throws Exception {
+    public Result<JobResult> submitTask2(@ProcessId @RequestParam Integer id) throws Exception {
         JobResult jobResult =
                 taskService.submitTask2(TaskSubmitDto.builder().id(id).build());
         if (jobResult.isSuccess()) {
@@ -73,13 +73,13 @@ public class TaskController {
         }
     }
 
-    @GetMapping("/submitTask2")
+    @GetMapping("/submitTask")
     @ApiOperation("Submit Task")
     @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
     @ExecuteProcess(type = ProcessType.SQL_SUBMIT)
-    public Result<JobResult> submitTask2(@ProcessId @RequestParam Integer id) throws Exception {
+    public Result<JobResult> submitTask(@ProcessId @RequestParam Integer id) throws Exception {
         JobResult jobResult =
-                taskService.submitTask2(TaskSubmitDto.builder().id(id).build());
+                taskService.submitTask(TaskSubmitDto.builder().id(id).build());
         if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
         } else {

@@ -698,62 +698,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
         );
     }
 
-    @Override
-    public List<JdbcSelectResult> executeSql2(String sql, Integer limit) {
-        // TODO 改为ProcessStep注释
-        log.info("Start parse sql...");
-        List<SQLStatement> stmtList =
-                SQLUtils.parseStatements(sql, config.getType().toLowerCase());
-        log.info(CharSequenceUtil.format("A total of {} statement have been Parsed.", stmtList.size()));
-        List<Object> resList = new ArrayList<>();
-        List<JdbcSelectResult> SelectResultList=new ArrayList<>();
-        log.info("Start execute sql...");
-        for (SQLStatement item : stmtList) {
-            JdbcSelectResult result = JdbcSelectResult.buildResult();
-            String type = item.getClass().getSimpleName();
-            if (type.toUpperCase().contains("SELECT")
-                    || type.toUpperCase().contains("SHOW")
-                    || type.toUpperCase().contains("DESC")
-                    || type.toUpperCase().contains("SQLEXPLAINSTATEMENT")) {
-                log.info("Execute query.");
-                result = query(item.toString(), limit);
-
-            } else if (type.toUpperCase().contains("INSERT")
-                    || type.toUpperCase().contains("UPDATE")
-                    || type.toUpperCase().contains("DELETE")) {
-                try {
-                    log.info("Execute update.");
-                    resList.add(executeUpdate(item.toString()));
-                    result.setStatusList(resList);
-                } catch (Exception e) {
-                    resList.add(0);
-                    result.setStatusList(resList);
-                    result.error(LogUtil.getError(e));
-                    log.error(e.getMessage());
-                    SelectResultList.add(result);
-                    return SelectResultList;
-                }
-            } else {
-                try {
-                    log.info("Execute DDL.");
-                    execute(item.toString());
-                    resList.add(1);
-                    result.setStatusList(resList);
-                } catch (Exception e) {
-                    resList.add(0);
-                    result.setStatusList(resList);
-                    result.error(LogUtil.getError(e));
-                    log.error(e.getMessage());
-                    SelectResultList.add(result);
-                    return SelectResultList;
-                }
-            }
-            result.success();
-            SelectResultList.add(result);
-        }
-
-        return SelectResultList;
-    }
 
     @Override
     public List<SqlExplainResult> explain(String sql) {
