@@ -17,13 +17,13 @@
  *
  */
 
-import { history } from '@@/core/history';
+import { ENABLE_MODEL_TIP } from '@/services/constants';
 import {
   hasKeyofLocalStorage,
   setKeyToLocalStorage,
   setLocalThemeToStorage
-} from "@/utils/function";
-import {ENABLE_MODEL_TIP} from "@/services/constants";
+} from '@/utils/function';
+import { history } from '@@/core/history';
 
 /** 此方法会跳转到 redirect 参数所在的位置 */
 export const gotoRedirectUrl = () => {
@@ -39,7 +39,6 @@ export const redirectToLogin = () => {
   window.location.href = '/login';
 };
 
-
 export const initSomeThing = () => {
   //  初始化设置主题
   setLocalThemeToStorage();
@@ -47,4 +46,4 @@ export const initSomeThing = () => {
   if (hasKeyofLocalStorage(ENABLE_MODEL_TIP)) {
     setKeyToLocalStorage(ENABLE_MODEL_TIP, 'true');
   }
-}
+};

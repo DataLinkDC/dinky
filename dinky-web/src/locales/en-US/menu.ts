@@ -39,8 +39,10 @@ export default {
   'menu.account.checkTenantConfirm': 'Are you sure to switch  tenant [ {tenantCode} ] ?',
   'menu.account.closeGlobalMessage': 'Close developer mode',
   'menu.account.openGlobalMessage': 'Turn on developer mode',
-  'menu.account.closeGlobalMessageTip': 'You have turned off the developer mode and will not receive all exception information returned by the background. You can only receive warning information.',
-  'menu.account.openGlobalMessageTip': 'Developer mode is turned on. You can receive all exception/warning information returned by the background. If you do not want to receive the exception stack, please turn off this function.',
+  'menu.account.closeGlobalMessageTip':
+    'You have turned off the developer mode and will not receive all exception information returned by the background. You can only receive warning information.',
+  'menu.account.openGlobalMessageTip':
+    'Developer mode is turned on. You can receive all exception/warning information returned by the background. If you do not want to receive the exception stack, please turn off this function.',
 
   'menu.datastudio': 'Data Studio',
 

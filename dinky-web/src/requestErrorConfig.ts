@@ -17,14 +17,14 @@
  *
  */
 
+import { ENABLE_MODEL_TIP } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { getValueFromLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ErrorNotification, WarningNotification } from '@/utils/messages';
 import { history } from '@@/core/history';
 import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
-import {getValueFromLocalStorage} from "@/utils/function";
-import {ENABLE_MODEL_TIP} from "@/services/constants";
 
 // 错误处理方案： 错误类型
 enum ErrorCode {
@@ -45,7 +45,7 @@ interface ResponseStructure {
 
 const handleBizError = (result: ResponseStructure) => {
   const { msg, code, data } = result;
-  console.log(JSON.stringify(msg))
+  console.log(JSON.stringify(msg));
 
   switch (code) {
     case ErrorCode.SUCCESS:
@@ -89,7 +89,7 @@ export const errorConfig: RequestConfig = {
     },
     // 错误接收及处理
     errorHandler: (error: any, opts: any) => {
-      console.log(error)
+      console.log(error);
 
       if (opts?.skipErrorHandler) throw error;
       // 我们的 errorThrower 抛出的错误。

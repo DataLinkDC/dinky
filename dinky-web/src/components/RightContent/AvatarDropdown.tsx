@@ -18,12 +18,19 @@
  */
 
 import { chooseTenantSubmit, outLogin } from '@/services/BusinessCrud';
-import {getValueFromLocalStorage, setKeyToLocalStorage, setTenantStorageAndCookie} from '@/utils/function';
+import { ENABLE_MODEL_TIP } from '@/services/constants';
+import {
+  getValueFromLocalStorage,
+  setKeyToLocalStorage,
+  setTenantStorageAndCookie
+} from '@/utils/function';
 import { l } from '@/utils/intl';
-import {ErrorNotification, SuccessNotification, WarningNotification} from '@/utils/messages';
+import { ErrorNotification, SuccessNotification, WarningNotification } from '@/utils/messages';
 import {
   BugOutlined,
-  ClearOutlined, CloseCircleOutlined, LogoutOutlined,
+  ClearOutlined,
+  CloseCircleOutlined,
+  LogoutOutlined,
   TeamOutlined,
   UserOutlined,
   UserSwitchOutlined
@@ -35,9 +42,8 @@ import { Avatar, Modal, Spin } from 'antd';
 import { stringify } from 'querystring';
 import { ItemType } from 'rc-menu/es/interface';
 import type { MenuInfo } from 'rc-menu/lib/interface';
-import {useCallback, useState} from 'react';
+import { useCallback, useState } from 'react';
 import HeaderDropdown from '../HeaderDropdown';
-import {ENABLE_MODEL_TIP} from "@/services/constants";
 
 export const loginOut = async () => {
   await outLogin();
@@ -121,7 +127,9 @@ const AvatarDropdown = () => {
   });
   const { initialState, setInitialState } = useModel('@@initialState');
 
-  const [enableModelTip, setEnableModelTip] = useState<boolean>(Boolean(getValueFromLocalStorage(ENABLE_MODEL_TIP)));
+  const [enableModelTip, setEnableModelTip] = useState<boolean>(
+    Boolean(getValueFromLocalStorage(ENABLE_MODEL_TIP))
+  );
 
   const loginOutHandler = useCallback(
     async (event: MenuInfo) => {
@@ -191,16 +199,15 @@ const AvatarDropdown = () => {
     return chooseTenantList;
   };
 
-
   const handleClickEnableModelTip = () => {
-    setKeyToLocalStorage(ENABLE_MODEL_TIP,String(!enableModelTip));
+    setKeyToLocalStorage(ENABLE_MODEL_TIP, String(!enableModelTip));
     setEnableModelTip(!enableModelTip);
-    if(!enableModelTip) {
+    if (!enableModelTip) {
       SuccessNotification(l('menu.account.openGlobalMessageTip'));
     } else {
       WarningNotification(l('menu.account.closeGlobalMessageTip'));
     }
-  }
+  };
 
   const menuItems = [
     {
@@ -243,7 +250,9 @@ const AvatarDropdown = () => {
     {
       key: 'enableModelTip',
       icon: enableModelTip ? <CloseCircleOutlined /> : <BugOutlined />,
-      label: enableModelTip ?  l('menu.account.closeGlobalMessage') : l('menu.account.openGlobalMessage'),
+      label: enableModelTip
+        ? l('menu.account.closeGlobalMessage')
+        : l('menu.account.openGlobalMessage'),
       onClick: () => handleClickEnableModelTip()
     },
     {
