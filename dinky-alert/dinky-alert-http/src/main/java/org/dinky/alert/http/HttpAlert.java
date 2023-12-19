@@ -19,16 +19,13 @@
 
 package org.dinky.alert.http;
 
-import java.util.Map;
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
 
-import java.io.IOException;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import freemarker.template.TemplateException;
 
 /**
  * DingTalkAlert

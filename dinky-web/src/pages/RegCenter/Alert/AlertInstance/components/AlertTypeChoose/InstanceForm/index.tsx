@@ -23,12 +23,12 @@ import Http from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoo
 import Sms from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms';
 import WeChat from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/WeChat';
 import { ALERT_TYPE_LIST_OPTIONS } from '@/pages/RegCenter/Alert/AlertInstance/constans';
-import { Alert,ALERT_TYPE } from '@/types/RegCenter/data.d';
+import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
-import { ProForm,ProFormSelect,ProFormText } from '@ant-design/pro-components';
+import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
-import React,{ useState } from 'react';
+import React, { useState } from 'react';
 import DingTalk from './DingTalk';
 
 type InstanceFormProps = {

@@ -22,7 +22,8 @@ import {
   DefaultSvg,
   DingTalkSvg,
   EmailSvg,
-  FeiShuSvg, HttpSvg,
+  FeiShuSvg,
+  HttpSvg,
   SmsSvg,
   WeChatSvg
 } from '@/components/Icons/AlertIcon';

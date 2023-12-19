@@ -85,7 +85,7 @@ public class HttpSender {
      * @param content： send msg content
      * @return AlertResult
      */
-    public AlertResult send(Map<String, Object> templateParams ) {
+    public AlertResult send(Map<String, Object> templateParams) {
         AlertResult alertResult = new AlertResult();
 
         try {
@@ -113,11 +113,12 @@ public class HttpSender {
         return alertResult;
     }
 
-    private void createHttpRequest(Map<String, Object> templateParams ) throws MalformedURLException, URISyntaxException {
+    private void createHttpRequest(Map<String, Object> templateParams)
+            throws MalformedURLException, URISyntaxException {
         if (HttpConstants.REQUEST_TYPE_POST.equals(httpParams.getMethod())) {
             httpRequest = new HttpPost(httpParams.getUrl());
             buildRequestHeader();
-            buildMsgToRequestBody( templateParams );
+            buildMsgToRequestBody(templateParams);
         } else if (HttpConstants.REQUEST_TYPE_GET.equals(httpParams.getMethod())) {
             buildMsgToUrl(templateParams);
             URL unencodeUrl = new URL(httpParams.getUrl());
@@ -169,7 +170,7 @@ public class HttpSender {
     /**
      * set body params
      */
-    private void buildMsgToRequestBody(Map<String, Object> templateParams ) {
+    private void buildMsgToRequestBody(Map<String, Object> templateParams) {
         try {
             JSONObject jsonObject = JSONUtil.createObj();
             templateParams.forEach(jsonObject::set);
