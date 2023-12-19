@@ -20,8 +20,8 @@
 export default {
   'app.response.response-error': '响应出错',
   'app.response.sucess': '成功',
-  'app.response.error': '错误',
+  'app.response.error': '操作未成功',
   'app.response.exception': '服务端错误',
-  'app.response.notlogin': '未登录',
+  'app.response.notlogin': '身份认证失败',
   'app.response.notexist': '你访问的页面/接口不存在'
 };
