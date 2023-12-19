@@ -38,4 +38,5 @@ public class HttpParams {
     private String url = "";
     private String method = "";
     private List<ConfigItem> headers = new ArrayList<>();
+    private List<ConfigItem> body = new ArrayList<>();
 }

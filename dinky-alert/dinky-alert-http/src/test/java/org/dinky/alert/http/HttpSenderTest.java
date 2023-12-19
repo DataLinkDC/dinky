@@ -41,12 +41,27 @@ public class HttpSenderTest {
     private static Map<String, Object> httpConfig = new HashMap<>();
 
     @Before
-    public void initFeiShuConfig() {
+    public void initConfig() {
         HttpParams httpParams = new HttpParams();
-        httpParams.setUrl("http://127.0.0.1:8080/alert");
+        httpParams.setUrl("https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxx");
         httpParams.setMethod(HttpConstants.REQUEST_TYPE_POST);
         ConfigItem configItem = new ConfigItem("Content-Type", "application/json");
         httpParams.setHeaders(Arrays.asList(configItem));
+
+        ConfigItem msgType = new ConfigItem("msgtype", "markdown");
+        ConfigItem title = new ConfigItem("title", AlertBaseConstant.ALERT_TEMPLATE_TITLE);
+        ConfigItem content = new ConfigItem("content", AlertBaseConstant.ALERT_TEMPLATE_MSG);
+        ConfigItem markdown = new ConfigItem("markdown", JSONUtil.toJsonStr(new HashMap<String, Object>() {
+            {
+                put("title", AlertBaseConstant.ALERT_TEMPLATE_TITLE);
+                put("text", AlertBaseConstant.ALERT_TEMPLATE_MSG);
+            }
+        }));
+
+        Arrays.asList(msgType, content, title, markdown).forEach(item -> {
+            httpParams.getBody().add(item);
+        });
+
         httpConfig = JsonUtils.toMap(JSONUtil.toJsonStr(httpParams), String.class, Object.class);
     }
 

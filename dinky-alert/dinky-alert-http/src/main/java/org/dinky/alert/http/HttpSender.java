@@ -62,7 +62,7 @@ public class HttpSender {
 
     HttpSender(Map<String, Object> config) {
         this.httpParams = JSONUtil.toBean(JSONUtil.toJsonStr(config), HttpParams.class);
-        Asserts.checkNotNull(httpParams, "dingTalkParams is null");
+        Asserts.checkNotNull(httpParams, "httpParams is null");
     }
 
     /**
@@ -75,7 +75,7 @@ public class HttpSender {
     public Map<String, Object> buildTemplateParams(String title, String content) {
         Map<String, Object> params = new HashMap<>();
         params.put(HttpConstants.ALERT_TEMPLATE_TITLE, title);
-        params.put(HttpConstants.ALERT_TEMPLATE_MSG, content);
+        params.put(HttpConstants.ALERT_TEMPLATE_CONTENT, content);
         return params;
     }
 
@@ -85,11 +85,11 @@ public class HttpSender {
      * @param content： send msg content
      * @return AlertResult
      */
-    public AlertResult send(String content) {
+    public AlertResult send(Map<String, Object> templateParams ) {
         AlertResult alertResult = new AlertResult();
 
         try {
-            createHttpRequest(content);
+            createHttpRequest(templateParams);
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -113,13 +113,13 @@ public class HttpSender {
         return alertResult;
     }
 
-    private void createHttpRequest(String msg) throws MalformedURLException, URISyntaxException {
+    private void createHttpRequest(Map<String, Object> templateParams ) throws MalformedURLException, URISyntaxException {
         if (HttpConstants.REQUEST_TYPE_POST.equals(httpParams.getMethod())) {
             httpRequest = new HttpPost(httpParams.getUrl());
             buildRequestHeader();
-            buildMsgToRequestBody(msg);
+            buildMsgToRequestBody( templateParams );
         } else if (HttpConstants.REQUEST_TYPE_GET.equals(httpParams.getMethod())) {
-            buildMsgToUrl(msg);
+            buildMsgToUrl(templateParams);
             URL unencodeUrl = new URL(httpParams.getUrl());
             URI uri = new URI(
                     unencodeUrl.getProtocol(),
@@ -143,14 +143,18 @@ public class HttpSender {
     /**
      * add msg param in url
      */
-    private void buildMsgToUrl(String msg) {
+    private void buildMsgToUrl(Map<String, Object> templateParams) {
 
-        String line = "&";
+        String line;
         // check splice char is & or ?
         if (!httpParams.getUrl().contains("?")) {
             line = "?";
+        } else {
+            line = "&";
         }
-        httpParams.setUrl(String.format("%s%smsg=%s", httpParams.getUrl(), line, msg));
+        templateParams.forEach((k, v) -> {
+            httpParams.setUrl(String.format("%s%s%s=%s", httpParams.getUrl(), line, k, v));
+        });
     }
 
     private void buildRequestHeader() {
@@ -165,9 +169,15 @@ public class HttpSender {
     /**
      * set body params
      */
-    private void buildMsgToRequestBody(String msg) {
+    private void buildMsgToRequestBody(Map<String, Object> templateParams ) {
         try {
-            JSONObject jsonObject = JSONUtil.createObj().set(HttpConstants.ALERT_TEMPLATE_MSG, msg);
+            JSONObject jsonObject = JSONUtil.createObj();
+            templateParams.forEach(jsonObject::set);
+            if (CollUtil.isNotEmpty(httpParams.getBody())) {
+                httpParams.getBody().forEach(configItem -> {
+                    jsonObject.set(configItem.getKey(), configItem.getValue());
+                });
+            }
             StringEntity entity = new StringEntity(JSONUtil.toJsonStr(jsonObject), HttpConstants.DEFAULT_CHARSET);
             ((HttpPost) httpRequest).setEntity(entity);
         } catch (Exception e) {

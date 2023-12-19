@@ -25,7 +25,7 @@ import InstanceForm from '@/pages/RegCenter/Alert/AlertInstance/components/Alert
 import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
 import { Alert } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
-import { ModalForm } from '@ant-design/pro-components';
+import {ModalForm, ProForm} from '@ant-design/pro-components';
 
 /**
  * update form props
@@ -131,7 +131,7 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
         submitter={{ render: () => [...renderFooter()] }}
         syncToInitialValues
       >
-        <InstanceForm form={form} values={formValues} />
+          <InstanceForm form={form} values={formValues} />
       </ModalForm>
     </>
   );

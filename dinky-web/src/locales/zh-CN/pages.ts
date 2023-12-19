@@ -640,6 +640,7 @@ export default {
   'rc.ai.http.method': '请求方法',
   'rc.ai.http.methodPleaseHolder': '请选择请求方法',
   'rc.ai.http.headers': '请求头',
+  'rc.ai.http.body': '请求体',
   'rc.alert.template.create': '创建模板',
   'rc.alert.template.modify': '修改模板',
   'rc.alert.template.new': '新建告警模板',

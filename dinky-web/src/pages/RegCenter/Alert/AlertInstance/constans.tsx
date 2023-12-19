@@ -84,8 +84,8 @@ export const ALERT_TYPE_LIST_OPTIONS: DefaultOptionType[] = [
 ];
 
 export const RequestMethod = [
-  { label: 'POST', value: 'POST' },
-  { label: 'GET', value: 'GET' }
+  { label: 'POST', value: 'POST', key: 'POST', disabled: false },
+  { label: 'GET', value: 'GET' , key: 'GET', disabled: true },
 ];
 export enum SMS_TYPE {
   ALIBABA = 'alibaba',

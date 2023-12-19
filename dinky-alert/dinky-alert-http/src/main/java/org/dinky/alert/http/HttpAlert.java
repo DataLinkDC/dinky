@@ -19,6 +19,7 @@
 
 package org.dinky.alert.http;
 
+import java.util.Map;
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
 
@@ -45,12 +46,7 @@ public class HttpAlert extends AbstractAlert {
     @Override
     public AlertResult send(String title, String content) {
         HttpSender sender = new HttpSender(getConfig().getParam());
-        try {
-            String built = buildContent(sender.buildTemplateParams(title, content));
-            return sender.send(built);
-        } catch (TemplateException | IOException e) {
-            log.error("{}'message send error, Reason:{}", getType(), e.getMessage());
-            throw new RuntimeException(e);
-        }
+        Map<String, Object> templateParams = sender.buildTemplateParams(title, content);
+        return sender.send(templateParams);
     }
 }

@@ -1,2 +1,2 @@
 ${title}
-${msg}
+${content}

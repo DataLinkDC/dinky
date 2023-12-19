@@ -83,6 +83,29 @@ const Http: React.FC<HttpProps> = (props) => {
           </Space>
         </ProFormGroup>
       </ProFormList>
+
+      {/*这有 bug，待解决*/}
+      <ProFormList
+        name={['params', 'body']}
+        label={l('rc.ai.http.body')}
+        copyIconProps={false}
+        required
+        initialValue={[{ key: '', value: '' }]}
+        deleteIconProps={{
+          tooltipText: l('rc.cc.deleteConfig')
+        }}
+        creatorButtonProps={{
+          style: { width: '100%' },
+          creatorButtonText: l('rc.cc.addConfig')
+        }}
+      >
+        <ProFormGroup key='bodyGroup' style={{ width: '100%' }}>
+          <Space key={'config'} style={{ width: '100%' }} align='baseline'>
+            <ProFormText width={'md'} name='key' placeholder={l('rc.cc.key')} />
+            <ProFormText width={'lg'} name='value' placeholder={l('rc.cc.value')} />
+          </Space>
+        </ProFormGroup>
+      </ProFormList>
     </>
   );
 };

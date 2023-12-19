@@ -662,6 +662,7 @@ export default {
   'rc.ai.http.method': 'Request method',
   'rc.ai.http.methodPleaseHolder': 'Please select the request method',
   'rc.ai.http.headers': 'Request headers',
+  'rc.ai.http.body': 'Request body',
   'rc.alert.template.create': 'Create Template',
   'rc.alert.template.modify': 'Modify Template',
   'rc.alert.template.new': 'Create an alert template',
