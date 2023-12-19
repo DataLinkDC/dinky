@@ -62,7 +62,7 @@ public class Result<T> implements Serializable {
             dataType = "Integer",
             required = true,
             example = "0",
-            notes = "0: success, 1: fail, 2: warning, 3:tips")
+            notes = "CodeEnum")
     private Integer code;
 
     @ApiModelProperty(
