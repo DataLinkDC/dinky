@@ -34,6 +34,7 @@ public class UnKnownExceptionHandler {
 
     @ExceptionHandler
     public Result<Exception> unknownException(Exception e) {
+        log.error(e.getMessage(), e);
         return Result.exception(e.getMessage(), e);
     }
 }
