@@ -26,7 +26,9 @@ import ITextModel = editor.ITextModel;
 import ProviderResult = languages.ProviderResult;
 import CompletionList = languages.CompletionList;
 import CompletionItem = languages.CompletionItem;
+import {loader} from "@monaco-editor/react";
 // 导入 lodash
+loader.config({ monaco });
 
 /**
  * get keyWordJson from {@link ./keyword.json}
