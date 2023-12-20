@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 id: job_config_submit
-title: 作业与执行模式管理
+title: 作业与环境管理
 ---
 
 ## 作业相关配置
