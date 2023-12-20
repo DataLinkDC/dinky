@@ -27,6 +27,7 @@ import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
+import org.dinky.data.exception.TaskNotDoneException;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
@@ -44,10 +45,7 @@ import org.dinky.service.DataBaseService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -275,7 +273,6 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             result.setEndTime(LocalDateTime.now());
             return result;
         }
-
         DataBase dataBase = getById(sqlDTO.getDatabaseId());
         if (Asserts.isNull(dataBase)) {
             result.setSuccess(false);
@@ -334,24 +331,29 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             result.setEndTime(LocalDateTime.now());
             return result;
         }
+        List<JdbcSelectResult> jdbcSelectResults=new ArrayList<>();
         try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
-
             Stream<JdbcSelectResult> jdbcSelectResultStream =
                     driver.StreamExecuteSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
-            List<JdbcSelectResult> jdbcSelectResults = jdbcSelectResultStream
-                    .takeWhile(res -> {
-                        if (!res.isSuccess()) {
-                            result.setSuccess(false);
-                            result.setError(res.getError());
-                            result.setEndTime(LocalDateTime.now());
-                            return false;
-                        }
-                        return true;
-                    })
-                    .collect(Collectors.toList());
-            if (result.getError() == null) {
-                result.setSuccess(true);
+            jdbcSelectResultStream.forEach(res->{
+                jdbcSelectResults.add(res);
+                if (!res.isSuccess()){
+                    throw new RuntimeException();
+                }
+            });
+            result.setResults(jdbcSelectResults);
+            result.setSuccess(true);
+            return result;
+        }
+        catch (RuntimeException e){
+            if (!jdbcSelectResults.isEmpty()){
+                result.setError(jdbcSelectResults.get(jdbcSelectResults.size()-1).getError());
             }
+            else {
+                result.setError(e.getMessage());
+            }
+            result.setSuccess(false);
+            result.setEndTime(LocalDateTime.now());
             result.setResults(jdbcSelectResults);
             return result;
         }

@@ -708,6 +708,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                     return result;
                 }
             }
+            result.success();
             return result;
         });
     }
