@@ -19,7 +19,6 @@
 
 package org.dinky.metadata.driver;
 
-import cn.hutool.core.text.StrFormatter;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.MetaDataException;
 import org.dinky.data.exception.SplitTableException;
@@ -33,8 +32,14 @@ import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.utils.JsonUtils;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.stream.Stream;
+
+import cn.hutool.core.text.StrFormatter;
 
 /**
  * Driver

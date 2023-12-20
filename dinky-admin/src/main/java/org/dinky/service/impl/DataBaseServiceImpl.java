@@ -30,7 +30,12 @@ import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.*;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.DataBase;
+import org.dinky.data.model.QueryData;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.SqlGeneration;
+import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.job.JobResult;
 import org.dinky.mapper.DataBaseMapper;
@@ -38,6 +43,7 @@ import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.DataBaseService;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -327,8 +333,8 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             return result;
         }
         try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
-            Stream<JdbcSelectResult> jdbcSelectResultStream =
-                    driver.StreamExecuteSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
+
+            Stream<JdbcSelectResult> jdbcSelectResultStream = driver.StreamExecuteSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
             List<JdbcSelectResult> jdbcSelectResults = jdbcSelectResultStream
                     .takeWhile(res -> {
                         if (!res.isSuccess()) {

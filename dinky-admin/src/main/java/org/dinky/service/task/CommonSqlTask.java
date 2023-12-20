@@ -19,8 +19,6 @@
 
 package org.dinky.service.task;
 
-import cn.hutool.extra.spring.SpringUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.SqlDTO;
@@ -30,6 +28,9 @@ import org.dinky.job.JobResult;
 import org.dinky.service.DataBaseService;
 
 import java.util.List;
+
+import cn.hutool.extra.spring.SpringUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SupportDialect({
