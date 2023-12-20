@@ -32,11 +32,11 @@ import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { SearchOutlined } from '@ant-design/icons';
 import { Highlight } from '@ant-design/pro-layout/es/components/Help/Search';
-import { Button, Empty, Input, InputRef, Space, Table } from 'antd';
+import {Button, Empty, Input, InputRef, Space, Table, Tabs} from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
 import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
 
 type Data = {
@@ -44,15 +44,16 @@ type Data = {
   columns?: string[];
   rowData?: object[];
 };
+type DataList=Data[];
 const Result = (props: any) => {
   const {
     tabs: { panes, activeKey }
   } = props;
   const [data, setData] = useState<Data>({});
+  const [dataList, setDataList] = useState<DataList>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const currentTabs = getCurrentTab(panes, activeKey);
   const current = getCurrentData(panes, activeKey) ?? {};
-
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
@@ -121,16 +122,21 @@ const Result = (props: any) => {
       )
   });
 
+
   const loadData = async (isRefresh?: boolean) => {
     if (!isDataStudioTabsItemType(currentTabs)) {
       return;
     }
-
     const params = currentTabs.params;
     const consoleData = currentTabs.console;
-    if (consoleData.result && !isRefresh) {
+    if(consoleData.results && !isRefresh){
+      setDataList(consoleData.results)
+    }
+    if(consoleData.result && !isRefresh) {
       setData(consoleData.result);
-    } else {
+    }
+
+    else {
       if (current.dialect && current.dialect.toLowerCase() == DIALECT.FLINK_SQL) {
         // flink sql
         // to do: get job data by history id list, not flink jid
@@ -166,7 +172,11 @@ const Result = (props: any) => {
   useEffect(() => {
     setData({});
     loadData();
-  }, [currentTabs, currentTabs?.console?.result]);
+  }, [currentTabs?.console?.result]);
+  useEffect(() => {
+    setDataList([]);
+    loadData();
+  }, [currentTabs?.console?.results]);
 
   const getColumns = (columns: string[]) => {
     return columns?.map((item) => {
@@ -237,8 +247,27 @@ const Result = (props: any) => {
           loading={loading}
         />
       ) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-      )}
+        dataList.length>0?(
+
+            <Tabs defaultActiveKey="0">
+              {dataList.map((data, index) => {
+                return (
+                  <Tabs.TabPane key={index} tab={`Table ${index + 1}`}>
+                    <Table
+                      columns={getColumns(data.columns)}
+                      size='small'
+                      dataSource={data.rowData?.map((item: any, index: number) => {
+                        return { ...item, key: index };
+                      })}
+                      loading={loading}
+                    />
+                  </Tabs.TabPane>
+                );
+              })}
+            </Tabs>):
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          )}
+
     </div>
   );
 };

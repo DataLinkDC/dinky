@@ -34,6 +34,7 @@ import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.job.Job;
 import org.dinky.job.JobResult;
 import org.dinky.mapper.DataBaseMapper;
 import org.dinky.metadata.driver.Driver;
@@ -342,8 +343,10 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
                     throw new RuntimeException();
                 }
             });
+            result.setStatus(Job.JobStatus.SUCCESS);
             result.setResults(jdbcSelectResults);
             result.setSuccess(true);
+            result.setEndTime(LocalDateTime.now());
             return result;
         } catch (RuntimeException e) {
             if (!jdbcSelectResults.isEmpty()) {
@@ -352,6 +355,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             } else {
                 result.setError(e.getMessage());
             }
+            result.setStatus(Job.JobStatus.FAILED);
             result.setSuccess(false);
             result.setEndTime(LocalDateTime.now());
             result.setResults(jdbcSelectResults);

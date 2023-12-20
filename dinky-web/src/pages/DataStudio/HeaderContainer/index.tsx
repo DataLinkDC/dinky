@@ -193,7 +193,8 @@ const HeaderContainer = (props: connect) => {
       l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
       currentData
     );
-
+    const saved = currentData.step == JOB_LIFE_CYCLE.PUBLISH ? true : await handleSave();
+    if (!saved) return;
     if (!res) return;
     updateJobRunningMsg({
       taskId: currentData.id,
@@ -203,7 +204,16 @@ const HeaderContainer = (props: connect) => {
     });
     await SuccessMessageAsync(l('pages.datastudio.editor.debug.success'));
     currentData.status = JOB_STATUS.RUNNING;
-    if (currentTab) currentTab.console.result = res.data.result;
+    // Common sql task is synchronized, so it needs to automatically update the status to finished.
+    if (isSql(currentData.dialect)) {
+      currentData.status = JOB_STATUS.FINISHED;
+      if (currentTab) currentTab.console.results = res.data.results;
+      if (currentTab) currentTab.console.result = {};
+    }
+    else {
+      if (currentTab) currentTab.console.result = res.data.result;
+    }
+
     saveTabs({ ...props.tabs });
   };
 
@@ -231,6 +241,7 @@ const HeaderContainer = (props: connect) => {
       currentData.status = JOB_STATUS.FINISHED;
     }
     if (currentTab) currentTab.console.result = res.data.result;
+    if (currentTab) currentTab.console.results = [];
     saveTabs({ ...props.tabs });
   };
 
@@ -378,9 +389,10 @@ const HeaderContainer = (props: connect) => {
       hotKeyDesc: 'Shift+F9',
       isShow:
         currentTab?.type == TabsPageType.project &&
-        !isRunning(currentData) &&
-        (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
-          currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR),
+        !isRunning(currentData),
+        // !isRunning(currentData) &&
+        // (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
+        //   currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR),
       props: {
         style: { background: '#52c41a' },
         type: 'primary'
