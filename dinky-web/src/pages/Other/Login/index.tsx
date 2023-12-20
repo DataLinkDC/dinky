@@ -19,13 +19,13 @@
 
 import Footer from '@/components/Footer';
 import ChooseModal from '@/pages/Other/Login/ChooseModal';
-import { gotoRedirectUrl, redirectToLogin } from '@/pages/Other/Login/function';
+import { gotoRedirectUrl, initSomeThing, redirectToLogin } from '@/pages/Other/Login/function';
 import LangSwitch from '@/pages/Other/Login/LangSwitch';
 import { chooseTenantSubmit, login, queryDataByParams } from '@/services/BusinessCrud';
 import { API } from '@/services/data';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data';
-import { setLocalThemeToStorage, setTenantStorageAndCookie } from '@/utils/function';
+import { setTenantStorageAndCookie } from '@/utils/function';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
 import { ErrorMessage, SuccessMessageAsync } from '@/utils/messages';
@@ -90,8 +90,6 @@ const Login: React.FC = () => {
           tenantCode: chooseTenantResult.data.tenantCode
         })
       );
-      //  补偿设置,设置主题色
-      setLocalThemeToStorage();
       /**
        * After the selection is complete, refresh all user information
        */
@@ -177,7 +175,8 @@ const Login: React.FC = () => {
     await handleChooseTenant(result);
     handleTenantVisible(false);
   };
-
+  // 进入登录页初始化一些东西
+  initSomeThing();
   return (
     <div className={containerClassName}>
       <HelmetTitle />
