@@ -39,6 +39,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -58,6 +59,7 @@ import cn.hutool.core.util.StrUtil;
 public class WebExceptionHandler {
 
     @ExceptionHandler
+    @ResponseBody
     public Result<Void> busException(BusException e) {
         if (StrUtil.isEmpty(e.getMsg())) {
             return Result.failed(I18n.getMessage(e.getCode(), e.getMessage()));
@@ -76,6 +78,7 @@ public class WebExceptionHandler {
             .build();
 
     @ExceptionHandler
+    @ResponseBody
     public Result<Void> notLoginException(NotLoginException notLoginException) {
         ServletRequestAttributes servletRequestAttributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -97,6 +100,7 @@ public class WebExceptionHandler {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ResponseBody
     public Result<String> paramExceptionHandler(MethodArgumentNotValidException e) {
         BindingResult exceptions = e.getBindingResult();
         // 判断异常中是否有错误信息，如果存在就使用异常中的消息，否则使用默认消息

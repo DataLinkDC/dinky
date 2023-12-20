@@ -32,6 +32,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.dinky.utils.LogUtil;
 
 /**
  * 返回对象
@@ -206,8 +207,8 @@ public class Result<T> implements Serializable {
         return of(null, CodeEnum.AUTHORIZE_ERROR.getCode(), msg);
     }
 
-    public static Result<Exception> exception(String msg, Exception e) {
-        return of(e, CodeEnum.EXCEPTION.getCode(), msg);
+    public static Result<String> exception(String msg, Exception e) {
+        return of(LogUtil.getError(e), CodeEnum.EXCEPTION.getCode(), msg);
     }
 
     public static <T> Result<T> paramsError(Status status, Object... args) {
