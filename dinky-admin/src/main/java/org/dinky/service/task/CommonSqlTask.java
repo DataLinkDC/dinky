@@ -19,6 +19,8 @@
 
 package org.dinky.service.task;
 
+import cn.hutool.extra.spring.SpringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.SqlDTO;
@@ -28,9 +30,6 @@ import org.dinky.job.JobResult;
 import org.dinky.service.DataBaseService;
 
 import java.util.List;
-
-import cn.hutool.extra.spring.SpringUtil;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SupportDialect({
@@ -64,6 +63,15 @@ public class CommonSqlTask extends BaseTask {
         SqlDTO sqlDTO = SqlDTO.build(task.getStatement(), task.getDatabaseId(), null);
         DataBaseService dataBaseService = SpringUtil.getBean(DataBaseService.class);
         JobResult jobResult = dataBaseService.executeCommonSql(sqlDTO);
+        return jobResult;
+    }
+
+    @Override
+    public JobResult StreamExecute() {
+        log.info("Preparing to execute common sql...");
+        SqlDTO sqlDTO = SqlDTO.build(task.getStatement(), task.getDatabaseId(), null);
+        DataBaseService dataBaseService = SpringUtil.getBean(DataBaseService.class);
+        JobResult jobResult = dataBaseService.StreamExecuteCommonSql(sqlDTO);
         return jobResult;
     }
 

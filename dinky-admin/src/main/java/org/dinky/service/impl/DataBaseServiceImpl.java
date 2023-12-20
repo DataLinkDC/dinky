@@ -19,6 +19,9 @@
 
 package org.dinky.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.apache.commons.lang3.StringUtils;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.constant.CommonConstant;
@@ -27,12 +30,7 @@ import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.Column;
-import org.dinky.data.model.DataBase;
-import org.dinky.data.model.QueryData;
-import org.dinky.data.model.Schema;
-import org.dinky.data.model.SqlGeneration;
-import org.dinky.data.model.Table;
+import org.dinky.data.model.*;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.job.JobResult;
 import org.dinky.mapper.DataBaseMapper;
@@ -40,19 +38,15 @@ import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.DataBaseService;
-
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * DataBaseServiceImpl
@@ -310,5 +304,47 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
                         .like(DataBase::getName, keyword)
                         .or()
                         .like(DataBase::getNote, keyword));
+    }
+
+    @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE_COMMON_SQL)
+    @Override
+    public JobResult StreamExecuteCommonSql(SqlDTO sqlDTO) {
+        JobResult result = new JobResult();
+        result.setStatement(sqlDTO.getStatement());
+        result.setStartTime(LocalDateTime.now());
+
+        if (Asserts.isNull(sqlDTO.getDatabaseId())) {
+            result.setSuccess(false);
+            result.setError("please assign data source");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
+        DataBase dataBase = getById(sqlDTO.getDatabaseId());
+        if (Asserts.isNull(dataBase)) {
+            result.setSuccess(false);
+            result.setError("data source not exist.");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            Stream<JdbcSelectResult> jdbcSelectResultStream =
+                    driver.StreamExecuteSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
+            List<JdbcSelectResult> jdbcSelectResults = jdbcSelectResultStream
+                    .takeWhile(res -> {
+                        if (!res.isSuccess()) {
+                            result.setSuccess(false);
+                            result.setError(res.getError());
+                            result.setEndTime(LocalDateTime.now());
+                            return false;
+                        }
+                        return true;
+                    })
+                    .collect(Collectors.toList());
+            if (result.getError() == null) {
+                result.setSuccess(true);
+            }
+            result.setResults(jdbcSelectResults);
+            return result;
+        }
     }
 }

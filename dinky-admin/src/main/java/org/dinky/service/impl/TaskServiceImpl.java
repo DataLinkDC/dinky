@@ -19,17 +19,30 @@
 
 package org.dinky.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.text.StrFormatter;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.constant.CommonConstant;
-import org.dinky.data.dto.AbstractStatementDTO;
-import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
-import org.dinky.data.dto.TaskRollbackVersionDTO;
-import org.dinky.data.dto.TaskSubmitDto;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.ProcessStepType;
@@ -38,14 +51,6 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.exception.SqlExplainExcepition;
 import org.dinky.data.exception.TaskNotDoneException;
-import org.dinky.data.model.Catalogue;
-import org.dinky.data.model.ClusterConfiguration;
-import org.dinky.data.model.ClusterInstance;
-import org.dinky.data.model.DataBase;
-import org.dinky.data.model.Savepoints;
-import org.dinky.data.model.SystemConfiguration;
-import org.dinky.data.model.Task;
-import org.dinky.data.model.TaskVersion;
 import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.model.home.JobModelOverview;
@@ -72,42 +77,11 @@ import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
 import org.dinky.mapper.TaskMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.service.AlertGroupService;
-import org.dinky.service.CatalogueService;
-import org.dinky.service.ClusterConfigurationService;
-import org.dinky.service.ClusterInstanceService;
-import org.dinky.service.DataBaseService;
-import org.dinky.service.FragmentVariableService;
-import org.dinky.service.JobInstanceService;
-import org.dinky.service.SavepointsService;
-import org.dinky.service.TaskService;
-import org.dinky.service.TaskVersionService;
-import org.dinky.service.UDFTemplateService;
-import org.dinky.service.UserService;
 import org.dinky.service.task.BaseTask;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.RunTimeUtil;
 import org.dinky.utils.UDFUtils;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
@@ -115,22 +89,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNode;
-import cn.hutool.core.lang.tree.TreeUtil;
-import cn.hutool.core.text.StrFormatter;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.Resource;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 /**
  * TaskServiceImpl
@@ -197,6 +161,18 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJob(TaskDTO task) throws Exception {
         JobResult jobResult = BaseTask.getTask(task).execute();
+        log.info("execute job finished,status is {}", jobResult.getStatus());
+        return jobResult;
+    }
+
+    @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
+    public JobResult executeJob(TaskDTO task, Boolean stream) throws Exception {
+        JobResult jobResult;
+        if (stream) {
+            jobResult = BaseTask.getTask(task).StreamExecute();
+        } else {
+            jobResult = BaseTask.getTask(task).execute();
+        }
         log.info("execute job finished,status is {}", jobResult.getStatus());
         return jobResult;
     }
@@ -330,7 +306,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         taskDTO.setStatementSet(false);
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
-        JobResult jobResult = taskServiceBean.executeJob(taskDTO);
+        JobResult jobResult = new JobResult();
+        if (Dialect.isCommonSql(taskDTO.getDialect())) {
+            jobResult = taskServiceBean.executeJob(taskDTO, true);
+        } else {
+            jobResult = taskServiceBean.executeJob(taskDTO);
+        }
+
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
             log.info("Job debug success");
             Task task = new Task(debugDTO.getId(), jobResult.getJobInstanceId());
