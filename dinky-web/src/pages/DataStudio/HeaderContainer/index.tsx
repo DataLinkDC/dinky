@@ -189,9 +189,17 @@ const HeaderContainer = (props: connect) => {
   const handlerDebug = async () => {
     if (!currentData) return;
 
+    let selectsql = null;
+    if (currentTab.editorInstance) {
+      selectsql = currentTab.editorInstance.getModel().getValueInRange(currentTab.editorInstance.getSelection());
+    }
+    if (selectsql == null || selectsql == '') {
+      selectsql = currentData.statement;
+    }
+
     const res = await debugTask(
       l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
-      currentData
+      {...currentData, statement: selectsql}
     );
 
     if (!res) return;
