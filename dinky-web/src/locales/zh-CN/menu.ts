@@ -37,6 +37,12 @@ export default {
   'menu.account.changePassword': '修改密码',
   'menu.account.checkTenant': '切换租户',
   'menu.account.checkTenantConfirm': '你确定切换租户【{tenantCode}】吗？',
+  'menu.account.closeGlobalMessage': '关闭开发者模式',
+  'menu.account.openGlobalMessage': '开启开发者模式',
+  'menu.account.closeGlobalMessageTip':
+    '你已关闭开发者模式,将不会接收到后台返回的所有异常信息,只能收到警告信息.',
+  'menu.account.openGlobalMessageTip':
+    '已开启开发者模式,你可以接收到后台返回的所有异常/警告信息,如果你不想接收异常堆栈,请关闭此功能.',
 
   'menu.datastudio': '数据开发',
 

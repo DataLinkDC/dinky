@@ -24,6 +24,7 @@ import org.dinky.data.result.Result;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 public class UnKnownExceptionHandler {
 
     @ExceptionHandler
-    public Result<Exception> unknownException(Exception e) {
+    @ResponseBody
+    public Result<String> unknownException(Exception e) {
         log.error(e.getMessage(), e);
         return Result.exception(e.getMessage(), e);
     }
