@@ -66,6 +66,10 @@ export function setKeyToLocalStorage(key: string, value: string) {
   localStorage.setItem(key, value);
 }
 
+export function hasKeyofLocalStorage(key: string): boolean {
+  return localStorage.getItem(key) === undefined || localStorage.getItem(key) === null;
+}
+
 /**
  * get value by localStorage's key
  * @param key
