@@ -21,6 +21,7 @@ package org.dinky.data.result;
 
 import org.dinky.data.enums.CodeEnum;
 import org.dinky.data.enums.Status;
+import org.dinky.utils.LogUtil;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -32,7 +33,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.dinky.utils.LogUtil;
 
 /**
  * 返回对象
