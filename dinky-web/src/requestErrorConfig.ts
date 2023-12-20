@@ -55,7 +55,7 @@ const handleBizError = (result: ResponseStructure) => {
       break;
     case ErrorCode.EXCEPTION:
       if (Boolean(getValueFromLocalStorage(ENABLE_MODEL_TIP))) {
-        ErrorNotification(data, l('app.response.error'));
+        ErrorNotification(data, l('app.response.exception'));
       }
       break;
     case ErrorCode.PARAMS_ERROR:
