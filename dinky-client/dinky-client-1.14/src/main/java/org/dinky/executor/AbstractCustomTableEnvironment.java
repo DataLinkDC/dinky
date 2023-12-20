@@ -47,6 +47,7 @@ public abstract class AbstractCustomTableEnvironment
         return streamTableEnvironment;
     }
 
+    @Override
     public StreamExecutionEnvironment getStreamExecutionEnvironment() {
         return ((StreamTableEnvironmentImpl) streamTableEnvironment).execEnv();
     }
@@ -56,9 +57,11 @@ public abstract class AbstractCustomTableEnvironment
         return userClassLoader;
     }
 
+    @Override
     public Planner getPlanner() {
         return ((StreamTableEnvironmentImpl) streamTableEnvironment).getPlanner();
     }
 
+    @Override
     public abstract <T> void addConfiguration(ConfigOption<T> option, T value);
 }

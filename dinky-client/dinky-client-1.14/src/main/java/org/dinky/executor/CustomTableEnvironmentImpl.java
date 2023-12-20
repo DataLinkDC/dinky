@@ -46,6 +46,7 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
+import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImpl;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
@@ -98,6 +99,14 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
+    private final CustomExtendedOperationExecutorImpl extendedExecutor = new CustomExtendedOperationExecutorImpl(this);
+    private static final String UNSUPPORTED_QUERY_IN_EXECUTE_SQL_MSG =
+            "Unsupported SQL query! executeSql() only accepts a single SQL statement of type "
+                    + "CREATE TABLE, DROP TABLE, ALTER TABLE, CREATE DATABASE, DROP DATABASE, ALTER DATABASE, "
+                    + "CREATE FUNCTION, DROP FUNCTION, ALTER FUNCTION, CREATE CATALOG, DROP CATALOG, "
+                    + "USE CATALOG, USE [CATALOG.]DATABASE, SHOW CATALOGS, SHOW DATABASES, SHOW TABLES, SHOW [USER] FUNCTIONS, SHOW PARTITIONS"
+                    + "CREATE VIEW, DROP VIEW, SHOW VIEWS, INSERT, DESCRIBE, LOAD MODULE, UNLOAD "
+                    + "MODULE, USE MODULES, SHOW [FULL] MODULES.";
 
     public CustomTableEnvironmentImpl(
             CatalogManager catalogManager,
@@ -122,7 +131,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         Thread.currentThread().setContextClassLoader(userClassLoader);
         this.executor = executor;
         injectParser(new CustomParserImpl(getPlanner().getParser()));
-        injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
+        injectExtendedExecutor(extendedExecutor);
     }
 
     public static CustomTableEnvironmentImpl create(
@@ -272,6 +281,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(getJobGraphFromInserts(statements)));
     }
 
+    @Override
     public StreamGraph getStreamGraphFromInserts(List<String> statements) {
         List<ModifyOperation> modifyOperations = new ArrayList();
         for (String statement : statements) {
@@ -300,10 +310,12 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         }
     }
 
+    @Override
     public JobGraph getJobGraphFromInserts(List<String> statements) {
         return getStreamGraphFromInserts(statements).getJobGraph();
     }
 
+    @Override
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         SqlExplainResult record = new SqlExplainResult();
         List<Operation> operations = getParser().parse(statement);
@@ -332,6 +344,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return record;
     }
 
+    @Override
     public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
         for (Operation operation : operations) {
@@ -383,6 +396,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         }
     }
 
+    @Override
     public <T> Table fromDataStream(DataStream<T> dataStream, String fields) {
         List<Expression> expressions = ExpressionParser.parseExpressionList(fields);
         return fromDataStream(dataStream, expressions.toArray(new Expression[0]));
@@ -436,5 +450,25 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                             + " stream environment. But is: %s",
                     getStreamExecutionEnvironment().getStreamTimeCharacteristic()));
         }
+    }
+
+    @Override
+    public TableResult executeSql(String statement) {
+        List<Operation> operations = getParser().parse(statement);
+
+        if (operations.size() != 1) {
+            throw new TableException(UNSUPPORTED_QUERY_IN_EXECUTE_SQL_MSG);
+        }
+
+        return executeInternal(operations.get(0));
+    }
+
+    @Override
+    public TableResult executeInternal(Operation operation) {
+        Optional<? extends TableResult> tableResult = extendedExecutor.executeOperation(operation);
+        if (tableResult.isPresent()) {
+            return tableResult.get();
+        }
+        return super.executeInternal(operation);
     }
 }

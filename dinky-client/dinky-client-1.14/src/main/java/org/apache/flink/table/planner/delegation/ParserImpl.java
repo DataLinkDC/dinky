@@ -19,6 +19,8 @@
 
 package org.apache.flink.table.planner.delegation;
 
+import org.dinky.parser.DinkyExtendedParser;
+
 import org.apache.calcite.rex.RexNode;
 import org.apache.calcite.sql.SqlIdentifier;
 import org.apache.calcite.sql.SqlNode;
@@ -63,7 +65,7 @@ public class ParserImpl implements Parser {
     private final Supplier<FlinkPlannerImpl> validatorSupplier;
     private final Supplier<CalciteParser> calciteParserSupplier;
     private final SqlExprToRexConverterFactory sqlExprToRexConverterFactory;
-    private static final ExtendedParser EXTENDED_PARSER = ExtendedParser.INSTANCE;
+    private static final ExtendedParser EXTENDED_PARSER = DinkyExtendedParser.INSTANCE;
 
     public ParserImpl(
             CatalogManager catalogManager,
@@ -122,6 +124,7 @@ public class ParserImpl implements Parser {
                 rexNode, TypeConversions.fromLogicalToDataType(logicalType), sqlExpression, sqlExpressionExpanded);
     }
 
+    @Override
     public String[] getCompletionHints(String statement, int cursor) {
         List<String> candidates = new ArrayList<>(Arrays.asList(EXTENDED_PARSER.getCompletionHints(statement, cursor)));
 
