@@ -17,7 +17,9 @@
  *
  */
 
+import { ENABLE_MODEL_TIP } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { getValueFromLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ErrorNotification, WarningNotification } from '@/utils/messages';
 import { history } from '@@/core/history';
@@ -43,6 +45,8 @@ interface ResponseStructure {
 
 const handleBizError = (result: ResponseStructure) => {
   const { msg, code, data } = result;
+  console.log(JSON.stringify(msg));
+
   switch (code) {
     case ErrorCode.SUCCESS:
       //don't deal with it, just be happy
@@ -52,7 +56,9 @@ const handleBizError = (result: ResponseStructure) => {
       break;
     case ErrorCode.EXCEPTION:
       //TODO 可配置化，dev换弹出错误，release不弹
-      //ErrorNotification(JSON.stringify(data), l('app.response.error'));
+      if (Boolean(getValueFromLocalStorage(ENABLE_MODEL_TIP))) {
+        ErrorNotification(JSON.stringify(data), l('app.response.error'));
+      }
       break;
     case ErrorCode.PARAMS_ERROR:
       ErrorNotification(msg, l('app.response.error'));
@@ -83,6 +89,8 @@ export const errorConfig: RequestConfig = {
     },
     // 错误接收及处理
     errorHandler: (error: any, opts: any) => {
+      console.log(error);
+
       if (opts?.skipErrorHandler) throw error;
       // 我们的 errorThrower 抛出的错误。
       if (error.name === 'BizError') {
