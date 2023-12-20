@@ -30,15 +30,26 @@ type StatisticsCardParams = {
   extra?: any;
   divider?: boolean;
   atClick?: () => void;
-  isChecked?: boolean;  // 是否选中
+  isChecked?: boolean; // 是否选中
 };
 const StatisticsCard = (props: StatisticsCardParams) => {
-  const { title, value,isChecked= false, icon, extra = <></>, divider = true, link, atClick } = props;
+  const {
+    title,
+    value,
+    isChecked = false,
+    icon,
+    extra = <></>,
+    divider = true,
+    link,
+    atClick
+  } = props;
   return (
     <>
       <ProCard
-        checked={isChecked} boxShadow={isChecked}
-        layout={'center'} onClick={() => (atClick ? atClick() : {})}
+        checked={isChecked}
+        boxShadow={isChecked}
+        layout={'center'}
+        onClick={() => (atClick ? atClick() : {})}
         hoverable={true}
       >
         <Space size={20}>
