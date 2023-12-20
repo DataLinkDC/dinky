@@ -25,7 +25,7 @@ import Result from '@/pages/DataStudio/BottomContainer/Result';
 import JsonToSql from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql';
 import TextComparison from '@/pages/DataStudio/BottomContainer/Tools/TextComparison';
 import { LeftBottomKey, LeftMenuKey, RightMenuKey } from '@/pages/DataStudio/data.d';
-import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
 import Catalog from '@/pages/DataStudio/LeftContainer/Catalog';
 import DataSource from '@/pages/DataStudio/LeftContainer/DataSource';
 import GlobalVariable from '@/pages/DataStudio/LeftContainer/GlobaleVar';
