@@ -63,6 +63,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(undefined);
             }}
+            isChecked={!statusFilter}
             extra={
               <Space direction='vertical'>
                 <Button type={'text'} icon={<BatchIcons size={20} />}>
@@ -85,6 +86,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(JOB_STATUS.RUNNING);
             }}
+            isChecked={statusFilter === JOB_STATUS.RUNNING}
           />
           <StatisticsCard
             title={l('devops.joblist.status.cancelled')}
@@ -93,6 +95,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(JOB_STATUS.CANCELED);
             }}
+            isChecked={statusFilter === JOB_STATUS.CANCELED}
           />
           <StatisticsCard
             title={l('devops.joblist.status.failed')}
@@ -101,6 +104,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(JOB_STATUS.FAILED);
             }}
+            isChecked={statusFilter === JOB_STATUS.FAILED}
           />
           <StatisticsCard
             title={l('devops.joblist.status.restarting')}
@@ -109,6 +113,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(JOB_STATUS.RESTARTING);
             }}
+            isChecked={statusFilter === JOB_STATUS.RESTARTING}
           />
           <StatisticsCard
             title={l('devops.joblist.status.finished')}
@@ -117,6 +122,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(JOB_STATUS.FINISHED);
             }}
+            isChecked={statusFilter === JOB_STATUS.FINISHED}
           />
           <StatisticsCard
             title={l('devops.joblist.status.unknown')}
@@ -126,6 +132,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(JOB_STATUS.UNKNOWN);
             }}
+            isChecked={statusFilter === JOB_STATUS.UNKNOWN}
           />
         </ProCard>
       </Col>
