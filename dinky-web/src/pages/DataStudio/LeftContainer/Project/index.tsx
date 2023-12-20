@@ -18,12 +18,18 @@
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
+import { LeftBottomKey } from '@/pages/DataStudio/data.d';
 import { getTabByTaskId } from '@/pages/DataStudio/function';
+import { useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import {
   FOLDER_RIGHT_MENU,
   JOB_RIGHT_MENU
 } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
+import {
+  getBottomSelectKeyFromNodeClickJobType,
+  getRightSelectKeyFromNodeClickJobType
+} from '@/pages/DataStudio/LeftContainer/Project/function';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
 import {
@@ -32,6 +38,7 @@ import {
   STUDIO_MODEL,
   STUDIO_MODEL_ASYNC
 } from '@/pages/DataStudio/model';
+import { LeftBottomMoreTabs } from '@/pages/DataStudio/route';
 import {
   handleAddOrUpdate,
   handleOption,
@@ -58,6 +65,7 @@ const Project: React.FC = (props: connect) => {
   } = props;
 
   const [projectState, setProjectState] = useState<ProjectState>(InitProjectState);
+  const btnDispatch = useTasksDispatch();
 
   useEffect(() => {
     setProjectState((prevState) => ({
@@ -126,16 +134,31 @@ const Project: React.FC = (props: connect) => {
     if (!isLeaf) {
       dispatch({ type: STUDIO_MODEL.updateProjectExpandKey, payload: [...expandKeys, key] });
       return;
+    } else {
+      dispatch({
+        type: STUDIO_MODEL.updateSelectRightKey,
+        payload: getRightSelectKeyFromNodeClickJobType(type)
+      });
+      const bottomKey = getBottomSelectKeyFromNodeClickJobType(type);
+      dispatch({
+        type: STUDIO_MODEL.updateSelectBottomKey,
+        payload: bottomKey
+      });
+      if (bottomKey === LeftBottomKey.TOOLS_KEY) {
+        dispatch({
+          type: STUDIO_MODEL.updateSelectBottomSubKey,
+          payload: LeftBottomMoreTabs[bottomKey][0].key
+        });
+      }
     }
 
-    path.pop();
     dispatch({
       type: STUDIO_MODEL.addTab,
       payload: {
         icon: type,
         id: parentId + name,
         treeKey: key,
-        breadcrumbLabel: path.join('/'),
+        breadcrumbLabel: path.slice(0, path.length - 1).join('/'),
         label: name,
         params: {
           taskId: taskId
@@ -164,8 +187,6 @@ const Project: React.FC = (props: connect) => {
 
   /**
    * 创建目录, 并刷新目录树
-   * @param {Catalogue} values
-   * @returns {Promise<void>}
    */
   const handleSubmit = async (values: Catalogue) => {
     const options = {
@@ -186,7 +207,7 @@ const Project: React.FC = (props: connect) => {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL;
     }
 
-    handleAddOrUpdate(
+    await handleAddOrUpdate(
       options.url,
       {
         ...values,
@@ -232,11 +253,11 @@ const Project: React.FC = (props: connect) => {
 
   /**
    * 删除目录, 并刷新目录树
-   * @param {MenuInfo} node
-   * @returns {Promise<void>}
    */
   const handleDeleteSubmit = async () => {
     const { key, isLeaf, name, type } = projectState.rightClickedNode;
+    const { taskId, task } = projectState.value;
+
     handleContextCancel();
     if (!isLeaf) {
       await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
@@ -246,24 +267,19 @@ const Project: React.FC = (props: connect) => {
       return;
     }
 
-    const renderContent = () => {
-      return (
-        <Text className={'needWrap'} type='danger'>
-          {l('datastudio.project.delete.job.confirm')}
-        </Text>
-      );
-    };
-
     Modal.confirm({
       title: l('datastudio.project.delete.job', '', { type, name }),
       width: '30%',
-      content: renderContent(),
+      content: (
+        <Text className={'needWrap'} type='danger'>
+          {l('datastudio.project.delete.job.confirm')}
+        </Text>
+      ),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
-          // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项
-          // dispatch({ type: STUDIO_MODEL.removeTag, payload: taskId });
+          dispatch({ type: STUDIO_MODEL.removeTag, payload: taskId });
           dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         });
       }
@@ -272,7 +288,6 @@ const Project: React.FC = (props: connect) => {
 
   /**
    * rename handle
-   * @returns {Promise<void>}
    */
   const handleRename = async () => {
     setProjectState((prevState) => ({ ...prevState, isRename: true }));
@@ -297,7 +312,6 @@ const Project: React.FC = (props: connect) => {
 
   /**
    * copy task handle and submit to server and refresh the tree
-   * @returns {Promise<void>}
    */
   const handleCopy = async () => {
     await handleOption(
@@ -311,7 +325,6 @@ const Project: React.FC = (props: connect) => {
 
   /**
    * cut task handle
-   * @returns {Promise<void>}
    */
   const handleCut = async () => {
     setProjectState((prevState) => ({
@@ -324,7 +337,6 @@ const Project: React.FC = (props: connect) => {
 
   /**
    * paste task handle and submit to server and refresh the tree
-   * @returns {Promise<void>}
    */
   const handlePaste = async () => {
     await handlePutDataByParams(
@@ -349,8 +361,6 @@ const Project: React.FC = (props: connect) => {
 
   /**
    *  all context menu click handle
-   * @param {MenuInfo} node
-   * @returns {Promise<void>}
    */
   const handleMenuClick = async (node: MenuInfo) => {
     setProjectState((prevState) => ({ ...prevState, rightActiveKey: node.key }));

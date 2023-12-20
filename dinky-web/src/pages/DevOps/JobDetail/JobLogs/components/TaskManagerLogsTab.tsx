@@ -91,7 +91,12 @@ const TaskManagerLogsTab = (props: JobProps) => {
             extra={<Paragraph>{currentTM.containerPath}</Paragraph>}
           >
             <Spin spinning={tmLog.loading}>
-              <CodeShow code={tmLog.data} height={500} />
+              <CodeShow
+                showFloatButton
+                code={tmLog.data}
+                language={'javalog'}
+                height={'calc(100vh - 340px)'}
+              />
             </Spin>
           </Card>
         </Col>
@@ -99,7 +104,11 @@ const TaskManagerLogsTab = (props: JobProps) => {
     );
   };
 
-  return <ProCard>{renderLogTab()}</ProCard>;
+  return (
+    <ProCard bodyStyle={{ height: parent.innerHeight - 200, overflow: 'auto' }}>
+      {renderLogTab()}
+    </ProCard>
+  );
 };
 
 export default TaskManagerLogsTab;

@@ -20,9 +20,9 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.parser.CustomParserImpl;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.dag.Transformation;
@@ -40,20 +40,15 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.ExplainFormat;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.table.operations.CreateTableASOperation;
 import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
-import org.apache.flink.table.operations.SinkModifyOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
-import org.apache.flink.table.operations.ddl.CreateTableOperation;
 import org.apache.flink.types.Row;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +61,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import cn.hutool.core.collection.CollUtil;
 
 /**
  * CustomTableEnvironmentImpl
@@ -82,20 +75,25 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     public CustomTableEnvironmentImpl(StreamTableEnvironment streamTableEnvironment) {
         super(streamTableEnvironment);
+        injectParser(new CustomParserImpl(getPlanner().getParser()));
+        injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
     }
 
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
+    public static CustomTableEnvironmentImpl create(
+            StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
+        return create(
+                executionEnvironment,
+                EnvironmentSettings.newInstance().withClassLoader(classLoader).build());
+    }
+
+    public static CustomTableEnvironmentImpl createBatch(
+            StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
         return create(
                 executionEnvironment,
                 EnvironmentSettings.newInstance()
-                        .withClassLoader(DinkyClassLoaderContextHolder.get())
+                        .withClassLoader(classLoader)
+                        .inBatchMode()
                         .build());
-    }
-
-    public static CustomTableEnvironmentImpl createBatch(StreamExecutionEnvironment executionEnvironment) {
-        return create(
-                executionEnvironment,
-                EnvironmentSettings.newInstance().inBatchMode().build());
     }
 
     public static CustomTableEnvironmentImpl create(
@@ -103,19 +101,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(executionEnvironment, settings);
 
         return new CustomTableEnvironmentImpl(streamTableEnvironment);
-    }
-
-    @Override
-    public void addJar(File... jarPath) {
-        Configuration configuration = this.getRootConfiguration();
-        List<String> jars = configuration.get(PipelineOptions.JARS);
-        if (jars == null) {
-            configuration.set(
-                    PipelineOptions.JARS,
-                    Arrays.stream(jarPath).map(File::getAbsolutePath).collect(Collectors.toList()));
-        } else {
-            CollUtil.addAll(jars, jarPath);
-        }
     }
 
     @Override
@@ -181,9 +166,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 throw new TableException("Only single statement is supported.");
             }
             Operation operation = operations.get(0);
-            if (operation instanceof CreateTableASOperation) {
-                executeCTAS(operation);
-            } else if (operation instanceof ModifyOperation) {
+            if (operation instanceof ModifyOperation) {
                 modifyOperations.add((ModifyOperation) operation);
             } else {
                 throw new TableException("Only insert statement is supported now.");
@@ -277,16 +260,5 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     @Override
     public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
         createTemporaryView(s, fromChangelogStream(dataStream));
-    }
-
-    @Override
-    public void executeCTAS(Operation operation) {
-        if (operation instanceof CreateTableASOperation) {
-            CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
-            CreateTableOperation createTableOperation = createTableASOperation.getCreateTableOperation();
-            executeInternal(createTableOperation);
-            SinkModifyOperation sinkModifyOperation = createTableASOperation.toSinkModifyOperation(getCatalogManager());
-            getPlanner().translate(CollUtil.newArrayList(sinkModifyOperation));
-        }
     }
 }

@@ -45,11 +45,6 @@
             <artifactId>jasypt</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.12.481</version>
-        </dependency>
-        <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
         </dependency>
@@ -171,21 +166,15 @@
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
+            <artifactId>dinky-gateway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
             <artifactId>dinky-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-daemon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-gateway</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.fabric8</groupId>
-                    <artifactId>kubernetes-client</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
@@ -198,10 +187,6 @@
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-executor</artifactId>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
@@ -409,10 +394,10 @@
                 <configuration>
                     <classesDirectory>target/classes/</classesDirectory>
                     <excludes>
-                        <!--注意这玩意默认从编译结果目录开始算目录结构-->
                         <exclude>/application*.yml</exclude>
                         <exclude>/mybatis*.xml</exclude>
                         <exclude>/DinkyFlinkDockerfile</exclude>
+                        <exclude>/dinky-loader/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>

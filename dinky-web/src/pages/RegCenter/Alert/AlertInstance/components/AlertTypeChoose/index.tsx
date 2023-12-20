@@ -1,26 +1,27 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import { Button, Form } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { FormContextValue } from '@/components/Context/FormContext';
 import InstanceForm from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm';
-import { buildJSONData, getJSONData } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
 import { Alert } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
@@ -35,6 +36,7 @@ type UpdateFormProps = {
   onTest: (values: Partial<Alert.AlertInstance>) => void;
   modalVisible: boolean;
   values: Partial<Alert.AlertInstance>;
+  loading: boolean;
 };
 
 const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
@@ -46,8 +48,11 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
     onCancel: handleCancelVisible,
     onTest: handleTest,
     modalVisible,
-    values
+    values,
+    loading
   } = props;
+
+  const [formValues, setFormValues] = useState<Partial<Alert.AlertInstance>>(values);
 
   /**
    * init form
@@ -76,19 +81,17 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
    * when modalVisible or values changed, set form values
    */
   useEffect(() => {
-    form.setFieldsValue(getJSONData(values));
-  }, [modalVisible, values, form]);
+    form.setFieldsValue(formValues);
+  }, [modalVisible, formValues, form]);
 
   const testSend = async () => {
     const validateFields = await form.validateFields();
-    const data = buildJSONData(values, validateFields);
-    await handleTest(data);
+    handleTest({ ...formValues, ...validateFields });
   };
 
   const submit = async () => {
     const validateFields = await form.validateFields();
-    const data = buildJSONData(values, validateFields);
-    await handleSubmit(data);
+    handleSubmit({ ...formValues, ...validateFields });
     handleCancel();
   };
 
@@ -97,10 +100,17 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
       <Button key={'AlertCancel'} onClick={handleCancel}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'AlertTest'} type='primary' onClick={testSend}>
+      <Button key={'AlertTest'} type='primary' loading={loading} onClick={testSend}>
         {l('button.test')}
       </Button>,
-      <Button key={'AlertFinish'} type='primary' onClick={submit}>
+      <Button
+        key={'AlertFinish'}
+        type='primary'
+        htmlType={'submit'}
+        autoFocus
+        loading={loading}
+        onClick={submit}
+      >
         {l('button.finish')}
       </Button>
     ];
@@ -108,15 +118,20 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
 
   return (
     <>
-      <ModalForm
+      <ModalForm<Alert.AlertInstance>
         {...NORMAL_MODAL_OPTIONS}
-        title={values?.id ? l('rc.ai.modify') : l('rc.ai.create')}
+        title={formValues?.id ? l('rc.ai.modify') : l('rc.ai.create')}
         open={modalVisible}
         form={form}
+        initialValues={formValues}
+        onValuesChange={(changedValues, allValues) =>
+          setFormValues((prevState) => ({ ...prevState, ...allValues, ...changedValues }))
+        }
         modalProps={{ onCancel: handleCancel, ...NORMAL_MODAL_OPTIONS }}
         submitter={{ render: () => [...renderFooter()] }}
+        syncToInitialValues
       >
-        <InstanceForm form={form} values={values} />
+        <InstanceForm form={form} values={formValues} />
       </ModalForm>
     </>
   );

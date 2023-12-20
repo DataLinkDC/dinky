@@ -29,6 +29,7 @@ import org.dinky.data.dto.AbstractStatementDTO;
 import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
+import org.dinky.data.dto.TaskSubmitDto;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.ProcessStepType;
@@ -37,20 +38,20 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.exception.SqlExplainExcepition;
 import org.dinky.data.exception.TaskNotDoneException;
-import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.DataBase;
-import org.dinky.data.model.JobInstance;
-import org.dinky.data.model.JobModelOverview;
-import org.dinky.data.model.JobTypeOverView;
 import org.dinky.data.model.Savepoints;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
-import org.dinky.data.model.TaskExtConfig;
 import org.dinky.data.model.TaskVersion;
-import org.dinky.data.model.UDFTemplate;
+import org.dinky.data.model.alert.AlertGroup;
+import org.dinky.data.model.ext.TaskExtConfig;
+import org.dinky.data.model.home.JobModelOverview;
+import org.dinky.data.model.home.JobTypeOverView;
+import org.dinky.data.model.job.JobInstance;
+import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageBuilder;
@@ -98,6 +99,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -110,6 +112,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -167,7 +170,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_PRECHECK)
-    public void preCheckTask(TaskDTO task) throws TaskNotDoneException {
+    public TaskDTO prepareTask(TaskSubmitDto submitDto) throws TaskNotDoneException {
+        TaskDTO task = this.getTaskInfoById(submitDto.getId());
+
         log.info("Start check and config task, task:{}", task.getName());
 
         Assert.notNull(task, Status.TASK_NOT_EXIST.getMessage());
@@ -180,6 +185,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 throw new BusException(Status.TASK_STATUS_IS_NOT_DONE.getMessage());
             }
         }
+
+        if (StringUtils.isNotBlank(submitDto.getSavePointPath())) {
+            task.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
+            task.setSavePointPath(submitDto.getSavePointPath());
+        }
+        task.setVariables(Optional.ofNullable(submitDto.getVariables()).orElse(new HashMap<>()));
+        return task;
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
@@ -189,8 +201,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return jobResult;
     }
 
+    // Submit and export task
     @ProcessStep(type = ProcessStepType.SUBMIT_BUILD_CONFIG)
-    public JobConfig buildJobConfig(TaskDTO task) {
+    public JobConfig buildJobSubmitConfig(TaskDTO task) {
         task.setStatement(buildEnvSql(task) + task.getStatement());
         JobConfig config = task.getJobConfig();
         Savepoints savepoints = savepointsService.getSavePointWithStrategy(task);
@@ -206,17 +219,55 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             flinkClusterCfg.getAppConfig().setUserJarParas(buildParams(config.getTaskId()));
             flinkClusterCfg.getAppConfig().setUserJarMainAppClass(CommonConstant.DINKY_APP_MAIN_CLASS);
             config.buildGatewayConfig(flinkClusterCfg);
-            Optional.ofNullable(task.getJobInstanceId()).ifPresent(i -> {
-                JobInstance jobInstance = jobInstanceService.getById(i);
-                config.setClusterId(jobInstance.getClusterId());
-            });
+            config.setClusterId(null);
+        } else if (GatewayType.LOCAL.equalsValue(task.getType())) {
+            config.setClusterId(null);
+            config.setClusterConfigurationId(null);
         } else {
             Optional.ofNullable(task.getClusterId()).ifPresent(config::setClusterId);
         }
         log.info("Init remote cluster");
-        Optional.ofNullable(config.getClusterId()).ifPresent(i -> {
-            config.setAddress(clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), i));
-        });
+        try {
+            config.setAddress(clusterInstanceService.buildEnvironmentAddress(config));
+        } catch (Exception e) {
+            log.error("Init remote cluster error:{}", e.getMessage());
+        }
+        return config;
+    }
+
+    // Savepoint and cancel task
+    @ProcessStep(type = ProcessStepType.SUBMIT_BUILD_CONFIG)
+    public JobConfig buildJobConfig(TaskDTO task) {
+        JobConfig config = task.getJobConfig();
+        if (GatewayType.get(task.getType()).isDeployCluster()) {
+            log.info("Init gateway config, type:{}", task.getType());
+            FlinkClusterConfig flinkClusterCfg =
+                    clusterCfgService.getFlinkClusterCfg(config.getClusterConfigurationId());
+            flinkClusterCfg.getAppConfig().setUserJarParas(buildParams(config.getTaskId()));
+            flinkClusterCfg.getAppConfig().setUserJarMainAppClass(CommonConstant.DINKY_APP_MAIN_CLASS);
+            config.buildGatewayConfig(flinkClusterCfg);
+            JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
+            if (Asserts.isNull(jobInstance)) {
+                log.error("Get job instance error: The job instance does not exist.");
+            }
+            config.setClusterId(jobInstance.getClusterId());
+        } else if (GatewayType.LOCAL.equalsValue(task.getType())) {
+            JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
+            if (Asserts.isNull(jobInstance)) {
+                log.error("Get job instance error: The job instance does not exist.");
+            }
+            config.setClusterId(jobInstance.getClusterId());
+            config.setUseRemote(true);
+            config.setClusterConfigurationId(null);
+        } else {
+            Optional.ofNullable(task.getClusterId()).ifPresent(config::setClusterId);
+        }
+        log.info("Init remote cluster");
+        try {
+            config.setAddress(clusterInstanceService.buildEnvironmentAddress(config));
+        } catch (Exception e) {
+            log.error("Init remote cluster error:{}", e.getMessage());
+        }
         return config;
     }
 
@@ -224,12 +275,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public String buildEnvSql(AbstractStatementDTO task) {
         log.info("Start initialize FlinkSQLEnv:");
         String sql = CommonConstant.LineSep;
-        if (task.isFragment()) {
+        if (task.getFragment()) {
             String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
             if (Asserts.isNotNullString(flinkWithSql)) {
                 sql += flinkWithSql + CommonConstant.LineSep;
             }
-            task.setVariables(fragmentVariableService.listEnabledVariables());
+            // The order cannot be wrong here,
+            // and the variables from the parameter have the highest priority
+            Map<String, String> variables = fragmentVariableService.listEnabledVariables();
+            variables.putAll(Optional.ofNullable(task.getVariables()).orElse(new HashMap<>()));
+            task.setVariables(variables);
         }
         int envId = Optional.ofNullable(task.getEnvId()).orElse(-1);
         if (envId > 0) {
@@ -245,22 +300,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public JobResult submitTask(Integer id, String savePointPath) throws Exception {
-        TaskDTO taskDTO = this.getTaskInfoById(id);
-
-        if (StringUtils.isNotBlank(savePointPath)) {
-            taskDTO.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
-            taskDTO.setSavePointPath(savePointPath);
-        }
+    public JobResult submitTask(TaskSubmitDto submitDto) throws Exception {
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
-        taskServiceBean.preCheckTask(taskDTO);
-        // The job instance does not exist by default,
-        // so that it does not affect other operations, such as checking the jobmanager address
-        taskDTO.setJobInstanceId(null);
+        TaskDTO taskDTO = taskServiceBean.prepareTask(submitDto);
+        // The statement set is enabled by default when submitting assignments
+        taskDTO.setStatementSet(true);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
         log.info("Job Submit success");
-        Task task = new Task(id, jobResult.getJobInstanceId());
+        Task task = new Task(submitDto.getId(), jobResult.getJobInstanceId());
         if (!this.updateById(task)) {
             throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
         }
@@ -278,6 +326,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         taskDTO.setUseChangeLog(debugDTO.isUseChangeLog());
         taskDTO.setUseAutoCancel(debugDTO.isUseAutoCancel());
         taskDTO.setMaxRowNum(debugDTO.getMaxRowNum());
+        // Debug mode need execute
+        taskDTO.setStatementSet(false);
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
@@ -303,7 +353,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 cancelTaskJob(task);
             }
         }
-        return submitTask(id, savePointPath);
+        return submitTask(
+                TaskSubmitDto.builder().id(id).savePointPath(savePointPath).build());
     }
 
     @Override
@@ -372,7 +423,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return task.getStatement();
         }
 
-        JobConfig config = buildJobConfig(task);
+        JobConfig config = buildJobSubmitConfig(task);
 
         // 加密敏感信息
         if (config.getVariables() != null) {
@@ -384,9 +435,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
 
         JobManager jobManager = JobManager.build(config);
-        if (config.isJarTask()) {
-            return "";
-        }
 
         return jobManager.exportSql(task.getStatement());
     }
@@ -444,8 +492,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean saveOrUpdateTask(Task task) {
-
-        if (JobLifeCycle.PUBLISH.equalsValue(task.getStep())) {
+        Task byId = getById(task.getId());
+        if (byId != null && JobLifeCycle.PUBLISH.equalsValue(byId.getStep())) {
             throw new BusException(Status.TASK_IS_ONLINE.getMessage());
         }
 
@@ -493,6 +541,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Task initDefaultFlinkSQLEnv(Integer tenantId) {
         TenantContextHolder.set(tenantId);
         String separator = SystemConfiguration.getInstances().getSqlSeparator();
@@ -524,6 +573,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         defaultFlinkSQLEnvTask.setFragment(true);
         defaultFlinkSQLEnvTask.setTenantId(tenantId);
         defaultFlinkSQLEnvTask.setEnabled(true);
+        defaultFlinkSQLEnvTask.setCreator(1);
+        defaultFlinkSQLEnvTask.setUpdater(1);
+        defaultFlinkSQLEnvTask.setOperator(1);
         saveOrUpdate(defaultFlinkSQLEnvTask);
 
         return defaultFlinkSQLEnvTask;

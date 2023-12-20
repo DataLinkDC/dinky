@@ -133,12 +133,12 @@ const config = {
     themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
-            /*announcementBar: {
+            announcementBar: {
                 id: 'announcementBar-2', // Increment on change
-                content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dlink">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="http://docs.dinky.org.cn">docs.dinky.org.cn</a>`,
+                content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dlink">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="http://www.dinky.org.cn">www.dinky.org.cn</a>`,
                 backgroundColor: "#BBDFFF",
                 isCloseable: false,
-            },*/
+            },
             hideOnScroll: false, // 滚动时是否隐藏 | Whether to hide the sidebar on scroll
             docs: {
                 sidebar: {
@@ -166,12 +166,12 @@ const config = {
                         position: 'left',
                         dropdownActiveClassDisabled: true,
                     },
-                    {
+                    /*{
                         to: '/download/download',
                         position: 'right',
                         label: '下载',
                         activeBaseRegex: `/download/`,
-                    },
+                    },*/
                     {
                         label: '开发者指南',
                         to: '/docs/next/developer_guide/contribution/how_contribute',
@@ -269,7 +269,7 @@ const config = {
                     height: 30,
                 },
                 copyright: `Copyright © ${new Date().getFullYear()} Dinky, Inc. DataLinkDC.<br/>
-                    <a href="https://beian.miit.gov.cn" target="_blank">鲁ICP备20001630号-2</a>`,
+                    <a href="https://beian.miit.gov.cn" target="_blank">鲁ICP备20001630号-3</a>`,
             },
             prism: {
                 theme: lightCodeTheme,

@@ -18,11 +18,14 @@
  */
 
 import {
-  AlertRules,
-  RuleOperator,
   RuleType,
   TriggerType
-} from '@/pages/SettingCenter/AlertRule/constants';
+} from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm/constants';
+import {
+  AlertRulesOption,
+  buildValueItem,
+  getOperatorOptions
+} from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm/function';
 import { getData } from '@/services/api';
 import { SWITCH_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -41,6 +44,7 @@ import {
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
+import { ProFormDependency } from '@ant-design/pro-form';
 import { Button, Divider, Form, Space } from 'antd';
 
 type AlertRuleFormProps = {
@@ -73,7 +77,13 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
       <Button key={'RuleCancel'} onClick={() => handleModalVisible(false)}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'RuleFinish'} type='primary' onClick={() => submit()}>
+      <Button
+        key={'RuleFinish'}
+        type='primary'
+        htmlType={'submit'}
+        autoFocus
+        onClick={() => submit()}
+      >
         {l('button.finish')}
       </Button>
     ];
@@ -159,20 +169,21 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
               name='ruleKey'
               width={'sm'}
               mode={'single'}
-              options={AlertRules}
+              options={AlertRulesOption()}
             />
-            <ProFormSelect
-              disabled={isSystem}
-              name='ruleOperator'
-              mode={'single'}
-              options={RuleOperator}
-            />
-
-            <ProFormText
-              disabled={isSystem}
-              name={'ruleValue'}
-              placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}
-            />
+            <ProFormDependency name={['ruleKey']}>
+              {(ruleKey) => (
+                <ProFormSelect
+                  disabled={isSystem}
+                  name='ruleOperator'
+                  mode={'single'}
+                  options={getOperatorOptions(ruleKey.ruleKey)}
+                />
+              )}
+            </ProFormDependency>
+            <ProFormDependency name={['ruleKey']}>
+              {(ruleKey) => buildValueItem(ruleKey.ruleKey, isSystem)}
+            </ProFormDependency>
           </Space>
         </ProFormGroup>
       </ProFormList>

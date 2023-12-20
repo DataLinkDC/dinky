@@ -18,8 +18,12 @@
  */
 
 export default {
+  'button.add': 'Add',
+  'button.check': 'Check',
+  'button.graph': 'DAG',
   'button.create': 'Create',
   'button.close': 'Close',
+  'button.daemon': 'Daemon Mode',
   'button.confirm': 'Confirm',
   'button.recovery': 'Recovery',
   'button.cancel': 'Cancel',
@@ -78,6 +82,7 @@ export default {
   'button.upScroll': 'Up Scroll',
   'button.stopRefresh': 'Stop Auto Refresh',
   'button.startRefresh': 'Start Auto Refresh(5s/e)',
+  'button.autoWrap': 'Auto Wrap/Unwrap',
 
   'menu.menu': 'Menu',
   'right.menu.open': 'Open',
@@ -206,5 +211,22 @@ export default {
   'global.month.september': 'September',
   'global.month.october': 'October',
   'global.month.november': 'November',
-  'global.month.december': 'December'
+  'global.month.december': 'December',
+
+  // job status
+  'global.job.status.initiating': 'Initializing',
+  'global.job.status.success': 'Success',
+  'global.job.status.created': 'Created',
+  'global.job.status.running': 'Running',
+  'global.job.status.failing': 'Failing',
+  'global.job.status.failed': 'Failed',
+  'global.job.status.cancelling': 'Cancelling',
+  'global.job.status.canceled': 'Canceled',
+  'global.job.status.finished': 'Finished',
+  'global.job.status.restarting': 'Restarting',
+  'global.job.status.suspended': 'Suspended',
+  'global.job.status.reconciling': 'Reconciling',
+  'global.job.status.reconnecting': 'Reconnecting',
+  'global.job.status.unknown': 'Unknown',
+  'global.job.status.failed-tip': 'Failed to submit to the cluster, unable to get the task name'
 };

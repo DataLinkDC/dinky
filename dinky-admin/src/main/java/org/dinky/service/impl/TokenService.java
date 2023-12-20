@@ -22,9 +22,11 @@ package org.dinky.service.impl;
 import org.dinky.context.UserInfoContextHolder;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.model.SysToken;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.User;
+import org.dinky.mapper.TenantMapper;
 import org.dinky.mapper.TokenMapper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,6 +55,7 @@ public class TokenService implements SaTokenDao {
 
     private final TokenMapper tokenMapper;
     private final StpLogic stpLogic;
+    private final TenantMapper tenantMapper;
 
     /**
      * 存储数据的集合
@@ -307,6 +310,7 @@ public class TokenService implements SaTokenDao {
             User user = new User();
             user.setId(userId);
             userInfo.setUser(user);
+            userInfo.setTenantList(Collections.singletonList(tenantMapper.selectById(sysToken.getTenantId())));
             UserInfoContextHolder.set(userId, userInfo);
             if (sysToken.getExpireType() == 1) {
                 expireMap.put(stpLogic.splicingKeyTokenValue(sysToken.getTokenValue()), NEVER_EXPIRE);

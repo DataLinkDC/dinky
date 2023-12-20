@@ -23,7 +23,7 @@ import {
   getCurrentTab,
   isDataStudioTabsItemType
 } from '@/pages/DataStudio/function';
-import { SessionType, StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
+import { SessionType, StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import {
   buildAlertGroupOptions,
   buildClusterConfigOptions,
@@ -32,8 +32,8 @@ import {
   buildRunModelOptions,
   calculatorWidth
 } from '@/pages/DataStudio/RightContainer/JobConfig/function';
-import { AlertStateType } from '@/pages/RegCenter/Alert/AlertInstance/model';
-import { RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
+import { AlertStateType, ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
+import { DIALECT, RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import {
@@ -78,9 +78,13 @@ const JobConfig = (props: any) => {
 
   useEffect(() => {
     dispatch({
-      type: 'Studio/queryFlinkConfigOptions'
+      type: STUDIO_MODEL_ASYNC.queryFlinkConfigOptions
     });
-    form.setFieldsValue(current);
+    dispatch({
+      type: ALERT_MODEL_ASYNC.queryAlertGroup
+    });
+
+    form.setFieldsValue({ ...current, type: current?.type ?? RUN_MODE.LOCAL });
   }, [current]);
 
   const onValuesChange = (change: { [key in string]: any }, all: any) => {
@@ -178,6 +182,7 @@ const JobConfig = (props: any) => {
           tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
           rules={[{ required: true, message: l('pages.datastudio.label.jobConfig.execmode.tip') }]}
           options={buildRunModelOptions()}
+          allowClear={false}
         />
 
         {[RUN_MODE.YARN_SESSION, RUN_MODE.KUBERNETES_SESSION, RUN_MODE.STANDALONE].includes(
@@ -201,19 +206,23 @@ const JobConfig = (props: any) => {
               { required: true, message: l('pages.datastudio.label.jobConfig.clusterConfig.tip2') }
             ]}
             options={buildClusterConfigOptions(current, clusterConfiguration)}
+            allowClear={false}
           />
         )}
 
-        <ProFormSelect
-          name='envId'
-          label={l('pages.datastudio.label.jobConfig.flinksql.env')}
-          tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
-          options={buildEnvOptions(env)}
-          rules={[
-            { required: true, message: l('pages.datastudio.label.jobConfig.flinksql.env.tip1') }
-          ]}
-          showSearch
-        />
+        {current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
+          <ProFormSelect
+            name='envId'
+            label={l('pages.datastudio.label.jobConfig.flinksql.env')}
+            tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
+            options={buildEnvOptions(env)}
+            rules={[
+              { required: true, message: l('pages.datastudio.label.jobConfig.flinksql.env.tip1') }
+            ]}
+            showSearch
+            allowClear={false}
+          />
+        )}
 
         <ProFormGroup>
           <ProFormDigit
@@ -224,17 +233,19 @@ const JobConfig = (props: any) => {
             max={9999}
             min={1}
           />
+          {/*{current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
+            <ProFormSwitch
+              label={l('pages.datastudio.label.jobConfig.insert')}
+              name='statementSet'
+              valuePropName='checked'
+              tooltip={{
+                title: l('pages.datastudio.label.jobConfig.insert.tip'),
+                icon: <InfoCircleOutlined />
+              }}
+              {...SWITCH_OPTIONS()}
+            />
+          )}*/}
 
-          <ProFormSwitch
-            label={l('pages.datastudio.label.jobConfig.insert')}
-            name='statementSet'
-            valuePropName='checked'
-            tooltip={{
-              title: l('pages.datastudio.label.jobConfig.insert.tip'),
-              icon: <InfoCircleOutlined />
-            }}
-            {...SWITCH_OPTIONS()}
-          />
           <ProFormSwitch
             label={l('pages.datastudio.label.jobConfig.fragment')}
             name='fragment'
@@ -262,6 +273,7 @@ const JobConfig = (props: any) => {
           name='savePointStrategy'
           tooltip={l('pages.datastudio.label.jobConfig.savePointStrategy.tip')}
           options={SAVE_POINT_TYPE}
+          allowClear={false}
         />
 
         {current?.savePointStrategy === 3 && (
@@ -278,6 +290,7 @@ const JobConfig = (props: any) => {
           name='alertGroupId'
           placeholder={l('pages.datastudio.label.jobConfig.alertGroup.tip')}
           options={buildAlertGroupOptions(group)}
+          allowClear={false}
         />
 
         <ProFormList
@@ -292,22 +305,6 @@ const JobConfig = (props: any) => {
         >
           <ProFormGroup>
             <Space key={'config'} align='baseline'>
-              {/* todo: 级联组件会受组件的 name 属性一致的影响,造成相同 name 属性值自动填充一样的值, 待寻找合适解决方案 */}
-              {/*<ProFormCascader*/}
-              {/*    name={['index','key']} allowClear*/}
-              {/*    width={calculatorWidth(rightContainer.width) + 30}*/}
-              {/*    placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}*/}
-              {/*    fieldProps={{*/}
-              {/*      options: flinkConfigOptions,*/}
-              {/*      showSearch: true,*/}
-              {/*    }}*/}
-              {/*    rules={[*/}
-              {/*      {*/}
-              {/*        required: true,*/}
-              {/*        message: l('pages.datastudio.label.jobConfig.addConfig.params')*/}
-              {/*      }*/}
-              {/*    ]}*/}
-              {/*/>*/}
               <ProFormSelect
                 name='key'
                 width={calculatorWidth(rightContainer.width) + 30}

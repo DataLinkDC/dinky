@@ -49,7 +49,7 @@ import lombok.NoArgsConstructor;
 @TableName("dinky_sys_token")
 @ApiModel(value = "SysToken", description = "System Token Information")
 public class SysToken implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3579444102399317143L;
 
     @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(
@@ -120,11 +120,11 @@ public class SysToken implements Serializable {
     private Integer creator;
 
     @ApiModelProperty(
-            value = "Updator",
+            value = "updater",
             dataType = "Integer",
             example = "1002",
             notes = "ID of the user who last updated the token")
-    private Integer updator;
+    private Integer updater;
 
     @TableField(exist = false)
     @ApiModelProperty(

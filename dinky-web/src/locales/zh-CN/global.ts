@@ -18,11 +18,13 @@
  */
 
 export default {
+  'button.add': '添加',
   'button.check': '检查',
   'button.graph': 'DAG',
   'button.create': '新建',
   'button.recovery': '恢复',
   'button.close': '关闭',
+  'button.daemon': '后台运行',
   'button.confirm': '确定',
   'button.cancel': '取消',
   'button.finish': '完成',
@@ -80,6 +82,7 @@ export default {
   'button.upScroll': '向上滚动',
   'button.stopRefresh': '停止自动刷新',
   'button.startRefresh': '开始自动刷新(5s/次)',
+  'button.autoWrap': '自动换行/不换行',
 
   'menu.menu': '菜单',
   'right.menu.open': '打开',
@@ -204,5 +207,22 @@ export default {
   'global.month.september': '九月',
   'global.month.october': '十月',
   'global.month.november': '十一月',
-  'global.month.december': '十二月'
+  'global.month.december': '十二月',
+
+  // job status
+  'global.job.status.initiating': '初始化',
+  'global.job.status.success': '成功',
+  'global.job.status.created': '已创建',
+  'global.job.status.running': '运行中',
+  'global.job.status.failing': '失败中',
+  'global.job.status.failed': '已失败',
+  'global.job.status.cancelling': '取消中',
+  'global.job.status.canceled': '已取消',
+  'global.job.status.finished': '已完成',
+  'global.job.status.restarting': '重启中',
+  'global.job.status.suspended': '已挂起',
+  'global.job.status.reconciling': '调节中',
+  'global.job.status.reconnecting': '重连中',
+  'global.job.status.unknown': '未知',
+  'global.job.status.failed-tip': '未成功提交到集群,无法获取任务名称/作业ID'
 };

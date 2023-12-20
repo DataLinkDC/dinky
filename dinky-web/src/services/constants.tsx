@@ -154,7 +154,9 @@ export const PROTABLE_OPTIONS_PUBLIC: any = {
  */
 export const NORMAL_MODAL_OPTIONS = {
   width: '50%',
-  bodyStyle: { padding: '20px 10px 10px' },
+  styles: {
+    body: { padding: '20px 10px 10px' }
+  },
   destroyOnClose: true,
   maskClosable: false
 };
@@ -219,13 +221,12 @@ export const DIALECT = {
   ORACLE: 'oracle',
   SQLSERVER: 'sqlserver',
   POSTGRESQL: 'postgresql',
-  CLICKHOUSE: 'clickHouse',
+  CLICKHOUSE: 'clickhouse',
   DORIS: 'doris',
   HIVE: 'hive',
   PHOENIX: 'phoenix',
-  STARROCKS: 'starRocks',
-  PRESTO: 'presto',
-  KUBERNETES_APPLICATION: 'kubernetesapplication'
+  STARROCKS: 'starrocks',
+  PRESTO: 'presto'
 };
 
 export const RUN_MODE = {

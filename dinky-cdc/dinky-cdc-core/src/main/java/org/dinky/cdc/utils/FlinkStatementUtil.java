@@ -138,7 +138,7 @@ public class FlinkStatementUtil {
         String configurationString =
                 SqlUtil.replaceAllParam(config.getSinkConfigurationString(), "schemaName", sinkSchemaName);
         configurationString = SqlUtil.replaceAllParam(configurationString, "tableName", sinkTableName);
-        if (configurationString.contains("${pkList}")) {
+        if (configurationString.contains("#{pkList}")) {
             configurationString = SqlUtil.replaceAllParam(configurationString, "pkList", pkList);
         }
         return configurationString;

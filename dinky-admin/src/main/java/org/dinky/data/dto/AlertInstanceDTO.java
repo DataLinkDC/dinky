@@ -21,6 +21,8 @@ package org.dinky.data.dto;
 
 import org.dinky.mybatis.annotation.Save;
 
+import java.util.Map;
+
 import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.ApiModel;
@@ -68,5 +70,5 @@ public class AlertInstanceDTO {
             required = true,
             dataType = "String",
             example = "{\"webhook\":\"https://oapi.dingtalk.com/robot/send?access_token=xxxxxx\"}")
-    private String params;
+    private Map<String, Object> params;
 }

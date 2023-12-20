@@ -49,7 +49,10 @@ CREATE TABLE "public"."dinky_alert_group" (
                                               "note" varchar(255) COLLATE "pg_catalog"."default",
                                               "enabled" int2,
                                               "create_time" timestamp(6),
-                                              "update_time" timestamp(6)
+                                              "update_time" timestamp(6),
+                                              "creator" int4,
+                                                "updater" int4
+
 )
 ;
 COMMENT ON COLUMN "public"."dinky_alert_group"."id" IS 'id';
@@ -60,6 +63,8 @@ COMMENT ON COLUMN "public"."dinky_alert_group"."note" IS 'note';
 COMMENT ON COLUMN "public"."dinky_alert_group"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_alert_group"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_alert_group"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_alert_group"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_alert_group"."updater" IS 'updater';
 COMMENT ON TABLE "public"."dinky_alert_group" IS 'Alert group';
 
 -- ----------------------------
@@ -108,10 +113,12 @@ CREATE TABLE "public"."dinky_alert_instance" (
                                                  "name" varchar(50) COLLATE "pg_catalog"."default" NOT null,
                                                  "tenant_id" int4 NOT null,
                                                  "type" varchar(50) COLLATE "pg_catalog"."default",
-                                                 "params" text COLLATE "pg_catalog"."default",
+                                                 "params" json COLLATE "pg_catalog"."default",
                                                  "enabled" int2,
                                                  "create_time" timestamp(6),
-                                                 "update_time" timestamp(6)
+                                                 "update_time" timestamp(6),
+                                                    "creator" int4,
+                                                 "updater" int4
 )
 ;
 COMMENT ON COLUMN "public"."dinky_alert_instance"."id" IS 'id';
@@ -122,6 +129,8 @@ COMMENT ON COLUMN "public"."dinky_alert_instance"."params" IS 'configuration';
 COMMENT ON COLUMN "public"."dinky_alert_instance"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_alert_instance"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_alert_instance"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_alert_instance"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_alert_instance"."updater" IS 'updater';
 COMMENT ON TABLE "public"."dinky_alert_instance" IS 'Alert instance';
 
 -- ----------------------------
@@ -142,7 +151,9 @@ CREATE TABLE "public"."dinky_catalogue" (
                                             "enabled" int2 NOT null,
                                             "is_leaf" int2 NOT null,
                                             "create_time" timestamp(6),
-                                            "update_time" timestamp(6)
+                                            "update_time" timestamp(6),
+                                            "creator" int4,
+                                            "updater" int4
 )
 ;
 COMMENT ON COLUMN "public"."dinky_catalogue"."id" IS 'ID';
@@ -155,6 +166,8 @@ COMMENT ON COLUMN "public"."dinky_catalogue"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_catalogue"."is_leaf" IS 'is leaf node';
 COMMENT ON COLUMN "public"."dinky_catalogue"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_catalogue"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_catalogue"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_catalogue"."updater" IS 'updater';
 COMMENT ON TABLE "public"."dinky_catalogue" IS 'catalogue';
 
 -- ----------------------------
@@ -181,7 +194,9 @@ CREATE TABLE "public"."dinky_cluster" (
                                           "task_id" int4,
                                           "enabled" int2 NOT null,
                                           "create_time" timestamp(6),
-                                          "update_time" timestamp(6)
+                                          "update_time" timestamp(6),
+                                            "creator" int4,
+                                          "updater" int4
 )
 ;
 COMMENT ON COLUMN "public"."dinky_cluster"."id" IS 'ID';
@@ -200,6 +215,8 @@ COMMENT ON COLUMN "public"."dinky_cluster"."task_id" IS 'task ID';
 COMMENT ON COLUMN "public"."dinky_cluster"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_cluster"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_cluster"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_cluster"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_cluster"."updater" IS 'updater';
 COMMENT ON TABLE "public"."dinky_cluster" IS 'cluster instance management';
 
 -- ----------------------------
@@ -220,7 +237,9 @@ CREATE TABLE "public"."dinky_cluster_configuration" (
                                                         "note" varchar(255) COLLATE "pg_catalog"."default",
                                                         "enabled" int2 NOT null,
                                                         "create_time" timestamp(6),
-                                                        "update_time" timestamp(6)
+                                                        "update_time" timestamp(6),
+                                                        "creator" int4,
+                                                        "updater" int4
 )
 ;
 COMMENT ON COLUMN "public"."dinky_cluster_configuration"."id" IS 'ID';
@@ -233,6 +252,8 @@ COMMENT ON COLUMN "public"."dinky_cluster_configuration"."note" IS 'note';
 COMMENT ON COLUMN "public"."dinky_cluster_configuration"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_cluster_configuration"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_cluster_configuration"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_cluster_configuration"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_cluster_configuration"."updater" IS 'updater';
 COMMENT ON TABLE "public"."dinky_cluster_configuration" IS 'cluster configuration management';
 
 -- ----------------------------
@@ -249,11 +270,7 @@ CREATE TABLE "public"."dinky_database" (
                                            "name" varchar(30) COLLATE "pg_catalog"."default" NOT null,
                                            "group_name" varchar(255) COLLATE "pg_catalog"."default",
                                            "type" varchar(50) COLLATE "pg_catalog"."default" NOT null,
-                                           "ip" varchar(255) COLLATE "pg_catalog"."default",
-                                           "port" int4,
-                                           "url" varchar(255) COLLATE "pg_catalog"."default",
-                                           "username" varchar(50) COLLATE "pg_catalog"."default",
-                                           "password" varchar(512) COLLATE "pg_catalog"."default",
+                                           "connect_config" text COLLATE "pg_catalog"."default" NOT null,
                                            "note" varchar(255) COLLATE "pg_catalog"."default",
                                            "flink_config" text COLLATE "pg_catalog"."default",
                                            "flink_template" text COLLATE "pg_catalog"."default",
@@ -263,7 +280,9 @@ CREATE TABLE "public"."dinky_database" (
                                            "heartbeat_time" timestamp(6),
                                            "enabled" int2 NOT null,
                                            "create_time" timestamp(6),
-                                           "update_time" timestamp(6)
+                                           "update_time" timestamp(6),
+                                            "creator" int4,
+                                           "updater" int4
 )
 ;
 COMMENT ON COLUMN "public"."dinky_database"."id" IS 'ID';
@@ -286,6 +305,8 @@ COMMENT ON COLUMN "public"."dinky_database"."heartbeat_time" IS 'last heartbeat 
 COMMENT ON COLUMN "public"."dinky_database"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_database"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_database"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_database"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_database"."updater" IS 'updater';
 COMMENT ON TABLE "public"."dinky_database" IS 'database management';
 
 -- ----------------------------
@@ -308,7 +329,9 @@ CREATE TABLE "public"."dinky_flink_document" (
                                                  "like_num" int4,
                                                  "enabled" int2 NOT null,
                                                  "create_time" timestamp(6),
-                                                 "update_time" timestamp(6)
+                                                 "update_time" timestamp(6),
+                                                    "creator" int4,
+                                                 "updater" int4
 )
 ;
 COMMENT ON COLUMN "public"."dinky_flink_document"."id" IS 'id';
@@ -322,12 +345,15 @@ COMMENT ON COLUMN "public"."dinky_flink_document"."like_num" IS 'like number';
 COMMENT ON COLUMN "public"."dinky_flink_document"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_flink_document"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_flink_document"."update_time" IS 'update_time';
+COMMENT ON COLUMN "public"."dinky_flink_document"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_flink_document"."updater" IS 'updater';
 COMMENT ON TABLE "public"."dinky_flink_document" IS 'flink document management';
 
+-- todo: 完善 字段值
 -- ----------------------------
 -- Records of dinky_flink_document
 -- ----------------------------
-insert into public.dinky_flink_document  values (1, 'Variable', '优化参数', 'Batch/Streaming', 'set table.exec.async-lookup.buffer-capacity', '异步查找连接可以触发的最大异步操作的操作数。
+insert into public.dinky_flink_document values (1, 'Variable', '优化参数', 'Batch/Streaming', 'set table.exec.async-lookup.buffer-capacity', '异步查找连接可以触发的最大异步操作的操作数。
 The max number of async i/o operation that the async lookup join can trigger.', 'Set ''table.exec.async-lookup.buffer-capacity''=''100'';', '1.14', 0, 1, '2022-01-20 15:00:00.000000', '2022-01-20 15:00:00.000000');
 insert into public.dinky_flink_document  values (2, 'Variable', '优化参数', 'Batch/Streaming', 'set table.exec.async-lookup.timeout', '异步操作完成的超时时间。
 The async timeout for the asynchronous operation to complete.', 'Set ''table.exec.async-lookup.timeout''=''3 min'';', '1.14', 0, 1, '2022-01-20 15:00:00.000000', '2022-01-20 15:00:00.000000');
@@ -1147,6 +1173,72 @@ WITH (
 )
 AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions', 0, 1, '2023-10-31 16:41:46.000000', '2023-10-31 16:43:29.000000');
 
+INSERT INTO public.dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time) VALUES (244, 'Reference', '建表语句', 'Batch/Streaming', 'datagen job demo', 'datagen job demo', e'DROP TABLE IF EXISTS source_table3;
+CREATE TABLE IF NOT EXISTS source_table3(
+--订单id
+`order_id` BIGINT,
+--产品
+
+`product` BIGINT,
+--金额
+`amount` BIGINT,
+
+--支付时间
+`order_time` as CAST(CURRENT_TIMESTAMP AS TIMESTAMP(3)), -- `在这里插入代码片`
+--WATERMARK
+WATERMARK FOR order_time AS order_time - INTERVAL \'2\' SECOND
+) WITH(
+\'connector\' = \'datagen\',
+ \'rows-per-second\' = \'1\',
+ \'fields.order_id.min\' = \'1\',
+ \'fields.order_id.max\' = \'2\',
+ \'fields.amount.min\' = \'1\',
+ \'fields.amount.max\' = \'10\',
+ \'fields.product.min\' = \'1\',
+ \'fields.product.max\' = \'2\'
+);
+
+-- SELECT * FROM source_table3 LIMIT 10;
+
+DROP TABLE IF EXISTS sink_table5;
+CREATE TABLE IF NOT EXISTS sink_table5(
+--产品
+`product` BIGINT,
+--金额
+`amount` BIGINT,
+--支付时间
+`order_time` TIMESTAMP(3),
+--1分钟时间聚合总数
+`one_minute_sum` BIGINT
+) WITH(
+\'connector\'=\'print\'
+);
+
+INSERT INTO sink_table5
+SELECT
+product,
+amount,
+order_time,
+SUM(amount) OVER(
+PARTITION BY product
+ORDER BY order_time
+-- 标识统计范围是1个 product 的最近 1 分钟的数据
+RANGE BETWEEN INTERVAL \'1\' MINUTE PRECEDING AND CURRENT ROW
+) as one_minute_sum
+FROM source_table3;', 'All Versions', 0, 1, '2023-11-15 15:42:16.000000', '2023-11-15 15:42:16.000000');
+INSERT INTO public.dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time) VALUES (245, 'Property', '优化参数', 'Streaming', 'checkpoint config', 'checkpoint config', e'-- 声明一些调优参数 (checkpoint 等相关配置)
+set \'execution.checkpointing.checkpoints-after-tasks-finish.enabled\' =\'true\';
+SET \'pipeline.operator-chaining\' = \'false\';
+set \'state.savepoints.dir\'=\'file:///opt/data/flink_cluster/savepoints\'; -- 目录自行修改
+set \'state.checkpoints.dir\'= \'file:///opt/data/flink_cluster/checkpoints\'; -- 目录自行修改
+-- set state.checkpoint-storage=\'filesystem\';
+set \'state.backend.type\'=\'rocksdb\';
+set \'execution.checkpointing.interval\'=\'60 s\';
+set \'state.checkpoints.num-retained\'=\'100\';
+-- 使 solt 均匀分布在 各个 TM 上
+set \'cluster.evenly-spread-out-slots\'=\'true\';', 'All Versions', 0, 1, '2023-11-15 15:57:42.000000', '2023-11-15 15:57:42.000000');
+
+
 -- ----------------------------
 -- Table structure for dinky_fragment
 -- ----------------------------
@@ -1159,7 +1251,9 @@ CREATE TABLE "public"."dinky_fragment" (
                                            "note" text COLLATE "pg_catalog"."default",
                                            "enabled" int2,
                                            "create_time" timestamp(6),
-                                           "update_time" timestamp(6)
+                                           "update_time" timestamp(6),
+                                            "creator" int4,
+                                            "updater" int4
 )
 ;
 COMMENT ON COLUMN "public"."dinky_fragment"."id" IS 'id';
@@ -1170,6 +1264,8 @@ COMMENT ON COLUMN "public"."dinky_fragment"."note" IS 'note';
 COMMENT ON COLUMN "public"."dinky_fragment"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_fragment"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_fragment"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_fragment"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_fragment"."updater" IS 'updater';
 COMMENT ON TABLE "public"."dinky_fragment" IS 'fragment management';
 
 -- ----------------------------
@@ -1201,7 +1297,10 @@ CREATE TABLE "public"."dinky_git_project" (
                                               "udf_class_map_list" text COLLATE "pg_catalog"."default",
                                               "order_line" int4 NOT null,
                                               "create_time" timestamp(6) NOT null,
-                                              "update_time" timestamp(6) NOT null
+                                              "update_time" timestamp(6) NOT null,
+                                            "creator" int4,
+                                              "updater" int4,
+                                                "operator" int4
 )
 ;
 COMMENT ON COLUMN "public"."dinky_git_project"."id" IS 'ID';
@@ -1225,6 +1324,9 @@ COMMENT ON COLUMN "public"."dinky_git_project"."udf_class_map_list" IS 'scan udf
 COMMENT ON COLUMN "public"."dinky_git_project"."order_line" IS 'order';
 COMMENT ON COLUMN "public"."dinky_git_project"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_git_project"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_git_project"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_git_project"."updater" IS 'updater';
+COMMENT ON COLUMN "public"."dinky_git_project"."operator" IS 'operator';
 
 -- ----------------------------
 -- Records of dinky_git_project
@@ -1245,6 +1347,7 @@ CREATE TABLE "public"."dinky_history" (
                                           "job_id" varchar(50) COLLATE "pg_catalog"."default",
                                           "job_name" varchar(255) COLLATE "pg_catalog"."default",
                                           "job_manager_address" varchar(255) COLLATE "pg_catalog"."default",
+                                          "batch_model" boolean COLLATE "pg_catalog"."default",
                                           "status" int4 NOT null,
                                           "type" varchar(50) COLLATE "pg_catalog"."default",
                                           "statement" text COLLATE "pg_catalog"."default",
@@ -1332,7 +1435,10 @@ CREATE TABLE "public"."dinky_job_instance" (
                                                "finish_time" timestamp(6),
                                                "duration" int8,
                                                "error" text COLLATE "pg_catalog"."default",
-                                               "failed_restart_count" int4
+                                               "failed_restart_count" int4,
+                                                "creator" int4,
+                                                "updater" int4,
+                                                "operator" int4
 )
 ;
 COMMENT ON COLUMN "public"."dinky_job_instance"."id" IS 'id';
@@ -1350,6 +1456,9 @@ COMMENT ON COLUMN "public"."dinky_job_instance"."finish_time" IS 'finish time';
 COMMENT ON COLUMN "public"."dinky_job_instance"."duration" IS 'job duration';
 COMMENT ON COLUMN "public"."dinky_job_instance"."error" IS 'error logs';
 COMMENT ON COLUMN "public"."dinky_job_instance"."failed_restart_count" IS 'failed restart count';
+COMMENT ON COLUMN "public"."dinky_job_instance"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_job_instance"."updater" IS 'updater';
+COMMENT ON COLUMN "public"."dinky_job_instance"."operator" IS 'operator';
 COMMENT ON TABLE "public"."dinky_job_instance" IS 'job instance';
 
 -- ----------------------------
@@ -1396,16 +1505,20 @@ CREATE TABLE "public"."dinky_row_permissions" (
                                                   "table_name" varchar(255) COLLATE "pg_catalog"."default",
                                                   "expression" varchar(255) COLLATE "pg_catalog"."default",
                                                   "create_time" timestamp(6),
-                                                  "update_time" timestamp(6)
+                                                  "update_time" timestamp(6),
+                                                    "creator" int4,
+                                                    "updater" int4
 )
 ;
 COMMENT ON COLUMN "public"."dinky_row_permissions"."id" IS 'ID';
-COMMENT ON COLUMN "public"."dinky_row_permissions"."role_id" IS '角色ID';
-COMMENT ON COLUMN "public"."dinky_row_permissions"."table_name" IS '表名';
-COMMENT ON COLUMN "public"."dinky_row_permissions"."expression" IS '表达式';
-COMMENT ON COLUMN "public"."dinky_row_permissions"."create_time" IS '创建时间';
-COMMENT ON COLUMN "public"."dinky_row_permissions"."update_time" IS '更新时间';
-COMMENT ON TABLE "public"."dinky_row_permissions" IS '角色数据查询权限';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."role_id" IS 'role ID';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."table_name" IS 'table name';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."expression" IS 'expression';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."create_time" IS 'create time';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."updater" IS 'updater';
+COMMENT ON TABLE "public"."dinky_row_permissions" IS 'row permissions';
 
 -- ----------------------------
 -- Records of dinky_row_permissions
@@ -1422,7 +1535,9 @@ CREATE TABLE "public"."dinky_savepoints" (
                                              "name" varchar(255) COLLATE "pg_catalog"."default" NOT null,
                                              "type" varchar(255) COLLATE "pg_catalog"."default" NOT null,
                                              "path" varchar(255) COLLATE "pg_catalog"."default" NOT null,
-                                             "create_time" timestamp(6)
+                                             "create_time" timestamp(6),
+                                            "creator" int4
+
 )
 ;
 COMMENT ON COLUMN "public"."dinky_savepoints"."id" IS 'ID';
@@ -1432,6 +1547,7 @@ COMMENT ON COLUMN "public"."dinky_savepoints"."name" IS 'task name';
 COMMENT ON COLUMN "public"."dinky_savepoints"."type" IS 'savepoint type';
 COMMENT ON COLUMN "public"."dinky_savepoints"."path" IS 'savepoint path';
 COMMENT ON COLUMN "public"."dinky_savepoints"."create_time" IS 'create time';
+COMMENT ON COLUMN "public"."dinky_savepoints"."creator" IS 'creator';
 COMMENT ON TABLE "public"."dinky_savepoints" IS 'job savepoint management';
 
 -- ----------------------------
@@ -1494,7 +1610,11 @@ CREATE TABLE "public"."dinky_task" (
                                        "create_time" timestamp(6),
                                        "update_time" timestamp(6),
                                        "version_id" int4,
-                                       statement  text
+                                       statement  text,
+                                        "creator" int4,
+                                        "updater" int4,
+                                        "operator" int4
+
 )
 ;
 COMMENT ON COLUMN "public"."dinky_task"."id" IS 'ID';
@@ -1523,6 +1643,9 @@ COMMENT ON COLUMN "public"."dinky_task"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_task"."update_time" IS 'update time';
 COMMENT ON COLUMN "public"."dinky_task"."version_id" IS 'version id';
 COMMENT ON COLUMN "public"."dinky_task"."statement" IS 'statement';
+COMMENT ON COLUMN "public"."dinky_task"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_task"."updater" IS 'updater';
+COMMENT ON COLUMN "public"."dinky_task"."operator" IS 'operator';
 COMMENT ON TABLE "public"."dinky_task" IS 'Task';
 
 -- ----------------------------
@@ -1539,7 +1662,8 @@ CREATE TABLE "public"."dinky_task_version" (
                                                "dialect" varchar(50) COLLATE "pg_catalog"."default",
                                                "type" varchar(50) COLLATE "pg_catalog"."default",
                                                "task_configure" text COLLATE "pg_catalog"."default" NOT null,
-                                               "create_time" timestamp(6)
+                                               "create_time" timestamp(6),
+                                                "creator" int4
 )
 ;
 COMMENT ON COLUMN "public"."dinky_task_version"."id" IS 'ID';
@@ -1552,6 +1676,7 @@ COMMENT ON COLUMN "public"."dinky_task_version"."dialect" IS 'dialect';
 COMMENT ON COLUMN "public"."dinky_task_version"."type" IS 'type';
 COMMENT ON COLUMN "public"."dinky_task_version"."task_configure" IS 'task configuration';
 COMMENT ON COLUMN "public"."dinky_task_version"."create_time" IS 'create time';
+COMMENT ON COLUMN "public"."dinky_task_version"."creator" IS 'creator';
 COMMENT ON TABLE "public"."dinky_task_version" IS 'job history version';
 
 -- ----------------------------
@@ -1584,51 +1709,6 @@ COMMENT ON TABLE "public"."dinky_tenant" IS 'tenant';
 -- ----------------------------
 INSERT INTO "public"."dinky_tenant" VALUES (1, 'DefaultTenant', 0, 'DefaultTenant', '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
--- ----------------------------
--- Table structure for dinky_udf
--- ----------------------------
-DROP TABLE IF EXISTS "public"."dinky_udf";
-CREATE TABLE "public"."dinky_udf" (
-                                      "id" SERIAL NOT null,
-                                      "name" varchar(200) COLLATE "pg_catalog"."default",
-                                      "class_name" varchar(200) COLLATE "pg_catalog"."default",
-                                      "source_code" text COLLATE "pg_catalog"."default",
-                                      "compiler_code" bytea,
-                                      "version_id" int4,
-                                      "version_description" varchar(50) COLLATE "pg_catalog"."default",
-                                      "is_default" int2,
-                                      "document_id" int4,
-                                      "from_version_id" int4,
-                                      "code_md5" varchar(50) COLLATE "pg_catalog"."default",
-                                      "dialect" varchar(50) COLLATE "pg_catalog"."default",
-                                      "type" varchar(50) COLLATE "pg_catalog"."default",
-                                      "step" int4,
-                                      "enable" int2,
-                                      "create_time" timestamp(6),
-                                      "update_time" timestamp(6)
-)
-;
-COMMENT ON COLUMN "public"."dinky_udf"."name" IS 'udf name';
-COMMENT ON COLUMN "public"."dinky_udf"."class_name" IS 'Complete class name';
-COMMENT ON COLUMN "public"."dinky_udf"."source_code" IS 'source code';
-COMMENT ON COLUMN "public"."dinky_udf"."compiler_code" IS 'compiler product';
-COMMENT ON COLUMN "public"."dinky_udf"."version_id" IS 'version';
-COMMENT ON COLUMN "public"."dinky_udf"."version_description" IS 'version description';
-COMMENT ON COLUMN "public"."dinky_udf"."is_default" IS 'Is it default';
-COMMENT ON COLUMN "public"."dinky_udf"."document_id" IS 'corresponding to the document id';
-COMMENT ON COLUMN "public"."dinky_udf"."from_version_id" IS 'Based on udf version id';
-COMMENT ON COLUMN "public"."dinky_udf"."code_md5" IS 'source code of md5';
-COMMENT ON COLUMN "public"."dinky_udf"."dialect" IS 'dialect';
-COMMENT ON COLUMN "public"."dinky_udf"."type" IS 'type';
-COMMENT ON COLUMN "public"."dinky_udf"."step" IS 'job lifecycle step';
-COMMENT ON COLUMN "public"."dinky_udf"."enable" IS 'is enable';
-COMMENT ON COLUMN "public"."dinky_udf"."create_time" IS 'create time';
-COMMENT ON COLUMN "public"."dinky_udf"."update_time" IS 'update time';
-COMMENT ON TABLE "public"."dinky_udf" IS 'udf';
-
--- ----------------------------
--- Records of dinky_udf
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for dinky_udf_template
@@ -1642,7 +1722,9 @@ CREATE TABLE "public"."dinky_udf_template" (
                                                "template_code" text COLLATE "pg_catalog"."default",
                                                "enabled" int2 NOT null DEFAULT 1,
                                                "create_time" timestamp(6),
-                                               "update_time" timestamp(6)
+                                               "update_time" timestamp(6),
+                                            "creator" int4,
+                                           "updater" int4
 )
 ;
 COMMENT ON COLUMN "public"."dinky_udf_template"."name" IS 'template name';
@@ -1652,6 +1734,8 @@ COMMENT ON COLUMN "public"."dinky_udf_template"."template_code" IS 'code';
 COMMENT ON COLUMN "public"."dinky_udf_template"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_udf_template"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_udf_template"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_udf_template"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_udf_template"."updater" IS 'updater';
 COMMENT ON TABLE "public"."dinky_udf_template" IS 'udf template';
 
 -- ----------------------------
@@ -2137,18 +2221,6 @@ ALTER TABLE "public"."dinky_row_permissions" ADD CONSTRAINT "dinky_row_permissio
 ALTER TABLE "public"."dinky_savepoints" ADD CONSTRAINT "dinky_savepoints_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
--- Indexes structure for table dinky_schema_history
--- ----------------------------
-CREATE INDEX "schema_history_idx" ON "public"."dinky_schema_history" USING btree (
-                                                                                  "success" "pg_catalog"."int2_ops" ASC nullS LAST
-    );
-
--- ----------------------------
--- Primary Key structure for table dinky_schema_history
--- ----------------------------
-ALTER TABLE "public"."dinky_schema_history" ADD CONSTRAINT "dinky_schema_history_pkey" PRIMARY KEY ("installed_rank");
-
--- ----------------------------
 -- Primary Key structure for table dinky_sys_config
 -- ----------------------------
 ALTER TABLE "public"."dinky_sys_config" ADD CONSTRAINT "dinky_sys_config_pkey" PRIMARY KEY ("id");
@@ -2165,19 +2237,6 @@ CREATE UNIQUE INDEX "task_un_idx1" ON "public"."dinky_task" USING btree (
 -- Primary Key structure for table dinky_task
 -- ----------------------------
 ALTER TABLE "public"."dinky_task" ADD CONSTRAINT "dinky_task_pkey" PRIMARY KEY ("id");
-
--- ----------------------------
--- Indexes structure for table dinky_task_statement
--- ----------------------------
-CREATE UNIQUE INDEX "task_statement_un_idx1" ON "public"."dinky_task_statement" USING btree (
-                                                                                             "tenant_id" "pg_catalog"."int4_ops" ASC nullS LAST,
-                                                                                             "id" "pg_catalog"."int4_ops" ASC nullS LAST
-    );
-
--- ----------------------------
--- Primary Key structure for table dinky_task_statement
--- ----------------------------
-ALTER TABLE "public"."dinky_task_statement" ADD CONSTRAINT "dinky_task_statement_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Indexes structure for table dinky_task_version
@@ -2198,20 +2257,12 @@ ALTER TABLE "public"."dinky_task_version" ADD CONSTRAINT "dinky_task_version_pke
 -- ----------------------------
 ALTER TABLE "public"."dinky_tenant" ADD CONSTRAINT "dinky_tenant_pkey" PRIMARY KEY ("id");
 
--- ----------------------------
--- Primary Key structure for table dinky_udf
--- ----------------------------
-ALTER TABLE "public"."dinky_udf" ADD CONSTRAINT "dinky_udf_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table dinky_udf_template
 -- ----------------------------
 ALTER TABLE "public"."dinky_udf_template" ADD CONSTRAINT "dinky_udf_template_pkey" PRIMARY KEY ("id");
 
--- ----------------------------
--- Primary Key structure for table dinky_upload_file_record
--- ----------------------------
-ALTER TABLE "public"."dinky_upload_file_record" ADD CONSTRAINT "dinky_upload_file_record_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table dinky_user
@@ -2312,20 +2363,22 @@ comment on column "public"."dinky_metrics"."update_time" is 'update time';
 -- Table structure for dinky_resources
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_resources";
-CREATE TABLE "public"."dinky_resources" (
-                                            "id" int4 NOT null,
-                                            "file_name" varchar(64) COLLATE "pg_catalog"."default",
-                                            "description" varchar(255) COLLATE "pg_catalog"."default",
-                                            "user_id" int4,
-                                            "type" int2,
-                                            "size" int8,
-                                            "pid" int4,
-                                            "full_name" varchar(128) COLLATE "pg_catalog"."default",
-                                            "is_directory" int2,
-                                            "create_time" timestamp(6) NOT null,
-                                            "update_time" timestamp(6) NOT null
-)
-;
+CREATE TABLE "public"."dinky_resources"
+(
+    "id"           int4         NOT null,
+    "file_name"    varchar(64) COLLATE "pg_catalog"."default",
+    "description"  varchar(255) COLLATE "pg_catalog"."default",
+    "user_id"      int4,
+    "type"         int2,
+    "size"         int8,
+    "pid"          int4,
+    "full_name"    varchar(128) COLLATE "pg_catalog"."default",
+    "is_directory" int2,
+    "create_time"  timestamp(6) NOT null,
+    "update_time"  timestamp(6) NOT null,
+    "creator"      int4,
+    "updater"      int4
+);
 comment on table "public"."dinky_resources" is 'resources management';
 COMMENT ON COLUMN "public"."dinky_resources"."id" IS 'key';
 COMMENT ON COLUMN "public"."dinky_resources"."file_name" IS 'file name';
@@ -2334,11 +2387,13 @@ COMMENT ON COLUMN "public"."dinky_resources"."type" IS 'resource type,0:FILE，1
 COMMENT ON COLUMN "public"."dinky_resources"."size" IS 'resource size';
 COMMENT ON COLUMN "public"."dinky_resources"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_resources"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_resources"."creator" IS 'creator';
+COMMENT ON COLUMN "public"."dinky_resources"."updater" IS 'updater';
 
 -- ----------------------------
 -- Records of dinky_resources
 -- ----------------------------
-INSERT INTO "public"."dinky_resources" VALUES (1, 'Root', 'main folder', 1, 0, 0, -1, '/', 1, '2023-06-28 20:20:13', '2023-06-28 20:20:13');
+INSERT INTO "public"."dinky_resources" VALUES (1, 'Root', 'main folder', 1, 0, 0, -1, '', 1, '2023-06-28 20:20:13', '2023-06-28 20:20:13');
 
 -- ----------------------------
 -- Indexes structure for table dinky_resources
@@ -2662,9 +2717,9 @@ create table public.dinky_sys_token (
   expire_end_time timestamp without time zone,
   create_time timestamp without time zone,
   update_time timestamp without time zone,
-  creator bigint,
-  updator bigint,
-  source bigint
+  source bigint,
+creator bigint,
+  updater bigint
 );
 comment on table public.dinky_sys_token is 'token table';
 comment on column public.dinky_sys_token.id is 'id';
@@ -2678,7 +2733,7 @@ comment on column public.dinky_sys_token.expire_end_time is 'expire end time ,wh
 comment on column public.dinky_sys_token.create_time is 'create time';
 comment on column public.dinky_sys_token.update_time is 'modify time';
 comment on column public.dinky_sys_token.creator is 'creat user';
-comment on column public.dinky_sys_token.updator is 'modify user';
+comment on column public.dinky_sys_token.updater is 'modify user';
 comment on column public.dinky_sys_token.source is 'source';
 
 
@@ -2692,7 +2747,9 @@ create table public.dinky_alert_template (
   template_content text,
   enabled smallint,
   create_time timestamp without time zone,
-  update_time timestamp without time zone
+  update_time timestamp without time zone,
+    creator int4,
+  updater int4
 );
 comment on table public.dinky_alert_template is 'alert template table';
 comment on column public.dinky_alert_template.id is 'id';
@@ -2701,6 +2758,8 @@ comment on column public.dinky_alert_template.template_content is 'template cont
 comment on column public.dinky_alert_template.enabled is 'is enable';
 comment on column public.dinky_alert_template.create_time is 'create time';
 comment on column public.dinky_alert_template.update_time is 'update time';
+comment on column public.dinky_alert_template.creator is 'creator';
+comment on column public.dinky_alert_template.updater is 'updater';
 
 
 
@@ -2715,7 +2774,9 @@ create table public.dinky_alert_rules (
   description text,
   enabled smallint,
   create_time timestamp without time zone,
-  update_time timestamp without time zone
+  update_time timestamp without time zone,
+    creator int4,
+  updater int4
 ) ;
 comment on table public.dinky_alert_rules is 'alert rule table';
 comment on column public.dinky_alert_rules.id is 'id';
@@ -2728,6 +2789,8 @@ comment on column public.dinky_alert_rules.description is 'description';
 comment on column public.dinky_alert_rules.enabled is 'is enable';
 comment on column public.dinky_alert_rules.create_time is 'create time';
 comment on column public.dinky_alert_rules.update_time is 'update time';
+comment on column public.dinky_alert_rules.creator is 'creator';
+comment on column public.dinky_alert_rules.updater is 'updater';
 
 
 
@@ -2735,20 +2798,20 @@ comment on column public.dinky_alert_rules.update_time is 'update time';
 -- ----------------------------
 -- Records of dinky_alert_rule
 -- ----------------------------
-INSERT INTO public.dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (3, 'alert.rule.jobFail', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'FAILED\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-04 23:03:02');
-INSERT INTO public.dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (4, 'alert.rule.getJobInfoFail', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'UNKNOWN\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-05 18:03:43');
-INSERT INTO public.dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (5, 'alert.rule.jobRestart', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'RESTARTING\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:35:12');
-INSERT INTO public.dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"checkpointRule.checkFailed(#key,#checkPoints)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:49:03');
-INSERT INTO public.dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"exceptionRule.isException(#key,#exceptions)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:50:12');
-INSERT INTO public.dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (8, 'alert.rule.checkpointTimeout', '[{"ruleKey":"checkpointRule.checkpointTime(#key,#checkPoints)","ruleOperator":"GE","ruleValue":"1000"}]', 1, 'CUSTOM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 22:23:35');
+
+INSERT INTO public.dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (3, 'alert.rule.jobFail', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"\'FAILED\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO public.dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (4, 'alert.rule.getJobInfoFail', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"\'UNKNOWN\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO public.dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (5, 'alert.rule.jobRestart', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"\'RESTARTING\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO public.dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"isCheckpointFailed","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO public.dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"isException","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
 
 INSERT INTO public.dinky_alert_template VALUES (1, 'Default', '
-- **Job Name :** <font color=''gray''>${task.name}</font>
-- **Job Status :** <font color=''red''>${jobInstance.status}</font>
-- **Alert Time :** ${time}
-- **Start Time :** ${startTime}
-- **End Time :** ${endTime}
-- **<font color=''red''>${(exceptions.rootException)?substring(0,20)}</font>**
+- **Job Name :** <font color=''gray''>${jobName}</font>
+- **Job Status :** <font color=''red''>${jobStatus}</font>
+- **Alert Time :** ${alertTime}
+- **Start Time :** ${jobStartTime}
+- **End Time :** ${jobEndTime}
+- **<font color=''red''>${errorMsg}</font>**
 [Go toTask Web](http://${taskUrl})
 ', 1, null, null);
 
@@ -2763,6 +2826,8 @@ CREATE TABLE "public"."dinky_udf_manage" (
                                              "enabled" int2,
                                              "create_time" timestamp(6),
                                              "update_time" timestamp(6),
+                                            "creator" int4,
+                                             "updater" int4
                                              CONSTRAINT "dinky_udf_manage_pkey" PRIMARY KEY ("id")
 )
 ;
@@ -2788,5 +2853,9 @@ COMMENT ON COLUMN "public"."dinky_udf_manage"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_udf_manage"."create_time" IS 'create time';
 
 COMMENT ON COLUMN "public"."dinky_udf_manage"."update_time" IS 'update time';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."creator" IS 'creator';
+
+COMMENT ON COLUMN "public"."dinky_udf_manage"."updater" IS 'updater';
 
 COMMENT ON TABLE "public"."dinky_udf_manage" IS 'udf';

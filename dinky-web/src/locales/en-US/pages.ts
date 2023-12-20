@@ -48,7 +48,7 @@ export default {
    *
    * */
 
-  'button.push': 'submit',
+  'button.push': 'Push',
   /**
    *
    * catalog
@@ -57,6 +57,7 @@ export default {
 
   'catalog.name': 'Job Name',
   'catalog.name.placeholder': 'Please enter the job name',
+  'catalog.name.validate.error': 'Job name cannot contain _ characters, K8s naming specification',
   'catalog.name.tip':
     'This name can be used as the JobName of the FlinkSql task (pipeline.name configuration item)',
   'catalog.note': 'Job Description',
@@ -86,6 +87,33 @@ export default {
   'datastudio.middle.qg.gitprojects': 'Git Projects',
   'datastudio.middle.qg.resource': 'Resource',
   'datastudio.middle.qg.udf': 'UDF',
+  'datastudio.header.pushdolphin.title': 'Push task [ {name} ] to DolphinScheduler',
+  'datastudio.header.pushdolphin.taskId': 'Dinky task encoding',
+  'datastudio.header.pushdolphin.taskName': 'Task name: {name}',
+  'datastudio.header.pushdolphin.taskNameExt':
+    'Task type: {type} Process definition: {processDefinitionName}',
+  'datastudio.header.pushdolphin.upstreamCodes': 'pre-task',
+  'datastudio.header.pushdolphin.upstreamCodesTip':
+    'After selecting the pre-task, the task will not be executed until the pre-task is successfully executed. Please choose wisely to avoid task circular dependencies. This platform does not do dependency checking',
+  'datastudio.header.pushdolphin.taskPriority': 'Task Priority',
+  'datastudio.header.pushdolphin.failRetryTimes': 'Number of retries',
+  'datastudio.header.pushdolphin.failRetryInterval': 'Failure retry interval (minutes)',
+  'datastudio.header.pushdolphin.failRetryIntervalPlaceholder':
+    'Please enter the failure retry interval (minutes)',
+  'datastudio.header.pushdolphin.delayTime': 'Delayed execution time (minutes)',
+  'datastudio.header.pushdolphin.delayTimePlaceholder':
+    'Please enter the delay execution time (minutes)',
+  'datastudio.header.pushdolphin.timeoutFlag': 'Timeout alarm',
+  'datastudio.header.pushdolphin.timeoutFlag.warn': 'Timeout warning',
+  'datastudio.header.pushdolphin.timeoutFlag.failed': 'Timeout failed',
+  'datastudio.header.pushdolphin.timeoutFlagTip': 'Please select a timeout warning',
+  'datastudio.header.pushdolphin.flag': 'Run flag',
+  'datastudio.header.pushdolphin.flagTip': 'Please select the run flag',
+  'datastudio.header.pushdolphin.timeoutNotifyStrategy': 'Timeout notification strategy',
+  'datastudio.header.pushdolphin.timeoutNotifyStrategyTip':
+    'Please select a timeout notification strategy',
+  'datastudio.header.pushdolphin.timeout': 'Timeout (minutes)',
+  'datastudio.header.pushdolphin.timeoutPlaceholder': 'Please enter the timeout time (minutes)',
   'datastudio.project.create.folder.name': 'Folder Name',
   'datastudio.project.create.folder.name.placeholder': 'Please enter the folder name',
   'datastudio.project.create.folder.tip':
@@ -98,6 +126,13 @@ export default {
    * devops
    *
    * */
+  'devops.joblist.status.all': 'All',
+  'devops.joblist.status.running': 'running',
+  'devops.joblist.status.cancelled': 'Canceled',
+  'devops.joblist.status.failed': 'Exception job',
+  'devops.joblist.status.restarting': 'Restarting',
+  'devops.joblist.status.finished': 'completed',
+  'devops.joblist.status.unknown': 'unknown job',
 
   'devops.baseinfo.name': 'Job Name',
   'devops.baseinfo.parallelism': 'Parallelism',
@@ -160,6 +195,7 @@ export default {
   'devops.jobinfo.metrics.metricsItems': 'Metrics Items',
   'devops.jobinfo.metrics.selected': 'Selected',
   'devops.jobinfo.offline': 'Offline',
+  'devops.jobinfo.recently.job.status': 'View recently saved job status information',
   'devops.jobinfo.reonline': 'Re-Online',
   'devops.jobinfo.restart': 'Restart',
   'devops.jobinfo.savepoint.cancel': 'SavePoint Stop',
@@ -167,6 +203,8 @@ export default {
   'devops.jobinfo.savepoint.stop': 'SavePoint Pause',
   'devops.jobinfo.savepoint.trigger': 'SavePoint Triggers',
   'devops.jobinfo.smart_stop': 'Smart Stop',
+  'devops.jobinfo.unable.obtain.status':
+    'Unable to connect to Flink cluster to obtain the latest job status information',
   'devops.jobinfo.version.delete': 'Delete Version',
   'devops.jobinfo.version.delete.sure': 'Are you sure you want to remove this version？V{version}',
   'devops.jobinfo.version.latestVersion': 'Current Version',
@@ -298,8 +336,8 @@ export default {
    *
    * */
 
-  'pages.datastudio.editor.check': 'Check current FlinkSql',
-  'pages.datastudio.editor.debug': 'Debug',
+  'pages.datastudio.editor.check': 'Check',
+  'pages.datastudio.editor.debug': 'Preview',
   'pages.datastudio.editor.exec': 'Execute',
   'pages.datastudio.editor.exec.error': 'Task [{jobName}] execution failed',
   'pages.datastudio.editor.debug.error': 'Task [{jobName}] debug failed',
@@ -313,13 +351,14 @@ export default {
   'pages.datastudio.editor.stop.job': 'Stop job',
   'pages.datastudio.editor.stop.jobConfirm': 'Are you sure to stop the job [{jobName}]? ',
   'pages.datastudio.editor.submitting': 'The new task [{jobName}] is executing',
+  'pages.datastudio.editor.checking': 'The task [{jobName}] is checking',
   'pages.datastudio.editor.debugging': 'The new task [{jobName}] is debugging',
   'pages.datastudio.editor.onlyread':
     'Task has been published, modification is prohibited, please go offline first',
   'pages.datastudio.editor.notsave': 'Current changes are not saved! ',
   'pages.datastudio.editor.notsave.note':
     'Continue will discard the changes, are you sure to continue?',
-  'pages.datastudio.to.jobDetail': 'Operation Center',
+  'pages.datastudio.to.jobDetail': 'Operation',
   'pages.datastudio.explain.validate': 'Validating...',
   'pages.datastudio.explain.validate.allright': 'All Right',
   'pages.datastudio.explain.validate.error': 'There are errors, a total of {errorCount}',
@@ -422,6 +461,34 @@ export default {
   'pages.datastudio.catalog.fieldInformation': 'Field Information',
   'pages.datastudio.catalog.selectDatasource': 'Select Datasource',
   'pages.datastudio.catalog.openMission': 'Open Mission',
+
+  'pages.datastudio.label.history.title': 'Job:【{name}】Execution History',
+  'pages.datastudio.label.history.noData': 'Please click the job to view the job execution history',
+  'pages.datastudio.label.history.execConfig': 'Execution Configuration',
+  'pages.datastudio.label.history.statement': 'Execution Statement',
+  'pages.datastudio.label.history.result': 'PreView Data',
+  'pages.datastudio.label.history.error': 'View Error Log',
+  'pages.datastudio.label.history.notSuccess':
+    'The Job has not been successfully executed. It cannot be Preview data.',
+  'pages.datastudio.label.history.clusterConfigId': 'Cluster Config ID',
+  'pages.datastudio.label.history.clusterId': 'Cluster Instance ID',
+  'pages.datastudio.label.history.taskType': 'Job Execution Mode',
+  'pages.datastudio.label.history.clusterName': 'Cluster Name',
+  'pages.datastudio.label.history.changelog': 'ChangeLog',
+  'pages.datastudio.label.history.maxRows': 'Max Rows',
+  'pages.datastudio.label.history.autoStop': 'Auto Stop',
+  'pages.datastudio.label.history.jobId': 'Job ID',
+  'pages.datastudio.label.history.jobName': 'Job Name',
+  'pages.datastudio.label.history.fragment': 'Global Variables',
+  'pages.datastudio.label.history.statementSet': 'StatementSet',
+  'pages.datastudio.label.history.parallelism': 'Parallelism',
+  'pages.datastudio.label.history.checkpoint': 'Checkpoint Interval',
+  'pages.datastudio.label.history.savePointStrategy': 'SavePoint Strategy',
+  'pages.datastudio.label.history.savePointPath': 'SavePoint Path',
+  'pages.datastudio.label.history.clusterType': 'Cluster Type',
+  'pages.datastudio.label.history.clusterInstance': 'Cluster Instance',
+  'pages.datastudio.label.history.clusterConfig': 'Cluster Config',
+  'pages.datastudio.label.history.local': 'Local (Built-in MiniCluster)',
   /**
    *
    * rc
@@ -441,12 +508,19 @@ export default {
   'rc.ag.search': 'Search Name/Note',
   'rc.ai.accessKeyId': 'AccessKeyId',
   'rc.ai.accessKeyIdPleaseHolder': 'Please enter AccessKeyId',
+  'rc.ai.sdkAppId': 'SdkAppId',
+  'rc.ai.sdkAppIdPleaseHolder': 'Please enter SdkAppId',
   'rc.ai.accessKeySecret': 'AccessKeySecret',
   'rc.ai.accessKeySecretPleaseHolder': 'Please enter AccessKeySecret',
   'rc.ai.action': 'Interface method',
   'rc.ai.actionPleaseHolder': 'Please enter the interface method',
   'rc.ai.agentId': 'AgentId',
   'rc.ai.agentIdPleaseHolder': 'Please enter AgentId',
+  'rc.ai.sendUrl': 'QiWei Send Addr',
+  'rc.ai.sendUrlPleaseHolder': 'Please enter the sending address or the proxy address',
+  'rc.ai.sendUrlValidate': 'Please enter the correct sending address, no / is required at the end',
+  'rc.ai.sendUrlTooltip':
+    'You can enter the proxy address for the sending address, such as: http://127.0.0.1:8080/cgi-bin, the default is: https://qyapi.weixin.qq.com/cgi-bin ',
   'rc.ai.apikey': 'Account unique identifier',
   'rc.ai.apikeyPleaseHolder': 'Please enter the unique ID of the account',
   'rc.ai.appId': 'App ID',
@@ -455,19 +529,26 @@ export default {
   'rc.ai.appKeyPleaseHolder': 'Please enter App Key',
   'rc.ai.appSecret': 'App Secret',
   'rc.ai.appSecretPleaseHolder': 'Please enter App Secret',
-  'rc.ai.atMobiles': 'At Mobiles',
-  'rc.ai.atMobilesPleaseHolder':
-    'Please enter the members that need @, multiple use, separated by numbers',
-  'rc.ai.atUsers': 'At Users',
-  'rc.ai.atUsersPleaseHolder':
-    'Please enter the user ID (user ID of FeiShu background is required), separated by multiple commas!',
+  'rc.ai.atLeast': 'At least [{min}] required',
+  'rc.ai.atMost': 'At most [{max}] required',
+  'rc.ai.previousItemRequired': 'The previous item is required, so that the next item can be added',
+  'rc.ai.atMobiles': 'Phone number',
+  'rc.ai.atMobilesPleaseHolder': 'Please enter the phone number',
+  'rc.ai.atMobilesRepeat': 'Duplicate phone number',
+  'rc.ai.atMobilesFormat': 'Phone number format is incorrect',
+  'rc.ai.atMobilesMax': 'Phone number (up to [{max}] digits)',
+  'rc.ai.emailPleaseHolderFormat': 'Please enter the correct email address',
+  'rc.ai.atUsers': '@User',
+  'rc.ai.atUsersPleaseHolder': 'Please enter the @user ID',
+  'rc.ai.atUsersRepeat': 'Duplicate @user ID',
+  'rc.ai.atUsersMax': '@User (up to [{max}] digits)',
   'rc.ai.baseUrl': 'REST API Base URL',
   'rc.ai.baseUrlPleaseHolder': 'Please enter the REST API Base URL',
   'rc.ai.callbackUrl': 'Official callback address',
   'rc.ai.callbackUrlPleaseHolder': 'Please enter the official callback address',
   'rc.ai.choosetype': 'Select the alarm type',
   'rc.ai.connTimeout': 'Request timeout',
-  'rc.ai.connTimeoutPleaseHolder': 'Please enter the request timeout',
+  'rc.ai.connTimeoutPleaseHolder': 'enter the request timeout(s)',
   'rc.ai.corpId': 'CorpId',
   'rc.ai.corpIdPleaseHolder': 'Please enter CorpId',
   'rc.ai.create': 'Create Alert Instance',
@@ -489,8 +570,10 @@ export default {
   'rc.ai.keyword': 'KeyWord',
   'rc.ai.keywordPleaseHolder': 'please enter keyword',
   'rc.ai.management': 'Alert Instance Management',
-  'rc.ai.manufacturers': 'SMS manufacturers',
-  'rc.ai.manufacturersPleaseHolder': 'Please select a SMS manufacturer',
+  'rc.ai.suppliers': 'SMS Suppliers',
+  'rc.ai.suppliersPleaseHolder': 'Please select a SMS supplier',
+  'rc.ai.phoneNumbers': 'Phone Numbers',
+  'rc.ai.phoneNumbersPleaseHolder': 'phone number',
   'rc.ai.mf.alibaba': 'Aliyun SMS',
   'rc.ai.mf.cloopen': 'CloOpen cloud domestic SMS',
   'rc.ai.mf.ctyun': 'Tianyi Cloud SMS',
@@ -511,16 +594,17 @@ export default {
   'rc.ai.proxy': 'Proxy',
   'rc.ai.proxyPleaseHolder': 'enter proxy',
   'rc.ai.receiverCcs': 'ReceiverCcs',
-  'rc.ai.receiverCcsPleaseHolder':
-    'Please enter the receiverCcs email address! Separate multiple commas!',
+  'rc.ai.receiverCcsPleaseHolder': 'Please enter the receiverCcs email address!',
+  'rc.ai.receiverCcsRepeat': 'Duplicate receiverCcs email address',
+  'rc.ai.receiverCcsMax': 'ReceiverCcs (up to [{max}] digits)',
   'rc.ai.receivers': 'Receivers',
-  'rc.ai.receiversPleaseHolder': 'Please enter recipient email address! Separate multiple commas',
+  'rc.ai.receiversPleaseHolder': 'Please enter recipient email address!',
+  'rc.ai.receiversRepeat': 'Duplicate recipient email address',
+  'rc.ai.receiversMax': 'Receivers (up to [{max}] digits)',
   'rc.ai.regionId': 'Regional Information',
   'rc.ai.regionIdPleaseHolder': 'Please enter the region information',
   'rc.ai.requestUrl': 'Request URL',
   'rc.ai.requestUrlPleaseHolder': 'Please enter the request URL',
-  'rc.ai.sdkAppId': 'Account unique ID',
-  'rc.ai.sdkAppIdPleaseHolder': 'Please enter the unique ID of the account',
   'rc.ai.secret': 'Secret',
   'rc.ai.secretKey': 'Access key secret',
   'rc.ai.secretKeyPleaseHolder': 'Please enter the access key secret',
@@ -551,6 +635,14 @@ export default {
   'rc.ai.templateIdPleaseHolder': 'Please enter the SMS template ID',
   'rc.ai.templateName': 'Template variable',
   'rc.ai.templateNamePleaseHolder': 'Please enter the SMS template variable',
+  'rc.ai.configId': 'Config ID',
+  'rc.ai.configIdPleaseHolder': 'Please enter the unique config ID',
+  'rc.ai.weight': 'Weight',
+  'rc.ai.weightPleaseHolder': 'Please enter the weight',
+  'rc.ai.retryInterval': 'Retry Interval(s)',
+  'rc.ai.retryIntervalPleaseHolder': 'Please enter the retry interval',
+  'rc.ai.maxRetries': 'Max Retries',
+  'rc.ai.maxRetriesPleaseHolder': 'Please enter the maximum number of retries',
   'rc.ai.type': 'Type',
   'rc.ai.url': 'APP access address',
   'rc.ai.urlPleaseHolder':
@@ -563,7 +655,7 @@ export default {
   'rc.ai.webhookPleaseHolder': 'please enter webhook url',
   'rc.ai.wechat': 'WeChat',
   'rc.ai.wechatAtUsersPleaseHolder':
-    'Please enter the @user ID (enterprise and micro user name spelled out), separated by multiple commas!',
+    'Please enter the @user ID (enterprise and micro user name spelled out)',
   'rc.ai.xls.file.path': 'XLS storage directory',
   'rc.ai.xls.file.pathPleaseHolder':
     'Please enter the XLS storage directory! The default is /tmp/xls',
@@ -597,7 +689,7 @@ export default {
   'rc.cc.flinkConfig': 'Flink Config',
   'rc.cc.flinkConfigPath': 'Flink Config File Path',
   'rc.cc.flinkConfigPathHelp':
-    'Please enter flink-conf.yaml path! Values such as /opt/module/flink/conf ',
+    'Only specify to the folder, dinky will auto read the configuration, this parameter is optional in K8S mode',
   'rc.cc.flinkConfigPathPlaceholder':
     'Please enter the flink-conf.yaml path! Values such as /opt/module/flink/conf ',
   'rc.cc.hadoop.defineConfig': 'Hadoop Custom Config (high priority)',
@@ -626,6 +718,8 @@ export default {
   'rc.cc.k8s.tmCpu': 'TaskManager CPU Config',
   'rc.cc.k8s.tmCpuHelp': 'TaskManager CPU configuration! eg',
   'rc.cc.k8sConfig': 'Kubernetes Config',
+  'rc.cc.k8s.defaultKubeConfigHelp':
+    'If you do not fill in this field, the `~/.kube/config` file will be used by default',
   'rc.cc.k8sOp.version': 'Flink Version',
   'rc.cc.k8sOp.versionHelp': 'Please select the Flink version!',
   'rc.cc.key': 'Config Key',
@@ -655,6 +749,8 @@ export default {
   'rc.cc.type': 'Type',
   'rc.cc.typePlaceholder': 'Please select the cluster configuration type!',
   'rc.cc.value': 'Config Value',
+  'rc.cc.loadFromLocal': 'Load from a local file',
+
   'rc.ci.alias': 'Alias',
   'rc.ci.aliasPlaceholder': 'Please enter an alias!',
   'rc.ci.ar': 'Auto Registration',
@@ -855,6 +951,7 @@ export default {
   'rc.udf.register.className': 'Class Name',
   'rc.udf.register.deleteConfirm': 'Are you sure you want to delete this UDF? ',
   'rc.udf.register': 'Register UDF',
+  'rc.udf.register.select': 'Please select a non-directory node',
   /**
    *
    * role
@@ -896,15 +993,18 @@ export default {
    * sys
    *
    * */
-
+  'sys.alert.rule.label.taskId': 'Task ID',
+  'sys.alert.rule.label.duration': 'Running time',
+  'sys.alert.rule.label.batchModel': 'Batch mode',
+  'sys.alert.rule.label.jobType': 'Execution mode',
+  'sys.alert.rule.label.jobException': 'The job is abnormal',
+  'sys.alert.rule.label.checkpointFailed': 'Checkpoint Failed',
+  'sys.alert.rule.label.checkpointTime': 'CheckPoint Time',
+  'sys.alert.rule.label.jobStatus': 'Job status',
   'sys.alert.rule.addRule': 'Add Rule',
   'sys.alert.rule.allRule': 'All Rules',
   'sys.alert.rule.anyRule': 'Any Rule',
-  'sys.alert.rule.checkpointFailed': 'Checkpoint Failed',
-  'sys.alert.rule.checkpointTime': 'Checkpoint Time',
   'sys.alert.rule.delete': 'Are you sure you want to delete this alert rule?',
-  'sys.alert.rule.jobException': 'Job Exception',
-  'sys.alert.rule.jobStatus': 'Job Status',
   'sys.alert.rule.name': 'Alert Rule Name',
   'sys.alert.rule.rule': 'Rule',
   'sys.alert.rule.ruleType': 'Rule Type',
@@ -1048,7 +1148,8 @@ export default {
   'user.request.type': 'Type',
   'user.reset': 'Are you sure to Reset this User Password?',
   'user.resetPassword': 'Reset your password',
-  'user.resetPasswordSuccess': 'User',
+  'user.resetPasswordSuccess':
+    'User [{username}] reset password successfully, new password: {password}',
   'user.role': 'Role',
   'user.status': 'Is Deleted',
   'user.superAdminFlag': 'Super Admin',
@@ -1060,12 +1161,12 @@ export default {
   'user.usernamePlaceholder': 'Please enter user name',
 
   'lineage.getError': 'Cannot Get Lineage',
-  'lineage.expandField': 'Expand Field',
-  'lineage.collapseField': 'Collapse Field',
-  'lineage.expandDownstream': 'Expand Downstream',
-  'lineage.collapseDownstream': 'Collapse Downstream',
-  'lineage.expandUpstream': 'Expand Upstream',
-  'lineage.collapseUpstream': 'Collapse Upstream',
+  'lineage.expandField': 'Expand Field(UnSupported)',
+  'lineage.collapseField': 'Collapse Field(UnSupported)',
+  'lineage.expandDownstream': 'Expand Downstream(UnSupported)',
+  'lineage.collapseDownstream': 'Collapse Downstream(UnSupported)',
+  'lineage.expandUpstream': 'Expand Upstream(UnSupported)',
+  'lineage.collapseUpstream': 'Collapse Upstream(UnSupported)',
   'lineage.showMap': 'Show Map',
   'lineage.hideMap': 'Hide Map',
   'lineage.refresh': 'Refresh'

@@ -19,12 +19,17 @@
 
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
-import { getFlinkConfigs } from '@/pages/DataStudio/RightContainer/JobConfig/service';
+import {
+  getFlinkConfigs,
+  querySuggessionData
+} from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+import { SuggestionInfo } from '@/types/Public/data';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect, Reducer } from '@@/plugin-dva/types';
+import { Monaco } from '@monaco-editor/react';
 import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
@@ -142,7 +147,8 @@ export enum TabsPageType {
 
 export enum TabsPageSubType {
   flinkSql = 'FlinkSql',
-  flinkJar = 'FlinkJar'
+  flinkJar = 'FlinkJar',
+  None = ''
 }
 
 export interface TabsItemType {
@@ -157,6 +163,7 @@ export interface TabsItemType {
   icon: any;
   closable: boolean;
   path: string[];
+  monacoInstance: React.RefObject<Monaco | undefined>;
   console: ConsoleType;
   isModified: boolean;
 }
@@ -284,6 +291,7 @@ export type StateType = {
   tabs: TabsType;
   bottomContainerContent: BottomContainerContent;
   footContainer: FooterType;
+  suggestions: SuggestionInfo[];
 };
 
 export type ModelType = {
@@ -292,6 +300,7 @@ export type ModelType = {
   effects: {
     queryProject: Effect;
     queryFlinkConfigOptions: Effect;
+    querySuggestions: Effect;
   };
   reducers: {
     updateToolContentHeight: Reducer<StateType>;
@@ -324,6 +333,7 @@ export type ModelType = {
     saveFooterValue: Reducer<StateType>;
     updateJobRunningMsg: Reducer<StateType>;
     saveFlinkConfigOptions: Reducer<StateType>;
+    updateSuggestions: Reducer<StateType>;
   };
 };
 
@@ -387,7 +397,8 @@ const Model: ModelType = {
         jobState: '',
         runningLog: ''
       }
-    }
+    },
+    suggestions: []
   },
   effects: {
     *queryProject({ payload }, { call, put }) {
@@ -403,6 +414,13 @@ const Model: ModelType = {
         type: 'saveFlinkConfigOptions',
         payload: response
       });
+    },
+    *querySuggestions({ payload }, { call, put }) {
+      const response: SuggestionInfo[] = yield call(querySuggessionData, payload);
+      yield put({
+        type: 'updateSuggestions',
+        payload: response
+      });
     }
   },
   reducers: {
@@ -410,19 +428,25 @@ const Model: ModelType = {
      * 更新工具栏高度
      */
     updateToolContentHeight(state, { payload }) {
-      return {
-        ...state,
-        toolContentHeight: payload
-      };
+      if (payload != state.toolContentHeight) {
+        return {
+          ...state,
+          toolContentHeight: payload
+        };
+      }
+      return state;
     },
     /**
      * 更新中间内容高度
      */
     updateCenterContentHeight(state, { payload }) {
-      return {
-        ...state,
-        centerContentHeight: payload
-      };
+      if (payload != state.centerContentHeight) {
+        return {
+          ...state,
+          centerContentHeight: payload
+        };
+      }
+      return state;
     },
     /**
      * 更新左侧选中key
@@ -482,17 +506,12 @@ const Model: ModelType = {
       if (payload === '') {
         centerContentHeight = state.centerContentHeight + (state.bottomContainer.height as number);
         toolContentHeight = state.toolContentHeight + (state.bottomContainer.height as number);
-        console.log(2);
-      } else if (
-        state.bottomContainer.selectKey !== '' &&
-        payload !== state.bottomContainer.selectKey
-      ) {
+      } else if (state.bottomContainer.selectKey !== '') {
         centerContentHeight = state.centerContentHeight;
         toolContentHeight = state.toolContentHeight;
       } else {
         centerContentHeight = state.centerContentHeight - (state.bottomContainer.height as number);
         toolContentHeight = state.toolContentHeight - (state.bottomContainer.height as number);
-        console.log(3);
       }
 
       return {
@@ -521,13 +540,16 @@ const Model: ModelType = {
      * 更新底部高度
      */
     updateBottomHeight(state, { payload }) {
-      return {
-        ...state,
-        bottomContainer: {
-          ...state.bottomContainer,
-          height: payload
-        }
-      };
+      if (payload != state.bottomContainer.height) {
+        return {
+          ...state,
+          bottomContainer: {
+            ...state.bottomContainer,
+            height: payload
+          }
+        };
+      }
+      return state;
     },
     /**
      * 更新数据库列表
@@ -646,6 +668,12 @@ const Model: ModelType = {
         for (const [index, pane] of panes.entries()) {
           if (pane.key === needCloseKey) {
             const nextPane = panes[(index + 1) % panes.length];
+            const height =
+              document.documentElement.clientHeight -
+              VIEW.headerHeight -
+              VIEW.headerNavHeight -
+              VIEW.footerHeight -
+              VIEW.otherHeight;
             return {
               ...state,
               tabs: {
@@ -659,7 +687,10 @@ const Model: ModelType = {
               footContainer: {
                 ...state.footContainer,
                 ...getFooterValue(panes, nextPane.key)
-              }
+              },
+              toolContentHeight:
+                panes.length < 2 ? height - VIEW.leftMargin : state.toolContentHeight,
+              centerContentHeight: panes.length < 2 ? height : state.toolContentHeight
             };
           }
         }
@@ -692,7 +723,8 @@ const Model: ModelType = {
             ...state,
             tabs: {
               ...state.tabs,
-              activeKey: item.key
+              activeKey: item.key,
+              activeBreadcrumbTitle: [item.type, item.breadcrumbLabel, item.label].join('/')
             },
             footContainer: {
               ...state.footContainer,
@@ -828,6 +860,12 @@ const Model: ModelType = {
           ...state.footContainer,
           jobRunningMsg: payload
         }
+      };
+    },
+    updateSuggestions(state, { payload }) {
+      return {
+        ...state,
+        suggestions: payload
       };
     }
   }

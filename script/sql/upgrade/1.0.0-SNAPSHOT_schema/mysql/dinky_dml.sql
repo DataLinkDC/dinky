@@ -18,6 +18,7 @@
  */
 
 
+begin ;
 delete from `dinky_task_statement` where id in (select id from `dinky_task` where `name` = 'dlink_default_catalog');
 
 delete from `dinky_task` where `name` = 'dlink_default_catalog';
@@ -58,7 +59,7 @@ UPDATE `dinky_sys_config` SET  `name` = 'flink.settings.useRestAPI' where `name`
 UPDATE `dinky_sys_config` SET  `name` = 'flink.settings.sqlSeparator' where `name` = 'sqlSeparator';
 UPDATE `dinky_sys_config` SET  `name` = 'flink.settings.jobIdWait' where `name` = 'jobIdWait';
 
-INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `type`, `size`, `pid`, `full_name`, `is_directory`) VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '/Root', 1);
+INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `type`, `size`, `pid`, `full_name`, `is_directory`) VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '', 1);
 
 
 -- ----------------------------
@@ -212,22 +213,23 @@ INSERT INTO `dinky_sys_menu` VALUES (146, 10, ' 拷贝', '/registration/datasour
 -- ----------------------------
 -- Records of dinky_alert_rule
 -- ----------------------------
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (3, 'alert.rule.jobFail', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'FAILED\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-04 23:03:02');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (4, 'alert.rule.getJobInfoFail', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'UNKNOWN\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-05 18:03:43');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (5, 'alert.rule.jobRestart', '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"\'RESTARTING\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:35:12');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"checkpointRule.checkFailed(#key,#checkPoints)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:49:03');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"exceptionRule.isException(#key,#exceptions)","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:50:12');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time) VALUES (8, 'alert.rule.checkpointTimeout', '[{"ruleKey":"checkpointRule.checkpointTime(#key,#checkPoints)","ruleOperator":"GE","ruleValue":"1000"}]', 1, 'CUSTOM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 22:23:35');
 
-INSERT INTO dinky_alert_template VALUES (1, 'Default', '
-- **Job Name :** <font color=''gray''>${task.name}</font>
-- **Job Status :** <font color=''red''>${jobInstance.status}</font>
-- **Alert Time :** ${time}
-- **Start Time :** ${startTime}
-- **End Time :** ${endTime}
-- **<font color=''red''>${(exceptions.rootException)?substring(0,20)}</font>**
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (3, 'alert.rule.jobFail', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"\'FAILED\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (4, 'alert.rule.getJobInfoFail', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"\'UNKNOWN\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (5, 'alert.rule.jobRestart', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"\'RESTARTING\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"isCheckpointFailed","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"isException","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+
+
+INSERT INTO dinky_alert_template (id, name, template_content, enabled, create_time, update_time, creator, updater) VALUES (1, 'Default', '
+- **Job Name :** <font color=\'gray\'>${jobName}</font>
+- **Job Status :** <font color=\'red\'>${jobStatus}</font>
+- **Alert Time :** ${alertTime}
+- **Start Time :** ${jobStartTime}
+- **End Time :** ${jobEndTime}
+- **<font color=\'red\'>${errorMsg}</font>**
 [Go toTask Web](http://${taskUrl})
-', 1, null, null);
+', 1, '2023-11-20 17:45:48', '2023-11-23 00:14:22', null, 1);
 
 COMMIT;
 
@@ -241,7 +243,9 @@ alter table dinky_task alter column `step` set default 1;
 
 
 
-replace  INTO dinky_task SELECT
+replace  INTO dinky_task
+(id, name, tenant_id, dialect, type, check_point, save_point_strategy, save_point_path, parallelism, fragment, statement_set, batch_model, cluster_id, cluster_configuration_id, database_id,jar_id ,env_id, alert_group_id, config_json, note, step, job_instance_id, enabled, create_time, update_time, version_id, statement)
+SELECT
                              t.id,
                              t.`name`,
                              t.tenant_id,
@@ -280,8 +284,12 @@ alter table dinky_job_history drop column jar_json;
 alter table dinky_task drop column jar_id;
 UPDATE dinky_task_version SET task_configure=JSON_REMOVE(task_configure, '$.jarId');
 UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.jarId');
-
-insert into `dinky_flink_document`  values (218, 'Reference', '建表语句', 'Streaming', 'EXECUTE CDCSOURCE print', 'Whole library synchronization print', 'EXECUTE CDCSOURCE demo_print WITH (
+UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.jarTask');
+UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.session');
+alter table dinky_history add batch_model boolean default false null after job_manager_address;
+insert into `dinky_flink_document`
+(id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (218, 'Reference', '建表语句', 'Streaming', 'EXECUTE CDCSOURCE print', 'Whole library synchronization print', 'EXECUTE CDCSOURCE demo_print WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
   ''port'' = ''3306'',
@@ -293,7 +301,8 @@ insert into `dinky_flink_document`  values (218, 'Reference', '建表语句', 'S
   ''table-name'' = ''test\\.student,test\\.score'',
   ''sink.connector'' = ''print''
 );', 'All Versions', 0, 1, '2023-10-31 16:01:45', '2023-10-31 16:02:56');
-insert into `dinky_flink_document`  values (219, 'Reference', '建表语句', 'Streaming', 'EXECUTE CDCSOURCE doris', 'Whole library synchronization doris', 'EXECUTE CDCSOURCE demo_print WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (219, 'Reference', '建表语句', 'Streaming', 'EXECUTE CDCSOURCE doris', 'Whole library synchronization doris', 'EXECUTE CDCSOURCE demo_print WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
   ''port'' = ''3306'',
@@ -305,7 +314,8 @@ insert into `dinky_flink_document`  values (219, 'Reference', '建表语句', 'S
   ''table-name'' = ''test\\.student,test\\.score'',
   ''sink.connector'' = ''print''
 );', 'All Versions', 0, 1, '2023-10-31 16:02:21', '2023-10-31 16:03:09');
-insert into `dinky_flink_document`  values (220, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE demo_doris_schema_evolution', 'The entire library is synchronized to doris tape mode evolution', 'EXECUTE CDCSOURCE demo_doris_schema_evolution WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (220, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE demo_doris_schema_evolution', 'The entire library is synchronized to doris tape mode evolution', 'EXECUTE CDCSOURCE demo_doris_schema_evolution WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
   ''port'' = ''3306'',
@@ -325,7 +335,8 @@ insert into `dinky_flink_document`  values (220, 'Reference', '建表语句', 'B
   ''sink.sink.db'' = ''test'',
   ''sink.table.identifier'' = ''${schemaName}.${tableName}''
 );', 'All Versions', 0, 1, '2023-10-31 16:04:53', '2023-10-31 16:04:53');
-insert into `dinky_flink_document`  values (221, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE StarRocks ', 'The entire library is synchronized to StarRocks
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (221, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE StarRocks ', 'The entire library is synchronized to StarRocks
 ', 'EXECUTE CDCSOURCE demo_hudi WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
@@ -367,7 +378,8 @@ insert into `dinky_flink_document`  values (221, 'Reference', '建表语句', 'B
  ''sink.hive_sync.table''=''${tableName}'',
  ''sink.table.prefix.schema''=''true''
 );', 'All Versions', 0, 1, '2023-10-31 16:05:50', '2023-10-31 16:08:53');
-insert into `dinky_flink_document`  values (222, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_mysql', 'The entire library is synchronized to mysql', 'EXECUTE CDCSOURCE demo_startrocks WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (222, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_mysql', 'The entire library is synchronized to mysql', 'EXECUTE CDCSOURCE demo_startrocks WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
   ''port'' = ''3306'',
@@ -393,7 +405,8 @@ insert into `dinky_flink_document`  values (222, 'Reference', '建表语句', 'B
   ''sink.sink.buffer-flush.interval-ms'' = ''15000'',
   ''sink.sink.parallelism'' = ''1''
 );', 'All Versions', 0, 1, '2023-10-31 16:07:08', '2023-10-31 16:08:46');
-insert into `dinky_flink_document`  values (223, 'Reference', '建表语句', 'Streaming', 'EXECUTE CDCSOURCE demo_doris', 'The entire library is synchronized to mysql', 'EXECUTE CDCSOURCE cdc_mysql WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (223, 'Reference', '建表语句', 'Streaming', 'EXECUTE CDCSOURCE demo_doris', 'The entire library is synchronized to mysql', 'EXECUTE CDCSOURCE cdc_mysql WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
  ''port'' = ''3306'',
@@ -417,7 +430,8 @@ insert into `dinky_flink_document`  values (223, 'Reference', '建表语句', 'S
  ''sink.sink.max-retries'' = ''5'',
  ''sink.auto.create'' = ''true''
 );', 'All Versions', 0, 1, '2023-10-31 16:07:47', '2023-10-31 16:08:39');
-insert into `dinky_flink_document`  values (224, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_oracle', 'The entire library is synchronized to cdc_oracle', 'EXECUTE CDCSOURCE cdc_oracle WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (224, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_oracle', 'The entire library is synchronized to cdc_oracle', 'EXECUTE CDCSOURCE cdc_oracle WITH (
  ''connector'' = ''oracle-cdc'',
  ''hostname'' = ''127.0.0.1'',
  ''port'' = ''1521'',
@@ -434,7 +448,8 @@ insert into `dinky_flink_document`  values (224, 'Reference', '建表语句', 'B
  ''password'' = ''123456'',
  ''table-name'' = ''TEST2.${tableName}''
 );', 'All Versions', 0, 1, '2023-10-31 16:08:30', '2023-10-31 16:08:30');
-insert into `dinky_flink_document`  values (225, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_kafka_one', 'The entire library is synchronized to a topic in kafka', 'EXECUTE CDCSOURCE cdc_kafka_one WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (225, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_kafka_one', 'The entire library is synchronized to a topic in kafka', 'EXECUTE CDCSOURCE cdc_kafka_one WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
  ''port'' = ''3306'',
@@ -448,7 +463,8 @@ insert into `dinky_flink_document`  values (225, 'Reference', '建表语句', 'B
  ''sink.topic''=''cdctest'',
  ''sink.brokers''=''bigdata2:9092,bigdata3:9092,bigdata4:9092''
 );', 'All Versions', 0, 1, '2023-10-31 16:10:13', '2023-10-31 16:10:13');
-insert into `dinky_flink_document`  values (226, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_kafka_mul', 'The entire library is synchronized to a single topic in kafka', 'EXECUTE CDCSOURCE cdc_kafka_mul WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (226, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_kafka_mul', 'The entire library is synchronized to a single topic in kafka', 'EXECUTE CDCSOURCE cdc_kafka_mul WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
  ''port'' = ''3306'',
@@ -461,7 +477,8 @@ insert into `dinky_flink_document`  values (226, 'Reference', '建表语句', 'B
  ''sink.connector''=''datastream-kafka'',
  ''sink.brokers''=''bigdata2:9092,bigdata3:9092,bigdata4:9092''
 )', 'All Versions', 0, 1, '2023-10-31 16:10:59', '2023-10-31 16:10:59');
-insert into `dinky_flink_document`  values (227, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_upsert_kafka', 'The entire library is synchronized to kafka primary key mode', 'EXECUTE CDCSOURCE cdc_upsert_kafka WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (227, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_upsert_kafka', 'The entire library is synchronized to kafka primary key mode', 'EXECUTE CDCSOURCE cdc_upsert_kafka WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
  ''port'' = ''3306'',
@@ -477,7 +494,8 @@ insert into `dinky_flink_document`  values (227, 'Reference', '建表语句', 'B
  ''sink.key.format'' = ''json'',
  ''sink.value.format'' = ''json''
 );', 'All Versions', 0, 1, '2023-10-31 16:12:14', '2023-10-31 16:12:14');
-insert into `dinky_flink_document`  values (228, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_postgresql ', 'The entire library is synchronized to postgresql', 'EXECUTE CDCSOURCE cdc_postgresql WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (228, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_postgresql ', 'The entire library is synchronized to postgresql', 'EXECUTE CDCSOURCE cdc_postgresql WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
  ''port'' = ''3306'',
@@ -500,7 +518,8 @@ insert into `dinky_flink_document`  values (228, 'Reference', '建表语句', 'B
  ''sink.sink.buffer-flush.max-rows'' = ''100'',
  ''sink.sink.max-retries'' = ''5''
 )', 'All Versions', 0, 1, '2023-10-31 16:12:54', '2023-10-31 16:12:54');
-insert into `dinky_flink_document`  values (229, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_clickhouse', 'Sync the entire library to clickhouse', 'EXECUTE CDCSOURCE cdc_clickhouse WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (229, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE cdc_clickhouse', 'Sync the entire library to clickhouse', 'EXECUTE CDCSOURCE cdc_clickhouse WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
  ''port'' = ''3306'',
@@ -523,7 +542,8 @@ insert into `dinky_flink_document`  values (229, 'Reference', '建表语句', 'B
   ''sink.sink.flush-interval'' = ''1000'',
   ''sink.sink.max-retries'' = ''3''
 );', 'All Versions', 0, 1, '2023-10-31 16:13:33', '2023-10-31 16:13:33');
-insert into `dinky_flink_document`  values (230, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE mysql2hive', 'The entire library is synchronized to the sql-catalog of hive', 'EXECUTE CDCSOURCE mysql2hive WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (230, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE mysql2hive', 'The entire library is synchronized to the sql-catalog of hive', 'EXECUTE CDCSOURCE mysql2hive WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
   ''port'' = ''3306'',
@@ -539,7 +559,8 @@ insert into `dinky_flink_document`  values (230, 'Reference', '建表语句', 'B
   ''sink.default-database'' = ''hdb'',
   ''sink.hive-conf-dir'' = ''/usr/local/dlink/hive-conf''
 );', 'All Versions', 0, 1, '2023-10-31 16:14:31', '2023-10-31 16:14:31');
-insert into `dinky_flink_document`  values (231, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE  mysql2paimon', 'The entire library is synchronized to paimon', 'EXECUTE CDCSOURCE mysql2paimon WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (231, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE  mysql2paimon', 'The entire library is synchronized to paimon', 'EXECUTE CDCSOURCE mysql2paimon WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
   ''port'' = ''3306'',
@@ -554,7 +575,8 @@ insert into `dinky_flink_document`  values (231, 'Reference', '建表语句', 'B
   ''sink.catalog.type'' = ''table-store'',
   ''sink.catalog.warehouse''=''file:/tmp/table_store''
 );', 'All Versions', 0, 1, '2023-10-31 16:15:22', '2023-10-31 16:28:52');
-insert into `dinky_flink_document`  values (232, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE mysql2dinky_catalog', 'The entire library is synchronized to dinky''s built-in catalog', 'EXECUTE CDCSOURCE mysql2dinky_catalog WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (232, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE mysql2dinky_catalog', 'The entire library is synchronized to dinky''s built-in catalog', 'EXECUTE CDCSOURCE mysql2dinky_catalog WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
   ''port'' = ''3306'',
@@ -572,7 +594,8 @@ insert into `dinky_flink_document`  values (232, 'Reference', '建表语句', 'B
   ''sink.catalog.url'' = ''jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC'',
   ''sink.sink.db'' = ''default_database''
 );', 'All Versions', 0, 1, '2023-10-31 16:16:22', '2023-10-31 16:16:22');
-insert into `dinky_flink_document`  values (233, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE mysql2multiple_sink', 'Synchronization of the entire library to multiple data sources (sink)', 'EXECUTE CDCSOURCE mysql2multiple_sink WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (233, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE mysql2multiple_sink', 'Synchronization of the entire library to multiple data sources (sink)', 'EXECUTE CDCSOURCE mysql2multiple_sink WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
   ''port'' = ''3306'',
@@ -599,10 +622,14 @@ insert into `dinky_flink_document`  values (233, 'Reference', '建表语句', 'B
   ''sink[1].topic''=''cdc'',
   ''sink[1].brokers''=''127.0.0.1:9092''
 )', 'All Versions', 0, 1, '2023-10-31 16:17:27', '2023-10-31 16:17:27');
-insert into `dinky_flink_document`  values (234, 'Reference', '建表语句', 'Batch/Streaming', 'ADD JAR', 'ADD JAR', 'ADD JAR ${1:}; -- str path ', 'All Versions', 0, 1, '2023-10-31 16:19:52', '2023-10-31 16:23:16');
-insert into `dinky_flink_document`  values (235, 'Function', 'Other', 'Batch/Streaming', 'SHOW FRAGMENTS', 'SHOW FRAGMENTS', 'SHOW FRAGMENTS;', 'All Versions', 0, 1, '2023-10-31 16:20:30', '2023-10-31 16:20:30');
-insert into `dinky_flink_document`  values (236, 'Function', 'Other', 'Batch/Streaming', 'SHOW FRAGMENT var1', 'SHOW FRAGMENT var1', 'SHOW FRAGMENT ${1:};', 'All Versions', 0, 1, '2023-10-31 16:21:23', '2023-10-31 16:21:23');
-insert into `dinky_flink_document`  values (237, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE demo_hudi', 'The entire library is synchronized to hudi', 'EXECUTE CDCSOURCE demo_hudi WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (234, 'Reference', '建表语句', 'Batch/Streaming', 'ADD JAR', 'ADD JAR', 'ADD JAR ${1:}; -- str path ', 'All Versions', 0, 1, '2023-10-31 16:19:52', '2023-10-31 16:23:16');
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (235, 'Function', 'Other', 'Batch/Streaming', 'SHOW FRAGMENTS', 'SHOW FRAGMENTS', 'SHOW FRAGMENTS;', 'All Versions', 0, 1, '2023-10-31 16:20:30', '2023-10-31 16:20:30');
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (236, 'Function', 'Other', 'Batch/Streaming', 'SHOW FRAGMENT var1', 'SHOW FRAGMENT var1', 'SHOW FRAGMENT ${1:};', 'All Versions', 0, 1, '2023-10-31 16:21:23', '2023-10-31 16:21:23');
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (237, 'Reference', '建表语句', 'Batch/Streaming', 'EXECUTE CDCSOURCE demo_hudi', 'The entire library is synchronized to hudi', 'EXECUTE CDCSOURCE demo_hudi WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
  ''port'' = ''3306'',
@@ -643,21 +670,25 @@ insert into `dinky_flink_document`  values (237, 'Reference', '建表语句', 'B
  ''sink.hive_sync.table''=''${tableName}'',
  ''sink.table.prefix.schema''=''true''
 );', 'All Versions', 0, 1, '2023-10-31 16:24:47', '2023-10-31 16:24:47');
-insert into `dinky_flink_document`  values (238, 'Reference', 'Other', 'Batch/Streaming', 'EXECUTE JAR ', 'EXECUTE JAR use sql', 'EXECUTE JAR WITH (
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (238, 'Reference', 'Other', 'Batch/Streaming', 'EXECUTE JAR ', 'EXECUTE JAR use sql', 'EXECUTE JAR WITH (
 ''uri''=''file:///opt/flink/lib/paimon-flink-1.16-0.5-20230818.001833-127.jar'',
 ''main-class''=''org.apache.paimon.flink.action.FlinkActions'',
 ''args''=''mysql-sync-table --warehouse hdfs:///save --database cdc-test --table cdc_test1 --primary-keys id --mysql-conf hostname=121.5.136.161 --mysql-conf port=3371 --mysql-conf username=root --mysql-conf password=dinky --mysql-conf database-name=cdc-test --mysql-conf table-name=table_1 --mysql-conf server-time-zone=Asia/Shanghai --table-conf bucket=4 --table-conf changelog-producer=input --table-conf sink.parallelism=1'',
 ''parallelism''='''',
 ''savepoint-path''=''''
 );', 'All Versions', 0, 1, '2023-10-31 16:27:53', '2023-10-31 16:27:53');
-insert into `dinky_flink_document`  values (239, 'Reference', '内置函数', 'Streaming', 'PRINT tablename', 'PRINT table data', 'PRINT ${1:}', 'All Versions', 0, 1, '2023-10-31 16:30:22', '2023-10-31 16:30:22');
-insert into `dinky_flink_document`  values (240, 'Reference', '建表语句', 'Batch/Streaming', 'CREATE TABLE Like', 'CREATE TABLE Like source table', 'DROP TABLE IF EXISTS sink_table;
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (239, 'Reference', '内置函数', 'Streaming', 'PRINT tablename', 'PRINT table data', 'PRINT ${1:}', 'All Versions', 0, 1, '2023-10-31 16:30:22', '2023-10-31 16:30:22');
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (240, 'Reference', '建表语句', 'Batch/Streaming', 'CREATE TABLE Like', 'CREATE TABLE Like source table', 'DROP TABLE IF EXISTS sink_table;
 CREATE TABLE IF not EXISTS sink_table
 WITH (
     ''topic'' = ''motor_vehicle_error''
 )
 LIKE source_table;', 'All Versions', 0, 1, '2023-10-31 16:33:38', '2023-10-31 16:33:38');
-insert into `dinky_flink_document`  values (241, 'Reference', '建表语句', 'Batch/Streaming', 'CREATE TABLE like source_table EXCLUDING', 'CREATE TABLE like source_table EXCLUDING', 'DROP TABLE IF EXISTS sink_table;
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (241, 'Reference', '建表语句', 'Batch/Streaming', 'CREATE TABLE like source_table EXCLUDING', 'CREATE TABLE like source_table EXCLUDING', 'DROP TABLE IF EXISTS sink_table;
 CREATE TABLE IF not EXISTS sink_table(
      -- Add watermark definition
     WATERMARK FOR order_time AS order_time - INTERVAL ''5'' SECOND
@@ -671,12 +702,14 @@ LIKE source_table (
     EXCLUDING ALL
     INCLUDING GENERATED
 );', 'All Versions', 0, 1, '2023-10-31 16:36:13', '2023-10-31 16:36:13');
-insert into `dinky_flink_document`  values (242, 'Reference', '建表语句', 'Batch/Streaming', 'CREATE TABLE ctas_kafka', 'CREATE TABLE ctas_kafka', 'CREATE TABLE my_ctas_table
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (242, 'Reference', '建表语句', 'Batch/Streaming', 'CREATE TABLE ctas_kafka', 'CREATE TABLE ctas_kafka', 'CREATE TABLE my_ctas_table
 WITH (
     ''connector'' = ''kafka''
 )
 AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions', 0, 1, '2023-10-31 16:37:33', '2023-10-31 16:47:17');
-insert into `dinky_flink_document`  values (243, 'Reference', '建表语句', 'Batch/Streaming', 'CREATE TABLE rtas_kafka', 'CREATE TABLE rtas_kafka', 'CREATE OR REPLACE TABLE my_ctas_table
+insert into `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time)
+values (243, 'Reference', '建表语句', 'Batch/Streaming', 'CREATE TABLE rtas_kafka', 'CREATE TABLE rtas_kafka', 'CREATE OR REPLACE TABLE my_ctas_table
 WITH (
     ''connector'' = ''kafka''
 )
@@ -684,5 +717,131 @@ AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions
 
 
 
+INSERT INTO `dinky_flink_document` (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time) VALUES (244, 'Reference', '建表语句', 'Batch/Streaming', 'datagen job demo', 'datagen job demo', 'DROP TABLE IF EXISTS source_table3;
+CREATE TABLE IF NOT EXISTS source_table3(
+--订单id
+`order_id` BIGINT,
+--产品
+
+`product` BIGINT,
+--金额
+`amount` BIGINT,
+
+--支付时间
+`order_time` as CAST(CURRENT_TIMESTAMP AS TIMESTAMP(3)), -- `在这里插入代码片`
+--WATERMARK
+WATERMARK FOR order_time AS order_time - INTERVAL \'2\' SECOND
+) WITH(
+\'connector\' = \'datagen\',
+ \'rows-per-second\' = \'1\',
+ \'fields.order_id.min\' = \'1\',
+ \'fields.order_id.max\' = \'2\',
+ \'fields.amount.min\' = \'1\',
+ \'fields.amount.max\' = \'10\',
+ \'fields.product.min\' = \'1\',
+ \'fields.product.max\' = \'2\'
+);
+
+-- SELECT * FROM source_table3 LIMIT 10;
+
+DROP TABLE IF EXISTS sink_table5;
+CREATE TABLE IF NOT EXISTS sink_table5(
+--产品
+`product` BIGINT,
+--金额
+`amount` BIGINT,
+--支付时间
+`order_time` TIMESTAMP(3),
+--1分钟时间聚合总数
+`one_minute_sum` BIGINT
+) WITH(
+\'connector\'=\'print\'
+);
+
+INSERT INTO sink_table5
+SELECT
+product,
+amount,
+order_time,
+SUM(amount) OVER(
+PARTITION BY product
+ORDER BY order_time
+-- 标识统计范围是1个 product 的最近 1 分钟的数据
+RANGE BETWEEN INTERVAL \'1\' MINUTE PRECEDING AND CURRENT ROW
+) as one_minute_sum
+FROM source_table3;', 'All Versions', 0, 1, '2023-11-15 15:42:16', '2023-11-15 15:42:16');
+
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time) VALUES (245, 'Property', '优化参数', 'Streaming', 'checkpoint config', 'checkpoint config', '-- 声明一些调优参数 (checkpoint 等相关配置)
+set \'execution.checkpointing.checkpoints-after-tasks-finish.enabled\' =\'true\';
+SET \'pipeline.operator-chaining\' = \'false\';
+set \'state.savepoints.dir\'=\'file:///opt/data/flink_cluster/savepoints\'; -- 目录自行修改
+set \'state.checkpoints.dir\'= \'file:///opt/data/flink_cluster/checkpoints\'; -- 目录自行修改
+-- set state.checkpoint-storage=\'filesystem\';
+set \'state.backend.type\'=\'rocksdb\';
+set \'execution.checkpointing.interval\'=\'60 s\';
+set \'state.checkpoints.num-retained\'=\'100\';
+-- 使 solt 均匀分布在 各个 TM 上
+set \'cluster.evenly-spread-out-slots\'=\'true\';', 'All Versions', 0, 1, '2023-11-15 15:57:42', '2023-11-15 15:57:42');
+
+
 -- 修改 dinky_udf_template 表的 enable 字段 不允许为空 默认为 1
 alter table dinky_udf_template modify column `enabled` tinyint(1) not null default 1 comment 'is enable, 0:no 1:yes';
+
+commit ;
+
+
+-- 设置默认值 | set default value
+begin ;
+-- 将以上表 增加的字段的默认值设置为 1 即 admin 用户 | set creator/updater/operator field default value to 1
+update dinky_alert_group set creator = 1 , updater = 1;
+update dinky_alert_instance set creator = 1, updater = 1;
+update dinky_alert_template set creator = 1, updater = 1;
+update dinky_alert_rules set creator = 1, updater = 1;
+update dinky_catalogue set creator = 1, updater = 1;
+update dinky_task set creator = 1, updater = 1, operator = 1;
+update dinky_task_version set creator = 1;
+update dinky_cluster_configuration set creator = 1, updater = 1;
+update dinky_cluster set creator = 1, updater = 1;
+update dinky_database set creator = 1, updater = 1;
+update dinky_flink_document set creator = 1, updater = 1;
+update dinky_fragment set creator = 1, updater = 1;
+update dinky_git_project set creator = 1, updater = 1, operator = 1;
+update dinky_udf_manage set creator = 1, updater = 1;
+update dinky_udf_template set creator = 1, updater = 1;
+update dinky_savepoints set creator = 1;
+update dinky_resources set creator = 1, updater = 1;
+update dinky_row_permissions set creator = 1, updater = 1;
+update dinky_job_instance set creator = 1, updater = 1, operator = 1;
+update dinky_sys_token set creator = 1, updater = 1;
+commit ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

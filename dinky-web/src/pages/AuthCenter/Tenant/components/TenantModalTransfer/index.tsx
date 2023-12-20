@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -47,6 +48,10 @@ const TenantModalTransfer: React.FC<TableTransferFromProps> = (props) => {
       maskClosable={false}
       width={'75%'}
       onCancel={() => onCancel()}
+      okButtonProps={{
+        htmlType: 'submit',
+        autoFocus: true
+      }}
       onOk={() => handleSubmit(targetKeys)}
     >
       <TenantTransfer tenant={tenant} onChange={(value) => handleValueChange(value)} />

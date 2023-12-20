@@ -21,7 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.data.dto.CommonDTO;
 import org.dinky.data.model.Resources;
-import org.dinky.data.model.UDFManage;
+import org.dinky.data.model.udf.UDFManage;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.UDFManageVO;
 import org.dinky.service.UDFService;

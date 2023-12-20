@@ -22,8 +22,9 @@ package org.dinky.metadata;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
+import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.sql.SQLException;
@@ -46,14 +47,16 @@ public class SqlServerTest {
 
     @Before
     public void init() {
-        DriverConfig config = new DriverConfig();
-        config.setName(UUID.randomUUID().toString());
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setType("SqlServer");
-        config.setIp("192.168.68.133");
-        config.setPort(1433);
-        config.setUsername("sa");
-        config.setPassword("OcP2020123");
-        config.setUrl("jdbc:sqlserver://192.168.68.133:1433;DatabaseName=test");
+        config.setName(UUID.randomUUID().toString());
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .ip("192.168.68.133")
+                .port(1433)
+                .username("dca")
+                .password("dca")
+                .url("jdbc:sqlserver://192.168.68.133:1433;DatabaseName=test")
+                .build());
         try {
             driver = Driver.build(config);
         } catch (Exception e) {

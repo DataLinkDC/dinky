@@ -24,15 +24,15 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.ID;
-import org.dinky.data.model.JobInfoDetail;
-import org.dinky.data.model.JobInstance;
-import org.dinky.data.model.JobManagerConfiguration;
-import org.dinky.data.model.TaskManagerConfiguration;
+import org.dinky.data.model.devops.TaskManagerConfiguration;
+import org.dinky.data.model.ext.JobInfoDetail;
+import org.dinky.data.model.home.JobInstanceStatus;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.task.JobInstanceVo;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.job.BuildConfiguration;
 import org.dinky.service.JobInstanceService;
+import org.dinky.utils.BuildConfiguration;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -79,7 +79,7 @@ public class JobInstanceController {
             paramType = "body",
             required = true,
             dataTypeClass = JsonNode.class)
-    public ProTableResult<JobInstance> listJobInstances(@RequestBody JsonNode para) {
+    public ProTableResult<JobInstanceVo> listJobInstances(@RequestBody JsonNode para) {
         return jobInstanceService.listJobInstances(para);
     }
 
@@ -88,11 +88,8 @@ public class JobInstanceController {
      */
     @GetMapping("/getStatusCount")
     @ApiOperation("Get status count")
-    public Result<Dict> getStatusCount() {
-        Dict result = Dict.create()
-                .set("history", jobInstanceService.getStatusCount(true))
-                .set("instance", jobInstanceService.getStatusCount(false));
-        return Result.succeed(result);
+    public Result<JobInstanceStatus> getStatusCount() {
+        return Result.succeed(jobInstanceService.getStatusCount());
     }
 
     /**
@@ -152,25 +149,6 @@ public class JobInstanceController {
             required = true)
     public Result<LineageResult> getLineage(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getLineage(id));
-    }
-
-    /**
-     * 获取 JobManager 的信息
-     */
-    @GetMapping("/getJobManagerInfo")
-    @ApiOperation("Get job manager info")
-    @ApiImplicitParam(
-            name = "address",
-            value = "JobManager address",
-            dataType = "String",
-            paramType = "query",
-            required = true)
-    public Result<JobManagerConfiguration> getJobManagerInfo(@RequestParam String address) {
-        JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
-        if (Asserts.isNotNullString(address)) {
-            BuildConfiguration.buildJobManagerConfiguration(jobManagerConfiguration, FlinkAPI.build(address));
-        }
-        return Result.succeed(jobManagerConfiguration);
     }
 
     @GetMapping("/getJobManagerLog")

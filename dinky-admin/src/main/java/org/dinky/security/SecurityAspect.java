@@ -19,8 +19,8 @@
 
 package org.dinky.security;
 
-import org.dinky.data.model.History;
-import org.dinky.data.model.JobInfoDetail;
+import org.dinky.data.model.ext.JobInfoDetail;
+import org.dinky.data.model.job.History;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;

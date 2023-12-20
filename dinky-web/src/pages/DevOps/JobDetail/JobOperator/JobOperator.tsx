@@ -1,30 +1,30 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
 import { cancelTask } from '@/pages/DataStudio/HeaderContainer/service';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { isStatusDone } from '@/pages/DevOps/function';
-import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { getData, postAll } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
-import { EllipsisOutlined } from '@ant-design/icons';
+import { EllipsisOutlined, RedoOutlined } from '@ant-design/icons';
 import { Button, Dropdown, message, Modal, Space } from 'antd';
 
 const operatorType = {
@@ -34,8 +34,12 @@ const operatorType = {
   SAVEPOINT_TRIGGER: 'trigger',
   SAVEPOINT_STOP: 'stop'
 };
-const JobOperator = (props: JobProps) => {
-  const { jobDetail } = props;
+export type OperatorType = {
+  jobDetail: Jobs.JobInfoDetail;
+  refesh: (isForce: boolean) => void;
+};
+const JobOperator = (props: OperatorType) => {
+  const { jobDetail, refesh } = props;
   const webUri = `/api/flink/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`;
 
   const handleJobOperator = (key: string) => {
@@ -47,13 +51,13 @@ const JobOperator = (props: JobProps) => {
       onOk: async () => {
         if (key == operatorType.CANCEL_JOB) {
           postAll(API_CONSTANTS.CANCEL_JOB, {
-            clusterId: jobDetail?.cluster?.id,
+            clusterId: jobDetail?.clusterInstance?.id,
             jobId: jobDetail?.instance?.jid
           });
         } else if (key == operatorType.RESTART_JOB) {
           getData(API_CONSTANTS.RESTART_TASK, {
             id: jobDetail?.instance?.taskId,
-            isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE
+            isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.PUBLISH
           });
         } else {
           cancelTask('', jobDetail?.instance?.taskId);
@@ -65,10 +69,11 @@ const JobOperator = (props: JobProps) => {
 
   return (
     <Space>
+      <Button icon={<RedoOutlined />} onClick={() => refesh(true)} />
+
       <Button key='flinkwebui' href={webUri} target={'_blank'}>
         FlinkWebUI
       </Button>
-
       <Button
         key='autorestart'
         type='primary'

@@ -33,7 +33,6 @@ import org.dinky.data.result.IResult;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SelectResult;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.service.StudioService;
 
 import java.util.List;
@@ -88,19 +87,6 @@ public class StudioController {
     @ApiImplicitParam(name = "jobId", value = "Get Job Plan", required = true, dataType = "String", paramType = "query")
     public Result<SelectResult> getJobData(@RequestParam String jobId) {
         return Result.succeed(studioService.getJobData(jobId));
-    }
-
-    /** 根据jobId获取数据 */
-    @GetMapping("/getCommonSqlData")
-    @ApiOperation("Get Common Sql Data")
-    @ApiImplicitParam(
-            name = "taskId",
-            value = "Get Common Sql Data",
-            required = true,
-            dataType = "Integer",
-            paramType = "query")
-    public Result<JdbcSelectResult> getJobData(@RequestParam Integer taskId) {
-        return Result.succeed(studioService.getCommonSqlData(taskId));
     }
 
     /** 获取单任务实例的血缘分析 */

@@ -10,7 +10,10 @@ CREATE TABLE `dinky_alert_group` (
                                    `note` varchar(255) null DEFAULT null COMMENT 'note',
                                    `enabled` tinyint(4) null DEFAULT 1 COMMENT 'is enable',
                                    `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
-                                   `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
+                                   `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                     `creator` int(11) null DEFAULT null COMMENT 'creator',
+                                   `updater` int(11)  null DEFAULT null COMMENT 'updater'
+
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 CREATE TABLE `dinky_alert_history` (
@@ -31,10 +34,12 @@ CREATE TABLE `dinky_alert_instance` (
                                       `name` varchar(50) NOT null COMMENT 'alert instance name',
                                       `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
                                       `type` varchar(50) null DEFAULT null COMMENT 'alert instance type such as: DingTalk,Wechat(Webhook,app) Feishu ,email',
-                                      `params` text null COMMENT 'configuration',
+                                      `params` json null COMMENT 'configuration',
                                       `enabled` tinyint(4) null DEFAULT 1 COMMENT 'is enable',
                                       `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
-                                      `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
+                                      `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                         `creator` int(11) null DEFAULT 1 COMMENT 'creator',
+                                   `updater` int(11)  null DEFAULT 1 COMMENT 'updater'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 CREATE TABLE `dinky_catalogue` (
@@ -47,7 +52,9 @@ CREATE TABLE `dinky_catalogue` (
                                  `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
                                  `is_leaf` tinyint(1) NOT null COMMENT 'is leaf node',
                                  `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
-                                 `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
+                                 `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                   `creator` int(11) null DEFAULT null COMMENT 'creator',
+                                   `updater` int(11)  null DEFAULT null COMMENT 'updater'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 CREATE TABLE `dinky_cluster` (
@@ -66,7 +73,9 @@ CREATE TABLE `dinky_cluster` (
                                `task_id` int(11) null DEFAULT null COMMENT 'task ID',
                                `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
                                `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
-                               `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
+                               `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                               `creator` int(11) null DEFAULT null COMMENT 'creator',
+                               `updater` int(11)  null DEFAULT null COMMENT 'updater'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 CREATE TABLE `dinky_cluster_configuration` (
@@ -79,7 +88,9 @@ CREATE TABLE `dinky_cluster_configuration` (
                                              `note` varchar(255) null DEFAULT null COMMENT 'note',
                                              `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
                                              `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
-                                             `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
+                                             `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                             `creator` int(11) null DEFAULT null COMMENT 'creator',
+                                           `updater` int(11)  null DEFAULT null COMMENT 'updater'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 CREATE TABLE `dinky_database` (
@@ -88,11 +99,7 @@ CREATE TABLE `dinky_database` (
                                 `name` varchar(30) NOT null COMMENT 'database name',
                                 `group_name` varchar(255) null DEFAULT 'Default' COMMENT 'database belong group name',
                                 `type` varchar(50) NOT null COMMENT 'database type',
-                                `ip` varchar(255) null DEFAULT null COMMENT 'database ip',
-                                `port` int(11) null DEFAULT null COMMENT 'database port',
-                                `url` varchar(255) null DEFAULT null COMMENT 'database url',
-                                `username` varchar(50) null DEFAULT null COMMENT 'username',
-                                `password` varchar(512) null DEFAULT null COMMENT 'password',
+                                `connect_config` text NOT null COMMENT 'database type',
                                 `note` varchar(255) null DEFAULT null COMMENT 'note',
                                 `flink_config` text null COMMENT 'Flink configuration',
                                 `flink_template` text null COMMENT 'Flink template',
@@ -102,7 +109,9 @@ CREATE TABLE `dinky_database` (
                                 `heartbeat_time` datetime(0) null DEFAULT null COMMENT 'last heartbeat time',
                                 `enabled` tinyint(1) NOT null DEFAULT 1 COMMENT 'is enable',
                                 `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
-                                `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
+                                `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                `creator` int(11) null DEFAULT null COMMENT 'creator',
+                               `updater` int(11)  null DEFAULT null COMMENT 'updater'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 CREATE TABLE `dinky_flink_document` (
@@ -117,7 +126,9 @@ CREATE TABLE `dinky_flink_document` (
                                       `like_num` int(11) null DEFAULT 0 COMMENT 'like number',
                                       `enabled` tinyint(1) NOT null DEFAULT 0 COMMENT 'is enable',
                                       `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
-                                      `update_time` datetime(0) null DEFAULT null COMMENT 'update_time'
+                                      `update_time` datetime(0) null DEFAULT null COMMENT 'update_time',
+                                      `creator` int(11) null DEFAULT null COMMENT 'creator',
+                                   `updater` int(11)  null DEFAULT null COMMENT 'updater'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 
@@ -129,7 +140,9 @@ CREATE TABLE `dinky_fragment` (
                                 `note` text null COMMENT 'note',
                                 `enabled` tinyint(4) null DEFAULT 1 COMMENT 'is enable',
                                 `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
-                                `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
+                                `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
+                                `creator` int(11) null DEFAULT null COMMENT 'creator',
+                               `updater` int(11)  null DEFAULT null COMMENT 'updater'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 CREATE TABLE `dinky_history` (
@@ -141,12 +154,13 @@ CREATE TABLE `dinky_history` (
                                `job_id` varchar(50) null DEFAULT null COMMENT 'Job ID',
                                `job_name` varchar(255) null DEFAULT null COMMENT 'Job Name',
                                `job_manager_address` varchar(255) null DEFAULT null COMMENT 'JJobManager Address',
+                               `batch_model` boolean null DEFAULT false COMMENT 'is batch model',
                                `status` int(11) NOT null DEFAULT 0 COMMENT 'status',
                                `type` varchar(50) null DEFAULT null COMMENT 'job type',
                                `statement` text null COMMENT 'statement set',
                                `error` text null COMMENT 'error message',
                                `result` text null COMMENT 'result set',
-                               `config_json` json null COMMENT 'config json',
+                               `config_json` text null COMMENT 'config json',
                                `start_time` datetime(0) null DEFAULT null COMMENT 'job start time',
                                `end_time` datetime(0) null DEFAULT null COMMENT 'job end time',
                                `task_id` int(11) null DEFAULT null COMMENT 'task ID',
@@ -158,13 +172,13 @@ CREATE TABLE `dinky_history` (
 CREATE TABLE `dinky_job_history` (
                                    `id` int(11) NOT null COMMENT 'id',
                                    `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
-                                   `job_json` json null COMMENT 'Job information json',
-                                   `exceptions_json` json null COMMENT 'error message json',
-                                   `checkpoints_json` json null COMMENT 'checkpoints json',
-                                   `checkpoints_config_json` json null COMMENT 'checkpoints configuration json',
-                                   `config_json` json null COMMENT 'configuration',
-                                   `cluster_json` json null COMMENT 'cluster instance configuration',
-                                   `cluster_configuration_json` json null COMMENT 'cluster config',
+                                   `job_json` text null COMMENT 'Job information json',
+                                   `exceptions_json` text null COMMENT 'error message json',
+                                   `checkpoints_json` text null COMMENT 'checkpoints json',
+                                   `checkpoints_config_json` text null COMMENT 'checkpoints configuration json',
+                                   `config_json` text null COMMENT 'configuration',
+                                   `cluster_json` text null COMMENT 'cluster instance configuration',
+                                   `cluster_configuration_json` text null COMMENT 'cluster config',
                                    `update_time` datetime(0) null DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
@@ -184,6 +198,9 @@ CREATE TABLE `dinky_job_instance` (
                                     `duration` bigint(20) null DEFAULT null COMMENT 'job duration',
                                     `error` text null COMMENT 'error logs',
                                     `failed_restart_count` int(11) null DEFAULT null COMMENT 'failed restart count',
+                                   `creator` int(11) null DEFAULT null COMMENT 'creator',
+                                   `updater` int(11)  null DEFAULT null COMMENT 'updater',
+                                   `operator` int(11)  null DEFAULT null COMMENT 'operator',
                                     INDEX job_instance_task_id_idx13(`task_id`)
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
@@ -208,7 +225,8 @@ CREATE TABLE `dinky_savepoints` (
                                   `name` varchar(255) NOT null COMMENT 'task name',
                                   `type` varchar(255) NOT null COMMENT 'savepoint type',
                                   `path` varchar(255) NOT null COMMENT 'savepoint path',
-                                  `create_time` datetime(0) null DEFAULT null COMMENT 'create time'
+                                  `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                  `creator` int(11) null DEFAULT null COMMENT 'creator'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 
@@ -246,7 +264,10 @@ CREATE TABLE `dinky_task` (
                             `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                             `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
                             `version_id` int(11) null DEFAULT null COMMENT 'version id',
-                            `statement` text null DEFAULT null COMMENT 'statement'
+                            `statement` text null DEFAULT null COMMENT 'statement',
+                            `creator` int(11) null DEFAULT null COMMENT 'creator',
+                           `updater` int(11)  null DEFAULT null COMMENT 'updater',
+                           `operator` int(11)  null DEFAULT null COMMENT 'operator'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 
@@ -260,7 +281,8 @@ CREATE TABLE `dinky_task_version` (
                                     `dialect` varchar(50) null DEFAULT null COMMENT 'dialect',
                                     `type` varchar(50) null DEFAULT null COMMENT 'type',
                                     `task_configure` text NOT null COMMENT 'task configuration',
-                                    `create_time` datetime(0) null DEFAULT null COMMENT 'create time'
+                                    `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
+                                     `creator` int(11) null DEFAULT null COMMENT 'creator'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 CREATE TABLE `dinky_tenant` (
@@ -273,26 +295,6 @@ CREATE TABLE `dinky_tenant` (
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 
-CREATE TABLE `dinky_udf` (
-                           `id` int(11) NOT null AUTO_INCREMENT,
-                           `name` varchar(200) null DEFAULT null COMMENT 'udf name',
-                           `class_name` varchar(200) null DEFAULT null COMMENT 'Complete class name',
-                           `source_code` longtext null COMMENT 'source code',
-                           `compiler_code` binary(255) null DEFAULT null COMMENT 'compiler product',
-                           `version_id` int(11) null DEFAULT null COMMENT 'version',
-                           `version_description` varchar(50) null DEFAULT null COMMENT 'version description',
-                           `is_default` tinyint(1) null DEFAULT null COMMENT 'Is it default',
-                           `document_id` int(11) null DEFAULT null COMMENT 'corresponding to the document id',
-                           `from_version_id` int(11) null DEFAULT null COMMENT 'Based on udf version id',
-                           `code_md5` varchar(50) null DEFAULT null COMMENT 'source code of md5',
-                           `dialect` varchar(50) null DEFAULT null COMMENT 'dialect',
-                           `type` varchar(50) null DEFAULT null COMMENT 'type',
-                           `step` int(11) null DEFAULT null COMMENT 'job lifecycle step',
-                           `enable` tinyint(1) null DEFAULT 1 COMMENT 'is enable',
-                           `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
-                           `update_time` datetime DEFAULT null ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
-) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-
 CREATE TABLE `dinky_udf_template` (
                                     `id` int(11) NOT null AUTO_INCREMENT,
                                     `name` varchar(100) null DEFAULT null COMMENT 'template name',
@@ -301,7 +303,9 @@ CREATE TABLE `dinky_udf_template` (
                                     `template_code` longtext null COMMENT 'code',
                                     `enabled` tinyint(1) not null DEFAULT 1 COMMENT 'is enable',
                                     `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
-                                    `update_time` datetime DEFAULT null ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
+                                    `update_time` datetime DEFAULT null ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                     `creator` int(11) null DEFAULT null COMMENT 'creator',
+                                   `updater` int(11)  null DEFAULT null COMMENT 'updater'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 
@@ -410,7 +414,9 @@ CREATE TABLE dinky_row_permissions (
                                              table_name varchar(255) null COMMENT '表名',
                                              expression varchar(255) null COMMENT '表达式',
                                              create_time datetime null COMMENT '创建时间',
-                                             update_time datetime null COMMENT '更新时间'
+                                             update_time datetime null COMMENT '更新时间',
+                                            `creator` int(11) null DEFAULT null COMMENT 'creator',
+                                           `updater` int(11)  null DEFAULT null COMMENT 'updater'
 );
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -435,7 +441,11 @@ CREATE TABLE `dinky_git_project` (
                                    `udf_class_map_list` text COMMENT 'scan udf class',
                                    `order_line` int(11) NOT null DEFAULT '1' COMMENT 'order',
                                    `create_time` datetime NOT null DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
-                                   `update_time` datetime NOT null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
+                                   `update_time` datetime NOT null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                    `creator` int(11) null DEFAULT null COMMENT 'creator',
+                                   `updater` int(11)  null DEFAULT null COMMENT 'updater',
+                                   `operator` int(11)  null DEFAULT null COMMENT 'operator'
+
 ) ENGINE = InnoDB;
 
 
@@ -465,7 +475,9 @@ CREATE TABLE `dinky_resources` (
                                    `full_name` varchar(128) DEFAULT null,
                                    `is_directory` tinyint(4) DEFAULT null,
                                    `create_time` datetime NOT null DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
-                                   `update_time` datetime NOT null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
+                                   `update_time` datetime NOT null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                   `creator` int(11) null DEFAULT null COMMENT 'creator',
+                                   `updater` int(11)  null DEFAULT null COMMENT 'updater'
 ) ENGINE = InnoDB;
 
 
@@ -552,7 +564,7 @@ CREATE TABLE `dinky_sys_role_menu` (
 
 
 -- ----------------------------
--- Table structure dinky_sys_token
+-- Table structure updater
 -- ----------------------------
 
 CREATE TABLE `dinky_sys_token` (
@@ -566,9 +578,9 @@ CREATE TABLE `dinky_sys_token` (
                                    `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
                                    `create_time` datetime NOT NULL COMMENT 'create time',
                                    `update_time` datetime NOT NULL COMMENT 'modify time',
-                                   `creator` bigint DEFAULT NULL COMMENT '创建人',
-                                   `updator` bigint DEFAULT NULL COMMENT '修改人',
                                    `source` tinyint(2) DEFAULT NULL COMMENT '1:login 2:custom',
+                                  `creator` bigint DEFAULT NULL COMMENT 'creator',
+                                   `updater` bigint DEFAULT NULL COMMENT 'updater',
                                    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='token management';
 
@@ -586,7 +598,9 @@ create table if not exists dinky_alert_template
     template_content text              null COMMENT 'template content',
     enabled          tinyint default 1 null COMMENT 'is enable',
     create_time      datetime          null COMMENT 'create time',
-    update_time      datetime          null COMMENT 'update time'
+    update_time      datetime          null COMMENT 'update time',
+    `creator` bigint DEFAULT NULL COMMENT 'creator',
+                                   `updater` bigint DEFAULT NULL COMMENT 'updater'
 );
 
 
@@ -602,7 +616,9 @@ create table if not exists dinky_alert_rules
     description        text              null comment 'description',
     enabled            tinyint default 1 null comment 'is enable',
     create_time        datetime          null comment 'create time',
-    update_time        datetime          null comment 'update time'
+    update_time        datetime          null comment 'update time',
+    `creator` bigint DEFAULT NULL COMMENT 'creator',
+`updater` bigint DEFAULT NULL COMMENT 'updater'
 );
 
 
@@ -616,5 +632,7 @@ CREATE TABLE IF NOT EXISTS `dinky_udf_manage` (
                                     `resources_id` int(11) DEFAULT NULL COMMENT 'resources id',
                                     `enabled` tinyint(1) DEFAULT 1 COMMENT 'is enable',
                                     `create_time` datetime DEFAULT NULL COMMENT 'create time',
-                                    `update_time` datetime DEFAULT NULL COMMENT 'update time'
+                                    `update_time` datetime DEFAULT NULL COMMENT 'update time',
+                                    `creator` bigint DEFAULT NULL COMMENT 'creator',
+                                   `updater` bigint DEFAULT NULL COMMENT 'updater'
 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC;

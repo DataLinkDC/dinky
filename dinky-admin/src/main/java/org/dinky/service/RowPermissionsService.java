@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.RowPermissions;
+import org.dinky.data.model.rbac.RowPermissions;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;

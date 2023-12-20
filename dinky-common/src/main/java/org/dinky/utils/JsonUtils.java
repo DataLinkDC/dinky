@@ -135,6 +135,19 @@ public class JsonUtils {
         return parseObject(json, new TypeReference<Map<String, String>>() {});
     }
 
+    //    public static <T, K> Map<T, K> toMap(Object o) {
+    //        return objectMapper.convertValue(o, new TypeReference<Map<T, K>>() {
+    //        });
+    //    }
+
+    public static Map<String, Object> toMap(Object o) {
+        return objectMapper.convertValue(o, new TypeReference<Map<String, Object>>() {});
+    }
+
+    public static <T> T convertValue(Object fromValue, Class<T> toValueType) {
+        return objectMapper.convertValue(fromValue, toValueType);
+    }
+
     public static <K, V> Map<K, V> toMap(String json, Class<K> classK, Class<V> classV) {
         return parseObject(json, new TypeReference<Map<K, V>>() {});
     }
@@ -232,10 +245,11 @@ public class JsonUtils {
 
     /**
      * 此方法为解决 dd-dd 这种命名转  java bean
+     *
      * @param jsonStr
      * @param clazz
-     * @return
      * @param <T>
+     * @return
      */
     public static <T> T toJavaBean(String jsonStr, Class<T> clazz) {
         return BeanUtil.toBean(

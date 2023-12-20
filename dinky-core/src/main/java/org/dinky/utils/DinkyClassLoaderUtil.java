@@ -20,7 +20,7 @@
 package org.dinky.utils;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.context.DinkyClassLoaderContextHolder;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.job.JobConfig;
@@ -34,7 +34,9 @@ import cn.hutool.core.io.FileUtil;
 
 public class DinkyClassLoaderUtil {
 
-    public static void initClassLoader(JobConfig config) {
+    public static void initClassLoader(JobConfig config, DinkyClassLoader dinkyClassLoader) {
+
+        FlinkUdfPathContextHolder udfPathContextHolder = dinkyClassLoader.getUdfPathContextHolder();
         if (CollUtil.isNotEmpty(config.getConfigJson())) {
             String pipelineJars = config.getConfigJson().get(PipelineOptions.JARS.key());
             String classpaths = config.getConfigJson().get(PipelineOptions.CLASSPATHS.key());
@@ -46,7 +48,7 @@ public class DinkyClassLoaderUtil {
                     if (!file.exists()) {
                         throw new DinkyException("file: " + path + " not exists!");
                     }
-                    FlinkUdfPathContextHolder.addUdfPath(file);
+                    udfPathContextHolder.addUdfPath(file);
                 }
             }
             // add custom classpath
@@ -57,13 +59,12 @@ public class DinkyClassLoaderUtil {
                     if (!file.exists()) {
                         throw new DinkyException("file: " + path + " not exists!");
                     }
-                    FlinkUdfPathContextHolder.addOtherPlugins(file);
+                    udfPathContextHolder.addOtherPlugins(file);
                 }
             }
         }
 
-        DinkyClassLoaderContextHolder.get()
-                .addURL(CollUtil.addAll(
-                        FlinkUdfPathContextHolder.getUdfFile(), FlinkUdfPathContextHolder.getOtherPluginsFiles()));
+        dinkyClassLoader.addURLs(
+                CollUtil.addAll(udfPathContextHolder.getUdfFile(), udfPathContextHolder.getOtherPluginsFiles()));
     }
 }

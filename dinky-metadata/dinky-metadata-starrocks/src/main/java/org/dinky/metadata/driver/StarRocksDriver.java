@@ -19,6 +19,7 @@
 
 package org.dinky.metadata.driver;
 
+import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.StarRocksTypeConvert;
 import org.dinky.metadata.query.IDBQuery;
@@ -40,7 +41,7 @@ public class StarRocksDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert getTypeConvert() {
+    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
         return new StarRocksTypeConvert();
     }
 

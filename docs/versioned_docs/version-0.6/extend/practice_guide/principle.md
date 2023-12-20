@@ -143,7 +143,7 @@ dlink -- 父项目
 | |-doc -- 使用文档
 | |-sql -- sql脚本
 |-dlink-function -- 函数中心
-|-dlink-web -- React 前端
+|-dinky-web -- React 前端
 ```
 
 ### 模块介绍
@@ -174,6 +174,6 @@ dlink -- 父项目
 
 该模块为 UDF 的封装模块，用于扩展 Flink 的 `UDF` 。
 
-#### dlink-web
+#### dinky-web
 
 该模块为 Dlink 的前端工程，基于 `Ant Design Pro` 开发，属于 `React` 技术栈，其中的 Sql 在线编辑器是基于 `Monaco Editor` 开发。

@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -25,8 +26,8 @@ const { Paragraph } = Typography;
 /**
  * default params
  */
-const defaultDuration = 2;
-const AsyncDuration = 0.5;
+const defaultDuration = 1;
+const AsyncDuration = 1;
 
 // ================================ About Notification Component ================================
 

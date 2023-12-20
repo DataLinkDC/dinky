@@ -26,12 +26,13 @@ import {
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { StateType } from '@/pages/DataStudio/model';
 import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
+import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { FireOutlined, SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 import { Highlight } from '@ant-design/pro-layout/es/components/Help/Search';
-import { Button, Empty, Input, InputRef, Space, Table, Tag } from 'antd';
+import { Button, Empty, Input, InputRef, Space, Table } from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
 import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
@@ -130,16 +131,7 @@ const Result = (props: any) => {
     if (consoleData.result && !isRefresh) {
       setData(consoleData.result);
     } else {
-      if (isSql(current.dialect)) {
-        // common sql
-        const res = await handleGetOption('api/studio/getCommonSqlData', 'Get Data', {
-          taskId: params.taskId
-        });
-        if (res.data) {
-          consoleData.result = res.data;
-          setData(res.data);
-        }
-      } else {
+      if (current.dialect && current.dialect.toLowerCase() == DIALECT.FLINK_SQL) {
         // flink sql
         // to do: get job data by history id list, not flink jid
         if (current.id) {
@@ -147,11 +139,15 @@ const Result = (props: any) => {
             id: current.id
           });
           const historyData = res.data;
-          if (historyData && '2' == historyData.status) {
+          if (historyData) {
             const historyId = historyData.id;
-            const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', {
-              jobId: historyId
-            });
+            const tableData = await handleGetOption(
+              'api/studio/getJobData',
+              l('global.getdata.tips'),
+              {
+                jobId: historyId
+              }
+            );
             const data = tableData.data;
             if (data.success) {
               consoleData.result = data;
@@ -170,7 +166,7 @@ const Result = (props: any) => {
   useEffect(() => {
     setData({});
     loadData();
-  }, [currentTabs, currentTabs?.console.result]);
+  }, [currentTabs, currentTabs?.console?.result]);
 
   const getColumns = (columns: string[]) => {
     return columns?.map((item) => {
@@ -203,9 +199,6 @@ const Result = (props: any) => {
               >
                 {l('pages.datastudio.label.result.query.latest.data')}
               </Button>
-              <Tag color='blue' key={data.jid}>
-                <FireOutlined /> {data.jid}
-              </Tag>
             </Space>
           </>
         ) : undefined}

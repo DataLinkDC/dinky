@@ -18,19 +18,19 @@
  */
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
-import MovableSidebar from '@/components/Sidebar/MovableSidebar';
-import useThemeValue from '@/hooks/useThemeValue';
 import { SseData } from '@/models/Sse';
-import { DataStudioTabsItemType, StateType } from '@/pages/DataStudio/model';
+import { DataStudioTabsItemType, StateType, VIEW } from '@/pages/DataStudio/model';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { parseMilliSecondStr } from '@/utils/function';
-import { connect, useModel, useRequest } from '@@/exports';
+import { SplitPane } from '@andrewray/react-multi-split-pane';
+import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { CheckOutlined, CloseCircleFilled, LoadingOutlined } from '@ant-design/icons';
+import { connect, useModel, useRequest } from '@umijs/max';
 import { Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
-import { Key, useEffect, useState } from 'react';
+import { Key, useEffect, useRef, useState } from 'react';
 
 const { Text } = Typography;
 
@@ -63,6 +63,7 @@ const buildExpandKeys = (node: ProcessStep) => {
 
 const ConsoleContent = (props: ConsoleProps) => {
   const { tab } = props;
+  const refObject = useRef<HTMLDivElement>(null);
 
   const [selectNode, setSelectNode] = useState<ProcessStep>();
   const [processNode, setProcessNode] = useState<ProcessStep>();
@@ -73,7 +74,6 @@ const ConsoleContent = (props: ConsoleProps) => {
   const { subscribeTopic } = useModel('Sse', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
-  const themeValue = useThemeValue();
 
   const onUpdate = (data: ProcessStep) => {
     setProcessNode((prevState: any) => {
@@ -139,48 +139,53 @@ const ConsoleContent = (props: ConsoleProps) => {
   };
 
   return (
-    <div style={{ overflow: 'hidden' }}>
-      <MovableSidebar
-        defaultSize={{
-          width: 300,
-          height: props.height - 53
-        }}
-        minWidth={20}
-        visible={true}
-        enable={{ right: true }}
-        headerVisible={false}
-        style={{
-          float: 'left',
-          borderInlineEnd: `1px solid ${themeValue.borderColor}`,
-          paddingInline: 10
-        }}
+    <div style={{ height: props.height - VIEW.leftMargin }}>
+      <SplitPane
+        split={'vertical'}
+        defaultSizes={[100, 500]}
+        minSize={100}
+        className={'split-pane'}
       >
-        {processNode ? (
-          <DirectoryTree
-            className={'treeList'}
-            showIcon={false}
-            titleRender={renderTitle}
-            onSelect={onSelect}
-            treeData={[processNode]}
-            expandedKeys={expandedKeys}
-            expandAction={'doubleClick'}
-            onExpand={handleExpand}
+        <Pane
+          className={'split-pane'}
+          forwardRef={refObject}
+          minSize={100}
+          size={100}
+          split={'horizontal'}
+        >
+          {processNode ? (
+            <DirectoryTree
+              className={'treeList'}
+              showIcon={false}
+              titleRender={renderTitle}
+              onSelect={onSelect}
+              treeData={[processNode]}
+              expandedKeys={expandedKeys}
+              expandAction={'doubleClick'}
+              onExpand={handleExpand}
+            />
+          ) : (
+            <Empty />
+          )}
+        </Pane>
+
+        <Pane
+          className={'split-pane'}
+          forwardRef={refObject}
+          minSize={100}
+          size={100}
+          split={'horizontal'}
+        >
+          <CodeShow
+            code={selectNode?.log ? selectNode.log : ''}
+            height={props.height - VIEW.leftMargin}
+            language={'javalog'}
+            lineNumbers={'off'}
+            enableMiniMap
+            showFloatButton
           />
-        ) : (
-          <Empty />
-        )}
-      </MovableSidebar>
-      <div style={{ display: 'inline', width: 1500 }}>
-        <CodeShow
-          code={selectNode?.log ? selectNode.log : ''}
-          height={props.height - 53}
-          language={'javalog'}
-          lineNumbers={'off'}
-          autoWrap={'off'}
-          //TODO 按钮显示有问题，先注释
-          // showFloatButton
-        />
-      </div>
+        </Pane>
+      </SplitPane>
     </div>
   );
 };

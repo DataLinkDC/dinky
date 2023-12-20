@@ -84,7 +84,8 @@ const ExceptionTab = (props: JobProps) => {
             </Paragraph>
             <CodeShow
               code={currentLog.stacktrace ? currentLog.stacktrace : 'No Exception'}
-              height={500}
+              height={'calc(100vh - 350px)'}
+              showFloatButton
             />
           </Card>
         </Col>
@@ -92,7 +93,7 @@ const ExceptionTab = (props: JobProps) => {
     );
   };
 
-  return <ProCard>{renderLogTab()}</ProCard>;
+  return <ProCard bodyStyle={{ height: '100%', overflow: 'auto' }}>{renderLogTab()}</ProCard>;
 };
 
 export default ExceptionTab;

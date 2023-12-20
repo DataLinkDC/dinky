@@ -1,22 +1,24 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
+import { SMS_TYPE } from '@/pages/RegCenter/Alert/AlertInstance/constans';
+import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 import {
   AlertGroupState,
   AlertInstanceState,
@@ -30,6 +32,7 @@ import {
   ResourceState,
   TemplateState
 } from '@/types/RegCenter/state';
+import { randomStr } from '@antfu/utils';
 
 /**
  * alert group state init
@@ -43,6 +46,85 @@ export const InitAlertGroupState: AlertGroupState = {
   value: {}
 };
 
+export const InitAlertInstanceParamsDingTalk: Alert.AlertInstanceParamsDingTalk = {
+  webhook: undefined,
+  keyword: undefined,
+  secret: undefined,
+  isEnableProxy: false,
+  isAtAll: false,
+  atMobiles: [''],
+  proxy: undefined,
+  port: undefined,
+  user: undefined,
+  password: undefined
+};
+export const InitAlertInstanceParamsFeiShu: Alert.AlertInstanceParamsFeiShu = {
+  webhook: undefined,
+  keyword: undefined,
+  secret: undefined,
+  isEnableProxy: false,
+  isAtAll: false,
+  users: [''],
+  proxy: undefined,
+  port: undefined,
+  user: undefined,
+  password: undefined
+};
+
+export const InitAlertInstanceParamsEmail: Alert.AlertInstanceParamsEmail = {
+  serverHost: undefined,
+  serverPort: undefined,
+  sender: undefined,
+  receivers: [''],
+  receiverCcs: [''],
+  enableSmtpAuth: false,
+  starttlsEnable: false,
+  sslEnable: false,
+  smtpSslTrust: undefined,
+  user: undefined,
+  password: undefined
+};
+
+export const InitAlertInstanceParamsWeChat: Alert.AlertInstanceParamsWeChat = {
+  sendType: 'wechat',
+  isAtAll: false,
+  webhook: undefined,
+  keyword: undefined,
+  users: undefined,
+  corpId: undefined,
+  secret: undefined,
+  agentId: undefined
+};
+
+export const InitAlertInstanceParamsSms: Alert.AlertInstanceParamsSms = {
+  suppliers: SMS_TYPE.ALIBABA,
+  accessKeyId: undefined,
+  sdkAppId: undefined,
+  accessKeySecret: undefined,
+  signature: undefined,
+  templateId: undefined,
+  configId: randomStr(32),
+  weight: 1,
+  retryInterval: 5,
+  maxRetries: 3,
+  phoneNumbers: ['']
+};
+
+export const InitAlertInstance: Alert.AlertInstance = {
+  id: undefined,
+  name: undefined,
+  type: ALERT_TYPE.DINGTALK,
+  params:
+    InitAlertInstanceParamsDingTalk ||
+    InitAlertInstanceParamsFeiShu ||
+    InitAlertInstanceParamsEmail ||
+    InitAlertInstanceParamsWeChat ||
+    InitAlertInstanceParamsSms,
+  enabled: true,
+  createTime: undefined,
+  updateTime: undefined
+};
+
 /**
  * alert instance state init
  * @type {{addedAlertInstanceOpen: boolean, alertInstanceList: any[], loading: boolean, editAlertInstanceOpen: boolean, value: {}}}
@@ -52,7 +134,7 @@ export const InitAlertInstanceState: AlertInstanceState = {
   loading: false,
   addedOpen: false,
   editOpen: false,
-  value: {}
+  value: InitAlertInstance
 };
 
 /**

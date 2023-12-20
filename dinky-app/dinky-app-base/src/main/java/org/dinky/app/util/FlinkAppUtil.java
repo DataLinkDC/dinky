@@ -19,16 +19,15 @@
 
 package org.dinky.app.util;
 
-import org.dinky.app.db.DBUtil;
-import org.dinky.constant.FlinkConstant;
 import org.dinky.data.enums.JobStatus;
-import org.dinky.data.enums.Status;
+import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.Executor;
 import org.dinky.utils.JsonUtils;
 
 import org.apache.flink.client.deployment.StandaloneClusterId;
 import org.apache.flink.client.program.rest.RestClusterClient;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.GlobalConfiguration;
+import org.apache.flink.configuration.ReadableConfig;
 import org.apache.flink.runtime.client.JobStatusMessage;
 
 import java.util.Collection;
@@ -45,9 +44,9 @@ public class FlinkAppUtil {
      * This method creates a Flink REST client and continuously checks the status of the task until it is completed.
      * If the task is completed, it sends a hook notification and stops monitoring.
      */
-    public static void monitorFlinkTask(int taskId) {
+    public static void monitorFlinkTask(Executor executor, int taskId) {
         boolean isRun = true;
-        try (RestClusterClient<StandaloneClusterId> client = createClient()) {
+        try (RestClusterClient<StandaloneClusterId> client = createClient(executor)) {
             while (isRun) {
                 Collection<JobStatusMessage> jobs = client.listJobs().get();
                 if (jobs.isEmpty()) {
@@ -79,14 +78,15 @@ public class FlinkAppUtil {
      */
     private static void sendHook(int taskId, String jobId, int reTryCount) throws InterruptedException {
         try {
-            String dinkyAddr = DBUtil.getSysConfig(Status.SYS_ENV_SETTINGS_DINKYADDR.getKey());
+            String dinkyAddr = SystemConfiguration.getInstances().getDinkyAddr().getValue();
             String url = StrFormatter.format(
                     "http://{}/api/jobInstance/hookJobDone?taskId={}&jobId={}", dinkyAddr, taskId, jobId);
             String resultStr = HttpUtil.get(url);
             // TODO 这里应该使用Result实体类，但是Result.class不在comm里，迁移改动太大，暂时不搞
             String code = JsonUtils.parseObject(resultStr).get("code").toString();
             if (!"0".equals(code)) {
-                throw new RuntimeException("Hook Job Done result failed: " + resultStr);
+                throw new RuntimeException(
+                        StrFormatter.format("Send Hook Job Done result failed,url:{},err:{} ", url, resultStr));
             }
         } catch (Exception e) {
             if (reTryCount < 30) {
@@ -104,14 +104,10 @@ public class FlinkAppUtil {
      * @return
      * @throws Exception
      */
-    private static RestClusterClient<StandaloneClusterId> createClient() throws Exception {
-        Configuration config;
-        Configuration fromEnvConfig = GlobalConfiguration.loadConfiguration();
-        if (!fromEnvConfig.keySet().isEmpty()) {
-            config = fromEnvConfig;
-        } else {
-            config = GlobalConfiguration.loadConfiguration(FlinkConstant.DEFAULT_FLINK_HOME);
-        }
-        return new RestClusterClient<>(config, StandaloneClusterId.getInstance());
+    private static RestClusterClient<StandaloneClusterId> createClient(Executor executor) throws Exception {
+        ReadableConfig config = executor.getStreamExecutionEnvironment().getConfiguration();
+        Configuration configuration = new Configuration((Configuration) config);
+
+        return new RestClusterClient<>(configuration, StandaloneClusterId.getInstance());
     }
 }

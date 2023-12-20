@@ -22,11 +22,11 @@ package org.dinky.controller;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.GitProjectDTO;
+import org.dinky.data.dto.GitProjectSortJarDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.GitProject;
-import org.dinky.data.params.GitProjectSortJarParams;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.GitProjectService;
@@ -129,26 +129,26 @@ public class GitController {
     /**
      * drag sort jar level
      *
-     * @param gitProjectSortJarParams
+     * @param gitProjectSortJarDTO
      * @return {@link Result}<{@link Void}>
      */
     @PostMapping("/dragendSortJar")
     @Log(title = "GitProject Jar Sort", businessType = BusinessType.UPDATE)
     @ApiOperation("GitProject Jar Sort")
     @ApiImplicitParam(
-            name = "gitProjectSortJarParams",
+            name = "gitProjectSortJarDTO",
             value = "after sorter data",
             required = true,
-            dataType = "GitProjectSortJarParams",
+            dataType = "GitProjectSortJarDTO",
             paramType = "body",
-            dataTypeClass = GitProjectSortJarParams.class)
+            dataTypeClass = GitProjectSortJarDTO.class)
     @SaCheckPermission(PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT)
-    public Result<Void> dragendSortJar(@RequestBody GitProjectSortJarParams gitProjectSortJarParams) {
-        GitProject gitProjectServiceById = gitProjectService.getById(gitProjectSortJarParams.getProjectId());
+    public Result<Void> dragendSortJar(@RequestBody GitProjectSortJarDTO gitProjectSortJarDTO) {
+        GitProject gitProjectServiceById = gitProjectService.getById(gitProjectSortJarDTO.getProjectId());
         if (gitProjectServiceById == null) {
             return Result.failed(Status.GIT_PROJECT_NOT_FOUND);
         } else {
-            if (gitProjectService.dragendSortJar(gitProjectSortJarParams)) {
+            if (gitProjectService.dragendSortJar(gitProjectSortJarDTO)) {
                 return Result.succeed(Status.GIT_SORT_SUCCESS);
             } else {
                 return Result.failed(Status.GIT_SORT_FAILED);

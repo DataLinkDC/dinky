@@ -93,7 +93,7 @@ export default {
   'menu.datastudio.bi': 'BI',
   'menu.datastudio.lineage': '血缘',
   'menu.datastudio.process': '进程',
-  'menu.datastudio.history': '历史',
+  'menu.datastudio.history': '执行历史',
   'menu.datastudio.table-data': '表数据',
 
   'menu.datastudio.tool.text-comparison': '文本比对',

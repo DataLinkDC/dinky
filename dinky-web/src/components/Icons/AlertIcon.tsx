@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import Icon from '@ant-design/icons';
@@ -147,6 +149,68 @@ export const EmailSvg = (props: any) => {
               fill='#1296db'
               data-spm-anchor-id='a313x.7781069.0.i7'
               className=''
+            ></path>
+          </svg>
+        )}
+      />
+    </>
+  );
+};
+
+export const AliYunSmsSvg = (props: any) => {
+  const size = props.size || defaultSvgSize;
+  return (
+    <>
+      <Icon
+        style={style}
+        component={() => (
+          <svg
+            className='icon'
+            viewBox='0 0 1024 1024'
+            version='1.1'
+            xmlns='http://www.w3.org/2000/svg'
+            width={size}
+            height={size}
+          >
+            <path d='M512 0A512 512 0 1 1 0 512 512 512 0 0 1 512 0z' fill='#FF6A00'></path>
+            <path
+              d='M298.141538 615.581538a30.72 30.72 0 0 1-24.418461-29.735384v-163.052308A31.901538 31.901538 0 0 1 298.141538 393.846154l151.236924-32.689231 16.147692-64.984615H289.476923A111.458462 111.458462 0 0 0 177.230769 406.252308v193.378461a113.033846 113.033846 0 0 0 112.246154 112.246154h176.049231l-15.950769-64.590769zM738.658462 295.384615h-177.23077l16.147693 64.984616L728.615385 393.846154a30.72 30.72 0 0 1 24.418461 29.538461v163.249231A31.704615 31.704615 0 0 1 728.615385 615.581538l-151.63077 32.886154-16.147692 64.984616h177.230769a112.443077 112.443077 0 0 0 112.836923-112.049231v-194.56a113.033846 113.033846 0 0 0-112.246153-111.458462z'
+              fill='#FFFFFF'
+            ></path>
+            <path d='M449.378462 495.852308h129.378461V512h-129.378461z' fill='#FFFFFF'></path>
+          </svg>
+        )}
+      />
+    </>
+  );
+};
+
+export const TencentSmsSvg = (props: any) => {
+  const size = props.size || defaultSvgSize;
+  return (
+    <>
+      <Icon
+        style={style}
+        component={() => (
+          <svg
+            className='icon'
+            viewBox='0 0 1024 1024'
+            version='1.1'
+            xmlns='http://www.w3.org/2000/svg'
+            width={size}
+            height={size}
+          >
+            <path
+              d='M515.12132 140c143.23 0 264.603 91.954 305.177 218.55-15.114-1.86-30.46-1.976-45.69-0.698-18.601 1.744-36.854 5.697-54.641 11.625C686.48532 291.94 607.31332 237.65 515.00432 237.65c-110.096 0-201.475 77.306-218.914 178.792-32.32-6.626-65.453-8.137-98.238-4.185C217.84932 258.808 352.24232 140 515.12132 140z'
+              fill='#006DFE'
+            ></path>
+            <path
+              d='M236.68232 410.514c59.757 0 114.398 22.087 156.135 58.59 17.671 15.461 49.642 43.477 95.913 84.281l-8.138-7.207-67.662 66.727-59.757-59.636c-37.551-37.549-72.545-52.545-116.607-52.545-81.032 0-146.718 65.565-146.718 146.591 0 81.026 65.686 146.591 146.718 146.591 11.742 0 32.204 0.814 61.617 2.558l-99.284 84.63C69.73632 859.936-17.92268 738.222 3.12032 609.185c18.718-114.39 117.537-198.439 233.562-198.671z'
+              fill='#00CDD8'
+            ></path>
+            <path
+              d='M693.34432 429.346c120.443-51.034 259.604 5.115 310.758 125.434 51.153 120.319-5.116 259.354-125.559 310.388-16.857 7.09-41.97 17.553-69.29 17.786-79.172 0.697-268.09 0.93-566.99 1.046h-46.968C340.85032 744.965 486.17132 605.814 631.26132 466.43c20.113-19.298 45.225-29.876 62.082-37.084z m46.038 88.35c-10.114 4.301-25.344 10.695-37.435 22.32-33.134 31.969-120.792 115.901-262.976 251.914h58.71c162.762 0 266.58-0.233 311.572-0.581 16.509-0.117 31.622-6.394 41.853-10.812 72.661-30.806 106.609-114.622 75.684-187.162-30.808-72.656-114.747-106.485-187.408-75.679z'
+              fill='#00A2FF'
             ></path>
           </svg>
         )}

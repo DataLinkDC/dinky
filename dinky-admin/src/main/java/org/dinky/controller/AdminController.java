@@ -22,7 +22,7 @@ package org.dinky.controller;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.Tenant;
+import org.dinky.data.model.rbac.Tenant;
 import org.dinky.data.result.Result;
 import org.dinky.service.UserService;
 

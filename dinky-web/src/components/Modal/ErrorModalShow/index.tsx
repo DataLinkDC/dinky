@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -87,7 +88,7 @@ const ErrorShowModal = (props: ShowModalProps) => {
       title={title}
       closable={closable}
       footer={
-        <Button type='primary' onClick={() => setShowModal(false)}>
+        <Button type='primary' htmlType={'submit'} autoFocus onClick={() => setShowModal(false)}>
           {l('global.notification.iknow')}
         </Button>
       }

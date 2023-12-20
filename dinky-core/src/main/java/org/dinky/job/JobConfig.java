@@ -80,9 +80,6 @@ public class JobConfig {
             notes = "Cluster configuration ID")
     private Integer clusterConfigurationId;
 
-    @ApiModelProperty(value = "JAR file ID", dataType = "Integer", example = "101", notes = "JAR file ID")
-    private Integer jarId;
-
     @ApiModelProperty(value = "Task JobLifeCycle", dataType = "Integer", example = "2", notes = "Task JobLifeCycle")
     private Integer step;
 
@@ -115,25 +112,11 @@ public class JobConfig {
     private boolean useAutoCancel;
 
     @ApiModelProperty(
-            value = "Session information",
-            dataType = "String",
-            example = "session-123",
-            notes = "Session information")
-    private String session;
-
-    @ApiModelProperty(
             value = "Flag indicating whether to use remote execution",
             dataType = "boolean",
             example = "false",
             notes = "Flag indicating whether to use remote execution")
     private boolean useRemote;
-
-    @ApiModelProperty(
-            value = "Flag indicating whether it's a JAR task",
-            dataType = "boolean",
-            example = "false",
-            notes = "Flag indicating whether it's a JAR task")
-    private boolean isJarTask;
 
     @ApiModelProperty(
             value = "Job manager address",
@@ -254,7 +237,7 @@ public class JobConfig {
     }
 
     public boolean isUseRemote() {
-        return !GatewayType.LOCAL.equalsValue(type);
+        return useRemote || !GatewayType.LOCAL.equalsValue(type);
     }
 
     public void buildLocal() {

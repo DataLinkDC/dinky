@@ -34,16 +34,18 @@ import { InitResourceState } from '@/types/RegCenter/init.d';
 import { ResourceState } from '@/types/RegCenter/state.d';
 import { unSupportView } from '@/utils/function';
 import { l } from '@/utils/intl';
+import { SplitPane } from '@andrewray/react-multi-split-pane';
+import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { ProCard } from '@ant-design/pro-components';
 import { useAsyncEffect } from 'ahooks';
 import { MenuInfo } from 'rc-menu/es/interface';
-import { Resizable } from 're-resizable';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 const ResourceOverView: React.FC = () => {
   const [resourceState, setResourceState] = useState<ResourceState>(InitResourceState);
 
   const [editModal, setEditModal] = useState<string>('');
+  const refObject = useRef<HTMLDivElement>(null);
 
   const [uploadValue] = useState({
     url: API_CONSTANTS.RESOURCE_UPLOAD,
@@ -165,7 +167,6 @@ const ResourceOverView: React.FC = () => {
   const handleRightClick = (info: any) => {
     // 获取右键点击的节点信息
     const { node, event } = info;
-    console.log('node', node);
     setResourceState((prevState) => ({
       ...prevState,
       selectedKeys: [node.key],
@@ -234,41 +235,60 @@ const ResourceOverView: React.FC = () => {
    */
   return (
     <>
-      <ProCard size={'small'}>
-        <Resizable
-          defaultSize={{
-            width: 500,
-            height: '100%'
-          }}
-          minWidth={200}
-          maxWidth={1200}
+      <ProCard ghost size={'small'} bodyStyle={{ height: parent.innerHeight - 80 }}>
+        <SplitPane
+          split={'vertical'}
+          defaultSizes={[150, 500]}
+          minSize={150}
+          className={'split-pane'}
         >
-          <ProCard ghost hoverable colSpan={'18%'} className={'siderTree schemaTree'}>
-            <FileTree
-              selectedKeys={resourceState.selectedKeys}
-              treeData={resourceState.treeData}
-              onRightClick={handleRightClick}
-              onNodeClick={(info: any) => handleNodeClick(info)}
-            />
-            <RightContextMenu
-              contextMenuPosition={resourceState.contextMenuPosition}
-              open={resourceState.contextMenuOpen}
-              openChange={() =>
-                setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }))
-              }
-              items={renderRightMenu()}
-              onClick={handleMenuClick}
-            />
-          </ProCard>
-        </Resizable>
-        <ProCard.Divider type={'vertical'} />
-        <ProCard ghost hoverable className={'schemaTree'} bodyStyle={{ height: '100%' }}>
-          <FileShow
-            onChange={handleContentChange}
-            code={resourceState.content}
-            item={resourceState.clickedNode}
-          />
-        </ProCard>
+          <Pane
+            className={'split-pane'}
+            forwardRef={refObject}
+            minSize={100}
+            size={100}
+            split={'horizontal'}
+          >
+            <ProCard
+              hoverable
+              boxShadow
+              bodyStyle={{ height: parent.innerHeight - 80 }}
+              colSpan={'18%'}
+            >
+              <FileTree
+                selectedKeys={resourceState.selectedKeys}
+                treeData={resourceState.treeData}
+                onRightClick={handleRightClick}
+                onNodeClick={(info: any) => handleNodeClick(info)}
+              />
+              <RightContextMenu
+                contextMenuPosition={resourceState.contextMenuPosition}
+                open={resourceState.contextMenuOpen}
+                openChange={() =>
+                  setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }))
+                }
+                items={renderRightMenu()}
+                onClick={handleMenuClick}
+              />
+            </ProCard>
+          </Pane>
+
+          <Pane
+            className={'split-pane'}
+            forwardRef={refObject}
+            minSize={100}
+            size={100}
+            split={'horizontal'}
+          >
+            <ProCard hoverable bodyStyle={{ height: parent.innerHeight }}>
+              <FileShow
+                onChange={handleContentChange}
+                code={resourceState.content}
+                item={resourceState.clickedNode}
+              />
+            </ProCard>
+          </Pane>
+        </SplitPane>
       </ProCard>
       {resourceState.editOpen && (
         <ResourceModal

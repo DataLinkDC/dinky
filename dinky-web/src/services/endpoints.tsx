@@ -113,13 +113,14 @@ export enum API_CONSTANTS {
   CLUSTER_CONFIGURATION_START = '/api/cluster/deploySessionClusterInstance',
   // cluster configuration list
   CLUSTER_CONFIGURATION = '/api/clusterConfiguration/list',
-  CLUSTER_CONFIGURATION_ADD_OR_UPDATE = '/api/clusterConfiguration/addOrUpdate',
+  CLUSTER_CONFIGURATION_ADD_OR_UPDATE = '/api/clusterConfiguration/saveOrUpdate',
   CLUSTER_CONFIGURATION_DELETE = '/api/clusterConfiguration/delete',
   CLUSTER_CONFIGURATION_ENABLE = '/api/clusterConfiguration/enable',
   CLUSTER_CONFIGURATION_TEST = '/api/clusterConfiguration/testConnect',
 
   // datasource registries list
   DATASOURCE = '/api/database/list',
+  DATASOURCE_ADD_OR_UPDATE = '/api/database/saveOrUpdate',
   // datasource registries delete
   DATASOURCE_DELETE = '/api/database/delete',
   // datasource registries enable or disable
@@ -146,7 +147,7 @@ export enum API_CONSTANTS {
   // ---- alert instance ----
   // alert instance list
   ALERT_INSTANCE = '/api/alertInstance/list',
-  ALERT_INSTANCE_ADD_OR_UPDATE = '/api/alertInstance/addOrUpdate',
+  ALERT_INSTANCE_ADD_OR_UPDATE = '/api/alertInstance/saveOrUpdate',
   // delete alert instance by id
   ALERT_INSTANCE_DELETE = '/api/alertInstance/delete',
   // alert instance enable or disable
@@ -158,6 +159,7 @@ export enum API_CONSTANTS {
 
   // ---- alert group ----
   ALERT_GROUP = '/api/alertGroup/list',
+  ALERT_GROUP_LIST_ENABLE_ALL = '/api/alertGroup/listEnabledAll',
   ALERT_GROUP_ADD_OR_UPDATE = '/api/alertGroup/addOrUpdate',
   // delete alert group by id
   ALERT_GROUP_DELETE = '/api/alertGroup/delete',
@@ -265,6 +267,7 @@ export enum API_CONSTANTS {
   MONITOR_GET_SYSTEM_DATA = '/api/monitor/getSysData',
   MONITOR_GET_FLINK_DATA = '/api/monitor/getFlinkData',
   MONITOR_GET_LAST_DATA = '/api/monitor/getLastUpdateData',
+  MONITOR_GET_JVM_INFO = '/api/monitor/getJvmInfo',
   METRICS_LAYOUT_GET_BY_NAME = '/api/monitor/getMetricsLayoutByName',
   JOB_METRICS = '/api/monitor/jobMetrics',
   SAVE_FLINK_METRICS = '/api/monitor/saveFlinkMetrics/',
@@ -290,5 +293,8 @@ export enum API_CONSTANTS {
   MOVE_CATALOGUE_URL = '/api/catalogue/moveCatalogue',
 
   //task
-  TASK = '/api/task'
+  TASK = '/api/task',
+
+  // history
+  HISTORY_LIST = '/api/history/list'
 }

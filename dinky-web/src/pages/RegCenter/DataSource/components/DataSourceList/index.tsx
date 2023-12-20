@@ -39,7 +39,6 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { DataSources } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import { WarningMessage } from '@/utils/messages';
-import { useNavigate } from '@@/exports';
 import {
   CheckCircleOutlined,
   CopyTwoTone,
@@ -47,6 +46,7 @@ import {
   HeartTwoTone
 } from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
+import { history } from '@umijs/max';
 import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useState } from 'react';
@@ -54,8 +54,7 @@ import { connect } from 'umi';
 import DataSourceModal from '../DataSourceModal';
 
 const DataSourceTable: React.FC<connect & StateType> = (props) => {
-  const { dispatch } = props;
-  const navigate = useNavigate();
+  const { dispatch, database } = props;
 
   /**
    * state
@@ -63,14 +62,16 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [detailPage, setDetailPage] = useState<boolean>(false);
-  const [dataSource, setDataSource] = useState<DataSources.DataSource[]>([]);
   const [formValues, setFormValues] = useState<Partial<DataSources.DataSource>>({});
   const actionRef = React.useRef<ActionType>();
 
   const queryDataSourceList = async (keyword = '') => {
-    queryDataByParams(API_CONSTANTS.DATASOURCE, { keyword }).then((res) =>
-      setDataSource(res as DataSources.DataSource[])
-    );
+    queryDataByParams(API_CONSTANTS.DATASOURCE, { keyword }).then((res) => {
+      dispatch({
+        type: STUDIO_MODEL.saveDataBase,
+        payload: res
+      });
+    });
   };
 
   /**
@@ -176,9 +177,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
         payload: item.id
       });
       setFormValues(item);
-      navigate(`/registration/datasource/detail/${item.id}`, {
-        state: { from: '/registration/datasource' }
-      });
+      history.push(`/registration/datasource/detail/${item.id}`);
       setDetailPage(!detailPage);
     } else {
       await WarningMessage(l('rc.ds.enter.error'));
@@ -243,7 +242,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   /**
    * render data source
    */
-  const renderDataSource = dataSource.map((item) => ({
+  const renderDataSource = database.dbData.map((item: DataSources.DataSource) => ({
     subTitle: renderDataSourceSubTitle(item),
     actions: <DataAction>{renderDataSourceActionButton(item)}</DataAction>,
     avatar: (

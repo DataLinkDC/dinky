@@ -17,6 +17,8 @@
  *
  */
 
+import { LeftBottomKey, RightMenuKey } from '@/pages/DataStudio/data.d';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { DIALECT } from '@/services/constants';
 import { Catalogue } from '@/types/Studio/data.d';
@@ -70,6 +72,55 @@ export const getLeafKeyList = (tree: any[]): Key[] => {
   }
   return leafKeyList;
 };
+
+export const buildStepValue = (step: number) => {
+  // "success", "processing", "error", "default", "warning"
+  switch (step) {
+    case 1:
+      return {
+        title: l('global.table.lifecycle.dev'),
+        status: 'processing',
+        color: '#1890ff'
+      };
+    case 2:
+      return {
+        title: l('global.table.lifecycle.online'),
+        status: 'success',
+        color: '#52c41a'
+      };
+    default:
+      return {
+        title: l('global.table.lifecycle.dev'),
+        status: 'default',
+        color: '#1890ff'
+      };
+  }
+};
+
+export const showBadge = (type: string) => {
+  if (!type) {
+    return false;
+  }
+  switch (type.toLowerCase()) {
+    case DIALECT.SQL:
+    case DIALECT.MYSQL:
+    case DIALECT.ORACLE:
+    case DIALECT.SQLSERVER:
+    case DIALECT.POSTGRESQL:
+    case DIALECT.CLICKHOUSE:
+    case DIALECT.PHOENIX:
+    case DIALECT.DORIS:
+    case DIALECT.HIVE:
+    case DIALECT.STARROCKS:
+    case DIALECT.PRESTO:
+    case DIALECT.FLINK_SQL:
+    case DIALECT.FLINKJAR:
+      return true;
+    default:
+      return false;
+  }
+};
+
 /**
  * build Catalogue tree
  * @param {Catalogue[]} data
@@ -136,72 +187,29 @@ export const buildProjectTree = (
     : [];
 
 export const isUDF = (jobType: string): boolean => {
-  return jobType === 'Scala' || jobType === 'Python' || jobType === 'Java';
+  return (
+    jobType.toLowerCase() === DIALECT.SCALA ||
+    jobType.toLowerCase() === DIALECT.PYTHON_LONG ||
+    jobType.toLowerCase() === DIALECT.JAVA
+  );
 };
 
-export const buildStepValue = (step: number) => {
-  // "success", "processing", "error", "default", "warning"
-  // todo: 生命周期正在重构 后续在优化
-  switch (step) {
-    case 0:
-      return {
-        title: l('global.table.lifecycle.unknown'),
-        status: 'default',
-        color: '#b0aeae'
-      };
-    case 1:
-      return {
-        title: l('global.table.lifecycle.dev'),
-        status: 'processing',
-        color: '#1890ff'
-      };
-    case 2:
-      return {
-        title: l('global.table.lifecycle.online'),
-        status: 'success',
-        color: '#52c41a'
-      };
-    case 3:
-      return {
-        title: l('global.table.lifecycle.stopped'),
-        status: 'error',
-        color: '#f5222d'
-      };
-    case 4:
-      return {
-        title: l('global.table.lifecycle.offline'),
-        status: 'warning',
-        color: '#faad14'
-      };
-    default:
-      return {
-        title: l('global.table.lifecycle.dev'),
-        status: 'default',
-        color: '#1890ff'
-      };
-  }
+export const isFlinkJob = (jobType: string): boolean => {
+  return jobType.toLowerCase() === DIALECT.FLINK_SQL || jobType.toLowerCase() === DIALECT.FLINKJAR;
 };
 
-export const showBadge = (type: string) => {
-  if (!type) {
-    return false;
-  }
-  switch (type.toLowerCase()) {
-    case DIALECT.SQL:
-    case DIALECT.MYSQL:
-    case DIALECT.ORACLE:
-    case DIALECT.SQLSERVER:
-    case DIALECT.POSTGRESQL:
-    case DIALECT.CLICKHOUSE:
-    case DIALECT.PHOENIX:
-    case DIALECT.DORIS:
-    case DIALECT.HIVE:
-    case DIALECT.STARROCKS:
-    case DIALECT.PRESTO:
-    case DIALECT.FLINK_SQL:
-    case DIALECT.FLINKJAR:
-      return true;
-    default:
-      return false;
-  }
-};
+export function getRightSelectKeyFromNodeClickJobType(jobType: string): string {
+  return isFlinkJob(jobType)
+    ? RightMenuKey.JOB_CONFIG_KEY
+    : isSql(jobType)
+    ? RightMenuKey.PREVIEW_CONFIG_KEY
+    : RightMenuKey.JOB_INFO_KEY;
+}
+
+export function getBottomSelectKeyFromNodeClickJobType(jobType: string): string {
+  return isFlinkJob(jobType) || isSql(jobType)
+    ? LeftBottomKey.CONSOLE_KEY
+    : isUDF(jobType) || jobType.toLowerCase() === DIALECT.FLINKSQLENV
+    ? LeftBottomKey.TOOLS_KEY
+    : LeftBottomKey.TOOLS_KEY;
+}

@@ -21,7 +21,7 @@ package org.dinky.utils;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.BusException;
-import org.dinky.data.model.FileNode;
+import org.dinky.data.model.ext.FileNode;
 
 import java.io.BufferedReader;
 import java.io.File;

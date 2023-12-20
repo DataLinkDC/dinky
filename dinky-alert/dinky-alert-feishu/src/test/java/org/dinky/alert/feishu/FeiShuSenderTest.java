@@ -19,6 +19,7 @@
 
 package org.dinky.alert.feishu;
 
+import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
 
@@ -34,7 +35,7 @@ import org.junit.Test;
 @Ignore
 public class FeiShuSenderTest {
 
-    private static Map<String, String> feiShuConfig = new HashMap<>();
+    private static Map<String, Object> feiShuConfig = new HashMap<>();
 
     @Before
     public void initFeiShuConfig() {
@@ -48,17 +49,6 @@ public class FeiShuSenderTest {
     @Test
     public void testSend() {
 
-        String msg =
-                "> The Dinky platform has detected an abnormality in your task. Please go to the Dinky Task page to check the task status.\n"
-                        + "- **Job Name : <font color='#0000FF'>Test Job</font>**\n"
-                        + "- **Job Status : <font color='#FF0000'>FAILED</font>**\n"
-                        + "- **Alert Time : 2023-01-01  12:00:00**\n"
-                        + "- **Start Time : 2023-01-01  12:00:00**\n"
-                        + "- **End Time : 2023-01-01  12:00:00**\n"
-                        + "> **<font color='#FF0000'>The test exception, your job exception will pass here</font>**\n"
-                        + "\n"
-                        + "> Dinky Team  [Go toTask Web](https://github.com/DataLinkDC/dinky)";
-
         FeiShuAlert feiShuAlert = new FeiShuAlert();
         AlertConfig alertConfig = new AlertConfig();
 
@@ -66,7 +56,8 @@ public class FeiShuSenderTest {
         alertConfig.setParam(feiShuConfig);
         feiShuAlert.setConfig(alertConfig);
 
-        AlertResult alertResult = feiShuAlert.send("FeiShu Alert", msg);
+        AlertResult alertResult =
+                feiShuAlert.send(AlertBaseConstant.ALERT_TEMPLATE_TITLE, AlertBaseConstant.ALERT_TEMPLATE_MSG);
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 }

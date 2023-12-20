@@ -1,5 +1,5 @@
 ---
-position: 3
+position: 4
 id: document_manager
 title: 文档管理
 ---
@@ -7,19 +7,19 @@ title: 文档管理
 
 ## 文档管理列表
 
-![document_manager_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/document_manager_list.png)
+![document_manager_list](http://www.aiwenmo.com/dinky/docs/test/zczx01.jpg)
 
 ## 查看文档描述
 
-![document_manager_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/document_show_desc.png)
+![document_manager_list](http://www.aiwenmo.com/dinky/docs/test/zczx02.jpg)
 
 ## 创建文档
 
-![create_document](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/create_document.png)
+![create_document](http://www.aiwenmo.com/dinky/docs/test/zczx03.jpg)
 
 ## 维护文档
 
-![update_document](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/update_document.png)
+![update_document](http://www.aiwenmo.com/dinky/docs/test/zczx04.jpg)
 
 **参数配置说明:**
 

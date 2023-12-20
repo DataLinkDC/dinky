@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import {
@@ -24,43 +26,8 @@ import {
   SmsSvg,
   WeChatSvg
 } from '@/components/Icons/AlertIcon';
-import { MANU_FACTURERS } from '@/pages/RegCenter/Alert/AlertInstance/constans';
-import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
-
-/**
- * get json data to alert instance
- * @param values
- */
-export const getJSONData = (values: Partial<Alert.AlertInstance>) => {
-  if (!values.params || values.params === '') {
-    return values;
-  }
-  let data = JSON.parse(values.params);
-  return { ...data, ...values };
-};
-
-/**
- * build json data to alert instance
- * @param values
- * @param params
- */
-export const buildJSONData = (values: Partial<Alert.AlertInstance>, params: any) => {
-  let newValue = values;
-  if (params.name) {
-    newValue.name = params.name;
-    delete params.name;
-  }
-  if (params.enabled) {
-    newValue.enabled = params.enabled;
-    delete params.enabled;
-  }
-  if (params.type) {
-    newValue.type = params.type;
-    delete params.type;
-  }
-  let data: string = JSON.stringify(params);
-  return { ...newValue, params: data };
-};
+import { MANU_FRACTURES } from '@/pages/RegCenter/Alert/AlertInstance/constans';
+import { ALERT_TYPE } from '@/types/RegCenter/data.d';
 
 /**
  * get alert icon
@@ -86,6 +53,6 @@ export const getAlertIcon = (type: string, size?: number) => {
   }
 };
 
-export const getSmsType = (type: number) => {
-  return MANU_FACTURERS.find((item) => item.value === type)?.label;
+export const getSmsType = (type: string) => {
+  return MANU_FRACTURES.find((item) => item.value === type)?.key || '';
 };

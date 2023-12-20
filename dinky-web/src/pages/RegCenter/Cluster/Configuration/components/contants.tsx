@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import { FormConfig } from '@/pages/RegCenter/Cluster/Configuration/components/data';
@@ -131,19 +133,22 @@ export const KUBERNETES_CONFIG_LIST: FormConfig[] = [
     name: 'kubernetes.namespace',
     label: l('rc.cc.k8s.namespace'),
     placeholder: l('rc.cc.k8s.namespaceHelp'),
-    tooltip: l('rc.cc.k8s.namespaceHelp')
+    tooltip: l('rc.cc.k8s.namespaceHelp'),
+    rules: [{ required: true }]
   },
   {
     name: 'kubernetes.service.account',
     label: l('rc.cc.k8s.account'),
     placeholder: l('rc.cc.k8s.accountHelp'),
-    tooltip: l('rc.cc.k8s.accountHelp')
+    tooltip: l('rc.cc.k8s.accountHelp'),
+    rules: [{ required: true }]
   },
   {
     name: 'kubernetes.container.image',
     label: l('rc.cc.k8s.image'),
     placeholder: l('rc.cc.k8s.imageHelp'),
-    tooltip: l('rc.cc.k8s.imageHelp')
+    tooltip: l('rc.cc.k8s.imageHelp'),
+    rules: [{ required: true }]
   },
   {
     name: 'kubernetes.jobmanager.cpu',
@@ -156,11 +161,5 @@ export const KUBERNETES_CONFIG_LIST: FormConfig[] = [
     label: l('rc.cc.k8s.tmCpu'),
     placeholder: l('rc.cc.k8s.tmCpuHelp'),
     tooltip: l('rc.cc.k8s.tmCpuHelp')
-  },
-  {
-    name: 'kubernetes.config.file',
-    label: l('rc.cc.k8s.configFile'),
-    placeholder: l('rc.cc.k8s.configFileHelp'),
-    tooltip: l('rc.cc.k8s.configFileHelp')
   }
 ];

@@ -20,12 +20,10 @@
 package org.dinky.data.dto;
 
 import org.dinky.data.model.DataBase;
-import org.dinky.mybatis.crypto.CryptoTypeHandler;
 import org.dinky.mybatis.model.SuperEntity;
 
 import java.time.LocalDateTime;
-
-import com.baomidou.mybatisplus.annotation.TableField;
+import java.util.Map;
 
 import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;
@@ -56,15 +54,8 @@ public class DataBaseDTO extends SuperEntity {
     @ApiModelProperty(value = "type", required = true, dataType = "String", example = "MySQL")
     private String type;
 
-    @ApiModelProperty(value = "url", required = true, dataType = "String", example = "jdbc:mysql://localhost:3306/test")
-    private String url;
-
-    @ApiModelProperty(value = "username", required = true, dataType = "String", example = "root")
-    private String username;
-
-    @TableField(typeHandler = CryptoTypeHandler.class)
-    @ApiModelProperty(value = "password", required = true, dataType = "String", example = "123456")
-    private String password;
+    @ApiModelProperty(value = "connectConfig", required = true, dataType = "String", example = "{}")
+    private Map<String, Object> connectConfig;
 
     @ApiModelProperty(value = "note", dataType = "String", example = "note")
     private String note;

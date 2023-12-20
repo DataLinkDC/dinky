@@ -36,7 +36,7 @@ VALUES ( 2, 1, 'python-udf', 'https://github.com/zackyoungh/dinky-quickstart-pyt
 
 INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `type`, `size`, `pid`, `full_name`,
                                `is_directory`)
-VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '/', 1);
+VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '', 1);
 
 
 INSERT INTO `dinky_sys_menu`
@@ -472,47 +472,23 @@ VALUES (146, 10, ' 拷贝', '/registration/datasource/copy', null, 'registration
 -- ----------------------------
 -- Records of dinky_alert_rule
 -- ----------------------------
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time)
-VALUES (3, 'alert.rule.jobFail',
-        '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"''FAILED''","rulePriority":"1"}]', 1,
-        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-04 23:03:02');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time)
-VALUES (4, 'alert.rule.getJobInfoFail',
-        '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"''UNKNOWN''","rulePriority":"1"}]', 1,
-        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-05 18:03:43');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time)
-VALUES (5, 'alert.rule.jobRestart',
-        '[{"ruleKey":"jobInstance.status","ruleOperator":"EQ","ruleValue":"''RESTARTING''","rulePriority":"1"}]', 1,
-        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:35:12');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time)
-VALUES (6, 'alert.rule.checkpointFail',
-        '[{"ruleKey":"checkpointRule.checkFailed(#key,#checkPoints)","ruleOperator":"EQ","ruleValue":"true"}]', 1,
-        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:49:03');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time)
-VALUES (7, 'alert.rule.jobRunException',
-        '[{"ruleKey":"exceptionRule.isException(#key,#exceptions)","ruleOperator":"EQ","ruleValue":"true"}]', 1,
-        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 21:50:12');
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time)
-VALUES (8, 'alert.rule.checkpointTimeout',
-        '[{"ruleKey":"checkpointRule.checkpointTime(#key,#checkPoints)","ruleOperator":"GE","ruleValue":"1000"}]', 1,
-        'CUSTOM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-09-06 22:23:35');
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (3, 'alert.rule.jobFail', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"''FAILED''","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (4, 'alert.rule.getJobInfoFail', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"''UNKNOWN''","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (5, 'alert.rule.jobRestart', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"''RESTARTING''","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"isCheckpointFailed","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"isException","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+
 
 INSERT INTO dinky_alert_template
 VALUES (1, 'Default', '
-- **Job Name :** <font color=''gray''>${task.name}</font>
-- **Job Status :** <font color=''red''>${jobInstance.status}</font>
-- **Alert Time :** ${time}
-- **Start Time :** ${startTime}
-- **End Time :** ${endTime}
-- **<font color=''red''>${(exceptions.rootException)?substring(0,20)}</font>**
+- **Job Name :** <font color=''gray''>${jobName}</font>
+- **Job Status :** <font color=''red''>${jobStatus}</font>
+- **Alert Time :** ${alertTime}
+- **Start Time :** ${jobStartTime}
+- **End Time :** ${jobEndTime}
+- **<font color=''red''>${errorMsg}</font>**
 [Go toTask Web](http://${taskUrl})
-', 1, null, null);
+', 1, current_timestamp, current_timestamp,null,null);
 
 INSERT INTO `dinky_udf_template`
 VALUES ( 1, 'java_udf', 'Java', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}
@@ -524,7 +500,7 @@ public class ${className} extends ScalarFunction {
         return null;
     }
 }'
-       , 1, '2022-10-19 09:17:37', '2022-10-25 17:45:57');
+       , 1, '2022-10-19 09:17:37', '2022-10-25 17:45:57',null,null);
 INSERT INTO `dinky_udf_template`
 VALUES ( 2, 'java_udtf', 'Java', 'UDTF', '${(package=='''')?string('''',''package ''+package+'';'')}
 
@@ -540,7 +516,7 @@ public static class ${className} extends TableFunction<Row> {
     }
   }
 }'
-       , 1, '2022-10-19 09:22:58', '2022-10-25 17:49:30');
+       , 1, '2022-10-19 09:22:58', '2022-10-25 17:49:30',null,null);
 INSERT INTO `dinky_udf_template`
 VALUES ( 3, 'scala_udf', 'Scala', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}
 
@@ -553,7 +529,7 @@ class ${className} extends ScalarFunction {
     "this is scala"
   }
 }'
-       , 1, '2022-10-25 09:21:32', '2022-10-25 17:49:46');
+       , 1, '2022-10-25 09:21:32', '2022-10-25 17:49:46',null,null);
 INSERT INTO `dinky_udf_template`
 VALUES ( 4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFunction, DataTypes
 from pyflink.table.udf import udf
@@ -567,7 +543,7 @@ class ${className}(ScalarFunction):
 
 
 ${attr!''f''} = udf(${className}(), result_type=DataTypes.STRING())'
-       , 1, '2022-10-25 09:23:07', '2022-10-25 09:34:01');
+       , 1, '2022-10-25 09:23:07', '2022-10-25 09:34:01',null,null);
 INSERT INTO `dinky_udf_template`
 VALUES ( 5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes
 from pyflink.table.udf import udf
@@ -575,7 +551,7 @@ from pyflink.table.udf import udf
 @udf(result_type=DataTypes.STRING())
 def ${className}(variable1:str):
   return '''''
-       , 1, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
+       , 1, '2022-10-25 09:25:13', '2022-10-25 09:34:47',null,null);
 
 INSERT INTO `dinky_flink_document` ( `id`, `category`, `type`, `subtype`, `name`
                                    , `description`, `fill_value`, `version`, `like_num`, `enabled`
@@ -2690,3 +2666,80 @@ WITH (
 AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions', 0, 1
        , '2023-10-31 16:41:46', '2023-10-31 16:43:29');
 
+
+INSERT INTO `dinky_flink_document` (id, category, type, subtype, name
+	, description, fill_value, version, like_num, enabled
+	, create_time, update_time)
+VALUES (244, 'Reference', '建表语句', 'Batch/Streaming', 'datagen job demo'
+	, 'datagen job demo', 'DROP TABLE IF EXISTS source_table3;
+CREATE TABLE IF NOT EXISTS source_table3(
+--订单id
+`order_id` BIGINT,
+--产品
+
+`product` BIGINT,
+--金额
+`amount` BIGINT,
+
+--支付时间
+`order_time` as CAST(CURRENT_TIMESTAMP AS TIMESTAMP(3)), -- `在这里插入代码片`
+--WATERMARK
+WATERMARK FOR order_time AS order_time - INTERVAL ''2'' SECOND
+) WITH(
+''connector'' = ''datagen'',
+ ''rows-per-second'' = ''1'',
+ ''fields.order_id.min'' = ''1'',
+ ''fields.order_id.max'' = ''2'',
+ ''fields.amount.min'' = ''1'',
+ ''fields.amount.max'' = ''10'',
+ ''fields.product.min'' = ''1'',
+ ''fields.product.max'' = ''2''
+);
+
+-- SELECT * FROM source_table3 LIMIT 10;
+
+DROP TABLE IF EXISTS sink_table5;
+CREATE TABLE IF NOT EXISTS sink_table5(
+--产品
+`product` BIGINT,
+--金额
+`amount` BIGINT,
+--支付时间
+`order_time` TIMESTAMP(3),
+--1分钟时间聚合总数
+`one_minute_sum` BIGINT
+) WITH(
+''connector''=''print''
+);
+
+INSERT INTO sink_table5
+SELECT
+product,
+amount,
+order_time,
+SUM(amount) OVER(
+PARTITION BY product
+ORDER BY order_time
+-- 标识统计范围是1个 product 的最近 1 分钟的数据
+RANGE BETWEEN INTERVAL ''1'' MINUTE PRECEDING AND CURRENT ROW
+) as one_minute_sum
+FROM source_table3;', 'All Versions', 0, 1
+	, '2023-11-15 15:42:16', '2023-11-15 15:42:16');
+
+
+INSERT INTO dinky_flink_document (id, category, type, subtype, name
+	, description, fill_value, version, like_num, enabled
+	, create_time, update_time)
+VALUES (245, 'Property', '优化参数', 'Streaming', 'checkpoint config'
+	, 'checkpoint config', '-- 声明一些调优参数 (checkpoint 等相关配置)
+set ''execution.checkpointing.checkpoints-after-tasks-finish.enabled'' =''true'';
+SET ''pipeline.operator-chaining'' = ''false'';
+set ''state.savepoints.dir''=''file:///opt/data/flink_cluster/savepoints''; -- 目录自行修改
+set ''state.checkpoints.dir''= ''file:///opt/data/flink_cluster/checkpoints''; -- 目录自行修改
+-- set state.checkpoint-storage=''filesystem'';
+set ''state.backend.type''=''rocksdb'';
+set ''execution.checkpointing.interval''=''60 s'';
+set ''state.checkpoints.num-retained''=''100'';
+-- 使 solt 均匀分布在 各个 TM 上
+set ''cluster.evenly-spread-out-slots''=''true'';', 'All Versions', 0, 1
+	, '2023-11-15 15:57:42', '2023-11-15 15:57:42');

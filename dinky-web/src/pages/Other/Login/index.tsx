@@ -25,14 +25,13 @@ import { chooseTenantSubmit, login, queryDataByParams } from '@/services/Busines
 import { API } from '@/services/data';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data';
-import { setTenantStorageAndCookie } from '@/utils/function';
+import { setLocalThemeToStorage, setTenantStorageAndCookie } from '@/utils/function';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
 import { ErrorMessage, SuccessMessageAsync } from '@/utils/messages';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useModel } from '@umijs/max';
 import React, { useEffect, useState } from 'react';
-import { flushSync } from 'react-dom';
 import HelmetTitle from './HelmetTitle';
 import LoginForm from './LoginForm';
 
@@ -57,12 +56,10 @@ const Login: React.FC = () => {
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
-      flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo
-        }));
-      });
+      setInitialState((s) => ({
+        ...s,
+        currentUser: userInfo
+      }));
     }
   };
 
@@ -93,6 +90,8 @@ const Login: React.FC = () => {
           tenantCode: chooseTenantResult.data.tenantCode
         })
       );
+      //  补偿设置,设置主题色
+      setLocalThemeToStorage();
       /**
        * After the selection is complete, refresh all user information
        */

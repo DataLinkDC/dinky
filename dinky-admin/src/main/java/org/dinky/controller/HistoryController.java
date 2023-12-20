@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.model.History;
+import org.dinky.data.model.job.History;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.HistoryService;
@@ -59,7 +59,7 @@ public class HistoryController {
      * @param para
      * @return
      */
-    @PostMapping
+    @PostMapping("/list")
     @ApiOperation("Query History List")
     @ApiImplicitParam(name = "para", value = "Query Parameters", dataType = "JsonNode", paramType = "body")
     public ProTableResult<History> listHistory(@RequestBody JsonNode para) {

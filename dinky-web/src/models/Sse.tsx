@@ -20,6 +20,7 @@
 import { postAll } from '@/services/api';
 import { ErrorMessage } from '@/utils/messages';
 import { useEffect, useRef, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export type SseData = {
   topic: string;
@@ -31,7 +32,7 @@ export type SubscriberData = {
 };
 
 export default () => {
-  const uuidRef = useRef<string>(crypto.randomUUID());
+  const uuidRef = useRef<string>(uuidv4());
   const subscriberRef = useRef<SubscriberData[]>([]);
   const [eventSource, setEventSource] = useState<EventSource>();
 

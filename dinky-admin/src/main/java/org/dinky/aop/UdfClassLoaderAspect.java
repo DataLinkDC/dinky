@@ -19,10 +19,7 @@
 
 package org.dinky.aop;
 
-import org.dinky.classloader.DinkyClassLoader;
-import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.data.exception.DinkyException;
-import org.dinky.job.JobResult;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -53,7 +50,7 @@ public class UdfClassLoaderAspect {
     @Around("allPointcut()")
     public Object round(ProceedingJoinPoint proceedingJoinPoint) {
         Object proceed = null;
-
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             proceed = proceedingJoinPoint.proceed();
         } catch (Throwable e) {
@@ -63,11 +60,8 @@ public class UdfClassLoaderAspect {
             e.printStackTrace();
             throw (DinkyException) e;
         } finally {
-            if (proceed instanceof JobResult) {
-                ClassLoader lastContextClassLoader = Thread.currentThread().getContextClassLoader();
-                if (lastContextClassLoader instanceof DinkyClassLoader) {
-                    DinkyClassLoaderContextHolder.clear();
-                }
+            if (contextClassLoader != Thread.currentThread().getContextClassLoader()) {
+                Thread.currentThread().setContextClassLoader(contextClassLoader);
             }
         }
         return proceed;
