@@ -126,7 +126,6 @@ const Result = (props: any) => {
       return;
     }
 
-    const params = currentTabs.params;
     const consoleData = currentTabs.console;
     if (consoleData.result && !isRefresh) {
       setData(consoleData.result);
@@ -166,7 +165,7 @@ const Result = (props: any) => {
   useEffect(() => {
     setData({});
     loadData();
-  }, [currentTabs, currentTabs?.console?.result]);
+  }, [currentTabs?.console?.result]);
 
   const getColumns = (columns: string[]) => {
     return columns?.map((item) => {
