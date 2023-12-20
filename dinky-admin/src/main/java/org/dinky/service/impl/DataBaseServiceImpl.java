@@ -27,7 +27,6 @@ import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
-import org.dinky.data.exception.TaskNotDoneException;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
@@ -45,8 +44,10 @@ import org.dinky.service.DataBaseService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
@@ -331,25 +332,24 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             result.setEndTime(LocalDateTime.now());
             return result;
         }
-        List<JdbcSelectResult> jdbcSelectResults=new ArrayList<>();
+        List<JdbcSelectResult> jdbcSelectResults = new ArrayList<>();
         try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
             Stream<JdbcSelectResult> jdbcSelectResultStream =
                     driver.StreamExecuteSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
-            jdbcSelectResultStream.forEach(res->{
+            jdbcSelectResultStream.forEach(res -> {
                 jdbcSelectResults.add(res);
-                if (!res.isSuccess()){
+                if (!res.isSuccess()) {
                     throw new RuntimeException();
                 }
             });
             result.setResults(jdbcSelectResults);
             result.setSuccess(true);
             return result;
-        }
-        catch (RuntimeException e){
-            if (!jdbcSelectResults.isEmpty()){
-                result.setError(jdbcSelectResults.get(jdbcSelectResults.size()-1).getError());
-            }
-            else {
+        } catch (RuntimeException e) {
+            if (!jdbcSelectResults.isEmpty()) {
+                result.setError(
+                        jdbcSelectResults.get(jdbcSelectResults.size() - 1).getError());
+            } else {
                 result.setError(e.getMessage());
             }
             result.setSuccess(false);
