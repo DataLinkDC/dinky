@@ -36,6 +36,7 @@ import org.dinky.metadata.result.JdbcSelectResult;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -249,6 +250,11 @@ class AbstractDriverTest {
 
         @Override
         public Map<String, String> getFlinkColumnTypeConversion() {
+            return null;
+        }
+
+        @Override
+        public Stream<JdbcSelectResult> StreamExecuteSql(String statement, Integer maxRowNum) {
             return null;
         }
     }
