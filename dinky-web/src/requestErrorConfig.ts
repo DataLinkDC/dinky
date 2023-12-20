@@ -17,7 +17,9 @@
  *
  */
 
+import { ENABLE_MODEL_TIP } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { getValueFromLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ErrorNotification, WarningNotification } from '@/utils/messages';
 import { history } from '@@/core/history';
@@ -43,6 +45,7 @@ interface ResponseStructure {
 
 const handleBizError = (result: ResponseStructure) => {
   const { msg, code, data } = result;
+
   switch (code) {
     case ErrorCode.SUCCESS:
       //don't deal with it, just be happy
@@ -51,8 +54,9 @@ const handleBizError = (result: ResponseStructure) => {
       WarningNotification(msg, l('app.response.error'));
       break;
     case ErrorCode.EXCEPTION:
-      //TODO 可配置化，dev换弹出错误，release不弹
-      //ErrorNotification(JSON.stringify(data), l('app.response.error'));
+      if (Boolean(getValueFromLocalStorage(ENABLE_MODEL_TIP))) {
+        ErrorNotification(data, l('app.response.exception'));
+      }
       break;
     case ErrorCode.PARAMS_ERROR:
       ErrorNotification(msg, l('app.response.error'));
@@ -83,6 +87,7 @@ export const errorConfig: RequestConfig = {
     },
     // 错误接收及处理
     errorHandler: (error: any, opts: any) => {
+
       if (opts?.skipErrorHandler) throw error;
       // 我们的 errorThrower 抛出的错误。
       if (error.name === 'BizError') {
@@ -96,9 +101,9 @@ export const errorConfig: RequestConfig = {
         if (error.response.status === 401) {
           history.push(API_CONSTANTS.LOGIN_PATH);
         } else {
-          //预留，处理其他code逻辑，目前未定义的code统一发送错误通知
-          //TODO 可配置化，dev换弹出错误，release不弹
-          // ErrorNotification(error.message, error.code);
+          if (Boolean(getValueFromLocalStorage(ENABLE_MODEL_TIP))) {
+            ErrorNotification(error.message, error.code);
+          }
         }
       } else if (error.request) {
         // 请求已经成功发起，但没有收到响应
