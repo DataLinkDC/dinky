@@ -21,6 +21,7 @@ package org.dinky.data.result;
 
 import org.dinky.data.enums.CodeEnum;
 import org.dinky.data.enums.Status;
+import org.dinky.utils.LogUtil;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -206,8 +207,8 @@ public class Result<T> implements Serializable {
         return of(null, CodeEnum.AUTHORIZE_ERROR.getCode(), msg);
     }
 
-    public static Result<Exception> exception(String msg, Exception e) {
-        return of(e, CodeEnum.EXCEPTION.getCode(), msg);
+    public static Result<String> exception(String msg, Exception e) {
+        return of(LogUtil.getError(e), CodeEnum.EXCEPTION.getCode(), msg);
     }
 
     public static <T> Result<T> paramsError(Status status, Object... args) {
