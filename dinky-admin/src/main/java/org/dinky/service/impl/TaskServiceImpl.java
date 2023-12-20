@@ -342,7 +342,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         taskDTO.setStatementSet(false);
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
-        JobResult jobResult ;
+        JobResult jobResult;
         if (Dialect.isCommonSql(taskDTO.getDialect())) {
             jobResult = taskServiceBean.executeJob(taskDTO, true);
         } else {

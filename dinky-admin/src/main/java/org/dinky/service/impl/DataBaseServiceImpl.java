@@ -19,9 +19,6 @@
 
 package org.dinky.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.apache.commons.lang3.StringUtils;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.constant.CommonConstant;
@@ -44,7 +41,7 @@ import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.DataBaseService;
 
-import org.springframework.stereotype.Service;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -53,6 +50,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 /**
  * DataBaseServiceImpl
@@ -334,7 +336,8 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         }
         try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
 
-            Stream<JdbcSelectResult> jdbcSelectResultStream = driver.StreamExecuteSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
+            Stream<JdbcSelectResult> jdbcSelectResultStream =
+                    driver.StreamExecuteSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
             List<JdbcSelectResult> jdbcSelectResults = jdbcSelectResultStream
                     .takeWhile(res -> {
                         if (!res.isSuccess()) {
