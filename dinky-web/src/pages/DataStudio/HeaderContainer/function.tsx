@@ -33,7 +33,7 @@ export const buildBreadcrumbItems = (breadcrumb: string) => {
     breadcrumbName: title
   }));
 
-  return [{ title: <EnvironmentOutlined /> }, ...activeBreadcrumbTitleList];
+  return activeBreadcrumbTitleList;
 };
 
 export const projectCommonShow = (type?: TabsPageType) => {
