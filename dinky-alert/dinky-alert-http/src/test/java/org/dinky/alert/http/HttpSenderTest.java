@@ -48,13 +48,12 @@ public class HttpSenderTest {
         ConfigItem configItem = new ConfigItem("Content-Type", "application/json");
         httpParams.setHeaders(Arrays.asList(configItem));
 
-        httpParams.setBody(" {\n" +
-                "    \"msgtype\": \"markdown\",\n" +
-                "    \"markdown\": {\n" +
-                "        \"title\": \"http 测试\",\n" +
-                "        \"text\": \"\"\n" +
-                "    }\n" +
-                "}");
+        httpParams.setBody(" {\n" + "    \"msgtype\": \"markdown\",\n"
+                + "    \"markdown\": {\n"
+                + "        \"title\": \"http 测试\",\n"
+                + "        \"text\": \"\"\n"
+                + "    }\n"
+                + "}");
 
         httpConfig = JsonUtils.toMap(JSONUtil.toJsonStr(httpParams), String.class, Object.class);
     }
