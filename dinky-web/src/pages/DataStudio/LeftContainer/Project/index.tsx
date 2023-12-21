@@ -33,7 +33,8 @@ import {
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
 import {
-  DataStudioParams, DataStudioTabsItemType,
+  DataStudioParams,
+  DataStudioTabsItemType,
   StateType,
   STUDIO_MODEL,
   STUDIO_MODEL_ASYNC
@@ -281,7 +282,7 @@ const Project: React.FC = (props: connect) => {
         await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
           const currentTabs = getTabByTaskId(panes, key) as DataStudioTabsItemType;
           dispatch({ type: STUDIO_MODEL.removeTag, payload: taskId });
-          const  previousTabs = panes[panes.length> 1 ? panes.length - 1 :0];
+          const previousTabs = panes[panes.length > 1 ? panes.length - 1 : 0];
           const { key: currentKey } = currentTabs;
           if (currentKey === activeKey && panes.length >= 1) {
             dispatch({ type: STUDIO_MODEL.updateTabsActiveKey, payload: previousTabs?.key });
