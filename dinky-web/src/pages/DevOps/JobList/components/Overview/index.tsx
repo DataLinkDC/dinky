@@ -38,18 +38,12 @@ import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { Button, Col, Row, Space } from 'antd';
 import { useContext, useEffect, useState } from 'react';
+import useHookRequest from "@/hooks/useHookRequest";
 
 const JobOverview = (props: any) => {
-  const [statusCount, setStatusCount] = useState<StatusCountOverView>();
   const { statusFilter, setStatusFilter } = useContext<any>(DevopContext);
-
-  useEffect(() => {
-    getData(API_CONSTANTS.GET_STATUS_COUNT)
-      .then((res) => {
-        setStatusCount(res.data);
-      })
-      .catch(() => {});
-  }, []);
+  const {data} = useHookRequest(getData,{defaultParams:[API_CONSTANTS.GET_STATUS_COUNT]})
+  const statusCount = data as StatusCountOverView;
 
   return (
     <Row gutter={[16, 8]}>
@@ -63,7 +57,6 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(undefined);
             }}
-            isChecked={!statusFilter}
             extra={
               <Space direction='vertical'>
                 <Button type={'text'} icon={<BatchIcons size={20} />}>
