@@ -170,12 +170,9 @@ const Result = (props: any) => {
 
   useEffect(() => {
     setData({});
-    loadData();
-  }, [currentTabs?.console?.result]);
-  useEffect(() => {
     setDataList([]);
     loadData();
-  }, [currentTabs?.console?.results]);
+  }, [currentTabs?.console?.result,currentTabs?.console?.results]);
 
   const getColumns = (columns: string[]) => {
     return columns?.map((item) => {
