@@ -24,10 +24,13 @@ import {
 } from '@/pages/DataStudio/MiddleContainer/StudioEditor/constants';
 import { convertCodeEditTheme } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { DiffEditor } from '@monaco-editor/react';
+import { DiffEditor, loader } from '@monaco-editor/react';
 import { Col, Modal, Row, Space, Table, Tabs, Typography } from 'antd';
+import * as monaco from 'monaco-editor';
 import React, { memo } from 'react';
 import styles from './index.less';
+
+loader.config({ monaco });
 
 const { Text, Link } = Typography;
 

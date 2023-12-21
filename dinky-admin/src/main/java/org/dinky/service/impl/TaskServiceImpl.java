@@ -26,7 +26,6 @@ import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.dto.AbstractStatementDTO;
-import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.dto.TaskSubmitDto;
@@ -250,6 +249,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     // Savepoint and cancel task
     @ProcessStep(type = ProcessStepType.SUBMIT_BUILD_CONFIG)
     public JobConfig buildJobConfig(TaskDTO task) {
+        if (Asserts.isNull(task.getType())) {
+            task.setType(GatewayType.LOCAL.getLongValue());
+        }
         JobConfig config = task.getJobConfig();
         if (GatewayType.get(task.getType()).isDeployCluster()) {
             log.info("Init gateway config, type:{}", task.getType());
@@ -329,30 +331,24 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     @ProcessStep(type = ProcessStepType.SUBMIT_TASK)
-    public JobResult debugTask(DebugDTO debugDTO) throws Exception {
-        initTenantByTaskId(debugDTO.getId());
-
-        TaskDTO taskDTO = this.getTaskInfoById(debugDTO.getId());
+    public JobResult debugTask(TaskDTO task) throws Exception {
         // Debug mode need return result
-        taskDTO.setUseResult(true);
-        taskDTO.setUseChangeLog(debugDTO.isUseChangeLog());
-        taskDTO.setUseAutoCancel(debugDTO.isUseAutoCancel());
-        taskDTO.setMaxRowNum(debugDTO.getMaxRowNum());
+        task.setUseResult(true);
         // Debug mode need execute
-        taskDTO.setStatementSet(false);
+        task.setStatementSet(false);
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
         JobResult jobResult;
-        if (Dialect.isCommonSql(taskDTO.getDialect())) {
-            jobResult = taskServiceBean.executeJob(taskDTO, true);
+        if (Dialect.isCommonSql(task.getDialect())) {
+            jobResult = taskServiceBean.executeJob(task, true);
         } else {
-            jobResult = taskServiceBean.executeJob(taskDTO);
+            jobResult = taskServiceBean.executeJob(task);
         }
 
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
             log.info("Job debug success");
-            Task task = new Task(debugDTO.getId(), jobResult.getJobInstanceId());
-            if (!this.updateById(task)) {
+            Task newTask = new Task(task.getId(), jobResult.getJobInstanceId());
+            if (!this.updateById(newTask)) {
                 throw new BusException(Status.TASK_UPDATE_FAILED.getMessage());
             }
         } else {

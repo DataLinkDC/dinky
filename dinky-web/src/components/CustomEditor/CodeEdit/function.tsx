@@ -19,6 +19,7 @@
 
 import { SuggestionInfo } from '@/types/Public/data';
 
+import { loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { editor, languages } from 'monaco-editor';
 import keyWordJsonData from './keyword.json';
@@ -27,6 +28,7 @@ import ProviderResult = languages.ProviderResult;
 import CompletionList = languages.CompletionList;
 import CompletionItem = languages.CompletionItem;
 // 导入 lodash
+loader.config({ monaco });
 
 /**
  * get keyWordJson from {@link ./keyword.json}

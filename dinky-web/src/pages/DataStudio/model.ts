@@ -110,7 +110,6 @@ export type TaskType = {
 };
 
 export type ConsoleType = {
-  results:{}[];
   // eslint-disable-next-line @typescript-eslint/ban-types
   result: {};
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -165,6 +164,7 @@ export interface TabsItemType {
   closable: boolean;
   path: string[];
   monacoInstance: React.RefObject<Monaco | undefined>;
+  editorInstance: editor.IStandaloneCodeEditor | undefined;
   console: ConsoleType;
   isModified: boolean;
 }
