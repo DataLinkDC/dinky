@@ -188,13 +188,12 @@ const HeaderContainer = (props: connect) => {
 
   const handlerDebug = async () => {
     if (!currentData) return;
-
+    const saved = currentData.step == JOB_LIFE_CYCLE.PUBLISH ? true : await handleSave();
+    if (!saved) return;
     const res = await debugTask(
       l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
       currentData
     );
-    const saved = currentData.step == JOB_LIFE_CYCLE.PUBLISH ? true : await handleSave();
-    if (!saved) return;
     if (!res) return;
     updateJobRunningMsg({
       taskId: currentData.id,

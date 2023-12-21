@@ -596,10 +596,9 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                     break;
                 }
             }
-            result.setSuccess(true);
+            result.success();
         } catch (Exception e) {
-            result.setError(LogUtil.getError(e));
-            result.setSuccess(false);
+            result.error(LogUtil.getError(e));
             log.error("Query failed", e);
         }
         close(preparedStatement, results);
@@ -628,7 +627,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                     || type.toUpperCase().contains("DESC")
                     || type.toUpperCase().contains("SQLEXPLAINSTATEMENT")) {
                 log.info("Execute query.");
-                result = query(item.toString(), limit);
+                return query(item.toString(), limit);
             } else if (type.toUpperCase().contains("INSERT")
                     || type.toUpperCase().contains("UPDATE")
                     || type.toUpperCase().contains("DELETE")) {
@@ -679,7 +678,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                     || type.toUpperCase().contains("DESC")
                     || type.toUpperCase().contains("SQLEXPLAINSTATEMENT")) {
                 log.info("Execute query.");
-                result = query(item.toString(), limit);
+                return query(item.toString(), limit);
             } else if (type.toUpperCase().contains("INSERT")
                     || type.toUpperCase().contains("UPDATE")
                     || type.toUpperCase().contains("DELETE")) {
