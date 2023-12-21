@@ -28,8 +28,8 @@ import {
   isCanPushDolphin,
   isOnline,
   isRunning,
-  projectCommonShow,
-  isSql
+  isSql,
+  projectCommonShow
 } from '@/pages/DataStudio/HeaderContainer/function';
 import PushDolphin from '@/pages/DataStudio/HeaderContainer/PushDolphin';
 import {
@@ -191,7 +191,9 @@ const HeaderContainer = (props: connect) => {
 
     let selectsql = null;
     if (currentTab.editorInstance) {
-      selectsql = currentTab.editorInstance.getModel().getValueInRange(currentTab.editorInstance.getSelection());
+      selectsql = currentTab.editorInstance
+        .getModel()
+        .getValueInRange(currentTab.editorInstance.getSelection());
     }
     if (selectsql == null || selectsql == '') {
       selectsql = currentData.statement;
@@ -199,7 +201,7 @@ const HeaderContainer = (props: connect) => {
 
     const res = await debugTask(
       l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
-      {...currentData, statement: selectsql}
+      { ...currentData, statement: selectsql }
     );
 
     if (!res) return;
