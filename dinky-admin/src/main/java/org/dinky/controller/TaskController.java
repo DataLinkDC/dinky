@@ -144,9 +144,9 @@ public class TaskController {
     public Result<Boolean> changeTaskLife(@RequestParam Integer taskId, @RequestParam Integer lifeCycle)
             throws SqlExplainExcepition {
         if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.get(lifeCycle))) {
-            return Result.succeed(Status.PUBLISH_SUCCESS);
+            return lifeCycle == 2 ? Result.succeed(Status.PUBLISH_SUCCESS) : Result.succeed(Status.OFFLINE_SUCCESS);
         } else {
-            return Result.failed(Status.PUBLISH_FAILED);
+            return lifeCycle == 2 ? Result.failed(Status.PUBLISH_FAILED) : Result.failed(Status.OFFLINE_FAILED);
         }
     }
 
