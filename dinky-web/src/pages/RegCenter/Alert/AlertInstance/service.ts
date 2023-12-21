@@ -37,9 +37,12 @@ export async function createOrModifyAlertInstance(alertInstance: Alert.AlertInst
 export async function sendTest(alertInstance: Alert.AlertInstance) {
   await LoadingMessageAsync(l('app.request.test.alert.msg'));
   try {
-    const { code, msg } = await postAll(API_CONSTANTS.ALERT_INSTANCE_SEND_TEST, alertInstance);
+    const { data, code, msg } = await postAll(
+      API_CONSTANTS.ALERT_INSTANCE_SEND_TEST,
+      alertInstance
+    );
     if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg);
+      SuccessMessage(`${msg}-->${data}`);
       return true;
     } else {
       WarningMessage(msg);

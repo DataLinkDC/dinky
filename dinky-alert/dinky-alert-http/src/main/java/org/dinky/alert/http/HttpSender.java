@@ -26,20 +26,15 @@ import org.dinky.data.ext.ConfigItem;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.apache.http.util.TextUtils;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.StrFormatter;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
@@ -57,7 +53,6 @@ public class HttpSender {
     private static final Logger logger = LoggerFactory.getLogger(HttpSender.class);
 
     private final HttpParams httpParams;
-
     private HttpRequestBase httpRequest;
 
     HttpSender(Map<String, Object> config) {
@@ -66,33 +61,13 @@ public class HttpSender {
     }
 
     /**
-     * build template params
-     *
-     * @param title
-     * @param content
-     * @return
-     */
-    public Map<String, Object> buildTemplateParams(String title, String content) {
-        Map<String, Object> params = new HashMap<>();
-        params.put(HttpConstants.ALERT_TEMPLATE_TITLE, title);
-        params.put(HttpConstants.ALERT_TEMPLATE_CONTENT, content);
-        return params;
-    }
-
-    /**
      * send msg of main
      *
      * @param content： send msg content
      * @return AlertResult
      */
-    public AlertResult send(Map<String, Object> templateParams) {
+    public AlertResult send(String title, String content) {
         AlertResult alertResult = new AlertResult();
-
-        try {
-            createHttpRequest(templateParams);
-        } catch (MalformedURLException | URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
 
         if (httpParams.getMethod() == null) {
             alertResult.setSuccess(false);
@@ -101,11 +76,12 @@ public class HttpSender {
         }
 
         try {
+            createHttpRequest(title, content);
             String resp = this.getResponseString(httpRequest);
             alertResult.setSuccess(true);
             alertResult.setMessage(resp);
         } catch (Exception e) {
-            logger.error("send http alert msg  exception : {}", e.getMessage());
+            logger.error("send http alert msg  failed", e);
             alertResult.setSuccess(false);
             alertResult.setMessage("send http request  alert fail.");
         }
@@ -113,32 +89,22 @@ public class HttpSender {
         return alertResult;
     }
 
-    private void createHttpRequest(Map<String, Object> templateParams)
-            throws MalformedURLException, URISyntaxException {
+    private void createHttpRequest(String title, String content) {
         if (HttpConstants.REQUEST_TYPE_POST.equals(httpParams.getMethod())) {
             httpRequest = new HttpPost(httpParams.getUrl());
             buildRequestHeader();
-            buildMsgToRequestBody(templateParams);
+            buildMsgToRequestBody(title, content);
         } else if (HttpConstants.REQUEST_TYPE_GET.equals(httpParams.getMethod())) {
-            buildMsgToUrl(templateParams);
-            URL unencodeUrl = new URL(httpParams.getUrl());
-            URI uri = new URI(
-                    unencodeUrl.getProtocol(),
-                    unencodeUrl.getHost(),
-                    unencodeUrl.getPath(),
-                    unencodeUrl.getQuery(),
-                    null);
-
-            httpRequest = new HttpGet(uri);
-            buildRequestHeader();
+            // TODO Get implementation
         }
     }
 
     public String getResponseString(HttpRequestBase httpRequest) throws IOException {
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        CloseableHttpResponse response = httpClient.execute(httpRequest);
-        HttpEntity entity = response.getEntity();
-        return EntityUtils.toString(entity, HttpConstants.DEFAULT_CHARSET);
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+            CloseableHttpResponse response = httpClient.execute(httpRequest);
+            HttpEntity entity = response.getEntity();
+            return EntityUtils.toString(entity, HttpConstants.DEFAULT_CHARSET);
+        }
     }
 
     /**
@@ -170,19 +136,19 @@ public class HttpSender {
     /**
      * set body params
      */
-    private void buildMsgToRequestBody(Map<String, Object> templateParams) {
+    private void buildMsgToRequestBody(String title, String content) {
         try {
-            JSONObject jsonObject = JSONUtil.createObj();
-            templateParams.forEach(jsonObject::set);
-            if (CollUtil.isNotEmpty(httpParams.getBody())) {
-                httpParams.getBody().forEach(configItem -> {
-                    jsonObject.set(configItem.getKey(), configItem.getValue());
-                });
+            JSONObject body = JSONUtil.parseObj(httpParams.getBody());
+            if (TextUtils.isEmpty(httpParams.getTitleFiled())) {
+                content = StrFormatter.format("{}\n{}", title, content);
+            } else {
+                body.putByPath(httpParams.getTitleFiled(), title);
             }
-            StringEntity entity = new StringEntity(JSONUtil.toJsonStr(jsonObject), HttpConstants.DEFAULT_CHARSET);
+            body.putByPath(httpParams.getContentFiled(), content);
+            StringEntity entity = new StringEntity(JSONUtil.toJsonStr(body), HttpConstants.DEFAULT_CHARSET);
             ((HttpPost) httpRequest).setEntity(entity);
         } catch (Exception e) {
-            logger.error("send http alert msg  exception : {}", e.getMessage());
+            logger.error("send http alert msg  exception", e);
         }
     }
 }

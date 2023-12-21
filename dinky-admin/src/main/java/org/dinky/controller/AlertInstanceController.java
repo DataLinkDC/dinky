@@ -191,10 +191,10 @@ public class AlertInstanceController {
             paramType = "body",
             required = true,
             dataTypeClass = AlertInstanceDTO.class)
-    public Result<Void> sendAlertMsgTest(@RequestBody AlertInstanceDTO alertInstanceDTO) {
+    public Result<String> sendAlertMsgTest(@RequestBody AlertInstanceDTO alertInstanceDTO) {
         AlertResult alertResult = alertInstanceService.testAlert(alertInstanceDTO);
         if (alertResult.getSuccess()) {
-            return Result.succeed(Status.SEND_TEST_SUCCESS);
+            return Result.succeed(alertResult.getMessage(), Status.SEND_TEST_SUCCESS);
         } else {
             return Result.failed(Status.SEND_TEST_FAILED);
         }

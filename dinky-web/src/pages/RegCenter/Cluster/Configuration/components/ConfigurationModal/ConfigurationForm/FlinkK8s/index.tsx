@@ -92,7 +92,7 @@ const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> 
         reader.readAsText(file);
         reader.onload = () => {
           form.setFieldValue(name, reader.result as string);
-          onChange(reader.result as string + "\n");
+          onChange((reader.result as string) + '\n');
         };
       },
       showUploadList: false

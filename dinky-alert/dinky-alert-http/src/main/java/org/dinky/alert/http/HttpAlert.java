@@ -22,18 +22,12 @@ package org.dinky.alert.http;
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
 
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * DingTalkAlert
  *
  * @since 2022/2/23 19:28
  */
 public class HttpAlert extends AbstractAlert {
-    private static final Logger log = LoggerFactory.getLogger(HttpAlert.class);
 
     @Override
     public String getType() {
@@ -43,7 +37,6 @@ public class HttpAlert extends AbstractAlert {
     @Override
     public AlertResult send(String title, String content) {
         HttpSender sender = new HttpSender(getConfig().getParam());
-        Map<String, Object> templateParams = sender.buildTemplateParams(title, content);
-        return sender.send(templateParams);
+        return sender.send(title, content);
     }
 }
