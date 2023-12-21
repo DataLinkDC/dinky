@@ -44,6 +44,6 @@ export const initSomeThing = () => {
   setLocalThemeToStorage();
   // 取出本地存储是否有启用消息提示的 key , 没有的话设置一下
   if (hasKeyofLocalStorage(ENABLE_MODEL_TIP)) {
-    setKeyToLocalStorage(ENABLE_MODEL_TIP, 'true');
+    setKeyToLocalStorage(ENABLE_MODEL_TIP, 'false');
   }
 };
