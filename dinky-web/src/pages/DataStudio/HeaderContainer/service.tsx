@@ -43,25 +43,3 @@ export function cancelTask(title: string, id: number) {
 export function changeTaskLife(title = '', id: number, life: number) {
   return handleGetOption('api/task/changeTaskLife', title, { taskId: id, lifeCycle: life });
 }
-
-export const isSql = (dialect: string) => {
-  if (!dialect) {
-    return false;
-  }
-  switch (dialect.toLowerCase()) {
-    case DIALECT.SQL:
-    case DIALECT.MYSQL:
-    case DIALECT.ORACLE:
-    case DIALECT.SQLSERVER:
-    case DIALECT.POSTGRESQL:
-    case DIALECT.CLICKHOUSE:
-    case DIALECT.PHOENIX:
-    case DIALECT.DORIS:
-    case DIALECT.HIVE:
-    case DIALECT.STARROCKS:
-    case DIALECT.PRESTO:
-      return true;
-    default:
-      return false;
-  }
-};
