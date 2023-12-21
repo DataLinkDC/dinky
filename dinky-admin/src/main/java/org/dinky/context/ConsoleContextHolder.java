@@ -185,7 +185,6 @@ public class ConsoleContextHolder {
         return processStepEntity;
     }
 
-
     /**
      * Mark the process as completed.
      *
@@ -193,7 +192,7 @@ public class ConsoleContextHolder {
      * @param status      Process status
      * @param e           exception object, optional
      */
-    public void  finishedProcess(String processName, ProcessStatus status, Throwable e) {
+    public void finishedProcess(String processName, ProcessStatus status, Throwable e) {
         if (!logPross.containsKey(processName)) {
             return;
         }
