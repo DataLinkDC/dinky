@@ -97,23 +97,23 @@ public class ConsoleContextHolder {
      * @throws BusException Throws an exception if the process does not exist
      */
     public void appendLog(String processName, String stepPid, String logLine, boolean recordGlobal) {
-        ProcessEntity process;
-        synchronized (logPross) {
-            if (!logPross.containsKey(processName)) {
-                log.debug("Process {} does not exist, This log was abandoned", processName);
-                return;
+        if (!logPross.containsKey(processName)) {
+            log.debug("Process {} does not exist, This log was abandoned", processName);
+            return;
+        }
+        ProcessEntity process = logPross.get(processName);
+        if (recordGlobal) {
+            process.appendLog(logLine);
+        }
+        if (stepPid != null) {
+            ProcessStepEntity stepNode = getStepNode(stepPid, getStepsMap(processName));
+            if (stepNode != null) {
+                stepNode.appendLog(logLine);
+                process.setLastUpdateStep(stepNode);
+            } else {
+                log.error("process step not found {},{}", processName, stepPid);
             }
-            process = logPross.get(processName);
-            if (recordGlobal) {
-                process.appendLog(logLine);
-            }
-            if (stepPid != null) {
-                ProcessStepEntity stepNode = getStepNode(stepPid, getStepsMap(processName));
-                if (stepNode != null) {
-                    stepNode.appendLog(logLine);
-                    process.setLastUpdateStep(stepNode);
-                }
-            }
+            process.setLastUpdateStep(stepNode);
         }
         //   /TOPIC/PROCESS_CONSOLE/FlinkSubmit/12
         String topic = StrFormatter.format("{}/{}", SseTopic.PROCESS_CONSOLE.getValue(), processName);
@@ -130,22 +130,20 @@ public class ConsoleContextHolder {
      * @throws RuntimeException Throws an exception if the process already exists
      */
     public void registerProcess(ProcessType type, String processName) throws RuntimeException {
-        synchronized (logPross) {
-            if (logPross.containsKey(processName)) {
-                throw new BusException(Status.PROCESS_REGISTER_EXITS);
-            }
-            ProcessEntity entity = ProcessEntity.builder()
-                    .key(UUID.fastUUID().toString())
-                    .log(new StringBuilder())
-                    .status(ProcessStatus.INITIALIZING)
-                    .type(type)
-                    .title(type.getValue())
-                    .startTime(LocalDateTime.now())
-                    .children(new CopyOnWriteArrayList<>())
-                    .build();
-            logPross.put(processName, entity);
-            appendLog(processName, null, "Start Process:" + processName, true);
+        if (logPross.containsKey(processName)) {
+            throw new BusException(Status.PROCESS_REGISTER_EXITS);
         }
+        ProcessEntity entity = ProcessEntity.builder()
+                .key(UUID.fastUUID().toString())
+                .log(new StringBuilder())
+                .status(ProcessStatus.INITIALIZING)
+                .type(type)
+                .title(type.getValue())
+                .startTime(LocalDateTime.now())
+                .children(new CopyOnWriteArrayList<>())
+                .build();
+        logPross.put(processName, entity);
+        appendLog(processName, null, "Start Process:" + processName, true);
     }
 
     /**
@@ -158,36 +156,35 @@ public class ConsoleContextHolder {
      */
     public ProcessStepEntity registerProcessStep(ProcessStepType type, String processName, String parentStepPid)
             throws RuntimeException {
-        synchronized (logPross) {
-            if (!logPross.containsKey(processName)) {
-                throw new BusException(StrFormatter.format("Process {} does not exist", type));
-            }
-            ProcessEntity process = logPross.get(processName);
-            process.setStatus(ProcessStatus.RUNNING);
-            ProcessStepEntity processStepEntity = ProcessStepEntity.builder()
-                    .key(UUID.fastUUID().toString())
-                    .status(ProcessStatus.RUNNING)
-                    .startTime(LocalDateTime.now())
-                    .type(type)
-                    .title(type.getDesc().getMessage())
-                    .log(new StringBuilder())
-                    .children(new CopyOnWriteArrayList<>())
-                    .build();
-
-            if (TextUtils.isEmpty(parentStepPid)) {
-                // parentStep为空表示为顶级节点
-                process.getChildren().add(processStepEntity);
-            } else {
-                ProcessStepEntity stepNode = getStepNode(parentStepPid, process.getChildren());
-                if (stepNode == null) {
-                    log.error("registerProcessStep {} failed in {}", type.getDesc(), processName);
-                } else {
-                    stepNode.getChildren().add(processStepEntity);
-                }
-            }
-            return processStepEntity;
+        if (!logPross.containsKey(processName)) {
+            throw new BusException(StrFormatter.format("Process {} does not exist", type));
         }
+        ProcessEntity process = logPross.get(processName);
+        process.setStatus(ProcessStatus.RUNNING);
+        ProcessStepEntity processStepEntity = ProcessStepEntity.builder()
+                .key(UUID.fastUUID().toString())
+                .status(ProcessStatus.RUNNING)
+                .startTime(LocalDateTime.now())
+                .type(type)
+                .title(type.getDesc().getMessage())
+                .log(new StringBuilder())
+                .children(new CopyOnWriteArrayList<>())
+                .build();
+
+        if (TextUtils.isEmpty(parentStepPid)) {
+            // parentStep为空表示为顶级节点
+            process.getChildren().add(processStepEntity);
+        } else {
+            ProcessStepEntity stepNode = getStepNode(parentStepPid, process.getChildren());
+            if (stepNode == null) {
+                log.error("registerProcessStep {} failed in {}", type.getDesc(), processName);
+            } else {
+                stepNode.getChildren().add(processStepEntity);
+            }
+        }
+        return processStepEntity;
     }
+
 
     /**
      * Mark the process as completed.
@@ -196,31 +193,25 @@ public class ConsoleContextHolder {
      * @param status      Process status
      * @param e           exception object, optional
      */
-    public void finishedProcess(String processName, ProcessStatus status, Throwable e) {
-        synchronized (logPross) {
-            if (!logPross.containsKey(processName)) {
-                return;
-            }
-            ProcessEntity process = logPross.get(processName);
-            process.setStatus(status);
-            process.setEndTime(LocalDateTime.now());
-            process.setTime(Duration.between(process.getStartTime(), process.getEndTime())
-                    .toMillis());
-            if (e != null) {
-                appendLog(processName, null, LogUtil.getError(e.getCause()), true);
-            }
-            String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
-            if (FileUtil.exist(filePath)) {
-                Assert.isTrue(FileUtil.del(filePath));
-            }
-            FileUtil.writeUtf8String(JSONObject.toJSONString(process), filePath);
-            appendLog(
-                    processName,
-                    null,
-                    StrFormatter.format("Process {} exit with status:{}", processName, status),
-                    true);
-            logPross.remove(processName);
+    public void  finishedProcess(String processName, ProcessStatus status, Throwable e) {
+        if (!logPross.containsKey(processName)) {
+            return;
         }
+        ProcessEntity process = logPross.get(processName);
+        process.setStatus(status);
+        process.setEndTime(LocalDateTime.now());
+        process.setTime(
+                Duration.between(process.getStartTime(), process.getEndTime()).toMillis());
+        if (e != null) {
+            appendLog(processName, null, LogUtil.getError(e.getCause()), true);
+        }
+        String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
+        if (FileUtil.exist(filePath)) {
+            Assert.isTrue(FileUtil.del(filePath));
+        }
+        FileUtil.writeUtf8String(JSONObject.toJSONString(process), filePath);
+        appendLog(processName, null, StrFormatter.format("Process {} exit with status:{}", processName, status), true);
+        logPross.remove(processName);
     }
 
     /**
@@ -232,23 +223,20 @@ public class ConsoleContextHolder {
      * @param e           exception object, optional
      */
     public void finishedStep(String processName, ProcessStepEntity step, ProcessStatus status, Exception e) {
-        synchronized (logPross) {
-            if (!logPross.containsKey(processName)) {
-                return;
-            }
-            step.setStatus(status);
-            step.setEndTime(LocalDateTime.now());
-            step.setTime(
-                    Duration.between(step.getStartTime(), step.getEndTime()).toMillis());
-            if (e != null) {
-                appendLog(processName, step.getKey(), LogUtil.getError(e.getCause()), false);
-            }
-            appendLog(
-                    processName,
-                    step.getKey(),
-                    StrFormatter.format("Process Step {} exit with status:{}", step.getType(), status),
-                    true);
+        if (!logPross.containsKey(processName)) {
+            return;
         }
+        step.setStatus(status);
+        step.setEndTime(LocalDateTime.now());
+        step.setTime(Duration.between(step.getStartTime(), step.getEndTime()).toMillis());
+        if (e != null) {
+            appendLog(processName, step.getKey(), LogUtil.getError(e.getCause()), false);
+        }
+        appendLog(
+                processName,
+                step.getKey(),
+                StrFormatter.format("Process Step {} exit with status:{}", step.getType(), status),
+                true);
     }
 
     private ProcessStepEntity getStepNode(String stepPid, CopyOnWriteArrayList<ProcessStepEntity> stepsMap) {
