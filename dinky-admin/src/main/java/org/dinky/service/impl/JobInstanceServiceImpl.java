@@ -151,9 +151,10 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
     @Override
     public JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance) {
+        Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
+
         JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
 
-        Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
         jobInfoDetail.setInstance(jobInstance);
 
         ClusterInstance clusterInstance = clusterInstanceService.getById(jobInstance.getClusterId());
