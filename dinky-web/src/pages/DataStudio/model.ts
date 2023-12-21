@@ -790,7 +790,10 @@ const Model: ModelType = {
         tabs: {
           panes: tabsItem ? [tabsItem] : [],
           activeKey: tabsItem?.key ?? '',
-          activeBreadcrumbTitle: breadcrumbLabel.length > 0 ? [tabsItem?.type,...breadcrumbLabel, tabsItem?.label].join('/') : ''
+          activeBreadcrumbTitle:
+            breadcrumbLabel.length > 0
+              ? [tabsItem?.type, ...breadcrumbLabel, tabsItem?.label].join('/')
+              : ''
         }
       };
     },
