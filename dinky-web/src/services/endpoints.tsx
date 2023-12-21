@@ -226,6 +226,7 @@ export enum API_CONSTANTS {
 
   // ---- devops
   GET_JOB_LIST = '/api/jobInstance',
+  GET_JOB_INSTANCE_BY_TASK_ID = '/api/jobInstance/getJobInstanceByTaskId',
   GET_JOB_BY_ID = '/api/jobInstance/getOneById',
   GET_LATEST_HISTORY_BY_ID = '/api/history/getLatestHistoryById',
   GET_JOB_DETAIL = '/api/jobInstance/getJobInfoDetail',
