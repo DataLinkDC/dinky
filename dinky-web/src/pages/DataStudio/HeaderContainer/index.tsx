@@ -71,6 +71,8 @@ import { connect } from '@umijs/max';
 import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import { ButtonProps } from 'antd/es/button/button';
 import React, { memo, useEffect, useState } from 'react';
+import {queryList} from "@/services/api";
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -360,7 +362,13 @@ const HeaderContainer = (props: connect) => {
         (currentTab?.subType?.toLowerCase() == DIALECT.FLINK_SQL ||
           currentTab?.subType?.toLowerCase() == DIALECT.FLINKJAR),
       props: {
-        href: `/#/devops/job-detail?id=${currentData?.jobInstanceId}`,
+        onClick: async () => {
+          const result = await queryList(API_CONSTANTS.GET_JOB_LIST, {
+            filter: {taskId: [currentData?.id]},
+            currentPage: 1,
+          });
+          window.open(`/#/devops/job-detail?id=${result.data[0].id}`)
+        },
         target: '_blank'
       }
     },
