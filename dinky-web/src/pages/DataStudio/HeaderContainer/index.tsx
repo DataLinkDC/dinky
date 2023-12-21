@@ -188,6 +188,8 @@ const HeaderContainer = (props: connect) => {
 
   const handlerDebug = async () => {
     if (!currentData) return;
+    const saved = currentData.step == JOB_LIFE_CYCLE.PUBLISH ? true : await handleSave();
+    if (!saved) return;
 
     let selectsql = null;
     if (currentTab.editorInstance) {
@@ -214,8 +216,11 @@ const HeaderContainer = (props: connect) => {
     // Common sql task is synchronized, so it needs to automatically update the status to finished.
     if (isSql(currentData.dialect)) {
       currentData.status = JOB_STATUS.FINISHED;
+      if (currentTab) currentTab.console.results = res.data.results;
     }
-    if (currentTab) currentTab.console.result = res.data.result;
+    else {
+      if (currentTab) currentTab.console.result = res.data.result;
+    }
     saveTabs({ ...props.tabs });
   };
 

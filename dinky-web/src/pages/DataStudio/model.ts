@@ -110,6 +110,7 @@ export type TaskType = {
 };
 
 export type ConsoleType = {
+  results:{}[];
   // eslint-disable-next-line @typescript-eslint/ban-types
   result: {};
   // eslint-disable-next-line @typescript-eslint/ban-types
