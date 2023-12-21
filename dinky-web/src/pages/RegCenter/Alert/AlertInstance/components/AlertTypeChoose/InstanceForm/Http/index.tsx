@@ -93,19 +93,15 @@ const Http: React.FC<HttpProps> = (props) => {
           <ProFormText
             width='xl'
             name={['params', 'contentFiled']}
-            label={'内容字段'}
+            label={l('rc.ai.http.contentFiled')}
             required
-            tooltip={
-              '在http请求中，请求体(body)内被替换为`告警消息`的字段，如果涉及多层嵌套字段，请使用json path表达式，例如 text.markdown.content'
-            }
+            tooltip={l('rc.ai.http.contentFiled.help')}
           />
           <ProFormText
             width='xl'
             name={['params', 'titleFiled']}
-            label={'标题字段'}
-            tooltip={
-              '在http请求中，请求体(body)内被替换为`标题内容`的字段，如果涉及多层嵌套字段，请使用json path表达式，例如 markdown.title，如果不填写，则标题默认拼接在内容字段中'
-            }
+            label={l('rc.ai.http.titleFiled')}
+            tooltip={l('rc.ai.http.titleFiled.help')}
           />
         </Col>
         <Divider type={'vertical'} />
@@ -120,7 +116,6 @@ const Http: React.FC<HttpProps> = (props) => {
           </ProFormItem>
         </Col>
       </Row>
-
     </>
   );
 };
