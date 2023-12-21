@@ -22,7 +22,6 @@ package org.dinky.controller;
 import org.dinky.data.annotations.ExecuteProcess;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.annotations.ProcessId;
-import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.dto.TaskSaveDTO;
@@ -96,8 +95,8 @@ public class TaskController {
             dataType = "DebugDTO",
             paramType = "body")
     @ExecuteProcess(type = ProcessType.FLINK_SUBMIT)
-    public Result<JobResult> debugTask(@RequestBody DebugDTO debugDTO) throws Exception {
-        JobResult result = taskService.debugTask(debugDTO);
+    public Result<JobResult> debugTask(@RequestBody TaskDTO task) throws Exception {
+        JobResult result = taskService.debugTask(task);
         if (result.isSuccess()) {
             return Result.succeed(result, Status.DEBUG_SUCCESS);
         }

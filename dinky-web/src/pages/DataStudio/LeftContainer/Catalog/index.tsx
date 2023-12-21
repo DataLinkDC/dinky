@@ -18,7 +18,7 @@
  */
 
 import { getCurrentData } from '@/pages/DataStudio/function';
-import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
 import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import { TableDataNode } from '@/pages/DataStudio/LeftContainer/Catalog/data';
 import { StateType } from '@/pages/DataStudio/model';

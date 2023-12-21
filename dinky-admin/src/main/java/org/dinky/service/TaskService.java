@@ -20,7 +20,6 @@
 package org.dinky.service;
 
 import org.dinky.data.dto.AbstractStatementDTO;
-import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.dto.TaskSubmitDto;
@@ -75,11 +74,11 @@ public interface TaskService extends ISuperService<Task> {
     /**
      * Debug the given task and return the job result.
      *
-     * @param debugDTO The param of preview task.
+     * @param task The param of preview task.
      * @return A {@link JobResult} object representing the result of the submitted task.
      * @throws ExcuteException If there is an error debugging the task.
      */
-    JobResult debugTask(DebugDTO debugDTO) throws Exception;
+    JobResult debugTask(TaskDTO task) throws Exception;
 
     /**
      * Restart the given task and return the job result.

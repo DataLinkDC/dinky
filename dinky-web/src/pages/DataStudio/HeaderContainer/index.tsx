@@ -28,7 +28,8 @@ import {
   isCanPushDolphin,
   isOnline,
   isRunning,
-  projectCommonShow
+  projectCommonShow,
+  isSql
 } from '@/pages/DataStudio/HeaderContainer/function';
 import PushDolphin from '@/pages/DataStudio/HeaderContainer/PushDolphin';
 import {
@@ -36,8 +37,7 @@ import {
   changeTaskLife,
   debugTask,
   executeSql,
-  getJobPlan,
-  isSql
+  getJobPlan
 } from '@/pages/DataStudio/HeaderContainer/service';
 import {
   DataStudioTabsItemType,
@@ -189,9 +189,17 @@ const HeaderContainer = (props: connect) => {
   const handlerDebug = async () => {
     if (!currentData) return;
 
+    let selectsql = null;
+    if (currentTab.editorInstance) {
+      selectsql = currentTab.editorInstance.getModel().getValueInRange(currentTab.editorInstance.getSelection());
+    }
+    if (selectsql == null || selectsql == '') {
+      selectsql = currentData.statement;
+    }
+
     const res = await debugTask(
       l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
-      currentData
+      {...currentData, statement: selectsql}
     );
 
     if (!res) return;
@@ -203,6 +211,10 @@ const HeaderContainer = (props: connect) => {
     });
     await SuccessMessageAsync(l('pages.datastudio.editor.debug.success'));
     currentData.status = JOB_STATUS.RUNNING;
+    // Common sql task is synchronized, so it needs to automatically update the status to finished.
+    if (isSql(currentData.dialect)) {
+      currentData.status = JOB_STATUS.FINISHED;
+    }
     if (currentTab) currentTab.console.result = res.data.result;
     saveTabs({ ...props.tabs });
   };
@@ -380,7 +392,7 @@ const HeaderContainer = (props: connect) => {
         currentTab?.type == TabsPageType.project &&
         !isRunning(currentData) &&
         (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
-          currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR),
+          isSql(currentTab?.subType?.toLowerCase())),
       props: {
         style: { background: '#52c41a' },
         type: 'primary'

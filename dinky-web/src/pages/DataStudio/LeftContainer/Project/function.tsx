@@ -18,7 +18,7 @@
  */
 
 import { LeftBottomKey, RightMenuKey } from '@/pages/DataStudio/data.d';
-import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { DIALECT } from '@/services/constants';
 import { Catalogue } from '@/types/Studio/data.d';

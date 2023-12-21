@@ -19,10 +19,12 @@
 
 package org.dinky.service.task;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
 import org.dinky.service.impl.TaskServiceImpl;
@@ -42,6 +44,10 @@ public class FlinkSqlTask extends BaseTask {
 
     public FlinkSqlTask(TaskDTO task) {
         super(task);
+        // Default run mode is local.
+        if (Asserts.isNull(task.getType())) {
+            task.setType(GatewayType.LOCAL.getLongValue());
+        }
         this.jobManager = getJobManager();
     }
 

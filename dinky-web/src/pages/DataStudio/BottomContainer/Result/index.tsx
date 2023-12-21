@@ -23,7 +23,7 @@ import {
   isDataStudioTabsItemType,
   mapDispatchToProps
 } from '@/pages/DataStudio/function';
-import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
@@ -126,7 +126,6 @@ const Result = (props: any) => {
       return;
     }
 
-    const params = currentTabs.params;
     const consoleData = currentTabs.console;
     if (consoleData.result && !isRefresh) {
       setData(consoleData.result);
@@ -166,7 +165,7 @@ const Result = (props: any) => {
   useEffect(() => {
     setData({});
     loadData();
-  }, [currentTabs, currentTabs?.console?.result]);
+  }, [currentTabs?.console?.result]);
 
   const getColumns = (columns: string[]) => {
     return columns?.map((item) => {
