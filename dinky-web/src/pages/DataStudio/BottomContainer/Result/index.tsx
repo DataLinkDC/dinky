@@ -129,13 +129,12 @@ const Result = (props: any) => {
     }
     const params = currentTabs.params;
     const consoleData = currentTabs.console;
+    if (consoleData.result && !isRefresh) {
+      setData(consoleData.result);
+    }
     if(consoleData.results && !isRefresh){
       setDataList(consoleData.results)
     }
-    if(consoleData.result && !isRefresh) {
-      setData(consoleData.result);
-    }
-
     else {
       if (current.dialect && current.dialect.toLowerCase() == DIALECT.FLINK_SQL) {
         // flink sql
