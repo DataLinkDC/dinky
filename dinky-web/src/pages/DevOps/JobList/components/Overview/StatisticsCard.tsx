@@ -46,7 +46,7 @@ const StatisticsCard = (props: StatisticsCardParams) => {
   return (
     <>
       <ProCard
-        checked={isChecked}
+        // checked={isChecked}
         boxShadow={isChecked}
         layout={'center'}
         onClick={() => (atClick ? atClick() : {})}
