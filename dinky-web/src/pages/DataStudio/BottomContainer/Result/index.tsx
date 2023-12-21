@@ -128,6 +128,7 @@ const Result = (props: any) => {
       return;
     }
 
+    const params = currentTabs.params;
     const consoleData = currentTabs.console;
     if (consoleData.result && !isRefresh) {
       setData(consoleData.result);
