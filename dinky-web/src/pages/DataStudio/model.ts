@@ -784,12 +784,13 @@ const Model: ModelType = {
     closeOtherTabs(state, { payload }) {
       // 从 pans 中找到需要关闭的 tab
       const tabsItem = state.tabs.panes.find((pane) => pane.key === payload.key);
+      const breadcrumbLabel = tabsItem?.breadcrumbLabel?.split('/') ?? [];
       return {
         ...state,
         tabs: {
           panes: tabsItem ? [tabsItem] : [],
           activeKey: tabsItem?.key ?? '',
-          activeBreadcrumbTitle: tabsItem?.breadcrumbLabel ?? ''
+          activeBreadcrumbTitle: breadcrumbLabel.length > 0 ? [tabsItem?.type,...breadcrumbLabel, tabsItem?.label].join('/') : ''
         }
       };
     },
