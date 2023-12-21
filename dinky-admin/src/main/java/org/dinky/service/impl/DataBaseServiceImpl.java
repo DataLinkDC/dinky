@@ -356,7 +356,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             } else {
                 result.setError(e.getMessage());
             }
-            result.setStatus(Job.JobStatus.SUCCESS);
+            result.setStatus(Job.JobStatus.FAILED);
             result.setSuccess(true);
             result.setEndTime(LocalDateTime.now());
             result.setResults(jdbcSelectResults);
