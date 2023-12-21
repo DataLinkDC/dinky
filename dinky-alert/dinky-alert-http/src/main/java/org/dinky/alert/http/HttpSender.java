@@ -47,7 +47,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
 /**
- * DingTalkSender
+ * Http Sender
  */
 public class HttpSender {
     private static final Logger logger = LoggerFactory.getLogger(HttpSender.class);

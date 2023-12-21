@@ -19,7 +19,7 @@
 
 package org.dinky.alert.http;
 
-/** DingTalkConstants */
+/** Http Constants */
 public class HttpConstants {
     public static final String TYPE = "Http";
 

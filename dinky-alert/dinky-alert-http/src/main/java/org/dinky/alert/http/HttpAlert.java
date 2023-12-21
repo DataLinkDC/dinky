@@ -23,9 +23,8 @@ import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
 
 /**
- * DingTalkAlert
+ * Http Alert
  *
- * @since 2022/2/23 19:28
  */
 public class HttpAlert extends AbstractAlert {
 
