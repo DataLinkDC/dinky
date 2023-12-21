@@ -49,8 +49,10 @@ import {
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
+import { queryList } from '@/services/api';
 import { handleOption, handlePutDataJson, queryDataByParams } from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { DolphinTaskDefinition, DolphinTaskMinInfo } from '@/types/Studio/data.d';
 import { l } from '@/utils/intl';
 import { SuccessMessageAsync } from '@/utils/messages';
@@ -71,8 +73,6 @@ import { connect } from '@umijs/max';
 import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import { ButtonProps } from 'antd/es/button/button';
 import React, { memo, useEffect, useState } from 'react';
-import {queryList} from "@/services/api";
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -364,10 +364,10 @@ const HeaderContainer = (props: connect) => {
       props: {
         onClick: async () => {
           const result = await queryList(API_CONSTANTS.GET_JOB_LIST, {
-            filter: {taskId: [currentData?.id]},
-            currentPage: 1,
+            filter: { taskId: [currentData?.id] },
+            currentPage: 1
           });
-          window.open(`/#/devops/job-detail?id=${result.data[0].id}`)
+          window.open(`/#/devops/job-detail?id=${result.data[0].id}`);
         },
         target: '_blank'
       }
@@ -446,7 +446,12 @@ const HeaderContainer = (props: connect) => {
     return (
       <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
         {/*<Breadcrumb itemRender={(item, params, items, paths)=><span>{item.title}</span>} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />*/}
-        <EnvironmentOutlined style={{paddingRight:20}}/><Breadcrumb style={{fontSize:12,lineHeight:VIEW.headerHeight+"px"}} separator={'/'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
+        <EnvironmentOutlined style={{ paddingRight: 20 }} />
+        <Breadcrumb
+          style={{ fontSize: 12, lineHeight: VIEW.headerHeight + 'px' }}
+          separator={'/'}
+          items={buildBreadcrumbItems(activeBreadcrumbTitle)}
+        />
       </FlexCenterDiv>
     );
   };

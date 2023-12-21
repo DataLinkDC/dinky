@@ -21,7 +21,6 @@ package org.dinky.alert.http.params;
 
 import org.dinky.data.ext.ConfigItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -35,8 +34,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(onConstructor = @__(@JsonCreator))
 public class HttpParams {
 
-    private String url = "";
-    private String method = "";
-    private List<ConfigItem> headers = new ArrayList<>();
-    private List<ConfigItem> body = new ArrayList<>();
+    private String url;
+    private String method;
+    private String contentFiled;
+    private String titleFiled;
+    private List<ConfigItem> headers;
+    private String body;
 }

@@ -220,6 +220,15 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dinky-alert/dinky-alert-http/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dinky-alert-http-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+
+        <fileSet>
             <directory>${project.parent.basedir}/dinky-alert/dinky-alert-feishu/target
             </directory>
             <outputDirectory>lib</outputDirectory>

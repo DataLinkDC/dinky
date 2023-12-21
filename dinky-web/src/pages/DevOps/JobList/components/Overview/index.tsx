@@ -28,6 +28,7 @@ import {
   SteamIcons,
   UnknownIcons
 } from '@/components/Icons/DevopsIcons';
+import useHookRequest from '@/hooks/useHookRequest';
 import { DevopContext } from '@/pages/DevOps';
 import { JOB_STATUS } from '@/pages/DevOps/constants';
 import StatisticsCard from '@/pages/DevOps/JobList/components/Overview/StatisticsCard';
@@ -37,12 +38,11 @@ import { StatusCountOverView } from '@/types/Home/data';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { Button, Col, Row, Space } from 'antd';
-import { useContext, useEffect, useState } from 'react';
-import useHookRequest from "@/hooks/useHookRequest";
+import { useContext } from 'react';
 
 const JobOverview = (props: any) => {
   const { statusFilter, setStatusFilter } = useContext<any>(DevopContext);
-  const {data} = useHookRequest(getData,{defaultParams:[API_CONSTANTS.GET_STATUS_COUNT]})
+  const { data } = useHookRequest(getData, { defaultParams: [API_CONSTANTS.GET_STATUS_COUNT] });
   const statusCount = data as StatusCountOverView;
 
   return (
