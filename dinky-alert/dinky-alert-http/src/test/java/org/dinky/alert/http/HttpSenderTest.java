@@ -48,19 +48,13 @@ public class HttpSenderTest {
         ConfigItem configItem = new ConfigItem("Content-Type", "application/json");
         httpParams.setHeaders(Arrays.asList(configItem));
 
-        ConfigItem msgType = new ConfigItem("msgtype", "markdown");
-        ConfigItem title = new ConfigItem("title", AlertBaseConstant.ALERT_TEMPLATE_TITLE);
-        ConfigItem content = new ConfigItem("content", AlertBaseConstant.ALERT_TEMPLATE_MSG);
-        ConfigItem markdown = new ConfigItem("markdown", JSONUtil.toJsonStr(new HashMap<String, Object>() {
-            {
-                put("title", AlertBaseConstant.ALERT_TEMPLATE_TITLE);
-                put("text", AlertBaseConstant.ALERT_TEMPLATE_MSG);
-            }
-        }));
-
-        Arrays.asList(msgType, content, title, markdown).forEach(item -> {
-            httpParams.getBody().add(item);
-        });
+        httpParams.setBody(" {\n" +
+                "    \"msgtype\": \"markdown\",\n" +
+                "    \"markdown\": {\n" +
+                "        \"title\": \"http 测试\",\n" +
+                "        \"text\": \"\"\n" +
+                "    }\n" +
+                "}");
 
         httpConfig = JsonUtils.toMap(JSONUtil.toJsonStr(httpParams), String.class, Object.class);
     }
