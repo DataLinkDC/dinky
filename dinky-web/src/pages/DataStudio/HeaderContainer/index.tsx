@@ -437,7 +437,8 @@ const HeaderContainer = (props: connect) => {
 
     return (
       <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
-        <Breadcrumb separator={'/'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
+        {/*<Breadcrumb itemRender={(item, params, items, paths)=><span>{item.title}</span>} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />*/}
+        <EnvironmentOutlined style={{paddingRight:20}}/><Breadcrumb style={{fontSize:12,lineHeight:VIEW.headerHeight+"px"}} separator={'/'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
       </FlexCenterDiv>
     );
   };
