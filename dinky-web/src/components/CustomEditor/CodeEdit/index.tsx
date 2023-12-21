@@ -25,7 +25,7 @@ import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEdi
 import { StateType } from '@/pages/DataStudio/model';
 import { MonacoEditorOptions, SuggestionInfo } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
-import {Editor, loader, Monaco, OnChange} from '@monaco-editor/react';
+import { Editor, loader, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
 import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
 import { memo, useCallback, useRef } from 'react';
