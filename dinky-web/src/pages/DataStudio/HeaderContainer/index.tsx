@@ -194,6 +194,7 @@ const HeaderContainer = (props: connect) => {
       l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
       currentData
     );
+
     if (!res) return;
     updateJobRunningMsg({
       taskId: currentData.id,

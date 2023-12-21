@@ -127,7 +127,7 @@ const Result = (props: any) => {
     if (!isDataStudioTabsItemType(currentTabs)) {
       return;
     }
-    const params = currentTabs.params;
+
     const consoleData = currentTabs.console;
     if (consoleData.result && !isRefresh) {
       setData(consoleData.result);

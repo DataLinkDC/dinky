@@ -275,6 +275,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             result.setEndTime(LocalDateTime.now());
             return result;
         }
+
         DataBase dataBase = getById(sqlDTO.getDatabaseId());
         if (Asserts.isNull(dataBase)) {
             result.setSuccess(false);
