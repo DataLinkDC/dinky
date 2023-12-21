@@ -318,6 +318,7 @@ export type ModelType = {
     updateProjectExpandKey: Reducer<StateType>;
     updateProjectSelectKey: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
+    updateActiveBreadcrumbTitle: Reducer<StateType>;
     closeTab: Reducer<StateType>;
     removeTag: Reducer<StateType>;
     addTab: Reducer<StateType>;
@@ -708,6 +709,15 @@ const Model: ModelType = {
         footContainer: {
           ...state.footContainer,
           ...getFooterValue(newPanes, activeKey)
+        }
+      };
+    },
+    updateActiveBreadcrumbTitle(state, { payload }) {
+      return {
+        ...state,
+        tabs: {
+          ...state.tabs,
+          activeBreadcrumbTitle: payload
         }
       };
     },

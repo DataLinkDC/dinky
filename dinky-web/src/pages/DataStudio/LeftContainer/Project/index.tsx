@@ -33,7 +33,7 @@ import {
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
 import {
-  DataStudioParams,
+  DataStudioParams, DataStudioTabsItemType,
   StateType,
   STUDIO_MODEL,
   STUDIO_MODEL_ASYNC
@@ -61,7 +61,8 @@ const Project: React.FC = (props: connect) => {
   const {
     dispatch,
     project: { expandKeys, selectKey },
-    tabs: { panes, activeKey }
+    tabs: { panes, activeKey },
+    tabs
   } = props;
 
   const [projectState, setProjectState] = useState<ProjectState>(InitProjectState);
@@ -262,7 +263,6 @@ const Project: React.FC = (props: connect) => {
     if (!isLeaf) {
       await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
-        // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项 && 有一个 bug Dinky/src/pages/DataStudio/RightContainer/JobInfo/index.tsx:55 -> Cannot read properties of undefined (reading 'id')
       });
       return;
     }
@@ -279,7 +279,17 @@ const Project: React.FC = (props: connect) => {
       cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
+          const currentTabs = getTabByTaskId(panes, key) as DataStudioTabsItemType;
           dispatch({ type: STUDIO_MODEL.removeTag, payload: taskId });
+          const  previousTabs = panes[panes.length> 1 ? panes.length - 1 :0];
+          const { key: currentKey } = currentTabs;
+          if (currentKey === activeKey && panes.length >= 1) {
+            dispatch({ type: STUDIO_MODEL.updateTabsActiveKey, payload: previousTabs?.key });
+          }
+          if (panes.length === 0) {
+            dispatch({ type: STUDIO_MODEL.updateTabsActiveKey, payload: '' });
+            dispatch({ type: STUDIO_MODEL.updateActiveBreadcrumbTitle, payload: '' });
+          }
           dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         });
       }
