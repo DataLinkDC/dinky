@@ -37,6 +37,7 @@
         <module>dinky-alert-feishu</module>
         <module>dinky-alert-email</module>
         <module>dinky-alert-sms</module>
+        <module>dinky-alert-http</module>
     </modules>
 
 </project>

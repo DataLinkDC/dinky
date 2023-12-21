@@ -17,6 +17,7 @@
  *
  */
 
+import { Authorized } from '@/hooks/useAccess';
 import {
   RuleType,
   TriggerType
@@ -45,7 +46,9 @@ import {
   ProFormTextArea
 } from '@ant-design/pro-components';
 import { ProFormDependency } from '@ant-design/pro-form';
-import { Button, Divider, Form, Space } from 'antd';
+import { Button, Divider, Form, Space, Typography } from 'antd';
+
+const { Link } = Typography;
 
 type AlertRuleFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -70,6 +73,20 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
   const submit = async () => {
     const fieldsValue = await form.validateFields();
     return handleSubmit({ ...fieldsValue, rule: JSON.stringify(fieldsValue.rule) });
+  };
+
+  const renderTemplateDropDown = (item: any) => {
+    return (
+      <>
+        {item}
+        <Authorized key='create' path='/registration/alert/template/add'>
+          <>
+            <Divider style={{ margin: '8px 0' }} />
+            <Link href={'#/registration/alert/template'}>+ {l('rc.alert.template.new')}</Link>
+          </>
+        </Authorized>
+      </>
+    );
   };
 
   const renderFooter = () => {
@@ -119,6 +136,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
           request={async () => getAlertTemplate()}
           placeholder={l('sys.alert.rule.template')}
           rules={[{ required: true, message: l('sys.alert.rule.template') }]}
+          fieldProps={{ dropdownRender: (item) => renderTemplateDropDown(item) }}
         />
       </ProFormGroup>
 

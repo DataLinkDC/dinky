@@ -23,6 +23,7 @@ import {
   DingTalkSvg,
   EmailSvg,
   FeiShuSvg,
+  HttpSvg,
   SmsSvg,
   WeChatSvg
 } from '@/components/Icons/AlertIcon';
@@ -46,6 +47,8 @@ export const getAlertIcon = (type: string, size?: number) => {
       return <SmsSvg size={size} />;
     case ALERT_TYPE.EMAIL:
       return <EmailSvg size={size} />;
+    case ALERT_TYPE.HTTP:
+      return <HttpSvg size={size} />;
     case ALERT_TYPE.GROUP:
       return <AlertGroupSvg size={size} />;
     default:

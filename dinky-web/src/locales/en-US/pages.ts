@@ -656,9 +656,13 @@ export default {
   'rc.ai.wechat': 'WeChat',
   'rc.ai.wechatAtUsersPleaseHolder':
     'Please enter the @user ID (enterprise and micro user name spelled out)',
-  'rc.ai.xls.file.path': 'XLS storage directory',
-  'rc.ai.xls.file.pathPleaseHolder':
-    'Please enter the XLS storage directory! The default is /tmp/xls',
+  'rc.ai.http': 'HTTP',
+  'rc.ai.http.url': 'Request address',
+  'rc.ai.http.urlPleaseHolder': 'Please enter the request address',
+  'rc.ai.http.method': 'Request method',
+  'rc.ai.http.methodPleaseHolder': 'Please select the request method',
+  'rc.ai.http.headers': 'Request headers',
+  'rc.ai.http.body': 'Request body',
   'rc.alert.template.create': 'Create Template',
   'rc.alert.template.modify': 'Modify Template',
   'rc.alert.template.new': 'Create an alert template',
