@@ -106,6 +106,7 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
     editor.focus();
     editorInstance.current = editor;
     tabsItem.monacoInstance = monaco;
+    tabsItem.editorInstance = editor;
 
     editor.onDidChangeCursorPosition((e) => {
       props.footContainer.codePosition = [e.position.lineNumber, e.position.column];
@@ -143,7 +144,7 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
         />
         <CodeEdit
           monacoRef={tabsItem?.monacoInstance}
-          editorRef={editorInstance}
+          editorRef={tabsItem?.editorInstance}
           code={tabsItem?.params?.taskData?.statement}
           language={matchLanguage(tabsItem?.subType)}
           editorDidMount={editorDidMount}

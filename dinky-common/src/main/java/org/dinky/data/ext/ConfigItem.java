@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.data.model.ext;
+package org.dinky.data.ext;
 
 import java.io.Serializable;
 

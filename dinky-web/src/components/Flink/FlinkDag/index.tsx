@@ -276,7 +276,7 @@ const FlinkDag = (props: DagProps) => {
               {
                 key: '1',
                 label: 'Detail',
-                children: <p>{currentSelect?.getData().description}</p>
+                children: <div style={{whiteSpace:"pre"}}>{(currentSelect?.getData().description)?.replaceAll("<br/>","\n")}</div>
               },
               {
                 key: '2',

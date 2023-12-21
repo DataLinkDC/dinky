@@ -19,6 +19,7 @@
 
 import Email from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Email';
 import FeiShu from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/FeiShu';
+import Http from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Http';
 import Sms from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms';
 import WeChat from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/WeChat';
 import { ALERT_TYPE_LIST_OPTIONS } from '@/pages/RegCenter/Alert/AlertInstance/constans';
@@ -77,6 +78,8 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
         return <Email values={value} form={form} />;
       case ALERT_TYPE.SMS:
         return <Sms values={value} form={form} />;
+      case ALERT_TYPE.HTTP:
+        return <Http values={value} form={form} />;
       default:
         return <></>;
     }
@@ -84,10 +87,12 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
 
   return (
     <>
-      <ProForm.Group>
-        {renderPreForm()}
-        {renderFormByType(values, alertType)}
-      </ProForm.Group>
+      <ProForm form={form} submitter={false}>
+        <ProForm.Group>
+          {renderPreForm()}
+          {renderFormByType(values, alertType)}
+        </ProForm.Group>
+      </ProForm>
     </>
   );
 };

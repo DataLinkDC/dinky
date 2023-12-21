@@ -28,6 +28,7 @@ export type CircleButtonProps = {
   onClick?: () => void;
   title?: string;
   key?: string;
+  href?: string;
 };
 export type CircleBottomButtonProps = {
   icon: React.ReactNode;
@@ -51,7 +52,7 @@ export type CircleDataStudioButtonProps = {
 };
 
 export const CircleBtn: React.FC<CircleButtonProps> = (props) => {
-  const { onClick, title, icon, loading } = props;
+  const { onClick, title, icon, loading, href } = props;
 
   return (
     <Button
@@ -62,6 +63,8 @@ export const CircleBtn: React.FC<CircleButtonProps> = (props) => {
       type={'text'}
       shape={'circle'}
       onClick={onClick}
+      href={href}
+      download=''
     />
   );
 };

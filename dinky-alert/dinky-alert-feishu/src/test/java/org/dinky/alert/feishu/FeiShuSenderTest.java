@@ -52,7 +52,7 @@ public class FeiShuSenderTest {
         FeiShuAlert feiShuAlert = new FeiShuAlert();
         AlertConfig alertConfig = new AlertConfig();
 
-        alertConfig.setType("FeiShu");
+        alertConfig.setType(FeiShuConstants.TYPE);
         alertConfig.setParam(feiShuConfig);
         feiShuAlert.setConfig(alertConfig);
 

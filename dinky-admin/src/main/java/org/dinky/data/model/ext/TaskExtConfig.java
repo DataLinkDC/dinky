@@ -20,6 +20,7 @@
 package org.dinky.data.model.ext;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.ext.ConfigItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;

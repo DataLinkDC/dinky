@@ -38,18 +38,12 @@ import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { Button, Col, Row, Space } from 'antd';
 import { useContext, useEffect, useState } from 'react';
+import useHookRequest from "@/hooks/useHookRequest";
 
 const JobOverview = (props: any) => {
-  const [statusCount, setStatusCount] = useState<StatusCountOverView>();
   const { statusFilter, setStatusFilter } = useContext<any>(DevopContext);
-
-  useEffect(() => {
-    getData(API_CONSTANTS.GET_STATUS_COUNT)
-      .then((res) => {
-        setStatusCount(res.data);
-      })
-      .catch(() => {});
-  }, []);
+  const {data} = useHookRequest(getData,{defaultParams:[API_CONSTANTS.GET_STATUS_COUNT]})
+  const statusCount = data as StatusCountOverView;
 
   return (
     <Row gutter={[16, 8]}>
@@ -85,6 +79,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(JOB_STATUS.RUNNING);
             }}
+            isChecked={statusFilter === JOB_STATUS.RUNNING}
           />
           <StatisticsCard
             title={l('devops.joblist.status.cancelled')}
@@ -93,6 +88,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(JOB_STATUS.CANCELED);
             }}
+            isChecked={statusFilter === JOB_STATUS.CANCELED}
           />
           <StatisticsCard
             title={l('devops.joblist.status.failed')}
@@ -101,6 +97,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(JOB_STATUS.FAILED);
             }}
+            isChecked={statusFilter === JOB_STATUS.FAILED}
           />
           <StatisticsCard
             title={l('devops.joblist.status.restarting')}
@@ -109,6 +106,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(JOB_STATUS.RESTARTING);
             }}
+            isChecked={statusFilter === JOB_STATUS.RESTARTING}
           />
           <StatisticsCard
             title={l('devops.joblist.status.finished')}
@@ -117,6 +115,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(JOB_STATUS.FINISHED);
             }}
+            isChecked={statusFilter === JOB_STATUS.FINISHED}
           />
           <StatisticsCard
             title={l('devops.joblist.status.unknown')}
@@ -126,6 +125,7 @@ const JobOverview = (props: any) => {
             atClick={() => {
               setStatusFilter(JOB_STATUS.UNKNOWN);
             }}
+            isChecked={statusFilter === JOB_STATUS.UNKNOWN}
           />
         </ProCard>
       </Col>

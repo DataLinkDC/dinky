@@ -28,6 +28,7 @@ import {
   isCanPushDolphin,
   isOnline,
   isRunning,
+  isSql,
   projectCommonShow
 } from '@/pages/DataStudio/HeaderContainer/function';
 import PushDolphin from '@/pages/DataStudio/HeaderContainer/PushDolphin';
@@ -36,8 +37,7 @@ import {
   changeTaskLife,
   debugTask,
   executeSql,
-  getJobPlan,
-  isSql
+  getJobPlan
 } from '@/pages/DataStudio/HeaderContainer/service';
 import {
   DataStudioTabsItemType,
@@ -71,6 +71,8 @@ import { connect } from '@umijs/max';
 import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import { ButtonProps } from 'antd/es/button/button';
 import React, { memo, useEffect, useState } from 'react';
+import {queryList} from "@/services/api";
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -189,9 +191,19 @@ const HeaderContainer = (props: connect) => {
   const handlerDebug = async () => {
     if (!currentData) return;
 
+    let selectsql = null;
+    if (currentTab.editorInstance) {
+      selectsql = currentTab.editorInstance
+        .getModel()
+        .getValueInRange(currentTab.editorInstance.getSelection());
+    }
+    if (selectsql == null || selectsql == '') {
+      selectsql = currentData.statement;
+    }
+
     const res = await debugTask(
       l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
-      currentData
+      { ...currentData, statement: selectsql }
     );
 
     if (!res) return;
@@ -203,6 +215,10 @@ const HeaderContainer = (props: connect) => {
     });
     await SuccessMessageAsync(l('pages.datastudio.editor.debug.success'));
     currentData.status = JOB_STATUS.RUNNING;
+    // Common sql task is synchronized, so it needs to automatically update the status to finished.
+    if (isSql(currentData.dialect)) {
+      currentData.status = JOB_STATUS.FINISHED;
+    }
     if (currentTab) currentTab.console.result = res.data.result;
     saveTabs({ ...props.tabs });
   };
@@ -346,7 +362,13 @@ const HeaderContainer = (props: connect) => {
         (currentTab?.subType?.toLowerCase() == DIALECT.FLINK_SQL ||
           currentTab?.subType?.toLowerCase() == DIALECT.FLINKJAR),
       props: {
-        href: `/#/devops/job-detail?id=${currentData?.jobInstanceId}`,
+        onClick: async () => {
+          const result = await queryList(API_CONSTANTS.GET_JOB_LIST, {
+            filter: {taskId: [currentData?.id]},
+            currentPage: 1,
+          });
+          window.open(`/#/devops/job-detail?id=${result.data[0].id}`)
+        },
         target: '_blank'
       }
     },
@@ -380,7 +402,7 @@ const HeaderContainer = (props: connect) => {
         currentTab?.type == TabsPageType.project &&
         !isRunning(currentData) &&
         (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
-          currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR),
+          isSql(currentTab?.subType?.toLowerCase())),
       props: {
         style: { background: '#52c41a' },
         type: 'primary'
@@ -423,7 +445,8 @@ const HeaderContainer = (props: connect) => {
 
     return (
       <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
-        <Breadcrumb separator={'/'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
+        {/*<Breadcrumb itemRender={(item, params, items, paths)=><span>{item.title}</span>} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />*/}
+        <EnvironmentOutlined style={{paddingRight:20}}/><Breadcrumb style={{fontSize:12,lineHeight:VIEW.headerHeight+"px"}} separator={'/'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
       </FlexCenterDiv>
     );
   };

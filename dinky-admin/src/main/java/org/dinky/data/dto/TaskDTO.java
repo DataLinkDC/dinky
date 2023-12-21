@@ -57,7 +57,7 @@ public class TaskDTO extends AbstractStatementDTO {
     @ApiModelProperty(
             value = "Run Mode",
             dataType = "String",
-            example = "BATCH",
+            example = "Local",
             notes = "The execution mode for the SQL query")
     private String type;
 
@@ -199,14 +199,14 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "boolean",
             example = "false",
             notes = "Flagindicatingwhethertousechangelogs")
-    private boolean useChangeLog;
+    private boolean useChangeLog = false;
 
     @ApiModelProperty(
             value = "Use Auto Cancel",
             dataType = "boolean",
             example = "false",
             notes = "Flag indicating whether to use auto-canceling")
-    private boolean useAutoCancel;
+    private boolean useAutoCancel = true;
 
     @ApiModelProperty(value = "Session", dataType = "String", example = "session_id", notes = "The session identifier")
     private String session;
@@ -219,7 +219,7 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "Integer",
             example = "100",
             notes = "The maximum number of rows to return")
-    private Integer maxRowNum;
+    private Integer maxRowNum = 100;
 
     public JobConfig getJobConfig() {
 
