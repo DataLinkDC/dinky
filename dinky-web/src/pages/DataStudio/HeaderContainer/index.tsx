@@ -193,14 +193,6 @@ const HeaderContainer = (props: connect) => {
     // @ts-ignore
     const editor = currentTab.monacoInstance.editor.getEditors().find((x:any)=>x["id"]===currentData.id);
 
-    let selectsql = null;
-    if (currentTab.editorInstance) {
-      // @ts-ignore
-      selectsql = currentTab.editorInstance
-        .getModel()
-        // @ts-ignore
-        .getValueInRange(currentTab.editorInstance.getSelection());
-    //
     let selectSql = '';
     if (editor) {
       selectSql = editor.getModel().getValueInRange(editor.getSelection());
