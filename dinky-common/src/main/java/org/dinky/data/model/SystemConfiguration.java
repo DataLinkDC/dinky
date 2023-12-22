@@ -20,6 +20,7 @@
 package org.dinky.data.model;
 
 import org.dinky.data.enums.Status;
+import org.dinky.data.properties.OssProperties;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -211,14 +212,15 @@ public class SystemConfiguration {
             .defaultValue(true)
             .note(Status.SYS_RESOURCE_SETTINGS_ENABLE_NOTE);
 
+    private final Configuration<ResourcesModelEnum> resourcesModel = key(Status.SYS_RESOURCE_SETTINGS_MODEL)
+            .enumType(ResourcesModelEnum.class)
+            .defaultValue(ResourcesModelEnum.LOCAL)
+            .note(Status.SYS_RESOURCE_SETTINGS_MODEL_NOTE);
+
     private final Configuration<String> resourcesUploadBasePath = key(Status.SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH)
             .stringType()
             .defaultValue("/dinky")
             .note(Status.SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH_NOTE);
-    private final Configuration<ResourcesModelEnum> resourcesModel = key(Status.SYS_RESOURCE_SETTINGS_MODEL)
-            .enumType(ResourcesModelEnum.class)
-            .defaultValue(ResourcesModelEnum.HDFS)
-            .note(Status.SYS_RESOURCE_SETTINGS_MODEL_NOTE);
 
     private final Configuration<String> resourcesOssEndpoint = key(Status.SYS_RESOURCE_SETTINGS_OSS_ENDPOINT)
             .stringType()
@@ -342,5 +344,17 @@ public class SystemConfiguration {
 
     public String getPythonHome() {
         return pythonHome.getValue();
+    }
+
+    public OssProperties getOssProperties() {
+        return OssProperties.builder()
+                .enable(true)
+                .endpoint(resourcesOssEndpoint.getValue())
+                .accessKey(resourcesOssAccessKey.getValue())
+                .secretKey(resourcesOssSecretKey.getValue())
+                .bucketName(resourcesOssBucketName.getValue())
+                .region(resourcesOssRegion.getValue())
+                .pathStyleAccess(resourcesPathStyleAccess.getValue())
+                .build();
     }
 }
