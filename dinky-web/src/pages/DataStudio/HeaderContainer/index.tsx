@@ -49,6 +49,7 @@ import {
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
+import { queryList } from '@/services/api';
 import { handleOption, handlePutDataJson, queryDataByParams } from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
