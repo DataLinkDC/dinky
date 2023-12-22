@@ -19,13 +19,10 @@
 
 package org.dinky.app.flinksql;
 
-import static org.apache.hadoop.fs.FileSystem.getDefaultUri;
-
 import org.dinky.app.db.DBUtil;
 import org.dinky.app.model.StatementParam;
 import org.dinky.app.model.SysConfig;
-import org.dinky.app.resource.impl.HdfsResourceManager;
-import org.dinky.app.resource.impl.OssResourceManager;
+import org.dinky.app.resource.BaseResourceManager;
 import org.dinky.app.url.RsURLStreamHandlerFactory;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
@@ -33,14 +30,11 @@ import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
-import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.SystemConfiguration;
-import org.dinky.data.properties.OssProperties;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
 import org.dinky.interceptor.FlinkInterceptor;
-import org.dinky.oss.OssTemplate;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
 import org.dinky.trans.dml.ExecuteJarOperation;
@@ -53,8 +47,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.python.PythonOptions;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -80,7 +72,6 @@ import org.slf4j.LoggerFactory;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.URLUtil;
 import lombok.SneakyThrows;
@@ -102,43 +93,9 @@ public class Submitter {
         systemConfiguration.initSetConfiguration(configMap);
     }
 
-    private static void initResource() throws SQLException {
-        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
-        switch (systemConfiguration.getResourcesModel().getValue()) {
-            case OSS:
-                OssProperties ossProperties = new OssProperties();
-                ossProperties.setAccessKey(
-                        systemConfiguration.getResourcesOssAccessKey().getValue());
-                ossProperties.setSecretKey(
-                        systemConfiguration.getResourcesOssSecretKey().getValue());
-                ossProperties.setEndpoint(
-                        systemConfiguration.getResourcesOssEndpoint().getValue());
-                ossProperties.setBucketName(
-                        systemConfiguration.getResourcesOssBucketName().getValue());
-                ossProperties.setRegion(
-                        systemConfiguration.getResourcesOssRegion().getValue());
-                Singleton.get(OssResourceManager.class).setOssTemplate(new OssTemplate(ossProperties));
-                break;
-            case HDFS:
-                final Configuration configuration = new Configuration();
-                configuration.set(
-                        "fs.defaultFS",
-                        systemConfiguration.getResourcesHdfsDefaultFS().getValue());
-                try {
-                    FileSystem fileSystem = FileSystem.get(
-                            getDefaultUri(configuration),
-                            configuration,
-                            systemConfiguration.getResourcesHdfsUser().getValue());
-                    Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
-                } catch (Exception e) {
-                    throw new DinkyException(e);
-                }
-        }
-    }
-
     public static void submit(AppParamConfig config) throws SQLException {
         initSystemConfiguration();
-        initResource();
+        BaseResourceManager.initResourceManager();
         URL.setURLStreamHandlerFactory(new RsURLStreamHandlerFactory());
         log.info("{} Start Submit Job:{}", LocalDateTime.now(), config.getTaskId());
 
