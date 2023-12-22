@@ -43,7 +43,6 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
 
   const [formValues, setFormValues] = useState<Partial<Alert.AlertInstance>>(values);
 
-
   const renderPreForm = () => {
     return (
       <>
@@ -91,11 +90,11 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
   return (
     <>
       <ProForm
-          form={form}
-          onValuesChange={(changedValues, allValues) =>
-              setFormValues((prevState) => ({ ...prevState, ...allValues, ...changedValues }))
-         }
-          submitter={false}
+        form={form}
+        onValuesChange={(changedValues, allValues) =>
+          setFormValues((prevState) => ({ ...prevState, ...allValues, ...changedValues }))
+        }
+        submitter={false}
       >
         <ProForm.Group>
           {renderPreForm()}
