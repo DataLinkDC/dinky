@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.operations.CustomNewParserImpl;
+import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.dag.Transformation;
@@ -63,7 +64,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.dinky.trans.ddl.CustomSetOperation;
 
 /**
  * CustomTableEnvironmentImpl

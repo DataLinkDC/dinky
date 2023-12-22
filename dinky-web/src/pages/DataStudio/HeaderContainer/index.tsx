@@ -191,7 +191,9 @@ const HeaderContainer = (props: connect) => {
   const handlerDebug = async () => {
     if (!currentData) return;
     // @ts-ignore
-    const editor = currentTab.monacoInstance.editor.getEditors().find((x:any)=>x["id"]===currentData.id);
+    const editor = currentTab.monacoInstance.editor
+      .getEditors()
+      .find((x: any) => x['id'] === currentData.id);
 
     //
     let selectSql = '';
@@ -403,7 +405,7 @@ const HeaderContainer = (props: connect) => {
         currentTab?.type == TabsPageType.project &&
         !isRunning(currentData) &&
         (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
-          isSql(currentTab?.subType?.toLowerCase()??"")),
+          isSql(currentTab?.subType?.toLowerCase() ?? '')),
       props: {
         style: { background: '#52c41a' },
         type: 'primary'
