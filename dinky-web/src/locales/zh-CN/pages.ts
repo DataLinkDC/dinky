@@ -717,7 +717,8 @@ export default {
   'rc.cc.spDir': '保存点路径',
   'rc.cc.spDirHelp': '对应SavePoint目录，如 hdfs:///flink/savepoint',
   'rc.cc.sqlSubmitJarPath': 'Jar 文件路径',
-  'rc.cc.sqlSubmitJarPathHelp': '请输入 Jar 文件路径! eg: hdfs:///dinky/dinky-app-1.16-with-dependencies.jar',
+  'rc.cc.sqlSubmitJarPathHelp':
+    '请输入 Jar 文件路径! eg: hdfs:///dinky/dinky-app-1.16-with-dependencies.jar',
   'rc.cc.start': '启动 Session 集群',
   'rc.cc.submitSqlConfig': '提交 FlinkSQL 配置项 (Application 模式必填)',
   'rc.cc.tmHeap': 'TaskManager 堆内存',
