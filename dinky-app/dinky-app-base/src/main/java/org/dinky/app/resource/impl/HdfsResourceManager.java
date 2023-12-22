@@ -34,16 +34,10 @@ import cn.hutool.core.util.URLUtil;
 
 public class HdfsResourceManager implements BaseResourceManager {
     FileSystem hdfs;
-    SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
 
     @Override
     public InputStream readFile(String path) {
         try {
-            if (systemConfiguration.getResourcesHdfsDefaultFS().getValue().contains("file:/")) {
-                return new URL("http://" + systemConfiguration.getDinkyAddr().getValue()
-                                + "/download/downloadFromRs?path=" + URLUtil.encode(path))
-                        .openStream();
-            }
             return getHdfs().open(new Path(getFilePath(path)));
         } catch (IOException e) {
             throw BusException.valueOf("file.read.failed", e);

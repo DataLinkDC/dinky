@@ -19,17 +19,29 @@
 
 package org.dinky.app.resource.impl;
 
+import cn.hutool.core.util.URLUtil;
 import org.dinky.app.resource.BaseResourceManager;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.dinky.data.model.SystemConfiguration;
 
 @Slf4j
 public class LocalResourceManager implements BaseResourceManager {
+    SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+
     @Override
     public InputStream readFile(String path) {
-        return FileUtil.getInputStream(getFilePath(path));
+        try {
+            return new URL("http://" + systemConfiguration.getDinkyAddr().getValue()
+                    + "/download/downloadFromRs?path=" + URLUtil.encode(path))
+                    .openStream();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
