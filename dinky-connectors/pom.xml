@@ -39,11 +39,6 @@
         </profile>
 
         <profile>
-            <id>flink-1.15</id>
-            <modules />
-        </profile>
-
-        <profile>
             <id>flink-all</id>
             <modules>
                 <module>dinky-connector-jdbc-1.14</module>
