@@ -1,5 +1,4 @@
 org.dinky.cdc.kafka.KafkaSinkBuilder
 org.dinky.cdc.kafka.KafkaSinkJsonBuilder
-org.dinky.cdc.doris.DorisExtendSinkBuilder
 org.dinky.cdc.doris.DorisSinkBuilder
 org.dinky.cdc.doris.DorisSchemaEvolutionSinkBuilder

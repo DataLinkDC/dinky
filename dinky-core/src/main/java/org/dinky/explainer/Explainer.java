@@ -147,7 +147,7 @@ public class Explainer {
                 if (!useStatementSet) {
                     break;
                 }
-            } else if (operationType.equals(SqlType.EXECUTE) || operationType.equals(SqlType.SOURCE)) {
+            } else if (operationType.equals(SqlType.EXECUTE) || operationType.equals(SqlType.FLINKCDCPIPELINE)) {
                 execute.add(new StatementParam(statement, operationType));
             } else if (operationType.equals(SqlType.PRINT)) {
                 Map<String, String> config = this.executor.getExecutorConfig().getConfig();

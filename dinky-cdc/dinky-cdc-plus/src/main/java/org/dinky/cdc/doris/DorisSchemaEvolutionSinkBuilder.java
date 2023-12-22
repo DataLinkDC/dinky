@@ -33,6 +33,7 @@ import org.apache.doris.flink.cfg.DorisOptions;
 import org.apache.doris.flink.cfg.DorisReadOptions;
 import org.apache.doris.flink.sink.DorisSink;
 import org.apache.doris.flink.sink.writer.JsonDebeziumSchemaSerializer;
+import org.apache.doris.flink.sink.writer.serializer.DorisRecordSerializer;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -164,7 +165,7 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
             builder.setDorisReadOptions(DorisReadOptions.builder().build())
                     .setDorisExecutionOptions(executionBuilder.build())
                     .setDorisOptions(dorisOptions)
-                    .setSerializer(JsonDebeziumSchemaSerializer.builder()
+                    .setSerializer((DorisRecordSerializer<String>) JsonDebeziumSchemaSerializer.builder()
                             .setDorisOptions(dorisOptions)
                             .build());
 

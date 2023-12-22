@@ -28,10 +28,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * TODO
+ * FlinkCDCPipelineTest
  *
- * @author wenmo
- * @since 2023/12/21 23:49
  */
 public class FlinkCDCPipelineTest {
 
