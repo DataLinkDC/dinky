@@ -21,12 +21,14 @@ package org.dinky.data.properties;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @ApiModel(value = "OssProperties", description = "Configuration Properties for Object Storage Service (OSS)")
+@Builder
 public class OssProperties {
 
     @ApiModelProperty(
@@ -34,7 +36,7 @@ public class OssProperties {
             dataType = "boolean",
             notes = "Whether to enable OSS (Object Storage Service)",
             example = "true")
-    private boolean enable = true;
+    private boolean enable;
 
     @ApiModelProperty(
             value = "OSS Endpoint",
@@ -44,18 +46,11 @@ public class OssProperties {
     private String endpoint;
 
     @ApiModelProperty(
-            value = "Custom Domain",
-            dataType = "String",
-            notes = "Custom domain for OSS",
-            example = "https://custom-domain.com")
-    private String customDomain;
-
-    @ApiModelProperty(
             value = "Path Style Access",
             dataType = "Boolean",
             notes = "Path style access configuration (true for path-style, false for virtual-hosted-style)",
             example = "true")
-    private Boolean pathStyleAccess = true;
+    private Boolean pathStyleAccess;
 
     @ApiModelProperty(value = "Region", dataType = "String", notes = "Region for OSS", example = "oss-cn-hangzhou")
     private String region;

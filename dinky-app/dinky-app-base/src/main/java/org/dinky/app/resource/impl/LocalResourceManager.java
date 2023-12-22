@@ -17,10 +17,30 @@
  *
  */
 
-package org.dinky.data.model;
+package org.dinky.app.resource.impl;
 
-public enum ResourcesModelEnum {
-    LOCAL,
-    HDFS,
-    OSS
+import org.dinky.app.resource.BaseResourceManager;
+import org.dinky.data.model.SystemConfiguration;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
+import cn.hutool.core.util.URLUtil;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class LocalResourceManager implements BaseResourceManager {
+    SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+
+    @Override
+    public InputStream readFile(String path) {
+        try {
+            return new URL("http://" + systemConfiguration.getDinkyAddr().getValue() + "/download/downloadFromRs?path="
+                            + URLUtil.encode(path))
+                    .openStream();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
