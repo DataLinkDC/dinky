@@ -244,6 +244,7 @@ export enum API_CONSTANTS {
   // /api/jobInstance/getLineage
   JOB_INSTANCE_GET_LINEAGE = '/api/jobInstance/getLineage',
   RESTART_TASK = '/api/task/restartTask',
+  SAVEPOINT = '/api/task/savepoint',
   RESTART_TASK_FROM_CHECKPOINT = '/api/task/selectSavePointRestartTask',
   GET_SAVEPOINTS = '/api/savepoints',
   ALERT_HISTORY_LIST = '/api/alertHistory/list',

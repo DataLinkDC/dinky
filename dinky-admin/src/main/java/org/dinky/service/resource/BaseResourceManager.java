@@ -19,9 +19,15 @@
 
 package org.dinky.service.resource;
 
+import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.oss.OssTemplate;
 import org.dinky.service.resource.impl.HdfsResourceManager;
+import org.dinky.service.resource.impl.LocalResourceManager;
 import org.dinky.service.resource.impl.OssResourceManager;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 
 import java.io.File;
 import java.io.InputStream;
@@ -52,8 +58,34 @@ public interface BaseResourceManager {
                 return Singleton.get(HdfsResourceManager.class);
             case OSS:
                 return Singleton.get(OssResourceManager.class);
+            case LOCAL:
+                return Singleton.get(LocalResourceManager.class);
             default:
                 return null;
+        }
+    }
+
+    static void initResourceManager() {
+        switch (instances.getResourcesModel().getValue()) {
+            case LOCAL:
+                Singleton.get(LocalResourceManager.class);
+            case OSS:
+                OssTemplate template = new OssTemplate(instances.getOssProperties());
+                Singleton.get(OssResourceManager.class).setOssTemplate(template);
+                break;
+            case HDFS:
+                final Configuration configuration = new Configuration();
+                configuration.set(
+                        "fs.defaultFS", instances.getResourcesHdfsDefaultFS().getValue());
+                try {
+                    FileSystem fileSystem = FileSystem.get(
+                            FileSystem.getDefaultUri(configuration),
+                            configuration,
+                            instances.getResourcesHdfsUser().getValue());
+                    Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
+                } catch (Exception e) {
+                    throw new DinkyException(e);
+                }
         }
     }
 
