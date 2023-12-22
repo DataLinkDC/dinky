@@ -19,11 +19,9 @@
 
 package org.dinky.alert.http;
 
-/** DingTalkConstants */
+/** Http Constants */
 public class HttpConstants {
     public static final String TYPE = "Http";
-    public static final String ALERT_TEMPLATE_TITLE = "title";
-    public static final String ALERT_TEMPLATE_CONTENT = "content";
 
     public static final String REQUEST_TYPE_POST = "POST";
     public static final String REQUEST_TYPE_GET = "GET";
