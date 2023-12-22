@@ -133,7 +133,7 @@ const Result = (props: any) => {
     if (consoleData.result && !isRefresh) {
       setData(consoleData.result);
     }
-    if(consoleData.results && !isRefresh){
+    else if(consoleData.results && !isRefresh){
       setDataList(consoleData.results)
     }
     else {
