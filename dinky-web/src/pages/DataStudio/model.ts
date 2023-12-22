@@ -164,7 +164,6 @@ export interface TabsItemType {
   closable: boolean;
   path: string[];
   monacoInstance: React.RefObject<Monaco | undefined>;
-  editorInstance: editor.IStandaloneCodeEditor | undefined;
   console: ConsoleType;
   isModified: boolean;
 }
@@ -184,6 +183,7 @@ export interface DataStudioTabsItemType extends TabsItemType {
 export type TabsType = {
   activeKey: string;
   activeBreadcrumbTitle: string;
+  selectedStatement?: string;
   panes: TabsItemType[];
 };
 
@@ -335,6 +335,7 @@ export type ModelType = {
     updateJobRunningMsg: Reducer<StateType>;
     saveFlinkConfigOptions: Reducer<StateType>;
     updateSuggestions: Reducer<StateType>;
+    updateSelectedStatement: Reducer<StateType>;
   };
 };
 
@@ -867,6 +868,15 @@ const Model: ModelType = {
       return {
         ...state,
         suggestions: payload
+      };
+    },
+    updateSelectedStatement(state, { payload }) {
+      return {
+        ...state,
+        tabs: {
+          ...state.tabs,
+          selectedStatement:payload
+        }
       };
     }
   }

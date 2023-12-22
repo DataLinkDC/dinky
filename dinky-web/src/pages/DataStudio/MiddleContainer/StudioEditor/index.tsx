@@ -39,6 +39,7 @@ import { Monaco } from '@monaco-editor/react';
 import { Button, Spin } from 'antd';
 import { editor } from 'monaco-editor';
 import React, { memo, useEffect, useRef, useState } from 'react';
+import {getCurrentData, getCurrentTab} from "@/pages/DataStudio/function";
 
 export type EditorProps = {
   tabsItem: DataStudioTabsItemType;
@@ -105,15 +106,21 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
     editor.layout();
     editor.focus();
     editorInstance.current = editor;
+    // @ts-ignore
+    editor['id']=getCurrentTab(tabs.panes,tabs.activeKey)?.params.taskId
     tabsItem.monacoInstance = monaco;
-    tabsItem.editorInstance = editor;
 
     editor.onDidChangeCursorPosition((e) => {
+
       props.footContainer.codePosition = [e.position.lineNumber, e.position.column];
       dispatch({
         type: STUDIO_MODEL.saveFooterValue,
         payload: { ...props.footContainer }
       });
+      // dispatch({
+      //   type: STUDIO_MODEL.updateSelectedStatement,
+      //   payload: editor.getModel().getValueInRange(editor.getSelection())
+      // });
     });
     registerEditorKeyBindingAndAction(editor);
   };
@@ -144,7 +151,6 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
         />
         <CodeEdit
           monacoRef={tabsItem?.monacoInstance}
-          editorRef={tabsItem?.editorInstance}
           code={tabsItem?.params?.taskData?.statement}
           language={matchLanguage(tabsItem?.subType)}
           editorDidMount={editorDidMount}

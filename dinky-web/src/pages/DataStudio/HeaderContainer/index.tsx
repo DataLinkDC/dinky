@@ -190,20 +190,21 @@ const HeaderContainer = (props: connect) => {
 
   const handlerDebug = async () => {
     if (!currentData) return;
+    // @ts-ignore
+    const editor = currentTab.monacoInstance.editor.getEditors().find((x:any)=>x["id"]===currentData.id);
 
-    let selectsql = null;
-    if (currentTab.editorInstance) {
-      selectsql = currentTab.editorInstance
-        .getModel()
-        .getValueInRange(currentTab.editorInstance.getSelection());
+    //
+    let selectSql = '';
+    if (editor) {
+      selectSql = editor.getModel().getValueInRange(editor.getSelection());
     }
-    if (selectsql == null || selectsql == '') {
-      selectsql = currentData.statement;
+    if (selectSql == null || selectSql == '') {
+      selectSql = currentData.statement;
     }
 
     const res = await debugTask(
       l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
-      { ...currentData, statement: selectsql }
+      { ...currentData, statement: selectSql }
     );
 
     if (!res) return;
@@ -402,7 +403,7 @@ const HeaderContainer = (props: connect) => {
         currentTab?.type == TabsPageType.project &&
         !isRunning(currentData) &&
         (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
-          isSql(currentTab?.subType?.toLowerCase())),
+          isSql(currentTab?.subType?.toLowerCase()??"")),
       props: {
         style: { background: '#52c41a' },
         type: 'primary'
