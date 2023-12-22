@@ -656,9 +656,19 @@ export default {
   'rc.ai.wechat': 'WeChat',
   'rc.ai.wechatAtUsersPleaseHolder':
     'Please enter the @user ID (enterprise and micro user name spelled out)',
-  'rc.ai.xls.file.path': 'XLS storage directory',
-  'rc.ai.xls.file.pathPleaseHolder':
-    'Please enter the XLS storage directory! The default is /tmp/xls',
+  'rc.ai.http': 'HTTP',
+  'rc.ai.http.url': 'Request address',
+  'rc.ai.http.urlPleaseHolder': 'Please enter the request address',
+  'rc.ai.http.method': 'Request method',
+  'rc.ai.http.methodPleaseHolder': 'Please select the request method',
+  'rc.ai.http.headers': 'Request headers',
+  'rc.ai.http.body': 'Request body',
+  'rc.ai.http.contentFiled': 'Content fields',
+  'rc.ai.http.contentFiled.help':
+    "In HTTP requests, the fields in the request body are replaced with 'Alarm Message', and if there are multiple layers of nested fields, use a JSON path expression, such as text.markdown.content",
+  'rc.ai.http.titleFiled': 'Title field',
+  'rc.ai.http.titleFiled.help':
+    "In HTTP requests, the field in the request body is replaced with 'header content', if there are multiple layers of nested fields, please use a JSON path expression, such as markdown.title, if not, the title is concatenated in the content field by default",
   'rc.alert.template.create': 'Create Template',
   'rc.alert.template.modify': 'Modify Template',
   'rc.alert.template.new': 'Create an alert template',

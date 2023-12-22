@@ -28,8 +28,8 @@ import {
   isCanPushDolphin,
   isOnline,
   isRunning,
-  projectCommonShow,
-  isSql
+  isSql,
+  projectCommonShow
 } from '@/pages/DataStudio/HeaderContainer/function';
 import PushDolphin from '@/pages/DataStudio/HeaderContainer/PushDolphin';
 import {
@@ -49,8 +49,10 @@ import {
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
+import { queryList } from '@/services/api';
 import { handleOption, handlePutDataJson, queryDataByParams } from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { DolphinTaskDefinition, DolphinTaskMinInfo } from '@/types/Studio/data.d';
 import { l } from '@/utils/intl';
 import { SuccessMessageAsync } from '@/utils/messages';
@@ -193,7 +195,9 @@ const HeaderContainer = (props: connect) => {
 
     let selectsql = null;
     if (currentTab.editorInstance) {
-      selectsql = currentTab.editorInstance.getModel().getValueInRange(currentTab.editorInstance.getSelection());
+      selectsql = currentTab.editorInstance
+        .getModel()
+        .getValueInRange(currentTab.editorInstance.getSelection());
     }
     if (selectsql == null || selectsql == '') {
       selectsql = currentData.statement;
@@ -201,7 +205,7 @@ const HeaderContainer = (props: connect) => {
 
     const res = await debugTask(
       l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
-      {...currentData, statement: selectsql}
+      { ...currentData, statement: selectsql }
     );
 
     if (!res) return;
@@ -368,7 +372,13 @@ const HeaderContainer = (props: connect) => {
         (currentTab?.subType?.toLowerCase() == DIALECT.FLINK_SQL ||
           currentTab?.subType?.toLowerCase() == DIALECT.FLINKJAR),
       props: {
-        href: `/#/devops/job-detail?id=${currentData?.jobInstanceId}`,
+        onClick: async () => {
+          const result = await queryList(API_CONSTANTS.GET_JOB_LIST, {
+            filter: { taskId: [currentData?.id] },
+            currentPage: 1
+          });
+          window.open(`/#/devops/job-detail?id=${result.data[0].id}`);
+        },
         target: '_blank'
       }
     },
@@ -445,7 +455,13 @@ const HeaderContainer = (props: connect) => {
 
     return (
       <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
-        <Breadcrumb separator={'/'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
+        {/*<Breadcrumb itemRender={(item, params, items, paths)=><span>{item.title}</span>} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />*/}
+        <EnvironmentOutlined style={{ paddingRight: 20 }} />
+        <Breadcrumb
+          style={{ fontSize: 12, lineHeight: VIEW.headerHeight + 'px' }}
+          separator={'/'}
+          items={buildBreadcrumbItems(activeBreadcrumbTitle)}
+        />
       </FlexCenterDiv>
     );
   };

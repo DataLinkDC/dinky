@@ -19,7 +19,7 @@
 
 package org.dinky.assertion;
 
-import org.dinky.data.exception.RunTimeException;
+import org.dinky.data.exception.BusException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -89,31 +89,31 @@ public class Asserts {
 
     public static void checkNull(Object key, String msg) {
         if (key == null) {
-            throw new RunTimeException(msg);
+            throw new BusException(msg);
         }
     }
 
     public static void checkNotNull(Object object, String msg) {
         if (isNull(object)) {
-            throw new RunTimeException(msg);
+            throw new BusException(msg);
         }
     }
 
     public static void checkNullString(String key, String msg) {
         if (isNull(key) || isEquals("", key)) {
-            throw new RunTimeException(msg);
+            throw new BusException(msg);
         }
     }
 
     public static void checkNullCollection(Collection<?> collection, String msg) {
         if (isNullCollection(collection)) {
-            throw new RunTimeException(msg);
+            throw new BusException(msg);
         }
     }
 
     public static void checkNullMap(Map<?, ?> map, String msg) {
         if (isNullMap(map)) {
-            throw new RunTimeException(msg);
+            throw new BusException(msg);
         }
     }
 }

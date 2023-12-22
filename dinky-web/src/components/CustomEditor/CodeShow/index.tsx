@@ -159,6 +159,14 @@ const CodeShow = (props: CodeShowFormProps) => {
   };
 
   /**
+   *  handle get downoad url
+   */
+  const handleDownloadLog = () => {
+    const blob = new Blob([code ?? 'not get content'], { type: 'text/plain' });
+    return URL.createObjectURL(blob);
+  };
+
+  /**
    *  editorDidMount
    * @param {editor.IStandaloneCodeEditor} editor
    * @param monaco {Monaco}
@@ -191,7 +199,8 @@ const CodeShow = (props: CodeShowFormProps) => {
     handleBackTop,
     handleBackBottom,
     handleUpScroll,
-    handleDownScroll
+    handleDownScroll,
+    handleDownloadLog
   };
 
   /**

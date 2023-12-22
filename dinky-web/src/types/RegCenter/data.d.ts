@@ -18,6 +18,7 @@
  */
 
 import { BaseBeanColumns } from '@/types/Public/data';
+import { ConfigItem } from '@/types/Studio/data.d';
 
 /**
  * about alert
@@ -58,6 +59,13 @@ declare namespace Alert {
     port: number;
     user: string;
     password: string;
+  };
+
+  export type AlertInstanceParamsHttp = {
+    url: string;
+    method: string;
+    headers: ConfigItem[];
+    body: any;
   };
 
   export type AlertInstanceParamsEmail = {
@@ -138,7 +146,8 @@ declare namespace Alert {
       | AlertInstanceParamsFeiShu
       | AlertInstanceParamsEmail
       | AlertInstanceParamsWeChat
-      | AlertInstanceParamsSms;
+      | AlertInstanceParamsSms
+      | AlertInstanceParamsHttp;
   };
 
   /**
@@ -160,6 +169,7 @@ export const ALERT_TYPE = {
   FEISHU: 'FeiShu',
   EMAIL: 'Email',
   SMS: 'Sms',
+  HTTP: 'Http',
   GROUP: 'Group'
 };
 

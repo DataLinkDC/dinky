@@ -18,7 +18,6 @@
  */
 
 import { handleGetOption, handleOption } from '@/services/BusinessCrud';
-import { DIALECT } from '@/services/constants';
 
 export async function explainSql(title: string, params: any) {
   return handleOption('/api/task/explainSql', title, params);

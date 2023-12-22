@@ -634,7 +634,19 @@ export default {
   'rc.ai.webhookPleaseHolder': '请输入 webhook 地址',
   'rc.ai.wechat': '企业微信',
   'rc.ai.wechatAtUsersPleaseHolder': '请输入被@用户ID(企微用户名全拼)',
-
+  'rc.ai.http': 'HTTP',
+  'rc.ai.http.url': '请求地址',
+  'rc.ai.http.urlPleaseHolder': '请输入请求地址',
+  'rc.ai.http.method': '请求方法',
+  'rc.ai.http.methodPleaseHolder': '请选择请求方法',
+  'rc.ai.http.headers': '请求头',
+  'rc.ai.http.body': '请求体',
+  'rc.ai.http.contentFiled': '内容字段',
+  'rc.ai.http.contentFiled.help':
+    '在http请求中，请求体(body)内被替换为`告警消息`的字段，如果涉及多层嵌套字段，请使用json path表达式，例如 text.markdown.content',
+  'rc.ai.http.titleFiled': '标题字段',
+  'rc.ai.http.titleFiled.help':
+    '在http请求中，请求体(body)内被替换为`标题内容`的字段，如果涉及多层嵌套字段，请使用json path表达式，例如 markdown.title，如果不填写，则标题默认拼接在内容字段中',
   'rc.alert.template.create': '创建模板',
   'rc.alert.template.modify': '修改模板',
   'rc.alert.template.new': '新建告警模板',

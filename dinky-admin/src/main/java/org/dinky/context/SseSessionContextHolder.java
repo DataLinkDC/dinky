@@ -159,7 +159,7 @@ public class SseSessionContextHolder {
                     SseDataVo data = new SseDataVo(sessionKey, topic, content);
                     sendSse(sessionKey, data);
                 } catch (Exception e) {
-                    log.error("Error sending sse data", e);
+                    log.error("Error sending sse data:{}", e.getMessage());
                     onError(sessionKey, e);
                 }
             }
