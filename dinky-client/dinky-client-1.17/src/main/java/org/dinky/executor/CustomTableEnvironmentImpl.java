@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.parser.CustomParserImpl;
+import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.dag.Transformation;
@@ -112,6 +113,15 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 return true;
             } else if (operation instanceof ResetOperation) {
                 callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
+                return true;
+            } else if (operation instanceof CustomSetOperation) {
+                CustomSetOperation customSetOperation = (CustomSetOperation) operation;
+                if (customSetOperation.isValid()) {
+                    callSet(
+                            new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()),
+                            getStreamExecutionEnvironment(),
+                            setMap);
+                }
                 return true;
             }
         }
