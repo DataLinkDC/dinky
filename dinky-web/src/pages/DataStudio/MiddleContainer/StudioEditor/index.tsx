@@ -19,6 +19,7 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { useEditor } from '@/hooks/useEditor';
+import { getCurrentTab } from '@/pages/DataStudio/function';
 import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
 import { TASK_VAR_FILTER } from '@/pages/DataStudio/MiddleContainer/StudioEditor/constants';
 import DiffModal from '@/pages/DataStudio/MiddleContainer/StudioEditor/DiffModal';
@@ -39,7 +40,6 @@ import { Monaco } from '@monaco-editor/react';
 import { Button, Spin } from 'antd';
 import { editor } from 'monaco-editor';
 import React, { memo, useEffect, useRef, useState } from 'react';
-import {getCurrentData, getCurrentTab} from "@/pages/DataStudio/function";
 
 export type EditorProps = {
   tabsItem: DataStudioTabsItemType;
@@ -107,11 +107,10 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
     editor.focus();
     editorInstance.current = editor;
     // @ts-ignore
-    editor['id']=getCurrentTab(tabs.panes,tabs.activeKey)?.params.taskId
+    editor['id'] = getCurrentTab(tabs.panes, tabs.activeKey)?.params.taskId;
     tabsItem.monacoInstance = monaco;
 
     editor.onDidChangeCursorPosition((e) => {
-
       props.footContainer.codePosition = [e.position.lineNumber, e.position.column];
       dispatch({
         type: STUDIO_MODEL.saveFooterValue,
