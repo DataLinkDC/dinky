@@ -17,17 +17,19 @@
  *
  */
 
+import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { RequestMethod } from '@/pages/RegCenter/Alert/AlertInstance/constans';
 import { Alert } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import {
   ProForm,
   ProFormGroup,
+  ProFormItem,
   ProFormList,
   ProFormSelect,
   ProFormText
 } from '@ant-design/pro-components';
-import { Space } from 'antd';
+import { Col, Divider, Row, Space } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React from 'react';
@@ -36,11 +38,15 @@ type HttpProps = {
   values: Partial<Alert.AlertInstance>;
   form: FormInstance<Values>;
 };
+const CodeEditProps = {
+  height: '30vh',
+  lineNumbers: 'on',
+  language: 'json'
+};
 const Http: React.FC<HttpProps> = (props) => {
   const { values, form } = props;
 
   const params = values.params as Alert.AlertInstanceParamsHttp;
-
   return (
     <>
       <ProForm.Group>
@@ -61,51 +67,55 @@ const Http: React.FC<HttpProps> = (props) => {
         />
       </ProForm.Group>
 
-      {/*这有 bug，待解决*/}
-      <ProFormList
-        name={['params', 'headers']}
-        label={l('rc.ai.http.headers')}
-        copyIconProps={false}
-        required
-        initialValue={[{ key: '', value: '' }]}
-        deleteIconProps={{
-          tooltipText: l('rc.cc.deleteConfig')
-        }}
-        creatorButtonProps={{
-          style: { width: '100%' },
-          creatorButtonText: l('rc.cc.addConfig')
-        }}
-      >
-        <ProFormGroup key='headersGroup' style={{ width: '100%' }}>
-          <Space key={'config'} style={{ width: '100%' }} align='baseline'>
-            <ProFormText width={'md'} name='key' placeholder={l('rc.cc.key')} />
-            <ProFormText width={'lg'} name='value' placeholder={l('rc.cc.value')} />
-          </Space>
-        </ProFormGroup>
-      </ProFormList>
+      <Row>
+        <Col span={10}>
+          <ProFormList
+            name={['params', 'headers']}
+            label={l('rc.ai.http.headers')}
+            copyIconProps={false}
+            required
+            initialValue={[{ key: '', value: '' }]}
+            deleteIconProps={{
+              tooltipText: l('rc.cc.deleteConfig')
+            }}
+            creatorButtonProps={{
+              creatorButtonText: l('rc.cc.addConfig')
+            }}
+          >
+            <ProFormGroup key='headersGroup' style={{ width: '100%' }}>
+              <Space key={'config'}>
+                <ProFormText name='key' placeholder={l('rc.cc.key')} />
+                <ProFormText name='value' placeholder={l('rc.cc.value')} />
+              </Space>
+            </ProFormGroup>
+          </ProFormList>
 
-      {/*这有 bug，待解决*/}
-      <ProFormList
-        name={['params', 'body']}
-        label={l('rc.ai.http.body')}
-        copyIconProps={false}
-        required
-        initialValue={[{ key: '', value: '' }]}
-        deleteIconProps={{
-          tooltipText: l('rc.cc.deleteConfig')
-        }}
-        creatorButtonProps={{
-          style: { width: '100%' },
-          creatorButtonText: l('rc.cc.addConfig')
-        }}
-      >
-        <ProFormGroup key='bodyGroup' style={{ width: '100%' }}>
-          <Space key={'config'} style={{ width: '100%' }} align='baseline'>
-            <ProFormText width={'md'} name='key' placeholder={l('rc.cc.key')} />
-            <ProFormText width={'lg'} name='value' placeholder={l('rc.cc.value')} />
-          </Space>
-        </ProFormGroup>
-      </ProFormList>
+          <ProFormText
+            width='xl'
+            name={['params', 'contentFiled']}
+            label={l('rc.ai.http.contentFiled')}
+            required
+            tooltip={l('rc.ai.http.contentFiled.help')}
+          />
+          <ProFormText
+            width='xl'
+            name={['params', 'titleFiled']}
+            label={l('rc.ai.http.titleFiled')}
+            tooltip={l('rc.ai.http.titleFiled.help')}
+          />
+        </Col>
+        <Divider type={'vertical'} />
+        <Col span={12}>
+          <ProFormItem
+            required
+            key='httpBody'
+            name={['params', 'body']}
+            label={l('rc.ai.http.body')}
+          >
+            <CodeEdit {...CodeEditProps} code={params.body ?? ''} />
+          </ProFormItem>
+        </Col>
+      </Row>
     </>
   );
 };

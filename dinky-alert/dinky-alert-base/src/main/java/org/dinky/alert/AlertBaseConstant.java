@@ -39,8 +39,8 @@ public class AlertBaseConstant {
     public static final String AT_USERS = "atUsers";
     public static final String PASSWORD = "password";
 
-    public static final String ALERT_TEMPLATE_TITLE = "Job Alert Test Title";
-    public static final String ALERT_TEMPLATE_MSG = "\n- **Job Name:** <font color='gray'>Test Job</font>\n"
+    public static final String ALERT_TEMPLATE_TITLE = "Dinky Job Alert Test Title";
+    public static final String ALERT_TEMPLATE_MSG = "\n- **Job Name:** <font color='gray'>Dinky Test Job</font>\n"
             + "- **Job Status:** <font color='red'>FAILED</font>\n"
             + "- **Alert Time:** 2023-01-01 12:00:00\n"
             + "- **Start Time:** 2023-01-01 12:00:00\n"

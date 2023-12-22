@@ -65,6 +65,7 @@ declare namespace Alert {
     url: string;
     method: string;
     headers: ConfigItem[];
+    body: any;
   };
 
   export type AlertInstanceParamsEmail = {
