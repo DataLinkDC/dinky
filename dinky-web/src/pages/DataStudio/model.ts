@@ -164,7 +164,6 @@ export interface TabsItemType {
   closable: boolean;
   path: string[];
   monacoInstance: React.RefObject<Monaco | undefined>;
-  editorInstance: editor.IStandaloneCodeEditor | undefined;
   console: ConsoleType;
   isModified: boolean;
 }
@@ -184,6 +183,7 @@ export interface DataStudioTabsItemType extends TabsItemType {
 export type TabsType = {
   activeKey: string;
   activeBreadcrumbTitle: string;
+  selectedStatement?: string;
   panes: TabsItemType[];
 };
 
@@ -868,7 +868,7 @@ const Model: ModelType = {
         ...state,
         suggestions: payload
       };
-    }
+    },
   }
 };
 
