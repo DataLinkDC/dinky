@@ -30,12 +30,6 @@
     <name>Dinky : Shaded : Paimon</name>
     <description>Dinky Shaded Paimon</description>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.paimon</groupId>
@@ -76,9 +70,7 @@
                             </filters>
                             <relocations>
                                 <relocation>
-                                    <!-- 改名前 -->
                                     <pattern>org.apache.paimon</pattern>
-                                    <!-- 改名后 -->
                                     <shadedPattern>org.dinky.shaded.org.apache.paimon</shadedPattern>
                                 </relocation>
                             </relocations>
