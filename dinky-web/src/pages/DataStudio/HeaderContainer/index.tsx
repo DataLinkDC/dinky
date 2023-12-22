@@ -49,10 +49,10 @@ import {
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
-import { queryList } from '@/services/api';
 import { handleOption, handlePutDataJson, queryDataByParams } from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { Jobs } from '@/types/DevOps/data.d';
 import { DolphinTaskDefinition, DolphinTaskMinInfo } from '@/types/Studio/data.d';
 import { l } from '@/utils/intl';
 import { SuccessMessageAsync } from '@/utils/messages';
@@ -191,9 +191,10 @@ const HeaderContainer = (props: connect) => {
   const handlerDebug = async () => {
     if (!currentData) return;
     // @ts-ignore
-    const editor = currentTab.monacoInstance.editor.getEditors().find((x:any)=>x["id"]===currentData.id);
+    const editor = currentTab.monacoInstance.editor
+      .getEditors()
+      .find((x: any) => x['id'] === currentData.id);
 
-    //
     let selectSql = '';
     if (editor) {
       selectSql = editor.getModel().getValueInRange(editor.getSelection());
@@ -364,11 +365,13 @@ const HeaderContainer = (props: connect) => {
           currentTab?.subType?.toLowerCase() == DIALECT.FLINKJAR),
       props: {
         onClick: async () => {
-          const result = await queryList(API_CONSTANTS.GET_JOB_LIST, {
-            filter: { taskId: [currentData?.id] },
-            currentPage: 1
-          });
-          window.open(`/#/devops/job-detail?id=${result.data[0].id}`);
+          const dataByParams = await queryDataByParams<Jobs.JobInstance>(
+            API_CONSTANTS.GET_JOB_INSTANCE_BY_TASK_ID,
+            { taskId: currentData?.id }
+          );
+          if (dataByParams) {
+            window.open(`/#/devops/job-detail?id=${dataByParams?.id}`);
+          }
         },
         target: '_blank'
       }
@@ -403,7 +406,7 @@ const HeaderContainer = (props: connect) => {
         currentTab?.type == TabsPageType.project &&
         !isRunning(currentData) &&
         (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
-          isSql(currentTab?.subType?.toLowerCase()??"")),
+          isSql(currentTab?.subType?.toLowerCase() ?? '')),
       props: {
         style: { background: '#52c41a' },
         type: 'primary'
