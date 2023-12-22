@@ -34,6 +34,7 @@ import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.job.Job;
 import org.dinky.job.JobResult;
 import org.dinky.mapper.DataBaseMapper;
 import org.dinky.metadata.driver.Driver;
@@ -48,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -310,5 +312,55 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
                         .like(DataBase::getName, keyword)
                         .or()
                         .like(DataBase::getNote, keyword));
+    }
+
+    @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE_COMMON_SQL)
+    @Override
+    public JobResult StreamExecuteCommonSql(SqlDTO sqlDTO) {
+        JobResult result = new JobResult();
+        result.setStatement(sqlDTO.getStatement());
+        result.setStartTime(LocalDateTime.now());
+
+        if (Asserts.isNull(sqlDTO.getDatabaseId())) {
+            result.setSuccess(false);
+            result.setError("please assign data source");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
+        DataBase dataBase = getById(sqlDTO.getDatabaseId());
+        if (Asserts.isNull(dataBase)) {
+            result.setSuccess(false);
+            result.setError("data source not exist.");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
+        List<JdbcSelectResult> jdbcSelectResults = new ArrayList<>();
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            Stream<JdbcSelectResult> jdbcSelectResultStream =
+                    driver.StreamExecuteSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
+            jdbcSelectResultStream.forEach(res -> {
+                jdbcSelectResults.add(res);
+                if (!res.isSuccess()) {
+                    throw new RuntimeException();
+                }
+            });
+            result.setStatus(Job.JobStatus.SUCCESS);
+            result.setResults(jdbcSelectResults);
+            result.setSuccess(true);
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        } catch (RuntimeException e) {
+            if (!jdbcSelectResults.isEmpty()) {
+                result.setError(
+                        jdbcSelectResults.get(jdbcSelectResults.size() - 1).getError());
+            } else {
+                result.setError(e.getMessage());
+            }
+            result.setStatus(Job.JobStatus.FAILED);
+            result.setSuccess(true);
+            result.setEndTime(LocalDateTime.now());
+            result.setResults(jdbcSelectResults);
+            return result;
+        }
     }
 }

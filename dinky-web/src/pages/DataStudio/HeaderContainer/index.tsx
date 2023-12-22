@@ -190,6 +190,8 @@ const HeaderContainer = (props: connect) => {
 
   const handlerDebug = async () => {
     if (!currentData) return;
+    const saved = currentData.step == JOB_LIFE_CYCLE.PUBLISH ? true : await handleSave();
+    if (!saved) return;
     // @ts-ignore
     const editor = currentTab.monacoInstance.editor
       .getEditors()
@@ -217,6 +219,14 @@ const HeaderContainer = (props: connect) => {
     });
     await SuccessMessageAsync(l('pages.datastudio.editor.debug.success'));
     currentData.status = JOB_STATUS.RUNNING;
+    // Common sql task is synchronized, so it needs to automatically update the status to finished.
+    if (isSql(currentData.dialect)) {
+      currentData.status = JOB_STATUS.FINISHED;
+      if (currentTab) currentTab.console.results = res.data.results;
+    }
+    else {
+      if (currentTab) currentTab.console.result = res.data.result;
+    }
     // Common sql task is synchronized, so it needs to automatically update the status to finished.
     if (isSql(currentData.dialect)) {
       currentData.status = JOB_STATUS.FINISHED;

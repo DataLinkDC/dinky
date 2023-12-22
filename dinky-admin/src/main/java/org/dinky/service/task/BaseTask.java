@@ -77,4 +77,8 @@ public abstract class BaseTask {
         }
         throw new RuntimeException("Not support dialect: " + taskDTO.getDialect());
     }
+
+    public JobResult StreamExecute() {
+        return null;
+    }
 }

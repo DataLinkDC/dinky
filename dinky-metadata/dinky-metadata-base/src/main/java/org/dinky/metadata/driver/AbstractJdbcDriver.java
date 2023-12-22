@@ -59,6 +59,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
@@ -595,10 +596,9 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                     break;
                 }
             }
-            result.setSuccess(true);
+            result.success();
         } catch (Exception e) {
-            result.setError(LogUtil.getError(e));
-            result.setSuccess(false);
+            result.error(LogUtil.getError(e));
             log.error("Query failed", e);
         }
         close(preparedStatement, results);
@@ -627,7 +627,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                     || type.toUpperCase().contains("DESC")
                     || type.toUpperCase().contains("SQLEXPLAINSTATEMENT")) {
                 log.info("Execute query.");
-                result = query(item.toString(), limit);
+                return query(item.toString(), limit);
             } else if (type.toUpperCase().contains("INSERT")
                     || type.toUpperCase().contains("UPDATE")
                     || type.toUpperCase().contains("DELETE")) {
@@ -659,6 +659,57 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
         }
         result.success();
         return result;
+    }
+
+    @Override
+    public Stream<JdbcSelectResult> StreamExecuteSql(String sql, Integer limit) {
+        // TODO 改为ProcessStep注释
+        log.info("Start parse sql...");
+        List<SQLStatement> stmtList =
+                SQLUtils.parseStatements(sql, config.getType().toLowerCase());
+        log.info(CharSequenceUtil.format("A total of {} statement have been Parsed.", stmtList.size()));
+        log.info("Start execute sql...");
+        return stmtList.stream().map(item -> {
+            List<Object> resList = new ArrayList<>();
+            JdbcSelectResult result = JdbcSelectResult.buildResult();
+            String type = item.getClass().getSimpleName();
+            if (type.toUpperCase().contains("SELECT")
+                    || type.toUpperCase().contains("SHOW")
+                    || type.toUpperCase().contains("DESC")
+                    || type.toUpperCase().contains("SQLEXPLAINSTATEMENT")) {
+                log.info("Execute query.");
+                return query(item.toString(), limit);
+            } else if (type.toUpperCase().contains("INSERT")
+                    || type.toUpperCase().contains("UPDATE")
+                    || type.toUpperCase().contains("DELETE")) {
+                try {
+                    log.info("Execute update.");
+                    resList.add(executeUpdate(item.toString()));
+                    result.setStatusList(resList);
+                } catch (Exception e) {
+                    resList.add(0);
+                    result.setStatusList(resList);
+                    result.error(LogUtil.getError(e));
+                    log.error(e.getMessage());
+                    return result;
+                }
+            } else {
+                try {
+                    log.info("Execute DDL.");
+                    execute(item.toString());
+                    resList.add(1);
+                    result.setStatusList(resList);
+                } catch (Exception e) {
+                    resList.add(0);
+                    result.setStatusList(resList);
+                    result.error(LogUtil.getError(e));
+                    log.error(e.getMessage());
+                    return result;
+                }
+            }
+            result.success();
+            return result;
+        });
     }
 
     @Override

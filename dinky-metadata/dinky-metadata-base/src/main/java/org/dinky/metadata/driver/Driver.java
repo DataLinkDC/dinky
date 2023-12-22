@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import cn.hutool.core.text.StrFormatter;
 
@@ -235,4 +236,6 @@ public interface Driver extends AutoCloseable {
     }
 
     List<Map<String, String>> getSplitSchemaList();
+
+    Stream<JdbcSelectResult> StreamExecuteSql(String statement, Integer maxRowNum);
 }
