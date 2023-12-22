@@ -61,6 +61,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.dinky.trans.ddl.CustomSetOperation;
 
 /**
  * CustomTableEnvironmentImpl
@@ -112,6 +113,15 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 return true;
             } else if (operation instanceof ResetOperation) {
                 callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
+                return true;
+            } else if (operation instanceof CustomSetOperation) {
+                CustomSetOperation customSetOperation = (CustomSetOperation) operation;
+                if (customSetOperation.isValid()) {
+                    callSet(
+                            new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()),
+                            getStreamExecutionEnvironment(),
+                            setMap);
+                }
                 return true;
             }
         }
