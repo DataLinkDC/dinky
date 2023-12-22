@@ -52,7 +52,6 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
     loading
   } = props;
 
-  const [formValues, setFormValues] = useState<Partial<Alert.AlertInstance>>(values);
 
   /**
    * init form
@@ -81,17 +80,17 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
    * when modalVisible or values changed, set form values
    */
   useEffect(() => {
-    form.setFieldsValue(formValues);
-  }, [modalVisible, formValues, form]);
+    form.setFieldsValue(values);
+  }, [modalVisible, values, form]);
 
   const testSend = async () => {
     const validateFields = await form.validateFields();
-    handleTest({ ...formValues, ...validateFields });
+    handleTest({ ...values, ...validateFields });
   };
 
   const submit = async () => {
     const validateFields = await form.validateFields();
-    handleSubmit({ ...formValues, ...validateFields });
+    handleSubmit({ ...values, ...validateFields });
     handleCancel();
   };
 
@@ -120,18 +119,15 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
     <>
       <ModalForm<Alert.AlertInstance>
         {...NORMAL_MODAL_OPTIONS}
-        title={formValues?.id ? l('rc.ai.modify') : l('rc.ai.create')}
+        title={values?.id ? l('rc.ai.modify') : l('rc.ai.create')}
         open={modalVisible}
         form={form}
-        initialValues={formValues}
-        onValuesChange={(changedValues, allValues) =>
-          setFormValues((prevState) => ({ ...prevState, ...allValues, ...changedValues }))
-        }
+        initialValues={values}
         modalProps={{ onCancel: handleCancel, ...NORMAL_MODAL_OPTIONS }}
         submitter={{ render: () => [...renderFooter()] }}
         syncToInitialValues
       >
-        <InstanceForm form={form} values={formValues} />
+        <InstanceForm form={form} values={values} />
       </ModalForm>
     </>
   );
