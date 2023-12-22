@@ -29,6 +29,7 @@
     <name>Dinky : Real-time Computing Platform</name>
 
     <modules>
+        <module>dinky-shaded</module>
         <module>dinky-flink</module>
         <module>dinky-common</module>
         <module>dinky-client</module>
@@ -603,11 +604,6 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-cdc-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
-                <artifactId>dinky-cdc-doris</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
