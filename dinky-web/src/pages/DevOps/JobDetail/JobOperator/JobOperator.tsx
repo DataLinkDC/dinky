@@ -63,17 +63,17 @@ const JobOperator = (props: OperatorType) => {
         } else if (key == operatorType.SAVEPOINT_CANCEL) {
           getData(API_CONSTANTS.SAVEPOINT, {
             taskId: jobDetail?.instance?.taskId,
-            savePointType: "cancel"
+            savePointType: 'cancel'
           });
         } else if (key == operatorType.SAVEPOINT_STOP) {
           getData(API_CONSTANTS.SAVEPOINT, {
             taskId: jobDetail?.instance?.taskId,
-            savePointType: "stop"
+            savePointType: 'stop'
           });
         } else if (key == operatorType.SAVEPOINT_TRIGGER) {
           getData(API_CONSTANTS.SAVEPOINT, {
             taskId: jobDetail?.instance?.taskId,
-            savePointType: "trigger"
+            savePointType: 'trigger'
           });
         } else {
           cancelTask('', jobDetail?.instance?.taskId);

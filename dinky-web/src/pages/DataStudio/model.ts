@@ -882,7 +882,7 @@ const Model: ModelType = {
         ...state,
         suggestions: payload
       };
-    },
+    }
   }
 };
 
