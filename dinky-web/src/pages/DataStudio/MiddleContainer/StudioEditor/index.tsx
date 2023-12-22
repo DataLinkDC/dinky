@@ -117,10 +117,6 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
         type: STUDIO_MODEL.saveFooterValue,
         payload: { ...props.footContainer }
       });
-      // dispatch({
-      //   type: STUDIO_MODEL.updateSelectedStatement,
-      //   payload: editor.getModel().getValueInRange(editor.getSelection())
-      // });
     });
     registerEditorKeyBindingAndAction(editor);
   };

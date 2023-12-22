@@ -335,7 +335,6 @@ export type ModelType = {
     updateJobRunningMsg: Reducer<StateType>;
     saveFlinkConfigOptions: Reducer<StateType>;
     updateSuggestions: Reducer<StateType>;
-    updateSelectedStatement: Reducer<StateType>;
   };
 };
 
@@ -870,15 +869,6 @@ const Model: ModelType = {
         suggestions: payload
       };
     },
-    updateSelectedStatement(state, { payload }) {
-      return {
-        ...state,
-        tabs: {
-          ...state.tabs,
-          selectedStatement:payload
-        }
-      };
-    }
   }
 };
 
