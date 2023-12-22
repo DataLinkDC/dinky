@@ -276,13 +276,11 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
                 () -> new BusException(Status.ROOT_DIR_NOT_ALLOW_DELETE));
         try {
             if (id < 1) {
-                getBaseResourceManager().remove("/");
                 // todo 删除主目录，实际是清空
                 remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId, 0));
             }
             Resources byId = getById(id);
             if (isExistsChildren(id)) {
-                getBaseResourceManager().remove(byId.getFullName());
                 if (byId.getIsDirectory()) {
                     List<Resources> resourceByPidToChildren =
                             getResourceByPidToChildren(new ArrayList<>(), byId.getId());
@@ -291,7 +289,6 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
                 List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), byId.getPid());
                 resourceByPidToParent.forEach(x -> x.setSize(x.getSize() - byId.getSize()));
                 updateBatchById(resourceByPidToParent);
-                getBaseResourceManager().remove(byId.getFullName());
                 return removeById(id);
             }
             return removeById(id);

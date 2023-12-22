@@ -17,10 +17,19 @@
  *
  */
 
-package org.dinky.data.model;
+package org.dinky.app.resource.impl;
 
-public enum ResourcesModelEnum {
-    LOCAL,
-    HDFS,
-    OSS
+import org.dinky.app.resource.BaseResourceManager;
+
+import java.io.InputStream;
+
+import cn.hutool.core.io.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class LocalResourceManager implements BaseResourceManager {
+    @Override
+    public InputStream readFile(String path) {
+        return FileUtil.getInputStream(getFilePath(path));
+    }
 }
