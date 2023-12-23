@@ -20,6 +20,7 @@
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import {
+  getEnvData,
   getFlinkConfigs,
   querySuggessionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
@@ -303,6 +304,7 @@ export type ModelType = {
     queryProject: Effect;
     queryFlinkConfigOptions: Effect;
     querySuggestions: Effect;
+    queryEnv: Effect;
   };
   reducers: {
     updateToolContentHeight: Reducer<StateType>;
@@ -408,6 +410,14 @@ const Model: ModelType = {
       const response: [] = yield call(getTaskData, payload);
       yield put({
         type: 'saveProject',
+        payload: response
+      });
+    },
+    *queryEnv({ payload }, { call, put }) {
+      const response: EnvType[] = yield call(getEnvData, payload);
+      console.log(response)
+      yield put({
+        type: 'saveEnv',
         payload: response
       });
     },
