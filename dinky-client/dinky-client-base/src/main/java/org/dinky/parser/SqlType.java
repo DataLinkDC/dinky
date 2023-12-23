@@ -56,7 +56,7 @@ public enum SqlType {
     RESET("RESET", "^RESET.*"),
 
     EXECUTE("EXECUTE", "^EXECUTE.*"),
-    FLINKCDCPIPELINE("FLINKCDCPIPELINE", "^[SOURCE|SINK|PIPELINE].*"),
+
     ADD_JAR("ADD_JAR", "^ADD\\s+JAR\\s+\\S+"),
     ADD("ADD", "^ADD\\s+CUSTOMJAR\\s+\\S+"),
 

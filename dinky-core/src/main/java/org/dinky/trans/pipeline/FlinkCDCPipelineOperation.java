@@ -64,7 +64,7 @@ import com.ververica.cdc.composer.definition.PipelineDef;
  */
 public class FlinkCDCPipelineOperation extends AbstractOperation implements Operation {
 
-    private static final String KEY_WORD = "SOURCE:";
+    private static final String KEY_WORD = "EXECUTE PIPELINE";
 
     public FlinkCDCPipelineOperation() {}
 
@@ -84,13 +84,14 @@ public class FlinkCDCPipelineOperation extends AbstractOperation implements Oper
 
     @Override
     public TableResult execute(Executor executor) {
+        String yamlText = statement.substring(statement.indexOf("(") + 1, statement.lastIndexOf(")"));
         com.ververica.cdc.common.configuration.Configuration globalPipelineConfig =
                 com.ververica.cdc.common.configuration.Configuration.fromMap(executor.getSetConfig());
         // Parse pipeline definition file
         YamlTextPipelineDefinitionParser pipelineDefinitionParser = new YamlTextPipelineDefinitionParser();
         PipelineDef pipelineDef = null;
         try {
-            pipelineDef = pipelineDefinitionParser.parse(statement, globalPipelineConfig);
+            pipelineDef = pipelineDefinitionParser.parse(yamlText, globalPipelineConfig);
         } catch (Exception e) {
             e.printStackTrace();
         }
