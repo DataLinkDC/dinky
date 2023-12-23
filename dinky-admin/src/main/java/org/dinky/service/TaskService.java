@@ -114,7 +114,7 @@ public interface TaskService extends ISuperService<Task> {
      * @param task The {@link TaskDTO} object representing the task to cancel.
      * @return true if the task job is successfully cancelled, false otherwise.
      */
-    boolean cancelTaskJob(TaskDTO task);
+    boolean cancelTaskJob(TaskDTO task, boolean withSavePoint);
 
     /**
      * Get the stream graph of the given task job.
