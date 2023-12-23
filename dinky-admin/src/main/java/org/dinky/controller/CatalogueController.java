@@ -147,6 +147,9 @@ public class CatalogueController {
             dataType = "CatalogueTaskDTO",
             dataTypeClass = CatalogueTaskDTO.class)
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
+        if (catalogueService.checkCatalogueTaskNameIsExist(catalogueTaskDTO.getName())) {
+            return Result.failed(Status.TASK_IS_EXIST);
+        }
         Catalogue catalogue = catalogueService.saveOrUpdateCatalogueAndTask(catalogueTaskDTO);
         if (catalogue.getId() != null) {
             return Result.succeed(catalogue, Status.SAVE_SUCCESS);

@@ -80,4 +80,7 @@ public class CatalogueTaskDTO {
             dataType = "TaskExtConfig",
             notes = "The task's extended configuration in JSON format")
     private TaskExtConfig configJson;
+
+    @ApiModelProperty(value = "Task", dataType = "TaskDTO", notes = "The task information")
+    private TaskDTO task;
 }

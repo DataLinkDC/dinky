@@ -109,6 +109,19 @@ public enum Dialect {
         }
     }
 
+    public static boolean isFlinkSql(String value, boolean includeFlinksqlEnv) {
+        Dialect dialect = Dialect.get(value);
+        switch (dialect) {
+            case FLINK_SQL:
+            case FLINK_JAR:
+                return true;
+            case FLINK_SQL_ENV:
+                return includeFlinksqlEnv;
+            default:
+                return false;
+        }
+    }
+
     public static boolean isJarDialect(String value) {
         Dialect dialect = Dialect.get(value);
         switch (dialect) {
