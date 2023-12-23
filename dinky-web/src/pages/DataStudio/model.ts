@@ -415,7 +415,7 @@ const Model: ModelType = {
     },
     *queryEnv({ payload }, { call, put }) {
       const response: EnvType[] = yield call(getEnvData, payload);
-      console.log(response)
+      console.log(response);
       yield put({
         type: 'saveEnv',
         payload: response

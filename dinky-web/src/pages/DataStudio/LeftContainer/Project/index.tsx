@@ -46,6 +46,7 @@ import {
   handlePutDataByParams,
   handleRemoveById
 } from '@/services/BusinessCrud';
+import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Catalogue } from '@/types/Studio/data.d';
 import { InitProjectState } from '@/types/Studio/init.d';
@@ -55,7 +56,6 @@ import { Modal, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { Key, useEffect, useState } from 'react';
 import { connect } from 'umi';
-import {DIALECT} from "@/services/constants";
 
 const { Text } = Typography;
 
@@ -224,7 +224,7 @@ const Project: React.FC = (props: connect) => {
         }));
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         if (values.type && values.type.toLowerCase() === DIALECT.FLINKSQLENV) {
-          dispatch({type: STUDIO_MODEL_ASYNC.queryEnv});
+          dispatch({ type: STUDIO_MODEL_ASYNC.queryEnv });
         }
         if (projectState.isEdit) {
           const { id } = values;
