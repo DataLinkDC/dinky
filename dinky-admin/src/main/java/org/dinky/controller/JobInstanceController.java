@@ -27,6 +27,7 @@ import org.dinky.data.model.ID;
 import org.dinky.data.model.devops.TaskManagerConfiguration;
 import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.model.home.JobInstanceStatus;
+import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.task.JobInstanceVo;
@@ -81,6 +82,23 @@ public class JobInstanceController {
             dataTypeClass = JsonNode.class)
     public ProTableResult<JobInstanceVo> listJobInstances(@RequestBody JsonNode para) {
         return jobInstanceService.listJobInstances(para);
+    }
+
+    /**
+     * query job instance by task id
+     * @param taskId task id
+     * @return {@link Result}< {@link JobInstance} >
+     */
+    @GetMapping("/getJobInstanceByTaskId")
+    @ApiImplicitParam(
+            name = "TaskId",
+            value = "TaskId",
+            dataType = "Integer",
+            paramType = "query",
+            required = true,
+            dataTypeClass = Integer.class)
+    public Result<JobInstance> getJobInstanceByTaskId(@RequestParam("taskId") Integer taskId) {
+        return Result.succeed(jobInstanceService.getJobInstanceByTaskId(taskId));
     }
 
     /**

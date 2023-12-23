@@ -17,14 +17,30 @@
  *
  */
 
-package org.apache.flink.connector.phoenix.statement;
+package org.dinky.app.resource.impl;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import org.dinky.app.resource.BaseResourceManager;
+import org.dinky.data.model.SystemConfiguration;
 
-/** A factory to create {@link FieldNamedPreparedStatement} with the given {@link Connection}. */
-public interface StatementFactory {
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
-    /** Creates {@link FieldNamedPreparedStatement} with the given {@link Connection}. */
-    FieldNamedPreparedStatement createStatement(Connection connection) throws SQLException;
+import cn.hutool.core.util.URLUtil;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class LocalResourceManager implements BaseResourceManager {
+    SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+
+    @Override
+    public InputStream readFile(String path) {
+        try {
+            return new URL("http://" + systemConfiguration.getDinkyAddr().getValue() + "/download/downloadFromRs?path="
+                            + URLUtil.encode(path))
+                    .openStream();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

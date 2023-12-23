@@ -86,7 +86,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
     handlerMaxsize: handleMaxsize,
     visible: leftContainer.selectKey !== '',
     defaultSize: { width: leftContainer.width, height: leftContainer.height },
-    minWidth: 160,
+    minWidth: 225,
     maxWidth: MAX_WIDTH,
     enable: { right: true },
     btnGroup: btn[leftContainer.selectKey]

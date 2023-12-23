@@ -49,10 +49,10 @@ import {
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
-import { queryList } from '@/services/api';
 import { handleOption, handlePutDataJson, queryDataByParams } from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { Jobs } from '@/types/DevOps/data.d';
 import { DolphinTaskDefinition, DolphinTaskMinInfo } from '@/types/Studio/data.d';
 import { l } from '@/utils/intl';
 import { SuccessMessageAsync } from '@/utils/messages';
@@ -190,20 +190,24 @@ const HeaderContainer = (props: connect) => {
 
   const handlerDebug = async () => {
     if (!currentData) return;
+    const saved = currentData.step == JOB_LIFE_CYCLE.PUBLISH ? true : await handleSave();
+    if (!saved) return;
+    // @ts-ignore
+    const editor = currentTab.monacoInstance.editor
+      .getEditors()
+      .find((x: any) => x['id'] === currentData.id);
 
-    let selectsql = null;
-    if (currentTab.editorInstance) {
-      selectsql = currentTab.editorInstance
-        .getModel()
-        .getValueInRange(currentTab.editorInstance.getSelection());
+    let selectSql = '';
+    if (editor) {
+      selectSql = editor.getModel().getValueInRange(editor.getSelection());
     }
-    if (selectsql == null || selectsql == '') {
-      selectsql = currentData.statement;
+    if (selectSql == null || selectSql == '') {
+      selectSql = currentData.statement;
     }
 
     const res = await debugTask(
       l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
-      { ...currentData, statement: selectsql }
+      { ...currentData, statement: selectSql }
     );
 
     if (!res) return;
@@ -215,6 +219,14 @@ const HeaderContainer = (props: connect) => {
     });
     await SuccessMessageAsync(l('pages.datastudio.editor.debug.success'));
     currentData.status = JOB_STATUS.RUNNING;
+    // Common sql task is synchronized, so it needs to automatically update the status to finished.
+    if (isSql(currentData.dialect)) {
+      currentData.status = JOB_STATUS.FINISHED;
+      if (currentTab) currentTab.console.results = res.data.results;
+    }
+    else {
+      if (currentTab) currentTab.console.result = res.data.result;
+    }
     // Common sql task is synchronized, so it needs to automatically update the status to finished.
     if (isSql(currentData.dialect)) {
       currentData.status = JOB_STATUS.FINISHED;
@@ -363,11 +375,13 @@ const HeaderContainer = (props: connect) => {
           currentTab?.subType?.toLowerCase() == DIALECT.FLINKJAR),
       props: {
         onClick: async () => {
-          const result = await queryList(API_CONSTANTS.GET_JOB_LIST, {
-            filter: { taskId: [currentData?.id] },
-            currentPage: 1
-          });
-          window.open(`/#/devops/job-detail?id=${result.data[0].id}`);
+          const dataByParams = await queryDataByParams<Jobs.JobInstance>(
+            API_CONSTANTS.GET_JOB_INSTANCE_BY_TASK_ID,
+            { taskId: currentData?.id }
+          );
+          if (dataByParams) {
+            window.open(`/#/devops/job-detail?id=${dataByParams?.id}`);
+          }
         },
         target: '_blank'
       }
@@ -402,7 +416,7 @@ const HeaderContainer = (props: connect) => {
         currentTab?.type == TabsPageType.project &&
         !isRunning(currentData) &&
         (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
-          isSql(currentTab?.subType?.toLowerCase())),
+          isSql(currentTab?.subType?.toLowerCase() ?? '')),
       props: {
         style: { background: '#52c41a' },
         type: 'primary'

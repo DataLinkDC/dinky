@@ -200,6 +200,18 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return jobResult;
     }
 
+    @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
+    public JobResult executeJob(TaskDTO task, Boolean stream) throws Exception {
+        JobResult jobResult;
+        if (stream) {
+            jobResult = BaseTask.getTask(task).StreamExecute();
+        } else {
+            jobResult = BaseTask.getTask(task).execute();
+        }
+        log.info("execute job finished,status is {}", jobResult.getStatus());
+        return jobResult;
+    }
+
     // Submit and export task
     @ProcessStep(type = ProcessStepType.SUBMIT_BUILD_CONFIG)
     public JobConfig buildJobSubmitConfig(TaskDTO task) {
@@ -329,7 +341,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         task.setStatementSet(false);
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
-        JobResult jobResult = taskServiceBean.executeJob(task);
+        JobResult jobResult;
+        if (Dialect.isCommonSql(task.getDialect())) {
+            jobResult = taskServiceBean.executeJob(task, true);
+        } else {
+            jobResult = taskServiceBean.executeJob(task);
+        }
+
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
             log.info("Job debug success");
             Task newTask = new Task(task.getId(), jobResult.getJobInstanceId());

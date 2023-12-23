@@ -32,7 +32,8 @@ const operatorType = {
   CANCEL_JOB: 'canceljob',
   SAVEPOINT_CANCEL: 'cancel',
   SAVEPOINT_TRIGGER: 'trigger',
-  SAVEPOINT_STOP: 'stop'
+  SAVEPOINT_STOP: 'stop',
+  AUTO_STOP: 'autostop'
 };
 export type OperatorType = {
   jobDetail: Jobs.JobInfoDetail;
@@ -58,6 +59,21 @@ const JobOperator = (props: OperatorType) => {
           getData(API_CONSTANTS.RESTART_TASK, {
             id: jobDetail?.instance?.taskId,
             isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.PUBLISH
+          });
+        } else if (key == operatorType.SAVEPOINT_CANCEL) {
+          getData(API_CONSTANTS.SAVEPOINT, {
+            taskId: jobDetail?.instance?.taskId,
+            savePointType: 'cancel'
+          });
+        } else if (key == operatorType.SAVEPOINT_STOP) {
+          getData(API_CONSTANTS.SAVEPOINT, {
+            taskId: jobDetail?.instance?.taskId,
+            savePointType: 'stop'
+          });
+        } else if (key == operatorType.SAVEPOINT_TRIGGER) {
+          getData(API_CONSTANTS.SAVEPOINT, {
+            taskId: jobDetail?.instance?.taskId,
+            savePointType: 'trigger'
           });
         } else {
           cancelTask('', jobDetail?.instance?.taskId);
@@ -91,7 +107,7 @@ const JobOperator = (props: OperatorType) => {
           <Button
             key='autostop'
             type='primary'
-            onClick={() => handleJobOperator(operatorType.SAVEPOINT_STOP)}
+            onClick={() => handleJobOperator(operatorType.AUTO_STOP)}
             danger
           >
             {jobDetail?.instance?.step == 5

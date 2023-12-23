@@ -19,6 +19,7 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { useEditor } from '@/hooks/useEditor';
+import { getCurrentTab } from '@/pages/DataStudio/function';
 import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
 import { TASK_VAR_FILTER } from '@/pages/DataStudio/MiddleContainer/StudioEditor/constants';
 import DiffModal from '@/pages/DataStudio/MiddleContainer/StudioEditor/DiffModal';
@@ -105,8 +106,9 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
     editor.layout();
     editor.focus();
     editorInstance.current = editor;
+    // @ts-ignore
+    editor['id'] = getCurrentTab(tabs.panes, tabs.activeKey)?.params.taskId;
     tabsItem.monacoInstance = monaco;
-    tabsItem.editorInstance = editor;
 
     editor.onDidChangeCursorPosition((e) => {
       props.footContainer.codePosition = [e.position.lineNumber, e.position.column];
@@ -144,7 +146,6 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
         />
         <CodeEdit
           monacoRef={tabsItem?.monacoInstance}
-          editorRef={tabsItem?.editorInstance}
           code={tabsItem?.params?.taskData?.statement}
           language={matchLanguage(tabsItem?.subType)}
           editorDidMount={editorDidMount}

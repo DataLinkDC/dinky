@@ -19,8 +19,6 @@
 
 package org.dinky.init;
 
-import static org.apache.hadoop.fs.FileSystem.getDefaultUri;
-
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.constant.FlinkTaskConstant;
@@ -35,14 +33,12 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.model.rbac.Tenant;
-import org.dinky.data.properties.OssProperties;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.ClearJobHistoryTask;
 import org.dinky.job.DynamicResizeFlinkJobPoolTask;
 import org.dinky.job.FlinkJobTask;
 import org.dinky.job.SystemMetricsTask;
-import org.dinky.oss.OssTemplate;
 import org.dinky.scheduler.client.ProjectClient;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.Project;
@@ -51,14 +47,12 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.SysConfigService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TenantService;
-import org.dinky.service.resource.impl.HdfsResourceManager;
-import org.dinky.service.resource.impl.OssResourceManager;
+import org.dinky.service.resource.BaseResourceManager;
 import org.dinky.url.RsURLStreamHandlerFactory;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.UDFUtils;
 
 import org.apache.catalina.webresources.TomcatURLStreamHandlerFactory;
-import org.apache.hadoop.fs.FileSystem;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -77,7 +71,6 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -140,49 +133,7 @@ public class SystemInit implements ApplicationRunner {
                 .forEach(x -> x.addParameterCheck(y -> {
                     if (Boolean.TRUE.equals(
                             systemConfiguration.getResourcesEnable().getValue())) {
-                        switch (systemConfiguration.getResourcesModel().getValue()) {
-                            case OSS:
-                                OssProperties ossProperties = new OssProperties();
-                                ossProperties.setAccessKey(systemConfiguration
-                                        .getResourcesOssAccessKey()
-                                        .getValue());
-                                ossProperties.setSecretKey(systemConfiguration
-                                        .getResourcesOssSecretKey()
-                                        .getValue());
-                                ossProperties.setEndpoint(systemConfiguration
-                                        .getResourcesOssEndpoint()
-                                        .getValue());
-                                ossProperties.setBucketName(systemConfiguration
-                                        .getResourcesOssBucketName()
-                                        .getValue());
-                                ossProperties.setRegion(systemConfiguration
-                                        .getResourcesOssRegion()
-                                        .getValue());
-                                ossProperties.setPathStyleAccess(systemConfiguration
-                                        .getResourcesPathStyleAccess()
-                                        .getValue());
-                                Singleton.get(OssResourceManager.class).setOssTemplate(new OssTemplate(ossProperties));
-                                break;
-                            case HDFS:
-                                final org.apache.hadoop.conf.Configuration configuration =
-                                        new org.apache.hadoop.conf.Configuration();
-                                configuration.set(
-                                        "fs.defaultFS",
-                                        systemConfiguration
-                                                .getResourcesHdfsDefaultFS()
-                                                .getValue());
-                                try {
-                                    FileSystem fileSystem = FileSystem.get(
-                                            getDefaultUri(configuration),
-                                            configuration,
-                                            systemConfiguration
-                                                    .getResourcesHdfsUser()
-                                                    .getValue());
-                                    Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
-                                } catch (Exception e) {
-                                    throw new DinkyException(e);
-                                }
-                        }
+                        BaseResourceManager.initResourceManager();
                     }
                 }));
     }

@@ -110,6 +110,7 @@ export type TaskType = {
 };
 
 export type ConsoleType = {
+  results:{}[];
   // eslint-disable-next-line @typescript-eslint/ban-types
   result: {};
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -164,7 +165,6 @@ export interface TabsItemType {
   closable: boolean;
   path: string[];
   monacoInstance: React.RefObject<Monaco | undefined>;
-  editorInstance: editor.IStandaloneCodeEditor | undefined;
   console: ConsoleType;
   isModified: boolean;
 }
@@ -184,6 +184,7 @@ export interface DataStudioTabsItemType extends TabsItemType {
 export type TabsType = {
   activeKey: string;
   activeBreadcrumbTitle: string;
+  selectedStatement?: string;
   panes: TabsItemType[];
 };
 
@@ -318,6 +319,7 @@ export type ModelType = {
     updateProjectExpandKey: Reducer<StateType>;
     updateProjectSelectKey: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
+    updateActiveBreadcrumbTitle: Reducer<StateType>;
     closeTab: Reducer<StateType>;
     removeTag: Reducer<StateType>;
     addTab: Reducer<StateType>;
@@ -711,6 +713,15 @@ const Model: ModelType = {
         }
       };
     },
+    updateActiveBreadcrumbTitle(state, { payload }) {
+      return {
+        ...state,
+        tabs: {
+          ...state.tabs,
+          activeBreadcrumbTitle: payload
+        }
+      };
+    },
 
     /**
      * 添加tab 如果存在则不添加
@@ -774,12 +785,16 @@ const Model: ModelType = {
     closeOtherTabs(state, { payload }) {
       // 从 pans 中找到需要关闭的 tab
       const tabsItem = state.tabs.panes.find((pane) => pane.key === payload.key);
+      const breadcrumbLabel = tabsItem?.breadcrumbLabel?.split('/') ?? [];
       return {
         ...state,
         tabs: {
           panes: tabsItem ? [tabsItem] : [],
           activeKey: tabsItem?.key ?? '',
-          activeBreadcrumbTitle: tabsItem?.breadcrumbLabel ?? ''
+          activeBreadcrumbTitle:
+            breadcrumbLabel.length > 0
+              ? [tabsItem?.type, ...breadcrumbLabel, tabsItem?.label].join('/')
+              : ''
         }
       };
     },
