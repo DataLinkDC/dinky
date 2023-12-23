@@ -162,7 +162,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
     <>
       <ProForm
         {...FORM_LAYOUT_PUBLIC}
-        // form={form}
+        form={form}
         submitter={false}
         layout={'horizontal'}
         initialValues={values}
