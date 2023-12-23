@@ -48,7 +48,7 @@ public class KerberosUtil {
         }
     }
 
-    public static void authenticate(Map<String, Object> configuration) {
+    public static void authenticate(Map<String, String> configuration) {
         configuration.forEach((k, v) -> logger.debug("Flink configuration key: [{}], value: [{}]", k, v));
         String krb5ConfPath = (String) configuration.getOrDefault("java.security.krb5.conf", "");
         String keytabPath = (String) configuration.getOrDefault("security.kerberos.login.keytab", "");
