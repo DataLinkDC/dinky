@@ -20,8 +20,10 @@
 package org.dinky.job;
 
 import org.dinky.data.result.IResult;
+import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -94,6 +96,9 @@ public class JobResult {
 
     @ApiModelProperty(value = "Result data of the job", dataType = "IResult", notes = "Result data of the job")
     private IResult result;
+
+    @ApiModelProperty(value = "Result data of the job", dataType = "IResult", notes = "Result data of the job")
+    private List<JdbcSelectResult> results;
 
     @ApiModelProperty(
             value = "Start time of job execution",

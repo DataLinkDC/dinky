@@ -41,6 +41,8 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
 
   const [alertType, setAlertType] = useState<string>(values.type ?? ALERT_TYPE.DINGTALK);
 
+  const [formValues, setFormValues] = useState<Partial<Alert.AlertInstance>>(values);
+
   const renderPreForm = () => {
     return (
       <>
@@ -87,10 +89,16 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
 
   return (
     <>
-      <ProForm form={form} submitter={false}>
+      <ProForm
+        form={form}
+        onValuesChange={(changedValues, allValues) =>
+          setFormValues((prevState) => ({ ...prevState, ...allValues, ...changedValues }))
+        }
+        submitter={false}
+      >
         <ProForm.Group>
           {renderPreForm()}
-          {renderFormByType(values, alertType)}
+          {renderFormByType(formValues, alertType)}
         </ProForm.Group>
       </ProForm>
     </>

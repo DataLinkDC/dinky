@@ -83,7 +83,7 @@ public abstract class Executor {
     protected DinkyClassLoader dinkyClassLoader;
 
     // Flink configuration, such as set rest.port = 8086
-    protected Map<String, Object> setConfig = new HashMap<>();
+    protected Map<String, String> setConfig = new HashMap<>();
 
     // Dinky variable manager
     protected VariableManager variableManager = new VariableManager();
@@ -109,6 +109,10 @@ public abstract class Executor {
         return environment;
     }
 
+    public void setStreamExecutionEnvironment(StreamExecutionEnvironment environment) {
+        this.environment = environment;
+    }
+
     public CustomTableEnvironment getCustomTableEnvironment() {
         return tableEnvironment;
     }
@@ -117,7 +121,7 @@ public abstract class Executor {
         return executorConfig;
     }
 
-    public Map<String, Object> getSetConfig() {
+    public Map<String, String> getSetConfig() {
         return setConfig;
     }
 

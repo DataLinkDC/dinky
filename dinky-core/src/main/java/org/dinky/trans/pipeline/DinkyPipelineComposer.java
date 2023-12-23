@@ -17,18 +17,18 @@
  *
  */
 
-package org.dinky.cdc.doris;
+package org.dinky.trans.pipeline;
 
-import org.apache.flink.configuration.ConfigOption;
-import org.apache.flink.configuration.ConfigOptions;
+import com.ververica.cdc.composer.PipelineExecution;
+import com.ververica.cdc.composer.definition.PipelineDef;
 
-public class DorisExtendSinkOptions extends DorisSinkOptions {
+/** Composer for translating a pipeline definition to an execution. */
+public interface DinkyPipelineComposer {
 
-    public static final ConfigOption<String> AdditionalColumns = ConfigOptions.key("additional-columns")
-            .stringType()
-            .noDefaultValue()
-            .withDescription(
-                    "Additional columns for sink, support meta column and fix value column."
-                            + "(meta: op_ts,database_name,schema_name,table_name; "
-                            + "fix value column type:BOOLEAN,INT,TINYINT,BIGINT,DECIMAL,FLOAT,DATE,TIMESTAMP,CHAR,VARCHAR,STRING)");
+    /**
+     * Composing pipeline execution from the specified pipeline definition.
+     *
+     * @param pipelineDef definition of the pipeline
+     */
+    PipelineExecution compose(PipelineDef pipelineDef);
 }

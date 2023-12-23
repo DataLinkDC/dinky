@@ -745,7 +745,8 @@ export default {
   'rc.cc.spDir': 'SavePoint Path',
   'rc.cc.spDirHelp': 'Please enter the savepoint path! This parameter configuration item is',
   'rc.cc.sqlSubmitJarPath': 'Jar File Path',
-  'rc.cc.sqlSubmitJarPathHelp': 'Please enter the Jar file path! eg',
+  'rc.cc.sqlSubmitJarPathHelp':
+    'Please enter the Jar file path! eg: hdfs:///dinky/dinky-app-1.16-with-dependencies.jar',
   'rc.cc.start': 'Start Session Cluster',
   'rc.cc.submitSqlConfig': 'Submit FlinkSQL Config items (required in Application mode)',
   'rc.cc.tmHeap': 'TaskManager Heap Memory',
