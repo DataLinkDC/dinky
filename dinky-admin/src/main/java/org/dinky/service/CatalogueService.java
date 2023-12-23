@@ -131,4 +131,11 @@ public interface CatalogueService extends ISuperService<Catalogue> {
      * @return A boolean value indicating whether the operation was successful.
      */
     Boolean saveOrUpdateOrRename(Catalogue catalogue);
+
+    /**
+     * Check if the catalogue task name is exist
+     * @param name catalogue task name
+     * @return true if the catalogue task name is exist
+     */
+    boolean checkCatalogueTaskNameIsExist(String name);
 }

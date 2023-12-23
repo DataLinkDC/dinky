@@ -66,7 +66,6 @@ export type Task = {
   clusterId: number;
   clusterConfigurationId: number;
   databaseId: number;
-  jarId: number;
   envId: number;
   alertGroupId: number;
   note: string;
@@ -78,7 +77,6 @@ export type Task = {
   savePoints: SavePoint[];
   configJson: TaskExtConfig;
   path: string;
-  jarName: string;
   clusterConfigurationName: string;
   databaseName: string;
   envName: string;
