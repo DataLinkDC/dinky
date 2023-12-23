@@ -22,6 +22,7 @@ package org.dinky.service.impl;
 import static org.dinky.assertion.Asserts.isNull;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.config.Dialect;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.Status;
@@ -31,6 +32,7 @@ import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobHistory;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.Result;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.mapper.CatalogueMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.CatalogueService;
@@ -58,6 +60,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -86,7 +89,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     }
 
     /**
-     *  build catalogue tree
+     * build catalogue tree
+     *
      * @param catalogueList catalogue list
      * @return catalogue tree
      */
@@ -114,6 +118,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     /**
      * recursion build catalogue and children
+     *
      * @param list
      * @param catalogues
      */
@@ -140,6 +145,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     /**
      * Determine whether there are child nodes
+     *
      * @param list
      * @param catalogue
      * @return
@@ -150,6 +156,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     /**
      * get child list
+     *
      * @param list
      * @param catalogue
      * @return
@@ -171,13 +178,46 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 .eq(Catalogue::getName, name));
     }
 
+    /**
+     * check catalogue task name is exist
+     * @param name name
+     * @return true if exist , otherwise false
+     */
+    @Override
+    public boolean checkCatalogueTaskNameIsExist(String name) {
+        return getBaseMapper().exists(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getName, name));
+    }
+
+    /**
+     * init some value
+     * @param catalogueTask {@link CatalogueTaskDTO}
+     * @return {@link Task}
+     */
+    private Task initTaskValue(CatalogueTaskDTO catalogueTask) {
+        Task task = new Task();
+        if (Opt.ofNullable(catalogueTask.getTask()).isPresent()) {
+            task = catalogueTask.getTask().buildTask();
+        } else {
+            task.setStep(JobLifeCycle.DEVELOP.getValue());
+            task.setEnabled(true);
+            if (Dialect.isFlinkSql(catalogueTask.getType(), false)) {
+                task.setType(GatewayType.LOCAL.getLongValue());
+                task.setParallelism(1);
+                task.setSavePointStrategy(0); // 0 is disabled
+                task.setEnvId(-1); // -1 is disabled
+                task.setAlertGroupId(-1); // -1 is disabled
+            }
+        }
+        return task;
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Catalogue saveOrUpdateCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO) {
         Task task = null;
         Catalogue catalogue = null;
         if (catalogueTaskDTO.getId() == null) {
-            task = new Task();
+            task = initTaskValue(catalogueTaskDTO);
             catalogue = new Catalogue();
         } else {
             catalogue = baseMapper.selectById(catalogueTaskDTO.getId());
@@ -439,10 +479,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     /**
      * <p>
-     *     1. save catalogue
-     *     2. save task
-     *     3. save statement
-     *     4. rename
+     * 1. save catalogue
+     * 2. save task
+     * 3. save statement
+     * 4. rename
+     *
      * @param catalogue
      * @return
      */

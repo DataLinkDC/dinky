@@ -18,6 +18,7 @@
  */
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
+import FlinkOptionsSelect from '@/components/Flink/OptionsSelect';
 import { TagAlignCenter } from '@/components/StyledComponents';
 import { StateType } from '@/pages/DataStudio/model';
 import {
@@ -209,7 +210,7 @@ const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> 
           >
             <ProFormGroup key='flinkGroup'>
               <Space key={'config'} style={{ display: 'flex' }} align='baseline'>
-                <ProFormSelect
+                <FlinkOptionsSelect
                   name='name'
                   width={'md'}
                   mode={'single'}

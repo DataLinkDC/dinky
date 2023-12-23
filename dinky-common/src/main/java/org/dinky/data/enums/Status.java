@@ -183,6 +183,7 @@ public enum Status {
     TASK_SQL_EXPLAN_FAILED(12007, "task.sql.explain.failed"),
     TASK_UPDATE_FAILED(12008, "task.update.failed"),
     TASK_IS_ONLINE(12009, "task.is.online"),
+    TASK_IS_EXIST(12010, "task.is.existed"),
 
     /**
      * alert instance
