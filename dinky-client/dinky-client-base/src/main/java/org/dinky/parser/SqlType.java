@@ -56,6 +56,7 @@ public enum SqlType {
     RESET("RESET", "^RESET.*"),
 
     EXECUTE("EXECUTE", "^EXECUTE.*"),
+
     ADD_JAR("ADD_JAR", "^ADD\\s+JAR\\s+\\S+"),
     ADD("ADD", "^ADD\\s+CUSTOMJAR\\s+\\S+"),
 

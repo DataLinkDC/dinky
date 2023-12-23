@@ -227,12 +227,12 @@ public class JobConfig {
         gatewayConfig.setTaskId(getTaskId());
     }
 
-    public void addGatewayConfig(Map<String, Object> config) {
+    public void addGatewayConfig(Map<String, String> config) {
         if (Asserts.isNull(gatewayConfig)) {
             gatewayConfig = new GatewayConfig();
         }
-        for (Map.Entry<String, Object> entry : config.entrySet()) {
-            gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), (String) entry.getValue());
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), entry.getValue());
         }
     }
 
