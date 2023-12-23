@@ -19,8 +19,9 @@
 
 import { FormContextValue } from '@/components/Context/FormContext';
 import { JOB_TYPE } from '@/pages/DataStudio/LeftContainer/Project/constants';
-import {isFlinkJob, isUDF} from '@/pages/DataStudio/LeftContainer/Project/function';
+import { isFlinkJob, isUDF } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { queryDataByParams } from '@/services/BusinessCrud';
+import { RUN_MODE } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
@@ -29,7 +30,6 @@ import { ProFormCascader } from '@ant-design/pro-form/lib';
 import { Form } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import React, { useEffect } from 'react';
-import {RUN_MODE} from "@/services/constants";
 
 type JobModalProps = {
   onCancel: () => void;
@@ -111,7 +111,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
       formData.configJson.udfConfig.templateId = selectKeys[selectKeys.length - 1];
     }
     // if this type is flink job, init task value and submit
-    if (isFlinkJob(formData.type ?? '')){
+    if (isFlinkJob(formData.type ?? '')) {
       const initTaskValue = {
         savePointStrategy: -1, // -1 is disabled
         parallelism: 1, // default parallelism
@@ -119,10 +119,10 @@ const JobModal: React.FC<JobModalProps> = (props) => {
         step: 1, // default step is develop
         alertGroupId: -1, // -1 is disabled
         type: RUN_MODE.LOCAL, // default run mode is local
-        dialect: formData.type,
-      }
-      onSubmit({ ...values, ...formData ,task: initTaskValue} as Catalogue);
-    }else {
+        dialect: formData.type
+      };
+      onSubmit({ ...values, ...formData, task: initTaskValue } as Catalogue);
+    } else {
       onSubmit({ ...values, ...formData } as Catalogue);
     }
   };
