@@ -225,7 +225,7 @@ export enum API_CONSTANTS {
   PROCESS_LOG = '/api/process/getProcess',
 
   // ---- devops
-  GET_JOB_LIST = '/api/jobInstance',
+  JOB_INSTANCE = '/api/jobInstance',
   GET_JOB_INSTANCE_BY_TASK_ID = '/api/jobInstance/getJobInstanceByTaskId',
   GET_JOB_BY_ID = '/api/jobInstance/getOneById',
   GET_LATEST_HISTORY_BY_ID = '/api/history/getLatestHistoryById',

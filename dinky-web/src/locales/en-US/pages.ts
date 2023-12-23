@@ -210,6 +210,12 @@ export default {
   'devops.jobinfo.version.latestVersion': 'Current Version',
   'devops.jobinfo.version.rollBack': 'Roll bcak this version',
   'devops.jobinfo.version.versionList': 'Job Version',
+  'devops.jobinfo.remap.title': 'Remap the cluster information',
+  'devops.jobinfo.remap.cluster.title': 'Cluster instance mapping information',
+  'devops.jobinfo.remap.cluster.title.help':
+    '(Note: This operation will modify the configuration of the cluster instance simultaneously.)',
+  'devops.jobinfo.remap.job.title': 'Job mapping information',
+
   'devops.joblist.detail': 'Job Detail',
   'devops.joblist.history': 'History',
   'devops.joblist.joblist': 'JobList',
