@@ -367,7 +367,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (!Dialect.isCommonSql(task.getDialect()) && Asserts.isNotNull(task.getJobInstanceId())) {
             String status = jobInstanceService.getById(task.getJobInstanceId()).getStatus();
             if (!JobStatus.isDone(status)) {
-                cancelTaskJob(task);
+                cancelTaskJob(task, true);
             }
         }
         return submitTask(
@@ -375,7 +375,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public boolean cancelTaskJob(TaskDTO task) {
+    public boolean cancelTaskJob(TaskDTO task, boolean withSavePoint) {
         if (Dialect.isCommonSql(task.getDialect())) {
             return true;
         }
@@ -385,7 +385,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Assert.notNull(clusterInstance, Status.CLUSTER_NOT_EXIST.getMessage());
 
         JobManager jobManager = JobManager.build(buildJobConfig(task));
-        return jobManager.cancel(jobInstance.getJid());
+        return jobManager.cancel(jobInstance.getJid(), withSavePoint);
     }
 
     @Override

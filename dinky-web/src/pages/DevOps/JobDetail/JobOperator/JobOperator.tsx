@@ -17,15 +17,15 @@
  *
  */
 
-import { cancelTask } from '@/pages/DataStudio/HeaderContainer/service';
-import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
-import { isStatusDone } from '@/pages/DevOps/function';
-import { getData, postAll } from '@/services/api';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { Jobs } from '@/types/DevOps/data';
-import { l } from '@/utils/intl';
-import { EllipsisOutlined, RedoOutlined } from '@ant-design/icons';
-import { Button, Dropdown, message, Modal, Space } from 'antd';
+import {cancelTask, restartTask, savePointTask} from '@/pages/DataStudio/HeaderContainer/service';
+import {JOB_LIFE_CYCLE} from '@/pages/DevOps/constants';
+import {isStatusDone} from '@/pages/DevOps/function';
+import {getData, postAll} from '@/services/api';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {Jobs} from '@/types/DevOps/data';
+import {l} from '@/utils/intl';
+import {EllipsisOutlined, RedoOutlined} from '@ant-design/icons';
+import {Button, Dropdown, message, Modal, Space} from 'antd';
 
 const operatorType = {
   RESTART_JOB: 'restart',
@@ -40,52 +40,37 @@ export type OperatorType = {
   refesh: (isForce: boolean) => void;
 };
 const JobOperator = (props: OperatorType) => {
-  const { jobDetail, refesh } = props;
+  const {jobDetail, refesh} = props;
   const webUri = `/api/flink/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`;
 
   const handleJobOperator = (key: string) => {
     Modal.confirm({
-      title: l('devops.jobinfo.job.key', '', { key: key }),
-      content: l('devops.jobinfo.job.keyConfirm', '', { key: key }),
+      title: l('devops.jobinfo.job.key', '', {key: key}),
+      content: l('devops.jobinfo.job.keyConfirm', '', {key: key}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
         if (key == operatorType.CANCEL_JOB) {
-          postAll(API_CONSTANTS.CANCEL_JOB, {
-            clusterId: jobDetail?.clusterInstance?.id,
-            jobId: jobDetail?.instance?.jid
-          });
+          cancelTask('', jobDetail?.instance?.taskId, false);
         } else if (key == operatorType.RESTART_JOB) {
-          getData(API_CONSTANTS.RESTART_TASK, {
-            id: jobDetail?.instance?.taskId,
-            isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.PUBLISH
-          });
+          restartTask('', jobDetail?.instance?.taskId, jobDetail?.instance?.step == JOB_LIFE_CYCLE.PUBLISH)
         } else if (key == operatorType.SAVEPOINT_CANCEL) {
-          getData(API_CONSTANTS.SAVEPOINT, {
-            taskId: jobDetail?.instance?.taskId,
-            savePointType: 'cancel'
-          });
+          savePointTask('', jobDetail?.instance?.taskId, 'cancel')
         } else if (key == operatorType.SAVEPOINT_STOP) {
-          getData(API_CONSTANTS.SAVEPOINT, {
-            taskId: jobDetail?.instance?.taskId,
-            savePointType: 'stop'
-          });
+          savePointTask('', jobDetail?.instance?.taskId, 'stop')
         } else if (key == operatorType.SAVEPOINT_TRIGGER) {
-          getData(API_CONSTANTS.SAVEPOINT, {
-            taskId: jobDetail?.instance?.taskId,
-            savePointType: 'trigger'
-          });
-        } else {
+          savePointTask('', jobDetail?.instance?.taskId, 'trigger')
+        } else if (key == operatorType.AUTO_STOP) {
           cancelTask('', jobDetail?.instance?.taskId);
         }
-        message.success(l('devops.jobinfo.job.key.success', '', { key: key }));
+        message.success(l('devops.jobinfo.job.key.success', '', {key: key}));
       }
     });
   };
 
   return (
     <Space>
-      <Button icon={<RedoOutlined />} onClick={() => refesh(true)} />
+      <Button icon={<RedoOutlined/>} onClick={() => refesh(true)}/>
 
       <Button key='flinkwebui' href={webUri} target={'_blank'}>
         FlinkWebUI
@@ -131,12 +116,16 @@ const JobOperator = (props: OperatorType) => {
                 {
                   key: operatorType.SAVEPOINT_CANCEL,
                   label: l('devops.jobinfo.savepoint.cancel')
+                },
+                {
+                  key: operatorType.CANCEL_JOB,
+                  label: l('devops.jobinfo.savepoint.canceljob')
                 }
               ]
             }}
           >
-            <Button key='4' style={{ padding: '0 8px' }}>
-              <EllipsisOutlined />
+            <Button key='4' style={{padding: '0 8px'}}>
+              <EllipsisOutlined/>
             </Button>
           </Dropdown>
         </>

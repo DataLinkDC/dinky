@@ -28,6 +28,7 @@ import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.enums.ProcessStepType;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.ErrorResult;
 import org.dinky.data.result.ExplainResult;
@@ -378,27 +379,32 @@ public class JobManager {
                 .getJsonPlan();
     }
 
-    public boolean cancel(String jobId) {
+    public boolean cancel(String jobId, boolean withSavePoint) {
         if (useGateway && !useRestAPI) {
             config.getGatewayConfig()
                     .setFlinkConfig(FlinkConfig.build(jobId, ActionType.CANCEL.getValue(), null, null));
             Gateway.build(config.getGatewayConfig()).savepointJob();
             return true;
-        } else if (useRestAPI) {
+        } else if (useRestAPI && withSavePoint) {
             try {
                 // Try to savepoint, if it fails, it will stop normally(尝试进行savepoint，如果失败，即普通停止)
                 savepoint(jobId, SavePointType.CANCEL, null);
                 return true;
             } catch (Exception e) {
-                return FlinkAPI.build(config.getAddress()).stop(jobId);
+                log.warn("Stop with savcePoint failed: {}, will try normal rest api stop", e.getMessage());
+                return cancelNormal(jobId);
             }
         } else {
-            try {
-                return FlinkAPI.build(config.getAddress()).stop(jobId);
-            } catch (Exception e) {
-                log.error("停止作业时集群不存在: " + e);
-            }
-            return false;
+            return cancelNormal(jobId);
+        }
+    }
+
+    public boolean cancelNormal(String jobId) {
+        try {
+            return FlinkAPI.build(config.getAddress()).stop(jobId);
+        } catch (Exception e) {
+            log.error("stop flink job failed:", e);
+            throw new BusException(e.getMessage());
         }
     }
 
