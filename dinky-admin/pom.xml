@@ -296,7 +296,7 @@
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-shaded-paimon</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${paimon-shaded.version}</version>
         </dependency>
 
     </dependencies>

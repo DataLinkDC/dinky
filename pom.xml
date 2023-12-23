@@ -102,6 +102,7 @@
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <org.commonmark>0.21.0</org.commonmark>
         <oshi.version>6.4.2</oshi.version>
+        <paimon-shaded.version>0.5.0-${revision}</paimon-shaded.version>
         <poi.version>5.2.3</poi.version>
         <postgresql.version>42.5.1</postgresql.version>
         <powermock.version>2.0.9</powermock.version>
