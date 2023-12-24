@@ -83,7 +83,7 @@ public final class VariableManager {
                 log.info("load class : {}", fullClassName);
             } catch (ClassNotFoundException e) {
                 log.error(
-                        "The class [{}] that needs to be loaded may not be loaded by dinky or there is no jar file of this class under dinky's lib/plugins. Please check, and try again. {}",
+                        "The class [{}] that needs to be loaded may not be loaded by dinky or there is no jar file of this class under dinky's lib/plugins/extends. Please check, and try again. {}",
                         fullClassName,
                         e.getMessage(),
                         e);
