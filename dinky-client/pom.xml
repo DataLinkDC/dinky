@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky</artifactId>
-        <version>${revision}</version>
+        <version>1.0.0-rc1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>dinky-client</artifactId>

@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky-connectors</artifactId>
-        <version>${revision}</version>
+        <version>1.0.0-rc1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>dinky-connector-jdbc-1.14</artifactId>
