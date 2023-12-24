@@ -41,7 +41,6 @@
                 <include>**/*.yaml</include>
                 <include>**/log4j2.xml</include>
                 <include>**/DinkyFlinkDockerfile</include>
-
             </includes>
         </fileSet>
         <fileSet>
@@ -70,7 +69,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.14</outputDirectory>
+            <outputDirectory>extends/flink1.14/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.14-${project.version}.jar</include>
                 <include>dinky-client-1.14-${project.version}.jar</include>
@@ -79,7 +78,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.15</outputDirectory>
+            <outputDirectory>extends/flink1.15/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.15-${project.version}.jar</include>
                 <include>dinky-client-1.15-${project.version}.jar</include>
@@ -87,7 +86,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.16</outputDirectory>
+            <outputDirectory>extends/flink1.16/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.16-${project.version}.jar</include>
                 <include>dinky-client-1.16-${project.version}.jar</include>
@@ -95,7 +94,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.17</outputDirectory>
+            <outputDirectory>extends/flink1.17/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.17-${project.version}.jar</include>
                 <include>dinky-client-1.17-${project.version}.jar</include>
@@ -103,7 +102,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.18</outputDirectory>
+            <outputDirectory>extends/flink1.18/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.18-${project.version}.jar</include>
                 <include>dinky-client-1.18-${project.version}.jar</include>
@@ -111,7 +110,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins</outputDirectory>
+            <outputDirectory>extends</outputDirectory>
             <includes>
                 <include>dinky-client-base-${project.version}.jar</include>
             </includes>

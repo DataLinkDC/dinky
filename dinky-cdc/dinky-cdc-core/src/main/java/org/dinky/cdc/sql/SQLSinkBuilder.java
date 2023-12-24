@@ -164,23 +164,25 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
                 return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
                         .atZone(sinkTimeZone)
                         .toLocalDateTime());
-            }
-
-            if (value instanceof String) {
+            } else if (value instanceof String) {
                 return Optional.of(
                         Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime());
+            } else {
+                TimestampType logicalType1 = (TimestampType) logicalType;
+                if (logicalType1.getPrecision() == 3) {
+                    return Optional.of(Instant.ofEpochMilli((long) value)
+                            .atZone(sinkTimeZone)
+                            .toLocalDateTime());
+                } else if (logicalType1.getPrecision() > 3) {
+                    return Optional.of(
+                            Instant.ofEpochMilli(((long) value) / (long) Math.pow(10, logicalType1.getPrecision() - 3))
+                                    .atZone(sinkTimeZone)
+                                    .toLocalDateTime());
+                }
+                return Optional.of(Instant.ofEpochSecond(((long) value))
+                        .atZone(sinkTimeZone)
+                        .toLocalDateTime());
             }
-
-            TimestampType timestampType = (TimestampType) logicalType;
-            // 转换为毫秒
-            if (timestampType.getPrecision() > 3) {
-                return Optional.of(
-                        Instant.ofEpochMilli(((long) value) / (long) Math.pow(10, timestampType.getPrecision() - 3.0))
-                                .atZone(sinkTimeZone)
-                                .toLocalDateTime());
-            }
-            return Optional.of(
-                    Instant.ofEpochSecond(((long) value)).atZone(sinkTimeZone).toLocalDateTime());
         }
         return Optional.empty();
     }
