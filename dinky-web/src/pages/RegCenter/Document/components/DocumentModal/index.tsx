@@ -23,7 +23,7 @@ import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
 import { Document } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { Form, Modal } from 'antd';
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
 type DocumentModalProps = {
   onCancel: (flag?: boolean) => void;
