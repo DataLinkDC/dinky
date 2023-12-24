@@ -219,9 +219,6 @@ const Project: React.FC = (props: connect) => {
       },
       () => {},
       () => {
-        setProjectState((prevState) => ({
-          ...prevState
-        }));
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         if (values.type && values.type.toLowerCase() === DIALECT.FLINKSQLENV) {
           dispatch({ type: STUDIO_MODEL_ASYNC.queryEnv });
@@ -295,8 +292,8 @@ const Project: React.FC = (props: connect) => {
             dispatch({ type: STUDIO_MODEL.updateTabsActiveKey, payload: '' });
             dispatch({ type: STUDIO_MODEL.updateActiveBreadcrumbTitle, payload: '' });
           }
-          dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         });
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
       }
     });
   };

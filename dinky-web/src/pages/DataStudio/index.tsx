@@ -27,8 +27,6 @@ import { isProjectTabs, mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { BtnProvider } from '@/pages/DataStudio/LeftContainer/BtnContext';
-import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
-import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
 import {
   StateType,
@@ -38,39 +36,34 @@ import {
   VIEW
 } from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
-import {
-  getClusterConfigurationData,
-  getEnvData,
-  getSessionData
-} from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide } from '@/pages/DataStudio/route';
 import { PageContainer } from '@ant-design/pro-layout';
+import { connect, getDvaApp } from '@umijs/max';
 import { useAsyncEffect } from 'ahooks';
 import { Layout, Menu, theme } from 'antd';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
-import { connect, getDvaApp } from 'umi';
 
 const { Sider, Content } = Layout;
 
 const { useToken } = theme;
 
-const DataStudio = (props: any) => {
+const DataStudio: React.FC<connect> = (props: any) => {
   const {
     bottomContainer,
     leftContainer,
     rightContainer,
-    saveDataBase,
-    saveProject,
+    queryDatabaseList,
+    queryTaskData,
     updateToolContentHeight,
     updateBottomHeight,
-    saveSession,
-    saveEnv,
+    querySessionData,
+    queryEnv,
     updateCenterContentHeight,
     updateSelectLeftKey,
     updateSelectRightKey,
     updateSelectBottomKey,
-    saveClusterConfiguration,
+    queryClusterConfigurationData,
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
     tabs: { panes, activeKey }
@@ -113,20 +106,12 @@ const DataStudio = (props: any) => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  const loadData = async () => {
-    Promise.all([
-      getDataSourceList(),
-      getTaskData(),
-      getSessionData(),
-      getEnvData(),
-      getClusterConfigurationData()
-    ]).then((res) => {
-      saveDataBase(res[0]);
-      saveProject(res[1]);
-      saveSession(res[2]);
-      saveEnv(res[3]);
-      saveClusterConfiguration(res[4]);
-    });
+  const loadData = () => {
+    queryDatabaseList();
+    queryTaskData();
+    querySessionData();
+    queryEnv();
+    queryClusterConfigurationData();
   };
 
   useEffect(() => {
@@ -141,7 +126,7 @@ const DataStudio = (props: any) => {
   }, [activeKey, panes]);
 
   useAsyncEffect(async () => {
-    await loadData();
+    loadData();
   }, []);
 
   const access = useAccess();
