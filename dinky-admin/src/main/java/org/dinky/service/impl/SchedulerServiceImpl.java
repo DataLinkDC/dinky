@@ -33,14 +33,15 @@ import org.dinky.scheduler.model.DagNodeLocation;
 import org.dinky.scheduler.model.DinkyTaskParams;
 import org.dinky.scheduler.model.DinkyTaskRequest;
 import org.dinky.scheduler.model.ProcessDefinition;
+import org.dinky.scheduler.model.ProcessTaskRelation;
 import org.dinky.scheduler.model.Project;
 import org.dinky.scheduler.model.TaskDefinition;
 import org.dinky.scheduler.model.TaskMainInfo;
 import org.dinky.scheduler.model.TaskRequest;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.SchedulerService;
+import org.dinky.utils.JsonUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -76,6 +77,13 @@ public class SchedulerServiceImpl implements SchedulerService {
      */
     @Override
     public boolean pushAddTask(DinkyTaskRequest dinkyTaskRequest) {
+        // Use root catalog as process (workflow) name.
+        Catalogue catalogue = catalogueService.getOne(
+                new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskRequest.getTaskId()));
+        if (catalogue == null) {
+            log.error(Status.DS_GET_NODE_LIST_ERROR.getMessage());
+            throw new BusException(Status.DS_GET_NODE_LIST_ERROR);
+        }
 
         DinkyTaskParams dinkyTaskParams = new DinkyTaskParams();
         dinkyTaskParams.setTaskId(dinkyTaskRequest.getTaskId());
@@ -84,77 +92,91 @@ public class SchedulerServiceImpl implements SchedulerService {
         dinkyTaskRequest.setTaskParams(JSONUtil.parseObj(dinkyTaskParams).toString());
         dinkyTaskRequest.setTaskType(TASK_TYPE);
 
-        Catalogue catalogue = catalogueService.getOne(
-                new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskRequest.getTaskId()));
-        if (catalogue == null) {
-            log.error(Status.DS_GET_NODE_LIST_ERROR.getMessage());
-            throw new BusException(Status.DS_GET_NODE_LIST_ERROR);
-        }
-
         String processName = getDinkyNames(catalogue, 0);
         long projectCode = SystemInit.getProject().getCode();
+        // Get process from dolphin scheduler
         ProcessDefinition process = processClient.getProcessDefinitionInfo(projectCode, processName);
 
         String taskName = catalogue.getName() + ":" + catalogue.getId();
         dinkyTaskRequest.setName(taskName);
 
         TaskRequest taskRequest = new TaskRequest();
-        JSONArray array = new JSONArray();
         Long taskCode = taskClient.genTaskCode(projectCode);
 
+        // If the process does not exist, a process needs to be created.
         if (process == null) {
             dinkyTaskRequest.setCode(taskCode);
             BeanUtil.copyProperties(dinkyTaskRequest, taskRequest);
             taskRequest.setTimeoutFlag(dinkyTaskRequest.getTimeoutFlag());
             taskRequest.setFlag(dinkyTaskRequest.getFlag());
+            taskRequest.setIsCache(dinkyTaskRequest.getIsCache());
             JSONObject jsonObject = JSONUtil.parseObj(taskRequest);
-            array.set(jsonObject);
+            JSONArray taskArray = new JSONArray();
+            taskArray.set(jsonObject);
             log.info(Status.DS_ADD_WORK_FLOW_DEFINITION_SUCCESS.getMessage());
-            // 随机出一个 x y 坐标
+
             DagNodeLocation dagNodeLocation = new DagNodeLocation();
             dagNodeLocation.setTaskCode(taskCode);
             dagNodeLocation.setX(RandomUtil.randomLong(200, 500));
             dagNodeLocation.setY(RandomUtil.randomLong(100, 400));
             log.info("DagNodeLocation Info: {}", dagNodeLocation);
+
+            ProcessTaskRelation processTaskRelation = ProcessTaskRelation.generateProcessTaskRelation(taskCode);
+            JSONObject processTaskRelationJSONObject = JSONUtil.parseObj(processTaskRelation);
+            JSONArray taskRelationArray = new JSONArray();
+            taskRelationArray.set(processTaskRelationJSONObject);
+
             processClient.createOrUpdateProcessDefinition(
-                    projectCode, null, processName, taskCode, array.toString(), Arrays.asList(dagNodeLocation), false);
+                    projectCode,
+                    null,
+                    processName,
+                    taskCode,
+                    taskRelationArray.toString(),
+                    taskArray.toString(),
+                    Arrays.asList(dagNodeLocation),
+                    false);
+            return true;
         }
 
-        if (process != null && process.getReleaseState() == ReleaseState.ONLINE) {
+        // If the workflow is in an online state, it cannot be updated.
+        if (process.getReleaseState() == ReleaseState.ONLINE) {
             log.error(Status.DS_WORK_FLOW_DEFINITION_ONLINE.getMessage(), processName);
         }
 
-        TaskMainInfo taskMainInfo = taskClient.getTaskMainInfo(projectCode, processName, taskName, "DINKY");
+        TaskMainInfo taskMainInfo = taskClient.getTaskMainInfo(projectCode, processName, taskName, TASK_TYPE);
+        // If task name exist, update task definition.
         if (taskMainInfo != null) {
-            // if task name exist, update task definition
             log.warn(Status.DS_WORK_FLOW_DEFINITION_TASK_NAME_EXIST.getMessage(), processName, taskName);
             return pushUpdateTask(
                     projectCode, taskMainInfo.getProcessDefinitionCode(), taskMainInfo.getTaskCode(), dinkyTaskRequest);
         }
-
+        // If the task does not exist, a dinky task needs to be created.
         dinkyTaskRequest.setCode(taskCode);
         BeanUtil.copyProperties(dinkyTaskRequest, taskRequest);
         taskRequest.setTimeoutFlag(dinkyTaskRequest.getTimeoutFlag());
         taskRequest.setFlag(dinkyTaskRequest.getFlag());
-        String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
-        if (process != null) {
-            taskClient.createTaskDefinition(
-                    projectCode, process.getCode(), dinkyTaskRequest.getUpstreamCodes(), taskDefinitionJsonObj);
-            // 更新 process 的 location 信息
-            updateProcessDefinition(process, taskCode, taskRequest, array, projectCode);
+        taskRequest.setIsCache(dinkyTaskRequest.getIsCache());
 
-            log.info(Status.DS_ADD_TASK_DEFINITION_SUCCESS.getMessage());
-            return true;
-        }
-        return false;
+        String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
+        taskClient.createTaskDefinition(
+                projectCode, process.getCode(), dinkyTaskRequest.getUpstreamCodes(), taskDefinitionJsonObj);
+        // update the location of process
+        updateProcessDefinition(process, taskCode, taskRequest, projectCode);
+
+        log.info(Status.DS_ADD_TASK_DEFINITION_SUCCESS.getMessage());
+        return true;
     }
 
-    private void updateProcessDefinition(
-            ProcessDefinition process, Long taskCode, TaskRequest taskRequest, JSONArray array, long projectCode) {
-        JSONObject jsonObject = JSONUtil.parseObj(taskRequest);
-        array.set(jsonObject);
+    private void updateProcessDefinition(ProcessDefinition process, Long taskCode, TaskRequest task, long projectCode) {
 
-        List<DagNodeLocation> locations = new ArrayList<>();
+        DagData dagData = processClient.getProcessDefinitionInfo(projectCode, process.getCode());
+        if (dagData == null) {
+            log.error(Status.DS_WORK_FLOW_DEFINITION_NOT_EXIST.getMessage());
+            throw new BusException(Status.DS_WORK_FLOW_DEFINITION_NOT_EXIST);
+        }
+        List<ProcessTaskRelation> processTaskRelationList = dagData.getProcessTaskRelationList();
+        List<TaskDefinition> taskDefinitionList = dagData.getTaskDefinitionList();
+        List<DagNodeLocation> locations = process.getLocations();
 
         if (CollUtil.isNotEmpty(process.getLocations())) {
             boolean matched = process.getLocations().stream().anyMatch(location -> location.getTaskCode() == taskCode);
@@ -175,13 +197,13 @@ public class SchedulerServiceImpl implements SchedulerService {
                         .getAsLong();
                 long yMin = process.getLocations().stream()
                         .mapToLong(DagNodeLocation::getY)
-                        .max()
+                        .min()
                         .getAsLong();
                 // 随机出一个 x y 坐标
                 DagNodeLocation dagNodeLocation = new DagNodeLocation();
                 dagNodeLocation.setTaskCode(taskCode);
-                dagNodeLocation.setX(RandomUtil.randomLong(xMax, xMin));
-                dagNodeLocation.setY(RandomUtil.randomLong(yMax, yMin));
+                dagNodeLocation.setX(RandomUtil.randomLong(xMin == xMax ? 0 : xMin, xMax));
+                dagNodeLocation.setY(RandomUtil.randomLong(yMin == yMax ? 0 : yMin, yMax));
                 locations = process.getLocations();
                 locations.add(dagNodeLocation);
             }
@@ -194,13 +216,27 @@ public class SchedulerServiceImpl implements SchedulerService {
             locations.add(dagNodeLocation);
         }
 
+        JSONArray taskArray = new JSONArray();
+        taskDefinitionList.removeIf(taskDefinition -> (task.getName()).equalsIgnoreCase(taskDefinition.getName()));
+
+        taskArray.addAll(taskDefinitionList);
+        taskArray.add(task);
+        String processTaskRelationListJson = JsonUtils.toJsonString(processTaskRelationList);
+
         processClient.createOrUpdateProcessDefinition(
-                projectCode, process.getCode(), process.getName(), taskCode, array.toString(), locations, true);
+                projectCode,
+                process.getCode(),
+                process.getName(),
+                taskCode,
+                processTaskRelationListJson,
+                taskArray.toString(),
+                locations,
+                true);
         log.info(
                 Status.DS_PROCESS_DEFINITION_UPDATE.getMessage(),
                 process.getName(),
                 taskCode,
-                array.toString(),
+                taskArray.toString(),
                 locations);
     }
 
@@ -251,14 +287,13 @@ public class SchedulerServiceImpl implements SchedulerService {
         BeanUtil.copyProperties(dinkyTaskRequest, taskRequest);
         taskRequest.setTimeoutFlag(dinkyTaskRequest.getTimeoutFlag());
         taskRequest.setFlag(dinkyTaskRequest.getFlag());
+        taskRequest.setIsCache(dinkyTaskRequest.getIsCache());
 
         String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
         Long updatedTaskDefinition = taskClient.updateTaskDefinition(
                 projectCode, taskCode, dinkyTaskRequest.getUpstreamCodes(), taskDefinitionJsonObj);
-        JSONObject jsonObject = JSONUtil.parseObj(taskRequest);
-        JSONArray array = new JSONArray();
-        array.set(jsonObject);
-        updateProcessDefinition(process, taskCode, taskRequest, array, projectCode);
+
+        updateProcessDefinition(process, taskCode, taskRequest, projectCode);
         if (updatedTaskDefinition != null && updatedTaskDefinition > 0) {
             log.info(Status.MODIFY_SUCCESS.getMessage());
             return true;
@@ -309,7 +344,7 @@ public class SchedulerServiceImpl implements SchedulerService {
 
         String processName = getDinkyNames(catalogue, 0);
         String taskName = catalogue.getName() + ":" + catalogue.getId();
-        TaskMainInfo taskMainInfo = taskClient.getTaskMainInfo(projectCode, processName, taskName, "DINKY");
+        TaskMainInfo taskMainInfo = taskClient.getTaskMainInfo(projectCode, processName, taskName, TASK_TYPE);
         TaskDefinition taskDefinition = null;
         if (taskMainInfo == null) {
             log.error(Status.DS_WORK_FLOW_DEFINITION_NOT_EXIST.getMessage(), processName, taskName);

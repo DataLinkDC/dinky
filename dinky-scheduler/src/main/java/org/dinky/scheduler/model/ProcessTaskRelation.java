@@ -67,4 +67,16 @@ public class ProcessTaskRelation {
 
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
+
+    public static ProcessTaskRelation generateProcessTaskRelation(long taskCode) {
+        ProcessTaskRelation processTaskRelation = new ProcessTaskRelation();
+        processTaskRelation.setName("");
+        processTaskRelation.setPreTaskCode(0);
+        processTaskRelation.setPreTaskVersion(0);
+        processTaskRelation.setPostTaskCode(taskCode);
+        processTaskRelation.setPostTaskVersion(1);
+        processTaskRelation.setConditionType(ConditionType.NONE);
+        processTaskRelation.setConditionParams("{}");
+        return processTaskRelation;
+    }
 }

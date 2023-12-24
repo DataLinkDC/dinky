@@ -74,6 +74,9 @@ public class TaskDefinition {
     @ApiModelProperty(value = "运行标志 yes 正常/no 禁止执行")
     private Flag flag;
 
+    @ApiModelProperty(value = "Cache run: yes/no ")
+    private Flag isCache;
+
     @ApiModelProperty(value = "优先级")
     private Priority taskPriority;
 

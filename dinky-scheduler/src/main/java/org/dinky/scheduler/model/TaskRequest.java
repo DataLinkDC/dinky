@@ -53,6 +53,9 @@ public class TaskRequest {
     @ApiModelProperty(value = "运行标志 yes 正常/no 禁止执行")
     private String flag;
 
+    @ApiModelProperty(value = "Cache run: yes/no")
+    private String isCache;
+
     @ApiModelProperty(value = "任务参数 默认DINKY参数")
     private String taskParams;
 
