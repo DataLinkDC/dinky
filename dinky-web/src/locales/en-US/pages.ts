@@ -109,6 +109,8 @@ export default {
   'datastudio.header.pushdolphin.timeoutFlagTip': 'Please select a timeout warning',
   'datastudio.header.pushdolphin.flag': 'Run flag',
   'datastudio.header.pushdolphin.flagTip': 'Please select the run flag',
+  'datastudio.header.pushdolphin.isCache': 'Cache run',
+  'datastudio.header.pushdolphin.isCacheTip': 'Please select cache run',
   'datastudio.header.pushdolphin.timeoutNotifyStrategy': 'Timeout notification strategy',
   'datastudio.header.pushdolphin.timeoutNotifyStrategyTip':
     'Please select a timeout notification strategy',
@@ -210,6 +212,12 @@ export default {
   'devops.jobinfo.version.latestVersion': 'Current Version',
   'devops.jobinfo.version.rollBack': 'Roll bcak this version',
   'devops.jobinfo.version.versionList': 'Job Version',
+  'devops.jobinfo.remap.title': 'Remap the cluster information',
+  'devops.jobinfo.remap.cluster.title': 'Cluster instance mapping information',
+  'devops.jobinfo.remap.cluster.title.help':
+    '(Note: This operation will modify the configuration of the cluster instance simultaneously.)',
+  'devops.jobinfo.remap.job.title': 'Job mapping information',
+
   'devops.joblist.detail': 'Job Detail',
   'devops.joblist.history': 'History',
   'devops.joblist.joblist': 'JobList',

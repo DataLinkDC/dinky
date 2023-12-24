@@ -420,6 +420,14 @@ const Model: ModelType = {
         payload: response
       });
     },
+    *queryEnv({ payload }, { call, put }) {
+      const response: EnvType[] = yield call(getEnvData, payload);
+      console.log(response);
+      yield put({
+        type: 'saveEnv',
+        payload: response
+      });
+    },
     *queryFlinkConfigOptions({ payload }, { call, put }) {
       const response: [] = yield call(getFlinkConfigs, payload);
       yield put({

@@ -138,7 +138,7 @@ public class TaskClient {
                         SystemConfiguration.getInstances()
                                 .getDolphinschedulerToken()
                                 .getValue())
-                .timeout(5000)
+                .timeout(20000)
                 .execute()
                 .body();
 
