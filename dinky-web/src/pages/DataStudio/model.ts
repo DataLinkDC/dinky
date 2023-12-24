@@ -18,11 +18,13 @@
  */
 
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
+import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import {
   getClusterConfigurationData,
   getEnvData,
-  getFlinkConfigs, getSessionData,
+  getFlinkConfigs,
+  getSessionData,
   querySuggessionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
@@ -36,7 +38,6 @@ import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
 import ICodeEditor = editor.ICodeEditor;
-import {getDataSourceList} from "@/pages/DataStudio/LeftContainer/DataSource/service";
 
 /**
  * 初始化布局宽高度
@@ -307,7 +308,7 @@ export type ModelType = {
     queryFlinkConfigOptions: Effect;
     querySuggestions: Effect;
     queryEnv: Effect;
-    queryDatabaseList: Effect
+    queryDatabaseList: Effect;
     queryTaskData: Effect;
     querySessionData: Effect;
     queryClusterConfigurationData: Effect;
@@ -436,9 +437,9 @@ const Model: ModelType = {
     *queryDatabaseList({ payload }, { call, put }) {
       const response: DataSources.DataSource[] = yield call(getDataSourceList, payload);
       yield put({
-        type:'saveDataBase',
-        payload:response
-      })
+        type: 'saveDataBase',
+        payload: response
+      });
     },
     *queryTaskData({ payload }, { call, put }) {
       const response: TaskType = yield call(getTaskData, payload);
@@ -457,7 +458,7 @@ const Model: ModelType = {
     *queryEnv({ payload }, { call, put }) {
       const response: EnvType[] = yield call(getEnvData, payload);
       yield put({
-        type:'saveEnv',
+        type: 'saveEnv',
         payload: response
       });
     },

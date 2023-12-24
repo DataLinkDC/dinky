@@ -38,17 +38,17 @@ import {
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import { LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide } from '@/pages/DataStudio/route';
 import { PageContainer } from '@ant-design/pro-layout';
+import { connect, getDvaApp } from '@umijs/max';
 import { useAsyncEffect } from 'ahooks';
 import { Layout, Menu, theme } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
-import {connect, getDvaApp} from "@umijs/max";
 
 const { Sider, Content } = Layout;
 
 const { useToken } = theme;
 
-const DataStudio: React.FC<connect> = (props: any ) => {
+const DataStudio: React.FC<connect> = (props: any) => {
   const {
     bottomContainer,
     leftContainer,
@@ -66,7 +66,7 @@ const DataStudio: React.FC<connect> = (props: any ) => {
     queryClusterConfigurationData,
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
-    tabs: { panes, activeKey },
+    tabs: { panes, activeKey }
   } = props;
   const isProject = isProjectTabs(panes, activeKey);
   const { token } = useToken();
