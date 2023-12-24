@@ -28,7 +28,7 @@ import org.dinky.scheduler.result.PageInfo;
 import org.dinky.scheduler.result.Result;
 import org.dinky.scheduler.utils.MyJSONUtil;
 import org.dinky.scheduler.utils.ParamUtil;
-import org.dinky.scheduler.utils.ReadFileUtil;
+import org.dinky.utils.JsonUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +75,7 @@ public class ProcessClient {
                                 .getDolphinschedulerToken()
                                 .getValue())
                 .form(ParamUtil.getPageParams(processName))
-                .timeout(5000)
+                .timeout(20000)
                 .execute()
                 .body();
         PageInfo<JSONObject> data = MyJSONUtil.toPageBean(content);
@@ -85,7 +85,11 @@ public class ProcessClient {
         }
 
         for (JSONObject jsonObject : data.getTotalList()) {
-            lists.add(MyJSONUtil.toBean(jsonObject, ProcessDefinition.class));
+            ProcessDefinition processDefinition = MyJSONUtil.toBean(jsonObject, ProcessDefinition.class);
+            // The locations of processDefinition is json string
+            List<DagNodeLocation> locations = jsonObject.getBeanList("locations", DagNodeLocation.class);
+            processDefinition.setLocations(locations);
+            lists.add(processDefinition);
         }
         return lists;
     }
@@ -127,7 +131,7 @@ public class ProcessClient {
                         SystemConfiguration.getInstances()
                                 .getDolphinschedulerToken()
                                 .getValue())
-                .timeout(5000)
+                .timeout(20000)
                 .execute()
                 .body();
 
@@ -148,6 +152,7 @@ public class ProcessClient {
             Long processCode,
             String processName,
             Long taskCode,
+            String taskRelationJson,
             String taskDefinitionJson,
             List<DagNodeLocation> locations,
             boolean isModify) {
@@ -160,8 +165,8 @@ public class ProcessClient {
         params.put("name", processName);
         params.put("description", "系统添加");
         params.put("tenantCode", "default");
-        params.put("locations", locations);
-        params.put("taskRelationJson", ReadFileUtil.taskRelation(Collections.singletonMap("code", taskCode)));
+        params.put("locations", JsonUtils.toJsonString(locations));
+        params.put("taskRelationJson", taskRelationJson);
         params.put("taskDefinitionJson", taskDefinitionJson);
         params.put("executionType", "PARALLEL");
 
@@ -178,7 +183,7 @@ public class ProcessClient {
                                 .getDolphinschedulerToken()
                                 .getValue())
                 .form(params)
-                .timeout(5000)
+                .timeout(20000)
                 .execute();
         String content = httpResponse.body();
         return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<ProcessDefinition>>() {}));

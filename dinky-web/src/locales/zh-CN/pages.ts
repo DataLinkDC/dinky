@@ -102,6 +102,8 @@ export default {
   'datastudio.header.pushdolphin.timeoutFlagTip': '请选择超时警告',
   'datastudio.header.pushdolphin.flag': '运行标志',
   'datastudio.header.pushdolphin.flagTip': '请选择运行标志',
+  'datastudio.header.pushdolphin.isCache': '缓存执行',
+  'datastudio.header.pushdolphin.isCacheTip': '请选择是否缓存执行',
   'datastudio.header.pushdolphin.timeoutNotifyStrategy': '超时通知策略',
   'datastudio.header.pushdolphin.timeoutNotifyStrategyTip': '请选择超时通知策略',
   'datastudio.header.pushdolphin.timeout': '超时时间(分钟)',

@@ -109,6 +109,8 @@ export default {
   'datastudio.header.pushdolphin.timeoutFlagTip': 'Please select a timeout warning',
   'datastudio.header.pushdolphin.flag': 'Run flag',
   'datastudio.header.pushdolphin.flagTip': 'Please select the run flag',
+  'datastudio.header.pushdolphin.isCache': 'Cache run',
+  'datastudio.header.pushdolphin.isCacheTip': 'Please select cache run',
   'datastudio.header.pushdolphin.timeoutNotifyStrategy': 'Timeout notification strategy',
   'datastudio.header.pushdolphin.timeoutNotifyStrategyTip':
     'Please select a timeout notification strategy',
