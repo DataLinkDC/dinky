@@ -127,6 +127,11 @@ const DataSource = (props: any) => {
     }));
   };
 
+  dispatch({
+    type: STUDIO_MODEL.updateSelectRightKey,
+    payload: ''
+  });
+
   /**
    * 树节点点击事件 添加tab页 并传递参数
    * @param keys
