@@ -89,7 +89,7 @@ const JobHistoryList = (props: HistoryProps) => {
         columns={jobListColumns}
         actionRef={actionRef}
         request={(params) =>
-          queryList(API_CONSTANTS.GET_JOB_LIST, {
+          queryList(API_CONSTANTS.JOB_INSTANCE, {
             ...params,
             filter: { task_id: [taskId] }
           })

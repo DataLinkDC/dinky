@@ -200,6 +200,11 @@ export default {
   'devops.jobinfo.version.latestVersion': '当前版本',
   'devops.jobinfo.version.rollBack': '回滚到此版本',
   'devops.jobinfo.version.versionList': '版本列表',
+  'devops.jobinfo.remap.title': '重新映射集群信息',
+  'devops.jobinfo.remap.cluster.title': '集群实例映射信息',
+  'devops.jobinfo.remap.cluster.title.help': ' (注意：此操作会同步修改集群实例配置)',
+  'devops.jobinfo.remap.job.title': 'Job映射信息',
+
   'devops.joblist.detail': '详情',
   'devops.joblist.history': '历史',
   'devops.joblist.joblist': '任务列表',

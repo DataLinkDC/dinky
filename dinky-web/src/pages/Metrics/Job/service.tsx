@@ -26,7 +26,7 @@ import { API_CONSTANTS } from '@/services/endpoints';
  * @returns {Promise<any>}
  */
 export async function getFlinkRunTask() {
-  return queryList(API_CONSTANTS.GET_JOB_LIST, {
+  return queryList(API_CONSTANTS.JOB_INSTANCE, {
     filter: {},
     currentPage: 1,
     status: 'RUNNING',

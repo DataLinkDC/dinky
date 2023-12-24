@@ -23,6 +23,7 @@ import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.enums.BusinessType;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.ID;
 import org.dinky.data.model.devops.TaskManagerConfiguration;
 import org.dinky.data.model.ext.JobInfoDetail;
@@ -40,6 +41,7 @@ import java.util.Set;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,6 +70,18 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class JobInstanceController {
     private final JobInstanceService jobInstanceService;
+
+    @PutMapping
+    @Log(title = "update JobInstance Job Id", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("update JobInstance Job Id")
+    public Result<Void> updateJobInstanceJobId(@RequestBody JobInstance jobInstance) {
+        boolean updated = jobInstanceService.updateById(jobInstance);
+        if (updated) {
+            return Result.succeed(Status.SAVE_SUCCESS);
+        } else {
+            return Result.failed(Status.SAVE_FAILED);
+        }
+    }
 
     /**
      * 动态查询列表

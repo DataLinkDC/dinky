@@ -137,7 +137,7 @@ const JobList = () => {
           actions: [<Button icon={<RedoOutlined />} onClick={() => tableRef.current?.reload()} />]
         }}
         request={async (params, sorter, filter: any) =>
-          queryList(API_CONSTANTS.GET_JOB_LIST, {
+          queryList(API_CONSTANTS.JOB_INSTANCE, {
             ...params,
             sorter,
             filter

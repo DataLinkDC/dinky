@@ -85,7 +85,9 @@ public class ClusterInstanceController {
             mode = SaMode.OR)
     public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstanceDTO clusterInstanceDTO)
             throws Exception {
-        clusterInstanceDTO.setAutoRegisters(false);
+        if (clusterInstanceDTO.getAutoRegisters() == null) {
+            clusterInstanceDTO.setAutoRegisters(false);
+        }
         clusterInstanceService.registersCluster(clusterInstanceDTO);
         return Result.succeed(Status.SAVE_SUCCESS);
     }
