@@ -1,5 +1,6 @@
 ---
 position: 5
+sidebar_position: 5
 id: global_var
 title: 全局变量
 ---

@@ -1,5 +1,6 @@
 ---
 position: 1
+sidebar_position: 1
 id: cluster_manage
 title: 集群管理
 ---
