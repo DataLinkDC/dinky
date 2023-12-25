@@ -33,9 +33,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.ververica.cdc.composer.PipelineComposer;
 import com.ververica.cdc.composer.definition.PipelineDef;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * FlinkCDCPipelineOperation
