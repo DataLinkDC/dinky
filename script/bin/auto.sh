@@ -5,7 +5,7 @@ FLINK_VERSION=${2:-1.18}
 JAR_NAME="dinky-admin"
 
 # Use FLINK_HOME:
-CLASS_PATH=".:./lib/*:config:./plugins/*:./customJar/*:./plugins/flink${FLINK_VERSION}/dinky/*:./plugins/flink${FLINK_VERSION}/*:./extends/flink${FLINK_VERSION}/dinky/*:./extends/flink${FLINK_VERSION}/*"
+CLASS_PATH=".:./lib/*:config:./extends/*:./plugins/*:./customJar/*:./plugins/flink${FLINK_VERSION}/dinky/*:./plugins/flink${FLINK_VERSION}/*:./extends/flink${FLINK_VERSION}/dinky/*:./extends/flink${FLINK_VERSION}/*"
 
 PID_FILE="dinky.pid"
 
