@@ -816,7 +816,7 @@ update dinky_sys_token set creator = 1, updater = 1;
 commit ;
 
 
-
+update dinky_task set save_point_strategy = 0 where save_point_strategy is not null and save_point_strategy = -1;
 
 
 
