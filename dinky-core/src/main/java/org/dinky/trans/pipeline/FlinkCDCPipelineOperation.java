@@ -30,9 +30,12 @@ import org.apache.flink.table.api.TableResult;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.ververica.cdc.composer.PipelineComposer;
 import com.ververica.cdc.composer.definition.PipelineDef;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * FlinkCDCPipelineOperation
@@ -84,7 +87,7 @@ public class FlinkCDCPipelineOperation extends AbstractOperation implements Oper
 
     @Override
     public TableResult execute(Executor executor) {
-        String yamlText = statement.substring(statement.indexOf("(") + 1, statement.lastIndexOf(")"));
+        String yamlText = getPipelineConfigure(statement);
         com.ververica.cdc.common.configuration.Configuration globalPipelineConfig =
                 com.ververica.cdc.common.configuration.Configuration.fromMap(executor.getSetConfig());
         // Parse pipeline definition file
@@ -109,6 +112,16 @@ public class FlinkCDCPipelineOperation extends AbstractOperation implements Oper
         executor.setStreamExecutionEnvironment(execution.getEnv());
 
         return null;
+    }
+
+    @Nullable
+    public String getPipelineConfigure(String statement) {
+        Pattern patternYaml = Pattern.compile("(?is)^EXECUTE\\s+PIPELINE\\s+WITHYAML\\s+\\((.+)\\)");
+        Matcher matcherYaml = patternYaml.matcher(statement);
+        if (matcherYaml.find()) {
+            return matcherYaml.group(1);
+        }
+        return "";
     }
 
     public DinkyFlinkPipelineComposer createComposer(
