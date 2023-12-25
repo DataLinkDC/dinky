@@ -18,9 +18,13 @@
  */
 
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
+import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import {
+  getClusterConfigurationData,
+  getEnvData,
   getFlinkConfigs,
+  getSessionData,
   querySuggessionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
@@ -303,6 +307,11 @@ export type ModelType = {
     queryProject: Effect;
     queryFlinkConfigOptions: Effect;
     querySuggestions: Effect;
+    queryEnv: Effect;
+    queryDatabaseList: Effect;
+    queryTaskData: Effect;
+    querySessionData: Effect;
+    queryClusterConfigurationData: Effect;
   };
   reducers: {
     updateToolContentHeight: Reducer<StateType>;
@@ -411,6 +420,14 @@ const Model: ModelType = {
         payload: response
       });
     },
+    *queryEnv({ payload }, { call, put }) {
+      const response: EnvType[] = yield call(getEnvData, payload);
+      console.log(response);
+      yield put({
+        type: 'saveEnv',
+        payload: response
+      });
+    },
     *queryFlinkConfigOptions({ payload }, { call, put }) {
       const response: [] = yield call(getFlinkConfigs, payload);
       yield put({
@@ -422,6 +439,41 @@ const Model: ModelType = {
       const response: SuggestionInfo[] = yield call(querySuggessionData, payload);
       yield put({
         type: 'updateSuggestions',
+        payload: response
+      });
+    },
+    *queryDatabaseList({ payload }, { call, put }) {
+      const response: DataSources.DataSource[] = yield call(getDataSourceList, payload);
+      yield put({
+        type: 'saveDataBase',
+        payload: response
+      });
+    },
+    *queryTaskData({ payload }, { call, put }) {
+      const response: TaskType = yield call(getTaskData, payload);
+      yield put({
+        type: 'saveProject',
+        payload: response
+      });
+    },
+    *querySessionData({ payload }, { call, put }) {
+      const response: SessionType = yield call(getSessionData, payload);
+      yield put({
+        type: 'saveSession',
+        payload: response
+      });
+    },
+    *queryEnv({ payload }, { call, put }) {
+      const response: EnvType[] = yield call(getEnvData, payload);
+      yield put({
+        type: 'saveEnv',
+        payload: response
+      });
+    },
+    *queryClusterConfigurationData({ payload }, { call, put }) {
+      const response: Cluster.Config[] = yield call(getClusterConfigurationData, payload);
+      yield put({
+        type: 'saveClusterConfiguration',
         payload: response
       });
     }

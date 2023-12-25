@@ -23,7 +23,7 @@ import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
 import { Document } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { Form, Modal } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 type DocumentModalProps = {
   onCancel: (flag?: boolean) => void;
@@ -50,11 +50,18 @@ const DocumentModalForm: React.FC<DocumentModalProps> = (props) => {
    * init props
    */
   const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
+  /**
+   * when modalVisible or values changed, set form values
+   */
+  useEffect(() => {
+    if (modalVisible) form.resetFields();
+    form.setFieldsValue(values);
+  }, [modalVisible, values, form]);
 
   /**
    * handle cancel
    */
-  const handleCancel = () => {
+  const handleCancel = async () => {
     handleModalVisible();
     formContext.resetForm();
   };
@@ -64,7 +71,7 @@ const DocumentModalForm: React.FC<DocumentModalProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     handleSubmit({ ...values, ...fieldsValue });
-    handleCancel();
+    await handleCancel();
   };
 
   return (
@@ -77,7 +84,7 @@ const DocumentModalForm: React.FC<DocumentModalProps> = (props) => {
         autoFocus: true
       }}
       onOk={() => submitForm()}
-      onCancel={() => handleModalVisible()}
+      onCancel={() => handleCancel()}
     >
       <DocumentForm values={values} form={form} />
     </Modal>

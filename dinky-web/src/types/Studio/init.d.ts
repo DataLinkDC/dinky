@@ -48,6 +48,7 @@ export const InitPushDolphinParams: PushDolphinParams = {
   timeout: 30,
   timeoutFlag: false,
   flag: false,
+  isCache: false,
   timeoutNotifyStrategy: ['WARN'],
   description: ''
 };

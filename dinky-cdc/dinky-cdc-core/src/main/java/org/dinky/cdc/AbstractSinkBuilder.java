@@ -40,7 +40,6 @@ import org.apache.flink.table.data.DecimalData;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
-import org.apache.flink.table.data.TimestampData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.types.logical.BigIntType;
@@ -337,7 +336,11 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 return new DateType();
             case LOCAL_DATETIME:
             case TIMESTAMP:
-                return new TimestampType();
+                if (column.getLength() != null) {
+                    return new TimestampType(column.getLength());
+                } else {
+                    return new TimestampType(3);
+                }
             case BYTES:
                 return new VarBinaryType(Integer.MAX_VALUE);
             default:
@@ -409,18 +412,28 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
         if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Optional.of(TimestampData.fromLocalDateTime(Instant.ofEpochMilli(((Integer) value).longValue())
+                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
                         .atZone(sinkTimeZone)
-                        .toLocalDateTime()));
+                        .toLocalDateTime());
+            } else if (value instanceof String) {
+                return Optional.of(
+                        Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime());
+            } else {
+                TimestampType logicalType1 = (TimestampType) logicalType;
+                if (logicalType1.getPrecision() == 3) {
+                    return Optional.of(Instant.ofEpochMilli((long) value)
+                            .atZone(sinkTimeZone)
+                            .toLocalDateTime());
+                } else if (logicalType1.getPrecision() > 3) {
+                    return Optional.of(
+                            Instant.ofEpochMilli(((long) value) / (long) Math.pow(10, logicalType1.getPrecision() - 3))
+                                    .atZone(sinkTimeZone)
+                                    .toLocalDateTime());
+                }
+                return Optional.of(Instant.ofEpochSecond(((long) value))
+                        .atZone(sinkTimeZone)
+                        .toLocalDateTime());
             }
-
-            if (value instanceof Long) {
-                return Optional.of(TimestampData.fromLocalDateTime(
-                        Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime()));
-            }
-
-            return Optional.of(TimestampData.fromLocalDateTime(
-                    Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDateTime()));
         }
         return Optional.empty();
     }

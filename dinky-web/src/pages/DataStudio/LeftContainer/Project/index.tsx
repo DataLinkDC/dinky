@@ -46,6 +46,7 @@ import {
   handlePutDataByParams,
   handleRemoveById
 } from '@/services/BusinessCrud';
+import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Catalogue } from '@/types/Studio/data.d';
 import { InitProjectState } from '@/types/Studio/init.d';
@@ -218,10 +219,10 @@ const Project: React.FC = (props: connect) => {
       },
       () => {},
       () => {
-        setProjectState((prevState) => ({
-          ...prevState
-        }));
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        if (values.type && values.type.toLowerCase() === DIALECT.FLINKSQLENV) {
+          dispatch({ type: STUDIO_MODEL_ASYNC.queryEnv });
+        }
         if (projectState.isEdit) {
           const { id } = values;
           const currentTabs = getTabByTaskId(panes, id);
@@ -291,8 +292,8 @@ const Project: React.FC = (props: connect) => {
             dispatch({ type: STUDIO_MODEL.updateTabsActiveKey, payload: '' });
             dispatch({ type: STUDIO_MODEL.updateActiveBreadcrumbTitle, payload: '' });
           }
-          dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         });
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
       }
     });
   };
