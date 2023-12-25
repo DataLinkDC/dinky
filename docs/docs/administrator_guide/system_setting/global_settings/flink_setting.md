@@ -1,6 +1,7 @@
 ---
 position: 2
 id: flink_setting
+sidebar_position: 2
 title: Flink 配置
 ---
 

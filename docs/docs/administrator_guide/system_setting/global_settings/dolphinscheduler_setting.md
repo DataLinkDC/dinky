@@ -1,9 +1,18 @@
 ---
 position: 4
+sidebar_position: 4
 id: dolphinscheduler_setting
 title: Dolphinscheduler 配置
 ---
 
+
+:::info 简介
+
+为了方便用户使用 Dinky 与 DolphinScheduler 进行集成，Dinky 提供了 DolphinScheduler 相关配置。
+
+在 Dinky V1.0.0 版本开始，提供了 DolphinScheduler 页面化配置功能，可以在页面上修改配置，修改后会自动生效，无需重启 Dinky 服务。
+
+:::
 
 
 
