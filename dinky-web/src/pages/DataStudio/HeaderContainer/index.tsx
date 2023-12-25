@@ -101,6 +101,7 @@ const HeaderContainer = (props: connect) => {
     saveTabs,
     updateJobRunningMsg,
     queryDsConfig,
+    queryTaskData,
     enabledDs
   } = props;
 
@@ -277,6 +278,7 @@ const HeaderContainer = (props: connect) => {
       }
     }
     saveTabs({ ...props.tabs });
+    await queryTaskData()
   };
 
   const showDagGraph = async () => {
