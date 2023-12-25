@@ -70,7 +70,7 @@ from datagen_source;
 | 作业配置 | 全局变量         | 默认禁用，开启后可以使用数据源连接配置变量、自定义变量等                                                                                             |
 | 作业配置 | 批模式          | 默认禁用，开启后启用 Batch Mode                                                                                                    |
 | 作业配置 | SavePoint 策略 | 默认禁用，策略包括:<br/>   **最近一次**<br/>   **最早一次**<br/>   **指定一次**                                                               |
-| 作业配置 | 报警组          | 报警组配置详见[报警管理](../administrator_guide/register_center/warning)                                                            |
+| 作业配置 | 报警组          | 报警组配置详见[报警管理](../administrator_guide/register_center/alert/alert_overview)                                                            |
 | 作业配置 | 其他配置         | 其他的 Flink 作业配置，具体可选参数，请参考 [Flink 官网](https://nightlies.apache.org/flink/flink-docs-release-1.14/docs/deployment/config/) |
 
 作业配置如下图：

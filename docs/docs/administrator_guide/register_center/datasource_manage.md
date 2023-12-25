@@ -1,5 +1,6 @@
 ---
 position: 2
+sidebar_position: 2
 id: datasource_manage
 title: 数据源
 
