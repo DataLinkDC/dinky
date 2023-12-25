@@ -24,6 +24,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.data.dto.ClusterInstanceDTO;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.gateway.config.GatewayConfig;
@@ -203,13 +204,17 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                 GatewayConfig.build(FlinkClusterConfig.create(clusterCfg.getType(), clusterCfg.getConfigJson()));
         gatewayConfig.setType(gatewayConfig.getType().getSessionType());
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
-        return registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
-                gatewayResult.getWebURL().replace("http://", ""),
-                gatewayResult.getId(),
-                clusterCfg.getName() + "_" + LocalDateTime.now(),
-                clusterCfg.getName() + LocalDateTime.now(),
-                id,
-                null));
+        if (gatewayResult.isSuccess()) {
+            Asserts.checkNullString(gatewayResult.getWebURL(), "Unable to obtain Web URL.");
+            return registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
+                    gatewayResult.getWebURL().replace("http://", ""),
+                    gatewayResult.getId(),
+                    clusterCfg.getName() + "_" + LocalDateTime.now(),
+                    clusterCfg.getName() + LocalDateTime.now(),
+                    id,
+                    null));
+        }
+        throw new DinkyException("Deploy session cluster error: " + gatewayResult.getError());
     }
 
     /**
