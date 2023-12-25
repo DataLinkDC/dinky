@@ -278,7 +278,7 @@ const HeaderContainer = (props: connect) => {
       }
     }
     saveTabs({ ...props.tabs });
-    await queryTaskData()
+    await queryTaskData();
   };
 
   const showDagGraph = async () => {
