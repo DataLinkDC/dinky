@@ -109,16 +109,16 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     @Override
     public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
-        for (Operation operation : operations) {
-            Operation innerOperation = ((DinkyExecutableOperation) operation).getInnerOperation();
-            if (innerOperation instanceof SetOperation) {
-                callSet((SetOperation) innerOperation, getStreamExecutionEnvironment(), setMap);
+        for (Operation outterOperation : operations) {
+            Operation operation = ((DinkyExecutableOperation) outterOperation).getInnerOperation();
+            if (operation instanceof SetOperation) {
+                callSet((SetOperation) operation, getStreamExecutionEnvironment(), setMap);
                 return true;
-            } else if (innerOperation instanceof ResetOperation) {
-                callReset((ResetOperation) innerOperation, getStreamExecutionEnvironment(), setMap);
+            } else if (operation instanceof ResetOperation) {
+                callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
                 return true;
-            } else if (innerOperation instanceof CustomSetOperation) {
-                CustomSetOperation customSetOperation = (CustomSetOperation) innerOperation;
+            } else if (operation instanceof CustomSetOperation) {
+                CustomSetOperation customSetOperation = (CustomSetOperation) operation;
                 if (customSetOperation.isValid()) {
                     callSet(
                             new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()),
