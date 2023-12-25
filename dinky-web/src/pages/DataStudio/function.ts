@@ -24,6 +24,7 @@ import {
   JobRunningMsgType,
   MetadataTabsItemType,
   STUDIO_MODEL,
+  STUDIO_MODEL_ASYNC,
   TabsItemType,
   TabsPageType,
   TaskDataType
@@ -84,6 +85,31 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
       type: STUDIO_MODEL.saveDataBase,
       payload: data
     }),
+  queryDatabaseList: () =>
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryDatabaseList
+    }),
+  queryTaskData: () => {
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryTaskData
+    });
+  },
+  querySessionData: () => {
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.querySessionData
+    });
+  },
+  queryEnv: () => {
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryEnv
+    });
+  },
+  queryClusterConfigurationData: () => {
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryClusterConfigurationData
+    });
+  },
+
   saveProject: (data: any[]) =>
     dispatch({
       type: STUDIO_MODEL.saveProject,

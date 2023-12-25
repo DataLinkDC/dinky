@@ -239,6 +239,13 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
             {...SWITCH_OPTIONS()}
             name={'flag'}
           />
+
+          <ProFormSwitch
+            label={l('datastudio.header.pushdolphin.isCache')}
+            rules={[{ required: true, message: l('datastudio.header.pushdolphin.isCacheTip') }]}
+            {...SWITCH_OPTIONS()}
+            name={'isCache'}
+          />
         </ProFormGroup>
         {/*如果是失败告警，则需要设置告警策略*/}
         {formValues.timeoutFlag && (

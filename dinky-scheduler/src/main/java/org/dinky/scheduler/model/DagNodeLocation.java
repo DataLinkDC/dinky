@@ -26,6 +26,8 @@ import lombok.Data;
 @Data
 public class DagNodeLocation implements Serializable {
 
+    private static final long serialVersionUID = -5243356147439794746L;
+
     private long taskCode;
     private long x;
     private long y;

@@ -55,7 +55,6 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data.d';
 import { DolphinTaskDefinition, DolphinTaskMinInfo } from '@/types/Studio/data.d';
 import { l } from '@/utils/intl';
-import { SuccessMessageAsync } from '@/utils/messages';
 import {
   ApartmentOutlined,
   BugOutlined,
@@ -102,6 +101,7 @@ const HeaderContainer = (props: connect) => {
     saveTabs,
     updateJobRunningMsg,
     queryDsConfig,
+    queryTaskData,
     enabledDs
   } = props;
 
@@ -190,8 +190,6 @@ const HeaderContainer = (props: connect) => {
 
   const handlerDebug = async () => {
     if (!currentData) return;
-    const saved = currentData.step == JOB_LIFE_CYCLE.PUBLISH ? true : await handleSave();
-    if (!saved) return;
     // @ts-ignore
     const editor = currentTab.monacoInstance.editor
       .getEditors()
@@ -217,7 +215,6 @@ const HeaderContainer = (props: connect) => {
       jobState: res.data.status,
       runningLog: res.msg
     });
-    await SuccessMessageAsync(l('pages.datastudio.editor.debug.success'));
     currentData.status = JOB_STATUS.RUNNING;
     // Common sql task is synchronized, so it needs to automatically update the status to finished.
     if (isSql(currentData.dialect)) {
@@ -251,7 +248,6 @@ const HeaderContainer = (props: connect) => {
       jobState: res.data.status,
       runningLog: res.msg
     });
-    await SuccessMessageAsync(l('pages.datastudio.editor.exec.success'));
     currentData.status = JOB_STATUS.RUNNING;
     // Common sql task is synchronized, so it needs to automatically update the status to finished.
     if (isSql(currentData.dialect)) {
@@ -282,6 +278,7 @@ const HeaderContainer = (props: connect) => {
       }
     }
     saveTabs({ ...props.tabs });
+    await queryTaskData();
   };
 
   const showDagGraph = async () => {

@@ -1,5 +1,6 @@
 ---
 position: 4
+sidebar_position: 4
 id: document_manager
 title: 文档管理
 ---

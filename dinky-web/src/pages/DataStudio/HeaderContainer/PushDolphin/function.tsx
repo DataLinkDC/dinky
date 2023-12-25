@@ -30,6 +30,7 @@ export const transformPushDolphinParams = (
       description: dolphinTaskDefinition.description,
       timeoutFlag: dolphinTaskDefinition.timeoutFlag === 'OPEN',
       flag: dolphinTaskDefinition.flag === 'YES',
+      isCache: dolphinTaskDefinition.isCache === 'YES',
       upstreamCodes: dolphinTaskDefinition.upstreamTaskMap
         ? Object.keys(dolphinTaskDefinition.upstreamTaskMap)
         : [],
@@ -46,6 +47,7 @@ export const transformPushDolphinParams = (
       description: pushDolphinParams.description,
       timeoutFlag: pushDolphinParams.timeoutFlag ? 'OPEN' : 'CLOSE',
       flag: pushDolphinParams.flag ? 'YES' : 'NO',
+      isCache: pushDolphinParams.isCache ? 'YES' : 'NO',
       timeoutNotifyStrategy: (pushDolphinParams.timeoutNotifyStrategy as string[]).join('')
     };
     return falseTransformValue;
