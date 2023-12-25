@@ -138,8 +138,7 @@ ADD extends /opt/flink/lib # 把当前extends目录下的jar添加进依赖目�
 
 ## 配置Kubernetes集群信息
 在**注册中心页面**,点击 **集群==>集群配置==>新建** 进入新建集群页面
-![图片](http://www.aiwenmo.com/dinky/docs/test/screenshot20231225.png)
-类型选择`Kubernetes Native`或者`Kubernetes Operator` 目前阶段仍推荐Kubernetes Native方式，operator还在beta中
+![IMG](http://www.aiwenmo.com/dinky/docs/test/k8s-new-config.png)类型选择`Kubernetes Native`或者`Kubernetes Operator` 目前阶段仍推荐Kubernetes Native方式，operator还在beta中
 
 #### 填写集群信息
 
@@ -186,13 +185,11 @@ ADD extends /opt/flink/lib # 把当前extends目录下的jar添加进依赖目�
 
 ## 启动session集群（可选）
 除了您自己手动部署session集群外，dinky还提供了快捷方式部署Kubernetes session集群，在上面Kubernetes集群配置完成后，点击启动按钮即可向指定Kubernetes集群提交session集群
-![图片](http://www.aiwenmo.com/dinky/docs/test/20231225194322.png)
-
+![IMG](http://www.aiwenmo.com/dinky/docs/test/k8s-config-list.png)
 至此，所有准备工作均已完成完成，接下来就可以通过` kubernetes session`模式或`kubernetes application`模式进行任务提交啦。
 
 ## 提交 kubernetes application 任务
 进入数据开发页面，新建一个flink sql任务，选择集群类型为`kubernetes application`，集群选择为我们刚刚配置的集群，点击提交即可
-![图片](http://www.aiwenmo.com/dinky/docs/test/20231225194949.png)
-## 提交 kubernetes session 任务
+![IMG](http://www.aiwenmo.com/dinky/docs/test/k8s-task-demo.png)## 提交 kubernetes session 任务
 进入数据开发页面，新建一个flink sql任务，选择集群类型为`kubernetes session`，集群选择为我们刚刚配置的集群，点击提交即可
 图片同上
