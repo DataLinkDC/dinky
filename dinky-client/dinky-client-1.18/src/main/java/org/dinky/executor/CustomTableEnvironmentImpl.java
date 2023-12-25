@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.operations.CustomNewParserImpl;
+import org.dinky.operations.DinkyExecutableOperation;
 import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.utils.LineageContext;
 
@@ -109,14 +110,15 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
         for (Operation operation : operations) {
-            if (operation instanceof SetOperation) {
-                callSet((SetOperation) operation, getStreamExecutionEnvironment(), setMap);
+            Operation innerOperation = ((DinkyExecutableOperation) operation).getInnerOperation();
+            if (innerOperation instanceof SetOperation) {
+                callSet((SetOperation) innerOperation, getStreamExecutionEnvironment(), setMap);
                 return true;
-            } else if (operation instanceof ResetOperation) {
-                callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
+            } else if (innerOperation instanceof ResetOperation) {
+                callReset((ResetOperation) innerOperation, getStreamExecutionEnvironment(), setMap);
                 return true;
-            } else if (operation instanceof CustomSetOperation) {
-                CustomSetOperation customSetOperation = (CustomSetOperation) operation;
+            } else if (innerOperation instanceof CustomSetOperation) {
+                CustomSetOperation customSetOperation = (CustomSetOperation) innerOperation;
                 if (customSetOperation.isValid()) {
                     callSet(
                             new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()),
