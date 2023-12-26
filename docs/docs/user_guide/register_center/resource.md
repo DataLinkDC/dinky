@@ -43,9 +43,9 @@ Dinky 在 v1.0.0 版本开始,提供了资源中心的功能，可以在 Dinky �
 
 ```bash
 # 假设基于以上配置, 在资源中心 Root 根目录下上传了一个 app.jar 文件,那么可以通过以下方式访问
-rs:///app.jar
+rs:/app.jar
 
 # 假设基于以上配置, 在资源中心 Root 根目录 新建了一个目录 test,并在 test 目录下上传了一个 app.jar 文件,那么可以通过以下方式访问
-rs:///test/app.jar
+rs:/test/app.jar
 
 ```
