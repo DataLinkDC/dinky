@@ -324,7 +324,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // The statement set is enabled by default when submitting assignments
         taskDTO.setStatementSet(true);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
-        if ((jobResult.getStatus()==Job.JobStatus.FAILED)){
+        if ((jobResult.getStatus() == Job.JobStatus.FAILED)) {
             throw new BusException(jobResult.getError());
         }
         log.info("Job Submit success");
