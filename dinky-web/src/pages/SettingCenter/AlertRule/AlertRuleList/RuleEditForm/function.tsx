@@ -62,13 +62,15 @@ export const buildValueItem = (key: string, isSystem: boolean) => {
             name={'ruleValue'}
             fieldProps={{ precision: 0 }}
             placeholder={plh}
+            width={'sm'}
           />
         );
       case OperatorType.STR_VALUE:
-        return <ProFormText disabled={isSystem} name={'ruleValue'} placeholder={plh} />;
+        return <ProFormText width={'sm'} disabled={isSystem} name={'ruleValue'} placeholder={plh} />;
       case OperatorType.OPTIONS_SEL:
         return (
           <ProFormSelect
+            width={'sm'}
             disabled={isSystem}
             width={'sm'}
             name='ruleValue'

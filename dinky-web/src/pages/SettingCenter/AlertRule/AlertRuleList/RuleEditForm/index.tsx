@@ -195,6 +195,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
                   disabled={isSystem}
                   name='ruleOperator'
                   mode={'single'}
+                  width={'sm'}
                   options={getOperatorOptions(ruleKey.ruleKey)}
                 />
               )}
