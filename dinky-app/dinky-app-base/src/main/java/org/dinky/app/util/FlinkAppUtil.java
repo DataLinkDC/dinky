@@ -107,6 +107,7 @@ public class FlinkAppUtil {
 
     /**
      * Create a REST cluster client for Flink.
+     *
      * @return
      * @throws Exception
      */
