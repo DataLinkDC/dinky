@@ -1,14 +1,13 @@
 ---
 position: 3
 id: maven_setting
+sidebar_position: 3
 title: Maven 配置
 ---
 
-
-
-
-Dinky1.0增加了从git拉取项目编译的功能（比如udf项目），当用户使用 **注册中心** > **Git项目**，构建项目需要下载jar包依赖，所以需要在 **配置中心** > **全局配置** > **Maven 配置** 页面进行相关设置。
-
+:::info 简介
+Dinky1.0增加了从git拉取项目编译的功能（比如udf项目），当用户使用 **注册中心** > **[Git项目](../../register_center/git_project)**，构建项目需要下载jar包依赖，所以需要在 **配置中心** > **全局配置** > **Maven 配置** 页面进行相关设置。
+:::
 
 ![maven_setting](http://www.aiwenmo.com/dinky/docs/test/maven_setting.png)
 

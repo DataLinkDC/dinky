@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 public enum SqlType {
     SELECT("SELECT", "^SELECT.*"),
 
-    CREATE("CREATE", "^CREATE(?!.*AS SELECT).*$"),
+    CREATE("CREATE", "^CREATE(?!\\s+TABLE.*AS SELECT).*$"),
 
     DROP("DROP", "^DROP.*"),
 
