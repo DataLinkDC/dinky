@@ -30,6 +30,9 @@ import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
+
+import cn.hutool.core.text.StrFormatter;
 
 /**
  * KubernetesSessionGateway
@@ -46,6 +49,8 @@ public class KubernetesSessionGateway extends KubernetesGateway {
     @Override
     public GatewayResult deployCluster(FlinkUdfPathContextHolder udfPathContextHolder) {
         if (Asserts.isNull(client)) {
+            String clusterId = StrFormatter.format("dinky-flink-session-{}", System.currentTimeMillis());
+            addConfigParas(KubernetesConfigOptions.CLUSTER_ID, clusterId);
             init();
         }
 
