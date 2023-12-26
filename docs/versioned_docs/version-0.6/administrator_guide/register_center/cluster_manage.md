@@ -31,9 +31,9 @@ title: 集群管理
 
 **注册中心 > 集群管理 > 集群实例管理 > 新建**
 
-![cluster_manager_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/cluster_manage/cluster_manager_list.png)
+![cluster_manager_list](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/cluster_manage/cluster_manager_list.png)
 
-![create_flink_cluster](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/cluster_manage/create_flink_cluster.png)
+![create_flink_cluster](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/cluster_manage/create_flink_cluster.png)
 
 **参数配置说明：** 
 
@@ -55,9 +55,9 @@ title: 集群管理
 
 单击**注册中心 > 集群管理 > 集群配置管理 > 新建 **
 
-![create_cluster_config_1](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/cluster_manage/create_cluster_config_1.png)
+![create_cluster_config_1](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/cluster_manage/create_cluster_config_1.png)
 
-![create_cluster_config_2](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/cluster_manage/create_cluster_config_2.png)
+![create_cluster_config_2](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/cluster_manage/create_cluster_config_2.png)
 
 **参数配置说明:**
 

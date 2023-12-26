@@ -5,7 +5,7 @@ authors:
   - name: roohom
     title: 深耕大数据领域多年 主要倾向于实时方向的研究
     url: https://github.com/DataLinkDC/dlink
-    image_url: http://www.aiwenmo.com/dinky/docs/dinky_logo.svg
+    image_url: http://pic.dinky.org.cn/dinky/docs/dinky_logo.svg
 tags: [Flink, Dinky, KUDU]
 ---
 &emsp;&emsp;
