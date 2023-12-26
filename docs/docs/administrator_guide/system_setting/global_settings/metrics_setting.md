@@ -1,9 +1,19 @@
 ---
 position: 6
+sidebar_position: 6
 id: metrics_setting
 title: Metrics 配置
 ---
-此配置决定监控页面JVM图的数据采集和展示
+
+:::info 简介
+
+Dinky1.0增加了Metrics监控功能，可以实现对 Dinky Server的JVM信息的监控 
+
+如开启Dinky JVM Monitor开关，可以在`监控`中看到 Dinky Server 的实时的 JVM 等信息
+
+:::
+
+
 ![metrics_setting](http://www.aiwenmo.com/dinky/docs/test/metrics_setting.png)
 
 **参数配置说明:**

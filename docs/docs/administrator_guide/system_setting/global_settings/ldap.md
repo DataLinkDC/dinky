@@ -1,9 +1,16 @@
 ---
 position: 5
+sidebar_position: 5
 id: ldap_setting
 title: LDAP 配置
 ---
 
+:::info 简介
+
+为了方便用户使用 Dinky 并与公司内部的用户进行集成时，Dinky 提供了LDAP配置。并支持可视化配置，修改后会自动生效，无需重启 Dinky 服务。
+同时实现了LDAP用户自动导入功能，开启后，当用户使用LDAP登录时，如果没有相应的Dinky用户映射，则会自动拉取LDAP信息创建一个Dinky用户与之映射。如果关闭此功能，对于未导入的LDAP用户将无法登录。
+
+:::
 
 ## 1. 什么是LDAP？
 LDAP（轻量级目录访问协议）是一种用于访问和维护分布式目录服务信息的开放标准协议。
