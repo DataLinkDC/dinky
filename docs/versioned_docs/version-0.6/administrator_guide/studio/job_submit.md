@@ -24,19 +24,19 @@ title: 作业提交
 
 **执行当前SQL如下**
 
-![execute_current_sql](http://www.aiwenmo.com/dinky/docs/administrator_guide/studio/job_ops/job_submit/execute_current_sql.png)
+![execute_current_sql](http://pic.dinky.org.cn/dinky/docs/administrator_guide/studio/job_ops/job_submit/execute_current_sql.png)
 
 
 
 **异步提交**
 
-![async_commit](http://www.aiwenmo.com/dinky/docs/administrator_guide/studio/job_ops/job_submit/async_commit.png)
+![async_commit](http://pic.dinky.org.cn/dinky/docs/administrator_guide/studio/job_ops/job_submit/async_commit.png)
 
 
 
 **上线下线发布**
 
-![publish](http://www.aiwenmo.com/dinky/docs/administrator_guide/studio/job_ops/job_submit/publish.png)
+![publish](http://pic.dinky.org.cn/dinky/docs/administrator_guide/studio/job_ops/job_submit/publish.png)
 
 
 

@@ -55,6 +55,7 @@ public class PrintNetSinkFunction extends RichSinkFunction<RowData> {
 
         try {
             this.targetAddress = InetAddress.getByName(hostname);
+            log.info("PrintNetSinkFunction target address: {}, port: {}", hostname, port);
         } catch (UnknownHostException e) {
             log.error("Unknown host: {}", hostname);
             throw new RuntimeException(e);
@@ -68,7 +69,6 @@ public class PrintNetSinkFunction extends RichSinkFunction<RowData> {
             serializer.open(null);
         }
 
-        //        StreamingRuntimeContext context = (StreamingRuntimeContext) getRuntimeContext();
         socket = new DatagramSocket();
     }
 

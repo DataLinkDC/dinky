@@ -122,7 +122,7 @@ Dinky开发环境配置有两种模式，分别是 provided 环境和 compile �
 > 开发时，在maven 配置文件 ,勾选即可。dev -> compiler 、 prod -> provided
 
 ### Maven Profile须知
-![local_debug_maven_profile_intro.png](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/local_debug/local_debug_maven_profile_intro.png)
+![local_debug_maven_profile_intro.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/local_debug_maven_profile_intro.png)
 ## Dinky本地开发环境
 
 ### 分支选择
@@ -195,13 +195,13 @@ npm start
 
 在IDEA启动后，等待几分钟，即可看到登录页，如下：
 
-![login](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/local_debug/login.png)
+![login](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/login.png)
 
 登录进去后，以配置数据源和查询数据源为例，观察IDEA的日志情况和dinky界面是否互通；
 
-![test_database_is_success](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/local_debug/test_database_is_success.png)
+![test_database_is_success](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/test_database_is_success.png)
 
-![url_log](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/local_debug/url_log.png)
+![url_log](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/url_log.png)
 
 如上，配置的数据源已经成功，IDEA日志也正常，这个时候就可以基于本地做二次开发或者贡献代码了。
 

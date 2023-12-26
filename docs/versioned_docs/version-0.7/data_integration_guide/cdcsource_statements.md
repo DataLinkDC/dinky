@@ -15,7 +15,7 @@ Dinky 定义了 CDCSOURCE 整库同步的语法，该语法和 CDAS 作用相似
 
 ### source 合并
 
-![source_merge](http://www.aiwenmo.com/dinky/docs/zh-CN/data_integration_guide/cdcsource_statementssource_merge.png)
+![source_merge](http://pic.dinky.org.cn/dinky/docs/zh-CN/data_integration_guide/cdcsource_statementssource_merge.png)
 
    面对建立的数据库连接过多，Binlog 重复读取会造成源库的巨大压力，上文分享采用了 source 合并的优化，尝试合并同一作业中的 source，如果都是读的同一数据源，则会被合并成一个 source 节点。
 
@@ -25,13 +25,13 @@ Dinky 定义了 CDCSOURCE 整库同步的语法，该语法和 CDAS 作用相似
 
 Dinky 是通过自身的数据源中心的元数据功能捕获源库的元数据信息，并同步构建 sink 阶段 datastream 或 tableAPI 所使用的 FlinkDDL。
 
-![meta_mapping](http://www.aiwenmo.com/dinky/docs/zh-CN/data_integration_guide/cdcsource_statementsmeta_mapping.png)
+![meta_mapping](http://pic.dinky.org.cn/dinky/docs/zh-CN/data_integration_guide/cdcsource_statementsmeta_mapping.png)
 
 ### 多种 sink 方式
 
 Dinky 提供了各式各样的 sink 方式，通过修改语句参数可以实现不同的 sink 方式。Dinky 支持通过 DataStream 来扩展新的 sink，也可以使用 FlinkSQL 无需修改代码直接扩展新的 sink。
 
-![sink](http://www.aiwenmo.com/dinky/docs/zh-CN/data_integration_guide/cdcsource_statementssink.png)
+![sink](http://pic.dinky.org.cn/dinky/docs/zh-CN/data_integration_guide/cdcsource_statementssink.png)
 
 ## EXECUTE CDCSOURCE 基本使用
 
@@ -276,4 +276,4 @@ EXECUTE CDCSOURCE jobname WITH (
 * jackson-datatype-jsr310-2.13.4.jar
 * flink-sql-connector-mysql-cdc-2.3.0.jar
 * dlink-client-1.14-0.7.0.jar
-![cdcsource_example.png](http://www.aiwenmo.com/dinky/dev/docs/cdcsource_example.png)
+![cdcsource_example.png](http://pic.dinky.org.cn/dinky/dev/docs/cdcsource_example.png)

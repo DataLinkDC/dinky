@@ -200,7 +200,7 @@ AGG BY TOP2(value) as (value,rank);
 
 ### 进入Dlink
 
-![login_dinky](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/login_dinky.png)
+![login_dinky](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/aggtable/login_dinky.png)
 
 ​	只有版本号大于等于 0.2.2-rc1 的 Dlink 才支持本文 AGGTABLE 的使用。
 
@@ -254,13 +254,13 @@ from aggscore b
 
 ### 维护 FlinkSQL 及配置
 
-![maintain_flinksql_config](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/maintain_flinksql_config.png)
+![maintain_flinksql_config](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/aggtable/maintain_flinksql_config.png)
 
 ​	编写 FlinkSQL ，配置开启 Fragment 机制，设置 Flink 集群为本地执行。点击保存。
 
 ### 同步执行INSERT
 
-![sync_run_insert](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/sync_run_insert.png)
+![sync_run_insert](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/aggtable/sync_run_insert.png)
 
 ​	点击同步执行按钮运行当前编辑器中的 FlinkSQL 语句集。弹出提示信息，等待执行完成后自动关闭并刷新信息和结果。
 
@@ -268,26 +268,26 @@ from aggscore b
 
 ### 执行反馈
 
-![run_feedback](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/run_feedback.png)
+![run_feedback](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/aggtable/run_feedback.png)
 
 ​	本地执行成功，“0_admin” 为本地会话，里面存储了 Catalog。
 
 ### 同步执行SELECT查看中间过程
 
-![sync_select_show_middle](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/sync_select_show_middle.png)
+![sync_select_show_middle](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/aggtable/sync_select_show_middle.png)
 
 ​	由于当前会话中已经存储了表的定义，此时直接选中 select 语句点击同步执行可以重新计算并展示其计算过程中产生的结果，由于 Flink 表值聚合操作机制，该结果非最终结果。
 
 ### 同步执行SELECT查看最终结果
 
-![sync_select_show_final](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/sync_select_show_final.png)
+![sync_select_show_final](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/aggtable/sync_select_show_final.png)
 
 
 ​	在草稿的页面使用相同的会话可以共享 Catalog，此时只需要执行 select 查询 sink 表就可以预览最终的统计结果。
 
 ### 查看Mysql表的数据
 
-![show_mysql_data](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/show_mysql_data.png)
+![show_mysql_data](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/aggtable/show_mysql_data.png)
 
 
 
@@ -355,19 +355,19 @@ left join aggscore2 b on a.sid=b.sid
 
 ### 同步执行
 
-![sync_run](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/sync_run.png)
+![sync_run](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/aggtable/sync_run.png)
 
 ​	与示例一相似，不同点在于需要更改集群配置为 远程集群。远程集群的注册在集群中心注册，Hosts 需要填写 JobManager 的地址，HA模式则使用英文逗号分割可能出现的地址，如“127.0.0.1:8081,127.0.0.2:8081,127.0.0.3:8081”。心跳监测正常的集群实例即可用于任务执行或提交。
 
 ### Flink UI
 
-![flink_webui](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/flink_webui.png)
+![flink_webui](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/aggtable/flink_webui.png)
 
 ​	打开集群的 Flink UI 可以发现刚刚提交的批任务，此时可以发现集群版本号为 1.12.2 ，而 Dlink 默认版本为 1.12.4 ，所以一般大版本内可以互相兼容。
 
 ### 查看Mysql表的数据
 
-![show_mysql_data_again](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/show_mysql_data_again.png)
+![show_mysql_data_again](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/aggtable/show_mysql_data_again.png)
 
 ​	查看 Mysql 表的最终数据，发现存在四条结果，且也符合问题的要求。
 
