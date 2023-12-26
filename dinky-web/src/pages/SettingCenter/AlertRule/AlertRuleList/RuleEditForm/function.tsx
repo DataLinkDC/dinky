@@ -70,6 +70,7 @@ export const buildValueItem = (key: string, isSystem: boolean) => {
         return (
           <ProFormSelect
             disabled={isSystem}
+            width={'sm'}
             name='ruleValue'
             mode={'single'}
             placeholder={plh}

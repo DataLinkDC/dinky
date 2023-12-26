@@ -27,7 +27,7 @@ title: 数据源
 - OLAP：ClickHouse,Doris,StartRocks,Presto
 - DataWarehouse/DataLake：Hive
 
-**url：** 数据库连接地址，如 jdbc:mysql://127.0.0.1:3306/dlink，点击输入框有常用的数据库URL示例
+**url：** 数据库连接地址，如 jdbc:mysql://127.0.0.1:3306/dinky，点击输入框有常用的数据库URL示例
 ![create_database](http://pic.dinky.org.cn/dinky/docs/test/datasource2.png)
 
 **用户名：** 连接数据库的用户名
@@ -36,7 +36,7 @@ title: 数据源
 
 **备注：** 自定义
 
-**Flink 连接配置：** 避免私密信息泄露，同时作为全局变量复用连接配置，在FlinkSQL中可使用`${数据源名称}` 来加载连接配置，如`${MySQL}`。说明：名称指的是英文唯一标识，即如图所示的名称。注意需要开启全局变量（原片段机制）。更多参数请参考[全局变量](./global_var.md)
+**Flink 连接配置：** 避免私密信息泄露，同时作为全局变量复用连接配置，在FlinkSQL中可使用`${数据源名称}` 来加载连接配置，如`${MySQL}`。说明：名称指的是英文唯一标识，即如图所示的名称。注意需要开启全局变量（原片段机制）。更多参数请参考[全局变量](./global_var)
 
 **Flink 连接模板：** Flink 连接模板作用是为生成 FlinkSQL DDL 而扩展的功能。其中`#{schemaName}`动态获取数据库，`#{tableName}` 动态获取表名称。其他flink相关参数请参考[Flink 官网](https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/overview/)
 
