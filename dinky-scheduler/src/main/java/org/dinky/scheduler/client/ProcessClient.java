@@ -46,6 +46,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 
 /**
  * 工作流定义
@@ -88,7 +89,7 @@ public class ProcessClient {
             ProcessDefinition processDefinition = MyJSONUtil.toBean(jsonObject, ProcessDefinition.class);
             // The locations of processDefinition is json string
             List<DagNodeLocation> locations = jsonObject.getBeanList("locations", DagNodeLocation.class);
-            processDefinition.setLocations(locations);
+            processDefinition.setLocations(JSONUtil.toJsonStr(locations));
             lists.add(processDefinition);
         }
         return lists;
