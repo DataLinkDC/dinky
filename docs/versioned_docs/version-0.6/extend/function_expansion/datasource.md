@@ -597,7 +597,7 @@ eg:
          },
 ```
 如下图:
-![extened_datasource_dbform](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/function_expansion/datasource/extened_datasource_dbform.jpg)
+![extened_datasource_dbform](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/function_expansion/datasource/extened_datasource_dbform.jpg)
 
 注意: ``此处数据源类型遵照大驼峰命名规则``
 
@@ -613,7 +613,7 @@ eg:
       break;
 ```
 如下图:
-![extened_datasource_datasourceform](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/function_expansion/datasource/extened_datasource_datasourceform.jpg)
+![extened_datasource_datasourceform](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/function_expansion/datasource/extened_datasource_datasourceform.jpg)
    - 创建数据源相关表单属性在: `dinky-web/src/pages/DataBase/components/DataBaseForm.tsx` 此处无需修改
 
 ----

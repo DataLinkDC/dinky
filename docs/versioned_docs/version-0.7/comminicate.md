@@ -16,4 +16,4 @@ QQ社区群：**543709668**，申请备注 “ Dinky ”，不写不批
 - **微信搜索公众号:** `Dinky开源`
 - **扫码关注公众号:** 扫下图二维码，关注公众号
 
-![Dinky开源](http://www.aiwenmo.com/dinky/docs/zh-CN/comminicate/datalink.jpg)
+![Dinky开源](http://pic.dinky.org.cn/dinky/docs/zh-CN/comminicate/datalink.jpg)

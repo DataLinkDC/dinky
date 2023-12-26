@@ -16,7 +16,7 @@ FlinkSQL 支持如下CREATE语句
 
 ## CREATE CATALOG
 
-使用给定的属性创建 Catalog。如果具有相同名称的目录已经存在，则会引发异常。当前 Dinky 支持的 Catalog 详见数据开发中的 [Catalog 管理](../../administrator_guide/studio/catalog_manage)。
+使用给定的属性创建 Catalog。如果具有相同名称的目录已经存在，则会引发异常。当前 Dinky 支持的 Catalog 详见数据开发中的 [Catalog 管理](../../user_guide/studio/catalog_manage)。
 
 ### 语法结构
 

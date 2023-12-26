@@ -85,19 +85,19 @@ from source_kafka
 flink sql 写入 hive ，依赖的是 fileSystem 连接器，该连接器写入到文件系统的文件可见性，依赖于 flink 任务的 checkpoint ，
 所以 dlink 界面提交任务时，一定要开启 checkpoint ，也就是设置 checkpoint 的时间间隔参数 `execution.checkpointing.interval` ，如下图所示，设置为 10000 毫秒。
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_dlink_ui.jpg)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_dlink_ui.jpg)
 
 任务运行之后，就可以看到如下的 fink ui 界面了
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_flink_ui.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_flink_ui.png)
 
 本案例使用 streaming 方式运行， checkpoint 时间为 10 s，文件滚动时间为 10 s，在配置的时间过后，就可以看到 hive 中的数据了
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_hive_data.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_hive_data.png)
 
 从 hdfs 上查看 hive 表对应文件的数据，如下图所示
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_hive_table_hdfs_file.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_hive_table_hdfs_file.png)
 
 可以看到，1 分钟滚动生成了 6 个文件，最新文件为 .part 开头的文件，在 hdfs 中，以 `.` 开头的文件，是不可见的，说明这个文件是由于我关闭了 flink sql 任务，然后文件无法滚动造成的。
 
@@ -193,15 +193,15 @@ from source_kafka
 
 flink sql 任务运行的 UI 界面如下
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_partition_table_flink_ui.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_partition_table_flink_ui.png)
 
 1 分钟之后查看 hive 表中数据，如下
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_partition_table_data.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_partition_table_data.png)
 
 查看 hive 表对应 hdfs 上的文件，可以看到
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_partition_table_hdfs_file.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_partition_table_hdfs_file.png)
 
 从上图可以看到，具体的分区目录下生成了 `_SUCCESS` 文件，表示该分区提交成功。
 

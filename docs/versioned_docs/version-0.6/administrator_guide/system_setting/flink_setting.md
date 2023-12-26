@@ -13,7 +13,7 @@ title: Flink 设置
 
 首先进入**系统设置**中的**Flink设置**，对参数配置进行修改即可。
 
-![flink_setting](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/system_setting/flink_setting/flink_setting.png)
+![flink_setting](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/system_setting/flink_setting/flink_setting.png)
 
 **参数配置说明:**
 

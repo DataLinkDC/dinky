@@ -14,13 +14,13 @@ title: temporal join
 
 订单流水表读取的是 kafka `order_water` 主题中的数据，数据内容如下
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_order_water_data.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_order_water_data.png)
 
 ### kafka 主题 （order_info）
 
 订单信息维表读取的是 kafka `order_info` 主题中的数据，数据内容如下
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_temporal_join_kafka_dim_data1.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_temporal_join_kafka_dim_data1.png)
 
 ### flink sql 语句
 
@@ -100,19 +100,19 @@ on order_flow.id = order_info.id
 
 flink sql 任务运行的 flink UI 界面如下
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_temporal_join_flink_ui.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_temporal_join_flink_ui.png)
 
 查看结果写入的 kafka `for_sink` 主题的数据为
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_temporal_join_kafka_sink_data1.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_temporal_join_kafka_sink_data1.png)
 
 此时新增数据到 kafka 维表主题 `order_info` 中，新增的数据如下
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_temporal_join_kafka_dim_data2.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_temporal_join_kafka_dim_data2.png)
 
 再查看结果写入的 kafka `for_sink` 主题的数据为
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_temporal_join_kafka_sink_data2.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_temporal_join_kafka_sink_data2.png)
 
 **注意**
 

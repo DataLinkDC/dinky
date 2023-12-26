@@ -55,27 +55,27 @@ from datagen_source;
 
 新建作业如下图：
 
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_dev/job_dev.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_dev/job_dev.png)
 
 6.在作业开发页面右侧 **执行配置**，填写配置信息
 
 |  类型  | 配置项          | 备注                                                                                                                       |
 |:----:|:-------------|:-------------------------------------------------------------------------------------------------------------------------|
-| 作业配置 | 执行模式         | 区别详见用户手册数据开发中的[作业概述](../administrator_guide/studio/job_hosting)                                                          |
-| 作业配置 | 集群实例         | Standalone 和 Session 执行模式需要选择集群实例，详见[集群实例管理](../administrator_guide/register_center/cluster_manage#集群实例管理)               |
-| 作业配置 | 集群配置         | Per-Job 和 Application 执行模式需要选择集群配置，详见[集群配置管理](../administrator_guide/register_center/cluster_manage#集群配置管理)              |
+| 作业配置 | 执行模式         | 区别详见用户手册数据开发中的[作业概述](../user_guide/studio/job_hosting)                                                          |
+| 作业配置 | 集群实例         | Standalone 和 Session 执行模式需要选择集群实例，详见[集群实例管理](../user_guide/register_center/cluster_manage#集群实例管理)               |
+| 作业配置 | 集群配置         | Per-Job 和 Application 执行模式需要选择集群配置，详见[集群配置管理](../user_guide/register_center/cluster_manage#集群配置管理)              |
 | 作业配置 | FlinkSQL 环境  | 选择已创建的 FlinkSQLEnv，如果没有则不选                                                                                               |
 | 作业配置 | 任务并行度        | 指定作业级任务并行度，默认为 1                                                                                                         |
 | 作业配置 | Insert 语句集   | 默认禁用，开启后将 SQL编辑器中编写的多个 Insert 语句合并为一个 JobGraph 进行提交                                                                      |
 | 作业配置 | 全局变量         | 默认禁用，开启后可以使用数据源连接配置变量、自定义变量等                                                                                             |
 | 作业配置 | 批模式          | 默认禁用，开启后启用 Batch Mode                                                                                                    |
 | 作业配置 | SavePoint 策略 | 默认禁用，策略包括:<br/>   **最近一次**<br/>   **最早一次**<br/>   **指定一次**                                                               |
-| 作业配置 | 报警组          | 报警组配置详见[报警管理](../administrator_guide/register_center/alert/alert_overview)                                                            |
+| 作业配置 | 报警组          | 报警组配置详见[报警管理](../user_guide/register_center/alert/alert_overview)                                                            |
 | 作业配置 | 其他配置         | 其他的 Flink 作业配置，具体可选参数，请参考 [Flink 官网](https://nightlies.apache.org/flink/flink-docs-release-1.14/docs/deployment/config/) |
 
 作业配置如下图：
 
-![job_config](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_dev/job_config.png)
+![job_config](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_dev/job_config.png)
 
 :::warning 注意事项
 请及时手动保存作业信息，以免丢失
@@ -113,21 +113,21 @@ from datagen_source;
 
 作业启动异步提交如下图：
 
-![async_submit](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_submit/async_submit.png)
+![async_submit](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_submit/async_submit.png)
 
 作业启动发布上线如下图：
 
-![online](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_submit/online.png)
+![online](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_submit/online.png)
 
 :::info 信息
-有关发布上线的详细内容，详见用户手册的[运维中心](../administrator_guide/devops_center/deveops_center_intro)
+有关发布上线的详细内容，详见用户手册的[运维中心](../user_guide/devops_center/deveops_center_intro)
 :::
 
 ---
 
 ## 作业调试
 
-可以选择使用 Standalone 或 Session 集群在开发测试环境对作业调试，如作业运行、检查结果等。配置 Standalone 或 Session 集群请参考注册中心中[集群管理](../administrator_guide/register_center/cluster_manage)的集群实例管理。
+可以选择使用 Standalone 或 Session 集群在开发测试环境对作业调试，如作业运行、检查结果等。配置 Standalone 或 Session 集群请参考注册中心中[集群管理](../user_guide/register_center/cluster_manage)的集群实例管理。
 
 也可以调试普通的 DB SQL 作业。
 

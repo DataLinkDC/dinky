@@ -37,11 +37,11 @@ title: 作业提交
 
 作业启动异步提交如下图：
 
-![async_submit](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_submit/async_submit.png)
+![async_submit](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_submit/async_submit.png)
 
 作业启动发布上线如下图：
 
-![online](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_submit/online.png)
+![online](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_submit/online.png)
 
 :::info 信息
 有关发布上线的详细内容，详见用户手册的运维中心

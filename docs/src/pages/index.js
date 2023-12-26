@@ -89,7 +89,7 @@ function Structure() {
     return (
         <div className={clsx("structure", styles.structure,styles.box_container)}>
             <div className={clsx("image", styles.box)}><img
-                src="http://www.aiwenmo.com/dinky/docs/zh-CN/concept_architecture/architecture/dinky.png"
+                src="http://pic.dinky.org.cn/dinky/docs/zh-CN/concept_architecture/architecture/dinky.png"
                 alt="structure"/></div>
             <div className={clsx("text", styles.box,styles.structureText)}>
                 <div className={clsx("title", styles.box,styles.structureText)}>

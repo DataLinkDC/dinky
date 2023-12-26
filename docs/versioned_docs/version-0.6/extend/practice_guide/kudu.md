@@ -26,7 +26,7 @@ Flink官网介绍了如何去自定义一个支持Source或者Sink的[Connector]
 
 在Kudu上创建一个表，这里为test
 
-![kudu-table](http://www.aiwenmo.com/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/kudu-table.png)
+![kudu-table](http://pic.dinky.org.cn/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/kudu-table.png)
 
 我们还需要一个Flink可以使用的针对kudu的Connector，我们找到[**[flink-connector-kudu](https://github.com/collabH/flink-connector-kudu)**]这个项目，clone该项目并在本地适当根据本地所使用组件的版本修改代码进行编译。
 
@@ -55,11 +55,11 @@ Flink官网介绍了如何去自定义一个支持Source或者Sink的[Connector]
 
 这里将Flink版本修改为1.13.6, 并且使用1.14.0版本的kudu-client，因为项目作者在README中已经说明了使用1.10.0会存在问题，并且添加了shade方式打包
 
-![kudu-client](http://www.aiwenmo.com/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/kudu-client.png)
+![kudu-client](http://pic.dinky.org.cn/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/kudu-client.png)
 
 2、修改`org.colloh.flink.kudu.connector.table.catalog.KuduCatalogFactory`
 
-![catalog-factory](http://www.aiwenmo.com/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/catalog-factory.png)
+![catalog-factory](http://pic.dinky.org.cn/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/catalog-factory.png)
 
 ## 构建及使用
 
@@ -67,7 +67,7 @@ Flink官网介绍了如何去自定义一个支持Source或者Sink的[Connector]
 
 2、OK，重启Dinky，如果使用yarn-session模式，咱们需要重启得到一个session集群，进入dinky的注册中心配置一个合适的集群实例
 
-![register-session](http://www.aiwenmo.com/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/register-session.png)
+![register-session](http://pic.dinky.org.cn/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/register-session.png)
 
 3、接下来我们去dinky的数据开发界面，写一个读取的SQL demo
 
@@ -89,7 +89,7 @@ SELECT * FROM kudu_test;
 
 点击运行
 
-![read-test](http://www.aiwenmo.com/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/read-test.png)
+![read-test](http://pic.dinky.org.cn/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/read-test.png)
 
 4、再来一个写入数据的SQL demo
 
@@ -109,10 +109,10 @@ INSERT INTO kudu_test
 SELECT 5 AS id , NULLIF('', '') AS name;
 ~~~
 
-![write-test](http://www.aiwenmo.com/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/write-test.png)
+![write-test](http://pic.dinky.org.cn/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/write-test.png)
 
 成功运行，再去查看kudu表的数据
 
-![write-test-show](http://www.aiwenmo.com/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/write-test-show.png)
+![write-test-show](http://pic.dinky.org.cn/dinky/docs/zh-CN/docs/extend/practice_guide/kudu/write-test-show.png)
 
 集成完毕。

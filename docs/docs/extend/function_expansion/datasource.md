@@ -18,7 +18,7 @@ title: 扩展数据源
    - ClickHouse 
    - Hive ``需要的jar包: hive-jdbc-2.1.1.jar && hive-service-2.1.1.jar``
 
-使用以上数据源,详见注册中心[数据源管理](../../administrator_guide/register_center/datasource_manage),配置数据源连接
+使用以上数据源,详见注册中心[数据源管理](../../user_guide/register_center/datasource_manage),配置数据源连接
 :::tip 注意事项
   Dinky 不在对 Starorcks 进行额外扩展，Doris 和 Starorcks 底层并无差别，原则上只是功能区分。经社区测试验证，可采用 Doris 扩展连接 Starrocks。
 :::
@@ -597,7 +597,7 @@ eg:
          },
 ```
 如下图:
-![extened_datasource_dbform](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/function_expansion/datasource/extened_datasource_dbform.jpg)
+![extened_datasource_dbform](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/function_expansion/datasource/extened_datasource_dbform.jpg)
 
 注意: ``此处数据源类型遵照大驼峰命名规则``
 
@@ -613,7 +613,7 @@ eg:
       break;
 ```
 如下图:
-![extened_datasource_datasourceform](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/function_expansion/datasource/extened_datasource_datasourceform.jpg)
+![extened_datasource_datasourceform](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/function_expansion/datasource/extened_datasource_datasourceform.jpg)
    - 创建数据源相关表单属性在: `dinky-web/src/pages/DataBase/components/DataBaseForm.tsx` 此处无需修改
 
 ----

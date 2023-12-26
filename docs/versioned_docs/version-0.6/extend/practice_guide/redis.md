@@ -28,7 +28,7 @@ commons-pool2, jedis 包, 是flink-connector-redis 的jar引用到了, 故添加
 Dlink 的 plugins 下添加 commons-pool2-2.11.0.jar, jedis-3.3.0.jar, flink-connector-redis-1.0.11.jar, flink-sql-connector-kafka_2.12-1.14.4.jar, 重启 Dlink. flink standalone模式 或者 yarn 模式, 请自行往需要的地方添加依赖.
 
 ### 依赖图
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/jar.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/jar.png)
 
 ## 场景1:
 ####  通过flink cdc同步更新mysql数据库数据到redis
@@ -136,31 +136,31 @@ insert into sink_redis select hsetKey, hsetField, hsetValue from temp_view;
 上面只是把数据库的字段和值, 拼接成json串, 作为redis hset 的value而已, 作为一个案例展示, 没有别的含义.
 因flink 1.15版本以上才内置json生成函数, 所以这里用 || 拼接 
 redis connector 其实支持很多操作, 支持设置更多配置, 更详细的用法还请自行翻阅github.
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/github.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/github.png)
 
 ### 1.3 运行perjob模式
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/sub_perjob.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/sub_perjob.png)
 ### FlinkWebUI
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/FlinkWebUI_1.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/FlinkWebUI_1.png)
 
 ####  上图可见，流任务已经成功被 Dinky 提交的远程集群了
 
 ### 1.4 数据效果图
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/redis_data.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/redis_data.png)
 
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/redis_data_2.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/redis_data_2.png)
 
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/json.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/json.png)
 
 ### 1.5 修改数据
 将 last_name 对应的值 `kunkun` 改为 `momoda`
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/mysql_change_data.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/mysql_change_data.png)
 
 flink webui 数据流变化
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/flink_web_ui_after.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/flink_web_ui_after.png)
 
 查看redis数据, 数据已经被修改
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/json_after.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/json_after.png)
 
 ### 1.6 新增数据
 表增加一条数据
@@ -169,7 +169,7 @@ insert into employees_1 VALUES ("12", "1996-06-16", "dili", "reba", "F", "2000-0
 ```
 
 redis 成功增加一条
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/redis_add.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/redis_add.png)
 
 ## 场景2
 ### 通过flinksql 将kafka 与 redis数据关联
@@ -253,11 +253,11 @@ and
 insert into sink_table select* from temp_view;
 ```
 ###  2.2  任务栏
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/task.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/task.png)
 ###  2.3  flink web ui
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/FlinkWebUI_dim.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/FlinkWebUI_dim.png)
 ###  2.4 成功关联到数据并输出控制台
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/print.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/redis/print.png)
 
 说明: 参数 pipeline.operator-chaining 是为了临时测试,观看数据流图
 业务上不推荐设置为false

@@ -10,7 +10,7 @@ title: 功能一览
 
 单击**数据开发> 打开已创建的作业**
 
-![function_intro](http://www.aiwenmo.com/dinky/docs/administrator_guide/studio/development_control/function_introduce/function_intro.png)
+![function_intro](http://pic.dinky.org.cn/dinky/docs/administrator_guide/studio/development_control/function_introduce/function_intro.png)
 
 
 
