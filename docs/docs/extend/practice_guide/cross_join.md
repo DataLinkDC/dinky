@@ -33,7 +33,7 @@ TBLPROPERTIES (
 
 `source_table` 表数据如下
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/hive_to_hive_explode_source_table_data.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/hive_to_hive_explode_source_table_data.png)
 
 ### sink
 
@@ -58,7 +58,7 @@ TBLPROPERTIES (
 
 `sink_table` 表数据如下
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/hive_to_hive_explode_sink_table_data.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/hive_to_hive_explode_sink_table_data.png)
 
 ### flink sql 语句
 

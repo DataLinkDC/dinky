@@ -10,9 +10,9 @@ title: Jar 管理
 
 **注册中心 > jar管理 > 新建 > 创建Jar配置**。
 
-![create_jar](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/jar_manager/create_jar.png)
+![create_jar](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/jar_manager/create_jar.png)
 
-![create_jar_config](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/jar_manager/create_jar_config.png)
+![create_jar_config](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/jar_manager/create_jar_config.png)
 
 **参数配置说明：**
 

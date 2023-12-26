@@ -69,13 +69,13 @@ CREATE TABLE Orders (
 select order_number,price,first_name,last_name,order_time from Orders 
 ```
 
-![image-20230308222328163](http://www.aiwenmo.com/dinky/docs/zh-CN/quick_start/docker/helloword.png)
+![image-20230308222328163](http://pic.dinky.org.cn/dinky/docs/zh-CN/quick_start/docker/helloword.png)
 
 ### 调试查询
 
 点击 `执行按钮`（执行当前的SQL），下方切换至 `结果` 选项卡，点击 `获取最新数据` ，即可查看 Select 语句的执行结果。
 
-![image-20230308222416050](http://www.aiwenmo.com/dinky/docs/zh-CN/quick_start/docker/selecttable.png)
+![image-20230308222416050](http://pic.dinky.org.cn/dinky/docs/zh-CN/quick_start/docker/selecttable.png)
 
 ## 结束语
 

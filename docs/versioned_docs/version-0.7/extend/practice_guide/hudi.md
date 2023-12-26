@@ -63,7 +63,7 @@ mvn clean install -DskipTests -DskipITs -Dcheckstyle.skip=true -Drat.skip=true -
 
 编译完成如下图:
 
-![hudill](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudill.png)
+![hudill](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudill.png)
 
 ②. 把相关应的jar包 放到相对应的目录下
 
@@ -97,15 +97,15 @@ ps:  注意 还需要将 `hudi-flink-bundle_2.12-0.10.0.jar` 这个包放到 dli
 
 `plugins` 下的包 如下图所示:
 
-![dlinkll](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/dlinkll.png)
+![dlinkll](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/dlinkll.png)
 
 c. 访问:  [http://ip:port/#/user/login](http://cdh7.vision.com:8811/#/user/login)  默认用户: admin  密码: admin
 
 d. 创建集群实例:
 
-![hudi_cluster](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_cluster.png)
+![hudi_cluster](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_cluster.png)
 
-![hudi_clustertable](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_clustertable.png)
+![hudi_clustertable](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_clustertable.png)
 
 ##  数据表
 
@@ -217,35 +217,35 @@ insert into sink_order_mysql_goods_order select * from source_order_mysql_goods_
 
 ### 1.对上述SQL执行语法校验:
 
-![hudi_explainsql](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_explainsql.png)
+![hudi_explainsql](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_explainsql.png)
 
 ### 2. 获取JobPlan
 
-![hudi_jobplan](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_jobplan.png)
+![hudi_jobplan](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_jobplan.png)
 
 ### 3. 执行任务
 
-![hudi_executesql](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_executesql.png)
+![hudi_executesql](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_executesql.png)
 
 ### 4. dlink 查看执行的任务
 
-![hudi_process](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_process.png)
+![hudi_process](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_process.png)
 
 ### 5. Flink-webUI 查看 作业
 
-![hudi_flink](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_flink.png)
+![hudi_flink](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_flink.png)
 
 ### 6. 查看hdfs路径下数据
 
-![hudi_hdfs](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hdfs.png)
+![hudi_hdfs](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hdfs.png)
 
 ### 7. 查看hive表:
 
-![hudi_hiveupdate](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hiveupdate.png)
+![hudi_hiveupdate](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hiveupdate.png)
 
 查看订单号对应的数据
 
-![hudi_hiveupdate](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hiveupdate.png)
+![hudi_hiveupdate](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hiveupdate.png)
 
 ### 8.更新数据操作
 
@@ -261,7 +261,7 @@ insert into sink_order_mysql_goods_order select * from source_order_mysql_goods_
 
 再次查看 hive 数据 发现已经更新
 
-![hudi_hiveupdate](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hiveupdate.png)
+![hudi_hiveupdate](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hiveupdate.png)
 
 ### 9.删除数据操作
 
@@ -273,7 +273,7 @@ insert into sink_order_mysql_goods_order select * from source_order_mysql_goods_
 
 
 
-![hudi_hivedelete](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hivedelete.png)
+![hudi_hivedelete](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hivedelete.png)
 
 ### 10.将此数据再次插入
 
@@ -285,7 +285,7 @@ INSERT INTO `order`.`goods_order`(`goods_order_id`, `goods_order_uid`, `customer
 
 再次查询hive数据 数据正常进入。
 
-![hudi_hiveinsert](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hiveinsert.png)
+![hudi_hiveinsert](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hiveinsert.png)
 
 至此 Dlink在Flink-SQL-CDC 到Hudi Sync Hive 测试结束
 

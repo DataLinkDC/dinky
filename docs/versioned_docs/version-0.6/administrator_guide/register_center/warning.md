@@ -25,13 +25,13 @@ title: 报警管理
 
 **注册中心** > **报警管理**，选择**新建**
 
-![create_alert_instance](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_alert_instance.png)
+![create_alert_instance](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_alert_instance.png)
 
 点击以上告警实例类型,创建报警实例配置。报警实例配置完成，就可以创建报警组。
 
 ### 查询报警实例信息
 
-![alert_instance_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/warning/alert_instance_list.png)
+![alert_instance_list](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/warning/alert_instance_list.png)
 
 报警实例信息相关字段含义如下：
 
@@ -50,9 +50,9 @@ title: 报警管理
 
 新建一个报警组，选择新建
 
-![alert_group_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/warning/alert_group_list.png)
+![alert_group_list](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/warning/alert_group_list.png)
 
-![create_alert_group](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_alert_group.jpg)
+![create_alert_group](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_alert_group.jpg)
 
 ### 查询报警组信息
 
@@ -72,7 +72,7 @@ title: 报警管理
 
 如果用户使用钉钉进行报警，请进入**注册中心** > **报警管理** > **报警实例管理**，点击**新建** 选择**钉钉**报警实例。
 
-![create_dingdingtalk_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_dingdingtalk_alert.png)
+![create_dingdingtalk_alert](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_dingdingtalk_alert.png)
 
 **参数配置：**
 
@@ -96,7 +96,7 @@ title: 报警管理
 
 #### 微信企业应用配置
 
-![create_wechat_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_wechat_app_alert.png)
+![create_wechat_alert](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_wechat_app_alert.png)
 
 **参数配置：**
 
@@ -111,7 +111,7 @@ title: 报警管理
 
 #### 微信企业群聊配置
 
-![create_wechat_chat_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_wechat_chat_alert.png)
+![create_wechat_chat_alert](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_wechat_chat_alert.png)
 
 **参数配置：**
 
@@ -137,7 +137,7 @@ title: 报警管理
 
 如果用户使用飞书进行报警，请进入**注册中心** > **报警管理** > **报警实例管理**，点击**新建** 选择**飞书**报警实例。
 
-![create_feishu_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_feishu_alert.png)
+![create_feishu_alert](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_feishu_alert.png)
 
 **参数配置：**
 
@@ -158,7 +158,7 @@ title: 报警管理
 
 如果用户使用邮箱进行报警，请进入**注册中心** > **报警管理** > **报警实例管理**，点击**新建** 选择**邮箱**报警实例。
 
-![create_email_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_email_alert.png)
+![create_email_alert](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/warning/create_email_alert.png)
 
 **参数配置：**
 

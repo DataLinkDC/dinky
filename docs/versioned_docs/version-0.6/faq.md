@@ -6,7 +6,7 @@ title: FAQ
 
 1.Flink on Yarn HA高可用,配置hdfs依赖,无法识别HDFS高可用访问地址别名，在Perjob和application模式，提交任务，出现异常信息
 
-![HDFS集群别名](http://www.aiwenmo.com/dinky/dev/docs/HDFS%E9%9B%86%E7%BE%A4%E5%88%AB%E5%90%8D.png)
+![HDFS集群别名](http://pic.dinky.org.cn/dinky/dev/docs/HDFS%E9%9B%86%E7%BE%A4%E5%88%AB%E5%90%8D.png)
 
 **解决办法：**
 
@@ -39,7 +39,7 @@ export HADOOP_HOME=/opt/cloudera/parcels/CDH/lib/hadoop
 
 3.依赖冲突
 
-![dependency_conflict](http://www.aiwenmo.com/dinky/docs/zh-CN/faq/dependency_conflict.png)
+![dependency_conflict](http://pic.dinky.org.cn/dinky/docs/zh-CN/faq/dependency_conflict.png)
 
 **解决办法：**
 
@@ -51,7 +51,7 @@ export HADOOP_HOME=/opt/cloudera/parcels/CDH/lib/hadoop
 Caused by: java.lang.ClassNotFoundException: org.apache.http.client.HttpClient
 ```
 
-![hive_http_error](http://www.aiwenmo.com/dinky/docs/zh-CN/faq/hive_http_error.png)
+![hive_http_error](http://pic.dinky.org.cn/dinky/docs/zh-CN/faq/hive_http_error.png)
 
 **解决办法:**
 
@@ -68,7 +68,7 @@ Caused by: java.lang.ClassNotFoundException: org.apache.http.client.HttpClient
 
 6.在 Flink 中，如果与 CDH 集成并使用 HiveCatalog，必须要从新编译对应 Flink 版本的源码，在使用中如果不编译，会报如下错误：
 
-![cdh_flink_sql_hive_connector_error](http://www.aiwenmo.com/dinky/docs/zh-CN/faq/cdh_flink_sql_hive_connector_error.jpg)
+![cdh_flink_sql_hive_connector_error](http://pic.dinky.org.cn/dinky/docs/zh-CN/faq/cdh_flink_sql_hive_connector_error.jpg)
 
 **解决办法:**
 

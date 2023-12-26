@@ -34,7 +34,7 @@ title: 致谢
 
 （以上排名不分先后）
 
-[![JetBrains](http://www.aiwenmo.com/dinky/docs/zh-CN/thanks/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
+[![JetBrains](http://pic.dinky.org.cn/dinky/docs/zh-CN/thanks/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
 
 
 &nbsp &nbsp &nbsp &nbsp&nbsp最后，我们要感谢各位Dinky贡献者对项目的辛勤努力和无私奉献，我们欢迎更多的开发者和贡献者加入Dinky的大家庭！如果您对我们的项目感兴趣，不论是提交 bug 报告、贡献代码、提出建议，还是分享您的使用经验，我们都非常欢迎。在这个开源社区中，每个人的贡献都有着巨大的价值，您的参与将使我们的项目更加丰富多彩。
