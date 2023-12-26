@@ -21,12 +21,12 @@ import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
 import StatusTag from '@/components/JobTags/StatusTag';
 import { DevopContext } from '@/pages/DevOps';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
+import { getJobDuration } from '@/pages/DevOps/function';
 import JobHistoryList from '@/pages/DevOps/JobList/components/JobHistoryList/JobHistoryList';
 import { queryList } from '@/services/api';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
-import { parseMilliSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ClockCircleTwoTone, EyeTwoTone, RedoOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
@@ -77,7 +77,7 @@ const JobList = () => {
     {
       title: l('global.table.useTime'),
       hideInSearch: true,
-      render: (_: any, row: Jobs.JobInstance) => parseMilliSecondStr(row.duration)
+      render: (_: any, row: Jobs.JobInstance) => getJobDuration(row)
     },
     {
       title: l('global.table.status'),
