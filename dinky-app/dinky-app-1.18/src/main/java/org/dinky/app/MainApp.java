@@ -49,15 +49,10 @@ public class MainApp {
         String config = parameters.get(AppParamConstant.config);
         config = isEncrypt ? new String(Base64.getDecoder().decode(config)) : config;
         AppParamConfig appConfig = JsonUtils.toJavaBean(config, AppParamConfig.class);
-        try {
-            log.info("dinky app is Ready to run, config is {}", appConfig);
-            DBUtil.init(appConfig);
-            Submitter.submit(appConfig);
-        } catch (Exception e) {
-            log.error("exectue app failed : ", e);
-        } finally {
-            log.info("Start Monitor Job");
-            FlinkAppUtil.monitorFlinkTask(Submitter.executor, appConfig.getTaskId());
-        }
+        log.info("dinky app is Ready to run, config is {}", appConfig);
+        DBUtil.init(appConfig);
+        Submitter.submit(appConfig);
+        log.info("Start Monitor Job");
+        FlinkAppUtil.monitorFlinkTask(Submitter.executor, appConfig.getTaskId());
     }
 }
