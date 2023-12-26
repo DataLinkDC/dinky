@@ -17,17 +17,17 @@
  *
  */
 
-import {Card, Typography} from 'antd';
+import { Card, Typography } from 'antd';
 
-const {Text, Paragraph} = Typography;
+const { Text, Paragraph } = Typography;
 
 const DagPlanNode = (props: any) => {
-  const {node} = props;
+  const { node } = props;
   const data: any = node?.getData();
 
   return (
     <Card
-      style={{width: 270, padding: 0, margin: 0, height: 140}}
+      style={{ width: 270, padding: 0, margin: 0, height: 140 }}
       bordered={false}
       size={'small'}
       type={'inner'}
@@ -37,9 +37,10 @@ const DagPlanNode = (props: any) => {
     >
       <Paragraph
         ellipsis={{
-          tooltip: {title: data.description, zIndex: 2000},
+          tooltip: { title: data.description, zIndex: 2000 },
           rows: 3
-        }}>
+        }}
+      >
         <blockquote>
           <Text>{data.description}</Text>
         </blockquote>

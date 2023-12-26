@@ -117,8 +117,8 @@ public class SchedulerServiceImpl implements SchedulerService {
 
             DagNodeLocation dagNodeLocation = new DagNodeLocation();
             dagNodeLocation.setTaskCode(taskCode);
-            dagNodeLocation.setX(RandomUtil.randomLong(200, 500));
-            dagNodeLocation.setY(RandomUtil.randomLong(100, 400));
+            dagNodeLocation.setX(RandomUtil.randomLong(200, 800));
+            dagNodeLocation.setY(RandomUtil.randomLong(100, 600));
             log.info("DagNodeLocation Info: {}", dagNodeLocation);
 
             ProcessTaskRelation processTaskRelation = ProcessTaskRelation.generateProcessTaskRelation(taskCode);
@@ -176,43 +176,32 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
         List<ProcessTaskRelation> processTaskRelationList = dagData.getProcessTaskRelationList();
         List<TaskDefinition> taskDefinitionList = dagData.getTaskDefinitionList();
-        List<DagNodeLocation> locations = process.getLocations();
+        List<DagNodeLocation> locations = JSONUtil.toList(process.getLocations(), DagNodeLocation.class);
 
-        if (CollUtil.isNotEmpty(process.getLocations())) {
-            boolean matched = process.getLocations().stream().anyMatch(location -> location.getTaskCode() == taskCode);
+        if (CollUtil.isNotEmpty(locations)) {
+            boolean matched = locations.stream().anyMatch(location -> location.getTaskCode() == taskCode);
+            // 获取最大的 x y 坐标
+            long xMax =
+                    locations.stream().mapToLong(DagNodeLocation::getX).max().getAsLong();
+
+            long yMax =
+                    locations.stream().mapToLong(DagNodeLocation::getY).max().getAsLong();
+
             // if not matched, add a new location
-            if (!matched) {
-                // 获取最大的 x y 坐标
-                long xMax = process.getLocations().stream()
-                        .mapToLong(DagNodeLocation::getX)
-                        .max()
-                        .getAsLong();
-                long xMin = process.getLocations().stream()
-                        .mapToLong(DagNodeLocation::getX)
-                        .min()
-                        .getAsLong();
-                long yMax = process.getLocations().stream()
-                        .mapToLong(DagNodeLocation::getY)
-                        .max()
-                        .getAsLong();
-                long yMin = process.getLocations().stream()
-                        .mapToLong(DagNodeLocation::getY)
-                        .min()
-                        .getAsLong();
+            if (matched) {
                 // 随机出一个 x y 坐标
                 DagNodeLocation dagNodeLocation = new DagNodeLocation();
                 dagNodeLocation.setTaskCode(taskCode);
-                dagNodeLocation.setX(RandomUtil.randomLong(xMin == xMax ? 0 : xMin, xMax));
-                dagNodeLocation.setY(RandomUtil.randomLong(yMin == yMax ? 0 : yMin, yMax));
-                locations = process.getLocations();
+                dagNodeLocation.setX(RandomUtil.randomLong(xMax - 200, xMax));
+                dagNodeLocation.setY(RandomUtil.randomLong(yMax - 150, yMax));
                 locations.add(dagNodeLocation);
             }
         } else {
             // 随机出一个 x y 坐标
             DagNodeLocation dagNodeLocation = new DagNodeLocation();
             dagNodeLocation.setTaskCode(taskCode);
-            dagNodeLocation.setX(RandomUtil.randomLong(200, 500));
-            dagNodeLocation.setY(RandomUtil.randomLong(100, 400));
+            dagNodeLocation.setX(RandomUtil.randomLong(200, 800));
+            dagNodeLocation.setY(RandomUtil.randomLong(100, 600));
             locations.add(dagNodeLocation);
         }
 

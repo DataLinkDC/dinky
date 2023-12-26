@@ -66,13 +66,14 @@ export const buildValueItem = (key: string, isSystem: boolean) => {
           />
         );
       case OperatorType.STR_VALUE:
-        return <ProFormText width={'sm'} disabled={isSystem} name={'ruleValue'} placeholder={plh} />;
+        return (
+          <ProFormText width={'sm'} disabled={isSystem} name={'ruleValue'} placeholder={plh} />
+        );
       case OperatorType.OPTIONS_SEL:
         return (
           <ProFormSelect
             width={'sm'}
             disabled={isSystem}
-            width={'sm'}
             name='ruleValue'
             mode={'single'}
             placeholder={plh}
