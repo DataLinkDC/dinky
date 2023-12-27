@@ -23,7 +23,9 @@ import { MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
 import JobMetricsList from '@/pages/Metrics/JobMetricsList';
 import Server from '@/pages/Metrics/Server';
 import { getAllConfig } from '@/pages/Metrics/service';
+import { l } from '@/utils/intl';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
+import { Alert } from 'antd';
 import { useState } from 'react';
 
 export default () => {
@@ -55,6 +57,11 @@ export default () => {
         fixedHeader={true}
         //todo 后面title改为下拉列表，用户自定义选择展示哪些layout，而不是全部展示
         loading={showServer.loading}
+        subTitle={
+          !showServer.data && (
+            <Alert message={l('metrics.dinky.not.open')} type={'warning'} banner showIcon />
+          )
+        }
         header={{ extra: [<MetricsFilter onTimeSelect={onTimeSelectChange} />] }}
         content={
           <>

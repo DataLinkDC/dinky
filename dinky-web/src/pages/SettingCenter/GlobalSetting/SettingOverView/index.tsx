@@ -34,6 +34,7 @@ import { EnvConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/E
 import { FlinkConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/FlinkConfig';
 import { LdapConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig';
 import { MavenConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/MavenConfig';
+import { MetricsConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/MetricsConfig';
 import { ResourcesConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/ResourcesConfig';
 import { handleOption, queryDataByParams } from '@/services/BusinessCrud';
 import { RESPONSE_CODE } from '@/services/constants';
@@ -166,7 +167,7 @@ const SettingOverView = () => {
             {l('sys.setting.metrics')}
           </TagAlignCenter>
         ),
-        children: <DSConfig onSave={handleSaveSubmit} data={metricsConfig} />,
+        children: <MetricsConfig onSave={handleSaveSubmit} data={metricsConfig} />,
         path: '/settings/globalsetting/metrics'
       },
       {
