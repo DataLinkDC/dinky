@@ -24,7 +24,7 @@ import {
   mapDispatchToProps
 } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
-import {StateType, TaskDataType} from '@/pages/DataStudio/model';
+import { StateType, TaskDataType } from '@/pages/DataStudio/model';
 import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
