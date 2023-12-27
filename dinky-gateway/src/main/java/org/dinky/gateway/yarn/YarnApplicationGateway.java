@@ -28,6 +28,8 @@ import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
 import org.dinky.utils.LogUtil;
 
+import org.apache.flink.api.common.JobID;
+import org.apache.flink.api.common.JobStatus;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
@@ -36,13 +38,20 @@ import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
+import org.apache.hadoop.yarn.api.records.ApplicationReport;
+import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
+
+import cn.hutool.http.HttpUtil;
 
 /**
  * YarnApplicationGateway
@@ -77,24 +86,45 @@ public class YarnApplicationGateway extends YarnGateway {
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
 
         YarnResult result = YarnResult.build(getType());
+        String webUrl = null;
         try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar(udfPathContextHolder)) {
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
                     clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
-            Collection<JobStatusMessage> jobStatusMessages =
-                    clusterClient.listJobs().get();
 
+            while (yarnClient.getApplicationReport(clusterClient.getClusterId()).getYarnApplicationState()
+                    == YarnApplicationState.ACCEPTED) {
+                Thread.sleep(1000);
+            }
+            ApplicationReport applicationReport = yarnClient.getApplicationReport(clusterClient.getClusterId());
+            if (applicationReport.getYarnApplicationState() != YarnApplicationState.RUNNING) {
+                throw new RuntimeException("Yarn application state is not running, please check yarn cluster status.");
+            }
+            webUrl = applicationReport.getOriginalTrackingUrl();
+            final List<JobStatusMessage> jobStatusMessages = new ArrayList<>();
             int counts = SystemConfiguration.getInstances().getJobIdWait();
-            while (jobStatusMessages.size() == 0 && counts > 0) {
+            while (jobStatusMessages.isEmpty() && counts > 0) {
                 Thread.sleep(1000);
                 counts--;
-                jobStatusMessages = clusterClient.listJobs().get();
-                if (jobStatusMessages.size() > 0) {
+                JSONArray jobs = JSON.parseObject(HttpUtil.get(
+                                yarnClient
+                                                .getApplicationReport(clusterClient.getClusterId())
+                                                .getTrackingUrl() + "jobs/overview"))
+                        .getJSONArray("jobs");
+                jobs.stream().map(x -> (JSONObject) x).forEach(job -> {
+                    JobStatusMessage jobStatusMessage = new JobStatusMessage(
+                            JobID.fromHexString(job.getString("jid")),
+                            job.getString("name"),
+                            JobStatus.valueOf(job.getString("state")),
+                            job.getLong("start-time"));
+                    jobStatusMessages.add(jobStatusMessage);
+                });
+                if (!jobStatusMessages.isEmpty()) {
                     break;
                 }
             }
 
-            if (jobStatusMessages.size() > 0) {
+            if (!jobStatusMessages.isEmpty()) {
                 List<String> jobIds = new ArrayList<>();
                 for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
                     jobIds.add(jobStatusMessage.getJobId().toHexString());
@@ -104,7 +134,7 @@ public class YarnApplicationGateway extends YarnGateway {
 
             ApplicationId applicationId = clusterClient.getClusterId();
             result.setId(applicationId.toString());
-            result.setWebURL(clusterClient.getWebInterfaceURL());
+            result.setWebURL(webUrl);
             result.success();
         } catch (Exception e) {
             result.fail(LogUtil.getError(e));
