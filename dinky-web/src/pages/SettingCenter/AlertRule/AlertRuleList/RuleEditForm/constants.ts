@@ -58,8 +58,7 @@ export const BOOLEAN_VALUE_ENUM: DefaultOptionType[] = [
 export const AlertRules: any = {
   jobName: {
     label: l('sys.alert.rule.label.taskId'),
-    valueType: OperatorType.NUMBER_VALUE,
-    options_enum: EqRuleOperator
+    valueType: OperatorType.NUMBER_VALUE
   },
   duration: {
     label: l('sys.alert.rule.label.duration'),
@@ -82,8 +81,7 @@ export const AlertRules: any = {
   },
   checkpointCostTime: {
     label: l('sys.alert.rule.label.checkpointTime'),
-    valueType: OperatorType.OPTIONS_SEL,
-    valueEnum: BOOLEAN_VALUE_ENUM
+    valueType: OperatorType.NUMBER_VALUE
   },
   isCheckpointFailed: {
     label: l('sys.alert.rule.label.checkpointFailed'),

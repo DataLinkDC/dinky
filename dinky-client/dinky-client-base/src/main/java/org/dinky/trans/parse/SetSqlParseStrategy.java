@@ -50,8 +50,8 @@ public class SetSqlParseStrategy extends AbstractRegexParseStrategy {
     public static Map<String, List<String>> getInfo(String statement) {
         // SET(\s+(\S+)\s*=(.*))?
         List<SqlSegment> segments = new ArrayList<>();
-        segments.add(new SqlSegment("(set)\\s+(.+)(\\s*=)", "[.]"));
-        segments.add(new SqlSegment("(=)\\s*(.*)($)", ","));
+        segments.add(new SqlSegment("(set)\\s+'?([^']+)'?(\\s*=)", "[.]"));
+        segments.add(new SqlSegment("(=)\\s*'?([^']+)'?($)", ","));
         return SqlSegmentUtil.splitSql2Segment(segments, statement);
     }
 

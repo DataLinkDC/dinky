@@ -17,15 +17,31 @@
  *
  */
 
-export const validationOptions = (value: string) => {
-  switch (value) {
-    case 'jobInstance.status':
-    case 'checkPoints.checkFailed(#key,#checkPoints)':
-    case 'exceptionRule.isException(#key,#exceptions)':
-      return true;
-    case 'checkPoints.checkpointTime(#key,#checkPoints)':
-      return false;
-    default:
-      return false;
-  }
-};
+package org.dinky.utils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+
+public class ClassPathUtils {
+    public static void sort(List<String> list) {
+        Collections.sort(list);
+        List<Integer> indexList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            String path = list.get(i);
+            if (StrUtil.contains(path, "dinky")) {
+                indexList.add(i);
+            }
+        }
+        if (CollUtil.isNotEmpty(indexList)) {
+            for (Integer i : indexList) {
+                int index = i;
+                String path = list.remove(index);
+                list.add(0, path);
+            }
+        }
+    }
+}

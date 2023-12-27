@@ -21,9 +21,15 @@ package org.dinky.scheduler.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor(onConstructor = @__(@JsonCreator))
+@NoArgsConstructor
 public class DagNodeLocation implements Serializable {
 
     private static final long serialVersionUID = -5243356147439794746L;

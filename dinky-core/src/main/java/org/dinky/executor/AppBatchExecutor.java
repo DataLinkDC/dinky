@@ -37,7 +37,7 @@ public class AppBatchExecutor extends Executor {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
             this.environment = StreamExecutionEnvironment.getExecutionEnvironment(configuration);
         } else {
-            this.environment = StreamExecutionEnvironment.createLocalEnvironment();
+            this.environment = StreamExecutionEnvironment.getExecutionEnvironment();
         }
         init(classLoader);
     }

@@ -46,11 +46,17 @@ public class FlinkAppUtil {
      */
     public static void monitorFlinkTask(Executor executor, int taskId) {
         boolean isRun = true;
+        int reTryCount = 0;
         try (RestClusterClient<StandaloneClusterId> client = createClient(executor)) {
             while (isRun) {
                 Collection<JobStatusMessage> jobs = client.listJobs().get();
                 if (jobs.isEmpty()) {
-                    log.error("No Flink task found, try again in 2 seconds.....");
+                    log.error("No Flink task found, try again in 5 seconds.....");
+                    reTryCount++;
+                    if (reTryCount > 10) {
+                        isRun = false;
+                        log.error("No Flink task found, please check the Flink cluster status.");
+                    }
                 }
                 for (JobStatusMessage job : jobs) {
                     if (JobStatus.isDone(job.getJobState().toString())) {
@@ -101,6 +107,7 @@ public class FlinkAppUtil {
 
     /**
      * Create a REST cluster client for Flink.
+     *
      * @return
      * @throws Exception
      */
