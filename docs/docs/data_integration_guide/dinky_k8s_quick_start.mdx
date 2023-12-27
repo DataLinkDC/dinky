@@ -3,6 +3,7 @@ sidebar_position: 1
 id: dinky_k8s_quick_start
 title: K8s集成
 ---
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
@@ -20,27 +21,21 @@ Dinky支持以下几种 Flink on k8s 运行模式：
 **部分内容可参考 Flink 对应集成 k8s 文档链接**
 
 <Tabs groupId="flink-version">
-
-<TabItem value="1.13" label="flink-1.13" default>
-
-[https://nightlies.apache.org/flink/flink-docs-release-1.13/zh/docs/deployment/resource-providers/native_kubernetes/](https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/)
-
-</TabItem>
-<TabItem value="1.14" label="flink-1.14" default>
-
-[https://nightlies.apache.org/flink/flink-docs-release-1.14/zh/docs/deployment/resource-providers/native_kubernetes/](https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/)
-
-</TabItem>
-<TabItem value="1.15" label="flink-1.15" default>
-
-[https://nightlies.apache.org/flink/flink-docs-release-1.15/zh/docs/deployment/resource-providers/native_kubernetes/](https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/)
-
-</TabItem>
-<TabItem value="1.16" label="flink-1.16" default>
-
-[https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/](https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/)
-
-</TabItem>
+    <TabItem value="1.14" label="flink-1.14" default>
+        [https://nightlies.apache.org/flink/flink-docs-release-1.14/zh/docs/deployment/resource-providers/native_kubernetes/](https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/)
+    </TabItem>
+    <TabItem value="1.15" label="flink-1.15" default>
+        [https://nightlies.apache.org/flink/flink-docs-release-1.15/zh/docs/deployment/resource-providers/native_kubernetes/](https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/)
+    </TabItem>
+    <TabItem value="1.16" label="flink-1.16" default>
+        [https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/](https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/)
+    </TabItem>
+    <TabItem value="1.17" label="flink-1.17" default>
+        [https://nightlies.apache.org/flink/flink-docs-release-1.17/zh/docs/deployment/resource-providers/native_kubernetes/](https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/)
+    </TabItem>
+    <TabItem value="1.18" label="flink-1.18" default>
+        [https://nightlies.apache.org/flink/flink-docs-release-1.18/zh/docs/deployment/resource-providers/native_kubernetes/](https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/)
+    </TabItem>
 </Tabs>
 
 
@@ -144,52 +139,61 @@ ADD extends /opt/flink/lib # 把当前extends目录下的jar添加进依赖目�
 
 ##### Kubernetes 配置
 
-| 参数     | 说明                                                     | 是否必填 | 默认值 |    示例值     |
-|--------|--------------------------------------------------------|:----:|:---:|:----------:|
-| 暴露端口类型     | 支持NodePort与ClusterIP |  是   |  无  |  NodePort |
-| Kubernetes 命名空间 | 集群所在的 Kubernetes 命名空间 |  是   |  无  |  dinky |
-| K8s 提交账号      | 集群提交任务的账号 |  是   |  无  |  default |
-| Flink 镜像地址    | 上一步打包的镜像地址 |  是   |  无  | dinky-flink-1.0.0-1.15.4 |
-| JobManager CPU 配置 | JobManager 资源配置 |  否   |  无  | 1 |
-| TaskManager CPU 配置 | TaskManager 资源配置 |  否   |  无  | 1 |
-| Flink 配置文件路径 | 仅指定到文件夹，dinky会自行读取文件夹下的配置文件并作为flink的默认配置 |  否   |  无  |  /opt/flink/conf |
+| 参数                 | 说明                                       | 是否必填 | 默认值 |           示例值            |
+|--------------------|------------------------------------------|:----:|:---:|:------------------------:|
+| 暴露端口类型             | 支持NodePort与ClusterIP                     |  是   |  无  |         NodePort         |
+| Kubernetes 命名空间    | 集群所在的 Kubernetes 命名空间                    |  是   |  无  |          dinky           |
+| K8s 提交账号           | 集群提交任务的账号                                |  是   |  无  |         default          |
+| Flink 镜像地址         | 上一步打包的镜像地址                               |  是   |  无  | dinky-flink-1.0.0-1.15.4 |
+| JobManager CPU 配置  | JobManager 资源配置                          |  否   |  无  |            1             |
+| TaskManager CPU 配置 | TaskManager 资源配置                         |  否   |  无  |            1             |
+| Flink 配置文件路径       | 仅指定到文件夹，dinky会自行读取文件夹下的配置文件并作为flink的默认配置 |  否   |  无  |     /opt/flink/conf      |
 
 > 如果您有其他的配置项需要添加，请点击添加配置项按钮，添加完毕后，点击保存即可
 
 ##### Kubernetes 连接与pod配置
-| 参数     | 说明                                                     | 是否必填 | 默认值 |    示例值     |
-|--------|--------------------------------------------------------|:----:|:---:|:----------:|
-|K8s KubeConfig |集群的KubeConfig内容,如果不填写，则默认使用`~/.kube/config`文件 |  否   |  无  |  无 |
-|Default Pod Template |默认的Pod模板 |  否   |  无  |  无 |
-|JM Pod Template |JobManager的Pod模板 |  否   |  无  |  无 |
-|TM Pod Template |TaskManager的Pod模板 |  否   |  无  |  无 |
+| 参数                   | 说明                                            | 是否必填 | 默认值 | 示例值 |
+|----------------------|-----------------------------------------------|:----:|:---:|:---:|
+| K8s KubeConfig       | 集群的KubeConfig内容,如果不填写，则默认使用`~/.kube/config`文件 |  否   |  无  |  无  |
+| Default Pod Template | 默认的Pod模板                                      |  否   |  无  |  无  |
+| JM Pod Template      | JobManager的Pod模板                              |  否   |  无  |  无  |
+| TM Pod Template      | TaskManager的Pod模板                             |  否   |  无  |  无  |
 
 ##### 提交 FlinkSQL 配置项 (Application 模式必填)-公共配置
 
-| 参数     | 说明                                                                                                       | 是否必填 | 默认值 |      示例值       |
-|--------|----------------------------------------------------------------------------------------------------------|:----:|:---:|:--------------:|
-| Jar 文件路径     | 指定镜像内dinky-app的 Jar 文件路径,如果该集群配置用于提交 Application 模式任务时 则必填|  否   |  无  | local:///opt/flink/dinky-app-1.16-1.0.0-jar-with-dependencies.jar |
+| 参数       | 说明                                                         | 是否必填 | 默认值 |                                示例值                                |
+|----------|------------------------------------------------------------|:----:|:---:|:-----------------------------------------------------------------:|
+| Jar 文件路径 | 指定镜像内dinky-app的 Jar 文件路径,如果该集群配置用于提交 Application 模式任务时 则必填 |  否   |  无  | local:///opt/flink/dinky-app-1.16-1.0.0-jar-with-dependencies.jar |
 > 由于flink限制，k8s模式只能加载镜像内的jar包，也就是地址必须为local://开头，如果想要自定义jar提交，请查阅jar提交部分
 
 
 #### Flink 预设配置（高优先级）-公共配置
 
-| 参数              | 说明 | 是否必填 | 默认值 | 示例值 |
-|-----------------|----|:----:|:---:|:--:|
-| JobManager 内存   | JobManager 内存大小! |  否   |  无  | 1g |
-| TaskManager 内存  |  TaskManager 内存大小! |  否   |  无  | 1g |
-| TaskManager 堆内存 |  TaskManager 堆内存大小! |  否   |  无  | 1g |
-| 插槽数             | 插槽数量  |  否   |  无  | 2  |
-| 保存点路径                | 对应SavePoint目录  |  否   |  无  | hdfs:///flink/savepoint   |
-| 检查点路径                | 对应CheckPoint目录 |  否   |  无  | hdfs:///flink/checkpoint  |
+| 参数              | 说明                 | 是否必填 | 默认值 |           示例值            |
+|-----------------|--------------------|:----:|:---:|:------------------------:|
+| JobManager 内存   | JobManager 内存大小!   |  否   |  无  |            1g            |
+| TaskManager 内存  | TaskManager 内存大小!  |  否   |  无  |            1g            |
+| TaskManager 堆内存 | TaskManager 堆内存大小! |  否   |  无  |            1g            |
+| 插槽数             | 插槽数量               |  否   |  无  |            2             |
+| 保存点路径           | 对应SavePoint目录      |  否   |  无  | hdfs:///flink/savepoint  |
+| 检查点路径           | 对应CheckPoint目录     |  否   |  无  | hdfs:///flink/checkpoint |
 
 ## 启动session集群（可选）
+
 除了您自己手动部署session集群外，dinky还提供了快捷方式部署Kubernetes session集群，在上面Kubernetes集群配置完成后，点击启动按钮即可向指定Kubernetes集群提交session集群
+
 ![IMG](http://pic.dinky.org.cn/dinky/docs/test/k8s-config-list.png)
+
 至此，所有准备工作均已完成完成，接下来就可以通过` kubernetes session`模式或`kubernetes application`模式进行任务提交啦。
 
+
 ## 提交 kubernetes application 任务
+
 进入数据开发页面，新建一个flink sql任务，选择集群类型为`kubernetes application`，集群选择为我们刚刚配置的集群，点击提交即可
-![IMG](http://pic.dinky.org.cn/dinky/docs/test/k8s-task-demo.png)## 提交 kubernetes session 任务
+
+![IMG](http://pic.dinky.org.cn/dinky/docs/test/k8s-task-demo.png)
+
+## 提交 kubernetes session 任务
+
 进入数据开发页面，新建一个flink sql任务，选择集群类型为`kubernetes session`，集群选择为我们刚刚配置的集群，点击提交即可
 图片同上

@@ -11,7 +11,7 @@ PID_FILE="dinky.pid"
 
 # JMX path
 APP_HOME="$(cd `dirname $0`; pwd)"
-JMX="-javaagent:$APP_HOME/lib/jmx_prometheus_javaagent-0.16.1.jar=10087:$APP_HOME/config/jmx/jmx_exporter_config.yaml"
+JMX="-javaagent:$APP_HOME/lib/jmx_prometheus_javaagent-0.20.0.jar=10087:$APP_HOME/config/jmx/jmx_exporter_config.yaml"
 
 # Check whether the pid path exists
 PID_PATH="$(cd "$(dirname "$0")";pwd)/run"

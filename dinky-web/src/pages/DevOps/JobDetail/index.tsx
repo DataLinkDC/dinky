@@ -65,7 +65,7 @@ const JobDetail = (props: any) => {
     pollingInterval: 3000
   });
 
-  const jobInfoDetail: Jobs.JobInfoDetail = data;
+  const jobInfoDetail = data as Jobs.JobInfoDetail;
 
   const [tabKey, setTabKey] = useState<string>(OperatorEnum.JOB_BASE_INFO);
 

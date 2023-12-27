@@ -90,7 +90,7 @@ npm run dev
 
 由于目前 Dinky 各个模块未发布到 Maven 中央仓库，所以需要先进行 Install 编译。从而在本地仓库中生成相应的依赖。
 
-如果你是第一次编译 Dinky，那么请勾选以下 Maven Profile,然后下图中的`生命周期 -> Install`进行编译。
+如果你是第一次编译 Dinky，那么请勾选以下 Maven Profile,然后双击下图中的`生命周期 -> Install`进行编译。
 :::
 
 ![localdebug_profile](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/localdebug_profile.png)
