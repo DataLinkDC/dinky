@@ -121,7 +121,7 @@ const FlinkTable = (props: JobProps): JSX.Element => {
         return entity.endTime === -1 || entity['end-time'] === -1
           ? '-'
           : formatTimestampToYYYYMMDDHHMMSS(entity['end-time'] as number) ||
-              formatTimestampToYYYYMMDDHHMMSS(entity.startTime as number);
+              formatTimestampToYYYYMMDDHHMMSS(entity.endTime as number);
       }
     },
     {
