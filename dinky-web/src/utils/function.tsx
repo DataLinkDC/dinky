@@ -619,10 +619,10 @@ export const formatDateToYYYYMMDDHHMMSS = (date: Date) => {
 };
 
 export const formatTimestampToYYYYMMDDHHMMSS = (timestamp: number) => {
-    if (timestamp == null) {
-        return '-';
-    }
-    return dayjs(timestamp).format(DATETIME_FORMAT);
+  if (timestamp == null) {
+    return '-';
+  }
+  return dayjs(timestamp).format(DATETIME_FORMAT);
 };
 
 export const parseDateStringToDate = (dateString: Date) => {

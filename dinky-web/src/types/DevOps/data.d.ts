@@ -18,7 +18,7 @@
  */
 
 import { BaseBeanColumns } from '@/types/Public/data';
-import {Alert, Cluster} from '@/types/RegCenter/data.d';
+import { Alert, Cluster } from '@/types/RegCenter/data.d';
 
 /**
  * about flink job
@@ -48,31 +48,31 @@ declare namespace Jobs {
     useBatchModel: string;
   };
 
-    export type ExecutorSetting = {
-        type: string;
-        host: string;
-        port: number;
-        useBatchModel: boolean;
-        checkpoint: string;
-        parallelism: number;
-        useSqlFragment: boolean;
-        useStatementSet: boolean;
-        savePointPath: string;
-        jobName: string;
-        config: Map<string, string>;
-        variables: Map<string, string>;
-        jarFiles: [];
-        jobManagerAddress: string;
-        plan: boolean;
-        remote: boolean;
-        validParallelism: boolean;
-        validJobName: boolean;
-        validHost: boolean;
-        validPort: boolean;
-        validConfig: boolean;
-        validVariables: boolean;
-        validJarFiles: boolean;
-    };
+  export type ExecutorSetting = {
+    type: string;
+    host: string;
+    port: number;
+    useBatchModel: boolean;
+    checkpoint: string;
+    parallelism: number;
+    useSqlFragment: boolean;
+    useStatementSet: boolean;
+    savePointPath: string;
+    jobName: string;
+    config: Map<string, string>;
+    variables: Map<string, string>;
+    jarFiles: [];
+    jobManagerAddress: string;
+    plan: boolean;
+    remote: boolean;
+    validParallelism: boolean;
+    validJobName: boolean;
+    validHost: boolean;
+    validPort: boolean;
+    validConfig: boolean;
+    validVariables: boolean;
+    validJarFiles: boolean;
+  };
 
   export type JobConfigJsonInfo = {
     type: string;
@@ -84,7 +84,7 @@ declare namespace Jobs {
     clusterConfigurationId: number;
     step: number;
     configJson: {
-        'state.savepoints.dir': string;
+      'state.savepoints.dir': string;
     };
     useResult: boolean;
     useChangeLog: boolean;
@@ -103,7 +103,6 @@ declare namespace Jobs {
     variables: Map<string, string>;
     executorSetting: ExecutorSetting;
   };
-
 
   export type History = {
     id: number;
