@@ -19,6 +19,7 @@
 
 package org.dinky.app.flinksql;
 
+import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.dinky.app.db.DBUtil;
 import org.dinky.app.model.StatementParam;
 import org.dinky.app.model.SysConfig;
@@ -252,7 +253,9 @@ public class Submitter {
             String sqlStatement = executor.pretreatStatement(statements[i]);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
-                executeJarOperation.execute(executor.getCustomTableEnvironment());
+                StreamGraph streamGraph = executeJarOperation.getStreamGraph(executor.getCustomTableEnvironment());
+                streamGraph.setJobName(executor.getExecutorConfig().getJobName());
+                executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
                 break;
             } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD) {
                 File[] info = AddJarSqlParseStrategy.getInfo(sqlStatement);
