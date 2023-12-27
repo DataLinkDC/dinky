@@ -60,7 +60,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         return Optional.of(TABLE_RESULT_OK);
     }
 
-    protected StreamGraph getStreamGraph(CustomTableEnvironment tEnv) {
+    public StreamGraph getStreamGraph(CustomTableEnvironment tEnv) {
         JarSubmitParam submitParam = JarSubmitParam.build(statement);
         return getStreamGraph(submitParam, tEnv);
     }
