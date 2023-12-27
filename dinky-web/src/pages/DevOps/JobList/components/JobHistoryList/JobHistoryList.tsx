@@ -18,10 +18,10 @@
  */
 
 import StatusTag from '@/components/JobTags/StatusTag';
+import { getJobDuration } from '@/pages/DevOps/function';
 import { queryList } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
-import { parseSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -62,7 +62,7 @@ const JobHistoryList = (props: HistoryProps) => {
     },
     {
       title: l('global.table.useTime'),
-      render: (_: any, row: { duration: number }) => parseSecondStr(row.duration)
+      render: (_: any, row: Jobs.JobInstance) => getJobDuration(row)
     },
     {
       title: l('global.table.operate'),

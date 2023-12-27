@@ -42,7 +42,7 @@ import { Button, Col, Divider, Row, Space, Typography, Upload, UploadProps } fro
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { RcFile } from 'antd/es/upload/interface';
 import { Values } from 'async-validator';
-import { useState } from 'react';
+import { editor } from 'monaco-editor';
 
 const { Text } = Typography;
 
@@ -56,11 +56,6 @@ const CodeEditProps = {
 const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> } & connect) => {
   const { type, value, form, flinkConfigOptions } = props;
   const k8sConfig = value.config?.kubernetesConfig;
-
-  const [kubeConfig, setKubeConfig] = useState<string>(k8sConfig?.kubeConfig);
-  const [podTemplate, setPodTemplate] = useState<string>(k8sConfig?.podTemplate);
-  const [jmPodTemplate, setJmPodTemplate] = useState<string>(k8sConfig?.jmPodTemplate);
-  const [tmPodTemplate, setTmPodTemplate] = useState<string>(k8sConfig?.tmPodTemplate);
 
   const renderK8sConfig = () => {
     return (
@@ -80,20 +75,16 @@ const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> 
     );
   };
 
-  const renderEdit = (
-    name: string[],
-    onChange: (value: string) => void,
-    key: string,
-    value?: string,
-    tips?: string
-  ) => {
+  const renderEdit = (name: string[], key: string, value?: string, tips?: string) => {
+    let editorRef: editor.IStandaloneCodeEditor;
     const uploadProp: UploadProps = {
       beforeUpload: (file: RcFile) => {
         const reader = new FileReader();
         reader.readAsText(file);
         reader.onload = () => {
-          form.setFieldValue(name, reader.result as string);
-          onChange((reader.result as string) + '\n');
+          const value = reader.result as string;
+          form.setFieldValue(name, value);
+          editorRef?.setValue(value);
         };
       },
       showUploadList: false
@@ -105,7 +96,13 @@ const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> 
           <Text type={'secondary'}> {tips}</Text>
         </Upload>
         <ProFormItem key={key} name={name}>
-          <CodeEdit {...CodeEditProps} code={value ?? ''} />
+          <CodeEdit
+            {...CodeEditProps}
+            code={value ?? ''}
+            editorDidMount={(editor: editor.IStandaloneCodeEditor) => {
+              editorRef = editor;
+            }}
+          />
         </ProFormItem>
       </Space>
     );
@@ -118,9 +115,8 @@ const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> 
       label: <TagAlignCenter>K8s KubeConfig</TagAlignCenter>,
       children: renderEdit(
         ['config', 'kubernetesConfig', 'kubeConfig'],
-        (value) => setKubeConfig(value),
         'k8s-kubeconfig-item',
-        kubeConfig,
+        k8sConfig?.kubeConfig,
         l('rc.cc.k8s.defaultKubeConfigHelp')
       )
     },
@@ -130,9 +126,8 @@ const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> 
       label: <TagAlignCenter>Default Pod Template</TagAlignCenter>,
       children: renderEdit(
         ['config', 'kubernetesConfig', 'podTemplate'],
-        (value) => setPodTemplate(value),
         'k8s-podTemplate-item',
-        podTemplate
+        k8sConfig?.podTemplate
       )
     },
     {
@@ -141,9 +136,8 @@ const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> 
       label: <TagAlignCenter>JM Pod Template</TagAlignCenter>,
       children: renderEdit(
         ['config', 'kubernetesConfig', 'jmPodTemplate'],
-        (value) => setJmPodTemplate(value),
         'k8s-jmPodTemplate-item',
-        jmPodTemplate
+        k8sConfig?.jmPodTemplate
       )
     },
     {
@@ -152,9 +146,8 @@ const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> 
       label: <TagAlignCenter>TM Pod Template</TagAlignCenter>,
       children: renderEdit(
         ['config', 'kubernetesConfig', 'tmPodTemplate'],
-        (value) => setTmPodTemplate(value),
         'k8s-tmPodTemplate-item',
-        tmPodTemplate
+        k8sConfig?.tmPodTemplate
       )
     }
   ];

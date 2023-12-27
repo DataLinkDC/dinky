@@ -18,6 +18,8 @@
  */
 
 import { JOB_STATUS } from '@/pages/DevOps/constants';
+import { Jobs } from '@/types/DevOps/data';
+import { parseMilliSecondStr } from '@/utils/function';
 
 /**
  * Checks if a job status indicates that the job is done.
@@ -37,5 +39,27 @@ export function isStatusDone(type: string) {
       return true;
     default:
       return false;
+  }
+}
+export function isNotFinallyStatus(type: string) {
+  if (!type) {
+    return true;
+  }
+  switch (type) {
+    case JOB_STATUS.RECONNECTING:
+    case JOB_STATUS.UNKNOWN:
+      return true;
+    default:
+      return false;
+  }
+}
+
+export function getJobDuration(jobInstance: Jobs.JobInstance) {
+  if (isStatusDone(jobInstance.status)) {
+    return parseMilliSecondStr(jobInstance.duration);
+  } else {
+    const currentTimestamp = Date.now();
+    const duration = currentTimestamp - new Date(jobInstance.createTime).getTime();
+    return parseMilliSecondStr(duration);
   }
 }

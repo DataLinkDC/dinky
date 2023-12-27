@@ -35,7 +35,12 @@ const DagPlanNode = (props: any) => {
       title={data.description}
       extra={<Text keyboard>{data.parallelism}</Text>}
     >
-      <Paragraph ellipsis={{ tooltip: data.description, rows: 3 }}>
+      <Paragraph
+        ellipsis={{
+          tooltip: { title: data.description, zIndex: 2000 },
+          rows: 3
+        }}
+      >
         <blockquote>
           <Text>{data.description}</Text>
         </blockquote>

@@ -29,6 +29,8 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
 import static org.apache.flink.yarn.YarnConfigKeys.ENV_FLINK_CLASSPATH;
 import static org.apache.flink.yarn.YarnConfigKeys.LOCAL_RESOURCE_DESCRIPTOR_SEPARATOR;
 
+import org.dinky.utils.ClassPathUtils;
+
 import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.flink.api.common.cache.DistributedCache;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -894,7 +896,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
         }
 
         // normalize classpath by sorting
-        Collections.sort(systemClassPaths);
+        ClassPathUtils.sort(systemClassPaths);
         Collections.sort(userClassPaths);
 
         // classpath assembler

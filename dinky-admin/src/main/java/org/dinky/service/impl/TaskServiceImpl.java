@@ -324,6 +324,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // The statement set is enabled by default when submitting assignments
         taskDTO.setStatementSet(true);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
+        if ((jobResult.getStatus() == Job.JobStatus.FAILED)) {
+            throw new BusException(jobResult.getError());
+        }
         log.info("Job Submit success");
         Task task = new Task(submitDto.getId(), jobResult.getJobInstanceId());
         if (!this.updateById(task)) {
@@ -487,6 +490,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws SqlExplainExcepition {
         TaskDTO task = getTaskInfoById(taskId);
         task.setStep(lifeCycle.getValue());
@@ -504,7 +508,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Integer taskVersionId = taskVersionService.createTaskVersionSnapshot(task);
             task.setVersionId(taskVersionId);
         }
-        return saveOrUpdate(task.buildTask());
+        boolean saved = saveOrUpdate(task.buildTask());
+        if (saved && Asserts.isNotNull(task.getJobInstanceId())) {
+            JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
+            jobInstance.setStep(lifeCycle.getValue());
+            jobInstanceService.updateById(jobInstance);
+            log.info("jobInstance [{}] step change to {}", jobInstance.getJid(), lifeCycle.getValue());
+        }
+        return saved;
     }
 
     @Override

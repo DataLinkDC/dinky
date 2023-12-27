@@ -101,12 +101,12 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                     .sorted(Comparator.comparing(Catalogue::getId))
                     .collect(Collectors.toList());
         }
-
+        List<Task> taskList = taskService.list();
         List<Catalogue> returnList = new ArrayList<>();
         for (Catalogue catalogue : catalogueList) {
             //  get all child catalogue of parent catalogue id , the 0 is root catalogue
             if (catalogue.getParentId() == 0) {
-                recursionBuildCatalogueAndChildren(catalogueList, catalogue);
+                recursionBuildCatalogueAndChildren(catalogueList, catalogue, taskList);
                 returnList.add(catalogue);
             }
         }
@@ -122,7 +122,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
      * @param list
      * @param catalogues
      */
-    private void recursionBuildCatalogueAndChildren(List<Catalogue> list, Catalogue catalogues) {
+    private void recursionBuildCatalogueAndChildren(List<Catalogue> list, Catalogue catalogues, List<Task> taskList) {
         // 得到子节点列表
         List<Catalogue> childList = getChildList(list, catalogues);
         catalogues.setChildren(childList);
@@ -130,14 +130,14 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             if (hasChild(list, tChild)) {
                 // Determine whether there are child nodes
                 for (Catalogue children : childList) {
-                    recursionBuildCatalogueAndChildren(list, children);
+                    recursionBuildCatalogueAndChildren(list, children, taskList);
                 }
             } else {
                 if (tChild.getIsLeaf() || null != tChild.getTaskId()) {
-                    Task task = taskService.getById(tChild.getTaskId());
-                    if (task != null) {
-                        tChild.setTask(task);
-                    }
+                    taskList.stream()
+                            .filter(t -> t.getId().equals(tChild.getTaskId()))
+                            .findFirst()
+                            .ifPresent(tChild::setTask);
                 }
             }
         }
