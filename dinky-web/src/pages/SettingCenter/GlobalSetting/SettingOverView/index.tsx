@@ -34,6 +34,7 @@ import { EnvConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/E
 import { FlinkConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/FlinkConfig';
 import { LdapConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig';
 import { MavenConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/MavenConfig';
+import { MetricsConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/MetricsConfig';
 import { ResourcesConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/ResourcesConfig';
 import { handleOption, queryDataByParams } from '@/services/BusinessCrud';
 import { RESPONSE_CODE } from '@/services/constants';
@@ -42,7 +43,6 @@ import { BaseConfigProperties, Settings } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { memo, useEffect, useState } from 'react';
-import {MetricsConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/MetricsConfig";
 
 const imgSize = 25;
 
