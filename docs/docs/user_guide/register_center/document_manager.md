@@ -39,9 +39,8 @@ Dinky 管理系统中的文档管理功能，可以对文档进行新增、编�
 | 子类型  | 定义函数子类型                                                                                                                                                                                                 | 是    | 无   |
 | 描述   | 该文档描述                                                                                                                                                                                                   | 否    | 无   |
 | 填充值  | 填充值 ,由 名称触发快捷提示时,回车后将自动补全该值<br/> 如: _`SELECT * FROM table WHERE name = ${1:}`_ ; <br/> 如果希望在函数 _`LTRIM(parms)`_ 中输入参数 则此处填充值语法为: _`LTRIM(${1:})`_  此时的1代表第一个光标 ; 如需多个数字+1即可 tab键切换光标,如不需要参数则直接输入期望填充值即可 | 是    | 无   |
-| 版本   | 文档版本<br/>Flink 1.13<br/> Flink1.14<br/> Flink1.15<br/> Flink1.16<br/> Flink1.17<br/> Flink1.18<br/> All Version                                                                                         | 是    | 无   |
+| 版本   | 文档版本<br/>Flink1.14<br/> Flink1.15<br/> Flink1.16<br/> Flink1.17<br/> Flink1.18<br/> All Version                                                                                                         | 是    | 无   |
 | 是否启用 | 是否启用 , 只有启用的文档才会在数据开发中使用触发快捷提示                                                                                                                                                                          | 是    | 不启用 |
-
 
 **填充值提示效果:**
 ![ducument_fill_style](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/register_center/document/ducument_fill_style.png)

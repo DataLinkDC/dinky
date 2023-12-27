@@ -218,10 +218,6 @@ export const DOCUMENT_SUBTYPE_ENUMS = {
  */
 export const VERSIONS = [
   {
-    text: 'Flink-1.13',
-    value: '1.13'
-  },
-  {
     text: 'Flink-1.14',
     value: '1.14'
   },
@@ -236,6 +232,10 @@ export const VERSIONS = [
   {
     text: 'Flink-1.17',
     value: '1.17'
+  },
+  {
+    text: 'Flink-1.18',
+    value: '1.18'
   },
   {
     text: 'All Versions',
