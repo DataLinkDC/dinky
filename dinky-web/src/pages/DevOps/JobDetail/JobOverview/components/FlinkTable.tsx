@@ -28,7 +28,6 @@ import {
 import { l } from '@/utils/intl';
 import { ProCard, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Typography } from 'antd';
-import dayjs from "dayjs";
 
 const { Link } = Typography;
 
@@ -110,13 +109,19 @@ const FlinkTable = (props: JobProps): JSX.Element => {
     {
       title: l('global.table.startTime'),
       render: (dom, entity) => {
-        return entity.startTime === -1 || entity['start-time'] === -1 ? '-' :  formatTimestampToYYYYMMDDHHMMSS(entity['start-time'] as number) || formatTimestampToYYYYMMDDHHMMSS(entity.startTime as number);
+        return entity.startTime === -1 || entity['start-time'] === -1
+          ? '-'
+          : formatTimestampToYYYYMMDDHHMMSS(entity['start-time'] as number) ||
+              formatTimestampToYYYYMMDDHHMMSS(entity.startTime as number);
       }
     },
     {
       title: l('global.table.endTime'),
       render: (dom, entity) => {
-        return entity.endTime === -1 || entity['end-time'] === -1 ? '-' :  formatTimestampToYYYYMMDDHHMMSS(entity['end-time'] as number) || formatTimestampToYYYYMMDDHHMMSS(entity.startTime as number);
+        return entity.endTime === -1 || entity['end-time'] === -1
+          ? '-'
+          : formatTimestampToYYYYMMDDHHMMSS(entity['end-time'] as number) ||
+              formatTimestampToYYYYMMDDHHMMSS(entity.startTime as number);
       }
     },
     {
