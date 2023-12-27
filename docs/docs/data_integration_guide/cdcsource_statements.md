@@ -99,6 +99,7 @@ plugins/flink-${flink-version}/dlink-client-${version}.jar
 | database-name                  | 否       | 无            | 此参数非必填                                                 |
 | table-name                     | 否       | 无            | 只支持正则,示例:"test\\.student,test\\.score"，所有表示例:"test\\..*" |
 | source.*                       | 否       | 无            | 指定个性化的 CDC 配置，如 source.server-time-zone 即为 server-time-zone 配置参数。 |
+| debezium.skipped.operations                       | 否       | 无            | 需要过滤的 oplog 操作。操作包括 c 表示插入，u 表示更新，d 表示删除。默认情况下，不跳过任何操作，以逗号分隔。 |
 | checkpoint                     | 否       | 无            | 单位 ms                                                      |
 | parallelism                    | 否       | 无            | 任务并行度                                                   |
 | sink.connector                 | 是       | 无            | 指定 sink 的类型，如 datastream-kafka、datastream-doris、datastream-hudi、kafka、doris、hudi、jdbc 等等，以 datastream- 开头的为 DataStream 的实现方式 |
