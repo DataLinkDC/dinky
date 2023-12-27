@@ -1,12 +1,9 @@
 ---
-sidebar_position: 5
+sidebar_position: 3
+position: 3
 id: commit_message
 title: Commit Message 须知
 ---
-
-
-
-
 
 
 一个好的 commit message 是能够帮助其他的开发者（或者未来的开发者）快速理解相关变更的上下文，同时也可以帮助项目管理人员确定该提交是否适合包含在发行版中。但当我们在查看了很多开源项目的 commit log 后，发现一个有趣的问题，一部分开发者，代码质量很不错，但是 commit message 记录却比较混乱，当其他贡献者或者学习者在查看代码的时候，并不能通过 commit log 很直观的了解

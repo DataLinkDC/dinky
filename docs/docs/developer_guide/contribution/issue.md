@@ -1,5 +1,6 @@
 ---
-sidebar_position: 3
+sidebar_position: 1
+position: 1
 id: issue
 title: Issue 须知
 ---
