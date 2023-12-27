@@ -327,6 +327,7 @@ export default {
   'metrics.flink.subTask': '子任务',
   'metrics.flink.subTask.placeholder': '请选择子任务名称',
   'metrics.flink.taskId': 'Dinky 任务ID',
+  'metrics.dinky.not.open': '暂未开启 Dinky Server 监控, 请前往 配置中心 -> 全局配置 -> Metrics 配置 -> Dinky JVM Monitor 开关 进行开启',
   /**
    *
    * pages

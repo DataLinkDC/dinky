@@ -338,6 +338,8 @@ export default {
   'metrics.flink.subTask': 'SubTask',
   'metrics.flink.subTask.placeholder': 'Please select a SubTask Name',
   'metrics.flink.taskId': 'Dinky Job ID',
+  'metrics.dinky.not.open': 'Dinky Server monitoring is not enabled, please go to the Setting Center -> Global Settings -> Metrics Configuration -> Dinky JVM Monitor switch to open',
+
   /**
    *
    * pages

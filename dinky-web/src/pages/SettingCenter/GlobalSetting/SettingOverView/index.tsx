@@ -42,6 +42,7 @@ import { BaseConfigProperties, Settings } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { memo, useEffect, useState } from 'react';
+import {MetricsConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/MetricsConfig";
 
 const imgSize = 25;
 
@@ -166,7 +167,7 @@ const SettingOverView = () => {
             {l('sys.setting.metrics')}
           </TagAlignCenter>
         ),
-        children: <DSConfig onSave={handleSaveSubmit} data={metricsConfig} />,
+        children: <MetricsConfig onSave={handleSaveSubmit} data={metricsConfig} />,
         path: '/settings/globalsetting/metrics'
       },
       {
