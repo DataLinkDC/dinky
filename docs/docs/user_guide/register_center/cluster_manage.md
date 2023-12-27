@@ -7,7 +7,7 @@ title: 集群
 
 # 集群管理
 
-:::warning 注意
+:::tip 提示
 
 在 Dinky 中，将 Flink 运行模式拆分为了 `Flink实例` 和 `集群配置` 两个概念。请按需选择使用。
 

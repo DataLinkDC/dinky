@@ -39,7 +39,7 @@ eg:
 | duration                | 作业持续时间/耗时                | 45s                                             |
 | jobName                 | 作业名称                     | demo                                            |
 | jobId                   | 作业ID                     | fe00e413b7bd3888e8906f2a42e2124f                |
-| jobStatus               | 作业状态                     | FAILD                                           |
+| jobStatus               | 作业状态                     | FAILED                                          |
 | taskId                  | 任务ID                     | 1                                               |
 | jobInstanceId           | 作业实例ID                   | 2                                               |
 | taskUrl                 | 任务详情地址                   | http://localhost:8000/#/devops/job-detail?id=29 |
