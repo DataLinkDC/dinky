@@ -24,6 +24,7 @@ import org.dinky.app.model.StatementParam;
 import org.dinky.app.model.SysConfig;
 import org.dinky.app.resource.BaseResourceManager;
 import org.dinky.app.url.RsURLStreamHandlerFactory;
+import org.dinky.app.util.FlinkAppUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
@@ -124,10 +125,15 @@ public class Submitter {
 
         String[] statements =
                 SqlUtil.getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
-        if (Dialect.FLINK_JAR == appTask.getDialect()) {
-            executeJarJob(appTask.getType(), executor, statements);
-        } else {
-            executeJob(executor, statements);
+        try {
+            if (Dialect.FLINK_JAR == appTask.getDialect()) {
+                executeJarJob(appTask.getType(), executor, statements);
+            } else {
+                executeJob(executor, statements);
+            }
+        } finally {
+            log.info("Start Monitor Job");
+            FlinkAppUtil.monitorFlinkTask(Submitter.executor, config.getTaskId());
         }
     }
 
@@ -277,6 +283,11 @@ public class Submitter {
                 if (!executorConfig.isUseStatementSet()) {
                     break;
                 }
+            } else if (operationType.equals(SqlType.EXECUTE)) {
+                execute.add(new StatementParam(statement, operationType));
+                if (!executorConfig.isUseStatementSet()) {
+                    break;
+                }
             } else {
                 ddl.add(new StatementParam(statement, operationType));
             }
@@ -317,14 +328,16 @@ public class Submitter {
                 }
             }
 
-            log.info("正在执行 FlinkSQL 语句集： {}", String.join(FlinkSQLConstant.SEPARATOR, executes));
+            log.info(
+                    "The FlinkSQL statement set is being executed： {}",
+                    String.join(FlinkSQLConstant.SEPARATOR, executes));
             try {
-                executor.execute(executorConfig.getJobName());
-                log.info("执行成功");
+                executor.executeAsync(executorConfig.getJobName());
+                log.info("The execution was successful");
             } catch (Exception e) {
-                log.error("执行失败, {}", e.getMessage(), e);
+                log.error("Execution failed, {}", e.getMessage(), e);
             }
         }
-        log.info("{}任务提交成功", LocalDateTime.now());
+        log.info("{} The task is successfully submitted", LocalDateTime.now());
     }
 }
