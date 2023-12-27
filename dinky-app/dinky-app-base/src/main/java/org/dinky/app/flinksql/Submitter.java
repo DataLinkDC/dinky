@@ -19,7 +19,6 @@
 
 package org.dinky.app.flinksql;
 
-import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.dinky.app.db.DBUtil;
 import org.dinky.app.model.StatementParam;
 import org.dinky.app.model.SysConfig;
@@ -49,6 +48,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.python.PythonOptions;
+import org.apache.flink.streaming.api.graph.StreamGraph;
 
 import java.io.File;
 import java.io.FileOutputStream;
