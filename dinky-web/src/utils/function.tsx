@@ -45,7 +45,6 @@ import { l } from '@/utils/intl';
 import { Monaco } from '@monaco-editor/react';
 import dayjs from 'dayjs';
 import cookies from 'js-cookie';
-import { trim } from 'lodash';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
 import path from 'path';
 import { format } from 'sql-formatter';
@@ -617,6 +616,13 @@ export const transformTableDataToCsv = <T,>(column: string[], data: T[]): string
 
 export const formatDateToYYYYMMDDHHMMSS = (date: Date) => {
   return dayjs(date).format(DATETIME_FORMAT);
+};
+
+export const formatTimestampToYYYYMMDDHHMMSS = (timestamp: number) => {
+  if (timestamp == null) {
+    return '-';
+  }
+  return dayjs(timestamp).format(DATETIME_FORMAT);
 };
 
 export const parseDateStringToDate = (dateString: Date) => {

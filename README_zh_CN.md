@@ -149,3 +149,9 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 ## 版权
 
 请参考 [LICENSE](https://github.com/DataLinkDC/dinky/blob/dev/LICENSE) 文件。
+
+# 贡献者
+
+<a href="https://github.com/DataLinkDC/dinky/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=DataLinkDC/dinky" />
+</a>
