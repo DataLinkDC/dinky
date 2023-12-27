@@ -80,19 +80,19 @@ export const buildStepValue = (step: number) => {
       return {
         title: l('global.table.lifecycle.dev'),
         status: 'processing',
-        color: '#1890ff'
+        color: 'cyan'
       };
     case 2:
       return {
         title: l('global.table.lifecycle.online'),
         status: 'success',
-        color: '#52c41a'
+        color: 'purple'
       };
     default:
       return {
         title: l('global.table.lifecycle.dev'),
         status: 'default',
-        color: '#1890ff'
+        color: 'cyan'
       };
   }
 };
@@ -144,7 +144,8 @@ export const buildProjectTree = (
           <>
             <Badge
               title={stepValue.title}
-              status={(stepValue.status as PresetStatusColorType) ?? 'default'}
+              color={stepValue.color}
+              // status={(stepValue.status as PresetStatusColorType) ?? 'default'}
             />
           </>
         );

@@ -511,10 +511,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         boolean saved = saveOrUpdate(task.buildTask());
         if (saved && Asserts.isNotNull(task.getJobInstanceId())) {
             JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
-            jobInstance.setStep(lifeCycle.getValue());
-            boolean updatedJobInstance = jobInstanceService.updateById(jobInstance);
-            if (updatedJobInstance) {
-                jobInstanceService.refreshJobInfoDetail(jobInstance.getId(), true);
+            if (Asserts.isNotNull(jobInstance)) {
+                jobInstance.setStep(lifeCycle.getValue());
+                boolean updatedJobInstance = jobInstanceService.updateById(jobInstance);
+                if (updatedJobInstance) jobInstanceService.refreshJobInfoDetail(jobInstance.getId(), true);
                 log.warn(
                         "JobInstance [{}] step change to [{}] ,Trigger Force Refresh",
                         jobInstance.getName(),
