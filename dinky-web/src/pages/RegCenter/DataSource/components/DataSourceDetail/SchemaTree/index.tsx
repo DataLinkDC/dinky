@@ -71,7 +71,6 @@ const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
             selectedKeys={selectKeys}
             onExpand={onExpand}
             style={style}
-            className={'treeList'}
             onSelect={onNodeClick}
             treeData={buildSchemaTree(treeData, searchValue)}
           />
