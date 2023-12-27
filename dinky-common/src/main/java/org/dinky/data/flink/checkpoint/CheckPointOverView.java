@@ -111,7 +111,7 @@ public class CheckPointOverView {
 
     @Data
     @NoArgsConstructor
-    public final class StatsSummaryDto {
+    public static final class StatsSummaryDto {
 
         public static final String FIELD_NAME_MINIMUM = "min";
 

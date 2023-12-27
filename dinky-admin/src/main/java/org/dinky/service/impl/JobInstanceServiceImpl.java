@@ -35,7 +35,10 @@ import org.dinky.data.model.home.JobInstanceCount;
 import org.dinky.data.model.home.JobInstanceStatus;
 import org.dinky.data.model.home.JobModelOverview;
 import org.dinky.data.model.job.History;
+import org.dinky.data.model.job.JobHistory;
 import org.dinky.data.model.job.JobInstance;
+import org.dinky.data.model.mapping.ClusterConfigurationMapping;
+import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.vo.task.JobInstanceVo;
 import org.dinky.explainer.lineage.LineageBuilder;
@@ -172,6 +175,20 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         }
 
         JobDataDto jobDataDto = jobHistoryService.getJobHistoryDto(jobInstance.getId());
+        if (jobDataDto == null) {
+            JobHistory jobHistory = JobHistory.builder()
+                    .id(jobInstance.getId())
+                    .clusterJson(ClusterInstanceMapping.getClusterInstanceMapping(clusterInstance))
+                    .clusterConfigurationJson(
+                            Asserts.isNotNull(jobInfoDetail.getClusterConfiguration())
+                                    ? ClusterConfigurationMapping.getClusterConfigurationMapping(jobInfoDetail
+                                            .getClusterConfiguration()
+                                            .toBean())
+                                    : null)
+                    .build();
+            jobHistoryService.save(jobHistory);
+            jobDataDto = JobDataDto.fromJobHistory(jobHistory);
+        }
         jobInfoDetail.setJobDataDto(jobDataDto);
 
         return jobInfoDetail;

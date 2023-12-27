@@ -17,6 +17,7 @@
  *
  */
 
+import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { queryList } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -57,7 +58,8 @@ const SavepointTable = (props: JobProps) => {
       title: l('devops.jobinfo.ck.external_path'),
       align: 'center',
       copyable: true,
-      dataIndex: 'path'
+      dataIndex: 'path',
+      render: (_, entity) => <EllipsisMiddle maxCount={60} children={entity.path} />
     },
     {
       title: l('devops.jobinfo.ck.trigger_timestamp'),
