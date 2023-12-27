@@ -24,7 +24,7 @@ import {
   mapDispatchToProps
 } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
-import { StateType } from '@/pages/DataStudio/model';
+import {StateType, TaskDataType} from '@/pages/DataStudio/model';
 import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -53,7 +53,7 @@ const Result = (props: any) => {
   const [dataList, setDataList] = useState<DataList>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const currentTabs = getCurrentTab(panes, activeKey);
-  const current = getCurrentData(panes, activeKey) ?? {};
+  const current = getCurrentData(panes, activeKey) as TaskDataType;
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -135,10 +135,10 @@ const Result = (props: any) => {
     } else if (consoleData.results && !isRefresh) {
       setDataList(consoleData.results);
     } else {
-      if (current.dialect && current.dialect.toLowerCase() == DIALECT.FLINK_SQL) {
+      if (current?.dialect && current?.dialect?.toLowerCase() == DIALECT.FLINK_SQL) {
         // flink sql
         // to do: get job data by history id list, not flink jid
-        if (current.id) {
+        if (current?.id) {
           const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
             id: current.id
           });
@@ -173,7 +173,7 @@ const Result = (props: any) => {
     loadData();
   }, [currentTabs?.console?.result, currentTabs?.console?.results]);
 
-  const getColumns = (columns: string[]) => {
+  const getColumns = (columns: string[] = []) => {
     return columns?.map((item) => {
       return {
         title: item,
@@ -236,6 +236,7 @@ const Result = (props: any) => {
         <Table
           columns={getColumns(data.columns)}
           size='small'
+          scroll={{ x: 'max-content' }}
           dataSource={data.rowData?.map((item: any, index: number) => {
             return { ...item, key: index };
           })}
