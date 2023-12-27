@@ -148,3 +148,8 @@ Thanks to [JetBrains](https://www.jetbrains.com/?from=dlink) for providing a fre
 
 Please refer to the [LICENSE](https://github.com/DataLinkDC/dinky/blob/dev/LICENSE) document.
 
+# Contributors
+
+<a href="https://github.com/DataLinkDC/dinky/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=DataLinkDC/dinky" />
+</a>

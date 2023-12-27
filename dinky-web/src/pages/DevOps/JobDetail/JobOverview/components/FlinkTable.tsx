@@ -19,10 +19,16 @@
 
 import StatusTag from '@/components/JobTags/StatusTag';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import { parseByteStr, parseMilliSecondStr, parseNumStr } from '@/utils/function';
+import {
+  formatTimestampToYYYYMMDDHHMMSS,
+  parseByteStr,
+  parseMilliSecondStr,
+  parseNumStr
+} from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ProCard, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Typography } from 'antd';
+import dayjs from "dayjs";
 
 const { Link } = Typography;
 
@@ -32,8 +38,10 @@ export type VerticesTableListItem = {
   metrics: any;
   parallelism: number;
   startTime?: number;
+  'start-time'?: number;
   duration?: number;
   endTime?: number;
+  'end-time'?: number;
   tasks: any;
 };
 
@@ -101,15 +109,14 @@ const FlinkTable = (props: JobProps): JSX.Element => {
     },
     {
       title: l('global.table.startTime'),
-      dataIndex: 'startTime',
-      valueType: 'dateTime'
+      render: (dom, entity) => {
+        return entity.startTime === -1 || entity['start-time'] === -1 ? '-' :  formatTimestampToYYYYMMDDHHMMSS(entity['start-time'] as number) || formatTimestampToYYYYMMDDHHMMSS(entity.startTime as number);
+      }
     },
     {
       title: l('global.table.endTime'),
-      dataIndex: 'endTime',
-      valueType: 'dateTime',
       render: (dom, entity) => {
-        return entity.endTime === -1 ? '-' : entity.endTime;
+        return entity.endTime === -1 || entity['end-time'] === -1 ? '-' :  formatTimestampToYYYYMMDDHHMMSS(entity['end-time'] as number) || formatTimestampToYYYYMMDDHHMMSS(entity.startTime as number);
       }
     },
     {

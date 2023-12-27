@@ -88,7 +88,7 @@ const JobDesc = (props: JobProps) => {
 
           <Descriptions.Item label={l('devops.jobinfo.config.RestartStrategy')}>
             <Tag color='blue' title={'Restart Strategy'}>
-              {jobDetail?.jobDataDto?.config?.executionConfig?.restartStrategy}
+              {jobDetail?.jobDataDto?.config["execution-config"]["restart-strategy"]}
             </Tag>
           </Descriptions.Item>
 
@@ -109,13 +109,13 @@ const JobDesc = (props: JobProps) => {
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.useSqlFragment')}>
-            {jobDetail?.history?.configJson?.useSqlFragment
+            {jobDetail?.history?.configJson?.fragment
               ? l('button.enable')
               : l('button.disable')}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.execmode')}>
-            {jobDetail?.history?.configJson?.useBatchModel
+            {jobDetail?.history?.configJson?.batchModel
               ? l('global.table.execmode.batch')
               : l('global.table.execmode.streaming')}
           </Descriptions.Item>
@@ -125,7 +125,7 @@ const JobDesc = (props: JobProps) => {
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.JobParallelism')}>
-            {jobDetail?.jobDataDto?.config?.executionConfig?.jobParallelism}
+            {jobDetail?.jobDataDto?.config["execution-config"]["job-parallelism"]}
           </Descriptions.Item>
 
           <Descriptions.Item label={l('global.table.useTime')}>
@@ -137,7 +137,7 @@ const JobDesc = (props: JobProps) => {
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.savePointPath')} span={2}>
-            {jobDetail?.history?.configJson.savePointPath}
+            {jobDetail?.history?.configJson?.configJson['state.savepoints.dir'] ?? '-'}
           </Descriptions.Item>
         </Descriptions>
       </ProCard>
