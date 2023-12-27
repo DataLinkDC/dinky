@@ -57,7 +57,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
-import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -208,7 +207,7 @@ public class JobRefreshHandler {
                 flinkJobDetailInfo.getPlan().getNodes().forEach(planNode -> {
                     if (planNode.getId().equals(vertex)) {
                         planNode.setWatermark(
-                                JSONUtil.toList(api.getWatermark(jobId, vertex), FlinkJobNodeWaterMark.class));
+                                JsonUtils.toList(api.getWatermark(jobId, vertex), FlinkJobNodeWaterMark.class));
                         planNode.setBackpressure(JsonUtils.toJavaBean(
                                 api.getBackPressure(jobId, vertex), FlinkJobNodeBackPressure.class));
                     }
@@ -216,10 +215,11 @@ public class JobRefreshHandler {
             });
 
             return builder.id(id)
-                    .checkpoints(JSONUtil.toBean(api.getCheckPoints(jobId).toString(), CheckPointOverView.class))
-                    .checkpointsConfig(
-                            JSONUtil.toBean(api.getCheckPointsConfig(jobId).toString(), CheckpointConfigInfo.class))
-                    .exceptions(JSONUtil.toBean(api.getException(jobId).toString(), FlinkJobExceptionsDetail.class))
+                    .checkpoints(JsonUtils.parseObject(api.getCheckPoints(jobId).toString(), CheckPointOverView.class))
+                    .checkpointsConfig(JsonUtils.parseObject(
+                            api.getCheckPointsConfig(jobId).toString(), CheckpointConfigInfo.class))
+                    .exceptions(
+                            JsonUtils.parseObject(api.getException(jobId).toString(), FlinkJobExceptionsDetail.class))
                     .job(flinkJobDetailInfo)
                     .config(jobConfigInfo)
                     .build();

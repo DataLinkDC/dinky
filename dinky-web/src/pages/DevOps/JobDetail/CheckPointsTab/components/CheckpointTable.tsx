@@ -17,6 +17,7 @@
  *
  */
 
+import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { getData } from '@/services/api';
@@ -137,7 +138,8 @@ const CheckpointTable = (props: JobProps) => {
       title: l('devops.jobinfo.ck.external_path'),
       align: 'center',
       copyable: true,
-      dataIndex: 'external_path'
+      dataIndex: 'external_path',
+      render: (_, entity) => <EllipsisMiddle maxCount={60} children={entity.external_path} />
     },
     {
       title: l('devops.jobinfo.ck.latest_ack_timestamp'),
