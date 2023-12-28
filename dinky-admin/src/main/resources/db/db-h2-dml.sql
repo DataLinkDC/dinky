@@ -469,82 +469,65 @@ VALUES (146, 10, ' 拷贝', '/registration/datasource/copy', null, 'registration
 -- ----------------------------
 -- Records of dinky_alert_rule
 -- ----------------------------
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time, creator, updater)
-VALUES (3, 'alert.rule.jobFail',
-        '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"''FAILED''","rulePriority":"1"}]', 1, 'SYSTEM',
-        ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time, creator, updater)
-VALUES (4, 'alert.rule.getJobInfoFail',
-        '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"''UNKNOWN''","rulePriority":"1"}]', 1, 'SYSTEM',
-        ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time, creator, updater)
-VALUES (5, 'alert.rule.jobRestart',
-        '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"''RESTARTING''","rulePriority":"1"}]', 1, 'SYSTEM',
-        ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time, creator, updater)
-VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"isCheckpointFailed","ruleOperator":"EQ","ruleValue":"true"}]', 1,
-        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
-INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled,
-                               create_time, update_time, creator, updater)
-VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"isException","ruleOperator":"EQ","ruleValue":"true"}]', 1,
-        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (3, 'alert.rule.jobFail', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"\'FAILED\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (4, 'alert.rule.getJobInfoFail', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"\'UNKNOWN\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (5, 'alert.rule.jobRestart', '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"\'RESTARTING\'","rulePriority":"1"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"isCheckpointFailed","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"isException","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
 
 
-INSERT INTO dinky_alert_template
-VALUES (1, 'Default', '
-- **Job Name :** <font color=''gray''>${jobName}</font>
-- **Job Status :** <font color=''red''>${jobStatus}</font>
+
+INSERT INTO dinky_alert_template (id, name, template_content, enabled, create_time, update_time, creator, updater) VALUES (1, 'Default', '
+- **Job Name :** <font color=\'gray\'>${jobName}</font>
+- **Job Status :** <font color=\'red\'>${jobStatus}</font>
 - **Alert Time :** ${alertTime}
 - **Start Time :** ${jobStartTime}
 - **End Time :** ${jobEndTime}
-- **<font color=''red''>${errorMsg}</font>**
+- **<font color=\'red\'>${errorMsg}</font>**
 [Go toTask Web](http://${taskUrl})
-', 1, current_timestamp, current_timestamp, null, null);
+', 1, '2023-11-24 20:41:23', '2023-11-24 20:41:23', null, null);
+
 
 
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (1, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.async-lookup.buffer-capacity', '异步查找连接可以触发的最大异步操作的操作数。
-The max number of async i/o operation that the async lookup join can trigger.', 'Set ''table.exec.async-lookup.buffer-capacity''=''100'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
+The max number of async i/o operation that the async lookup join can trigger.', 'Set \'table.exec.async-lookup.buffer-capacity\'=\'100\';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (2, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.async-lookup.timeout', '异步操作完成的超时时间。
-The async timeout for the asynchronous operation to complete.', 'Set ''table.exec.async-lookup.timeout''=''3 min'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
+The async timeout for the asynchronous operation to complete.', 'Set \'table.exec.async-lookup.timeout\'=\'3 min\';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (3, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.disabled-operators', '禁用指定operators，用逗号分隔
-Mainly for testing. A comma-separated list of operator names, each name represents a kind of disabled operator. Operators that can be disabled include "NestedLoopJoin", "ShuffleHashJoin", "BroadcastHashJoin", "SortMergeJoin", "HashAgg", "SortAgg". By default no operator is disabled.', 'Set ''table.exec.disabled-operators''=''SortMergeJoin'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (4, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.mini-batch.allow-latency', '最大等待时间可用于MiniBatch缓冲输入记录。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。MiniBatch以允许的等待时间间隔以及达到最大缓冲记录数触发。注意：如果将table.exec.mini-batch.enabled设置为true，则其值必须大于零.', 'Set ''table.exec.mini-batch.allow-latency''=''-1 ms'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (5, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.mini-batch.enabled', '指定是否启用MiniBatch优化。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。默认情况下禁用此功能。 要启用此功能，用户应将此配置设置为true。注意：如果启用了mini batch 处理，则必须设置“ table.exec.mini-batch.allow-latency”和“ table.exec.mini-batch.size”.', 'Set ''table.exec.mini-batch.enabled''=''false'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (6, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.mini-batch.size', '可以为MiniBatch缓冲最大输入记录数。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。MiniBatch以允许的等待时间间隔以及达到最大缓冲记录数触发。 注意：MiniBatch当前仅适用于非窗口聚合。如果将table.exec.mini-batch.enabled设置为true，则其值必须为正.', 'Set ''table.exec.mini-batch.size''=''-1'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
+Mainly for testing. A comma-separated list of operator names, each name represents a kind of disabled operator. Operators that can be disabled include "NestedLoopJoin", "ShuffleHashJoin", "BroadcastHashJoin", "SortMergeJoin", "HashAgg", "SortAgg". By default no operator is disabled.', 'Set \'table.exec.disabled-operators\'=\'SortMergeJoin\';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (4, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.mini-batch.allow-latency', '最大等待时间可用于MiniBatch缓冲输入记录。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。MiniBatch以允许的等待时间间隔以及达到最大缓冲记录数触发。注意：如果将table.exec.mini-batch.enabled设置为true，则其值必须大于零.', 'Set \'table.exec.mini-batch.allow-latency\'=\'-1 ms\';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (5, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.mini-batch.enabled', '指定是否启用MiniBatch优化。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。默认情况下禁用此功能。 要启用此功能，用户应将此配置设置为true。注意：如果启用了mini batch 处理，则必须设置“ table.exec.mini-batch.allow-latency”和“ table.exec.mini-batch.size”.', 'Set \'table.exec.mini-batch.enabled\'=\'false\';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (6, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.mini-batch.size', '可以为MiniBatch缓冲最大输入记录数。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。MiniBatch以允许的等待时间间隔以及达到最大缓冲记录数触发。 注意：MiniBatch当前仅适用于非窗口聚合。如果将table.exec.mini-batch.enabled设置为true，则其值必须为正.', 'Set \'table.exec.mini-batch.size\'=\'-1\';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (7, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.resource.default-parallelism', '设置所有Operator的默认并行度。
-Sets default parallelism for all operators (such as aggregate, join, filter) to run with parallel instances. This config has a higher priority than parallelism of StreamExecutionEnvironment (actually, this config overrides the parallelism of StreamExecutionEnvironment). A value of -1 indicates that no default parallelism is set, then it will fallback to use the parallelism of StreamExecutionEnvironment.', 'Set ''table.exec.resource.default-parallelism''=''1'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
+Sets default parallelism for all operators (such as aggregate, join, filter) to run with parallel instances. This config has a higher priority than parallelism of StreamExecutionEnvironment (actually, this config overrides the parallelism of StreamExecutionEnvironment). A value of -1 indicates that no default parallelism is set, then it will fallback to use the parallelism of StreamExecutionEnvironment.', 'Set \'table.exec.resource.default-parallelism\'=\'1\';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (8, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.sink.not-null-enforcer', '对表的NOT NULL列约束强制执行不能将空值插入到表中。Flink支持“error”（默认）和“drop”强制行为
-The NOT NULL column constraint on a table enforces that null values can''t be inserted into the table. Flink supports ''error'' (default) and ''drop'' enforcement behavior. By default, Flink will check values and throw runtime exception when null values writing into NOT NULL columns. Users can change the behavior to ''drop'' to silently drop such records without throwing exception.
+The NOT NULL column constraint on a table enforces that null values can\'t be inserted into the table. Flink supports \'error\' (default) and \'drop\' enforcement behavior. By default, Flink will check values and throw runtime exception when null values writing into NOT NULL columns. Users can change the behavior to \'drop\' to silently drop such records without throwing exception.
 Possible values:
 "ERROR"
-"DROP"', 'Set ''table.exec.sink.not-null-enforcer''=''ERROR'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
+"DROP"', 'Set \'table.exec.sink.not-null-enforcer\'=\'ERROR\';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (9, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.sink.upsert-materialize', '由于分布式系统中 Shuffle 导致 ChangeLog 数据混乱，Sink 接收到的数据可能不是全局 upsert 的顺序。因此，在 upsert sink 之前添加 upsert materialize 运算符。它接收上游的变更日志记录并为下游生成一个 upsert 视图。默认情况下，当唯一键出现分布式无序时，会添加具体化操作符。您也可以选择不实现（NONE）或强制实现（FORCE）。
 Possible values:
 "NONE"
 "FORCE"
-"AUTO"', 'Set ''table.exec.sink.upsert-materialize''=''AUTO'';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
+"AUTO"', 'Set \'table.exec.sink.upsert-materialize\'=\'AUTO\';', '1.14', 0, 1, '2022-01-20 15:00:00', '2023-12-27 23:58:09', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (10, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.kafka', 'kafka快速建表格式', 'CREATE TABLE Kafka_Table (
-  `event_time` TIMESTAMP(3) METADATA FROM ''timestamp'',
+  `event_time` TIMESTAMP(3) METADATA FROM \'timestamp\',
   `partition` BIGINT METADATA VIRTUAL,
   `offset` BIGINT METADATA VIRTUAL,
   `user_id` BIGINT,
   `item_id` BIGINT,
   `behavior` STRING
 ) WITH (
-  ''connector'' = ''kafka'',
-  ''topic'' = ''user_behavior'',
-  ''properties.bootstrap.servers'' = ''localhost:9092'',
-  ''properties.group.id'' = ''testGroup'',
-  ''scan.startup.mode'' = ''earliest-offset'',
-  ''format'' = ''csv''
+  \'connector\' = \'kafka\',
+  \'topic\' = \'user_behavior\',
+  \'properties.bootstrap.servers\' = \'localhost:9092\',
+  \'properties.group.id\' = \'testGroup\',
+  \'scan.startup.mode\' = \'earliest-offset\',
+  \'format\' = \'csv\'
 );
---可选: ''value.fields-include'' = ''ALL'',
---可选: ''json.ignore-parse-errors'' = ''true'',
---可选: ''key.fields-prefix'' = ''k_'',', '1.14', 0, 1, '2022-01-20 16:59:18', '2023-12-28 00:02:57', null, null);
+--可选: \'value.fields-include\' = \'ALL\',
+--可选: \'json.ignore-parse-errors\' = \'true\',
+--可选: \'key.fields-prefix\' = \'k_\',', '1.14', 0, 1, '2022-01-20 16:59:18', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (11, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.doris', 'Doris快速建表', 'CREATE TABLE doris_table (
     cid INT,
     sid INT,
@@ -553,11 +536,11 @@ INSERT INTO dinky_flink_document (id, category, type, subtype, name, description
     score INT,
     PRIMARY KEY (cid) NOT ENFORCED
 ) WITH (
-''connector'' = ''doris'',
-''fenodes'' = ''127.0.0.1:8030'' ,
-''table.identifier'' = ''test.scoreinfo'',
-''username'' = ''root'',
-''password''=''''
+\'connector\' = \'doris\',
+\'fenodes\' = \'127.0.0.1:8030\' ,
+\'table.identifier\' = \'test.scoreinfo\',
+\'username\' = \'root\',
+\'password\'=\'\'
 );', '1.14', 0, 1, '2022-01-20 17:08:00', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (12, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.jdbc', 'JDBC建表语句', 'CREATE TABLE JDBC_table (
   id BIGINT,
@@ -566,28 +549,28 @@ INSERT INTO dinky_flink_document (id, category, type, subtype, name, description
   status BOOLEAN,
   PRIMARY KEY (id) NOT ENFORCED
 ) WITH (
-   ''connector'' = ''jdbc'',
-   ''url'' = ''jdbc:mysql://localhost:3306/mydatabase'',
-   ''table-name'' = ''users'',
-   ''username'' = ''root'',
-   ''password'' = ''123456''
+   \'connector\' = \'jdbc\',
+   \'url\' = \'jdbc:mysql://localhost:3306/mydatabase\',
+   \'table-name\' = \'users\',
+   \'username\' = \'root\',
+   \'password\' = \'123456\'
 );
---可选: ''sink.parallelism''=''1'',
---可选: ''lookup.cache.ttl''=''1000s'',', '1.14', 0, 1, '2022-01-20 17:15:26', '2023-12-28 00:02:57', null, null);
+--可选: \'sink.parallelism\'=\'1\',
+--可选: \'lookup.cache.ttl\'=\'1000s\',', '1.14', 0, 1, '2022-01-20 17:15:26', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (13, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.catalog.hive', '创建HIVE的catalog', 'CREATE CATALOG hive WITH (
-    ''type'' = ''hive'',
-    ''default-database'' = ''default'',
-    ''hive-conf-dir'' = ''/app/wwwroot/MBDC/hive/conf/'', --hive配置文件
-    ''hadoop-conf-dir''=''/app/wwwroot/MBDC/hadoop/etc/hadoop/'' --hadoop配置文件，配了环境变量则不需要。
+    \'type\' = \'hive\',
+    \'default-database\' = \'default\',
+    \'hive-conf-dir\' = \'/app/wwwroot/MBDC/hive/conf/\', --hive配置文件
+    \'hadoop-conf-dir\'=\'/app/wwwroot/MBDC/hadoop/etc/hadoop/\' --hadoop配置文件，配了环境变量则不需要。
 );', '1.14', 0, 1, '2022-01-20 17:18:54', '2023-12-28 00:03:53', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (14, 'Operator', 'SQL_TEMPLATE', 'FlinkSql', 'use.catalog.hive', '使用hive的catalog', 'USE CATALOG hive;', '1.14', 0, 1, '2022-01-20 17:22:53', '2023-12-28 00:03:53', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (15, 'Operator', 'SQL_TEMPLATE', 'FlinkSql', 'use.catalog.default', '使用default的catalog', 'USE CATALOG default_catalog;', '1.14', 0, 1, '2022-01-20 17:23:48', '2023-12-28 00:03:53', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (16, 'Variable', 'FLINK_OPTIONS', '', 'set dialect.hive', '使用hive方言', 'Set table.sql-dialect=hive;', '1.14', 0, 1, '2022-01-20 17:25:37', '2023-12-28 00:04:44', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (17, 'Variable', 'FLINK_OPTIONS', '', 'set dialect.default', '使用default方言', 'Set table.sql-dialect=default;', '1.14', 0, 1, '2022-01-20 17:26:19', '2023-12-28 00:04:44', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (18, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.stream.table.hive', '创建流式HIVE表', 'CREATE CATALOG hive WITH ( --创建hive的catalog
-    ''type'' = ''hive'',
-    ''hive-conf-dir'' = ''/app/wwwroot/MBDC/hive/conf/'',
-    ''hadoop-conf-dir''=''/app/wwwroot/MBDC/hadoop/etc/hadoop/''
+    \'type\' = \'hive\',
+    \'hive-conf-dir\' = \'/app/wwwroot/MBDC/hive/conf/\',
+    \'hadoop-conf-dir\'=\'/app/wwwroot/MBDC/hadoop/etc/hadoop/\'
 );
 
 USE CATALOG hive;
@@ -598,13 +581,13 @@ CREATE TABLE hive_stream_table (
   user_id STRING,
   order_amount DOUBLE
 ) PARTITIONED BY (dt STRING, hr STRING) STORED AS parquet TBLPROPERTIES (
-  ''partition.time-extractor.timestamp-pattern''=''$dt $hr:00:00'',
-  ''sink.partition-commit.trigger''=''partition-time'',
-  ''sink.partition-commit.delay''=''1min'',
-  ''sink.semantic'' = ''exactly-once'',
-  ''sink.rolling-policy.rollover-interval'' =''1min'',
-  ''sink.rolling-policy.check-interval''=''1min'',
-  ''sink.partition-commit.policy.kind''=''metastore,success-file''
+  \'partition.time-extractor.timestamp-pattern\'=\'$dt $hr:00:00\',
+  \'sink.partition-commit.trigger\'=\'partition-time\',
+  \'sink.partition-commit.delay\'=\'1min\',
+  \'sink.semantic\' = \'exactly-once\',
+  \'sink.rolling-policy.rollover-interval\' =\'1min\',
+  \'sink.rolling-policy.check-interval\'=\'1min\',
+  \'sink.partition-commit.policy.kind\'=\'metastore,success-file\'
 );', '1.14', 0, 1, '2022-01-20 17:34:06', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (19, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.mysql_cdc', '创建Mysql_CDC表', 'CREATE TABLE mysql_cdc_table(
     cid INT,
@@ -613,58 +596,58 @@ INSERT INTO dinky_flink_document (id, category, type, subtype, name, description
     score INT,
     PRIMARY KEY (cid) NOT ENFORCED
 ) WITH (
-''connector'' = ''mysql-cdc'',
-''hostname'' = ''127.0.0.1'',
-''port'' = ''3306'',
-''username'' = ''test'',
-''password'' = ''123456'',
-''database-name'' = ''test'',
-''server-time-zone'' = ''UTC'',
-''scan.incremental.snapshot.enabled'' = ''true'',
-''debezium.snapshot.mode''=''latest-offset'' ,-- 或者key是scan.startup.mode，initial表示要历史数据，latest-offset表示不要历史数据
-''debezium.datetime.format.date''=''yyyy-MM-dd'',
-''debezium.datetime.format.time''=''HH-mm-ss'',
-''debezium.datetime.format.datetime''=''yyyy-MM-dd HH-mm-ss'',
-''debezium.datetime.format.timestamp''=''yyyy-MM-dd HH-mm-ss'',
-''debezium.datetime.format.timestamp.zone''=''UTC+8'',
-''table-name'' = ''mysql_cdc_table'');', '1.14', 0, 1, '2022-01-20 17:49:14', '2023-12-28 00:02:57', null, null);
+\'connector\' = \'mysql-cdc\',
+\'hostname\' = \'127.0.0.1\',
+\'port\' = \'3306\',
+\'username\' = \'test\',
+\'password\' = \'123456\',
+\'database-name\' = \'test\',
+\'server-time-zone\' = \'UTC\',
+\'scan.incremental.snapshot.enabled\' = \'true\',
+\'debezium.snapshot.mode\'=\'latest-offset\' ,-- 或者key是scan.startup.mode，initial表示要历史数据，latest-offset表示不要历史数据
+\'debezium.datetime.format.date\'=\'yyyy-MM-dd\',
+\'debezium.datetime.format.time\'=\'HH-mm-ss\',
+\'debezium.datetime.format.datetime\'=\'yyyy-MM-dd HH-mm-ss\',
+\'debezium.datetime.format.timestamp\'=\'yyyy-MM-dd HH-mm-ss\',
+\'debezium.datetime.format.timestamp.zone\'=\'UTC+8\',
+\'table-name\' = \'mysql_cdc_table\');', '1.14', 0, 1, '2022-01-20 17:49:14', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (20, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.hudi', '创建hudi表', 'CREATE TABLE hudi_table
 (
-    `goods_order_id`  bigint COMMENT ''自增主键id'',
-    `goods_order_uid` string COMMENT ''订单uid'',
-    `customer_uid`    string COMMENT ''客户uid'',
-    `customer_name`   string COMMENT ''客户name'',
-    `create_time`     timestamp(3) COMMENT ''创建时间'',
-    `update_time`     timestamp(3) COMMENT ''更新时间'',
-    `create_by`       string COMMENT ''创建人uid（唯一标识）'',
-    `update_by`       string COMMENT ''更新人uid（唯一标识）'',
+    `goods_order_id`  bigint COMMENT \'自增主键id\',
+    `goods_order_uid` string COMMENT \'订单uid\',
+    `customer_uid`    string COMMENT \'客户uid\',
+    `customer_name`   string COMMENT \'客户name\',
+    `create_time`     timestamp(3) COMMENT \'创建时间\',
+    `update_time`     timestamp(3) COMMENT \'更新时间\',
+    `create_by`       string COMMENT \'创建人uid（唯一标识）\',
+    `update_by`       string COMMENT \'更新人uid（唯一标识）\',
     PRIMARY KEY (goods_order_id) NOT ENFORCED
-) COMMENT ''hudi_table''
+) COMMENT \'hudi_table\'
 WITH (
-''connector'' = ''hudi'',
-''path'' = ''hdfs://cluster1/data/bizdata/cdc/mysql/order/goods_order'', -- 路径会自动创建
-''hoodie.datasource.write.recordkey.field'' = ''goods_order_id'', -- 主键
-''write.precombine.field'' = ''update_time'', -- 相同的键值时，取此字段最大值，默认ts字段
-''read.streaming.skip_compaction'' = ''true'', -- 避免重复消费问题
-''write.bucket_assign.tasks'' = ''2'', -- 并发写的 bucekt 数
-''write.tasks'' = ''2'',
-''compaction.tasks'' = ''1'',
-''write.operation'' = ''upsert'', -- UPSERT（插入更新）\\INSERT（插入）\\BULK_INSERT（批插入）（upsert性能会低些，不适合埋点上报）
-''write.rate.limit'' = ''20000'', -- 限制每秒多少条
-''table.type'' = ''COPY_ON_WRITE'', -- 默认COPY_ON_WRITE ，
-''compaction.async.enabled'' = ''true'', -- 在线压缩
-''compaction.trigger.strategy'' = ''num_or_time'', -- 按次数压缩
-''compaction.delta_commits'' = ''20'', -- 默认为5
-''compaction.delta_seconds'' = ''60'', -- 默认为1小时
-''hive_sync.enable'' = ''true'', -- 启用hive同步
-''hive_sync.mode'' = ''hms'', -- 启用hive hms同步，默认jdbc
-''hive_sync.metastore.uris'' = ''thrift://cdh2.vision.com:9083'', -- required, metastore的端口
-''hive_sync.jdbc_url'' = ''jdbc:hive2://cdh1.vision.com:10000'', -- required, hiveServer地址
-''hive_sync.table'' = ''order_mysql_goods_order'', -- required, hive 新建的表名 会自动同步hudi的表结构和数据到hive
-''hive_sync.db'' = ''cdc_ods'', -- required, hive 新建的数据库名
-''hive_sync.username'' = ''hive'', -- required, HMS 用户名
-''hive_sync.password'' = ''123456'', -- required, HMS 密码
-''hive_sync.skip_ro_suffix'' = ''true'' -- 去除ro后缀
+\'connector\' = \'hudi\',
+\'path\' = \'hdfs://cluster1/data/bizdata/cdc/mysql/order/goods_order\', -- 路径会自动创建
+\'hoodie.datasource.write.recordkey.field\' = \'goods_order_id\', -- 主键
+\'write.precombine.field\' = \'update_time\', -- 相同的键值时，取此字段最大值，默认ts字段
+\'read.streaming.skip_compaction\' = \'true\', -- 避免重复消费问题
+\'write.bucket_assign.tasks\' = \'2\', -- 并发写的 bucekt 数
+\'write.tasks\' = \'2\',
+\'compaction.tasks\' = \'1\',
+\'write.operation\' = \'upsert\', -- UPSERT（插入更新）\\INSERT（插入）\\BULK_INSERT（批插入）（upsert性能会低些，不适合埋点上报）
+\'write.rate.limit\' = \'20000\', -- 限制每秒多少条
+\'table.type\' = \'COPY_ON_WRITE\', -- 默认COPY_ON_WRITE ，
+\'compaction.async.enabled\' = \'true\', -- 在线压缩
+\'compaction.trigger.strategy\' = \'num_or_time\', -- 按次数压缩
+\'compaction.delta_commits\' = \'20\', -- 默认为5
+\'compaction.delta_seconds\' = \'60\', -- 默认为1小时
+\'hive_sync.enable\' = \'true\', -- 启用hive同步
+\'hive_sync.mode\' = \'hms\', -- 启用hive hms同步，默认jdbc
+\'hive_sync.metastore.uris\' = \'thrift://cdh2.vision.com:9083\', -- required, metastore的端口
+\'hive_sync.jdbc_url\' = \'jdbc:hive2://cdh1.vision.com:10000\', -- required, hiveServer地址
+\'hive_sync.table\' = \'order_mysql_goods_order\', -- required, hive 新建的表名 会自动同步hudi的表结构和数据到hive
+\'hive_sync.db\' = \'cdc_ods\', -- required, hive 新建的数据库名
+\'hive_sync.username\' = \'hive\', -- required, HMS 用户名
+\'hive_sync.password\' = \'123456\', -- required, HMS 密码
+\'hive_sync.skip_ro_suffix\' = \'true\' -- 去除ro后缀
 );', '1.14', 0, 1, '2022-01-20 17:56:50', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (21, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 <> value2', '如果value1不等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} <> ${2:}', '1.12', 4, 1, '2021-02-22 10:05:38', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (22, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 > value2', '如果value1大于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} > ${2:}', '1.12', 2, 1, '2021-02-22 14:37:58', '2023-12-28 00:08:58', null, null);
@@ -808,17 +791,17 @@ INSERT INTO dinky_flink_document (id, category, type, subtype, name, description
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (115, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'TO_BASE64(string)', '从STRING返回base64编码的结果；如果STRING为NULL，则返回NULL。', 'TO_BASE64(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (116, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'ASCII(string)', '返回字符串的第一个字符的数值。如果字符串为NULL，则返回NULL。仅在blink planner中支持。', 'ASCII(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (117, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CHR(integer)', '返回与integer在二进制上等价的ASCII字符。如果integer大于255，我们将首先得到integer的模数除以255，并返回模数的CHR。如果integer为NULL，则返回NULL。仅在blink planner中支持。', 'CHR(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (118, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'DECODE(binary, string)', '使用提供的字符集(''US-ASCII''， ''ISO-8859-1''， ''UTF-8''， ''UTF-16BE''， ''UTF-16LE''， ''UTF-16''之一)将第一个参数解码为字符串。如果任意一个参数为空，结果也将为空。仅在blink planner中支持。', 'DECODE(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (119, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'ENCODE(string1, string2)', '使用提供的string2字符集(''US-ASCII''， ''ISO-8859-1''， ''UTF-8''， ''UTF-16BE''， ''UTF-16LE''， ''UTF-16''之一)将string1编码为二进制。如果任意一个参数为空，结果也将为空。仅在blink planner中支持。', 'ENCODE(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (118, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'DECODE(binary, string)', '使用提供的字符集(\'US-ASCII\'， \'ISO-8859-1\'， \'UTF-8\'， \'UTF-16BE\'， \'UTF-16LE\'， \'UTF-16\'之一)将第一个参数解码为字符串。如果任意一个参数为空，结果也将为空。仅在blink planner中支持。', 'DECODE(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (119, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'ENCODE(string1, string2)', '使用提供的string2字符集(\'US-ASCII\'， \'ISO-8859-1\'， \'UTF-8\'， \'UTF-16BE\'， \'UTF-16LE\'， \'UTF-16\'之一)将string1编码为二进制。如果任意一个参数为空，结果也将为空。仅在blink planner中支持。', 'ENCODE(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (120, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'INSTR(string1, string2)', '返回string2在string1中第一次出现的位置。如果任何参数为空，则返回NULL。仅在blink planner中支持。', 'INSTR(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (121, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'LEFT(string, integer)', '返回字符串中最左边的整数字符。如果整数为负，则返回空字符串。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'LEFT(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (122, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'RIGHT(string, integer)', '返回字符串中最右边的整数字符。如果整数为负，则返回空字符串。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'RIGHT(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (123, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'LOCATE(string1, string2[, integer])', '返回string1在string2中的位置整数之后第一次出现的位置。如果没有找到，返回0。如果任何参数为NULL，则返回NULL仅在blink planner中支持。', 'LOCATE(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (124, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'PARSE_URL(string1, string2[, string3])', '从URL返回指定的部分。string2的有效值包括''HOST''， ''PATH''， ''QUERY''， ''REF''， ''PROTOCOL''， ''AUTHORITY''， ''FILE''和''USERINFO''。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'PARSE_URL(${1:} , ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (124, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'PARSE_URL(string1, string2[, string3])', '从URL返回指定的部分。string2的有效值包括\'HOST\'， \'PATH\'， \'QUERY\'， \'REF\'， \'PROTOCOL\'， \'AUTHORITY\'， \'FILE\'和\'USERINFO\'。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'PARSE_URL(${1:} , ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (125, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REGEXP(string1, string2)', '如果string1的任何子字符串(可能为空)与Java正则表达式string2匹配，则返回TRUE，否则返回FALSE。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'REGEXP(${1:}, ${2:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (126, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REVERSE(string)', '返回反向字符串。如果字符串为NULL，则返回NULL仅在blink planner中支持。', 'REVERSE(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (127, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'SPLIT_INDEX(string1, string2, integer1)', '通过分隔符string2拆分string1，返回拆分字符串的整数(从零开始)字符串。如果整数为负，返回NULL。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'SPLIT_INDEX(${1:}, ${2:} , ${3:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (128, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'STR_TO_MAP(string1[, string2, string3]])', '使用分隔符将string1分割成键/值对后返回一个映射。string2是pair分隔符，默认为''，''。string3是键值分隔符，默认为''=''。仅在blink planner中支持。', 'STR_TO_MAP(${1:})', '1.12', 4, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (128, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'STR_TO_MAP(string1[, string2, string3]])', '使用分隔符将string1分割成键/值对后返回一个映射。string2是pair分隔符，默认为\'，\'。string3是键值分隔符，默认为\'=\'。仅在blink planner中支持。', 'STR_TO_MAP(${1:})', '1.12', 4, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (129, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'SUBSTR(string[, integer1[, integer2]])', '返回一个字符串的子字符串，从位置integer1开始，长度为integer2(默认到末尾)。仅在blink planner中支持。', 'SUBSTR(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (130, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CHAR_LENGTH(string)', '返回STRING中的字符数。', 'CHAR_LENGTH(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (131, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CHARACTER_LENGTH(string)', '返回STRING中的字符数。', 'CHARACTER_LENGTH(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2023-12-28 00:08:58', null, null);
@@ -845,15 +828,15 @@ INSERT INTO dinky_flink_document (id, category, type, subtype, name, description
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (152, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'FLOOR(timepoint TO timeintervalunit)', '返回一个将timepoint舍入到时间单位timeintervalunit的值。', 'FLOOR(${1:} TO ${2:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (153, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CEIL(timepoint TO timeintervalunit)', '返回一个将timepoint舍入到时间单位timeintervalunit的值。', 'CEIL(${1:} TO ${2:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (154, 'Function', 'FUN_UDF', 'TIME_FUNCTION', '(timepoint1, temporal1) OVERLAPS (timepoint2, temporal2)', '如果(timepoint1, temporal1)和(timepoint2, temporal2)定义的两个时间间隔重叠，则返回TRUE。时间值可以是时间点或时间间隔。', '(${1:} , ${1:}) OVERLAPS (${2:} , ${2:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (155, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'DATE_FORMAT(timestamp, string)', '注意这个功能有严重的错误，现在不应该使用。请实现一个自定义的UDF，或者使用EXTRACT作为解决方案。', 'DATE_FORMAT(${1:}, ''yyyy-MM-dd'')', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (155, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'DATE_FORMAT(timestamp, string)', '注意这个功能有严重的错误，现在不应该使用。请实现一个自定义的UDF，或者使用EXTRACT作为解决方案。', 'DATE_FORMAT(${1:}, \'yyyy-MM-dd\')', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (156, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TIMESTAMPADD(timeintervalunit, interval, timepoint)', '返回一个新的时间值，该值将一个(带符号的)整数间隔添加到时间点。间隔的单位由unit参数给出，它应该是以下值之一:秒、分、小时、日、周、月、季度或年。', 'TIMESTAMPADD(${1:} , ${2:} , ${3:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (157, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TIMESTAMPDIFF(timepointunit, timepoint1, timepoint2)', '返回timepointunit在timepoint1和timepoint2之间的(带符号)数。间隔的单位由第一个参数给出，它应该是以下值之一:秒、分、小时、日、月或年。', 'TIMESTAMPDIFF(${1:} , ${2:} , ${3:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (158, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CONVERT_TZ(string1, string2, string3)', '将时区string2中的datetime string1(默认ISO时间戳格式''yyyy-MM-dd HH:mm:ss'')转换为时区string3。时区的格式可以是缩写，如“PST”;可以是全名，如“America/Los_Angeles”;或者是自定义ID，如“GMT-8:00”。仅在blink planner中支持。', 'CONVERT_TZ(${1:} , ${2:} , ${3:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (159, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'FROM_UNIXTIME(numeric[, string])', '以字符串格式返回数值参数的表示形式(默认为''yyyy-MM-dd HH:mm:ss'')。numeric是一个内部时间戳值，表示从UTC ''1970-01-01 00:00:00''开始的秒数，例如UNIX_TIMESTAMP()函数生成的时间戳。返回值用会话时区表示(在TableConfig中指定)。仅在blink planner中支持。', 'FROM_UNIXTIME(${1:} )', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (158, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CONVERT_TZ(string1, string2, string3)', '将时区string2中的datetime string1(默认ISO时间戳格式\'yyyy-MM-dd HH:mm:ss\')转换为时区string3。时区的格式可以是缩写，如“PST”;可以是全名，如“America/Los_Angeles”;或者是自定义ID，如“GMT-8:00”。仅在blink planner中支持。', 'CONVERT_TZ(${1:} , ${2:} , ${3:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (159, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'FROM_UNIXTIME(numeric[, string])', '以字符串格式返回数值参数的表示形式(默认为\'yyyy-MM-dd HH:mm:ss\')。numeric是一个内部时间戳值，表示从UTC \'1970-01-01 00:00:00\'开始的秒数，例如UNIX_TIMESTAMP()函数生成的时间戳。返回值用会话时区表示(在TableConfig中指定)。仅在blink planner中支持。', 'FROM_UNIXTIME(${1:} )', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (160, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'UNIX_TIMESTAMP()', '获取当前Unix时间戳(以秒为单位)。仅在blink planner中支持。', 'UNIX_TIMESTAMP()', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (161, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'UNIX_TIMESTAMP(string1[, string2])', '转换日期时间字符串string1，格式为string2(缺省为yyyy-MM-dd HH:mm:ss，如果没有指定)为Unix时间戳(以秒为单位)，使用表配置中指定的时区。仅在blink planner中支持。', 'UNIX_TIMESTAMP(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (162, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TO_DATE(string1[, string2])', '将格式为string2的日期字符串string1(默认为''yyyy-MM-dd'')转换为日期。仅在blink planner中支持。', 'TO_DATE(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (163, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TO_TIMESTAMP(string1[, string2])', '将会话时区(由TableConfig指定)下的日期时间字符串string1转换为时间戳，格式为string2(默认为''yyyy-MM-dd HH:mm:ss'')。仅在blink planner中支持。', 'TO_TIMESTAMP(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (162, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TO_DATE(string1[, string2])', '将格式为string2的日期字符串string1(默认为\'yyyy-MM-dd\')转换为日期。仅在blink planner中支持。', 'TO_DATE(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (163, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TO_TIMESTAMP(string1[, string2])', '将会话时区(由TableConfig指定)下的日期时间字符串string1转换为时间戳，格式为string2(默认为\'yyyy-MM-dd HH:mm:ss\')。仅在blink planner中支持。', 'TO_TIMESTAMP(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (164, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'NOW()', '返回UTC时区内的当前SQL时间戳。仅在blink planner中支持。', 'NOW()', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:08:59', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (165, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'CASE value
 WHEN value1_1 [, value1_2 ]* THEN result1
@@ -920,394 +903,394 @@ INSERT INTO dinky_flink_document (id, category, type, subtype, name, description
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (210, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'LAG(expression [, offset] [, default])', '返回表达式的值，该值位于窗口中当前行之后的偏移行。offset的默认值是1,default的默认值是NULL。仅在blink planner中支持。', 'LAG(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:09:00', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (211, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'FIRST_VALUE(expression)', '返回一组有序值中的第一个值。仅在blink planner中支持。', 'FIRST_VALUE(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:09:00', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (212, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'LAST_VALUE(expression)', '返回一组有序值中的最后一个值。仅在blink planner中支持。', 'LAST_VALUE(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:09:00', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (213, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'LISTAGG(expression [, separator])', '连接字符串表达式的值，并在它们之间放置分隔符值。分隔符没有添加在字符串的末尾。分隔符的默认值是''，''。仅在blink planner中支持。', 'LISTAGG(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:09:00', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (213, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'LISTAGG(expression [, separator])', '连接字符串表达式的值，并在它们之间放置分隔符值。分隔符没有添加在字符串的末尾。分隔符的默认值是\'，\'。仅在blink planner中支持。', 'LISTAGG(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:09:00', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (214, 'Function', 'FUN_UDF', 'COLUMN_FUNCTION', 'withColumns(…)', '选择的列', 'withColumns(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:09:00', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (215, 'Function', 'FUN_UDF', 'COLUMN_FUNCTION', 'withoutColumns(…)', '不选择的列', 'withoutColumns(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2023-12-28 00:09:00', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (216, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 = value2', '如果value1等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} =${2:}', '1.12', 9, 1, '2021-02-22 10:06:49', '2023-12-28 00:08:58', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (217, 'Function', 'FUN_UDF', 'TABLE_AGGREGATE_FUNCTION', 'TO_MAP(string1,object2[, string3])', '将非规则一维表转化为规则二维表，string1是key。string2是value。string3为非必填项，表示key的值域（维度），用英文逗号分割。', 'TO_MAP(${1:})', '1.12', 8, 1, '2021-05-20 19:59:22', '2023-12-28 00:10:10', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (218, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE print', 'Whole library synchronization print', 'EXECUTE CDCSOURCE demo_print WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''10000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\.student,test\\.score'',
-  ''sink.connector'' = ''print''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'10000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\.student,test\\.score\',
+  \'sink.connector\' = \'print\'
 );', 'All Versions', 0, 1, '2023-10-31 16:01:45', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (219, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE doris', 'Whole library synchronization doris', 'EXECUTE CDCSOURCE demo_print WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''10000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\.student,test\\.score'',
-  ''sink.connector'' = ''print''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'10000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\.student,test\\.score\',
+  \'sink.connector\' = \'print\'
 );', 'All Versions', 0, 1, '2023-10-31 16:02:21', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (220, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_doris_schema_evolution', 'The entire library is synchronized to doris tape mode evolution', 'EXECUTE CDCSOURCE demo_doris_schema_evolution WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''10000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\.student,test\\.score'',
-  ''sink.connector'' = ''datastream-doris-schema-evolution'',
-  ''sink.fenodes'' = ''127.0.0.1:8030'',
-  ''sink.username'' = ''root'',
-  ''sink.password'' = ''123456'',
-  ''sink.doris.batch.size'' = ''1000'',
-  ''sink.sink.max-retries'' = ''1'',
-  ''sink.sink.batch.interval'' = ''60000'',
-  ''sink.sink.db'' = ''test'',
-  ''sink.table.identifier'' = ''#{schemaName}.#{tableName}''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'10000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\.student,test\\.score\',
+  \'sink.connector\' = \'datastream-doris-schema-evolution\',
+  \'sink.fenodes\' = \'127.0.0.1:8030\',
+  \'sink.username\' = \'root\',
+  \'sink.password\' = \'123456\',
+  \'sink.doris.batch.size\' = \'1000\',
+  \'sink.sink.max-retries\' = \'1\',
+  \'sink.sink.batch.interval\' = \'60000\',
+  \'sink.sink.db\' = \'test\',
+  \'sink.table.identifier\' = \'${schemaName}.${tableName}\'
 );', 'All Versions', 0, 1, '2023-10-31 16:04:53', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (221, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE StarRocks ', 'The entire library is synchronized to StarRocks
 ', 'EXECUTE CDCSOURCE demo_hudi WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''10000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''database-name''=''bigdata'',
- ''table-name''=''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector''=''hudi'',
- ''sink.path''=''hdfs://nameservice1/data/hudi/#{tableName}'',
- ''sink.hoodie.datasource.write.recordkey.field''=''${pkList}'',
- ''sink.hoodie.parquet.max.file.size''=''268435456'',
- ''sink.write.tasks''=''1'',
- ''sink.write.bucket_assign.tasks''=''2'',
- ''sink.write.precombine''=''true'',
- ''sink.compaction.async.enabled''=''true'',
- ''sink.write.task.max.size''=''1024'',
- ''sink.write.rate.limit''=''3000'',
- ''sink.write.operation''=''upsert'',
- ''sink.table.type''=''COPY_ON_WRITE'',
- ''sink.compaction.tasks''=''1'',
- ''sink.compaction.delta_seconds''=''20'',
- ''sink.compaction.async.enabled''=''true'',
- ''sink.read.streaming.skip_compaction''=''true'',
- ''sink.compaction.delta_commits''=''20'',
- ''sink.compaction.trigger.strategy''=''num_or_time'',
- ''sink.compaction.max_memory''=''500'',
- ''sink.changelog.enabled''=''true'',
- ''sink.read.streaming.enabled''=''true'',
- ''sink.read.streaming.check.interval''=''3'',
- ''sink.hive_sync.skip_ro_suffix'' = ''true'',
- ''sink.hive_sync.enable''=''true'',
- ''sink.hive_sync.mode''=''hms'',
- ''sink.hive_sync.metastore.uris''=''thrift://bigdata1:9083'',
- ''sink.hive_sync.db''=''qhc_hudi_ods'',
- ''sink.hive_sync.table''=''#{tableName}'',
- ''sink.table.prefix.schema''=''true''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'10000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'database-name\'=\'bigdata\',
+ \'table-name\'=\'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\'=\'hudi\',
+ \'sink.path\'=\'hdfs://nameservice1/data/hudi/${tableName}\',
+ \'sink.hoodie.datasource.write.recordkey.field\'=\'${pkList}\',
+ \'sink.hoodie.parquet.max.file.size\'=\'268435456\',
+ \'sink.write.tasks\'=\'1\',
+ \'sink.write.bucket_assign.tasks\'=\'2\',
+ \'sink.write.precombine\'=\'true\',
+ \'sink.compaction.async.enabled\'=\'true\',
+ \'sink.write.task.max.size\'=\'1024\',
+ \'sink.write.rate.limit\'=\'3000\',
+ \'sink.write.operation\'=\'upsert\',
+ \'sink.table.type\'=\'COPY_ON_WRITE\',
+ \'sink.compaction.tasks\'=\'1\',
+ \'sink.compaction.delta_seconds\'=\'20\',
+ \'sink.compaction.async.enabled\'=\'true\',
+ \'sink.read.streaming.skip_compaction\'=\'true\',
+ \'sink.compaction.delta_commits\'=\'20\',
+ \'sink.compaction.trigger.strategy\'=\'num_or_time\',
+ \'sink.compaction.max_memory\'=\'500\',
+ \'sink.changelog.enabled\'=\'true\',
+ \'sink.read.streaming.enabled\'=\'true\',
+ \'sink.read.streaming.check.interval\'=\'3\',
+ \'sink.hive_sync.skip_ro_suffix\' = \'true\',
+ \'sink.hive_sync.enable\'=\'true\',
+ \'sink.hive_sync.mode\'=\'hms\',
+ \'sink.hive_sync.metastore.uris\'=\'thrift://bigdata1:9083\',
+ \'sink.hive_sync.db\'=\'qhc_hudi_ods\',
+ \'sink.hive_sync.table\'=\'${tableName}\',
+ \'sink.table.prefix.schema\'=\'true\'
 );', 'All Versions', 0, 1, '2023-10-31 16:05:50', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (222, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_mysql', 'The entire library is synchronized to mysql', 'EXECUTE CDCSOURCE demo_startrocks WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''3000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
-  ''sink.connector'' = ''starrocks'',
-  ''sink.jdbc-url'' = ''jdbc:mysql://127.0.0.1:19035'',
-  ''sink.load-url'' = ''127.0.0.1:18035'',
-  ''sink.username'' = ''root'',
-  ''sink.password'' = ''123456'',
-  ''sink.sink.db'' = ''ods'',
-  ''sink.table.prefix'' = ''ods_'',
-  ''sink.table.lower'' = ''true'',
-  ''sink.database-name'' = ''ods'',
-  ''sink.table-name'' = ''#{tableName}'',
-  ''sink.sink.properties.format'' = ''json'',
-  ''sink.sink.properties.strip_outer_array'' = ''true'',
-  ''sink.sink.max-retries'' = ''10'',
-  ''sink.sink.buffer-flush.interval-ms'' = ''15000'',
-  ''sink.sink.parallelism'' = ''1''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'3000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+  \'sink.connector\' = \'starrocks\',
+  \'sink.jdbc-url\' = \'jdbc:mysql://127.0.0.1:19035\',
+  \'sink.load-url\' = \'127.0.0.1:18035\',
+  \'sink.username\' = \'root\',
+  \'sink.password\' = \'123456\',
+  \'sink.sink.db\' = \'ods\',
+  \'sink.table.prefix\' = \'ods_\',
+  \'sink.table.lower\' = \'true\',
+  \'sink.database-name\' = \'ods\',
+  \'sink.table-name\' = \'${tableName}\',
+  \'sink.sink.properties.format\' = \'json\',
+  \'sink.sink.properties.strip_outer_array\' = \'true\',
+  \'sink.sink.max-retries\' = \'10\',
+  \'sink.sink.buffer-flush.interval-ms\' = \'15000\',
+  \'sink.sink.parallelism\' = \'1\'
 );', 'All Versions', 0, 1, '2023-10-31 16:07:08', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (223, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_doris', 'The entire library is synchronized to mysql', 'EXECUTE CDCSOURCE cdc_mysql WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector'' = ''jdbc'',
- ''sink.url'' = ''jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8&useSSL=false'',
- ''sink.username'' = ''root'',
- ''sink.password'' = ''123456'',
- ''sink.sink.db'' = ''test'',
- ''sink.table.prefix'' = ''test_'',
- ''sink.table.lower'' = ''true'',
- ''sink.table-name'' = ''#{tableName}'',
- ''sink.driver'' = ''com.mysql.jdbc.Driver'',
- ''sink.sink.buffer-flush.interval'' = ''2s'',
- ''sink.sink.buffer-flush.max-rows'' = ''100'',
- ''sink.sink.max-retries'' = ''5'',
- ''sink.auto.create'' = ''true''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\' = \'jdbc\',
+ \'sink.url\' = \'jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8&useSSL=false\',
+ \'sink.username\' = \'root\',
+ \'sink.password\' = \'123456\',
+ \'sink.sink.db\' = \'test\',
+ \'sink.table.prefix\' = \'test_\',
+ \'sink.table.lower\' = \'true\',
+ \'sink.table-name\' = \'${tableName}\',
+ \'sink.driver\' = \'com.mysql.jdbc.Driver\',
+ \'sink.sink.buffer-flush.interval\' = \'2s\',
+ \'sink.sink.buffer-flush.max-rows\' = \'100\',
+ \'sink.sink.max-retries\' = \'5\',
+ \'sink.auto.create\' = \'true\'
 );', 'All Versions', 0, 1, '2023-10-31 16:07:47', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (224, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_oracle', 'The entire library is synchronized to cdc_oracle', 'EXECUTE CDCSOURCE cdc_oracle WITH (
- ''connector'' = ''oracle-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''1521'',
- ''username''=''root'',
- ''password''=''123456'',
- ''database-name''=''ORCL'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''TEST\\..*'',
- ''connector'' = ''jdbc'',
- ''url'' = ''jdbc:oracle:thin:@127.0.0.1:1521:orcl'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''table-name'' = ''TEST2.#{tableName}''
+ \'connector\' = \'oracle-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'1521\',
+ \'username\'=\'root\',
+ \'password\'=\'123456\',
+ \'database-name\'=\'ORCL\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'TEST\\..*\',
+ \'connector\' = \'jdbc\',
+ \'url\' = \'jdbc:oracle:thin:@127.0.0.1:1521:orcl\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'table-name\' = \'TEST2.${tableName}\'
 );', 'All Versions', 0, 1, '2023-10-31 16:08:30', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (225, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_kafka_one', 'The entire library is synchronized to a topic in kafka', 'EXECUTE CDCSOURCE cdc_kafka_one WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector''=''datastream-kafka'',
- ''sink.topic''=''cdctest'',
- ''sink.brokers''=''bigdata2:9092,bigdata3:9092,bigdata4:9092''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\'=\'datastream-kafka\',
+ \'sink.topic\'=\'cdctest\',
+ \'sink.brokers\'=\'bigdata2:9092,bigdata3:9092,bigdata4:9092\'
 );', 'All Versions', 0, 1, '2023-10-31 16:10:13', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (226, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_kafka_mul', 'The entire library is synchronized to a single topic in kafka', 'EXECUTE CDCSOURCE cdc_kafka_mul WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector''=''datastream-kafka'',
- ''sink.brokers''=''bigdata2:9092,bigdata3:9092,bigdata4:9092''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\'=\'datastream-kafka\',
+ \'sink.brokers\'=\'bigdata2:9092,bigdata3:9092,bigdata4:9092\'
 )', 'All Versions', 0, 1, '2023-10-31 16:10:59', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (227, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_upsert_kafka', 'The entire library is synchronized to kafka primary key mode', 'EXECUTE CDCSOURCE cdc_upsert_kafka WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector'' = ''upsert-kafka'',
- ''sink.topic'' = ''#{tableName}'',
- ''sink.properties.bootstrap.servers'' = ''bigdata2:9092,bigdata3:9092,bigdata4:9092'',
- ''sink.key.format'' = ''json'',
- ''sink.value.format'' = ''json''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\' = \'upsert-kafka\',
+ \'sink.topic\' = \'${tableName}\',
+ \'sink.properties.bootstrap.servers\' = \'bigdata2:9092,bigdata3:9092,bigdata4:9092\',
+ \'sink.key.format\' = \'json\',
+ \'sink.value.format\' = \'json\'
 );', 'All Versions', 0, 1, '2023-10-31 16:12:14', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (228, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_postgresql ', 'The entire library is synchronized to postgresql', 'EXECUTE CDCSOURCE cdc_postgresql WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector'' = ''jdbc'',
- ''sink.url'' = ''jdbc:postgresql://127.0.0.1:5432/test'',
- ''sink.username'' = ''test'',
- ''sink.password'' = ''123456'',
- ''sink.sink.db'' = ''test'',
- ''sink.table.prefix'' = ''test_'',
- ''sink.table.lower'' = ''true'',
- ''sink.table-name'' = ''#{tableName}'',
- ''sink.driver'' = ''org.postgresql.Driver'',
- ''sink.sink.buffer-flush.interval'' = ''2s'',
- ''sink.sink.buffer-flush.max-rows'' = ''100'',
- ''sink.sink.max-retries'' = ''5''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\' = \'jdbc\',
+ \'sink.url\' = \'jdbc:postgresql://127.0.0.1:5432/test\',
+ \'sink.username\' = \'test\',
+ \'sink.password\' = \'123456\',
+ \'sink.sink.db\' = \'test\',
+ \'sink.table.prefix\' = \'test_\',
+ \'sink.table.lower\' = \'true\',
+ \'sink.table-name\' = \'${tableName}\',
+ \'sink.driver\' = \'org.postgresql.Driver\',
+ \'sink.sink.buffer-flush.interval\' = \'2s\',
+ \'sink.sink.buffer-flush.max-rows\' = \'100\',
+ \'sink.sink.max-retries\' = \'5\'
 )', 'All Versions', 0, 1, '2023-10-31 16:12:54', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (229, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_clickhouse', 'Sync the entire library to clickhouse', 'EXECUTE CDCSOURCE cdc_clickhouse WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
-  ''sink.connector'' = ''clickhouse'',
-  ''sink.url'' = ''clickhouse://127.0.0.1:8123'',
-  ''sink.username'' = ''default'',
-  ''sink.password'' = ''123456'',
-  ''sink.sink.db'' = ''test'',
-  ''sink.table.prefix'' = ''test_'',
-  ''sink.table.lower'' = ''true'',
-  ''sink.database-name'' = ''test'',
-  ''sink.table-name'' = ''#{tableName}'',
-  ''sink.sink.batch-size'' = ''500'',
-  ''sink.sink.flush-interval'' = ''1000'',
-  ''sink.sink.max-retries'' = ''3''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+  \'sink.connector\' = \'clickhouse\',
+  \'sink.url\' = \'clickhouse://127.0.0.1:8123\',
+  \'sink.username\' = \'default\',
+  \'sink.password\' = \'123456\',
+  \'sink.sink.db\' = \'test\',
+  \'sink.table.prefix\' = \'test_\',
+  \'sink.table.lower\' = \'true\',
+  \'sink.database-name\' = \'test\',
+  \'sink.table-name\' = \'${tableName}\',
+  \'sink.sink.batch-size\' = \'500\',
+  \'sink.sink.flush-interval\' = \'1000\',
+  \'sink.sink.max-retries\' = \'3\'
 );', 'All Versions', 0, 1, '2023-10-31 16:13:33', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (230, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2hive', 'The entire library is synchronized to the sql-catalog of hive', 'EXECUTE CDCSOURCE mysql2hive WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''10000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\..*'',
-  ''sink.connector'' = ''sql-catalog'',
-  ''sink.catalog.name'' = ''hive'',
-  ''sink.catalog.type'' = ''hive'',
-  ''sink.default-database'' = ''hdb'',
-  ''sink.hive-conf-dir'' = ''/usr/local/dlink/hive-conf''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'10000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\..*\',
+  \'sink.connector\' = \'sql-catalog\',
+  \'sink.catalog.name\' = \'hive\',
+  \'sink.catalog.type\' = \'hive\',
+  \'sink.default-database\' = \'hdb\',
+  \'sink.hive-conf-dir\' = \'/usr/local/dlink/hive-conf\'
 );', 'All Versions', 0, 1, '2023-10-31 16:14:31', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (231, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE  mysql2paimon', 'The entire library is synchronized to paimon', 'EXECUTE CDCSOURCE mysql2paimon WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''10000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\..*'',
-  ''sink.connector'' = ''sql-catalog'',
-  ''sink.catalog.name'' = ''fts'',
-  ''sink.catalog.type'' = ''table-store'',
-  ''sink.catalog.warehouse''=''file:/tmp/table_store''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'10000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\..*\',
+  \'sink.connector\' = \'sql-catalog\',
+  \'sink.catalog.name\' = \'fts\',
+  \'sink.catalog.type\' = \'table-store\',
+  \'sink.catalog.warehouse\'=\'file:/tmp/table_store\'
 );', 'All Versions', 0, 1, '2023-10-31 16:15:22', '2023-12-28 00:02:57', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (232, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2dinky_catalog', 'The entire library is synchronized to dinky''s built-in catalog', 'EXECUTE CDCSOURCE mysql2dinky_catalog WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''10000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\..*'',
-  ''sink.connector'' = ''sql-catalog'',
-  ''sink.catalog.name'' = ''dlinkmysql'',
-  ''sink.catalog.type'' = ''dlink_mysql'',
-  ''sink.catalog.username'' = ''dlink'',
-  ''sink.catalog.password'' = ''dlink'',
-  ''sink.catalog.url'' = ''jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC'',
-  ''sink.sink.db'' = ''default_database''
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (232, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2dinky_catalog', 'The entire library is synchronized to dinky\'s built-in catalog', 'EXECUTE CDCSOURCE mysql2dinky_catalog WITH (
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'10000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\..*\',
+  \'sink.connector\' = \'sql-catalog\',
+  \'sink.catalog.name\' = \'dlinkmysql\',
+  \'sink.catalog.type\' = \'dlink_mysql\',
+  \'sink.catalog.username\' = \'dlink\',
+  \'sink.catalog.password\' = \'dlink\',
+  \'sink.catalog.url\' = \'jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC\',
+  \'sink.sink.db\' = \'default_database\'
 );', 'All Versions', 0, 1, '2023-10-31 16:16:22', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (233, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2multiple_sink', 'Synchronization of the entire library to multiple data sources (sink)', 'EXECUTE CDCSOURCE mysql2multiple_sink WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''3000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\.student,test\\.score'',
-  ''sink[0].connector'' = ''doris'',
-  ''sink[0].fenodes'' = ''127.0.0.1:8030'',
-  ''sink[0].username'' = ''root'',
-  ''sink[0].password'' = ''dw123456'',
-  ''sink[0].sink.batch.size'' = ''1'',
-  ''sink[0].sink.max-retries'' = ''1'',
-  ''sink[0].sink.batch.interval'' = ''60000'',
-  ''sink[0].sink.db'' = ''test'',
-  ''sink[0].table.prefix'' = ''ODS_'',
-  ''sink[0].table.upper'' = ''true'',
-  ''sink[0].table.identifier'' = ''#{schemaName}.#{tableName}'',
-  ''sink[0].sink.label-prefix'' = ''#{schemaName}_${tableName}_1'',
-  ''sink[0].sink.enable-delete'' = ''true'',
-  ''sink[1].connector''=''datastream-kafka'',
-  ''sink[1].topic''=''cdc'',
-  ''sink[1].brokers''=''127.0.0.1:9092''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'3000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\.student,test\\.score\',
+  \'sink[0].connector\' = \'doris\',
+  \'sink[0].fenodes\' = \'127.0.0.1:8030\',
+  \'sink[0].username\' = \'root\',
+  \'sink[0].password\' = \'dw123456\',
+  \'sink[0].sink.batch.size\' = \'1\',
+  \'sink[0].sink.max-retries\' = \'1\',
+  \'sink[0].sink.batch.interval\' = \'60000\',
+  \'sink[0].sink.db\' = \'test\',
+  \'sink[0].table.prefix\' = \'ODS_\',
+  \'sink[0].table.upper\' = \'true\',
+  \'sink[0].table.identifier\' = \'${schemaName}.${tableName}\',
+  \'sink[0].sink.label-prefix\' = \'${schemaName}_${tableName}_1\',
+  \'sink[0].sink.enable-delete\' = \'true\',
+  \'sink[1].connector\'=\'datastream-kafka\',
+  \'sink[1].topic\'=\'cdc\',
+  \'sink[1].brokers\'=\'127.0.0.1:9092\'
 )', 'All Versions', 0, 1, '2023-10-31 16:17:27', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (234, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'ADD JAR', 'ADD JAR', 'ADD JAR ${1:}; -- str path ', 'All Versions', 0, 1, '2023-10-31 16:19:52', '2023-12-28 00:02:02', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (235, 'Function', 'Other', 'Other', 'SHOW FRAGMENTS', 'SHOW FRAGMENTS', 'SHOW FRAGMENTS;', 'All Versions', 0, 1, '2023-10-31 16:20:30', '2023-12-28 09:57:55', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (236, 'Function', 'Other', 'Other', 'SHOW FRAGMENT var1', 'SHOW FRAGMENT var1', 'SHOW FRAGMENT ${1:};', 'All Versions', 0, 1, '2023-10-31 16:21:23', '2023-12-28 09:57:54', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (237, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_hudi', 'The entire library is synchronized to hudi', 'EXECUTE CDCSOURCE demo_hudi WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''10000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''database-name''=''bigdata'',
- ''table-name''=''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector''=''hudi'',
- ''sink.path''=''hdfs://nameservice1/data/hudi/#{tableName}'',
- ''sink.hoodie.datasource.write.recordkey.field''=''${pkList}'',
- ''sink.hoodie.parquet.max.file.size''=''268435456'',
- ''sink.write.tasks''=''1'',
- ''sink.write.bucket_assign.tasks''=''2'',
- ''sink.write.precombine''=''true'',
- ''sink.compaction.async.enabled''=''true'',
- ''sink.write.task.max.size''=''1024'',
- ''sink.write.rate.limit''=''3000'',
- ''sink.write.operation''=''upsert'',
- ''sink.table.type''=''COPY_ON_WRITE'',
- ''sink.compaction.tasks''=''1'',
- ''sink.compaction.delta_seconds''=''20'',
- ''sink.compaction.async.enabled''=''true'',
- ''sink.read.streaming.skip_compaction''=''true'',
- ''sink.compaction.delta_commits''=''20'',
- ''sink.compaction.trigger.strategy''=''num_or_time'',
- ''sink.compaction.max_memory''=''500'',
- ''sink.changelog.enabled''=''true'',
- ''sink.read.streaming.enabled''=''true'',
- ''sink.read.streaming.check.interval''=''3'',
- ''sink.hive_sync.skip_ro_suffix'' = ''true'',
- ''sink.hive_sync.enable''=''true'',
- ''sink.hive_sync.mode''=''hms'',
- ''sink.hive_sync.metastore.uris''=''thrift://bigdata1:9083'',
- ''sink.hive_sync.db''=''qhc_hudi_ods'',
- ''sink.hive_sync.table''=''#{tableName}'',
- ''sink.table.prefix.schema''=''true''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'10000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'database-name\'=\'bigdata\',
+ \'table-name\'=\'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\'=\'hudi\',
+ \'sink.path\'=\'hdfs://nameservice1/data/hudi/${tableName}\',
+ \'sink.hoodie.datasource.write.recordkey.field\'=\'${pkList}\',
+ \'sink.hoodie.parquet.max.file.size\'=\'268435456\',
+ \'sink.write.tasks\'=\'1\',
+ \'sink.write.bucket_assign.tasks\'=\'2\',
+ \'sink.write.precombine\'=\'true\',
+ \'sink.compaction.async.enabled\'=\'true\',
+ \'sink.write.task.max.size\'=\'1024\',
+ \'sink.write.rate.limit\'=\'3000\',
+ \'sink.write.operation\'=\'upsert\',
+ \'sink.table.type\'=\'COPY_ON_WRITE\',
+ \'sink.compaction.tasks\'=\'1\',
+ \'sink.compaction.delta_seconds\'=\'20\',
+ \'sink.compaction.async.enabled\'=\'true\',
+ \'sink.read.streaming.skip_compaction\'=\'true\',
+ \'sink.compaction.delta_commits\'=\'20\',
+ \'sink.compaction.trigger.strategy\'=\'num_or_time\',
+ \'sink.compaction.max_memory\'=\'500\',
+ \'sink.changelog.enabled\'=\'true\',
+ \'sink.read.streaming.enabled\'=\'true\',
+ \'sink.read.streaming.check.interval\'=\'3\',
+ \'sink.hive_sync.skip_ro_suffix\' = \'true\',
+ \'sink.hive_sync.enable\'=\'true\',
+ \'sink.hive_sync.mode\'=\'hms\',
+ \'sink.hive_sync.metastore.uris\'=\'thrift://bigdata1:9083\',
+ \'sink.hive_sync.db\'=\'qhc_hudi_ods\',
+ \'sink.hive_sync.table\'=\'${tableName}\',
+ \'sink.table.prefix.schema\'=\'true\'
 );', 'All Versions', 0, 1, '2023-10-31 16:24:47', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (238, 'Reference', 'SQL_TEMPLATE', 'FlinkJar', 'EXECUTE JAR ', 'EXECUTE JAR use sql', 'EXECUTE JAR WITH (
-''uri''=''rs:///jar/flink/demo/SocketWindowWordCount.jar'',
-''main-class''=''org.apache.flink.streaming.examples.socket'',
-''args''='' --hostname localhost '',
-''parallelism''='''',
-''savepoint-path''=''''
+\'uri\'=\'rs:///jar/flink/demo/SocketWindowWordCount.jar\',
+\'main-class\'=\'org.apache.flink.streaming.examples.socket\',
+\'args\'=\' --hostname localhost \',
+\'parallelism\'=\'\',
+\'savepoint-path\'=\'\'
 );', 'All Versions', 0, 1, '2023-10-31 16:27:53', '2023-12-28 09:57:54', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (239, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'PRINT tablename', 'PRINT table data', 'PRINT ${1:}', 'All Versions', 0, 1, '2023-10-31 16:30:22', '2023-12-28 00:09:39', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (240, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE Like', 'CREATE TABLE Like source table', 'DROP TABLE IF EXISTS sink_table;
 CREATE TABLE IF not EXISTS sink_table
 WITH (
-    ''topic'' = ''motor_vehicle_error''
+    \'topic\' = \'motor_vehicle_error\'
 )
 LIKE source_table;', 'All Versions', 0, 1, '2023-10-31 16:33:38', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (241, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE like source_table EXCLUDING', 'CREATE TABLE like source_table EXCLUDING', 'DROP TABLE IF EXISTS sink_table;
 CREATE TABLE IF not EXISTS sink_table(
      -- Add watermark definition
-    WATERMARK FOR order_time AS order_time - INTERVAL ''5'' SECOND
+    WATERMARK FOR order_time AS order_time - INTERVAL \'5\' SECOND
 )
 WITH (
-    ''topic'' = ''motor_vehicle_error''
+    \'topic\' = \'motor_vehicle_error\'
 )
 LIKE source_table (
      -- Exclude everything besides the computed columns which we need to generate the watermark for.
@@ -1317,12 +1300,12 @@ LIKE source_table (
 );', 'All Versions', 0, 1, '2023-10-31 16:36:13', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (242, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE ctas_kafka', 'CREATE TABLE ctas_kafka', 'CREATE TABLE my_ctas_table
 WITH (
-    ''connector'' = ''kafka''
+    \'connector\' = \'kafka\'
 )
 AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions', 0, 1, '2023-10-31 16:37:33', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (243, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE rtas_kafka', 'CREATE TABLE rtas_kafka', 'CREATE OR REPLACE TABLE my_ctas_table
 WITH (
-    ''connector'' = ''kafka''
+    \'connector\' = \'kafka\'
 )
 AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions', 0, 1, '2023-10-31 16:41:46', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (244, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'datagen job demo', 'datagen job demo', 'DROP TABLE IF EXISTS source_table3;
@@ -1338,16 +1321,16 @@ CREATE TABLE IF NOT EXISTS source_table3(
 --支付时间
 `order_time` as CAST(CURRENT_TIMESTAMP AS TIMESTAMP(3)), -- `在这里插入代码片`
 --WATERMARK
-WATERMARK FOR order_time AS order_time - INTERVAL ''2'' SECOND
+WATERMARK FOR order_time AS order_time - INTERVAL \'2\' SECOND
 ) WITH(
-''connector'' = ''datagen'',
- ''rows-per-second'' = ''1'',
- ''fields.order_id.min'' = ''1'',
- ''fields.order_id.max'' = ''2'',
- ''fields.amount.min'' = ''1'',
- ''fields.amount.max'' = ''10'',
- ''fields.product.min'' = ''1'',
- ''fields.product.max'' = ''2''
+\'connector\' = \'datagen\',
+ \'rows-per-second\' = \'1\',
+ \'fields.order_id.min\' = \'1\',
+ \'fields.order_id.max\' = \'2\',
+ \'fields.amount.min\' = \'1\',
+ \'fields.amount.max\' = \'10\',
+ \'fields.product.min\' = \'1\',
+ \'fields.product.max\' = \'2\'
 );
 
 -- SELECT * FROM source_table3 LIMIT 10;
@@ -1363,7 +1346,7 @@ CREATE TABLE IF NOT EXISTS sink_table5(
 --1分钟时间聚合总数
 `one_minute_sum` BIGINT
 ) WITH(
-''connector''=''print''
+\'connector\'=\'print\'
 );
 
 INSERT INTO sink_table5
@@ -1375,20 +1358,20 @@ SUM(amount) OVER(
 PARTITION BY product
 ORDER BY order_time
 -- 标识统计范围是1个 product 的最近 1 分钟的数据
-RANGE BETWEEN INTERVAL ''1'' MINUTE PRECEDING AND CURRENT ROW
+RANGE BETWEEN INTERVAL \'1\' MINUTE PRECEDING AND CURRENT ROW
 ) as one_minute_sum
 FROM source_table3;', 'All Versions', 0, 1, '2023-11-15 15:42:16', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (245, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'checkpoint config', 'checkpoint config', '-- 声明一些调优参数 (checkpoint 等相关配置)
-set ''execution.checkpointing.checkpoints-after-tasks-finish.enabled'' =''true'';
-SET ''pipeline.operator-chaining'' = ''false'';
-set ''state.savepoints.dir''=''file:///opt/data/flink_cluster/savepoints''; -- 目录自行修改
-set ''state.checkpoints.dir''= ''file:///opt/data/flink_cluster/checkpoints''; -- 目录自行修改
--- set state.checkpoint-storage=''filesystem'';
-set ''state.backend.type''=''rocksdb'';
-set ''execution.checkpointing.interval''=''60 s'';
-set ''state.checkpoints.num-retained''=''100'';
+set \'execution.checkpointing.checkpoints-after-tasks-finish.enabled\' =\'true\';
+SET \'pipeline.operator-chaining\' = \'false\';
+set \'state.savepoints.dir\'=\'file:///opt/data/flink_cluster/savepoints\'; -- 目录自行修改
+set \'state.checkpoints.dir\'= \'file:///opt/data/flink_cluster/checkpoints\'; -- 目录自行修改
+-- set state.checkpoint-storage=\'filesystem\';
+set \'state.backend.type\'=\'rocksdb\';
+set \'execution.checkpointing.interval\'=\'60 s\';
+set \'state.checkpoints.num-retained\'=\'100\';
 -- 使 solt 均匀分布在 各个 TM 上
-set ''cluster.evenly-spread-out-slots''=''true'';', 'All Versions', 0, 1, '2023-11-15 15:57:42', '2023-12-27 23:58:09', null, null);
+set \'cluster.evenly-spread-out-slots\'=\'true\';', 'All Versions', 0, 1, '2023-11-15 15:57:42', '2023-12-28 15:49:20', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (246, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'note template', 'note template', '-- -----------------------------------------------------------------
 -- @Description(作业描述): ${1:}
 -- @Creator(创建人): ${2:}
@@ -1404,19 +1387,18 @@ INSERT INTO dinky_flink_document (id, category, type, subtype, name, description
 EXECUTE CDCSOURCE dinky_paimon_auto_create_table
 WITH
   (
-    ''connector'' = ''mysql-cdc'',
-    ''hostname'' = '''',
-    ''port'' = '''',
-    ''username'' = '''',
-    ''password'' = '''',
-    ''checkpoint'' = ''10000'',
-    ''parallelism'' = ''1'',
-    ''scan.startup.mode'' = ''initial'',
-    ''database-name'' = ''dinky'',
-    ''sink.connector'' = ''paimon'',
-    ''sink.path'' = ''hdfs:/tmp/paimon/#{schemaName}.db/#{tableName}'',
-    ''sink.auto-create'' = ''true'',
+    \'connector\' = \'mysql-cdc\',
+    \'hostname\' = \'\',
+    \'port\' = \'\',
+    \'username\' = \'\',
+    \'password\' = \'\',
+    \'checkpoint\' = \'10000\',
+    \'parallelism\' = \'1\',
+    \'scan.startup.mode\' = \'initial\',
+    \'database-name\' = \'dinky\',
+    \'sink.connector\' = \'paimon\',
+    \'sink.path\' = \'hdfs:/tmp/paimon/#{schemaName}.db/#{tableName}\',
+    \'sink.auto-create\' = \'true\',
   );', 'All Versions', 0, 1, '2023-12-27 16:53:37', '2023-12-28 12:05:20', 1, 1);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (248, 'Variable', 'SQL_TEMPLATE', 'FlinkSql', 'add-customjar', 'add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式', '-- add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式
-add CUSTOMJAR ''${1:}'';', 'All Versions', 0, 1, '2023-12-28 10:50:17', '2023-12-28 12:05:20', 1, 1);
-
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (248, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'add-customjar', 'add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式', '-- add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式
+add CUSTOMJAR \'${1:}\';', 'All Versions', 0, 1, '2023-12-28 10:50:17', '2023-12-28 15:49:40', 1, 1);

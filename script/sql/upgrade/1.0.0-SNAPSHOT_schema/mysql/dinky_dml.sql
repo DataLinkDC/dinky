@@ -288,388 +288,388 @@ UPDATE dinky_history SET config_json=JSON_REMOVE(config_json, '$.session');
 alter table dinky_history add batch_model boolean default false null after job_manager_address;
 
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (218, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE print', 'Whole library synchronization print', 'EXECUTE CDCSOURCE demo_print WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''10000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\.student,test\\.score'',
-  ''sink.connector'' = ''print''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'10000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\.student,test\\.score\',
+  \'sink.connector\' = \'print\'
 );', 'All Versions', 0, 1, '2023-10-31 16:01:45', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (219, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE doris', 'Whole library synchronization doris', 'EXECUTE CDCSOURCE demo_print WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''10000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\.student,test\\.score'',
-  ''sink.connector'' = ''print''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'10000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\.student,test\\.score\',
+  \'sink.connector\' = \'print\'
 );', 'All Versions', 0, 1, '2023-10-31 16:02:21', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (220, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_doris_schema_evolution', 'The entire library is synchronized to doris tape mode evolution', 'EXECUTE CDCSOURCE demo_doris_schema_evolution WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''10000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\.student,test\\.score'',
-  ''sink.connector'' = ''datastream-doris-schema-evolution'',
-  ''sink.fenodes'' = ''127.0.0.1:8030'',
-  ''sink.username'' = ''root'',
-  ''sink.password'' = ''123456'',
-  ''sink.doris.batch.size'' = ''1000'',
-  ''sink.sink.max-retries'' = ''1'',
-  ''sink.sink.batch.interval'' = ''60000'',
-  ''sink.sink.db'' = ''test'',
-  ''sink.table.identifier'' = ''#{schemaName}.#{tableName}''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'10000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\.student,test\\.score\',
+  \'sink.connector\' = \'datastream-doris-schema-evolution\',
+  \'sink.fenodes\' = \'127.0.0.1:8030\',
+  \'sink.username\' = \'root\',
+  \'sink.password\' = \'123456\',
+  \'sink.doris.batch.size\' = \'1000\',
+  \'sink.sink.max-retries\' = \'1\',
+  \'sink.sink.batch.interval\' = \'60000\',
+  \'sink.sink.db\' = \'test\',
+  \'sink.table.identifier\' = \'${schemaName}.${tableName}\'
 );', 'All Versions', 0, 1, '2023-10-31 16:04:53', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (221, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE StarRocks ', 'The entire library is synchronized to StarRocks
 ', 'EXECUTE CDCSOURCE demo_hudi WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''10000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''database-name''=''bigdata'',
- ''table-name''=''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector''=''hudi'',
- ''sink.path''=''hdfs://nameservice1/data/hudi/#{tableName}'',
- ''sink.hoodie.datasource.write.recordkey.field''=''${pkList}'',
- ''sink.hoodie.parquet.max.file.size''=''268435456'',
- ''sink.write.tasks''=''1'',
- ''sink.write.bucket_assign.tasks''=''2'',
- ''sink.write.precombine''=''true'',
- ''sink.compaction.async.enabled''=''true'',
- ''sink.write.task.max.size''=''1024'',
- ''sink.write.rate.limit''=''3000'',
- ''sink.write.operation''=''upsert'',
- ''sink.table.type''=''COPY_ON_WRITE'',
- ''sink.compaction.tasks''=''1'',
- ''sink.compaction.delta_seconds''=''20'',
- ''sink.compaction.async.enabled''=''true'',
- ''sink.read.streaming.skip_compaction''=''true'',
- ''sink.compaction.delta_commits''=''20'',
- ''sink.compaction.trigger.strategy''=''num_or_time'',
- ''sink.compaction.max_memory''=''500'',
- ''sink.changelog.enabled''=''true'',
- ''sink.read.streaming.enabled''=''true'',
- ''sink.read.streaming.check.interval''=''3'',
- ''sink.hive_sync.skip_ro_suffix'' = ''true'',
- ''sink.hive_sync.enable''=''true'',
- ''sink.hive_sync.mode''=''hms'',
- ''sink.hive_sync.metastore.uris''=''thrift://bigdata1:9083'',
- ''sink.hive_sync.db''=''qhc_hudi_ods'',
- ''sink.hive_sync.table''=''#{tableName}'',
- ''sink.table.prefix.schema''=''true''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'10000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'database-name\'=\'bigdata\',
+ \'table-name\'=\'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\'=\'hudi\',
+ \'sink.path\'=\'hdfs://nameservice1/data/hudi/${tableName}\',
+ \'sink.hoodie.datasource.write.recordkey.field\'=\'${pkList}\',
+ \'sink.hoodie.parquet.max.file.size\'=\'268435456\',
+ \'sink.write.tasks\'=\'1\',
+ \'sink.write.bucket_assign.tasks\'=\'2\',
+ \'sink.write.precombine\'=\'true\',
+ \'sink.compaction.async.enabled\'=\'true\',
+ \'sink.write.task.max.size\'=\'1024\',
+ \'sink.write.rate.limit\'=\'3000\',
+ \'sink.write.operation\'=\'upsert\',
+ \'sink.table.type\'=\'COPY_ON_WRITE\',
+ \'sink.compaction.tasks\'=\'1\',
+ \'sink.compaction.delta_seconds\'=\'20\',
+ \'sink.compaction.async.enabled\'=\'true\',
+ \'sink.read.streaming.skip_compaction\'=\'true\',
+ \'sink.compaction.delta_commits\'=\'20\',
+ \'sink.compaction.trigger.strategy\'=\'num_or_time\',
+ \'sink.compaction.max_memory\'=\'500\',
+ \'sink.changelog.enabled\'=\'true\',
+ \'sink.read.streaming.enabled\'=\'true\',
+ \'sink.read.streaming.check.interval\'=\'3\',
+ \'sink.hive_sync.skip_ro_suffix\' = \'true\',
+ \'sink.hive_sync.enable\'=\'true\',
+ \'sink.hive_sync.mode\'=\'hms\',
+ \'sink.hive_sync.metastore.uris\'=\'thrift://bigdata1:9083\',
+ \'sink.hive_sync.db\'=\'qhc_hudi_ods\',
+ \'sink.hive_sync.table\'=\'${tableName}\',
+ \'sink.table.prefix.schema\'=\'true\'
 );', 'All Versions', 0, 1, '2023-10-31 16:05:50', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (222, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_mysql', 'The entire library is synchronized to mysql', 'EXECUTE CDCSOURCE demo_startrocks WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''3000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
-  ''sink.connector'' = ''starrocks'',
-  ''sink.jdbc-url'' = ''jdbc:mysql://127.0.0.1:19035'',
-  ''sink.load-url'' = ''127.0.0.1:18035'',
-  ''sink.username'' = ''root'',
-  ''sink.password'' = ''123456'',
-  ''sink.sink.db'' = ''ods'',
-  ''sink.table.prefix'' = ''ods_'',
-  ''sink.table.lower'' = ''true'',
-  ''sink.database-name'' = ''ods'',
-  ''sink.table-name'' = ''#{tableName}'',
-  ''sink.sink.properties.format'' = ''json'',
-  ''sink.sink.properties.strip_outer_array'' = ''true'',
-  ''sink.sink.max-retries'' = ''10'',
-  ''sink.sink.buffer-flush.interval-ms'' = ''15000'',
-  ''sink.sink.parallelism'' = ''1''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'3000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+  \'sink.connector\' = \'starrocks\',
+  \'sink.jdbc-url\' = \'jdbc:mysql://127.0.0.1:19035\',
+  \'sink.load-url\' = \'127.0.0.1:18035\',
+  \'sink.username\' = \'root\',
+  \'sink.password\' = \'123456\',
+  \'sink.sink.db\' = \'ods\',
+  \'sink.table.prefix\' = \'ods_\',
+  \'sink.table.lower\' = \'true\',
+  \'sink.database-name\' = \'ods\',
+  \'sink.table-name\' = \'${tableName}\',
+  \'sink.sink.properties.format\' = \'json\',
+  \'sink.sink.properties.strip_outer_array\' = \'true\',
+  \'sink.sink.max-retries\' = \'10\',
+  \'sink.sink.buffer-flush.interval-ms\' = \'15000\',
+  \'sink.sink.parallelism\' = \'1\'
 );', 'All Versions', 0, 1, '2023-10-31 16:07:08', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (223, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_doris', 'The entire library is synchronized to mysql', 'EXECUTE CDCSOURCE cdc_mysql WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector'' = ''jdbc'',
- ''sink.url'' = ''jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8&useSSL=false'',
- ''sink.username'' = ''root'',
- ''sink.password'' = ''123456'',
- ''sink.sink.db'' = ''test'',
- ''sink.table.prefix'' = ''test_'',
- ''sink.table.lower'' = ''true'',
- ''sink.table-name'' = ''#{tableName}'',
- ''sink.driver'' = ''com.mysql.jdbc.Driver'',
- ''sink.sink.buffer-flush.interval'' = ''2s'',
- ''sink.sink.buffer-flush.max-rows'' = ''100'',
- ''sink.sink.max-retries'' = ''5'',
- ''sink.auto.create'' = ''true''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\' = \'jdbc\',
+ \'sink.url\' = \'jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8&useSSL=false\',
+ \'sink.username\' = \'root\',
+ \'sink.password\' = \'123456\',
+ \'sink.sink.db\' = \'test\',
+ \'sink.table.prefix\' = \'test_\',
+ \'sink.table.lower\' = \'true\',
+ \'sink.table-name\' = \'${tableName}\',
+ \'sink.driver\' = \'com.mysql.jdbc.Driver\',
+ \'sink.sink.buffer-flush.interval\' = \'2s\',
+ \'sink.sink.buffer-flush.max-rows\' = \'100\',
+ \'sink.sink.max-retries\' = \'5\',
+ \'sink.auto.create\' = \'true\'
 );', 'All Versions', 0, 1, '2023-10-31 16:07:47', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (224, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_oracle', 'The entire library is synchronized to cdc_oracle', 'EXECUTE CDCSOURCE cdc_oracle WITH (
- ''connector'' = ''oracle-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''1521'',
- ''username''=''root'',
- ''password''=''123456'',
- ''database-name''=''ORCL'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''TEST\\..*'',
- ''connector'' = ''jdbc'',
- ''url'' = ''jdbc:oracle:thin:@127.0.0.1:1521:orcl'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''table-name'' = ''TEST2.#{tableName}''
+ \'connector\' = \'oracle-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'1521\',
+ \'username\'=\'root\',
+ \'password\'=\'123456\',
+ \'database-name\'=\'ORCL\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'TEST\\..*\',
+ \'connector\' = \'jdbc\',
+ \'url\' = \'jdbc:oracle:thin:@127.0.0.1:1521:orcl\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'table-name\' = \'TEST2.${tableName}\'
 );', 'All Versions', 0, 1, '2023-10-31 16:08:30', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (225, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_kafka_one', 'The entire library is synchronized to a topic in kafka', 'EXECUTE CDCSOURCE cdc_kafka_one WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector''=''datastream-kafka'',
- ''sink.topic''=''cdctest'',
- ''sink.brokers''=''bigdata2:9092,bigdata3:9092,bigdata4:9092''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\'=\'datastream-kafka\',
+ \'sink.topic\'=\'cdctest\',
+ \'sink.brokers\'=\'bigdata2:9092,bigdata3:9092,bigdata4:9092\'
 );', 'All Versions', 0, 1, '2023-10-31 16:10:13', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (226, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_kafka_mul', 'The entire library is synchronized to a single topic in kafka', 'EXECUTE CDCSOURCE cdc_kafka_mul WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector''=''datastream-kafka'',
- ''sink.brokers''=''bigdata2:9092,bigdata3:9092,bigdata4:9092''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\'=\'datastream-kafka\',
+ \'sink.brokers\'=\'bigdata2:9092,bigdata3:9092,bigdata4:9092\'
 )', 'All Versions', 0, 1, '2023-10-31 16:10:59', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (227, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_upsert_kafka', 'The entire library is synchronized to kafka primary key mode', 'EXECUTE CDCSOURCE cdc_upsert_kafka WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector'' = ''upsert-kafka'',
- ''sink.topic'' = ''#{tableName}'',
- ''sink.properties.bootstrap.servers'' = ''bigdata2:9092,bigdata3:9092,bigdata4:9092'',
- ''sink.key.format'' = ''json'',
- ''sink.value.format'' = ''json''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\' = \'upsert-kafka\',
+ \'sink.topic\' = \'${tableName}\',
+ \'sink.properties.bootstrap.servers\' = \'bigdata2:9092,bigdata3:9092,bigdata4:9092\',
+ \'sink.key.format\' = \'json\',
+ \'sink.value.format\' = \'json\'
 );', 'All Versions', 0, 1, '2023-10-31 16:12:14', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (228, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_postgresql ', 'The entire library is synchronized to postgresql', 'EXECUTE CDCSOURCE cdc_postgresql WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector'' = ''jdbc'',
- ''sink.url'' = ''jdbc:postgresql://127.0.0.1:5432/test'',
- ''sink.username'' = ''test'',
- ''sink.password'' = ''123456'',
- ''sink.sink.db'' = ''test'',
- ''sink.table.prefix'' = ''test_'',
- ''sink.table.lower'' = ''true'',
- ''sink.table-name'' = ''#{tableName}'',
- ''sink.driver'' = ''org.postgresql.Driver'',
- ''sink.sink.buffer-flush.interval'' = ''2s'',
- ''sink.sink.buffer-flush.max-rows'' = ''100'',
- ''sink.sink.max-retries'' = ''5''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\' = \'jdbc\',
+ \'sink.url\' = \'jdbc:postgresql://127.0.0.1:5432/test\',
+ \'sink.username\' = \'test\',
+ \'sink.password\' = \'123456\',
+ \'sink.sink.db\' = \'test\',
+ \'sink.table.prefix\' = \'test_\',
+ \'sink.table.lower\' = \'true\',
+ \'sink.table-name\' = \'${tableName}\',
+ \'sink.driver\' = \'org.postgresql.Driver\',
+ \'sink.sink.buffer-flush.interval\' = \'2s\',
+ \'sink.sink.buffer-flush.max-rows\' = \'100\',
+ \'sink.sink.max-retries\' = \'5\'
 )', 'All Versions', 0, 1, '2023-10-31 16:12:54', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (229, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_clickhouse', 'Sync the entire library to clickhouse', 'EXECUTE CDCSOURCE cdc_clickhouse WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''3000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''table-name'' = ''bigdata\\.products,bigdata\\.orders'',
-  ''sink.connector'' = ''clickhouse'',
-  ''sink.url'' = ''clickhouse://127.0.0.1:8123'',
-  ''sink.username'' = ''default'',
-  ''sink.password'' = ''123456'',
-  ''sink.sink.db'' = ''test'',
-  ''sink.table.prefix'' = ''test_'',
-  ''sink.table.lower'' = ''true'',
-  ''sink.database-name'' = ''test'',
-  ''sink.table-name'' = ''#{tableName}'',
-  ''sink.sink.batch-size'' = ''500'',
-  ''sink.sink.flush-interval'' = ''1000'',
-  ''sink.sink.max-retries'' = ''3''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'3000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'table-name\' = \'bigdata\\.products,bigdata\\.orders\',
+  \'sink.connector\' = \'clickhouse\',
+  \'sink.url\' = \'clickhouse://127.0.0.1:8123\',
+  \'sink.username\' = \'default\',
+  \'sink.password\' = \'123456\',
+  \'sink.sink.db\' = \'test\',
+  \'sink.table.prefix\' = \'test_\',
+  \'sink.table.lower\' = \'true\',
+  \'sink.database-name\' = \'test\',
+  \'sink.table-name\' = \'${tableName}\',
+  \'sink.sink.batch-size\' = \'500\',
+  \'sink.sink.flush-interval\' = \'1000\',
+  \'sink.sink.max-retries\' = \'3\'
 );', 'All Versions', 0, 1, '2023-10-31 16:13:33', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (230, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2hive', 'The entire library is synchronized to the sql-catalog of hive', 'EXECUTE CDCSOURCE mysql2hive WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''10000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\..*'',
-  ''sink.connector'' = ''sql-catalog'',
-  ''sink.catalog.name'' = ''hive'',
-  ''sink.catalog.type'' = ''hive'',
-  ''sink.default-database'' = ''hdb'',
-  ''sink.hive-conf-dir'' = ''/usr/local/dlink/hive-conf''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'10000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\..*\',
+  \'sink.connector\' = \'sql-catalog\',
+  \'sink.catalog.name\' = \'hive\',
+  \'sink.catalog.type\' = \'hive\',
+  \'sink.default-database\' = \'hdb\',
+  \'sink.hive-conf-dir\' = \'/usr/local/dlink/hive-conf\'
 );', 'All Versions', 0, 1, '2023-10-31 16:14:31', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (231, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE  mysql2paimon', 'The entire library is synchronized to paimon', 'EXECUTE CDCSOURCE mysql2paimon WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''10000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\..*'',
-  ''sink.connector'' = ''sql-catalog'',
-  ''sink.catalog.name'' = ''fts'',
-  ''sink.catalog.type'' = ''table-store'',
-  ''sink.catalog.warehouse''=''file:/tmp/table_store''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'10000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\..*\',
+  \'sink.connector\' = \'sql-catalog\',
+  \'sink.catalog.name\' = \'fts\',
+  \'sink.catalog.type\' = \'table-store\',
+  \'sink.catalog.warehouse\'=\'file:/tmp/table_store\'
 );', 'All Versions', 0, 1, '2023-10-31 16:15:22', '2023-12-28 00:02:57', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (232, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2dinky_catalog', 'The entire library is synchronized to dinky''s built-in catalog', 'EXECUTE CDCSOURCE mysql2dinky_catalog WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''10000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\..*'',
-  ''sink.connector'' = ''sql-catalog'',
-  ''sink.catalog.name'' = ''dlinkmysql'',
-  ''sink.catalog.type'' = ''dlink_mysql'',
-  ''sink.catalog.username'' = ''dlink'',
-  ''sink.catalog.password'' = ''dlink'',
-  ''sink.catalog.url'' = ''jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC'',
-  ''sink.sink.db'' = ''default_database''
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (232, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2dinky_catalog', 'The entire library is synchronized to dinky\'s built-in catalog', 'EXECUTE CDCSOURCE mysql2dinky_catalog WITH (
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'10000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\..*\',
+  \'sink.connector\' = \'sql-catalog\',
+  \'sink.catalog.name\' = \'dlinkmysql\',
+  \'sink.catalog.type\' = \'dlink_mysql\',
+  \'sink.catalog.username\' = \'dlink\',
+  \'sink.catalog.password\' = \'dlink\',
+  \'sink.catalog.url\' = \'jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC\',
+  \'sink.sink.db\' = \'default_database\'
 );', 'All Versions', 0, 1, '2023-10-31 16:16:22', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (233, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2multiple_sink', 'Synchronization of the entire library to multiple data sources (sink)', 'EXECUTE CDCSOURCE mysql2multiple_sink WITH (
-  ''connector'' = ''mysql-cdc'',
-  ''hostname'' = ''127.0.0.1'',
-  ''port'' = ''3306'',
-  ''username'' = ''root'',
-  ''password'' = ''123456'',
-  ''checkpoint'' = ''3000'',
-  ''scan.startup.mode'' = ''initial'',
-  ''parallelism'' = ''1'',
-  ''table-name'' = ''test\\.student,test\\.score'',
-  ''sink[0].connector'' = ''doris'',
-  ''sink[0].fenodes'' = ''127.0.0.1:8030'',
-  ''sink[0].username'' = ''root'',
-  ''sink[0].password'' = ''dw123456'',
-  ''sink[0].sink.batch.size'' = ''1'',
-  ''sink[0].sink.max-retries'' = ''1'',
-  ''sink[0].sink.batch.interval'' = ''60000'',
-  ''sink[0].sink.db'' = ''test'',
-  ''sink[0].table.prefix'' = ''ODS_'',
-  ''sink[0].table.upper'' = ''true'',
-  ''sink[0].table.identifier'' = ''#{schemaName}.#{tableName}'',
-  ''sink[0].sink.label-prefix'' = ''#{schemaName}_${tableName}_1'',
-  ''sink[0].sink.enable-delete'' = ''true'',
-  ''sink[1].connector''=''datastream-kafka'',
-  ''sink[1].topic''=''cdc'',
-  ''sink[1].brokers''=''127.0.0.1:9092''
+  \'connector\' = \'mysql-cdc\',
+  \'hostname\' = \'127.0.0.1\',
+  \'port\' = \'3306\',
+  \'username\' = \'root\',
+  \'password\' = \'123456\',
+  \'checkpoint\' = \'3000\',
+  \'scan.startup.mode\' = \'initial\',
+  \'parallelism\' = \'1\',
+  \'table-name\' = \'test\\.student,test\\.score\',
+  \'sink[0].connector\' = \'doris\',
+  \'sink[0].fenodes\' = \'127.0.0.1:8030\',
+  \'sink[0].username\' = \'root\',
+  \'sink[0].password\' = \'dw123456\',
+  \'sink[0].sink.batch.size\' = \'1\',
+  \'sink[0].sink.max-retries\' = \'1\',
+  \'sink[0].sink.batch.interval\' = \'60000\',
+  \'sink[0].sink.db\' = \'test\',
+  \'sink[0].table.prefix\' = \'ODS_\',
+  \'sink[0].table.upper\' = \'true\',
+  \'sink[0].table.identifier\' = \'${schemaName}.${tableName}\',
+  \'sink[0].sink.label-prefix\' = \'${schemaName}_${tableName}_1\',
+  \'sink[0].sink.enable-delete\' = \'true\',
+  \'sink[1].connector\'=\'datastream-kafka\',
+  \'sink[1].topic\'=\'cdc\',
+  \'sink[1].brokers\'=\'127.0.0.1:9092\'
 )', 'All Versions', 0, 1, '2023-10-31 16:17:27', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (234, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'ADD JAR', 'ADD JAR', 'ADD JAR ${1:}; -- str path ', 'All Versions', 0, 1, '2023-10-31 16:19:52', '2023-12-28 00:02:02', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (235, 'Function', 'Other', 'Other', 'SHOW FRAGMENTS', 'SHOW FRAGMENTS', 'SHOW FRAGMENTS;', 'All Versions', 0, 1, '2023-10-31 16:20:30', '2023-12-28 09:57:55', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (236, 'Function', 'Other', 'Other', 'SHOW FRAGMENT var1', 'SHOW FRAGMENT var1', 'SHOW FRAGMENT ${1:};', 'All Versions', 0, 1, '2023-10-31 16:21:23', '2023-12-28 09:57:54', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (237, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_hudi', 'The entire library is synchronized to hudi', 'EXECUTE CDCSOURCE demo_hudi WITH (
- ''connector'' = ''mysql-cdc'',
- ''hostname'' = ''127.0.0.1'',
- ''port'' = ''3306'',
- ''username'' = ''root'',
- ''password'' = ''123456'',
- ''checkpoint'' = ''10000'',
- ''scan.startup.mode'' = ''initial'',
- ''parallelism'' = ''1'',
- ''database-name''=''bigdata'',
- ''table-name''=''bigdata\\.products,bigdata\\.orders'',
- ''sink.connector''=''hudi'',
- ''sink.path''=''hdfs://nameservice1/data/hudi/#{tableName}'',
- ''sink.hoodie.datasource.write.recordkey.field''=''${pkList}'',
- ''sink.hoodie.parquet.max.file.size''=''268435456'',
- ''sink.write.tasks''=''1'',
- ''sink.write.bucket_assign.tasks''=''2'',
- ''sink.write.precombine''=''true'',
- ''sink.compaction.async.enabled''=''true'',
- ''sink.write.task.max.size''=''1024'',
- ''sink.write.rate.limit''=''3000'',
- ''sink.write.operation''=''upsert'',
- ''sink.table.type''=''COPY_ON_WRITE'',
- ''sink.compaction.tasks''=''1'',
- ''sink.compaction.delta_seconds''=''20'',
- ''sink.compaction.async.enabled''=''true'',
- ''sink.read.streaming.skip_compaction''=''true'',
- ''sink.compaction.delta_commits''=''20'',
- ''sink.compaction.trigger.strategy''=''num_or_time'',
- ''sink.compaction.max_memory''=''500'',
- ''sink.changelog.enabled''=''true'',
- ''sink.read.streaming.enabled''=''true'',
- ''sink.read.streaming.check.interval''=''3'',
- ''sink.hive_sync.skip_ro_suffix'' = ''true'',
- ''sink.hive_sync.enable''=''true'',
- ''sink.hive_sync.mode''=''hms'',
- ''sink.hive_sync.metastore.uris''=''thrift://bigdata1:9083'',
- ''sink.hive_sync.db''=''qhc_hudi_ods'',
- ''sink.hive_sync.table''=''#{tableName}'',
- ''sink.table.prefix.schema''=''true''
+ \'connector\' = \'mysql-cdc\',
+ \'hostname\' = \'127.0.0.1\',
+ \'port\' = \'3306\',
+ \'username\' = \'root\',
+ \'password\' = \'123456\',
+ \'checkpoint\' = \'10000\',
+ \'scan.startup.mode\' = \'initial\',
+ \'parallelism\' = \'1\',
+ \'database-name\'=\'bigdata\',
+ \'table-name\'=\'bigdata\\.products,bigdata\\.orders\',
+ \'sink.connector\'=\'hudi\',
+ \'sink.path\'=\'hdfs://nameservice1/data/hudi/${tableName}\',
+ \'sink.hoodie.datasource.write.recordkey.field\'=\'${pkList}\',
+ \'sink.hoodie.parquet.max.file.size\'=\'268435456\',
+ \'sink.write.tasks\'=\'1\',
+ \'sink.write.bucket_assign.tasks\'=\'2\',
+ \'sink.write.precombine\'=\'true\',
+ \'sink.compaction.async.enabled\'=\'true\',
+ \'sink.write.task.max.size\'=\'1024\',
+ \'sink.write.rate.limit\'=\'3000\',
+ \'sink.write.operation\'=\'upsert\',
+ \'sink.table.type\'=\'COPY_ON_WRITE\',
+ \'sink.compaction.tasks\'=\'1\',
+ \'sink.compaction.delta_seconds\'=\'20\',
+ \'sink.compaction.async.enabled\'=\'true\',
+ \'sink.read.streaming.skip_compaction\'=\'true\',
+ \'sink.compaction.delta_commits\'=\'20\',
+ \'sink.compaction.trigger.strategy\'=\'num_or_time\',
+ \'sink.compaction.max_memory\'=\'500\',
+ \'sink.changelog.enabled\'=\'true\',
+ \'sink.read.streaming.enabled\'=\'true\',
+ \'sink.read.streaming.check.interval\'=\'3\',
+ \'sink.hive_sync.skip_ro_suffix\' = \'true\',
+ \'sink.hive_sync.enable\'=\'true\',
+ \'sink.hive_sync.mode\'=\'hms\',
+ \'sink.hive_sync.metastore.uris\'=\'thrift://bigdata1:9083\',
+ \'sink.hive_sync.db\'=\'qhc_hudi_ods\',
+ \'sink.hive_sync.table\'=\'${tableName}\',
+ \'sink.table.prefix.schema\'=\'true\'
 );', 'All Versions', 0, 1, '2023-10-31 16:24:47', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (238, 'Reference', 'SQL_TEMPLATE', 'FlinkJar', 'EXECUTE JAR ', 'EXECUTE JAR use sql', 'EXECUTE JAR WITH (
-''uri''=''rs:///jar/flink/demo/SocketWindowWordCount.jar'',
-''main-class''=''org.apache.flink.streaming.examples.socket'',
-''args''='' --hostname localhost '',
-''parallelism''='''',
-''savepoint-path''=''''
+\'uri\'=\'rs:///jar/flink/demo/SocketWindowWordCount.jar\',
+\'main-class\'=\'org.apache.flink.streaming.examples.socket\',
+\'args\'=\' --hostname localhost \',
+\'parallelism\'=\'\',
+\'savepoint-path\'=\'\'
 );', 'All Versions', 0, 1, '2023-10-31 16:27:53', '2023-12-28 09:57:54', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (239, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'PRINT tablename', 'PRINT table data', 'PRINT ${1:}', 'All Versions', 0, 1, '2023-10-31 16:30:22', '2023-12-28 00:09:39', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (240, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE Like', 'CREATE TABLE Like source table', 'DROP TABLE IF EXISTS sink_table;
 CREATE TABLE IF not EXISTS sink_table
 WITH (
-    ''topic'' = ''motor_vehicle_error''
+    \'topic\' = \'motor_vehicle_error\'
 )
 LIKE source_table;', 'All Versions', 0, 1, '2023-10-31 16:33:38', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (241, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE like source_table EXCLUDING', 'CREATE TABLE like source_table EXCLUDING', 'DROP TABLE IF EXISTS sink_table;
 CREATE TABLE IF not EXISTS sink_table(
      -- Add watermark definition
-    WATERMARK FOR order_time AS order_time - INTERVAL ''5'' SECOND
+    WATERMARK FOR order_time AS order_time - INTERVAL \'5\' SECOND
 )
 WITH (
-    ''topic'' = ''motor_vehicle_error''
+    \'topic\' = \'motor_vehicle_error\'
 )
 LIKE source_table (
      -- Exclude everything besides the computed columns which we need to generate the watermark for.
@@ -679,12 +679,12 @@ LIKE source_table (
 );', 'All Versions', 0, 1, '2023-10-31 16:36:13', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (242, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE ctas_kafka', 'CREATE TABLE ctas_kafka', 'CREATE TABLE my_ctas_table
 WITH (
-    ''connector'' = ''kafka''
+    \'connector\' = \'kafka\'
 )
 AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions', 0, 1, '2023-10-31 16:37:33', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (243, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE rtas_kafka', 'CREATE TABLE rtas_kafka', 'CREATE OR REPLACE TABLE my_ctas_table
 WITH (
-    ''connector'' = ''kafka''
+    \'connector\' = \'kafka\'
 )
 AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions', 0, 1, '2023-10-31 16:41:46', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (244, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'datagen job demo', 'datagen job demo', 'DROP TABLE IF EXISTS source_table3;
@@ -700,16 +700,16 @@ CREATE TABLE IF NOT EXISTS source_table3(
 --支付时间
 `order_time` as CAST(CURRENT_TIMESTAMP AS TIMESTAMP(3)), -- `在这里插入代码片`
 --WATERMARK
-WATERMARK FOR order_time AS order_time - INTERVAL ''2'' SECOND
+WATERMARK FOR order_time AS order_time - INTERVAL \'2\' SECOND
 ) WITH(
-''connector'' = ''datagen'',
- ''rows-per-second'' = ''1'',
- ''fields.order_id.min'' = ''1'',
- ''fields.order_id.max'' = ''2'',
- ''fields.amount.min'' = ''1'',
- ''fields.amount.max'' = ''10'',
- ''fields.product.min'' = ''1'',
- ''fields.product.max'' = ''2''
+\'connector\' = \'datagen\',
+ \'rows-per-second\' = \'1\',
+ \'fields.order_id.min\' = \'1\',
+ \'fields.order_id.max\' = \'2\',
+ \'fields.amount.min\' = \'1\',
+ \'fields.amount.max\' = \'10\',
+ \'fields.product.min\' = \'1\',
+ \'fields.product.max\' = \'2\'
 );
 
 -- SELECT * FROM source_table3 LIMIT 10;
@@ -725,7 +725,7 @@ CREATE TABLE IF NOT EXISTS sink_table5(
 --1分钟时间聚合总数
 `one_minute_sum` BIGINT
 ) WITH(
-''connector''=''print''
+\'connector\'=\'print\'
 );
 
 INSERT INTO sink_table5
@@ -737,20 +737,20 @@ SUM(amount) OVER(
 PARTITION BY product
 ORDER BY order_time
 -- 标识统计范围是1个 product 的最近 1 分钟的数据
-RANGE BETWEEN INTERVAL ''1'' MINUTE PRECEDING AND CURRENT ROW
+RANGE BETWEEN INTERVAL \'1\' MINUTE PRECEDING AND CURRENT ROW
 ) as one_minute_sum
 FROM source_table3;', 'All Versions', 0, 1, '2023-11-15 15:42:16', '2023-12-28 00:02:57', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (245, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'checkpoint config', 'checkpoint config', '-- 声明一些调优参数 (checkpoint 等相关配置)
-set ''execution.checkpointing.checkpoints-after-tasks-finish.enabled'' =''true'';
-SET ''pipeline.operator-chaining'' = ''false'';
-set ''state.savepoints.dir''=''file:///opt/data/flink_cluster/savepoints''; -- 目录自行修改
-set ''state.checkpoints.dir''= ''file:///opt/data/flink_cluster/checkpoints''; -- 目录自行修改
--- set state.checkpoint-storage=''filesystem'';
-set ''state.backend.type''=''rocksdb'';
-set ''execution.checkpointing.interval''=''60 s'';
-set ''state.checkpoints.num-retained''=''100'';
+set \'execution.checkpointing.checkpoints-after-tasks-finish.enabled\' =\'true\';
+SET \'pipeline.operator-chaining\' = \'false\';
+set \'state.savepoints.dir\'=\'file:///opt/data/flink_cluster/savepoints\'; -- 目录自行修改
+set \'state.checkpoints.dir\'= \'file:///opt/data/flink_cluster/checkpoints\'; -- 目录自行修改
+-- set state.checkpoint-storage=\'filesystem\';
+set \'state.backend.type\'=\'rocksdb\';
+set \'execution.checkpointing.interval\'=\'60 s\';
+set \'state.checkpoints.num-retained\'=\'100\';
 -- 使 solt 均匀分布在 各个 TM 上
-set ''cluster.evenly-spread-out-slots''=''true'';', 'All Versions', 0, 1, '2023-11-15 15:57:42', '2023-12-27 23:58:09', null, null);
+set \'cluster.evenly-spread-out-slots\'=\'true\';', 'All Versions', 0, 1, '2023-11-15 15:57:42', '2023-12-28 15:49:20', null, null);
 INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (246, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'note template', 'note template', '-- -----------------------------------------------------------------
 -- @Description(作业描述): ${1:}
 -- @Creator(创建人): ${2:}
@@ -766,21 +766,21 @@ INSERT INTO dinky_flink_document (id, category, type, subtype, name, description
 EXECUTE CDCSOURCE dinky_paimon_auto_create_table
 WITH
   (
-    ''connector'' = ''mysql-cdc'',
-    ''hostname'' = '''',
-    ''port'' = '''',
-    ''username'' = '''',
-    ''password'' = '''',
-    ''checkpoint'' = ''10000'',
-    ''parallelism'' = ''1'',
-    ''scan.startup.mode'' = ''initial'',
-    ''database-name'' = ''dinky'',
-    ''sink.connector'' = ''paimon'',
-    ''sink.path'' = ''hdfs:/tmp/paimon/#{schemaName}.db/#{tableName}'',
-    ''sink.auto-create'' = ''true'',
+    \'connector\' = \'mysql-cdc\',
+    \'hostname\' = \'\',
+    \'port\' = \'\',
+    \'username\' = \'\',
+    \'password\' = \'\',
+    \'checkpoint\' = \'10000\',
+    \'parallelism\' = \'1\',
+    \'scan.startup.mode\' = \'initial\',
+    \'database-name\' = \'dinky\',
+    \'sink.connector\' = \'paimon\',
+    \'sink.path\' = \'hdfs:/tmp/paimon/#{schemaName}.db/#{tableName}\',
+    \'sink.auto-create\' = \'true\',
   );', 'All Versions', 0, 1, '2023-12-27 16:53:37', '2023-12-28 12:05:20', 1, 1);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (248, 'Variable', 'SQL_TEMPLATE', 'FlinkSql', 'add-customjar', 'add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式', '-- add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式
-add CUSTOMJAR ''${1:}'';', 'All Versions', 0, 1, '2023-12-28 10:50:17', '2023-12-28 12:05:20', 1, 1);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (248, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'add-customjar', 'add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式', '-- add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式
+add CUSTOMJAR \'${1:}\';', 'All Versions', 0, 1, '2023-12-28 10:50:17', '2023-12-28 15:49:40', 1, 1);
 
 
 -- 修改 dinky_udf_template 表的 enable 字段 不允许为空 默认为 1
