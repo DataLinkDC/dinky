@@ -26,16 +26,17 @@ import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
+import org.dinky.utils.FlinkJsonUtil;
 import org.dinky.utils.LogUtil;
 
-import org.apache.flink.api.common.JobID;
-import org.apache.flink.api.common.JobStatus;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
 import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.runtime.client.JobStatusMessage;
+import org.apache.flink.runtime.messages.webmonitor.JobDetails;
+import org.apache.flink.runtime.messages.webmonitor.MultipleJobsDetails;
+import org.apache.flink.runtime.rest.messages.JobsOverviewHeaders;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
@@ -47,10 +48,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
-
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.HttpUtil;
 
 /**
@@ -86,7 +84,7 @@ public class YarnApplicationGateway extends YarnGateway {
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
 
         YarnResult result = YarnResult.build(getType());
-        String webUrl = null;
+        String webUrl;
         try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar(udfPathContextHolder)) {
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
                     clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
@@ -101,33 +99,32 @@ public class YarnApplicationGateway extends YarnGateway {
                 throw new RuntimeException("Yarn application state is not running, please check yarn cluster status.");
             }
             webUrl = applicationReport.getOriginalTrackingUrl();
-            final List<JobStatusMessage> jobStatusMessages = new ArrayList<>();
+            final List<JobDetails> jobDetailsList = new ArrayList<>();
             int counts = SystemConfiguration.getInstances().getJobIdWait();
-            while (jobStatusMessages.isEmpty() && counts > 0) {
+            while (jobDetailsList.isEmpty() && counts > 0) {
                 Thread.sleep(1000);
                 counts--;
-                JSONArray jobs = JSON.parseObject(HttpUtil.get(
-                                yarnClient
-                                                .getApplicationReport(clusterClient.getClusterId())
-                                                .getTrackingUrl() + "jobs/overview"))
-                        .getJSONArray("jobs");
-                jobs.stream().map(x -> (JSONObject) x).forEach(job -> {
-                    JobStatusMessage jobStatusMessage = new JobStatusMessage(
-                            JobID.fromHexString(job.getString("jid")),
-                            job.getString("name"),
-                            JobStatus.valueOf(job.getString("state")),
-                            job.getLong("start-time"));
-                    jobStatusMessages.add(jobStatusMessage);
-                });
-                if (!jobStatusMessages.isEmpty()) {
+
+                String url = ReUtil.replaceAll(
+                        yarnClient
+                                        .getApplicationReport(clusterClient.getClusterId())
+                                        .getTrackingUrl()
+                                + JobsOverviewHeaders.URL,
+                        "/+",
+                        "/");
+                String json = HttpUtil.get(url);
+                MultipleJobsDetails jobsDetails = FlinkJsonUtil.toBean(json, JobsOverviewHeaders.getInstance());
+
+                jobDetailsList.addAll(jobsDetails.getJobs());
+                if (!jobDetailsList.isEmpty()) {
                     break;
                 }
             }
 
-            if (!jobStatusMessages.isEmpty()) {
+            if (!jobDetailsList.isEmpty()) {
                 List<String> jobIds = new ArrayList<>();
-                for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
-                    jobIds.add(jobStatusMessage.getJobId().toHexString());
+                for (JobDetails jobDetails : jobDetailsList) {
+                    jobIds.add(jobDetails.getJobId().toHexString());
                 }
                 result.setJids(jobIds);
             }
