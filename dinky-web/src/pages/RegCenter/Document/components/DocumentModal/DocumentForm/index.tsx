@@ -26,7 +26,7 @@ import {Document} from '@/types/RegCenter/data';
 import {l} from '@/utils/intl';
 import {
   ProForm,
-  ProFormItem,
+  ProFormItem, ProFormSegmented,
   ProFormSelect,
   ProFormSwitch,
   ProFormText,
@@ -36,8 +36,6 @@ import {FormInstance} from 'antd/es/form/hooks/useForm';
 import {Values} from 'async-validator';
 import {DefaultOptionType} from 'rc-select/lib/Select';
 import React, {useState} from 'react';
-import {Segmented} from "antd";
-import {SegmentedLabeledOption} from "rc-segmented";
 import {ProFormDependency} from "@ant-design/pro-form";
 import {JOB_TYPE} from "@/pages/DataStudio/LeftContainer/Project/constants";
 
@@ -69,10 +67,6 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
     Object.values(DOCUMENT_CATEGORY_ENUMS).map((item) => ({label: item.text, value: item.value}))
   );
 
-  const [TYPE_LIST] = useState<SegmentedLabeledOption[]>(
-    Object.values(DOCUMENT_TYPE_ENUMS).map((item) => ({label: item.text, value: item.value})
-    ));
-
   const [FUNCTION_TYPES] = useState<DefaultOptionType[]>(
     Object.values(DOCUMENT_FUNCTION_TYPE_ENUMS).map((item) => ({label: item.text, value: item.value}))
   );
@@ -97,13 +91,12 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
   const documentFormRender = () => {
     return (
       <>
-        <ProFormItem
+        <ProFormSegmented
           name='type'
           label={l('rc.doc.functionType')}
           rules={[{required: true, message: l('rc.doc.typePlaceholder')}]}
-        >
-          <Segmented options={TYPE_LIST} block/>
-        </ProFormItem>
+          valueEnum={DOCUMENT_TYPE_ENUMS}
+        />
 
         <ProFormText
           name='name'
