@@ -90,8 +90,10 @@ public class YarnApplicationGateway extends YarnGateway {
                     clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
 
+            int counts = SystemConfiguration.getInstances().getJobIdWait();
             while (yarnClient.getApplicationReport(clusterClient.getClusterId()).getYarnApplicationState()
-                    == YarnApplicationState.ACCEPTED) {
+                            == YarnApplicationState.ACCEPTED
+                    && counts-- > 0) {
                 Thread.sleep(1000);
             }
             ApplicationReport applicationReport = yarnClient.getApplicationReport(clusterClient.getClusterId());
@@ -100,10 +102,8 @@ public class YarnApplicationGateway extends YarnGateway {
             }
             webUrl = applicationReport.getOriginalTrackingUrl();
             final List<JobDetails> jobDetailsList = new ArrayList<>();
-            int counts = SystemConfiguration.getInstances().getJobIdWait();
-            while (jobDetailsList.isEmpty() && counts > 0) {
+            while (jobDetailsList.isEmpty() && counts-- > 0) {
                 Thread.sleep(1000);
-                counts--;
 
                 String url = ReUtil.replaceAll(
                         yarnClient
@@ -114,7 +114,6 @@ public class YarnApplicationGateway extends YarnGateway {
                         "/");
                 String json = HttpUtil.get(url);
                 MultipleJobsDetails jobsDetails = FlinkJsonUtil.toBean(json, JobsOverviewHeaders.getInstance());
-
                 jobDetailsList.addAll(jobsDetails.getJobs());
                 if (!jobDetailsList.isEmpty()) {
                     break;
