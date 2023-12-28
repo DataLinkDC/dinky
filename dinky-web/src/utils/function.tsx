@@ -48,6 +48,7 @@ import cookies from 'js-cookie';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
 import path from 'path';
 import { format } from 'sql-formatter';
+import {trim} from "lodash";
 
 /**
  * get language by localStorage's umi_locale , if not exist , return zh-CN
