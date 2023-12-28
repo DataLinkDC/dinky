@@ -214,17 +214,19 @@ public class Explainer {
                         "Exception in executing FlinkSQL:\n{}\n{}",
                         SqlUtil.addLineNumber(item.getValue()),
                         e.getMessage());
-                resultBuilder.error(error)
+                resultBuilder
+                        .error(error)
                         .explainTrue(false)
                         .explainTime(LocalDateTime.now())
-                        .sql(item.getValue()).
-                        index(index);
+                        .sql(item.getValue())
+                        .index(index);
                 sqlExplainRecords.add(resultBuilder.build());
                 correct = false;
                 log.error(error);
                 break;
             }
-            resultBuilder.explainTrue(true)
+            resultBuilder
+                    .explainTrue(true)
                     .explainTime(LocalDateTime.now())
                     .sql(item.getValue())
                     .index(index++);
@@ -242,18 +244,18 @@ public class Explainer {
                     SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
                     String sqlSet = String.join(";\r\n ", inserts);
                     try {
-                        resultBuilder.explain(executor.explainStatementSet(inserts))
+                        resultBuilder
+                                .explain(executor.explainStatementSet(inserts))
                                 .parseTrue(true)
                                 .explainTrue(true);
                     } catch (Exception e) {
                         String error = LogUtil.getError(e);
-                        resultBuilder.error(error)
-                                .parseTrue(false)
-                                .explainTrue(false);
+                        resultBuilder.error(error).parseTrue(false).explainTrue(false);
                         correct = false;
                         log.error(error);
                     } finally {
-                        resultBuilder.type("Modify DML")
+                        resultBuilder
+                                .type("Modify DML")
                                 .explainTime(LocalDateTime.now())
                                 .sql(sqlSet)
                                 .index(index);
@@ -266,20 +268,18 @@ public class Explainer {
 
                     try {
                         resultBuilder = SqlExplainResult.newBuilder(executor.explainSqlRecord(item.getValue()));
-                        resultBuilder.parseTrue(true)
-                                .explainTrue(true);
+                        resultBuilder.parseTrue(true).explainTrue(true);
                     } catch (Exception e) {
                         String error = StrFormatter.format(
                                 "Exception in executing FlinkSQL:\n{}\n{}",
                                 SqlUtil.addLineNumber(item.getValue()),
                                 e.getMessage());
-                        resultBuilder.error(error)
-                                .parseTrue(false)
-                                .explainTrue(false);
+                        resultBuilder.error(error).parseTrue(false).explainTrue(false);
                         correct = false;
                         log.error(error);
                     } finally {
-                        resultBuilder.type("Modify DML")
+                        resultBuilder
+                                .type("Modify DML")
                                 .explainTime(LocalDateTime.now())
                                 .sql(item.getValue())
                                 .index(index++);
@@ -299,24 +299,25 @@ public class Explainer {
                     executor.executeSql(item.getValue());
                 }
                 resultBuilder = SqlExplainResult.newBuilder(sqlExplainResult);
-                resultBuilder.type("DATASTREAM")
-                        .parseTrue(true);
+                resultBuilder.type("DATASTREAM").parseTrue(true);
             } catch (Exception e) {
                 String error = StrFormatter.format(
                         "Exception in executing FlinkSQL:\n{}\n{}",
                         SqlUtil.addLineNumber(item.getValue()),
                         e.getMessage());
-                resultBuilder.error(error)
+                resultBuilder
+                        .error(error)
                         .explainTrue(false)
-                                .explainTime(LocalDateTime.now())
-                                .sql(item.getValue())
-                                .index(index);
+                        .explainTime(LocalDateTime.now())
+                        .sql(item.getValue())
+                        .index(index);
                 sqlExplainRecords.add(resultBuilder.build());
                 correct = false;
                 log.error(error);
                 break;
             }
-            resultBuilder.explainTrue(true)
+            resultBuilder
+                    .explainTrue(true)
                     .explainTime(LocalDateTime.now())
                     .sql(item.getValue())
                     .index(index++);
