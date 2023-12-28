@@ -1098,7 +1098,7 @@ ORDER BY order_time
 RANGE BETWEEN INTERVAL \'1\' MINUTE PRECEDING AND CURRENT ROW
 ) as one_minute_sum
 FROM source_table3;', 'All Versions', 0, 1, '2023-11-15 15:42:16', '2023-12-28 00:02:57', null, null);
-INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (245, 'Property', 'FLINK_OPTIONS', '', 'checkpoint config', 'checkpoint config', '-- 声明一些调优参数 (checkpoint 等相关配置)
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (245, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'checkpoint config', 'checkpoint config', '-- 声明一些调优参数 (checkpoint 等相关配置)
 set \'execution.checkpointing.checkpoints-after-tasks-finish.enabled\' =\'true\';
 SET \'pipeline.operator-chaining\' = \'false\';
 set \'state.savepoints.dir\'=\'file:///opt/data/flink_cluster/savepoints\'; -- 目录自行修改
@@ -1108,7 +1108,37 @@ set \'state.backend.type\'=\'rocksdb\';
 set \'execution.checkpointing.interval\'=\'60 s\';
 set \'state.checkpoints.num-retained\'=\'100\';
 -- 使 solt 均匀分布在 各个 TM 上
-set \'cluster.evenly-spread-out-slots\'=\'true\';', 'All Versions', 0, 1, '2023-11-15 15:57:42', '2023-12-27 23:58:09', null, null);
+set \'cluster.evenly-spread-out-slots\'=\'true\';', 'All Versions', 0, 1, '2023-11-15 15:57:42', '2023-12-28 15:49:20', null, null);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (246, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'note template', 'note template', '-- -----------------------------------------------------------------
+-- @Description(作业描述): ${1:}
+-- @Creator(创建人): ${2:}
+-- @Create DateTime(创建时间): ${3:}
+-- -----------------------------------------------------------------
+
+${4:}', 'All Versions', 0, 1, '2023-11-17 17:03:24', '2023-12-28 12:05:20', 1, 1);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (247, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'dinky_paimon_auto_create_table', 'dinky paimon auto create table', '-- -----------------------------------------------------------------
+-- 该 demo 用于创建 mysql-cdc 到 paimon 的整库同步案例 并使用自动建表,注意 #{schemaName} 和 #{tableName} 为固定写法,不要修改,用于动态获取库名和表名
+-- -----------------------------------------------------------------
+
+
+EXECUTE CDCSOURCE dinky_paimon_auto_create_table
+WITH
+  (
+    \'connector\' = \'mysql-cdc\',
+    \'hostname\' = \'\',
+    \'port\' = \'\',
+    \'username\' = \'\',
+    \'password\' = \'\',
+    \'checkpoint\' = \'10000\',
+    \'parallelism\' = \'1\',
+    \'scan.startup.mode\' = \'initial\',
+    \'database-name\' = \'dinky\',
+    \'sink.connector\' = \'paimon\',
+    \'sink.path\' = \'hdfs:/tmp/paimon/#{schemaName}.db/#{tableName}\',
+    \'sink.auto-create\' = \'true\',
+  );', 'All Versions', 0, 1, '2023-12-27 16:53:37', '2023-12-28 12:05:20', 1, 1);
+INSERT INTO dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (248, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'add-customjar', 'add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式', '-- add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式
+add CUSTOMJAR \'${1:}\';', 'All Versions', 0, 1, '2023-12-28 10:50:17', '2023-12-28 15:49:40', 1, 1);
 
 commit ;
 -- ----------------------------
@@ -1385,11 +1415,11 @@ CREATE TABLE `dinky_udf_template`  (
 -- ----------------------------
 -- Records of dinky_udf_template
 -- ----------------------------
-INSERT INTO `dinky_udf_template` VALUES (1, 'java_udf', 'Java', 'UDF', '${(package==\'\')?string(\'\',\'package \'+package+\';\')}\n\nimport org.apache.flink.table.functions.ScalarFunction;\n\npublic class ${className} extends ScalarFunction {\n    public String eval(String s) {\n        return null;\n    }\n}', true, '2022-10-19 09:17:37', '2022-10-25 17:45:57' ,null,null);
-INSERT INTO `dinky_udf_template` VALUES (2, 'java_udtf', 'Java', 'UDTF', '${(package==\'\')?string(\'\',\'package \'+package+\';\')}\n\nimport org.apache.flink.table.functions.ScalarFunction;\n\n@FunctionHint(output = @DataTypeHint(\"ROW<word STRING, length INT>\"))\npublic static class ${className} extends TableFunction<Row> {\n\n  public void eval(String str) {\n    for (String s : str.split(\" \")) {\n      // use collect(...) to emit a row\n      collect(Row.of(s, s.length()));\n    }\n  }\n}', true, '2022-10-19 09:22:58', '2022-10-25 17:49:30' ,null,null);
-INSERT INTO `dinky_udf_template` VALUES (3, 'scala_udf', 'Scala', 'UDF', '${(package==\'\')?string(\'\',\'package \'+package+\';\')}\n\nimport org.apache.flink.table.api._\nimport org.apache.flink.table.functions.ScalarFunction\n\n// 定义可参数化的函数逻辑\nclass ${className} extends ScalarFunction {\n  def eval(s: String, begin: Integer, end: Integer): String = {\n    \"this is scala\"\n  }\n}', true, '2022-10-25 09:21:32', '2022-10-25 17:49:46' ,null,null);
-INSERT INTO `dinky_udf_template` VALUES (4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFunction, DataTypes\nfrom pyflink.table.udf import udf\n\nclass ${className}(ScalarFunction):\n    def __init__(self):\n        pass\n\n    def eval(self, variable):\n        return str(variable)\n\n\n${attr!\'f\'} = udf(${className}(), result_type=DataTypes.STRING())', true, '2022-10-25 09:23:07', '2022-10-25 09:34:01' ,null,null);
-INSERT INTO `dinky_udf_template` VALUES (5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes\nfrom pyflink.table.udf import udf\n\n@udf(result_type=DataTypes.STRING())\ndef ${className}(variable1:str):\n  return \'\'', true, '2022-10-25 09:25:13', '2022-10-25 09:34:47' ,null,null);
+INSERT INTO `dinky_udf_template` VALUES (1, 'java_udf', 'Java', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}\n\nimport org.apache.flink.table.functions.ScalarFunction;\n\npublic class ${className} extends ScalarFunction {\n    public String eval(String s) {\n        return null;\n    }\n}', true, '2022-10-19 09:17:37', '2022-10-25 17:45:57' ,null,null);
+INSERT INTO `dinky_udf_template` VALUES (2, 'java_udtf', 'Java', 'UDTF', '${(package=='''')?string('''',''package ''+package+'';'')}\n\nimport org.apache.flink.table.functions.ScalarFunction;\n\n@FunctionHint(output = @DataTypeHint(\"ROW<word STRING, length INT>\"))\npublic static class ${className} extends TableFunction<Row> {\n\n  public void eval(String str) {\n    for (String s : str.split(\" \")) {\n      // use collect(...) to emit a row\n      collect(Row.of(s, s.length()));\n    }\n  }\n}', true, '2022-10-19 09:22:58', '2022-10-25 17:49:30' ,null,null);
+INSERT INTO `dinky_udf_template` VALUES (3, 'scala_udf', 'Scala', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}\n\nimport org.apache.flink.table.api._\nimport org.apache.flink.table.functions.ScalarFunction\n\n// 定义可参数化的函数逻辑\nclass ${className} extends ScalarFunction {\n  def eval(s: String, begin: Integer, end: Integer): String = {\n    \"this is scala\"\n  }\n}', true, '2022-10-25 09:21:32', '2022-10-25 17:49:46' ,null,null);
+INSERT INTO `dinky_udf_template` VALUES (4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFunction, DataTypes\nfrom pyflink.table.udf import udf\n\nclass ${className}(ScalarFunction):\n    def __init__(self):\n        pass\n\n    def eval(self, variable):\n        return str(variable)\n\n\n${attr!''f''} = udf(${className}(), result_type=DataTypes.STRING())', true, '2022-10-25 09:23:07', '2022-10-25 09:34:01' ,null,null);
+INSERT INTO `dinky_udf_template` VALUES (5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes\nfrom pyflink.table.udf import udf\n\n@udf(result_type=DataTypes.STRING())\ndef ${className}(variable1:str):\n  return ''\'', true, '2022-10-25 09:25:13', '2022-10-25 09:34:47' ,null,null);
 
 
 -- ----------------------------
@@ -1791,7 +1821,6 @@ INSERT INTO `dinky_sys_menu` VALUES (40, 5, '保存点', '/datastudio/right/save
 INSERT INTO `dinky_sys_menu` VALUES (41, 5, '作业信息', '/datastudio/right/jobInfo', null, 'datastudio:right:jobInfo', 'InfoCircleOutlined', 'F', 0, 8, '2023-09-01 18:04:31', '2023-09-25 18:26:45', null);
 INSERT INTO `dinky_sys_menu` VALUES (42, 5, '控制台', '/datastudio/bottom/console', null, 'datastudio:bottom:console', 'ConsoleSqlOutlined', 'F', 0, 12, '2023-09-01 18:04:56', '2023-09-26 14:51:24', null);
 INSERT INTO `dinky_sys_menu` VALUES (43, 5, '结果', '/datastudio/bottom/result', null, 'datastudio:bottom:result', 'SearchOutlined', 'F', 0, 13, '2023-09-01 18:05:16', '2023-09-26 14:51:36', null);
-INSERT INTO `dinky_sys_menu` VALUES (44, 5, 'BI', '/datastudio/bottom/bi', null, 'datastudio:bottom:bi', 'DashboardOutlined', 'F', 0, 14, '2023-09-01 18:05:43', '2023-09-26 14:51:45', null);
 INSERT INTO `dinky_sys_menu` VALUES (45, 5, '血缘', '/datastudio/bottom/lineage', null, 'datastudio:bottom:lineage', 'PushpinOutlined', 'F', 0, 15, '2023-09-01 18:07:15', '2023-09-26 14:52:00', null);
 INSERT INTO `dinky_sys_menu` VALUES (46, 5, '表数据监控', '/datastudio/bottom/process', null, 'datastudio:bottom:process', 'TableOutlined', 'F', 0, 16, '2023-09-01 18:07:55', '2023-09-26 14:52:38', null);
 INSERT INTO `dinky_sys_menu` VALUES (47, 5, '小工具', '/datastudio/bottom/tool', null, 'datastudio:bottom:tool', 'ToolOutlined', 'F', 0, 17, '2023-09-01 18:08:18', '2023-09-26 14:53:04', null);
@@ -1957,15 +1986,15 @@ INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_c
 INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"isCheckpointFailed","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
 INSERT INTO dinky_alert_rules (id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater) VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"isException","ruleOperator":"EQ","ruleValue":"true"}]', 1, 'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
 
-INSERT INTO dinky_alert_template VALUES (1, 'Default', '
-- **Job Name :** <font color=''gray''>${jobName}</font>
-- **Job Status :** <font color=''red''>${jobStatus}</font>
+INSERT INTO dinky_alert_template (id, name, template_content, enabled, create_time, update_time, creator, updater) VALUES (1, 'Default', '
+- **Job Name :** <font color=\'gray\'>${jobName}</font>
+- **Job Status :** <font color=\'red\'>${jobStatus}</font>
 - **Alert Time :** ${alertTime}
 - **Start Time :** ${jobStartTime}
 - **End Time :** ${jobEndTime}
-- **<font color=''red''>${errorMsg}</font>**
+- **<font color=\'red\'>${errorMsg}</font>**
 [Go toTask Web](http://${taskUrl})
-', 1, current_timestamp(), current_timestamp(),null,null);
+', 1, '2023-11-24 20:41:23', '2023-11-24 20:41:23', null, null);
 
 commit;
 

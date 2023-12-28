@@ -83,7 +83,7 @@ const PermissionsProTable: React.FC = () => {
     setRowPermissions((prevState) => ({
       ...prevState,
       value: record,
-      editOpen: false
+      editOpen: true
     }));
   };
 
