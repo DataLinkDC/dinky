@@ -1,5 +1,5 @@
 ---
-sidebar_position: 13
+sidebar_position: 14
 id: upgrade
 title: 升级指南
 ---

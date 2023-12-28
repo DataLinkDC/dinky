@@ -79,4 +79,4 @@ select order_number,price,first_name,last_name,order_time from Orders
 
 ## 结束语
 
-至此，FlinkSQL 的丝滑之旅已经开始，还不赶快邀请朋友一起探索这奇妙的 Dinky 实时计算平台。更多用法请看官网文档（ www.dlink.top ）。
+至此，FlinkSQL 的丝滑之旅已经开始，还不赶快邀请朋友一起探索这奇妙的 Dinky 实时计算平台。更多用法请看官网文档（ http://www.dinky.org.cn）。

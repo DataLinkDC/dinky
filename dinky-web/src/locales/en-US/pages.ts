@@ -800,7 +800,7 @@ export default {
   'rc.ci.version': 'Version',
   'rc.ci.desc': 'Note',
   'rc.ci.search': 'Search Name/Alias/Note',
-  'rc.doc.category': 'Document Type',
+  'rc.doc.category': 'Register Type',
   'rc.doc.categoryPlaceholder': 'Please select the type of this Document!',
   'rc.doc.create': 'Create Document',
   'rc.doc.delete': 'Delete Document',
@@ -811,7 +811,7 @@ export default {
   'rc.doc.fillValueHelp': 'Please enter the fill value',
   'rc.doc.fillValuePlaceholder':
     'Please enter the fill value, use the name in the editor to trigger the prompt eg',
-  'rc.doc.functionType': 'Function Type',
+  'rc.doc.functionType': 'Document Type',
   'rc.doc.management': 'Document Management',
   'rc.doc.modify': 'Modify Document',
   'rc.doc.name': 'Name',

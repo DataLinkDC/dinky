@@ -134,7 +134,7 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 
 1.创建 issue，并描述清晰
 
-2.访问 [官网](http://www.dlink.top/#/) 网址，阅读最新文档手册
+2.访问 [官网](http://www.dinky.org.cn/#/) 网址，阅读最新文档手册
 
 3.推荐扫码进入钉钉群
 
@@ -149,3 +149,9 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 ## 版权
 
 请参考 [LICENSE](https://github.com/DataLinkDC/dinky/blob/dev/LICENSE) 文件。
+
+# 贡献者
+
+<a href="https://github.com/DataLinkDC/dinky/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=DataLinkDC/dinky" />
+</a>

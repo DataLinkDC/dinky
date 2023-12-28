@@ -130,7 +130,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>${scope.runtime}</scope>
         </dependency>
         <!-- postgresql -->
         <dependency>
@@ -284,7 +283,7 @@
         <dependency>
             <groupId>io.prometheus.jmx</groupId>
             <artifactId>jmx_prometheus_javaagent</artifactId>
-            <version>0.16.1</version>
+            <version>0.20.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.yaml</groupId>
