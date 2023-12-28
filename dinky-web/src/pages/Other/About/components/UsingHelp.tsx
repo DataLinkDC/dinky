@@ -50,8 +50,8 @@ export const UsingHelp = () => {
         <br />
         <Typography.Text {...TypographyRestProps}>
           <LinkOutlined /> Document:{' '}
-          <a href={'http://www.dlink.top'} target={'_blank'} rel='noreferrer'>
-            http://www.dlink.top
+          <a href={'http://www.dinky.org.cn/'} target={'_blank'} rel='noreferrer'>
+            http://www.dinky.org.cn/
           </a>
         </Typography.Text>
         <br />

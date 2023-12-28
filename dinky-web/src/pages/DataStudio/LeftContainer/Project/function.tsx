@@ -25,7 +25,6 @@ import { Catalogue } from '@/types/Studio/data.d';
 import { searchTreeNode } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { Badge, Space } from 'antd';
-import { PresetStatusColorType } from 'antd/es/_util/colors';
 import { Key } from 'react';
 
 export const generateList = (data: any, list: any[]) => {

@@ -848,8 +848,9 @@
             </plugin>
         </plugins>
     </build>
-    <url>http://www.dlink.top</url>
-    <inceptionYear>2014</inceptionYear>
+
+    <url>http://www.dinky.org.cn/</url>
+    <inceptionYear>2021</inceptionYear>
 
     <licenses>
         <license>
@@ -859,8 +860,63 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <id>aiwenmo</id>
+            <name>aiwenmo</name>
+            <url>https://github.com/aiwenmo</url>
+            <organization>DataLinkDC</organization>
+            <organizationUrl>https://github.com/DataLinkDC</organizationUrl>
+            <roles>
+                <role>Owner</role>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>Zzm0809</id>
+            <name>Zzm0809</name>
+            <url>https://github.com/Zzm0809</url>
+            <organization>DataLinkDC</organization>
+            <organizationUrl>https://github.com/DataLinkDC</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>zackyoungh</id>
+            <name>zackyoungh</name>
+            <url>https://github.com/zackyoungh</url>
+            <organization>DataLinkDC</organization>
+            <organizationUrl>https://github.com/DataLinkDC</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>gaoyan1998</id>
+            <name>gaoyan1998</name>
+            <url>https://github.com/gaoyan1998</url>
+            <organization>DataLinkDC</organization>
+            <organizationUrl>https://github.com/DataLinkDC</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>leechor</id>
+            <name>leechor</name>
+            <url>https://github.com/leechor</url>
+            <organization>DataLinkDC</organization>
+            <organizationUrl>https://github.com/DataLinkDC</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
     <scm>
         <connection>git@github.com:DataLinkDC/dinky.git</connection>
+        <developerConnection>https://github.com/DataLinkDC/dinky/graphs/contributors</developerConnection>
         <url>https://github.com/DataLinkDC/dinky</url>
     </scm>
     <repositories>

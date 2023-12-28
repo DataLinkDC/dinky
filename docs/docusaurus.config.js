@@ -28,7 +28,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
     title: 'Dinky',  //网站标题 | Site title
     tagline: 'Dinky 为 Apache Flink 而生，让 Flink SQL 纵享丝滑', // 网站标语 | Tagline for your website
-    url: 'http://www.dlink.top/', // 网站网址 | Your website's URL
+    url: 'http://www.dinky.org.cn/', // 网站网址 | Your website's URL
     baseUrl: '/', // 站点的相对路径 可将其视为是主机名后的路径 | Path to your website
     staticDirectories: ['static/img', 'blog/blog_img'], // 静态文件目录 | Path to static files
     // trailingSlash: true, //此选项允许您自定义 URL/链接后是否添加结尾斜杠 | Whether to append a trailing slash to the URL when rendering URLs
