@@ -2157,9 +2157,7 @@ ORDER BY order_time
 RANGE BETWEEN INTERVAL ''1'' MINUTE PRECEDING AND CURRENT ROW
 ) as one_minute_sum
 FROM source_table3;', 'All Versions', 0, 1, '2023-11-15 15:42:16.000000', '2023-12-28 00:02:57.000000', null, null);
-INSERT INTO public.dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num,
-                                         enabled, create_time, update_time, creator, updater)
-VALUES (245, 'Property', 'FLINK_OPTIONS', '', 'checkpoint config', 'checkpoint config', e'-- 声明一些调优参数 (checkpoint 等相关配置)
+INSERT INTO public.dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) VALUES (245, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'checkpoint config', 'checkpoint config', '-- 声明一些调优参数 (checkpoint 等相关配置)
 set ''execution.checkpointing.checkpoints-after-tasks-finish.enabled'' =''true'';
 SET ''pipeline.operator-chaining'' = ''false'';
 set ''state.savepoints.dir''=''file:///opt/data/flink_cluster/savepoints''; -- 目录自行修改
@@ -2169,8 +2167,7 @@ set ''state.backend.type''=''rocksdb'';
 set ''execution.checkpointing.interval''=''60 s'';
 set ''state.checkpoints.num-retained''=''100'';
 -- 使 solt 均匀分布在 各个 TM 上
-set ''cluster.evenly-spread-out-slots''=''true'';', 'All Versions', 0, 1, '2023-11-15 15:57:42.000000',
-        '2023-12-27 23:58:09.000000', null, null);
+set ''cluster.evenly-spread-out-slots''=''true'';', 'All Versions', 0, 1, '2023-11-15 15:57:42', '2023-12-27 23:58:09', null, null);
 INSERT INTO public.dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num,
                                          enabled, create_time, update_time, creator, updater)
 VALUES (246, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'note template', 'note template', e'-- -----------------------------------------------------------------
