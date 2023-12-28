@@ -201,33 +201,34 @@ public class Explainer {
         int index = 1;
         boolean correct = true;
         for (StatementParam item : jobParam.getDdl()) {
-            SqlExplainResult record = new SqlExplainResult();
+            SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
             try {
-                record = executor.explainSqlRecord(item.getValue());
-                if (Asserts.isNull(record)) {
+                SqlExplainResult recordResult = executor.explainSqlRecord(item.getValue());
+                if (Asserts.isNull(recordResult)) {
                     continue;
                 }
+                resultBuilder = SqlExplainResult.newBuilder(recordResult);
                 executor.executeSql(item.getValue());
             } catch (Exception e) {
                 String error = StrFormatter.format(
                         "Exception in executing FlinkSQL:\n{}\n{}",
                         SqlUtil.addLineNumber(item.getValue()),
                         e.getMessage());
-                record.setError(error);
-                record.setExplainTrue(false);
-                record.setExplainTime(LocalDateTime.now());
-                record.setSql(item.getValue());
-                record.setIndex(index);
-                sqlExplainRecords.add(record);
+                resultBuilder.error(error)
+                        .explainTrue(false)
+                        .explainTime(LocalDateTime.now())
+                        .sql(item.getValue()).
+                        index(index);
+                sqlExplainRecords.add(resultBuilder.build());
                 correct = false;
                 log.error(error);
                 break;
             }
-            record.setExplainTrue(true);
-            record.setExplainTime(LocalDateTime.now());
-            record.setSql(item.getValue());
-            record.setIndex(index++);
-            sqlExplainRecords.add(record);
+            resultBuilder.explainTrue(true)
+                    .explainTime(LocalDateTime.now())
+                    .sql(item.getValue())
+                    .index(index++);
+            sqlExplainRecords.add(resultBuilder.build());
         }
         if (correct && !jobParam.getTrans().isEmpty()) {
             if (useStatementSet) {
@@ -238,85 +239,88 @@ public class Explainer {
                     }
                 }
                 if (!inserts.isEmpty()) {
-                    SqlExplainResult record = new SqlExplainResult();
+                    SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
                     String sqlSet = String.join(";\r\n ", inserts);
                     try {
-                        record.setExplain(executor.explainStatementSet(inserts));
-                        record.setParseTrue(true);
-                        record.setExplainTrue(true);
+                        resultBuilder.explain(executor.explainStatementSet(inserts))
+                                .parseTrue(true)
+                                .explainTrue(true);
                     } catch (Exception e) {
                         String error = LogUtil.getError(e);
-                        record.setError(error);
-                        record.setParseTrue(false);
-                        record.setExplainTrue(false);
+                        resultBuilder.error(error)
+                                .parseTrue(false)
+                                .explainTrue(false);
                         correct = false;
                         log.error(error);
                     } finally {
-                        record.setType("Modify DML");
-                        record.setExplainTime(LocalDateTime.now());
-                        record.setSql(sqlSet);
-                        record.setIndex(index);
-                        sqlExplainRecords.add(record);
+                        resultBuilder.type("Modify DML")
+                                .explainTime(LocalDateTime.now())
+                                .sql(sqlSet)
+                                .index(index);
+                        sqlExplainRecords.add(resultBuilder.build());
                     }
                 }
             } else {
                 for (StatementParam item : jobParam.getTrans()) {
-                    SqlExplainResult record = new SqlExplainResult();
+                    SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
+
                     try {
-                        record = executor.explainSqlRecord(item.getValue());
-                        record.setParseTrue(true);
-                        record.setExplainTrue(true);
+                        resultBuilder = SqlExplainResult.newBuilder(executor.explainSqlRecord(item.getValue()));
+                        resultBuilder.parseTrue(true)
+                                .explainTrue(true);
                     } catch (Exception e) {
                         String error = StrFormatter.format(
                                 "Exception in executing FlinkSQL:\n{}\n{}",
                                 SqlUtil.addLineNumber(item.getValue()),
                                 e.getMessage());
-                        record.setError(error);
-                        record.setParseTrue(false);
-                        record.setExplainTrue(false);
+                        resultBuilder.error(error)
+                                .parseTrue(false)
+                                .explainTrue(false);
                         correct = false;
                         log.error(error);
                     } finally {
-                        record.setType("Modify DML");
-                        record.setExplainTime(LocalDateTime.now());
-                        record.setSql(item.getValue());
-                        record.setIndex(index++);
-                        sqlExplainRecords.add(record);
+                        resultBuilder.type("Modify DML")
+                                .explainTime(LocalDateTime.now())
+                                .sql(item.getValue())
+                                .index(index++);
+                        sqlExplainRecords.add(resultBuilder.build());
                     }
                 }
             }
         }
         for (StatementParam item : jobParam.getExecute()) {
-            SqlExplainResult record = new SqlExplainResult();
+            SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
+
             try {
-                record = executor.explainSqlRecord(item.getValue());
-                if (Asserts.isNull(record)) {
-                    record = new SqlExplainResult();
+                SqlExplainResult sqlExplainResult = executor.explainSqlRecord(item.getValue());
+                if (Asserts.isNull(sqlExplainResult)) {
+                    sqlExplainResult = new SqlExplainResult();
                 } else {
                     executor.executeSql(item.getValue());
                 }
-                record.setType("DATASTREAM");
-                record.setParseTrue(true);
+                resultBuilder = SqlExplainResult.newBuilder(sqlExplainResult);
+                resultBuilder.type("DATASTREAM")
+                        .parseTrue(true);
             } catch (Exception e) {
                 String error = StrFormatter.format(
                         "Exception in executing FlinkSQL:\n{}\n{}",
                         SqlUtil.addLineNumber(item.getValue()),
                         e.getMessage());
-                record.setError(error);
-                record.setExplainTrue(false);
-                record.setExplainTime(LocalDateTime.now());
-                record.setSql(item.getValue());
-                record.setIndex(index);
-                sqlExplainRecords.add(record);
+                resultBuilder.error(error)
+                        .explainTrue(false)
+                                .explainTime(LocalDateTime.now())
+                                .sql(item.getValue())
+                                .index(index);
+                sqlExplainRecords.add(resultBuilder.build());
                 correct = false;
                 log.error(error);
                 break;
             }
-            record.setExplainTrue(true);
-            record.setExplainTime(LocalDateTime.now());
-            record.setSql(item.getValue());
-            record.setIndex(index++);
-            sqlExplainRecords.add(record);
+            resultBuilder.explainTrue(true)
+                    .explainTime(LocalDateTime.now())
+                    .sql(item.getValue())
+                    .index(index++);
+            sqlExplainRecords.add(resultBuilder.build());
         }
         log.info(StrUtil.format("A total of {} FlinkSQL have been Explained.", sqlExplainRecords.size()));
         return new ExplainResult(correct, sqlExplainRecords.size(), sqlExplainRecords);
@@ -331,9 +335,9 @@ public class Explainer {
         }
 
         if (!jobParam.getExecute().isEmpty()) {
-            List<String> datastreamPlans =
+            List<String> dataStreamPlans =
                     jobParam.getExecute().stream().map(StatementParam::getValue).collect(Collectors.toList());
-            return executor.getStreamGraphFromDataStream(datastreamPlans);
+            return executor.getStreamGraphFromDataStream(dataStreamPlans);
         }
         return mapper.createObjectNode();
     }
@@ -347,9 +351,9 @@ public class Explainer {
         }
 
         if (!jobParam.getExecute().isEmpty()) {
-            List<String> datastreamPlans =
+            List<String> dataStreamPlans =
                     jobParam.getExecute().stream().map(StatementParam::getValue).collect(Collectors.toList());
-            return executor.getJobPlanInfoFromDataStream(datastreamPlans);
+            return executor.getJobPlanInfoFromDataStream(dataStreamPlans);
         }
         throw new RuntimeException("Creating job plan fails because this job doesn't contain an insert statement.");
     }

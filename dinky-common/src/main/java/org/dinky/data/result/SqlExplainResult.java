@@ -61,12 +61,38 @@ public class SqlExplainResult {
         this.explainTime = explainTime;
     }
 
+    private SqlExplainResult(Builder builder) {
+        setIndex(builder.index);
+        setType(builder.type);
+        setSql(builder.sql);
+        setParse(builder.parse);
+        setExplain(builder.explain);
+        setError(builder.error);
+        setParseTrue(builder.parseTrue);
+        setExplainTrue(builder.explainTrue);
+        setExplainTime(builder.explainTime);
+    }
+
     public static SqlExplainResult success(String type, String sql, String explain) {
         return new SqlExplainResult(1, type, sql, null, explain, null, true, true, LocalDateTime.now());
     }
 
     public static SqlExplainResult fail(String sql, String error) {
         return new SqlExplainResult(1, null, sql, null, null, error, false, false, LocalDateTime.now());
+    }
+
+    public static Builder newBuilder(SqlExplainResult copy) {
+        Builder builder = new Builder();
+        builder.index = copy.getIndex();
+        builder.type = copy.getType();
+        builder.sql = copy.getSql();
+        builder.parse = copy.getParse();
+        builder.explain = copy.getExplain();
+        builder.error = copy.getError();
+        builder.parseTrue = copy.isParseTrue();
+        builder.explainTrue = copy.isExplainTrue();
+        builder.explainTime = copy.getExplainTime();
+        return builder;
     }
 
     public Integer getIndex() {
@@ -147,5 +173,73 @@ public class SqlExplainResult {
                 "SqlExplainRecord{index=%d, type='%s', sql='%s', parse='%s', explain='%s',"
                         + " error='%s', parseTrue=%s, explainTrue=%s, explainTime=%s}",
                 index, type, sql, parse, explain, error, parseTrue, explainTrue, explainTime);
+    }
+
+    public static final class Builder {
+        private Integer index;
+        private String type;
+        private String sql;
+        private String parse;
+        private String explain;
+        private String error;
+        private boolean parseTrue;
+        private boolean explainTrue;
+        private LocalDateTime explainTime;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder index(Integer val) {
+            index = val;
+            return this;
+        }
+
+        public Builder type(String val) {
+            type = val;
+            return this;
+        }
+
+        public Builder sql(String val) {
+            sql = val;
+            return this;
+        }
+
+        public Builder parse(String val) {
+            parse = val;
+            return this;
+        }
+
+        public Builder explain(String val) {
+            explain = val;
+            return this;
+        }
+
+        public Builder error(String val) {
+            error = val;
+            return this;
+        }
+
+        public Builder parseTrue(boolean val) {
+            parseTrue = val;
+            return this;
+        }
+
+        public Builder explainTrue(boolean val) {
+            explainTrue = val;
+            return this;
+        }
+
+        public Builder explainTime(LocalDateTime val) {
+            explainTime = val;
+            return this;
+        }
+
+        public SqlExplainResult build() {
+            return new SqlExplainResult(this);
+        }
     }
 }
