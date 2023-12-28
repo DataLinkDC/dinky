@@ -821,6 +821,33 @@ update dinky_task set save_point_strategy = 0 where save_point_strategy is not n
 
 
 
+UPDATE dinky_flink_document t SET t.type = 'FLINK_OPTIONS',t.subtype = '' WHERE t.type = '优化参数';
+
+UPDATE dinky_flink_document t SET t.type = 'SQL_TEMPLATE',t.subtype = 'FlinkSql' WHERE t.type = '建表语句';
+
+UPDATE dinky_flink_document t SET t.type = 'SQL_TEMPLATE',t.subtype = 'FlinkSql' WHERE t.type = 'CataLog';
+
+UPDATE dinky_flink_document t SET t.type = 'FLINK_OPTIONS',t.subtype = '' WHERE t.type = '设置参数';
+
+UPDATE dinky_flink_document t SET t.type = 'FUN_UDF' WHERE t.type = '内置函数';
+UPDATE dinky_flink_document t SET t.type = 'FUN_UDF' WHERE t.type = 'UDF';
+
+UPDATE dinky_flink_document t SET t.subtype = 'COMPARE_FUNCTION' WHERE t.subtype = '比较函数';
+UPDATE dinky_flink_document t SET t.subtype = 'LOGICAL_FUNCTION' WHERE t.subtype = '逻辑函数';
+UPDATE dinky_flink_document t SET t.subtype = 'ARITHMETIC_FUNCTIONS' WHERE t.subtype = '算术函数';
+UPDATE dinky_flink_document t SET t.subtype = 'STRING_FUNCTIONS' WHERE t.subtype = '字符串函数';
+UPDATE dinky_flink_document t SET t.subtype = 'TIME_FUNCTION' WHERE t.subtype = '时间函数';
+UPDATE dinky_flink_document t SET t.subtype = 'CONDITIONAL_FUNCTION' WHERE t.subtype = '条件函数';
+UPDATE dinky_flink_document t SET t.subtype = 'TYPE_CONVER_FUNCTION' WHERE t.subtype = '类型转换函数功能';
+UPDATE dinky_flink_document t SET t.subtype = 'COLLECTION_FUNCTION' WHERE t.subtype = 'Collection 函数';
+UPDATE dinky_flink_document t SET t.subtype = 'VALUE_CONSTRUCTION_FUNCTION' WHERE t.subtype = 'Value Construction函数';
+UPDATE dinky_flink_document t SET t.subtype = 'VALUE_ACCESS_FUNCTION' WHERE t.subtype = 'Value Access函数';
+UPDATE dinky_flink_document t SET t.subtype = 'GROUP_FUNCTION' WHERE t.subtype = '分组函数';
+UPDATE dinky_flink_document t SET t.subtype = 'HASH_FUNCTION' WHERE t.subtype = 'hash函数';
+UPDATE dinky_flink_document t SET t.subtype = 'AGGREGATE_FUNCTION' WHERE t.subtype = '聚合函数';
+UPDATE dinky_flink_document t SET t.subtype = 'COLUMN_FUNCTION' WHERE t.subtype = '列函数';
+UPDATE dinky_flink_document t SET t.subtype = 'TABLE_AGGREGATE_FUNCTION' WHERE t.subtype = '表值聚合函数';
+UPDATE dinky_flink_document t SET t.subtype = 'OTHER_FUNCTION' WHERE t.subtype = '其他函数';
 
 
 
