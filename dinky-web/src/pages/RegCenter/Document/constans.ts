@@ -17,9 +17,6 @@
  *
  */
 
-/**
- * document category enum map
- */
 export const DOCUMENT_CATEGORY_ENUMS = {
   Variable: {text: 'Variable', value: 'Variable'},
   Module: {text: 'Module', value: 'Module'},
