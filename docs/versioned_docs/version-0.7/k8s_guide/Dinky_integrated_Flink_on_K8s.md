@@ -767,4 +767,4 @@ Flink官网-HA高可用配置：https://nightlies.apache.org/flink/flink-docs-re
 
 Flink官网-配置参数：https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/config/
 
-Dinky官网-Dinky快速集成K8S：http://www.dlink.top/docs/0.7/k8s_guide/dinky_k8s_quick_start
+Dinky官网-Dinky快速集成K8S：http://www.dinky.org.cn/docs/0.7/k8s_guide/dinky_k8s_quick_start
