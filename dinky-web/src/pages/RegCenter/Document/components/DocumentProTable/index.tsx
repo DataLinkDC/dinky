@@ -27,8 +27,8 @@ import DocumentDrawer from '@/pages/RegCenter/Document/components/DocumentDrawer
 import DocumentModalForm from '@/pages/RegCenter/Document/components/DocumentModal';
 import {
   DOCUMENT_CATEGORY_ENUMS,
-  DOCUMENT_TYPE_ENUMS,
-  DOCUMENT_FUNCTION_TYPE_ENUMS
+  DOCUMENT_FUNCTION_TYPE_ENUMS,
+  DOCUMENT_TYPE_ENUMS
 } from '@/pages/RegCenter/Document/constans';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
@@ -113,7 +113,7 @@ const DocumentTableList: React.FC = () => {
       sorter: true,
       dataIndex: 'type',
       filterMultiple: true,
-      filters:true,
+      filters: true,
       valueEnum: DOCUMENT_TYPE_ENUMS
     },
     {
