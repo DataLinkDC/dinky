@@ -325,7 +325,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         taskDTO.setStatementSet(true);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
         if ((jobResult.getStatus() == Job.JobStatus.FAILED)) {
-            throw new BusException(jobResult.getError());
+            throw new RuntimeException(jobResult.getError());
         }
         log.info("Job Submit success");
         Task task = new Task(submitDto.getId(), jobResult.getJobInstanceId());
