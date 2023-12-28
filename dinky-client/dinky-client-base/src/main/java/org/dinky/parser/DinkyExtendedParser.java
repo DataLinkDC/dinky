@@ -19,27 +19,19 @@
 
 package org.dinky.parser;
 
-import org.dinky.trans.parse.AddJarSqlParseStrategy;
-import org.dinky.trans.parse.CreateAggTableSelectSqlParseStrategy;
-import org.dinky.trans.parse.CreateTemporalTableFunctionParseStrategy;
-import org.dinky.trans.parse.SetSqlParseStrategy;
-
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.planner.parse.ExtendedParseStrategy;
 import org.apache.flink.table.planner.parse.ExtendedParser;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.ServiceLoader;
 
 public class DinkyExtendedParser extends ExtendedParser {
     public static final DinkyExtendedParser INSTANCE = new DinkyExtendedParser();
 
-    public static final List<ExtendedParseStrategy> PARSE_STRATEGIES = Arrays.asList(
-            AddJarSqlParseStrategy.INSTANCE,
-            CreateAggTableSelectSqlParseStrategy.INSTANCE,
-            SetSqlParseStrategy.INSTANCE,
-            CreateTemporalTableFunctionParseStrategy.INSTANCE);
+    protected static final List<ExtendedParseStrategy> PARSE_STRATEGIES = loadExtendedStrategies();
 
     @Override
     public Optional<Operation> parse(String statement) {
@@ -49,5 +41,15 @@ public class DinkyExtendedParser extends ExtendedParser {
             }
         }
         return Optional.empty();
+    }
+
+    private static List<ExtendedParseStrategy> loadExtendedStrategies() {
+        // load ExtendedParserStrategy class with ServiceLoader
+        List<ExtendedParseStrategy> parseStrategies = new ArrayList<>();
+        ServiceLoader<ExtendedParseStrategy> extendedParseStrategies = ServiceLoader.load(ExtendedParseStrategy.class);
+        for (ExtendedParseStrategy extendedParseStrategy : extendedParseStrategies) {
+            parseStrategies.add(extendedParseStrategy);
+        }
+        return parseStrategies;
     }
 }

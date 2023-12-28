@@ -40,7 +40,7 @@ public class ExecuteJarParseStrategy extends AbstractRegexParseStrategy {
     private static final Pattern PATTERN = Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     public static final ExecuteJarParseStrategy INSTANCE = new ExecuteJarParseStrategy();
 
-    protected ExecuteJarParseStrategy() {
+    public ExecuteJarParseStrategy() {
         super(PATTERN);
     }
 
