@@ -26,6 +26,7 @@ import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
+import org.dinky.utils.FlinkJsonUtil;
 import org.dinky.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
@@ -33,16 +34,22 @@ import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
 import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.runtime.client.JobStatusMessage;
+import org.apache.flink.runtime.messages.webmonitor.JobDetails;
+import org.apache.flink.runtime.messages.webmonitor.MultipleJobsDetails;
+import org.apache.flink.runtime.rest.messages.JobsOverviewHeaders;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
+import org.apache.hadoop.yarn.api.records.ApplicationReport;
+import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.http.HttpUtil;
 
 /**
  * YarnApplicationGateway
@@ -77,34 +84,53 @@ public class YarnApplicationGateway extends YarnGateway {
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
 
         YarnResult result = YarnResult.build(getType());
+        String webUrl;
         try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar(udfPathContextHolder)) {
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
                     clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
-            Collection<JobStatusMessage> jobStatusMessages =
-                    clusterClient.listJobs().get();
 
             int counts = SystemConfiguration.getInstances().getJobIdWait();
-            while (jobStatusMessages.size() == 0 && counts > 0) {
+            while (yarnClient.getApplicationReport(clusterClient.getClusterId()).getYarnApplicationState()
+                            == YarnApplicationState.ACCEPTED
+                    && counts-- > 0) {
                 Thread.sleep(1000);
-                counts--;
-                jobStatusMessages = clusterClient.listJobs().get();
-                if (jobStatusMessages.size() > 0) {
+            }
+            ApplicationReport applicationReport = yarnClient.getApplicationReport(clusterClient.getClusterId());
+            if (applicationReport.getYarnApplicationState() != YarnApplicationState.RUNNING) {
+                throw new RuntimeException("Yarn application state is not running, please check yarn cluster status.");
+            }
+            webUrl = applicationReport.getOriginalTrackingUrl();
+            final List<JobDetails> jobDetailsList = new ArrayList<>();
+            while (jobDetailsList.isEmpty() && counts-- > 0) {
+                Thread.sleep(1000);
+
+                String url = ReUtil.replaceAll(
+                        yarnClient
+                                        .getApplicationReport(clusterClient.getClusterId())
+                                        .getTrackingUrl()
+                                + JobsOverviewHeaders.URL,
+                        "/+",
+                        "/");
+                String json = HttpUtil.get(url);
+                MultipleJobsDetails jobsDetails = FlinkJsonUtil.toBean(json, JobsOverviewHeaders.getInstance());
+                jobDetailsList.addAll(jobsDetails.getJobs());
+                if (!jobDetailsList.isEmpty()) {
                     break;
                 }
             }
 
-            if (jobStatusMessages.size() > 0) {
+            if (!jobDetailsList.isEmpty()) {
                 List<String> jobIds = new ArrayList<>();
-                for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
-                    jobIds.add(jobStatusMessage.getJobId().toHexString());
+                for (JobDetails jobDetails : jobDetailsList) {
+                    jobIds.add(jobDetails.getJobId().toHexString());
                 }
                 result.setJids(jobIds);
             }
 
             ApplicationId applicationId = clusterClient.getClusterId();
             result.setId(applicationId.toString());
-            result.setWebURL(clusterClient.getWebInterfaceURL());
+            result.setWebURL(webUrl);
             result.success();
         } catch (Exception e) {
             result.fail(LogUtil.getError(e));
