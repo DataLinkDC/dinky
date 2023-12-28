@@ -55,7 +55,7 @@ public class FlinkServiceImpl implements FlinkService {
             dataList.add(cascaderVO);
         }
 
-        List<CascaderVO> voList = documentService.lambdaQuery().eq(Document::getCategory, "Variable").list().stream()
+        List<CascaderVO> voList = documentService.lambdaQuery().eq(Document::getType, "FLINK_OPTIONS").list().stream()
                 .map(d -> new CascaderVO(d.getName().replace("set ", "")))
                 .collect(Collectors.toList());
 
