@@ -122,7 +122,7 @@ public class JobRefreshHandler {
         } else {
             jobInfoDetail.setJobDataDto(jobDataDto);
             FlinkJobDetailInfo flinkJobDetailInfo = jobDataDto.getJob();
-//            The YARN running status is no longer monitored
+            //            The YARN running status is no longer monitored
             jobInstance.setStatus(flinkJobDetailInfo.getState());
             jobInstance.setDuration(flinkJobDetailInfo.getDuration());
             jobInstance.setCreateTime(TimeUtil.toLocalDateTime(flinkJobDetailInfo.getStartTime()));
