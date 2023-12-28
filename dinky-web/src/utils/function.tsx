@@ -45,10 +45,10 @@ import { l } from '@/utils/intl';
 import { Monaco } from '@monaco-editor/react';
 import dayjs from 'dayjs';
 import cookies from 'js-cookie';
+import { trim } from 'lodash';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
 import path from 'path';
 import { format } from 'sql-formatter';
-import {trim} from "lodash";
 
 /**
  * get language by localStorage's umi_locale , if not exist , return zh-CN
