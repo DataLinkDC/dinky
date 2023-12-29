@@ -17,6 +17,7 @@
  *
  */
 
+import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/Instance/components/contants';
 import { validatorJMHAAdderess } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import { l } from '@/utils/intl';
@@ -26,10 +27,9 @@ import {
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
-import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 import {Cluster} from "@/types/RegCenter/data.d";
 import React from "react";
-import {Alert, Divider} from "antd";
+import {Alert} from "antd";
 
 type InstanceFormProps = {
   values: Partial<Cluster.Instance>;
