@@ -25,7 +25,8 @@ import { DefaultOptionType } from 'rc-select/es/Select';
 /**
  * Cluster instance type
  */
-export const CLUSTER_INSTANCE_TYPE: DefaultOptionType[] = [
+export const CLUSTER_INSTANCE_TYPE = (hiddenOptions: string[] = []): DefaultOptionType[] => {
+  const returnResult: DefaultOptionType[] = [
   {
     value: ClusterType.STANDALONE,
     label: 'Standalone',
@@ -47,11 +48,13 @@ export const CLUSTER_INSTANCE_TYPE: DefaultOptionType[] = [
     key: ClusterType.YARN_APPLICATION
   },
   {
-    value: ClusterType.LOACL,
+    value: ClusterType.LOCAL,
     label: 'Local',
-    key: ClusterType.LOACL
+    key: ClusterType.LOCAL
   }
-];
+]
+  return returnResult.filter((item) => !hiddenOptions.includes(item.value as string));
+}
 
 /**
  * Cluster instance status enum

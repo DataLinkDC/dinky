@@ -31,6 +31,7 @@ import {
   ProFormTextArea
 } from '@ant-design/pro-components';
 import { Button, Divider, Form, Typography } from 'antd';
+import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 const { Text } = Typography;
 
 const EditJobInstanceForm = (props: {
@@ -84,7 +85,7 @@ const EditJobInstanceForm = (props: {
         name='type'
         label={l('rc.ci.type')}
         disabled
-        options={CLUSTER_INSTANCE_TYPE}
+        options={CLUSTER_INSTANCE_TYPE([ClusterType.YARN_APPLICATION])}
         rules={[{ required: true, message: l('rc.ci.typePlaceholder') }]}
         placeholder={l('rc.ci.typePlaceholder')}
       />
