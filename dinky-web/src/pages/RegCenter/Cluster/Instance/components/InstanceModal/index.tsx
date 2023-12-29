@@ -109,7 +109,7 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
         submitter={{ render: () => [...renderFooter()] }}
         initialValues={value}
       >
-        <InstanceForm values={value}/>
+        <InstanceForm values={value} />
       </ModalForm>
     </>
   );

@@ -759,7 +759,8 @@ export default {
   'rc.ci.management': '集群实例管理',
   'rc.ci.modify': '修改集群',
   'rc.ci.name': '实例名称',
-  'rc.ci.autoRegisterCannotModify': '自动注册的实例仅能修改 `JobManger高可用地址` 属性,其他无法修改!',
+  'rc.ci.autoRegisterCannotModify':
+    '自动注册的实例仅能修改 `JobManger高可用地址` 属性,其他无法修改!',
   'rc.ci.namePlaceholder': '请输入名称!',
   'rc.ci.recycle': '回收 Flink 实例',
   'rc.ci.recycleConfirm': '确定回收所有自动创建且过期的 Flink 实例吗？',

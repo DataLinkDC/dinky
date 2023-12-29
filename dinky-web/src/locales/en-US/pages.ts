@@ -790,7 +790,8 @@ export default {
   'rc.ci.management': 'Cluster Instance Management',
   'rc.ci.modify': 'Modify cluster Instance',
   'rc.ci.name': 'Name',
-  'rc.ci.autoRegisterCannotModify': 'Automatically registered instances can only modify the `JobManger high-availability address` attribute, and others cannot be modified!',
+  'rc.ci.autoRegisterCannotModify':
+    'Automatically registered instances can only modify the `JobManger high-availability address` attribute, and others cannot be modified!',
   'rc.ci.namePlaceholder': 'Please enter a name!',
   'rc.ci.recycle': 'Recycle Flink Cluster Instances',
   'rc.ci.recycleConfirm':
