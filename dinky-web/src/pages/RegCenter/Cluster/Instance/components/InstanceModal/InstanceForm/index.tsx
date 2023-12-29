@@ -27,16 +27,26 @@ import {
   ProFormTextArea
 } from '@ant-design/pro-components';
 import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
+import {Cluster} from "@/types/RegCenter/data.d";
+import React from "react";
+import {Alert, Divider} from "antd";
 
-const InstanceForm = () => {
+type InstanceFormProps = {
+  values: Partial<Cluster.Instance>;
+}
+const InstanceForm:React.FC<InstanceFormProps> = ( props) => {
+
+  const { values } = props;
   const renderForm = () => {
     return (
       <>
+        {values && values.autoRegisters && <Alert type={'warning'} message={l('rc.ci.autoRegisterCannotModify')} showIcon /> }
         <ProFormGroup>
           <ProFormText
             name='name'
             label={l('rc.ci.name')}
             width='md'
+            disabled={values &&values.autoRegisters}
             rules={[{ required: true, message: l('rc.ci.namePlaceholder') }]}
             placeholder={l('rc.ci.namePlaceholder')}
           />
@@ -45,6 +55,7 @@ const InstanceForm = () => {
             name='alias'
             label={l('rc.ci.alias')}
             width='sm'
+            disabled={values &&values.autoRegisters}
             placeholder={l('rc.ci.aliasPlaceholder')}
           />
 
@@ -52,6 +63,7 @@ const InstanceForm = () => {
             name='type'
             label={l('rc.ci.type')}
             width='sm'
+            disabled={values &&values.autoRegisters}
             options={CLUSTER_INSTANCE_TYPE([ClusterType.YARN_APPLICATION])}
             rules={[{ required: true, message: l('rc.ci.typePlaceholder') }]}
             placeholder={l('rc.ci.typePlaceholder')}
@@ -73,6 +85,7 @@ const InstanceForm = () => {
           />
           <ProFormTextArea
             name='note'
+            disabled={values &&values.autoRegisters}
             label={l('global.table.note')}
             width='md'
             placeholder={l('global.table.notePlaceholder')}
