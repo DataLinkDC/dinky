@@ -19,14 +19,16 @@
 
 package org.dinky.function.compiler;
 
-import cn.hutool.core.lang.Singleton;
-import cn.hutool.core.util.StrUtil;
-import org.apache.flink.configuration.ReadableConfig;
 import org.dinky.assertion.Asserts;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.exception.UDFCompilerException;
 
+import org.apache.flink.configuration.ReadableConfig;
+
 import java.util.List;
+
+import cn.hutool.core.lang.Singleton;
+import cn.hutool.core.util.StrUtil;
 
 /** @since 0.6.8 */
 public interface FunctionCompiler {
