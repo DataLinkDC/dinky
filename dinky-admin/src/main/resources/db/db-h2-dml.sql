@@ -469,99 +469,145 @@ VALUES (146, 10, ' 拷贝', '/registration/datasource/copy', null, 'registration
 -- ----------------------------
 -- Records of dinky_alert_rule
 -- ----------------------------
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+INSERT INTO dinky_alert_rules
+VALUES (3, 'alert.rule.jobFail',
+        '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"''FAILED''","rulePriority":"1"}]', 1, 'SYSTEM',
+        ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules
+VALUES (4, 'alert.rule.getJobInfoFail',
+        '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"''UNKNOWN''","rulePriority":"1"}]', 1, 'SYSTEM',
+        ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules
+VALUES (5, 'alert.rule.jobRestart',
+        '[{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"''RESTARTING''","rulePriority":"1"}]', 1, 'SYSTEM',
+        ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules
+VALUES (6, 'alert.rule.checkpointFail', '[{"ruleKey":"isCheckpointFailed","ruleOperator":"EQ","ruleValue":"true"}]', 1,
+        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+INSERT INTO dinky_alert_rules
+VALUES (7, 'alert.rule.jobRunException', '[{"ruleKey":"isException","ruleOperator":"EQ","ruleValue":"true"}]', 1,
+        'SYSTEM', ' or ', '', 1, '1970-01-01 00:00:00', '2023-11-22 17:03:44', null, null);
+
+
+INSERT INTO dinky_alert_template
+VALUES (1, 'Default', '
+- **Job Name :** <font color=''gray''>${jobName}</font>
+- **Job Status :** <font color=''red''>${jobStatus}</font>
+- **Alert Time :** ${alertTime}
+- **Start Time :** ${jobStartTime}
+- **End Time :** ${jobEndTime}
+- **<font color=''red''>${errorMsg}</font>**
+[Go toTask Web](http://${taskUrl})
+', 1, '2023-11-24 20:41:23', '2023-11-24 20:41:23', null, null);
+
+
+
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (1, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.async-lookup.buffer-capacity'
+VALUES ( 1, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.async-lookup.buffer-capacity'
        , '异步查找连接可以触发的最大异步操作的操作数。
-The max number of async i/o operation that the async lookup join can trigger.', 'Set ''table.exec.async-lookup.buffer-capacity''=''100'';', '1.14', 0, 1
-       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+The max number of async i/o operation that the async lookup join can trigger.'
+       , 'Set ''table.exec.async-lookup.buffer-capacity''=''100'';', '1.14', 0, 1
+       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (2, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.async-lookup.timeout'
+VALUES ( 2, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.async-lookup.timeout'
        , '异步操作完成的超时时间。
-The async timeout for the asynchronous operation to complete.', 'Set ''table.exec.async-lookup.timeout''=''3 min'';', '1.14', 0, 1
-       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+The async timeout for the asynchronous operation to complete.', 'Set ''table.exec.async-lookup.timeout''=''3 min'';'
+       , '1.14', 0, 1
+       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (3, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.disabled-operators'
+VALUES ( 3, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.disabled-operators'
        , '禁用指定operators，用逗号分隔
-Mainly for testing. A comma-separated list of operator names, each name represents a kind of disabled operator. Operators that can be disabled include "NestedLoopJoin", "ShuffleHashJoin", "BroadcastHashJoin", "SortMergeJoin", "HashAgg", "SortAgg". By default no operator is disabled.', 'Set ''table.exec.disabled-operators''=''SortMergeJoin'';', '1.14', 0, 1
-       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+Mainly for testing. A comma-separated list of operator names, each name represents a kind of disabled operator. Operators that can be disabled include "NestedLoopJoin", "ShuffleHashJoin", "BroadcastHashJoin", "SortMergeJoin", "HashAgg", "SortAgg". By default no operator is disabled.'
+       , 'Set ''table.exec.disabled-operators''=''SortMergeJoin'';', '1.14', 0, 1
+       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (4, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.mini-batch.allow-latency'
-       , '最大等待时间可用于MiniBatch缓冲输入记录。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。MiniBatch以允许的等待时间间隔以及达到最大缓冲记录数触发。注意：如果将table.exec.mini-batch.enabled设置为true，则其值必须大于零.', 'Set ''table.exec.mini-batch.allow-latency''=''-1 ms'';', '1.14', 0, 1
-       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 4, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.mini-batch.allow-latency'
+       , '最大等待时间可用于MiniBatch缓冲输入记录。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。MiniBatch以允许的等待时间间隔以及达到最大缓冲记录数触发。注意：如果将table.exec.mini-batch.enabled设置为true，则其值必须大于零.'
+       , 'Set ''table.exec.mini-batch.allow-latency''=''-1 ms'';', '1.14', 0, 1
+       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (5, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.mini-batch.enabled'
-       , '指定是否启用MiniBatch优化。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。默认情况下禁用此功能。 要启用此功能，用户应将此配置设置为true。注意：如果启用了mini batch 处理，则必须设置“ table.exec.mini-batch.allow-latency”和“ table.exec.mini-batch.size”.', 'Set ''table.exec.mini-batch.enabled''=''false'';', '1.14', 0, 1
-       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 5, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.mini-batch.enabled'
+       , '指定是否启用MiniBatch优化。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。默认情况下禁用此功能。 要启用此功能，用户应将此配置设置为true。注意：如果启用了mini batch 处理，则必须设置“ table.exec.mini-batch.allow-latency”和“ table.exec.mini-batch.size”.'
+       , 'Set ''table.exec.mini-batch.enabled''=''false'';', '1.14', 0, 1
+       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (6, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.mini-batch.size'
-       , '可以为MiniBatch缓冲最大输入记录数。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。MiniBatch以允许的等待时间间隔以及达到最大缓冲记录数触发。 注意：MiniBatch当前仅适用于非窗口聚合。如果将table.exec.mini-batch.enabled设置为true，则其值必须为正.', 'Set ''table.exec.mini-batch.size''=''-1'';', '1.14', 0, 1
-       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 6, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.mini-batch.size'
+       , '可以为MiniBatch缓冲最大输入记录数。 MiniBatch是用于缓冲输入记录以减少状态访问的优化。MiniBatch以允许的等待时间间隔以及达到最大缓冲记录数触发。 注意：MiniBatch当前仅适用于非窗口聚合。如果将table.exec.mini-batch.enabled设置为true，则其值必须为正.'
+       , 'Set ''table.exec.mini-batch.size''=''-1'';', '1.14', 0, 1
+       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (7, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.resource.default-parallelism'
+VALUES ( 7, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.resource.default-parallelism'
        , '设置所有Operator的默认并行度。
-Sets default parallelism for all operators (such as aggregate, join, filter) to run with parallel instances. This config has a higher priority than parallelism of StreamExecutionEnvironment (actually, this config overrides the parallelism of StreamExecutionEnvironment). A value of -1 indicates that no default parallelism is set, then it will fallback to use the parallelism of StreamExecutionEnvironment.', 'Set ''table.exec.resource.default-parallelism''=''1'';', '1.14', 0, 1
-       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+Sets default parallelism for all operators (such as aggregate, join, filter) to run with parallel instances. This config has a higher priority than parallelism of StreamExecutionEnvironment (actually, this config overrides the parallelism of StreamExecutionEnvironment). A value of -1 indicates that no default parallelism is set, then it will fallback to use the parallelism of StreamExecutionEnvironment.'
+       , 'Set ''table.exec.resource.default-parallelism''=''1'';', '1.14', 0, 1
+       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (8, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.sink.not-null-enforcer'
+VALUES ( 8, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.sink.not-null-enforcer'
        , '对表的NOT NULL列约束强制执行不能将空值插入到表中。Flink支持“error”（默认）和“drop”强制行为
 The NOT NULL column constraint on a table enforces that null values can''t be inserted into the table. Flink supports ''error'' (default) and ''drop'' enforcement behavior. By default, Flink will check values and throw runtime exception when null values writing into NOT NULL columns. Users can change the behavior to ''drop'' to silently drop such records without throwing exception.
 Possible values:
 "ERROR"
 "DROP"', 'Set ''table.exec.sink.not-null-enforcer''=''ERROR'';', '1.14', 0, 1
-       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (9, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.sink.upsert-materialize'
+VALUES ( 9, 'Variable', 'FLINK_OPTIONS', '', 'set table.exec.sink.upsert-materialize'
        , '由于分布式系统中 Shuffle 导致 ChangeLog 数据混乱，Sink 接收到的数据可能不是全局 upsert 的顺序。因此，在 upsert sink 之前添加 upsert materialize 运算符。它接收上游的变更日志记录并为下游生成一个 upsert 视图。默认情况下，当唯一键出现分布式无序时，会添加具体化操作符。您也可以选择不实现（NONE）或强制实现（FORCE）。
 Possible values:
 "NONE"
 "FORCE"
 "AUTO"', 'Set ''table.exec.sink.upsert-materialize''=''AUTO'';', '1.14', 0, 1
-       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2022-01-20 15:00:00', '2023-12-27 23:58:09', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
 VALUES (10, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.kafka'
-       , 'kafka快速建表格式', 'CREATE TABLE Kafka_Table (
-  `event_time` TIMESTAMP(3) METADATA FROM ''timestamp'',
-  `partition` BIGINT METADATA VIRTUAL,
-  `offset` BIGINT METADATA VIRTUAL,
-  `user_id` BIGINT,
-  `item_id` BIGINT,
-  `behavior` STRING
-) WITH (
-  ''connector'' = ''kafka'',
-  ''topic'' = ''user_behavior'',
-  ''properties.bootstrap.servers'' = ''localhost:9092'',
-  ''properties.group.id'' = ''testGroup'',
-  ''scan.startup.mode'' = ''earliest-offset'',
-  ''format'' = ''csv''
-);
---可选: ''value.fields-include'' = ''ALL'',
---可选: ''json.ignore-parse-errors'' = ''true'',
---可选: ''key.fields-prefix'' = ''k_'',', '1.14', 0, 1
-       , '2022-01-20 16:59:18', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+           , 'kafka快速建表格式',
+        'CREATE TABLE Kafka_Table (
+              `event_time` TIMESTAMP(3) METADATA FROM ''timestamp'',
+              `partition` BIGINT METADATA VIRTUAL,
+              `offset` BIGINT METADATA VIRTUAL,
+              `user_id` BIGINT,
+              `item_id` BIGINT,
+              `behavior` STRING
+            ) WITH (
+              ''connector'' = ''kafka'',
+              ''topic'' = ''user_behavior'',
+              ''properties.bootstrap.servers'' = ''localhost:9092'',
+              ''properties.group.id'' = ''testGroup'',
+              ''scan.startup.mode'' = ''earliest-offset'',
+              ''format'' = ''csv''
+                --可选: ''value.fields-include'' = ''ALL'',
+                --可选: ''json.ignore-parse-errors'' = ''true'',
+                --可选: ''key.fields-prefix'' = ''k_'',''
+            );
+',
+        '1.14', 0, 1
+           , '2022-01-20 16:59:18', '2023-12-28 00:02:57', NULL, NULL);
+
+
+
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (11, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.doris'
+VALUES ( 11, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.doris'
        , 'Doris快速建表', 'CREATE TABLE doris_table (
     cid INT,
     sid INT,
@@ -576,66 +622,70 @@ VALUES (11, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.doris'
 ''username'' = ''root'',
 ''password''=''''
 );', '1.14', 0, 1
-       , '2022-01-20 17:08:00', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2022-01-20 17:08:00', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (12, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.jdbc'
+VALUES ( 12, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.jdbc'
        , 'JDBC建表语句', 'CREATE TABLE JDBC_table (
-  id BIGINT,
-  name STRING,
-  age INT,
-  status BOOLEAN,
-  PRIMARY KEY (id) NOT ENFORCED
-) WITH (
-   ''connector'' = ''jdbc'',
-   ''url'' = ''jdbc:mysql://localhost:3306/mydatabase'',
-   ''table-name'' = ''users'',
-   ''username'' = ''root'',
-   ''password'' = ''123456''
-);
---可选: ''sink.parallelism''=''1'',
---可选: ''lookup.cache.ttl''=''1000s'',', '1.14', 0, 1
-       , '2022-01-20 17:15:26', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+              id BIGINT,
+              name STRING,
+              age INT,
+              status BOOLEAN,
+              PRIMARY KEY (id) NOT ENFORCED
+            ) WITH (
+               ''connector'' = ''jdbc'',
+               ''url'' = ''jdbc:mysql://localhost:3306/mydatabase'',
+               ''table-name'' = ''users'',
+               ''username'' = ''root'',
+               ''password'' = ''123456''
+                --可选: ''sink.parallelism''=''1'',
+                --可选: ''lookup.cache.ttl''=''1000s'',
+    );
+', '1.14', 0, 1
+       , '2022-01-20 17:15:26', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (13, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.catalog.hive'
-       , '创建HIVE的catalog', 'CREATE CATALOG hive WITH (
-    ''type'' = ''hive'',
-    ''default-database'' = ''default'',
-    ''hive-conf-dir'' = ''/app/wwwroot/MBDC/hive/conf/'', --hive配置文件
-    ''hadoop-conf-dir''=''/app/wwwroot/MBDC/hadoop/etc/hadoop/'' --hadoop配置文件，配了环境变量则不需要。
-);', '1.14', 0, 1
-       , '2022-01-20 17:18:54', '2023-12-28 00:03:53', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 13, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.catalog.hive'
+       , '创建HIVE的catalog',
+         '
+             CREATE CATALOG hive WITH (
+                 ''type'' = ''hive'',
+                 ''default-database'' = ''default'',
+                 ''hive-conf-dir'' = ''/app/wwwroot/MBDC/hive/conf/'', -- hive配置文件
+                 ''hadoop-conf-dir''=''/app/wwwroot/MBDC/hadoop/etc/hadoop/'' -- hadoop配置文件，配了环境变量则不需要。
+             );
+     ', '1.14', 0, 1
+       , '2022-01-20 17:18:54', '2023-12-28 00:03:53', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (14, 'Operator', 'SQL_TEMPLATE', 'FlinkSql', 'use.catalog.hive'
+VALUES ( 14, 'Operator', 'SQL_TEMPLATE', 'FlinkSql', 'use.catalog.hive'
        , '使用hive的catalog', 'USE CATALOG hive;', '1.14', 0, 1
-       , '2022-01-20 17:22:53', '2023-12-28 00:03:53', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2022-01-20 17:22:53', '2023-12-28 00:03:53', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (15, 'Operator', 'SQL_TEMPLATE', 'FlinkSql', 'use.catalog.default'
+VALUES ( 15, 'Operator', 'SQL_TEMPLATE', 'FlinkSql', 'use.catalog.default'
        , '使用default的catalog', 'USE CATALOG default_catalog;', '1.14', 0, 1
-       , '2022-01-20 17:23:48', '2023-12-28 00:03:53', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2022-01-20 17:23:48', '2023-12-28 00:03:53', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (16, 'Variable', 'FLINK_OPTIONS', '', 'set dialect.hive'
+VALUES ( 16, 'Variable', 'FLINK_OPTIONS', '', 'set dialect.hive'
        , '使用hive方言', 'Set table.sql-dialect=hive;', '1.14', 0, 1
-       , '2022-01-20 17:25:37', '2023-12-28 00:04:44', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2022-01-20 17:25:37', '2023-12-28 00:04:44', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (17, 'Variable', 'FLINK_OPTIONS', '', 'set dialect.default'
+VALUES ( 17, 'Variable', 'FLINK_OPTIONS', '', 'set dialect.default'
        , '使用default方言', 'Set table.sql-dialect=default;', '1.14', 0, 1
-       , '2022-01-20 17:26:19', '2023-12-28 00:04:44', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2022-01-20 17:26:19', '2023-12-28 00:04:44', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (18, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.stream.table.hive'
+VALUES ( 18, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.stream.table.hive'
        , '创建流式HIVE表', 'CREATE CATALOG hive WITH ( --创建hive的catalog
     ''type'' = ''hive'',
     ''hive-conf-dir'' = ''/app/wwwroot/MBDC/hive/conf/'',
@@ -658,11 +708,11 @@ CREATE TABLE hive_stream_table (
   ''sink.rolling-policy.check-interval''=''1min'',
   ''sink.partition-commit.policy.kind''=''metastore,success-file''
 );', '1.14', 0, 1
-       , '2022-01-20 17:34:06', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2022-01-20 17:34:06', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (19, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.mysql_cdc'
+VALUES ( 19, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.mysql_cdc'
        , '创建Mysql_CDC表', 'CREATE TABLE mysql_cdc_table(
     cid INT,
     sid INT,
@@ -685,11 +735,11 @@ VALUES (19, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.mysql_cdc'
 ''debezium.datetime.format.timestamp''=''yyyy-MM-dd HH-mm-ss'',
 ''debezium.datetime.format.timestamp.zone''=''UTC+8'',
 ''table-name'' = ''mysql_cdc_table'');', '1.14', 0, 1
-       , '2022-01-20 17:49:14', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2022-01-20 17:49:14', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (20, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.hudi'
+VALUES ( 20, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.hudi'
        , '创建hudi表', 'CREATE TABLE hudi_table
 (
     `goods_order_id`  bigint COMMENT ''自增主键id'',
@@ -728,920 +778,965 @@ WITH (
 ''hive_sync.password'' = ''123456'', -- required, HMS 密码
 ''hive_sync.skip_ro_suffix'' = ''true'' -- 去除ro后缀
 );', '1.14', 0, 1
-       , '2022-01-20 17:56:50', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2022-01-20 17:56:50', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (21, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 <> value2'
+VALUES ( 21, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 <> value2'
        , '如果value1不等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} <> ${2:}', '1.12', 4, 1
-       , '2021-02-22 10:05:38', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 10:05:38', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (22, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 > value2'
+VALUES ( 22, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 > value2'
        , '如果value1大于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} > ${2:}', '1.12', 2, 1
-       , '2021-02-22 14:37:58', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:37:58', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (23, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 >= value2'
+VALUES ( 23, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 >= value2'
        , '如果value1大于或等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} >= ${2:}', '1.12', 2, 1
-       , '2021-02-22 14:38:52', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:38:52', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (24, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 < value2'
+VALUES ( 24, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 < value2'
        , '如果value1小于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} < ${2:}', '1.12', 0, 1
-       , '2021-02-22 14:39:15', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:39:15', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (25, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 <= value2'
-       , '如果value1小于或等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} <=   ${2:}', '1.12', 0, 1
-       , '2021-02-22 14:39:40', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 25, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 <= value2'
+       , '如果value1小于或等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} <=   ${2:}', '1.12', 0
+       , 1
+       , '2021-02-22 14:39:40', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (26, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value IS NULL'
+VALUES ( 26, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value IS NULL'
        , '如果value为NULL，则返回TRUE 。', '${1:} IS NULL', '1.12', 2, 1
-       , '2021-02-22 14:40:39', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:40:39', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (27, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value IS NOT NULL'
+VALUES ( 27, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value IS NOT NULL'
        , '如果value不为NULL，则返回TRUE 。', '${1:}  IS NOT NULL', '1.12', 0, 1
-       , '2021-02-22 14:41:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:41:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (28, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 IS DISTINCT FROM value2'
+VALUES ( 28, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 IS DISTINCT FROM value2'
        , '如果两个值不相等则返回TRUE。NULL值在这里被视为相同的值。', '${1:} IS DISTINCT FROM ${2:}', '1.12', 0, 1
-       , '2021-02-22 14:42:39', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:42:39', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (29, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 IS NOT DISTINCT FROM value2'
+VALUES ( 29, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 IS NOT DISTINCT FROM value2'
        , '如果两个值相等则返回TRUE。NULL值在这里被视为相同的值。', '${1:} IS NOT DISTINCT FROM ${2:}', '1.12', 0, 1
-       , '2021-02-22 14:43:23', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:43:23', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (30, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 BETWEEN [ ASYMMETRIC | SYMMETRIC ] value2 AND value3'
+VALUES ( 30, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 BETWEEN [ ASYMMETRIC | SYMMETRIC ] value2 AND value3'
        , '如果value1大于或等于value2和小于或等于value3 返回true', '${1:} BETWEEN ${2:} AND ${3:}', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (31, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 NOT BETWEEN [ ASYMMETRIC | SYMMETRIC ] value2 AND value3'
+VALUES ( 31, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION'
+       , 'value1 NOT BETWEEN [ ASYMMETRIC | SYMMETRIC ] value2 AND value3'
        , '如果value1小于value2或大于value3 返回true', '${1:} NOT BETWEEN ${2:} AND ${3:}', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (32, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'string1 LIKE string2 [ ESCAPE char ]'
-       , '如果STRING1匹配模式STRING2，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} LIKE ${2:}', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 32, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'string1 LIKE string2 [ ESCAPE char ]'
+       , '如果STRING1匹配模式STRING2，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} LIKE ${2:}', '1.12'
+       , 0, 1
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (33, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'string1 NOT LIKE string2 [ ESCAPE char ]'
-       , '如果STRING1不匹配模式STRING2，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} NOT LIKE ${2:}', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 33, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'string1 NOT LIKE string2 [ ESCAPE char ]'
+       , '如果STRING1不匹配模式STRING2，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} NOT LIKE ${2:}'
+       , '1.12', 0, 1
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (34, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'string1 SIMILAR TO string2 [ ESCAPE char ]'
-       , '如果STRING1与SQL正则表达式STRING2匹配，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} SIMILAR TO ${2:}', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 34, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'string1 SIMILAR TO string2 [ ESCAPE char ]'
+       , '如果STRING1与SQL正则表达式STRING2匹配，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。'
+       , '${1:} SIMILAR TO ${2:}', '1.12', 0, 1
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (35, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'string1 NOT SIMILAR TO string2 [ ESCAPE char ]'
-       , '如果STRING1与SQL正则表达式STRING2不匹配，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。', '${1:} NOT SIMILAR TO ${2:}', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 35, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'string1 NOT SIMILAR TO string2 [ ESCAPE char ]'
+       , '如果STRING1与SQL正则表达式STRING2不匹配，则返回TRUE ；如果STRING1或STRING2为NULL，则返回UNKNOWN 。'
+       , '${1:} NOT SIMILAR TO ${2:}', '1.12', 0, 1
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (36, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 IN (value2 [, value3]* )'
+VALUES ( 36, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 IN (value2 [, value3]* )'
        , '如果value1存在于给定列表（value2，value3，...）中，则返回TRUE 。
 
 当（value2，value3，...）包含NULL，如果可以找到该元素，则返回TRUE，否则返回UNKNOWN。
 
 如果value1为NULL，则始终返回UNKNOWN 。', '${1:} IN (${2:} )', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (37, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 NOT IN (value2 [, value3]* )'
+VALUES ( 37, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 NOT IN (value2 [, value3]* )'
        , '如果value1不存在于给定列表（value2，value3，...）中，则返回TRUE 。
 
 当（value2，value3，...）包含NULL，如果可以找到该元素，则返回TRUE，否则返回UNKNOWN。
 
 如果value1为NULL，则始终返回UNKNOWN 。', '${1:} NOT IN (${2:})', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (38, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'EXISTS (sub-query)'
+VALUES ( 38, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'EXISTS (sub-query)'
        , '如果value存在于子查询中，则返回TRUE。', 'EXISTS (${1:})', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (39, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value IN (sub-query)'
+VALUES ( 39, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value IN (sub-query)'
        , '如果value存在于子查询中，则返回TRUE。', '${1:} IN (${2:})', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (40, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value NOT IN (sub-query)'
+VALUES ( 40, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value NOT IN (sub-query)'
        , '如果value不存在于子查询中，则返回TRUE。', '${1:} NOT IN (${2:})', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (41, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean1 OR boolean2'
+VALUES ( 41, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean1 OR boolean2'
        , '如果BOOLEAN1为TRUE或BOOLEAN2为TRUE，则返回TRUE。支持三值逻辑。
 
 例如，true || Null(Types.BOOLEAN)返回TRUE。', '${1:} OR ${2:}', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (42, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean1 AND boolean2'
+VALUES ( 42, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean1 AND boolean2'
        , '如果BOOLEAN1和BOOLEAN2均为TRUE，则返回TRUE。支持三值逻辑。
 
 例如，true && Null(Types.BOOLEAN)返回未知。', '${1:} AND ${2:}', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (43, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'NOT boolean'
+VALUES ( 43, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'NOT boolean'
        , '如果BOOLEAN为FALSE，则返回TRUE ；如果BOOLEAN为TRUE，则返回FALSE 。
 
 如果BOOLEAN为UNKNOWN，则返回UNKNOWN。', 'NOT ${1:} ', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (44, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean IS FALSE'
+VALUES ( 44, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean IS FALSE'
        , '如果BOOLEAN为FALSE，则返回TRUE ；如果BOOLEAN为TRUE或UNKNOWN，则返回FALSE 。', '${1:}  IS FALSE', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (45, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean IS NOT FALSE'
+VALUES ( 45, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean IS NOT FALSE'
        , '如果BOOLEAN为TRUE或UNKNOWN，则返回TRUE ；如果BOOLEAN为FALSE，则返回FALSE。', '${1:}  IS NOT FALSE', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (46, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean IS TRUE'
+VALUES ( 46, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean IS TRUE'
        , '如果BOOLEAN为TRUE，则返回TRUE；如果BOOLEAN为FALSE或UNKNOWN，则返回FALSE 。', '${1:}  IS TRUE', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (47, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean IS NOT TRUE'
+VALUES ( 47, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean IS NOT TRUE'
        , '如果BOOLEAN为FALSE或UNKNOWN，则返回TRUE ；如果BOOLEAN为TRUE，则返回FALSE 。', '${1:}  IS NOT TRUE', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (48, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean IS UNKNOWN'
+VALUES ( 48, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean IS UNKNOWN'
        , '如果BOOLEAN为UNKNOWN，则返回TRUE ；如果BOOLEAN为TRUE或FALSE，则返回FALSE 。', '${1:}  IS UNKNOWN', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (49, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean IS NOT UNKNOWN'
-       , '如果BOOLEAN为TRUE或FALSE，则返回TRUE ；如果BOOLEAN为UNKNOWN，则返回FALSE 。', '${1:}  IS NOT UNKNOWN', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 49, 'Function', 'FUN_UDF', 'LOGICAL_FUNCTION', 'boolean IS NOT UNKNOWN'
+       , '如果BOOLEAN为TRUE或FALSE，则返回TRUE ；如果BOOLEAN为UNKNOWN，则返回FALSE 。', '${1:}  IS NOT UNKNOWN', '1.12', 0
+       , 1
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (50, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', '+ numeric'
+VALUES ( 50, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', '+ numeric'
        , '返回NUMERIC。', '+ ${1:} ', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (51, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', '- numeric'
+VALUES ( 51, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', '- numeric'
        , '返回负数NUMERIC。', '- ${1:} ', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (52, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'numeric1 + numeric2'
+VALUES ( 52, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'numeric1 + numeric2'
        , '返回NUMERIC1加NUMERIC2。', '${1:}  + ${2:} ', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (53, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'numeric1 - numeric2'
+VALUES ( 53, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'numeric1 - numeric2'
        , '返回NUMERIC1减去NUMERIC2。', '${1:}  - ${2:} ', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (54, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'numeric1 * numeric2'
+VALUES ( 54, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'numeric1 * numeric2'
        , '返回NUMERIC1乘以NUMERIC2。', '${1:} * ${2:} ', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (55, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'numeric1 / numeric2'
+VALUES ( 55, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'numeric1 / numeric2'
        , '返回NUMERIC1除以NUMERIC2。', '${1:}  / ${2:} ', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (56, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'numeric1 % numeric2'
+VALUES ( 56, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'numeric1 % numeric2'
        , '返回NUMERIC1除以NUMERIC2的余数（模）。仅当numeric1为负数时，结果为负数。', '${1:}  % ${2:} ', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (57, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'POWER(numeric1, numeric2)'
+VALUES ( 57, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'POWER(numeric1, numeric2)'
        , '返回NUMERIC1的NUMERIC2 次幂。', 'POWER(${1:} , ${2:})', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (58, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'ABS(numeric)'
+VALUES ( 58, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'ABS(numeric)'
        , '返回NUMERIC的绝对值。', 'ABS(${1:})', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (59, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'MOD(numeric1, numeric2)'
+VALUES ( 59, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'MOD(numeric1, numeric2)'
        , '返回numeric1除以numeric2的余数(模)。只有当numeric1为负数时，结果才为负数', 'MOD(${1:} , ${2:} )', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (60, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'SQRT(numeric)'
+VALUES ( 60, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'SQRT(numeric)'
        , '返回NUMERIC的平方根。', 'SQRT(${1:})', '1.12', 0, 1
-       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 14:44:26', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (61, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'LN(numeric)'
+VALUES ( 61, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'LN(numeric)'
        , '返回NUMERIC的自然对数（以e为底）。', 'LN(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (62, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'LOG10(numeric)'
+VALUES ( 62, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'LOG10(numeric)'
        , '返回NUMERIC的以10为底的对数。', 'LOG10(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (63, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'LOG2(numeric)'
+VALUES ( 63, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'LOG2(numeric)'
        , '返回NUMERIC的以2为底的对数。', 'LOG2(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (64, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'EXP(numeric)'
+VALUES ( 64, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'EXP(numeric)'
        , '返回e 的 NUMERIC 次幂。', 'EXP(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (65, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'FLOOR(numeric)'
+VALUES ( 65, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'FLOOR(numeric)'
        , '向下舍入NUMERIC，并返回小于或等于NUMERIC的最大整数。', 'FLOOR(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (66, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'SIN(numeric)'
+VALUES ( 66, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'SIN(numeric)'
        , '返回NUMERIC的正弦值。', 'SIN(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (67, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'SINH(numeric)'
+VALUES ( 67, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'SINH(numeric)'
        , '返回NUMERIC的双曲正弦值。
 
 返回类型为DOUBLE。', 'SINH(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (68, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'COS(numeric)'
+VALUES ( 68, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'COS(numeric)'
        , '返回NUMERIC的余弦值。', 'COS(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (69, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'TAN(numeric)'
+VALUES ( 69, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'TAN(numeric)'
        , '返回NUMERIC的正切。', 'TAN(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (70, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'TANH(numeric)'
+VALUES ( 70, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'TANH(numeric)'
        , '返回NUMERIC的双曲正切值。
 
 返回类型为DOUBLE。', 'TANH(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (71, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'COT(numeric)'
+VALUES ( 71, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'COT(numeric)'
        , '返回NUMERIC的余切。', 'COT(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (72, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'ASIN(numeric)'
+VALUES ( 72, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'ASIN(numeric)'
        , '返回NUMERIC的反正弦值。', 'ASIN(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (73, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'ACOS(numeric)'
+VALUES ( 73, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'ACOS(numeric)'
        , '返回NUMERIC的反余弦值。', 'ACOS(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (74, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'ATAN(numeric)'
+VALUES ( 74, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'ATAN(numeric)'
        , '返回NUMERIC的反正切。', 'ATAN(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (75, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'ATAN2(numeric1, numeric2)'
+VALUES ( 75, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'ATAN2(numeric1, numeric2)'
        , '返回坐标的反正切（NUMERIC1，NUMERIC2）。', 'ATAN2(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (76, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'COSH(numeric)'
+VALUES ( 76, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'COSH(numeric)'
        , '返回NUMERIC的双曲余弦值。
 
 返回值类型为DOUBLE。', 'COSH(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (77, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'DEGREES(numeric)'
+VALUES ( 77, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'DEGREES(numeric)'
        , '返回弧度NUMERIC的度数表示形式', 'DEGREES(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (78, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'RADIANS(numeric)'
+VALUES ( 78, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'RADIANS(numeric)'
        , '返回度数NUMERIC的弧度表示。', 'RADIANS(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (79, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'SIGN(numeric)'
+VALUES ( 79, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'SIGN(numeric)'
        , '返回NUMERIC的符号。', 'SIGN(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (80, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'ROUND(numeric, integer)'
+VALUES ( 80, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'ROUND(numeric, integer)'
        , '返回一个数字，四舍五入为NUMERIC的INT小数位。', 'ROUND(${1:} , ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (81, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'PI'
+VALUES ( 81, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'PI'
        , '返回一个比任何其他值都更接近圆周率的值。', 'PI', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (82, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'E()'
+VALUES ( 82, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'E()'
        , '返回一个比任何其他值都更接近e的值。', 'E()', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (83, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'RAND()'
+VALUES ( 83, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'RAND()'
        , '返回介于0.0（含）和1.0（不含）之间的伪随机双精度值。', 'RAND()', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (84, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'RAND(integer)'
+VALUES ( 84, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'RAND(integer)'
        , '返回带有初始种子INTEGER的介于0.0（含）和1.0（不含）之间的伪随机双精度值。
 
 如果两个RAND函数具有相同的初始种子，它们将返回相同的数字序列。', 'RAND(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (85, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'RAND_INTEGER(integer)'
+VALUES ( 85, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'RAND_INTEGER(integer)'
        , '返回介于0（含）和INTEGER（不含）之间的伪随机整数值。', 'RAND_INTEGER(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (86, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'RAND_INTEGER(integer1, integer2)'
+VALUES ( 86, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'RAND_INTEGER(integer1, integer2)'
        , '返回介于0（含）和INTEGER2（不含）之间的伪随机整数值，其初始种子为INTEGER1。
 
 如果两个randInteger函数具有相同的初始种子和边界，它们将返回相同的数字序列。', 'RAND_INTEGER(${1:} , ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (87, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'UUID()'
+VALUES ( 87, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'UUID()'
        , '根据RFC 4122 type 4（伪随机生成）UUID返回UUID（通用唯一标识符）字符串
 
 （例如，“ 3d3c68f7-f608-473f-b60c-b0c44ad4cc4e”）。使用加密强度高的伪随机数生成器生成UUID。', 'UUID()', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (88, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'BIN(integer)'
+VALUES ( 88, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'BIN(integer)'
        , '以二进制格式返回INTEGER的字符串表示形式。如果INTEGER为NULL，则返回NULL。
 
 例如，4.bin()返回“ 100”并12.bin()返回“ 1100”。', 'BIN(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (89, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'HEX(numeric)
+VALUES ( 89, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'HEX(numeric)
 HEX(string)'
        , '以十六进制格式返回整数NUMERIC值或STRING的字符串表示形式。如果参数为NULL，则返回NULL。
 
 例如，数字20导致“ 14”，数字100导致“ 64”，字符串“ hello，world”导致“ 68656C6C6F2C776F726C64”。', 'HEX(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (90, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'TRUNCATE(numeric1, integer2)'
+VALUES ( 90, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'TRUNCATE(numeric1, integer2)'
        , '返回一个小数点后被截断为integer2位的数字。', 'TRUNCATE(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (91, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'PI()'
+VALUES ( 91, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'PI()'
        , '返回π (pi)的值。仅在blink planner中支持。', 'PI()', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (92, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'LOG(numeric1)'
+VALUES ( 92, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'LOG(numeric1)'
        , '如果不带参数调用，则返回NUMERIC1的自然对数。当使用参数调用时，将NUMERIC1的对数返回到基数NUMERIC2。
 
 注意：当前，NUMERIC1必须大于0，而NUMERIC2必须大于1。', 'LOG(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (93, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'LOG(numeric1, numeric2)'
+VALUES ( 93, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'LOG(numeric1, numeric2)'
        , '如果不带参数调用，则返回NUMERIC1的自然对数。当使用参数调用时，将NUMERIC1的对数返回到基数NUMERIC2。
 
 注意：当前，NUMERIC1必须大于0，而NUMERIC2必须大于1。', 'LOG(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (94, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'CEIL(numeric)'
+VALUES ( 94, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'CEIL(numeric)'
        , '将NUMERIC向上舍入，并返回大于或等于NUMERIC的最小整数。', 'CEIL(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (95, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'CEILING(numeric)'
+VALUES ( 95, 'Function', 'FUN_UDF', 'ARITHMETIC_FUNCTIONS', 'CEILING(numeric)'
        , '将NUMERIC向上舍入，并返回大于或等于NUMERIC的最小整数。', 'CEILING(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (96, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'string1 || string2'
+VALUES ( 96, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'string1 || string2'
        , '返回string1和string2的连接。', '${1:} || ${2:}', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (97, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'UPPER(string)'
+VALUES ( 97, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'UPPER(string)'
        , '以大写形式返回STRING。', 'UPPER(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (98, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'LOWER(string)'
+VALUES ( 98, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'LOWER(string)'
        , '以小写形式返回STRING。', 'LOWER(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (99, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'POSITION(string1 IN string2)'
+VALUES ( 99, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'POSITION(string1 IN string2)'
        , '返回STRING1在STRING2中第一次出现的位置（从1开始）；
 
 如果在STRING2中找不到STRING1，则返回0 。', 'POSITION(${1:} IN ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (100, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'TRIM([ BOTH | LEADING | TRAILING ] string1 FROM string2)'
+VALUES ( 100, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'TRIM([ BOTH | LEADING | TRAILING ] string1 FROM string2)'
        , '返回一个字符串，该字符串从STRING中删除前导和/或结尾字符。', 'TRIM(${1:} FROM ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (101, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'LTRIM(string)'
+VALUES ( 101, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'LTRIM(string)'
        , '返回一个字符串，该字符串从STRING除去左空格。
 
 例如，" This is a test String.".ltrim()返回“This is a test String.”。', 'LTRIM(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (102, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'RTRIM(string)'
+VALUES ( 102, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'RTRIM(string)'
        , '返回一个字符串，该字符串从STRING中删除正确的空格。
 
 例如，"This is a test String. ".rtrim()返回“This is a test String.”。', 'RTRIM(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (103, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REPEAT(string, integer)'
+VALUES ( 103, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REPEAT(string, integer)'
        , '返回一个字符串，该字符串重复基本STRING INT次。
 
-例如，"This is a test String.".repeat(2)返回“This is a test String.This is a test String.”。', 'REPEAT(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+例如，"This is a test String.".repeat(2)返回“This is a test String.This is a test String.”。', 'REPEAT(${1:}, ${2:})'
+       , '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (104, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REGEXP_REPLACE(string1, string2, string3)'
+VALUES ( 104, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REGEXP_REPLACE(string1, string2, string3)'
        , '返回字符串STRING1所有匹配正则表达式的子串STRING2连续被替换STRING3。
 
 例如，"foobar".regexpReplace("oo|ar", "")返回“ fb”。', 'REGEXP_REPLACE(${1:} , ${2:} , ${3:} )', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (105, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'OVERLAY(string1 PLACING string2 FROM integer1 [ FOR integer2 ])'
-       , '从位置INT1返回一个字符串，该字符串将STRING1的INT2（默认为STRING2的长度）字符替换为STRING2', 'OVERLAY(${1:} PLACING ${2:} FROM ${3:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 105, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS'
+       , 'OVERLAY(string1 PLACING string2 FROM integer1 [ FOR integer2 ])'
+       , '从位置INT1返回一个字符串，该字符串将STRING1的INT2（默认为STRING2的长度）字符替换为STRING2'
+       , 'OVERLAY(${1:} PLACING ${2:} FROM ${3:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (106, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'SUBSTRING(string FROM integer1 [ FOR integer2 ])'
-       , '返回字符串STRING的子字符串，从位置INT1开始，长度为INT2（默认为结尾）。', 'SUBSTRING${1:} FROM ${2:} )', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 106, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'SUBSTRING(string FROM integer1 [ FOR integer2 ])'
+       , '返回字符串STRING的子字符串，从位置INT1开始，长度为INT2（默认为结尾）。', 'SUBSTRING${1:} FROM ${2:} )', '1.12', 0
+       , 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (107, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REPLACE(string1, string2, string3)'
-       , '返回一个新字符串替换其中出现的所有STRING2与STRING3（非重叠）从STRING1。', 'REPLACE(${1:} , ${2:} , ${3:} )', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 107, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REPLACE(string1, string2, string3)'
+       , '返回一个新字符串替换其中出现的所有STRING2与STRING3（非重叠）从STRING1。', 'REPLACE(${1:} , ${2:} , ${3:} )'
+       , '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (108, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REGEXP_EXTRACT(string1, string2[, integer])'
-       , '从STRING1返回一个字符串，该字符串使用指定的正则表达式STRING2和正则表达式匹配组索引INTEGER1提取。', 'REGEXP_EXTRACT(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 108, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REGEXP_EXTRACT(string1, string2[, integer])'
+       , '从STRING1返回一个字符串，该字符串使用指定的正则表达式STRING2和正则表达式匹配组索引INTEGER1提取。'
+       , 'REGEXP_EXTRACT(${1:}, ${2:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (109, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'INITCAP(string)'
+VALUES ( 109, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'INITCAP(string)'
        , '返回一种新形式的STRING，其中每个单词的第一个字符转换为大写，其余字符转换为小写。', 'INITCAP(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (110, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CONCAT(string1, string2,...)'
-       , '返回连接STRING1，STRING2，...的字符串。如果任何参数为NULL，则返回NULL。', 'CONCAT(${1:} , ${2:} , ${3:} )', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 110, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CONCAT(string1, string2,...)'
+       , '返回连接STRING1，STRING2，...的字符串。如果任何参数为NULL，则返回NULL。', 'CONCAT(${1:} , ${2:} , ${3:} )', '1.12'
+       , 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (111, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CONCAT_WS(string1, string2, string3,...)'
+VALUES ( 111, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CONCAT_WS(string1, string2, string3,...)'
        , '返回一个字符串，会连接STRING2，STRING3，......与分离STRING1。', 'CONCAT_WS(${1:} , ${2:} , ${3:} )', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (112, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'LPAD(string1, integer, string2)'
-       , '返回一个新字符串，该字符串从STRING1的左侧填充STRING2，长度为INT个字符。', 'LPAD(${1:} , ${2:} , ${3:} )', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 112, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'LPAD(string1, integer, string2)'
+       , '返回一个新字符串，该字符串从STRING1的左侧填充STRING2，长度为INT个字符。', 'LPAD(${1:} , ${2:} , ${3:} )', '1.12'
+       , 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (113, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'RPAD(string1, integer, string2)'
-       , '返回一个新字符串，该字符串从STRING1右侧填充STRING2，长度为INT个字符。', 'RPAD(${1:} , ${2:} , ${3:} )', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 113, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'RPAD(string1, integer, string2)'
+       , '返回一个新字符串，该字符串从STRING1右侧填充STRING2，长度为INT个字符。', 'RPAD(${1:} , ${2:} , ${3:} )', '1.12', 0
+       , 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (114, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'FROM_BASE64(string)'
+VALUES ( 114, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'FROM_BASE64(string)'
        , '返回来自STRING的base64解码结果；如果STRING为NULL，则返回null 。', 'FROM_BASE64(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (115, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'TO_BASE64(string)'
+VALUES ( 115, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'TO_BASE64(string)'
        , '从STRING返回base64编码的结果；如果STRING为NULL，则返回NULL。', 'TO_BASE64(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (116, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'ASCII(string)'
-       , '返回字符串的第一个字符的数值。如果字符串为NULL，则返回NULL。仅在blink planner中支持。', 'ASCII(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 116, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'ASCII(string)'
+       , '返回字符串的第一个字符的数值。如果字符串为NULL，则返回NULL。仅在blink planner中支持。', 'ASCII(${1:})', '1.12', 0
+       , 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (117, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CHR(integer)'
-       , '返回与integer在二进制上等价的ASCII字符。如果integer大于255，我们将首先得到integer的模数除以255，并返回模数的CHR。如果integer为NULL，则返回NULL。仅在blink planner中支持。', 'CHR(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 117, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CHR(integer)'
+       , '返回与integer在二进制上等价的ASCII字符。如果integer大于255，我们将首先得到integer的模数除以255，并返回模数的CHR。如果integer为NULL，则返回NULL。仅在blink planner中支持。'
+       , 'CHR(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (118, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'DECODE(binary, string)'
-       , '使用提供的字符集(''US-ASCII''， ''ISO-8859-1''， ''UTF-8''， ''UTF-16BE''， ''UTF-16LE''， ''UTF-16''之一)将第一个参数解码为字符串。如果任意一个参数为空，结果也将为空。仅在blink planner中支持。', 'DECODE(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 118, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'DECODE(binary, string)'
+       , '使用提供的字符集(''US-ASCII''， ''ISO-8859-1''， ''UTF-8''， ''UTF-16BE''， ''UTF-16LE''， ''UTF-16''之一)将第一个参数解码为字符串。如果任意一个参数为空，结果也将为空。仅在blink planner中支持。'
+       , 'DECODE(${1:}, ${2:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (119, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'ENCODE(string1, string2)'
-       , '使用提供的string2字符集(''US-ASCII''， ''ISO-8859-1''， ''UTF-8''， ''UTF-16BE''， ''UTF-16LE''， ''UTF-16''之一)将string1编码为二进制。如果任意一个参数为空，结果也将为空。仅在blink planner中支持。', 'ENCODE(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 119, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'ENCODE(string1, string2)'
+       , '使用提供的string2字符集(''US-ASCII''， ''ISO-8859-1''， ''UTF-8''， ''UTF-16BE''， ''UTF-16LE''， ''UTF-16''之一)将string1编码为二进制。如果任意一个参数为空，结果也将为空。仅在blink planner中支持。'
+       , 'ENCODE(${1:}, ${2:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (120, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'INSTR(string1, string2)'
-       , '返回string2在string1中第一次出现的位置。如果任何参数为空，则返回NULL。仅在blink planner中支持。', 'INSTR(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 120, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'INSTR(string1, string2)'
+       , '返回string2在string1中第一次出现的位置。如果任何参数为空，则返回NULL。仅在blink planner中支持。'
+       , 'INSTR(${1:}, ${2:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (121, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'LEFT(string, integer)'
-       , '返回字符串中最左边的整数字符。如果整数为负，则返回空字符串。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'LEFT(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 121, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'LEFT(string, integer)'
+       , '返回字符串中最左边的整数字符。如果整数为负，则返回空字符串。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。'
+       , 'LEFT(${1:}, ${2:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (122, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'RIGHT(string, integer)'
-       , '返回字符串中最右边的整数字符。如果整数为负，则返回空字符串。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'RIGHT(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 122, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'RIGHT(string, integer)'
+       , '返回字符串中最右边的整数字符。如果整数为负，则返回空字符串。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。'
+       , 'RIGHT(${1:}, ${2:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (123, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'LOCATE(string1, string2[, integer])'
-       , '返回string1在string2中的位置整数之后第一次出现的位置。如果没有找到，返回0。如果任何参数为NULL，则返回NULL仅在blink planner中支持。', 'LOCATE(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 123, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'LOCATE(string1, string2[, integer])'
+       , '返回string1在string2中的位置整数之后第一次出现的位置。如果没有找到，返回0。如果任何参数为NULL，则返回NULL仅在blink planner中支持。'
+       , 'LOCATE(${1:}, ${2:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (124, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'PARSE_URL(string1, string2[, string3])'
-       , '从URL返回指定的部分。string2的有效值包括''HOST''， ''PATH''， ''QUERY''， ''REF''， ''PROTOCOL''， ''AUTHORITY''， ''FILE''和''USERINFO''。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'PARSE_URL(${1:} , ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 124, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'PARSE_URL(string1, string2[, string3])'
+       , '从URL返回指定的部分。string2的有效值包括''HOST''， ''PATH''， ''QUERY''， ''REF''， ''PROTOCOL''， ''AUTHORITY''， ''FILE''和''USERINFO''。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。'
+       , 'PARSE_URL(${1:} , ${2:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (125, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REGEXP(string1, string2)'
-       , '如果string1的任何子字符串(可能为空)与Java正则表达式string2匹配，则返回TRUE，否则返回FALSE。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'REGEXP(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 125, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REGEXP(string1, string2)'
+       , '如果string1的任何子字符串(可能为空)与Java正则表达式string2匹配，则返回TRUE，否则返回FALSE。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。'
+       , 'REGEXP(${1:}, ${2:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (126, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REVERSE(string)'
+VALUES ( 126, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'REVERSE(string)'
        , '返回反向字符串。如果字符串为NULL，则返回NULL仅在blink planner中支持。', 'REVERSE(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (127, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'SPLIT_INDEX(string1, string2, integer1)'
-       , '通过分隔符string2拆分string1，返回拆分字符串的整数(从零开始)字符串。如果整数为负，返回NULL。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。', 'SPLIT_INDEX(${1:}, ${2:} , ${3:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 127, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'SPLIT_INDEX(string1, string2, integer1)'
+       , '通过分隔符string2拆分string1，返回拆分字符串的整数(从零开始)字符串。如果整数为负，返回NULL。如果任何参数为NULL，则返回NULL。仅在blink planner中支持。'
+       , 'SPLIT_INDEX(${1:}, ${2:} , ${3:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (128, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'STR_TO_MAP(string1[, string2, string3]])'
-       , '使用分隔符将string1分割成键/值对后返回一个映射。string2是pair分隔符，默认为''，''。string3是键值分隔符，默认为''=''。仅在blink planner中支持。', 'STR_TO_MAP(${1:})', '1.12', 4, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 128, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'STR_TO_MAP(string1[, string2, string3]])'
+       , '使用分隔符将string1分割成键/值对后返回一个映射。string2是pair分隔符，默认为''，''。string3是键值分隔符，默认为''=''。仅在blink planner中支持。'
+       , 'STR_TO_MAP(${1:})', '1.12', 4, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (129, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'SUBSTR(string[, integer1[, integer2]])'
-       , '返回一个字符串的子字符串，从位置integer1开始，长度为integer2(默认到末尾)。仅在blink planner中支持。', 'SUBSTR(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 129, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'SUBSTR(string[, integer1[, integer2]])'
+       , '返回一个字符串的子字符串，从位置integer1开始，长度为integer2(默认到末尾)。仅在blink planner中支持。'
+       , 'SUBSTR(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (130, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CHAR_LENGTH(string)'
+VALUES ( 130, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CHAR_LENGTH(string)'
        , '返回STRING中的字符数。', 'CHAR_LENGTH(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (131, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CHARACTER_LENGTH(string)'
+VALUES ( 131, 'Function', 'FUN_UDF', 'STRING_FUNCTIONS', 'CHARACTER_LENGTH(string)'
        , '返回STRING中的字符数。', 'CHARACTER_LENGTH(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (132, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'DATE string'
+VALUES ( 132, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'DATE string'
        , '返回以“ yyyy-MM-dd”形式从STRING解析的SQL日期。', 'DATE(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (133, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TIME string'
+VALUES ( 133, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TIME string'
        , '返回以“ HH：mm：ss”的形式从STRING解析的SQL时间。', 'TIME(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (134, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TIMESTAMP string'
+VALUES ( 134, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TIMESTAMP string'
        , '返回从STRING解析的SQL时间戳，格式为“ yyyy-MM-dd HH：mm：ss [.SSS]”', 'TIMESTAMP(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (135, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'INTERVAL string range'
-       , '解析“dd hh:mm:ss”形式的区间字符串。fff表示毫秒间隔，yyyy-mm表示月间隔。间隔范围可以是天、分钟、天到小时或天到秒，以毫秒为间隔;年或年到月的间隔。', 'INTERVAL ${1:} range', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 135, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'INTERVAL string range'
+       , '解析“dd hh:mm:ss”形式的区间字符串。fff表示毫秒间隔，yyyy-mm表示月间隔。间隔范围可以是天、分钟、天到小时或天到秒，以毫秒为间隔;年或年到月的间隔。'
+       , 'INTERVAL ${1:} range', '1.12', 0, 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (136, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CURRENT_DATE'
+VALUES ( 136, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CURRENT_DATE'
        , '返回UTC时区中的当前SQL日期。', 'CURRENT_DATE', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (137, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CURRENT_TIME'
+VALUES ( 137, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CURRENT_TIME'
        , '返回UTC时区的当前SQL时间。', 'CURRENT_TIME', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (138, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CURRENT_TIMESTAMP'
+VALUES ( 138, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CURRENT_TIMESTAMP'
        , '返回UTC时区内的当前SQL时间戳。', 'CURRENT_TIMESTAMP', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (139, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'LOCALTIME'
+VALUES ( 139, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'LOCALTIME'
        , '返回本地时区的当前SQL时间。', 'LOCALTIME', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (140, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'LOCALTIMESTAMP'
+VALUES ( 140, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'LOCALTIMESTAMP'
        , '返回本地时区的当前SQL时间戳。', 'LOCALTIMESTAMP', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (141, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'EXTRACT(timeintervalunit FROM temporal)'
+VALUES ( 141, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'EXTRACT(timeintervalunit FROM temporal)'
        , '返回从时域的timeintervalunit部分提取的长值。', 'EXTRACT(${1:} FROM ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (142, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'YEAR(date)'
+VALUES ( 142, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'YEAR(date)'
        , '返回SQL date日期的年份。等价于EXTRACT(YEAR FROM date)。', 'YEAR(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (143, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'QUARTER(date)'
-       , '从SQL date date返回一年中的季度(1到4之间的整数)。相当于EXTRACT(从日期起四分之一)。', 'QUARTER(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 143, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'QUARTER(date)'
+       , '从SQL date date返回一年中的季度(1到4之间的整数)。相当于EXTRACT(从日期起四分之一)。', 'QUARTER(${1:})', '1.12', 0
+       , 1
+       , '2021-02-22 15:29:35', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (144, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'MONTH(date)'
+VALUES ( 144, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'MONTH(date)'
        , '返回SQL date date中的某月(1到12之间的整数)。等价于EXTRACT(MONTH FROM date)。', 'MONTH(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (145, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'WEEK(date)'
-       , '从SQL date date返回一年中的某个星期(1到53之间的整数)。相当于EXTRACT(从日期开始的星期)。', 'WEEK(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 145, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'WEEK(date)'
+       , '从SQL date date返回一年中的某个星期(1到53之间的整数)。相当于EXTRACT(从日期开始的星期)。', 'WEEK(${1:})', '1.12'
+       , 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (146, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'DAYOFYEAR(date)'
+VALUES ( 146, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'DAYOFYEAR(date)'
        , '返回SQL date date中的某一天(1到366之间的整数)。相当于EXTRACT(DOY FROM date)。', 'DAYOFYEAR(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (147, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'DAYOFMONTH(date)'
-       , '从SQL date date返回一个月的哪一天(1到31之间的整数)。相当于EXTRACT(DAY FROM date)。', 'DAYOFMONTH(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 147, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'DAYOFMONTH(date)'
+       , '从SQL date date返回一个月的哪一天(1到31之间的整数)。相当于EXTRACT(DAY FROM date)。', 'DAYOFMONTH(${1:})', '1.12'
+       , 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (148, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'DAYOFWEEK(date)'
+VALUES ( 148, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'DAYOFWEEK(date)'
        , '返回星期几(1到7之间的整数;星期日= 1)从SQL日期日期。相当于提取(道指从日期)。', 'DAYOFWEEK(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (149, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'HOUR(timestamp)'
-       , '从SQL timestamp timestamp返回一天中的小时(0到23之间的整数)。相当于EXTRACT(HOUR FROM timestamp)。', 'HOUR(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 149, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'HOUR(timestamp)'
+       , '从SQL timestamp timestamp返回一天中的小时(0到23之间的整数)。相当于EXTRACT(HOUR FROM timestamp)。', 'HOUR(${1:})'
+       , '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (150, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'MINUTE(timestamp)'
-       , '从SQL timestamp timestamp返回一小时的分钟(0到59之间的整数)。相当于EXTRACT(分钟从时间戳)。', 'MINUTE(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 150, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'MINUTE(timestamp)'
+       , '从SQL timestamp timestamp返回一小时的分钟(0到59之间的整数)。相当于EXTRACT(分钟从时间戳)。', 'MINUTE(${1:})'
+       , '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (151, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'SECOND(timestamp)'
-       , '从SQL时间戳返回一分钟中的秒(0到59之间的整数)。等价于EXTRACT(从时间戳开始倒数第二)。', 'SECOND(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 151, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'SECOND(timestamp)'
+       , '从SQL时间戳返回一分钟中的秒(0到59之间的整数)。等价于EXTRACT(从时间戳开始倒数第二)。', 'SECOND(${1:})', '1.12', 0
+       , 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (152, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'FLOOR(timepoint TO timeintervalunit)'
+VALUES ( 152, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'FLOOR(timepoint TO timeintervalunit)'
        , '返回一个将timepoint舍入到时间单位timeintervalunit的值。', 'FLOOR(${1:} TO ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (153, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CEIL(timepoint TO timeintervalunit)'
+VALUES ( 153, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CEIL(timepoint TO timeintervalunit)'
        , '返回一个将timepoint舍入到时间单位timeintervalunit的值。', 'CEIL(${1:} TO ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (154, 'Function', 'FUN_UDF', 'TIME_FUNCTION', '(timepoint1, temporal1) OVERLAPS (timepoint2, temporal2)'
-       , '如果(timepoint1, temporal1)和(timepoint2, temporal2)定义的两个时间间隔重叠，则返回TRUE。时间值可以是时间点或时间间隔。', '(${1:} , ${1:}) OVERLAPS (${2:} , ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 154, 'Function', 'FUN_UDF', 'TIME_FUNCTION', '(timepoint1, temporal1) OVERLAPS (timepoint2, temporal2)'
+       , '如果(timepoint1, temporal1)和(timepoint2, temporal2)定义的两个时间间隔重叠，则返回TRUE。时间值可以是时间点或时间间隔。'
+       , '(${1:} , ${1:}) OVERLAPS (${2:} , ${2:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (155, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'DATE_FORMAT(timestamp, string)'
-       , '注意这个功能有严重的错误，现在不应该使用。请实现一个自定义的UDF，或者使用EXTRACT作为解决方案。', 'DATE_FORMAT(${1:}, ''yyyy-MM-dd'')', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 155, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'DATE_FORMAT(timestamp, string)'
+       , '注意这个功能有严重的错误，现在不应该使用。请实现一个自定义的UDF，或者使用EXTRACT作为解决方案。'
+       , 'DATE_FORMAT(${1:}, ''yyyy-MM-dd'')', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (156, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TIMESTAMPADD(timeintervalunit, interval, timepoint)'
-       , '返回一个新的时间值，该值将一个(带符号的)整数间隔添加到时间点。间隔的单位由unit参数给出，它应该是以下值之一:秒、分、小时、日、周、月、季度或年。', 'TIMESTAMPADD(${1:} , ${2:} , ${3:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 156, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TIMESTAMPADD(timeintervalunit, interval, timepoint)'
+       , '返回一个新的时间值，该值将一个(带符号的)整数间隔添加到时间点。间隔的单位由unit参数给出，它应该是以下值之一:秒、分、小时、日、周、月、季度或年。'
+       , 'TIMESTAMPADD(${1:} , ${2:} , ${3:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (157, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TIMESTAMPDIFF(timepointunit, timepoint1, timepoint2)'
-       , '返回timepointunit在timepoint1和timepoint2之间的(带符号)数。间隔的单位由第一个参数给出，它应该是以下值之一:秒、分、小时、日、月或年。', 'TIMESTAMPDIFF(${1:} , ${2:} , ${3:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 157, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TIMESTAMPDIFF(timepointunit, timepoint1, timepoint2)'
+       , '返回timepointunit在timepoint1和timepoint2之间的(带符号)数。间隔的单位由第一个参数给出，它应该是以下值之一:秒、分、小时、日、月或年。'
+       , 'TIMESTAMPDIFF(${1:} , ${2:} , ${3:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (158, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CONVERT_TZ(string1, string2, string3)'
-       , '将时区string2中的datetime string1(默认ISO时间戳格式''yyyy-MM-dd HH:mm:ss'')转换为时区string3。时区的格式可以是缩写，如“PST”;可以是全名，如“America/Los_Angeles”;或者是自定义ID，如“GMT-8:00”。仅在blink planner中支持。', 'CONVERT_TZ(${1:} , ${2:} , ${3:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 158, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'CONVERT_TZ(string1, string2, string3)'
+       , '将时区string2中的datetime string1(默认ISO时间戳格式''yyyy-MM-dd HH:mm:ss'')转换为时区string3。时区的格式可以是缩写，如“PST”;可以是全名，如“America/Los_Angeles”;或者是自定义ID，如“GMT-8:00”。仅在blink planner中支持。'
+       , 'CONVERT_TZ(${1:} , ${2:} , ${3:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (159, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'FROM_UNIXTIME(numeric[, string])'
-       , '以字符串格式返回数值参数的表示形式(默认为''yyyy-MM-dd HH:mm:ss'')。numeric是一个内部时间戳值，表示从UTC ''1970-01-01 00:00:00''开始的秒数，例如UNIX_TIMESTAMP()函数生成的时间戳。返回值用会话时区表示(在TableConfig中指定)。仅在blink planner中支持。', 'FROM_UNIXTIME(${1:} )', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 159, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'FROM_UNIXTIME(numeric[, string])'
+       , '以字符串格式返回数值参数的表示形式(默认为''yyyy-MM-dd HH:mm:ss'')。numeric是一个内部时间戳值，表示从UTC ''1970-01-01 00:00:00''开始的秒数，例如UNIX_TIMESTAMP()函数生成的时间戳。返回值用会话时区表示(在TableConfig中指定)。仅在blink planner中支持。'
+       , 'FROM_UNIXTIME(${1:} )', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (160, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'UNIX_TIMESTAMP()'
+VALUES ( 160, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'UNIX_TIMESTAMP()'
        , '获取当前Unix时间戳(以秒为单位)。仅在blink planner中支持。', 'UNIX_TIMESTAMP()', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (161, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'UNIX_TIMESTAMP(string1[, string2])'
-       , '转换日期时间字符串string1，格式为string2(缺省为yyyy-MM-dd HH:mm:ss，如果没有指定)为Unix时间戳(以秒为单位)，使用表配置中指定的时区。仅在blink planner中支持。', 'UNIX_TIMESTAMP(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 161, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'UNIX_TIMESTAMP(string1[, string2])'
+       , '转换日期时间字符串string1，格式为string2(缺省为yyyy-MM-dd HH:mm:ss，如果没有指定)为Unix时间戳(以秒为单位)，使用表配置中指定的时区。仅在blink planner中支持。'
+       , 'UNIX_TIMESTAMP(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (162, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TO_DATE(string1[, string2])'
-       , '将格式为string2的日期字符串string1(默认为''yyyy-MM-dd'')转换为日期。仅在blink planner中支持。', 'TO_DATE(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 162, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TO_DATE(string1[, string2])'
+       , '将格式为string2的日期字符串string1(默认为''yyyy-MM-dd'')转换为日期。仅在blink planner中支持。', 'TO_DATE(${1:})'
+       , '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (163, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TO_TIMESTAMP(string1[, string2])'
-       , '将会话时区(由TableConfig指定)下的日期时间字符串string1转换为时间戳，格式为string2(默认为''yyyy-MM-dd HH:mm:ss'')。仅在blink planner中支持。', 'TO_TIMESTAMP(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 163, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'TO_TIMESTAMP(string1[, string2])'
+       , '将会话时区(由TableConfig指定)下的日期时间字符串string1转换为时间戳，格式为string2(默认为''yyyy-MM-dd HH:mm:ss'')。仅在blink planner中支持。'
+       , 'TO_TIMESTAMP(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (164, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'NOW()'
+VALUES ( 164, 'Function', 'FUN_UDF', 'TIME_FUNCTION', 'NOW()'
        , '返回UTC时区内的当前SQL时间戳。仅在blink planner中支持。', 'NOW()', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (165, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'CASE value
+VALUES ( 165, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'CASE value
 WHEN value1_1 [, value1_2 ]* THEN result1
 [ WHEN value2_1 [, value2_2 ]* THEN result2 ]*
 [ ELSE resultZ ]
@@ -1650,11 +1745,11 @@ END'
   WHEN ${2:}  THEN ${3:}
  ELSE ${4:}
 END AS ${5:}', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (166, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'CASE
+VALUES ( 166, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'CASE
 WHEN condition1 THEN result1
 [ WHEN condition2 THEN result2 ]*
 [ ELSE resultZ ]
@@ -1662,321 +1757,350 @@ END'
        , '当第一个条件满足时返回resultX。当不满足任何条件时，如果提供了resultZ则返回resultZ，否则返回NULL。', 'CASE WHEN ${1:} THEN ${2:}
    ELSE ${3:}
 END AS ${4:}', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (167, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'NULLIF(value1, value2)'
+VALUES ( 167, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'NULLIF(value1, value2)'
        , '如果value1等于value2，则返回NULL;否则返回value1。', 'NULLIF(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (168, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'COALESCE(value1, value2 [, value3 ]* )'
+VALUES ( 168, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'COALESCE(value1, value2 [, value3 ]* )'
        , '返回value1, value2， ....中的第一个非空值', 'COALESCE(${1:} )', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (169, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'IF(condition, true_value, false_value)'
+VALUES ( 169, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'IF(condition, true_value, false_value)'
        , '如果条件满足则返回true值，否则返回false值。仅在blink planner中支持。', 'IF((${1:}, ${2:}, ${3:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (170, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'IS_ALPHA(string)'
-       , '如果字符串中所有字符都是字母则返回true，否则返回false。仅在blink planner中支持。', 'IS_ALPHA(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 170, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'IS_ALPHA(string)'
+       , '如果字符串中所有字符都是字母则返回true，否则返回false。仅在blink planner中支持。', 'IS_ALPHA(${1:})', '1.12', 0
+       , 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (171, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'IS_DECIMAL(string)'
-       , '如果字符串可以被解析为有效的数字则返回true，否则返回false。仅在blink planner中支持。', 'IS_DECIMAL(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 171, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'IS_DECIMAL(string)'
+       , '如果字符串可以被解析为有效的数字则返回true，否则返回false。仅在blink planner中支持。', 'IS_DECIMAL(${1:})'
+       , '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (172, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'IS_DIGIT(string)'
-       , '如果字符串中所有字符都是数字则返回true，否则返回false。仅在blink planner中支持。', 'IS_DIGIT(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 172, 'Function', 'FUN_UDF', 'CONDITIONAL_FUNCTION', 'IS_DIGIT(string)'
+       , '如果字符串中所有字符都是数字则返回true，否则返回false。仅在blink planner中支持。', 'IS_DIGIT(${1:})', '1.12', 0
+       , 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (173, 'Function', 'FUN_UDF', 'TYPE_CONVER_FUNCTION', 'CAST(value AS type)'
+VALUES ( 173, 'Function', 'FUN_UDF', 'TYPE_CONVER_FUNCTION', 'CAST(value AS type)'
        , '返回一个要转换为type类型的新值。', 'CAST(${1:} AS ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (174, 'Function', 'FUN_UDF', 'COLLECTION_FUNCTION', 'CARDINALITY(array)'
+VALUES ( 174, 'Function', 'FUN_UDF', 'COLLECTION_FUNCTION', 'CARDINALITY(array)'
        , '返回数组中元素的数量。', 'CARDINALITY(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (175, 'Function', 'FUN_UDF', 'COLLECTION_FUNCTION', 'array ‘[’ integer ‘]’'
+VALUES ( 175, 'Function', 'FUN_UDF', 'COLLECTION_FUNCTION', 'array ‘[’ integer ‘]’'
        , '返回数组中位于整数位置的元素。索引从1开始。', 'array[${1:}]', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (176, 'Function', 'FUN_UDF', 'COLLECTION_FUNCTION', 'ELEMENT(array)'
-       , '返回数组的唯一元素(其基数应为1);如果数组为空，则返回NULL。如果数组有多个元素，则抛出异常。', 'ELEMENT(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 176, 'Function', 'FUN_UDF', 'COLLECTION_FUNCTION', 'ELEMENT(array)'
+       , '返回数组的唯一元素(其基数应为1);如果数组为空，则返回NULL。如果数组有多个元素，则抛出异常。', 'ELEMENT(${1:})'
+       , '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (177, 'Function', 'FUN_UDF', 'COLLECTION_FUNCTION', 'CARDINALITY(map)'
+VALUES ( 177, 'Function', 'FUN_UDF', 'COLLECTION_FUNCTION', 'CARDINALITY(map)'
        , '返回map中的条目数。', 'CARDINALITY(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (178, 'Function', 'FUN_UDF', 'COLLECTION_FUNCTION', 'map ‘[’ value ‘]’'
+VALUES ( 178, 'Function', 'FUN_UDF', 'COLLECTION_FUNCTION', 'map ‘[’ value ‘]’'
        , '返回map中key value指定的值。', 'map[${1:}]', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (179, 'Function', 'FUN_UDF', 'VALUE_CONSTRUCTION_FUNCTION', 'ARRAY ‘[’ value1 [, value2 ]* ‘]’'
+VALUES ( 179, 'Function', 'FUN_UDF', 'VALUE_CONSTRUCTION_FUNCTION', 'ARRAY ‘[’ value1 [, value2 ]* ‘]’'
        , '返回一个由一系列值(value1, value2，…)创建的数组。', 'ARRAY[ ${1:} ]', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (180, 'Function', 'FUN_UDF', 'VALUE_CONSTRUCTION_FUNCTION', 'MAP ‘[’ value1, value2 [, value3, value4 ]* ‘]’'
+VALUES ( 180, 'Function', 'FUN_UDF', 'VALUE_CONSTRUCTION_FUNCTION', 'MAP ‘[’ value1, value2 [, value3, value4 ]* ‘]’'
        , '返回一个从键值对列表((value1, value2)， (value3, value4)，…)创建的映射。', 'MAP[ ${1:} ]', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (181, 'Function', 'FUN_UDF', 'VALUE_CONSTRUCTION_FUNCTION', 'implicit constructor with parenthesis
+VALUES ( 181, 'Function', 'FUN_UDF', 'VALUE_CONSTRUCTION_FUNCTION', 'implicit constructor with parenthesis
 (value1 [, value2]*)'
        , '返回从值列表(value1, value2，…)创建的行。', '(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (182, 'Function', 'FUN_UDF', 'VALUE_CONSTRUCTION_FUNCTION', 'explicit ROW constructor
+VALUES ( 182, 'Function', 'FUN_UDF', 'VALUE_CONSTRUCTION_FUNCTION', 'explicit ROW constructor
 ROW(value1 [, value2]*)'
        , '返回从值列表(value1, value2，…)创建的行。', 'ROW(${1:}) ', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (183, 'Function', 'FUN_UDF', 'VALUE_ACCESS_FUNCTION', 'tableName.compositeType.field'
+VALUES ( 183, 'Function', 'FUN_UDF', 'VALUE_ACCESS_FUNCTION', 'tableName.compositeType.field'
        , '按名称从Flink复合类型(例如，Tuple, POJO)中返回一个字段的值。', 'tableName.compositeType.field', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (184, 'Function', 'FUN_UDF', 'VALUE_ACCESS_FUNCTION', 'tableName.compositeType.*'
-       , '返回Flink复合类型(例如，Tuple, POJO)的平面表示，它将每个直接子类型转换为一个单独的字段。在大多数情况下，平面表示的字段的名称与原始字段类似，但使用了$分隔符(例如，mypojo$mytuple$f0)。', 'tableName.compositeType.*', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 184, 'Function', 'FUN_UDF', 'VALUE_ACCESS_FUNCTION', 'tableName.compositeType.*'
+       , '返回Flink复合类型(例如，Tuple, POJO)的平面表示，它将每个直接子类型转换为一个单独的字段。在大多数情况下，平面表示的字段的名称与原始字段类似，但使用了$分隔符(例如，mypojo$mytuple$f0)。'
+       , 'tableName.compositeType.*', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:08:59', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (185, 'Function', 'FUN_UDF', 'GROUP_FUNCTION', 'GROUP_ID()'
+VALUES ( 185, 'Function', 'FUN_UDF', 'GROUP_FUNCTION', 'GROUP_ID()'
        , '返回唯一标识分组键组合的整数', 'GROUP_ID()', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (186, 'Function', 'FUN_UDF', 'GROUP_FUNCTION', 'GROUPING(expression1 [, expression2]* )
+VALUES ( 186, 'Function', 'FUN_UDF', 'GROUP_FUNCTION', 'GROUPING(expression1 [, expression2]* )
 GROUPING_ID(expression1 [, expression2]* )'
        , '返回给定分组表达式的位向量。', 'GROUPING(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (187, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'MD5(string)'
+VALUES ( 187, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'MD5(string)'
        , '以32位十六进制数字的字符串形式返回string的MD5哈希值;如果字符串为NULL，则返回NULL。', 'MD5(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (188, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'SHA1(string)'
-       , '返回字符串的SHA-1散列，作为一个由40个十六进制数字组成的字符串;如果字符串为NULL，则返回NULL', 'SHA1(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 188, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'SHA1(string)'
+       , '返回字符串的SHA-1散列，作为一个由40个十六进制数字组成的字符串;如果字符串为NULL，则返回NULL', 'SHA1(${1:})'
+       , '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (189, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'SHA224(string)'
-       , '以56位十六进制数字的字符串形式返回字符串的SHA-224散列;如果字符串为NULL，则返回NULL。', 'SHA224(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 189, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'SHA224(string)'
+       , '以56位十六进制数字的字符串形式返回字符串的SHA-224散列;如果字符串为NULL，则返回NULL。', 'SHA224(${1:})', '1.12'
+       , 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (190, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'SHA256(string)'
-       , '以64位十六进制数字的字符串形式返回字符串的SHA-256散列;如果字符串为NULL，则返回NULL。', 'SHA256(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 190, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'SHA256(string)'
+       , '以64位十六进制数字的字符串形式返回字符串的SHA-256散列;如果字符串为NULL，则返回NULL。', 'SHA256(${1:})', '1.12'
+       , 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (191, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'SHA384(string)'
-       , '以96个十六进制数字的字符串形式返回string的SHA-384散列;如果字符串为NULL，则返回NULL。', 'SHA384(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 191, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'SHA384(string)'
+       , '以96个十六进制数字的字符串形式返回string的SHA-384散列;如果字符串为NULL，则返回NULL。', 'SHA384(${1:})', '1.12'
+       , 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (192, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'SHA512(string)'
-       , '以128位十六进制数字的字符串形式返回字符串的SHA-512散列;如果字符串为NULL，则返回NULL。', 'SHA512(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 192, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'SHA512(string)'
+       , '以128位十六进制数字的字符串形式返回字符串的SHA-512散列;如果字符串为NULL，则返回NULL。', 'SHA512(${1:})', '1.12'
+       , 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (193, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'SHA2(string, hashLength)'
-       , '使用SHA-2哈希函数族(SHA-224、SHA-256、SHA-384或SHA-512)返回哈希值。第一个参数string是要散列的字符串，第二个参数hashLength是结果的位长度(224、256、384或512)。如果string或hashLength为NULL，则返回NULL。', 'SHA2(${1:}, ${2:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 193, 'Function', 'FUN_UDF', 'HASH_FUNCTION', 'SHA2(string, hashLength)'
+       , '使用SHA-2哈希函数族(SHA-224、SHA-256、SHA-384或SHA-512)返回哈希值。第一个参数string是要散列的字符串，第二个参数hashLength是结果的位长度(224、256、384或512)。如果string或hashLength为NULL，则返回NULL。'
+       , 'SHA2(${1:}, ${2:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (194, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'COUNT([ ALL ] expression | DISTINCT expression1 [, expression2]*)'
-       , '默认情况下或使用ALL时，返回表达式不为空的输入行数。对每个值的唯一实例使用DISTINCT。', 'COUNT( DISTINCT ${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 194, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION'
+       , 'COUNT([ ALL ] expression | DISTINCT expression1 [, expression2]*)'
+       , '默认情况下或使用ALL时，返回表达式不为空的输入行数。对每个值的唯一实例使用DISTINCT。', 'COUNT( DISTINCT ${1:})'
+       , '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (195, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'COUNT(*)
+VALUES ( 195, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'COUNT(*)
 COUNT(1)'
        , '返回输入行数。', 'COUNT(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (196, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'AVG([ ALL | DISTINCT ] expression)'
-       , '默认情况下，或使用关键字ALL，返回表达式在所有输入行中的平均值(算术平均值)。对每个值的唯一实例使用DISTINCT。', 'AVG(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 196, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'AVG([ ALL | DISTINCT ] expression)'
+       , '默认情况下，或使用关键字ALL，返回表达式在所有输入行中的平均值(算术平均值)。对每个值的唯一实例使用DISTINCT。'
+       , 'AVG(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (197, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'SUM([ ALL | DISTINCT ] expression)'
-       , '默认情况下，或使用关键字ALL，返回所有输入行表达式的和。对每个值的唯一实例使用DISTINCT。', 'SUM(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 197, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'SUM([ ALL | DISTINCT ] expression)'
+       , '默认情况下，或使用关键字ALL，返回所有输入行表达式的和。对每个值的唯一实例使用DISTINCT。', 'SUM(${1:})', '1.12', 0
+       , 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (198, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'MAX([ ALL | DISTINCT ] expression)'
-       , '默认情况下或使用关键字ALL，返回表达式在所有输入行中的最大值。对每个值的唯一实例使用DISTINCT。', 'MAX(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 198, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'MAX([ ALL | DISTINCT ] expression)'
+       , '默认情况下或使用关键字ALL，返回表达式在所有输入行中的最大值。对每个值的唯一实例使用DISTINCT。', 'MAX(${1:})'
+       , '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (199, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'MIN([ ALL | DISTINCT ] expression)'
-       , '默认情况下，或使用关键字ALL，返回表达式在所有输入行中的最小值。对每个值的唯一实例使用DISTINCT。', 'MIN(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 199, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'MIN([ ALL | DISTINCT ] expression)'
+       , '默认情况下，或使用关键字ALL，返回表达式在所有输入行中的最小值。对每个值的唯一实例使用DISTINCT。', 'MIN(${1:})'
+       , '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (200, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'STDDEV_POP([ ALL | DISTINCT ] expression)'
-       , '默认情况下，或使用关键字ALL，返回表达式在所有输入行中的总体标准差。对每个值的唯一实例使用DISTINCT。', 'STDDEV_POP(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 200, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'STDDEV_POP([ ALL | DISTINCT ] expression)'
+       , '默认情况下，或使用关键字ALL，返回表达式在所有输入行中的总体标准差。对每个值的唯一实例使用DISTINCT。'
+       , 'STDDEV_POP(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (201, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'STDDEV_SAMP([ ALL | DISTINCT ] expression)'
-       , '默认情况下或使用关键字ALL时，返回表达式在所有输入行中的样本标准差。对每个值的唯一实例使用DISTINCT。', 'STDDEV_SAMP(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 201, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'STDDEV_SAMP([ ALL | DISTINCT ] expression)'
+       , '默认情况下或使用关键字ALL时，返回表达式在所有输入行中的样本标准差。对每个值的唯一实例使用DISTINCT。'
+       , 'STDDEV_SAMP(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (202, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'VAR_POP([ ALL | DISTINCT ] expression)'
-       , '默认情况下，或使用关键字ALL，返回表达式在所有输入行中的总体方差(总体标准差的平方)。对每个值的唯一实例使用DISTINCT。', 'VAR_POP(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 202, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'VAR_POP([ ALL | DISTINCT ] expression)'
+       , '默认情况下，或使用关键字ALL，返回表达式在所有输入行中的总体方差(总体标准差的平方)。对每个值的唯一实例使用DISTINCT。'
+       , 'VAR_POP(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (203, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'VAR_SAMP([ ALL | DISTINCT ] expression)'
-       , '默认情况下，或使用关键字ALL，返回表达式在所有输入行中的样本方差(样本标准差的平方)。对每个值的唯一实例使用DISTINCT。', 'VAR_SAMP(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 203, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'VAR_SAMP([ ALL | DISTINCT ] expression)'
+       , '默认情况下，或使用关键字ALL，返回表达式在所有输入行中的样本方差(样本标准差的平方)。对每个值的唯一实例使用DISTINCT。'
+       , 'VAR_SAMP(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (204, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'COLLECT([ ALL | DISTINCT ] expression)'
-       , '默认情况下，或使用关键字ALL，跨所有输入行返回表达式的多集。空值将被忽略。对每个值的唯一实例使用DISTINCT。', 'COLLECT(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 204, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'COLLECT([ ALL | DISTINCT ] expression)'
+       , '默认情况下，或使用关键字ALL，跨所有输入行返回表达式的多集。空值将被忽略。对每个值的唯一实例使用DISTINCT。'
+       , 'COLLECT(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (205, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'VARIANCE([ ALL | DISTINCT ] expression)'
+VALUES ( 205, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'VARIANCE([ ALL | DISTINCT ] expression)'
        , 'VAR_SAMP的同义词。仅在blink planner中支持。', 'VARIANCE(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (206, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'RANK()'
-       , '返回值在一组值中的秩。结果是1加上分区顺序中位于当前行之前或等于当前行的行数。这些值将在序列中产生空白。仅在blink planner中支持。', 'RANK()', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 206, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'RANK()'
+       , '返回值在一组值中的秩。结果是1加上分区顺序中位于当前行之前或等于当前行的行数。这些值将在序列中产生空白。仅在blink planner中支持。'
+       , 'RANK()', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (207, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'DENSE_RANK()'
-       , '返回值在一组值中的秩。结果是1加上前面分配的秩值。与函数rank不同，dense_rank不会在排序序列中产生空隙。仅在blink planner中支持。', 'DENSE_RANK()', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 207, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'DENSE_RANK()'
+       , '返回值在一组值中的秩。结果是1加上前面分配的秩值。与函数rank不同，dense_rank不会在排序序列中产生空隙。仅在blink planner中支持。'
+       , 'DENSE_RANK()', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (208, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'ROW_NUMBER()'
-       , '根据窗口分区中的行顺序，为每一行分配一个惟一的连续数字，从1开始。仅在blink planner中支持。', 'ROW_NUMBER()', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 208, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'ROW_NUMBER()'
+       , '根据窗口分区中的行顺序，为每一行分配一个惟一的连续数字，从1开始。仅在blink planner中支持。', 'ROW_NUMBER()'
+       , '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (209, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'LEAD(expression [, offset] [, default] )'
-       , '返回表达式在窗口中当前行之前的偏移行上的值。offset的默认值是1,default的默认值是NULL。仅在blink planner中支持。', 'LEAD(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 209, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'LEAD(expression [, offset] [, default] )'
+       , '返回表达式在窗口中当前行之前的偏移行上的值。offset的默认值是1,default的默认值是NULL。仅在blink planner中支持。'
+       , 'LEAD(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (210, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'LAG(expression [, offset] [, default])'
-       , '返回表达式的值，该值位于窗口中当前行之后的偏移行。offset的默认值是1,default的默认值是NULL。仅在blink planner中支持。', 'LAG(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 210, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'LAG(expression [, offset] [, default])'
+       , '返回表达式的值，该值位于窗口中当前行之后的偏移行。offset的默认值是1,default的默认值是NULL。仅在blink planner中支持。'
+       , 'LAG(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (211, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'FIRST_VALUE(expression)'
+VALUES ( 211, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'FIRST_VALUE(expression)'
        , '返回一组有序值中的第一个值。仅在blink planner中支持。', 'FIRST_VALUE(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (212, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'LAST_VALUE(expression)'
+VALUES ( 212, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'LAST_VALUE(expression)'
        , '返回一组有序值中的最后一个值。仅在blink planner中支持。', 'LAST_VALUE(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (213, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'LISTAGG(expression [, separator])'
-       , '连接字符串表达式的值，并在它们之间放置分隔符值。分隔符没有添加在字符串的末尾。分隔符的默认值是''，''。仅在blink planner中支持。', 'LISTAGG(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 213, 'Function', 'FUN_UDF', 'AGGREGATE_FUNCTION', 'LISTAGG(expression [, separator])'
+       , '连接字符串表达式的值，并在它们之间放置分隔符值。分隔符没有添加在字符串的末尾。分隔符的默认值是''，''。仅在blink planner中支持。'
+       , 'LISTAGG(${1:})', '1.12', 0, 1
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (214, 'Function', 'FUN_UDF', 'COLUMN_FUNCTION', 'withColumns(…)'
+VALUES ( 214, 'Function', 'FUN_UDF', 'COLUMN_FUNCTION', 'withColumns(…)'
        , '选择的列', 'withColumns(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (215, 'Function', 'FUN_UDF', 'COLUMN_FUNCTION', 'withoutColumns(…)'
+VALUES ( 215, 'Function', 'FUN_UDF', 'COLUMN_FUNCTION', 'withoutColumns(…)'
        , '不选择的列', 'withoutColumns(${1:})', '1.12', 0, 1
-       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 15:46:48', '2023-12-28 00:09:00', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (216, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 = value2'
+VALUES ( 216, 'Function', 'FUN_UDF', 'COMPARE_FUNCTION', 'value1 = value2'
        , '如果value1等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} =${2:}', '1.12', 9, 1
-       , '2021-02-22 10:06:49', '2023-12-28 00:08:58', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2021-02-22 10:06:49', '2023-12-28 00:08:58', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (217, 'Function', 'FUN_UDF', 'TABLE_AGGREGATE_FUNCTION', 'TO_MAP(string1,object2[, string3])'
-       , '将非规则一维表转化为规则二维表，string1是key。string2是value。string3为非必填项，表示key的值域（维度），用英文逗号分割。', 'TO_MAP(${1:})', '1.12', 8, 1
-       , '2021-05-20 19:59:22', '2023-12-28 00:10:10', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+VALUES ( 217, 'Function', 'FUN_UDF', 'TABLE_AGGREGATE_FUNCTION', 'TO_MAP(string1,object2[, string3])'
+       , '将非规则一维表转化为规则二维表，string1是key。string2是value。string3为非必填项，表示key的值域（维度），用英文逗号分割。'
+       , 'TO_MAP(${1:})', '1.12', 8, 1
+       , '2021-05-20 19:59:22', '2023-12-28 00:10:10', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (218, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE print'
+VALUES ( 218, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE print'
        , 'Whole library synchronization print', 'EXECUTE CDCSOURCE demo_print WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
@@ -1989,11 +2113,11 @@ VALUES (218, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE print'
   ''table-name'' = ''test\\.student,test\\.score'',
   ''sink.connector'' = ''print''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:01:45', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:01:45', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (219, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE doris'
+VALUES ( 219, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE doris'
        , 'Whole library synchronization doris', 'EXECUTE CDCSOURCE demo_print WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
@@ -2006,11 +2130,11 @@ VALUES (219, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE doris'
   ''table-name'' = ''test\\.student,test\\.score'',
   ''sink.connector'' = ''print''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:02:21', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:02:21', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (220, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_doris_schema_evolution'
+VALUES ( 220, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_doris_schema_evolution'
        , 'The entire library is synchronized to doris tape mode evolution', 'EXECUTE CDCSOURCE demo_doris_schema_evolution WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
@@ -2031,11 +2155,11 @@ VALUES (220, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_do
   ''sink.sink.db'' = ''test'',
   ''sink.table.identifier'' = ''${schemaName}.${tableName}''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:04:53', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:04:53', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (221, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE StarRocks '
+VALUES ( 221, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE StarRocks '
        , 'The entire library is synchronized to StarRocks
 ', 'EXECUTE CDCSOURCE demo_hudi WITH (
  ''connector'' = ''mysql-cdc'',
@@ -2078,11 +2202,11 @@ VALUES (221, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE StarRoc
  ''sink.hive_sync.table''=''${tableName}'',
  ''sink.table.prefix.schema''=''true''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:05:50', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:05:50', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (222, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_mysql'
+VALUES ( 222, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_mysql'
        , 'The entire library is synchronized to mysql', 'EXECUTE CDCSOURCE demo_startrocks WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
@@ -2109,11 +2233,11 @@ VALUES (222, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_mys
   ''sink.sink.buffer-flush.interval-ms'' = ''15000'',
   ''sink.sink.parallelism'' = ''1''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:07:08', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:07:08', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (223, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_doris'
+VALUES ( 223, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_doris'
        , 'The entire library is synchronized to mysql', 'EXECUTE CDCSOURCE cdc_mysql WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
@@ -2138,11 +2262,11 @@ VALUES (223, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_do
  ''sink.sink.max-retries'' = ''5'',
  ''sink.auto.create'' = ''true''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:07:47', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:07:47', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (224, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_oracle'
+VALUES ( 224, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_oracle'
        , 'The entire library is synchronized to cdc_oracle', 'EXECUTE CDCSOURCE cdc_oracle WITH (
  ''connector'' = ''oracle-cdc'',
  ''hostname'' = ''127.0.0.1'',
@@ -2160,11 +2284,11 @@ VALUES (224, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_ora
  ''password'' = ''123456'',
  ''table-name'' = ''TEST2.${tableName}''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:08:30', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:08:30', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (225, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_kafka_one'
+VALUES ( 225, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_kafka_one'
        , 'The entire library is synchronized to a topic in kafka', 'EXECUTE CDCSOURCE cdc_kafka_one WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
@@ -2179,11 +2303,11 @@ VALUES (225, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_kaf
  ''sink.topic''=''cdctest'',
  ''sink.brokers''=''bigdata2:9092,bigdata3:9092,bigdata4:9092''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:10:13', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:10:13', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (226, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_kafka_mul'
+VALUES ( 226, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_kafka_mul'
        , 'The entire library is synchronized to a single topic in kafka', 'EXECUTE CDCSOURCE cdc_kafka_mul WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
@@ -2197,11 +2321,11 @@ VALUES (226, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_kaf
  ''sink.connector''=''datastream-kafka'',
  ''sink.brokers''=''bigdata2:9092,bigdata3:9092,bigdata4:9092''
 )', 'All Versions', 0, 1
-       , '2023-10-31 16:10:59', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:10:59', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (227, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_upsert_kafka'
+VALUES ( 227, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_upsert_kafka'
        , 'The entire library is synchronized to kafka primary key mode', 'EXECUTE CDCSOURCE cdc_upsert_kafka WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
@@ -2218,11 +2342,11 @@ VALUES (227, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_ups
  ''sink.key.format'' = ''json'',
  ''sink.value.format'' = ''json''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:12:14', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:12:14', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (228, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_postgresql '
+VALUES ( 228, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_postgresql '
        , 'The entire library is synchronized to postgresql', 'EXECUTE CDCSOURCE cdc_postgresql WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
@@ -2246,11 +2370,11 @@ VALUES (228, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_pos
  ''sink.sink.buffer-flush.max-rows'' = ''100'',
  ''sink.sink.max-retries'' = ''5''
 )', 'All Versions', 0, 1
-       , '2023-10-31 16:12:54', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:12:54', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (229, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_clickhouse'
+VALUES ( 229, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_clickhouse'
        , 'Sync the entire library to clickhouse', 'EXECUTE CDCSOURCE cdc_clickhouse WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
@@ -2274,11 +2398,11 @@ VALUES (229, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE cdc_cli
   ''sink.sink.flush-interval'' = ''1000'',
   ''sink.sink.max-retries'' = ''3''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:13:33', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:13:33', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (230, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2hive'
+VALUES ( 230, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2hive'
        , 'The entire library is synchronized to the sql-catalog of hive', 'EXECUTE CDCSOURCE mysql2hive WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
@@ -2295,11 +2419,11 @@ VALUES (230, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2h
   ''sink.default-database'' = ''hdb'',
   ''sink.hive-conf-dir'' = ''/usr/local/dlink/hive-conf''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:14:31', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:14:31', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (231, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE  mysql2paimon'
+VALUES ( 231, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE  mysql2paimon'
        , 'The entire library is synchronized to paimon', 'EXECUTE CDCSOURCE mysql2paimon WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
@@ -2315,11 +2439,11 @@ VALUES (231, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE  mysql2
   ''sink.catalog.type'' = ''table-store'',
   ''sink.catalog.warehouse''=''file:/tmp/table_store''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:15:22', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:15:22', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (232, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2dinky_catalog'
+VALUES ( 232, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2dinky_catalog'
        , 'The entire library is synchronized to dinky''s built-in catalog', 'EXECUTE CDCSOURCE mysql2dinky_catalog WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
@@ -2338,11 +2462,11 @@ VALUES (232, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2d
   ''sink.catalog.url'' = ''jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC'',
   ''sink.sink.db'' = ''default_database''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:16:22', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:16:22', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (233, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2multiple_sink'
+VALUES ( 233, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2multiple_sink'
        , 'Synchronization of the entire library to multiple data sources (sink)', 'EXECUTE CDCSOURCE mysql2multiple_sink WITH (
   ''connector'' = ''mysql-cdc'',
   ''hostname'' = ''127.0.0.1'',
@@ -2370,29 +2494,29 @@ VALUES (233, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2m
   ''sink[1].topic''=''cdc'',
   ''sink[1].brokers''=''127.0.0.1:9092''
 )', 'All Versions', 0, 1
-       , '2023-10-31 16:17:27', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:17:27', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (234, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'ADD JAR'
+VALUES ( 234, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'ADD JAR'
        , 'ADD JAR', 'ADD JAR ${1:}; -- str path ', 'All Versions', 0, 1
-       , '2023-10-31 16:19:52', '2023-12-28 00:02:02', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:19:52', '2023-12-28 00:02:02', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (235, 'Function', 'Other', 'Other', 'SHOW FRAGMENTS'
+VALUES ( 235, 'Function', 'Other', 'Other', 'SHOW FRAGMENTS'
        , 'SHOW FRAGMENTS', 'SHOW FRAGMENTS;', 'All Versions', 0, 1
-       , '2023-10-31 16:20:30', '2023-12-28 09:57:55', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:20:30', '2023-12-28 09:57:55', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (236, 'Function', 'Other', 'Other', 'SHOW FRAGMENT var1'
+VALUES ( 236, 'Function', 'Other', 'Other', 'SHOW FRAGMENT var1'
        , 'SHOW FRAGMENT var1', 'SHOW FRAGMENT ${1:};', 'All Versions', 0, 1
-       , '2023-10-31 16:21:23', '2023-12-28 09:57:54', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:21:23', '2023-12-28 09:57:54', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (237, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_hudi'
+VALUES ( 237, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_hudi'
        , 'The entire library is synchronized to hudi', 'EXECUTE CDCSOURCE demo_hudi WITH (
  ''connector'' = ''mysql-cdc'',
  ''hostname'' = ''127.0.0.1'',
@@ -2434,11 +2558,11 @@ VALUES (237, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE demo_hu
  ''sink.hive_sync.table''=''${tableName}'',
  ''sink.table.prefix.schema''=''true''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:24:47', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:24:47', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (238, 'Reference', 'SQL_TEMPLATE', 'FlinkJar', 'EXECUTE JAR '
+VALUES ( 238, 'Reference', 'SQL_TEMPLATE', 'FlinkJar', 'EXECUTE JAR '
        , 'EXECUTE JAR use sql', 'EXECUTE JAR WITH (
 ''uri''=''rs:///jar/flink/demo/SocketWindowWordCount.jar'',
 ''main-class''=''org.apache.flink.streaming.examples.socket'',
@@ -2446,28 +2570,28 @@ VALUES (238, 'Reference', 'SQL_TEMPLATE', 'FlinkJar', 'EXECUTE JAR '
 ''parallelism''='''',
 ''savepoint-path''=''''
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:27:53', '2023-12-28 09:57:54', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:27:53', '2023-12-28 09:57:54', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (239, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'PRINT tablename'
+VALUES ( 239, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'PRINT tablename'
        , 'PRINT table data', 'PRINT ${1:}', 'All Versions', 0, 1
-       , '2023-10-31 16:30:22', '2023-12-28 00:09:39', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:30:22', '2023-12-28 00:09:39', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (240, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE Like'
+VALUES ( 240, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE Like'
        , 'CREATE TABLE Like source table', 'DROP TABLE IF EXISTS sink_table;
 CREATE TABLE IF not EXISTS sink_table
 WITH (
     ''topic'' = ''motor_vehicle_error''
 )
 LIKE source_table;', 'All Versions', 0, 1
-       , '2023-10-31 16:33:38', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:33:38', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (241, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE like source_table EXCLUDING'
+VALUES ( 241, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE like source_table EXCLUDING'
        , 'CREATE TABLE like source_table EXCLUDING', 'DROP TABLE IF EXISTS sink_table;
 CREATE TABLE IF not EXISTS sink_table(
      -- Add watermark definition
@@ -2482,31 +2606,31 @@ LIKE source_table (
     EXCLUDING ALL
     INCLUDING GENERATED
 );', 'All Versions', 0, 1
-       , '2023-10-31 16:36:13', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:36:13', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (242, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE ctas_kafka'
+VALUES ( 242, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE ctas_kafka'
        , 'CREATE TABLE ctas_kafka', 'CREATE TABLE my_ctas_table
 WITH (
     ''connector'' = ''kafka''
 )
 AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions', 0, 1
-       , '2023-10-31 16:37:33', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:37:33', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (243, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE rtas_kafka'
+VALUES ( 243, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'CREATE TABLE rtas_kafka'
        , 'CREATE TABLE rtas_kafka', 'CREATE OR REPLACE TABLE my_ctas_table
 WITH (
     ''connector'' = ''kafka''
 )
 AS SELECT id, name, age FROM source_table WHERE mod(id, 10) = 0;', 'All Versions', 0, 1
-       , '2023-10-31 16:41:46', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-10-31 16:41:46', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (244, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'datagen job demo'
+VALUES ( 244, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'datagen job demo'
        , 'datagen job demo', 'DROP TABLE IF EXISTS source_table3;
 CREATE TABLE IF NOT EXISTS source_table3(
 --订单id
@@ -2560,11 +2684,11 @@ ORDER BY order_time
 RANGE BETWEEN INTERVAL ''1'' MINUTE PRECEDING AND CURRENT ROW
 ) as one_minute_sum
 FROM source_table3;', 'All Versions', 0, 1
-       , '2023-11-15 15:42:16', '2023-12-28 00:02:57', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-11-15 15:42:16', '2023-12-28 00:02:57', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (245, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'checkpoint config'
+VALUES ( 245, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'checkpoint config'
        , 'checkpoint config', '-- 声明一些调优参数 (checkpoint 等相关配置)
 set ''execution.checkpointing.checkpoints-after-tasks-finish.enabled'' =''true'';
 SET ''pipeline.operator-chaining'' = ''false'';
@@ -2576,23 +2700,24 @@ set ''execution.checkpointing.interval''=''60 s'';
 set ''state.checkpoints.num-retained''=''100'';
 -- 使 solt 均匀分布在 各个 TM 上
 set ''cluster.evenly-spread-out-slots''=''true'';', 'All Versions', 0, 1
-       , '2023-11-15 15:57:42', '2023-12-28 15:49:20', NULL, NULL);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-11-15 15:57:42', '2023-12-28 15:49:20', NULL, NULL);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (246, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'note template'
-       , 'note template', '-- -----------------------------------------------------------------
+VALUES ( 246, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'note template'
+       , 'note template', '
+-- -----------------------------------------------------------------
 -- @Description(作业描述): ${1:}
 -- @Creator(创建人): ${2:}
 -- @Create DateTime(创建时间): ${3:}
 -- -----------------------------------------------------------------
-
-${4:}', 'All Versions', 0, 1
-       , '2023-11-17 17:03:24', '2023-12-28 12:05:20', 1, 1);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+${4:}
+', 'All Versions', 0, 1
+       , '2023-11-17 17:03:24', '2023-12-28 12:05:20', 1, 1);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (247, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'dinky_paimon_auto_create_table'
+VALUES ( 247, 'Reference', 'SQL_TEMPLATE', 'FlinkSql', 'dinky_paimon_auto_create_table'
        , 'dinky paimon auto create table', '-- -----------------------------------------------------------------
 -- 该 demo 用于创建 mysql-cdc 到 paimon 的整库同步案例 并使用自动建表,注意 #{schemaName} 和 #{tableName} 为固定写法,不要修改,用于动态获取库名和表名
 -- -----------------------------------------------------------------
@@ -2614,12 +2739,77 @@ WITH
     ''sink.path'' = ''hdfs:/tmp/paimon/#{schemaName}.db/#{tableName}'',
     ''sink.auto-create'' = ''true'',
   );', 'All Versions', 0, 1
-       , '2023-12-27 16:53:37', '2023-12-28 12:05:20', 1, 1);;
-INSERT INTO dinky_flink_document (id, category, type, subtype, name
+       , '2023-12-27 16:53:37', '2023-12-28 12:05:20', 1, 1);
+INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES (248, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'add-customjar'
+VALUES ( 248, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'add-customjar'
        , 'add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式', '-- add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式
 add CUSTOMJAR ''${1:}'';', 'All Versions', 0, 1
-       , '2023-12-28 10:50:17', '2023-12-28 15:49:40', 1, 1);;
+       , '2023-12-28 10:50:17', '2023-12-28 15:49:40', 1, 1);
 
+
+
+
+INSERT INTO `dinky_udf_template`
+VALUES ( 1, 'java_udf', 'Java', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}
+
+import org.apache.flink.table.functions.ScalarFunction;
+
+public class ${className} extends ScalarFunction {
+    public String eval(String s) {
+        return null;
+    }
+}'
+       , 1, '2022-10-19 09:17:37', '2022-10-25 17:45:57', null, null);
+INSERT INTO `dinky_udf_template`
+VALUES ( 2, 'java_udtf', 'Java', 'UDTF', '${(package=='''')?string('''',''package ''+package+'';'')}
+
+import org.apache.flink.table.functions.ScalarFunction;
+
+@FunctionHint(output = @DataTypeHint("ROW<word STRING, length INT>"))
+public static class ${className} extends TableFunction<Row> {
+
+  public void eval(String str) {
+    for (String s : str.split(" ")) {
+      // use collect(...) to emit a row
+      collect(Row.of(s, s.length()));
+    }
+  }
+}'
+       , 1, '2022-10-19 09:22:58', '2022-10-25 17:49:30', null, null);
+INSERT INTO `dinky_udf_template`
+VALUES ( 3, 'scala_udf', 'Scala', 'UDF', '${(package=='''')?string('''',''package ''+package+'';'')}
+
+import org.apache.flink.table.api._
+import org.apache.flink.table.functions.ScalarFunction
+
+// 定义可参数化的函数逻辑
+class ${className} extends ScalarFunction {
+  def eval(s: String, begin: Integer, end: Integer): String = {
+    "this is scala"
+  }
+}'
+       , 1, '2022-10-25 09:21:32', '2022-10-25 17:49:46', null, null);
+INSERT INTO `dinky_udf_template`
+VALUES ( 4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFunction, DataTypes
+from pyflink.table.udf import udf
+
+class ${className}(ScalarFunction):
+    def __init__(self):
+        pass
+
+    def eval(self, variable):
+        return str(variable)
+
+
+${attr!''f''} = udf(${className}(), result_type=DataTypes.STRING())'
+       , 1, '2022-10-25 09:23:07', '2022-10-25 09:34:01', null, null);
+INSERT INTO `dinky_udf_template`
+VALUES ( 5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes
+from pyflink.table.udf import udf
+
+@udf(result_type=DataTypes.STRING())
+def ${className}(variable1:str):
+  return '''''
+       , 1, '2022-10-25 09:25:13', '2022-10-25 09:34:47', null, null);
