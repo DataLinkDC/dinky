@@ -17,13 +17,13 @@
  *
  */
 
-import {l} from '@/utils/intl';
-import {ProForm, ProFormItem} from '@ant-design/pro-components';
-import {AutoComplete, Input} from 'antd';
-import {FormInstance} from 'antd/es/form/hooks/useForm';
-import {Values} from 'async-validator';
-import {DefaultOptionType} from 'rc-select/es/Select';
-import React, {useState} from 'react';
+import { l } from '@/utils/intl';
+import { ProForm, ProFormItem } from '@ant-design/pro-components';
+import { AutoComplete, Input } from 'antd';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
+import { DefaultOptionType } from 'rc-select/es/Select';
+import React, { useState } from 'react';
 
 type QueryFormProps = {
   form: FormInstance<Values>;
@@ -32,7 +32,7 @@ type QueryFormProps = {
 };
 
 const QueryForm: React.FC<QueryFormProps> = (props) => {
-  const {form, onSubmit: submitHandle, autoCompleteColumns} = props;
+  const { form, onSubmit: submitHandle, autoCompleteColumns } = props;
 
   /**
    * search form submit
@@ -51,39 +51,49 @@ const QueryForm: React.FC<QueryFormProps> = (props) => {
   });
 
   const handleOrderChange = (value: string) => {
-    setCondition(prevState => ({
+    setCondition((prevState) => ({
       ...prevState,
       order: prevState.where + `${value} ,`
     }));
   };
 
   const handleWhereChange = (value: string) => {
-    setCondition(prevState => ({
+    setCondition((prevState) => ({
       ...prevState,
       where: prevState.where + ` ${value} and`
     }));
   };
 
-
-
   const renderForm = () => {
     return (
       <>
-        <ProFormItem key='where' name='where' required initialValue={condition.where} addonBefore={'WHERE'}>
+        <ProFormItem
+          key='where'
+          name='where'
+          required
+          initialValue={condition.where}
+          addonBefore={'WHERE'}
+        >
           <AutoComplete
             options={autoCompleteColumns}
             onSelect={(value: string) => handleWhereChange(value)}
           >
-            <Input value={condition.where} style={{width: '25vw'}} maxLength={2000}/>
+            <Input value={condition.where} style={{ width: '25vw' }} maxLength={2000} />
           </AutoComplete>
         </ProFormItem>
 
-        <ProFormItem key='order' name='order' initialValue={condition.order} required addonBefore={'ORDER BY'}>
+        <ProFormItem
+          key='order'
+          name='order'
+          initialValue={condition.order}
+          required
+          addonBefore={'ORDER BY'}
+        >
           <AutoComplete
             options={autoCompleteColumns}
             onSelect={(value: string) => handleOrderChange(value)}
           >
-            <Input value={condition.order} style={{width: '25vw'}} maxLength={2000}/>
+            <Input value={condition.order} style={{ width: '25vw' }} maxLength={2000} />
           </AutoComplete>
         </ProFormItem>
       </>
@@ -117,7 +127,7 @@ const QueryForm: React.FC<QueryFormProps> = (props) => {
         isKeyPressSubmit
         autoFocusFirstInput
         className={'query-form'}
-        submitter={{...submitConfig}}
+        submitter={{ ...submitConfig }}
       >
         {renderForm()}
       </ProForm>
