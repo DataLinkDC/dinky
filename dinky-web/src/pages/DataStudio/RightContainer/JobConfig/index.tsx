@@ -31,7 +31,7 @@ import {
   buildClusterOptions,
   buildEnvOptions,
   buildRunModelOptions,
-  calculatorWidth
+  calculatorWidth, isCanRenderClusterConfiguration, isCanRenderClusterInstance
 } from '@/pages/DataStudio/RightContainer/JobConfig/function';
 import { AlertStateType, ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { DIALECT, RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
@@ -49,7 +49,7 @@ import {
 import { Badge, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
-import { useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import { connect } from 'umi';
 
 const { Text } = Typography;
@@ -76,6 +76,8 @@ const JobConfig = (props: any) => {
     }
   };
   const [form] = useForm();
+
+  const [selectRunMode, setSelectRunMode] = useState<string>(current?.type ?? RUN_MODE.LOCAL);
 
   useEffect(() => {
     dispatch({
@@ -152,7 +154,7 @@ const JobConfig = (props: any) => {
         }
       ]}
       name='clusterId'
-      options={buildClusterOptions(sessionCluster)}
+      options={buildClusterOptions(selectRunMode,sessionCluster)}
       fieldProps={{
         onChange: onChangeClusterSession
       }}
@@ -164,7 +166,7 @@ const JobConfig = (props: any) => {
       <ProForm
         size={'middle'}
         initialValues={{
-          type: RUN_MODE.LOCAL,
+          type: selectRunMode,
           envId: -1,
           parallelism: 1,
           savePointStrategy: 0,
@@ -183,30 +185,29 @@ const JobConfig = (props: any) => {
           tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
           rules={[{ required: true, message: l('pages.datastudio.label.jobConfig.execmode.tip') }]}
           options={buildRunModelOptions()}
+          fieldProps={{
+            onChange: (value :string) => {
+              setSelectRunMode(value)
+              form.resetFields(['clusterId', 'clusterConfigurationId']);
+            }
+          }}
           allowClear={false}
         />
 
-        {[RUN_MODE.YARN_SESSION, RUN_MODE.KUBERNETES_SESSION, RUN_MODE.STANDALONE].includes(
-          current?.type
-        ) && <>{execMode}</>}
+        {isCanRenderClusterInstance(selectRunMode) && <>{execMode}</>}
 
-        {[
-          RUN_MODE.YARN_PER_JOB,
-          RUN_MODE.YARN_APPLICATION,
-          RUN_MODE.KUBERNETES_APPLICATION,
-          RUN_MODE.KUBERNETES_APPLICATION_OPERATOR
-        ].includes(current?.type) && (
+        {isCanRenderClusterConfiguration(selectRunMode) && (
           <ProFormSelect
             name='clusterConfigurationId'
-            placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip2')}
+            placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1','',{type: selectRunMode})}
             label={l('pages.datastudio.label.jobConfig.clusterConfig')}
             tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip2', '', {
-              type: current?.type
+              type: selectRunMode
             })}
             rules={[
-              { required: true, message: l('pages.datastudio.label.jobConfig.clusterConfig.tip2') }
+              { required: true, message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1') }
             ]}
-            options={buildClusterConfigOptions(current, clusterConfiguration)}
+            options={buildClusterConfigOptions(selectRunMode, clusterConfiguration)}
             allowClear={false}
           />
         )}
