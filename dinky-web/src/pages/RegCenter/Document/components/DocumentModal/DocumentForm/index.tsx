@@ -36,7 +36,6 @@ import {
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
-import {ProFormDependency} from '@ant-design/pro-form';
 import {FormInstance} from 'antd/es/form/hooks/useForm';
 import {Values} from 'async-validator';
 import {DefaultOptionType} from 'rc-select/lib/Select';
