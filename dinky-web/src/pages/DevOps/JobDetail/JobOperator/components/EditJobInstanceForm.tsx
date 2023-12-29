@@ -17,6 +17,7 @@
  *
  */
 
+import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/Instance/components/contants';
 import { validatorJMHAAdderess } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import { handleAddOrUpdate } from '@/services/BusinessCrud';
@@ -31,7 +32,6 @@ import {
   ProFormTextArea
 } from '@ant-design/pro-components';
 import { Button, Divider, Form, Typography } from 'antd';
-import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 const { Text } = Typography;
 
 const EditJobInstanceForm = (props: {
