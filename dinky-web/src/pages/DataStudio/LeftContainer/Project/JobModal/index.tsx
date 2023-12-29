@@ -113,7 +113,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     // if this type is flink job, init task value and submit
     if (isFlinkJob(formData.type ?? '')) {
       const initTaskValue = {
-        savePointStrategy: -1, // -1 is disabled
+        savePointStrategy: 0, // 0 is disabled
         parallelism: 1, // default parallelism
         envId: -1, // -1 is disabled
         step: 1, // default step is develop
