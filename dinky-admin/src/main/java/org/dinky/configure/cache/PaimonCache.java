@@ -23,7 +23,7 @@ import org.dinky.data.constant.PaimonTableConstant;
 import org.dinky.data.paimon.CacheData;
 import org.dinky.utils.PaimonUtil;
 
-import org.apache.paimon.data.BinaryString;
+import org.dinky.shaded.paimon.data.BinaryString;
 
 import java.util.Arrays;
 import java.util.Collections;
