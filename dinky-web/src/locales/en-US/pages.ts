@@ -424,7 +424,8 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig': 'Flink cluster Config',
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     'Select Flink cluster Config for remote submission tasks in [{type}] mode',
-  'pages.datastudio.label.jobConfig.clusterConfig.tip2': 'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available.',
+  'pages.datastudio.label.jobConfig.clusterConfig.tip2':
+    'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available.',
   'pages.datastudio.label.jobConfig.execmode.tip':
     'Specify the execution mode of the Flink task, the default is Local',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL environment',

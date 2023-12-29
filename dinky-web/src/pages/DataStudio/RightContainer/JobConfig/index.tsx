@@ -31,7 +31,9 @@ import {
   buildClusterOptions,
   buildEnvOptions,
   buildRunModelOptions,
-  calculatorWidth, isCanRenderClusterConfiguration, isCanRenderClusterInstance
+  calculatorWidth,
+  isCanRenderClusterConfiguration,
+  isCanRenderClusterInstance
 } from '@/pages/DataStudio/RightContainer/JobConfig/function';
 import { AlertStateType, ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { DIALECT, RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
@@ -49,7 +51,7 @@ import {
 import { Badge, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { connect } from 'umi';
 
 const { Text } = Typography;
@@ -154,7 +156,7 @@ const JobConfig = (props: any) => {
         }
       ]}
       name='clusterId'
-      options={buildClusterOptions(selectRunMode,sessionCluster)}
+      options={buildClusterOptions(selectRunMode, sessionCluster)}
       fieldProps={{
         onChange: onChangeClusterSession
       }}
@@ -186,8 +188,8 @@ const JobConfig = (props: any) => {
           rules={[{ required: true, message: l('pages.datastudio.label.jobConfig.execmode.tip') }]}
           options={buildRunModelOptions()}
           fieldProps={{
-            onChange: (value :string) => {
-              setSelectRunMode(value)
+            onChange: (value: string) => {
+              setSelectRunMode(value);
               form.resetFields(['clusterId', 'clusterConfigurationId']);
             }
           }}
@@ -199,7 +201,9 @@ const JobConfig = (props: any) => {
         {isCanRenderClusterConfiguration(selectRunMode) && (
           <ProFormSelect
             name='clusterConfigurationId'
-            placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1','',{type: selectRunMode})}
+            placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+              type: selectRunMode
+            })}
             label={l('pages.datastudio.label.jobConfig.clusterConfig')}
             tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip2', '', {
               type: selectRunMode

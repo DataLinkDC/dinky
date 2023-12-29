@@ -17,14 +17,14 @@
  *
  */
 
-import {TagAlignLeft} from '@/components/StyledComponents';
-import {getAlertIcon} from '@/pages/RegCenter/Alert/AlertInstance/function';
-import {RUN_MODE} from '@/services/constants';
-import {Alert, ALERT_TYPE, Cluster} from '@/types/RegCenter/data.d';
-import {l} from '@/utils/intl';
-import {PaperClipOutlined} from '@ant-design/icons';
-import {Badge, Space, Tag} from 'antd';
-import {DefaultOptionType} from 'antd/es/select';
+import { TagAlignLeft } from '@/components/StyledComponents';
+import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
+import { RUN_MODE } from '@/services/constants';
+import { Alert, ALERT_TYPE, Cluster } from '@/types/RegCenter/data.d';
+import { l } from '@/utils/intl';
+import { PaperClipOutlined } from '@ant-design/icons';
+import { Badge, Space, Tag } from 'antd';
+import { DefaultOptionType } from 'antd/es/select';
 
 /**
  * build job run model
@@ -72,15 +72,21 @@ export const buildRunModelOptions = () => {
 /**
  * build cluster options
  */
-export const buildClusterOptions = (selectedRunMode: string, sessionCluster: Cluster.Instance[]) => {
+export const buildClusterOptions = (
+  selectedRunMode: string,
+  sessionCluster: Cluster.Instance[]
+) => {
   const sessionClusterOptions: DefaultOptionType[] = [];
   // filter session cluster options, and need to filter auto register cluster and status is normal(1)
-  sessionCluster = sessionCluster.filter((item) => item.type === selectedRunMode && !item.autoRegisters && item.status === 1);
+  sessionCluster = sessionCluster.filter(
+    (item) => item.type === selectedRunMode && !item.autoRegisters && item.status === 1
+  );
 
   for (const item of sessionCluster) {
     const tag = (
       <Space size={'small'}>
-        <Tag color={item.enabled ? 'processing' : 'error'}>{item.type}</Tag>{item.name}
+        <Tag color={item.enabled ? 'processing' : 'error'}>{item.type}</Tag>
+        {item.name}
       </Space>
     );
     sessionClusterOptions.push({
@@ -95,14 +101,21 @@ export const buildClusterOptions = (selectedRunMode: string, sessionCluster: Clu
 /**
  *  build cluster config options
  */
-export const buildClusterConfigOptions = (selectedRunMode: string, clusterConfiguration: Cluster.Config[]) => {
-
+export const buildClusterConfigOptions = (
+  selectedRunMode: string,
+  clusterConfiguration: Cluster.Config[]
+) => {
   // if run mode is yarn-application or yarn per-job, need to filter yarn application and yarn per-job
   if ([RUN_MODE.YARN_APPLICATION, RUN_MODE.YARN_PER_JOB].includes(selectedRunMode)) {
-    clusterConfiguration = clusterConfiguration.filter((item) => [RUN_MODE.YARN_APPLICATION, RUN_MODE.YARN_PER_JOB].includes(item.type) && item.isAvailable);
+    clusterConfiguration = clusterConfiguration.filter(
+      (item) =>
+        [RUN_MODE.YARN_APPLICATION, RUN_MODE.YARN_PER_JOB].includes(item.type) && item.isAvailable
+    );
   } else {
     // the other run mode, need to filter run mode
-    clusterConfiguration = clusterConfiguration.filter((item) => item.type === selectedRunMode && item.isAvailable);
+    clusterConfiguration = clusterConfiguration.filter(
+      (item) => item.type === selectedRunMode && item.isAvailable
+    );
   }
 
   const clusterConfigOptions: DefaultOptionType[] = [];
@@ -110,7 +123,8 @@ export const buildClusterConfigOptions = (selectedRunMode: string, clusterConfig
     const tag = (
       <TagAlignLeft>
         <Space size={'small'}>
-          <Tag color={item.enabled ? 'processing' : 'error'}>{item.type}</Tag>{item.name}
+          <Tag color={item.enabled ? 'processing' : 'error'}>{item.type}</Tag>
+          {item.name}
         </Space>
       </TagAlignLeft>
     );
@@ -138,8 +152,8 @@ export const buildEnvOptions = (env: any[]) => {
   for (const item of env) {
     const tag = (
       <TagAlignLeft>
-        {item.enabled ? <Badge status='success'/> : <Badge status='error'/>}
-        {item.fragment ? <PaperClipOutlined/> : undefined}
+        {item.enabled ? <Badge status='success' /> : <Badge status='error' />}
+        {item.fragment ? <PaperClipOutlined /> : undefined}
         {item.name}
       </TagAlignLeft>
     );
@@ -194,12 +208,11 @@ export const calculatorWidth = (width: number) => {
   return resultWidth > 0 ? resultWidth / 2 : 300;
 };
 
-
 export const isCanRenderClusterInstance = (selectRunMode: string) => {
   return [RUN_MODE.YARN_SESSION, RUN_MODE.KUBERNETES_SESSION, RUN_MODE.STANDALONE].includes(
     selectRunMode
-  )
-}
+  );
+};
 
 export const isCanRenderClusterConfiguration = (selectRunMode: string) => {
   return [
@@ -207,5 +220,5 @@ export const isCanRenderClusterConfiguration = (selectRunMode: string) => {
     RUN_MODE.YARN_PER_JOB,
     RUN_MODE.KUBERNETES_APPLICATION,
     RUN_MODE.KUBERNETES_APPLICATION_OPERATOR
-  ].includes(selectRunMode)
-}
+  ].includes(selectRunMode);
+};
