@@ -120,7 +120,7 @@ public class DinkyClassLoader extends URLClassLoader {
                     // maybe is system class, try parents delegate
                     return super.loadClass(name, false);
                 }
-            }else if (resolve) {
+            } else if (resolve) {
                 resolveClass(loadedClass);
             }
             return loadedClass;
