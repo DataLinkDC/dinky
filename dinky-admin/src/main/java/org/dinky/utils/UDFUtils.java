@@ -25,7 +25,6 @@ import org.dinky.function.util.UDFUtil;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 
-/** @since 0.6.8 */
 public class UDFUtils extends UDFUtil {
 
     public static UDF taskToUDF(Task task) {
