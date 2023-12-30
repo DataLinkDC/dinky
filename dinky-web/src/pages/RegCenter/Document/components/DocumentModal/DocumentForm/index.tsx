@@ -18,15 +18,15 @@
  */
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
-import {JOB_TYPE} from '@/pages/DataStudio/LeftContainer/Project/constants';
+import { JOB_TYPE } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import {
   DOCUMENT_CATEGORY_ENUMS,
   DOCUMENT_FUNCTION_TYPE_ENUMS,
   DOCUMENT_TYPE_ENUMS,
   VERSIONS
 } from '@/pages/RegCenter/Document/constans';
-import {Document} from '@/types/RegCenter/data';
-import {l} from '@/utils/intl';
+import { Document } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
 import {
   ProFormGroup,
   ProFormItem,
@@ -36,10 +36,10 @@ import {
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
-import {FormInstance} from 'antd/es/form/hooks/useForm';
-import {Values} from 'async-validator';
-import {DefaultOptionType} from 'rc-select/lib/Select';
-import React, {useState} from 'react';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
+import { DefaultOptionType } from 'rc-select/lib/Select';
+import React, { useState } from 'react';
 
 type DocumentFormProps = {
   values: Partial<Document>;
@@ -52,16 +52,16 @@ const CodeEditProps = {
 };
 
 const DocumentForm: React.FC<DocumentFormProps> = (props) => {
-  const {values, form} = props;
+  const { values, form } = props;
 
   /**
    * status
    */
   const [codeFillValue, setCodeFillValue] = useState<string>(values.fillValue || '');
-  const {FLINK_OPTIONS, SQL_TEMPLATE, FUN_UDF, OTHER} = DOCUMENT_TYPE_ENUMS;
+  const { FLINK_OPTIONS, SQL_TEMPLATE, FUN_UDF, OTHER } = DOCUMENT_TYPE_ENUMS;
 
   const [CATEGORY_LIST] = useState<DefaultOptionType[]>(
-    Object.values(DOCUMENT_CATEGORY_ENUMS).map((item) => ({label: item.text, value: item.value}))
+    Object.values(DOCUMENT_CATEGORY_ENUMS).map((item) => ({ label: item.text, value: item.value }))
   );
 
   const [FUNCTION_TYPES] = useState<DefaultOptionType[]>(
@@ -72,11 +72,10 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
   );
 
   const [VERSION_OPTIONS] = useState<DefaultOptionType[]>(
-    VERSIONS.map((item) => ({label: item.text, value: item.value}))
+    VERSIONS.map((item) => ({ label: item.text, value: item.value }))
   );
 
   const [documentType, setDocumentType] = useState<string>('');
-
 
   /**
    * form
@@ -90,8 +89,9 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
             name='type'
             label={l('rc.doc.functionType')}
             initialValue={SQL_TEMPLATE.value}
-            rules={[{required: true, message: l('rc.doc.typePlaceholder')}]}
-            valueEnum={DOCUMENT_TYPE_ENUMS} fieldProps={{onChange: (value) => setDocumentType(value as string)}}
+            rules={[{ required: true, message: l('rc.doc.typePlaceholder') }]}
+            valueEnum={DOCUMENT_TYPE_ENUMS}
+            fieldProps={{ onChange: (value) => setDocumentType(value as string) }}
           />
 
           <ProFormText
@@ -99,7 +99,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
             width={'md'}
             label={l('rc.doc.name')}
             placeholder={l('rc.doc.namePlaceholder')}
-            rules={[{required: true, message: l('rc.doc.namePlaceholder')}]}
+            rules={[{ required: true, message: l('rc.doc.namePlaceholder') }]}
           />
 
           <ProFormSwitch
@@ -108,7 +108,6 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
             checkedChildren={l('button.enable')}
             unCheckedChildren={l('button.disable')}
           />
-
         </ProFormGroup>
 
         <ProFormGroup>
@@ -116,7 +115,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
             name='subtype'
             width={'sm'}
             label={l('rc.doc.subFunctionType')}
-            rules={[{required: true, message: l('rc.doc.subTypePlaceholder')}]}
+            rules={[{ required: true, message: l('rc.doc.subTypePlaceholder') }]}
             options={documentType == FUN_UDF.value ? FUNCTION_TYPES : JOB_TYPE}
           />
 
@@ -124,14 +123,14 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
             name='category'
             width={'sm'}
             label={l('rc.doc.category')}
-            rules={[{required: true, message: l('rc.doc.categoryPlaceholder')}]}
+            rules={[{ required: true, message: l('rc.doc.categoryPlaceholder') }]}
             options={CATEGORY_LIST}
           />
           <ProFormSelect
             name='version'
             width={'sm'}
             label={l('rc.doc.version')}
-            rules={[{required: true, message: l('rc.doc.versionPlaceholder')}]}
+            rules={[{ required: true, message: l('rc.doc.versionPlaceholder') }]}
             options={VERSION_OPTIONS}
           />
         </ProFormGroup>
@@ -140,7 +139,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
           name='fillValue'
           label={l('rc.doc.fillValue')}
           tooltip={l('rc.doc.fillValuePlaceholder')}
-          rules={[{required: true, message: l('rc.doc.fillValueHelp')}]}
+          rules={[{ required: true, message: l('rc.doc.fillValueHelp') }]}
         >
           <CodeEdit
             code={codeFillValue}
@@ -159,10 +158,6 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
     );
   };
 
-  return (
-    <>
-      {documentFormRender()}
-    </>
-  );
+  return <>{documentFormRender()}</>;
 };
 export default DocumentForm;
