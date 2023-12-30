@@ -18,15 +18,18 @@
  */
 
 import { getCurrentData } from '@/pages/DataStudio/function';
-import { StateType } from '@/pages/DataStudio/model';
-import { postAll } from '@/services/api';
+import {StateType, TaskDataType} from '@/pages/DataStudio/model';
+import {queryList} from '@/services/api';
 import { SavePoint } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { ActionType, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import { Drawer } from 'antd';
-import { useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import { connect } from 'umi';
+import {ProColumns} from "@ant-design/pro-table";
+import {API_CONSTANTS} from "@/services/endpoints";
+import {queryDataByParams} from "@/services/BusinessCrud";
 
 const url = '/api/savepoints';
 
@@ -34,17 +37,29 @@ const SavePoints = (props: any) => {
   const {
     tabs: { panes, activeKey }
   } = props;
-  const current = getCurrentData(panes, activeKey);
+  const current = getCurrentData(panes, activeKey) as TaskDataType;
   const [row, setRow] = useState<SavePoint>();
   const actionRef = useRef<ActionType>();
-  actionRef.current?.reloadAndRest?.();
 
-  const columns: ProDescriptionsItemProps<SavePoint>[] = [
+  const [savepointData , setSavepointData] = useState<SavePoint[]>([])
+
+
+  useEffect(()=>{
+    queryDataByParams<Partial<SavePoint[]>>(API_CONSTANTS.GET_SAVEPOINT_LIST_BY_TASK_ID,{taskId: current?.id}).then((res)=>{
+      setSavepointData(res as SavePoint[] ?? [])
+    })
+  },[current?.id])
+
+
+  const columns: ProColumns<SavePoint>[] | ProDescriptionsItemProps<SavePoint[]> = [
     {
       title: l('pages.task.savePointPath'),
       dataIndex: 'path',
       hideInForm: true,
-      hideInSearch: true
+      ellipsis: true,
+      tooltip: true,
+      copyable: true,
+      hideInSearch: true,
     },
     {
       title: l('global.table.createTime'),
@@ -63,11 +78,11 @@ const SavePoints = (props: any) => {
       <ProTable<SavePoint>
         actionRef={actionRef}
         rowKey='id'
-        request={(params, sorter, filter) =>
-          postAll(url, { taskId: current.key, ...params, sorter, filter })
-        }
+        dataSource={savepointData}
         columns={columns}
+        size={'small'}
         search={false}
+        options={false}
       />
       <Drawer
         width={600}
@@ -87,7 +102,7 @@ const SavePoints = (props: any) => {
             params={{
               id: row?.name
             }}
-            columns={columns}
+            columns={columns as ProDescriptionsItemProps<SavePoint>[]}
           />
         )}
       </Drawer>
