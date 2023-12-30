@@ -24,12 +24,22 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { SavePoint } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import { useRef } from 'react';
+import {useEffect, useRef, useState} from 'react';
+import {queryDataByParams} from "@/services/BusinessCrud";
 
 const SavepointTable = (props: JobProps) => {
   const { jobDetail } = props;
 
   const actionRef = useRef<ActionType>();
+
+  const [savepointData , setSavepointData] = useState<SavePoint[]>([])
+
+  useEffect(()=>{
+    queryDataByParams<Partial<SavePoint[]>>(API_CONSTANTS.GET_SAVEPOINT_LIST_BY_TASK_ID,{taskId:jobDetail?.instance?.taskId}).then((res)=>{
+      setSavepointData(res as SavePoint[] ?? [])
+    })
+  },[jobDetail])
+
 
   const columns: ProColumns<SavePoint>[] = [
     {
@@ -73,13 +83,7 @@ const SavepointTable = (props: JobProps) => {
     <ProTable<SavePoint>
       columns={columns}
       style={{ width: '100%', height: 'calc(100vh - 450px)' }}
-      request={(params, sorter, filter) =>
-        queryList(API_CONSTANTS.GET_SAVEPOINTS, {
-          ...params,
-          sorter,
-          filter: { taskId: [jobDetail?.instance.taskId] }
-        })
-      }
+      dataSource={savepointData}
       actionRef={actionRef}
       toolBarRender={false}
       rowKey='id'

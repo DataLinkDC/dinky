@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.model.Savepoints;
 import org.dinky.gateway.enums.SavePointStrategy;
@@ -42,7 +43,7 @@ public class SavepointsServiceImpl extends SuperServiceImpl<SavepointsMapper, Sa
 
     @Override
     public List<Savepoints> listSavepointsByTaskId(Integer taskId) {
-        return list(new QueryWrapper<Savepoints>().eq("task_id", taskId));
+        return list(new LambdaQueryWrapper<>(Savepoints.class).eq(Savepoints::getTaskId, taskId));
     }
 
     @Override

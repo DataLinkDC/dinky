@@ -17,14 +17,15 @@
  *
  */
 
-import { TagAlignLeft } from '@/components/StyledComponents';
-import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
-import { RUN_MODE } from '@/services/constants';
-import { Alert, ALERT_TYPE, Cluster } from '@/types/RegCenter/data.d';
-import { l } from '@/utils/intl';
-import { PaperClipOutlined } from '@ant-design/icons';
-import { Badge, Space, Tag } from 'antd';
-import { DefaultOptionType } from 'antd/es/select';
+import {TagAlignLeft} from '@/components/StyledComponents';
+import {getAlertIcon} from '@/pages/RegCenter/Alert/AlertInstance/function';
+import {RUN_MODE} from '@/services/constants';
+import {Alert, ALERT_TYPE, Cluster} from '@/types/RegCenter/data.d';
+import {l} from '@/utils/intl';
+import {PaperClipOutlined} from '@ant-design/icons';
+import {Badge, Space, Tag} from 'antd';
+import {DefaultOptionType} from 'antd/es/select';
+import {TaskInfo} from "@/types/Studio/data.d";
 
 /**
  * build job run model
@@ -103,7 +104,7 @@ export const buildClusterOptions = (
  */
 export const buildClusterConfigOptions = (
   selectedRunMode: string,
-  clusterConfiguration: Cluster.Config[]
+  clusterConfiguration: Cluster.Config[] = []
 ) => {
   // if run mode is yarn-application or yarn per-job, need to filter yarn application and yarn per-job
   if ([RUN_MODE.YARN_APPLICATION, RUN_MODE.YARN_PER_JOB].includes(selectedRunMode)) {
@@ -140,7 +141,7 @@ export const buildClusterConfigOptions = (
 /**
  * build env options
  */
-export const buildEnvOptions = (env: any[]) => {
+export const buildEnvOptions = (env: TaskInfo[] = []) => {
   const envList: DefaultOptionType[] = [
     {
       label: l('button.disable'),
@@ -152,8 +153,8 @@ export const buildEnvOptions = (env: any[]) => {
   for (const item of env) {
     const tag = (
       <TagAlignLeft>
-        {item.enabled ? <Badge status='success' /> : <Badge status='error' />}
-        {item.fragment ? <PaperClipOutlined /> : undefined}
+        {item.enabled ? <Badge status='success'/> : <Badge status='error'/>}
+        {item.fragment ? <PaperClipOutlined/> : undefined}
         {item.name}
       </TagAlignLeft>
     );
@@ -171,7 +172,7 @@ export const buildEnvOptions = (env: any[]) => {
 /**
  * build job alert groups
  */
-export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
+export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[] = []) => {
   const alertGroupOptions: DefaultOptionType[] = [
     {
       label: (
@@ -184,7 +185,7 @@ export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
       key: -1
     }
   ];
-  alertGroups?.forEach((item) => {
+  alertGroups.forEach((item) => {
     alertGroupOptions.push({
       label: (
         <TagAlignLeft>
