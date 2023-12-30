@@ -19,12 +19,12 @@
 
 import { FormContextValue } from '@/components/Context/FormContext';
 import DocumentForm from '@/pages/RegCenter/Document/components/DocumentModal/DocumentForm';
-import {MODAL_FORM_OPTIONS} from '@/services/constants';
+import { MODAL_FORM_OPTIONS } from '@/services/constants';
 import { Document } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import {Form} from 'antd';
+import { ModalForm } from '@ant-design/pro-components';
+import { Form } from 'antd';
 import React, { useEffect } from 'react';
-import {ModalForm} from "@ant-design/pro-components";
 
 type DocumentModalProps = {
   onCancel: (flag?: boolean) => void;
@@ -74,7 +74,6 @@ const DocumentModalForm: React.FC<DocumentModalProps> = (props) => {
     handleSubmit({ ...values, ...formValue });
     await handleCancel();
   };
-
 
   return (
     <ModalForm<Partial<Document>>
