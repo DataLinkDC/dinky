@@ -105,13 +105,10 @@ public class YarnApplicationGateway extends YarnGateway {
             while (jobDetailsList.isEmpty() && counts-- > 0) {
                 Thread.sleep(1000);
 
-                String url = ReUtil.replaceAll(
-                        yarnClient
-                                        .getApplicationReport(clusterClient.getClusterId())
-                                        .getTrackingUrl()
-                                + JobsOverviewHeaders.URL,
-                        "/+",
-                        "/");
+                String url=yarnClient
+                        .getApplicationReport(clusterClient.getClusterId())
+                        .getTrackingUrl()+JobsOverviewHeaders.URL.substring(1);
+
                 String json = HttpUtil.get(url);
                 MultipleJobsDetails jobsDetails = FlinkJsonUtil.toBean(json, JobsOverviewHeaders.getInstance());
                 jobDetailsList.addAll(jobsDetails.getJobs());
