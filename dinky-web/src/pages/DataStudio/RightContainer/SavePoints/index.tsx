@@ -18,18 +18,17 @@
  */
 
 import { getCurrentData } from '@/pages/DataStudio/function';
-import {StateType, TaskDataType} from '@/pages/DataStudio/model';
-import {queryList} from '@/services/api';
+import { StateType, TaskDataType } from '@/pages/DataStudio/model';
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { SavePoint } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { ActionType, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
+import { ProColumns } from '@ant-design/pro-table';
 import { Drawer } from 'antd';
-import {useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
-import {ProColumns} from "@ant-design/pro-table";
-import {API_CONSTANTS} from "@/services/endpoints";
-import {queryDataByParams} from "@/services/BusinessCrud";
 
 const url = '/api/savepoints';
 
@@ -41,15 +40,15 @@ const SavePoints = (props: any) => {
   const [row, setRow] = useState<SavePoint>();
   const actionRef = useRef<ActionType>();
 
-  const [savepointData , setSavepointData] = useState<SavePoint[]>([])
+  const [savepointData, setSavepointData] = useState<SavePoint[]>([]);
 
-
-  useEffect(()=>{
-    queryDataByParams<Partial<SavePoint[]>>(API_CONSTANTS.GET_SAVEPOINT_LIST_BY_TASK_ID,{taskId: current?.id}).then((res)=>{
-      setSavepointData(res as SavePoint[] ?? [])
-    })
-  },[current?.id])
-
+  useEffect(() => {
+    queryDataByParams<Partial<SavePoint[]>>(API_CONSTANTS.GET_SAVEPOINT_LIST_BY_TASK_ID, {
+      taskId: current?.id
+    }).then((res) => {
+      setSavepointData((res as SavePoint[]) ?? []);
+    });
+  }, [current?.id]);
 
   const columns: ProColumns<SavePoint>[] | ProDescriptionsItemProps<SavePoint[]> = [
     {
@@ -59,7 +58,7 @@ const SavePoints = (props: any) => {
       ellipsis: true,
       tooltip: true,
       copyable: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('global.table.createTime'),
