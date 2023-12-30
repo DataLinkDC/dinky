@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.model.Savepoints;
 import org.dinky.gateway.enums.SavePointStrategy;
@@ -31,7 +30,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 /**
  * SavepointsServiceImpl

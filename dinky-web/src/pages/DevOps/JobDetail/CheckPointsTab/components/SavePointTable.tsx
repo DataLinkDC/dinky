@@ -19,27 +19,27 @@
 
 import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import { queryList } from '@/services/api';
+import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { SavePoint } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import {useEffect, useRef, useState} from 'react';
-import {queryDataByParams} from "@/services/BusinessCrud";
+import { useEffect, useRef, useState } from 'react';
 
 const SavepointTable = (props: JobProps) => {
   const { jobDetail } = props;
 
   const actionRef = useRef<ActionType>();
 
-  const [savepointData , setSavepointData] = useState<SavePoint[]>([])
+  const [savepointData, setSavepointData] = useState<SavePoint[]>([]);
 
-  useEffect(()=>{
-    queryDataByParams<Partial<SavePoint[]>>(API_CONSTANTS.GET_SAVEPOINT_LIST_BY_TASK_ID,{taskId:jobDetail?.instance?.taskId}).then((res)=>{
-      setSavepointData(res as SavePoint[] ?? [])
-    })
-  },[jobDetail])
-
+  useEffect(() => {
+    queryDataByParams<Partial<SavePoint[]>>(API_CONSTANTS.GET_SAVEPOINT_LIST_BY_TASK_ID, {
+      taskId: jobDetail?.instance?.taskId
+    }).then((res) => {
+      setSavepointData((res as SavePoint[]) ?? []);
+    });
+  }, [jobDetail]);
 
   const columns: ProColumns<SavePoint>[] = [
     {
