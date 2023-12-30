@@ -103,7 +103,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -325,7 +324,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         taskDTO.setStatementSet(true);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
         if ((jobResult.getStatus() == Job.JobStatus.FAILED)) {
-            throw new BusException(jobResult.getError());
+            throw new RuntimeException(jobResult.getError());
         }
         log.info("Job Submit success");
         Task task = new Task(submitDto.getId(), jobResult.getJobInstanceId());
@@ -552,13 +551,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
             // to compiler udf
             if (Asserts.isNotNullString(task.getDialect())
-                    && Dialect.JAVA.equalsVal(task.getDialect())
+                    && Dialect.JAVA.isDialect(task.getDialect())
                     && Asserts.isNotNullString(task.getStatement())) {
                 CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
                 task.setSavePointPath(compiler.getFullClassName());
-            } else if (Dialect.PYTHON.equalsVal(task.getDialect())) {
+            } else if (Dialect.PYTHON.isDialect(task.getDialect())) {
                 task.setSavePointPath(task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
-            } else if (Dialect.SCALA.equalsVal(task.getDialect())) {
+            } else if (Dialect.SCALA.isDialect(task.getDialect())) {
                 task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
             }
             UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task));
@@ -633,15 +632,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public List<Task> getAllUDF() {
-        List<Task> tasks = list(new QueryWrapper<Task>()
-                .in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON)
+        return list(new QueryWrapper<Task>()
+                .in("dialect", Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
                 .eq("enabled", 1)
                 .isNotNull("save_point_path"));
-        return tasks.stream()
-                .peek(task -> {
-                    Assert.notNull(task, Status.TASK_NOT_EXIST.getMessage());
-                })
-                .collect(Collectors.toList());
     }
 
     @Override

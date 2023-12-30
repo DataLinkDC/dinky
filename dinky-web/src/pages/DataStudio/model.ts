@@ -422,7 +422,6 @@ const Model: ModelType = {
     },
     *queryEnv({ payload }, { call, put }) {
       const response: EnvType[] = yield call(getEnvData, payload);
-      console.log(response);
       yield put({
         type: 'saveEnv',
         payload: response
@@ -460,13 +459,6 @@ const Model: ModelType = {
       const response: SessionType = yield call(getSessionData, payload);
       yield put({
         type: 'saveSession',
-        payload: response
-      });
-    },
-    *queryEnv({ payload }, { call, put }) {
-      const response: EnvType[] = yield call(getEnvData, payload);
-      yield put({
-        type: 'saveEnv',
         payload: response
       });
     },

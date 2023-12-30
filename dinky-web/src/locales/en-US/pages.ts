@@ -424,7 +424,8 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig': 'Flink cluster Config',
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     'Select Flink cluster Config for remote submission tasks in [{type}] mode',
-  'pages.datastudio.label.jobConfig.clusterConfig.tip2': 'Select Flink cluster Config',
+  'pages.datastudio.label.jobConfig.clusterConfig.tip2':
+    'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available.',
   'pages.datastudio.label.jobConfig.execmode.tip':
     'Specify the execution mode of the Flink task, the default is Local',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL environment',
@@ -790,6 +791,8 @@ export default {
   'rc.ci.management': 'Cluster Instance Management',
   'rc.ci.modify': 'Modify cluster Instance',
   'rc.ci.name': 'Name',
+  'rc.ci.autoRegisterCannotModify':
+    'Automatically registered instances can only modify the `JobManger high-availability address` attribute, and others cannot be modified!',
   'rc.ci.namePlaceholder': 'Please enter a name!',
   'rc.ci.recycle': 'Recycle Flink Cluster Instances',
   'rc.ci.recycleConfirm':

@@ -18,18 +18,17 @@
  */
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
-import { JOB_TYPE } from '@/pages/DataStudio/LeftContainer/Project/constants';
+import {JOB_TYPE} from '@/pages/DataStudio/LeftContainer/Project/constants';
 import {
   DOCUMENT_CATEGORY_ENUMS,
   DOCUMENT_FUNCTION_TYPE_ENUMS,
   DOCUMENT_TYPE_ENUMS,
   VERSIONS
 } from '@/pages/RegCenter/Document/constans';
-import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
-import { Document } from '@/types/RegCenter/data';
-import { l } from '@/utils/intl';
+import {Document} from '@/types/RegCenter/data';
+import {l} from '@/utils/intl';
 import {
-  ProForm,
+  ProFormGroup,
   ProFormItem,
   ProFormSegmented,
   ProFormSelect,
@@ -37,11 +36,10 @@ import {
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
-import { ProFormDependency } from '@ant-design/pro-form';
-import { FormInstance } from 'antd/es/form/hooks/useForm';
-import { Values } from 'async-validator';
-import { DefaultOptionType } from 'rc-select/lib/Select';
-import React, { useState } from 'react';
+import {FormInstance} from 'antd/es/form/hooks/useForm';
+import {Values} from 'async-validator';
+import {DefaultOptionType} from 'rc-select/lib/Select';
+import React, {useState} from 'react';
 
 type DocumentFormProps = {
   values: Partial<Document>;
@@ -54,16 +52,16 @@ const CodeEditProps = {
 };
 
 const DocumentForm: React.FC<DocumentFormProps> = (props) => {
-  const { values, form } = props;
+  const {values, form} = props;
 
   /**
    * status
    */
   const [codeFillValue, setCodeFillValue] = useState<string>(values.fillValue || '');
-  const { FLINK_OPTIONS, SQL_TEMPLATE, FUN_UDF, OTHER } = DOCUMENT_TYPE_ENUMS;
+  const {FLINK_OPTIONS, SQL_TEMPLATE, FUN_UDF, OTHER} = DOCUMENT_TYPE_ENUMS;
 
   const [CATEGORY_LIST] = useState<DefaultOptionType[]>(
-    Object.values(DOCUMENT_CATEGORY_ENUMS).map((item) => ({ label: item.text, value: item.value }))
+    Object.values(DOCUMENT_CATEGORY_ENUMS).map((item) => ({label: item.text, value: item.value}))
   );
 
   const [FUNCTION_TYPES] = useState<DefaultOptionType[]>(
@@ -74,17 +72,11 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
   );
 
   const [VERSION_OPTIONS] = useState<DefaultOptionType[]>(
-    VERSIONS.map((item) => ({ label: item.text, value: item.value }))
+    VERSIONS.map((item) => ({label: item.text, value: item.value}))
   );
 
-  const onTypeAndNameChange = (type: string, name: string) => {
-    if (type == FLINK_OPTIONS.value) {
-      const fillValue = "set '" + name + "' = '${1:}'";
-      form.setFieldsValue({ category: 'Varible' });
-      form.setFieldsValue({ fillValue: fillValue });
-      setCodeFillValue(fillValue);
-    }
-  };
+  const [documentType, setDocumentType] = useState<string>('');
+
 
   /**
    * form
@@ -93,51 +85,62 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
   const documentFormRender = () => {
     return (
       <>
-        <ProFormSegmented
-          name='type'
-          label={l('rc.doc.functionType')}
-          rules={[{ required: true, message: l('rc.doc.typePlaceholder') }]}
-          valueEnum={DOCUMENT_TYPE_ENUMS}
-        />
+        <ProFormGroup>
+          <ProFormSegmented
+            name='type'
+            label={l('rc.doc.functionType')}
+            initialValue={SQL_TEMPLATE.value}
+            rules={[{required: true, message: l('rc.doc.typePlaceholder')}]}
+            valueEnum={DOCUMENT_TYPE_ENUMS} fieldProps={{onChange: (value) => setDocumentType(value as string)}}
+          />
 
-        <ProFormText
-          name='name'
-          label={l('rc.doc.name')}
-          placeholder={l('rc.doc.namePlaceholder')}
-          rules={[{ required: true, message: l('rc.doc.namePlaceholder') }]}
-        />
+          <ProFormText
+            name='name'
+            width={'md'}
+            label={l('rc.doc.name')}
+            placeholder={l('rc.doc.namePlaceholder')}
+            rules={[{required: true, message: l('rc.doc.namePlaceholder')}]}
+          />
 
-        <ProFormDependency name={['type', 'name']}>
-          {({ type, name }) => {
-            onTypeAndNameChange(type, name);
-            return (
-              <>
-                {type != FLINK_OPTIONS.value && type != OTHER.value && (
-                  <ProFormSelect
-                    name='subtype'
-                    label={l('rc.doc.subFunctionType')}
-                    rules={[{ required: true, message: l('rc.doc.subTypePlaceholder') }]}
-                    options={type == FUN_UDF.value ? FUNCTION_TYPES : JOB_TYPE}
-                  />
-                )}
+          <ProFormSwitch
+            name='enabled'
+            label={l('global.table.isEnable')}
+            checkedChildren={l('button.enable')}
+            unCheckedChildren={l('button.disable')}
+          />
 
-                <ProFormSelect
-                  disabled={type == FLINK_OPTIONS.value}
-                  name='category'
-                  label={l('rc.doc.category')}
-                  rules={[{ required: true, message: l('rc.doc.categoryPlaceholder') }]}
-                  options={CATEGORY_LIST}
-                />
-              </>
-            );
-          }}
-        </ProFormDependency>
+        </ProFormGroup>
+
+        <ProFormGroup>
+          <ProFormSelect
+            name='subtype'
+            width={'sm'}
+            label={l('rc.doc.subFunctionType')}
+            rules={[{required: true, message: l('rc.doc.subTypePlaceholder')}]}
+            options={documentType == FUN_UDF.value ? FUNCTION_TYPES : JOB_TYPE}
+          />
+
+          <ProFormSelect
+            name='category'
+            width={'sm'}
+            label={l('rc.doc.category')}
+            rules={[{required: true, message: l('rc.doc.categoryPlaceholder')}]}
+            options={CATEGORY_LIST}
+          />
+          <ProFormSelect
+            name='version'
+            width={'sm'}
+            label={l('rc.doc.version')}
+            rules={[{required: true, message: l('rc.doc.versionPlaceholder')}]}
+            options={VERSION_OPTIONS}
+          />
+        </ProFormGroup>
 
         <ProFormItem
           name='fillValue'
           label={l('rc.doc.fillValue')}
           tooltip={l('rc.doc.fillValuePlaceholder')}
-          rules={[{ required: true, message: l('rc.doc.fillValueHelp') }]}
+          rules={[{required: true, message: l('rc.doc.fillValueHelp')}]}
         >
           <CodeEdit
             code={codeFillValue}
@@ -152,35 +155,13 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
           label={l('rc.doc.description')}
           placeholder={l('rc.doc.descriptionPlaceholder')}
         />
-
-        <ProFormSelect
-          name='version'
-          label={l('rc.doc.version')}
-          rules={[{ required: true, message: l('rc.doc.versionPlaceholder') }]}
-          options={VERSION_OPTIONS}
-        />
-
-        <ProFormSwitch
-          name='enabled'
-          label={l('global.table.isEnable')}
-          checkedChildren={l('button.enable')}
-          unCheckedChildren={l('button.disable')}
-        />
       </>
     );
   };
 
   return (
     <>
-      <ProForm
-        {...FORM_LAYOUT_PUBLIC}
-        form={form}
-        submitter={false}
-        layout={'horizontal'}
-        initialValues={values}
-      >
-        {documentFormRender()}
-      </ProForm>
+      {documentFormRender()}
     </>
   );
 };

@@ -37,7 +37,7 @@ const config = {
     onDuplicateRoutes: 'warn', // Docusaurus 在检测到重复的路由时的行为 |  Behavior of docusaurus when duplicate routes are detected  ->  类型：'ignore' | 'log' | 'warn' | 'error' | 'throw'
     favicon: 'dinky_logo.svg', // 左侧logo  | left logo
     organizationName: 'DataLinkDC', // 拥有此源的 GitHub 用户或组织。 用于部署命令。 |  The GitHub user or organization that owns this source. Command for deployment.
-    projectName: 'dlink', // GitHub 源的名称。 用于部署命令。 | The name of the GitHub repository. Command for deployment.
+    projectName: 'dinky', // GitHub 源的名称。 用于部署命令。 | The name of the GitHub repository. Command for deployment.
     deploymentBranch: 'main', // GitHub Pages 的部署分支。 用于部署命令。 | The branch to deploy to GitHub Pages. Command for deployment.
     customFields: { // 自定义字段 | Custom fields
         structTitle: 'Dinky',
@@ -84,10 +84,10 @@ const config = {
             /** @type {import('@docusaurus/preset-classic').Options} */
             ({
                 docs: {
-                    lastVersion: '0.7',
+                    lastVersion: 'current',
                     versions: {
                         current: {
-                            label: 'Next',
+                            label: '1.0.0',
                             path: '/next',
                         },
                         0.6: {
@@ -104,9 +104,9 @@ const config = {
                     // Please change this to your repo.
                     editUrl: ({locale, versionDocsDirPath, docPath}) => {
                         if (locale !== 'zh') {
-                            return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
+                            return `https://github.com/DataLinkDC/dinky/tree/master/docs/i18n/${locale}/${docPath}`;
                         }
-                        return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
+                        return `https://github.com/DataLinkDC/dinky/tree/master/docs/${versionDocsDirPath}/${docPath}`;
                     },
                 },
                 blog: {
@@ -135,7 +135,7 @@ const config = {
         ({
             announcementBar: {
                 id: 'announcementBar-2', // Increment on change
-                content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dlink">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="http://www.dinky.org.cn">www.dinky.org.cn</a>`,
+                content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dinky">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="http://www.dinky.org.cn">www.dinky.org.cn</a>`,
                 backgroundColor: "#BBDFFF",
                 isCloseable: false,
             },
@@ -166,12 +166,12 @@ const config = {
                         position: 'left',
                         dropdownActiveClassDisabled: true,
                     },
-                    /*{
+                    {
                         to: '/download/download',
                         position: 'right',
                         label: '下载',
                         activeBaseRegex: `/download/`,
-                    },*/
+                    },
                     {
                         label: '开发者指南',
                         to: '/docs/next/developer_guide/contribution/how_contribute',
@@ -191,18 +191,18 @@ const config = {
                             },
                         ],
                     },
-                    /*{
+                    {
                         to: '/blog',
                         position: 'right',
                         label: '博客',
-                        // activeBaseRegex: `/!*!/`,
-                    },*/
+                        // activeBaseRegex: `/*/`,
+                    },
                     {
                         type: 'localeDropdown',
                         position: 'right',
                     },
                     {
-                        href: 'https://github.com/DataLinkDC/dlink/issues/884',
+                        href: 'https://github.com/DataLinkDC/dinky/issues/884',
                         label: 'FAQ',
                         position: 'right',
                     },
@@ -212,7 +212,7 @@ const config = {
                         position: 'right',
                     },
                     {
-                        href: 'https://github.com/DataLinkDC/dlink',
+                        href: 'https://github.com/DataLinkDC/dinky',
                         className: 'header-github-link',
                         position: 'right',
                         alt: 'Gitlab repository',
@@ -240,15 +240,15 @@ const config = {
                         items: [
                             {
                                 label: 'Discussions',
-                                href: 'https://github.com/DataLinkDC/dlink/discussions',
+                                href: 'https://github.com/DataLinkDC/dinky/discussions',
                             },
                             {
                                 label: 'Issue',
-                                href: 'https://github.com/DataLinkDC/dlink/issues',
+                                href: 'https://github.com/DataLinkDC/dinky/issues',
                             },
                             {
                                 label: 'Pull Request',
-                                href: 'https://github.com/DataLinkDC/dlink/pulls',
+                                href: 'https://github.com/DataLinkDC/dinky/pulls',
                             },
                         ],
                     },
@@ -257,7 +257,7 @@ const config = {
                         items: [
                             {
                                 label: 'GitHub',
-                                href: 'https://github.com/DataLinkDC/dlink',
+                                href: 'https://github.com/DataLinkDC/dinky',
                             }
                         ],
                     },
@@ -286,9 +286,9 @@ const config = {
                 routeBasePath: 'download',
                 editUrl: ({locale, versionDocsDirPath, docPath}) => {
                     if (locale !== 'zh') {
-                        return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
+                        return `https://github.com/DataLinkDC/dinky/tree/master/docs/i18n/${locale}/${docPath}`;
                     }
-                    return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
+                    return `https://github.com/DataLinkDC/dinky/tree/master/docs/${versionDocsDirPath}/${docPath}`;
                 },
                 sidebarPath: require.resolve('./sidebars.js'),
             },

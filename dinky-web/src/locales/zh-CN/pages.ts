@@ -407,7 +407,8 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig': 'Flink集群配置',
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     '选择Flink集群配置进行【{type}】模式的远程提交任务',
-  'pages.datastudio.label.jobConfig.clusterConfig.tip2': '选择Flink集群配置',
+  'pages.datastudio.label.jobConfig.clusterConfig.tip2':
+    '如下拉框无数据,请先配置/新建集群实例,或者检查集群配置/集群实例是否为健康可用状态',
   'pages.datastudio.label.jobConfig.execmode.tip': '指定 Flink 任务的执行模式，默认为 Local',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL 环境',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
@@ -759,6 +760,8 @@ export default {
   'rc.ci.management': '集群实例管理',
   'rc.ci.modify': '修改集群',
   'rc.ci.name': '实例名称',
+  'rc.ci.autoRegisterCannotModify':
+    '自动注册的实例仅能修改 `JobManger高可用地址` 属性,其他无法修改!',
   'rc.ci.namePlaceholder': '请输入名称!',
   'rc.ci.recycle': '回收 Flink 实例',
   'rc.ci.recycleConfirm': '确定回收所有自动创建且过期的 Flink 实例吗？',

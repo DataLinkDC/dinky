@@ -17,6 +17,7 @@
  *
  */
 
+import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/Instance/components/contants';
 import { validatorJMHAAdderess } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import { handleAddOrUpdate } from '@/services/BusinessCrud';
@@ -84,7 +85,7 @@ const EditJobInstanceForm = (props: {
         name='type'
         label={l('rc.ci.type')}
         disabled
-        options={CLUSTER_INSTANCE_TYPE}
+        options={CLUSTER_INSTANCE_TYPE([ClusterType.YARN_APPLICATION])}
         rules={[{ required: true, message: l('rc.ci.typePlaceholder') }]}
         placeholder={l('rc.ci.typePlaceholder')}
       />
