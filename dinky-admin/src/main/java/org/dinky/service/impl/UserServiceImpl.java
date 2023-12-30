@@ -199,13 +199,13 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         // save login log record
         loginLogService.saveLoginLog(user, Status.LOGIN_SUCCESS);
 
-        insertToken(userInfo);
+        upsertToken(userInfo);
 
         // Return the user information along with a success status
         return Result.succeed(userInfo, Status.LOGIN_SUCCESS);
     }
 
-    private void insertToken(UserDTO userInfo) {
+    private void upsertToken(UserDTO userInfo) {
         Integer userId = userInfo.getUser().getId();
         SysToken sysToken = new SysToken();
         String tokenValue = StpUtil.getTokenValueByLoginId(userId);
@@ -221,7 +221,15 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         sysToken.setCreator(userId);
         sysToken.setUpdater(userId);
         sysToken.setSource(SysToken.Source.LOGIN);
-        tokenMapper.insert(sysToken);
+        synchronized (this) {
+            SysToken lastSysToken = tokenMapper.selectOne(new LambdaQueryWrapper<SysToken>().eq(SysToken::getTokenValue, tokenValue));
+            if (Asserts.isNull(lastSysToken)) {
+                tokenMapper.insert(sysToken);
+            } else {
+                sysToken.setId(lastSysToken.getId());
+                tokenMapper.updateById(sysToken);
+            }
+        }
     }
 
     private User localLogin(LoginDTO loginDTO) throws AuthException {
