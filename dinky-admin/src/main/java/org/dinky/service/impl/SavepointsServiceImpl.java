@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 /**
  * SavepointsServiceImpl
@@ -42,7 +42,7 @@ public class SavepointsServiceImpl extends SuperServiceImpl<SavepointsMapper, Sa
 
     @Override
     public List<Savepoints> listSavepointsByTaskId(Integer taskId) {
-        return list(new QueryWrapper<Savepoints>().eq("task_id", taskId));
+        return list(new LambdaQueryWrapper<>(Savepoints.class).eq(Savepoints::getTaskId, taskId));
     }
 
     @Override
