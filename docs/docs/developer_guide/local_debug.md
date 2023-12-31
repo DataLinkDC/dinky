@@ -223,30 +223,4 @@ spring:
 
 ## 常见问题
 
-Q1: 为什么不支持除了 Java8 和 Java11 以外的其他版本呢？
-
-> A1: 因为 Flink 目前仅支持 Java8 和 Java11。
-
---- 
-
-Q2: 为什么 Maven Profile 切换了不生效呢?? 提交任务时还是报各种依赖问题,Profile 像是不生效呢?????
-
-> A2-1: 因为你没刷新 Maven Profile，导致不生效
-
-> A2-2: 因为虽然你刷新了 Maven Profile, 没重启 Dinky 服务(不要问为什么需要重启,这是一个开发人员的基本认知),导致依赖没包含在当前已启动的服务中.
-
-> A2-3: Profile 切的不对,注意灰色的 Profile 选项.请仔细仔细仔细仔细的看看.
-
-> A2-4: 查看你的 IDEA 的版本,不要太旧,尽量保持在 2022.x 以上(别问为什么,上边已经说了)
-
-> A2-5: Profile 切换加载,基于依赖的 `<scope></scope>`标签属性声明 ,如果不懂,自行百度/谷歌/CSDN/StackOverFlow/ChatGPT
-
---- 
-
-Q3: 我在 IDEA 中启动 Dinky 后, 前端页面访问不了, 报错找不到页面??????
-
-> A3-1: 可以在执行 Install 阶段勾选 `web` Profile,不然 dinky-admin/src/main/resources/ 下没有静态资源文件目录 `static`.
-
-> A3-2: 可以单独启动前端,参考 [启动前端](#启动前端) 部分
-
---- 
+请参考 [本地调试 FAQ](../faq#本地调试FAQ) 文档。
