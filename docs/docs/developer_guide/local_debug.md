@@ -43,7 +43,7 @@ title: 本地调试
 ```shell
 mkdir workspace
 cd workspace
-git clone https://github.com/DataLinkDC/dlink.git
+git clone https://github.com/DataLinkDC/dinky.git
 #或者
 git clone git://github.com/DataLinkDC/dlink.git
 ```
@@ -51,7 +51,7 @@ git clone git://github.com/DataLinkDC/dlink.git
 ### 导入 Dinky
 
 1. 启动 IDEA 并选择 Open。
-2. 选择已克隆的 Dlink 存储库的根文件夹。
+2. 选择已克隆的 Dinky 存储库的根文件夹。
 3. 等待项目加载完成。
 4. 设置 JDK 1.8 和 Maven 3.6.0。
 
@@ -90,7 +90,7 @@ npm run dev
 
 由于目前 Dinky 各个模块未发布到 Maven 中央仓库，所以需要先进行 Install 编译。从而在本地仓库中生成相应的依赖。
 
-如果你是第一次编译 Dinky，那么请勾选以下 Maven Profile,然后双击下图中的`生命周期 -> Install`进行编译。
+如果你是第一次编译 Dinky，那么请勾选以下 Maven Profile,然后双击下图中的`生命周期 -> Install`进行编译。如果在 Install/Package 过程中报错代码格式化问题,请参考 [代码格式化](contribution/code_format)章节
 :::
 
 ![localdebug_profile](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/localdebug_profile.png)
@@ -129,7 +129,7 @@ npm run dev
 Dinky开发环境配置有两种模式，分别是 provided 环境和 compile 环境
 
 - provided：即上述 Profile 中的 `prod` ,此环境适合打包部署，或者二次开发后打包部署
-- compile： 即上述 Profile 中的 `dev`,此环境适合二次开发或者熟悉源码，此模式不需要额外安装Flink,通过Flink自带的local模式变可调试开发
+- compile： 即上述 Profile 中的 `dev`,此环境适合二次开发或者熟悉源码，此模式不需要额外安装Flink,通过Flink自带的local模式便可调试开发
 
 ### 本地调试 Profile
 
@@ -220,3 +220,7 @@ spring:
 
 如果你在 Dinky 的基础上进行了二次开发,并有意向将代码贡献给 Dinky,请参考 [代码贡献](./contribution/how_contribute) 文档。
 :::
+
+## 常见问题
+
+请参考 [本地调试 FAQ](../faq#本地调试FAQ) 文档。
