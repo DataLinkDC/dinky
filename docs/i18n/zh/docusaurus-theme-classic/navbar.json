@@ -53,11 +53,11 @@
   },
   "item.label.faq": {
     "message": "常见问题",
-    "description": "Navbar item with label FAQ"
+    "description": "Navbar item with label 常见问题"
   },
   "item.label.roadmap": {
     "message": "未来规划",
-    "description": "Navbar item with label Roadmap"
+    "description": "Navbar item with label 未来规划"
   },
   "logo.alt": {
     "message": "Dinky",

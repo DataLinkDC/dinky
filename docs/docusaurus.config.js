@@ -181,7 +181,7 @@ const config = {
                                 to: "/docs/next/developer_guide/contribution/how_contribute",
                             },
                             {
-                                label: "本地调试",
+                                label: "local_debug",
                                 to: "/docs/next/developer_guide/local_debug",
                             },
                             {
