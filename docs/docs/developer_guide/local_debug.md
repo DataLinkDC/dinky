@@ -43,7 +43,7 @@ title: 本地调试
 ```shell
 mkdir workspace
 cd workspace
-git clone https://github.com/DataLinkDC/dlink.git
+git clone https://github.com/DataLinkDC/dinky.git
 #或者
 git clone git://github.com/DataLinkDC/dlink.git
 ```

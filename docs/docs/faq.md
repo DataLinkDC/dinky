@@ -15,7 +15,7 @@ Caused by: java.lang.IllegalArgumentException: java.net.UnknownHostException: na
 ```
 
 提供 3 种方式解决这个问题：
-- 升级 Dinky 至 0.6.2 及后续版本。详见：[https://github.com/DataLinkDC/dlink/issues/310](https://github.com/DataLinkDC/dlink/issues/310)
+- 升级 Dinky 至 0.6.2 及后续版本。详见：[https://github.com/DataLinkDC/dinky/issues/310](https://github.com/DataLinkDC/dinky/issues/310)
 
 - 修改 `/etc/profile`，添加 HADOOP_HOME 环境变量
 ```shell
