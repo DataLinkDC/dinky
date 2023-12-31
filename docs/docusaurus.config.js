@@ -143,7 +143,7 @@ const config = {
             docs: {
                 sidebar: {
                     hideable: true,// 是否隐藏侧边栏 | Whether to hide the sidebar in mobile
-                    autoCollapseCategories: true, // 点击另一个分类时自动折叠当前分类 | Click another category will automatically collapse the current category
+                    autoCollapseCategories: false, // 点击另一个分类时自动折叠当前分类 | Click another category will automatically collapse the current category
 
                 }
             },
@@ -157,8 +157,7 @@ const config = {
                     {
                         to: '/',
                         position: 'left',
-                        label: '主页',
-                        title: '主页',
+                        label: 'home',
                         activeBaseRegex: `^/$`,
                     },
                     {
@@ -169,16 +168,16 @@ const config = {
                     {
                         to: '/download/download',
                         position: 'right',
-                        label: '下载',
+                        label: 'download',
                         activeBaseRegex: `/download/`,
                     },
                     {
-                        label: '开发者指南',
+                        label: 'developer_guide',
                         to: '/docs/next/developer_guide/contribution/how_contribute',
                         position: 'right',
                         items: [
                             {
-                                label: "如何参与",
+                                label: "how_contribute",
                                 to: "/docs/next/developer_guide/contribution/how_contribute",
                             },
                             {
@@ -191,24 +190,24 @@ const config = {
                             },
                         ],
                     },
-                    {
-                        to: '/blog',
-                        position: 'right',
-                        label: '博客',
-                        // activeBaseRegex: `/*/`,
-                    },
+                    // {
+                    //     to: '/blog',
+                    //     position: 'right',
+                    //     label: 'bolg',
+                    //     // activeBaseRegex: `/*/`,
+                    // },
                     {
                         type: 'localeDropdown',
                         position: 'right',
                     },
                     {
                         href: 'https://github.com/DataLinkDC/dinky/issues/884',
-                        label: 'FAQ',
+                        label: 'faq',
                         position: 'right',
                     },
                     {
                         href: 'https://github.com/orgs/DataLinkDC/projects/1',
-                        label: 'Roadmap',
+                        label: 'roadmap',
                         position: 'right',
                     },
                     {
@@ -223,10 +222,10 @@ const config = {
                 style: 'dark',
                 links: [
                     {
-                        title: 'Docs',
+                        title: 'docs',
                         items: [
                             {
-                                label: '文档首页',
+                                label: 'doc_home',
                                 to: '/docs/next/platform_intro/intro',
                             },
                             {
@@ -236,27 +235,23 @@ const config = {
                         ],
                     },
                     {
-                        title: 'Community',
+                        title: 'community',
                         items: [
                             {
-                                label: 'Discussions',
-                                href: 'https://github.com/DataLinkDC/dinky/discussions',
-                            },
-                            {
-                                label: 'Issue',
+                                label: 'issue',
                                 href: 'https://github.com/DataLinkDC/dinky/issues',
                             },
                             {
-                                label: 'Pull Request',
+                                label: 'pr',
                                 href: 'https://github.com/DataLinkDC/dinky/pulls',
                             },
                         ],
                     },
                     {
-                        title: 'More',
+                        title: 'more',
                         items: [
                             {
-                                label: 'GitHub',
+                                label: 'github',
                                 href: 'https://github.com/DataLinkDC/dinky',
                             }
                         ],
@@ -298,6 +293,19 @@ const config = {
             {
                 quality: 70,
                 max: 1030, // 最大缩放图片尺寸。
+                options: {
+                    // 图片加载失败时显示的图片
+                    // 默认的图片加载方式
+                    // 默认的图片加载方式
+                    loadType: 'default',
+                    // 图片加载失败时显示的图片
+                    errorImg: 'Cannot load image',
+                    // 图片加载失败时显示的图片
+                    errorType: 'default',
+                    // 图片加载失败时显示的图片
+                    errorImgType: 'default',
+                    // 图片加载失败时显示的图片
+                },
                 min: 640, // 最小缩放图片尺寸。 如果原始值比这还低，会使用原图尺寸。
                 steps: 2, // 在 min 和 max 之间最多生成的图片数量（包含两端点）
                 disableInDev: false,
