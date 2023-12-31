@@ -205,7 +205,7 @@ Q3: 我在 IDEA 中启动 Dinky 后, 前端页面访问不了, 报错找不到�
 
 > A3-1: 可以在执行 Install 阶段勾选 `web` Profile,不然 dinky-admin/src/main/resources/ 下没有静态资源文件目录 `static`.
 
-> A3-2: 可以单独启动前端,参考 [启动前端](#启动前端) 部分
+> A3-2: 可以单独启动前端,参考 [本地调试-启动前端](developer_guide/local_debug#启动前端) 部分
 
 --- 
 
