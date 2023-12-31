@@ -184,10 +184,6 @@ const config = {
                                 label: "local_debug",
                                 to: "/docs/next/developer_guide/local_debug",
                             },
-                            {
-                                label: "远程调试",
-                                to: "/docs/next/developer_guide/remote_debug",
-                            },
                         ],
                     },
                     // {
@@ -229,8 +225,8 @@ const config = {
                                 to: '/docs/next/platform_intro/intro',
                             },
                             {
-                                label: 'Open Api',
-                                to: '/docs/next/administrator_guide/studio/openapi',
+                                label: 'openapi',
+                                to: '/docs/next/user_guide/studio/openapi',
                             },
                         ],
                     },
