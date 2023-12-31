@@ -222,6 +222,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         sysToken.setUpdater(userId);
         sysToken.setSource(SysToken.Source.LOGIN);
         synchronized (this) {
+
             SysToken lastSysToken = tokenMapper.selectOne(new LambdaQueryWrapper<SysToken>().eq(SysToken::getTokenValue, tokenValue));
             if (Asserts.isNull(lastSysToken)) {
                 tokenMapper.insert(sysToken);
