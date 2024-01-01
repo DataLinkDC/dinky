@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -105,6 +106,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     private final MenuService menuService;
     private final TokenService tokenService;
     private final TokenMapper tokenMapper;
+
+    private final ReentrantLock lock = new ReentrantLock();
 
     @Override
     public Result<Void> registerUser(User user) {
@@ -222,7 +225,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         sysToken.setUpdater(userId);
         sysToken.setSource(SysToken.Source.LOGIN);
 
-        synchronized (this) {
+        try {
+            lock.lock();
             SysToken lastSysToken =
                     tokenMapper.selectOne(new LambdaQueryWrapper<SysToken>().eq(SysToken::getTokenValue, tokenValue));
             if (Asserts.isNull(lastSysToken)) {
@@ -231,6 +235,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                 sysToken.setId(lastSysToken.getId());
                 tokenMapper.updateById(sysToken);
             }
+        } catch (Exception e) {
+            log.error("update token info failed", e);
+        } finally {
+            lock.unlock();
         }
     }
 
