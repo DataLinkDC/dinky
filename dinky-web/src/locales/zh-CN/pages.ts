@@ -329,7 +329,8 @@ export default {
   'metrics.flink.taskId': 'Dinky 任务ID',
   'metrics.dinky.not.open':
     '暂未开启 Dinky Server 监控, 请前往 配置中心 -> 全局配置 -> Metrics 配置 -> Dinky JVM Monitor 开关 进行开启',
-  'metrics.flink.deleteConfirm': '确认删除该任务下的监控数据吗? \n注意:该操作会同步影响运维中心该任务的监控数据!!\n请谨慎操作,该操作不可撤销!',
+  'metrics.flink.deleteConfirm':
+    '确认删除该任务下的监控数据吗? \n注意:该操作会同步影响运维中心该任务的监控数据!!\n请谨慎操作,该操作不可撤销!',
   /**
    *
    * pages
