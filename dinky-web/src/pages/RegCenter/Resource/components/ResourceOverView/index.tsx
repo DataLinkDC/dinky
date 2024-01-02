@@ -296,8 +296,8 @@ const ResourceOverView: React.FC = () => {
             editModal === 'createFolder'
               ? l('right.menu.createFolder')
               : editModal === 'rename'
-                ? l('right.menu.rename')
-                : ''
+              ? l('right.menu.rename')
+              : ''
           }
           formValues={resourceState.value}
           onOk={handleModalSubmit}

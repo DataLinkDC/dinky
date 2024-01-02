@@ -316,10 +316,10 @@ const MenuList: React.FC = () => {
         {sysMenuValue?.id && editOpen
           ? l('menu.edit')
           : !sysMenuValue?.id && addedOpen && !isRootMenu
-            ? l('right.menu.addSub')
-            : !sysMenuValue?.id && addedOpen && isRootMenu
-              ? l('right.menu.createRoot')
-              : ''}
+          ? l('right.menu.addSub')
+          : !sysMenuValue?.id && addedOpen && isRootMenu
+          ? l('right.menu.createRoot')
+          : ''}
       </>
     );
   };
