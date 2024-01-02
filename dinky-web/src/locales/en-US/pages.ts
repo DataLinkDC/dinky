@@ -340,6 +340,8 @@ export default {
   'metrics.flink.taskId': 'Dinky Job ID',
   'metrics.dinky.not.open':
     'Dinky Server monitoring is not enabled, please go to the Setting Center -> Global Settings -> Metrics Configuration -> Dinky JVM Monitor switch to open',
+  'metrics.flink.deleteConfirm':
+    'Are you sure to delete the monitoring data under this task? \nAttention: This operation will synchronously affect the monitoring data of the operation and maintenance center for this task!! \nPlease operate with caution, this operation is irreversible!',
 
   /**
    *

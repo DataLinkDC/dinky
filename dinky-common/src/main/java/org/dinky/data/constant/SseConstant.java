@@ -17,46 +17,11 @@
  *
  */
 
-export type JobMetrics = {
-  taskId: number;
-  flinkJobId: string;
-  jobName: string;
-  subTaskId: string;
-  metrics: string;
-  url: string;
-  title: string;
-  layoutName: string;
-  showType: string;
-  showSize: string;
-};
+package org.dinky.data.constant;
 
-export type Task = {
-  id: number;
-  jid: string;
-  name: string;
-  type: string;
-  clusterName: string;
-};
-
-export type SubTask = {
-  id: string;
-  name: string;
-  status: string;
-  parallelism: number;
-};
-
-export type ChartData = {
-  time: Date;
-  value: number | string;
-};
-
-export type MetricsLayout = {
-  taskId: number;
-  vertices: string;
-  metrics: string;
-  position: number;
-  showType: string;
-  showSize: string;
-  title: string;
-  layoutName: string;
-};
+public class SseConstant {
+    /**
+     * Sse label for front to reconnect session
+     */
+    public static final String SSE_SESSION_INVALID = "SESSION_INVALID";
+}

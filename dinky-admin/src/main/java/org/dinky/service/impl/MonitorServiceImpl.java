@@ -165,4 +165,18 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
         wrapper.lambda().eq(Metrics::getTaskId, taskId);
         return this.baseMapper.selectList(wrapper);
     }
+
+    /**
+     * Delete the metrics layout.
+     *
+     * @param taskId the task id
+     * @return if the delete is successful.
+     */
+    @Override
+    public boolean deleteMetricsLayout(Integer taskId) {
+        List<Metrics> metricsList = getMetricsLayoutByTaskId(taskId);
+        int deleted = this.baseMapper.deleteBatchIds(
+                metricsList.stream().map(Metrics::getId).collect(Collectors.toList()));
+        return deleted > 0;
+    }
 }
