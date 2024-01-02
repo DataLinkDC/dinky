@@ -51,6 +51,7 @@ export type ChartData = {
 };
 
 export type MetricsLayout = {
+  id: number;
   taskId: number;
   vertices: string;
   metrics: string;

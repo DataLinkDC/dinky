@@ -24,7 +24,7 @@ import React from 'react';
 
 type PopconfirmProps = {
   onClick: () => void;
-  description: string;
+  description: string | React.ReactNode;
   options?: any;
 };
 

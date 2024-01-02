@@ -23,13 +23,17 @@ import { SseData } from '@/models/Sse';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { JobMetricsItem, MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
 import { getMetricsData } from '@/pages/DevOps/JobDetail/srvice';
-import { ChartData } from '@/pages/Metrics/Job/data';
+import {ChartData} from '@/pages/Metrics/Job/data';
 import { MetricsDataType } from '@/pages/Metrics/Server/data';
 import { getMetricsLayout } from '@/pages/Metrics/service';
 import { useModel } from '@@/exports';
 import { ProCard } from '@ant-design/pro-components';
 import { Empty, Row, Spin } from 'antd';
 import { useEffect, useState } from 'react';
+import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
+import {handleRemoveById} from "@/services/BusinessCrud";
+import {l} from "@/utils/intl";
+import {API_CONSTANTS} from "@/services/endpoints";
 
 export type MetricsProps = {
   timeRange: MetricsTimeFilter;
@@ -41,7 +45,7 @@ const JobMetricsList = (props: MetricsProps) => {
   const [chartDatas, setChartDatas] = useState<Record<string, ChartData[]>>({});
   const [jobIds, setJobIds] = useState<string>('');
 
-  const { data } = useHookRequest<any, any>(getMetricsLayout, { defaultParams: [] });
+  const { data,refresh } = useHookRequest<any, any>(getMetricsLayout, { defaultParams: [] });
 
   const dataProcess = (sourceData: Record<string, ChartData[]>, datas: MetricsDataType[]) => {
     datas.forEach((item) => {
@@ -116,7 +120,16 @@ const JobMetricsList = (props: MetricsProps) => {
         data.map((lo: any) => {
           return (
             <Spin spinning={loading} key={`spin-${lo.layoutName}`}>
-              <ProCard key={lo.layoutName} title={lo.layoutName} collapsible ghost gutter={[0, 8]}>
+              <ProCard
+                key={lo.layoutName}
+                bordered hoverable
+                title={lo.layoutName} collapsible ghost gutter={[0, 8]}
+                extra={[
+                  <PopconfirmDeleteBtn onClick={async ()=>{
+                   await handleRemoveById(API_CONSTANTS.METRICS_LAYOUT_DELETE, lo.taskId, ()=>{refresh()})
+                  }} description={<span className={'needWrap'}>{l('metrics.flink.deleteConfirm')}</span>}/>,
+                ]}
+              >
                 <Row gutter={[8, 16]}>{renderFlinkChartGroup(lo.flinkJobId, lo.metrics)}</Row>
               </ProCard>
             </Spin>
