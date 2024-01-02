@@ -92,54 +92,57 @@ export default class LineageDagExt extends LineageDag {
       edges: result.edges
     };
 
-    setTimeout(() => {
-      let tmpEdges = result.edges;
-      result.edges = [];
-      // this.canvas.wrapper.style.visibility = 'hidden';
-      this.canvas.draw(result, () => {
-        this.canvas.relayout(
-          {
-            edges: tmpEdges.map((item) => {
-              return {
-                source: item.sourceNode,
-                target: item.targetNode
-              };
-            })
-          },
-          true
-        );
-        // this.canvas.wrapper.style.visibility = 'visible';
-        this.canvas.addEdges(tmpEdges, true);
+    setTimeout(
+      () => {
+        let tmpEdges = result.edges;
+        result.edges = [];
+        // this.canvas.wrapper.style.visibility = 'hidden';
+        this.canvas.draw(result, () => {
+          this.canvas.relayout(
+            {
+              edges: tmpEdges.map((item) => {
+                return {
+                  source: item.sourceNode,
+                  target: item.targetNode
+                };
+              })
+            },
+            true
+          );
+          // this.canvas.wrapper.style.visibility = 'visible';
+          this.canvas.addEdges(tmpEdges, true);
 
-        let minimap = _.get(this, 'props.config.minimap', {});
+          let minimap = _.get(this, 'props.config.minimap', {});
 
-        const minimapCfg = _.assign({}, minimap.config, {
-          events: ['system.node.click', 'system.canvas.click']
+          const minimapCfg = _.assign({}, minimap.config, {
+            events: ['system.node.click', 'system.canvas.click']
+          });
+
+          if (minimap && minimap.enable) {
+            this.canvas.setMinimap(true, minimapCfg);
+          }
+
+          if (_.get(this, 'props.config.gridMode')) {
+            this.canvas.setGridMode(true, _.assign({}, _.get(this, 'props.config.gridMode', {})));
+          }
+
+          if (result.nodes.length !== 0) {
+            this.canvas.focusCenterWithAnimate();
+            this._isFirstFocus = true;
+          }
+
+          this.forceUpdate();
+          this.props.onLoaded && this.props.onLoaded(this.canvas);
         });
-
-        if (minimap && minimap.enable) {
-          this.canvas.setMinimap(true, minimapCfg);
-        }
-
-        if (_.get(this, 'props.config.gridMode')) {
-          this.canvas.setGridMode(true, _.assign({}, _.get(this, 'props.config.gridMode', {})));
-        }
-
-        if (result.nodes.length !== 0) {
-          this.canvas.focusCenterWithAnimate();
-          this._isFirstFocus = true;
-        }
-
-        this.forceUpdate();
-        this.props.onLoaded && this.props.onLoaded(this.canvas);
-      });
-      this.canvas.on('system.node.click', (data) => {
-        let node = data.node;
-        this.canvas.focus(node.id);
-      });
-      this.canvas.on('system.canvas.click', () => {
-        this.canvas.unfocus();
-      });
-    }, _.get(this.props, 'config.delayDraw', 0));
+        this.canvas.on('system.node.click', (data) => {
+          let node = data.node;
+          this.canvas.focus(node.id);
+        });
+        this.canvas.on('system.canvas.click', () => {
+          this.canvas.unfocus();
+        });
+      },
+      _.get(this.props, 'config.delayDraw', 0)
+    );
   }
 }
