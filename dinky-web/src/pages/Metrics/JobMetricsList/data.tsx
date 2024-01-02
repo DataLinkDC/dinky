@@ -17,7 +17,6 @@
  *
  */
 
-
 export type ChartData = {
   time: Date;
   value: number | string;
