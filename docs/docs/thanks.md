@@ -44,8 +44,8 @@ title: 致谢
 - Sa-Token 是一款简单易用、功能强大的Java权限认证框架。它提供了一套简单、灵活、高效的权限认证方案，帮助开发者更方便地进行权限认证。Dinky 项目的登录认证功能/权限控制基于 Sa-Token 实现。
 
 
-[![JetBrains](http://pic.dinky.org.cn/dinky/docs/zh-CN/thanks/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
-此外，特别感谢 [JetBrains](https://www.jetbrains.com/?from=dlink) 提供的免费开源 License 赞助,JetBrains是一家软件开发工具提供商，提供了许多受欢迎的集成开发环境，如 IntelliJ IDEA。他们支持开源社区，为一些开源项目提供免费的开源许可证，以促进软件开发的进步
+[![JetBrains](http://pic.dinky.org.cn/dinky/docs/zh-CN/thanks/jetbrains.svg)](https://www.jetbrains.com/?from=dinky)
+此外，特别感谢 [JetBrains](https://www.jetbrains.com/?from=dinky) 提供的免费开源 License 赞助,JetBrains是一家软件开发工具提供商，提供了许多受欢迎的集成开发环境，如 IntelliJ IDEA。他们支持开源社区，为一些开源项目提供免费的开源许可证，以促进软件开发的进步
 
 ### 贡献者
 
