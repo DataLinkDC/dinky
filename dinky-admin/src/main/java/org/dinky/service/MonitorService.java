@@ -81,4 +81,11 @@ public interface MonitorService extends IService<Metrics> {
      * @return A list of {@link Metrics} objects representing the job metrics for the specified task ID.
      */
     List<Metrics> getMetricsLayoutByTaskId(Integer taskId);
+
+    /**
+     * Delete the metrics layout.
+     * @param taskId the task id
+     * @return if the delete is successful.
+     */
+    boolean deleteMetricsLayout(Integer taskId);
 }

@@ -17,7 +17,7 @@
  *
  */
 
-import { ChartData } from '@/pages/Metrics/Job/data';
+import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
 import { differenceDays } from '@/utils/function';
 import { Line } from '@ant-design/charts';
 import { ExpandOutlined } from '@ant-design/icons';
