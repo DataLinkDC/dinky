@@ -122,12 +122,23 @@ const JobMetricsList = (props: MetricsProps) => {
             <Spin spinning={loading} key={`spin-${lo.layoutName}`}>
               <ProCard
                 key={lo.layoutName}
-                bordered hoverable
-                title={lo.layoutName} collapsible ghost gutter={[0, 8]}
+                bordered
+                hoverable
+                title={lo.layoutName}
+                collapsible
+                ghost
+                gutter={[0, 8]}
                 subTitle={
-                  <PopconfirmDeleteBtn onClick={async ()=>{
-                    await handleRemoveById(API_CONSTANTS.METRICS_LAYOUT_DELETE, lo.taskId, ()=>{refresh()})
-                  }} description={<span className={'needWrap'}>{l('metrics.flink.deleteConfirm')}</span>}/>
+                  <PopconfirmDeleteBtn
+                    onClick={async () => {
+                      await handleRemoveById(API_CONSTANTS.METRICS_LAYOUT_DELETE, lo.taskId, () => {
+                        refresh();
+                      });
+                    }}
+                    description={
+                      <span className={'needWrap'}>{l('metrics.flink.deleteConfirm')}</span>
+                    }
+                  />
                 }
               >
                 <Row gutter={[8, 16]}>{renderFlinkChartGroup(lo.flinkJobId, lo.metrics)}</Row>
