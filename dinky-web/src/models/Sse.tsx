@@ -17,11 +17,12 @@
  *
  */
 
-import { postAll } from '@/services/api';
-import { ErrorMessage } from '@/utils/messages';
-import { useEffect, useRef, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import {postAll} from '@/services/api';
+import {ErrorMessage} from '@/utils/messages';
+import {useEffect, useRef, useState} from 'react';
+import {v4 as uuidv4} from 'uuid';
 
+const session_invalid_label = 'SESSION_INVALID';
 export type SseData = {
   topic: string;
   data: any;
@@ -39,8 +40,12 @@ export default () => {
   const subscribe = async () => {
     const topics: string[] = [];
     subscriberRef.current.forEach((sub) => topics.push(...sub.topic));
-    const para = { sessionKey: uuidRef.current, topics: topics };
-    await postAll('api/sse/subscribeTopic', para).catch((e) => ErrorMessage(e));
+    const para = {sessionKey: uuidRef.current, topics: topics};
+    await postAll('api/sse/subscribeTopic', para).then((res: any) => {
+      if (res.data.length === 1 && res.data[0] === session_invalid_label) {
+        reconnectSse();
+      }
+    }).catch((e) => ErrorMessage(e));
   };
   const reconnectSse = () => {
     const sseUrl = '/api/sse/connect?sessionKey=' + uuidRef.current;
@@ -69,7 +74,7 @@ export default () => {
   }, [eventSource]);
 
   const subscribeTopic = (topic: string[], onMessage: (data: SseData) => void) => {
-    const sub: SubscriberData = { topic: topic, call: onMessage };
+    const sub: SubscriberData = {topic: topic, call: onMessage};
     subscriberRef.current = [...subscriberRef.current, sub];
     subscribe();
     return () => {

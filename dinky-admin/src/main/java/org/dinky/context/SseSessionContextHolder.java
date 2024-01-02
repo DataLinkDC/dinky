@@ -19,6 +19,7 @@
 
 package org.dinky.context;
 
+import org.dinky.data.constant.SseConstant;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.vo.SseDataVo;
 
@@ -51,7 +52,10 @@ public class SseSessionContextHolder {
         if (exists(sessionId)) {
             return sessionMap.get(sessionId).updateTopics(topics);
         } else {
-            throw new BusException("Session does not exist");
+            HashSet<String> reconnectMessage = new HashSet<>(1);
+            reconnectMessage.add(SseConstant.SSE_SESSION_INVALID);
+            log.warn("session id is invalid");
+            return reconnectMessage;
         }
     }
 
