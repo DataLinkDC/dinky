@@ -1,46 +1,42 @@
 {
-  "link.title.Docs": {
-    "message": "Docs",
-    "description": "The title of the footer links column with title=Docs in the footer"
+  "link.title.docs": {
+    "message": "文档",
+    "description": "The title of the footer links column with title=docs in the footer"
   },
-  "link.title.Community": {
-    "message": "Community",
-    "description": "The title of the footer links column with title=Community in the footer"
+  "link.title.community": {
+    "message": "社区",
+    "description": "The title of the footer links column with title=community in the footer"
   },
-  "link.title.More": {
-    "message": "More",
-    "description": "The title of the footer links column with title=More in the footer"
+  "link.title.more": {
+    "message": "更多",
+    "description": "The title of the footer links column with title=more in the footer"
   },
-  "link.item.label.文档首页": {
+  "link.item.label.doc_home": {
     "message": "文档首页",
-    "description": "The label of footer link with label=文档首页 linking to /docs/next/platform_intro/intro"
+    "description": "The label of footer link with label=doc_home linking to /docs/next/platform_intro/intro"
   },
-  "link.item.label.Open Api": {
+  "link.item.label.openapi": {
     "message": "Open Api",
-    "description": "The label of footer link with label=Open Api linking to /docs/next/administrator_guide/studio/openapi"
+    "description": "The label of footer link with label=openapi linking to /docs/next/user_guide/studio/openapi"
   },
-  "link.item.label.Discussions": {
-    "message": "Discussions",
-    "description": "The label of footer link with label=Discussions linking to https://github.com/DataLinkDC/dlink/discussions"
-  },
-  "link.item.label.Issue": {
+  "link.item.label.issue": {
     "message": "Issue",
-    "description": "The label of footer link with label=Issue linking to https://github.com/DataLinkDC/dlink/issues"
+    "description": "The label of footer link with label=issue linking to https://github.com/DataLinkDC/dinky/issues"
   },
-  "link.item.label.Pull Request": {
+  "link.item.label.pr": {
     "message": "Pull Request",
-    "description": "The label of footer link with label=Pull Request linking to https://github.com/DataLinkDC/dlink/pulls"
+    "description": "The label of footer link with label=pr linking to https://github.com/DataLinkDC/dinky/pulls"
   },
-  "link.item.label.GitHub": {
+  "link.item.label.github": {
     "message": "GitHub",
-    "description": "The label of footer link with label=GitHub linking to https://github.com/DataLinkDC/dlink"
+    "description": "The label of footer link with label=github linking to https://github.com/DataLinkDC/dinky"
   },
   "copyright": {
     "message": "Copyright © 2022 Dinky, Inc. DataLinkDC.<br/><a href=\"https://beian.miit.gov.cn\" target=\"_blank\">鲁ICP备20001630号-2</a>",
     "description": "The footer copyright"
   },
-  "link.item.label.博客": {
-    "message": "博客",
-    "description": "The label of footer link with label=最新动态 linking to /blog"
+  "logo.alt": {
+    "message": "Dinky",
+    "description": "The alt text of footer logo"
   }
 }
