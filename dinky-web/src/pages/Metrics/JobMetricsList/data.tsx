@@ -17,23 +17,20 @@
  *
  */
 
-import { MetricsLayout } from '@/pages/Metrics/Job/data';
-import { putDataAsArray, queryList } from '@/services/api';
-import { API_CONSTANTS } from '@/services/endpoints';
 
-/**
- * 获取 运行的 flink任务 列表
- * @returns {Promise<any>}
- */
-export async function getFlinkRunTask() {
-  return queryList(API_CONSTANTS.JOB_INSTANCE, {
-    filter: {},
-    currentPage: 1,
-    status: 'RUNNING',
-    sorter: { id: 'descend' }
-  });
-}
+export type ChartData = {
+  time: Date;
+  value: number | string;
+};
 
-export async function saveFlinkMetrics(jobList: MetricsLayout[]) {
-  return await putDataAsArray(API_CONSTANTS.SAVE_FLINK_METRICS, jobList);
-}
+export type MetricsLayout = {
+  id: number;
+  taskId: number;
+  vertices: string;
+  metrics: string;
+  position: number;
+  showType: string;
+  showSize: string;
+  title: string;
+  layoutName: string;
+};

@@ -24,7 +24,7 @@ import { SseData } from '@/models/Sse';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { JobMetricsItem, MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
 import { getMetricsData } from '@/pages/DevOps/JobDetail/srvice';
-import { ChartData } from '@/pages/Metrics/Job/data';
+import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
 import { MetricsDataType } from '@/pages/Metrics/Server/data';
 import { getMetricsLayout } from '@/pages/Metrics/service';
 import { handleRemoveById } from '@/services/BusinessCrud';
