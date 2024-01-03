@@ -205,7 +205,7 @@ export default () => {
                 disabled={!HasAuthority('/registration/cluster/instance/edit')}
               />
               <Tag color='cyan'>
-                {CLUSTER_INSTANCE_TYPE.find((record) => item.type === record.value)?.label}
+                {CLUSTER_INSTANCE_TYPE().find((record) => item.type === record.value)?.label}
               </Tag>
               <Tag
                 icon={item.status === 1 ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}

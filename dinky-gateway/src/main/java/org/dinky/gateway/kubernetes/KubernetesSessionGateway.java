@@ -24,7 +24,6 @@ import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
-import org.dinky.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;
@@ -67,7 +66,7 @@ public class KubernetesSessionGateway extends KubernetesGateway {
             result.setWebURL(clusterClient.getWebInterfaceURL());
             result.success();
         } catch (Exception e) {
-            result.fail(LogUtil.getError(e));
+            throw new RuntimeException(e);
         }
         return result;
     }

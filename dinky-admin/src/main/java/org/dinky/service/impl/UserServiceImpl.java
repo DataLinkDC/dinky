@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -105,6 +106,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     private final MenuService menuService;
     private final TokenService tokenService;
     private final TokenMapper tokenMapper;
+
+    private final ReentrantLock lock = new ReentrantLock();
 
     @Override
     public Result<Void> registerUser(User user) {
@@ -199,13 +202,13 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         // save login log record
         loginLogService.saveLoginLog(user, Status.LOGIN_SUCCESS);
 
-        insertToken(userInfo);
+        upsertToken(userInfo);
 
         // Return the user information along with a success status
         return Result.succeed(userInfo, Status.LOGIN_SUCCESS);
     }
 
-    private void insertToken(UserDTO userInfo) {
+    private void upsertToken(UserDTO userInfo) {
         Integer userId = userInfo.getUser().getId();
         SysToken sysToken = new SysToken();
         String tokenValue = StpUtil.getTokenValueByLoginId(userId);
@@ -221,7 +224,22 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         sysToken.setCreator(userId);
         sysToken.setUpdater(userId);
         sysToken.setSource(SysToken.Source.LOGIN);
-        tokenMapper.insert(sysToken);
+
+        try {
+            lock.lock();
+            SysToken lastSysToken =
+                    tokenMapper.selectOne(new LambdaQueryWrapper<SysToken>().eq(SysToken::getTokenValue, tokenValue));
+            if (Asserts.isNull(lastSysToken)) {
+                tokenMapper.insert(sysToken);
+            } else {
+                sysToken.setId(lastSysToken.getId());
+                tokenMapper.updateById(sysToken);
+            }
+        } catch (Exception e) {
+            log.error("update token info failed", e);
+        } finally {
+            lock.unlock();
+        }
     }
 
     private User localLogin(LoginDTO loginDTO) throws AuthException {

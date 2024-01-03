@@ -305,7 +305,7 @@ Dinky 将通过暴露的 NodePort 端口提交 FlinkSQL 作业至外部的 Flink
 
 ![image-20231220110234858](http://pic.dinky.org.cn/dinky/docs/test/202312201102913.png)
 
-如何注册 Kubernetes Application 的集群配置，详见[集群管理](http://www.dlink.top/docs/next/administrator_guide/register_center/cluster_manage) 的集群配置管理。
+如何注册 Kubernetes Application 的集群配置，详见[集群管理](http://www.dinky.org.cn/docs/next/administrator_guide/register_center/cluster_manage) 的集群配置管理。
 
 ## 作业提交
 

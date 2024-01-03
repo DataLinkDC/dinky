@@ -132,7 +132,7 @@ Thanks to [JetBrains](https://www.jetbrains.com/?from=dlink) for providing a fre
 
 1.Create an issue and provide a clear description.
 
-2.Visit the [official website](http://www.dlink.top/#/) website to read the latest documentation manual.
+2.Visit the [official website](http://www.dinky.org.cn/#/) website to read the latest documentation manual.
 
 3.It is recommended to scan the code to enter the DingTalk group.
 
@@ -148,3 +148,8 @@ Thanks to [JetBrains](https://www.jetbrains.com/?from=dlink) for providing a fre
 
 Please refer to the [LICENSE](https://github.com/DataLinkDC/dinky/blob/dev/LICENSE) document.
 
+# Contributors
+
+<a href="https://github.com/DataLinkDC/dinky/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=DataLinkDC/dinky" />
+</a>

@@ -46,7 +46,7 @@ public class AddJarSqlParseStrategy extends AbstractRegexParseStrategy {
     private static final Pattern ADD_JAR_PATTERN = Pattern.compile(ADD_JAR, Pattern.CASE_INSENSITIVE);
     public static final AddJarSqlParseStrategy INSTANCE = new AddJarSqlParseStrategy();
 
-    protected AddJarSqlParseStrategy() {
+    public AddJarSqlParseStrategy() {
         super(ADD_JAR_PATTERN);
     }
 

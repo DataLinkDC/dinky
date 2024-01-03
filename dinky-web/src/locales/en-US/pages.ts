@@ -338,6 +338,11 @@ export default {
   'metrics.flink.subTask': 'SubTask',
   'metrics.flink.subTask.placeholder': 'Please select a SubTask Name',
   'metrics.flink.taskId': 'Dinky Job ID',
+  'metrics.dinky.not.open':
+    'Dinky Server monitoring is not enabled, please go to the Setting Center -> Global Settings -> Metrics Configuration -> Dinky JVM Monitor switch to open',
+  'metrics.flink.deleteConfirm':
+    'Are you sure to delete the monitoring data under this task? \nAttention: This operation will synchronously affect the monitoring data of the operation and maintenance center for this task!! \nPlease operate with caution, this operation is irreversible!',
+
   /**
    *
    * pages
@@ -421,7 +426,8 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig': 'Flink cluster Config',
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     'Select Flink cluster Config for remote submission tasks in [{type}] mode',
-  'pages.datastudio.label.jobConfig.clusterConfig.tip2': 'Select Flink cluster Config',
+  'pages.datastudio.label.jobConfig.clusterConfig.tip2':
+    'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available.',
   'pages.datastudio.label.jobConfig.execmode.tip':
     'Specify the execution mode of the Flink task, the default is Local',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL environment',
@@ -787,6 +793,8 @@ export default {
   'rc.ci.management': 'Cluster Instance Management',
   'rc.ci.modify': 'Modify cluster Instance',
   'rc.ci.name': 'Name',
+  'rc.ci.autoRegisterCannotModify':
+    'Automatically registered instances can only modify the `JobManger high-availability address` attribute, and others cannot be modified!',
   'rc.ci.namePlaceholder': 'Please enter a name!',
   'rc.ci.recycle': 'Recycle Flink Cluster Instances',
   'rc.ci.recycleConfirm':
@@ -797,7 +805,7 @@ export default {
   'rc.ci.version': 'Version',
   'rc.ci.desc': 'Note',
   'rc.ci.search': 'Search Name/Alias/Note',
-  'rc.doc.category': 'Document Type',
+  'rc.doc.category': 'Register Type',
   'rc.doc.categoryPlaceholder': 'Please select the type of this Document!',
   'rc.doc.create': 'Create Document',
   'rc.doc.delete': 'Delete Document',
@@ -808,7 +816,7 @@ export default {
   'rc.doc.fillValueHelp': 'Please enter the fill value',
   'rc.doc.fillValuePlaceholder':
     'Please enter the fill value, use the name in the editor to trigger the prompt eg',
-  'rc.doc.functionType': 'Function Type',
+  'rc.doc.functionType': 'Document Type',
   'rc.doc.management': 'Document Management',
   'rc.doc.modify': 'Modify Document',
   'rc.doc.name': 'Name',

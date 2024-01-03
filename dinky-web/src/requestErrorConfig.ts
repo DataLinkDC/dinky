@@ -54,7 +54,8 @@ const handleBizError = (result: ResponseStructure) => {
       WarningNotification(msg, l('app.response.error'));
       break;
     case ErrorCode.EXCEPTION:
-      if (Boolean(getValueFromLocalStorage(ENABLE_MODEL_TIP))) {
+      const valueFromLocalStorage = getValueFromLocalStorage(ENABLE_MODEL_TIP);
+      if (valueFromLocalStorage === 'true') {
         ErrorNotification(data, l('app.response.exception'));
       }
       break;

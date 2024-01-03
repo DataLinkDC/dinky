@@ -86,7 +86,7 @@ public class Knife4jConfig {
                 .version(dinkyVersion)
                 .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0")
                 .license("Apache 2.0")
-                .contact(new Contact("Dinky 开源", "http://www.dlink.top/", ""))
+                .contact(new Contact("Dinky 开源", "http://www.dinky.org.cn/", ""))
                 .build();
     }
     /** 增加如下配置可解决Spring Boot 6.x 与Swagger 3.0.0 不兼容问题 */

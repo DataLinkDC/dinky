@@ -103,7 +103,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -325,7 +324,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         taskDTO.setStatementSet(true);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
         if ((jobResult.getStatus() == Job.JobStatus.FAILED)) {
-            throw new BusException(jobResult.getError());
+            throw new RuntimeException(jobResult.getError());
         }
         log.info("Job Submit success");
         Task task = new Task(submitDto.getId(), jobResult.getJobInstanceId());
@@ -511,14 +510,21 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         boolean saved = saveOrUpdate(task.buildTask());
         if (saved && Asserts.isNotNull(task.getJobInstanceId())) {
             JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
-            jobInstance.setStep(lifeCycle.getValue());
-            jobInstanceService.updateById(jobInstance);
-            log.info("jobInstance [{}] step change to {}", jobInstance.getJid(), lifeCycle.getValue());
+            if (Asserts.isNotNull(jobInstance)) {
+                jobInstance.setStep(lifeCycle.getValue());
+                boolean updatedJobInstance = jobInstanceService.updateById(jobInstance);
+                if (updatedJobInstance) jobInstanceService.refreshJobInfoDetail(jobInstance.getId(), true);
+                log.warn(
+                        "JobInstance [{}] step change to [{}] ,Trigger Force Refresh",
+                        jobInstance.getName(),
+                        lifeCycle.getValue());
+            }
         }
         return saved;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdateTask(Task task) {
         Task byId = getById(task.getId());
         if (byId != null && JobLifeCycle.PUBLISH.equalsValue(byId.getStep())) {
@@ -545,13 +551,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
             // to compiler udf
             if (Asserts.isNotNullString(task.getDialect())
-                    && Dialect.JAVA.equalsVal(task.getDialect())
+                    && Dialect.JAVA.isDialect(task.getDialect())
                     && Asserts.isNotNullString(task.getStatement())) {
                 CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
                 task.setSavePointPath(compiler.getFullClassName());
-            } else if (Dialect.PYTHON.equalsVal(task.getDialect())) {
+            } else if (Dialect.PYTHON.isDialect(task.getDialect())) {
                 task.setSavePointPath(task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
-            } else if (Dialect.SCALA.equalsVal(task.getDialect())) {
+            } else if (Dialect.SCALA.isDialect(task.getDialect())) {
                 task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
             }
             UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task));
@@ -626,15 +632,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public List<Task> getAllUDF() {
-        List<Task> tasks = list(new QueryWrapper<Task>()
-                .in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON)
+        return list(new QueryWrapper<Task>()
+                .in("dialect", Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
                 .eq("enabled", 1)
                 .isNotNull("save_point_path"));
-        return tasks.stream()
-                .peek(task -> {
-                    Assert.notNull(task, Status.TASK_NOT_EXIST.getMessage());
-                })
-                .collect(Collectors.toList());
     }
 
     @Override

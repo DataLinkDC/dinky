@@ -48,6 +48,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.python.PythonOptions;
+import org.apache.flink.streaming.api.graph.StreamGraph;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -252,7 +253,9 @@ public class Submitter {
             String sqlStatement = executor.pretreatStatement(statements[i]);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
-                executeJarOperation.execute(executor.getCustomTableEnvironment());
+                StreamGraph streamGraph = executeJarOperation.getStreamGraph(executor.getCustomTableEnvironment());
+                streamGraph.setJobName(executor.getExecutorConfig().getJobName());
+                executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
                 break;
             } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD) {
                 File[] info = AddJarSqlParseStrategy.getInfo(sqlStatement);

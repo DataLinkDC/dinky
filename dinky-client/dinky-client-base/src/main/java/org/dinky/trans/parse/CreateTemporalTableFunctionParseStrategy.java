@@ -45,7 +45,7 @@ public class CreateTemporalTableFunctionParseStrategy extends AbstractRegexParse
     public static final CreateTemporalTableFunctionParseStrategy INSTANCE =
             new CreateTemporalTableFunctionParseStrategy();
 
-    protected CreateTemporalTableFunctionParseStrategy() {
+    public CreateTemporalTableFunctionParseStrategy() {
         super(PATTERN);
     }
 

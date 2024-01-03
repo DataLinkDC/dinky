@@ -132,8 +132,7 @@ public class ClusterConfigurationController {
     @ApiImplicitParam(name = "id", value = "id", dataType = "Integer", paramType = "query", required = true)
     @SaCheckPermission(value = PermissionConstants.REGISTRATION_CLUSTER_CONFIG_DELETE)
     public Result<Void> deleteById(@RequestParam("id") Integer id) {
-        boolean removeById = clusterConfigurationService.removeById(id);
-        if (removeById) {
+        if (clusterConfigurationService.deleteClusterConfigurationById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
         } else {
             return Result.failed(Status.DELETE_FAILED);

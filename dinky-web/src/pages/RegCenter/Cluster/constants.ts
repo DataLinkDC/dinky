@@ -25,5 +25,5 @@ export enum ClusterType {
   KUBERNETES_NATIVE = 'kubernetes-application',
   KUBERNETES_OPERATOR = 'kubernetes-application-operator',
   YARN_APPLICATION = 'yarn-application',
-  LOACL = 'local'
+  LOCAL = 'local'
 }

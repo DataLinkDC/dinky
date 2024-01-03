@@ -27,7 +27,8 @@ import {
   zoomOptions
 } from '@/components/Flink/FlinkDag/config';
 import { buildDag, regConnect, updateDag } from '@/components/Flink/FlinkDag/functions';
-import { getData } from '@/services/api';
+import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
+import { getDataByParamsReturnResult } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
 import { DagreLayout } from '@antv/layout';
@@ -35,7 +36,7 @@ import { Edge, Graph } from '@antv/x6';
 import { Rectangle } from '@antv/x6-geometry';
 import { Selection } from '@antv/x6-plugin-selection';
 import { register } from '@antv/x6-react-shape';
-import { Drawer, Select, Slider, Table, Tabs, TabsProps, Typography } from 'antd';
+import { Drawer, Select, Slider, Table, Tabs, TabsProps, Tag, Typography } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import './index.css';
 
@@ -66,7 +67,13 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
       return;
     }
 
-    getData(API_CONSTANTS.READ_CHECKPOINT, { path: selectPath, operatorId: id }).then((res) => {
+    getDataByParamsReturnResult(API_CONSTANTS.READ_CHECKPOINT, {
+      path: selectPath,
+      operatorId: id
+    }).then((res) => {
+      if (!res || res.code !== 0) {
+        return;
+      }
       const genData = Object.keys(res.data).map((x) => {
         const datum = res.data[x];
         return {
@@ -112,10 +119,21 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
       <Select
         defaultValue={selectPath}
         style={{ width: '100%' }}
-        placeholder='Select a person'
+        placeholder='Select a Checkpoint'
         optionFilterProp='children'
         options={checkpointArray.map((x) => {
-          return { label: x.id, value: x.path };
+          return {
+            label: (
+              <>
+                <Tag color='success'>CheckPoint Id: {x.id}</Tag>
+                <Tag color='processing'>
+                  CheckPoint Path:<EllipsisMiddle maxCount={40}>{x.path}</EllipsisMiddle>
+                </Tag>
+                <Tag color='processing'>Type:{x.checkpointType}</Tag>
+              </>
+            ),
+            value: x.path
+          };
         })}
         onChange={(path) => {
           setSelectPath(path);

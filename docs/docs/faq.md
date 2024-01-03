@@ -1,5 +1,5 @@
 ---
-sidebar_position: 14
+sidebar_position: 15
 id: faq
 title: FAQ
 ---
@@ -15,7 +15,7 @@ Caused by: java.lang.IllegalArgumentException: java.net.UnknownHostException: na
 ```
 
 提供 3 种方式解决这个问题：
-- 升级 Dinky 至 0.6.2 及后续版本。详见：[https://github.com/DataLinkDC/dlink/issues/310](https://github.com/DataLinkDC/dlink/issues/310)
+- 升级 Dinky 至 0.6.2 及后续版本。详见：[https://github.com/DataLinkDC/dinky/issues/310](https://github.com/DataLinkDC/dinky/issues/310)
 
 - 修改 `/etc/profile`，添加 HADOOP_HOME 环境变量
 ```shell
@@ -176,3 +176,41 @@ Cannot map checkpoint/savepoint state for operator xxx to the new program, becau
 ```
 
 添加参数 execution.savepoint.ignore-unclaimed-state:true，跳过无法还原的算子
+
+
+## 本地调试FAQ
+
+
+Q1: 为什么不支持除了 Java8 和 Java11 以外的其他版本呢？
+
+> A1: 因为 Flink 目前仅支持 Java8 和 Java11。
+
+--- 
+
+Q2: 为什么 Maven Profile 切换了不生效呢?? 提交任务时还是报各种依赖问题,Profile 像是不生效呢?????
+
+> A2-1: 因为你没刷新 Maven Profile，导致不生效
+
+> A2-2: 因为虽然你刷新了 Maven Profile, 没重启 Dinky 服务(不要问为什么需要重启,这是一个开发人员的基本认知),导致依赖没包含在当前已启动的服务中.
+
+> A2-3: Profile 切的不对,注意灰色的 Profile 选项.请仔细仔细仔细仔细的看看.
+
+> A2-4: 查看你的 IDEA 的版本,不要太旧,尽量保持在 2022.x 以上(别问为什么,上边已经说了)
+
+> A2-5: Profile 切换加载,基于依赖的 `<scope></scope>`标签属性声明 ,如果不懂,自行百度/谷歌/CSDN/StackOverFlow/ChatGPT
+
+--- 
+
+Q3: 我在 IDEA 中启动 Dinky 后, 前端页面访问不了, 报错找不到页面??????
+
+> A3-1: 可以在执行 Install 阶段勾选 `web` Profile,不然 dinky-admin/src/main/resources/ 下没有静态资源文件目录 `static`.
+
+> A3-2: 可以单独启动前端,参考 [本地调试-启动前端](developer_guide/local_debug#启动前端) 部分
+
+--- 
+
+Q4: 为什么在 IDEA 中启动 Dinky 后，Profile 也加载了,我用到了一个 connector 仍然报错找不到类?????
+
+> A4-1: Dinky 只加载了 Dinky 在开发中过程中用到的相关 Flink 依赖以及 Flink 的基本环境依赖.如报此类错误,请检查你的 pom.xml 文件,是否包含了 connector 所依赖的 jar 包
+
+> A4-2: 如上述问题未解决,请检查你的 `dinky-flink` 模块下的与你Flink 版本一致的 `pom.xml` 文件,是否包含了 connector 所依赖的 jar 包

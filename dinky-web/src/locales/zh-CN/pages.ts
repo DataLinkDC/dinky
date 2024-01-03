@@ -327,6 +327,10 @@ export default {
   'metrics.flink.subTask': '子任务',
   'metrics.flink.subTask.placeholder': '请选择子任务名称',
   'metrics.flink.taskId': 'Dinky 任务ID',
+  'metrics.dinky.not.open':
+    '暂未开启 Dinky Server 监控, 请前往 配置中心 -> 全局配置 -> Metrics 配置 -> Dinky JVM Monitor 开关 进行开启',
+  'metrics.flink.deleteConfirm':
+    '确认删除该任务下的监控数据吗? \n注意:该操作会同步影响运维中心该任务的监控数据!!\n请谨慎操作,该操作不可撤销!',
   /**
    *
    * pages
@@ -405,7 +409,8 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig': 'Flink集群配置',
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     '选择Flink集群配置进行【{type}】模式的远程提交任务',
-  'pages.datastudio.label.jobConfig.clusterConfig.tip2': '选择Flink集群配置',
+  'pages.datastudio.label.jobConfig.clusterConfig.tip2':
+    '如下拉框无数据,请先配置/新建集群实例,或者检查集群配置/集群实例是否为健康可用状态',
   'pages.datastudio.label.jobConfig.execmode.tip': '指定 Flink 任务的执行模式，默认为 Local',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL 环境',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
@@ -757,6 +762,8 @@ export default {
   'rc.ci.management': '集群实例管理',
   'rc.ci.modify': '修改集群',
   'rc.ci.name': '实例名称',
+  'rc.ci.autoRegisterCannotModify':
+    '自动注册的实例仅能修改 `JobManger高可用地址` 属性,其他无法修改!',
   'rc.ci.namePlaceholder': '请输入名称!',
   'rc.ci.recycle': '回收 Flink 实例',
   'rc.ci.recycleConfirm': '确定回收所有自动创建且过期的 Flink 实例吗？',
@@ -766,7 +773,7 @@ export default {
   'rc.ci.version': '版本',
   'rc.ci.desc': '描述',
   'rc.ci.search': '搜索 名称/别名/备注',
-  'rc.doc.category': '文档类型',
+  'rc.doc.category': '注册类型',
   'rc.doc.categoryPlaceholder': '请选择该文档所属类型!',
   'rc.doc.create': '创建文档',
   'rc.doc.delete': '删除文档',
@@ -776,7 +783,7 @@ export default {
   'rc.doc.fillValue': '填充值',
   'rc.doc.fillValueHelp': '请输入填充值',
   'rc.doc.fillValuePlaceholder': '请输入填充值,编辑器内使用名称触发提示 eg',
-  'rc.doc.functionType': '函数类型',
+  'rc.doc.functionType': '文档类型',
   'rc.doc.management': '文档管理',
   'rc.doc.modify': '修改文档',
   'rc.doc.name': '名称',

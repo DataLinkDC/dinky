@@ -58,7 +58,7 @@ public enum Dialect {
         return value;
     }
 
-    public boolean equalsVal(String valueText) {
+    public boolean isDialect(String valueText) {
         return Asserts.isEqualsIgnoreCase(value, valueText);
     }
 

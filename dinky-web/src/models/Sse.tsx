@@ -22,6 +22,7 @@ import { ErrorMessage } from '@/utils/messages';
 import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
+const session_invalid_label = 'SESSION_INVALID';
 export type SseData = {
   topic: string;
   data: any;
@@ -40,7 +41,13 @@ export default () => {
     const topics: string[] = [];
     subscriberRef.current.forEach((sub) => topics.push(...sub.topic));
     const para = { sessionKey: uuidRef.current, topics: topics };
-    await postAll('api/sse/subscribeTopic', para).catch((e) => ErrorMessage(e));
+    await postAll('api/sse/subscribeTopic', para)
+      .then((res: any) => {
+        if (res.data.length === 1 && res.data[0] === session_invalid_label) {
+          reconnectSse();
+        }
+      })
+      .catch((e) => ErrorMessage(e));
   };
   const reconnectSse = () => {
     const sseUrl = '/api/sse/connect?sessionKey=' + uuidRef.current;

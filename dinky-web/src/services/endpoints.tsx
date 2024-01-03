@@ -247,7 +247,7 @@ export enum API_CONSTANTS {
   RESTART_TASK = '/api/task/restartTask',
   SAVEPOINT = '/api/task/savepoint',
   RESTART_TASK_FROM_CHECKPOINT = '/api/task/selectSavePointRestartTask',
-  GET_SAVEPOINTS = '/api/savepoints',
+  GET_SAVEPOINT_LIST_BY_TASK_ID = '/api/savepoints/listSavepointsByTaskId',
   ALERT_HISTORY_LIST = '/api/alertHistory/list',
   ALERT_HISTORY_DELETE = '/api/alertHistory/delete',
 
@@ -271,6 +271,7 @@ export enum API_CONSTANTS {
   MONITOR_GET_LAST_DATA = '/api/monitor/getLastUpdateData',
   MONITOR_GET_JVM_INFO = '/api/monitor/getJvmInfo',
   METRICS_LAYOUT_GET_BY_NAME = '/api/monitor/getMetricsLayoutByName',
+  METRICS_LAYOUT_DELETE = '/api/monitor/deleteMetricsLayout',
   JOB_METRICS = '/api/monitor/jobMetrics',
   SAVE_FLINK_METRICS = '/api/monitor/saveFlinkMetrics/',
   GET_METRICS_LAYOUT = '/api/monitor/getMetricsLayout',

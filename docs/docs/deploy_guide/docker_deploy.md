@@ -1,5 +1,6 @@
 ---
-sidebar_position: 3
+sidebar_position: 2
+position: 2
 id: docker_deploy
 title: Docker 部署
 ---

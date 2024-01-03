@@ -17,8 +17,10 @@
  *
  */
 
+import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/Instance/components/contants';
 import { validatorJMHAAdderess } from '@/pages/RegCenter/Cluster/Instance/components/function';
+import { Cluster } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import {
   ProFormGroup,
@@ -26,16 +28,26 @@ import {
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
+import { Alert } from 'antd';
+import React from 'react';
 
-const InstanceForm = () => {
+type InstanceFormProps = {
+  values: Partial<Cluster.Instance>;
+};
+const InstanceForm: React.FC<InstanceFormProps> = (props) => {
+  const { values } = props;
   const renderForm = () => {
     return (
       <>
+        {values && values.autoRegisters && (
+          <Alert type={'warning'} message={l('rc.ci.autoRegisterCannotModify')} showIcon />
+        )}
         <ProFormGroup>
           <ProFormText
             name='name'
             label={l('rc.ci.name')}
             width='md'
+            disabled={values && values.autoRegisters}
             rules={[{ required: true, message: l('rc.ci.namePlaceholder') }]}
             placeholder={l('rc.ci.namePlaceholder')}
           />
@@ -44,6 +56,7 @@ const InstanceForm = () => {
             name='alias'
             label={l('rc.ci.alias')}
             width='sm'
+            disabled={values && values.autoRegisters}
             placeholder={l('rc.ci.aliasPlaceholder')}
           />
 
@@ -51,7 +64,8 @@ const InstanceForm = () => {
             name='type'
             label={l('rc.ci.type')}
             width='sm'
-            options={CLUSTER_INSTANCE_TYPE}
+            disabled={values && values.autoRegisters}
+            options={CLUSTER_INSTANCE_TYPE([ClusterType.YARN_APPLICATION])}
             rules={[{ required: true, message: l('rc.ci.typePlaceholder') }]}
             placeholder={l('rc.ci.typePlaceholder')}
           />
@@ -72,6 +86,7 @@ const InstanceForm = () => {
           />
           <ProFormTextArea
             name='note'
+            disabled={values && values.autoRegisters}
             label={l('global.table.note')}
             width='md'
             placeholder={l('global.table.notePlaceholder')}
