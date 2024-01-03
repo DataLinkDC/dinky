@@ -59,4 +59,11 @@ public interface AlertGroupService extends ISuperService<AlertGroup> {
     Boolean deleteGroupById(Integer id);
 
     List<AlertGroup> selectListByKeyWord(String keyword);
+
+    /**
+     * check alert group has relationship with other table
+     * @param id {@link Integer} alert group id
+     * @return {@link Boolean} true: has relationship, false: no relationship
+     */
+    boolean hasRelationShip(Integer id);
 }

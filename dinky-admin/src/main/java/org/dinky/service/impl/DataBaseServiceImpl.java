@@ -27,12 +27,14 @@ import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
 import org.dinky.data.model.Table;
+import org.dinky.data.model.Task;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.job.Job;
 import org.dinky.job.JobResult;
@@ -41,6 +43,7 @@ import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.DataBaseService;
+import org.dinky.service.TaskService;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -51,6 +54,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -63,6 +68,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  */
 @Service
 public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBase> implements DataBaseService {
+
+    @Lazy
+    @Autowired
+    private TaskService taskService;
 
     @Override
     public String testConnect(DataBaseDTO db) {
@@ -126,6 +135,20 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public List<DataBase> listEnabledAll() {
         return this.list(new QueryWrapper<DataBase>().eq("enabled", 1));
+    }
+
+    /**
+     * delete database by id (physical deletion)
+     *
+     * @param id {@link Integer} database id
+     * @return {@link Boolean} true: success false: fail
+     */
+    @Override
+    public Boolean deleteDataSourceById(Integer id) {
+        if (hasRelationShip(id)) {
+            throw new BusException(Status.DATASOURCE_EXIST_RELATIONSHIP);
+        }
+        return this.removeById(id);
     }
 
     @Override
@@ -362,5 +385,18 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             result.setResults(jdbcSelectResults);
             return result;
         }
+    }
+
+    /**
+     * check datasource has relationship with other table
+     *
+     * @param id {@link Integer} alert group id
+     * @return {@link Boolean} true: has relationship, false: no relationship
+     */
+    @Override
+    public boolean hasRelationShip(Integer id) {
+        return !taskService
+                .list(new LambdaQueryWrapper<Task>().eq(Task::getAlertGroupId, id))
+                .isEmpty();
     }
 }
