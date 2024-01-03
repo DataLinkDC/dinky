@@ -223,7 +223,7 @@ public class ClusterInstanceController {
      * @param id {@link Integer} cluster instance id
      * @return {@link Result}<{@link Void}>
      */
-    @GetMapping("/killCluster")
+    @PutMapping("/killCluster")
     @Log(title = "Cluster Instance Kill", businessType = BusinessType.UPDATE)
     @ApiOperation("Cluster Instance Kill")
     @ApiImplicitParam(
