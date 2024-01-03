@@ -72,6 +72,7 @@ import { connect } from '@umijs/max';
 import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import { ButtonProps } from 'antd/es/button/button';
 import React, { memo, useEffect, useState } from 'react';
+import {LeftBottomKey} from "@/pages/DataStudio/data.d";
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -100,6 +101,7 @@ const HeaderContainer = (props: connect) => {
     tabs: { panes, activeKey },
     saveTabs,
     updateJobRunningMsg,
+    updateSelectBottomKey,
     queryDsConfig,
     queryTaskData,
     enabledDs
@@ -189,6 +191,7 @@ const HeaderContainer = (props: connect) => {
   };
 
   const handlerDebug = async () => {
+    updateSelectBottomKey(LeftBottomKey.CONSOLE_KEY);
     if (!currentData) return;
     // @ts-ignore
     const editor = currentTab.monacoInstance.editor
@@ -208,7 +211,12 @@ const HeaderContainer = (props: connect) => {
       { ...currentData, statement: selectSql }
     );
 
-    if (!res) return;
+    if (!res) {
+      return;
+    }else{
+      updateSelectBottomKey(LeftBottomKey.RESULT_KEY);
+    }
+
     updateJobRunningMsg({
       taskId: currentData.id,
       jobName: currentData.name,
@@ -232,6 +240,8 @@ const HeaderContainer = (props: connect) => {
   };
 
   const handlerSubmit = async () => {
+    updateSelectBottomKey(LeftBottomKey.CONSOLE_KEY);
+
     if (!currentData) return;
     const saved = currentData.step == JOB_LIFE_CYCLE.PUBLISH ? true : await handleSave();
     if (!saved) return;

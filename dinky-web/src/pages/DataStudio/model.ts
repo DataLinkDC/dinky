@@ -38,6 +38,7 @@ import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
 import ICodeEditor = editor.ICodeEditor;
+import {LeftBottomKey, LeftMenuKey} from "@/pages/DataStudio/data.d";
 
 /**
  * 初始化布局宽高度
@@ -356,7 +357,7 @@ const Model: ModelType = {
     toolContentHeight: 0,
     centerContentHeight: 0,
     leftContainer: {
-      selectKey: 'menu.datastudio.project',
+      selectKey: LeftMenuKey.PROJECT_KEY,
       selectSubKey: {},
       height: '100%',
       width: 260
@@ -368,7 +369,7 @@ const Model: ModelType = {
       width: 260
     },
     bottomContainer: {
-      selectKey: 'menu.datastudio.console',
+      selectKey: LeftBottomKey.CONSOLE_KEY,
       selectSubKey: {},
       height: 180,
       width: '100%'
