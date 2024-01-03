@@ -24,6 +24,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * ClusterConfig
  *
@@ -54,6 +57,12 @@ public class ClusterConfig {
             example = "/etc/hadoop/conf/yarn-site.xml",
             notes = "Path to the YARN configuration file")
     private String hadoopConfigPath;
+
+    @ApiModelProperty(
+            value = "Custom Hadoop Config",
+            dataType = "Configuration",
+            notes = "Custom hadoop config")
+    private Map<String, String> customHadoopConfig = new HashMap<>();
 
     @ApiModelProperty(
             value = "YARN application ID",

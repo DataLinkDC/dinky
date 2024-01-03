@@ -19,6 +19,7 @@
 
 package org.dinky.gateway.yarn;
 
+import cn.hutool.core.collection.CollectionUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
@@ -59,10 +60,7 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -76,7 +74,8 @@ public abstract class YarnGateway extends AbstractGateway {
     protected YarnConfiguration yarnConfiguration;
     protected YarnClient yarnClient;
 
-    public YarnGateway() {}
+    public YarnGateway() {
+    }
 
     public YarnGateway(GatewayConfig config) {
         super(config);
@@ -115,8 +114,7 @@ public abstract class YarnGateway extends AbstractGateway {
                 UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
                 logger.info("安全认证结束，用户和认证方式:" + currentUser.toString());
             } catch (Exception e) {
-                logger.error(e.getMessage());
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -129,10 +127,19 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     private void initYarnClient() {
+        final ClusterConfig clusterConfig = config.getClusterConfig();
         yarnConfiguration = new YarnConfiguration();
         yarnConfiguration.addResource(getYanConfigFilePath("yarn-site.xml"));
         yarnConfiguration.addResource(getYanConfigFilePath("core-site.xml"));
         yarnConfiguration.addResource(getYanConfigFilePath("hdfs-site.xml"));
+
+        Map<String, String> customHadoopConfig = clusterConfig.getCustomHadoopConfig();
+        if (CollectionUtil.isNotEmpty(customHadoopConfig)) {
+            customHadoopConfig.forEach((key, value) -> {
+                logger.debug("Custom hadoop config: {} = {}", key, value);
+                yarnConfiguration.set(key, value);
+            });
+        }
 
         yarnClient = YarnClient.createYarnClient();
         yarnClient.init(yarnConfiguration);

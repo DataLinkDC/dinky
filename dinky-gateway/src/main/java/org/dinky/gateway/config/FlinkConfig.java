@@ -97,13 +97,6 @@ public class FlinkConfig {
             notes = "Additional configuration properties for the job")
     private Map<String, String> configuration = new HashMap<>();
 
-    @ApiModelProperty(
-            value = "List of Flink configuration properties",
-            dataType = "List<Map<String, String>>",
-            example = "[{\"key\":\"value\"},{\"key2\":\"value2\"}]",
-            notes = "List of Flink configuration properties")
-    private List<Map<String, String>> flinkConfigList = new ArrayList<>();
-
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static final String DEFAULT_SAVEPOINT_PREFIX = "hdfs:///flink/savepoints/";
