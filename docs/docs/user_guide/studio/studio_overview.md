@@ -1,8 +1,8 @@
 ---
 sidebar_position: 1
 position: 1
-id: guide
-title: 数据开发引导
+id: studio_overview
+title: 数据开发功能简介
 ---
 
 :::note 简介
