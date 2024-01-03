@@ -31,6 +31,7 @@ import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Task;
 import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.GatewayResult;
@@ -196,15 +197,22 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     @Override
     public void killCluster(Integer id) {
         ClusterInstance clusterInstance = getById(id);
-        if (Asserts.isNull(clusterInstance)) {
-            throw new GatewayException("The clusterInstance does not exist.");
+        if (hasRelationShip(id)) {
+            throw new BusException(Status.CLUSTER_INSTANCE_EXIST_RELATIONSHIP);
+        } else if (Asserts.isNull(clusterInstance)) {
+            throw new BusException(Status.CLUSTER_NOT_EXIST);
         } else if (!checkHealth(clusterInstance)) {
-            throw new GatewayException("The clusterInstance has been killed.");
+            throw new BusException(Status.CLUSTER_INSTANCE_NOT_HEALTH);
+        } else if (clusterInstance.getType().equals(GatewayType.LOCAL.getLongValue())) {
+            // todo: kill local cluster instance by id is not support
+            throw new BusException(Status.CLUSTER_INSTANCE_LOCAL_NOT_SUPPORT_KILL);
+        } else {
+            Integer clusterConfigurationId = clusterInstance.getClusterConfigurationId();
+            FlinkClusterConfig flinkClusterConfig =
+                    clusterConfigurationService.getFlinkClusterCfg(clusterConfigurationId);
+            GatewayConfig gatewayConfig = GatewayConfig.build(flinkClusterConfig);
+            JobManager.killCluster(gatewayConfig, clusterInstance.getName());
         }
-        Integer clusterConfigurationId = clusterInstance.getClusterConfigurationId();
-        FlinkClusterConfig flinkClusterConfig = clusterConfigurationService.getFlinkClusterCfg(clusterConfigurationId);
-        GatewayConfig gatewayConfig = GatewayConfig.build(flinkClusterConfig);
-        JobManager.killCluster(gatewayConfig, clusterInstance.getName());
     }
 
     @Override
