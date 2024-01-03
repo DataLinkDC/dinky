@@ -20,7 +20,6 @@
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
-import { ProCard } from '@ant-design/pro-components';
 import { Tag } from 'antd';
 import React from 'react';
 
@@ -39,17 +38,17 @@ export const MetricsConfig = ({ data, onSave }: MetricsConfigProps) => {
   };
   return (
     <>
-        <GeneralConfig
-          loading={loading}
-          onSave={onSaveHandler}
-          tag={
-            <>
-              <Tag color={'error'}>{l('sys.setting.tag.system')}</Tag>
-              <Tag color={'processing'}>{l('sys.setting.tag.core')}</Tag>
-            </>
-          }
-          data={data}
-        />
+      <GeneralConfig
+        loading={loading}
+        onSave={onSaveHandler}
+        tag={
+          <>
+            <Tag color={'error'}>{l('sys.setting.tag.system')}</Tag>
+            <Tag color={'processing'}>{l('sys.setting.tag.core')}</Tag>
+          </>
+        }
+        data={data}
+      />
     </>
   );
 };
