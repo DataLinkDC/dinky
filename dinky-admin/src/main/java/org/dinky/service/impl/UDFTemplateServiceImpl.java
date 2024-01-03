@@ -20,20 +20,32 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.mapper.UDFTemplateMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
+import org.dinky.service.TaskService;
 import org.dinky.service.UDFTemplateService;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import cn.hutool.core.util.StrUtil;
 
-/** @since 0.6.8 */
+/**
+ * @since 0.6.8
+ */
 @Service
 public class UDFTemplateServiceImpl extends SuperServiceImpl<UDFTemplateMapper, UDFTemplate>
         implements UDFTemplateService {
+
+    @Lazy
+    @Autowired
+    private TaskService taskService;
 
     @Override
     public boolean saveOrUpdate(UDFTemplate udfTemplate) {
@@ -61,5 +73,29 @@ public class UDFTemplateServiceImpl extends SuperServiceImpl<UDFTemplateMapper, 
         UDFTemplate udfTemplate = getById(id);
         udfTemplate.setEnabled(!udfTemplate.getEnabled());
         return updateById(udfTemplate);
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    @Override
+    public Boolean deleteUDFTemplateById(Integer id) {
+        if (hasRelationShip(id)) {
+            throw new BusException(Status.UDF_TEMPLATE_EXIST_RELATIONSHIP);
+        }
+        return removeById(id);
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    @Override
+    public Boolean hasRelationShip(Integer id) {
+        return taskService.list().stream().anyMatch(t -> Optional.ofNullable(
+                        t.getConfigJson().getUdfConfig().getTemplateId())
+                .orElse(-1)
+                .equals(id));
     }
 }

@@ -24,9 +24,12 @@ import org.dinky.assertion.Asserts;
 import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.data.dto.ClusterInstanceDTO;
+import org.dinky.data.enums.Status;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
+import org.dinky.data.model.Task;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.model.FlinkClusterConfig;
@@ -37,6 +40,7 @@ import org.dinky.mapper.ClusterInstanceMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
+import org.dinky.service.TaskService;
 import org.dinky.utils.IpUtil;
 import org.dinky.utils.URLUtils;
 
@@ -44,6 +48,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +70,10 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         implements ClusterInstanceService {
 
     private final ClusterConfigurationService clusterConfigurationService;
+
+    @Autowired
+    @Lazy
+    private TaskService taskService;
 
     @Override
     public FlinkClusterInfo checkHeartBeat(String hosts, String host) {
@@ -157,7 +167,10 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
      */
     @Override
     public Boolean deleteClusterInstanceById(Integer id) {
-        return baseMapper.deleteById(id) > 0;
+        if (hasRelationShip(id)) {
+            throw new BusException(Status.CLUSTER_INSTANCE_EXIST_RELATIONSHIP);
+        }
+        return removeById(id);
     }
 
     @Override
@@ -231,6 +244,19 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                                 .like(ClusterInstance::getAlias, searchKeyWord)
                                 .or()
                                 .like(ClusterInstance::getNote, searchKeyWord)));
+    }
+
+    /**
+     * check cluster instance has relationship
+     *
+     * @param id {@link Integer} alert template id
+     * @return {@link Boolean} true: has relationship, false: no relationship
+     */
+    @Override
+    public boolean hasRelationShip(Integer id) {
+        return !taskService
+                .list(new LambdaQueryWrapper<Task>().eq(Task::getClusterId, id))
+                .isEmpty();
     }
 
     private boolean checkHealth(ClusterInstance clusterInstance) {

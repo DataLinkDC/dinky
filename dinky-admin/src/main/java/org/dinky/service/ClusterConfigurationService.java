@@ -74,4 +74,8 @@ public interface ClusterConfigurationService extends ISuperService<ClusterConfig
     Boolean modifyClusterConfigStatus(Integer id);
 
     List<ClusterConfigurationDTO> selectListByKeyWord(String keyword);
+
+    Boolean deleteClusterConfigurationById(Integer id);
+
+    Boolean hasRelationShip(Integer id);
 }

@@ -65,7 +65,6 @@ public class ClusterInstanceController {
      *
      * @param clusterInstanceDTO {@link ClusterInstanceDTO} cluster instance
      * @return {@link Result}<{@link Void}>
-     * @throws Exception exception
      */
     @PutMapping
     @Log(title = "Insert Or Update Cluster Instance", businessType = BusinessType.INSERT_OR_UPDATE)
@@ -83,8 +82,7 @@ public class ClusterInstanceController {
                 PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD
             },
             mode = SaMode.OR)
-    public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstanceDTO clusterInstanceDTO)
-            throws Exception {
+    public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstanceDTO clusterInstanceDTO) {
         if (clusterInstanceDTO.getAutoRegisters() == null) {
             clusterInstanceDTO.setAutoRegisters(false);
         }
