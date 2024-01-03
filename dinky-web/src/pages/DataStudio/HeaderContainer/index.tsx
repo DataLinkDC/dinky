@@ -20,6 +20,7 @@
 import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import { PushpinIcon } from '@/components/Icons/CustomIcons';
 import { FlexCenterDiv } from '@/components/StyledComponents';
+import { LeftBottomKey } from '@/pages/DataStudio/data.d';
 import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
@@ -100,6 +101,7 @@ const HeaderContainer = (props: connect) => {
     tabs: { panes, activeKey },
     saveTabs,
     updateJobRunningMsg,
+    updateSelectBottomKey,
     queryDsConfig,
     queryTaskData,
     enabledDs
@@ -189,6 +191,7 @@ const HeaderContainer = (props: connect) => {
   };
 
   const handlerDebug = async () => {
+    updateSelectBottomKey(LeftBottomKey.CONSOLE_KEY);
     if (!currentData) return;
     // @ts-ignore
     const editor = currentTab.monacoInstance.editor
@@ -208,7 +211,12 @@ const HeaderContainer = (props: connect) => {
       { ...currentData, statement: selectSql }
     );
 
-    if (!res) return;
+    if (!res) {
+      return;
+    } else {
+      updateSelectBottomKey(LeftBottomKey.RESULT_KEY);
+    }
+
     updateJobRunningMsg({
       taskId: currentData.id,
       jobName: currentData.name,
@@ -232,6 +240,8 @@ const HeaderContainer = (props: connect) => {
   };
 
   const handlerSubmit = async () => {
+    updateSelectBottomKey(LeftBottomKey.CONSOLE_KEY);
+
     if (!currentData) return;
     const saved = currentData.step == JOB_LIFE_CYCLE.PUBLISH ? true : await handleSave();
     if (!saved) return;
