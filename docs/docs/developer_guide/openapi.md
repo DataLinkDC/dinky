@@ -1,5 +1,6 @@
 ---
-sidebar_position: 7
+sidebar_position: 3
+position: 3
 id: openapi
 title: Open API
 ---

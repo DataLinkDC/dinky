@@ -40,6 +40,10 @@ HDFS, OSS 三种文件系统.
 | HDFS操作用户名      | hdfs用户名                                                                                                                                                                                                                | hdfs     |
 | HDFS defaultFS | fs.defaultFS 配置项，例如: 远程 HDFS：hdfs://localhost:9000，本地：file:///                                                                                                                                                         | file:/// |
 
+:::warning 注意
+HDFS defaultFS 配置项，目前暂时不支持高可用 ,请填写可用节点(active)的 HDFS 地址
+:::
+
 ### OSS 配置
 
 ![global_setting_resource_oss](http://pic.dinky.org.cn/dinky/docs/test/global_setting_resource_oss.png)
