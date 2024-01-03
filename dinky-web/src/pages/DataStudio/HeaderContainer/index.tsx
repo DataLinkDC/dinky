@@ -20,6 +20,7 @@
 import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import { PushpinIcon } from '@/components/Icons/CustomIcons';
 import { FlexCenterDiv } from '@/components/StyledComponents';
+import { LeftBottomKey } from '@/pages/DataStudio/data.d';
 import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
@@ -72,7 +73,6 @@ import { connect } from '@umijs/max';
 import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import { ButtonProps } from 'antd/es/button/button';
 import React, { memo, useEffect, useState } from 'react';
-import {LeftBottomKey} from "@/pages/DataStudio/data.d";
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -213,7 +213,7 @@ const HeaderContainer = (props: connect) => {
 
     if (!res) {
       return;
-    }else{
+    } else {
       updateSelectBottomKey(LeftBottomKey.RESULT_KEY);
     }
 

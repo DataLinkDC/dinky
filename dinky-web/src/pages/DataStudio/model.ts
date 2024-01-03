@@ -17,6 +17,7 @@
  *
  */
 
+import { LeftBottomKey, LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
 import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
@@ -38,7 +39,6 @@ import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
 import ICodeEditor = editor.ICodeEditor;
-import {LeftBottomKey, LeftMenuKey} from "@/pages/DataStudio/data.d";
 
 /**
  * 初始化布局宽高度
