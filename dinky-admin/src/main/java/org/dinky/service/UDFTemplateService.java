@@ -39,4 +39,8 @@ public interface UDFTemplateService extends ISuperService<UDFTemplate> {
      * @return A {@link Boolean} value indicating whether the modification was successful.
      */
     Boolean modifyUDFTemplateStatus(Integer id);
+
+    Boolean deleteUDFTemplateById(Integer id);
+
+    Boolean hasRelationShip(Integer id);
 }

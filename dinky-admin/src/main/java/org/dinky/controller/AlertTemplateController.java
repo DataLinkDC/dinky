@@ -70,7 +70,7 @@ public class AlertTemplateController {
             example = "1")
     @SaCheckPermission(PermissionConstants.REGISTRATION_ALERT_TEMPLATE_DELETE)
     public Result<Boolean> deleteAlertTemplateById(@RequestParam Integer id) {
-        if (alertTemplateService.removeById(id)) {
+        if (alertTemplateService.removeAlertTemplateById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
         }
         return Result.failed(Status.DELETE_FAILED);
