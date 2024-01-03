@@ -32,7 +32,7 @@ type PopconfirmProps = {
 };
 
 export const PopconfirmDeleteBtn: React.FC<PopconfirmProps> = (props) => {
-  const { onClick, description, disabled = false, buttonIcon, title, options } = props;
+  const { onClick, description,disabled=false, buttonIcon,title,options } = props;
 
   return (
     //外面包装一层onclick，阻止冒泡传递事件

@@ -783,8 +783,7 @@ export default {
   'rc.ci.create': 'Create Cluster Instance',
   'rc.ci.deleteConfirm': 'Are you sure to delete this Flink Cluster instance? ',
   'rc.ci.heartbeat': 'Heartbeat Detection',
-  'rc.ci.killConfirm':
-    'Are you sure to stop this Flink Cluster instance?  Please note that after stopping, it will not be recovered! The associated task will affect, please be careful!',
+  'rc.ci.killConfirm': 'Are you sure to stop this Flink Cluster instance?  Please note that after stopping, it will not be recovered! The associated task will affect, please be careful!',
   'rc.ci.kill': 'Stop Flink Cluster Instance',
   'rc.ci.jma': 'JobManger Address',
   'rc.ci.jmha': 'JobManger HA Address',
