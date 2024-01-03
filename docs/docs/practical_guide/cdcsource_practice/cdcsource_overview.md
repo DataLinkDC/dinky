@@ -110,6 +110,7 @@ plugins/flink-${flink-version}/dlink-client-${version}.jar
 | table-name                     | 否    | 无             | 只支持正则,示例:"test\\.student,test\\.score"，所有表示例:"test\\..*"                                                                     |
 | source.*                       | 否    | 无             | 指定个性化的 CDC 配置，如 source.server-time-zone 即为 server-time-zone 配置参数。                                                            |
 | debezium.*                     | 否    | 无             | 支持debezium参数，示例:`'debezium.skipped.operations'='d'` 即过滤源数据库删除操作日志。                                                           |
+| jdbc.properties.*              | 否    | 无             | 连接jdbc的url参数，示例:'jdbc.properties.useSSL' = 'false' 连接url效果: jdbc:mysql://ip:3306/db?useSSL=false 数据库连接参数                 |
 | checkpoint                     | 否    | 无             | 单位 ms                                                                                                                        |
 | parallelism                    | 否    | 无             | 任务并行度                                                                                                                        |
 | sink.connector                 | 是    | 无             | 指定 sink 的类型，如 datastream-kafka、datastream-doris、datastream-hudi、kafka、doris、hudi、jdbc 等等，以 datastream- 开头的为 DataStream 的实现方式 |
