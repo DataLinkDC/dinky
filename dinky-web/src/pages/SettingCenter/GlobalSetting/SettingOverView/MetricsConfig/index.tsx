@@ -44,7 +44,8 @@ export const MetricsConfig = ({ data, onSave }: MetricsConfigProps) => {
           onSave={onSaveHandler}
           tag={
             <>
-              <Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>
+              <Tag color={'error'}>{l('sys.setting.tag.system')}</Tag>
+              <Tag color={'processing'}>{l('sys.setting.tag.core')}</Tag>
             </>
           }
           data={data}
