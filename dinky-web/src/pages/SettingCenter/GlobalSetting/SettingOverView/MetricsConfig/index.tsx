@@ -39,15 +39,6 @@ export const MetricsConfig = ({ data, onSave }: MetricsConfigProps) => {
   };
   return (
     <>
-      <ProCard
-        title={l('sys.setting.metrics')}
-        tooltip={l('sys.setting.metrics.tooltip')}
-        size='small'
-        headerBordered
-        ghost
-        collapsible
-        defaultCollapsed={false}
-      >
         <GeneralConfig
           loading={loading}
           onSave={onSaveHandler}
@@ -58,7 +49,6 @@ export const MetricsConfig = ({ data, onSave }: MetricsConfigProps) => {
           }
           data={data}
         />
-      </ProCard>
     </>
   );
 };
