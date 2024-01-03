@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 id: dinky_integration_ds
-title: DolphinScheduler 集成
+title: Dinky 集成 DolphinScheduler 
 ---
 
 :::info 说明
@@ -68,7 +68,7 @@ cd /opt/dinky-1.0.0
 3. 打开该任务,编辑器内输入以下 DEMO SQL
 
 ```sql
--- 声明一些调优参数 (checkpoint 等相关配置)
+# checkpoint 配置 自行根据实际情况修改, 以下为示例
 set execution.checkpointing.checkpoints-after-tasks-finish.enabled=true;
 SET pipeline.operator-chaining=false;
 set state.backend.type=rocksdb;
