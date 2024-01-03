@@ -751,7 +751,8 @@ export default {
   'rc.ci.mr': '手动注册',
   'rc.ci.create': '创建集群',
   'rc.ci.deleteConfirm': '确定删除该 Flink 实例吗？',
-  'rc.ci.killConfirm': '确定停止该 Flink 实例吗? 请注意,停止后将无法恢复!关联的任务将会收到影响,请谨慎操作!',
+  'rc.ci.killConfirm':
+    '确定停止该 Flink 实例吗? 请注意,停止后将无法恢复!关联的任务将会收到影响,请谨慎操作!',
   'rc.ci.heartbeat': '心跳检测',
   'rc.ci.kill': '停止 Flink 实例',
   'rc.ci.jma': 'JobManger 地址',

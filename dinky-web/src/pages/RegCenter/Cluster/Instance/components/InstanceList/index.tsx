@@ -28,7 +28,10 @@ import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/componen
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
 import { getData } from '@/services/api';
 import {
-  handleAddOrUpdate, handleOption, handlePutDataByParams, handleRemoveById,
+  handleAddOrUpdate,
+  handleOption,
+  handlePutDataByParams,
+  handleRemoveById,
   updateDataByParam
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
@@ -37,7 +40,12 @@ import { Cluster } from '@/types/RegCenter/data.d';
 import { InitClusterInstanceState } from '@/types/RegCenter/init.d';
 import { ClusterInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
-import {CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone, StopTwoTone} from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  HeartTwoTone,
+  StopTwoTone
+} from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import {
   Badge,
@@ -134,7 +142,7 @@ export default () => {
   };
   const handleKill = async (id: number) => {
     await executeAndCallback(async () =>
-      handlePutDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_KILL, l('rc.ci.kill'), {id})
+      handlePutDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_KILL, l('rc.ci.kill'), { id })
     );
   };
 
@@ -173,19 +181,17 @@ export default () => {
           description={l('rc.ci.deleteConfirm')}
         />
       </Authorized>
-      {
-        record.autoRegisters && record.status === 1 && (
-          <Authorized key={`${record.id}_delete_auth`} path='/registration/cluster/instance/kill'>
-            <PopconfirmDeleteBtn
-              key={`${record.id}_kill`}
-              onClick={() => handleKill(record.id)}
-              buttonIcon={<StopTwoTone />}
-              title={l('rc.ci.kill')}
-              description={l('rc.ci.killConfirm')}
-            />
-          </Authorized>
-        )
-      }
+      {record.autoRegisters && record.status === 1 && (
+        <Authorized key={`${record.id}_delete_auth`} path='/registration/cluster/instance/kill'>
+          <PopconfirmDeleteBtn
+            key={`${record.id}_kill`}
+            onClick={() => handleKill(record.id)}
+            buttonIcon={<StopTwoTone />}
+            title={l('rc.ci.kill')}
+            description={l('rc.ci.killConfirm')}
+          />
+        </Authorized>
+      )}
     </Space>
   );
 
