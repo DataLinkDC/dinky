@@ -91,7 +91,7 @@ stop() {
 }
 
 status() {
-   updatePid
+  updatePid
   if [ -z $pid ]; then
     echo ""
     echo "Service ${JAR_NAME} is not running!"
