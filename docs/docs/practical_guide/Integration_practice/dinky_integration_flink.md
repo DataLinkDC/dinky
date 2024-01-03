@@ -46,11 +46,14 @@ mv flink-1.18.0 flink
 
 ```bash
 
-echo EOF 
+
+vim ~/.bashrc
+
+# 末尾加入以下内容
 export FLINK_HOME=/opt/flink
 export PATH=$PATH:$FLINK_HOME/bin
-EOF >> ~/.bashrc
 
+# 使环境变量生效
 source ~/.bashrc
 
 ```
