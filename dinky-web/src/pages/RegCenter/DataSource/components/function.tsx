@@ -31,7 +31,7 @@ import {
   StarRocksIcons
 } from '@/components/Icons/DBIcons';
 import { QUERY_KEYWORD } from '@/pages/RegCenter/DataSource/components/constants';
-import {DIALECT} from "@/services/constants";
+import { DIALECT } from '@/services/constants';
 
 /**
  * render DB icon
@@ -74,5 +74,5 @@ export const buildColumnsQueryKeyWord = (data: string[]) => {
 };
 
 export function isRequiredPassword(dbType: string): boolean {
-  return dbType.toLowerCase() !== DIALECT.DORIS || dbType.toLowerCase() !== DIALECT.PRESTO
+  return dbType.toLowerCase() !== DIALECT.DORIS || dbType.toLowerCase() !== DIALECT.PRESTO;
 }
