@@ -25,8 +25,6 @@ import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.K8sConfig;
 import org.dinky.gateway.enums.GatewayType;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import io.swagger.annotations.ApiModel;
@@ -60,22 +58,10 @@ public class FlinkClusterConfig {
     private FlinkConfig flinkConfig;
 
     @ApiModelProperty(
-            value = "Custom Flink Configuration",
-            dataType = "List",
-            notes = "Custom configuration settings for the Flink cluster")
-    private List<CustomConfig> flinkConfigList = new ArrayList<>();
-
-    @ApiModelProperty(
             value = "Application Configuration",
             dataType = "AppConfig",
             notes = "Configuration settings for the application")
     private AppConfig appConfig = new AppConfig();
-
-    @ApiModelProperty(
-            value = "Custom Hadoop Configuration",
-            dataType = "List",
-            notes = "Custom configuration settings for Hadoop")
-    private List<CustomConfig> hadoopConfigList = new ArrayList<>();
 
     @ApiModelProperty(
             value = "Kubernetes Configuration",

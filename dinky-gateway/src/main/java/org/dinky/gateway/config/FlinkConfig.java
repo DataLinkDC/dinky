@@ -22,8 +22,11 @@ package org.dinky.gateway.config;
 import org.dinky.assertion.Asserts;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.SavePointType;
+import org.dinky.gateway.model.CustomConfig;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -90,9 +93,16 @@ public class FlinkConfig {
 
     @ApiModelProperty(
             value = "Additional configuration properties",
+            dataType = "List",
+            example = "[{\"name\":\"key1\",\"value\":\"value1\"}, {\"name\":\"key2\",\"value\":\"value2\"}]",
+            notes = "Additional configuration properties for the job on web page")
+    private List<CustomConfig> flinkConfigList = new ArrayList<>();
+
+    @ApiModelProperty(
+            value = "Additional configuration properties",
             dataType = "Map",
             example = "{\"key1\":\"value1\",\"key2\":\"value2\"}",
-            notes = "Additional configuration properties for the job")
+            notes = "Fixed configuration properties for the job on web page")
     private Map<String, String> configuration = new HashMap<>();
 
     private static final ObjectMapper mapper = new ObjectMapper();

@@ -19,7 +19,11 @@
 
 package org.dinky.gateway.config;
 
+import org.dinky.gateway.model.CustomConfig;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.swagger.annotations.ApiModel;
@@ -58,8 +62,20 @@ public class ClusterConfig {
             notes = "Path to the YARN configuration file")
     private String hadoopConfigPath;
 
-    @ApiModelProperty(value = "Custom Hadoop Config", dataType = "Configuration", notes = "Custom hadoop config")
-    private Map<String, String> customHadoopConfig = new HashMap<>();
+    @ApiModelProperty(
+            value = "Additional hadoop configuration properties",
+            dataType = "List",
+            example = "[{\"name\":\"key1\",\"value\":\"value1\"}, {\"name\":\"key2\",\"value\":\"value2\"}]",
+            notes = "Additional hadoop configuration properties for the job on web page")
+    private List<CustomConfig> hadoopConfigList = new ArrayList<>();
+
+    @ApiModelProperty(
+            value = "Additional hadoop configuration properties",
+            dataType = "Map",
+            example = "{\"key1\":\"value1\",\"key2\":\"value2\"}",
+            notes = "Additional hadoop configuration properties for the job, invisible on web page",
+            hidden = true)
+    private Map<String, String> hadoopConfigMap = new HashMap<>();
 
     @ApiModelProperty(
             value = "YARN application ID",

@@ -29,6 +29,7 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.model.CustomConfig;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 
@@ -62,7 +63,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -70,6 +71,7 @@ import java.util.stream.Collectors;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 
 public abstract class YarnGateway extends AbstractGateway {
 
@@ -137,11 +139,12 @@ public abstract class YarnGateway extends AbstractGateway {
         yarnConfiguration.addResource(getYanConfigFilePath("core-site.xml"));
         yarnConfiguration.addResource(getYanConfigFilePath("hdfs-site.xml"));
 
-        Map<String, String> customHadoopConfig = clusterConfig.getCustomHadoopConfig();
-        if (CollectionUtil.isNotEmpty(customHadoopConfig)) {
-            customHadoopConfig.forEach((key, value) -> {
-                logger.debug("Custom hadoop config: {} = {}", key, value);
-                yarnConfiguration.set(key, value);
+        List<CustomConfig> hadoopConfigList = clusterConfig.getHadoopConfigList();
+        if (CollectionUtil.isNotEmpty(hadoopConfigList)) {
+            hadoopConfigList.forEach((customConfig) -> {
+                Assert.notNull(customConfig.getName(), "Custom hadoop config has null key");
+                Assert.notNull(customConfig.getValue(), "Custom hadoop config has null value");
+                yarnConfiguration.set(customConfig.getName(), customConfig.getValue());
             });
         }
 
