@@ -23,16 +23,15 @@ import {
   DATA_SOURCE_TYPE_OPTIONS,
   GROUP_TYPE
 } from '@/pages/RegCenter/DataSource/components/constants';
-import {DataSources} from '@/types/RegCenter/data.d';
-import {l} from '@/utils/intl';
-import {ProForm, ProFormGroup, ProFormSelect, ProFormText} from '@ant-design/pro-components';
-import {AutoComplete, Form} from 'antd';
-import {FormInstance} from 'antd/es/form/hooks/useForm';
+import { isRequiredPassword } from '@/pages/RegCenter/DataSource/components/function';
+import { DataSources } from '@/types/RegCenter/data.d';
+import { l } from '@/utils/intl';
+import { ProForm, ProFormGroup, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { AutoComplete, Form } from 'antd';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
 import TextArea from 'antd/es/input/TextArea';
-import {Values} from 'async-validator';
+import { Values } from 'async-validator';
 import React from 'react';
-import {DIALECT} from "@/services/constants";
-import {isRequiredPassword} from "@/pages/RegCenter/DataSource/components/function";
 
 type DataSourceProFormProps = {
   values: Partial<DataSources.DataSource>;
@@ -61,7 +60,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             name='name'
             width={'md'}
             label={l('rc.ds.name')}
-            rules={[{required: true, message: l('rc.ds.namePlaceholder')}]}
+            rules={[{ required: true, message: l('rc.ds.namePlaceholder') }]}
             placeholder={l('rc.ds.namePlaceholder')}
           />
           <ProFormSelect
@@ -78,7 +77,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             showSearch
             initialValue={dbType}
             options={DATA_SOURCE_TYPE_OPTIONS}
-            rules={[{required: true, message: l('rc.ds.typePlaceholder')}]}
+            rules={[{ required: true, message: l('rc.ds.typePlaceholder') }]}
             placeholder={l('rc.ds.typePlaceholder')}
           />
 
@@ -86,7 +85,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             name={['connectConfig', 'username']}
             width={'sm'}
             label={l('rc.ds.username')}
-            rules={[{required: true, message: l('rc.ds.usernamePlaceholder')}]}
+            rules={[{ required: true, message: l('rc.ds.usernamePlaceholder') }]}
             placeholder={l('rc.ds.usernamePlaceholder')}
           />
           <ProFormText.Password
@@ -107,7 +106,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
           <Form.Item
             name={['connectConfig', 'url']}
             label={l('rc.ds.url')}
-            rules={[{required: true, message: l('rc.ds.urlPlaceholder')}]}
+            rules={[{ required: true, message: l('rc.ds.urlPlaceholder') }]}
           >
             <AutoComplete
               virtual
@@ -118,9 +117,9 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
                 width: parent.innerWidth / 2 - 80
               }}
               filterOption
-              onSelect={(value) => form && form.setFieldsValue({url: value})}
+              onSelect={(value) => form && form.setFieldsValue({ url: value })}
             >
-              <TextArea placeholder={l('rc.ds.urlPlaceholder')}/>
+              <TextArea placeholder={l('rc.ds.urlPlaceholder')} />
               {/*<ProFormTextArea*/}
               {/*  name='url'*/}
               {/*  width={parent.innerWidth / 2 - 80}*/}
