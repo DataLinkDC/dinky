@@ -47,6 +47,7 @@ import org.dinky.utils.ZipUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.configuration.ReadableConfig;
 import org.apache.flink.python.PythonOptions;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 
@@ -254,10 +255,17 @@ public class Submitter {
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
                 StreamGraph streamGraph = executeJarOperation.getStreamGraph(executor.getCustomTableEnvironment());
+                ReadableConfig configuration =
+                        executor.getStreamExecutionEnvironment().getConfiguration();
+                streamGraph
+                        .getExecutionConfig()
+                        .configure(configuration, Thread.currentThread().getContextClassLoader());
+                streamGraph.getCheckpointConfig().configure(configuration);
                 streamGraph.setJobName(executor.getExecutorConfig().getJobName());
                 executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
                 break;
-            } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD) {
+            }
+            if (Operations.getOperationType(sqlStatement) == SqlType.ADD) {
                 File[] info = AddJarSqlParseStrategy.getInfo(sqlStatement);
                 Arrays.stream(info).forEach(executor.getDinkyClassLoader().getUdfPathContextHolder()::addOtherPlugins);
                 if ("kubernetes-application".equals(type)) {
