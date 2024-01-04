@@ -36,7 +36,7 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.StrUtil;
 
 public class ExecuteJarParseStrategy extends AbstractRegexParseStrategy {
-    private static final String PATTERN_STR = "^EXECUTE\\s+JAR\\s+WITH\\s?\\(\\s+(.*\\s+)+\\)";
+    private static final String PATTERN_STR = "^EXECUTE\\s+JAR\\s+WITH\\s*\\(.+\\)";
     private static final Pattern PATTERN = Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     public static final ExecuteJarParseStrategy INSTANCE = new ExecuteJarParseStrategy();
 
