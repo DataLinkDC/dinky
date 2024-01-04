@@ -135,7 +135,8 @@ public interface CatalogueService extends ISuperService<Catalogue> {
     /**
      * Check if the catalogue task name is exist
      * @param name catalogue task name
+     * @param id catalogue task id
      * @return true if the catalogue task name is exist
      */
-    boolean checkCatalogueTaskNameIsExist(String name);
+    boolean checkCatalogueTaskNameIsExistById(String name, Integer id);
 }
