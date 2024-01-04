@@ -65,7 +65,15 @@ public class Catalogue extends SuperEntity<Catalogue> {
     @TableField(exist = false)
     private Task task;
 
+    @TableField(exist = false)
+    private String note;
+
     public Catalogue() {}
+
+    public void setTaskAndNote(Task task){
+        this.task = task;
+        this.note = task.getNote();
+    }
 
     public Catalogue(String name, Integer taskId, String type, Integer parentId, Boolean isLeaf) {
         this.setName(name);
