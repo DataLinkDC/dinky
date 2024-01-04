@@ -47,7 +47,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -187,8 +191,10 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
      */
     @Override
     public boolean checkCatalogueTaskNameIsExistById(String name, Integer id) {
-        return getBaseMapper().exists(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getName, name)
-                .ne(id != null, Catalogue::getId, id));
+        return getBaseMapper()
+                .exists(new LambdaQueryWrapper<Catalogue>()
+                        .eq(Catalogue::getName, name)
+                        .ne(id != null, Catalogue::getId, id));
     }
 
     /**

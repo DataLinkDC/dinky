@@ -70,7 +70,7 @@ public class Catalogue extends SuperEntity<Catalogue> {
 
     public Catalogue() {}
 
-    public void setTaskAndNote(Task task){
+    public void setTaskAndNote(Task task) {
         this.task = task;
         this.note = task.getNote();
     }
