@@ -214,12 +214,13 @@ public class JobRefreshHandler {
                 });
             });
             JsonNode checkPoints = api.getCheckPoints(jobId);
-            if(checkPoints.findParent("errors") == null){
+            if (checkPoints.findParent("errors") == null) {
                 builder.checkpoints(JsonUtils.parseObject(checkPoints.toString(), CheckPointOverView.class));
             }
             JsonNode checkpointConfigInfo = api.getCheckPointsConfig(jobId);
-            if(checkpointConfigInfo.findParent("errors") == null){
-                builder.checkpointsConfig(JsonUtils.parseObject(checkpointConfigInfo.toString(), CheckpointConfigInfo.class));
+            if (checkpointConfigInfo.findParent("errors") == null) {
+                builder.checkpointsConfig(
+                        JsonUtils.parseObject(checkpointConfigInfo.toString(), CheckpointConfigInfo.class));
             }
             return builder.id(id)
                     .exceptions(
