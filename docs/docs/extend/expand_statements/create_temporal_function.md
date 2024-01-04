@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-position: 1
+position: 2
 id: create_temporal_function
 title: CTF
 ---
@@ -11,8 +11,7 @@ CTF 意指: Create Temporal Function, 用于在 FlinkSQL 中定义临时函数.
 
 :::
 
-CREATE TEMPORAL FUNCTION 实现在sql中定义[Defining a Temporal Table Function](https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/dev/table/concepts/temporal_table_function/#defining-a-temporal-table-function:~:text=pure%20SQL%20DDL.-,Defining%20a%20Temporal%20Table%20Function,-%23)
-功能,语法结构如下:
+CREATE TEMPORAL FUNCTION 实现在sql中定义[Defining a Temporal Table Function](https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/dev/table/concepts/temporal_table_function/#defining-a-temporal-table-function:~:text=pure%20SQL%20DDL.-,Defining%20a%20Temporal%20Table%20Function,-%23) 功能,语法结构如下:
 ```sql
 CREATE TEMPORAL [TEMPORARY|TEMPORARY SYSTEM] FUNCTION  
     [IF NOT EXISTS] [catalog_name.][db_name.]function_name  

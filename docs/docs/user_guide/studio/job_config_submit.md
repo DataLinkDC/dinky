@@ -1,5 +1,6 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
+position: 2
 id: job_config_submit
 title: 作业与环境管理
 ---

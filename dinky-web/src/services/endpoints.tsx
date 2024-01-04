@@ -108,6 +108,7 @@ export enum API_CONSTANTS {
   CLUSTER_INSTANCE_LIST = '/api/cluster/list',
   CLUSTER_INSTANCE_ENABLE = '/api/cluster/enable',
   CLUSTER_INSTANCE_DELETE = '/api/cluster/delete',
+  CLUSTER_INSTANCE_KILL = '/api/cluster/killCluster',
   CLUSTER_INSTANCE_HEARTBEATS = '/api/cluster/heartbeats',
   CLUSTER_INSTANCE_RECYCLE = '/api/cluster/recycle',
   CLUSTER_CONFIGURATION_START = '/api/cluster/deploySessionClusterInstance',

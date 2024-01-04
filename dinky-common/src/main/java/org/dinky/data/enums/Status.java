@@ -214,6 +214,8 @@ public enum Status {
     CLUSTER_INSTANCE_DEPLOY(15004, "cluster.instance.deploy"),
     CLUSTER_NOT_EXIST(15004, "cluster.not.exist"),
     CLUSTER_INSTANCE_EXIST_RELATIONSHIP(15005, "cluster.instance.exist.relationship"),
+    CLUSTER_INSTANCE_LOCAL_NOT_SUPPORT_KILL(15006, "cluster.instance.local.not.support.kill"),
+    CLUSTER_INSTANCE_NOT_HEALTH(15007, "cluster.instance.not.health"),
 
     /**
      * git
