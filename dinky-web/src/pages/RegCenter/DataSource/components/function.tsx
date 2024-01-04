@@ -72,7 +72,3 @@ export const buildColumnsQueryKeyWord = (data: string[]) => {
   }));
   return result;
 };
-
-export function isRequiredPassword(dbType: string): boolean {
-  return dbType.toLowerCase() !== DIALECT.DORIS || dbType.toLowerCase() !== DIALECT.PRESTO
-}

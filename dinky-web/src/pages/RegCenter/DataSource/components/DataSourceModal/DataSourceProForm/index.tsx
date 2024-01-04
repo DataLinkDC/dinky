@@ -93,12 +93,6 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             name={['connectConfig', 'password']}
             width={'sm'}
             label={l('rc.ds.password')}
-            rules={[
-              {
-                required: isRequiredPassword(dbType),
-                message: l('rc.ds.passwordPlaceholder')
-              }
-            ]}
             placeholder={l('rc.ds.passwordPlaceholder')}
           />
           <ProFormText
