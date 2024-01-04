@@ -142,7 +142,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                     taskList.stream()
                             .filter(t -> t.getId().equals(tChild.getTaskId()))
                             .findFirst()
-                            .ifPresent(tChild::setTask);
+                            .ifPresent(tChild::setTaskAndNote);
                 }
             }
         }
@@ -186,11 +186,15 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     /**
      * check catalogue task name is exist
      * @param name name
+     * @param id id
      * @return true if exist , otherwise false
      */
     @Override
-    public boolean checkCatalogueTaskNameIsExist(String name) {
-        return getBaseMapper().exists(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getName, name));
+    public boolean checkCatalogueTaskNameIsExistById(String name, Integer id) {
+        return getBaseMapper()
+                .exists(new LambdaQueryWrapper<Catalogue>()
+                        .eq(Catalogue::getName, name)
+                        .ne(id != null, Catalogue::getId, id));
     }
 
     /**
