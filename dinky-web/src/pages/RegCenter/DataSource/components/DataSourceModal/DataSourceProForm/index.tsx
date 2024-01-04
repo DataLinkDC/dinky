@@ -23,7 +23,6 @@ import {
   DATA_SOURCE_TYPE_OPTIONS,
   GROUP_TYPE
 } from '@/pages/RegCenter/DataSource/components/constants';
-import { isRequiredPassword } from '@/pages/RegCenter/DataSource/components/function';
 import { DataSources } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import { ProForm, ProFormGroup, ProFormSelect, ProFormText } from '@ant-design/pro-components';
