@@ -25,9 +25,11 @@ import org.dinky.job.JobBuilder;
 import org.dinky.job.JobManager;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
+import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.trans.dml.ExecuteJarOperation;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
+import org.dinky.trans.parse.SetSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.SqlUtil;
 
@@ -40,7 +42,6 @@ import cn.hutool.core.lang.Assert;
 
 /**
  * JobJarStreamGraphBuilder
- *
  */
 public class JobJarStreamGraphBuilder extends JobBuilder {
 
@@ -66,7 +67,10 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
                 break;
             }
             SqlType operationType = Operations.getOperationType(sqlStatement);
-            if (operationType.equals(SqlType.ADD)) {
+            if (operationType.equals(SqlType.SET) && SetSqlParseStrategy.INSTANCE.match(sqlStatement)) {
+                CustomSetOperation customSetOperation = new CustomSetOperation(sqlStatement);
+                customSetOperation.execute(this.executor.getCustomTableEnvironment());
+            } else if (operationType.equals(SqlType.ADD)) {
                 Set<File> files = AddJarSqlParseStrategy.getAllFilePath(sqlStatement);
                 files.forEach(executor::addJar);
                 files.forEach(jobManager.getUdfPathContextHolder()::addOtherPlugins);
