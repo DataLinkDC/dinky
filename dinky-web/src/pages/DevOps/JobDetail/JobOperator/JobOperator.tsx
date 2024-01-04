@@ -17,17 +17,16 @@
  *
  */
 
-import { cancelTask, restartTask, savePointTask } from '@/pages/DataStudio/HeaderContainer/service';
-import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
+import { cancelTask, savePointTask } from '@/pages/DataStudio/HeaderContainer/service';
 import { isStatusDone } from '@/pages/DevOps/function';
 import EditJobInstanceForm from '@/pages/DevOps/JobDetail/JobOperator/components/EditJobInstanceForm';
+import RestartForm from '@/pages/DevOps/JobDetail/JobOperator/components/RestartForm';
 import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
 import { EllipsisOutlined, RedoOutlined } from '@ant-design/icons';
 import { Button, Dropdown, message, Modal, Space } from 'antd';
 
 const operatorType = {
-  RESTART_JOB: 'restart',
   CANCEL_JOB: 'canceljob',
   SAVEPOINT_CANCEL: 'cancel',
   SAVEPOINT_TRIGGER: 'trigger',
@@ -51,12 +50,6 @@ const JobOperator = (props: OperatorType) => {
       onOk: async () => {
         if (key == operatorType.CANCEL_JOB) {
           cancelTask('', jobDetail?.instance?.taskId, false);
-        } else if (key == operatorType.RESTART_JOB) {
-          restartTask(
-            '',
-            jobDetail?.instance?.taskId,
-            jobDetail?.instance?.step == JOB_LIFE_CYCLE.PUBLISH
-          );
         } else if (key == operatorType.SAVEPOINT_CANCEL) {
           savePointTask('', jobDetail?.instance?.taskId, 'cancel');
         } else if (key == operatorType.SAVEPOINT_STOP) {
@@ -79,15 +72,11 @@ const JobOperator = (props: OperatorType) => {
       <Button key='flinkwebui' href={webUri} target={'_blank'}>
         FlinkWebUI
       </Button>
-      <Button
-        key='autorestart'
-        type='primary'
-        onClick={() => handleJobOperator(operatorType.RESTART_JOB)}
-      >
-        {jobDetail?.instance?.step == 5
-          ? l('devops.jobinfo.reonline')
-          : l('devops.jobinfo.restart')}
-      </Button>
+
+      <RestartForm
+        lastCheckpoint={jobDetail?.jobDataDto?.checkpoints?.latest}
+        instance={jobDetail?.instance}
+      />
 
       {isStatusDone(jobDetail?.instance?.status as string) ? (
         <></>

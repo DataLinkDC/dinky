@@ -200,11 +200,20 @@ export default {
   'devops.jobinfo.recently.job.status': 'View recently saved job status information',
   'devops.jobinfo.reonline': 'Re-Online',
   'devops.jobinfo.restart': 'Restart',
+  'devops.jobinfo.restart.auto.savepoint': 'Automatically create a save point and restart',
+  'devops.jobinfo.restart.from.savepoint': 'Restart from the save point',
+  'devops.jobinfo.restart.from.savepoint.help':
+    'Stop the job and start from the specified save point, this option will not automatically create a save point (be sure to ensure that this path exists, otherwise the restart will fail)',
+  'devops.jobinfo.restart.cannot.auto.savepoint':
+    'The job has been stopped and Smart Restart is not available',
   'devops.jobinfo.savepoint.cancel': 'SavePoint Stop',
   'devops.jobinfo.savepoint.canceljob': 'Normal Stop',
   'devops.jobinfo.savepoint.stop': 'SavePoint Pause',
   'devops.jobinfo.savepoint.trigger': 'SavePoint Triggers',
   'devops.jobinfo.smart_stop': 'Smart Stop',
+  'devops.jobinfo.smart_restart': 'Smart restart',
+  'devops.jobinfo.smart_restart.help':
+    'A save point is automatically created and started from a job stop during the job stop process',
   'devops.jobinfo.unable.obtain.status':
     'Unable to connect to Flink cluster to obtain the latest job status information',
   'devops.jobinfo.version.delete': 'Delete Version',

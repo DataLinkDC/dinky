@@ -17,37 +17,25 @@
  *
  */
 
-import { Tooltip, Typography } from 'antd';
+import { restartTask } from '@/pages/DataStudio/HeaderContainer/service';
+import { l } from '@/utils/intl';
+import { message, Modal } from 'antd';
 
-const { Paragraph, Text } = Typography;
-
-type EllipsisMiddleProps = {
-  maxCount: number;
-  children: string;
-  copyable?: boolean;
+export const recoveryCheckPoint = (taskId: number, path: string) => {
+  Modal.confirm({
+    title: l('devops.jobinfo.ck.recovery'),
+    content: l('devops.jobinfo.ck.recoveryConfirm', '', {
+      path: path
+    }),
+    okText: l('button.confirm'),
+    cancelText: l('button.cancel'),
+    onOk: async () => {
+      const result = await restartTask(taskId, path);
+      if (result.code == 0) {
+        message.success(l('devops.jobinfo.ck.recovery.success'));
+      } else {
+        message.error(l('devops.jobinfo.ck.recovery.failed'));
+      }
+    }
+  });
 };
-
-const EllipsisMiddle: React.FC<EllipsisMiddleProps> = (props) => {
-  const { maxCount, children, copyable = true } = props;
-  let start = '';
-  let end;
-  let tip = '';
-  if (!children || children.length <= maxCount) {
-    start = children;
-  } else {
-    const half = maxCount / 2;
-    start = children.slice(0, half).trim();
-    end = children.slice(-half).trim();
-    tip = children;
-  }
-  return (
-    <Tooltip title={tip}>
-      <Text copyable={copyable}>
-        {start}
-        {end ? `......${end}` : ''}
-      </Text>
-    </Tooltip>
-  );
-};
-
-export default EllipsisMiddle;

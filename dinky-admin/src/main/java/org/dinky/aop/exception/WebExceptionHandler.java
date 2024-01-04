@@ -48,6 +48,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * WebExceptionHandler
@@ -56,11 +57,13 @@ import cn.hutool.core.util.StrUtil;
  */
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@Slf4j
 public class WebExceptionHandler {
 
     @ExceptionHandler
     @ResponseBody
     public Result<Void> busException(BusException e) {
+        log.error("BusException:", e);
         if (StrUtil.isEmpty(e.getMsg())) {
             return Result.failed(I18n.getMessage(e.getCode(), e.getMessage()));
         }
