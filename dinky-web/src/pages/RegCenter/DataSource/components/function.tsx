@@ -31,7 +31,6 @@ import {
   StarRocksIcons
 } from '@/components/Icons/DBIcons';
 import { QUERY_KEYWORD } from '@/pages/RegCenter/DataSource/components/constants';
-import { DIALECT } from '@/services/constants';
 
 /**
  * render DB icon
