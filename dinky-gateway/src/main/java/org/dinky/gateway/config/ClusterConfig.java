@@ -19,13 +19,13 @@
 
 package org.dinky.gateway.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * ClusterConfig
@@ -58,10 +58,7 @@ public class ClusterConfig {
             notes = "Path to the YARN configuration file")
     private String hadoopConfigPath;
 
-    @ApiModelProperty(
-            value = "Custom Hadoop Config",
-            dataType = "Configuration",
-            notes = "Custom hadoop config")
+    @ApiModelProperty(value = "Custom Hadoop Config", dataType = "Configuration", notes = "Custom hadoop config")
     private Map<String, String> customHadoopConfig = new HashMap<>();
 
     @ApiModelProperty(

@@ -28,15 +28,9 @@ import lombok.Setter;
 @Setter
 @ApiModel(value = "CustomConfig", description = "Custom config of name-value model")
 public class CustomConfig {
-    @ApiModelProperty(
-            value = "Custom Config Name",
-            dataType = "String",
-            notes = "The name of custom config")
+    @ApiModelProperty(value = "Custom Config Name", dataType = "String", notes = "The name of custom config")
     private String name;
 
-    @ApiModelProperty(
-            value = "Custom Config Value",
-            dataType = "String",
-            notes = "The value of custom config")
+    @ApiModelProperty(value = "Custom Config Value", dataType = "String", notes = "The value of custom config")
     private String value;
 }

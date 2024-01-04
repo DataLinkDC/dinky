@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.yarn;
 
-import cn.hutool.core.collection.CollectionUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
@@ -60,11 +59,16 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
@@ -72,10 +76,10 @@ public abstract class YarnGateway extends AbstractGateway {
     public static final String HADOOP_CONFIG = "fs.hdfs.hadoopconf";
 
     protected YarnConfiguration yarnConfiguration;
+
     protected YarnClient yarnClient;
 
-    public YarnGateway() {
-    }
+    public YarnGateway() {}
 
     public YarnGateway(GatewayConfig config) {
         super(config);

@@ -94,7 +94,9 @@ public class GatewayConfig {
         for (CustomConfig customConfig : config.getHadoopConfigList()) {
             Assert.notNull(customConfig.getName(), "Custom hadoop config has null key");
             Assert.notNull(customConfig.getValue(), "Custom hadoop config has null value");
-            gatewayConfig.getClusterConfig().getCustomHadoopConfig()
+            gatewayConfig
+                    .getClusterConfig()
+                    .getCustomHadoopConfig()
                     .put(customConfig.getName(), customConfig.getValue());
         }
         return gatewayConfig;

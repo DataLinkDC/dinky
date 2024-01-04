@@ -19,52 +19,51 @@
 
 package org.dinky.gateway.model;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
-import org.dinky.gateway.config.ClusterConfig;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
-import java.util.List;
 
 public class FlinkClusterConfigTest {
 
     @Ignore
     @Test
     public void testParseCustomConfig() throws IOException {
-        String clusterConfigJson = "{\n" +
-                "        \"clusterConfig\":{\n" +
-                "            \"hadoopConfigPath\":\"/opt/dinky-resources/hadoopConfDir\",\n" +
-                "            \"flinkLibPath\":\"hdfs:///flink/flink1.14-lib\",\n" +
-                "            \"flinkConfigPath\":\"/opt/flink/conf\"\n" +
-                "        },\n" +
-                "        \"hadoopConfigList\":[\n" +
-                "            {\n" +
-                "                \"name\":\"yarn.timeline-service.enabled\",\n" +
-                "                \"value\":\"false\"\n" +
-                "            }\n" +
-                "        ],\n" +
-                "        \"flinkConfigList\":[\n" +
-                "            {\n" +
-                "                \"name\":\"yarn.application.queue\",\n" +
-                "                \"value\":\"prod\"\n" +
-                "            }\n" +
-                "        ],\n" +
-                "        \"flinkConfig\":{\n" +
-                "            \"configuration\":{\n" +
-                "                \"jobmanager.memory.process.size\":\"2G\",\n" +
-                "                \"taskmanager.memory.process.size\":\"2G\",\n" +
-                "                \"taskmanager.memory.framework.heap.size\":\"1G\",\n" +
-                "                \"taskmanager.numberOfTaskSlots\":\"2\",\n" +
-                "                \"state.savepoints.dir\":\"hdfs:///flink/savepoint\",\n" +
-                "                \"state.checkpoints.dir\":\"hdfs:///flink/checkpoint\"\n" +
-                "            }\n" +
-                "        },\n" +
-                "        \"appConfig\":{\n" +
-                "            \"userJarPath\":\"hdfs:///flink/dinky/jar/dinky-app-1.14-1.0.0-rc1-jar-with-dependencies.jar\"\n" +
-                "        }\n" +
-                "    }";
+
+        String clusterConfigJson = "{\n" + "        \"clusterConfig\":{\n"
+                + "            \"hadoopConfigPath\":\"/opt/dinky-resources/hadoopConfDir\",\n"
+                + "            \"flinkLibPath\":\"hdfs:///flink/flink1.14-lib\",\n"
+                + "            \"flinkConfigPath\":\"/opt/flink/conf\"\n"
+                + "        },\n"
+                + "        \"hadoopConfigList\":[\n"
+                + "            {\n"
+                + "                \"name\":\"yarn.timeline-service.enabled\",\n"
+                + "                \"value\":\"false\"\n"
+                + "            }\n"
+                + "        ],\n"
+                + "        \"flinkConfigList\":[\n"
+                + "            {\n"
+                + "                \"name\":\"yarn.application.queue\",\n"
+                + "                \"value\":\"prod\"\n"
+                + "            }\n"
+                + "        ],\n"
+                + "        \"flinkConfig\":{\n"
+                + "            \"configuration\":{\n"
+                + "                \"jobmanager.memory.process.size\":\"2G\",\n"
+                + "                \"taskmanager.memory.process.size\":\"2G\",\n"
+                + "                \"taskmanager.memory.framework.heap.size\":\"1G\",\n"
+                + "                \"taskmanager.numberOfTaskSlots\":\"2\",\n"
+                + "                \"state.savepoints.dir\":\"hdfs:///flink/savepoint\",\n"
+                + "                \"state.checkpoints.dir\":\"hdfs:///flink/checkpoint\"\n"
+                + "            }\n"
+                + "        },\n"
+                + "        \"appConfig\":{\n"
+                + "            \"userJarPath\":\"hdfs:///flink/dinky/jar/dinky-app-1.14-1.0.0-rc1-jar-with-dependencies.jar\"\n"
+                + "        }\n"
+                + "    }";
         ObjectMapper objectMapper = new ObjectMapper();
         FlinkClusterConfig clusterConfig = objectMapper.readValue(clusterConfigJson, FlinkClusterConfig.class);
         List<CustomConfig> flinkConfigList = clusterConfig.getFlinkConfigList();
