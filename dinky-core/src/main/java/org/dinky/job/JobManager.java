@@ -385,26 +385,6 @@ public class JobManager {
                 .getJsonPlan();
     }
 
-    public boolean cancel(String jobId, boolean withSavePoint) {
-        if (useGateway && !useRestAPI) {
-            config.getGatewayConfig()
-                    .setFlinkConfig(FlinkConfig.build(jobId, ActionType.CANCEL.getValue(), null, null));
-            Gateway.build(config.getGatewayConfig()).savepointJob();
-            return true;
-        } else if (useRestAPI && withSavePoint) {
-            try {
-                // Try to savepoint, if it fails, it will stop normally(尝试进行savepoint，如果失败，即普通停止)
-                savepoint(jobId, SavePointType.CANCEL, null);
-                return true;
-            } catch (Exception e) {
-                log.warn("Stop with savcePoint failed: {}, will try normal rest api stop", e.getMessage());
-                return cancelNormal(jobId);
-            }
-        } else {
-            return cancelNormal(jobId);
-        }
-    }
-
     public boolean cancelNormal(String jobId) {
         try {
             return FlinkAPI.build(config.getAddress()).stop(jobId);
