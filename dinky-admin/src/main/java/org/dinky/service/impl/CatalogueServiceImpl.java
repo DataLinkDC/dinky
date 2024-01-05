@@ -27,6 +27,7 @@ import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
+import org.dinky.data.model.Metrics;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobHistory;
@@ -39,6 +40,7 @@ import org.dinky.service.CatalogueService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
+import org.dinky.service.MonitorService;
 import org.dinky.service.TaskService;
 
 import java.io.BufferedReader;
@@ -59,6 +61,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjectUtil;
@@ -79,6 +82,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private final HistoryService historyService;
 
     private final JobHistoryService jobHistoryService;
+
+    private final MonitorService monitorService;
 
     /**
      * @return
@@ -137,7 +142,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                     taskList.stream()
                             .filter(t -> t.getId().equals(tChild.getTaskId()))
                             .findFirst()
-                            .ifPresent(tChild::setTask);
+                            .ifPresent(tChild::setTaskAndNote);
                 }
             }
         }
@@ -181,11 +186,15 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     /**
      * check catalogue task name is exist
      * @param name name
+     * @param id id
      * @return true if exist , otherwise false
      */
     @Override
-    public boolean checkCatalogueTaskNameIsExist(String name) {
-        return getBaseMapper().exists(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getName, name));
+    public boolean checkCatalogueTaskNameIsExistById(String name, Integer id) {
+        return getBaseMapper()
+                .exists(new LambdaQueryWrapper<Catalogue>()
+                        .eq(Catalogue::getName, name)
+                        .ne(id != null, Catalogue::getId, id));
     }
 
     /**
@@ -448,6 +457,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             // doing: cascade delete jobInstance && jobHistory && history && statement
             // 获取 task 表中的作业
             Task task = taskService.getById(catalogue.getTaskId());
+            // 获取 metrics 表中的监控数据
+            List<Metrics> metricListByTaskId = monitorService.getMetricsLayoutByTaskId(catalogue.getTaskId());
+
             // 获取 job instance 表中的作业
             List<JobInstance> jobInstanceList = jobInstanceService.list(
                     new LambdaQueryWrapper<JobInstance>().eq(JobInstance::getTaskId, catalogue.getTaskId()));
@@ -470,6 +482,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             // 删除 task 表中的作业
             if (task != null) {
                 taskService.removeById(task.getId());
+            }
+
+            if (CollUtil.isNotEmpty(metricListByTaskId)) {
+                metricListByTaskId.forEach(metrics -> monitorService.removeById(metrics.getId()));
+                // todo: 需要删除 paimon 中的监控数据, 但是 paimon 中没有提供删除接口
             }
         }
 

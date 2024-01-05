@@ -14,7 +14,6 @@ FlinkDDL 等。
 
 目前支持的数据源类型包括：MySQL、Oracle、PostgreSQL、SQLServer、Phoenix、ClickHouse、Doris、StartRocks、Presto、Hive。
 
-如果需要扩展其他数据源类型，可以参考 [数据源扩展](../../extend/function_expansion/datasource)。
 :::
 
 ## 数据源管理

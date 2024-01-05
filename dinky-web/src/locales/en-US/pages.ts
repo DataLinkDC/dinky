@@ -129,12 +129,12 @@ export default {
    *
    * */
   'devops.joblist.status.all': 'All',
-  'devops.joblist.status.running': 'running',
+  'devops.joblist.status.running': 'Running',
   'devops.joblist.status.cancelled': 'Canceled',
-  'devops.joblist.status.failed': 'Exception job',
+  'devops.joblist.status.failed': 'Exception',
   'devops.joblist.status.restarting': 'Restarting',
-  'devops.joblist.status.finished': 'completed',
-  'devops.joblist.status.unknown': 'unknown job',
+  'devops.joblist.status.finished': 'Completed',
+  'devops.joblist.status.unknown': 'Unknown',
 
   'devops.baseinfo.name': 'Job Name',
   'devops.baseinfo.parallelism': 'Parallelism',
@@ -179,14 +179,14 @@ export default {
   'devops.jobinfo.config.JobLineage': 'Lineage',
   'devops.jobinfo.config.JobLogs': 'Job Logs',
   'devops.jobinfo.config.JobMonitor': 'Monitor',
-  'devops.jobinfo.config.JobParallelism': 'JobParallelism',
+  'devops.jobinfo.config.JobParallelism': 'Job Parallelism',
   'devops.jobinfo.config.JobType': 'Job Type',
   'devops.jobinfo.config.JobVersion': 'History Info',
-  'devops.jobinfo.config.RestartStrategy': 'RestartStrategy',
+  'devops.jobinfo.config.RestartStrategy': 'Restart Strategy',
   'devops.jobinfo.config.UserCustomConf': 'Custom Config',
   'devops.jobinfo.config.execmode': 'Exec Mode',
-  'devops.jobinfo.config.savePointPath': 'savePoint path',
-  'devops.jobinfo.config.startFromSavePoint': 'Start from SavePoint',
+  'devops.jobinfo.config.savePointPath': 'Savepoint Path',
+  'devops.jobinfo.config.startFromSavePoint': 'Start from Savepoint',
   'devops.jobinfo.config.submitType': 'Submit Mode',
   'devops.jobinfo.config.taskId': 'Dinky Job ID',
   'devops.jobinfo.config.useSqlFragment': 'Sql Fragment',
@@ -200,17 +200,26 @@ export default {
   'devops.jobinfo.recently.job.status': 'View recently saved job status information',
   'devops.jobinfo.reonline': 'Re-Online',
   'devops.jobinfo.restart': 'Restart',
-  'devops.jobinfo.savepoint.cancel': 'SavePoint Stop',
+  'devops.jobinfo.restart.auto.savepoint': 'Automatically create a save point and restart',
+  'devops.jobinfo.restart.from.savepoint': 'Restart from the save point',
+  'devops.jobinfo.restart.from.savepoint.help':
+    'Stop the job and start from the specified save point, this option will not automatically create a save point (be sure to ensure that this path exists, otherwise the restart will fail)',
+  'devops.jobinfo.restart.cannot.auto.savepoint':
+    'The job has been stopped and Smart Restart is not available',
+  'devops.jobinfo.savepoint.cancel': 'Savepoint Stop',
   'devops.jobinfo.savepoint.canceljob': 'Normal Stop',
-  'devops.jobinfo.savepoint.stop': 'SavePoint Pause',
-  'devops.jobinfo.savepoint.trigger': 'SavePoint Triggers',
+  'devops.jobinfo.savepoint.stop': 'Savepoint Pause',
+  'devops.jobinfo.savepoint.trigger': 'Savepoint Triggers',
   'devops.jobinfo.smart_stop': 'Smart Stop',
+  'devops.jobinfo.smart_restart': 'Smart restart',
+  'devops.jobinfo.smart_restart.help':
+    'A save point is automatically created and started from a job stop during the job stop process',
   'devops.jobinfo.unable.obtain.status':
     'Unable to connect to Flink cluster to obtain the latest job status information',
   'devops.jobinfo.version.delete': 'Delete Version',
   'devops.jobinfo.version.delete.sure': 'Are you sure you want to remove this version？V{version}',
   'devops.jobinfo.version.latestVersion': 'Current Version',
-  'devops.jobinfo.version.rollBack': 'Roll bcak this version',
+  'devops.jobinfo.version.rollBack': 'Roll back this version',
   'devops.jobinfo.version.versionList': 'Job Version',
   'devops.jobinfo.remap.title': 'Remap the cluster information',
   'devops.jobinfo.remap.cluster.title': 'Cluster instance mapping information',
@@ -220,7 +229,7 @@ export default {
 
   'devops.joblist.detail': 'Job Detail',
   'devops.joblist.history': 'History',
-  'devops.joblist.joblist': 'JobList',
+  'devops.joblist.joblist': 'Job List',
   /**
    *
    * home
@@ -340,6 +349,8 @@ export default {
   'metrics.flink.taskId': 'Dinky Job ID',
   'metrics.dinky.not.open':
     'Dinky Server monitoring is not enabled, please go to the Setting Center -> Global Settings -> Metrics Configuration -> Dinky JVM Monitor switch to open',
+  'metrics.flink.deleteConfirm':
+    'Are you sure to delete the monitoring data under this task? \nAttention: This operation will synchronously affect the monitoring data of the operation and maintenance center for this task!! \nPlease operate with caution, this operation is irreversible!',
 
   /**
    *
@@ -424,7 +435,8 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig': 'Flink cluster Config',
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     'Select Flink cluster Config for remote submission tasks in [{type}] mode',
-  'pages.datastudio.label.jobConfig.clusterConfig.tip2': 'Select Flink cluster Config',
+  'pages.datastudio.label.jobConfig.clusterConfig.tip2':
+    'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available.',
   'pages.datastudio.label.jobConfig.execmode.tip':
     'Specify the execution mode of the Flink task, the default is Local',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL environment',
@@ -441,17 +453,17 @@ export default {
     'Other Config items will be applied to the execution environment, such as pipeline.name',
   'pages.datastudio.label.jobConfig.parallelism': 'Parallelism',
   'pages.datastudio.label.jobConfig.parallelism.tip':
-    'Set the parallelism of Flink tasks, the minimum is 1',
-  'pages.datastudio.label.jobConfig.savePointStrategy': 'SavePointStrategy',
+    'Set the parallelism of Flink tasks, the minimum value is 1',
+  'pages.datastudio.label.jobConfig.savePointStrategy': 'Savepoint strategy',
   'pages.datastudio.label.jobConfig.savePointStrategy.tip':
-    'Specify the SavePoint strategy, the default is disabled',
-  'pages.datastudio.label.jobConfig.savePointpath': 'SavePointpath',
-  'pages.datastudio.label.jobConfig.savePointpath.tip1': 'Restore Flink task from SavePointPath',
+    'Specify the Savepoint strategy, the default is disabled',
+  'pages.datastudio.label.jobConfig.savePointpath': 'Savepoint Path',
+  'pages.datastudio.label.jobConfig.savePointpath.tip1': 'Restore Flink task from Savepoint path',
   'pages.datastudio.label.jobConfig.savePointpath.tip2': 'hdfs',
   'pages.datastudio.label.jobInfo.dialect': 'Dialect',
   'pages.datastudio.label.jobInfo.id': 'Job ID',
-  'pages.datastudio.label.jobInfo.name': 'job name',
-  'pages.datastudio.label.jobInfo.versionId': 'version number',
+  'pages.datastudio.label.jobInfo.name': 'Job name',
+  'pages.datastudio.label.jobInfo.versionId': 'Version number',
   'pages.datastudio.label.result.query.latest.data': 'Get the latest data',
   'pages.datastudio.label.version': 'Version History',
   'pages.datastudio.label.version.diff': 'Version Diff',
@@ -465,7 +477,7 @@ export default {
   'pages.devops.jobinfo.localenv': 'Local environment',
   'pages.metadata.DataSearch': 'Data Search',
   'pages.metadata.selectDatabase': 'Select Database',
-  'pages.task.savePointPath': 'SavePoint Path',
+  'pages.task.savePointPath': 'Savepoint Path',
 
   'pages.datastudio.catalog.catalogSelect': 'Please select catalog & database',
   'pages.datastudio.catalog.tableInfo': 'Table Info',
@@ -494,8 +506,8 @@ export default {
   'pages.datastudio.label.history.statementSet': 'StatementSet',
   'pages.datastudio.label.history.parallelism': 'Parallelism',
   'pages.datastudio.label.history.checkpoint': 'Checkpoint Interval',
-  'pages.datastudio.label.history.savePointStrategy': 'SavePoint Strategy',
-  'pages.datastudio.label.history.savePointPath': 'SavePoint Path',
+  'pages.datastudio.label.history.savePointStrategy': 'Savepoint Strategy',
+  'pages.datastudio.label.history.savePointPath': 'Savepoint Path',
   'pages.datastudio.label.history.clusterType': 'Cluster Type',
   'pages.datastudio.label.history.clusterInstance': 'Cluster Instance',
   'pages.datastudio.label.history.clusterConfig': 'Cluster Config',
@@ -685,7 +697,7 @@ export default {
   'rc.alert.template.new': 'Create an alert template',
   'rc.cc.addConfig': 'Add Config item',
   'rc.cc.baseConfig': 'Basic Config',
-  'rc.cc.ckpDir': 'CheckPoint Path',
+  'rc.cc.ckpDir': 'Checkpoint Path',
   'rc.cc.ckpDirHelp': 'Please enter the checkpoint path! This parameter configuration item is',
   'rc.cc.create': 'Create Cluster Config',
   'rc.cc.defineConfig': 'Flink Default Config (high priority)',
@@ -753,7 +765,7 @@ export default {
   'rc.cc.name': 'Cluster Config Name',
   'rc.cc.search': 'Search Name',
   'rc.cc.namePlaceholder': 'Please enter the cluster configuration name!',
-  'rc.cc.spDir': 'SavePoint Path',
+  'rc.cc.spDir': 'Savepoint Path',
   'rc.cc.spDirHelp': 'Please enter the savepoint path! This parameter configuration item is',
   'rc.cc.sqlSubmitJarPath': 'Jar File Path',
   'rc.cc.sqlSubmitJarPathHelp':
@@ -780,6 +792,9 @@ export default {
   'rc.ci.create': 'Create Cluster Instance',
   'rc.ci.deleteConfirm': 'Are you sure to delete this Flink Cluster instance? ',
   'rc.ci.heartbeat': 'Heartbeat Detection',
+  'rc.ci.killConfirm':
+    'Are you sure to stop this Flink Cluster instance?  Please note that after stopping, it will not be recovered! The associated task will affect, please be careful!',
+  'rc.ci.kill': 'Stop Flink Cluster Instance',
   'rc.ci.jma': 'JobManger Address',
   'rc.ci.jmha': 'JobManger HA Address',
   'rc.ci.jmha.tips':
@@ -790,6 +805,8 @@ export default {
   'rc.ci.management': 'Cluster Instance Management',
   'rc.ci.modify': 'Modify cluster Instance',
   'rc.ci.name': 'Name',
+  'rc.ci.autoRegisterCannotModify':
+    'Automatically registered instances can only modify the `JobManger high-availability address` attribute, and others cannot be modified!',
   'rc.ci.namePlaceholder': 'Please enter a name!',
   'rc.ci.recycle': 'Recycle Flink Cluster Instances',
   'rc.ci.recycleConfirm':
@@ -1021,7 +1038,7 @@ export default {
   'sys.alert.rule.label.jobType': 'Execution mode',
   'sys.alert.rule.label.jobException': 'The job is abnormal',
   'sys.alert.rule.label.checkpointFailed': 'Checkpoint Failed',
-  'sys.alert.rule.label.checkpointTime': 'CheckPoint Time',
+  'sys.alert.rule.label.checkpointTime': 'Checkpoint Time',
   'sys.alert.rule.label.jobStatus': 'Job status',
   'sys.alert.rule.addRule': 'Add Rule',
   'sys.alert.rule.allRule': 'All Rules',

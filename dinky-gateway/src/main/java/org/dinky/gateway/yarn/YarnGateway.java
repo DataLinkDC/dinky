@@ -29,6 +29,7 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.model.CustomConfig;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 
@@ -62,18 +63,22 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 
 public abstract class YarnGateway extends AbstractGateway {
 
     public static final String HADOOP_CONFIG = "fs.hdfs.hadoopconf";
 
     protected YarnConfiguration yarnConfiguration;
+
     protected YarnClient yarnClient;
 
     public YarnGateway() {}
@@ -115,8 +120,7 @@ public abstract class YarnGateway extends AbstractGateway {
                 UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
                 logger.info("安全认证结束，用户和认证方式:" + currentUser.toString());
             } catch (Exception e) {
-                logger.error(e.getMessage());
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -129,10 +133,20 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     private void initYarnClient() {
+        final ClusterConfig clusterConfig = config.getClusterConfig();
         yarnConfiguration = new YarnConfiguration();
         yarnConfiguration.addResource(getYanConfigFilePath("yarn-site.xml"));
         yarnConfiguration.addResource(getYanConfigFilePath("core-site.xml"));
         yarnConfiguration.addResource(getYanConfigFilePath("hdfs-site.xml"));
+
+        List<CustomConfig> hadoopConfigList = clusterConfig.getHadoopConfigList();
+        if (CollectionUtil.isNotEmpty(hadoopConfigList)) {
+            hadoopConfigList.forEach((customConfig) -> {
+                Assert.notNull(customConfig.getName(), "Custom hadoop config has null key");
+                Assert.notNull(customConfig.getValue(), "Custom hadoop config has null value");
+                yarnConfiguration.set(customConfig.getName(), customConfig.getValue());
+            });
+        }
 
         yarnClient = YarnClient.createYarnClient();
         yarnClient.init(yarnConfiguration);

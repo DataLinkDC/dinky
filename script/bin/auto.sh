@@ -31,13 +31,13 @@ fi
 
 tips() {
   echo ""
-  echo "WARNING!!!......Tips, please use command: sh auto.sh [start|startOnPending|startWithJmx|stop|restart|status].   For example: sh auto.sh start  "
+  echo "WARNING!!!......Tips, please use command: sh auto.sh [start|startOnPending|startWithJmx|stop|restart|restartWithJmx|status].   For example: sh auto.sh start  "
   echo ""
   exit 1
 }
 
 updatePid() {
-  pid=$(ps -ef | grep [d]inky  | awk '{print $2}' | head -1)
+  pid=$(ps -ef | grep [D]inky  | awk '{print $2}' | head -1)
   echo $pid >"${PID_PATH}"/${PID_FILE}
 }
 
@@ -68,7 +68,8 @@ startWithJmx() {
   updatePid
   if [ -z "$pid" ]; then
     nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky &
-    echo $! >"${PID_PATH}"/${PID_FILE}
+#    echo $! >"${PID_PATH}"/${PID_FILE}
+    updatePid
     echo "........................................Start Dinky with Jmx Successfully.....................................
     ..."
   else
@@ -110,6 +111,13 @@ restart() {
   echo "........................................Restart Successfully........................................"
 }
 
+restartWithJmx() {
+  echo ""
+  stop
+  startWithJmx
+  echo "........................................Restart with Jmx Successfully........................................"
+}
+
 case "$1" in
 "start")
   start
@@ -128,6 +136,9 @@ case "$1" in
   ;;
 "restart")
   restart
+  ;;
+"restartWithJmx")
+  restartWithJmx
   ;;
 *)
   tips

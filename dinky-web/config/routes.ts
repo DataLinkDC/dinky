@@ -42,15 +42,15 @@ export default [
   },
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/datastudio'
   },
-  {
-    path: '/home',
-    name: 'home',
-    icon: 'HomeOutlined',
-    footerRender: false,
-    component: './Home'
-  },
+  // {
+  //   path: '/home',
+  //   name: 'home',
+  //   icon: 'HomeOutlined',
+  //   footerRender: false,
+  //   component: './Home'
+  // },
   {
     path: '/datastudio',
     name: 'datastudio',
@@ -246,12 +246,12 @@ export default [
         icon: 'InfoCircleOutlined',
         component: './SettingCenter/SystemLogs'
       },
-      {
-        path: '/settings/process',
-        name: 'process',
-        icon: 'ReconciliationOutlined',
-        component: './SettingCenter/Process'
-      },
+      // {
+      //   path: '/settings/process',
+      //   name: 'process',
+      //   icon: 'ReconciliationOutlined',
+      //   component: './SettingCenter/Process'
+      // },
       {
         path: '/settings/alertrulelist',
         name: 'alertrulelist',
@@ -267,13 +267,13 @@ export default [
     footerRender: false,
     component: './Metrics'
   },
-  {
-    path: '/about',
-    name: 'about',
-    icon: 'SmileOutlined',
-    footerRender: false,
-    component: './Other/About'
-  },
+  // {
+  //   path: '/about',
+  //   name: 'about',
+  //   icon: 'SmileOutlined',
+  //   footerRender: false,
+  //   component: './Other/About'
+  // },
   {
     path: '/account/center',
     footerRender: false,

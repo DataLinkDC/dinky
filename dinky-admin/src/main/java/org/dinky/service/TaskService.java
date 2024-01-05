@@ -81,12 +81,14 @@ public interface TaskService extends ISuperService<Task> {
     JobResult debugTask(TaskDTO task) throws Exception;
 
     /**
-     * Restart the given task and return the job result.
-     *
+     * This class implements the TaskService interface and provides functionality to restart a task.
+     * It checks if the task exists and if it is not a common SQL dialect. If the job instance is not done,
+     * it cancels the job and triggers a savepoint if necessary.
+     * It then waits for the job to complete and submits the task again with the savepoint path.
      * @param id The ID of the task to restart.
-     * @param savePointPath The path of the save point for the job execution.
-     * @return A {@link JobResult} object representing the result of the restarted task.
-     * @throws ExcuteException If there is an error restarting the task.
+     * @param savePointPath The savepoint path to use for restarting the task.
+     * @return A JobResult object containing the status of the job.
+     * @throws Exception If there is an error while restarting the task.
      */
     JobResult restartTask(Integer id, String savePointPath) throws Exception;
 

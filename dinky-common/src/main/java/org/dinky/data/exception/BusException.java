@@ -28,7 +28,10 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * BusException
+ * Prompt exception, after the exception is caught,
+ * it will look for internationalization prompts according to the code,
+ * the web will pop up the corresponding prompt
+ * Please do not use this exception for meaningless throwing
  *
  * @since 2021/5/28 14:21
  */
@@ -81,7 +84,7 @@ public class BusException extends RuntimeException {
     public static BusException valueOf(String code, Throwable e) {
         String errMsg = ExceptionUtil.stacktraceToString(e);
         log.error(errMsg);
-        return new BusException(code, errMsg);
+        return new BusException(code, e.getMessage());
     }
 
     /**

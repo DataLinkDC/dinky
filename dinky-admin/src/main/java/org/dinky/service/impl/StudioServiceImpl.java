@@ -101,7 +101,7 @@ public class StudioServiceImpl implements StudioService {
     public LineageResult getLineage(StudioLineageDTO studioCADTO) {
         // TODO 添加ProcessStep
         if (Asserts.isNotNullString(studioCADTO.getDialect())
-                && !Dialect.FLINK_SQL.equalsVal(studioCADTO.getDialect())) {
+                && !Dialect.FLINK_SQL.isDialect(studioCADTO.getDialect())) {
             if (Asserts.isNull(studioCADTO.getDatabaseId())) {
                 log.error("Job's data source not selected!");
                 return null;
@@ -111,7 +111,7 @@ public class StudioServiceImpl implements StudioService {
                 log.error("Job's data source does not exist!");
                 return null;
             }
-            if (Dialect.DORIS.equalsVal(studioCADTO.getDialect())) {
+            if (Dialect.DORIS.isDialect(studioCADTO.getDialect())) {
                 return SQLLineageBuilder.getSqlLineage(studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
             } else {
                 return SQLLineageBuilder.getSqlLineage(

@@ -213,11 +213,16 @@ public class JobRefreshHandler {
                     }
                 });
             });
-
+            JsonNode checkPoints = api.getCheckPoints(jobId);
+            if (checkPoints.findParent("errors") == null) {
+                builder.checkpoints(JsonUtils.parseObject(checkPoints.toString(), CheckPointOverView.class));
+            }
+            JsonNode checkpointConfigInfo = api.getCheckPointsConfig(jobId);
+            if (checkpointConfigInfo.findParent("errors") == null) {
+                builder.checkpointsConfig(
+                        JsonUtils.parseObject(checkpointConfigInfo.toString(), CheckpointConfigInfo.class));
+            }
             return builder.id(id)
-                    .checkpoints(JsonUtils.parseObject(api.getCheckPoints(jobId).toString(), CheckPointOverView.class))
-                    .checkpointsConfig(JsonUtils.parseObject(
-                            api.getCheckPointsConfig(jobId).toString(), CheckpointConfigInfo.class))
                     .exceptions(
                             JsonUtils.parseObject(api.getException(jobId).toString(), FlinkJobExceptionsDetail.class))
                     .job(flinkJobDetailInfo)

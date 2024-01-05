@@ -28,7 +28,7 @@ export const TENANT_ID = 'tenantId';
 /**
  * the platform version
  */
-export const VERSION = '1.0.0-rc1';
+export const VERSION = '1.0.0-rc2';
 
 /**
  * the platform language

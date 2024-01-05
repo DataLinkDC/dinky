@@ -171,6 +171,8 @@ public enum Status {
     // 清除库表缓存
     DATASOURCE_CLEAR_CACHE_SUCCESS(11005, "datasource.clear.cache.success"),
 
+    DATASOURCE_EXIST_RELATIONSHIP(11006, "datasource.exist.relationship"),
+
     /**
      * job or task about
      */
@@ -200,6 +202,8 @@ public enum Status {
      * alert group
      */
     ALERT_GROUP_EXIST(14001, "alert.group.exist"),
+    //    "Alert group has relationship with other table, please delete the relationship first"
+    ALERT_GROUP_EXIST_RELATIONSHIP(14002, "alert.group.exist.relationship"),
 
     /**
      * cluster instance
@@ -209,6 +213,9 @@ public enum Status {
     CLUSTER_INSTANCE_KILL(15003, "cluster.instance.kill"),
     CLUSTER_INSTANCE_DEPLOY(15004, "cluster.instance.deploy"),
     CLUSTER_NOT_EXIST(15004, "cluster.not.exist"),
+    CLUSTER_INSTANCE_EXIST_RELATIONSHIP(15005, "cluster.instance.exist.relationship"),
+    CLUSTER_INSTANCE_LOCAL_NOT_SUPPORT_KILL(15006, "cluster.instance.local.not.support.kill"),
+    CLUSTER_INSTANCE_NOT_HEALTH(15007, "cluster.instance.not.health"),
 
     /**
      * git
@@ -264,6 +271,21 @@ public enum Status {
     ALERT_RULE_CHECKPOINT_FAIL(20004, "alert.rule.checkpointFail"),
     ALERT_RULE_JOB_RUN_EXCEPTION(20005, "alert.rule.jobRunException"),
     ALERT_RULE_CHECKPOINT_TIMEOUT(20006, "alert.rule.checkpointTimeout"),
+
+    /**
+     * alert template
+     */
+    ALERT_TEMPLATE_EXIST_RELATIONSHIP(21001, "alert.template.exist.relationship"),
+
+    /**
+     * cluster config
+     */
+    CLUSTER_CONFIG_EXIST_RELATIONSHIP(22001, "cluster.config.exist.relationship"),
+
+    /**
+     * udf template
+     */
+    UDF_TEMPLATE_EXIST_RELATIONSHIP(23001, "udf.template.exist.relationship"),
 
     /**
      * Resource

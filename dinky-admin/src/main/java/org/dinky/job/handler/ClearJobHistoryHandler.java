@@ -122,7 +122,7 @@ public class ClearJobHistoryHandler {
         for (History history : historyList) {
             // Check if the count exceeds the maximum retain count
             if (history.getCount() > maxRetainCount) {
-                List<History> reservedHistorys = historyService
+                List<History> reservedHistory = historyService
                         .lambdaQuery()
                         .eq(History::getTaskId, history.getTaskId())
                         .orderByDesc(History::getId)
@@ -137,7 +137,7 @@ public class ClearJobHistoryHandler {
                         .notIn(
                                 true,
                                 History::getId,
-                                reservedHistorys.stream().map(History::getId).toArray());
+                                reservedHistory.stream().map(History::getId).toArray());
                 historyService.remove(deleteWrapper);
             }
         }

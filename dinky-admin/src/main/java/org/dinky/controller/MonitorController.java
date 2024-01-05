@@ -24,6 +24,7 @@ import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.MetricsType;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.MetricsVO;
@@ -33,6 +34,7 @@ import org.dinky.service.MonitorService;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -126,5 +128,15 @@ public class MonitorController {
     @ApiOperation("Get Jvm Data Display")
     public SseEmitter getJvmInfo() {
         return monitorService.sendJvmInfo();
+    }
+
+    @DeleteMapping("/deleteMetricsLayout")
+    @ApiOperation("Delete Metrics Layout")
+    @ApiImplicitParam(name = "taskId", value = "taskId", required = true, dataType = "Integer")
+    public Result<Void> deleteMetricsLayout(@RequestParam("id") Integer taskId) {
+        if (monitorService.deleteMetricsLayout(taskId)) {
+            return Result.succeed(Status.DELETE_SUCCESS);
+        }
+        return Result.failed(Status.DELETE_FAILED);
     }
 }

@@ -24,10 +24,11 @@ const { Paragraph, Text } = Typography;
 type EllipsisMiddleProps = {
   maxCount: number;
   children: string;
+  copyable?: boolean;
 };
 
 const EllipsisMiddle: React.FC<EllipsisMiddleProps> = (props) => {
-  const { maxCount, children } = props;
+  const { maxCount, children, copyable = true } = props;
   let start = '';
   let end;
   let tip = '';
@@ -41,7 +42,7 @@ const EllipsisMiddle: React.FC<EllipsisMiddleProps> = (props) => {
   }
   return (
     <Tooltip title={tip}>
-      <Text copyable={true}>
+      <Text copyable={copyable}>
         {start}
         {end ? `......${end}` : ''}
       </Text>

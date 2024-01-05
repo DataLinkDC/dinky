@@ -24,7 +24,6 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
-import org.dinky.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;
@@ -98,7 +97,7 @@ public class YarnPerJobGateway extends YarnGateway {
             }
             result.success();
         } catch (Exception e) {
-            result.fail(LogUtil.getError(e));
+            throw new RuntimeException(e);
         }
         return result;
     }

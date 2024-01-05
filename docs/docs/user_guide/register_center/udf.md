@@ -12,9 +12,9 @@ Dinky 在 v1.0.0 版本开始，提供了 UDF 管理的功能，可以在 Dinky 
 
 ## UDF 注册管理
 
-> 在 Git 项目中管理的 UDF 项目经过构建后，会自动将产物推动至 [`资源中心`](resource_center) 的 udf 节点下集中管理
+> 在 Git 项目中管理的 UDF 项目经过构建后，会自动将产物推动至 [资源中心](./resource) 的 udf 节点下集中管理
 
-在新增时 可以直接拉取 [`资源中心`](resource_center) 中的 UDF 产物进行添加, 实现解析 UDF 具体的函数信息,并提供方可修改函数名功能
+在新增时 可以直接拉取 [资源中心](./resource) 中的 UDF 产物进行添加, 实现解析 UDF 具体的函数信息,并提供方可修改函数名功能
 
 ![udf_register_list](http://pic.dinky.org.cn/dinky/docs/test/udf_register_list.png)
 

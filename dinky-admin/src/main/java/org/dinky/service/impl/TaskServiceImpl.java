@@ -36,7 +36,6 @@ import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.exception.SqlExplainExcepition;
-import org.dinky.data.exception.TaskNotDoneException;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
@@ -46,6 +45,7 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.TaskVersion;
 import org.dinky.data.model.alert.AlertGroup;
+import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.model.home.JobModelOverview;
 import org.dinky.data.model.home.JobTypeOverView;
@@ -91,6 +91,7 @@ import org.dinky.utils.UDFUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.util.TextUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -103,7 +104,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -169,7 +169,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_PRECHECK)
-    public TaskDTO prepareTask(TaskSubmitDto submitDto) throws TaskNotDoneException {
+    public TaskDTO prepareTask(TaskSubmitDto submitDto) {
         TaskDTO task = this.getTaskInfoById(submitDto.getId());
 
         log.info("Start check and config task, task:{}", task.getName());
@@ -283,7 +283,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         try {
             config.setAddress(clusterInstanceService.buildEnvironmentAddress(config));
         } catch (Exception e) {
-            log.error("Init remote cluster error:{}", e.getMessage());
+            throw new BusException(e.getMessage());
         }
         return config;
     }
@@ -325,7 +325,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         taskDTO.setStatementSet(true);
         JobResult jobResult = taskServiceBean.executeJob(taskDTO);
         if ((jobResult.getStatus() == Job.JobStatus.FAILED)) {
-            throw new BusException(jobResult.getError());
+            throw new RuntimeException(jobResult.getError());
         }
         log.info("Job Submit success");
         Task task = new Task(submitDto.getId(), jobResult.getJobInstanceId());
@@ -366,11 +366,46 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobResult restartTask(Integer id, String savePointPath) throws Exception {
         TaskDTO task = this.getTaskInfoById(id);
+        boolean useSavepoint = !TextUtils.isEmpty(savePointPath);
+
         Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMessage());
         if (!Dialect.isCommonSql(task.getDialect()) && Asserts.isNotNull(task.getJobInstanceId())) {
-            String status = jobInstanceService.getById(task.getJobInstanceId()).getStatus();
+            JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
+            Assert.notNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
+            String status = jobInstance.getStatus();
             if (!JobStatus.isDone(status)) {
-                cancelTaskJob(task, true);
+                log.info("JobInstance [{}] status is [{}], stop it now", jobInstance.getName(), status);
+                JobManager jobManager = JobManager.build(buildJobConfig(task));
+                // If a user specifies a savepoint, the savepoint is not automatically triggered
+                if (useSavepoint) {
+                    jobManager.cancelNormal(jobInstance.getJid());
+                } else {
+                    log.info("stop {}  with savepoint", jobInstance.getName());
+                    SavePointResult savePointResult = savepointTaskJob(task, SavePointType.CANCEL);
+                    // Although the return is an array, it is generally only one
+                    for (JobInfo jobInfo : savePointResult.getJobInfos()) {
+                        savePointPath = jobInfo.getSavePoint();
+                    }
+                }
+                int count = 0;
+                while (true) {
+                    JobInfoDetail jobInfoDetail = jobInstanceService.refreshJobInfoDetail(jobInstance.getId(), false);
+                    if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus())) {
+                        log.info(
+                                "JobInstance [{}] status is [{}], ready to submit Job",
+                                jobInstance.getName(),
+                                jobInfoDetail.getInstance().getStatus());
+                        break;
+                    } else if (count > 10) {
+                        throw new BusException("stop job failed, please check job status");
+                    }
+                    log.warn(
+                            "JobInstance [{}] status is [{}], wait 2s to check again",
+                            jobInstance.getName(),
+                            jobInfoDetail.getInstance().getStatus());
+                    count++;
+                    Thread.sleep(2000);
+                }
             }
         }
         return submitTask(
@@ -388,7 +423,21 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Assert.notNull(clusterInstance, Status.CLUSTER_NOT_EXIST.getMessage());
 
         JobManager jobManager = JobManager.build(buildJobConfig(task));
-        return jobManager.cancel(jobInstance.getJid(), withSavePoint);
+
+        boolean isSuccess;
+        try {
+            if (withSavePoint) {
+                savepointTaskJob(task, SavePointType.CANCEL);
+            } else {
+                jobManager.cancelNormal(jobInstance.getJid());
+            }
+            isSuccess = true;
+        } catch (Exception e) {
+            log.warn("Stop with savcePoint failed: {}, will try normal rest api stop", e.getMessage());
+            isSuccess = jobManager.cancelNormal(jobInstance.getJid());
+        }
+        jobInstanceService.refreshJobInfoDetail(jobInstance.getId(), true);
+        return isSuccess;
     }
 
     @Override
@@ -552,13 +601,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
             // to compiler udf
             if (Asserts.isNotNullString(task.getDialect())
-                    && Dialect.JAVA.equalsVal(task.getDialect())
+                    && Dialect.JAVA.isDialect(task.getDialect())
                     && Asserts.isNotNullString(task.getStatement())) {
                 CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
                 task.setSavePointPath(compiler.getFullClassName());
-            } else if (Dialect.PYTHON.equalsVal(task.getDialect())) {
+            } else if (Dialect.PYTHON.isDialect(task.getDialect())) {
                 task.setSavePointPath(task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
-            } else if (Dialect.SCALA.equalsVal(task.getDialect())) {
+            } else if (Dialect.SCALA.isDialect(task.getDialect())) {
                 task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
             }
             UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task));
@@ -633,15 +682,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public List<Task> getAllUDF() {
-        List<Task> tasks = list(new QueryWrapper<Task>()
-                .in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON)
+        return list(new QueryWrapper<Task>()
+                .in("dialect", Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
                 .eq("enabled", 1)
                 .isNotNull("save_point_path"));
-        return tasks.stream()
-                .peek(task -> {
-                    Assert.notNull(task, Status.TASK_NOT_EXIST.getMessage());
-                })
-                .collect(Collectors.toList());
     }
 
     @Override

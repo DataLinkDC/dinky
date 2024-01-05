@@ -177,7 +177,7 @@ export default {
   'devops.jobinfo.config.UserCustomConf': '用户自定义配置',
   'devops.jobinfo.config.execmode': '执行模式',
   'devops.jobinfo.config.savePointPath': 'savePoint路径',
-  'devops.jobinfo.config.startFromSavePoint': '从SavePoint启动',
+  'devops.jobinfo.config.startFromSavePoint': '从Savepoint启动',
   'devops.jobinfo.config.submitType': '提交模式',
   'devops.jobinfo.config.taskId': 'Dinky作业ID',
   'devops.jobinfo.config.useSqlFragment': '语句集',
@@ -191,11 +191,18 @@ export default {
   'devops.jobinfo.recently.job.status': '查看最近保存的作业状态信息',
   'devops.jobinfo.reonline': '重新上线',
   'devops.jobinfo.restart': '重新启动',
-  'devops.jobinfo.savepoint.cancel': 'SavePoint 停止',
+  'devops.jobinfo.restart.auto.savepoint': '自动创建保存点并重启',
+  'devops.jobinfo.restart.from.savepoint': '从保存点重启',
+  'devops.jobinfo.restart.from.savepoint.help':
+    '停止作业并从指定保存点启动，此选项不会自动创建保存点（请务必保证此路径存在，否则会重启失败）',
+  'devops.jobinfo.restart.cannot.auto.savepoint': '作业已停止，无法使用智能重启',
+  'devops.jobinfo.savepoint.cancel': 'Savepoint 停止',
   'devops.jobinfo.savepoint.canceljob': '普通停止',
-  'devops.jobinfo.savepoint.stop': 'SavePoint 暂停',
-  'devops.jobinfo.savepoint.trigger': 'SavePoint 触发',
+  'devops.jobinfo.savepoint.stop': 'Savepoint 暂停',
+  'devops.jobinfo.savepoint.trigger': 'Savepoint 触发',
   'devops.jobinfo.smart_stop': '智能停止',
+  'devops.jobinfo.smart_restart': '智能重启',
+  'devops.jobinfo.smart_restart.help': '在作业停止过程中会自动创建保存点并从此保存点启动',
   'devops.jobinfo.unable.obtain.status': '无法连接到 Flink 集群获取最新作业状态信息',
   'devops.jobinfo.version.delete': '删除版本',
   'devops.jobinfo.version.delete.sure': '确定删除此版本吗？V{version}',
@@ -329,6 +336,8 @@ export default {
   'metrics.flink.taskId': 'Dinky 任务ID',
   'metrics.dinky.not.open':
     '暂未开启 Dinky Server 监控, 请前往 配置中心 -> 全局配置 -> Metrics 配置 -> Dinky JVM Monitor 开关 进行开启',
+  'metrics.flink.deleteConfirm':
+    '确认删除该任务下的监控数据吗? \n注意:该操作会同步影响运维中心该任务的监控数据!!\n请谨慎操作,该操作不可撤销!',
   /**
    *
    * pages
@@ -407,7 +416,8 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig': 'Flink集群配置',
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     '选择Flink集群配置进行【{type}】模式的远程提交任务',
-  'pages.datastudio.label.jobConfig.clusterConfig.tip2': '选择Flink集群配置',
+  'pages.datastudio.label.jobConfig.clusterConfig.tip2':
+    '如下拉框无数据,请先配置/新建集群实例,或者检查集群配置/集群实例是否为健康可用状态',
   'pages.datastudio.label.jobConfig.execmode.tip': '指定 Flink 任务的执行模式，默认为 Local',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL 环境',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
@@ -421,10 +431,10 @@ export default {
   'pages.datastudio.label.jobConfig.other.tip': '其他配置项，将被应用于执行环境，如 pipeline.name',
   'pages.datastudio.label.jobConfig.parallelism': '任务并行度',
   'pages.datastudio.label.jobConfig.parallelism.tip': '设置Flink任务的并行度，最小为 1',
-  'pages.datastudio.label.jobConfig.savePointStrategy': 'SavePoint策略',
-  'pages.datastudio.label.jobConfig.savePointStrategy.tip': '指定 SavePoint策略，默认为禁用',
-  'pages.datastudio.label.jobConfig.savePointpath': 'SavePoint路径',
-  'pages.datastudio.label.jobConfig.savePointpath.tip1': '从SavePointPath恢复Flink任务',
+  'pages.datastudio.label.jobConfig.savePointStrategy': 'Savepoint策略',
+  'pages.datastudio.label.jobConfig.savePointStrategy.tip': '指定 Savepoint 策略，默认为禁用',
+  'pages.datastudio.label.jobConfig.savePointpath': 'Savepoint路径',
+  'pages.datastudio.label.jobConfig.savePointpath.tip1': '从SavepointPath恢复Flink任务',
   'pages.datastudio.label.jobConfig.savePointpath.tip2': 'hdfs',
   'pages.datastudio.label.jobInfo.dialect': '方言',
   'pages.datastudio.label.jobInfo.id': '任务ID',
@@ -472,8 +482,8 @@ export default {
   'pages.datastudio.label.history.statementSet': '语句集',
   'pages.datastudio.label.history.parallelism': '并行度',
   'pages.datastudio.label.history.checkpoint': 'Checkpoint间隔',
-  'pages.datastudio.label.history.savePointStrategy': 'SavePoint策略',
-  'pages.datastudio.label.history.savePointPath': 'SavePoint路径',
+  'pages.datastudio.label.history.savePointStrategy': 'Savepoint策略',
+  'pages.datastudio.label.history.savePointPath': 'Savepoint路径',
   'pages.datastudio.label.history.clusterType': '集群类型',
   'pages.datastudio.label.history.clusterInstance': '集群实例',
   'pages.datastudio.label.history.clusterConfig': '集群配置',
@@ -724,7 +734,7 @@ export default {
   'rc.cc.search': '搜索 名称',
   'rc.cc.namePlaceholder': '请输入集群配置名称!',
   'rc.cc.spDir': '保存点路径',
-  'rc.cc.spDirHelp': '对应SavePoint目录，如 hdfs:///flink/savepoint',
+  'rc.cc.spDirHelp': '对应Savepoint目录，如 hdfs:///flink/savepoint',
   'rc.cc.sqlSubmitJarPath': 'Jar 文件路径',
   'rc.cc.sqlSubmitJarPathHelp':
     '请输入 Jar 文件路径! eg: hdfs:///dinky/dinky-app-1.16-with-dependencies.jar',
@@ -748,7 +758,10 @@ export default {
   'rc.ci.mr': '手动注册',
   'rc.ci.create': '创建集群',
   'rc.ci.deleteConfirm': '确定删除该 Flink 实例吗？',
+  'rc.ci.killConfirm':
+    '确定停止该 Flink 实例吗? 请注意,停止后将无法恢复!关联的任务将会收到影响,请谨慎操作!',
   'rc.ci.heartbeat': '心跳检测',
+  'rc.ci.kill': '停止 Flink 实例',
   'rc.ci.jma': 'JobManger 地址',
   'rc.ci.jmha': 'JobManger 高可用地址',
   'rc.ci.jmha.tips':
@@ -759,6 +772,8 @@ export default {
   'rc.ci.management': '集群实例管理',
   'rc.ci.modify': '修改集群',
   'rc.ci.name': '实例名称',
+  'rc.ci.autoRegisterCannotModify':
+    '自动注册的实例仅能修改 `JobManger高可用地址` 属性,其他无法修改!',
   'rc.ci.namePlaceholder': '请输入名称!',
   'rc.ci.recycle': '回收 Flink 实例',
   'rc.ci.recycleConfirm': '确定回收所有自动创建且过期的 Flink 实例吗？',

@@ -43,13 +43,6 @@ const JobList = () => {
 
   const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
     {
-      title: l('devops.jobinfo.config.taskId'),
-      dataIndex: 'taskId',
-      width: '6%',
-      valueType: 'indexBorder',
-      fixed: 'left'
-    },
-    {
       title: l('global.table.jobname'),
       dataIndex: 'name'
     },

@@ -65,7 +65,6 @@ public class ClusterInstanceController {
      *
      * @param clusterInstanceDTO {@link ClusterInstanceDTO} cluster instance
      * @return {@link Result}<{@link Void}>
-     * @throws Exception exception
      */
     @PutMapping
     @Log(title = "Insert Or Update Cluster Instance", businessType = BusinessType.INSERT_OR_UPDATE)
@@ -83,8 +82,7 @@ public class ClusterInstanceController {
                 PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD
             },
             mode = SaMode.OR)
-    public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstanceDTO clusterInstanceDTO)
-            throws Exception {
+    public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstanceDTO clusterInstanceDTO) {
         if (clusterInstanceDTO.getAutoRegisters() == null) {
             clusterInstanceDTO.setAutoRegisters(false);
         }
@@ -225,7 +223,7 @@ public class ClusterInstanceController {
      * @param id {@link Integer} cluster instance id
      * @return {@link Result}<{@link Void}>
      */
-    @GetMapping("/killCluster")
+    @PutMapping("/killCluster")
     @Log(title = "Cluster Instance Kill", businessType = BusinessType.UPDATE)
     @ApiOperation("Cluster Instance Kill")
     @ApiImplicitParam(

@@ -31,7 +31,7 @@ export type Catalogue = {
   updateTime: Date;
   children: Catalogue[];
   configJson: TaskExtConfig;
-  task: Task;
+  task: TaskInfo;
 };
 
 export type TaskUdfConfig = {
@@ -50,7 +50,7 @@ export type TaskExtConfig = {
   customConfig: List<Map<string, object>>;
 };
 
-export type Task = {
+export type TaskInfo = {
   id: number;
   name: string;
   dialect: string;
@@ -67,6 +67,7 @@ export type Task = {
   clusterConfigurationId: number;
   databaseId: number;
   envId: number;
+  enabled: boolean;
   alertGroupId: number;
   note: string;
   step: number;

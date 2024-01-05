@@ -30,6 +30,7 @@ import { getData } from '@/services/api';
 import {
   handleAddOrUpdate,
   handleOption,
+  handlePutDataByParams,
   handleRemoveById,
   updateDataByParam
 } from '@/services/BusinessCrud';
@@ -39,7 +40,12 @@ import { Cluster } from '@/types/RegCenter/data.d';
 import { InitClusterInstanceState } from '@/types/RegCenter/init.d';
 import { ClusterInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
-import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  HeartTwoTone,
+  StopTwoTone
+} from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import {
   Badge,
@@ -134,6 +140,11 @@ export default () => {
       handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_DELETE, id)
     );
   };
+  const handleKill = async (id: number) => {
+    await executeAndCallback(async () =>
+      handlePutDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_KILL, l('rc.ci.kill'), { id })
+    );
+  };
 
   /**
    * enable or disable
@@ -170,6 +181,17 @@ export default () => {
           description={l('rc.ci.deleteConfirm')}
         />
       </Authorized>
+      {record.autoRegisters && record.status === 1 && (
+        <Authorized key={`${record.id}_delete_auth`} path='/registration/cluster/instance/kill'>
+          <PopconfirmDeleteBtn
+            key={`${record.id}_kill`}
+            onClick={() => handleKill(record.id)}
+            buttonIcon={<StopTwoTone />}
+            title={l('rc.ci.kill')}
+            description={l('rc.ci.killConfirm')}
+          />
+        </Authorized>
+      )}
     </Space>
   );
 
@@ -205,7 +227,7 @@ export default () => {
                 disabled={!HasAuthority('/registration/cluster/instance/edit')}
               />
               <Tag color='cyan'>
-                {CLUSTER_INSTANCE_TYPE.find((record) => item.type === record.value)?.label}
+                {CLUSTER_INSTANCE_TYPE().find((record) => item.type === record.value)?.label}
               </Tag>
               <Tag
                 icon={item.status === 1 ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
