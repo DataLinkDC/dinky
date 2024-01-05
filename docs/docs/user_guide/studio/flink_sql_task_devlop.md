@@ -92,6 +92,20 @@ Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览
 
 提交成功后会切换到`结果选项卡`，点击 `获取最新数据` ，即可查看 Select 语句的执行结果。
 
+:::tip 说明
+### FlinkSQL 预览结果的必要条件
+
+1.执行模式必须是 Local、Standalone、Yarn Session、Kubernetes Session 其中的一种；
+
+2.除 SET 和 DDL 外，必须只提交一个 SELECT 或 SHOW 或 DESC 语句；
+
+3.必须开启 **预览结果**；
+
+4.作业必须是提交成功并且返回 JID，同时在远程集群可以看到作业处于 RUNNING 或 FINISHED 状态；
+
+5.Dinky 重启后，之前的预览结果将失效
+:::
+
 ![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-preview-result.png)
 :::tip 说明
 预览功能只支持Flink Sql 作业的select语句查询结果(目前不支持Application与Prejob预览功能)
