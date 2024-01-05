@@ -124,3 +124,10 @@ Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览
 |  否   | 打印流  | 默认禁用，开启打印流将同步运行并返回含有**op**字段信息的 ChangeLog<br/> 默认不开启则返回最终结果 |
 |  否   | 最大行数 |                       预览数据的最大行数，默认100                       |
 |  否   | 自动停止 |                 默认禁用，开启自动停止将在捕获最大行记录数后自动停止                  |
+
+提交成功后会切换到`结果选项卡`，点击 `获取最新数据` ，即可查看 Select 语句的执行结果。
+
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-preview-result.png)
+:::tip 说明
+预览功能只支持select语句查询结果(目前不支持Application与Prejob预览功能)，如果您是正常的带有insert的FlinkSql作业，请点击`执行按钮`
+:::
