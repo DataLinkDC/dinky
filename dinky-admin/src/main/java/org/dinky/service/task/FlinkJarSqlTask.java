@@ -25,7 +25,6 @@ import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.job.JobResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -38,7 +37,7 @@ public class FlinkJarSqlTask extends FlinkSqlTask {
 
     @Override
     public List<SqlExplainResult> explain() {
-        return new ArrayList<>();
+        return jobManager.explainSql(task.getStatement()).getSqlExplainResults();
     }
 
     @Override

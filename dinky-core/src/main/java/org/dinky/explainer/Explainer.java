@@ -39,7 +39,9 @@ import org.dinky.job.StatementParam;
 import org.dinky.job.builder.JobUDFBuilder;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
+import org.dinky.trans.dml.ExecuteJarOperation;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
+import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.IpUtil;
 import org.dinky.utils.LogUtil;
@@ -49,6 +51,7 @@ import org.dinky.utils.URLUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.graph.StreamGraph;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -295,6 +298,10 @@ public class Explainer {
                 SqlExplainResult sqlExplainResult = executor.explainSqlRecord(item.getValue());
                 if (Asserts.isNull(sqlExplainResult)) {
                     sqlExplainResult = new SqlExplainResult();
+                } else if (ExecuteJarParseStrategy.INSTANCE.match(item.getValue())) {
+                    StreamGraph streamGraph =
+                            new ExecuteJarOperation(item.getValue()).explain(executor.getCustomTableEnvironment());
+                    sqlExplainResult.setExplain(streamGraph.getStreamingPlanAsJSON());
                 } else {
                     executor.executeSql(item.getValue());
                 }

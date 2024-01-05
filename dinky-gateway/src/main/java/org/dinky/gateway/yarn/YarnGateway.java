@@ -78,9 +78,9 @@ import java.util.stream.Collectors;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.HttpUtil;
-import cn.hutool.core.lang.Assert;
 
 public abstract class YarnGateway extends AbstractGateway {
 
@@ -348,7 +348,7 @@ public abstract class YarnGateway extends AbstractGateway {
                     .get(0)
                     .getLogUrl();
             String log = ReUtil.getGroup1(HTML_TAG_REGEX, HttpUtil.get(logUrl + "/jobmanager.log?start=-10000"));
-            logger.error("History log url is " + logUrl);
+            logger.error("\n\nHistory log url is: {}\n\n ", logUrl);
             throw new RuntimeException(
                     "Yarn application state is not running, please check yarn cluster status. Log content:\n" + log);
         }
