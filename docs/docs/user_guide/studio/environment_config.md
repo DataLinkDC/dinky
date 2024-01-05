@@ -1,6 +1,6 @@
 ---
-sidebar_position: 1
-position: 1
+sidebar_position: 2
+position: 2
 id: environment_config
 title: 执行模式
 ---

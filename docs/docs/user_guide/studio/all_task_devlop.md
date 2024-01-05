@@ -1,49 +1,13 @@
 ---
-sidebar_position: 2
-position: 2
+sidebar_position: 3
+position: 3
 id: all_task_devlop
-title: 作业开发
+title: Flink作业开发
 ---
 
-## 创建作业
+本章节介绍Flink Sql与Flink Jar作业开发
 
-Dinky支持创建多种类型作业，以满足不同需求，主要分为 Flink类型作业，Jdbc类型作业，其他类型作业(UDF)，如图，下面开始介绍各种类型作业使用教程
-
-![image-20231220140415854](http://pic.dinky.org.cn/dinky/docs/test/202312201404899.png)
-
-#### FlinkSql作业
-
-此作业类型用于开发**FlinkSQL**，与 **FlinkCDC整库同步**作业。
-
-#### FlinkJar作业
-
-用于运行**自定义jar包**，对于非Flink sql作业，使用原生flink代码开发的jar包，可以通过dinky的`exec jar`语法进行提交与管理
-
-#### FlinkSqlEnv作业类型
-
-这是一个比较特殊的作业类型，对于sql作业开发，我们总是不可避免的需要一些通用参数需求，或者一些通用代码片段等，除了使用全局变量以外
-我们还可以通过创建一个`FlinkSqlEnv`类型作业把代码写在里面供其他任务引用，以此避免重复编写一些通用的语句，提高开发效率，具体见下面作业配置说明。
-
-[//]: # (![image-20231220141323767]&#40;http://pic.dinky.org.cn/dinky/docs/test/202312201413831.png&#41;)
-
-[//]: # (可在此处对FlinkSqlEnv作业创建的catalog进行选择)
-
-[//]: # (![image-20231220141416725]&#40;http://pic.dinky.org.cn/dinky/docs/test/202312201414788.png&#41;)
-
-#### Jdbc作业
-
-此作业类型用于执行**Jdbc sql语句**，目前支持多种数据库，如：Mysql,ClickHouse、Doris 等,需要提前在配置中心进行数据源注册。
-
-#### 其他类型作业
-
-目前支持编写**UDF**类型的作业，如：Python、Java、Scala 等。
-
-:::tip 说明
-
-Dinky将多种类型作业编写全部SQL化，并拓展了语法，不同类型作业语法并不通用，在创建作业时请注意不要创建错误类型的作业。
-
-:::
-
+## 基础作业配置
 ### 作业配置
 
 ![image-20231220112839608](http://pic.dinky.org.cn/dinky/docs/test/202312201128666.png)
@@ -129,5 +93,67 @@ Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览
 
 ![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-preview-result.png)
 :::tip 说明
-预览功能只支持select语句查询结果(目前不支持Application与Prejob预览功能)，如果您是正常的带有insert的FlinkSql作业，请点击`执行按钮`
+预览功能只支持Flink Sql 作业的select语句查询结果(目前不支持Application与Prejob预览功能)，如果您是正常的带有insert的FlinkSql作业，请点击`执行按钮`
+:::
+
+## Flink sql作业
+
+编写FlinkSql语句
+```sql
+--创建源表datagen_source
+CREATE TABLE datagen_source(
+  id  BIGINT,
+  name STRING
+) WITH (
+  'connector' = 'datagen'
+);
+--创建结果表blackhole_sink
+CREATE  TABLE blackhole_sink(
+   id  BIGINT,
+   name STRING
+) WITH (
+  'connector' = 'blackhole'
+);
+--将源表数据插入到结果表
+INSERT INTO blackhole_sink
+SELECT
+   id  ,
+   name 
+from datagen_source;
+```
+点击提交按钮，即可提交任务到集群，任务提交完成，我们可以进入运维中心页面，状态为Running表示运行成功。
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-devops.png)
+
+
+## Flink JAR作业
+
+编写FlinkSql语句
+
+### 语法结构
+
+```sql
+
+EXECUTE JAR WITH (
+'uri'='<jar_path>.jar', -- jar文件路径 必填
+'main-class'='<main_class>', -- jar作业运行的主类 必填
+'args'='<args>', -- 主类入参 可选 
+'parallelism'='<parallelism>', -- 任务并行度 可选
+);
+
+```
+
+### 样例代码:
+
+```sql
+EXECUTE JAR WITH (
+'uri'='rs:/jar/flink/demo/SocketWindowWordCount.jar',
+'main-class'='org.apache.flink.streaming.examples.socket',
+'args'=' --hostname localhost ',
+'parallelism'='',
+);
+```
+:::warning 注意
+1. 以上示例中, uri 参数使用了 rs 协议, 请参考 [资源管理](../../user_guide/register_center/resource) 中 rs 协议使用方式
+2. 以上示例中, uri 的值为 rs:/jar/flink/demo/SocketWindowWordCount.jar, 该值为资源中心中的资源路径, 请确保资源中心中存在该资源,请忽略资源中心 Root 节点(该节点为虚拟节点)
+3. 目前仅支持 rs 与 file 协议头，后续会支持更多协议，请关注版本更新
 :::
