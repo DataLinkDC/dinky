@@ -18,14 +18,14 @@
  */
 
 import { FormContextValue } from '@/components/Context/FormContext';
+import { STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import ConfigurationForm from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm';
 import { Cluster } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { ModalForm } from '@ant-design/pro-components';
+import { connect } from '@umijs/max';
 import { Button, Form } from 'antd';
 import React, { useEffect } from 'react';
-import {connect} from "@umijs/max";
-import {STUDIO_MODEL_ASYNC} from "@/pages/DataStudio/model";
 
 type ConfigurationModalProps = {
   visible: boolean;
@@ -34,8 +34,7 @@ type ConfigurationModalProps = {
   onSubmit: (values: Partial<Cluster.Config>) => void;
 };
 const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) => {
-
-  const { visible, onClose, onSubmit, value,dispatch } = props;
+  const { visible, onClose, onSubmit, value, dispatch } = props;
 
   /**
    * init form
@@ -60,7 +59,8 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
     if (visible) {
       dispatch({
         type: STUDIO_MODEL_ASYNC.queryFlinkConfigOptions
-      })    }
+      });
+    }
     form.setFieldsValue(value);
   }, [visible, value, form]);
 
