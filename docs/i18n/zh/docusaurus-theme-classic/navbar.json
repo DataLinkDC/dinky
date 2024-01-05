@@ -5,7 +5,7 @@
   },
   "item.label.home": {
     "message": "主页",
-    "description": "Navbar item with label 主页"
+    "description": "Navbar item with label home"
   },
   "item.label.doc": {
     "message": "文档",
@@ -13,11 +13,11 @@
   },
   "item.label.download": {
     "message": "下载",
-    "description": "Navbar item with label 下载"
+    "description": "Navbar item with label download"
   },
   "item.label.developer_guide": {
     "message": "开发者指南",
-    "description": "Navbar item with label 开发者指南"
+    "description": "Navbar item with label developer_guide"
   },
   "item.label.github": {
     "message": "GitHub",
@@ -41,11 +41,11 @@
   },
   "item.label.how_contribute": {
     "message": "如何参与",
-    "description": "Navbar item with label 如何参与"
+    "description": "Navbar item with label how_contribute"
   },
   "item.label.local_debug": {
     "message": "本地调试",
-    "description": "Navbar item with label 本地调试"
+    "description": "Navbar item with label local_debug"
   },
   "item.label.0.6": {
     "message": "0.6",
@@ -53,11 +53,11 @@
   },
   "item.label.faq": {
     "message": "常见问题",
-    "description": "Navbar item with label 常见问题"
+    "description": "Navbar item with label faq"
   },
   "item.label.roadmap": {
     "message": "未来规划",
-    "description": "Navbar item with label 未来规划"
+    "description": "Navbar item with label roadmap"
   },
   "logo.alt": {
     "message": "Dinky",
