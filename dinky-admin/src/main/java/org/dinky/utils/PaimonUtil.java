@@ -26,7 +26,6 @@ import org.dinky.data.annotations.paimon.Options;
 import org.dinky.data.annotations.paimon.PartitionKey;
 import org.dinky.data.annotations.paimon.PrimaryKey;
 import org.dinky.function.constant.PathConstant;
-
 import org.dinky.shaded.paimon.catalog.Catalog;
 import org.dinky.shaded.paimon.catalog.CatalogContext;
 import org.dinky.shaded.paimon.catalog.CatalogFactory;
