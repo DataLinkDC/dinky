@@ -19,8 +19,8 @@
 
 package org.dinky.utils;
 
-import org.apache.paimon.types.DataType;
-import org.apache.paimon.types.DataTypes;
+import org.dinky.shaded.paimon.types.DataType;
+import org.dinky.shaded.paimon.types.DataTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

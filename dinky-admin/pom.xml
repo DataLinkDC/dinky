@@ -292,9 +292,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.paimon</groupId>
-            <artifactId>paimon-bundle</artifactId>
-            <version>0.5.0-incubating</version>
+            <groupId>io.github.datalinkdc</groupId>
+            <artifactId>dinky-shaded-paimon</artifactId>
+            <version>1.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
