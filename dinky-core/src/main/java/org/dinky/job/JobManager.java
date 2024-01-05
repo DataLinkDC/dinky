@@ -248,30 +248,30 @@ public class JobManager {
         ready();
         JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
         StreamGraph streamGraph = jobJarStreamGraphBuilder.getJarStreamGraph(statement, getDinkyClassLoader());
+        if (Asserts.isNotNullString(config.getSavePointPath())) {
+            streamGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
+                    config.getSavePointPath(),
+                    executor.getStreamExecutionEnvironment()
+                            .getConfiguration()
+                            .get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
+        }
         try {
             if (!useGateway) {
                 executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
             } else {
-                GatewayResult gatewayResult = null;
+                GatewayResult gatewayResult;
                 config.addGatewayConfig(executor.getSetConfig());
                 if (runMode.isApplicationMode()) {
                     gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar(getUdfPathContextHolder());
                 } else {
                     streamGraph.setJobName(config.getJobName());
                     JobGraph jobGraph = streamGraph.getJobGraph();
-                    if (Asserts.isNotNullString(config.getSavePointPath())) {
-                        jobGraph.setSavepointRestoreSettings(
-                                SavepointRestoreSettings.forPath(config.getSavePointPath(), true));
-                    }
                     GatewayConfig gatewayConfig = config.getGatewayConfig();
                     List<String> uriList = jobJarStreamGraphBuilder.getUris(statement);
                     String[] jarPaths = uriList.stream()
                             .map(URLUtils::toFile)
                             .map(File::getAbsolutePath)
                             .toArray(String[]::new);
-                    //                    Opt.ofNullable(dinkyClassLoader.get()).ifPresent(x -> {
-                    //                        x.getUdfPathContextHolder().addOtherPlugins(URLUtils.toFile(uri));
-                    //                    });
                     gatewayConfig.setJarPaths(jarPaths);
                     gatewayResult = Gateway.build(gatewayConfig).submitJobGraph(jobGraph);
                 }

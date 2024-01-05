@@ -10,6 +10,11 @@ title: EXECUTE JAR
 该功能是为了解决在执行 JAR 类型任务时，去除各种繁杂交互, 以及统一任务提交方式, 使得用户可以更加方便的提交任务。
 
 :::
+:::warn 注意事项
+
+如果使用 `Checkpoint` 或 `Savepoint` ,请在右边作业，选择 `Savepoint策略`，其次检查点 跳过 请使用 execution.savepoint.ignore-unclaimed-state: true 参数控制
+
+:::
 
 ## 语法结构
 
@@ -20,7 +25,6 @@ EXECUTE JAR WITH (
 'main-class'='<main_class>', -- 该参数 必填
 'args'='<args>', -- 主类入参 该参数可选 
 'parallelism'='<parallelism>', -- 任务并行度 该参数可选
-'savepoint-path'='<savepoint_path>' --任务保存点路径 该参数可选
 );
 
 ```
@@ -33,7 +37,6 @@ EXECUTE JAR WITH (
 'main-class'='org.apache.flink.streaming.examples.socket',
 'args'=' --hostname localhost ',
 'parallelism'='',
-'savepoint-path'=''
 );
 ```
 :::warning 注意
