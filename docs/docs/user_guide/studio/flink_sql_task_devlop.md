@@ -177,4 +177,4 @@ EXECUTE JAR WITH (
 2. 以上示例中, uri 的值为 rs:/jar/flink/demo/SocketWindowWordCount.jar, 该值为资源中心中的资源路径,
    请确保资源中心中存在该资源,请忽略资源中心 Root 节点(该节点为虚拟节点)
 3. 目前仅支持 rs 与 file 协议头，后续会支持更多协议，请关注版本更新
-   :::
+:::
