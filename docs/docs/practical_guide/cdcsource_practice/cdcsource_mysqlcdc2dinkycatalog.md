@@ -1,15 +1,15 @@
 ---
 sidebar_position: 12
 position: 12
-id: cdcsource_mysqlcdc2paimon
-title: MySQLCDC 整库到 Paimon
+id: cdcsource_mysqlcdc2dinkycatalog
+title: MySQLCDC 整库到 DinkyCatalog
 ---
 
 
 
 ### 整库同步到 Dinky Catalog
 
-```sql
+```sql showLineNumbers
 EXECUTE CDCSOURCE demo WITH (
   'connector' = 'mysql-cdc',
   'hostname' = '127.0.0.1',

@@ -5,11 +5,21 @@ id: cdcsource_mysqlcdc2paimon
 title: MySQLCDC 整库到 Paimon
 ---
 
+## 前置准备
+
+- 请确保已经在 Flink/lib 和 dinky/extends 目录下放置了 Paimon 的 Flink connector jar。如果提交模式为 Application/Per-Job，请确保 Paimon connector jar 已经放置在 HDFS 中
+- 请确保已经在 Flink/lib 和 dinky/extends 目录下放置了 MySQL CDC 的 Flink connector jar。 如果提交模式为 Application/Per-Job，请确保 MySQL CDC connector jar 已经放置在 HDFS 中
+- 如在两方启动后才进行放置上述 jar 包，请重启 Flink 和 Dinky 服务,或者使用 Dinky 中提供的 [ADD CUSTOMJAR](../../extend/expand_statements/add_jar_statement) 功能进行加载。
 
 
-### 整库同步到 Apache Paimon
+## 示例
 
-```sql
+注意事项:
+- 该示例是将 mysql 整库同步到 Paimon 表
+- 该示例 sink 中的各个参数均可根据实际情况进行调整，请按照 Paimon 连接器官方文档进行配置。并请遵守整库同步的规范.
+
+
+```sql showLineNumbers
 EXECUTE CDCSOURCE demo WITH (
   'connector' = 'mysql-cdc',
   'hostname' = '127.0.0.1',
@@ -29,8 +39,9 @@ EXECUTE CDCSOURCE demo WITH (
 
 或者
 
-> 此方式可自动建表
-```sql 
+> 此方式可自动建表, 自动建表由 Paimon 完成, dinky 不介入
+
+```sql showLineNumbers
 
 EXECUTE CDCSOURCE dinky_paimon_test
 WITH
@@ -48,6 +59,5 @@ WITH
     'sink.path' = 'hdfs:/tmp/paimon/#{schemaName}.db/#{tableName}',
     'sink.auto-create' = 'true',
   );
-
 
 ```

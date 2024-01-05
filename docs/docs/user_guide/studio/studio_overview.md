@@ -5,7 +5,7 @@ id: studio_overview
 title: 数据开发功能简介
 ---
 
-:::note 简介
+:::info 简介
 本章节主要介绍 Dinky 数据开发的基本设计理念，以及如何使用 Dinky 数据开发功能。
 :::
 

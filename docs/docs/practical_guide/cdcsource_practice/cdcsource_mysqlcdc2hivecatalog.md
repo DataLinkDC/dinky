@@ -11,7 +11,7 @@ title: MySQLCDC 整库到 HiveCatalog
 
 ### 整库同步到 HiveCatalog
 
-```sql
+```sql showLineNumbers
 EXECUTE CDCSOURCE demo WITH (
   'connector' = 'mysql-cdc',
   'hostname' = '127.0.0.1',
