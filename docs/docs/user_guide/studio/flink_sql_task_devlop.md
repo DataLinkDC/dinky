@@ -2,7 +2,7 @@
 sidebar_position: 3
 position: 3
 id: all_task_devlop
-title: Flink作业开发
+title: Flink作业
 ---
 
 本章节介绍Flink Sql与Flink Jar作业开发
