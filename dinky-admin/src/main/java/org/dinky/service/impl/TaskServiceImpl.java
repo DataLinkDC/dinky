@@ -234,6 +234,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             flinkClusterCfg.getAppConfig().setUserJarMainAppClass(CommonConstant.DINKY_APP_MAIN_CLASS);
             config.buildGatewayConfig(flinkClusterCfg);
             config.setClusterId(null);
+            config.getGatewayConfig().setType(GatewayType.get(config.getType()));
         } else if (GatewayType.LOCAL.equalsValue(task.getType())) {
             config.setClusterId(null);
             config.setClusterConfigurationId(null);

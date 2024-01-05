@@ -81,6 +81,7 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -245,8 +246,8 @@ public class JobManager {
     public JobResult executeJarSql(String statement) throws Exception {
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
-        StreamGraph streamGraph =
-                JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, getDinkyClassLoader());
+        JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
+        StreamGraph streamGraph = jobJarStreamGraphBuilder.getJarStreamGraph(statement, getDinkyClassLoader());
         try {
             if (!useGateway) {
                 executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
@@ -262,7 +263,17 @@ public class JobManager {
                         jobGraph.setSavepointRestoreSettings(
                                 SavepointRestoreSettings.forPath(config.getSavePointPath(), true));
                     }
-                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+                    GatewayConfig gatewayConfig = config.getGatewayConfig();
+                    List<String> uriList = jobJarStreamGraphBuilder.getUris(statement);
+                    String[] jarPaths = uriList.stream()
+                            .map(URLUtils::toFile)
+                            .map(File::getAbsolutePath)
+                            .toArray(String[]::new);
+                    //                    Opt.ofNullable(dinkyClassLoader.get()).ifPresent(x -> {
+                    //                        x.getUdfPathContextHolder().addOtherPlugins(URLUtils.toFile(uri));
+                    //                    });
+                    gatewayConfig.setJarPaths(jarPaths);
+                    gatewayResult = Gateway.build(gatewayConfig).submitJobGraph(jobGraph);
                 }
                 job.setResult(InsertResult.success(gatewayResult.getId()));
                 job.setJobId(gatewayResult.getId());
