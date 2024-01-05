@@ -25,7 +25,9 @@ import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.enums.JobLifeCycle;
+import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.Status;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.model.Task;
@@ -185,8 +187,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     /**
      * check catalogue task name is exist
+     *
      * @param name name
-     * @param id id
+     * @param id   id
      * @return true if exist , otherwise false
      */
     @Override
@@ -199,6 +202,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     /**
      * init some value
+     *
      * @param catalogueTask {@link CatalogueTaskDTO}
      * @return {@link Task}
      */
@@ -457,6 +461,22 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             // doing: cascade delete jobInstance && jobHistory && history && statement
             // 获取 task 表中的作业
             Task task = taskService.getById(catalogue.getTaskId());
+            if (task != null) {
+                if (task.getStep().equals(JobLifeCycle.PUBLISH.getValue())) {
+                    throw new BusException(Status.TASK_IS_PUBLISH_CANNOT_DELETE);
+                }
+                if (task.getJobInstanceId() != null) {
+                    // 获取前 先强制刷新一下, 避免获取任务信息状态不准确
+                    jobInstanceService.refreshJobInfoDetail(task.getJobInstanceId(), true);
+                    // 获取当前 job instance
+                    JobInstance currentJobInstance = jobInstanceService.getById(task.getJobInstanceId());
+                    if (currentJobInstance != null
+                            && currentJobInstance.getStatus().equals(JobStatus.RUNNING.getValue())) {
+                        throw new BusException(Status.TASK_IS_RUNNING_CANNOT_DELETE);
+                    }
+                }
+            }
+
             // 获取 metrics 表中的监控数据
             List<Metrics> metricListByTaskId = monitorService.getMetricsLayoutByTaskId(catalogue.getTaskId());
 
