@@ -186,6 +186,8 @@ public enum Status {
     TASK_UPDATE_FAILED(12008, "task.update.failed"),
     TASK_IS_ONLINE(12009, "task.is.online"),
     TASK_IS_EXIST(12010, "task.is.existed"),
+    TASK_IS_PUBLISH_CANNOT_DELETE(12011, "task.is.publish.cannot.delete"),
+    TASK_IS_RUNNING_CANNOT_DELETE(12012, "task.is.running.cannot.delete"),
 
     /**
      * alert instance

@@ -19,13 +19,31 @@
 
 package org.dinky.service.impl;
 
-import static org.dinky.assertion.Asserts.isNull;
-
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.Opt;
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.enums.JobLifeCycle;
+import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.Status;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.model.Task;
@@ -42,30 +60,9 @@ import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
 import org.dinky.service.TaskService;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.util.ObjectUtil;
-import lombok.RequiredArgsConstructor;
+import static org.dinky.assertion.Asserts.isNull;
 
 /**
  * CatalogueServiceImpl
@@ -185,8 +182,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     /**
      * check catalogue task name is exist
+     *
      * @param name name
-     * @param id id
+     * @param id   id
      * @return true if exist , otherwise false
      */
     @Override
@@ -199,6 +197,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     /**
      * init some value
+     *
      * @param catalogueTask {@link CatalogueTaskDTO}
      * @return {@link Task}
      */
@@ -412,7 +411,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private String getFileText(File sourceFile) {
         StringBuilder sb = new StringBuilder();
         try (InputStreamReader isr = new InputStreamReader(Files.newInputStream(sourceFile.toPath()));
-                BufferedReader br = new BufferedReader(isr)) {
+             BufferedReader br = new BufferedReader(isr)) {
             if (sourceFile.isFile() && sourceFile.exists()) {
 
                 String lineText;
@@ -457,6 +456,21 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             // doing: cascade delete jobInstance && jobHistory && history && statement
             // 获取 task 表中的作业
             Task task = taskService.getById(catalogue.getTaskId());
+            if (task != null) {
+                if (task.getStep().equals(JobLifeCycle.PUBLISH.getValue())) {
+                    throw new BusException(Status.TASK_IS_PUBLISH_CANNOT_DELETE);
+                }
+                if (task.getJobInstanceId() != null) {
+                    // 获取前 先强制刷新一下, 避免获取任务信息状态不准确
+                    jobInstanceService.refreshJobInfoDetail(task.getJobInstanceId(), true);
+                    // 获取当前 job instance
+                    JobInstance currentJobInstance = jobInstanceService.getById(task.getJobInstanceId());
+                    if (currentJobInstance != null && currentJobInstance.getStatus().equals(JobStatus.RUNNING.getValue())) {
+                        throw new BusException(Status.TASK_IS_RUNNING_CANNOT_DELETE);
+                    }
+                }
+            }
+
             // 获取 metrics 表中的监控数据
             List<Metrics> metricListByTaskId = monitorService.getMetricsLayoutByTaskId(catalogue.getTaskId());
 
