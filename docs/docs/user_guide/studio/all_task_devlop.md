@@ -8,6 +8,7 @@ title: Flink作业开发
 本章节介绍Flink Sql与Flink Jar作业开发
 
 ## 基础作业配置
+
 ### 作业配置
 
 ![image-20231220112839608](http://pic.dinky.org.cn/dinky/docs/test/202312201128666.png)
@@ -93,43 +94,60 @@ Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览
 
 ![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-preview-result.png)
 :::tip 说明
-预览功能只支持Flink Sql 作业的select语句查询结果(目前不支持Application与Prejob预览功能)，如果您是正常的带有insert的FlinkSql作业，请点击`执行按钮`
+预览功能只支持Flink Sql 作业的select语句查询结果(目前不支持Application与Prejob预览功能)
+，如果您是正常的带有insert的FlinkSql作业，请点击`执行按钮`
 :::
+
+## 工具栏使用
+
+在数据开发页面右上方的工具栏可帮助用户快速对作业进行操作
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN//datastudio_toolbar.png)
+具体含义如下
+
+| 名称  |       作用       |      备注      |
+|:---:|:--------------:|:------------:|
+| 保存  |     保存当前作业     |              |
+| DAG | 获取Flink sql流程图 |              |
+| 检查  |    对sql进行校验    |              |
+| 发布  |      发布任务      | 任务发布后不允许进行修改 |
+| 运维  |     跳转运维页面     | 作用未运行不会有此按钮  |
+| 运行  |      提交作业      |              |
+| 预览  |     预览作业数据     |              |
 
 ## Flink sql作业
 
 编写FlinkSql语句
+
 ```sql
 --创建源表datagen_source
-CREATE TABLE datagen_source(
-  id  BIGINT,
-  name STRING
-) WITH (
-  'connector' = 'datagen'
-);
+CREATE TABLE datagen_source
+(
+    id BIGINT,
+    name STRING
+)
+WITH ( 'connector' = 'datagen');
 --创建结果表blackhole_sink
-CREATE  TABLE blackhole_sink(
-   id  BIGINT,
-   name STRING
-) WITH (
-  'connector' = 'blackhole'
-);
+CREATE TABLE blackhole_sink
+(
+    id BIGINT,
+    name STRING
+)
+WITH ( 'connector' = 'blackhole');
 --将源表数据插入到结果表
 INSERT INTO blackhole_sink
-SELECT
-   id  ,
-   name 
+SELECT id,
+       name
 from datagen_source;
 ```
+
 点击提交按钮，即可提交任务到集群，任务提交完成，我们可以进入运维中心页面，状态为Running表示运行成功。
 ![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-devops.png)
-
 
 ## Flink JAR作业
 
 编写FlinkSql语句
 
-### 语法结构
+**语法结构**
 
 ```sql
 
@@ -142,7 +160,7 @@ EXECUTE JAR WITH (
 
 ```
 
-### 样例代码:
+**样例代码**
 
 ```sql
 EXECUTE JAR WITH (
@@ -152,8 +170,11 @@ EXECUTE JAR WITH (
 'parallelism'='',
 );
 ```
+
 :::warning 注意
+
 1. 以上示例中, uri 参数使用了 rs 协议, 请参考 [资源管理](../../user_guide/register_center/resource) 中 rs 协议使用方式
-2. 以上示例中, uri 的值为 rs:/jar/flink/demo/SocketWindowWordCount.jar, 该值为资源中心中的资源路径, 请确保资源中心中存在该资源,请忽略资源中心 Root 节点(该节点为虚拟节点)
+2. 以上示例中, uri 的值为 rs:/jar/flink/demo/SocketWindowWordCount.jar, 该值为资源中心中的资源路径,
+   请确保资源中心中存在该资源,请忽略资源中心 Root 节点(该节点为虚拟节点)
 3. 目前仅支持 rs 与 file 协议头，后续会支持更多协议，请关注版本更新
-:::
+   :::
