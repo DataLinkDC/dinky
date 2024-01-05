@@ -24,6 +24,8 @@ import { l } from '@/utils/intl';
 import { ModalForm } from '@ant-design/pro-components';
 import { Button, Form } from 'antd';
 import React, { useEffect } from 'react';
+import {connect} from "@umijs/max";
+import {STUDIO_MODEL_ASYNC} from "@/pages/DataStudio/model";
 
 type ConfigurationModalProps = {
   visible: boolean;
@@ -31,8 +33,9 @@ type ConfigurationModalProps = {
   value: Partial<Cluster.Config>;
   onSubmit: (values: Partial<Cluster.Config>) => void;
 };
-const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
-  const { visible, onClose, onSubmit, value } = props;
+const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) => {
+
+  const { visible, onClose, onSubmit, value,dispatch } = props;
 
   /**
    * init form
@@ -54,6 +57,10 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
    * when modalVisible or values changed, set form values
    */
   useEffect(() => {
+    if (visible) {
+      dispatch({
+        type: STUDIO_MODEL_ASYNC.queryFlinkConfigOptions
+      })    }
     form.setFieldsValue(value);
   }, [visible, value, form]);
 
@@ -121,4 +128,4 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
   );
 };
 
-export default InstanceModal;
+export default connect()(ConfigurationModal);
