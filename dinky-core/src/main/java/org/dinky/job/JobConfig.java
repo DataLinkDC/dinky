@@ -225,6 +225,7 @@ public class JobConfig {
 
         gatewayConfig = GatewayConfig.build(config);
         gatewayConfig.setTaskId(getTaskId());
+        gatewayConfig.setType(GatewayType.get(getType()));
     }
 
     public void addGatewayConfig(Map<String, String> config) {

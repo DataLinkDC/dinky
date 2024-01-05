@@ -231,7 +231,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                     gatewayResult.getWebURL().replace("http://", ""),
                     gatewayResult.getId(),
                     clusterCfg.getName() + "_" + LocalDateTime.now(),
-                    clusterCfg.getName() + LocalDateTime.now(),
+                    gatewayConfig.getType().getLongValue(),
                     id,
                     null));
         }

@@ -11,14 +11,14 @@ title: 常规部署
 
 Dinky 采用 mysql 作为后端的存储库，mysql 支持 5.7+。这里假设你已经安装了 mysql 。首先需要创建 Dinky 的后端数据库，这里以配置文件中默认库创建。
 
-在 Dinky 根目录 sql 文件夹下分别放置了 dinky-mysql.sql 、 upgrade/${version}_schema/mysql/ddl 和 dml。如果第一次部署，可以直接将 sql/dinky-mysql.sql 文件在 dinky 数据库下执行。（如果之前已经部署，那 upgrade 目录下 存放了各版本的升级 sql ，根据版本号按需执行即可）
+在 Dinky 根目录 sql 文件夹下分别放置了 dinky-mysql.sql 、 upgrade/${version}_schema/mysql/ddl 和 dml。如果第一次部署，可以直接将 sql/dinky-mysql.sql 文件在 dinky 数据库下执行。（如果之前已经部署，那 upgrade 目录下存放了各版本的升级 sql ，根据版本号按需执行即可）
 
 <Tabs groupId="operating-systems">
-<TabItem value="mysq5" label="mysql-5.x" default>
+<TabItem value="mysql5" label="mysql-5.x" default>
 
 ```sql
 #登录mysql
-mysql -uroot -proot@123
+mysql -uroot -p
 #创建数据库
 mysql>
 create database dinky;
@@ -36,7 +36,7 @@ mysql -h fdw1 -udinky -pdinky
 
 ```sql
 #登录mysql
-mysql -uroot -proot@123
+mysql -uroot -p
 #创建数据库
 mysql>
 CREATE DATABASE dinky;
@@ -59,8 +59,7 @@ flush privileges;
 ```sql
 #首先登录 mysql
 mysql -h fdw1  -udinky -pdinky
-mysql>
-use dinky;
+mysql> use dinky;
 mysql> source /opt/dinky/sql/dinky-mysql.sql
 ```
 
@@ -79,7 +78,7 @@ import TabItem from '@theme/TabItem';
 Dinky 不依赖任何外部的 Hadoop 或者 Flink 环境，可以单独部署在 flink、 hadoop 和 K8S 集群之外，完全解耦，支持同时连接多个不同的集群实例进行运维。
 
 ```shell
-tar -zxvf dinky-release-${version}.tar.gz
+tar -zxf dinky-release-${version}.tar.gz
 mv dinky-release-${version} dinky
 cd dinky
 ```
@@ -90,21 +89,44 @@ cd dinky
 
 ### 配置文件
 
-创建好数据库后，修改 Dinky 连接 mysql 的配置文件。
+创建好数据库后，修改 Dinky 配置文件，选择默认数据源为 mysql。
 
 ```shell
-#切换目录
 cd /opt/dinky/config/
 vim application.yml
+# 修改 Dinky 所使用的数据库类型为 mysql
+spring:
+  application:
+    name: Dinky
+  profiles:
+    # The h2 database is used by default. If you need to use other databases, please set the configuration active to: mysql, currently supports [mysql, pgsql, h2]
+    # If you use mysql database, please configure mysql database connection information in application-mysql.yml
+    # If you use pgsql database, please configure pgsql database connection information in application-pgsql.yml
+    # If you use the h2 database, please configure the h2 database connection information in application-h2.yml,
+    # note: the h2 database is only for experience use, and the related data that has been created cannot be migrated, please use it with caution
+    active: ${DB_ACTIVE:mysql} #[h2,mysql,pgsql]
+    include: jmx
 ```
 
+修改 Dinky 的 mysql 的配置文件。
 
-### 加载依赖
+```shell
+vim application-mysql.yml
+# 修改 Dinky 的 mysql 链接配置
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_ADDR:127.0.0.1:3306}/${MYSQL_DATABASE:dinky}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:dinky}
+    password: ${MYSQL_PASSWORD:dinky}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+```
 
-Dinky 需要具备自身的 Flink 环境，该 Flink 环境的实现需要用户自己在 Dinky 根目录下 plugins/flink${FLINK_VERSION} 文件夹并上传相关的 Flink 依赖，如 flink-dist, flink-table 等，具体见下文。当然也可在启动文件中指定 FLINK_HOME，但不建议这样做。
+### 上传依赖
+
+Dinky 需要具备内置的 Flink 环境，该 Flink 环境的实现需要用户自己在 Dinky 根目录下 extends/flink${FLINK_VERSION} 文件夹上传相关的 Flink 依赖，如 flink-dist, flink-table 等，具体见下文。当然也可在启动文件中指定 FLINK_HOME，但不建议这样做。
 
 :::warning 注意事项
-Dinky 当前版本的 yarn 的 perjob 与 application 执行模式依赖 flink-shade-hadoop ，如果你的 Hadoop 版本为 2+ 或 3+，需要额外添加 flink-shade-hadoop-uber-3 包，请手动删除该包内部的 javax.servlet 等冲突内容。
+Dinky 当前版本的 yarn 的 per-job 与 application 执行模式依赖 flink-shade-hadoop ，如果你的 Hadoop 版本为 2+ 或 3+，需要额外添加 flink-shade-hadoop-uber-3 包，请手动删除该包内部的 javax.servlet 等冲突内容。
 当然如果你的 Hadoop 为 3+ 也可以自行编译对于版本的 dinky-client-hadoop.jar 以替代 uber 包，
 :::
 
@@ -114,7 +136,7 @@ Dinky 当前版本的 yarn 的 perjob 与 application 执行模式依赖 flink-s
 https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-3-uber?repo=cloudera-repos
 ```
 
-如果是 CDH 及 HDP 使用开源 flink-shade 对 Dinky 没有任何影响，其他用到的依赖取决于 CDH 或者 HDP 与开源版本的兼容性，需要自行根据兼容性添加依赖即可正常使用 Dinky 的所有功能。
+如果是 CDH 及 HDP 使用开源 flink-shade 对 Dinky 目前没有影响，其他用到的依赖取决于 CDH 或者 HDP 与开源版本的兼容性，需要自行根据兼容性添加依赖即可正常使用 Dinky 的所有功能。
 
 最终项目根目录如下，仅供参考：
 
@@ -123,64 +145,83 @@ https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-3-uber?r
 ├── config -- 配置文件
 │   ├── jmx
 │   │   └── jmx_exporter_config.yaml -- JMX 监控集成
+│   ├── application.yml -- 主要程序运行配置文件
+│   ├── application-h2.yml -- h2 配置文件
+│   ├── application-jmx.yml -- jmx 配置文件
+│   ├── application-mysql.yml -- mysql 配置文件
+│   ├── application-pgsql.yml -- pgsql 配置文件
 │   ├── DinkyFlinkDockerfile -- k8s 集群配置自动构建镜像的Dockerfile
-│   └── log4j2.xml -- 日志文件
-│   └── application.yml -- 主要程序运行配置文件
-├── jar
-│   ├── Dockerfile
-│   ├── dlink-app-1.13-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.13.x application
-│   ├── dlink-app-1.14-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.14.x application
-│   ├── dlink-app-1.15-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.15.x application
-│   └── dlink-app-1.16-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.16.x application
-├── lib
-│   ├── dlink-admin-${VERSION}.jar --主程序包
-│   ├── dlink-alert-base-${VERSION}.jar
-│   ├── dlink-alert-dingtalk-${VERSION}.jar
-│   ├── dlink-alert-email-${VERSION}.jar
-│   ├── dlink-alert-feishu-${VERSION}.jar
-│   ├── dlink-alert-wechat-${VERSION}.jar
-│   ├── dlink-client-base-${VERSION}.jar
-│   ├── dlink-common-${VERSION}.jar
-│   ├── dlink-core-${VERSION}.jar
-│   ├── dlink-daemon-${VERSION}.jar
-│   ├── dlink-executor-${VERSION}.jar
-│   ├── dlink-function-${VERSION}.jar
-│   ├── dlink-gateway-${VERSION}.jar
-│   ├── dlink-metadata-base-${VERSION}.jar
-│   ├── dlink-metadata-clickhouse-${VERSION}.jar
-│   ├── dlink-metadata-doris-${VERSION}.jar
-│   ├── dlink-metadata-hive-${VERSION}.jar
-│   ├── dlink-metadata-mysql-${VERSION}.jar
-│   ├── dlink-metadata-oracle-${VERSION}.jar
-│   ├── dlink-metadata-phoenix-${VERSION}.jar
-│   ├── dlink-metadata-postgresql-${VERSION}.jar
-│   ├── dlink-metadata-presto-${VERSION}.jar
-│   ├── dlink-metadata-sqlserver-${VERSION}.jar
-│   ├── dlink-metadata-starrocks-${VERSION}.jar
-│   ├── dlink-process-${VERSION}.jar
-│   ├── dlink-scheduler-${VERSION}.jar
-├── plugins
-│   ├── flink1.13  -- 适配 Flink1.13.x
-│   ├── dinky-connector-jdbc-1.13-${VERSION}.jar -- dlink 的 jdbc 连接器增强实现
-│   │   ├── dlink-catalog-mysql-1.13-${VERSION}.jar -- dlink 的 catalog 实现
-│   │   └── dlink-client-1.13-${VERSION}.jar
-│   ├── flink1.14  -- 适配 Flink1.14.x,默认
-│   ├── dinky-connector-jdbc-1.14-${VERSION}.jar -- dlink 的 jdbc 连接器增强实现
-│   │   ├── dlink-catalog-mysql-1.14-${VERSION}.jar -- dlink 的 catalog 实现
-│   │   └── dlink-client-1.14-${VERSION}.jar
+│   └── log4j2.xml -- 日志配置
+├── dinky-loader
+│   ├── ExpressionVariableClass -- 全局变量动态加载的表达式扫描配置文件
+│   └── FlinkConfClass -- 全局变量动态加载 Flink 配置的扫描配置文件
+├── extends
+│   ├── flink1.14  -- 适配 Flink1.14.x
+│   │   └── dinky
+│   │       ├── dinky-catalog-mysql-1.14-${VERSION}.jar -- dinky 的 catalog 实现
+│   │       ├── dinky-client-1.14-${VERSION}.jar
+│   │       └── dinky-connector-jdbc-1.14-${VERSION}.jar -- dinky 的 jdbc 连接器增强实现
 │   ├── flink1.15  -- 适配 Flink1.15.x
-│   │   ├── dlink-catalog-mysql-1.15-${VERSION}.jar -- dlink 的 catalog 实现
-│   │   └── dlink-client-1.15-${VERSION}.jar
-│   └── flink1.16  -- 适配 Flink1.15.x
-│       ├── dlink-catalog-mysql-1.16-${VERSION}.jar -- dlink 的 catalog 实现
-│       └── dlink-client-1.16-${VERSION}.jar
+│   │   └── dinky
+│   │       ├── dinky-catalog-mysql-1.15-${VERSION}.jar -- dinky 的 catalog 实现
+│   │       └── dinky-client-1.15-${VERSION}.jar
+│   ├── flink1.16  -- 适配 Flink1.16.x
+│   │   └── dinky
+│   │       ├── dinky-catalog-mysql-1.16-${VERSION}.jar -- dinky 的 catalog 实现
+│   │       └── dinky-client-1.16-${VERSION}.jar
+│   ├── flink1.17  -- 适配 Flink1.17.x
+│   │   └── dinky
+│   │       ├── dinky-catalog-mysql-1.17-${VERSION}.jar -- dinky 的 catalog 实现
+│   │       └── dinky-client-1.17-${VERSION}.jar
+│   └── flink1.18  -- 适配 Flink1.18.x
+│   │   └── dinky
+│   │       ├── dinky-catalog-mysql-1.18-${VERSION}.jar -- dinky 的 catalog 实现
+│   │       └── dinky-client-1.18-${VERSION}.jar
+├── jar
+│   ├── dinky-app-1.14-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.14.x application
+│   ├── dinky-app-1.15-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.15.x application
+│   ├── dinky-app-1.16-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.16.x application
+│   ├── dinky-app-1.17-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.17.x application
+│   └── dinky-app-1.18-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.18.x application
+├── lib
+│   └── ... -- Dinky 的内部依赖
 └── sql
     ├── dinky-mysql.sql -- Mysql 首次初始化脚本
+    ├── dinky-pg.sql -- PGSql 首次初始化脚本
     └── upgrade  -- 各个版本的升级 SQL
 ```
-
+对应 `Flink` 版本的依赖，放在Dinky 安装目录下 extends/flink${FLINK_VERSION} 下，例如：
+```shell
+clickhouse-jdbc-0.2.6.jar
+flink-cep-1.16.1.jar
+flink-connector-files-1.16.1.jar
+flink-connector-jdbc-1.16.1.jar
+flink-csv-1.16.1.jar
+flink-dist-1.16.1.jar
+flink-doris-connector-1.16-1.3.0.jar
+flink-json-1.16.1.jar
+flink-scala_2.12-1.16.1.jar
+flink-shaded-hadoop-2-uber-2.7.5-8.0.jar
+flink-shaded-zookeeper-3.5.9.jar
+flink-sql-connector-hbase-1.4-1.16.1.jar
+flink-sql-connector-kafka-1.16.1.jar
+flink-sql-connector-mysql-cdc-2.4.1.jar
+flink-sql-connector-oracle-cdc-2.4.1.jar
+flink-table-api-java-uber-1.16.1.jar
+flink-table-planner_2.12-1.16.1.jar
+flink-table-runtime-1.16.1.jar
+log4j-1.2-api-2.17.1.jar
+log4j-api-2.17.1.jar
+log4j-core-2.17.1.jar
+log4j-slf4j-impl-2.17.1.jar
+mssql-jdbc-8.2.2.jre8.jar
+mysql-connector-java-8.0.13.jar
+orai18n-19.7.0.0.jar
+```
 :::tip
-推荐公共 jar 包放在 plugins 目录下，Flink 版本化的依赖放在 plugins/flink${FLINK_VERSION}
+1.0.0 之前的版本 Flink 相关依赖是放在 plugins 目录下，1.0.0 及之后是放在 extends 目录下。（目前做了 plugins 目录的兼容，即放在 plugins 下也会生效）
+
+推荐公共 jar 包放在 extends 目录下，Flink 版本的依赖放在 extends/flink${FLINK_VERSION} 下
 :::
 
 ### 启动 Dinky
@@ -197,114 +238,16 @@ sh auto.sh status
 ```
 
 #### 版本适配
-启动指令的第二个参数则是版本选择，支持 【1.13, 1.14, 1.15, 1.16】,参考指令如下：
+启动指令的第二个参数则是版本选择，支持 【1.14, 1.15, 1.16, 1.17, 1.18】,参考指令如下：
 ```shell
 #启动
-sh auto.sh start 1.14
+sh auto.sh start 1.16
 ```
-对应 `Flink` 版本的依赖，放在Dinky 安装目录下 plugins/flink${FLINK_VERSION}下
-
-
-### Flink 任务监控（可选）
-
-参考[flink 任务运行监控](../extend/function_expansion/flinktaskmonitor)
-
-
 
 :::tip 说明
 服务启动后，默认端口 8888，[http://127.0.0.1:8888](http://127.0.0.1:8888) , 默认用户名/密码: admin/admin
 
 Dinky 部署需要 MySQL5.7 以上版本
 
-Dinky 不依赖于 Nginx， Nginx 可选
 :::
-
----
-
-## 前后端分离部署
-### 部署 `Nginx`（可选）
-
-在 linux，首先要配置好相应的 yum 库，因为在安装过程中没有配置，这里可以大概讲述下步骤，可以选择连接网络或者本地 yum 源都可以，这里选择连接网络方式配置。
-
-```shell
-#下载yum源
-wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-#清除缓存
-yum makecache
-#接下来安装nginx
-yum -y install epel-release
-yum -y install nginx
-sudo systemctl enable nginx
-sudo service nginx start
-sudo service nginx reload
-nginx -v
-#最后查看进程看是否正常启动
-ps -ef|grep nginx
-```
-
-说明: Dinky-0.5.0 以上版本部署 nginx 为可选
-
-### Nginx 中配置 Dinky（可选）
-
-如果是 yum 源安装的 nginx，配置文件在 etc 下，如果是源码包安装，请自行找到配置文件
-
-```shell
-#切换到nginx配置目录
-cd /etc/nginx/
-```
-
-vim /etc/nginx/nginx.conf 打开配置文件，修改 server 中的内容，其内容按照如下配置即可。
-
-```
-  server {
-        listen       9999;
-        #listen       [::]:80;
-        server_name  bigdata3;
-        root         /usr/share/nginx/html;
-                gzip on;
-     		gzip_min_length 1k;
-		gzip_comp_level 9;
-		gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
-		gzip_vary on;
-		gzip_disable "MSIE [1-6]\.";
-
-        # Load configuration files for the default server block.
-        include /etc/nginx/default.d/*.conf;
-
-        location / {
-            root   html;
-            index  index.html index.htm;
-			try_files $uri $uri/ /index.html;
-        }
-        error_page 404 /404.html;
-        location = /404.html {
-        }
-
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-        }
-
-        location ^~ /api {
-            proxy_pass http://192.168.0.0:8888;
-            proxy_set_header   X-Forwarded-Proto $scheme;
-            proxy_set_header   X-Real-IP         $remote_addr;
-        }
-    }
-```
-
-修改内容:
-
-- listen 监听端口；
-- 存放html路径；
-- location / 这里可以指定为绝对路径
-
-配置完成后，保存退出。并重启 nginx 并重新加载生效
-
-```shell
-$systemctl restart nginx.service
-$systemctl reload nginx.service
-#查看nginx是否配置成功
-nginx -t
-$nginx -s reload
-```
 

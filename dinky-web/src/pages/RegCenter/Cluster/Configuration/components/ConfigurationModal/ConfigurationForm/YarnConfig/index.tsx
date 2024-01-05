@@ -54,7 +54,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
           </ProFormGroup>
           <Divider>{l('rc.cc.hadoop.defineConfig')}</Divider>
           <ProFormList
-            name={['config', 'hadoopConfigList']}
+            name={['config', 'clusterConfig', 'hadoopConfigList']}
             copyIconProps={false}
             deleteIconProps={{
               tooltipText: l('rc.cc.deleteConfig')
@@ -104,7 +104,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
 
           <Divider>{l('rc.cc.flink.defineConfig')}</Divider>
           <ProFormList
-            name={['config', 'flinkConfigList']}
+            name={['config', 'flinkConfig', 'flinkConfigList']}
             copyIconProps={false}
             deleteIconProps={{
               tooltipText: l('rc.cc.deleteConfig')
