@@ -1,5 +1,5 @@
 ---
-sidebar_position: 18
+sidebar_position: 999
 id: thanks
 title: 致谢
 ---

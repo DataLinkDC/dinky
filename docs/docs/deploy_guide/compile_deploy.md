@@ -61,7 +61,7 @@ Clone 完成后, 等待 IDEA 自动下载依赖(前提 IDEA 已经正确配置�
 :::danger 注意
 1. 请严格按照上述 Profile 进行编译打包，否则可能会出现编译失败的情况。如出现编译失败，请检查环境是否正确，Profile 是否正确。请务必仔细核对。
 2. 如果出现编译失败，请查看 IDEA 控制台输出的错误信息，根据错误信息自行进行排查。如果无法解决，请百度/谷歌/Stackoverflow 解决。最后如果还是无法解决，请提交 [Issue](https://github.com/DataLinkDC/dinky/issues/new/choose)
-3. 编译完成后，请查看编译后的目录，如果编译成功，会在 `dinky/target` 目录下生成对应的版本的 jar 包。
+3. 编译完成后，请查看编译后的目录，如果编译成功，会在 `dinky/build` 目录下生成对应的版本的 jar 包。
 :::
 
 #### 编译结果
