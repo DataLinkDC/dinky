@@ -91,9 +91,9 @@ Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览
 |  否   | 自动停止 |                 默认禁用，开启自动停止将在捕获最大行记录数后自动停止                  |
 
 提交成功后会切换到`结果选项卡`，点击 `获取最新数据` ，即可查看 Select 语句的执行结果。
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-preview-result.png)
 
-:::tip 说明
-### FlinkSQL 预览结果的必要条件
+:::tip FlinkSQL 预览结果的必要条件
 
 1.执行模式必须是 Local、Standalone、Yarn Session、Kubernetes Session 其中的一种；
 
@@ -106,11 +106,6 @@ Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览
 5.Dinky 重启后，之前的预览结果将失效
 :::
 
-![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-preview-result.png)
-:::tip 说明
-预览功能只支持Flink Sql 作业的select语句查询结果(目前不支持Application与Prejob预览功能)
-，如果您是正常的带有insert的FlinkSql作业，请点击`执行按钮`
-:::
 
 ## 工具栏使用
 
