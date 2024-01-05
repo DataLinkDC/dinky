@@ -1,6 +1,6 @@
 ---
-sidebar_position: 1
-position: 1
+sidebar_position: 100
+position: 100
 id: studio_overview
 title: 数据开发功能简介
 ---
