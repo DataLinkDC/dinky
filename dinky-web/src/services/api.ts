@@ -66,11 +66,14 @@ export async function removeById(url: string, params: any) {
   });
 }
 
-export async function getData(url: string, params?: any) {
+export async function getData(url: string, params?: any, headers?: any) {
   return request(url, {
     method: METHOD_CONSTANTS.GET,
     params: {
       ...params
+    },
+    headers:{
+      ...headers
     }
   });
 }

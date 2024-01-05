@@ -105,7 +105,7 @@ const TaskManagerLogsTab = (props: JobProps) => {
   };
 
   return (
-    <ProCard bodyStyle={{ height: parent.innerHeight - 200, overflow: 'auto' }}>
+    <ProCard bodyStyle={{ height: 1000 - 200, overflow: 'auto' }}>
       {renderLogTab()}
     </ProCard>
   );

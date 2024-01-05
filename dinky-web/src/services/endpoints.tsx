@@ -27,7 +27,7 @@ export enum API_CONSTANTS {
   // user login
   LOGIN = '/api/login',
   // current user info
-  CURRENT_USER = '/api/current',
+  CURRENT_USER = 'http://localhost:35000/uniplore-app-uaa/auth/get/user',
   // logout
   LOGOUT = '/api/outLogin',
   // choose tenant

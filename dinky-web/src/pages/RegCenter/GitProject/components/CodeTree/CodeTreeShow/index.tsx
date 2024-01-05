@@ -87,7 +87,7 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
    */
   return (
     <>
-      <ProCard size={'small'} bodyStyle={{ height: parent.innerHeight - 320, overflow: 'auto' }}>
+      <ProCard size={'small'} bodyStyle={{ height: 1000 - 320, overflow: 'auto' }}>
         <SplitPane
           split={'vertical'}
           defaultSizes={[100, 500]}
@@ -106,7 +106,7 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
               hoverable
               bordered
               size={'small'}
-              bodyStyle={{ height: parent.innerHeight, overflow: 'auto' }}
+              bodyStyle={{ height: 1000, overflow: 'auto' }}
               colSpan={'20%'}
             >
               {/* tree */}
@@ -130,7 +130,7 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
               hoverable
               bordered
               size={'small'}
-              bodyStyle={{ height: parent.innerHeight }}
+              bodyStyle={{ height: 1000 }}
             >
               <CodeContent code={codeValue} current={currentGitProjectTreeNode} />
             </ProCard>

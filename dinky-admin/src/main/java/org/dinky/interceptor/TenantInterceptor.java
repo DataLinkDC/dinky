@@ -62,22 +62,7 @@ public class TenantInterceptor implements AsyncHandlerInterceptor {
                         }
                         break;
                     case "tenantId":
-                        UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
-                        if (Asserts.isNull(userInfo)) {
-                            StpUtil.logout(StpUtil.getLoginIdAsInt());
-                            return false;
-                        }
-
-                        int finalTenantId = Integer.parseInt(cookie.getValue());
-                        List<Tenant> tenants =
-                                Opt.ofNullable(userInfo.getTenantList()).orElse(new ArrayList<>()).stream()
-                                        .filter(t -> t.getId() == finalTenantId)
-                                        .collect(Collectors.toList());
-                        if (CollectionUtils.isEmpty(tenants)) {
-                            StpUtil.logout(StpUtil.getLoginIdAsInt());
-                            return false;
-                        }
-
+                        int finalTenantId = 1000;
                         TenantContextHolder.set(finalTenantId);
                         break;
                 }

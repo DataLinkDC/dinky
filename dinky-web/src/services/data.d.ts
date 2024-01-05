@@ -30,11 +30,11 @@ declare namespace API {
 
   type CurrentUser = {
     user: UserBaseInfo.User;
-    roleList: UserBaseInfo.Role[];
-    tenantList: UserBaseInfo.Tenant[];
-    currentTenant?: UserBaseInfo.Tenant;
-    menuList: SysMenu[];
-    tokenInfo: SaTokenInfo;
+    // roleList: UserBaseInfo.Role[];
+    // tenantList: UserBaseInfo.Tenant[];
+    // currentTenant?: UserBaseInfo.Tenant;
+    // menuList: SysMenu[];
+    // tokenInfo: SaTokenInfo;
   };
 
   type PageParams = {

@@ -69,7 +69,7 @@ export const CodeContent: React.FC<CodeContentProps> = (props) => {
     } else {
       return (
         <CodeShow
-          {...{ ...CodeEditProps, height: parent.innerHeight - 320 }}
+          {...{ ...CodeEditProps, height: 1000 - 320 }}
           language={getLanguage()}
           showFloatButton
           code={code}

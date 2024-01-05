@@ -235,7 +235,7 @@ const ResourceOverView: React.FC = () => {
    */
   return (
     <>
-      <ProCard ghost size={'small'} bodyStyle={{ height: parent.innerHeight - 80 }}>
+      <ProCard ghost size={'small'} bodyStyle={{ height: 1000 - 80 }}>
         <SplitPane
           split={'vertical'}
           defaultSizes={[150, 500]}
@@ -252,7 +252,7 @@ const ResourceOverView: React.FC = () => {
             <ProCard
               hoverable
               boxShadow
-              bodyStyle={{ height: parent.innerHeight - 80 }}
+              bodyStyle={{ height: 1000 - 80 }}
               colSpan={'18%'}
             >
               <FileTree
@@ -280,7 +280,7 @@ const ResourceOverView: React.FC = () => {
             size={100}
             split={'horizontal'}
           >
-            <ProCard hoverable bodyStyle={{ height: parent.innerHeight }}>
+            <ProCard hoverable bodyStyle={{ height: 1000 }}>
               <FileShow
                 onChange={handleContentChange}
                 code={resourceState.content}

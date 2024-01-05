@@ -1,0 +1,218 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+import { l } from '@/utils/intl';
+import { DefaultOptionType } from 'antd/es/select';
+
+export const WEEK_CONTEXT_MENU: DefaultOptionType[] = [
+  {
+    title:'周一',
+    label:'周一',
+    value:'1'
+  },
+  {
+    title:'周二',
+    label:'周二',
+    value:'2'
+  },
+  {
+    title:'周三',
+    label:'周三',
+    value:'3'
+  },
+  {
+    title:'周四',
+    label:'周四',
+    value:'4'
+  },
+  {
+    title:'周五',
+    label:'周五',
+    value:'5'
+  },
+  {
+    title:'周六',
+    label:'周六',
+    value:'6'
+  },
+  {
+    title:'周天',
+    label:'周天',
+    value:'7'
+  },
+];
+
+export const MONTH_CONTEXT_MENU: DefaultOptionType[] = [
+  {
+    title:'1号',
+    label:'1号',
+    value:'1'
+  },
+  {
+    title:'2号',
+    label:'2号',
+    value:'2'
+  },
+  {
+    title:'3号',
+    label:'3号',
+    value:'3'
+  },
+  {
+    title:'4号',
+    label:'4号',
+    value:'4'
+  },
+  {
+    title:'5号',
+    label:'5号',
+    value:'5'
+  },
+  {
+    title:'6号',
+    label:'6号',
+    value:'6'
+  },
+  {
+    title:'7号',
+    label:'7号',
+    value:'7'
+  },
+  {
+    title:'8号',
+    label:'8号',
+    value:'8'
+  },
+  {
+    title:'9号',
+    label:'9号',
+    value:'9'
+  },
+  {
+    title:'10号',
+    label:'10号',
+    value:'10'
+  },
+  {
+    title:'11号',
+    label:'11号',
+    value:'11'
+  },
+  {
+    title:'12号',
+    label:'12号',
+    value:'12'
+  },
+  {
+    title:'13号',
+    label:'13号',
+    value:'13'
+  },
+  {
+    title:'14号',
+    label:'14号',
+    value:'14'
+  },
+  {
+    title:'15号',
+    label:'15号',
+    value:'15'
+  },
+  {
+    title:'16号',
+    label:'16号',
+    value:'16'
+  },
+  {
+    title:'17号',
+    label:'17号',
+    value:'17'
+  },
+  {
+    title:'18号',
+    label:'18号',
+    value:'18'
+  },
+  {
+    title:'19号',
+    label:'19号',
+    value:'19'
+  },
+  {
+    title:'20号',
+    label:'20号',
+    value:'20'
+  },
+  {
+    title:'21号',
+    label:'21号',
+    value:'21'
+  },
+  {
+    title:'22号',
+    label:'22号',
+    value:'22'
+  },
+  {
+    title:'23号',
+    label:'23号',
+    value:'23'
+  },
+  {
+    title:'24号',
+    label:'24号',
+    value:'24'
+  },
+  {
+    title:'25号',
+    label:'25号',
+    value:'25'
+  },
+  {
+    title:'26号',
+    label:'26号',
+    value:'26'
+  },
+  {
+    title:'27号',
+    label:'27号',
+    value:'27'
+  },
+  {
+    title:'28号',
+    label:'28号',
+    value:'28'
+  },
+  {
+    title:'29号',
+    label:'29号',
+    value:'29'
+  },
+  {
+    title:'30号',
+    label:'30号',
+    value:'30'
+  },
+  {
+    title:'31号',
+    label:'31号',
+    value:'31'
+  }
+];
+

@@ -37,15 +37,15 @@ declare namespace UserBaseInfo {
   export type User = ExcludeNameAndEnableColumns & {
     username: string;
     nickname?: string;
-    password?: string;
+    // password?: string;
     avatar?: string;
-    worknum?: string;
-    userType: number;
-    mobile?: string;
-    enabled: boolean;
-    isDelete: boolean;
-    superAdminFlag: boolean;
-    tenantAdminFlag?: boolean;
+    // worknum?: string;
+    // userType: number;
+    // mobile?: string;
+    // enabled: boolean;
+    // isDelete: boolean;
+    // superAdminFlag: boolean;
+    // tenantAdminFlag?: boolean;
   };
 
   export type ChangePasswordParams = {

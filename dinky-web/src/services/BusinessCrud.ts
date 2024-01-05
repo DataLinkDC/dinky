@@ -323,10 +323,10 @@ export const getDataByIdReturnResult = async (url: string, id: any) => {
   }
 };
 
-export const getDataByParamsReturnResult = async (url: string, params?: any) => {
+export const getDataByParamsReturnResult = async (url: string, params?: any, headers?: any) => {
   try {
-    const result = await getData(url, params);
-    if (result.code === RESPONSE_CODE.SUCCESS) {
+    const result = await getData(url, params,headers);
+    if (result.code === RESPONSE_CODE.SUCCESS || result.code === 200) {
       return result;
     }
     return undefined;

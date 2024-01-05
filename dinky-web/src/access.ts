@@ -25,18 +25,16 @@ import { API } from './services/data';
 export default function access(initialState: { currentUser?: API.CurrentUser } | undefined) {
   const { currentUser } = initialState ?? {};
   return {
-    canAdmin: currentUser && currentUser.user.superAdminFlag,
+    canAdmin: currentUser,
     canAuth({ path, ...route }: { path: string }) {
-      if (currentUser && currentUser.user.superAdminFlag) {
+      if (currentUser) {
         return true;
       }
 
       //TODO根据path判断应用、目录、菜单、按钮，判断返回true,false
       //TODOpath可以是window.location.href、key
 
-      return currentUser?.menuList?.some?.(
-        (item) => item?.path?.startsWith(path) || item?.path?.endsWith(path)
-      );
+      return {};
     }
   };
 }

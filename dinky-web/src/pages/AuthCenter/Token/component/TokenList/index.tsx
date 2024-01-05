@@ -149,12 +149,10 @@ const TokenList = (props: any) => {
         actionRef={actionRef}
         loading={tokenState.loading}
         toolBarRender={() => [
-          <Authorized key={`CreateToken_auth`} path='/auth/token/add'>
             <CreateBtn
               key={'CreateToken'}
               onClick={() => setTokenState((prevState) => ({ ...prevState, addedOpen: true }))}
             />
-          </Authorized>
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.TOKEN, {

@@ -19,6 +19,14 @@
 
 package org.dinky.service.impl;
 
+import cn.uniplore.service.operation.monitor.dto.FeignOmJobAddDTO;
+import cn.uniplore.service.operation.monitor.dto.FeignOmJobUpdateDTO;
+import cn.uniplore.service.operation.monitor.enums.BatchJobStatusEnum;
+import cn.uniplore.service.operation.monitor.enums.BusinessTypeEnum;
+import cn.uniplore.service.operation.monitor.enums.JobTypeEnum;
+import cn.uniplore.service.operation.monitor.feign.FeignOmJobProvider;
+import cn.uniplore.service.operation.monitor.vo.FeignOmJobResultVO;
+import com.alibaba.fastjson.JSONObject;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.context.TenantContextHolder;
@@ -96,16 +104,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
@@ -488,10 +493,66 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         log.info("Init task tenan finished..");
     }
 
+    @Autowired
+    private final FeignOmJobProvider feignOmJobProvider;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws SqlExplainExcepition {
+    public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws ParseException {
         TaskDTO task = getTaskInfoById(taskId);
+        JSONObject scheduleConfig = JSONObject.parseObject(task.getScheduleConfig());
+        String periodTime = scheduleConfig.getString("periodTime");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date parse = sdf.parse(periodTime);
+        scheduleConfig.put("periodTime",parse.getTime());
+        int josStatus;
+        if(lifeCycle.equalsValue(0)){
+            josStatus = 3;
+        }else if(lifeCycle.equalsValue(1)){
+            josStatus = 2;
+        }else{
+            josStatus = 1;
+        }
+        if(task.getDatabaseId() != null){
+            //新增任务
+            FeignOmJobAddDTO feignOmJobAddDTO = new FeignOmJobAddDTO();
+            feignOmJobAddDTO.setJobName(task.getName());
+            feignOmJobAddDTO.setJobType(task.isBatchModel()?0:1);
+            feignOmJobAddDTO.setBusinessType(1);
+            feignOmJobAddDTO.setScheduleConfig(scheduleConfig);
+            feignOmJobAddDTO.setJobStatus(josStatus);
+            feignOmJobAddDTO.setDescription(task.getNote());
+            feignOmJobAddDTO.setVersion(1f);
+            cn.uniplore.core.common.web.Result<FeignOmJobResultVO> feignOmJobResultVOResult = feignOmJobProvider.addOmJob(feignOmJobAddDTO);
+            System.out.println(feignOmJobResultVOResult.getData().getJobId());
+            Long dataJobId = feignOmJobResultVOResult.getData().getJobId();
+            Task task2 = new Task();
+            task2.setId(task.getId());
+            task2.setDataJobId(dataJobId);
+            this.updateById(task2);
+        }else{
+            //更新任务
+            FeignOmJobUpdateDTO omJobUpdateDTO = new FeignOmJobUpdateDTO();
+            omJobUpdateDTO.setId(task.getDataJobId());
+            omJobUpdateDTO.setJobName(task.getName());
+            omJobUpdateDTO.setJobType(JobTypeEnum.BATCH.getValue());
+            omJobUpdateDTO.setBusinessType(1);
+            omJobUpdateDTO.setScheduleConfig(scheduleConfig);
+            omJobUpdateDTO.setJobStatus(josStatus);
+            omJobUpdateDTO.setDescription(task.getNote());
+            omJobUpdateDTO.setVersion(task.getVersionId().floatValue());
+            feignOmJobProvider.updateOmJob(task.getDataJobId(),omJobUpdateDTO);
+        }
+        if(lifeCycle == JobLifeCycle.PUBLISH && task.isBatchModel()){
+            //上线离线任务
+            feignOmJobProvider.onlineBatchJob(task.getDataJobId());
+        }else if(lifeCycle == JobLifeCycle.DEVELOP && task.isBatchModel()){
+            //下线离线任务
+            List<Long> dataJobIds = new ArrayList<>();
+            dataJobIds.add(task.getDataJobId());
+            feignOmJobProvider.refreshOnOfflineBatchJob(dataJobIds);
+        }
+        //feignOmJobProvider.onlineStreamJob()
         task.setStep(lifeCycle.getValue());
         if (lifeCycle == JobLifeCycle.PUBLISH) {
             //            List<SqlExplainResult> sqlExplainResults = explainTask(task);
@@ -521,6 +582,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
         }
         return saved;
+        //return true;
     }
 
     @Override

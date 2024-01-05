@@ -15,9 +15,13 @@ spring:
     # If you use pgsql database, please configure pgsql database connection information in application-pgsql.yml
     # If you use the h2 database, please configure the h2 database connection information in application-h2.yml,
     # note: the h2 database is only for experience use, and the related data that has been created cannot be migrated, please use it with caution
-    active: ${DB_ACTIVE:h2} #[h2,mysql,pgsql]
+    active: mysql
     include: jmx
 
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
   # mvc config
   mvc:
     pathmatch:
@@ -36,6 +40,7 @@ spring:
   # circular references allowed
   main:
     allow-circular-references: true
+    allow-bean-definition-overriding: true
 
   # file upload config of servlet , the default is 500MB
   servlet:
@@ -96,8 +101,8 @@ mybatis-plus:
     banner: false
   configuration:
     ##### mybatis-plus prints complete sql (only for development environment)
-    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
   type-handlers-package: org.dinky.data.typehandler
 #################################################################################################################
 ################################################# SMS Config ####################################################

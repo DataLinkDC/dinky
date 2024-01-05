@@ -74,6 +74,8 @@ public class Task extends SuperEntity<Task> {
     @ApiModelProperty(value = "Parallelism", dataType = "Integer", example = "4", notes = "Parallelism for the task")
     private Integer parallelism;
 
+    private String scheduleConfig;
+
     @ApiModelProperty(
             value = "Fragment",
             dataType = "Boolean",
@@ -167,6 +169,13 @@ public class Task extends SuperEntity<Task> {
             example = "1001",
             notes = "ID of the user who created the task")
     private Integer operator;
+
+    @ApiModelProperty(
+            value = "dataJobId",
+            dataType = "Long",
+            example = "1001",
+            notes = "数据中台任务中心id")
+    private Long dataJobId;
 
     public Task(Integer id, Integer jobInstanceId) {
         this.jobInstanceId = jobInstanceId;

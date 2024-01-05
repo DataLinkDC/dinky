@@ -48,7 +48,7 @@ const JobLineage: React.FC<connect> = (props) => {
 
   return (
     <>
-      <Card hoverable bodyStyle={{ height: '100%' }} style={{ height: parent.innerHeight - 180 }}>
+      <Card hoverable bodyStyle={{ height: '100%' }} style={{ height: 1000 - 180 }}>
         {lineageData && (lineageData.tables.length !== 0 || lineageData.relations.length !== 0) ? (
           <LineageGraph lineageData={lineageData} refreshCallBack={queryLineageData} />
         ) : (

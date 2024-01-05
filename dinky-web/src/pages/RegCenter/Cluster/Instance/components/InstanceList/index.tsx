@@ -21,7 +21,6 @@ import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import useHookRequest from '@/hooks/useHookRequest';
 import { CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/Instance/components/contants';
 import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
@@ -160,16 +159,12 @@ export default () => {
   const renderActionButton = (record: Cluster.Instance) => (
     <Space wrap direction={'vertical'} align={'center'}>
       <br />
-      <Authorized key={`${record.id}_edit_auth`} path='/registration/cluster/instance/edit'>
         <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />
-      </Authorized>
-      <Authorized key={`${record.id}_delete_auth`} path='/registration/cluster/instance/delete'>
         <PopconfirmDeleteBtn
           key={`${record.id}_delete`}
           onClick={() => handleDelete(record.id)}
           description={l('rc.ci.deleteConfirm')}
         />
-      </Authorized>
     </Space>
   );
 
@@ -202,7 +197,6 @@ export default () => {
               <EnableSwitchBtn
                 record={item}
                 onChange={() => handleChangeEnable(item)}
-                disabled={!HasAuthority('/registration/cluster/instance/edit')}
               />
               <Tag color='cyan'>
                 {CLUSTER_INSTANCE_TYPE().find((record) => item.type === record.value)?.label}
@@ -251,13 +245,10 @@ export default () => {
       unCheckedChildren={l('rc.ci.mr')}
       onChange={(v) => setIsAutoCreate(v)}
     />,
-    <Authorized key={`_add_auth`} path='/registration/cluster/instance/add'>
       <CreateBtn
         key={`_add`}
         onClick={() => setClusterInstanceStatus((prevState) => ({ ...prevState, addedOpen: true }))}
-      />
-    </Authorized>,
-    <Authorized key={`_add_heartbeat`} path='/registration/cluster/instance/heartbeat'>
+      />,
       <Button
         key={`_add_heartbeat_btn`}
         type={'primary'}
@@ -266,7 +257,6 @@ export default () => {
       >
         {l('button.heartbeat')}
       </Button>
-    </Authorized>
   ];
 
   const renderListItem = (item: Cluster.Instance) => {

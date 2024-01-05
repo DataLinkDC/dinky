@@ -72,11 +72,11 @@ public class AppConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
         // 注册Sa-Token的路由拦截器
-        registry.addInterceptor(new SaInterceptor(handler -> StpUtil.checkLogin()))
-                .addPathPatterns("/api/**")
-                .excludePathPatterns(
-                        "/api/login", "/api/ldap/ldapEnableStatus",
-                        "/druid/**", "/openapi/**");
+//        registry.addInterceptor(new SaInterceptor(handler -> StpUtil.checkLogin()))
+//                .addPathPatterns("/api/**")
+//                .excludePathPatterns(
+//                        "/api/login", "/api/ldap/ldapEnableStatus",
+//                        "/druid/**", "/openapi/**");
 
         registry.addInterceptor(new TenantInterceptor())
                 .addPathPatterns("/api/**")

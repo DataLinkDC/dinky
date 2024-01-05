@@ -135,7 +135,18 @@ export type TaskDataBaseType = {
   // Only common sql has(只有普通sql才有)
   databaseId?: number;
   envId?: number;
+  scheduleConfig?:scheduleConfig;
 };
+
+export type scheduleConfig = {
+  schedulingType?:string;
+  effectiveDateEnd?:string;
+  effectiveDateStart?:string;
+  periodType?:string;
+  days?:[];
+  weeks?:[];
+  periodTime?:string;
+}
 
 export type TaskDataType = TaskDataBaseType & Record<string, any>;
 

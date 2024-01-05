@@ -24,7 +24,6 @@ import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { RunningBtn } from '@/components/CallBackButton/RunningBtn';
 import { ClusterConfigIcon } from '@/components/Icons/HomeIcon';
 import { DataAction } from '@/components/StyledComponents';
-import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import { imgStyle } from '@/pages/Home/constants';
 import ConfigurationModal from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal';
 import { CLUSTER_CONFIG_TYPE } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
@@ -187,20 +186,13 @@ export default () => {
    */
   const renderDataActionButton = (item: Cluster.Config) => {
     return [
-      <Authorized key={`${item.id}_edit`} path='/registration/cluster/config/edit'>
-        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
-      </Authorized>,
-      <Authorized key={`${item.id}_delete`} path='/registration/cluster/config/delete'>
-        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
-      </Authorized>,
-      <Authorized key={`${item.id}_delete`} path='/registration/cluster/config/deploy'>
+        <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />,
+        <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />,
         <RunningBtn
           key={`${item.id}_running`}
           title={l('rc.cc.start')}
           onClick={() => handleStartCluster(item)}
-        />
-      </Authorized>,
-      <Authorized key={`${item.id}_heart`} path='/registration/cluster/config/heartbeat'>
+        />,
         <Button
           className={'options-button'}
           key={`${item.id}_heart`}
@@ -208,7 +200,6 @@ export default () => {
           title={l('button.heartbeat')}
           icon={<HeartTwoTone twoToneColor={item.isAvailable ? '#1ac431' : '#e10d0d'} />}
         />
-      </Authorized>
     ];
   };
   /**
@@ -221,7 +212,6 @@ export default () => {
         <EnableSwitchBtn
           record={item}
           onChange={() => handleEnable(item)}
-          disabled={!HasAuthority('/registration/cluster/config/edit')}
         />
         <Tag color='cyan'>
           {CLUSTER_CONFIG_TYPE.find((record) => item.type === record.value)?.label}
@@ -261,12 +251,10 @@ export default () => {
       placeholder={l('rc.cc.search')}
       onSearch={(value) => queryClusterConfigList(value)}
     />,
-    <Authorized key='new' path='/registration/cluster/config/add'>
       <CreateBtn
         key={'configcreate'}
         onClick={() => setClusterConfigState((prevState) => ({ ...prevState, addedOpen: true }))}
       />
-    </Authorized>
   ];
 
   /**

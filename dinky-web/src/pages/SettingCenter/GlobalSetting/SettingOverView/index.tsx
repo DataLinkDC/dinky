@@ -208,7 +208,7 @@ const SettingOverView = () => {
             cardProps: {
               hoverable: true,
               bodyStyle: {
-                height: parent.innerHeight - 155
+                height: 1000 - 155
               },
               boxShadow: true
             },

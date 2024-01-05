@@ -219,12 +219,10 @@ const TenantProTable: React.FC = () => {
         headerTitle={l('tenant.TenantManager')}
         actionRef={actionRef}
         toolBarRender={() => [
-          <Authorized key={`CreateTenant_auth`} path='/auth/tenant/add'>
             <CreateBtn
               key={'tenantTable'}
               onClick={() => setTenantState((prevState) => ({ ...prevState, addedOpen: true }))}
             />
-          </Authorized>
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.TENANT, { ...params, sorter, filter })

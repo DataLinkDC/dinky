@@ -21,6 +21,7 @@ package org.dinky.data.dto;
 
 import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.model.Task;
+import org.dinky.data.model.ext.ScheduleConfig;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.job.JobConfig;
 
@@ -53,6 +54,13 @@ public class TaskDTO extends AbstractStatementDTO {
 
     @ApiModelProperty(value = "Dialect", dataType = "String", notes = "Dialect for the task")
     private String dialect;
+
+    @ApiModelProperty(
+            value = "dataJobId",
+            dataType = "Long",
+            example = "1001",
+            notes = "数据中台任务中心id")
+    private Long dataJobId;
 
     @ApiModelProperty(
             value = "Run Mode",
@@ -168,6 +176,8 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "TaskExtConfig",
             notes = "Extended configuration in JSON format for the task")
     private TaskExtConfig configJson;
+
+    private String scheduleConfig;
 
     @ApiModelProperty(value = "Path", dataType = "String", notes = "Path associated with the task")
     private String path;

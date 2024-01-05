@@ -32,6 +32,7 @@ import org.dinky.data.enums.ProcessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.exception.SqlExplainExcepition;
+import org.dinky.data.model.SchedulerParam;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -41,6 +42,7 @@ import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
 import org.dinky.service.TaskService;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -142,7 +144,7 @@ public class TaskController {
     @Log(title = "changeTaskLife", businessType = BusinessType.TRIGGER)
     @ApiOperation("changeTaskLife")
     public Result<Boolean> changeTaskLife(@RequestParam Integer taskId, @RequestParam Integer lifeCycle)
-            throws SqlExplainExcepition {
+            throws ParseException {
         if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.get(lifeCycle))) {
             return Result.succeed(lifeCycle == 2 ? Status.PUBLISH_SUCCESS : Status.OFFLINE_SUCCESS);
         } else {
