@@ -36,6 +36,8 @@ import org.dinky.utils.SqlUtil;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import cn.hutool.core.lang.Assert;
@@ -78,5 +80,18 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
         }
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));
         return executeJarOperation.explain(executor.getCustomTableEnvironment());
+    }
+
+    public List<String> getUris(String statement) {
+        String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
+        List<String> uriList = new ArrayList<>();
+        for (String sql : statements) {
+            String sqlStatement = executor.pretreatStatement(sql);
+            if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
+                uriList.add(ExecuteJarParseStrategy.getInfo(statement).getUri());
+                break;
+            }
+        }
+        return uriList;
     }
 }

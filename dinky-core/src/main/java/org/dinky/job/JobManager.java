@@ -81,6 +81,7 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -245,24 +246,34 @@ public class JobManager {
     public JobResult executeJarSql(String statement) throws Exception {
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
-        StreamGraph streamGraph =
-                JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement, getDinkyClassLoader());
+        JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
+        StreamGraph streamGraph = jobJarStreamGraphBuilder.getJarStreamGraph(statement, getDinkyClassLoader());
+        if (Asserts.isNotNullString(config.getSavePointPath())) {
+            streamGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
+                    config.getSavePointPath(),
+                    executor.getStreamExecutionEnvironment()
+                            .getConfiguration()
+                            .get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
+        }
         try {
             if (!useGateway) {
                 executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
             } else {
-                GatewayResult gatewayResult = null;
+                GatewayResult gatewayResult;
                 config.addGatewayConfig(executor.getSetConfig());
                 if (runMode.isApplicationMode()) {
                     gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar(getUdfPathContextHolder());
                 } else {
                     streamGraph.setJobName(config.getJobName());
                     JobGraph jobGraph = streamGraph.getJobGraph();
-                    if (Asserts.isNotNullString(config.getSavePointPath())) {
-                        jobGraph.setSavepointRestoreSettings(
-                                SavepointRestoreSettings.forPath(config.getSavePointPath(), true));
-                    }
-                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+                    GatewayConfig gatewayConfig = config.getGatewayConfig();
+                    List<String> uriList = jobJarStreamGraphBuilder.getUris(statement);
+                    String[] jarPaths = uriList.stream()
+                            .map(URLUtils::toFile)
+                            .map(File::getAbsolutePath)
+                            .toArray(String[]::new);
+                    gatewayConfig.setJarPaths(jarPaths);
+                    gatewayResult = Gateway.build(gatewayConfig).submitJobGraph(jobGraph);
                 }
                 job.setResult(InsertResult.success(gatewayResult.getId()));
                 job.setJobId(gatewayResult.getId());
