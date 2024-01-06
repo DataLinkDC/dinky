@@ -168,7 +168,7 @@ const CodeShow = (props: CodeShowFormProps) => {
 
   const handleWrap = () => {
     editorInstance?.current?.updateOptions({ wordWrap: 'on' });
-  }
+  };
 
   /**
    *  editorDidMount
@@ -205,7 +205,7 @@ const CodeShow = (props: CodeShowFormProps) => {
     handleUpScroll,
     handleDownScroll,
     handleDownloadLog,
-    handleWrap,
+    handleWrap
   };
 
   /**
