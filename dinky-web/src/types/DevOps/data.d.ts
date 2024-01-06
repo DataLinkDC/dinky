@@ -37,7 +37,7 @@ declare namespace Jobs {
     error: string;
     failedRestartCount: number;
     duration: number;
-    finishTime: Date;
+    finishTime: string;
   };
 
   export type JobConfig = {
