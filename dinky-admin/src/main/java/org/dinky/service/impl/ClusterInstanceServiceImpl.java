@@ -171,6 +171,12 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         if (hasRelationShip(id)) {
             throw new BusException(Status.CLUSTER_INSTANCE_EXIST_RELATIONSHIP);
         }
+        ClusterInstance clusterInstance = getById(id);
+        // if cluster instance is not null and cluster instance is health, can not delete, must kill cluster instance
+        // first
+        if (Asserts.isNotNull(clusterInstance) && checkHealth(clusterInstance)) {
+            throw new BusException(Status.CLUSTER_INSTANCE_HEALTH_NOT_DELETE);
+        }
         return removeById(id);
     }
 
