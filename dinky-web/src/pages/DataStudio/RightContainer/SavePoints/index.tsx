@@ -18,16 +18,16 @@
  */
 
 import { getCurrentData } from '@/pages/DataStudio/function';
-import {StateType, TaskDataType} from '@/pages/DataStudio/model';
+import { StateType, TaskDataType } from '@/pages/DataStudio/model';
 import { postAll } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { SavePoint } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
-import {ActionType, ProColumns, ProDescriptions, ProTable} from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import { Drawer } from 'antd';
 import { useRef, useState } from 'react';
 import { connect } from 'umi';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const url = '/api/savepoints';
 
@@ -65,9 +65,9 @@ const SavePoints = (props: any) => {
         actionRef={actionRef}
         rowKey='id'
         request={(params, sorter, filter) =>
-          postAll(API_CONSTANTS.GET_SAVEPOINT_LIST, {params, sorter, filter })
+          postAll(API_CONSTANTS.GET_SAVEPOINT_LIST, { params, sorter, filter })
         }
-        params={{taskId: current.id}}
+        params={{ taskId: current.id }}
         columns={columns as ProColumns<SavePoint>[]}
         search={false}
       />
