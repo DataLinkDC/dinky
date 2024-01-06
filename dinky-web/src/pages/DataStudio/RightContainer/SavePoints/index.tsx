@@ -29,8 +29,6 @@ import { useRef, useState } from 'react';
 import { connect } from 'umi';
 import {API_CONSTANTS} from "@/services/endpoints";
 
-const url = '/api/savepoints';
-
 const SavePoints = (props: any) => {
   const {
     tabs: { panes, activeKey }

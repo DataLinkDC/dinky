@@ -34,16 +34,6 @@ const SavepointTable = (props: JobProps) => {
 
   const actionRef = useRef<ActionType>();
 
-  const [savepointData, setSavepointData] = useState<SavePoint[]>([]);
-
-  useEffect(() => {
-    queryDataByParams<Partial<SavePoint[]>>(API_CONSTANTS.GET_SAVEPOINT_LIST_BY_TASK_ID, {
-      taskId: jobDetail?.instance?.taskId
-    }).then((res) => {
-      setSavepointData((res as SavePoint[]) ?? []);
-    });
-  }, [jobDetail]);
-
   const columns: ProColumns<SavePoint>[] = [
     {
       title: l('devops.jobinfo.ck.id'),
