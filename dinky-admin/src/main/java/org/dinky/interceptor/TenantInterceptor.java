@@ -35,6 +35,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 import cn.dev33.satoken.SaManager;
@@ -47,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TenantInterceptor implements AsyncHandlerInterceptor {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+    public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler)
             throws Exception {
         boolean isPass = false;
         Cookie[] cookies = request.getCookies();

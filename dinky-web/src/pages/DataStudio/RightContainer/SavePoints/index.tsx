@@ -18,15 +18,16 @@
  */
 
 import { getCurrentData } from '@/pages/DataStudio/function';
-import { StateType } from '@/pages/DataStudio/model';
+import {StateType, TaskDataType} from '@/pages/DataStudio/model';
 import { postAll } from '@/services/api';
 import { SavePoint } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
-import { ActionType, ProDescriptions, ProTable } from '@ant-design/pro-components';
+import {ActionType, ProColumns, ProDescriptions, ProTable} from '@ant-design/pro-components';
 import { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import { Drawer } from 'antd';
 import { useRef, useState } from 'react';
 import { connect } from 'umi';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const url = '/api/savepoints';
 
@@ -34,12 +35,12 @@ const SavePoints = (props: any) => {
   const {
     tabs: { panes, activeKey }
   } = props;
-  const current = getCurrentData(panes, activeKey);
+  const current = getCurrentData(panes, activeKey) as TaskDataType;
   const [row, setRow] = useState<SavePoint>();
   const actionRef = useRef<ActionType>();
   actionRef.current?.reloadAndRest?.();
 
-  const columns: ProDescriptionsItemProps<SavePoint>[] = [
+  const columns: ProDescriptionsItemProps<SavePoint>[] | ProColumns<SavePoint>[] = [
     {
       title: l('pages.task.savePointPath'),
       dataIndex: 'path',
@@ -52,7 +53,7 @@ const SavePoints = (props: any) => {
       valueType: 'dateTime',
       hideInForm: true,
       hideInSearch: true,
-      render: (dom, entity) => {
+      render: (dom: any, entity: SavePoint) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       }
     }
@@ -64,9 +65,10 @@ const SavePoints = (props: any) => {
         actionRef={actionRef}
         rowKey='id'
         request={(params, sorter, filter) =>
-          postAll(url, { taskId: current.key, ...params, sorter, filter })
+          postAll(API_CONSTANTS.GET_SAVEPOINT_LIST, {params, sorter, filter })
         }
-        columns={columns}
+        params={{taskId: current.id}}
+        columns={columns as ProColumns<SavePoint>[]}
         search={false}
       />
       <Drawer
@@ -87,7 +89,7 @@ const SavePoints = (props: any) => {
             params={{
               id: row?.name
             }}
-            columns={columns}
+            columns={columns as ProDescriptionsItemProps<SavePoint>[]}
           />
         )}
       </Drawer>

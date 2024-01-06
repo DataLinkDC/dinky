@@ -27,6 +27,7 @@ import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button } from 'antd';
 import { useEffect, useRef, useState } from 'react';
+import {postAll} from "@/services/api";
 
 const SavepointTable = (props: JobProps) => {
   const { jobDetail } = props;
@@ -96,7 +97,14 @@ const SavepointTable = (props: JobProps) => {
     <ProTable<SavePoint>
       columns={columns}
       style={{ width: '100%', height: 'calc(100vh - 450px)' }}
-      dataSource={savepointData}
+      request={(params, sorter, filter) =>
+        postAll(API_CONSTANTS.GET_SAVEPOINT_LIST, {
+          ...params,
+          sorter,
+          filter,
+        })
+      }
+      params={{ taskId: jobDetail?.instance?.taskId }}
       actionRef={actionRef}
       toolBarRender={false}
       rowKey='id'
