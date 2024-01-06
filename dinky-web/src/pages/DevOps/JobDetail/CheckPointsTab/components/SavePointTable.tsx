@@ -20,6 +20,7 @@
 import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
 import { recoveryCheckPoint } from '@/pages/DevOps/JobDetail/CheckPointsTab/components/functions';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import { postAll } from '@/services/api';
 import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { SavePoint } from '@/types/Studio/data';
@@ -27,7 +28,6 @@ import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button } from 'antd';
 import { useEffect, useRef, useState } from 'react';
-import {postAll} from "@/services/api";
 
 const SavepointTable = (props: JobProps) => {
   const { jobDetail } = props;
@@ -91,7 +91,7 @@ const SavepointTable = (props: JobProps) => {
         postAll(API_CONSTANTS.GET_SAVEPOINT_LIST, {
           ...params,
           sorter,
-          filter,
+          filter
         })
       }
       params={{ taskId: jobDetail?.instance?.taskId }}
