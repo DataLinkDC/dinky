@@ -20,6 +20,7 @@
 import { restartTask } from '@/pages/DataStudio/HeaderContainer/service';
 import { l } from '@/utils/intl';
 import { message, Modal } from 'antd';
+import {ErrorMessage, SuccessMessage} from "@/utils/messages";
 
 export const recoveryCheckPoint = (taskId: number, path: string) => {
   Modal.confirm({
@@ -30,11 +31,11 @@ export const recoveryCheckPoint = (taskId: number, path: string) => {
     okText: l('button.confirm'),
     cancelText: l('button.cancel'),
     onOk: async () => {
-      const result = await restartTask(taskId, path);
-      if (result.code == 0) {
-        message.success(l('devops.jobinfo.ck.recovery.success'));
+      const result = await restartTask(taskId, path, l('devops.jobinfo.ck.recovery'));
+      if (result && result.code == 0) {
+        SuccessMessage(l('devops.jobinfo.ck.recovery.success'));
       } else {
-        message.error(l('devops.jobinfo.ck.recovery.failed'));
+        ErrorMessage(l('devops.jobinfo.ck.recovery.failed'));
       }
     }
   });
