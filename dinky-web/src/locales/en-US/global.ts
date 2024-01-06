@@ -79,6 +79,7 @@ export default {
   'button.backTop': 'Back Top',
   'button.backBottom': 'Back Bottom',
   'button.downScroll': 'Down Scroll',
+  'button.wrap': 'Wrap',
   'button.upScroll': 'Up Scroll',
   'button.stopRefresh': 'Stop Auto Refresh',
   'button.startRefresh': 'Start Auto Refresh(5s/e)',
