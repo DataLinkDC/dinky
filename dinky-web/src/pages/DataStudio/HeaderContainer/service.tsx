@@ -40,7 +40,7 @@ export function cancelTask(title: string, id: number, withSavePoint: boolean = t
   return handleGetOption(API_CONSTANTS.CANCEL_JOB, title, { id, withSavePoint });
 }
 
-export function restartTask(id: number, savePointPath: string,title: string) {
+export function restartTask(id: number, savePointPath: string, title: string) {
   return handleGetOption(API_CONSTANTS.RESTART_TASK, title, { id, savePointPath });
 }
 export function savePointTask(title: string, taskId: number, savePointType: string) {

@@ -19,8 +19,8 @@
 
 import { restartTask } from '@/pages/DataStudio/HeaderContainer/service';
 import { l } from '@/utils/intl';
-import { message, Modal } from 'antd';
-import {ErrorMessage, SuccessMessage} from "@/utils/messages";
+import { ErrorMessage, SuccessMessage } from '@/utils/messages';
+import { Modal } from 'antd';
 
 export const recoveryCheckPoint = (taskId: number, path: string) => {
   Modal.confirm({
