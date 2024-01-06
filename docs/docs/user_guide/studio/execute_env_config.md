@@ -21,9 +21,7 @@ Dinky 内置的 Flink MiniCluster,资源受限,用于语法校验等操作。
 :::
 
 作业配置处的`执行模式`中，勾选`Local模式`，即可使用。
-
-![image-20231116091702701](http://pic.dinky.org.cn/dinky/docs/test/202311160917749.png)
-
+![local_mode](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/execute_env_config/local_mode.png)
 ### Standalone 执行模式
 
 :::tip 特点
@@ -39,12 +37,10 @@ Dinky 将通过 JobManager 的 Rest 端口提交 FlinkSQL 作业至外部的 Fli
 :::
 
 自行根据Flink官网教程部署一个Standalone模式，并将地址其添加到`注册中心-Flink实例`中。
-
-![image-20231116092905314](http://pic.dinky.org.cn/dinky/docs/test/202311160929362.png)
+![create_standalone_cluster](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/execute_env_config/create_standalone_cluster.png)
 
 相关依赖添加完成后，在作业配置处的`执行模式`中，勾选`standalone模式`，并且在下方的`flink集群`选项框中勾选上方添加的集群，即可使用。
-
-![image-20231116093642228](http://pic.dinky.org.cn/dinky/docs/test/202311160936280.png)
+![select_standalone](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/execute_env_config/select_standalone.png)
 
 ### Yarn Session 执行模式
 
@@ -62,11 +58,10 @@ Dinky 将通过 JobManager 的 Rest 端口提交 FlinkSQL 作业至外部的 Fli
 
 自行根据Flink官网教程部署一个 `Flink Yarn Session`模式，并将地址其添加到`注册中心-Flink实例`中。
 
-![image-20231116095708329](http://pic.dinky.org.cn/dinky/docs/test/202311160957398.png)
-
+![create_yarn_session_cluster](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/execute_env_config/create_yarn_session_cluster.png)
 相关依赖添加完成后，在作业配置处的`执行模式`中，勾选`yarn session模式`，并且在下方的`flink集群`选项框中勾选上方添加的集群，即可使用。
 
-![image-20231116095621922](http://pic.dinky.org.cn/dinky/docs/test/202311160956970.png)
+![select_yarn_session](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/execute_env_config/select_yarn_session.png)
 
 ### Yarn Per-Job 执行模式
 
@@ -85,13 +80,12 @@ Dinky 将通过 Yarn 来创建 Flink Yarn Per-Job 集群。
 在 `注册中心-集群配置` 中注册 Hadoop 与 Flink 相关配置，具体配置过程见[集群管理](../register_center/cluster_manage)
 的集群配置管理。
 
-![image-20231116100208363](http://pic.dinky.org.cn/dinky/docs/test/202311161002408.png)
+![create_yarn_per_job_cluster](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/execute_env_config/create_yarn_per_job_cluster.png)
 
 在配置完成后并且相关依赖添加完成后，在作业配置处的`执行模式`中，勾选`yarn per-job模式`，并且在下方的`flink集群`
 选项框中勾选上方添加的集群，即可使用。
 
-![image-20231116100506987](http://pic.dinky.org.cn/dinky/docs/test/202311161005023.png)
-
+![select_yarn_per_job](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/execute_env_config/select_yarn_per_job.png)
 ### Yarn Application 执行模式
 
 :::tip 特点
@@ -109,7 +103,7 @@ Dinky 将通过 Yarn 来创建 Flink Yarn Application 集群。
 在 `注册中心-集群配置` 中注册 Hadoop 与 Flink 相关配置，具体配置过程详见[集群管理](../register_center/cluster_manage)
 的集群配置管理。
 
-![](http://pic.dinky.org.cn/dinky/docs/test/202312201032576.png)
+![create_yarn_application_cluster](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/execute_env_config/create_yarn_application_cluster.png)
 
 ### Kubernetes Session 执行模式
 
@@ -127,11 +121,11 @@ Dinky 将通过暴露的 NodePort 端口提交 FlinkSQL 作业至外部的 Flink
 
 根据 Flink 官网手动部署一个 Flink Kubernetes Session 集群，并暴露 **NodePort **端口， 注册到 **集群实例** 中
 
-![](http://pic.dinky.org.cn/dinky/docs/test/202312201036450.png)
+![create_kubernetes_session_cluster](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/execute_env_config/create_kubernetes_session_cluster.png)
 
 注册完成后，在创建作业后可在右侧作业配置处进行勾选执行模式
 
-![](http://pic.dinky.org.cn/dinky/docs/test/202312201036304.png)
+![select_kubernetes_session](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/execute_env_config/select_kubernetes_session.png)
 
 ### Kubernetes Application 执行模式
 
@@ -147,7 +141,7 @@ Dinky 将通过暴露的 NodePort 端口提交 FlinkSQL 作业至外部的 Flink
 
 在 **注册中心 > 集群管理 > 集群配置管理** 中注册 Kubernetes Native类型
 
-![image-20231220103914938](http://pic.dinky.org.cn/dinky/docs/test/202312201039000.png)
+![create_kubernetes_application_cluster](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/execute_env_config/create_kubernetes_application_cluster.png)
 
 ### Kubernetes Operator 执行模式
 
@@ -166,5 +160,5 @@ Dinky 将通过暴露的 NodePort 端口提交 FlinkSQL 作业至外部的 Flink
 
 在 **注册中心 > 集群管理 > 集群配置管理** 中注册 Kubernetes Opeartor类型
 
-![image-20231220110234858](http://pic.dinky.org.cn/dinky/docs/test/202312201102913.png)
+![create_kubernetes_operator_cluster](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/execute_env_config/create_kubernetes_operator_cluster.png)
 

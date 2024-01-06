@@ -25,11 +25,11 @@ Dinky 数据开发功能主要包括：
 
 Dinky支持创建多种类型作业，以满足不同需求，主要分为 Flink类型作业，Jdbc类型作业，其他类型作业(UDF)，如图，下面开始介绍各种类型作业使用教程
 
-![image-20231220140415854](http://pic.dinky.org.cn/dinky/docs/test/202312201404899.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/create_task.png)
 
 #### FlinkSql作业
 
-此作业类型用于开发**FlinkSQL**，与 **FlinkCDC整库同步**作业。
+此作业类型用于开发**FlinkSQL**，与 **FlinkCDC整库同步**作业。 
 
 #### FlinkJar作业
 

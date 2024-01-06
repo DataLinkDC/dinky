@@ -10,9 +10,7 @@ title: Flink作业
 ## 基础作业配置
 
 ### 作业配置
-
-![image-20231220112839608](http://pic.dinky.org.cn/dinky/docs/test/202312201128666.png)
-
+![task_config_panel](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/task_config_panel.png)
 该面板仅在 FlinkSQL 与 Flink Jar 类型作业需要配置，您可以根据具体需求配置参数，参数设置如下
 
 | 是否必填 |     配置项      | 备注                                                                                                                                                                   |
@@ -45,21 +43,17 @@ Flink参数，添加完成后即可在配置列表中找到刚刚添加的Flink�
 
 Dinky 提供 FlinkSQL 在通过 **智能停止** 作业时，自动触发**savepoint**。也可以在运维中心手动触发，触发成功后会保存结果并记录在这里
 
-![image-20231220114448998](http://pic.dinky.org.cn/dinky/docs/test/202312201144048.png)
-
+![save_point](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/save_point.png)
 ### 版本历史
 
 在创建作业后，点击`发布`会自动创建一个历史版本，用于记录历史并回退
-
-![image-20231220134050332](http://pic.dinky.org.cn/dinky/docs/test/202312201340401.png)
+![history](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/history.png)
 
 单机历史版本即可查看当前版本与所选版本的代码差异
-
-![image-20231220134119789](http://pic.dinky.org.cn/dinky/docs/test/202312201341853.png)
+![code_diff](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/code_diff.png)
 
 可点击此处回滚版本
-
-![image-20231220134324847](http://pic.dinky.org.cn/dinky/docs/test/202312201343903.png)
+![rollback](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/rollback.png)
 
 ### 运行作业
 
@@ -69,7 +63,7 @@ Dinky 提供 FlinkSQL 在通过 **智能停止** 作业时，自动触发**savep
 请勿将Select语句作为FlinkSQL作业提交，Select语句请使用预览功能，详见下方预览功能章节
 
 :::
-![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-preview.png)
+![preview](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/preview.png)
 
 ### 作业预览
 
@@ -78,8 +72,7 @@ Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览
 即可。
 
 同时你也可以对预览功能进行配置，如下图
-
-![image-20231220114031011](http://pic.dinky.org.cn/dinky/docs/test/202312201140092.png)
+![preview_config](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/preview_config.png)
 
 参数设置如下
 
@@ -91,7 +84,7 @@ Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览
 |  否   | 自动停止 |                 默认禁用，开启自动停止将在捕获最大行记录数后自动停止                  |
 
 提交成功后会切换到`结果选项卡`，点击 `获取最新数据` ，即可查看 Select 语句的执行结果。
-![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-preview-result.png)
+![preview_result](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/preview_result.png)
 
 :::tip FlinkSQL 预览结果的必要条件
 
@@ -110,7 +103,7 @@ Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览
 ## 工具栏使用
 
 在数据开发页面右上方的工具栏可帮助用户快速对作业进行操作
-![](http://pic.dinky.org.cn/dinky/docs/zh-CN//datastudio_toolbar.png)
+![tool_bar](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/tool_bar.png)
 具体含义如下
 
 | 名称  |       作用       |      备注      |
@@ -150,7 +143,7 @@ from datagen_source;
 ```
 
 点击提交按钮，即可提交任务到集群，任务提交完成，我们可以进入运维中心页面，状态为Running表示运行成功。
-![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-devops.png)
+![runing_success](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/runing_success.png)
 
 ## Flink JAR作业
 
