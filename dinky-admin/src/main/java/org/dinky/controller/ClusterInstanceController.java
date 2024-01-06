@@ -204,20 +204,6 @@ public class ClusterInstanceController {
     }
 
     /**
-     * recycle cluster instances
-     *
-     * @return {@link Result}<{@link Integer}>
-     */
-    @DeleteMapping("/recycle")
-    @Log(title = "Cluster Instance Recycle", businessType = BusinessType.DELETE)
-    @ApiOperation("Cluster Instance Recycle")
-    @Transactional(rollbackFor = Exception.class)
-    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_RECYCLE})
-    public Result<Integer> recycleCluster() {
-        return Result.succeed(clusterInstanceService.recycleCluster(), Status.CLUSTER_INSTANCE_RECYCLE_SUCCESS);
-    }
-
-    /**
      * kill cluster instance
      *
      * @param id {@link Integer} cluster instance id
