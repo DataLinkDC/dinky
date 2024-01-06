@@ -22,6 +22,7 @@ import { l } from '@/utils/intl';
 import {
   CloudDownloadOutlined,
   DownCircleFilled,
+  EnterOutlined,
   StopFilled,
   SyncOutlined,
   UpCircleFilled,
@@ -48,6 +49,7 @@ type EditFloatBtnProps = {
   handleUpScroll?: () => void; // up scroll callback
   handleDownScroll?: () => void; // down scroll callback
   handleDownloadLog?: () => string; // download log callback
+  handleWrap?: () => void; // wrap callback
 };
 const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
   /**
@@ -65,7 +67,8 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
     handleBackBottom,
     handleUpScroll,
     handleDownScroll,
-    handleDownloadLog
+    handleDownloadLog,
+    handleWrap
   } = props;
 
   /**
@@ -120,6 +123,11 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
           icon={<CloudDownloadOutlined />}
           href={handleDownloadLog ? handleDownloadLog() : '123 '}
           title={'Download'}
+        />
+        <CircleBtn
+          icon={<EnterOutlined />}
+          onClick={() => handleWrap && handleWrap()}
+          title={l('button.wrap')}
         />
       </Space>
     </>

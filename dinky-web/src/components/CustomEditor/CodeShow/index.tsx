@@ -166,6 +166,10 @@ const CodeShow = (props: CodeShowFormProps) => {
     return URL.createObjectURL(blob);
   };
 
+  const handleWrap = () => {
+    editorInstance?.current?.updateOptions({ wordWrap: 'on' });
+  };
+
   /**
    *  editorDidMount
    * @param {editor.IStandaloneCodeEditor} editor
@@ -200,7 +204,8 @@ const CodeShow = (props: CodeShowFormProps) => {
     handleBackBottom,
     handleUpScroll,
     handleDownScroll,
-    handleDownloadLog
+    handleDownloadLog,
+    handleWrap
   };
 
   /**
