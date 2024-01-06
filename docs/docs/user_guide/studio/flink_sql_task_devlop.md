@@ -49,7 +49,7 @@ Dinky 提供 FlinkSQL 在通过 **智能停止** 作业时，自动触发**savep
 在创建作业后，点击`发布`会自动创建一个历史版本，用于记录历史并回退
 ![history](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/history.png)
 
-单机历史版本即可查看当前版本与所选版本的代码差异
+单击历史版本即可查看当前版本与所选版本的代码差异
 ![code_diff](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/code_diff.png)
 
 可点击此处回滚版本
@@ -148,7 +148,10 @@ from datagen_source;
 ## Flink JAR作业
 
 编写FlinkSql语句
-
+:::tip 注意
+1. 此为dinky增强扩展语法
+2. 此语法仅能在Flink jar作业中使用
+:::
 **语法结构**
 
 ```sql
@@ -175,8 +178,7 @@ EXECUTE JAR WITH (
 
 :::warning 注意
 
-1. 以上示例中, uri 参数使用了 rs 协议, 请参考 [资源管理](../../user_guide/register_center/resource) 中 rs 协议使用方式
-2. 以上示例中, uri 的值为 rs:/jar/flink/demo/SocketWindowWordCount.jar, 该值为资源中心中的资源路径,
+1. 以上示例中, uri 的值为 rs:/jar/flink/demo/SocketWindowWordCount.jar, 该值为资源中心中的资源路径,
    请确保资源中心中存在该资源,请忽略资源中心 Root 节点(该节点为虚拟节点)
-3. 目前仅支持 rs 与 file 协议头，后续会支持更多协议，请关注版本更新
+2. 如果要读取S3，HDFS，LCOAL等存储上面的文件均可通过rs协议进行桥接使用,请参考 [资源管理](../../user_guide/register_center/resource) 中 rs 协议使用方式
 :::

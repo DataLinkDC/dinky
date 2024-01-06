@@ -33,18 +33,12 @@ Dinky支持创建多种类型作业，以满足不同需求，主要分为 Flink
 
 #### FlinkJar作业
 
-用于运行**自定义jar包**，对于非Flink sql作业，使用原生flink代码开发的jar包，可以通过dinky的`exec jar`语法进行提交与管理
+用于运行**自定义jar包**，对于非Flink sql作业，使用原生flink代码开发的jar包，可以通过dinky的`execute jar`语法进行提交与管理
 
 #### FlinkSqlEnv作业类型
 
 这是一个比较特殊的作业类型，对于sql作业开发，我们总是不可避免的需要一些通用参数需求，或者一些通用代码片段等，除了使用全局变量以外
 我们还可以通过创建一个`FlinkSqlEnv`类型作业把代码写在里面供其他任务引用，以此避免重复编写一些通用的语句，提高开发效率。
-
-[//]: # (![image-20231220141323767]&#40;http://pic.dinky.org.cn/dinky/docs/test/202312201413831.png&#41;)
-
-[//]: # (可在此处对FlinkSqlEnv作业创建的catalog进行选择)
-
-[//]: # (![image-20231220141416725]&#40;http://pic.dinky.org.cn/dinky/docs/test/202312201414788.png&#41;)
 
 #### Jdbc作业
 
