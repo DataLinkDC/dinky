@@ -190,7 +190,7 @@ declare namespace Cluster {
     version: string;
     status: number;
     note: string;
-    clusterConfigurationId: string;
+    clusterConfigurationId: number;
   };
 
   /**
