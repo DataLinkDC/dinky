@@ -18,24 +18,24 @@
  */
 
 import StatusTag from '@/components/JobTags/StatusTag';
-import {getJobDuration} from '@/pages/DevOps/function';
-import {queryList} from '@/services/api';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {Jobs} from '@/types/DevOps/data.d';
-import {l} from '@/utils/intl';
-import type {ActionType, ProColumns} from '@ant-design/pro-components';
-import {ProTable} from '@ant-design/pro-components';
-import {Typography} from 'antd';
-import {useRef} from 'react';
+import { getJobDuration } from '@/pages/DevOps/function';
+import { queryList } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { Jobs } from '@/types/DevOps/data.d';
+import { l } from '@/utils/intl';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { ProTable } from '@ant-design/pro-components';
+import { Typography } from 'antd';
+import { useRef } from 'react';
 
-const {Link} = Typography;
+const { Link } = Typography;
 
 type HistoryProps = {
   taskId: number;
 };
 
 const JobHistoryList = (props: HistoryProps) => {
-  const {taskId} = props;
+  const { taskId } = props;
 
   const actionRef = useRef<ActionType>();
 
@@ -49,8 +49,10 @@ const JobHistoryList = (props: HistoryProps) => {
       title: l('global.table.finishTime'),
       render(_, row: Jobs.JobInstance) {
         // 判断finishTime 是否 小于 1970-01-02 如果是则返回 '-' 否则返回 finishTime
-        return !row.finishTime || new Date(row.finishTime) <= new Date('1970-01-02') ? '-' : row.finishTime
-      },
+        return !row.finishTime || new Date(row.finishTime) <= new Date('1970-01-02')
+          ? '-'
+          : row.finishTime;
+      }
     },
     {
       title: l('global.table.jobid'),
@@ -61,7 +63,7 @@ const JobHistoryList = (props: HistoryProps) => {
     {
       title: l('global.table.status'),
       dataIndex: 'status',
-      render: (_: any, row: { status: string | undefined }) => <StatusTag status={row.status}/>
+      render: (_: any, row: { status: string | undefined }) => <StatusTag status={row.status} />
     },
     {
       title: l('global.table.useTime'),
@@ -82,7 +84,7 @@ const JobHistoryList = (props: HistoryProps) => {
     <>
       <ProTable<Jobs.JobInstance>
         search={false}
-        params={{isHistory: true}}
+        params={{ isHistory: true }}
         tableStyle={{
           overflowX: 'hidden',
           overflowY: 'hidden',
@@ -94,12 +96,12 @@ const JobHistoryList = (props: HistoryProps) => {
         request={(params) =>
           queryList(API_CONSTANTS.JOB_INSTANCE, {
             ...params,
-            filter: {task_id: [taskId]}
+            filter: { task_id: [taskId] }
           })
         }
         rowKey={(record) => record.id}
         toolBarRender={false}
-        pagination={{showSizeChanger: false}}
+        pagination={{ showSizeChanger: false }}
       />
     </>
   );
