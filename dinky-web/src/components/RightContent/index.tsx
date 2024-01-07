@@ -18,7 +18,9 @@
  */
 
 import { ThemeCloud, ThemeStar } from '@/components/ThemeSvg/ThemeSvg';
+import { queryDataByParams } from '@/services/BusinessCrud';
 import { LANGUAGE_KEY, LANGUAGE_ZH, STORY_LANGUAGE } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { THEME } from '@/types/Public/data';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
@@ -29,8 +31,6 @@ import React, { useEffect, useState } from 'react';
 import useCookie from 'react-use-cookie';
 import screenfull from 'screenfull';
 import Avatar from './AvatarDropdown';
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const GlobalHeaderRight: React.FC = () => {
   /**
@@ -131,9 +131,9 @@ const GlobalHeaderRight: React.FC = () => {
         title={<span>{fullScreen ? l('global.fullScreen') : l('global.fullScreen.exit')}</span>}
       >
         {fullScreen ? (
-          <FullscreenOutlined {...fullScreenProps as any} onClick={screenFull} />
+          <FullscreenOutlined {...(fullScreenProps as any)} onClick={screenFull} />
         ) : (
-          <FullscreenExitOutlined {...fullScreenProps as any} onClick={screenFull} />
+          <FullscreenExitOutlined {...(fullScreenProps as any)} onClick={screenFull} />
         )}
       </Tooltip>
       <Tooltip placement='bottom' title={<span>{menuVersion}</span>}>

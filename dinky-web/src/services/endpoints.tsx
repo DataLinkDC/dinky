@@ -18,7 +18,6 @@
  */
 
 export enum API_CONSTANTS {
-
   GET_SERVICE_VERSION = '/api/version',
 
   // --- user ---
