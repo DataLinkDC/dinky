@@ -81,8 +81,6 @@ public interface CustomTableEnvironment
         return Collections.emptyList();
     }
 
-    <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList);
-
     default void addJar(File... jarPath) {
         Configuration configuration = this.getRootConfiguration();
         List<String> pathList =

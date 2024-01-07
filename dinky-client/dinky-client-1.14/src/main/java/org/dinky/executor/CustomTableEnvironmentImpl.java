@@ -424,42 +424,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
-    public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
-        createTemporaryView(s, fromChangelogStream(dataStream));
-    }
-
-    @Override
     public <T> void createTemporaryView(String path, DataStream<T> dataStream, Expression... fields) {
         createTemporaryView(path, fromDataStream(dataStream, fields));
-    }
-
-    private <T> JavaDataStreamQueryOperation<T> asQueryOperation(
-            DataStream<T> dataStream, Optional<List<Expression>> fields) {
-        TypeInformation<T> streamType = dataStream.getType();
-
-        // get field names and types for all non-replaced fields
-        FieldInfoUtils.TypeInfoSchema typeInfoSchema = fields.map(f -> {
-                    FieldInfoUtils.TypeInfoSchema fieldsInfo =
-                            FieldInfoUtils.getFieldsInfo(streamType, f.toArray(new Expression[0]));
-
-                    // check if event-time is enabled
-                    validateTimeCharacteristic(fieldsInfo.isRowtimeDefined());
-                    return fieldsInfo;
-                })
-                .orElseGet(() -> FieldInfoUtils.getFieldsInfo(streamType));
-
-        return new JavaDataStreamQueryOperation<>(
-                dataStream, typeInfoSchema.getIndices(), typeInfoSchema.toResolvedSchema());
-    }
-
-    private void validateTimeCharacteristic(boolean isRowtimeDefined) {
-        if (isRowtimeDefined
-                && getStreamExecutionEnvironment().getStreamTimeCharacteristic() != TimeCharacteristic.EventTime) {
-            throw new ValidationException(String.format(
-                    "A rowtime attribute requires an EventTime time characteristic in"
-                            + " stream environment. But is: %s",
-                    getStreamExecutionEnvironment().getStreamTimeCharacteristic()));
-        }
     }
 
     @Override

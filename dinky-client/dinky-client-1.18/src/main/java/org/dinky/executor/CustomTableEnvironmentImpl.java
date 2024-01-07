@@ -271,11 +271,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
-    public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
-        createTemporaryView(s, fromChangelogStream(dataStream));
-    }
-
-    @Override
     public void createCatalog(String catalogName, CatalogDescriptor catalogDescriptor) {
         getCatalogManager().createCatalog(catalogName, catalogDescriptor);
     }

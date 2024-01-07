@@ -253,8 +253,4 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return lineageContext.analyzeLineage(statement);
     }
 
-    @Override
-    public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
-        createTemporaryView(s, fromChangelogStream(dataStream));
-    }
 }
