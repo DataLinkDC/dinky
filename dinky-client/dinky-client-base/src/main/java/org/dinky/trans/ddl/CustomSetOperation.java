@@ -98,8 +98,7 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
         return Optional.of(TABLE_RESULT_OK);
     }
 
-    public boolean parseAndLoadConfiguration(
-            String statement, CustomTableEnvironment tEnv) {
+    public boolean parseAndLoadConfiguration(String statement, CustomTableEnvironment tEnv) {
         List<Operation> operations = tEnv.getParser().parse(statement);
         for (Operation operation : operations) {
             if (operation instanceof SetOperation) {
@@ -133,8 +132,7 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
         setConfiguration(environment, Collections.singletonMap(key, value));
     }
 
-    private void callReset(
-            ResetOperation resetOperation, CustomTableEnvironment environment) {
+    private void callReset(ResetOperation resetOperation, CustomTableEnvironment environment) {
         final Optional<String> keyOptional = resetOperation.getKey();
         if (!keyOptional.isPresent()) {
             return;
