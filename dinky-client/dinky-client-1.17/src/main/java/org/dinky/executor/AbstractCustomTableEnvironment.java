@@ -19,14 +19,27 @@
 
 package org.dinky.executor;
 
+import org.dinky.data.model.LineageRel;
+import org.dinky.data.result.SqlExplainResult;
+import org.dinky.utils.LineageContext;
+
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.ExplainDetail;
+import org.apache.flink.table.api.ExplainFormat;
 import org.apache.flink.table.api.TableEnvironment;
+import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImpl;
 import org.apache.flink.table.delegation.ExtendedOperationExecutor;
 import org.apache.flink.table.delegation.Planner;
+import org.apache.flink.table.operations.ExplainOperation;
+import org.apache.flink.table.operations.ModifyOperation;
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.planner.delegation.PlannerBase;
+
+import java.util.List;
 
 import cn.hutool.core.util.ReflectUtil;
 
@@ -78,5 +91,41 @@ public abstract class AbstractCustomTableEnvironment
     @Override
     public Configuration getRootConfiguration() {
         return (Configuration) this.getConfig().getRootConfiguration();
+    }
+
+    @Override
+    public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
+        List<Operation> operations = getParser().parse(statement);
+        if (operations.size() != 1) {
+            throw new TableException("Unsupported SQL query! explainSql() only accepts a single SQL query.");
+        }
+
+        Operation operation = operations.get(0);
+        SqlExplainResult data = new SqlExplainResult();
+        data.setParseTrue(true);
+        data.setExplainTrue(true);
+
+        if (operation instanceof ModifyOperation) {
+            data.setType("Modify DML");
+        } else if (operation instanceof ExplainOperation) {
+            data.setType("Explain DML");
+        } else if (operation instanceof QueryOperation) {
+            data.setType("Query DML");
+        } else {
+            data.setExplain(operation.asSummaryString());
+            data.setType("DDL");
+
+            // data.setExplain("DDL statement needn't comment。");
+            return data;
+        }
+
+        data.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
+        return data;
+    }
+
+    @Override
+    public List<LineageRel> getLineage(String statement) {
+        LineageContext lineageContext = new LineageContext(this);
+        return lineageContext.analyzeLineage(statement);
     }
 }

@@ -19,19 +19,15 @@
 
 package org.dinky.executor;
 
-import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.parser.CustomParserImpl;
 import org.dinky.utils.JsonUtils;
-import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
@@ -43,7 +39,6 @@ import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
-import org.apache.flink.types.Row;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,10 +139,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return transOperatoinsToStreamGraph(modifyOperations);
     }
 
-    public JobGraph getJobGraphFromInserts(List<String> statements) {
-        return getStreamGraphFromInserts(statements).getJobGraph();
-    }
-
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         List<Operation> operations = getParser().parse(statement);
         if (operations.size() != 1) {
@@ -175,16 +166,5 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
         record.setExplain(getPlanner().explain(operations, extraDetails));
         return record;
-    }
-
-    @Override
-    public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext = new LineageContext(this);
-        return lineageContext.analyzeLineage(statement);
-    }
-
-    @Override
-    public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
-        createTemporaryView(s, fromChangelogStream(dataStream));
     }
 }
