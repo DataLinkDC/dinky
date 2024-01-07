@@ -19,31 +19,21 @@
 
 package org.dinky.executor;
 
-import org.dinky.data.model.LineageRel;
-import org.dinky.data.result.SqlExplainResult;
 import org.dinky.parser.CustomParserImpl;
-import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.EnvironmentSettings;
-import org.apache.flink.table.api.ExplainDetail;
-import org.apache.flink.table.api.ExplainFormat;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.operations.QueryOperation;
-import org.apache.flink.types.Row;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,5 +144,4 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
         return transOperatoinsToStreamGraph(modifyOperations);
     }
-
 }
