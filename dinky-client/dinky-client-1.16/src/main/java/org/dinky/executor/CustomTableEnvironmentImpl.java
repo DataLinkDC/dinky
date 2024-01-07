@@ -100,29 +100,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return new CustomTableEnvironmentImpl(streamTableEnvironment);
     }
 
-    public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
-        List<Operation> operations = getParser().parse(statement);
-        for (Operation operation : operations) {
-            if (operation instanceof SetOperation) {
-                callSet((SetOperation) operation, getStreamExecutionEnvironment(), setMap);
-                return true;
-            } else if (operation instanceof ResetOperation) {
-                callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
-                return true;
-            } else if (operation instanceof CustomSetOperation) {
-                CustomSetOperation customSetOperation = (CustomSetOperation) operation;
-                if (customSetOperation.isValid()) {
-                    callSet(
-                            new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()),
-                            getStreamExecutionEnvironment(),
-                            setMap);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
     public ObjectNode getStreamGraph(String statement) {
         List<Operation> operations = super.getParser().parse(statement);
         if (operations.size() != 1) {
@@ -185,66 +162,26 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         }
 
         Operation operation = operations.get(0);
-        SqlExplainResult record = new SqlExplainResult();
-        record.setParseTrue(true);
-        record.setExplainTrue(true);
+        SqlExplainResult sqlExplainResult = new SqlExplainResult();
+        sqlExplainResult.setParseTrue(true);
+        sqlExplainResult.setExplainTrue(true);
 
         if (operation instanceof ModifyOperation) {
-            record.setType("Modify DML");
+            sqlExplainResult.setType("Modify DML");
         } else if (operation instanceof ExplainOperation) {
-            record.setType("Explain DML");
+            sqlExplainResult.setType("Explain DML");
         } else if (operation instanceof QueryOperation) {
-            record.setType("Query DML");
+            sqlExplainResult.setType("Query DML");
         } else {
-            record.setExplain(operation.asSummaryString());
-            record.setType("DDL");
+            sqlExplainResult.setExplain(operation.asSummaryString());
+            sqlExplainResult.setType("DDL");
 
-            // record.setExplain("DDL statement needn't comment。");
-            return record;
+            // sqlExplainResult.setExplain("DDL statement needn't comment。");
+            return sqlExplainResult;
         }
 
-        record.setExplain(getPlanner().explain(operations, extraDetails));
-        return record;
-    }
-
-    private void callSet(
-            SetOperation setOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
-        if (!setOperation.getKey().isPresent() || !setOperation.getValue().isPresent()) {
-            return;
-        }
-
-        String key = setOperation.getKey().get().trim();
-        String value = setOperation.getValue().get().trim();
-        if (Asserts.isNullString(key) || Asserts.isNullString(value)) {
-            return;
-        }
-        setMap.put(key, value);
-
-        setConfiguration(environment, Collections.singletonMap(key, value));
-    }
-
-    private void callReset(
-            ResetOperation resetOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
-        final Optional<String> keyOptional = resetOperation.getKey();
-        if (!keyOptional.isPresent()) {
-            setMap.clear();
-            return;
-        }
-
-        String key = keyOptional.get().trim();
-        if (Asserts.isNullString(key)) {
-            return;
-        }
-
-        setMap.remove(key);
-        setConfiguration(environment, Collections.singletonMap(key, null));
-    }
-
-    private void setConfiguration(StreamExecutionEnvironment environment, Map<String, String> config) {
-        Configuration configuration = Configuration.fromMap(config);
-        environment.getConfig().configure(configuration, null);
-        environment.getCheckpointConfig().configure(configuration);
-        getConfig().addConfiguration(configuration);
+        sqlExplainResult.setExplain(getPlanner().explain(operations, extraDetails));
+        return sqlExplainResult;
     }
 
     @Override

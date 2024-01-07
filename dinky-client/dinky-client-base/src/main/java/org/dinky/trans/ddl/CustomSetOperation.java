@@ -19,6 +19,9 @@
 
 package org.dinky.trans.ddl;
 
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.operations.command.ResetOperation;
+import org.apache.flink.table.operations.command.SetOperation;
 import org.dinky.assertion.Asserts;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
@@ -30,6 +33,7 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +80,7 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
     public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
         try {
             if (null != Class.forName("org.apache.log4j.Logger")) {
-                tEnv.parseAndLoadConfiguration(statement, new HashMap<>());
+                parseAndLoadConfiguration(statement, new HashMap<>(), tEnv);
                 return Optional.of(TABLE_RESULT_OK);
             }
         } catch (ClassNotFoundException e) {
@@ -93,6 +97,71 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
         }
         return Optional.of(TABLE_RESULT_OK);
     }
+
+    public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap, CustomTableEnvironment tEnv) {
+        List<Operation> operations = tEnv.getParser().parse(statement);
+        for (Operation operation : operations) {
+            if (operation instanceof SetOperation) {
+                callSet((SetOperation) operation, tEnv, setMap);
+                return true;
+            } else if (operation instanceof ResetOperation) {
+                callReset((ResetOperation) operation, tEnv, setMap);
+                return true;
+            } else if (operation instanceof CustomSetOperation) {
+                CustomSetOperation customSetOperation = (CustomSetOperation) operation;
+                if (customSetOperation.isValid()) {
+                    callSet(
+                            new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()),
+                            tEnv,
+                            setMap);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void callSet(
+            SetOperation setOperation, CustomTableEnvironment environment, Map<String, Object> setMap) {
+        if (!setOperation.getKey().isPresent() || !setOperation.getValue().isPresent()) {
+            return;
+        }
+
+        String key = setOperation.getKey().get().trim();
+        String value = setOperation.getValue().get().trim();
+        if (Asserts.isNullString(key) || Asserts.isNullString(value)) {
+            return;
+        }
+        setMap.put(key, value);
+
+        setConfiguration(environment, Collections.singletonMap(key, value));
+    }
+
+
+    private void callReset(
+            ResetOperation resetOperation, CustomTableEnvironment environment, Map<String, Object> setMap) {
+        final Optional<String> keyOptional = resetOperation.getKey();
+        if (!keyOptional.isPresent()) {
+            setMap.clear();
+            return;
+        }
+
+        String key = keyOptional.get().trim();
+        if (Asserts.isNullString(key)) {
+            return;
+        }
+
+        setMap.remove(key);
+        setConfiguration(environment, Collections.singletonMap(key, null));
+    }
+
+    private void setConfiguration(CustomTableEnvironment environment, Map<String, String> config) {
+        Configuration configuration = Configuration.fromMap(config);
+        environment.getStreamExecutionEnvironment().getConfig().configure(configuration, null);
+        environment.getStreamExecutionEnvironment().getCheckpointConfig().configure(configuration);
+        environment.getConfig().addConfiguration(configuration);
+    }
+
 
     @Override
     public String asSummaryString() {
