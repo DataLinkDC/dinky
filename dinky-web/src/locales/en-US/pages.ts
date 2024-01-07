@@ -56,6 +56,7 @@ export default {
    * */
 
   'catalog.name': 'Job Name',
+  'catalog.useTemplate': 'Use Template',
   'catalog.name.placeholder': 'Please enter the job name',
   'catalog.name.validate.error': 'Job name cannot contain _ characters, K8s naming specification',
   'catalog.name.tip':
