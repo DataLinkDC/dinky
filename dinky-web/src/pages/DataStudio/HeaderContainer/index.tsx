@@ -28,7 +28,6 @@ import {
   buildBreadcrumbItems,
   isCanPushDolphin,
   isOnline,
-  isRunning,
   isSql,
   projectCommonShow
 } from '@/pages/DataStudio/HeaderContainer/function';
@@ -48,13 +47,14 @@ import {
   VIEW
 } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
+import { isStatusDone } from '@/pages/DevOps/function';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 import { handleOption, handlePutDataJson, queryDataByParams } from '@/services/BusinessCrud';
 import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data.d';
-import { DolphinTaskDefinition, DolphinTaskMinInfo } from '@/types/Studio/data.d';
+import { ButtonRoute, DolphinTaskDefinition, DolphinTaskMinInfo } from '@/types/Studio/data.d';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -71,7 +71,6 @@ import {
 } from '@ant-design/icons';
 import { connect } from '@umijs/max';
 import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
-import { ButtonProps } from 'antd/es/button/button';
 import React, { memo, useEffect, useState } from 'react';
 
 const headerStyle: React.CSSProperties = {
@@ -82,16 +81,6 @@ const headerStyle: React.CSSProperties = {
   fontWeight: 'bold',
   fontSize: '16px',
   padding: '4px 10px'
-};
-
-type ButtonRoute = {
-  icon?: React.ReactNode;
-  title?: string;
-  click?: () => void;
-  hotKey?: (e: KeyboardEvent) => boolean;
-  hotKeyDesc?: string;
-  isShow: boolean;
-  props?: ButtonProps;
 };
 
 const HeaderContainer = (props: connect) => {
@@ -172,21 +161,31 @@ const HeaderContainer = (props: connect) => {
   };
 
   const handlerStop = () => {
-    if (!currentData) return;
-
-    modal.confirm({
-      title: l('pages.datastudio.editor.stop.job'),
-      content: l('pages.datastudio.editor.stop.jobConfirm', '', {
-        jobName: currentData.name
-      }),
-      okText: l('button.confirm'),
-      cancelText: l('button.cancel'),
-      onOk: async () => {
-        cancelTask(l('pages.datastudio.editor.stop.job'), currentData.id).then(() => {
-          currentData.status = JOB_STATUS.CANCELED;
-          saveTabs({ ...props.tabs });
-        });
-      }
+    if (!currentData) return new Promise((resolve) => resolve(false));
+    //RECONNECTING状态无法停止需要改变提示内容
+    const isReconnect = currentData.status == JOB_STATUS.RECONNECTING;
+    const content = isReconnect
+      ? 'pages.datastudio.editor.stop.force.jobConfirm'
+      : 'pages.datastudio.editor.stop.job';
+    return new Promise((resolve) => {
+      modal.confirm({
+        title: l('pages.datastudio.editor.stop.job'),
+        content: l(content, '', {
+          jobName: currentData.name
+        }),
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
+        onOk: async () => {
+          await cancelTask(l('pages.datastudio.editor.stop.job'), currentData.id).then(() => {
+            currentData.status = JOB_STATUS.CANCELED;
+            saveTabs({ ...props.tabs });
+          });
+          resolve(true);
+        },
+        onCancel: () => {
+          resolve(false);
+        }
+      });
     });
   };
 
@@ -401,7 +400,7 @@ const HeaderContainer = (props: connect) => {
       hotKeyDesc: 'Shift+F10',
       isShow:
         currentTab?.type == TabsPageType.project &&
-        !isRunning(currentData) &&
+        isStatusDone(currentData?.status) &&
         currentTab?.subType?.toLowerCase() !== DIALECT.JAVA &&
         currentTab?.subType?.toLowerCase() !== DIALECT.SCALA &&
         currentTab?.subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
@@ -420,7 +419,7 @@ const HeaderContainer = (props: connect) => {
       hotKeyDesc: 'Shift+F9',
       isShow:
         currentTab?.type == TabsPageType.project &&
-        !isRunning(currentData) &&
+        isStatusDone(currentData?.status) &&
         (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
           isSql(currentTab?.subType?.toLowerCase() ?? '')),
       props: {
@@ -433,12 +432,12 @@ const HeaderContainer = (props: connect) => {
       icon: <PauseOutlined />,
       title: l('pages.datastudio.editor.stop'),
       click: handlerStop,
-      isShow: currentTab?.type == TabsPageType.project && isRunning(currentData),
+      isShow: currentTab?.type == TabsPageType.project && !isStatusDone(currentData?.status),
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       hotKeyDesc: 'Shift+F10',
       props: {
         type: 'primary',
-        danger: true
+        style: { background: '#FF4D4F' }
       }
     },
     {
@@ -495,19 +494,7 @@ const HeaderContainer = (props: connect) => {
           {routes
             .filter((x) => x.isShow)
             .map((route) => {
-              return (
-                <LoadingBtn
-                  key={route.title}
-                  size={'small'}
-                  type={'text'}
-                  icon={route.icon}
-                  onClick={route.click}
-                  title={route.hotKeyDesc}
-                  {...route.props}
-                >
-                  {route.title}
-                </LoadingBtn>
-              );
+              return <LoadingBtn {...route} />;
             })}
         </Space>
         {contextHolder}

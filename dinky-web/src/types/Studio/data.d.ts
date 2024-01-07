@@ -18,6 +18,8 @@
  */
 
 import { List } from 'antd';
+import { ButtonProps } from 'antd/es/button/button';
+import React from 'react';
 
 export type Catalogue = {
   id: number;
@@ -309,3 +311,13 @@ export interface PushDolphinParams {
   timeoutNotifyStrategy: string[] | string;
   description: string;
 }
+
+export type ButtonRoute = {
+  icon?: React.ReactNode;
+  title?: string;
+  click?: () => any;
+  hotKey?: (e: KeyboardEvent) => boolean;
+  hotKeyDesc?: string;
+  isShow: boolean;
+  props?: ButtonProps;
+};

@@ -209,7 +209,12 @@ const JobConfig = (props: any) => {
               type: selectRunMode
             })}
             rules={[
-              { required: true, message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1') }
+              {
+                required: true,
+                message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                  type: selectRunMode
+                })
+              }
             ]}
             options={buildClusterConfigOptions(selectRunMode, clusterConfiguration)}
             allowClear={false}

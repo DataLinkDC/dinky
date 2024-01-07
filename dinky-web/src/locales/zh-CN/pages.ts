@@ -358,6 +358,8 @@ export default {
   'pages.datastudio.editor.stop': '停止',
   'pages.datastudio.editor.stop.job': '停止作业',
   'pages.datastudio.editor.stop.jobConfirm': '确定停止作业【{jobName}】吗？',
+  'pages.datastudio.editor.stop.force.jobConfirm':
+    '当前作业【{jobName}】连接到集群获取信息失败，无法进行停止操作，确定强制修改状态吗？',
   'pages.datastudio.editor.submitting': '新任务【{jobName}】正在执行',
   'pages.datastudio.editor.checking': '任务【{jobName}】正在检查',
   'pages.datastudio.editor.debugging': '新任务【{jobName}】正在调试',
