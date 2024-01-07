@@ -19,12 +19,9 @@
 
 package org.dinky.executor;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.operations.CustomNewParserImpl;
-import org.dinky.operations.DinkyExecutableOperation;
-import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.dag.Transformation;
@@ -48,15 +45,10 @@ import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
-import org.apache.flink.table.operations.command.ResetOperation;
-import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.types.Row;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -104,31 +96,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(executionEnvironment, settings);
 
         return new CustomTableEnvironmentImpl(streamTableEnvironment);
-    }
-
-    @Override
-    public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
-        List<Operation> operations = getParser().parse(statement);
-        for (Operation outterOperation : operations) {
-            Operation operation = ((DinkyExecutableOperation) outterOperation).getInnerOperation();
-            if (operation instanceof SetOperation) {
-                callSet((SetOperation) operation, getStreamExecutionEnvironment(), setMap);
-                return true;
-            } else if (operation instanceof ResetOperation) {
-                callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
-                return true;
-            } else if (operation instanceof CustomSetOperation) {
-                CustomSetOperation customSetOperation = (CustomSetOperation) operation;
-                if (customSetOperation.isValid()) {
-                    callSet(
-                            new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()),
-                            getStreamExecutionEnvironment(),
-                            setMap);
-                }
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -222,46 +189,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
         data.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
         return data;
-    }
-
-    private void callSet(
-            SetOperation setOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
-        if (!setOperation.getKey().isPresent() || !setOperation.getValue().isPresent()) {
-            return;
-        }
-
-        String key = setOperation.getKey().get().trim();
-        String value = setOperation.getValue().get().trim();
-        if (Asserts.isNullString(key) || Asserts.isNullString(value)) {
-            return;
-        }
-        setMap.put(key, value);
-
-        setConfiguration(environment, Collections.singletonMap(key, value));
-    }
-
-    private void callReset(
-            ResetOperation resetOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
-        final Optional<String> keyOptional = resetOperation.getKey();
-        if (!keyOptional.isPresent()) {
-            setMap.clear();
-            return;
-        }
-
-        String key = keyOptional.get().trim();
-        if (Asserts.isNullString(key)) {
-            return;
-        }
-
-        setMap.remove(key);
-        setConfiguration(environment, Collections.singletonMap(key, null));
-    }
-
-    private void setConfiguration(StreamExecutionEnvironment environment, Map<String, String> config) {
-        Configuration configuration = Configuration.fromMap(config);
-        environment.getConfig().configure(configuration, null);
-        environment.getCheckpointConfig().configure(configuration);
-        getConfig().addConfiguration(configuration);
     }
 
     @Override

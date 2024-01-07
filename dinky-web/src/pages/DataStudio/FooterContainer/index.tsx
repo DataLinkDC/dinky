@@ -183,7 +183,8 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
       </div>
       <JobRunningModal
         value={jobRunningMsg}
-        visible={viewJobRunning}
+        //TODO 目前实现不了，禁掉
+        visible={false}
         onCancel={() => setViewJobRunning(false)}
         onOk={() => setViewJobRunning(false)}
       />
