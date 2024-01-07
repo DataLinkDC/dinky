@@ -43,7 +43,7 @@ export function isStatusDone(type: string) {
 }
 export function isNotFinallyStatus(type: string) {
   if (!type) {
-    return true;
+    return false;
   }
   switch (type) {
     case JOB_STATUS.RECONNECTING:

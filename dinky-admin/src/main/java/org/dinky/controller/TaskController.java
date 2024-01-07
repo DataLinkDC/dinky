@@ -106,8 +106,11 @@ public class TaskController {
     @GetMapping("/cancel")
     @Log(title = "Cancel Flink Job", businessType = BusinessType.TRIGGER)
     @ApiOperation("Cancel Flink Job")
-    public Result<Void> cancel(@RequestParam Integer id, @RequestParam(defaultValue = "false") boolean withSavePoint) {
-        if (taskService.cancelTaskJob(taskService.getTaskInfoById(id), withSavePoint)) {
+    public Result<Void> cancel(
+            @RequestParam Integer id,
+            @RequestParam(defaultValue = "false") boolean withSavePoint,
+            @RequestParam(defaultValue = "false") boolean forceCancel) {
+        if (taskService.cancelTaskJob(taskService.getTaskInfoById(id), withSavePoint, forceCancel)) {
             return Result.succeed(Status.EXECUTE_SUCCESS);
         } else {
             return Result.failed(Status.EXECUTE_FAILED);
