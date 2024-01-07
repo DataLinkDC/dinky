@@ -17,20 +17,37 @@
  *
  */
 
+import { ButtonRoute } from '@/types/Studio/data';
 import { Button } from 'antd';
-import { ButtonProps } from 'antd/es/button/button';
 import React, { useState } from 'react';
 
-export const LoadingBtn: React.FC<ButtonProps> = (props) => {
+export const LoadingBtn: React.FC<ButtonRoute> = (route) => {
+  const { click, title, icon, hotKeyDesc, props } = route;
   const [loading, setLoading] = useState(false);
 
   const handleClick = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    if (props.onClick) {
+    if (click) {
       setLoading(true);
-      await props.onClick(event);
+      const result = await click();
+      if (result instanceof Promise) {
+        await result;
+      }
       setLoading(false);
     }
   };
 
-  return <Button {...props} loading={loading} onClick={(event) => handleClick(event)}></Button>;
+  return (
+    <Button
+      key={title}
+      size={'small'}
+      type={'text'}
+      icon={icon}
+      title={hotKeyDesc}
+      loading={loading}
+      onClick={(event) => handleClick(event)}
+      {...props}
+    >
+      {title}
+    </Button>
+  );
 };

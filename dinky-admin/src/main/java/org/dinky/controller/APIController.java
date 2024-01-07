@@ -96,9 +96,12 @@ public class APIController {
     //    @Log(title = "Cancel Flink Job", businessType = BusinessType.TRIGGER)
     @ApiOperation("Cancel Flink Job")
     public Result<Boolean> cancel(
-            @RequestParam Integer id, @RequestParam(defaultValue = "false") boolean withSavePoint) {
+            @RequestParam Integer id,
+            @RequestParam(defaultValue = "false") boolean withSavePoint,
+            @RequestParam(defaultValue = "true") boolean forceCancel) {
         return Result.succeed(
-                taskService.cancelTaskJob(taskService.getTaskInfoById(id), withSavePoint), Status.EXECUTE_SUCCESS);
+                taskService.cancelTaskJob(taskService.getTaskInfoById(id), withSavePoint, forceCancel),
+                Status.EXECUTE_SUCCESS);
     }
 
     /**
