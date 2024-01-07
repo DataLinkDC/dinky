@@ -22,6 +22,7 @@ package org.dinky.api;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.FlinkRestAPIConstant;
 import org.dinky.data.constant.NetConstant;
+import org.dinky.data.exception.BusException;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.model.JobInfo;
@@ -202,7 +203,7 @@ public class FlinkAPI {
                     break;
                 }
             } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
+                throw new BusException(e.getMessage());
             }
         }
 
