@@ -144,10 +144,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return transOperatoinsToStreamGraph(modifyOperations);
     }
 
-    public JobGraph getJobGraphFromInserts(List<String> statements) {
-        return getStreamGraphFromInserts(statements).getJobGraph();
-    }
-
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         List<Operation> operations = getParser().parse(statement);
         if (operations.size() != 1) {
@@ -176,11 +172,4 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         record.setExplain(getPlanner().explain(operations, extraDetails));
         return record;
     }
-
-    @Override
-    public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext = new LineageContext(this);
-        return lineageContext.analyzeLineage(statement);
-    }
-
 }

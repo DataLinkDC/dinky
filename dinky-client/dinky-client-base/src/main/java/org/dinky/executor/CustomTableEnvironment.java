@@ -62,8 +62,6 @@ public interface CustomTableEnvironment
 
     StreamGraph getStreamGraphFromInserts(List<String> statements);
 
-    JobGraph getJobGraphFromInserts(List<String> statements);
-
     SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
 
     StreamExecutionEnvironment getStreamExecutionEnvironment();
@@ -73,6 +71,10 @@ public interface CustomTableEnvironment
     ClassLoader getUserClassLoader();
 
     Configuration getRootConfiguration();
+
+    default JobGraph getJobGraphFromInserts(List<String> statements) {
+        return getStreamGraphFromInserts(statements).getJobGraph();
+    }
 
     default List<LineageRel> getLineage(String statement) {
         return Collections.emptyList();

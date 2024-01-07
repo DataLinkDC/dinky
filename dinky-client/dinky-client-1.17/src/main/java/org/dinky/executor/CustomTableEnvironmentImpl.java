@@ -155,45 +155,4 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return transOperatoinsToStreamGraph(modifyOperations);
     }
 
-    @Override
-    public JobGraph getJobGraphFromInserts(List<String> statements) {
-        return getStreamGraphFromInserts(statements).getJobGraph();
-    }
-
-    @Override
-    public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
-        List<Operation> operations = getParser().parse(statement);
-        if (operations.size() != 1) {
-            throw new TableException("Unsupported SQL query! explainSql() only accepts a single SQL query.");
-        }
-
-        Operation operation = operations.get(0);
-        SqlExplainResult data = new SqlExplainResult();
-        data.setParseTrue(true);
-        data.setExplainTrue(true);
-
-        if (operation instanceof ModifyOperation) {
-            data.setType("Modify DML");
-        } else if (operation instanceof ExplainOperation) {
-            data.setType("Explain DML");
-        } else if (operation instanceof QueryOperation) {
-            data.setType("Query DML");
-        } else {
-            data.setExplain(operation.asSummaryString());
-            data.setType("DDL");
-
-            // data.setExplain("DDL statement needn't comment。");
-            return data;
-        }
-
-        data.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
-        return data;
-    }
-
-    @Override
-    public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext = new LineageContext(this);
-        return lineageContext.analyzeLineage(statement);
-    }
-
 }

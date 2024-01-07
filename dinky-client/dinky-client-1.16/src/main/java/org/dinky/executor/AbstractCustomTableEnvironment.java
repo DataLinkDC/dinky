@@ -29,6 +29,10 @@ import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.table.planner.delegation.PlannerBase;
 
 import cn.hutool.core.util.ReflectUtil;
+import org.dinky.data.model.LineageRel;
+import org.dinky.utils.LineageContext;
+
+import java.util.List;
 
 /** */
 public abstract class AbstractCustomTableEnvironment
@@ -80,4 +84,11 @@ public abstract class AbstractCustomTableEnvironment
     public Configuration getRootConfiguration() {
         return (Configuration) this.getConfig().getRootConfiguration();
     }
+
+    @Override
+    public List<LineageRel> getLineage(String statement) {
+        LineageContext lineageContext = new LineageContext(this);
+        return lineageContext.analyzeLineage(statement);
+    }
+
 }
