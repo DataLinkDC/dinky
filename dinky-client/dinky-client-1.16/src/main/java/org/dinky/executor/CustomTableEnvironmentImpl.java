@@ -155,26 +155,26 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         }
 
         Operation operation = operations.get(0);
-        SqlExplainResult sqlExplainResult = new SqlExplainResult();
-        sqlExplainResult.setParseTrue(true);
-        sqlExplainResult.setExplainTrue(true);
+        SqlExplainResult record = new SqlExplainResult();
+        record.setParseTrue(true);
+        record.setExplainTrue(true);
 
         if (operation instanceof ModifyOperation) {
-            sqlExplainResult.setType("Modify DML");
+            record.setType("Modify DML");
         } else if (operation instanceof ExplainOperation) {
-            sqlExplainResult.setType("Explain DML");
+            record.setType("Explain DML");
         } else if (operation instanceof QueryOperation) {
-            sqlExplainResult.setType("Query DML");
+            record.setType("Query DML");
         } else {
-            sqlExplainResult.setExplain(operation.asSummaryString());
-            sqlExplainResult.setType("DDL");
+            record.setExplain(operation.asSummaryString());
+            record.setType("DDL");
 
-            // sqlExplainResult.setExplain("DDL statement needn't comment。");
-            return sqlExplainResult;
+            // record.setExplain("DDL statement needn't comment。");
+            return record;
         }
 
-        sqlExplainResult.setExplain(getPlanner().explain(operations, extraDetails));
-        return sqlExplainResult;
+        record.setExplain(getPlanner().explain(operations, extraDetails));
+        return record;
     }
 
     @Override
