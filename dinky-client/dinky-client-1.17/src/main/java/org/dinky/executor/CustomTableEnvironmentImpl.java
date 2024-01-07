@@ -105,30 +105,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
-    public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
-        List<Operation> operations = getParser().parse(statement);
-        for (Operation operation : operations) {
-            if (operation instanceof SetOperation) {
-                callSet((SetOperation) operation, getStreamExecutionEnvironment(), setMap);
-                return true;
-            } else if (operation instanceof ResetOperation) {
-                callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
-                return true;
-            } else if (operation instanceof CustomSetOperation) {
-                CustomSetOperation customSetOperation = (CustomSetOperation) operation;
-                if (customSetOperation.isValid()) {
-                    callSet(
-                            new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()),
-                            getStreamExecutionEnvironment(),
-                            setMap);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public ObjectNode getStreamGraph(String statement) {
         List<Operation> operations = super.getParser().parse(statement);
         if (operations.size() != 1) {
@@ -219,46 +195,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
         data.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
         return data;
-    }
-
-    private void callSet(
-            SetOperation setOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
-        if (!setOperation.getKey().isPresent() || !setOperation.getValue().isPresent()) {
-            return;
-        }
-
-        String key = setOperation.getKey().get().trim();
-        String value = setOperation.getValue().get().trim();
-        if (Asserts.isNullString(key) || Asserts.isNullString(value)) {
-            return;
-        }
-        setMap.put(key, value);
-
-        setConfiguration(environment, Collections.singletonMap(key, value));
-    }
-
-    private void callReset(
-            ResetOperation resetOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
-        final Optional<String> keyOptional = resetOperation.getKey();
-        if (!keyOptional.isPresent()) {
-            setMap.clear();
-            return;
-        }
-
-        String key = keyOptional.get().trim();
-        if (Asserts.isNullString(key)) {
-            return;
-        }
-
-        setMap.remove(key);
-        setConfiguration(environment, Collections.singletonMap(key, null));
-    }
-
-    private void setConfiguration(StreamExecutionEnvironment environment, Map<String, String> config) {
-        Configuration configuration = Configuration.fromMap(config);
-        environment.getConfig().configure(configuration, null);
-        environment.getCheckpointConfig().configure(configuration);
-        getConfig().addConfiguration(configuration);
     }
 
     @Override
