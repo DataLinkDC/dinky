@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.DinkyVersion;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
@@ -117,5 +118,11 @@ public class AdminController {
     @ApiOperation(value = "Query Current User Token Info", notes = "Query Current User Token Info")
     public Result<SaTokenInfo> getTokenInfo() {
         return Result.succeed(StpUtil.getTokenInfo());
+    }
+
+    @GetMapping("/version")
+    @ApiOperation(value = "Query Service Version", notes = "Query Dinky Service Version Number")
+    public Result<Object> getVersionInfo() {
+        return Result.succeed((Object) DinkyVersion.getVersion());
     }
 }
