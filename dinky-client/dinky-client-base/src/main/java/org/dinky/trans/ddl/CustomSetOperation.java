@@ -19,9 +19,6 @@
 
 package org.dinky.trans.ddl;
 
-import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.operations.command.ResetOperation;
-import org.apache.flink.table.operations.command.SetOperation;
 import org.dinky.assertion.Asserts;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
@@ -32,6 +29,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.operations.command.ResetOperation;
+import org.apache.flink.table.operations.command.SetOperation;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -98,7 +98,8 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
         return Optional.of(TABLE_RESULT_OK);
     }
 
-    public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap, CustomTableEnvironment tEnv) {
+    public boolean parseAndLoadConfiguration(
+            String statement, Map<String, Object> setMap, CustomTableEnvironment tEnv) {
         List<Operation> operations = tEnv.getParser().parse(statement);
         for (Operation operation : operations) {
             if (operation instanceof SetOperation) {
@@ -110,10 +111,7 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
             } else if (operation instanceof CustomSetOperation) {
                 CustomSetOperation customSetOperation = (CustomSetOperation) operation;
                 if (customSetOperation.isValid()) {
-                    callSet(
-                            new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()),
-                            tEnv,
-                            setMap);
+                    callSet(new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()), tEnv, setMap);
                 }
                 return true;
             }
@@ -121,8 +119,7 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
         return false;
     }
 
-    private void callSet(
-            SetOperation setOperation, CustomTableEnvironment environment, Map<String, Object> setMap) {
+    private void callSet(SetOperation setOperation, CustomTableEnvironment environment, Map<String, Object> setMap) {
         if (!setOperation.getKey().isPresent() || !setOperation.getValue().isPresent()) {
             return;
         }
@@ -136,7 +133,6 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
 
         setConfiguration(environment, Collections.singletonMap(key, value));
     }
-
 
     private void callReset(
             ResetOperation resetOperation, CustomTableEnvironment environment, Map<String, Object> setMap) {
@@ -161,7 +157,6 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
         environment.getStreamExecutionEnvironment().getCheckpointConfig().configure(configuration);
         environment.getConfig().addConfiguration(configuration);
     }
-
 
     @Override
     public String asSummaryString() {
