@@ -1010,9 +1010,6 @@
 
         <profile>
             <id>flink-1.14</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
                 <dinky.flink.version>1.14</dinky.flink.version>
                 <flink.version>1.14.6</flink.version>
@@ -1023,17 +1020,19 @@
             <id>flink-1.15</id>
             <properties>
                 <dinky.flink.version>1.15</dinky.flink.version>
-
             </properties>
         </profile>
 
         <profile>
             <id>flink-1.16</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <dinky.flink.version>1.16</dinky.flink.version>
-
             </properties>
         </profile>
+
         <profile>
             <id>flink-1.17</id>
             <properties>
