@@ -96,7 +96,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
    */
   const handleCancel = () => {
     formContext.resetForm();
-    setJobType('FlinkSql');
+    setJobType('');
     onCancel();
   };
 
