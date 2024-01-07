@@ -80,7 +80,7 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
     public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
         try {
             if (null != Class.forName("org.apache.log4j.Logger")) {
-                parseAndLoadConfiguration(statement, new HashMap<>(), tEnv);
+                parseAndLoadConfiguration(statement, tEnv);
                 return Optional.of(TABLE_RESULT_OK);
             }
         } catch (ClassNotFoundException e) {
@@ -99,19 +99,19 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
     }
 
     public boolean parseAndLoadConfiguration(
-            String statement, Map<String, Object> setMap, CustomTableEnvironment tEnv) {
+            String statement, CustomTableEnvironment tEnv) {
         List<Operation> operations = tEnv.getParser().parse(statement);
         for (Operation operation : operations) {
             if (operation instanceof SetOperation) {
-                callSet((SetOperation) operation, tEnv, setMap);
+                callSet((SetOperation) operation, tEnv);
                 return true;
             } else if (operation instanceof ResetOperation) {
-                callReset((ResetOperation) operation, tEnv, setMap);
+                callReset((ResetOperation) operation, tEnv);
                 return true;
             } else if (operation instanceof CustomSetOperation) {
                 CustomSetOperation customSetOperation = (CustomSetOperation) operation;
                 if (customSetOperation.isValid()) {
-                    callSet(new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()), tEnv, setMap);
+                    callSet(new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()), tEnv);
                 }
                 return true;
             }
@@ -119,7 +119,7 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
         return false;
     }
 
-    private void callSet(SetOperation setOperation, CustomTableEnvironment environment, Map<String, Object> setMap) {
+    private void callSet(SetOperation setOperation, CustomTableEnvironment environment) {
         if (!setOperation.getKey().isPresent() || !setOperation.getValue().isPresent()) {
             return;
         }
@@ -129,16 +129,14 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
         if (Asserts.isNullString(key) || Asserts.isNullString(value)) {
             return;
         }
-        setMap.put(key, value);
 
         setConfiguration(environment, Collections.singletonMap(key, value));
     }
 
     private void callReset(
-            ResetOperation resetOperation, CustomTableEnvironment environment, Map<String, Object> setMap) {
+            ResetOperation resetOperation, CustomTableEnvironment environment) {
         final Optional<String> keyOptional = resetOperation.getKey();
         if (!keyOptional.isPresent()) {
-            setMap.clear();
             return;
         }
 
@@ -147,7 +145,6 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
             return;
         }
 
-        setMap.remove(key);
         setConfiguration(environment, Collections.singletonMap(key, null));
     }
 
