@@ -272,8 +272,8 @@ const MenuList: React.FC = () => {
   const handleCreateRoot = () => {
     setMenuState((prevState) => ({
       ...prevState,
-      addedMenuOpen: true,
-      editMenuOpen: false,
+      addedOpen: true,
+      editOpen: false,
       contextMenuOpen: false,
       isRootMenu: true,
       sysMenuValue: {}
