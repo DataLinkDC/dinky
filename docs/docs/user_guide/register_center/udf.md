@@ -26,6 +26,10 @@ Dinky 在 v1.0.0 版本开始，提供了 UDF 管理的功能，可以在 Dinky 
 
 > 可以在该功能中管理常用的 UDF 模板,方便的进行 UDF 函数的开发,避免重复的编写模板代码
 
+:::warning 注意
+1. 删除模版时会进行引用检查,如果有作业引用该模版,将无法删除
+:::
+
 - 支持 scala/java/python 三种语言的模板管理
 
 ![udf_template_list](http://pic.dinky.org.cn/dinky/docs/test/udf_template_list.png)

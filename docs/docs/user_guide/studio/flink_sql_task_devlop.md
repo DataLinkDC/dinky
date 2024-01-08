@@ -10,6 +10,7 @@ title: Flink作业
 ## 基础作业配置
 
 ### 作业配置
+
 ![task_config_panel](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/task_config_panel.png)
 该面板仅在 FlinkSQL 与 Flink Jar 类型作业需要配置，您可以根据具体需求配置参数，参数设置如下
 
@@ -17,9 +18,9 @@ title: Flink作业
 |:----:|:------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |  是   |     执行模式     | 指定 FlinkSQL 的执行模式，默认为local，支持以下几种运行模式**<br />Local<br />Standalone<br />Yarn / Yarn Session<br />Yarn Prejob / Yarn Application<br />K8s Application / K8s Session** |
 |  是   |   Flink集群    | 除Local模式外，Standalone与Session模式需要选择对应的集群实例，Application与PreJob模式需要选择对应的集群配置，具体配置方法参考注册中心内容                                                                             |
-|  否   | FlinkSQL 环境  | 选择当前 FlinkSQL 执行环境或Catalog，默认无，请参考Flink Env作业或Catalog章节                                                                                                              |
+|  否   | FlinkSQL 环境  | 选择当前 FlinkSQL 执行环境或Catalog，默认无，请参考[FlinkSQLEnv 作业](./flink_env_task_devlop)或Catalog章节                                                                                |
 |  是   |    任务并行度     | 设置Flink任务的并行度，默认为 1                                                                                                                                                  |
-|  否   |     全局变量     | 默认禁用，开启 FlinkSQL 全局变量，以“${}”进行调用                                                                                                                                     |
+|  否   |     全局变量     | 默认禁用，开启 FlinkSQL 全局变量，以`${}`进行调用                                                                                                                                     |
 |  否   |     批模式      | 默认禁用，开启后启用 Batch Mode                                                                                                                                                |
 |  否   | SavePoint 策略 | 默认禁用，策略包括:<br/>   **最近一次**<br/>   **最早一次**<br/>   **指定一次**                                                                                                           |
 |  否   |     报警组      | 报警组配置详见[报警管理](../register_center/alert/alert_overview)                                                                                                               |
@@ -44,6 +45,7 @@ Flink参数，添加完成后即可在配置列表中找到刚刚添加的Flink�
 Dinky 提供 FlinkSQL 在通过 **智能停止** 作业时，自动触发**savepoint**。也可以在运维中心手动触发，触发成功后会保存结果并记录在这里
 
 ![save_point](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/save_point.png)
+
 ### 版本历史
 
 在创建作业后，点击`发布`会自动创建一个历史版本，用于记录历史并回退
@@ -78,7 +80,6 @@ Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览
 
 | 是否必填 | 配置项  |                             备注                              |
 |:----:|:----:|:-----------------------------------------------------------:|
-|  否   | 预览结果 |                   默认开启，开启预览结果将同步运行并返回数据结果                   |
 |  否   | 打印流  | 默认禁用，开启打印流将同步运行并返回含有**op**字段信息的 ChangeLog<br/> 默认不开启则返回最终结果 |
 |  否   | 最大行数 |                       预览数据的最大行数，默认100                       |
 |  否   | 自动停止 |                 默认禁用，开启自动停止将在捕获最大行记录数后自动停止                  |
@@ -88,17 +89,15 @@ Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览
 
 :::tip FlinkSQL 预览结果的必要条件
 
-1.执行模式必须是 Local、Standalone、Yarn Session、Kubernetes Session 其中的一种；
+1. 执行模式必须是 Local、Standalone、Yarn Session、Kubernetes Session 其中的一种；
 
-2.除 SET 和 DDL 外，必须只提交一个 SELECT 或 SHOW 或 DESC 语句；
+2. 除 SET 和 DDL 外，必须只提交一个 SELECT 或 SHOW 或 DESC 语句；
 
-3.必须开启 **预览结果**；
+3. 作业必须是提交成功并且返回 JID，同时在远程集群可以看到作业处于 RUNNING 或 FINISHED 状态；
 
-4.作业必须是提交成功并且返回 JID，同时在远程集群可以看到作业处于 RUNNING 或 FINISHED 状态；
+4. Dinky 重启后，之前的预览结果将失效
 
-5.Dinky 重启后，之前的预览结果将失效
 :::
-
 
 ## 工具栏使用
 
@@ -106,15 +105,16 @@ Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览
 ![tool_bar](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/tool_bar.png)
 具体含义如下
 
-| 名称  |       作用       |      备注      |
-|:---:|:--------------:|:------------:|
-| 保存  |     保存当前作业     |              |
-| DAG | 获取Flink sql流程图 |              |
-| 检查  |    对sql进行校验    |              |
-| 发布  |      发布任务      | 任务发布后不允许进行修改 |
-| 运维  |     跳转运维页面     | 作用未运行不会有此按钮  |
-| 运行  |      提交作业      |              |
-| 预览  |     预览作业数据     |              |
+| 名称  |          作用          |                                       备注                                       |
+|:---:|:--------------------:|:------------------------------------------------------------------------------:|
+| 保存  |        保存当前作业        |                                                                                |
+| DAG |    获取Flink sql流程图    |                                                                                |
+| 检查  |       对sql进行校验       |                                                                                |
+| 发布  |         发布任务         |                                  任务发布后不允许进行修改                                  |
+| 推送  | 推送至 DolphinScheduler | 该按钮仅在以下条件全部满足时方可展示/使用, 条件:<br/>1. 启用了DolphinScheduler,且配置正确<br/>2. 任务已经发布<br/> |
+| 运维  |        跳转运维页面        |                                  作用未运行不会有此按钮                                   |
+| 运行  |         提交作业         |                                                                                |
+| 预览  |        预览作业数据        |                                                                                |
 
 ## Flink sql作业
 
@@ -149,10 +149,12 @@ from datagen_source;
 
 编写FlinkSql语句
 :::tip 注意
-1. 此为dinky增强扩展语法
-2. 此语法仅能在Flink jar作业中使用
+
+1. 此为dinky增强扩展语法, 详见 [Flink SQL 扩展语法](../../extend/expand_statements/execute_jar)
+2. 此语法仅能在Flink jar作业中使用,请注意创建作业时选择作业类型为 `FlinkJar`
+   
 :::
-**语法结构**
+   **语法结构**
 
 ```sql
 
@@ -180,5 +182,5 @@ EXECUTE JAR WITH (
 
 1. 以上示例中, uri 的值为 rs:/jar/flink/demo/SocketWindowWordCount.jar, 该值为资源中心中的资源路径,
    请确保资源中心中存在该资源,请忽略资源中心 Root 节点(该节点为虚拟节点)
-2. 如果要读取S3，HDFS，LCOAL等存储上面的文件均可通过rs协议进行桥接使用,请参考 [资源管理](../../user_guide/register_center/resource) 中 rs 协议使用方式
+2. 如果要读取 S3，HDFS，LOCAL 等存储上面的文件均可通过rs协议进行桥接使用,请参考 [资源管理](../../user_guide/register_center/resource) 中 rs 协议使用方式
 :::
