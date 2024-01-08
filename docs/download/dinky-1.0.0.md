@@ -5,7 +5,7 @@ title: 1.0.0 release
 
 | 版本        | 二进制程序                                                                                                                             | Source                                                                                    |
 |-----------|-----------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
-| 1.0.0-rc2 | [dinky-release-1.0.0-rc2.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.0-rc2/dinky-release-1.0.0-rc2.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.0-rc2.zip) |
+| 1.0.0-rc3 | [dinky-release-1.0.0-rc3.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.0-rc3/dinky-release-1.0.0-rc3.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.0-rc3.zip) |
 
 ## Dinky-1.0.0-rc1 发行说明
 
@@ -133,5 +133,71 @@ Dinky 1.0 是一个重构版本，对已有的功能进行重构，并新增了�
 @leechor
 @stdnt-xiao
 @yangzehan
+@zackyoungh
+@Zzm0809
+
+## Dinky-1.0.0-rc3 发行说明
+### 新功能
+- 默认 Flink 启动版本修改为 1.16
+- 实现 CodeShow 组件换行按钮
+- 实现 Flink 实例停止功能
+- 实现删除已定义的任务监控布局
+
+
+### 优化
+- 获取版本方式优化为后端接口返回
+- 优化CANCEL作业逻辑，对于失联作业可强制停止
+- 优化注册中心部分删除时的检测引用逻辑
+- 优化作业创建时可指定作业模版
+- 优化Task 删除逻辑
+- 优化部分前端国际化
+- 优化 Dinky 进程 PID 检测逻辑
+- 优化执行预览时控制台与结果 Tag 自动切换
+
+
+
+### 修复
+- 修复告警实例表单渲染问题
+- 修复FlinkSQLEnv 无法检查的问题
+- 修复 set 语句无法生效的问题
+- 修复yarn集群配置自定义Flink，hadoop配置无效问题
+- 修复Prejob模式下一些问题
+- 修复运维中心检查点信息获取不到问题
+- 修复Yarn Application作业结束后状态无法检测问题
+- 修复yarn作业提交失败控制台日志无打印问题
+- 修复获取 savepoint 列表 404 的问题
+- 修复从集群配置启动的Flink 实例无法在作业配置中选择的问题
+- 修复RECONNECT状态作业状态识别错误
+- 修复运维中心列表结束时间为 1970-01-01 的问题
+- 修复 FlinkJar 任务在提交到 PreJob 模式的问题
+- 修复告警模块依赖重复引入,导致冲突
+- 修复Dinky启动检测pid问题
+- 修复内置Paimon 与 用户集成版本不一致时,导致冲突的问题(使用 shade 实现)
+- 修复 execute jar 语法正则问题
+- 修复FlinkJar 任务在 Application 模式下CheckPoint 参数不生效问题
+- 修复修改 Task 作业时名称和备注信息更新错误的问题
+- 修复注册数据源时密码为必填的问题
+
+### 文档
+- 添加部分数据开发相关文档
+- 优化注册中心部分文档
+- 删除一些弃用/错误的文档
+- 调整一些文档结构
+- 添加快速开始文档
+- 添加部署文档
+
+### 贡献者
+@aiwenmo
+@drgnchan
+@gaoyan1998
+@gitfortian
+@gitjxm
+@leechor
+@leeoo
+@Logout-y
+@MaoMiMao
+@Pandas886
+@yangzehan
+@YardStrong
 @zackyoungh
 @Zzm0809
