@@ -263,6 +263,9 @@ const HeaderContainer = (props: connect) => {
       currentData.status = JOB_STATUS.FINISHED;
     }
     if (currentTab) currentTab.console.result = res.data.result;
+    if (isSql(currentData.dialect)) {
+      updateSelectBottomKey(LeftBottomKey.RESULT_KEY);
+    }
     saveTabs({ ...props.tabs });
   };
 
