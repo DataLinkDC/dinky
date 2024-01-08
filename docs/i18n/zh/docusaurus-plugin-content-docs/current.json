@@ -110,5 +110,9 @@
   "sidebar.tutorialSidebar.category.upgrade": {
     "message": "升级",
     "description": "The label for category upgrade in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.openapi": {
+    "message": "OpenAPI",
+    "description": "The label for category openapi in sidebar tutorialSidebar"
   }
 }

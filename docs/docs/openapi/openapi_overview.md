@@ -1,17 +1,17 @@
 ---
-sidebar_position: 996
-position: 996
-id: openapi
-title: Open API
+sidebar_position: 1
+position: 1
+id: openapi_overview
+title: Open API 总览
 ---
 
+
+:::info 介绍
 Dinky 平台提供 OpenAPI 能力，通过调用 Dinky 的 OpenAPI 可以使用 Dinky 的功能，实现应用和 Dinky 的集成和交互。
 
-### 背景
-
-Dinky 的O penAPI 提供了 10 多种 API 功能。通过调用 API，可以快速进行操作和系统集成对接等工作，提高数据开发效率，满足企业定制化需求。您还可以通过开放平台，轻松获取
+Dinky 的 OpenAPI 提供多种 API 功能。通过调用 API，可以快速进行操作和系统集成对接等工作，提高数据开发效率，满足企业定制化需求。您还可以通过开放平台，轻松获取
 OpenAPI 的使用情况。
-
+:::
 当前支持的 OpenAPI 包括如下：
 
 | 序号 |      执行模式      |        类型名称        |             作用             |
@@ -31,7 +31,8 @@ OpenAPI 的使用情况。
 | 13 | savepointTask  |                    |      调用并触发 Savepoint       |
 | 14 |   submitTask   |                    |            作业调度            |
 
-### 示例
+
+## 示例
 
 **explainSql**
 
