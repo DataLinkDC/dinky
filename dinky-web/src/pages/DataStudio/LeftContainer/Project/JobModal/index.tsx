@@ -165,7 +165,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
             placeholder={l('catalog.name.placeholder')}
             validateTrigger={['onBlur', 'onChange', 'onSubmit']}
             rules={[{ required: true, validator: validateName }]}
-            width={'md'}
+            width={'xl'}
           />
           <ProFormSelect
             name={'type'}
@@ -177,7 +177,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
             placeholder={l('catalog.type.placeholder')}
             rules={[{ required: true, message: l('catalog.type.placeholder') }]}
             allowClear={false}
-            width={'sm'}
+            width={'lg'}
           />
         </ProFormGroup>
         {isUDF(jobType) && (
@@ -233,7 +233,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     <ModalForm<Catalogue>
       title={title}
       form={form}
-      width={'40%'}
+      width={'60%'}
       initialValues={{ ...values }}
       open={modalVisible}
       autoFocusFirstInput
