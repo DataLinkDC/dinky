@@ -21,7 +21,7 @@ import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
 import { BaseState, ContextMenuPosition } from '@/types/Public/state.d';
 import {
   Alert,
-  Cluster,
+  Cluster, DataSources,
   Document,
   GitProject,
   GlobalVar,
@@ -128,4 +128,9 @@ export interface ResourceState {
 export interface TemplateState extends BaseState {
   value: Partial<UDFTemplate>;
   drawerOpen: boolean;
+}
+
+export interface DataSourceState extends BaseState {
+  value: Partial<DataSources.DataSource>;
+  isDetailPage: boolean;
 }

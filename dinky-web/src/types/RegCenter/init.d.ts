@@ -25,7 +25,7 @@ import {
   AlertTemplateState,
   BuildStepsState,
   ClusterConfigState,
-  ClusterInstanceState,
+  ClusterInstanceState, DataSourceState,
   DocumentState,
   GitProjectState,
   GlobalVarState,
@@ -251,3 +251,12 @@ export const InitTemplateState: TemplateState = {
   value: {},
   drawerOpen: false
 };
+
+
+export const InitDataSourceState: DataSourceState = {
+  loading: false,
+  addedOpen: false,
+  editOpen: false,
+  value: {},
+  isDetailPage: false
+}
