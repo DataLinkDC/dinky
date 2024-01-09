@@ -21,7 +21,8 @@ import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
 import { BaseState, ContextMenuPosition } from '@/types/Public/state.d';
 import {
   Alert,
-  Cluster, DataSources,
+  Cluster,
+  DataSources,
   Document,
   GitProject,
   GlobalVar,
