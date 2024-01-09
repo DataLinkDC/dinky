@@ -37,6 +37,8 @@ import {
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { DataSources } from '@/types/RegCenter/data.d';
+import { InitDataSourceState } from '@/types/RegCenter/init.d';
+import { DataSourceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { WarningMessage } from '@/utils/messages';
 import {
@@ -59,10 +61,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   /**
    * state
    */
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [detailPage, setDetailPage] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState<Partial<DataSources.DataSource>>({});
+  const [datasourceState, setDatasourceState] = useState<DataSourceState>(InitDataSourceState);
   const actionRef = React.useRef<ActionType>();
 
   const queryDataSourceList = async (keyword = '') => {
@@ -91,10 +90,10 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * @param callback
    */
   const executeAndCallbackRefresh = async (callback: () => Promise<any>) => {
-    setLoading(true);
+    setDatasourceState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     await queryDataSourceList();
-    setLoading(false);
+    setDatasourceState((prevState) => ({ ...prevState, loading: false }));
   };
 
   /**
@@ -161,8 +160,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * @param item
    */
   const editClick = (item: DataSources.DataSource) => {
-    setFormValues(item);
-    setModalVisible(!modalVisible);
+    setDatasourceState((prevState) => ({ ...prevState, value: item, editOpen: true }));
   };
 
   /**
@@ -176,9 +174,9 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
         type: STUDIO_MODEL.updateSelectDatabaseId,
         payload: item.id
       });
-      setFormValues(item);
+      setDatasourceState((prevState) => ({ ...prevState, value: item }));
       history.push(`/registration/datasource/detail/${item.id}`);
-      setDetailPage(!detailPage);
+      setDatasourceState((prevState) => ({ ...prevState, isDetailPage: true }));
     } else {
       await WarningMessage(l('rc.ds.enter.error'));
     }
@@ -190,7 +188,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    */
   const renderDataSourceActionButton = (item: DataSources.DataSource) => {
     return [
-      <Authorized key={`${item.id}_edit`} path='/registration/datasource/add'>
+      <Authorized key={`${item.id}_edit`} path='/registration/datasource/edit'>
         <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
       <Authorized key={`${item.id}_delete`} path='/registration/datasource/delete'>
@@ -256,21 +254,23 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    * cancel all
    */
   const cancelAll = () => {
-    setModalVisible(false);
-    setFormValues({});
+    setDatasourceState(InitDataSourceState);
   };
 
   const renderToolBar = () => {
     return [
       <Input.Search
-        loading={loading}
+        loading={datasourceState.loading}
         key={`_search`}
         allowClear
         placeholder={l('rc.ds.search')}
         onSearch={(value) => queryDataSourceList(value)}
       />,
       <Authorized key='create' path='/registration/datasource/add'>
-        <CreateBtn key={'CreateBtn'} onClick={() => setModalVisible(true)} />
+        <CreateBtn
+          key={'CreateBtn'}
+          onClick={() => setDatasourceState({ ...datasourceState, addedOpen: true })}
+        />
       </Authorized>
     ];
   };
@@ -280,12 +280,12 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    */
   return (
     <>
-      {!detailPage ? (
+      {!datasourceState.isDetailPage ? (
         <>
           <ProList<DataSources.DataSource>
             {...PROTABLE_OPTIONS_PUBLIC}
             {...(PRO_LIST_CARD_OPTIONS as any)}
-            loading={loading}
+            loading={datasourceState.loading}
             tooltip={l('rc.ds.enter')}
             actionRef={actionRef}
             headerTitle={l('rc.ds.management')}
@@ -294,16 +294,34 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
           />
 
           {/* added */}
-          <DataSourceModal
-            values={formValues}
-            visible={modalVisible}
-            onCancel={cancelAll}
-            onTest={(value) => handleTest(value)}
-            onSubmit={(value) => executeAndCallbackRefresh(async () => saveOrUpdateHandle(value))}
-          />
+          {datasourceState.addedOpen && (
+            <DataSourceModal
+              values={{}}
+              visible={datasourceState.addedOpen}
+              onCancel={cancelAll}
+              onTest={(value) => handleTest(value)}
+              onSubmit={(value) => executeAndCallbackRefresh(async () => saveOrUpdateHandle(value))}
+            />
+          )}
+
+          {/* edit mode */}
+          {datasourceState.editOpen && (
+            <DataSourceModal
+              values={datasourceState.value}
+              visible={datasourceState.editOpen}
+              onCancel={cancelAll}
+              onTest={(value) => handleTest(value)}
+              onSubmit={(value) => executeAndCallbackRefresh(async () => saveOrUpdateHandle(value))}
+            />
+          )}
         </>
       ) : (
-        <DataSourceDetail backClick={() => setDetailPage(false)} dataSource={formValues} />
+        <DataSourceDetail
+          backClick={() =>
+            setDatasourceState((prevState) => ({ ...prevState, isDetailPage: false }))
+          }
+          dataSource={datasourceState.value}
+        />
       )}
     </>
   );

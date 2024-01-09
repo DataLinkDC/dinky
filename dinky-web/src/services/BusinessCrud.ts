@@ -136,7 +136,7 @@ export const handleRemoveById = async (url: string, id: number, afterCallBack?: 
  * @param params
  */
 export const updateDataByParam = async (url: string, params: any) => {
-  await LoadingMessageAsync(l('app.request.update'));
+  await LoadingMessageAsync(l('app.request.running') + l('app.request.update'));
   try {
     const { code, msg } = await updateDataByParams(url, { ...params });
     if (code === RESPONSE_CODE.SUCCESS) {
