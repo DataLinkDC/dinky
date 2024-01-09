@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FLINK_VERSION=${2:-1.18}
+FLINK_VERSION=${2:-1.16}
 
 JAR_NAME="dinky-admin"
 

@@ -19,6 +19,9 @@
 
 package org.dinky.executor;
 
+import org.dinky.data.model.LineageRel;
+import org.dinky.utils.LineageContext;
+
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableEnvironment;
@@ -27,6 +30,8 @@ import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImp
 import org.apache.flink.table.delegation.ExtendedOperationExecutor;
 import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.table.planner.delegation.PlannerBase;
+
+import java.util.List;
 
 import cn.hutool.core.util.ReflectUtil;
 
@@ -79,5 +84,11 @@ public abstract class AbstractCustomTableEnvironment
     @Override
     public Configuration getRootConfiguration() {
         return (Configuration) this.getConfig().getRootConfiguration();
+    }
+
+    @Override
+    public List<LineageRel> getLineage(String statement) {
+        LineageContext lineageContext = new LineageContext(this);
+        return lineageContext.analyzeLineage(statement);
     }
 }

@@ -21,11 +21,9 @@ package org.dinky.executor;
 
 import static org.apache.flink.table.api.bridge.internal.AbstractStreamTableEnvironmentImpl.lookupExecutor;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.parser.CustomParserImpl;
-import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
@@ -34,7 +32,6 @@ import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.ExecutionOptions;
 import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -64,16 +61,12 @@ import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
-import org.apache.flink.table.operations.command.ResetOperation;
-import org.apache.flink.table.operations.command.SetOperation;
-import org.apache.flink.types.Row;
 
 import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -285,11 +278,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
-    public JobGraph getJobGraphFromInserts(List<String> statements) {
-        return getStreamGraphFromInserts(statements).getJobGraph();
-    }
-
-    @Override
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         SqlExplainResult record = new SqlExplainResult();
         List<Operation> operations = getParser().parse(statement);
@@ -318,67 +306,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
-    public boolean parseAndLoadConfiguration(String statement, Map<String, Object> setMap) {
-        List<Operation> operations = getParser().parse(statement);
-        for (Operation operation : operations) {
-            if (operation instanceof SetOperation) {
-                callSet((SetOperation) operation, getStreamExecutionEnvironment(), setMap);
-                return true;
-            } else if (operation instanceof ResetOperation) {
-                callReset((ResetOperation) operation, getStreamExecutionEnvironment(), setMap);
-                return true;
-            } else if (operation instanceof CustomSetOperation) {
-                CustomSetOperation customSetOperation = (CustomSetOperation) operation;
-                if (customSetOperation.isValid()) {
-                    callSet(
-                            new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()),
-                            getStreamExecutionEnvironment(),
-                            setMap);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void callSet(
-            SetOperation setOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
-        if (setOperation.getKey().isPresent() && setOperation.getValue().isPresent()) {
-            String key = setOperation.getKey().get().trim();
-            String value = setOperation.getValue().get().trim();
-            if (Asserts.isNullString(key) || Asserts.isNullString(value)) {
-                return;
-            }
-            Map<String, String> confMap = new HashMap<>();
-            confMap.put(key, value);
-            setMap.put(key, value);
-            Configuration configuration = Configuration.fromMap(confMap);
-            environment.getConfig().configure(configuration, null);
-            environment.getCheckpointConfig().configure(configuration);
-            getConfig().addConfiguration(configuration);
-        }
-    }
-
-    private void callReset(
-            ResetOperation resetOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
-        if (resetOperation.getKey().isPresent()) {
-            String key = resetOperation.getKey().get().trim();
-            if (Asserts.isNullString(key)) {
-                return;
-            }
-            Map<String, String> confMap = new HashMap<>();
-            confMap.put(key, null);
-            setMap.remove(key);
-            Configuration configuration = Configuration.fromMap(confMap);
-            environment.getConfig().configure(configuration, null);
-            environment.getCheckpointConfig().configure(configuration);
-            getConfig().addConfiguration(configuration);
-        } else {
-            setMap.clear();
-        }
-    }
-
-    @Override
     public <T> Table fromDataStream(DataStream<T> dataStream, String fields) {
         List<Expression> expressions = ExpressionParser.INSTANCE.parseExpressionList(fields);
         return fromDataStream(dataStream, expressions.toArray(new Expression[0]));
@@ -393,11 +320,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     public List<LineageRel> getLineage(String statement) {
         LineageContext lineageContext = new LineageContext((TableEnvironmentImpl) streamTableEnvironment);
         return lineageContext.analyzeLineage(statement);
-    }
-
-    @Override
-    public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
-        createTemporaryView(s, fromChangelogStream(dataStream));
     }
 
     @Override

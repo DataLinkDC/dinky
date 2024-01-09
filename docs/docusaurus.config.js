@@ -222,11 +222,11 @@ const config = {
                         items: [
                             {
                                 label: 'doc_home',
-                                to: '/docs/next/platform_intro/overview',
+                                to: '/docs/next/get_started/overview',
                             },
                             {
                                 label: 'openapi',
-                                to: '/docs/next/openapi',
+                                to: '/docs/next/openapi/openapi_overview',
                             },
                         ],
                     },

@@ -14,6 +14,7 @@ FlinkDDL 等。
 
 目前支持的数据源类型包括：MySQL、Oracle、PostgreSQL、SQLServer、Phoenix、ClickHouse、Doris、StartRocks、Presto、Hive。
 
+注意: 删除前会进行引用检查，如果有作业引用该数据源，将无法删除。
 :::
 
 ## 数据源管理

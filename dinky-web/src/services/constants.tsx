@@ -26,11 +26,6 @@ import { ModalFormProps } from '@ant-design/pro-form/es/layouts/ModalForm';
 export const TENANT_ID = 'tenantId';
 
 /**
- * the platform version
- */
-export const VERSION = '1.0.0-rc2';
-
-/**
  * the platform language
  */
 export const STORY_LANGUAGE = 'language';

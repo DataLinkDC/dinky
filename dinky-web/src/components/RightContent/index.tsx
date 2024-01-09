@@ -18,7 +18,9 @@
  */
 
 import { ThemeCloud, ThemeStar } from '@/components/ThemeSvg/ThemeSvg';
-import { LANGUAGE_KEY, LANGUAGE_ZH, STORY_LANGUAGE, VERSION } from '@/services/constants';
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { LANGUAGE_KEY, LANGUAGE_ZH, STORY_LANGUAGE } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { THEME } from '@/types/Public/data';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
@@ -39,6 +41,7 @@ const GlobalHeaderRight: React.FC = () => {
   const [theme, setTheme] = useLocalStorage(THEME.NAV_THEME, initialState?.settings?.navTheme);
   const [language, setLanguage] = useLocalStorage(LANGUAGE_KEY, LANGUAGE_ZH);
   const [langCache, setLangCache] = useCookie(STORY_LANGUAGE, language);
+  const [serviceVersion, setServiceVersion] = useState<string>('');
 
   useEffect(() => {
     setLangCache(language);
@@ -60,6 +63,12 @@ const GlobalHeaderRight: React.FC = () => {
       })))();
   }, [theme, language]);
 
+  useEffect(() => {
+    queryDataByParams<string>(API_CONSTANTS.GET_SERVICE_VERSION).then((res) => {
+      if (res) setServiceVersion(res);
+    });
+  }, []);
+
   if (!initialState || !initialState.settings) {
     return null;
   }
@@ -67,7 +76,7 @@ const GlobalHeaderRight: React.FC = () => {
   /**
    * css
    */
-  const actionClassName = {
+  const actionClassName: any = {
     display: 'flex',
     float: 'right',
     justifyContent: 'center',
@@ -114,7 +123,7 @@ const GlobalHeaderRight: React.FC = () => {
     style: fullScreenClassName
   };
 
-  const menuVersion = l('menu.version', '', { version: VERSION });
+  const menuVersion = l('menu.version', '', { version: serviceVersion });
   return (
     <>
       <Tooltip
@@ -122,9 +131,9 @@ const GlobalHeaderRight: React.FC = () => {
         title={<span>{fullScreen ? l('global.fullScreen') : l('global.fullScreen.exit')}</span>}
       >
         {fullScreen ? (
-          <FullscreenOutlined {...fullScreenProps} onClick={screenFull} />
+          <FullscreenOutlined {...(fullScreenProps as any)} onClick={screenFull} />
         ) : (
-          <FullscreenExitOutlined {...fullScreenProps} onClick={screenFull} />
+          <FullscreenExitOutlined {...(fullScreenProps as any)} onClick={screenFull} />
         )}
       </Tooltip>
       <Tooltip placement='bottom' title={<span>{menuVersion}</span>}>
