@@ -120,7 +120,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
         if (TextUtils.isEmpty(k8sConfig.getKubeConfig())) {
             kubernetesClient = new DefaultKubernetesClient();
         } else {
-            kubernetesClient = DefaultKubernetesClient.fromConfig(k8sConfig.getKubeConfig());
+            kubernetesClient = new DefaultKubernetesClient(Config.fromKubeconfig(k8sConfig.getKubeConfig()));
         }
     }
 
