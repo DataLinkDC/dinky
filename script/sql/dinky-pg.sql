@@ -534,7 +534,7 @@ VALUES (12, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.jdbc', 'JDBC建�
         null, null);
 INSERT INTO public.dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num,
                                          enabled, create_time, update_time, creator, updater)
-VALUES (13, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.catalog.hive', '创建HIVE的catalog', e'CREATE CATALOG hive WITH (
+VALUES (13, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.catalog.hive', '创建HIVE的catalog', 'CREATE CATALOG hive WITH (
     ''type'' = ''hive'',
     ''default-database'' = ''default'',
     ''hive-conf-dir'' = ''/app/wwwroot/MBDC/hive/conf/'', --hive配置文件
