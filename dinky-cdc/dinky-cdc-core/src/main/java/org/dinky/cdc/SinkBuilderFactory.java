@@ -69,12 +69,11 @@ public class SinkBuilderFactory {
             sinkBuilders.add(factory);
         }
 
-        Map<String, Supplier<SinkBuilder>> plusSinkBuilder = sinkBuilders.stream()
-                .collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, x->()->x));
+        Map<String, Supplier<SinkBuilder>> plusSinkBuilder =
+                sinkBuilders.stream().collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, x -> () -> x));
         map.putAll(plusSinkBuilder);
         return map;
     }
-
 
     public static String getKeyWord(SinkBuilder c) {
         String fieldName = "KEY_WORD";
