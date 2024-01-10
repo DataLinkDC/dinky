@@ -52,7 +52,7 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
   const key = id + selectPath;
   const [itemChildren, setItemChildren] = useState({ [key]: [] as TabsProps['items'] });
 
-  const checkpointArray = ((checkPoints.history ?? []) as any[])
+  const checkpointArray = ((checkPoints?.history ?? []) as any[])
     .filter((x) => x.status === 'COMPLETED')
     .map((x) => {
       return { checkpointType: x.checkpoint_type, path: x.external_path, id: x.id };
