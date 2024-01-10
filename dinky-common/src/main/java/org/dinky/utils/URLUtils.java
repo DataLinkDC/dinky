@@ -19,6 +19,7 @@
 
 package org.dinky.utils;
 
+import cn.hutool.core.text.StrFormatter;
 import org.dinky.assertion.Asserts;
 
 import java.io.File;
@@ -50,16 +51,14 @@ public class URLUtils {
         try {
             URL url = new URL(urlPath);
             URLConnection urlConnection = url.openConnection();
-            if ("http".equals(url.getProtocol())
-                    || "https".equals(url.getProtocol())
-                    || "hdfs".equals(url.getProtocol())) {
-            } else if ("rs".equals(url.getProtocol())) {
+            if ("rs".equals(url.getProtocol())) {
                 String path = StrUtil.join(File.separator, TMP_PATH, "rs", url.getPath());
                 return FileUtil.writeFromStream(urlConnection.getInputStream(), path);
             } else if ("file".equals(url.getProtocol())) {
                 return new File(url.getPath());
             }
-            return null;
+            throw new RuntimeException(StrFormatter.format("The path {} unsupported protocol: {},please use rs:// or file://",
+                    urlPath, url.getProtocol()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
