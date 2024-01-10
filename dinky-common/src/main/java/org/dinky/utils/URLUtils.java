@@ -19,7 +19,6 @@
 
 package org.dinky.utils;
 
-import cn.hutool.core.text.StrFormatter;
 import org.dinky.assertion.Asserts;
 
 import java.io.File;
@@ -33,6 +32,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.StrUtil;
 
 /**
@@ -57,8 +57,8 @@ public class URLUtils {
             } else if ("file".equals(url.getProtocol())) {
                 return new File(url.getPath());
             }
-            throw new RuntimeException(StrFormatter.format("The path {} unsupported protocol: {},please use rs:// or file://",
-                    urlPath, url.getProtocol()));
+            throw new RuntimeException(StrFormatter.format(
+                    "The path {} unsupported protocol: {},please use rs:// or file://", urlPath, url.getProtocol()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
