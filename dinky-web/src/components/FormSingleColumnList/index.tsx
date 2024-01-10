@@ -106,7 +106,7 @@ export const FormSingleColumnList = (props: FormSingleColumnListProps) => {
                   onClick={async () => {
                     // 获取前一项的值
                     const lastItem = fields[fields.length === 0 ? 0 : fields.length - 1];
-                    if (!lastItem){
+                    if (!lastItem) {
                       add();
                       return;
                     }
