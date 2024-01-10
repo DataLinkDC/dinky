@@ -209,7 +209,7 @@ public abstract class Executor {
         Configuration configuration = tableEnvironment.getRootConfiguration();
         List<String> jars = configuration.get(PipelineOptions.JARS);
         if (jars == null) {
-            configuration.set(PipelineOptions.JARS, CollUtil.newArrayList(jarPath));
+            tableEnvironment.addConfiguration(PipelineOptions.JARS, CollUtil.newArrayList(jarPath));
         } else {
             CollUtil.addAll(jars, jarPath);
         }
