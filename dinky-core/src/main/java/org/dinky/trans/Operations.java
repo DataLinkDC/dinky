@@ -69,7 +69,8 @@ public class Operations {
                     } catch (NoClassDefFoundError e) {
                         log.warn(
                                 "getAllOperations error,  If you do not have this class, please add the corresponding dependency. Operation: {}.{}",
-                                t, e.getMessage());
+                                t,
+                                e.getMessage());
                         return null;
                     }
                 })
