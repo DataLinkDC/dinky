@@ -68,6 +68,7 @@ import org.dinky.utils.URLUtils;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
@@ -80,6 +81,7 @@ import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -257,7 +259,21 @@ public class JobManager {
         }
         try {
             if (!useGateway) {
-                executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
+                JobClient jobClient = executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
+                if (Asserts.isNotNull(jobClient)) {
+                    job.setJobId(jobClient.getJobID().toHexString());
+                    job.setJids(new ArrayList<String>() {
+
+                        {
+                            add(job.getJobId());
+                        }
+                    });
+                    job.setStatus(Job.JobStatus.SUCCESS);
+                    success();
+                } else {
+                    job.setStatus(Job.JobStatus.FAILED);
+                    failed();
+                }
             } else {
                 GatewayResult gatewayResult;
                 config.addGatewayConfig(executor.getSetConfig());

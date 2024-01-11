@@ -106,12 +106,15 @@ export const FormSingleColumnList = (props: FormSingleColumnListProps) => {
                   onClick={async () => {
                     // 获取前一项的值
                     const lastItem = fields[fields.length === 0 ? 0 : fields.length - 1];
+                    if (!lastItem) {
+                      add();
+                      return;
+                    }
                     const addBeforePreItem = form.getFieldValue([...namePath, lastItem.name]);
                     if (!addBeforePreItem) {
                       await ErrorMessageAsync(l('rc.ai.previousItemRequired'));
                       return;
                     } else if (fields.length >= max) {
-                      console.log(fields.length);
                       await ErrorMessageAsync(l('rc.ai.atMost', '', { max }));
                       return;
                     } else {
