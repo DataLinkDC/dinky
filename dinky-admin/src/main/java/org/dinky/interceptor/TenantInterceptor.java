@@ -49,6 +49,7 @@ public class TenantInterceptor implements AsyncHandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+        TenantContextHolder.set(10000);
         boolean isPass = false;
         Cookie[] cookies = request.getCookies();
         Opt<String> token = Opt.empty();
@@ -62,7 +63,7 @@ public class TenantInterceptor implements AsyncHandlerInterceptor {
                         }
                         break;
                     case "tenantId":
-                        int finalTenantId = 1000;
+                        int finalTenantId = 10000;
                         TenantContextHolder.set(finalTenantId);
                         break;
                 }

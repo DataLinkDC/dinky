@@ -147,7 +147,11 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         if (StrUtil.isEmpty(clusterInstance.getAlias())) {
             clusterInstance.setAlias(clusterInstance.getName());
         }
-        saveOrUpdate(clusterInstance);
+        try {
+            saveOrUpdate(clusterInstance);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return clusterInstance;
     }
 

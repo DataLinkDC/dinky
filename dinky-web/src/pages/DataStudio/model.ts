@@ -139,13 +139,13 @@ export type TaskDataBaseType = {
 };
 
 export type scheduleConfig = {
-  schedulingType?:string;
-  effectiveDateEnd?:string;
-  effectiveDateStart?:string;
-  periodType?:string;
-  days?:[];
-  weeks?:[];
-  periodTime?:string;
+  schedulingType:string;
+  effectiveDateEnd:string;
+  effectiveDateStart:string;
+  periodType:string;
+  days:[];
+  weeks:[];
+  periodTime:string;
 }
 
 export type TaskDataType = TaskDataBaseType & Record<string, any>;

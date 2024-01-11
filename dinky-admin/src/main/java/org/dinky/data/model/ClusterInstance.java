@@ -74,6 +74,8 @@ public class ClusterInstance extends SuperEntity<ClusterInstance> {
             notes = "job manager host")
     private String jobManagerHost;
 
+    private String historyJobUrl;
+
     @ApiModelProperty(
             value = "version",
             required = true,

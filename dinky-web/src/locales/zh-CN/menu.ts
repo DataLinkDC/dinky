@@ -85,7 +85,7 @@ export default {
   'menu.about': '关于',
   'menu.version': '版本：{version}',
 
-  'menu.datastudio.project': '项目',
+  'menu.datastudio.project': '文件夹',
   'menu.datastudio.catalog': 'Catalog',
   'menu.datastudio.datasource': '数据源',
   'menu.datastudio.console': '控制台',

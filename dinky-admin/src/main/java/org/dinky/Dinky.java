@@ -24,6 +24,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import lombok.SneakyThrows;
@@ -36,7 +37,7 @@ import lombok.SneakyThrows;
 @EnableTransactionManagement
 @SpringBootApplication(exclude = FreeMarkerAutoConfiguration.class)
 @EnableCaching
-@EnableFeignClients(basePackages = "cn.uniplore.service.operation.monitor.feign")
+@EnableFeignClients(basePackages = {"cn.uniplore.service.operation.monitor.feign","cn.uniplore.service.data.datasource.feign"})
 public class Dinky {
 
     static {

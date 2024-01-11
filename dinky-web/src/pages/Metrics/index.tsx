@@ -55,6 +55,7 @@ export default () => {
     <div>
       <PageContainer
         fixedHeader={true}
+        breadcrumb={{ style: { display: 'none' } }}
         //todo 后面title改为下拉列表，用户自定义选择展示哪些layout，而不是全部展示
         loading={showServer.loading}
         subTitle={

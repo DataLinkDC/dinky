@@ -939,7 +939,7 @@
         <repository>
             <snapshots />
             <id>apache-snapshots</id>
-            <url>https://maven.aliyun.com/repository/apache-snapshots</url>
+            <url>http://192.168.2.104:8081/repository/maven-releases/</url>
         </repository>
     </repositories>
 
@@ -955,6 +955,21 @@
                 <repository>
                     <id>maven-central</id>
                     <url>https://repo1.maven.org/maven2/</url>
+                </repository>
+            </repositories>
+        </profile>
+
+        <profile>
+            <id>maven-nexus</id>
+            <activation>
+                <property>
+                    <name>maven-nexus</name>
+                </property>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>maven-nexus</id>
+                    <url>http://192.168.2.104:8081/repository/maven-releases/</url>
                 </repository>
             </repositories>
         </profile>

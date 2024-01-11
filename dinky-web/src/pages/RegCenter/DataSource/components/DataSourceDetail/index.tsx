@@ -75,7 +75,7 @@ const DataSourceDetail = (props: DataSourceDetailProps & connect) => {
   const querySchemaTree = useCallback(async () => {
     clearState();
     setLoading(true);
-    await getDataByIdReturnResult(API_CONSTANTS.DATASOURCE_GET_SCHEMA_TABLES, dataSource.id).then(
+    await getDataByIdReturnResult(API_CONSTANTS.DATASOURCE_GET_SCHEMA_TABLES,dataSource.dsDatasourceId).then(
       (res) => {
         if (res.code === RESPONSE_CODE.SUCCESS) {
           setTreeData(res.data);

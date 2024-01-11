@@ -41,14 +41,14 @@ const DataSource = (props: any) => {
   const [treeData, setTreeData] = useState<[]>([]);
   const [isLoadingDatabase, setIsLoadingDatabase] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
-  const selectDb = (dbData as DataSources.DataSource[]).filter((x) => x.id === selectDatabaseId)[0];
+  const selectDb = (dbData as DataSources.DataSource[]).filter((x) => x.dsDatasourceId === selectDatabaseId)[0];
   const btnDispatch = useTasksDispatch();
 
   /**
    * @description: 刷新树数据
    * @param {number} databaseId
    */
-  const onRefreshTreeData = async (databaseId: number) => {
+  const onRefreshTreeData = async (databaseId: string) => {
     if (!databaseId) {
       setIsLoadingDatabase(false);
       return;
@@ -77,7 +77,7 @@ const DataSource = (props: any) => {
 
   useEffect(() => {
     if (selectDatabaseId) {
-      onRefreshTreeData(selectDatabaseId);
+      onRefreshTreeData(selectDb.dsDatasourceId);
     }
   }, []);
 
@@ -85,7 +85,7 @@ const DataSource = (props: any) => {
    * 数据库选择改变时间时 刷新树数据
    * @param {number} value
    */
-  const onChangeDataBase = (value: number) => {
+  const onChangeDataBase = (value: string) => {
     onRefreshTreeData(value);
   };
   const currentTabName = 'menu.datastudio.datasource';
@@ -98,8 +98,8 @@ const DataSource = (props: any) => {
   btnEvent[1].onClick = () => {
     if (!selectDatabaseId) return;
     setIsLoadingDatabase(true);
-    clearDataSourceTable(selectDatabaseId).then(() => {
-      onChangeDataBase(selectDatabaseId);
+    clearDataSourceTable(selectDb.dsDatasourceId).then(() => {
+      onChangeDataBase(selectDb.dsDatasourceId);
     });
   };
   btnDispatch({
@@ -112,12 +112,12 @@ const DataSource = (props: any) => {
    * 构建数据库列表 下拉框
    */
   const getDataBaseOptions = () => {
-    return dbData.map(({ id, name, type, enabled, status }: DataSources.DataSource) => ({
-      key: id,
-      value: id,
+    return dbData.map(({ id, dsDatasourceId, name, type, enabled, status }: DataSources.DataSource) => ({
+      key: dsDatasourceId,
+      value: dsDatasourceId,
       label: (
         <TagAlignLeft>
-          <Tag key={id} color={enabled ? 'processing' : 'error'}>
+          <Tag key={dsDatasourceId} color={enabled ? 'processing' : 'error'}>
             {type}
           </Tag>
           {name}
@@ -152,7 +152,7 @@ const DataSource = (props: any) => {
       return;
     }
 
-    const queryParams = { id: selectDatabaseId, schemaName, tableName };
+    const queryParams = { id: selectDb.dsDatasourceId, schemaName, tableName };
     dispatch({
       type: STUDIO_MODEL.addTab,
       payload: {
@@ -170,7 +170,7 @@ const DataSource = (props: any) => {
    * 数据库选择改变事件
    * @param {number} databaseId
    */
-  const handleSelectDataBaseId = (databaseId: number) => {
+  const handleSelectDataBaseId = (databaseId: string) => {
     dispatch({
       type: STUDIO_MODEL.updateSelectDatabaseId,
       payload: databaseId
@@ -220,7 +220,7 @@ const DataSource = (props: any) => {
           placeholder={l('pages.metadata.selectDatabase')}
           options={getDataBaseOptions()}
           fieldProps={{
-            onSelect: (selectId) => handleSelectDataBaseId(selectId as number)
+            onSelect: (selectId) => handleSelectDataBaseId(selectId as string)
           }}
         />
       </ProForm>

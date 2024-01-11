@@ -32,7 +32,7 @@ public class QueryData {
             dataType = "Integer",
             example = "1",
             notes = "Unique identifier for the query")
-    private Integer id;
+    private Long id;
 
     @ApiModelProperty(
             value = "Name of the schema",

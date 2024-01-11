@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -20,7 +21,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "scheduleConfig", description = "调度配置")
-public class ScheduleConfig {
+public class ScheduleConfig implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(
             value = "schedulingType",
@@ -45,12 +48,12 @@ public class ScheduleConfig {
     @ApiModelProperty(
             value = "periodType",
             notes = "指定日")
-    private String[] days = new String[0];
+    private String[] days;
 
     @ApiModelProperty(
             value = "periodType",
             notes = "调度周")
-    private String[] weeks = new String[0];
+    private String[] weeks;
 
     @ApiModelProperty(
             value = "periodTime",

@@ -166,7 +166,7 @@ export default () => {
   };
 
   return (
-    <PageContainer title={false}>
+    <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
       <ProList<Alert.AlertTemplate>
         headerTitle={l('menu.registration.alert.template')}
         rowKey='id'

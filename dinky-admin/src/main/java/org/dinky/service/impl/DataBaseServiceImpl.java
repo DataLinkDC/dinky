@@ -129,8 +129,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
-    public List<Schema> getSchemasAndTables(Integer id) {
-        DataBase dataBase = getById(id);
+    public List<Schema> getSchemasAndTables(DataBase dataBase) {
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
@@ -139,8 +138,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
-    public List<Column> listColumns(Integer id, String schemaName, String tableName) {
-        DataBase dataBase = getById(id);
+    public List<Column> listColumns(DataBase dataBase, String schemaName, String tableName) {
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Column> columns = driver.listColumns(schemaName, tableName);
@@ -179,8 +177,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
-    public JdbcSelectResult queryData(QueryData queryData) {
-        DataBase dataBase = getById(queryData.getId());
+    public JdbcSelectResult queryData(QueryData queryData,DataBase dataBase) {
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         StringBuilder queryOption = driver.genQueryOption(queryData);
@@ -201,8 +198,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
-    public SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName) {
-        DataBase dataBase = getById(id);
+    public SqlGeneration getSqlGeneration(DataBase dataBase, String schemaName, String tableName) {
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         Table table = driver.getTable(schemaName, tableName);

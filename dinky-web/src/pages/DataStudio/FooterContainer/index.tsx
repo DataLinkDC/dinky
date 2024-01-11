@@ -169,11 +169,11 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
           left: 0
         }}
       >
-        <Space style={{ direction: 'ltr', width: '30%%' }}>
-          <Button size={'small'} type={'text'} block style={{ paddingInline: 4 }}>
-            Welcome to Dinky !
-          </Button>
-        </Space>
+        {/*<Space style={{ direction: 'ltr', width: '30%%' }}>*/}
+        {/*  <Button size={'small'} type={'text'} block style={{ paddingInline: 4 }}>*/}
+        {/*    Welcome to Dinky !*/}
+        {/*  </Button>*/}
+        {/*</Space>*/}
         <Space onClick={() => setViewJobRunning(true)} style={{ direction: 'rtl', width: '30%' }}>
           {jobRunningMsg.jobName} - {jobRunningMsg.runningLog}
         </Space>

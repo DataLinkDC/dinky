@@ -83,20 +83,20 @@ public interface DataBaseService extends ISuperService<DataBase> {
     /**
      * get all database of schemas and tables
      *
-     * @param id {@link Integer}
+     * @param dataBase {@link DataBase}
      * @return {@link List}< {@link Schema}>
      */
-    List<Schema> getSchemasAndTables(Integer id);
+    List<Schema> getSchemasAndTables(DataBase dataBase);
 
     /**
      * get columns of table
      *
-     * @param id {@link Integer}
+     * @param dataBase {@link DataBase}
      * @param schemaName {@link String}
      * @param tableName {@link String}
      * @return {@link List}< {@link Column}>
      */
-    List<Column> listColumns(Integer id, String schemaName, String tableName);
+    List<Column> listColumns(DataBase dataBase, String schemaName, String tableName);
 
     /**
      * Get the Flink table SQL for the given ID, schema name, and table name.
@@ -137,7 +137,7 @@ public interface DataBaseService extends ISuperService<DataBase> {
      * @param queryData {@link QueryData}
      * @return {@link JdbcSelectResult}
      */
-    JdbcSelectResult queryData(QueryData queryData);
+    JdbcSelectResult queryData(QueryData queryData,DataBase dataBase);
 
     /**
      * exec sql
@@ -150,12 +150,12 @@ public interface DataBaseService extends ISuperService<DataBase> {
     /**
      * get sql generation
      *
-     * @param id {@link Integer}
+     * @param dataBase {@link DataBase}
      * @param schemaName {@link String}
      * @param tableName {@link String}
      * @return {@link SqlGeneration}
      */
-    SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName);
+    SqlGeneration getSqlGeneration(DataBase dataBase, String schemaName, String tableName);
 
     /**
      * List all enabled Flink with statements.

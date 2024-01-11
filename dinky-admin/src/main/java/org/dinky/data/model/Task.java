@@ -19,6 +19,7 @@
 
 package org.dinky.data.model;
 
+import org.dinky.data.model.ext.ScheduleConfig;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.JSONObjectHandler;
 import org.dinky.mybatis.model.SuperEntity;
@@ -74,7 +75,8 @@ public class Task extends SuperEntity<Task> {
     @ApiModelProperty(value = "Parallelism", dataType = "Integer", example = "4", notes = "Parallelism for the task")
     private Integer parallelism;
 
-    private String scheduleConfig;
+    @TableField(typeHandler = JSONObjectHandler.class, jdbcType = JdbcType.VARCHAR)
+    private ScheduleConfig scheduleConfig;
 
     @ApiModelProperty(
             value = "Fragment",

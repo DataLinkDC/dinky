@@ -239,7 +239,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
 
   return (
     <SlowlyAppear>
-      <PageContainer title={false}>
+      <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
         {/* alert group list */}
         <ProList<Alert.AlertGroup>
           {...PROTABLE_OPTIONS_PUBLIC}

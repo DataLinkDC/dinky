@@ -75,6 +75,8 @@ public class ClusterInstanceDTO {
             notes = "job manager host")
     private String jobManagerHost;
 
+    private String historyJobUrl;
+
     @ApiModelProperty(
             value = "autoRegisters",
             required = true,

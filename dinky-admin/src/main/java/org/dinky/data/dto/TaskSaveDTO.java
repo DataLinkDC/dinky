@@ -152,7 +152,6 @@ public class TaskSaveDTO {
     public Task toTaskEntity() {
         Task task = new Task();
         BeanUtil.copyProperties(this, task);
-        task.setScheduleConfig(JSONObject.toJSONString(this.getScheduleConfig()));
         return task;
     }
 }

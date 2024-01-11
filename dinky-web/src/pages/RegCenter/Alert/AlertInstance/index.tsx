@@ -25,7 +25,7 @@ export { ALERT_MODEL, ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertIns
 export default () => {
   return (
     <SlowlyAppear>
-      <PageContainer title={false}>
+      <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
         <AlertInstanceList />
       </PageContainer>
     </SlowlyAppear>

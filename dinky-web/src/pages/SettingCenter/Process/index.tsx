@@ -24,7 +24,7 @@ import ProcessList from './components/ProcessList';
 export default () => {
   return (
     <SlowlyAppear>
-      <PageContainer title={false}>
+      <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
         <ProcessList />
       </PageContainer>
     </SlowlyAppear>

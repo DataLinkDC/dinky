@@ -224,6 +224,7 @@ declare namespace DataSources {
     status: boolean;
     healthTime: Date;
     heartbeatTime: Date;
+    dsDatasourceId: string;
   };
 
   /**

@@ -19,11 +19,19 @@
 
 package org.dinky.data.model;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.uniplore.service.data.datasource.vo.FeignDatasourceByDinkyVO;
+import cn.uniplore.service.data.datasource.vo.FeignDatasourceVO;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.ibatis.type.JdbcType;
+import org.dinky.context.TenantContextHolder;
 import org.dinky.data.typehandler.JSONObjectHandler;
 import org.dinky.metadata.config.DriverConfig;
 import org.dinky.mybatis.model.SuperEntity;
 
+import java.io.File;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -49,6 +57,9 @@ public class DataBase extends SuperEntity<DataBase> {
 
     @ApiModelProperty(value = "tenantId", required = true, dataType = "Integer", example = "1")
     private Integer tenantId;
+
+    @ApiModelProperty(value = "dsDatasourceId", dataType = "Long", example = "1")
+    private String dsDatasourceId;
 
     @ApiModelProperty(value = "groupName", required = true, dataType = "String", example = "source")
     private String groupName;
@@ -83,5 +94,66 @@ public class DataBase extends SuperEntity<DataBase> {
 
     public DriverConfig<Map<String, Object>> getDriverConfig() {
         return new DriverConfig<Map<String, Object>>(getName(), getType(), connectConfig);
+    }
+
+    public DataBase toDataBaseByDataEntity(FeignDatasourceVO datasourceVO) {
+        DataBase dataBase = new DataBase();
+        String type = datasourceVO.getType();
+        dataBase.setId(datasourceVO.getId().intValue());
+        dataBase.setStatus(true);
+
+        dataBase.setDsDatasourceId(datasourceVO.getId().toString());
+        dataBase.setNote(datasourceVO.getDescription());
+        dataBase.setName(datasourceVO.getName());
+        dataBase.setEnabled(true);
+        dataBase.setCreateTime(datasourceVO.getCreateTime());
+        dataBase.setUpdateTime(datasourceVO.getUpdateTime());
+        dataBase.setCreator(datasourceVO.getCreateBy().intValue());
+        dataBase.setUpdater(datasourceVO.getUpdateBy().intValue());
+        Integer tenantId = (Integer) TenantContextHolder.get();
+        dataBase.setTenantId(tenantId);
+        dataBase.setType(datasourceVO.getType());
+        Map<String, Object> connectConfig = new HashMap<>();
+        JSONObject jsonObject = JSONObject.parseObject(datasourceVO.getConnectRecipe());
+        JSONObject config = jsonObject.getJSONObject("config");
+        connectConfig.put("username",config.getString("username"));
+        connectConfig.put("password",config.getString("password"));
+        String url = null;
+        if("MYSQL".equals(type)){
+            url = "jdbc:mysql://" + config.getString("hostname") + ":" + config.getString("port") + "?useSSL=false&serverTimezone=UTC";
+        }
+        connectConfig.put("url",url);
+        dataBase.setConnectConfig(connectConfig);
+        return dataBase;
+    }
+
+    public DataBase toDataBaseByDataEntityByDinky(FeignDatasourceByDinkyVO datasourceVO) {
+        DataBase dataBase = new DataBase();
+        String type = datasourceVO.getType();
+        dataBase.setStatus(true);
+
+        dataBase.setDsDatasourceId(datasourceVO.getId().toString());
+        dataBase.setNote(datasourceVO.getDescription());
+        dataBase.setName(datasourceVO.getName());
+        dataBase.setEnabled(true);
+        dataBase.setCreateTime(datasourceVO.getCreateTime());
+        dataBase.setUpdateTime(datasourceVO.getUpdateTime());
+        dataBase.setCreator(datasourceVO.getCreateBy().intValue());
+        dataBase.setUpdater(datasourceVO.getUpdateBy().intValue());
+        Integer tenantId = (Integer) TenantContextHolder.get();
+        dataBase.setTenantId(tenantId);
+        dataBase.setType(datasourceVO.getType());
+        Map<String, Object> connectConfig = new HashMap<>();
+        JSONObject jsonObject = JSONObject.parseObject(datasourceVO.getConnectRecipe());
+        JSONObject config = jsonObject.getJSONObject("config");
+        connectConfig.put("username",config.getString("username"));
+        connectConfig.put("password",config.getString("password"));
+        String url = null;
+        if("MYSQL".equals(type)){
+            url = "jdbc:mysql://" + config.getString("hostname") + ":" + config.getString("port") + "?useSSL=false&serverTimezone=UTC";
+        }
+        connectConfig.put("url",url);
+        dataBase.setConnectConfig(connectConfig);
+        return dataBase;
     }
 }

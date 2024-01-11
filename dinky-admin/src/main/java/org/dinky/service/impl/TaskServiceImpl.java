@@ -21,6 +21,7 @@ package org.dinky.service.impl;
 
 import cn.uniplore.service.operation.monitor.dto.FeignOmJobAddDTO;
 import cn.uniplore.service.operation.monitor.dto.FeignOmJobUpdateDTO;
+import cn.uniplore.service.operation.monitor.dto.FeignOmOnlineStreamJobAddDTO;
 import cn.uniplore.service.operation.monitor.enums.BatchJobStatusEnum;
 import cn.uniplore.service.operation.monitor.enums.BusinessTypeEnum;
 import cn.uniplore.service.operation.monitor.enums.JobTypeEnum;
@@ -54,6 +55,7 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.TaskVersion;
 import org.dinky.data.model.alert.AlertGroup;
+import org.dinky.data.model.ext.ScheduleConfig;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.model.home.JobModelOverview;
 import org.dinky.data.model.home.JobTypeOverView;
@@ -159,6 +161,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Resource
     @Lazy
     private CatalogueService catalogueService;
+
+    @Autowired
+    private final FeignOmJobProvider feignOmJobProvider;
 
     private String[] buildParams(int id) {
         AppParamConfig appParamConfig = AppParamConfig.builder()
@@ -493,18 +498,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         log.info("Init task tenan finished..");
     }
 
-    @Autowired
-    private final FeignOmJobProvider feignOmJobProvider;
-
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws ParseException {
+    public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws Exception {
+        // 注解自调用会失效，这里通过获取对象方法绕过此限制
+        TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
         TaskDTO task = getTaskInfoById(taskId);
-        JSONObject scheduleConfig = JSONObject.parseObject(task.getScheduleConfig());
-        String periodTime = scheduleConfig.getString("periodTime");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date parse = sdf.parse(periodTime);
-        scheduleConfig.put("periodTime",parse.getTime());
         int josStatus;
         if(lifeCycle.equalsValue(0)){
             josStatus = 3;
@@ -513,66 +512,115 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }else{
             josStatus = 1;
         }
-        if(task.getDatabaseId() != null){
-            //新增任务
-            FeignOmJobAddDTO feignOmJobAddDTO = new FeignOmJobAddDTO();
-            feignOmJobAddDTO.setJobName(task.getName());
-            feignOmJobAddDTO.setJobType(task.isBatchModel()?0:1);
-            feignOmJobAddDTO.setBusinessType(1);
-            feignOmJobAddDTO.setScheduleConfig(scheduleConfig);
-            feignOmJobAddDTO.setJobStatus(josStatus);
-            feignOmJobAddDTO.setDescription(task.getNote());
-            feignOmJobAddDTO.setVersion(1f);
-            cn.uniplore.core.common.web.Result<FeignOmJobResultVO> feignOmJobResultVOResult = feignOmJobProvider.addOmJob(feignOmJobAddDTO);
-            System.out.println(feignOmJobResultVOResult.getData().getJobId());
-            Long dataJobId = feignOmJobResultVOResult.getData().getJobId();
-            Task task2 = new Task();
-            task2.setId(task.getId());
-            task2.setDataJobId(dataJobId);
-            this.updateById(task2);
-        }else{
-            //更新任务
-            FeignOmJobUpdateDTO omJobUpdateDTO = new FeignOmJobUpdateDTO();
-            omJobUpdateDTO.setId(task.getDataJobId());
-            omJobUpdateDTO.setJobName(task.getName());
-            omJobUpdateDTO.setJobType(JobTypeEnum.BATCH.getValue());
-            omJobUpdateDTO.setBusinessType(1);
-            omJobUpdateDTO.setScheduleConfig(scheduleConfig);
-            omJobUpdateDTO.setJobStatus(josStatus);
-            omJobUpdateDTO.setDescription(task.getNote());
-            omJobUpdateDTO.setVersion(task.getVersionId().floatValue());
-            feignOmJobProvider.updateOmJob(task.getDataJobId(),omJobUpdateDTO);
+        JSONObject jobConfig = new JSONObject();
+        ClusterInstance clusterInstance = clusterInstanceService.getById(task.getClusterId());
+        jobConfig.put("task_id",taskId);
+        jobConfig.put("jobUrl",clusterInstance.getHosts());
+        jobConfig.put("historyJobUrl",clusterInstance.getHistoryJobUrl());
+        jobConfig.put("isBatch","task.isBatchModel()");
+        if(lifeCycle == JobLifeCycle.PUBLISH){
+            if(task.isBatchModel()){
+                ScheduleConfig schedule = task.getScheduleConfig();
+                JSONObject scheduleConfig = null;
+                if(schedule != null){
+                    scheduleConfig = JSONObject.parseObject(JSONObject.toJSON(schedule).toString());
+                }
+                if(task.getDataJobId() == null){
+                    //新增任务
+                    Long dataJobId = addOmJob(task, josStatus, jobConfig,scheduleConfig);
+                    task.setDataJobId(dataJobId);
+                } else{
+                    //更新任务
+                    FeignOmJobUpdateDTO omJobUpdateDTO = new FeignOmJobUpdateDTO();
+                    omJobUpdateDTO.setId(task.getDataJobId());
+                    omJobUpdateDTO.setJobName(task.getName());
+                    omJobUpdateDTO.setJobType(task.isBatchModel()?JobTypeEnum.BATCH.getValue():JobTypeEnum.STREAM.getValue());
+                    omJobUpdateDTO.setBusinessType(1);
+                    omJobUpdateDTO.setJobConfig(jobConfig);
+                    omJobUpdateDTO.setScheduleConfig(scheduleConfig);
+                    omJobUpdateDTO.setJobStatus(josStatus);
+                    omJobUpdateDTO.setDescription(task.getNote());
+                    Integer versionId = task.getVersionId();
+                    if(versionId != null){
+                        versionId += 1;
+                    }else{
+                        versionId = 1;
+                    }
+                    omJobUpdateDTO.setVersion(versionId.floatValue());
+                    feignOmJobProvider.updateOmJob(task.getDataJobId(),omJobUpdateDTO);
+                }
+                //上线离线任务
+                feignOmJobProvider.onlineBatchJob(task.getDataJobId());
+            }else {
+                //新增任务
+                Long dataJobId = addOmJob(task, josStatus, jobConfig, null);
+                task.setDataJobId(dataJobId);
+                //上线实时任务
+                //执行任务
+                JobResult jobResult = submitTask(TaskSubmitDto.builder().id(taskId).build());
+                //更新实例id
+                task.setJobInstanceId(jobResult.getJobInstanceId());
+                // 注解自调用会失效，这里通过获取对象方法绕过此限制
+                taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
+                taskServiceBean.saveOrUpdateTask(task.buildTask());
+                //将flinkid返回数据中台并且上线
+                FeignOmOnlineStreamJobAddDTO data = new FeignOmOnlineStreamJobAddDTO();
+                data.setDataJobId(dataJobId);
+                data.setFlinkJobId(jobResult.getJobId());
+                feignOmJobProvider.onlineStreamJobByDinky(data);
+            }
+            taskServiceBean.offlineOmJob(task,lifeCycle);
+        }else if(lifeCycle == JobLifeCycle.DEVELOP){
+            if(task.isBatchModel()){
+                //下线离线任务
+                List<Long> dataJobIds = new ArrayList<>();
+                dataJobIds.add(task.getDataJobId());
+                feignOmJobProvider.refreshOnOfflineBatchJob(dataJobIds);
+                taskServiceBean.offlineOmJob(task,lifeCycle);
+            }else {
+                //下线实时任务
+                //数据中台下线任务
+                feignOmJobProvider.offlineOmJob(task.getDataJobId());
+            }
         }
-        if(lifeCycle == JobLifeCycle.PUBLISH && task.isBatchModel()){
-            //上线离线任务
-            feignOmJobProvider.onlineBatchJob(task.getDataJobId());
-        }else if(lifeCycle == JobLifeCycle.DEVELOP && task.isBatchModel()){
-            //下线离线任务
-            List<Long> dataJobIds = new ArrayList<>();
-            dataJobIds.add(task.getDataJobId());
-            feignOmJobProvider.refreshOnOfflineBatchJob(dataJobIds);
-        }
-        //feignOmJobProvider.onlineStreamJob()
+        return true;
+    }
+
+    /**
+     * @description 向任务中心新增任务
+     * @param task 任务详情:
+     * @param josStatus 任务状态:
+     * @param jobConfig 任务配置:
+     * @return: java.lang.Long
+     * @author liurulin
+     * @date 2024/1/8 14:36
+     * @link
+     */
+    private Long addOmJob(TaskDTO task,int josStatus,JSONObject jobConfig,JSONObject scheduleConfig){
+        //新增任务
+        FeignOmJobAddDTO feignOmJobAddDTO = new FeignOmJobAddDTO();
+        feignOmJobAddDTO.setJobName(task.getName());
+        feignOmJobAddDTO.setJobType(task.isBatchModel()?JobTypeEnum.BATCH.getValue():JobTypeEnum.STREAM.getValue());
+        feignOmJobAddDTO.setBusinessType(1);
+        feignOmJobAddDTO.setScheduleConfig(scheduleConfig);
+        feignOmJobAddDTO.setJobStatus(josStatus);
+        feignOmJobAddDTO.setJobConfig(jobConfig);
+        feignOmJobAddDTO.setDescription(task.getNote());
+        feignOmJobAddDTO.setVersion(1f);
+        cn.uniplore.core.common.web.Result<FeignOmJobResultVO> feignOmJobResultVOResult = feignOmJobProvider.addOmJob(feignOmJobAddDTO);
+        return feignOmJobResultVOResult.getData().getJobId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean offlineOmJob(TaskDTO task,JobLifeCycle lifeCycle){
+        TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
         task.setStep(lifeCycle.getValue());
-        if (lifeCycle == JobLifeCycle.PUBLISH) {
-            //            List<SqlExplainResult> sqlExplainResults = explainTask(task);
-            //            for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
-            //                if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
-            //                    throw new SqlExplainExcepition(StrFormatter.format(
-            //                            "task [{}] sql explain failed, sql [{}], error: [{}]",
-            //                            task.getName(),
-            //                            sqlExplainResult.getSql(),
-            //                            sqlExplainResult.getError()));
-            //                }
-            //            }
-            Integer taskVersionId = taskVersionService.createTaskVersionSnapshot(task);
-            task.setVersionId(taskVersionId);
-        }
-        boolean saved = saveOrUpdate(task.buildTask());
+        boolean saved = taskServiceBean.saveOrUpdate(task.buildTask());
         if (saved && Asserts.isNotNull(task.getJobInstanceId())) {
             JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
             if (Asserts.isNotNull(jobInstance)) {
-                jobInstance.setStep(lifeCycle.getValue());
+                jobInstance.setStep(JobLifeCycle.DEVELOP.getValue());
                 boolean updatedJobInstance = jobInstanceService.updateById(jobInstance);
                 if (updatedJobInstance) jobInstanceService.refreshJobInfoDetail(jobInstance.getId(), true);
                 log.warn(
@@ -582,7 +630,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
         }
         return saved;
-        //return true;
     }
 
     @Override

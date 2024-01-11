@@ -45,6 +45,7 @@ export default () => {
           tabBarGutter: 5,
           centered: true
         }}
+        breadcrumb={{ style: { display: 'none' } }}
         onTabChange={setActiveKey}
         tabActiveKey={activeKey}
         tabBarExtraContent={renderExtra()}

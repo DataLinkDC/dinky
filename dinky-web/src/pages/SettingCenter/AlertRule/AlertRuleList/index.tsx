@@ -136,10 +136,8 @@ const AlertRuleList: React.FC = () => {
       title: l('global.table.operate'),
       valueType: 'option',
       render: (_text: any, record: AlertRule) => [
-        <Authorized key={`${record.id}_edit_auth`} path='/settings/alertrule/edit'>
           <EditBtn key={`${record.id}_edit`} onClick={() => editClick(record)} />
-        </Authorized>,
-        <Authorized key={`${record.id}_delete_auth`} path='/settings/alertrule/delete'>
+        ,
           <>
             {record.ruleType != RuleType.SYSTEM && (
               <PopconfirmDeleteBtn
@@ -149,7 +147,6 @@ const AlertRuleList: React.FC = () => {
               />
             )}
           </>
-        </Authorized>
       ]
     }
   ];
@@ -162,12 +159,10 @@ const AlertRuleList: React.FC = () => {
         loading={ruleState.loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
-          <Authorized key={`CreateRule_auth`} path='/settings/alertrule/add'>
             <CreateBtn
               key={'CreateRule'}
               onClick={() => setRuleState((prevState) => ({ ...prevState, addedOpen: true }))}
             />
-          </Authorized>
         ]}
         rowKey='id'
         size={'small'}

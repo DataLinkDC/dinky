@@ -177,7 +177,7 @@ public class TaskDTO extends AbstractStatementDTO {
             notes = "Extended configuration in JSON format for the task")
     private TaskExtConfig configJson;
 
-    private String scheduleConfig;
+    private ScheduleConfig scheduleConfig;
 
     @ApiModelProperty(value = "Path", dataType = "String", notes = "Path associated with the task")
     private String path;

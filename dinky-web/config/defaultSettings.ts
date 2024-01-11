@@ -24,6 +24,8 @@ const Settings: ProLayoutProps & {
   pwa?: boolean;
   logo?: string;
 } = {
+  headerRender:false,
+  menuRender:false,
   navTheme: 'light',
   // 拂晓蓝
   colorPrimary: '#1890ff',

@@ -61,14 +61,15 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             label={l('rc.ds.name')}
             rules={[{ required: true, message: l('rc.ds.namePlaceholder') }]}
             placeholder={l('rc.ds.namePlaceholder')}
+            disabled={true}
           />
-          <ProFormSelect
-            name='groupName'
-            width={'sm'}
-            label={l('rc.ds.groupName')}
-            options={GROUP_TYPE}
-            placeholder={l('rc.ds.groupNamePlaceholder')}
-          />
+          {/*<ProFormSelect*/}
+          {/*  name='groupName'*/}
+          {/*  width={'sm'}*/}
+          {/*  label={l('rc.ds.groupName')}*/}
+          {/*  options={GROUP_TYPE}*/}
+          {/*  placeholder={l('rc.ds.groupNamePlaceholder')}*/}
+          {/*/>*/}
           <ProFormSelect
             name='type'
             width={'sm'}
@@ -78,6 +79,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             options={DATA_SOURCE_TYPE_OPTIONS}
             rules={[{ required: true, message: l('rc.ds.typePlaceholder') }]}
             placeholder={l('rc.ds.typePlaceholder')}
+            disabled={true}
           />
 
           <ProFormText
@@ -86,11 +88,13 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             label={l('rc.ds.username')}
             rules={[{ required: true, message: l('rc.ds.usernamePlaceholder') }]}
             placeholder={l('rc.ds.usernamePlaceholder')}
+            disabled={true}
           />
           <ProFormText.Password
             name={['connectConfig', 'password']}
             width={'sm'}
             label={l('rc.ds.password')}
+            disabled={true}
             rules={[
               {
                 required: dbType !== 'Doris',
@@ -104,6 +108,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             width={'md'}
             label={l('global.table.note')}
             placeholder={l('global.table.notePlaceholder')}
+            disabled={true}
           />
         </ProForm.Group>
 
@@ -119,15 +124,16 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
               autoClearSearchValue
               options={AUTO_COMPLETE_TYPE}
               style={{
-                width: parent.innerWidth / 2 - 80
+                width: 1000 / 2 - 80
               }}
               filterOption
               onSelect={(value) => form && form.setFieldsValue({ url: value })}
+              disabled={true}
             >
               <TextArea placeholder={l('rc.ds.urlPlaceholder')} />
               {/*<ProFormTextArea*/}
               {/*  name='url'*/}
-              {/*  width={parent.innerWidth / 2 - 80}*/}
+              {/*  width={1000 / 2 - 80}*/}
               {/*  label={l('rc.ds.url')}*/}
               {/*  rules={[{ required: true, message: l('rc.ds.urlPlaceholder') }]}*/}
               {/*  placeholder={l('rc.ds.urlPlaceholder')}*/}

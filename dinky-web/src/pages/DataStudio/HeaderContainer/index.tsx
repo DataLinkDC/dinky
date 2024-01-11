@@ -372,7 +372,7 @@ const HeaderContainer = (props: connect) => {
         ((currentTab?.type == TabsPageType.project &&
           currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL) ||
           currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR) &&
-          currentData?.params?.taskData?.type !== "local",
+          currentTab?.params?.taskData?.type !== "local",
       // click: () => handleChangeJobLife()
       click: () => currentTab?.params?.taskData?.batchModel && !isOnline(currentData) ?showModal():handleChangeJobLife()
     },
@@ -381,10 +381,11 @@ const HeaderContainer = (props: connect) => {
       icon: <RotateRightOutlined />,
       title: l('pages.datastudio.to.jobDetail'),
       isShow:
-        currentTab?.type == TabsPageType.project &&
-        currentData?.jobInstanceId &&
-        (currentTab?.subType?.toLowerCase() == DIALECT.FLINK_SQL ||
-          currentTab?.subType?.toLowerCase() == DIALECT.FLINKJAR),
+        // currentTab?.type == TabsPageType.project &&
+        // currentData?.jobInstanceId &&
+        // (currentTab?.subType?.toLowerCase() == DIALECT.FLINK_SQL ||
+        //   currentTab?.subType?.toLowerCase() == DIALECT.FLINKJAR),
+        false,
       props: {
         onClick: async () => {
           const dataByParams = await queryDataByParams<Jobs.JobInstance>(
@@ -411,8 +412,8 @@ const HeaderContainer = (props: connect) => {
         currentTab?.subType?.toLowerCase() !== DIALECT.JAVA &&
         currentTab?.subType?.toLowerCase() !== DIALECT.SCALA &&
         currentTab?.subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.FLINKSQLENV ,
-        // currentData?.params?.taskData.type === "local",
+        currentTab?.subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
+        currentTab?.params?.taskData?.type === "local",
       props: {
         style: { background: '#52c41a' },
         type: 'primary'
@@ -430,7 +431,7 @@ const HeaderContainer = (props: connect) => {
         !isRunning(currentData) &&
         (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
           isSql(currentTab?.subType?.toLowerCase() ?? '')) &&
-        currentData?.params?.taskData.type === "local",
+        currentTab?.params?.taskData?.type === "local",
       props: {
         style: { background: '#52c41a' },
         type: 'primary'
@@ -461,28 +462,28 @@ const HeaderContainer = (props: connect) => {
   /**
    * @description: 生成面包屑
    */
-  const renderBreadcrumbItems = () => {
-    if (!activeBreadcrumbTitle) {
-      return (
-        <Space>
-          <EnvironmentOutlined />
-          <span>Guide Page</span>
-        </Space>
-      );
-    }
-
-    return (
-      <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
-        {/*<Breadcrumb itemRender={(item, params, items, paths)=><span>{item.title}</span>} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />*/}
-        <EnvironmentOutlined style={{ paddingRight: 20 }} />
-        <Breadcrumb
-          style={{ fontSize: 12, lineHeight: VIEW.headerHeight + 'px' }}
-          separator={'/'}
-          items={buildBreadcrumbItems(activeBreadcrumbTitle)}
-        />
-      </FlexCenterDiv>
-    );
-  };
+  // const renderBreadcrumbItems = () => {
+  //   if (!activeBreadcrumbTitle) {
+  //     return (
+  //       <Space>
+  //         <EnvironmentOutlined />
+  //         <span>Guide Page</span>
+  //       </Space>
+  //     );
+  //   }
+  //
+  //   return (
+  //     <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
+  //       {/*<Breadcrumb itemRender={(item, params, items, paths)=><span>{item.title}</span>} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />*/}
+  //       <EnvironmentOutlined style={{ paddingRight: 20 }} />
+  //       <Breadcrumb
+  //         style={{ fontSize: 12, lineHeight: VIEW.headerHeight + 'px' }}
+  //         separator={'/'}
+  //         items={buildBreadcrumbItems(activeBreadcrumbTitle)}
+  //       />
+  //     </FlexCenterDiv>
+  //   );
+  // };
 
   document.onkeydown = (e) => {
     routes
@@ -581,10 +582,9 @@ const HeaderContainer = (props: connect) => {
       if(key === "effectiveDate"){
         pane.params.taskData.scheduleConfig.effectiveDateEnd = dayjs(all[key][0]).format(DATETIME_FORMAT);
         pane.params.taskData.scheduleConfig.effectiveDateStart = dayjs(all[key][0]).format(DATETIME_FORMAT);
-      }else if(key === "periodTime"){
+      } else if(key === "periodTime"){
         pane.params.taskData.scheduleConfig.periodTime = dayjs(all[key][0]).format(DATETIME_FORMAT);
-      }
-      else{
+      } else{
         pane.params.taskData.scheduleConfig[key] = all[key];
       }
 
@@ -597,7 +597,7 @@ const HeaderContainer = (props: connect) => {
    */
   return (
     <Descriptions column={2} size={'middle'} layout={'horizontal'} key={'h'} style={headerStyle}>
-      <Descriptions.Item>{renderBreadcrumbItems()}</Descriptions.Item>
+      {/*<Descriptions.Item>{renderBreadcrumbItems()}</Descriptions.Item>*/}
       <Descriptions.Item contentStyle={{ display: 'flex', flexDirection: 'row-reverse' }}>
         {renderRightButtons()}
         {pushDolphinState.modalVisible && (

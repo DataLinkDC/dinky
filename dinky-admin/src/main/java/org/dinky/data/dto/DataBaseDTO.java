@@ -48,6 +48,9 @@ public class DataBaseDTO extends SuperEntity {
     @ApiModelProperty(value = "tenantId", required = true, dataType = "Integer", example = "1")
     private Integer tenantId;
 
+    @ApiModelProperty(value = "dsDatasourceId", dataType = "Long", example = "1")
+    private String dsDatasourceId;
+
     @ApiModelProperty(value = "groupName", required = true, dataType = "String", example = "source")
     private String groupName;
 

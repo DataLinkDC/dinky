@@ -163,7 +163,7 @@ public interface TaskService extends ISuperService<Task> {
      * @param lifeCycle The new life cycle of the task.
      * @return true if the life cycle is successfully changed, false otherwise.
      */
-    boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws ParseException;
+    boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws Exception;
 
     /**
      * Save or update the given task.
@@ -280,4 +280,10 @@ public interface TaskService extends ISuperService<Task> {
      * @return A {@link LineageResult} object representing the found task lineage.
      */
     LineageResult getTaskLineage(Integer id);
+
+    /**
+     * @description 下线离线任务
+     *
+     */
+    boolean offlineOmJob(TaskDTO task,JobLifeCycle lifeCycle);
 }

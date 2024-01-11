@@ -85,6 +85,20 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
             placeholder={l('rc.ci.jmhaPlaceholder')}
           />
           <ProFormTextArea
+            name='historyJobUrl'
+            label={"历史服务器地址"}
+            width='md'
+            tooltip={"历史服务器地址"}
+            validateTrigger={['onChange']}
+            rules={[
+              {
+                required: true,
+                validator: (rule, hostsValue) => validatorJMHAAdderess(rule, hostsValue)
+              }
+            ]}
+            placeholder={l('rc.ci.jmhaPlaceholder')}
+          />
+          <ProFormTextArea
             name='note'
             disabled={values && values.autoRegisters}
             label={l('global.table.note')}

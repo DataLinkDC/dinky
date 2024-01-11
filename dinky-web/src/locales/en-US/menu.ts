@@ -85,7 +85,7 @@ export default {
   'menu.about': 'About',
   'menu.version': 'Version: {version}',
 
-  'menu.datastudio.project': 'Project',
+  'menu.datastudio.project': 'Folder',
   'menu.datastudio.catalog': 'Catalog',
   'menu.datastudio.datasource': 'Data Source',
   'menu.datastudio.console': 'Console',

@@ -22,6 +22,7 @@ package org.dinky.job;
 import org.dinky.data.result.IResult;
 import org.dinky.metadata.result.JdbcSelectResult;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,7 +39,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel(value = "JobResult", description = "Result of a job execution")
-public class JobResult {
+public class JobResult implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "Unique identifier for the job result", dataType = "Integer", example = "123")
     private Integer id;

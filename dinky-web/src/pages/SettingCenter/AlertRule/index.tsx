@@ -24,7 +24,7 @@ import AlertRuleList from './AlertRuleList';
 export default () => {
   return (
     <SlowlyAppear>
-      <PageContainer title={false}>
+      <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
         <AlertRuleList />
       </PageContainer>
     </SlowlyAppear>

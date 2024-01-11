@@ -19,6 +19,12 @@
 
 package org.dinky.controller;
 
+import cn.uniplore.service.data.datasource.feign.FeignDatasourceProvider;
+import cn.uniplore.service.data.datasource.vo.FeignDatasourceByDinkyVO;
+import cn.uniplore.service.data.datasource.vo.FeignDatasourceVO;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.CommonConstant;
@@ -36,7 +42,9 @@ import org.dinky.metadata.driver.DriverPool;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.service.DataBaseService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -72,6 +80,8 @@ public class DataBaseController {
 
     private final DataBaseService databaseService;
 
+    private final FeignDatasourceProvider feignDatasourceProvider;
+
     /**
      * save or update database
      *
@@ -93,6 +103,14 @@ public class DataBaseController {
             },
             mode = SaMode.OR)
     public Result<Void> saveOrUpdateDataBase(@RequestBody DataBaseDTO dataBaseDTO) {
+        cn.uniplore.core.common.web.Result<FeignDatasourceByDinkyVO> datasourceVOResult = feignDatasourceProvider.getByIdByDinky(Long.parseLong(dataBaseDTO.getDsDatasourceId()));
+        if (datasourceVOResult.getCode() == 200) {
+            FeignDatasourceByDinkyVO data = datasourceVOResult.getData();
+            Map<String, Object> connectConfig = dataBaseDTO.getConnectConfig();
+            JSONObject jsonObject = JSONObject.parseObject(data.getConnectRecipe());
+            JSONObject config = jsonObject.getJSONObject("config");
+            connectConfig.put("password",config.getString("password"));
+        }
         if (databaseService.saveOrUpdateDataBase(dataBaseDTO)) {
             DriverPool.remove(dataBaseDTO.getName());
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -110,7 +128,25 @@ public class DataBaseController {
     @GetMapping("/list")
     @ApiOperation("DataBase Get All")
     public Result<List<DataBase>> listDataBases(@RequestParam(value = "keyword") String keyword) {
-        return Result.succeed(databaseService.selectListByKeyWord(keyword));
+        List<DataBase> dataBases = new ArrayList<>();
+        cn.uniplore.core.common.web.Result<List<FeignDatasourceByDinkyVO>> datasourceAll = feignDatasourceProvider.getDatasourceAllByDinky(null, keyword, null, keyword);
+        if(datasourceAll.getCode() == 200){
+            List<FeignDatasourceByDinkyVO> data = datasourceAll.getData();
+            for (FeignDatasourceByDinkyVO vo:data){
+                DataBase dataBase = new DataBase().toDataBaseByDataEntityByDinky(vo);
+                DataBase selectOne = databaseService.getBaseMapper().selectOne(new QueryWrapper<DataBase>().eq("enabled", 1).eq("ds_datasource_id", dataBase.getDsDatasourceId()));
+                if(selectOne != null){
+                    dataBase.setStatus(selectOne.getStatus());
+                    dataBase.setFlinkConfig(selectOne.getFlinkConfig());
+                    dataBase.setFlinkTemplate(selectOne.getFlinkTemplate());
+                    dataBase.setId(selectOne.getId());
+                }
+                Map<String, Object> connectConfig = dataBase.getConnectConfig();
+                connectConfig.put("password","******");
+                dataBases.add(dataBase);
+            }
+        }
+        return Result.succeed(dataBases);
     }
 
     /**
@@ -169,7 +205,25 @@ public class DataBaseController {
     @GetMapping("/listEnabledAll")
     @ApiOperation("Get All DataBase Enabled")
     public Result<List<DataBase>> listEnabledAll() {
-        List<DataBase> dataBases = databaseService.listEnabledAll();
+        cn.uniplore.core.common.web.Result<List<FeignDatasourceByDinkyVO>> datasourceAll = feignDatasourceProvider.getDatasourceAllByDinky(null, null, null, null);
+        List<DataBase> dataBases = new ArrayList<>();
+        if(datasourceAll.getCode() == 200){
+            List<FeignDatasourceByDinkyVO> data = datasourceAll.getData();
+            for (FeignDatasourceByDinkyVO vo:data){
+                DataBase dataBase = new DataBase().toDataBaseByDataEntityByDinky(vo);
+                DataBase selectOne = databaseService.getBaseMapper().selectOne(new QueryWrapper<DataBase>().eq("enabled", 1).eq("ds_datasource_id", dataBase.getDsDatasourceId()));
+                if(selectOne != null){
+                    dataBase.setStatus(selectOne.getStatus());
+                    dataBase.setFlinkConfig(selectOne.getFlinkConfig());
+                    dataBase.setFlinkTemplate(selectOne.getFlinkTemplate());
+                    dataBase.setId(selectOne.getId());
+                }
+                Map<String, Object> connectConfig = dataBase.getConnectConfig();
+                connectConfig.put("password","******");
+                dataBases.add(dataBase);
+            }
+        }
+//        List<DataBase> dataBases2 = databaseService.listEnabledAll();
         return Result.succeed(dataBases);
     }
 
@@ -212,25 +266,30 @@ public class DataBaseController {
             name = "id",
             value = "DataBase Id",
             required = true,
-            dataType = "Integer",
+            dataType = "Long",
             paramType = "path",
             dataTypeClass = Integer.class,
             example = "1")
     @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_CHECK_HEARTBEAT)
-    public Result<Void> checkHeartBeatByDataSourceId(@RequestParam Integer id) {
-        DataBase dataBase = databaseService.getById(id);
-        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
-        String error = "";
-        try {
-            databaseService.checkHeartBeat(dataBase);
-        } catch (Exception e) {
-            error = e.getMessage();
+    public Result<Void> checkHeartBeatByDataSourceId(@RequestParam Long id) {
+        cn.uniplore.core.common.web.Result<FeignDatasourceByDinkyVO> datasourceVOResult = feignDatasourceProvider.getByIdByDinky(id);
+        if(datasourceVOResult.getCode() == 200){
+            FeignDatasourceByDinkyVO data = datasourceVOResult.getData();
+            DataBase dataBase = new DataBase().toDataBaseByDataEntityByDinky(data);
+            Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
+            String error = "";
+            try {
+                databaseService.checkHeartBeat(dataBase);
+            } catch (Exception e) {
+                error = e.getMessage();
+            }
+            databaseService.updateById(dataBase);
+            if (Asserts.isNotNullString(error)) {
+                return Result.failed(error);
+            }
+            return Result.succeed(Status.DATASOURCE_CONNECT_NORMAL);
         }
-        databaseService.updateById(dataBase);
-        if (Asserts.isNotNullString(error)) {
-            return Result.failed(error);
-        }
-        return Result.succeed(Status.DATASOURCE_CONNECT_NORMAL);
+        return Result.failed(datasourceVOResult.getMsg());
     }
 
     /**
@@ -250,8 +309,21 @@ public class DataBaseController {
             paramType = "path",
             dataTypeClass = Integer.class,
             example = "1")
-    public Result<List<Schema>> getSchemasAndTables(@RequestParam Integer id) {
-        return Result.succeed(databaseService.getSchemasAndTables(id));
+    public Result<List<Schema>> getSchemasAndTables(@RequestParam Long id) {
+        cn.uniplore.core.common.web.Result<FeignDatasourceByDinkyVO> datasourceVOResult = feignDatasourceProvider.getByIdByDinky(id);
+        if(datasourceVOResult.getCode() == 200) {
+            FeignDatasourceByDinkyVO data = datasourceVOResult.getData();
+            DataBase dataBase = new DataBase().toDataBaseByDataEntityByDinky(data);
+            DataBase selectOne = databaseService.getBaseMapper().selectOne(new QueryWrapper<DataBase>().eq("enabled", 1).eq("ds_datasource_id", dataBase.getDsDatasourceId()));
+            if(selectOne != null){
+                dataBase.setStatus(selectOne.getStatus());
+                dataBase.setFlinkConfig(selectOne.getFlinkConfig());
+                dataBase.setFlinkTemplate(selectOne.getFlinkTemplate());
+                dataBase.setId(selectOne.getId());
+            }
+            return Result.succeed(databaseService.getSchemasAndTables(dataBase));
+        }
+       return Result.failed(datasourceVOResult.getMsg());
     }
 
     /**
@@ -313,8 +385,21 @@ public class DataBaseController {
                         example = "user")
             })
     public Result<List<Column>> listColumns(
-            @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
-        return Result.succeed(databaseService.listColumns(id, schemaName, tableName));
+            @RequestParam Long id, @RequestParam String schemaName, @RequestParam String tableName) {
+        cn.uniplore.core.common.web.Result<FeignDatasourceByDinkyVO> datasourceVOResult = feignDatasourceProvider.getByIdByDinky(id);
+        if(datasourceVOResult.getCode() == 200) {
+            FeignDatasourceByDinkyVO data = datasourceVOResult.getData();
+            DataBase dataBase = new DataBase().toDataBaseByDataEntityByDinky(data);
+            DataBase selectOne = databaseService.getBaseMapper().selectOne(new QueryWrapper<DataBase>().eq("enabled", 1).eq("ds_datasource_id", dataBase.getDsDatasourceId()));
+            if (selectOne != null) {
+                dataBase.setStatus(selectOne.getStatus());
+                dataBase.setFlinkConfig(selectOne.getFlinkConfig());
+                dataBase.setFlinkTemplate(selectOne.getFlinkTemplate());
+                dataBase.setId(selectOne.getId());
+            }
+            return Result.succeed(databaseService.listColumns(dataBase, schemaName, tableName));
+        }
+        return Result.failed(datasourceVOResult.getMsg());
     }
 
     /**
@@ -333,12 +418,26 @@ public class DataBaseController {
             paramType = "body",
             dataTypeClass = QueryData.class)
     public Result<JdbcSelectResult> queryData(@RequestBody QueryData queryData) {
-        JdbcSelectResult jdbcSelectResult = databaseService.queryData(queryData);
-        if (jdbcSelectResult.isSuccess()) {
-            return Result.succeed(jdbcSelectResult);
-        } else {
-            return Result.failed();
+        cn.uniplore.core.common.web.Result<FeignDatasourceByDinkyVO> datasourceVOResult = feignDatasourceProvider.getByIdByDinky(queryData.getId());
+        if(datasourceVOResult.getCode() == 200) {
+            FeignDatasourceByDinkyVO data = datasourceVOResult.getData();
+            DataBase dataBase = new DataBase().toDataBaseByDataEntityByDinky(data);
+            DataBase selectOne = databaseService.getBaseMapper().selectOne(new QueryWrapper<DataBase>().eq("enabled", 1).eq("ds_datasource_id", dataBase.getDsDatasourceId()));
+            if (selectOne != null) {
+                dataBase.setStatus(selectOne.getStatus());
+                dataBase.setFlinkConfig(selectOne.getFlinkConfig());
+                dataBase.setFlinkTemplate(selectOne.getFlinkTemplate());
+                dataBase.setId(selectOne.getId());
+            }
+            JdbcSelectResult jdbcSelectResult = databaseService.queryData(queryData,dataBase);
+            if (jdbcSelectResult.isSuccess()) {
+                return Result.succeed(jdbcSelectResult);
+            } else {
+                return Result.failed();
+            }
         }
+        return Result.failed(datasourceVOResult.getMsg());
+
     }
 
     /**
@@ -405,8 +504,22 @@ public class DataBaseController {
                         example = "user")
             })
     public Result<SqlGeneration> getSqlGeneration(
-            @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
-        return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName));
+            @RequestParam Long id, @RequestParam String schemaName, @RequestParam String tableName) {
+        cn.uniplore.core.common.web.Result<FeignDatasourceByDinkyVO> datasourceVOResult = feignDatasourceProvider.getByIdByDinky(id);
+        if(datasourceVOResult.getCode() == 200) {
+            FeignDatasourceByDinkyVO data = datasourceVOResult.getData();
+            DataBase dataBase = new DataBase().toDataBaseByDataEntityByDinky(data);
+            DataBase selectOne = databaseService.getBaseMapper().selectOne(new QueryWrapper<DataBase>().eq("enabled", 1).eq("ds_datasource_id", dataBase.getDsDatasourceId()));
+            if (selectOne != null) {
+                dataBase.setStatus(selectOne.getStatus());
+                dataBase.setFlinkConfig(selectOne.getFlinkConfig());
+                dataBase.setFlinkTemplate(selectOne.getFlinkTemplate());
+                dataBase.setId(selectOne.getId());
+            }
+            return Result.succeed(databaseService.getSqlGeneration(dataBase, schemaName, tableName));
+        }
+        return Result.failed(datasourceVOResult.getMsg());
+
     }
 
     /**

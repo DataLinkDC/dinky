@@ -167,7 +167,7 @@ const AvatarDropdown = () => {
    */
   const tenantHandleChange = (option: any) => {
     const tenantCode = option.domEvent.target.innerText;
-    const tenantId = option.key as number;
+    const tenantId = 10000 as number;
     Modal.confirm({
       title: l('menu.account.checkTenant'),
       content: l('menu.account.checkTenantConfirm', '', { tenantCode }),

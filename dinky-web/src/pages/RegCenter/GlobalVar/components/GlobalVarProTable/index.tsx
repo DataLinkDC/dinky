@@ -176,16 +176,13 @@ const GlobalVarProTable = () => {
       valueType: 'option',
       hideInDescriptions: true,
       render: (_, record) => [
-        <Authorized key={`${record.id}_edit`} path='/registration/fragment/edit'>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />
-        </Authorized>,
-        <Authorized key={`${record.id}_delete`} path='/registration/fragment/delete'>
+        ,
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteSubmit(record.id)}
             description={l('rc.gv.deleteConfirm')}
           />
-        </Authorized>
       ]
     }
   ];
@@ -202,12 +199,10 @@ const GlobalVarProTable = () => {
         loading={globalVarState.loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
-          <Authorized key='create' path='/registration/fragment/add'>
             <CreateBtn
               key={'vartable'}
               onClick={() => setGlobalVarState((prevState) => ({ ...prevState, addedOpen: true }))}
             />
-          </Authorized>
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.GLOBAL_VARIABLE, {
