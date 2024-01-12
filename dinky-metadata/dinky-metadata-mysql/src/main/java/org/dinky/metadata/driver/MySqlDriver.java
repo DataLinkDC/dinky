@@ -108,7 +108,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
 
                     final String dv = column.getDefaultValue();
                     String defaultValue = Asserts.isNotNull(dv)
-                            ? String.format(" DEFAULT %s", dv.isEmpty() ? "\"\"" : dv)
+                            ? String.format(" DEFAULT '%s'", dv.isEmpty() ? "''" : dv)
                             : String.format("%s NULL ", !column.isNullable() ? " NOT " : "");
 
                     return String.format(
