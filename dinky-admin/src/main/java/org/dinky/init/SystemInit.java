@@ -202,9 +202,7 @@ public class SystemInit implements ApplicationRunner {
                     project = projectClient.createDinkyProject();
                 }
             } catch (Exception e) {
-                log.error("Error in DolphinScheduler: ", e);
-                log.error(
-                        "get or create DolphinScheduler project failed, please check the config of DolphinScheduler!");
+                log.warn("Get or create DolphinScheduler project failed, please check the config of DolphinScheduler!");
             }
         }
     }

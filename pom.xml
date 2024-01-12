@@ -607,7 +607,7 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
-                <artifactId>dinky-cdc-doris</artifactId>
+                <artifactId>dinky-cdc-plus</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
