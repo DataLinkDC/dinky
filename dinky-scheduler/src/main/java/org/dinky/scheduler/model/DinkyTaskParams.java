@@ -19,6 +19,7 @@
 
 package org.dinky.scheduler.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -28,7 +29,7 @@ import lombok.Data;
 public class DinkyTaskParams {
 
     @ApiModelProperty(value = "自定义参数")
-    private List<Property> localParams;
+    private List<Property> localParams = new ArrayList<>();
 
     @ApiModelProperty(value = "dinky地址")
     private String address;

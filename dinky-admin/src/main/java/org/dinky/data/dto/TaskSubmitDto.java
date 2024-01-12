@@ -28,9 +28,24 @@ import lombok.Data;
 @Data
 @Builder
 public class TaskSubmitDto {
+    public TaskSubmitDto() {}
+
+    public TaskSubmitDto(Integer id, Boolean isOnline, String savePointPath, Map<String, String> variables) {
+        this.id = id;
+        this.isOnline = isOnline;
+        this.savePointPath = savePointPath;
+        this.variables = variables;
+    }
 
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "6", notes = "The identifier of the execution")
     private Integer id;
+
+    @ApiModelProperty(
+            value = "Is online",
+            dataType = "Boolean",
+            example = "true",
+            notes = "Online dinky task, and only one job is allowed to execute")
+    private Boolean isOnline;
 
     @ApiModelProperty(
             value = "Save Point Path",
