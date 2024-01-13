@@ -46,7 +46,6 @@ export const isOnline = (data: TaskDataType | undefined) => {
 export const isCanPushDolphin = (data: TaskDataType | undefined) => {
   return data
     ? JOB_LIFE_CYCLE.PUBLISH === data.step &&
-        !isSql(data?.dialect) &&
         data?.dialect?.toLowerCase() !== DIALECT.FLINKSQLENV &&
         data?.dialect?.toLowerCase() !== DIALECT.SCALA &&
         data?.dialect?.toLowerCase() !== DIALECT.JAVA &&

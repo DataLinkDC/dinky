@@ -600,8 +600,9 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
         } catch (Exception e) {
             result.error(LogUtil.getError(e));
             log.error("Query failed", e);
+        } finally {
+            close(preparedStatement, results);
         }
-        close(preparedStatement, results);
         result.setRowData(datas);
         return result;
     }
