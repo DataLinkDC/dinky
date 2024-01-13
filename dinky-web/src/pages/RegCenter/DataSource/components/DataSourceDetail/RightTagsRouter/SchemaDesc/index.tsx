@@ -25,8 +25,8 @@ import { Empty } from 'antd';
 import React from 'react';
 
 type SchemaDescProps = {
-  tableInfo: Partial<DataSources.Table>;
-  tableColumns: Partial<DataSources.Column[]>;
+  tableInfo?: Partial<DataSources.Table>;
+  tableColumns?: Partial<DataSources.Column[]>;
 };
 
 const SchemaDesc: React.FC<SchemaDescProps> = (props) => {
@@ -34,12 +34,9 @@ const SchemaDesc: React.FC<SchemaDescProps> = (props) => {
 
   return (
     <>
-      {!(Object.keys(tableInfo).length === 0 && tableColumns.length === 0) ? (
-        <>
-          <TableInfo tableInfo={tableInfo} />
-          <ColumnInfo columnInfo={tableColumns} />
-        </>
-      ) : (
+      {tableInfo && <TableInfo tableInfo={tableInfo} />}
+      {tableColumns && <ColumnInfo columnInfo={tableColumns} />}
+      {!tableInfo && !tableColumns && (
         <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')} />
       )}
     </>
