@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.yarn;
 
-import org.apache.flink.configuration.RestOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;

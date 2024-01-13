@@ -133,7 +133,8 @@ const Catalog: React.FC = (props: connect) => {
       databaseId
     };
     const result = getMSSchemaInfo(param);
-    result.then((res) => {
+    result
+      .then((res) => {
         setLoading(false);
         const tables: any[] = [];
         if (res.tables) {
