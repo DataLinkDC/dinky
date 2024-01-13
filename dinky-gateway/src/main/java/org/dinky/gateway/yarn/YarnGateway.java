@@ -19,6 +19,7 @@
 
 package org.dinky.gateway.yarn;
 
+import org.apache.flink.configuration.RestOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
@@ -105,6 +106,9 @@ public abstract class YarnGateway extends AbstractGateway {
     private void initConfig() {
         final ClusterConfig clusterConfig = config.getClusterConfig();
         configuration = GlobalConfiguration.loadConfiguration(clusterConfig.getFlinkConfigPath());
+        if (!configuration.contains(RestOptions.PORT)) {
+            configuration.set(RestOptions.PORT, RestOptions.PORT.defaultValue());
+        }
         configuration.set(CoreOptions.CLASSLOADER_RESOLVE_ORDER, "parent-first");
 
         final FlinkConfig flinkConfig = config.getFlinkConfig();
