@@ -84,7 +84,7 @@ const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
     {
       title: l('rc.ds.length'),
       dataIndex: 'length',
-      width: '4%'
+      width: '6%'
     },
     {
       title: l('rc.ds.precision'),
