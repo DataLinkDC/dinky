@@ -52,6 +52,22 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
         return SystemConfiguration.getInstances().getAllConfiguration();
     }
 
+    /**
+     * Get one configuration by key.
+     *
+     * @param key
+     * @return A map of string keys to lists of {@link Configuration} objects.
+     */
+    @Override
+    public Configuration<?> getOneConfigByKey(String key) {
+        List<Configuration<?>> configurationList =
+                getAll().entrySet().stream().flatMap(x -> x.getValue().stream()).collect(Collectors.toList());
+        return configurationList.stream()
+                .filter(x -> x.getKey().equals(key))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No such configuration: " + key));
+    }
+
     @Override
     public void initSysConfig() {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
