@@ -123,7 +123,7 @@ const Email = (props: EmailProps) => {
               inputPlaceholder={l('rc.ai.receiverCcsPleaseHolder')}
               title={l('rc.ai.receiverCcsMax', '', { max: 10 })}
               max={10}
-              min={1}
+              min={0}
               plain={true}
             />
           </ProCard>

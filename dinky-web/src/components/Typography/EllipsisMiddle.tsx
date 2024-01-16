@@ -42,7 +42,7 @@ const EllipsisMiddle: React.FC<EllipsisMiddleProps> = (props) => {
   }
   return (
     <Tooltip title={tip}>
-      <Text copyable={copyable}>
+      <Text copyable={copyable ? { text: children } : false}>
         {start}
         {end ? `......${end}` : ''}
       </Text>

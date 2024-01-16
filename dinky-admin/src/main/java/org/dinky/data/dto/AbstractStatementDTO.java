@@ -19,6 +19,7 @@
 
 package org.dinky.data.dto;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import io.swagger.annotations.ApiModel;
@@ -41,12 +42,12 @@ public class AbstractStatementDTO {
     private Integer envId;
 
     @ApiModelProperty(value = "Fragment Flag", dataType = "boolean", example = "false", notes = "是否为片段")
-    private Boolean fragment;
+    private Boolean fragment = false;
 
     @ApiModelProperty(
             value = "Variables",
             dataType = "Map<String, String>",
             example = "{\"key\": \"value\"}",
             notes = "变量集合")
-    private Map<String, String> variables;
+    private Map<String, String> variables = new HashMap<>();
 }

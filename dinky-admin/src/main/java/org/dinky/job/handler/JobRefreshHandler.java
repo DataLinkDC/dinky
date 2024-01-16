@@ -122,8 +122,7 @@ public class JobRefreshHandler {
         } else {
             jobInfoDetail.setJobDataDto(jobDataDto);
             FlinkJobDetailInfo flinkJobDetailInfo = jobDataDto.getJob();
-            //            The YARN running status is no longer monitored
-            jobInstance.setStatus(flinkJobDetailInfo.getState());
+            jobInstance.setStatus(getJobStatus(jobInfoDetail).getValue());
             jobInstance.setDuration(flinkJobDetailInfo.getDuration());
             jobInstance.setCreateTime(TimeUtil.toLocalDateTime(flinkJobDetailInfo.getStartTime()));
             // if the job is still running the end-time is -1
@@ -244,7 +243,8 @@ public class JobRefreshHandler {
 
         ClusterConfigurationDTO clusterCfg = jobInfoDetail.getClusterConfiguration();
 
-        if (!Asserts.isNull(clusterCfg)) {
+        if (!Asserts.isNull(clusterCfg)
+                && GatewayType.YARN_PER_JOB.getLongValue().equals(clusterCfg.getType())) {
             try {
                 String appId = jobInfoDetail.getClusterInstance().getName();
 

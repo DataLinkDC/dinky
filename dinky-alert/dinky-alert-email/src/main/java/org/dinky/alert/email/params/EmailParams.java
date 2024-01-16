@@ -44,5 +44,5 @@ public class EmailParams {
     private boolean sslEnable;
     private String user;
     private String password;
-    private String smtpSslTrust;
+    private String smtpSslTrust = "";
 }

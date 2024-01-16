@@ -366,10 +366,7 @@ const HeaderContainer = (props: connect) => {
       // 发布按钮
       icon: isOnline(currentData) ? <MergeCellsOutlined /> : <FundOutlined />,
       title: isOnline(currentData) ? l('button.offline') : l('button.publish'),
-      isShow:
-        (currentTab?.type == TabsPageType.project &&
-          currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL) ||
-        currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR,
+      isShow: currentTab?.type == TabsPageType.project,
       click: () => handleChangeJobLife()
     },
     {

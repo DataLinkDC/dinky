@@ -97,15 +97,11 @@ const JobDesc = (props: JobProps) => {
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.JobId')}>
-            <Text copyable>
-              <a>{jobDetail?.instance?.jid}</a>
-            </Text>
+            <Text copyable>{jobDetail?.instance?.jid}</Text>
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.taskId')}>
-            <Text copyable>
-              <a>{jobDetail?.instance?.taskId}</a>
-            </Text>
+            <Text copyable>{jobDetail?.instance?.taskId}</Text>
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.useSqlFragment')}>

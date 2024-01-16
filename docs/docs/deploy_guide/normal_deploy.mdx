@@ -126,8 +126,9 @@ spring:
 Dinky 需要具备内置的 Flink 环境，该 Flink 环境的实现需要用户自己在 Dinky 根目录下 extends/flink${FLINK_VERSION} 文件夹上传相关的 Flink 依赖，如 flink-dist, flink-table 等，具体见下文。当然也可在启动文件中指定 FLINK_HOME，但不建议这样做。
 
 :::warning 注意事项
-Dinky 当前版本的 yarn 的 per-job 与 application 执行模式依赖 flink-shade-hadoop ，如果你的 Hadoop 版本为 2+ 或 3+，需要额外添加 flink-shade-hadoop-uber-3 包，请手动删除该包内部的 javax.servlet 等冲突内容。
+1. Dinky 当前版本的 yarn 的 per-job 与 application 执行模式依赖 flink-shade-hadoop ，如果你的 Hadoop 版本为 2+ 或 3+，需要额外添加 flink-shade-hadoop-uber-3 包，请手动删除该包内部的 javax.servlet 等冲突内容。
 当然如果你的 Hadoop 为 3+ 也可以自行编译对于版本的 dinky-client-hadoop.jar 以替代 uber 包，
+2. Dinky所有监控相关功能目前强依赖hadoop，即使你不需要任何hadoop功能，也需要上传hadoop相关依赖，否则会导致监控功能无法正常使用，建议添加`flink-shade-hadoop`
 :::
 
 将 flink-shade-hadoop 上传到到 plugins 文件目录下，使用 flink-shade-hadoop-3 地址如下：
@@ -135,6 +136,8 @@ Dinky 当前版本的 yarn 的 per-job 与 application 执行模式依赖 flink-
 ```
 https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-3-uber?repo=cloudera-repos
 ```
+
+dinky默认不包含mysql，postgres等数据库驱动，请自行下载相关依赖到lib或extends目录下
 
 如果是 CDH 及 HDP 使用开源 flink-shade 对 Dinky 目前没有影响，其他用到的依赖取决于 CDH 或者 HDP 与开源版本的兼容性，需要自行根据兼容性添加依赖即可正常使用 Dinky 的所有功能。
 

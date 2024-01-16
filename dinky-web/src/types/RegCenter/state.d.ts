@@ -22,6 +22,7 @@ import { BaseState, ContextMenuPosition } from '@/types/Public/state.d';
 import {
   Alert,
   Cluster,
+  DataSources,
   Document,
   GitProject,
   GlobalVar,
@@ -128,4 +129,9 @@ export interface ResourceState {
 export interface TemplateState extends BaseState {
   value: Partial<UDFTemplate>;
   drawerOpen: boolean;
+}
+
+export interface DataSourceState extends BaseState {
+  value: Partial<DataSources.DataSource>;
+  isDetailPage: boolean;
 }
