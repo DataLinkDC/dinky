@@ -211,6 +211,7 @@ public class JobAlertHandler {
                     }
                     // if current time in diff minute time, and alert send record count > diff minute max send count,
                     // then not send, else send
+                    // todo: 多线程会重复发送,需要优化
                     if (isGTEMaxSendRecordCount(alertGroup, task) && timeIsInDiffMinute(alertGroup, task)) {
                         sendAlert(
                                 alertInstance,
@@ -218,8 +219,6 @@ public class JobAlertHandler {
                                 alertGroup.getId(),
                                 alertRuleDTO.getName(),
                                 alertContent);
-                    } else {
-                        log.warn("当前任务:[{}] 当前时间在指定时间间隔前的时间区间内，且发送记录数大于指定时间间隔内最大发送次数，不发送告警消息", task.getName());
                     }
                 }
             }
@@ -257,8 +256,8 @@ public class JobAlertHandler {
         // record count > diff minute max send count, then not send
         // 2. 如果 当前时间 不在 指定时间间隔前的时间区间内，则发送 | if current time not in diff minute time, then send
         if (jobInstanceAlertSendRecordCount > diffMinuteMaxSendCount) {
-            log.warn(
-                    "你配置了指定时间间隔内最大发送次数为：{}，当前时间在指定时间间隔前的时间区间内，且发送记录数为：{}，不发送告警消息",
+            log.warn(Status.JOB_ALERT_MAX_SEND_COUNT.getMessage(),
+                    jobResendDiffMinute,
                     diffMinuteMaxSendCount,
                     jobInstanceAlertSendRecordCount);
             return false;
@@ -281,11 +280,7 @@ public class JobAlertHandler {
         // 获取当前时间 - 指定时间间隔 = 指定时间间隔前的时间 | get current time - diff minute = diff minute time
         DateTime diffMinuteTime = DateUtil.offsetMinute(DateUtil.date(), -jobResendDiffMinute);
         // 1. 如果 当前时间 在 指定时间间隔前的时间区间内
-        if (DateUtil.date().before(diffMinuteTime)) {
-            log.warn("当前时间在指定时间间隔前的时间区间内");
-            return false;
-        }
-        return true;
+        return !DateUtil.date().before(diffMinuteTime);
     }
 
     /**

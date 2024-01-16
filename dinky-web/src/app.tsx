@@ -27,7 +27,7 @@ import { l } from '@/utils/intl';
 import { PageLoading, Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
-import { JSX } from 'react';
+import React, { JSX } from 'react';
 import { Reducer, StoreEnhancer } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -117,6 +117,7 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+  // @ts-ignore
   const fullscreen = initialState?.fullscreen;
 
   const defaultSettings = {
@@ -130,12 +131,13 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     // 自定义 403 页面
     unAccessible: <UnAccessible />,
     // 增加一个 loading 的状态
-    childrenRender: (children) => {
+    childrenRender: (children: any) => {
       return initialState?.loading ? (
         <PageLoading />
       ) : (
         <AccessContextProvider currentUser={initialState?.currentUser}>
-          <FullScreenProvider>{children}</FullScreenProvider>
+          {/* @ts-ignore */}
+          <FullScreenProvider key={location.pathname}>{children}</FullScreenProvider>
         </AccessContextProvider>
       );
     }

@@ -188,6 +188,7 @@ public enum Status {
     TASK_IS_EXIST(12010, "task.is.existed"),
     TASK_IS_PUBLISH_CANNOT_DELETE(12011, "task.is.publish.cannot.delete"),
     TASK_IS_RUNNING_CANNOT_DELETE(12012, "task.is.running.cannot.delete"),
+    JOB_ALERT_MAX_SEND_COUNT(12013, "job.alert.max.send.count"),
 
     /**
      * alert instance
