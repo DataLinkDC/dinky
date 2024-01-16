@@ -25,7 +25,7 @@ EXECUTE CDCSOURCE demo WITH (
   'sink.connector' = 'sql-catalog',
   'sink.catalog.name' = 'hive',
   'sink.catalog.type' = 'hive',
-  'sink.default-database' = 'hdb',
-  'sink.hive-conf-dir' = '/usr/local/dlink/hive-conf'
+  'sink.sink.db' = 'hdb',
+  'sink.catalog.hive-conf-dir' = '/usr/local/dlink/hive-conf'
 );
 ```
