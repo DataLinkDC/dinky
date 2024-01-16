@@ -45,7 +45,7 @@ public interface SysConfigService extends ISuperService<SysConfig> {
      *
      * @return A map of string keys to lists of {@link Configuration} objects.
      */
-    Configuration<?> getOneConfigByKey(String key);
+    Configuration<Object> getOneConfigByKey(String key);
 
     /**
      * Initialize system configurations.
