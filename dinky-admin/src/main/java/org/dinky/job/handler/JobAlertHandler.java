@@ -256,7 +256,8 @@ public class JobAlertHandler {
         // record count > diff minute max send count, then not send
         // 2. 如果 当前时间 不在 指定时间间隔前的时间区间内，则发送 | if current time not in diff minute time, then send
         if (jobInstanceAlertSendRecordCount > diffMinuteMaxSendCount) {
-            log.warn(Status.JOB_ALERT_MAX_SEND_COUNT.getMessage(),
+            log.warn(
+                    Status.JOB_ALERT_MAX_SEND_COUNT.getMessage(),
                     jobResendDiffMinute,
                     diffMinuteMaxSendCount,
                     jobInstanceAlertSendRecordCount);
