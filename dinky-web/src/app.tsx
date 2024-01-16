@@ -27,7 +27,7 @@ import { l } from '@/utils/intl';
 import { PageLoading, Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
-import React, { JSX } from 'react';
+import { JSX } from 'react';
 import { Reducer, StoreEnhancer } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
