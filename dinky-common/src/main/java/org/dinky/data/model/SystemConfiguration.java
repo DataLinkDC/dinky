@@ -106,10 +106,10 @@ public class SystemConfiguration {
             .defaultValue(System.getProperty("dinkyAddr"))
             .note(Status.SYS_ENV_SETTINGS_DINKYADDR_NOTE);
 
-    private final Configuration<Integer> jobReSendDiffMinute = key(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_MINUTE)
+    private final Configuration<Integer> jobReSendDiffSecond = key(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND)
             .intType()
-            .defaultValue(1)
-            .note(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_MINUTE_NOTE);
+            .defaultValue(60)
+            .note(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND_NOTE);
 
     private final Configuration<Integer> diffMinuteMaxSendCount =
             key(Status.SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT)

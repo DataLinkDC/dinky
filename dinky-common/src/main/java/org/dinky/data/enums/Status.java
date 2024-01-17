@@ -333,8 +333,8 @@ public enum Status {
     SYS_ENV_SETTINGS_DINKYADDR(116, "sys.env.settings.dinkyAddr"),
     SYS_ENV_SETTINGS_DINKYADDR_NOTE(117, "sys.env.settings.dinkyAddr.note"),
 
-    SYS_ENV_SETTINGS_JOB_RESEND_DIFF_MINUTE(118, "sys.env.settings.jobResendDiffMinute"),
-    SYS_ENV_SETTINGS_JOB_RESEND_DIFF_MINUTE_NOTE(119, "sys.env.settings.jobResendDiffMinute.note"),
+    SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND(118, "sys.env.settings.jobResendDiffSecond"),
+    SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND_NOTE(119, "sys.env.settings.jobResendDiffSecond.note"),
 
     SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT(120, "sys.env.settings.diffMinuteMaxSendCount"),
     SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT_NOTE(121, "sys.env.settings.diffMinuteMaxSendCount.note"),

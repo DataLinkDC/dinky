@@ -233,17 +233,17 @@ public class JobAlertHandler {
      * @return if true, then send alert
      */
     private boolean isGTEMaxSendRecordCount(AlertGroup alertGroup, TaskDTO task) {
-        // check diff minute max send count| 指定时间间隔内最大发送次数 2
+        // check diff seconds max send count| 指定时间间隔内最大发送次数 2
         int diffMinuteMaxSendCount = (int) sysConfigService
                 .getOneConfigByKey(Status.SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT.getKey())
                 .getValue();
-        // check diff minute max send count | 指定时间间隔 1
-        int jobResendDiffMinute = (int) sysConfigService
-                .getOneConfigByKey(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_MINUTE.getKey())
+        // check diff seconds max send count | 指定时间间隔 1
+        int jobResendDiffSecond = (int) sysConfigService
+                .getOneConfigByKey(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND.getKey())
                 .getValue();
 
-        // 获取当前时间 - 指定时间间隔 = 指定时间间隔前的时间 | get current time - diff minute = diff minute time
-        DateTime diffMinuteTime = DateUtil.offsetMinute(DateUtil.date(), -jobResendDiffMinute);
+        // 获取当前时间 - 指定时间间隔 = 指定时间间隔前的时间 | get current time - diff seconds = diff seconds time
+        DateTime diffMinuteTime = DateUtil.offsetSecond(DateUtil.date(), -jobResendDiffSecond);
         // 获取指定时间间隔前的时间到当前时间之间的发送记录数 | get diff minute time to current time alert send record count
         long jobInstanceAlertSendRecordCount = alertHistoryService.count(
                 new LambdaQueryWrapper<>(AlertHistory.class)
@@ -255,10 +255,10 @@ public class JobAlertHandler {
         // 1. 如果 当前时间 在 指定时间间隔前的时间区间内，且发送记录数大于指定时间间隔内最大发送次数，则不发送 | if current time in diff minute time, and alert send
         // record count > diff minute max send count, then not send
         // 2. 如果 当前时间 不在 指定时间间隔前的时间区间内，则发送 | if current time not in diff minute time, then send
-        if (jobInstanceAlertSendRecordCount > diffMinuteMaxSendCount) {
+        if (jobInstanceAlertSendRecordCount >= diffMinuteMaxSendCount) {
             log.warn(
                     Status.JOB_ALERT_MAX_SEND_COUNT.getMessage(),
-                    jobResendDiffMinute,
+                    jobResendDiffSecond,
                     diffMinuteMaxSendCount,
                     jobInstanceAlertSendRecordCount);
             return false;
@@ -275,13 +275,13 @@ public class JobAlertHandler {
      */
     private boolean timeIsInDiffMinute(AlertGroup alertGroup, TaskDTO task) {
         // check diff minute max send count | 指定时间间隔 1
-        int jobResendDiffMinute = (int) sysConfigService
-                .getOneConfigByKey(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_MINUTE.getKey())
+        int jobResendDiffSecond = (int) sysConfigService
+                .getOneConfigByKey(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND.getKey())
                 .getValue();
-        // 获取当前时间 - 指定时间间隔 = 指定时间间隔前的时间 | get current time - diff minute = diff minute time
-        DateTime diffMinuteTime = DateUtil.offsetMinute(DateUtil.date(), -jobResendDiffMinute);
+        // 获取当前时间 - 指定时间间隔 = 指定时间间隔前的时间 | get current time - diff seconds = diff seconds time
+        DateTime diffSecondTime = DateUtil.offsetSecond(DateUtil.date(), -jobResendDiffSecond);
         // 1. 如果 当前时间 在 指定时间间隔前的时间区间内
-        return !DateUtil.date().before(diffMinuteTime);
+        return !DateUtil.date().before(diffSecondTime);
     }
 
     /**
