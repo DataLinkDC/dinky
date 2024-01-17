@@ -71,7 +71,8 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
             CustomTableEnvironment customTableEnvironment, DataStream<Row> rowDataDataStream, Table table) {
         // 上游表名称
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
-        customTableEnvironment.createTemporaryView(viewName, rowDataDataStream);
+        customTableEnvironment.createTemporaryView(
+                viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream));
         logger.info("Create {} temporaryView successful...", viewName);
         return viewName;
     }
