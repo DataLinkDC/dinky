@@ -110,10 +110,6 @@ const JobConfig = (props: any) => {
     });
   };
 
-  const onChangeClusterSession = () => {
-    //todo 这里需要验证
-    // showTables(currentSession.session, dispatch);
-  };
   return (
     <div style={{ maxHeight: rightContainer.height, marginTop: 10 }}>
       {current?.step === JOB_LIFE_CYCLE.PUBLISH && (
@@ -177,9 +173,6 @@ const JobConfig = (props: any) => {
                   ]}
                   name='clusterId'
                   options={buildClusterOptions(selectRunMode, sessionCluster)}
-                  fieldProps={{
-                    onChange: onChangeClusterSession
-                  }}
                 />
               </>
             )}
