@@ -17,18 +17,18 @@
  *
  */
 
-import {l} from '@/utils/intl';
-import {CloseCircleTwoTone, IssuesCloseOutlined} from '@ant-design/icons';
-import {Space} from 'antd';
-import {DefaultOptionType} from 'antd/es/select';
-import {MenuItemType} from 'rc-menu/lib/interface';
+import { l } from '@/utils/intl';
+import { CloseCircleTwoTone, IssuesCloseOutlined } from '@ant-design/icons';
+import { Space } from 'antd';
+import { DefaultOptionType } from 'antd/es/select';
+import { MenuItemType } from 'rc-menu/lib/interface';
 
 export const STUDIO_TAG_RIGHT_CONTEXT_MENU: MenuItemType[] = [
   {
     key: 'closeAll',
     label: (
       <Space>
-        <CloseCircleTwoTone/>
+        <CloseCircleTwoTone />
         {l('right.menu.closeAll')}
       </Space>
     )
@@ -37,7 +37,7 @@ export const STUDIO_TAG_RIGHT_CONTEXT_MENU: MenuItemType[] = [
     key: 'closeOther',
     label: (
       <Space>
-        <IssuesCloseOutlined className={'blue-icon'}/>
+        <IssuesCloseOutlined className={'blue-icon'} />
         {l('right.menu.closeOther')}
       </Space>
     )
