@@ -120,6 +120,8 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
           destroyOnClose: true,
           onCancel: () => handleCancel()
         }}
+        onValuesChange={(changedValues, allValues) => form.setFieldsValue(allValues)}
+        syncToInitialValues
       >
         <ProjectForm values={values} form={form} />
       </ModalForm>
