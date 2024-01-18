@@ -80,8 +80,8 @@ const JobConfig = (props: any) => {
     dispatch({
       type: ALERT_MODEL_ASYNC.queryAlertGroup
     });
-
-    form.setFieldsValue({ ...current, type: current?.type ?? RUN_MODE.LOCAL });
+    setSelectRunMode(current?.type);
+    form.setFieldsValue({ ...current, type: current?.type });
   }, [current]);
 
   const onValuesChange = (change: { [key in string]: any }, all: any) => {
@@ -114,7 +114,7 @@ const JobConfig = (props: any) => {
     //todo 这里需要验证
     // showTables(currentSession.session, dispatch);
   };
-
+  console.log(selectRunMode,'selectRunMode')
   return (
     <div style={{ maxHeight: rightContainer.height, marginTop: 10 }}>
       {current?.step === JOB_LIFE_CYCLE.PUBLISH && (
@@ -154,11 +154,10 @@ const JobConfig = (props: any) => {
           }}
           allowClear={false}
         />
-
-        {/*集群实例渲染逻辑*/}
-        {isCanRenderClusterInstance(selectRunMode) && (
-          <>
-            {current && current?.clusterId && (
+        { selectRunMode !== RUN_MODE.LOCAL && <>
+          {/*集群实例渲染逻辑*/}
+          {isCanRenderClusterInstance(selectRunMode) && (
+            <>
               <ProFormSelect
                 style={{ width: '100%' }}
                 placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
@@ -182,33 +181,34 @@ const JobConfig = (props: any) => {
                   onChange: onChangeClusterSession
                 }}
               />
-            )}
-          </>
-        )}
+            </>
+          )}
 
-        {/*集群配置渲染逻辑*/}
-        {isCanRenderClusterConfiguration(selectRunMode) && (
-          <ProFormSelect
-            name='clusterConfigurationId'
-            placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-              type: selectRunMode
-            })}
-            label={l('pages.datastudio.label.jobConfig.clusterConfig')}
-            tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip2', '', {
-              type: selectRunMode
-            })}
-            rules={[
-              {
-                required: true,
-                message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-                  type: selectRunMode
-                })
-              }
-            ]}
-            options={buildClusterConfigOptions(selectRunMode, clusterConfiguration)}
-            allowClear={false}
-          />
-        )}
+          {/*集群配置渲染逻辑*/}
+          {isCanRenderClusterConfiguration(selectRunMode) && (
+            <ProFormSelect
+              name='clusterConfigurationId'
+              placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                type: selectRunMode
+              })}
+              label={l('pages.datastudio.label.jobConfig.clusterConfig')}
+              tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip2', '', {
+                type: selectRunMode
+              })}
+              rules={[
+                {
+                  required: true,
+                  message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                    type: selectRunMode
+                  })
+                }
+              ]}
+              options={buildClusterConfigOptions(selectRunMode, clusterConfiguration)}
+              allowClear={false}
+            />
+          )}
+        </>}
+
 
         {current?.dialect && current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
           <ProFormSelect
