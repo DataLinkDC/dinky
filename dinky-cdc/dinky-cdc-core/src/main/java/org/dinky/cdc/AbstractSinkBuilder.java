@@ -174,7 +174,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                         break;
                     case "u":
                         rowDataCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, value);
-                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, value);
+                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_AFTER, value);
                         break;
                     default:
                 }
@@ -211,7 +211,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     @SuppressWarnings("rawtypes")
-    public static Map getOriginRowData(RowKind rowKind, Map value) {
+    protected Map getOriginRowData(RowKind rowKind, Map value) {
         switch (rowKind) {
             case INSERT:
             case UPDATE_AFTER:
