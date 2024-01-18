@@ -95,7 +95,6 @@ public class FlinkAppUtil {
             // If an exception is thrown, it will cause the k8s pod to trigger a restart,
             // resulting in an inability to exit normally
             log.error("refesh status failed:", e);
-            sendHook(taskId, jobId, 0);
         }
     }
 
