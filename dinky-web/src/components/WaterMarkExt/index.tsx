@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import {WaterMark} from "@ant-design/pro-components";
+import { WaterMark } from "@ant-design/pro-components";
 
 
 interface WaterMarkExtProps {
@@ -29,14 +29,13 @@ interface WaterMarkExtProps {
 }
 
 const WaterMarkExt = (props: WaterMarkExtProps) => {
+  const { children, hiddenWaterMark, waterMarkContent = [] || '', contentColor } = props;
 
-  const {children, hiddenWaterMark, waterMarkContent = [] || '',contentColor } = props;
-
-  return <>
-    {
-      hiddenWaterMark ? <>
-        {children}
-      </> :
+  return (
+    <>
+      {hiddenWaterMark ? (
+        <>{children}</>
+      ) : (
         <>
           <WaterMark
             fontColor={contentColor}
@@ -47,8 +46,9 @@ const WaterMarkExt = (props: WaterMarkExtProps) => {
             {children}
           </WaterMark>
         </>
-    }
-  </>
-}
+      )}
+    </>
+  );
+};
 
 export default WaterMarkExt;

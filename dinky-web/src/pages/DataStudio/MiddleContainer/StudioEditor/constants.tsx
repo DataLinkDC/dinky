@@ -57,5 +57,5 @@ export const TASK_VAR_FILTER = [
   'databaseName',
   'envName',
   'alertGroupName',
-  'variables',
+  'variables'
 ];
