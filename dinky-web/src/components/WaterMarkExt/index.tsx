@@ -17,9 +17,8 @@
  *
  */
 
-import React from "react";
-import { WaterMark } from "@ant-design/pro-components";
-
+import { WaterMark } from '@ant-design/pro-components';
+import React from 'react';
 
 interface WaterMarkExtProps {
   children: React.ReactNode;
