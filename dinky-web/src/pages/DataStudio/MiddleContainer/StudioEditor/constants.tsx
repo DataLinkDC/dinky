@@ -56,5 +56,6 @@ export const TASK_VAR_FILTER = [
   'clusterConfigurationName',
   'databaseName',
   'envName',
-  'alertGroupName'
+  'alertGroupName',
+  'variables'
 ];

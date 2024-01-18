@@ -233,19 +233,6 @@ export type BottomContainerContent = {
   console: string;
 };
 
-export type SessionType = {
-  session?: string;
-  sessionConfig?: {
-    type?: string;
-    clusterId?: number;
-    clusterName?: string;
-    address?: string;
-  };
-  createUser?: string;
-  createTime?: string;
-  connectors: ConnectorType[];
-};
-
 /**
  * job running type msg
  */
@@ -457,7 +444,7 @@ const Model: ModelType = {
       });
     },
     *querySessionData({ payload }, { call, put }) {
-      const response: SessionType = yield call(getSessionData, payload);
+      const response: Cluster.Instance[] = yield call(getSessionData, payload);
       yield put({
         type: 'saveSession',
         payload: response

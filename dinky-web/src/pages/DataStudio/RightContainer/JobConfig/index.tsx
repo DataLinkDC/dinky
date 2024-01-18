@@ -24,7 +24,7 @@ import {
   getCurrentTab,
   isDataStudioTabsItemType
 } from '@/pages/DataStudio/function';
-import { SessionType, StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
+import { StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import {
   buildAlertGroupOptions,
   buildClusterConfigOptions,
@@ -35,6 +35,7 @@ import {
   isCanRenderClusterConfiguration,
   isCanRenderClusterInstance
 } from '@/pages/DataStudio/RightContainer/JobConfig/function';
+import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { AlertStateType, ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { DIALECT, RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
 import { l } from '@/utils/intl';
@@ -48,13 +49,11 @@ import {
   ProFormSwitch,
   ProFormText
 } from '@ant-design/pro-components';
-import { Badge, Space, Typography } from 'antd';
+import { Alert, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
 import { useEffect, useState } from 'react';
 import { connect } from 'umi';
-
-const { Text } = Typography;
 
 const JobConfig = (props: any) => {
   const {
@@ -70,16 +69,9 @@ const JobConfig = (props: any) => {
 
   const current = getCurrentData(panes, activeKey);
 
-  const currentSession: SessionType = {
-    connectors: [],
-    sessionConfig: {
-      clusterId: current?.clusterId,
-      clusterName: current?.clusterName
-    }
-  };
   const [form] = useForm();
 
-  const [selectRunMode, setSelectRunMode] = useState<string>(current?.type ?? RUN_MODE.LOCAL);
+  const [selectRunMode, setSelectRunMode] = useState<string>(current?.type);
 
   useEffect(() => {
     dispatch({
@@ -88,8 +80,8 @@ const JobConfig = (props: any) => {
     dispatch({
       type: ALERT_MODEL_ASYNC.queryAlertGroup
     });
-
-    form.setFieldsValue({ ...current, type: current?.type ?? RUN_MODE.LOCAL });
+    setSelectRunMode(current?.type);
+    form.setFieldsValue({ ...current, type: current?.type });
   }, [current]);
 
   const onValuesChange = (change: { [key in string]: any }, all: any) => {
@@ -118,53 +110,13 @@ const JobConfig = (props: any) => {
     });
   };
 
-  const onChangeClusterSession = () => {
-    //todo 这里需要验证
-    // showTables(currentSession.session, dispatch);
-  };
-
-  const statusElement = currentSession.sessionConfig?.clusterId ? (
-    <Space>
-      <Badge status='success' />
-      <Text type='success'>{currentSession.sessionConfig.clusterName}</Text>
-    </Space>
-  ) : (
-    <Space>
-      <Badge status='error' />
-      <Text type='danger'>{l('pages.devops.jobinfo.localenv')}</Text>
-    </Space>
-  );
-
-  const execMode = currentSession.session ? (
-    statusElement
-  ) : (
-    <ProFormSelect
-      style={{ width: '100%' }}
-      placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-        type: current?.type
-      })}
-      label={l('pages.datastudio.label.jobConfig.cluster')}
-      tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-        type: current?.type
-      })}
-      rules={[
-        {
-          required: true,
-          message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-            type: current?.type
-          })
-        }
-      ]}
-      name='clusterId'
-      options={buildClusterOptions(selectRunMode, sessionCluster)}
-      fieldProps={{
-        onChange: onChangeClusterSession
-      }}
-    />
-  );
-
   return (
-    <div style={{ maxHeight: rightContainer.height }}>
+    <div style={{ maxHeight: rightContainer.height, marginTop: 10 }}>
+      {current?.step === JOB_LIFE_CYCLE.PUBLISH && (
+        <>
+          <Alert message={l('pages.datastudio.label.jobConfig.watermark')} type='info' showIcon />
+        </>
+      )}
       <ProForm
         size={'middle'}
         initialValues={{
@@ -175,11 +127,13 @@ const JobConfig = (props: any) => {
           alertGroupId: -1
         }}
         className={'data-studio-form'}
-        style={{ paddingInline: '15px', overflow: 'scroll' }}
+        style={{ paddingInline: '15px', overflow: 'scroll', marginTop: 5 }}
         form={form}
         submitter={false}
         layout='vertical'
+        disabled={current?.step === JOB_LIFE_CYCLE.PUBLISH} // 当该任务处于发布状态时 表单禁用 不允许修改 | when this job is publishing, the form is disabled , and it is not allowed to modify
         onValuesChange={debounce(onValuesChange, 500)}
+        syncToInitialValues
       >
         <ProFormSelect
           name='type'
@@ -195,33 +149,61 @@ const JobConfig = (props: any) => {
           }}
           allowClear={false}
         />
+        {selectRunMode !== RUN_MODE.LOCAL && (
+          <>
+            {/*集群实例渲染逻辑*/}
+            {isCanRenderClusterInstance(selectRunMode) && (
+              <>
+                <ProFormSelect
+                  style={{ width: '100%' }}
+                  placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                    type: current?.type
+                  })}
+                  label={l('pages.datastudio.label.jobConfig.cluster')}
+                  tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                    type: current?.type
+                  })}
+                  rules={[
+                    {
+                      required: true,
+                      message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                        type: current?.type
+                      })
+                    }
+                  ]}
+                  name='clusterId'
+                  options={buildClusterOptions(selectRunMode, sessionCluster)}
+                />
+              </>
+            )}
 
-        {isCanRenderClusterInstance(selectRunMode) && <>{execMode}</>}
-
-        {isCanRenderClusterConfiguration(selectRunMode) && (
-          <ProFormSelect
-            name='clusterConfigurationId'
-            placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-              type: selectRunMode
-            })}
-            label={l('pages.datastudio.label.jobConfig.clusterConfig')}
-            tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip2', '', {
-              type: selectRunMode
-            })}
-            rules={[
-              {
-                required: true,
-                message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+            {/*集群配置渲染逻辑*/}
+            {isCanRenderClusterConfiguration(selectRunMode) && (
+              <ProFormSelect
+                name='clusterConfigurationId'
+                placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
                   type: selectRunMode
-                })
-              }
-            ]}
-            options={buildClusterConfigOptions(selectRunMode, clusterConfiguration)}
-            allowClear={false}
-          />
+                })}
+                label={l('pages.datastudio.label.jobConfig.clusterConfig')}
+                tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip2', '', {
+                  type: selectRunMode
+                })}
+                rules={[
+                  {
+                    required: true,
+                    message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                      type: selectRunMode
+                    })
+                  }
+                ]}
+                options={buildClusterConfigOptions(selectRunMode, clusterConfiguration)}
+                allowClear={false}
+              />
+            )}
+          </>
         )}
 
-        {current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
+        {current?.dialect && current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
           <ProFormSelect
             name='envId'
             label={l('pages.datastudio.label.jobConfig.flinksql.env')}
@@ -244,19 +226,6 @@ const JobConfig = (props: any) => {
             max={9999}
             min={1}
           />
-          {/*{current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
-            <ProFormSwitch
-              label={l('pages.datastudio.label.jobConfig.insert')}
-              name='statementSet'
-              valuePropName='checked'
-              tooltip={{
-                title: l('pages.datastudio.label.jobConfig.insert.tip'),
-                icon: <InfoCircleOutlined />
-              }}
-              {...SWITCH_OPTIONS()}
-            />
-          )}*/}
-
           <ProFormSwitch
             label={l('pages.datastudio.label.jobConfig.fragment')}
             name='fragment'
