@@ -153,61 +153,62 @@ const JobConfig = (props: any) => {
           }}
           allowClear={false}
         />
-        { selectRunMode !== RUN_MODE.LOCAL && <>
-          {/*集群实例渲染逻辑*/}
-          {isCanRenderClusterInstance(selectRunMode) && (
-            <>
+        {selectRunMode !== RUN_MODE.LOCAL && (
+          <>
+            {/*集群实例渲染逻辑*/}
+            {isCanRenderClusterInstance(selectRunMode) && (
+              <>
+                <ProFormSelect
+                  style={{ width: '100%' }}
+                  placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                    type: current?.type
+                  })}
+                  label={l('pages.datastudio.label.jobConfig.cluster')}
+                  tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                    type: current?.type
+                  })}
+                  rules={[
+                    {
+                      required: true,
+                      message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                        type: current?.type
+                      })
+                    }
+                  ]}
+                  name='clusterId'
+                  options={buildClusterOptions(selectRunMode, sessionCluster)}
+                  fieldProps={{
+                    onChange: onChangeClusterSession
+                  }}
+                />
+              </>
+            )}
+
+            {/*集群配置渲染逻辑*/}
+            {isCanRenderClusterConfiguration(selectRunMode) && (
               <ProFormSelect
-                style={{ width: '100%' }}
+                name='clusterConfigurationId'
                 placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-                  type: current?.type
+                  type: selectRunMode
                 })}
-                label={l('pages.datastudio.label.jobConfig.cluster')}
-                tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-                  type: current?.type
+                label={l('pages.datastudio.label.jobConfig.clusterConfig')}
+                tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip2', '', {
+                  type: selectRunMode
                 })}
                 rules={[
                   {
                     required: true,
                     message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-                      type: current?.type
+                      type: selectRunMode
                     })
                   }
                 ]}
-                name='clusterId'
-                options={buildClusterOptions(selectRunMode, sessionCluster)}
-                fieldProps={{
-                  onChange: onChangeClusterSession
-                }}
+                options={buildClusterConfigOptions(selectRunMode, clusterConfiguration)}
+                allowClear={false}
               />
-            </>
-          )}
-
-          {/*集群配置渲染逻辑*/}
-          {isCanRenderClusterConfiguration(selectRunMode) && (
-            <ProFormSelect
-              name='clusterConfigurationId'
-              placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-                type: selectRunMode
-              })}
-              label={l('pages.datastudio.label.jobConfig.clusterConfig')}
-              tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip2', '', {
-                type: selectRunMode
-              })}
-              rules={[
-                {
-                  required: true,
-                  message: l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-                    type: selectRunMode
-                  })
-                }
-              ]}
-              options={buildClusterConfigOptions(selectRunMode, clusterConfiguration)}
-              allowClear={false}
-            />
-          )}
-        </>}
-
+            )}
+          </>
+        )}
 
         {current?.dialect && current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
           <ProFormSelect

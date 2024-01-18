@@ -17,15 +17,15 @@
  *
  */
 
-import {TagAlignLeft} from '@/components/StyledComponents';
-import {getAlertIcon} from '@/pages/RegCenter/Alert/AlertInstance/function';
-import {RUN_MODE} from '@/services/constants';
-import {Alert, ALERT_TYPE, Cluster} from '@/types/RegCenter/data.d';
-import {TaskInfo} from '@/types/Studio/data.d';
-import {l} from '@/utils/intl';
-import {PaperClipOutlined} from '@ant-design/icons';
-import {Badge, Space, Tag} from 'antd';
-import {DefaultOptionType} from 'antd/es/select';
+import { TagAlignLeft } from '@/components/StyledComponents';
+import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
+import { RUN_MODE } from '@/services/constants';
+import { Alert, ALERT_TYPE, Cluster } from '@/types/RegCenter/data.d';
+import { TaskInfo } from '@/types/Studio/data.d';
+import { l } from '@/utils/intl';
+import { PaperClipOutlined } from '@ant-design/icons';
+import { Badge, Space, Tag } from 'antd';
+import { DefaultOptionType } from 'antd/es/select';
 
 /**
  * build job run model
@@ -156,8 +156,8 @@ export const buildEnvOptions = (env: TaskInfo[] = []) => {
   for (const item of env) {
     const tag = (
       <TagAlignLeft>
-        {item.enabled ? <Badge status='success'/> : <Badge status='error'/>}
-        {item.fragment ? <PaperClipOutlined/> : undefined}
+        {item.enabled ? <Badge status='success' /> : <Badge status='error' />}
+        {item.fragment ? <PaperClipOutlined /> : undefined}
         {item.name}
       </TagAlignLeft>
     );
