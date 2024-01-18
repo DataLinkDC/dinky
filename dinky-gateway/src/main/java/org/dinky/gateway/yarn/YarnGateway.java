@@ -19,30 +19,17 @@
 
 package org.dinky.gateway.yarn;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.context.FlinkUdfPathContextHolder;
-import org.dinky.data.enums.JobStatus;
-import org.dinky.data.model.SystemConfiguration;
-import org.dinky.gateway.AbstractGateway;
-import org.dinky.gateway.config.ClusterConfig;
-import org.dinky.gateway.config.FlinkConfig;
-import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.enums.ActionType;
-import org.dinky.gateway.enums.SavePointType;
-import org.dinky.gateway.exception.GatewayException;
-import org.dinky.gateway.model.CustomConfig;
-import org.dinky.gateway.result.SavePointResult;
-import org.dinky.gateway.result.TestResult;
-import org.dinky.gateway.result.YarnResult;
-import org.dinky.utils.FlinkJsonUtil;
-import org.dinky.utils.ThreadUtil;
-
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.http.HttpUtil;
 import org.apache.flink.client.deployment.ClusterRetrieveException;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
-import org.apache.flink.configuration.RestOptions;
 import org.apache.flink.configuration.SecurityOptions;
 import org.apache.flink.runtime.messages.webmonitor.JobDetails;
 import org.apache.flink.runtime.messages.webmonitor.MultipleJobsDetails;
@@ -64,24 +51,30 @@ import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
+import org.dinky.assertion.Asserts;
+import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.enums.JobStatus;
+import org.dinky.data.model.SystemConfiguration;
+import org.dinky.gateway.AbstractGateway;
+import org.dinky.gateway.config.ClusterConfig;
+import org.dinky.gateway.config.FlinkConfig;
+import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.enums.ActionType;
+import org.dinky.gateway.enums.SavePointType;
+import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.model.CustomConfig;
+import org.dinky.gateway.result.SavePointResult;
+import org.dinky.gateway.result.TestResult;
+import org.dinky.gateway.result.YarnResult;
+import org.dinky.utils.FlinkJsonUtil;
+import org.dinky.utils.ThreadUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.http.HttpUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
 
@@ -92,7 +85,8 @@ public abstract class YarnGateway extends AbstractGateway {
 
     protected YarnClient yarnClient;
 
-    public YarnGateway() {}
+    public YarnGateway() {
+    }
 
     public YarnGateway(GatewayConfig config) {
         super(config);
@@ -106,9 +100,7 @@ public abstract class YarnGateway extends AbstractGateway {
     private void initConfig() {
         final ClusterConfig clusterConfig = config.getClusterConfig();
         configuration = GlobalConfiguration.loadConfiguration(clusterConfig.getFlinkConfigPath());
-        if (!configuration.contains(RestOptions.PORT)) {
-            configuration.set(RestOptions.PORT, RestOptions.PORT.defaultValue());
-        }
+
         configuration.set(CoreOptions.CLASSLOADER_RESOLVE_ORDER, "parent-first");
 
         final FlinkConfig flinkConfig = config.getFlinkConfig();
@@ -339,7 +331,7 @@ public abstract class YarnGateway extends AbstractGateway {
         String webUrl;
         int counts = SystemConfiguration.getInstances().getJobIdWait();
         while (yarnClient.getApplicationReport(clusterClient.getClusterId()).getYarnApplicationState()
-                        == YarnApplicationState.ACCEPTED
+                == YarnApplicationState.ACCEPTED
                 && counts-- > 0) {
             Thread.sleep(1000);
         }
@@ -362,8 +354,8 @@ public abstract class YarnGateway extends AbstractGateway {
             Thread.sleep(1000);
 
             String url = yarnClient
-                            .getApplicationReport(clusterClient.getClusterId())
-                            .getTrackingUrl()
+                    .getApplicationReport(clusterClient.getClusterId())
+                    .getTrackingUrl()
                     + JobsOverviewHeaders.URL.substring(1);
 
             String json = HttpUtil.get(url);
