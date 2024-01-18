@@ -114,7 +114,6 @@ const JobConfig = (props: any) => {
     //todo 这里需要验证
     // showTables(currentSession.session, dispatch);
   };
-  console.log(selectRunMode,'selectRunMode')
   return (
     <div style={{ maxHeight: rightContainer.height, marginTop: 10 }}>
       {current?.step === JOB_LIFE_CYCLE.PUBLISH && (
