@@ -172,11 +172,10 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
             placeholder={l('rc.gp.branchPlaceholder')}
             rules={[{ required: true, message: l('rc.gp.branchPlaceholder') }]}
             fieldProps={{
-              onFocus: getBranchList,
+              onFocus: getBranchList
             }}
             showSearch
           />
-
 
           <ProFormRadio.Group
             name='codeType'
@@ -189,19 +188,16 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
               <Radio value={2}>{GIT_PROJECT_CODE_TYPE_ENUM[2].text}</Radio>
             </Radio.Group>
           </ProFormRadio.Group>
-
         </ProForm.Group>
 
         <ProForm.Group>
           <ProForm.Item name='buildArgs' label={l('rc.gp.buildArgs')}>
             <CodeEdit
-              onChange={(value :string) => setBuildArgsValue(value ?? '')}
+              onChange={(value: string) => setBuildArgsValue(value ?? '')}
               code={buildArgs}
               {...CodeEditProps}
             />
           </ProForm.Item>
-
-
         </ProForm.Group>
 
         <ProForm.Group>
