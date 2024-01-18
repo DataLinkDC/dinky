@@ -145,7 +145,7 @@ public class Submitter {
                 FlinkAppUtil.monitorFlinkTask(jobClient.get(), config.getTaskId());
             } else {
                 log.error("jobClient is empty, can not  monitor job");
-                //FlinkAppUtil.monitorFlinkTask(Submitter.executor, config.getTaskId());
+                // FlinkAppUtil.monitorFlinkTask(Submitter.executor, config.getTaskId());
             }
         }
     }
