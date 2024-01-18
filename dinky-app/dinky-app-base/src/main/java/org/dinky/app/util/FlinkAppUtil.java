@@ -127,7 +127,7 @@ public class FlinkAppUtil {
                 }
                 sendHook(taskId, jobId, reTryCount + 1);
             } else {
-                log.error("Hook Job Done failed to {}, The retry limit is exceeded: {}",dinkyAddr, e.getMessage());
+                log.error("Hook Job Done failed to {}, The retry limit is exceeded: {}", dinkyAddr, e.getMessage());
             }
         }
     }

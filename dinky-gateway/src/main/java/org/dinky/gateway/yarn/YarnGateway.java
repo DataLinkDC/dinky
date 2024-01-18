@@ -104,7 +104,8 @@ public abstract class YarnGateway extends AbstractGateway {
 
     private void initConfig() {
         final ClusterConfig clusterConfig = config.getClusterConfig();
-        configuration = GlobalConfiguration.loadConfiguration(clusterConfig.getFlinkConfigPath().trim());
+        configuration = GlobalConfiguration.loadConfiguration(
+                clusterConfig.getFlinkConfigPath().trim());
         configuration.set(CoreOptions.CLASSLOADER_RESOLVE_ORDER, "parent-first");
 
         final FlinkConfig flinkConfig = config.getFlinkConfig();
