@@ -19,22 +19,21 @@
 
 package org.dinky.app.util;
 
-import org.dinky.data.enums.JobStatus;
-import org.dinky.data.model.SystemConfiguration;
-import org.dinky.executor.Executor;
-import org.dinky.utils.JsonUtils;
-
+import cn.hutool.core.text.StrFormatter;
+import cn.hutool.http.HttpUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.client.deployment.StandaloneClusterId;
 import org.apache.flink.client.program.rest.RestClusterClient;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.ReadableConfig;
 import org.apache.flink.runtime.client.JobStatusMessage;
+import org.dinky.data.enums.JobStatus;
+import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.Executor;
+import org.dinky.utils.JsonUtils;
 
 import java.util.Collection;
-
-import cn.hutool.core.text.StrFormatter;
-import cn.hutool.http.HttpUtil;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
 
 @Slf4j
 public class FlinkAppUtil {
@@ -114,7 +113,8 @@ public class FlinkAppUtil {
     private static RestClusterClient<StandaloneClusterId> createClient(Executor executor) throws Exception {
         ReadableConfig config = executor.getStreamExecutionEnvironment().getConfiguration();
         Configuration configuration = new Configuration((Configuration) config);
-
-        return new RestClusterClient<>(configuration, StandaloneClusterId.getInstance());
+        Map<String, String> map = configuration.toMap();
+        map.remove("web.port");
+        return new RestClusterClient<>(Configuration.fromMap(map), StandaloneClusterId.getInstance());
     }
 }
