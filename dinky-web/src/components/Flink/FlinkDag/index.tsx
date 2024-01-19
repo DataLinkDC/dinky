@@ -87,7 +87,7 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
                   label: y,
                   children: (
                     <Table
-                      dataSource={datum[y].data}
+                      dataSource={datum[y].datas}
                       columns={(datum[y].headers as string[]).map((z) => {
                         return {
                           title: z,

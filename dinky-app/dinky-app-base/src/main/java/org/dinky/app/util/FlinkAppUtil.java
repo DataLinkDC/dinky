@@ -79,7 +79,6 @@ public class FlinkAppUtil {
     public static void monitorFlinkTask(JobClient jobClient, int taskId) {
         boolean isRun = true;
         String jobId = jobClient.getJobID().toHexString();
-
         try {
             while (isRun) {
                 String jobStatus = jobClient.getJobStatus().get().toString();
