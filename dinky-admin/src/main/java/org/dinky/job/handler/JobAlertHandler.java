@@ -39,8 +39,10 @@ import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.options.JobAlertRuleOptions;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
+import org.dinky.service.SysConfigService;
 import org.dinky.service.TaskService;
 import org.dinky.service.impl.AlertRuleServiceImpl;
+import org.dinky.service.impl.SysConfigServiceImpl;
 import org.dinky.utils.JsonUtils;
 
 import java.io.IOException;
@@ -59,6 +61,10 @@ import org.jeasy.rules.core.RuleBuilder;
 import org.jeasy.rules.spel.SpELCondition;
 import org.springframework.context.annotation.DependsOn;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -73,6 +79,7 @@ public class JobAlertHandler {
     private static final AlertHistoryService alertHistoryService;
     private static final AlertGroupService alertGroupService;
     private static final TaskService taskService;
+    private static final SysConfigService sysConfigService;
     private static final AlertRuleServiceImpl alertRuleService;
 
     /**
@@ -97,6 +104,7 @@ public class JobAlertHandler {
         alertHistoryService = SpringContextUtils.getBean("alertHistoryServiceImpl", AlertHistoryService.class);
         alertGroupService = SpringContextUtils.getBean("alertGroupServiceImpl", AlertGroupService.class);
         alertRuleService = SpringContextUtils.getBean("alertRuleServiceImpl", AlertRuleServiceImpl.class);
+        sysConfigService = SpringContextUtils.getBean("sysConfigServiceImpl", SysConfigServiceImpl.class);
     }
 
     public static JobAlertHandler getInstance() {
@@ -201,15 +209,79 @@ public class JobAlertHandler {
                     if (alertInstance == null || !alertInstance.getEnabled()) {
                         continue;
                     }
-                    sendAlert(
-                            alertInstance,
-                            facts.get(JobAlertRuleOptions.FIELD_JOB_INSTANCE_ID),
-                            alertGroup.getId(),
-                            alertRuleDTO.getName(),
-                            alertContent);
+                    // if current time in diff minute time, and alert send record count > diff minute max send count,
+                    // then not send, else send
+                    // todo: 多线程会重复发送,需要优化
+                    if (isGTEMaxSendRecordCount(alertGroup, task) && timeIsInDiffMinute(alertGroup, task)) {
+                        sendAlert(
+                                alertInstance,
+                                facts.get(JobAlertRuleOptions.FIELD_JOB_INSTANCE_ID),
+                                alertGroup.getId(),
+                                alertRuleDTO.getName(),
+                                alertContent);
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * 判断是否大于最大发送次数 | Whether it is greater than the maximum number of sending times
+     *
+     * @param alertGroup
+     * @param task
+     * @return if true, then send alert
+     */
+    private boolean isGTEMaxSendRecordCount(AlertGroup alertGroup, TaskDTO task) {
+        // check diff seconds max send count| 指定时间间隔内最大发送次数 2
+        int diffMinuteMaxSendCount = (int) sysConfigService
+                .getOneConfigByKey(Status.SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT.getKey())
+                .getValue();
+        // check diff seconds max send count | 指定时间间隔 1
+        int jobResendDiffSecond = (int) sysConfigService
+                .getOneConfigByKey(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND.getKey())
+                .getValue();
+
+        // 获取当前时间 - 指定时间间隔 = 指定时间间隔前的时间 | get current time - diff seconds = diff seconds time
+        DateTime diffMinuteTime = DateUtil.offsetSecond(DateUtil.date(), -jobResendDiffSecond);
+        // 获取指定时间间隔前的时间到当前时间之间的发送记录数 | get diff minute time to current time alert send record count
+        long jobInstanceAlertSendRecordCount = alertHistoryService.count(
+                new LambdaQueryWrapper<>(AlertHistory.class)
+                        .eq(AlertHistory::getAlertGroupId, alertGroup.getId()) // alert group id
+                        .eq(AlertHistory::getJobInstanceId, task.getJobInstanceId()) // assert group id
+                        .ge(true, AlertHistory::getCreateTime, diffMinuteTime) // 指定时间间隔前的时间 | diff minute time
+                        .le(true, AlertHistory::getCreateTime, DateUtil.date()) // 当前时间 | current time
+                );
+        // 1. 如果 当前时间 在 指定时间间隔前的时间区间内，且发送记录数大于指定时间间隔内最大发送次数，则不发送 | if current time in diff minute time, and alert send
+        // record count > diff minute max send count, then not send
+        // 2. 如果 当前时间 不在 指定时间间隔前的时间区间内，则发送 | if current time not in diff minute time, then send
+        if (jobInstanceAlertSendRecordCount >= diffMinuteMaxSendCount) {
+            log.warn(
+                    Status.JOB_ALERT_MAX_SEND_COUNT.getMessage(),
+                    jobResendDiffSecond,
+                    diffMinuteMaxSendCount,
+                    jobInstanceAlertSendRecordCount);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 判断当前时间是否在指定时间间隔前的时间区间内 | Whether the current time is in the time interval before the specified time interval
+     *
+     * @param alertGroup
+     * @param task
+     * @return
+     */
+    private boolean timeIsInDiffMinute(AlertGroup alertGroup, TaskDTO task) {
+        // check diff minute max send count | 指定时间间隔 1
+        int jobResendDiffSecond = (int) sysConfigService
+                .getOneConfigByKey(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND.getKey())
+                .getValue();
+        // 获取当前时间 - 指定时间间隔 = 指定时间间隔前的时间 | get current time - diff seconds = diff seconds time
+        DateTime diffSecondTime = DateUtil.offsetSecond(DateUtil.date(), -jobResendDiffSecond);
+        // 1. 如果 当前时间 在 指定时间间隔前的时间区间内
+        return !DateUtil.date().before(diffSecondTime);
     }
 
     /**

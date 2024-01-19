@@ -17,15 +17,37 @@
  *
  */
 
-import { getIntl } from '@umijs/max';
+import { WaterMark } from '@ant-design/pro-components';
+import React from 'react';
 
-export const l = (id: string, defaultMessage?: string, value?: {}): string => {
-  if (!id) {
-    return '';
-  }
-  return getIntl().formatMessage({ id, defaultMessage }, value);
+interface WaterMarkExtProps {
+  children: React.ReactNode;
+  hiddenWaterMark?: boolean;
+  waterMarkContent?: string[] | string;
+  contentColor?: string;
+}
+
+const WaterMarkExt = (props: WaterMarkExtProps) => {
+  const { children, hiddenWaterMark, waterMarkContent = [] || '', contentColor } = props;
+
+  return (
+    <>
+      {hiddenWaterMark ? (
+        <>{children}</>
+      ) : (
+        <>
+          <WaterMark
+            fontColor={contentColor}
+            fontStyle={'oblique'}
+            fontSize={18}
+            content={waterMarkContent}
+          >
+            {children}
+          </WaterMark>
+        </>
+      )}
+    </>
+  );
 };
 
-export const parseSplitI18nToWaterMarkList = (i18nMsg: string, splitter: string): string[] => {
-  return i18nMsg.split(splitter);
-};
+export default WaterMarkExt;

@@ -188,6 +188,7 @@ public enum Status {
     TASK_IS_EXIST(12010, "task.is.existed"),
     TASK_IS_PUBLISH_CANNOT_DELETE(12011, "task.is.publish.cannot.delete"),
     TASK_IS_RUNNING_CANNOT_DELETE(12012, "task.is.running.cannot.delete"),
+    JOB_ALERT_MAX_SEND_COUNT(12013, "job.alert.max.send.count"),
 
     /**
      * alert instance
@@ -331,6 +332,13 @@ public enum Status {
     SYS_ENV_SETTINGS_PYTHONHOME_NOTE(115, "sys.env.settings.pythonHome.note"),
     SYS_ENV_SETTINGS_DINKYADDR(116, "sys.env.settings.dinkyAddr"),
     SYS_ENV_SETTINGS_DINKYADDR_NOTE(117, "sys.env.settings.dinkyAddr.note"),
+
+    SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND(118, "sys.env.settings.jobResendDiffSecond"),
+    SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND_NOTE(119, "sys.env.settings.jobResendDiffSecond.note"),
+
+    SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT(120, "sys.env.settings.diffMinuteMaxSendCount"),
+    SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT_NOTE(121, "sys.env.settings.diffMinuteMaxSendCount.note"),
+
     SYS_ENV_SETTINGS_MAX_RETAIN_DAYS(1171, "sys.env.settings.maxRetainDays"),
     SYS_ENV_SETTINGS_MAX_RETAIN_DAYS_NOTE(1172, "sys.env.settings.maxRetainDays.note"),
     SYS_ENV_SETTINGS_MAX_RETAIN_COUNT(1173, "sys.env.settings.maxRetainCount"),

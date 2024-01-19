@@ -50,8 +50,8 @@ type ProjectFormProps = {
  */
 const CodeEditProps = {
   height: '15vh',
-  width: '20vw',
-  lineNumbers: 'off',
+  width: '45vw',
+  lineNumbers: 'on',
   language: 'shell'
 };
 
@@ -113,23 +113,20 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
             placeholder={l('rc.gp.namePlaceholder')}
           />
           <ProFormSelect name='type' hidden shouldUpdate initialValue={cloneType} />
-
           <ProFormText
             name='url'
-            width={'xs'}
+            width={'md'}
             label={l('rc.gp.url')}
+            placeholder={l('rc.gp.urlPlaceholder')}
             rules={[{ required: true, message: l('rc.gp.urlPlaceholder') }]}
             addonBefore={renderUrlBeforeSelect()}
-          >
-            <Input
-              style={{
-                width: '18vw'
-              }}
-              addonBefore={undefined}
-              onBlur={cloneType === 1 ? getBranchList : () => Promise<void>}
-              placeholder={l('rc.gp.urlPlaceholder')}
-            />
-          </ProFormText>
+          />
+          <ProFormSwitch
+            width='xs'
+            name='enabled'
+            label={l('global.table.isEnable')}
+            {...SWITCH_OPTIONS()}
+          />
         </ProForm.Group>
 
         <ProForm.Group>
@@ -162,43 +159,24 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
 
           <ProFormText.Password
             name='password'
+            width={'sm'}
             label={l('rc.gp.password')}
             placeholder={l('rc.gp.passwordPlaceholder')}
           />
 
           <ProFormSelect
             options={branches}
-            shouldUpdate
-            disabled={
-              cloneType === 1
-                ? !form.getFieldsValue().url
-                : !form.getFieldsValue().privateKey && !form.getFieldsValue().url
-            }
-            colon={true}
             name='branch'
             width={'sm'}
             label={l('rc.gp.branch')}
             placeholder={l('rc.gp.branchPlaceholder')}
             rules={[{ required: true, message: l('rc.gp.branchPlaceholder') }]}
+            fieldProps={{
+              onFocus: getBranchList
+            }}
             showSearch
           />
-        </ProForm.Group>
 
-        <ProForm.Group>
-          <ProForm.Item name='buildArgs' label={l('rc.gp.buildArgs')}>
-            <CodeEdit
-              onChange={(value) => setBuildArgsValue(value ?? '')}
-              code={buildArgs}
-              {...CodeEditProps}
-            />
-          </ProForm.Item>
-
-          <ProFormSwitch
-            width='xs'
-            name='enabled'
-            label={l('global.table.isEnable')}
-            {...SWITCH_OPTIONS()}
-          />
           <ProFormRadio.Group
             name='codeType'
             width={'xs'}
@@ -213,15 +191,25 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
         </ProForm.Group>
 
         <ProForm.Group>
+          <ProForm.Item name='buildArgs' label={l('rc.gp.buildArgs')}>
+            <CodeEdit
+              onChange={(value: string) => setBuildArgsValue(value ?? '')}
+              code={buildArgs}
+              {...CodeEditProps}
+            />
+          </ProForm.Item>
+        </ProForm.Group>
+
+        <ProForm.Group>
           <ProFormTextArea
             name='pom'
-            width={'md'}
+            width={'lg'}
             label={l('rc.gp.pom')}
             placeholder={l('rc.gp.pomPlaceholder')}
           />
           <ProFormTextArea
             name='description'
-            width={'md'}
+            width={'lg'}
             label={l('global.table.note')}
             placeholder={l('global.table.notePlaceholder')}
           />
@@ -232,7 +220,7 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
 
   return (
     <>
-      <ProForm form={form} submitter={false} initialValues={values}>
+      <ProForm form={form} submitter={false} initialValues={values} syncToInitialValues>
         {renderGitProjectForm()}
       </ProForm>
     </>

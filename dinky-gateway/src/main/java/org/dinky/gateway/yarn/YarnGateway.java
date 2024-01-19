@@ -42,7 +42,6 @@ import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
-import org.apache.flink.configuration.RestOptions;
 import org.apache.flink.configuration.SecurityOptions;
 import org.apache.flink.runtime.messages.webmonitor.JobDetails;
 import org.apache.flink.runtime.messages.webmonitor.MultipleJobsDetails;
@@ -105,10 +104,8 @@ public abstract class YarnGateway extends AbstractGateway {
 
     private void initConfig() {
         final ClusterConfig clusterConfig = config.getClusterConfig();
-        configuration = GlobalConfiguration.loadConfiguration(clusterConfig.getFlinkConfigPath());
-        if (!configuration.contains(RestOptions.PORT)) {
-            configuration.set(RestOptions.PORT, RestOptions.PORT.defaultValue());
-        }
+        configuration = GlobalConfiguration.loadConfiguration(
+                clusterConfig.getFlinkConfigPath().trim());
         configuration.set(CoreOptions.CLASSLOADER_RESOLVE_ORDER, "parent-first");
 
         final FlinkConfig flinkConfig = config.getFlinkConfig();
