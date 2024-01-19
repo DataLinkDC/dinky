@@ -23,8 +23,11 @@ import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.Resources;
 import org.dinky.data.result.Result;
 
+import java.io.File;
 import java.util.List;
+import java.util.function.Function;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -40,6 +43,8 @@ public interface ResourcesService extends IService<Resources> {
      * @return A {@link TreeNodeDTO} object representing the newly created folder.
      */
     TreeNodeDTO createFolder(Integer pid, String fileName, String desc);
+
+    TreeNodeDTO createFolderOrGet(Integer pid, String fileName, String desc);
 
     /**
      * Rename an existing folder with the specified parameters.
@@ -78,6 +83,16 @@ public interface ResourcesService extends IService<Resources> {
     String getContentByResourceId(Integer id);
 
     /**
+     * Download files from explorer（从资源管理器下载文件）
+     * @param id resource id
+     * @return {@link File}
+     */
+    File getFile(Integer id);
+
+    @Transactional(rollbackFor = Exception.class)
+    void uploadFile(Integer pid, String desc, File file);
+
+    /**
      * Upload a file to the specified folder.
      *
      * @param pid The ID of the parent folder.
@@ -113,4 +128,11 @@ public interface ResourcesService extends IService<Resources> {
      * @return {@link Result}< {@link List}< {@link Resources}>>}
      */
     List<Resources> getResourcesTree();
+
+    /**
+     * query Resources tree data by filter
+     * @param filterFunction filter function
+     * @return {@link Result}< {@link List}< {@link Resources}>>}
+     */
+    List<Resources> getResourcesTreeByFilter(Function<Resources, Boolean> filterFunction);
 }

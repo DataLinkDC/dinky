@@ -32,7 +32,6 @@
 
     <properties>
         <expand.scope>provided</expand.scope>
-        <jgit.version>5.13.1.202206130422-r</jgit.version>
         <postgresql.version>42.5.1</postgresql.version>
     </properties>
 
@@ -44,11 +43,6 @@
         <dependency>
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.12.481</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
@@ -136,7 +130,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>${scope.runtime}</scope>
         </dependency>
         <!-- postgresql -->
         <dependency>
@@ -170,14 +163,9 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <!-- sa-token 持久化 -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-gateway</artifactId>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
@@ -186,16 +174,6 @@
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-daemon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-gateway</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.fabric8</groupId>
-                    <artifactId>kubernetes-client</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
@@ -208,10 +186,6 @@
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-executor</artifactId>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
@@ -299,28 +273,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jgit</groupId>
-            <artifactId>org.eclipse.jgit.archive</artifactId>
-            <version>${jgit.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jgit</groupId>
-            <artifactId>org.eclipse.jgit.ssh.jsch</artifactId>
-            <version>${jgit.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-ldap</artifactId>
         </dependency>
@@ -331,7 +283,7 @@
         <dependency>
             <groupId>io.prometheus.jmx</groupId>
             <artifactId>jmx_prometheus_javaagent</artifactId>
-            <version>0.16.1</version>
+            <version>0.20.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.yaml</groupId>
@@ -339,15 +291,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- 获取系统信息 -->
         <dependency>
-            <groupId>com.github.oshi</groupId>
-            <artifactId>oshi-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.paimon</groupId>
-            <artifactId>paimon-bundle</artifactId>
-            <version>0.4.0-incubating</version>
+            <groupId>io.github.datalinkdc</groupId>
+            <artifactId>dinky-shaded-paimon</artifactId>
+            <version>1.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -446,10 +393,10 @@
                 <configuration>
                     <classesDirectory>target/classes/</classesDirectory>
                     <excludes>
-                        <!--注意这玩意默认从编译结果目录开始算目录结构-->
                         <exclude>/application*.yml</exclude>
                         <exclude>/mybatis*.xml</exclude>
                         <exclude>/DinkyFlinkDockerfile</exclude>
+                        <exclude>/dinky-loader/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>

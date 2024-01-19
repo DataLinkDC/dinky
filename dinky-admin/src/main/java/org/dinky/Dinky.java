@@ -26,7 +26,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Dinky Starter
@@ -36,8 +35,12 @@ import lombok.extern.slf4j.Slf4j;
 @EnableTransactionManagement
 @SpringBootApplication(exclude = FreeMarkerAutoConfiguration.class)
 @EnableCaching
-@Slf4j
 public class Dinky {
+
+    static {
+        System.setProperty("log4j2.isThreadContextMapInheritable", "true");
+    }
+
     @SneakyThrows
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(Dinky.class);

@@ -56,7 +56,7 @@ from datagen_source;
 
 新建作业如下图：
 
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_dev/job_dev.png)
+![](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_dev/job_dev.png)
 
 6.在作业开发页面右侧 **执行配置**，填写配置信息
 
@@ -76,7 +76,7 @@ from datagen_source;
 
 作业配置如下图：
 
-![job_config](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_dev/job_config.png)
+![job_config](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_dev/job_config.png)
 
 :::warning 注意事项
   请及时手动保存作业信息，以免丢失

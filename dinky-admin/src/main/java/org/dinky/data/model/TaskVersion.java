@@ -23,7 +23,9 @@ import org.dinky.data.dto.TaskVersionConfigureDTO;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
@@ -84,4 +86,26 @@ public class TaskVersion implements Serializable {
     @ApiModelProperty(value = "Create Time", dataType = "Date", notes = "Timestamp when the version was created")
     @TableField(value = "create_time")
     private LocalDateTime createTime;
+
+    @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty(value = "Creator", required = true, dataType = "Integer", example = "Creator")
+    private Integer creator;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskVersion that = (TaskVersion) o;
+        return Objects.equals(taskId, that.taskId)
+                && Objects.equals(versionId, that.versionId)
+                && Objects.equals(statement, that.statement)
+                && Objects.equals(dialect, that.dialect)
+                && Objects.equals(type, that.type)
+                && Objects.equals(taskConfigure, that.taskConfigure);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskId, versionId, statement, dialect, type, taskConfigure);
+    }
 }

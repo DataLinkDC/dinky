@@ -39,7 +39,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_catalogue")
-public class Catalogue extends SuperEntity {
+public class Catalogue extends SuperEntity<Catalogue> {
 
     private static final long serialVersionUID = 4659379420249868394L;
 
@@ -65,7 +65,15 @@ public class Catalogue extends SuperEntity {
     @TableField(exist = false)
     private Task task;
 
+    @TableField(exist = false)
+    private String note;
+
     public Catalogue() {}
+
+    public void setTaskAndNote(Task task) {
+        this.task = task;
+        this.note = task.getNote();
+    }
 
     public Catalogue(String name, Integer taskId, String type, Integer parentId, Boolean isLeaf) {
         this.setName(name);

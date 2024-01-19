@@ -37,10 +37,6 @@
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
-            <artifactId>dinky-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
             <artifactId>dinky-flink-1.14</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
@@ -64,6 +60,11 @@
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

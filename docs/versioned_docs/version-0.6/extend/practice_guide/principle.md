@@ -17,11 +17,11 @@ Dlink 基于 Flink 源码二次开发，主要应用于 SQL 任务的管理与�
 
 ### Dlink  的原理
 
-![dinky_principle](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/principle/dinky_principle.png)
+![dinky_principle](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/principle/dinky_principle.png)
 
 ### Dlink 的 FlinkSQL 执行原理
 
-![execution_principle](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/principle/execution_principle.png)
+![execution_principle](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/principle/execution_principle.png)
 
 ### Connector 的扩展
 
@@ -143,7 +143,7 @@ dlink -- 父项目
 | |-doc -- 使用文档
 | |-sql -- sql脚本
 |-dlink-function -- 函数中心
-|-dlink-web -- React 前端
+|-dinky-web -- React 前端
 ```
 
 ### 模块介绍
@@ -174,6 +174,6 @@ dlink -- 父项目
 
 该模块为 UDF 的封装模块，用于扩展 Flink 的 `UDF` 。
 
-#### dlink-web
+#### dinky-web
 
 该模块为 Dlink 的前端工程，基于 `Ant Design Pro` 开发，属于 `React` 技术栈，其中的 Sql 在线编辑器是基于 `Monaco Editor` 开发。

@@ -19,9 +19,9 @@
 
 package org.dinky.data.dto;
 
-import org.dinky.config.Dialect;
+import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.model.Task;
-import org.dinky.data.model.TaskExtConfig;
+import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.job.JobConfig;
 
 import java.util.HashMap;
@@ -44,6 +44,10 @@ import lombok.extern.slf4j.Slf4j;
 @ApiModel(value = "StudioExecuteDTO", description = "DTO for executing SQL queries")
 public class TaskDTO extends AbstractStatementDTO {
 
+    @ApiModelProperty(value = "ID", dataType = "Integer", example = "6", notes = "The identifier of the execution")
+    @ProcessId
+    private Integer id;
+
     @ApiModelProperty(value = "Name", required = true, dataType = "String", example = "Name")
     private String name;
 
@@ -53,12 +57,9 @@ public class TaskDTO extends AbstractStatementDTO {
     @ApiModelProperty(
             value = "Run Mode",
             dataType = "String",
-            example = "BATCH",
+            example = "Local",
             notes = "The execution mode for the SQL query")
     private String type;
-
-    @ApiModelProperty(value = "Check Point", dataType = "Integer", example = "1", notes = "Check point for the task")
-    private Integer checkPoint;
 
     @ApiModelProperty(
             value = "Save Point Strategy",
@@ -89,7 +90,7 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "boolean",
             example = "false",
             notes = "Flag indicating whether to use a statement set")
-    private boolean statementSet;
+    private boolean statementSet = true;
 
     @ApiModelProperty(
             value = "Batch Model",
@@ -118,9 +119,6 @@ public class TaskDTO extends AbstractStatementDTO {
             example = "3",
             notes = "The identifier of the database")
     private Integer databaseId;
-
-    @ApiModelProperty(value = "JAR ID", dataType = "Integer", example = "4", notes = "The identifier of the JAR")
-    private Integer jarId;
 
     @ApiModelProperty(
             value = "Alert Group ID",
@@ -174,9 +172,6 @@ public class TaskDTO extends AbstractStatementDTO {
     @ApiModelProperty(value = "Path", dataType = "String", notes = "Path associated with the task")
     private String path;
 
-    @ApiModelProperty(value = "JAR Name", dataType = "String", notes = "Name of the associated JAR")
-    private String jarName;
-
     @ApiModelProperty(
             value = "Cluster Configuration Name",
             dataType = "String",
@@ -204,14 +199,14 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "boolean",
             example = "false",
             notes = "Flagindicatingwhethertousechangelogs")
-    private boolean useChangeLog;
+    private boolean useChangeLog = false;
 
     @ApiModelProperty(
             value = "Use Auto Cancel",
             dataType = "boolean",
             example = "false",
             notes = "Flag indicating whether to use auto-canceling")
-    private boolean useAutoCancel;
+    private boolean useAutoCancel = true;
 
     @ApiModelProperty(value = "Session", dataType = "String", example = "session_id", notes = "The session identifier")
     private String session;
@@ -219,15 +214,12 @@ public class TaskDTO extends AbstractStatementDTO {
     @ApiModelProperty(value = "Job Name", dataType = "String", example = "MyJob", notes = "The name of the job")
     private String jobName;
 
-    @ApiModelProperty(value = "ID", dataType = "Integer", example = "6", notes = "The identifier of the execution")
-    private Integer id;
-
     @ApiModelProperty(
             value = "Max Row Number",
             dataType = "Integer",
             example = "100",
             notes = "The maximum number of rows to return")
-    private Integer maxRowNum;
+    private Integer maxRowNum = 100;
 
     public JobConfig getJobConfig() {
 
@@ -237,7 +229,6 @@ public class TaskDTO extends AbstractStatementDTO {
         JobConfig jobConfig = new JobConfig();
         BeanUtil.copyProperties(this, jobConfig);
         jobConfig.setConfigJson(parsedConfig);
-        jobConfig.setJarTask(isJarTask());
         jobConfig.setTaskId(id);
         jobConfig.setJobName(name);
 
@@ -248,9 +239,5 @@ public class TaskDTO extends AbstractStatementDTO {
         Task task = new Task();
         BeanUtil.copyProperties(this, task);
         return task;
-    }
-
-    public boolean isJarTask() {
-        return Dialect.isJarDialect(dialect);
     }
 }

@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.UDFTemplate;
+import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.mybatis.service.ISuperService;
 
 public interface UDFTemplateService extends ISuperService<UDFTemplate> {
@@ -39,4 +39,8 @@ public interface UDFTemplateService extends ISuperService<UDFTemplate> {
      * @return A {@link Boolean} value indicating whether the modification was successful.
      */
     Boolean modifyUDFTemplateStatus(Integer id);
+
+    Boolean deleteUDFTemplateById(Integer id);
+
+    Boolean hasRelationShip(Integer id);
 }

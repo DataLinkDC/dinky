@@ -20,9 +20,10 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.dto.DataBaseDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Column;
@@ -30,7 +31,6 @@ import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
-import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.metadata.driver.DriverPool;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -48,8 +48,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
@@ -77,26 +75,26 @@ public class DataBaseController {
     /**
      * save or update database
      *
-     * @param database {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Result}< {@link Void}>
      */
-    @PutMapping
+    @PutMapping("/saveOrUpdate")
     @Log(title = "Insert Or Update DataBase", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update DataBase")
     @ApiImplicitParam(
-            name = "database",
-            value = "DataBase",
+            name = "databaseDTO",
+            value = "DataBaseDTO",
             required = true,
-            dataType = "DataBase",
+            dataType = "DataBaseDTO",
             paramType = "body",
-            dataTypeClass = DataBase.class)
+            dataTypeClass = DataBaseDTO.class)
     @SaCheckPermission(
             value = {PermissionConstants.REGISTRATION_DATA_SOURCE_ADD, PermissionConstants.REGISTRATION_DATA_SOURCE_EDIT
             },
             mode = SaMode.OR)
-    public Result<Void> saveOrUpdateDataBase(@RequestBody DataBase database) {
-        if (databaseService.saveOrUpdateDataBase(database)) {
-            DriverPool.remove(database.getName());
+    public Result<Void> saveOrUpdateDataBase(@RequestBody DataBaseDTO dataBaseDTO) {
+        if (databaseService.saveOrUpdateDataBase(dataBaseDTO)) {
+            DriverPool.remove(dataBaseDTO.getName());
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
@@ -106,27 +104,13 @@ public class DataBaseController {
     /**
      * get all database
      *
-     * @param para {@link JsonNode}
-     * @return {@link ProTableResult}< {@link DataBase}>
+     * @param keyword {@link String}
+     * @return {@link Result}< {@link DataBase}>
      */
-    @PostMapping
+    @GetMapping("/list")
     @ApiOperation("DataBase Get All")
-    @ApiImplicitParam(
-            name = "para",
-            value = "JsonNode",
-            required = true,
-            dataType = "JsonNode",
-            paramType = "body",
-            dataTypeClass = JsonNode.class)
-    public ProTableResult<DataBase> listDataBases(@RequestBody JsonNode para) {
-        final ProTableResult<DataBase> result = databaseService.selectForProTable(para);
-        // 密码不返回
-        if (result != null && result.getData() != null) {
-            for (DataBase data : result.getData()) {
-                data.setPassword(null);
-            }
-        }
-        return result;
+    public Result<List<DataBase>> listDataBases(@RequestParam(value = "keyword") String keyword) {
+        return Result.succeed(databaseService.selectListByKeyWord(keyword));
     }
 
     /**
@@ -192,21 +176,21 @@ public class DataBaseController {
     /**
      * test connect database
      *
-     * @param database {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Result}< {@link Void}>
      */
     @PostMapping("/testConnect")
     @Log(title = "DataBase Test Connect", businessType = BusinessType.TEST)
     @ApiOperation("DataBase Test Connect")
     @ApiImplicitParam(
-            name = "database",
-            value = "DataBase",
+            name = "dataBaseDTO",
+            value = "DataBaseDTO",
             required = true,
-            dataType = "DataBase",
+            dataType = "DataBaseDTO",
             paramType = "body",
-            dataTypeClass = DataBase.class)
-    public Result<Void> testConnect(@RequestBody DataBase database) {
-        String msg = databaseService.testConnect(database);
+            dataTypeClass = DataBaseDTO.class)
+    public Result<Void> testConnect(@RequestBody DataBaseDTO dataBaseDTO) {
+        String msg = databaseService.testConnect(dataBaseDTO);
         boolean isHealthy = Asserts.isEquals(CommonConstant.HEALTHY, msg);
         if (isHealthy) {
             return Result.succeed(Status.DATASOURCE_CONNECT_SUCCESS);
@@ -294,9 +278,9 @@ public class DataBaseController {
     /**
      * get columns of table
      *
-     * @param id {@link Integer}
+     * @param id         {@link Integer}
      * @param schemaName {@link String}
-     * @param tableName {@link String}
+     * @param tableName  {@link String}
      * @return {@link Result}< {@link List}< {@link Column}>>
      */
     @GetMapping("/listColumns")
@@ -386,9 +370,9 @@ public class DataBaseController {
     /**
      * get sql generation
      *
-     * @param id {@link Integer}
+     * @param id         {@link Integer}
      * @param schemaName {@link String}
-     * @param tableName {@link String}
+     * @param tableName  {@link String}
      * @return {@link Result}< {@link SqlGeneration}>
      */
     @GetMapping("/getSqlGeneration")
@@ -428,15 +412,15 @@ public class DataBaseController {
     /**
      * copy database
      *
-     * @param database {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Result}< {@link Void}>
      */
     @PostMapping("/copyDatabase")
     @Log(title = "Copy Database", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Copy Database")
     @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_COPY)
-    public Result<Void> copyDatabase(@RequestBody DataBase database) {
-        if (databaseService.copyDatabase(database)) {
+    public Result<Void> copyDatabase(@RequestBody DataBaseDTO dataBaseDTO) {
+        if (databaseService.copyDatabase(dataBaseDTO)) {
             return Result.succeed(Status.COPY_SUCCESS);
         } else {
             return Result.failed(Status.COPY_FAILED);

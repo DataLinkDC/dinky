@@ -21,9 +21,10 @@ package org.dinky.service.resource.impl;
 
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
+import org.dinky.oss.OssTemplate;
 import org.dinky.service.resource.BaseResourceManager;
-import org.dinky.utils.OssTemplate;
 
+import java.io.File;
 import java.io.InputStream;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 
 public class OssResourceManager implements BaseResourceManager {
@@ -64,12 +66,22 @@ public class OssResourceManager implements BaseResourceManager {
     }
 
     @Override
-    public String getFileContent(String path) {
-        return IoUtil.readUtf8(getFile(path));
+    public void putFile(String path, File file) {
+        try {
+            getOssTemplate()
+                    .putObject(getOssTemplate().getBucketName(), getFilePath(path), FileUtil.getInputStream(file));
+        } catch (Exception e) {
+            throw new DinkyException(e);
+        }
     }
 
     @Override
-    public InputStream getFile(String path) {
+    public String getFileContent(String path) {
+        return IoUtil.readUtf8(readFile(path));
+    }
+
+    @Override
+    public InputStream readFile(String path) {
         return getOssTemplate()
                 .getObject(getOssTemplate().getBucketName(), getFilePath(path))
                 .getObjectContent();

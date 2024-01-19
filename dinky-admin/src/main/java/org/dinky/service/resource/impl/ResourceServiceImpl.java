@@ -27,10 +27,14 @@ import org.dinky.data.result.Result;
 import org.dinky.mapper.ResourcesMapper;
 import org.dinky.service.resource.BaseResourceManager;
 import org.dinky.service.resource.ResourcesService;
+import org.dinky.utils.URLUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -69,6 +73,30 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         resources.setSize(0L);
         resources.setDescription(desc);
         save(resources);
+        return convertTree(resources);
+    }
+
+    @Override
+    public TreeNodeDTO createFolderOrGet(Integer pid, String fileName, String desc) {
+        String path = "/" + fileName;
+        Resources resources;
+        long count = count(
+                new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
+        if (count > 0) {
+            resources = getOne(new LambdaQueryWrapper<Resources>()
+                    .eq(Resources::getPid, pid)
+                    .eq(Resources::getFileName, fileName));
+        } else {
+            resources = new Resources();
+            resources.setPid(pid);
+            resources.setFileName(fileName);
+            resources.setIsDirectory(true);
+            resources.setType(0);
+            resources.setFullName(pid < 1 ? path : getById(pid).getFullName() + path);
+            resources.setSize(0L);
+            resources.setDescription(desc);
+            save(resources);
+        }
         return convertTree(resources);
     }
 
@@ -161,17 +189,39 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         return getBaseResourceManager().getFileContent(resources.getFullName());
     }
 
+    @Override
+    public File getFile(Integer id) {
+        Resources resources = getById(id);
+        Assert.notNull(resources, () -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST));
+        Assert.isFalse(resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE, () -> new BusException("file is too large!"));
+        return URLUtils.toFile("rs://" + resources.getFullName());
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void uploadFile(Integer pid, String desc, MultipartFile file) {
+    public void uploadFile(Integer pid, String desc, File file) {
         Resources pResource = RESOURCES_CACHE.get(pid, () -> getById(pid));
         if (!pResource.getIsDirectory()) {
             RESOURCES_CACHE.remove(pid);
             Integer realPid = pResource.getPid();
             pResource = RESOURCES_CACHE.get(pid, () -> getById(realPid));
         }
-        long size = file.getSize();
-        String fileName = file.getOriginalFilename();
+        long size = file.length();
+        String fileName = file.getName();
+        upload(pid, desc, (fullName) -> getBaseResourceManager().putFile(fullName, file), fileName, pResource, size);
+    }
+
+    /**
+     *
+     * @param pid pid
+     * @param desc desc
+     * @param uploadAction uploadAction
+     * @param fileName fileName
+     * @param pResource pResource
+     * @param size size
+     */
+    private void upload(
+            Integer pid, String desc, Consumer<String> uploadAction, String fileName, Resources pResource, long size) {
         Resources currentUploadResource = getOne(
                 new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
         String fullName;
@@ -194,11 +244,25 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
             resources.setDescription(desc);
             saveOrUpdate(resources);
         }
-        getBaseResourceManager().putFile(fullName, file);
+        uploadAction.accept(fullName);
 
         List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), pid);
         resourceByPidToParent.forEach(x -> x.setSize(x.getSize() + size));
         updateBatchById(resourceByPidToParent);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void uploadFile(Integer pid, String desc, MultipartFile file) {
+        Resources pResource = RESOURCES_CACHE.get(pid, () -> getById(pid));
+        if (!pResource.getIsDirectory()) {
+            RESOURCES_CACHE.remove(pid);
+            Integer realPid = pResource.getPid();
+            pResource = RESOURCES_CACHE.get(pid, () -> getById(realPid));
+        }
+        long size = file.getSize();
+        String fileName = file.getOriginalFilename();
+        upload(pid, desc, (fullName) -> getBaseResourceManager().putFile(fullName, file), fileName, pResource, size);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -212,13 +276,11 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
                 () -> new BusException(Status.ROOT_DIR_NOT_ALLOW_DELETE));
         try {
             if (id < 1) {
-                getBaseResourceManager().remove("/");
                 // todo 删除主目录，实际是清空
                 remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId, 0));
             }
             Resources byId = getById(id);
             if (isExistsChildren(id)) {
-                getBaseResourceManager().remove(byId.getFullName());
                 if (byId.getIsDirectory()) {
                     List<Resources> resourceByPidToChildren =
                             getResourceByPidToChildren(new ArrayList<>(), byId.getId());
@@ -227,7 +289,6 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
                 List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), byId.getPid());
                 resourceByPidToParent.forEach(x -> x.setSize(x.getSize() - byId.getSize()));
                 updateBatchById(resourceByPidToParent);
-                getBaseResourceManager().remove(byId.getFullName());
                 return removeById(id);
             }
             return removeById(id);
@@ -287,6 +348,21 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     @Override
     public List<Resources> getResourcesTree() {
         return buildResourcesTree(this.list());
+    }
+
+    /**
+     * query Resources tree data by filter
+     *
+     * @param filterFunction filter function
+     * @return {@link Result}< {@link List}< {@link Resources}>>}
+     */
+    @Override
+    public List<Resources> getResourcesTreeByFilter(Function<Resources, Boolean> filterFunction) {
+        List<Resources> list = this.list();
+        return buildResourcesTree(
+                filterFunction == null
+                        ? list
+                        : list.stream().filter(filterFunction::apply).collect(Collectors.toList()));
     }
 
     /**
@@ -363,7 +439,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
      * @return
      */
     private boolean hasChild(List<Resources> resourcesList, Resources resources) {
-        return getChildList(resourcesList, resources).size() > 0;
+        return !getChildList(resourcesList, resources).isEmpty();
     }
 
     private BaseResourceManager getBaseResourceManager() {

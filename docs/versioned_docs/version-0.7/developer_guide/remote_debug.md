@@ -53,14 +53,14 @@ mvn clean package -Dmaven.test.skip=true
 
 ### 图形化编译
 
-![install](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/local_package_install.jpg)
+![install](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/remote_debug/local_package_install.jpg)
 图形化编译，需要跳过 test ，并进行 clean ==> install。
 
 **说明:**
 
-​ 1.如果不想单独编译前端，在 dlink-web 模块的 pom 下有``frontend-maven-plugins``，可直接前后端编译；
+​ 1.如果不想单独编译前端，在 dinky-web 模块的 pom 下有``frontend-maven-plugins``，可直接前后端编译；
 
-​ 2.如果要分开编译，在后端编译完成后，需要在 dlink-web 下执行 ``npm i --force ``;
+​ 2.如果要分开编译，在后端编译完成后，需要在 dinky-web 下执行 ``npm i --force ``;
 
 :::warning 注意事项
 如果不执行 install 生成的 jar安装不到本地 别的依赖就识别不到本地仓库这些包 所以可能导依赖的时候会报错 CustomTableEnvironmentImpl 这个类未定义 。
@@ -175,7 +175,7 @@ hive-site.xml 需要使用到 Hive Catalog 时添加
 根据 job 的场景自行选择插件依赖 jar, 选择需要的 jars , 右键添加为库,如下所示：
 
 - 选中 jars 添加为库
-  ![jars_add_to_repo](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/jars_add_to_repo.jpg)
+  ![jars_add_to_repo](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/remote_debug/jars_add_to_repo.jpg)
 
 
 - 弹框中选择信息如图:
@@ -183,8 +183,8 @@ hive-site.xml 需要使用到 Hive Catalog 时添加
     - 级别: 项目库
     - 添加到模块: dlink-admin
 
-![choose_addrepo_global](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/choose_addrepo_global.png)   
-![create_repo](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/create_repo.png)
+![choose_addrepo_global](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/remote_debug/choose_addrepo_global.png)   
+![create_repo](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/remote_debug/create_repo.png)
 
 :::warning 注意事项
 如果是整库同步场景下请将级别设置为全局库 ,模块选中所有
@@ -207,7 +207,7 @@ yarn-session.sh -n 2 -jm 1024 -tm 4096 -s 6 -d
 #### 方式二
 
 - 启动 dlink-admin 下的 Dlink 启动类
-- 进入到 **dlink-web** 执行 **npm start**
+- 进入到 **dinky-web** 执行 **npm start**
 - **访问:** 127.0.0.1:8000
 - **账户密码:** admin/admin
 
@@ -336,26 +336,26 @@ insert into sink_order_mysql_goods_order_pay select * from source_order_my
 
 **SQL 逻辑语法校验**
 
-![check_sql](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/check_sql.jpg)
+![check_sql](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/remote_debug/check_sql.jpg)
 
 **获取JobPlan**
 
-![check_sql](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/job_plan.jpg)
+![check_sql](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/remote_debug/job_plan.jpg)
 
 **Flink Web UI 查看作业**
 
-![job_flinkwebui](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/job_flinkwebui.png)
+![job_flinkwebui](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/remote_debug/job_flinkwebui.png)
 
 **查看是否同步到 Hive**
 
-![is_sync_hive_table](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/is_sync_hive_table.png)
+![is_sync_hive_table](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/remote_debug/is_sync_hive_table.png)
 
 **运维中心查看 JOB 提交状态**
 
-![job_davops_center](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/job_davops_center.png)
+![job_davops_center](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/remote_debug/job_davops_center.png)
 
 **运维中心查看 JOB 详情**
-![job_davops_center](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/devops_job_detail.png)
+![job_davops_center](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/remote_debug/devops_job_detail.png)
 
 :::warning 注意事项
 如果拉取了新代码，远程调试环境一定要检查一遍，以防各种报错。

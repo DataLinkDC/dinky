@@ -20,6 +20,7 @@
 package org.dinky.data.model;
 
 public enum ResourcesModelEnum {
+    LOCAL,
     HDFS,
     OSS
 }

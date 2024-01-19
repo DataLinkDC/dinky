@@ -19,6 +19,7 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.DataBaseDTO;
 import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.model.Column;
@@ -43,10 +44,10 @@ public interface DataBaseService extends ISuperService<DataBase> {
     /**
      * test connect database
      *
-     * @param dataBase {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link String}
      */
-    String testConnect(DataBase dataBase);
+    String testConnect(DataBaseDTO dataBaseDTO);
 
     /**
      * check heart beat
@@ -59,10 +60,10 @@ public interface DataBaseService extends ISuperService<DataBase> {
     /**
      * save or update database
      *
-     * @param dataBase {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Boolean}
      */
-    Boolean saveOrUpdateDataBase(DataBase dataBase);
+    Boolean saveOrUpdateDataBase(DataBaseDTO dataBaseDTO);
 
     /**
      * enable or disable database
@@ -78,6 +79,14 @@ public interface DataBaseService extends ISuperService<DataBase> {
      * @return {@link List}< {@link DataBase}>
      */
     List<DataBase> listEnabledAll();
+
+    /**
+     * delete database by id (physical deletion)
+     *
+     * @param id {@link Integer} database id
+     * @return {@link Boolean} true: success false: fail
+     */
+    Boolean deleteDataSourceById(Integer id);
 
     /**
      * get all database of schemas and tables
@@ -173,10 +182,10 @@ public interface DataBaseService extends ISuperService<DataBase> {
     /**
      * copy database
      *
-     * @param database {@link DataBase}
+     * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Boolean}
      */
-    Boolean copyDatabase(DataBase database);
+    Boolean copyDatabase(DataBaseDTO dataBaseDTO);
 
     /**
      * Explain common SQL statements for the given task.
@@ -193,4 +202,15 @@ public interface DataBaseService extends ISuperService<DataBase> {
      * @return A {@link JobResult} object representing the execution result of the SQL statement.
      */
     JobResult executeCommonSql(SqlDTO sqlDTO);
+
+    List<DataBase> selectListByKeyWord(String keyword);
+
+    JobResult StreamExecuteCommonSql(SqlDTO sqlDTO);
+
+    /**
+     * check datasource has relationship with other table
+     * @param id {@link Integer} alert group id
+     * @return {@link Boolean} true: has relationship, false: no relationship
+     */
+    boolean hasRelationShip(Integer id);
 }

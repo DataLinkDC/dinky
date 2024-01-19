@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.History;
+import org.dinky.data.model.job.History;
 import org.dinky.mybatis.service.ISuperService;
 
 /**
@@ -30,11 +30,10 @@ import org.dinky.mybatis.service.ISuperService;
 public interface HistoryService extends ISuperService<History> {
 
     /**
-     * Remove the history of a Git project based on its ID.
+     * Get latest history info by task id.
      *
-     * @param id The ID of the Git project to remove the history for.
-     * @return A boolean value indicating whether the removal was successful.
+     * @param id The ID of the task.
+     * @return History info.
      */
-    @Deprecated
-    boolean removeHistoryById(Integer id);
+    History getLatestHistoryById(Integer id);
 }

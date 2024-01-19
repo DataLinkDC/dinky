@@ -23,6 +23,8 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
+import org.dinky.metadata.config.DriverConfig;
+import org.dinky.metadata.config.IConnectConfig;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.query.IDBQuery;
 
@@ -35,21 +37,16 @@ import java.util.stream.Collectors;
  *
  * @since 2021/7/19 23:32
  */
-public abstract class AbstractDriver implements Driver {
+public abstract class AbstractDriver<T extends IConnectConfig> implements Driver {
 
-    protected DriverConfig config;
+    protected DriverConfig<T> config;
 
     public abstract IDBQuery getDBQuery();
 
-    public abstract ITypeConvert getTypeConvert();
+    public abstract ITypeConvert<T> getTypeConvert();
 
     public boolean canHandle(String type) {
         return Asserts.isEqualsIgnoreCase(getType(), type);
-    }
-
-    public Driver setDriverConfig(DriverConfig config) {
-        this.config = config;
-        return this;
     }
 
     public boolean isHealth() {

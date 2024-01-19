@@ -10,16 +10,16 @@ sub
 截取函数
 com.test.SubFunction
 ```
-![create_java_udf_work.png](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/how_to/create_java_udf_work.png)
-![create_java_udf_work2.png](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/how_to/create_java_udf_work2.png)
+![create_java_udf_work.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/udf_develop/how_to/create_java_udf_work.png)
+![create_java_udf_work2.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/udf_develop/how_to/create_java_udf_work2.png)
 > 此时从模板构建了代码，剩下函数逻辑填补即可。
 
-![java_udf_code.png](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/how_to/java_udf_code.png)
+![java_udf_code.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/udf_develop/how_to/java_udf_code.png)
 
 > 这里为了方便测试，返回一段字符串
 
 2. 接下来创建一个 `FlinkSql` 作业
-![java_udf_flink_sql.png](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/how_to/java_udf_flink_sql.png)
+![java_udf_flink_sql.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/udf_develop/how_to/java_udf_flink_sql.png)
 
 创建函数时，复制类名，以下为测试代码
 ```sql
@@ -44,13 +44,13 @@ insert into sinkTable select id,sb_j(java_c) from sourceTable;
 
 ```
 
-![java_udf_exec.png](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/how_to/java_udf_exec.png)
+![java_udf_exec.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/udf_develop/how_to/java_udf_exec.png)
 > 选择执行模式，我这里采用 `pre-job` 进行演示 
 
 3. 执行，结果查看
 
-![java_udf_flink_sout.png](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/how_to/java_udf_flink_sout.png)
+![java_udf_flink_sout.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/udf_develop/how_to/java_udf_flink_sout.png)
 查看 `Taskmanager` 输出，正常输出，验证成功
 
 ## 动图演示
-![java_udf_show.gif](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/how_to/java_udf_show.gif)
+![java_udf_show.gif](http://pic.dinky.org.cn/dinky/docs/zh-CN/udf_develop/how_to/java_udf_show.gif)

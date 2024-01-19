@@ -46,9 +46,9 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-#      - name: Check Style
-#        run: |
-#          ./mvnw -T 4C -B --no-snapshot-updates clean spotless:check
+      #      - name: Check Style
+      #        run: |
+      #          ./mvnw -T 4C -B --no-snapshot-updates clean spotless:check
       - name: Build and Package
         run: |
           ./mvnw -B clean install \
@@ -105,7 +105,6 @@ jobs:
       fail-fast: true
       matrix:
         url: [ registry.cn-hangzhou.aliyuncs.com ,docker.io ]
-#        FLINK_VERSION: [1.11.6 , 1.12.7 , 1.13.6 , 1.14.6 , 1.15.2 , 1.16.0, 1.17.0]
         include:
           - url: registry.cn-hangzhou.aliyuncs.com
             namespace: dinky
@@ -115,7 +114,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Move Dockerfile
         run: |
-          cp ./docker/Dockerfile* ./
+          cp -r ./docker/Dockerfile* ./
       - name: Download math result for job 1
         uses: actions/download-artifact@v3
         with:
@@ -154,14 +153,12 @@ jobs:
       fail-fast: true
       matrix:
         url: [ registry.cn-hangzhou.aliyuncs.com ,docker.io ]
-        FLINK_VERSION: [1.13.6 , 1.14.6 , 1.15.2 , 1.16.0, 1.17.0]
+        FLINK_VERSION: [1.14.6 , 1.15.2 , 1.16.0, 1.17.0, 1.18.0]
         include:
           - url: registry.cn-hangzhou.aliyuncs.com
             namespace: dinky
           - url: docker.io
             namespace: dinkydocker
-          - FLINK_VERSION: 1.13.6
-            FLINK_BIG_VERSION: 1.13
           - FLINK_VERSION: 1.14.6
             FLINK_BIG_VERSION: 1.14
           - FLINK_VERSION: 1.15.4
@@ -170,11 +167,13 @@ jobs:
             FLINK_BIG_VERSION: 1.16
           - FLINK_VERSION : 1.17.1
             FLINK_BIG_VERSION: 1.17
+          - FLINK_VERSION: 1.18.0
+            FLINK_BIG_VERSION: 1.18
     steps:
       - uses: actions/checkout@v3
       - name: Move Dockerfile
         run: |
-          cp ./docker/Dockerfile* ./
+          cp -r ./docker/Dockerfile* ./
       - uses: actions/checkout@v3
       - name: set the flink_big_version
         run: |
@@ -205,7 +204,7 @@ jobs:
             FLINK_VERSION=${{ matrix.FLINK_VERSION }}
             DINKY_IMAGE=${{ matrix.url }}/${{ matrix.namespace }}/dinky-standalone-server:${{ inputs.version }}
             FLINK_BIG_VERSION=${{ matrix.FLINK_BIG_VERSION }}
-          file: ./docker/DockerfileDinkyFlink
+          file: DockerfileDinkyFlink
           context: .
           push: true
           tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-standalone-server:${{ inputs.version }}-flink-${{matrix.FLINK_BIG_VERSION }}

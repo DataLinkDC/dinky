@@ -1,103 +1,182 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
+import {
+  AliYunArea,
+  TencentArea
+} from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/constants';
+import { SMS_TYPE } from '@/pages/RegCenter/Alert/AlertInstance/constans';
 import { l } from '@/utils/intl';
-import { ProForm, ProFormDigit, ProFormSwitch, ProFormTextArea } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormDigit,
+  ProFormSelect,
+  ProFormSwitch,
+  ProFormTextArea
+} from '@ant-design/pro-components';
 import { ProFormText } from '@ant-design/pro-form';
+import { randomStr } from '@antfu/utils';
 
-export const renderCommonSmsForm = () => {
+/**
+ * 匹配平台请求地址 | match platform request url
+ * @param smsType
+ */
+export function matchPlatFormRequestUrl(smsType: string): string {
+  switch (smsType) {
+    case SMS_TYPE.ALIBABA:
+      return 'dysmsapi.aliyuncs.com';
+    case SMS_TYPE.TENCENT:
+      return 'sms.tencentcloudapi.com';
+    default:
+      return '';
+  }
+}
+
+/**
+ * 匹配平台版本号 | match platform version
+ * @param smsType
+ */
+export function matchPlatVersion(smsType: string): string {
+  switch (smsType) {
+    case SMS_TYPE.ALIBABA:
+      return '2017-05-25';
+    case SMS_TYPE.TENCENT:
+      return '2021-01-11';
+    default:
+      return '';
+  }
+}
+
+export const renderCommonSmsForm = (smsType: string) => {
   return (
     <>
       <ProFormText
-        name='accessKeyId'
+        name={['params', 'accessKeyId']}
         label={l('rc.ai.accessKeyId')}
         width={'md'}
         rules={[{ required: true, message: l('rc.ai.accessKeyIdPleaseHolder') }]}
         placeholder={l('rc.ai.accessKeyIdPleaseHolder')}
       />
       <ProFormText.Password
-        name='accessKeySecret'
+        name={['params', 'accessKeySecret']}
         label={l('rc.ai.accessKeySecret')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.accessKeyIdPleaseHolder') }]}
         placeholder={l('rc.ai.accessKeyIdPleaseHolder')}
       />
-
       <ProFormText
-        name='templateId'
-        label={l('rc.ai.templateId')}
-        width={'sm'}
-        rules={[{ required: true, message: l('rc.ai.templateIdPleaseHolder') }]}
-        placeholder={l('rc.ai.templateIdPleaseHolder')}
-      />
-    </>
-  );
-};
-
-export const renderAlibabaSmsForm = () => {
-  return (
-    <>
-      {renderCommonSmsForm()}
-      <ProFormTextArea
-        name='requestUrl'
-        label={l('rc.ai.requestUrl')}
-        width={'md'}
-        rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
-        placeholder={l('rc.ai.requestUrlPleaseHolder')}
-      />
-      <ProFormTextArea
-        name='templateName'
-        label={l('rc.ai.templateName')}
-        width={'sm'}
-        rules={[{ required: true, message: l('rc.ai.templateNamePleaseHolder') }]}
-        placeholder={l('rc.ai.templateNamePleaseHolder')}
-      />
-
-      <ProFormTextArea
-        name='signature'
+        name={['params', 'signature']}
         label={l('rc.ai.signature')}
         width={'sm'}
         rules={[{ required: true, message: l('rc.ai.signaturePleaseHolder') }]}
         placeholder={l('rc.ai.signaturePleaseHolder')}
       />
-
       <ProFormText
-        name='regionId'
-        label={l('rc.ai.regionId')}
+        name={['params', 'templateId']}
+        label={l('rc.ai.templateId')}
         width={'md'}
-        initialValue={'cn-hangzhou'}
+        rules={[{ required: true, message: l('rc.ai.templateIdPleaseHolder') }]}
+        placeholder={l('rc.ai.templateIdPleaseHolder')}
+      />
+      <ProFormDigit
+        name={['params', 'weight']}
+        label={l('rc.ai.weight')}
+        width={'xs'}
+        initialValue={1}
+        rules={[{ required: true, message: l('rc.ai.weightPleaseHolder') }]}
+        placeholder={l('rc.ai.weightPleaseHolder')}
+      />
+      <ProFormDigit
+        name={['params', 'retryInterval']}
+        label={l('rc.ai.retryInterval')}
+        width={'xs'}
+        initialValue={5}
+        rules={[{ required: true, message: l('rc.ai.retryInterval') }]}
+        placeholder={l('rc.ai.retryInterval')}
+      />
+      <ProFormDigit
+        name={['params', 'maxRetries']}
+        label={l('rc.ai.maxRetries')}
+        width={'xs'}
+        initialValue={5}
+        rules={[{ required: true, message: l('rc.ai.maxRetriesPleaseHolder') }]}
+        placeholder={l('rc.ai.maxRetriesPleaseHolder')}
+      />
+      <ProFormText
+        name={['params', 'configId']}
+        label={l('rc.ai.configId')}
+        width={'md'}
+        disabled
+        hidden
+        initialValue={randomStr(32)}
+        rules={[{ required: true, message: l('rc.ai.configIdPleaseHolder') }]}
+        placeholder={l('rc.ai.configIdPleaseHolder')}
+      />
+    </>
+  );
+};
+
+export const renderAlibabaSmsForm = (smsType: string) => {
+  // let area = YunArea[0].value;
+  return (
+    <>
+      {renderCommonSmsForm(smsType)}
+      <ProFormText
+        name={['params', 'requestUrl']}
+        label={l('rc.ai.requestUrl')}
+        width={'md'}
+        rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
+        placeholder={l('rc.ai.requestUrlPleaseHolder')}
+      />
+      <ProFormSelect
+        name={['params', 'regionId']}
+        label={l('rc.ai.regionId')}
+        width={'sm'}
+        options={AliYunArea}
         rules={[{ required: true, message: l('rc.ai.regionIdPleaseHolder') }]}
         placeholder={l('rc.ai.regionIdPleaseHolder')}
       />
-
       <ProFormText
-        name='action'
+        name={['params', 'templateName']}
+        label={l('rc.ai.templateName')}
+        width={'md'}
+        initialValue={'content'}
+        disabled
+        hidden
+        rules={[{ required: true, message: l('rc.ai.templateNamePleaseHolder') }]}
+        placeholder={l('rc.ai.templateNamePleaseHolder')}
+      />
+      <ProFormText
+        name={['params', 'action']}
         label={l('rc.ai.action')}
         width={'sm'}
         disabled
+        hidden
         initialValue={'SendSms'}
         placeholder={l('rc.ai.actionPleaseHolder')}
       />
-
       <ProFormText
-        name='version'
+        name={['params', 'version']}
         label={l('rc.ai.version')}
         width={'sm'}
         disabled
+        hidden
         initialValue={'2017-05-25'}
         placeholder={l('rc.ai.versionPleaseHolder')}
       />
@@ -105,6 +184,64 @@ export const renderAlibabaSmsForm = () => {
   );
 };
 
+export const renderTencentSmsForm = (smsType: string) => {
+  return (
+    <>
+      {renderCommonSmsForm(smsType)}
+      <ProFormText
+        name={['params', 'sdkAppId']}
+        label={l('rc.ai.sdkAppId')}
+        width={'sm'}
+        rules={[{ required: true, message: l('rc.ai.sdkAppIdPleaseHolder') }]}
+        placeholder={l('rc.ai.sdkAppIdPleaseHolder')}
+      />
+      <ProFormSelect
+        name={['params', 'territory']}
+        label={l('rc.ai.regionId')}
+        width={'sm'}
+        options={TencentArea}
+        rules={[{ required: true, message: l('rc.ai.regionIdPleaseHolder') }]}
+        placeholder={l('rc.ai.regionIdPleaseHolder')}
+      />
+      <ProFormDigit
+        name={['params', 'connTimeout']}
+        label={l('rc.ai.connTimeout')}
+        width={'xs'}
+        rules={[{ required: true, message: l('rc.ai.connTimeoutPleaseHolder') }]}
+        placeholder={l('rc.ai.connTimeoutPleaseHolder')}
+        initialValue={60}
+      />
+      <ProFormText
+        name={['params', 'requestUrl']}
+        label={l('rc.ai.requestUrl')}
+        width={'sm'}
+        rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
+        placeholder={l('rc.ai.requestUrlPleaseHolder')}
+      />
+      <ProForm.Group>
+        <ProFormText
+          name={['params', 'action']}
+          label={l('rc.ai.action')}
+          width={'sm'}
+          disabled
+          hidden
+          initialValue={'SendSms'}
+          placeholder={l('rc.ai.actionPleaseHolder')}
+        />
+
+        <ProFormText
+          name={['params', 'version']}
+          label={l('rc.ai.version')}
+          width={'sm'}
+          disabled
+          hidden
+          initialValue={'2021-01-11'}
+          placeholder={l('rc.ai.versionPleaseHolder')}
+        />
+      </ProForm.Group>
+    </>
+  );
+};
 export const renderHuaWeiSmsForm = () => {
   return (
     <>
@@ -200,76 +337,10 @@ export const renderYunpianSmsForm = () => {
   );
 };
 
-export const renderTencentSmsForm = () => {
+export const renderUniSmsForm = (smsType: string) => {
   return (
     <>
-      {renderCommonSmsForm()}
-      <ProFormText
-        name='sdkAppId'
-        label={l('rc.ai.sdkAppId')}
-        width={'md'}
-        rules={[{ required: true, message: l('rc.ai.sdkAppIdPleaseHolder') }]}
-        placeholder={l('rc.ai.sdkAppIdPleaseHolder')}
-      />
-      <ProFormText
-        name='signature'
-        label={l('rc.ai.signature')}
-        width={'sm'}
-        rules={[{ required: true, message: l('rc.ai.signaturePleaseHolder') }]}
-        placeholder={l('rc.ai.signaturePleaseHolder')}
-      />
-      <ProFormText
-        name='territory'
-        label={l('rc.ai.regionId')}
-        width={'sm'}
-        rules={[{ required: true, message: l('rc.ai.regionIdPleaseHolder') }]}
-        placeholder={l('rc.ai.regionIdPleaseHolder')}
-      />
-
-      <ProFormTextArea
-        name='requestUrl'
-        label={l('rc.ai.requestUrl')}
-        width={'xl'}
-        rules={[{ required: true, message: l('rc.ai.requestUrlPleaseHolder') }]}
-        placeholder={l('rc.ai.requestUrlPleaseHolder')}
-        initialValue={'https://sms.tencentcloudapi.com/'}
-      />
-      <ProForm.Group>
-        <ProFormDigit
-          name='connTimeout'
-          label={l('rc.ai.connTimeout')}
-          width={'md'}
-          rules={[{ required: true, message: l('rc.ai.connTimeoutPleaseHolder') }]}
-          placeholder={l('rc.ai.connTimeoutPleaseHolder')}
-          initialValue={60}
-        />
-
-        <ProFormText
-          name='action'
-          label={l('rc.ai.action')}
-          width={'sm'}
-          disabled
-          initialValue={'SendSms'}
-          placeholder={l('rc.ai.actionPleaseHolder')}
-        />
-
-        <ProFormText
-          name='version'
-          label={l('rc.ai.version')}
-          width={'sm'}
-          disabled
-          initialValue={'2021-01-11'}
-          placeholder={l('rc.ai.versionPleaseHolder')}
-        />
-      </ProForm.Group>
-    </>
-  );
-};
-
-export const renderUniSmsForm = () => {
-  return (
-    <>
-      {renderCommonSmsForm()}
+      {renderCommonSmsForm(smsType)}
       <ProFormTextArea
         name='templateName'
         label={l('rc.ai.templateName')}
@@ -297,10 +368,10 @@ export const renderUniSmsForm = () => {
   );
 };
 
-export const renderJDSmsForm = () => {
+export const renderJDSmsForm = (smsType: string) => {
   return (
     <>
-      {renderCommonSmsForm()}
+      {renderCommonSmsForm(smsType)}
       <ProFormText
         name='signature'
         label={l('rc.ai.signature')}
@@ -382,10 +453,10 @@ export const renderEmaySmsForm = () => {
   );
 };
 
-export const renderCtyunForm = () => {
+export const renderCtyunForm = (smsType: string) => {
   return (
     <>
-      {renderCommonSmsForm()}
+      {renderCommonSmsForm(smsType)}
       <ProFormText
         name='signature'
         label={l('rc.ai.signature')}

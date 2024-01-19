@@ -19,11 +19,13 @@
 
 package org.dinky.data.model;
 
+import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.JSONObjectHandler;
 import org.dinky.mybatis.model.SuperEntity;
 
 import org.apache.ibatis.type.JdbcType;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -115,13 +117,6 @@ public class Task extends SuperEntity<Task> {
     private Integer databaseId;
 
     @ApiModelProperty(
-            value = "JAR ID",
-            dataType = "Integer",
-            example = "5001",
-            notes = "ID of the JAR associated with the task")
-    private Integer jarId;
-
-    @ApiModelProperty(
             value = "Environment ID",
             dataType = "Integer",
             example = "6001",
@@ -164,6 +159,14 @@ public class Task extends SuperEntity<Task> {
 
     @ApiModelProperty(value = "Statement", dataType = "String", notes = "SQL statement for the task")
     private String statement;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty(
+            value = "Operator",
+            dataType = "Integer",
+            example = "1001",
+            notes = "ID of the user who created the task")
+    private Integer operator;
 
     public Task(Integer id, Integer jobInstanceId) {
         this.jobInstanceId = jobInstanceId;

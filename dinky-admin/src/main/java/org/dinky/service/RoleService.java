@@ -19,8 +19,9 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.Role;
-import org.dinky.data.model.User;
+import org.dinky.data.dto.RoleDTO;
+import org.dinky.data.model.rbac.Role;
+import org.dinky.data.model.rbac.User;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
@@ -35,10 +36,10 @@ public interface RoleService extends ISuperService<Role> {
     /**
      * create or update role
      *
-     * @param role {@link Role}
+     * @param roleDTO {@link RoleDTO}
      * @return {@link Result} of {@link Void}
      */
-    Result<Void> addedOrUpdateRole(Role role);
+    Result<Void> addedOrUpdateRole(RoleDTO roleDTO);
 
     @Override
     ProTableResult<Role> selectForProTable(JsonNode para);

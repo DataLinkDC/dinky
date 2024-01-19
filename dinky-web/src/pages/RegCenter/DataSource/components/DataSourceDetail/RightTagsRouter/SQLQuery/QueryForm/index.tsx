@@ -1,27 +1,29 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import { l } from '@/utils/intl';
-import { ProForm, ProFormText } from '@ant-design/pro-components';
-import { AutoComplete } from 'antd';
+import { ProForm, ProFormItem } from '@ant-design/pro-components';
+import { AutoComplete, Input } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import { DefaultOptionType } from 'rc-select/es/Select';
-import React from 'react';
+import React, { useState } from 'react';
 
 type QueryFormProps = {
   form: FormInstance<Values>;
@@ -40,44 +42,60 @@ const QueryForm: React.FC<QueryFormProps> = (props) => {
     submitHandle(values);
   };
 
-  /**
-   * handle change
-   * @param value
-   * @param tag
-   */
-  const handleChange = (value: string, tag: string) => {
-    switch (tag) {
-      case 'where':
-        form.setFieldsValue({
-          where: `${(form.getFieldsValue().where || '') + value}`
-        });
-        break;
-      case 'order':
-        form.setFieldsValue({
-          order: `${(form.getFieldsValue().order || '') + value}`
-        });
-        break;
-    }
+  const [condition, setCondition] = useState<{
+    where: string;
+    order: string;
+  }>({
+    where: '',
+    order: ''
+  });
+
+  const handleOrderChange = (value: string) => {
+    setCondition((prevState) => ({
+      ...prevState,
+      order: prevState.where + `${value} ,`
+    }));
+  };
+
+  const handleWhereChange = (value: string) => {
+    setCondition((prevState) => ({
+      ...prevState,
+      where: prevState.where + ` ${value} and`
+    }));
   };
 
   const renderForm = () => {
     return (
       <>
-        <AutoComplete
-          backfill
-          autoFocus
-          options={autoCompleteColumns}
-          onSelect={(value: string) => handleChange(value, 'where')}
+        <ProFormItem
+          key='where'
+          name='where'
+          required
+          initialValue={condition.where}
+          addonBefore={'WHERE'}
         >
-          <ProFormText addonBefore={'WHERE'} width={'md'} key='where' name='where' required />
-        </AutoComplete>
+          <AutoComplete
+            options={autoCompleteColumns}
+            onSelect={(value: string) => handleWhereChange(value)}
+          >
+            <Input value={condition.where} style={{ width: '25vw' }} maxLength={2000} />
+          </AutoComplete>
+        </ProFormItem>
 
-        <AutoComplete
-          options={autoCompleteColumns}
-          onSelect={(value: string) => handleChange(value, 'order')}
+        <ProFormItem
+          key='order'
+          name='order'
+          initialValue={condition.order}
+          required
+          addonBefore={'ORDER BY'}
         >
-          <ProFormText addonBefore={'ORDER BY'} width={'md'} key='order' name='order' required />
-        </AutoComplete>
+          <AutoComplete
+            options={autoCompleteColumns}
+            onSelect={(value: string) => handleOrderChange(value)}
+          >
+            <Input value={condition.order} style={{ width: '25vw' }} maxLength={2000} />
+          </AutoComplete>
+        </ProFormItem>
       </>
     );
   };

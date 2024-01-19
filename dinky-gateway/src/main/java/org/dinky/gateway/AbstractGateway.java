@@ -20,11 +20,13 @@
 package org.dinky.gateway;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.exception.NotSupportGetStatusException;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.SavePointResult;
@@ -172,7 +174,7 @@ public abstract class AbstractGateway implements Gateway {
 
     @Override
     public JobStatus getJobStatusById(String id) {
-        return JobStatus.UNKNOWN;
+        throw new NotSupportGetStatusException(StrFormatter.format("{} is not support get status.", getType()));
     }
 
     @Override
@@ -181,7 +183,7 @@ public abstract class AbstractGateway implements Gateway {
     }
 
     @Override
-    public GatewayResult submitJar() {
+    public GatewayResult submitJar(FlinkUdfPathContextHolder udfPathContextHolder) {
         throw new GatewayException("Couldn't deploy Flink Cluster with User Application Jar.");
     }
 
@@ -206,7 +208,7 @@ public abstract class AbstractGateway implements Gateway {
     }
 
     @Override
-    public GatewayResult deployCluster() {
+    public GatewayResult deployCluster(FlinkUdfPathContextHolder udfPathContextHolder) {
         logger.error("Could not deploy the Flink cluster");
         return null;
     }

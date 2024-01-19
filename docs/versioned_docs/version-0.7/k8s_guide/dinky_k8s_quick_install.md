@@ -225,11 +225,11 @@ spec:
 kubectl apply -f deploy.yaml
 ```
 
-![image-20230909105508605](https://ylw-typora-img.oss-cn-chengdu.aliyuncs.com/img/202309091056114.png)
+![image-20230909105508605](http://pic.dinky.org.cn/dinky/docs/test/202312201511694.png)
 
 等待pod初始化完成
 
-![](https://ylw-typora-img.oss-cn-chengdu.aliyuncs.com/img/202309091055530.png)
+![](http://pic.dinky.org.cn/dinky/docs/test/202312201511677.png)
 
 在安装完毕后查看pod，svc是否有问题
 
@@ -237,7 +237,7 @@ kubectl apply -f deploy.yaml
 kubectl get pods,svc -o wide -n dinky
 ```
 
-![image-20230909105740008](https://ylw-typora-img.oss-cn-chengdu.aliyuncs.com/img/202309091057080.png)
+![image-20230909105740008](http://pic.dinky.org.cn/dinky/docs/test/202312201511321.png)
 
 进入浏览器，访问配置文件中设置的`【对外暴露端口号】`，这里配置文件设置的为`32323`
 
@@ -249,7 +249,7 @@ http://主机ip:端口
 
 默认登录账号密码为`admin/admin`
 
-![image-20230909105927963](https://ylw-typora-img.oss-cn-chengdu.aliyuncs.com/img/202309091059029.png)
+![image-20230909105927963](http://pic.dinky.org.cn/dinky/docs/test/202312201511332.png)
 
 #### 4.测试
 
@@ -278,11 +278,11 @@ FROM test1;
 
 点击获取数据测试
 
-![image-20230909110331424](https://ylw-typora-img.oss-cn-chengdu.aliyuncs.com/img/202309091103543.png)
+![image-20230909110331424](http://pic.dinky.org.cn/dinky/docs/test/202312201511356.png)
 
 点击查看bi
 
-![image-20230909110437935](https://ylw-typora-img.oss-cn-chengdu.aliyuncs.com/img/202309091104042.png)
+![image-20230909110437935](http://pic.dinky.org.cn/dinky/docs/test/202312201511369.png)
 
 ### 注意事项
 
@@ -292,7 +292,7 @@ FROM test1;
 
   - 方式二：是通过Dokcerfile重新打包，重新指定启动参数，默认镜像是指定了`ENV FLINK_BIG_VERSION=1.16`,重写打包即可，上面的镜像自行替换最新版
 
-    ![image-20230911102325172](https://ylw-typora-img.oss-cn-chengdu.aliyuncs.com/img/202309111023240.png)
+    ![image-20230911102325172](http://pic.dinky.org.cn/dinky/docs/test/202312201511494.png)
 
     在此基础上添加参数重启即可，用下面例子，或者自行编写，完整参数可见：[docker hub](https://hub.docker.com/layers/dinkydocker/dinky-standalone-server/0.7.3-flink16/images/sha256-b1ac433950a004c899d4fe930d5996acbf9d09dc2eaca5973ff84d1d4c12f5b0?context=explore)
 
@@ -382,4 +382,4 @@ FROM test1;
             #   path: /data/nfs/dinky/plugins #【方式二】映射到nfs共享目录下，每次添加依赖需重启pod生效，首次需要手动复制文件到此目录
     ```
 
-![image-20230923155056343](https://ylw-typora-img.oss-cn-chengdu.aliyuncs.com/img/202309231550459.png)
+![image-20230923155056343](http://pic.dinky.org.cn/dinky/docs/test/202312201511589.png)

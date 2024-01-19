@@ -19,6 +19,7 @@
 
 package org.dinky.context;
 
+import org.dinky.data.constant.PaimonTableConstant;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.PaimonUtil;
@@ -54,16 +55,21 @@ public class MetricsContextHolder {
 
     public void sendAsync(String key, MetricsVO o) {
         CompletableFuture.runAsync(() -> {
-            metricsVOS.add(o);
-            long duration = System.currentTimeMillis() - lastDumpTime;
-            synchronized (metricsVOS) {
-                if (metricsVOS.size() > 1000 || duration > 1000 * 5) {
-                    PaimonUtil.writeMetrics(metricsVOS);
-                    metricsVOS.clear();
-                }
-            }
-            String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
-            SseSessionContextHolder.sendTopic(topic, o);
-        });
+                    metricsVOS.add(o);
+                    long duration = System.currentTimeMillis() - lastDumpTime;
+                    synchronized (metricsVOS) {
+                        if (metricsVOS.size() > 1000 || duration > 1000 * 5) {
+                            PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, metricsVOS, MetricsVO.class);
+                            metricsVOS.clear();
+                        }
+                    }
+                    String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
+                    SseSessionContextHolder.sendTopic(topic, o);
+                })
+                .whenComplete((v, t) -> {
+                    if (t != null) {
+                        log.error("send metrics async error", t);
+                    }
+                });
     }
 }

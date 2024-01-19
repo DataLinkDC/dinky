@@ -19,10 +19,10 @@
 
 package org.dinky.data.dto;
 
-import org.dinky.data.model.Menu;
-import org.dinky.data.model.Role;
-import org.dinky.data.model.Tenant;
-import org.dinky.data.model.User;
+import org.dinky.data.model.rbac.Menu;
+import org.dinky.data.model.rbac.Role;
+import org.dinky.data.model.rbac.Tenant;
+import org.dinky.data.model.rbac.User;
 
 import java.util.List;
 

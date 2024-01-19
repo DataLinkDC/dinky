@@ -1,23 +1,25 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import Footer from '@/components/Footer';
 import ChooseModal from '@/pages/Other/Login/ChooseModal';
-import { gotoRedirectUrl, redirectToLogin } from '@/pages/Other/Login/function';
+import { gotoRedirectUrl, initSomeThing, redirectToLogin } from '@/pages/Other/Login/function';
 import LangSwitch from '@/pages/Other/Login/LangSwitch';
 import { chooseTenantSubmit, login, queryDataByParams } from '@/services/BusinessCrud';
 import { API } from '@/services/data';
@@ -30,7 +32,6 @@ import { ErrorMessage, SuccessMessageAsync } from '@/utils/messages';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useModel } from '@umijs/max';
 import React, { useEffect, useState } from 'react';
-import { flushSync } from 'react-dom';
 import HelmetTitle from './HelmetTitle';
 import LoginForm from './LoginForm';
 
@@ -55,12 +56,10 @@ const Login: React.FC = () => {
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
-      flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo
-        }));
-      });
+      setInitialState((s) => ({
+        ...s,
+        currentUser: userInfo
+      }));
     }
   };
 
@@ -88,7 +87,7 @@ const Login: React.FC = () => {
       await SuccessMessageAsync(
         l('login.chooseTenantSuccess', '', {
           msg: chooseTenantResult.msg,
-          tenantCode: chooseTenantResult.datas.tenantCode
+          tenantCode: chooseTenantResult.data.tenantCode
         })
       );
       /**
@@ -143,12 +142,12 @@ const Login: React.FC = () => {
           setLocalStorageOfToken(JSON.stringify(res))
         );
       }
-      setInitialState((s) => ({ ...s, currentUser: result.datas }));
+      setInitialState((s) => ({ ...s, currentUser: result.data }));
       await SuccessMessageAsync(l('login.result', '', { msg: result.msg, time: result.time }));
       /**
        * After successful login, set the tenant list
        */
-      const tenantList: UserBaseInfo.Tenant[] = result.datas.tenantList;
+      const tenantList: UserBaseInfo.Tenant[] = result.data.tenantList;
       await assertTenant(tenantList);
       /**
        * Determine whether the current tenant list is multiple
@@ -176,7 +175,8 @@ const Login: React.FC = () => {
     await handleChooseTenant(result);
     handleTenantVisible(false);
   };
-
+  // 进入登录页初始化一些东西
+  initSomeThing();
   return (
     <div className={containerClassName}>
       <HelmetTitle />

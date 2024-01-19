@@ -1,26 +1,25 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
-/**
- * the  interface api constants
- */
 export enum API_CONSTANTS {
+  GET_SERVICE_VERSION = '/api/version',
+
   // --- user ---
   // login path
   LOGIN_PATH = '/user/login',
@@ -111,17 +110,20 @@ export enum API_CONSTANTS {
   CLUSTER_INSTANCE_LIST = '/api/cluster/list',
   CLUSTER_INSTANCE_ENABLE = '/api/cluster/enable',
   CLUSTER_INSTANCE_DELETE = '/api/cluster/delete',
+  CLUSTER_INSTANCE_KILL = '/api/cluster/killCluster',
   CLUSTER_INSTANCE_HEARTBEATS = '/api/cluster/heartbeats',
   CLUSTER_INSTANCE_RECYCLE = '/api/cluster/recycle',
   CLUSTER_CONFIGURATION_START = '/api/cluster/deploySessionClusterInstance',
   // cluster configuration list
-  CLUSTER_CONFIGURATION = '/api/clusterConfiguration',
+  CLUSTER_CONFIGURATION = '/api/clusterConfiguration/list',
+  CLUSTER_CONFIGURATION_ADD_OR_UPDATE = '/api/clusterConfiguration/saveOrUpdate',
   CLUSTER_CONFIGURATION_DELETE = '/api/clusterConfiguration/delete',
   CLUSTER_CONFIGURATION_ENABLE = '/api/clusterConfiguration/enable',
   CLUSTER_CONFIGURATION_TEST = '/api/clusterConfiguration/testConnect',
 
   // datasource registries list
-  DATASOURCE = '/api/database',
+  DATASOURCE = '/api/database/list',
+  DATASOURCE_ADD_OR_UPDATE = '/api/database/saveOrUpdate',
   // datasource registries delete
   DATASOURCE_DELETE = '/api/database/delete',
   // datasource registries enable or disable
@@ -147,16 +149,21 @@ export enum API_CONSTANTS {
 
   // ---- alert instance ----
   // alert instance list
-  ALERT_INSTANCE = '/api/alertInstance',
+  ALERT_INSTANCE = '/api/alertInstance/list',
+  ALERT_INSTANCE_ADD_OR_UPDATE = '/api/alertInstance/saveOrUpdate',
   // delete alert instance by id
   ALERT_INSTANCE_DELETE = '/api/alertInstance/delete',
   // alert instance enable or disable
   ALERT_INSTANCE_ENABLE = '/api/alertInstance/enable',
   // alert instance list all
   ALERT_INSTANCE_LIST_ENABLE_ALL = '/api/alertInstance/listEnabledAll',
+  // sendTest
+  ALERT_INSTANCE_SEND_TEST = '/api/alertInstance/sendTest',
 
   // ---- alert group ----
-  ALERT_GROUP = '/api/alertGroup',
+  ALERT_GROUP = '/api/alertGroup/list',
+  ALERT_GROUP_LIST_ENABLE_ALL = '/api/alertGroup/listEnabledAll',
+  ALERT_GROUP_ADD_OR_UPDATE = '/api/alertGroup/addOrUpdate',
   // delete alert group by id
   ALERT_GROUP_DELETE = '/api/alertGroup/delete',
   // alert group enable or disable
@@ -187,6 +194,12 @@ export enum API_CONSTANTS {
   // ---- get project build logs by id----
   GIT_PROJECT_BUILD_STEP_LOGS = '/api/git/build-step-logs',
 
+  //UDF Manage
+  UDF_LIST = '/api/udf/list',
+  UDF_RESOURCES_LIST = '/api/udf/udfResourcesList',
+  UDF_ADD = '/api/udf/addOrUpdateByResourceId',
+  UDF_UPDATE = '/api/udf/update',
+
   // UDF template
   UDF_TEMPLATE = '/api/udf/template/list',
   // UDF template add or update
@@ -215,8 +228,10 @@ export enum API_CONSTANTS {
   PROCESS_LOG = '/api/process/getProcess',
 
   // ---- devops
-  GET_JOB_LIST = '/api/jobInstance',
+  JOB_INSTANCE = '/api/jobInstance',
+  GET_JOB_INSTANCE_BY_TASK_ID = '/api/jobInstance/getJobInstanceByTaskId',
   GET_JOB_BY_ID = '/api/jobInstance/getOneById',
+  GET_LATEST_HISTORY_BY_ID = '/api/history/getLatestHistoryById',
   GET_JOB_DETAIL = '/api/jobInstance/getJobInfoDetail',
   REFRESH_JOB_DETAIL = '/api/jobInstance/refreshJobInfoDetail',
   READ_CHECKPOINT = '/api/flinkConf/readCheckPoint',
@@ -227,14 +242,16 @@ export enum API_CONSTANTS {
   GET_TASKMANAGER_LIST = 'api/jobInstance/getTaskManagerList',
   GET_TASKMANAGER_LOG = 'api/jobInstance/getTaskManagerLog',
   GET_JOB_METRICS_ITEMS = 'api/jobInstance/getJobMetricsItems',
-  CANCEL_JOB = '/api/studio/cancel',
+  CANCEL_JOB = '/api/task/cancel',
   // /api/studio/getLineage
   STUDIO_GET_LINEAGE = '/api/studio/getLineage',
   // /api/jobInstance/getLineage
   JOB_INSTANCE_GET_LINEAGE = '/api/jobInstance/getLineage',
   RESTART_TASK = '/api/task/restartTask',
+  SAVEPOINT = '/api/task/savepoint',
   RESTART_TASK_FROM_CHECKPOINT = '/api/task/selectSavePointRestartTask',
-  GET_SAVEPOINTS = '/api/savepoints',
+  GET_SAVEPOINT_LIST_BY_TASK_ID = '/api/savepoints/listSavepointsByTaskId',
+  GET_SAVEPOINT_LIST = '/api/savepoints',
   ALERT_HISTORY_LIST = '/api/alertHistory/list',
   ALERT_HISTORY_DELETE = '/api/alertHistory/delete',
 
@@ -256,7 +273,9 @@ export enum API_CONSTANTS {
   MONITOR_GET_SYSTEM_DATA = '/api/monitor/getSysData',
   MONITOR_GET_FLINK_DATA = '/api/monitor/getFlinkData',
   MONITOR_GET_LAST_DATA = '/api/monitor/getLastUpdateData',
+  MONITOR_GET_JVM_INFO = '/api/monitor/getJvmInfo',
   METRICS_LAYOUT_GET_BY_NAME = '/api/monitor/getMetricsLayoutByName',
+  METRICS_LAYOUT_DELETE = '/api/monitor/deleteMetricsLayout',
   JOB_METRICS = '/api/monitor/jobMetrics',
   SAVE_FLINK_METRICS = '/api/monitor/saveFlinkMetrics/',
   GET_METRICS_LAYOUT = '/api/monitor/getMetricsLayout',
@@ -281,5 +300,8 @@ export enum API_CONSTANTS {
   MOVE_CATALOGUE_URL = '/api/catalogue/moveCatalogue',
 
   //task
-  TASK = '/api/task'
+  TASK = '/api/task',
+
+  // history
+  HISTORY_LIST = '/api/history/list'
 }

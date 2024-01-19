@@ -19,12 +19,15 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.DinkyVersion;
+import org.dinky.data.annotations.Log;
+import org.dinky.data.dto.APISavePointTaskDTO;
 import org.dinky.data.dto.TaskDTO;
+import org.dinky.data.dto.TaskSubmitDto;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.NotSupportExplainExcepition;
-import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.gateway.enums.SavePointType;
@@ -64,11 +67,18 @@ public class APIController {
     private final TaskService taskService;
     private final JobInstanceService jobInstanceService;
 
+    @GetMapping("/version")
+    @ApiOperation(value = "Query Service Version", notes = "Query Dinky Service Version Number")
+    public Result<String> getVersionInfo() {
+        return Result.succeed(DinkyVersion.getVersion(), "Get success");
+    }
+
     @PostMapping("/submitTask")
     @ApiOperation("Submit Task")
     //    @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
-    public Result<JobResult> submitTask(@RequestBody TaskDTO taskDTO) throws Exception {
-        JobResult jobResult = taskService.submitTask(taskDTO.getId(), null);
+    public Result<JobResult> submitTask(@RequestBody TaskSubmitDto submitDto) throws Exception {
+        taskService.initTenantByTaskId(submitDto.getId());
+        JobResult jobResult = taskService.submitTask(submitDto);
         if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
         } else {
@@ -76,11 +86,25 @@ public class APIController {
         }
     }
 
+    @PostMapping("/savepointTask")
+    public Result savepointTask(@RequestBody APISavePointTaskDTO apiSavePointTaskDTO) {
+        return Result.succeed(
+                taskService.savepointTaskJob(
+                        taskService.getTaskInfoById(apiSavePointTaskDTO.getTaskId()),
+                        SavePointType.get(apiSavePointTaskDTO.getType())),
+                Status.EXECUTE_SUCCESS);
+    }
+
     @GetMapping("/cancel")
     //    @Log(title = "Cancel Flink Job", businessType = BusinessType.TRIGGER)
     @ApiOperation("Cancel Flink Job")
-    public Result<Boolean> cancel(@RequestParam Integer id) {
-        return Result.succeed(taskService.cancelTaskJob(taskService.getTaskInfoById(id)), Status.EXECUTE_SUCCESS);
+    public Result<Boolean> cancel(
+            @RequestParam Integer id,
+            @RequestParam(defaultValue = "false") boolean withSavePoint,
+            @RequestParam(defaultValue = "true") boolean forceCancel) {
+        return Result.succeed(
+                taskService.cancelTaskJob(taskService.getTaskInfoById(id), withSavePoint, forceCancel),
+                Status.EXECUTE_SUCCESS);
     }
 
     /**
@@ -162,5 +186,20 @@ public class APIController {
             dataTypeClass = Integer.class)
     public Result<String> exportSql(@RequestParam Integer id) {
         return Result.succeed(taskService.exportSql(id));
+    }
+
+    @GetMapping("/getTaskLineage")
+    @ApiOperation("Get Task Lineage")
+    @Log(title = "Get Task Lineage", businessType = BusinessType.OTHER)
+    @ApiImplicitParam(
+            name = "id",
+            value = "Task Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "query",
+            dataTypeClass = Integer.class)
+    public Result getTaskLineage(@RequestParam Integer id) {
+        taskService.initTenantByTaskId(id);
+        return Result.succeed(taskService.getTaskLineage(id), "获取成功");
     }
 }

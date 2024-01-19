@@ -18,12 +18,18 @@
  */
 
 export default {
+  'button.add': 'Add',
+  'button.check': 'Check',
+  'button.graph': 'DAG',
   'button.create': 'Create',
   'button.close': 'Close',
+  'button.daemon': 'Daemon Mode',
   'button.confirm': 'Confirm',
   'button.recovery': 'Recovery',
   'button.cancel': 'Cancel',
   'button.finish': 'Finish',
+  'button.retry': 'Retry',
+  'button.rebuild': 'Re Build',
   'button.back': 'Back',
   'button.save': 'Save',
   'button.delete': 'Delete',
@@ -73,9 +79,11 @@ export default {
   'button.backTop': 'Back Top',
   'button.backBottom': 'Back Bottom',
   'button.downScroll': 'Down Scroll',
+  'button.wrap': 'Wrap',
   'button.upScroll': 'Up Scroll',
   'button.stopRefresh': 'Stop Auto Refresh',
   'button.startRefresh': 'Start Auto Refresh(5s/e)',
+  'button.autoWrap': 'Auto Wrap/Unwrap',
 
   'menu.menu': 'Menu',
   'right.menu.open': 'Open',
@@ -106,10 +114,10 @@ export default {
   'status.enabled': 'Enabled',
   'status.disabled': 'Disabled',
 
-  'global.time.second': 'S ',
-  'global.time.minute': 'M ',
-  'global.time.hour': 'H ',
-  'global.time.day': 'D ',
+  'global.time.second': 's ',
+  'global.time.minute': 'm ',
+  'global.time.hour': 'h ',
+  'global.time.day': 'd ',
   'global.time.millisecond': 'ms ',
 
   'global.stay.tuned': 'Stay tuned',
@@ -149,6 +157,7 @@ export default {
   'global.table.lifecycle.dev': 'Develop',
   'global.table.execmode.batch': 'Batch Mode',
   'global.table.execmode.streaming': 'Stream Mode',
+  'global.table.lifecycle.publishing': 'Publishing',
   'global.table.lifecycle.publish': 'Publish',
   'global.table.lifecycle.stopped': 'Stopped',
   'global.table.lifecycle.online': 'Online',
@@ -203,5 +212,22 @@ export default {
   'global.month.september': 'September',
   'global.month.october': 'October',
   'global.month.november': 'November',
-  'global.month.december': 'December'
+  'global.month.december': 'December',
+
+  // job status
+  'global.job.status.initiating': 'Initializing',
+  'global.job.status.success': 'Success',
+  'global.job.status.created': 'Created',
+  'global.job.status.running': 'Running',
+  'global.job.status.failing': 'Failing',
+  'global.job.status.failed': 'Failed',
+  'global.job.status.cancelling': 'Cancelling',
+  'global.job.status.canceled': 'Canceled',
+  'global.job.status.finished': 'Finished',
+  'global.job.status.restarting': 'Restarting',
+  'global.job.status.suspended': 'Suspended',
+  'global.job.status.reconciling': 'Reconciling',
+  'global.job.status.reconnecting': 'Reconnecting',
+  'global.job.status.unknown': 'Unknown',
+  'global.job.status.failed-tip': 'Failed to submit to the cluster, unable to get the task name'
 };

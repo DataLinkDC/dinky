@@ -37,6 +37,10 @@ public class JobParam {
     private List<StatementParam> execute;
     private List<UDF> udfList;
 
+    public JobParam(List<UDF> udfList) {
+        this.udfList = udfList;
+    }
+
     public JobParam(List<StatementParam> ddl, List<StatementParam> trans) {
         this.ddl = ddl;
         this.trans = trans;

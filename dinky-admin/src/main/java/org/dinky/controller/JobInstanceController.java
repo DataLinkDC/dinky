@@ -21,24 +21,27 @@ package org.dinky.controller;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.enums.BusinessType;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.ID;
-import org.dinky.data.model.JobInfoDetail;
-import org.dinky.data.model.JobInstance;
-import org.dinky.data.model.JobManagerConfiguration;
-import org.dinky.data.model.TaskManagerConfiguration;
+import org.dinky.data.model.devops.TaskManagerConfiguration;
+import org.dinky.data.model.ext.JobInfoDetail;
+import org.dinky.data.model.home.JobInstanceStatus;
+import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.task.JobInstanceVo;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.job.BuildConfiguration;
 import org.dinky.service.JobInstanceService;
+import org.dinky.utils.BuildConfiguration;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.Dict;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -67,6 +71,18 @@ import lombok.extern.slf4j.Slf4j;
 public class JobInstanceController {
     private final JobInstanceService jobInstanceService;
 
+    @PutMapping
+    @Log(title = "update JobInstance Job Id", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("update JobInstance Job Id")
+    public Result<Void> updateJobInstanceJobId(@RequestBody JobInstance jobInstance) {
+        boolean updated = jobInstanceService.updateById(jobInstance);
+        if (updated) {
+            return Result.succeed(Status.SAVE_SUCCESS);
+        } else {
+            return Result.failed(Status.SAVE_FAILED);
+        }
+    }
+
     /**
      * 动态查询列表
      */
@@ -78,8 +94,25 @@ public class JobInstanceController {
             paramType = "body",
             required = true,
             dataTypeClass = JsonNode.class)
-    public ProTableResult<JobInstance> listJobInstances(@RequestBody JsonNode para) {
+    public ProTableResult<JobInstanceVo> listJobInstances(@RequestBody JsonNode para) {
         return jobInstanceService.listJobInstances(para);
+    }
+
+    /**
+     * query job instance by task id
+     * @param taskId task id
+     * @return {@link Result}< {@link JobInstance} >
+     */
+    @GetMapping("/getJobInstanceByTaskId")
+    @ApiImplicitParam(
+            name = "TaskId",
+            value = "TaskId",
+            dataType = "Integer",
+            paramType = "query",
+            required = true,
+            dataTypeClass = Integer.class)
+    public Result<JobInstance> getJobInstanceByTaskId(@RequestParam("taskId") Integer taskId) {
+        return Result.succeed(jobInstanceService.getJobInstanceByTaskId(taskId));
     }
 
     /**
@@ -87,11 +120,8 @@ public class JobInstanceController {
      */
     @GetMapping("/getStatusCount")
     @ApiOperation("Get status count")
-    public Result<Dict> getStatusCount() {
-        Dict result = Dict.create()
-                .set("history", jobInstanceService.getStatusCount(true))
-                .set("instance", jobInstanceService.getStatusCount(false));
-        return Result.succeed(result);
+    public Result<JobInstanceStatus> getStatusCount() {
+        return Result.succeed(jobInstanceService.getStatusCount());
     }
 
     /**
@@ -133,8 +163,9 @@ public class JobInstanceController {
             dataType = "Integer",
             paramType = "query",
             required = true)
-    public Result<JobInfoDetail> refreshJobInfoDetail(@RequestParam Integer id) {
-        return Result.succeed(jobInstanceService.refreshJobInfoDetail(id));
+    public Result<JobInfoDetail> refreshJobInfoDetail(
+            @RequestParam Integer id, @RequestParam(defaultValue = "false") boolean isForce) {
+        return Result.succeed(jobInstanceService.refreshJobInfoDetail(id, isForce));
     }
 
     /**
@@ -150,25 +181,6 @@ public class JobInstanceController {
             required = true)
     public Result<LineageResult> getLineage(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getLineage(id));
-    }
-
-    /**
-     * 获取 JobManager 的信息
-     */
-    @GetMapping("/getJobManagerInfo")
-    @ApiOperation("Get job manager info")
-    @ApiImplicitParam(
-            name = "address",
-            value = "JobManager address",
-            dataType = "String",
-            paramType = "query",
-            required = true)
-    public Result<JobManagerConfiguration> getJobManagerInfo(@RequestParam String address) {
-        JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
-        if (Asserts.isNotNullString(address)) {
-            BuildConfiguration.buildJobManagerConfiguration(jobManagerConfiguration, FlinkAPI.build(address));
-        }
-        return Result.succeed(jobManagerConfiguration);
     }
 
     @GetMapping("/getJobManagerLog")
@@ -300,5 +312,17 @@ public class JobInstanceController {
             @RequestParam String verticeId,
             @RequestParam String metrics) {
         return Result.succeed(FlinkAPI.build(address).getJobMetricsData(jobId, verticeId, metrics));
+    }
+
+    @GetMapping("/hookJobDone")
+    @ApiOperation("hookJobDone")
+    @SaIgnore
+    public Result<Dict> hookJobDone(@RequestParam String jobId, @RequestParam Integer taskId) {
+        boolean done = jobInstanceService.hookJobDone(jobId, taskId);
+        if (done) {
+            return Result.succeed();
+        } else {
+            return Result.failed();
+        }
     }
 }

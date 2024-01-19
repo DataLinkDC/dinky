@@ -23,7 +23,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { BackIcon } from '@/components/Icons/CustomIcons';
-import { Authorized, useAccess } from '@/hooks/useAccess';
+import { Authorized, HasAuthority, useAccess } from '@/hooks/useAccess';
 import { UserType, USER_TYPE_ENUM } from '@/pages/AuthCenter/User/components/constants';
 import PasswordModal from '@/pages/AuthCenter/User/components/PasswordModal';
 import UserModalForm from '@/pages/AuthCenter/User/components/UserModalForm';
@@ -107,7 +107,7 @@ const UserProTable = () => {
         roleIds: userState.roleIds
       })
     );
-    setUserState((prevState) => ({ ...prevState, assignRoleOpen: true }));
+    setUserState((prevState) => ({ ...prevState, assignRoleOpen: false }));
   };
 
   /**
@@ -157,7 +157,7 @@ const UserProTable = () => {
         id: value.id
       }).then((res) => {
         const {
-          datas: { user, originalPassword }
+          data: { user, originalPassword }
         } = res;
         SuccessMessage(
           l('user.resetPasswordSuccess', '', {
@@ -225,6 +225,7 @@ const UserProTable = () => {
           <EnableSwitchBtn
             key={`${record.id}_enable`}
             record={record}
+            disabled={!HasAuthority('/auth/user/edit')}
             onChange={() => handleChangeEnable(record)}
           />
           // </Authorized>
@@ -275,7 +276,7 @@ const UserProTable = () => {
         </Authorized>,
         <Authorized key={`${record.id}_delete_auth`} path='/auth/user/delete'>
           <>
-            {access.isAdmin && !record.isDelete && (
+            {access.isAdmin && !record.isDelete && !record.superAdminFlag && (
               <PopconfirmDeleteBtn
                 key={`${record.id}_delete`}
                 onClick={() => handleDeleteUser(record)}

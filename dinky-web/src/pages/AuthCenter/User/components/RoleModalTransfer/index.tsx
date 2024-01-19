@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -51,6 +52,10 @@ const RoleModalTransfer = (props: RoleTransferFromProps) => {
       maskClosable={false}
       width={'75%'}
       onCancel={() => handleCancel()}
+      okButtonProps={{
+        htmlType: 'submit',
+        autoFocus: true
+      }}
       onOk={() => handleSubmit(targetKeys)}
     >
       <RoleTransfer role={user} onChange={(value) => handleValueChange(value)} />

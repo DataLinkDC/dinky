@@ -77,7 +77,7 @@ RUN cp -r /opt/flink-1.14.6/lib /opt/dinky/plugins/flink${FLINK_VERSION}
 ```
 docker build
 ```shell
-# 在项目根目录下执行
+# execute in the project root directory
 docker build -t dinky-server:0.8.0 -f ./docker/server/Dockerfile ./
 ```
 

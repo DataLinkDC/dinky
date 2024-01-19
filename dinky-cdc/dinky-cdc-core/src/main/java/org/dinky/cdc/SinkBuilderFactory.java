@@ -20,6 +20,7 @@
 package org.dinky.cdc;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.cdc.kafka.KafkaSinkBuilder;
 import org.dinky.cdc.sql.SQLSinkBuilder;
 import org.dinky.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import org.dinky.data.model.FlinkCDCConfig;
@@ -47,7 +48,7 @@ public class SinkBuilderFactory {
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
 
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
-            throw new FlinkClientException("set Sink connector。");
+            throw new FlinkClientException("set Sink connector.");
         }
         return SINK_BUILDER_MAP
                 .getOrDefault(config.getSink().get("connector"), SQLSinkBuilder::new)
@@ -59,6 +60,7 @@ public class SinkBuilderFactory {
         Map<String, Supplier<SinkBuilder>> map = new HashMap<>();
         map.put(SQLSinkBuilder.KEY_WORD, SQLSinkBuilder::new);
         map.put(SQLCatalogSinkBuilder.KEY_WORD, SQLCatalogSinkBuilder::new);
+        map.put(KafkaSinkBuilder.KEY_WORD, KafkaSinkBuilder::new);
 
         final ServiceLoader<SinkBuilder> loader = ServiceLoader.load(SinkBuilder.class);
 
@@ -67,22 +69,10 @@ public class SinkBuilderFactory {
             sinkBuilders.add(factory);
         }
 
-        Map<String, Supplier<SinkBuilder>> plusSinkBuilder = sinkBuilders.stream()
-                .collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, SinkBuilderFactory::getSupplier));
+        Map<String, Supplier<SinkBuilder>> plusSinkBuilder =
+                sinkBuilders.stream().collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, x -> () -> x));
         map.putAll(plusSinkBuilder);
         return map;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Supplier<SinkBuilder> getSupplier(SinkBuilder clazz) {
-        return () -> {
-            try {
-                return SinkBuilder.class.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                logger.warn("Could not get constructor supplier : {}", e.getMessage());
-            }
-            return null;
-        };
     }
 
     public static String getKeyWord(SinkBuilder c) {

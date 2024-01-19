@@ -1,29 +1,35 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
+
 import StatusTag from '@/components/JobTags/StatusTag';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import { parseByteStr, parseMilliSecondStr, parseNumStr } from '@/utils/function';
+import {
+  formatTimestampToYYYYMMDDHHMMSS,
+  parseByteStr,
+  parseMilliSecondStr,
+  parseNumStr
+} from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ProCard, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Typography } from 'antd';
 
-const { Text, Link } = Typography;
+const { Link } = Typography;
 
 export type VerticesTableListItem = {
   name: string;
@@ -31,8 +37,10 @@ export type VerticesTableListItem = {
   metrics: any;
   parallelism: number;
   startTime?: number;
+  'start-time'?: number;
   duration?: number;
   endTime?: number;
+  'end-time'?: number;
   tasks: any;
 };
 
@@ -100,15 +108,20 @@ const FlinkTable = (props: JobProps): JSX.Element => {
     },
     {
       title: l('global.table.startTime'),
-      dataIndex: 'startTime',
-      valueType: 'dateTime'
+      render: (dom, entity) => {
+        return entity.startTime === -1 || entity['start-time'] === -1
+          ? '-'
+          : formatTimestampToYYYYMMDDHHMMSS(entity['start-time'] as number) ||
+              formatTimestampToYYYYMMDDHHMMSS(entity.startTime as number);
+      }
     },
     {
       title: l('global.table.endTime'),
-      dataIndex: 'endTime',
-      valueType: 'dateTime',
       render: (dom, entity) => {
-        return entity.endTime === -1 ? '-' : entity.endTime;
+        return entity.endTime === -1 || entity['end-time'] === -1
+          ? '-'
+          : formatTimestampToYYYYMMDDHHMMSS(entity['end-time'] as number) ||
+              formatTimestampToYYYYMMDDHHMMSS(entity.endTime as number);
       }
     },
     {

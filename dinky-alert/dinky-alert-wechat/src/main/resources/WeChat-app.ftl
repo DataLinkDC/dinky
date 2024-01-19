@@ -10,7 +10,7 @@
 </#if>
 
 "msgtype": "markdown",
-"agentid" : ${agentId},
+"agentid": ${agentId},
 "markdown": {
 "content": "### Dinky Alert:${title}\n${content?json_string}"
 },

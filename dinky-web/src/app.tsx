@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import Footer from '@/components/Footer';
@@ -59,7 +61,7 @@ export function patchRoutes({ routes }: any) {
 
 const queryUserInfo = async () => {
   return getDataByParamsReturnResult(API_CONSTANTS.CURRENT_USER).then((result) => {
-    const { user, roleList, tenantList, currentTenant, menuList, saTokenInfo } = result.datas;
+    const { user, roleList, tenantList, currentTenant, menuList, saTokenInfo } = result.data;
     const currentUser: API.CurrentUser = {
       user: {
         ...user,
@@ -115,7 +117,7 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
-  console.log(initialState);
+  // @ts-ignore
   const fullscreen = initialState?.fullscreen;
 
   const defaultSettings = {
@@ -129,12 +131,13 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     // 自定义 403 页面
     unAccessible: <UnAccessible />,
     // 增加一个 loading 的状态
-    childrenRender: (children) => {
+    childrenRender: (children: any) => {
       return initialState?.loading ? (
         <PageLoading />
       ) : (
         <AccessContextProvider currentUser={initialState?.currentUser}>
-          <FullScreenProvider>{children}</FullScreenProvider>
+          {/* @ts-ignore */}
+          <FullScreenProvider key={location.pathname}>{children}</FullScreenProvider>
         </AccessContextProvider>
       );
     }

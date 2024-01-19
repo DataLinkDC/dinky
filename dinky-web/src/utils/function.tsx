@@ -1,24 +1,28 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import {
+  ConfigSvg,
   FileIcon,
   FlinkSQLSvg,
   FolderSvgExpand,
+  JarSvg,
   JavaSvg,
   LogSvg,
   MarkDownSvg,
@@ -26,7 +30,8 @@ import {
   ScalaSvg,
   ShellSvg,
   XMLSvg,
-  YAMLSvg
+  YAMLSvg,
+  ZipSvg
 } from '@/components/Icons/CodeLanguageIcon';
 import {
   DATETIME_FORMAT,
@@ -37,12 +42,13 @@ import {
 } from '@/services/constants';
 import { CODE_EDIT_THEME, THEME } from '@/types/Public/data';
 import { l } from '@/utils/intl';
+import { Monaco } from '@monaco-editor/react';
 import dayjs from 'dayjs';
 import cookies from 'js-cookie';
 import { trim } from 'lodash';
-import { editor } from 'monaco-editor';
+import { editor, KeyCode, KeyMod } from 'monaco-editor';
 import path from 'path';
-import { useEffect, useState } from 'react';
+import { format } from 'sql-formatter';
 
 /**
  * get language by localStorage's umi_locale , if not exist , return zh-CN
@@ -58,6 +64,10 @@ export function getLocalStorageLanguage() {
  */
 export function setKeyToLocalStorage(key: string, value: string) {
   localStorage.setItem(key, value);
+}
+
+export function hasKeyofLocalStorage(key: string): boolean {
+  return localStorage.getItem(key) === undefined || localStorage.getItem(key) === null;
 }
 
 /**
@@ -116,101 +126,189 @@ export function parseJsonStr(jsonStr: string) {
  * get theme by localStorage's theme
  */
 export function getLocalTheme(): string {
-  return localStorage.getItem(THEME.NAV_THEME) ?? THEME.dark;
+  return localStorage.getItem(THEME.NAV_THEME) ?? THEME.light;
+}
+
+export function setLocalThemeToStorage(defaultTheme?: string) {
+  localStorage.setItem(THEME.NAV_THEME, defaultTheme ?? getLocalTheme());
+}
+
+/**
+ * register editor key binding | 注册编辑器快捷键
+ *
+ * @param editorInstance
+ */
+function registerEditorKeyBinding(editorInstance?: editor.IStandaloneCodeEditor) {
+  // 添加 ctrl + z 撤销
+  editorInstance?.addCommand(KeyMod.CtrlCmd | KeyCode.KeyZ, () => {
+    editorInstance?.trigger('anyString', 'undo', '');
+  });
+  // 添加 ctrl + y 恢复
+  editorInstance?.addCommand(KeyMod.CtrlCmd | KeyCode.KeyY, () => {
+    editorInstance?.trigger('anyString', 'redo', '');
+  });
+  // 格式化所有代码
+  editorInstance?.addCommand(KeyMod.Alt | KeyCode.Digit3, () => {
+    editorInstance?.trigger('anyString', 'editor.action.formatDocument', '');
+    editorInstance?.setValue(format(editorInstance?.getValue()));
+  });
+  // 格式化选定内容
+  editorInstance?.addCommand(KeyMod.Alt | KeyCode.Digit4, () => {
+    editorInstance?.trigger('anyString', 'editor.action.formatSelection', '');
+    editorInstance?.setValue(format(editorInstance?.getValue()));
+  });
+}
+
+/**
+ * <p> 如果使用了 sql-formatter , 可以使用以下参数 </p> <br/>
+ * language: the SQL dialect to use (when using format()). | 要使用的SQL方言（当使用format（）时） <br/>
+ * dialect: the SQL dialect to use (when using formatDialect() since version 12). | 要使用的SQL方言（自版本12起）<br/>
+ * tabWidth: amount of indentation to use. | 要使用的缩进量<br/>
+ * useTabs: to use tabs for indentation. | 要使用制表符进行缩进<br/>
+ * keywordCase: uppercases or lowercases keywords. | 关键字大小写<br/>
+ * identifierCase: uppercases or lowercases identifiers. (experimental!) | 标识符大小写<br/>
+ * indentStyle: defines overall indentation style.| 总体缩进样式<br/>
+ * logicalOperatorNewline: newline before or after boolean operator (AND, OR, XOR). | 布尔运算符（AND，OR，XOR）的换行位置<br/>
+ * expressionWidth: maximum number of characters in parenthesized expressions to be kept on single line. | 带括号的表达式中保持在一行的最大字符数<br/>
+ * linesBetweenQueries: how many newlines to insert between queries. | 在查询之间插入的换行数<br/>
+ * denseOperators: packs operators densely without spaces. | 密集地封装运算符，没有空格<br/>
+ * newlineBeforeSemicolon: places semicolon on separate line. | 将分号放在单独的行上 <br/>
+ * params: collection of values for placeholder replacement. | 占位符替换的值的集合<br/>
+ * paramTypes: specifies parameter placeholders types to support | 指定要支持的参数占位符类型 <br/>
+ * register editor action
+ * @param editorInstance editor instance
+ */
+function registerEditorAction(editorInstance?: editor.IStandaloneCodeEditor) {
+  // 格式化所有代码 添加到 右键菜单 | format document
+  editorInstance?.addAction({
+    id: 'format',
+    label: l('shortcut.key.format'),
+    keybindings: [KeyMod.CtrlCmd | KeyCode.Digit3],
+    contextMenuGroupId: 'custom',
+    contextMenuOrder: 1.5,
+    run: () => {
+      editorInstance?.trigger('anyString', 'editor.action.formatDocument', '');
+      editorInstance?.setValue(format(editorInstance?.getValue(), { language: 'spark' }));
+    }
+  });
+  // 格式化选定内容 添加到 右键菜单 | format selection
+  editorInstance?.addAction({
+    id: 'formatSelection',
+    label: l('shortcut.key.formatSelection'),
+    keybindings: [KeyMod.CtrlCmd | KeyCode.Digit4],
+    contextMenuGroupId: 'custom',
+    contextMenuOrder: 1.5,
+    run: () => {
+      editorInstance?.trigger('anyString', 'editor.action.formatSelection', '');
+      editorInstance?.setValue(format(editorInstance?.getValue(), { language: 'spark' }));
+    }
+  });
+  // 注释该行 添加到 右键菜单 | comment line
+  editorInstance?.addAction({
+    id: 'commentLine',
+    label: l('shortcut.key.notes'),
+    keybindings: [KeyMod.CtrlCmd | KeyCode.Slash],
+    contextMenuGroupId: 'custom',
+    contextMenuOrder: 1.5,
+    run: () => {
+      editorInstance?.trigger('anyString', 'editor.action.commentLine', '');
+    }
+  });
+  // 转为 大写 添加到 右键菜单 | to uppercase
+  editorInstance?.addAction({
+    id: 'upperCase',
+    label: l('shortcut.key.upperCase'),
+    keybindings: [KeyMod.CtrlCmd | KeyCode.KeyU],
+    contextMenuGroupId: 'custom',
+    contextMenuOrder: 1.5,
+    run: () => {
+      editorInstance?.trigger('anyString', 'editor.action.transformToUppercase', '');
+    }
+  });
+  // 转为 小写 添加到 右键菜单 | to lowercase
+  editorInstance?.addAction({
+    id: 'lowerCase',
+    label: l('shortcut.key.lowerCase'),
+    keybindings: [KeyMod.CtrlCmd | KeyCode.KeyL],
+    contextMenuGroupId: 'custom',
+    contextMenuOrder: 1.5,
+    run: () => {
+      editorInstance?.trigger('anyString', 'editor.action.transformToLowercase', '');
+    }
+  });
+}
+
+/**
+ * register editor key binding and action | 注册编辑器快捷键和右键菜单
+ * @param editorInstance
+ */
+export function registerEditorKeyBindingAndAction(editorInstance?: editor.IStandaloneCodeEditor) {
+  registerEditorKeyBinding(editorInstance);
+  registerEditorAction(editorInstance);
 }
 
 /**
  * get code edit theme by localStorage's theme
  * @constructor
  */
-export function convertCodeEditTheme() {
-  /**
-   * user can define a new theme by calling the defineTheme method on the editor.
-   */
-  editor.defineTheme(CODE_EDIT_THEME.VS_CUSTOME, {
-    base: 'vs', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
-    inherit: true, // 是否继承基础主题配置 , 默认为 true, is to inherit the base theme
-    // rules is an array of rules. The array must not be sparse (i.e. do not use holes).
-    rules: [
-      { token: 'comment', foreground: '#008800', fontStyle: 'italic' },
-      { token: 'keyword', foreground: '#064cff', fontStyle: 'bold' },
-      { token: 'string', foreground: '#507dee' },
-      { token: 'delimiter', foreground: '#041d81' },
-      {
-        token: 'readonly',
-        foreground: '#e73a6e',
-        background: '#141414',
-        fontStyle: 'italic'
-      },
-      { token: 'number', foreground: '#ffffff' }
-    ],
-    // colors is an object of color identifiers and their color values.
-    colors: {
-      'editor.background': '#2f2e2e', //  editor background color
-      'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
-      'editorLineNumber.foreground': '#ffffff', //   editor line number color
-      'editorCursor.foreground': '#ffffff', //  editor cursor color
-      'editorIndentGuide.background': '#ffffff', //  editor indent guide color
-      'editor.foreground': '#ffffff', //  editor selection highlight border color
-      'editor.selectionBackground': '#4ba1ef', //  editor selection highlight color
-      'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
-      'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
-      'editor.wordHighlightBackground': '#8bb2d2' //  editor word highlight color
-    }
-  });
+export function convertCodeEditTheme(editorInstance?: Monaco['editor']) {
+  if (!editorInstance) {
+    editorInstance = editor;
+  }
+  if (editorInstance === undefined) {
+    return CODE_EDIT_THEME.LIGHT;
+  } else {
+    /**
+     * 定义亮色 覆盖vs主题,增加扩展规则
+     */
+    editorInstance?.defineTheme?.(CODE_EDIT_THEME.LIGHT, {
+      base: 'vs', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
+      inherit: true, // 是否继承主题配置
+      rules: [
+        // 注意,默认的不做修改 因为上边继承了父主题, 只添加自己定义的 , 否则会覆盖默认的 , 导致编辑器样式不一致
+        { token: 'custom-info', foreground: '#808080' },
+        { token: 'custom-thread', foreground: '#9fa19f' },
+        { token: 'custom-class', foreground: '#1060d9' },
+        { token: 'custom-error', foreground: '#ff0000', fontStyle: 'bold' },
+        { token: 'custom-warning', foreground: '#FFA500', fontStyle: 'bold' },
+        { token: 'custom-date', foreground: '#008800' },
+        { token: 'custom-process', foreground: '#07f313' }
+      ],
+      colors: {},
+      encodedTokensColors: []
+    });
+
+    /**
+     * 定义暗色 覆盖vs-dark主题,增加扩展规则
+     */
+    editorInstance?.defineTheme?.(CODE_EDIT_THEME.DARK, {
+      base: 'vs-dark', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
+      inherit: true, // 是否继承主题配置
+      rules: [
+        // 注意,默认的不做修改 因为上边继承了父主题, 只添加自己定义的 , 否则会覆盖默认的 , 导致编辑器样式不一致
+        { token: 'custom-info', foreground: '#008800' },
+        { token: 'custom-thread', foreground: '#9fa19f' },
+        { token: 'custom-class', foreground: '#1060d9' },
+        { token: 'custom-error', foreground: '#ff0000', fontStyle: 'bold' },
+        { token: 'custom-warning', foreground: '#FFA500', fontStyle: 'bold' },
+        { token: 'custom-date', foreground: '#008800' },
+        { token: 'custom-process', foreground: '#07f313' }
+      ],
+      colors: {},
+      encodedTokensColors: []
+    });
+  }
 
   const theme = getLocalTheme();
   switch (theme) {
     case THEME.dark:
-      return CODE_EDIT_THEME.VS_CUSTOME;
-    case THEME.light:
       return CODE_EDIT_THEME.DARK;
+    case THEME.light:
+      return CODE_EDIT_THEME.LIGHT;
     default:
-      return CODE_EDIT_THEME.HC_BLACK;
+      return CODE_EDIT_THEME.LIGHT;
   }
 }
-
-/**
- * use SSE build single data
- * @param url
- */
-export const useSSEBuildSingleData = (url: string) => {
-  const [data, setData] = useState<any>(null);
-
-  useEffect(() => {
-    const eventSource = new EventSource(url);
-    eventSource.onmessage = (event) => {
-      const newData = JSON.parse(event.data);
-      setData(newData);
-    };
-    return () => {
-      eventSource.close();
-    };
-  }, [url]);
-
-  return data;
-};
-
-/**
- * use SSE build array data
- * @param url
- */
-export const useSSEBuildArrayData = (url: string) => {
-  const [data, setData] = useState<any[]>([]);
-
-  useEffect(() => {
-    const eventSource = new EventSource(url);
-    eventSource.onmessage = (event) => {
-      const newData = JSON.parse(event.data);
-      setData((prevData) => [...prevData, newData]);
-    };
-    return () => {
-      eventSource.close();
-    };
-  }, [url]);
-
-  return data;
-};
 
 /**
  * get file icon by file type
@@ -271,12 +369,20 @@ export const getIcon = (type: string) => {
     case DIALECT.YAML:
     case DIALECT.YML:
       return <YAMLSvg />;
+    case DIALECT.JAR:
+      return <JarSvg />;
     case DIALECT.SH:
     case DIALECT.BASH:
     case DIALECT.CMD:
       return <ShellSvg />;
+    case DIALECT.CONF:
+      return <ConfigSvg />;
     case DIALECT.LOG:
       return <LogSvg />;
+    case DIALECT.ZIP:
+    case DIALECT.TAR:
+    case DIALECT.TAR_GZ:
+      return <ZipSvg />;
     case DIALECT.FLINK_SQL:
       return <FlinkSQLSvg />;
     default:
@@ -405,7 +511,7 @@ export function parseNumStr(num: number) {
  * @param {number} second_time
  * @returns {any}
  */
-export function parseMilliSecondStr(second_time: number | undefined) {
+export function parseMilliSecondStr(second_time: number | undefined): string {
   if (second_time == null) {
     return 'None';
   }
@@ -511,6 +617,13 @@ export const transformTableDataToCsv = <T,>(column: string[], data: T[]): string
 
 export const formatDateToYYYYMMDDHHMMSS = (date: Date) => {
   return dayjs(date).format(DATETIME_FORMAT);
+};
+
+export const formatTimestampToYYYYMMDDHHMMSS = (timestamp: number) => {
+  if (timestamp == null) {
+    return '-';
+  }
+  return dayjs(timestamp).format(DATETIME_FORMAT);
 };
 
 export const parseDateStringToDate = (dateString: Date) => {

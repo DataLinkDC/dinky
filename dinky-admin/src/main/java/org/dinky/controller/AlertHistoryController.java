@@ -19,10 +19,10 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.AlertHistory;
+import org.dinky.data.model.alert.AlertHistory;
 import org.dinky.data.result.Result;
 import org.dinky.service.AlertHistoryService;
 

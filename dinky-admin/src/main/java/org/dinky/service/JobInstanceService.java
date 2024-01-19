@@ -19,10 +19,11 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.JobInfoDetail;
-import org.dinky.data.model.JobInstance;
-import org.dinky.data.model.JobInstanceStatus;
+import org.dinky.data.model.ext.JobInfoDetail;
+import org.dinky.data.model.home.JobInstanceStatus;
+import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.ProTableResult;
+import org.dinky.data.vo.task.JobInstanceVo;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -49,10 +50,9 @@ public interface JobInstanceService extends ISuperService<JobInstance> {
     /**
      * Get the count of job instance statuses.
      *
-     * @param isHistory A boolean indicating whether to get the history status count or not.
      * @return An integer representing the count of job instance statuses.
      */
-    JobInstanceStatus getStatusCount(boolean isHistory);
+    JobInstanceStatus getStatusCount();
 
     /**
      * Get a list of active job instances.
@@ -83,7 +83,16 @@ public interface JobInstanceService extends ISuperService<JobInstance> {
      * @param jobInstanceId The ID of the job instance to refresh the job information detail for.
      * @return A {@link JobInfoDetail} object representing the refreshed job information detail.
      */
-    JobInfoDetail refreshJobInfoDetail(Integer jobInstanceId);
+    JobInfoDetail refreshJobInfoDetail(Integer jobInstanceId, boolean isForce);
+
+    /**
+     * Hook the job done for the given job ID and task ID.
+     *
+     * @param jobId The ID of the job to hook the job done for.
+     * @param taskId The ID of the task to hook the job done for.
+     * @return A boolean indicating whether the hooking was successful or not.
+     */
+    boolean hookJobDone(String jobId, Integer taskId);
 
     /**
      * Refresh the job instances for the given task IDs.
@@ -114,7 +123,7 @@ public interface JobInstanceService extends ISuperService<JobInstance> {
      * @param para A {@link JsonNode} object representing the filter conditions for listing job instances.
      * @return A {@link ProTableResult<JobInstance>} object representing the list of job instances.
      */
-    ProTableResult<JobInstance> listJobInstances(JsonNode para);
+    ProTableResult<JobInstanceVo> listJobInstances(JsonNode para);
 
     /**
      * Initialize the tenant by the given job instance ID.

@@ -19,6 +19,8 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.annotations.ProcessId;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -37,14 +39,8 @@ public class DebugDTO {
             dataType = "Integer",
             example = "1",
             notes = "The ID of Task which is debugged")
+    @ProcessId
     private Integer id;
-
-    @ApiModelProperty(
-            value = "Use Result",
-            dataType = "boolean",
-            example = "true",
-            notes = "Flag indicating whether to preview table result")
-    private boolean useResult = true;
 
     @ApiModelProperty(
             value = "Use ChangeLog",

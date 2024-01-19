@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -24,11 +24,13 @@ import {
   JobRunningMsgType,
   MetadataTabsItemType,
   STUDIO_MODEL,
+  STUDIO_MODEL_ASYNC,
   TabsItemType,
   TabsPageType,
   TaskDataType
 } from '@/pages/DataStudio/model';
 import { CONFIG_MODEL_ASYNC } from '@/pages/SettingCenter/GlobalSetting/model';
+import { DIALECT } from '@/services/constants';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { Dispatch } from '@@/plugin-dva/types';
 
@@ -83,6 +85,31 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
       type: STUDIO_MODEL.saveDataBase,
       payload: data
     }),
+  queryDatabaseList: () =>
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryDatabaseList
+    }),
+  queryTaskData: () => {
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryTaskData
+    });
+  },
+  querySessionData: () => {
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.querySessionData
+    });
+  },
+  queryEnv: () => {
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryEnv
+    });
+  },
+  queryClusterConfigurationData: () => {
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryClusterConfigurationData
+    });
+  },
+
   saveProject: (data: any[]) =>
     dispatch({
       type: STUDIO_MODEL.saveProject,
@@ -142,6 +169,40 @@ export function getCurrentTab(
   activeKey: string
 ): DataStudioTabsItemType | MetadataTabsItemType | undefined {
   const item = panes.find((item) => item.key === activeKey);
+  switch (item?.type) {
+    case 'project':
+      return item as DataStudioTabsItemType;
+    case 'metadata':
+      return item as MetadataTabsItemType;
+    default:
+      return undefined;
+  }
+}
+
+export function isProjectTabs(panes: TabsItemType[], activeKey: string): boolean {
+  const item = panes.find((item) => item.key === activeKey);
+  switch (item?.type) {
+    case 'project':
+      return true;
+    default:
+      return false;
+  }
+}
+
+export function isShowRightTabsJobConfig(dialect: string): boolean {
+  return (
+    dialect.toLowerCase() === DIALECT.JAVA ||
+    dialect.toLowerCase() === DIALECT.PYTHON_LONG ||
+    dialect.toLowerCase() === DIALECT.SCALA ||
+    dialect.toLowerCase() === DIALECT.FLINKSQLENV
+  );
+}
+
+export function getTabByTaskId(
+  panes: TabsItemType[],
+  id: number
+): DataStudioTabsItemType | MetadataTabsItemType | undefined {
+  const item = panes.find((item) => item.treeKey === id);
   switch (item?.type) {
     case 'project':
       return item as DataStudioTabsItemType;

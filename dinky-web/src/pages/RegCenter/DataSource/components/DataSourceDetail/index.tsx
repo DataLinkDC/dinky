@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import { DataSourceDetailBackButton } from '@/components/StyledComponents';
@@ -25,16 +27,17 @@ import { RESPONSE_CODE } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import { connect } from '@@/exports';
 import { BackwardOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Key, ProCard } from '@ant-design/pro-components';
-import { useNavigate } from '@umijs/max';
+import { connect, history } from '@umijs/max';
 import { Button, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 
-const DataSourceDetail = (props: any) => {
-  const navigate = useNavigate();
-
+interface DataSourceDetailProps {
+  dataSource: DataSources.DataSource;
+  backClick: () => void;
+}
+const DataSourceDetail = (props: DataSourceDetailProps & connect) => {
   const {
     dataSource,
     backClick,
@@ -54,9 +57,7 @@ const DataSourceDetail = (props: any) => {
 
   const handleBackClick = () => {
     // go back
-    navigate('/registration/database', {
-      state: { from: `/registration/database/detail/${dataSource.id}` }
-    });
+    history.push(`/registration/datasource`);
     // back click callback
     backClick();
   };
@@ -77,7 +78,7 @@ const DataSourceDetail = (props: any) => {
     await getDataByIdReturnResult(API_CONSTANTS.DATASOURCE_GET_SCHEMA_TABLES, dataSource.id).then(
       (res) => {
         if (res.code === RESPONSE_CODE.SUCCESS) {
-          setTreeData(res.datas);
+          setTreeData(res.data);
         }
       }
     );

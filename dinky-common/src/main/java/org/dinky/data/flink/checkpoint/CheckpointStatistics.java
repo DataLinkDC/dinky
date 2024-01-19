@@ -34,6 +34,8 @@ public class CheckpointStatistics {
 
     public static final String FIELD_NAME_ID = "id";
 
+    public static final String EXTERNAL_PATH = "external_path";
+
     public static final String FIELD_NAME_STATUS = "status";
 
     public static final String FIELD_NAME_IS_SAVEPOINT = "is_savepoint";
@@ -109,6 +111,9 @@ public class CheckpointStatistics {
 
     @JsonProperty(FIELD_NAME_CHECKPOINT_TYPE)
     private String checkpointType;
+
+    @JsonProperty(EXTERNAL_PATH)
+    private String externalPath;
 
     @JsonProperty(FIELD_NAME_TASKS)
     private Map<String, TaskCheckpointStatistics> checkpointStatisticsPerTask;

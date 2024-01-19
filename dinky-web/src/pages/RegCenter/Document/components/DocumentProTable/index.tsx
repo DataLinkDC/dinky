@@ -26,12 +26,9 @@ import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import DocumentDrawer from '@/pages/RegCenter/Document/components/DocumentDrawer';
 import DocumentModalForm from '@/pages/RegCenter/Document/components/DocumentModal';
 import {
-  DOCUMENT_CATEGORY,
   DOCUMENT_CATEGORY_ENUMS,
-  DOCUMENT_FUNCTION_ENUMS,
-  DOCUMENT_FUNCTION_TYPE,
-  DOCUMENT_SUBTYPE,
-  DOCUMENT_SUBTYPE_ENUMS
+  DOCUMENT_FUNCTION_TYPE_ENUMS,
+  DOCUMENT_TYPE_ENUMS
 } from '@/pages/RegCenter/Document/constans';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
@@ -112,28 +109,28 @@ const DocumentTableList: React.FC = () => {
       }
     },
     {
-      title: l('rc.doc.category'),
-      sorter: true,
-      dataIndex: 'category',
-      filterMultiple: false,
-      filters: DOCUMENT_CATEGORY,
-      valueEnum: DOCUMENT_CATEGORY_ENUMS
-    },
-    {
       title: l('rc.doc.functionType'),
       sorter: true,
       dataIndex: 'type',
-      filterMultiple: false,
-      filters: DOCUMENT_FUNCTION_TYPE,
-      valueEnum: DOCUMENT_FUNCTION_ENUMS
+      filterMultiple: true,
+      filters: true,
+      valueEnum: DOCUMENT_TYPE_ENUMS
     },
     {
       title: l('rc.doc.subFunctionType'),
       sorter: true,
       dataIndex: 'subtype',
-      filters: DOCUMENT_SUBTYPE,
-      filterMultiple: false,
-      valueEnum: DOCUMENT_SUBTYPE_ENUMS
+      filters: true,
+      filterMultiple: true,
+      valueEnum: DOCUMENT_FUNCTION_TYPE_ENUMS
+    },
+    {
+      title: l('rc.doc.category'),
+      sorter: true,
+      dataIndex: 'category',
+      filterMultiple: true,
+      filters: true,
+      valueEnum: DOCUMENT_CATEGORY_ENUMS
     },
     {
       title: l('rc.doc.description'),
@@ -150,7 +147,7 @@ const DocumentTableList: React.FC = () => {
       hideInTable: true,
       hideInSearch: true,
       render: (_, record) => {
-        return <CodeShow width={'85vh'} code={record.fillValue} />;
+        return <CodeShow language={'sql'} width={'40vw'} code={record.fillValue} />;
       }
     },
     {

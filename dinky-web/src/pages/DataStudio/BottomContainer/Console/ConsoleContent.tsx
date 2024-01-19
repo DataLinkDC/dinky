@@ -1,41 +1,44 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
-import MovableSidebar from '@/components/Sidebar/MovableSidebar';
 import { SseData } from '@/models/Sse';
-import { DataStudioTabsItemType, StateType } from '@/pages/DataStudio/model';
+import { DataStudioTabsItemType, StateType, VIEW } from '@/pages/DataStudio/model';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { parseMilliSecondStr } from '@/utils/function';
-import { connect, useModel, useRequest } from '@@/exports';
+import { SplitPane } from '@andrewray/react-multi-split-pane';
+import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { CheckOutlined, CloseCircleFilled, LoadingOutlined } from '@ant-design/icons';
+import { connect, useModel, useRequest } from '@umijs/max';
 import { Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
-import { Key, useEffect, useState } from 'react';
+import { Key, useEffect, useRef, useState } from 'react';
+
 const { Text } = Typography;
 
 export type ConsoleProps = {
   tab: DataStudioTabsItemType;
   height: number;
 };
+
 export interface ProcessStep extends DataNode {
   status: string;
   type: string;
@@ -60,6 +63,7 @@ const buildExpandKeys = (node: ProcessStep) => {
 
 const ConsoleContent = (props: ConsoleProps) => {
   const { tab } = props;
+  const refObject = useRef<HTMLDivElement>(null);
 
   const [selectNode, setSelectNode] = useState<ProcessStep>();
   const [processNode, setProcessNode] = useState<ProcessStep>();
@@ -96,7 +100,12 @@ const ConsoleContent = (props: ConsoleProps) => {
     { onSuccess: async (res) => onUpdate(res) }
   );
   useEffect(() => subscribeTopic([topic], (data: SseData) => onUpdate(data.data)), []);
-  const onSelect = (_selectedKeys: Key[], info: { node: ProcessStep }) => setSelectNode(info.node);
+  const onSelect = (
+    _selectedKeys: Key[],
+    info: {
+      node: ProcessStep;
+    }
+  ) => setSelectNode(info.node);
 
   const renderTitle = (node: any) => {
     const startDate = new Date(node.startTime);
@@ -130,42 +139,53 @@ const ConsoleContent = (props: ConsoleProps) => {
   };
 
   return (
-    <div style={{ overflow: 'hidden' }}>
-      <MovableSidebar
-        defaultSize={{
-          width: 300,
-          height: props.height - 53
-        }}
-        minWidth={20}
-        visible={true}
-        enable={{ right: true }}
-        headerVisible={false}
-        style={{ borderInlineStart: `1px`, float: 'left' }}
+    <div style={{ height: props.height - VIEW.leftMargin }}>
+      <SplitPane
+        split={'vertical'}
+        defaultSizes={[100, 500]}
+        minSize={100}
+        className={'split-pane'}
       >
-        {processNode ? (
-          <DirectoryTree
-            className={'treeList'}
-            showIcon={false}
-            titleRender={renderTitle}
-            onSelect={onSelect}
-            treeData={[processNode]}
-            expandedKeys={expandedKeys}
-            onExpand={handleExpand}
+        <Pane
+          className={'split-pane'}
+          forwardRef={refObject}
+          minSize={100}
+          size={100}
+          split={'horizontal'}
+        >
+          {processNode ? (
+            <DirectoryTree
+              className={'treeList'}
+              showIcon={false}
+              titleRender={renderTitle}
+              onSelect={onSelect}
+              treeData={[processNode]}
+              expandedKeys={expandedKeys}
+              expandAction={'doubleClick'}
+              onExpand={handleExpand}
+            />
+          ) : (
+            <Empty />
+          )}
+        </Pane>
+
+        <Pane
+          className={'split-pane'}
+          forwardRef={refObject}
+          minSize={100}
+          size={100}
+          split={'horizontal'}
+        >
+          <CodeShow
+            code={selectNode?.log ? selectNode.log : ''}
+            height={props.height - VIEW.leftMargin}
+            language={'javalog'}
+            lineNumbers={'off'}
+            enableMiniMap
+            showFloatButton
           />
-        ) : (
-          <Empty />
-        )}
-      </MovableSidebar>
-      <div>
-        <CodeShow
-          code={selectNode?.log ? selectNode.log : ''}
-          height={props.height - 53}
-          language={'kotlin'}
-          lineNumbers={'off'}
-          //TODO 按钮显示有问题，先注释
-          // showFloatButton
-        />
-      </div>
+        </Pane>
+      </SplitPane>
     </div>
   );
 };

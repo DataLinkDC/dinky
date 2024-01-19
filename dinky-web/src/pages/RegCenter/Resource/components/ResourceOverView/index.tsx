@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -32,16 +32,20 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { ResourceInfo } from '@/types/RegCenter/data';
 import { InitResourceState } from '@/types/RegCenter/init.d';
 import { ResourceState } from '@/types/RegCenter/state.d';
+import { unSupportView } from '@/utils/function';
 import { l } from '@/utils/intl';
+import { SplitPane } from '@andrewray/react-multi-split-pane';
+import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { ProCard } from '@ant-design/pro-components';
+import { useAsyncEffect } from 'ahooks';
 import { MenuInfo } from 'rc-menu/es/interface';
-import { Resizable } from 're-resizable';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 const ResourceOverView: React.FC = () => {
   const [resourceState, setResourceState] = useState<ResourceState>(InitResourceState);
 
   const [editModal, setEditModal] = useState<string>('');
+  const refObject = useRef<HTMLDivElement>(null);
 
   const [uploadValue] = useState({
     url: API_CONSTANTS.RESOURCE_UPLOAD,
@@ -55,22 +59,19 @@ const ResourceOverView: React.FC = () => {
     );
   };
 
-  useEffect(() => {
-    refreshTree();
-  }, [resourceState]);
+  useAsyncEffect(async () => {
+    await refreshTree();
+  }, []);
 
   /**
    * query content by id
    * @type {(id: number) => Promise<void>}
    */
-  const queryContent = useCallback(
-    async (id: number) => {
-      await queryDataByParams<string>(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {
-        id
-      }).then((res) => setResourceState((prevState) => ({ ...prevState, content: res ?? '' })));
-    },
-    [resourceState.clickedNode]
-  );
+  const queryContent: (id: number) => Promise<void> = useCallback(async (id: number) => {
+    await queryDataByParams<string>(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {
+      id
+    }).then((res) => setResourceState((prevState) => ({ ...prevState, content: res ?? '' })));
+  }, []);
 
   /**
    * the node click event
@@ -79,11 +80,11 @@ const ResourceOverView: React.FC = () => {
    */
   const handleNodeClick = async (info: any): Promise<void> => {
     const {
-      node: { id, isLeaf, key },
+      node: { id, isLeaf, key, name },
       node
     } = info;
     setResourceState((prevState) => ({ ...prevState, selectedKeys: [key], clickedNode: node }));
-    if (isLeaf) {
+    if (isLeaf && !unSupportView(name)) {
       await queryContent(id);
     } else {
       setResourceState((prevState) => ({ ...prevState, content: '' }));
@@ -140,7 +141,7 @@ const ResourceOverView: React.FC = () => {
     }
   };
 
-  const handleMenuClick = (node: MenuInfo) => {
+  const handleMenuClick = async (node: MenuInfo) => {
     switch (node.key) {
       case 'createFolder':
         handleCreateFolder();
@@ -149,7 +150,7 @@ const ResourceOverView: React.FC = () => {
         handleUpload();
         break;
       case 'delete':
-        handleDelete();
+        await handleDelete();
         break;
       case 'rename':
         handleRename();
@@ -166,7 +167,6 @@ const ResourceOverView: React.FC = () => {
   const handleRightClick = (info: any) => {
     // 获取右键点击的节点信息
     const { node, event } = info;
-    console.log('node', node);
     setResourceState((prevState) => ({
       ...prevState,
       selectedKeys: [node.key],
@@ -183,9 +183,9 @@ const ResourceOverView: React.FC = () => {
   /**
    * the rename cancel
    */
-  const handleModalCancel = () => {
+  const handleModalCancel = async () => {
     setResourceState((prevState) => ({ ...prevState, editOpen: false }));
-    refreshTree();
+    await refreshTree();
   };
 
   /**
@@ -222,11 +222,11 @@ const ResourceOverView: React.FC = () => {
   const renderRightMenu = () => {
     if (!resourceState.rightClickedNode.isLeaf) {
       return RIGHT_CONTEXT_FOLDER_MENU.filter(
-        (menu) => !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+        (menu) => !menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
       );
     }
     return RIGHT_CONTEXT_FILE_MENU.filter(
-      (menu) => !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+      (menu) => !menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
     );
   };
 
@@ -235,41 +235,60 @@ const ResourceOverView: React.FC = () => {
    */
   return (
     <>
-      <ProCard size={'small'}>
-        <Resizable
-          defaultSize={{
-            width: 500,
-            height: '100%'
-          }}
-          minWidth={200}
-          maxWidth={1200}
+      <ProCard ghost size={'small'} bodyStyle={{ height: parent.innerHeight - 80 }}>
+        <SplitPane
+          split={'vertical'}
+          defaultSizes={[150, 500]}
+          minSize={150}
+          className={'split-pane'}
         >
-          <ProCard ghost hoverable colSpan={'18%'} className={'siderTree schemaTree'}>
-            <FileTree
-              selectedKeys={resourceState.selectedKeys}
-              treeData={resourceState.treeData}
-              onRightClick={handleRightClick}
-              onNodeClick={(info: any) => handleNodeClick(info)}
-            />
-            <RightContextMenu
-              contextMenuPosition={resourceState.contextMenuPosition}
-              open={resourceState.contextMenuOpen}
-              openChange={() =>
-                setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }))
-              }
-              items={renderRightMenu()}
-              onClick={handleMenuClick}
-            />
-          </ProCard>
-        </Resizable>
-        <ProCard.Divider type={'vertical'} />
-        <ProCard ghost hoverable className={'schemaTree'} bodyStyle={{ height: '100%' }}>
-          <FileShow
-            onChange={handleContentChange}
-            code={resourceState.content}
-            item={resourceState.clickedNode}
-          />
-        </ProCard>
+          <Pane
+            className={'split-pane'}
+            forwardRef={refObject}
+            minSize={100}
+            size={100}
+            split={'horizontal'}
+          >
+            <ProCard
+              hoverable
+              boxShadow
+              bodyStyle={{ height: parent.innerHeight - 80 }}
+              colSpan={'18%'}
+            >
+              <FileTree
+                selectedKeys={resourceState.selectedKeys}
+                treeData={resourceState.treeData}
+                onRightClick={handleRightClick}
+                onNodeClick={(info: any) => handleNodeClick(info)}
+              />
+              <RightContextMenu
+                contextMenuPosition={resourceState.contextMenuPosition}
+                open={resourceState.contextMenuOpen}
+                openChange={() =>
+                  setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }))
+                }
+                items={renderRightMenu()}
+                onClick={handleMenuClick}
+              />
+            </ProCard>
+          </Pane>
+
+          <Pane
+            className={'split-pane'}
+            forwardRef={refObject}
+            minSize={100}
+            size={100}
+            split={'horizontal'}
+          >
+            <ProCard hoverable bodyStyle={{ height: parent.innerHeight }}>
+              <FileShow
+                onChange={handleContentChange}
+                code={resourceState.content}
+                item={resourceState.clickedNode}
+              />
+            </ProCard>
+          </Pane>
+        </SplitPane>
       </ProCard>
       {resourceState.editOpen && (
         <ResourceModal

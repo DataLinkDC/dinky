@@ -1,28 +1,32 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
+import { Authorized } from '@/hooks/useAccess';
 import {
-  AlertRules,
-  RuleOperator,
   RuleType,
   TriggerType
-} from '@/pages/SettingCenter/AlertRule/constants';
+} from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm/constants';
+import {
+  AlertRulesOption,
+  buildValueItem,
+  getOperatorOptions
+} from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm/function';
 import { getData } from '@/services/api';
 import { SWITCH_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -41,7 +45,10 @@ import {
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
-import { Button, Divider, Form, Space } from 'antd';
+import { ProFormDependency } from '@ant-design/pro-form';
+import { Button, Divider, Form, Space, Typography } from 'antd';
+
+const { Link } = Typography;
 
 type AlertRuleFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -59,7 +66,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
   const [form] = Form.useForm<AlertRule>();
 
   const getAlertTemplate = async () => {
-    const template: Alert.AlertTemplate[] = (await getData(API_CONSTANTS.ALERT_TEMPLATE)).datas;
+    const template: Alert.AlertTemplate[] = (await getData(API_CONSTANTS.ALERT_TEMPLATE)).data;
     return template.map((t) => ({ label: t.name, value: t.id }));
   };
 
@@ -68,12 +75,32 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
     return handleSubmit({ ...fieldsValue, rule: JSON.stringify(fieldsValue.rule) });
   };
 
+  const renderTemplateDropDown = (item: any) => {
+    return (
+      <>
+        {item}
+        <Authorized key='create' path='/registration/alert/template/add'>
+          <>
+            <Divider style={{ margin: '8px 0' }} />
+            <Link href={'#/registration/alert/template'}>+ {l('rc.alert.template.new')}</Link>
+          </>
+        </Authorized>
+      </>
+    );
+  };
+
   const renderFooter = () => {
     return [
       <Button key={'RuleCancel'} onClick={() => handleModalVisible(false)}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'RuleFinish'} type='primary' onClick={() => submit()}>
+      <Button
+        key={'RuleFinish'}
+        type='primary'
+        htmlType={'submit'}
+        autoFocus
+        onClick={() => submit()}
+      >
         {l('button.finish')}
       </Button>
     ];
@@ -109,6 +136,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
           request={async () => getAlertTemplate()}
           placeholder={l('sys.alert.rule.template')}
           rules={[{ required: true, message: l('sys.alert.rule.template') }]}
+          fieldProps={{ dropdownRender: (item) => renderTemplateDropDown(item) }}
         />
       </ProFormGroup>
 
@@ -159,20 +187,22 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
               name='ruleKey'
               width={'sm'}
               mode={'single'}
-              options={AlertRules}
+              options={AlertRulesOption()}
             />
-            <ProFormSelect
-              disabled={isSystem}
-              name='ruleOperator'
-              mode={'single'}
-              options={RuleOperator}
-            />
-
-            <ProFormText
-              disabled={isSystem}
-              name={'ruleValue'}
-              placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}
-            />
+            <ProFormDependency name={['ruleKey']}>
+              {(ruleKey) => (
+                <ProFormSelect
+                  disabled={isSystem}
+                  name='ruleOperator'
+                  mode={'single'}
+                  width={'sm'}
+                  options={getOperatorOptions(ruleKey.ruleKey)}
+                />
+              )}
+            </ProFormDependency>
+            <ProFormDependency name={['ruleKey']}>
+              {(ruleKey) => buildValueItem(ruleKey.ruleKey, isSystem)}
+            </ProFormDependency>
           </Space>
         </ProFormGroup>
       </ProFormList>

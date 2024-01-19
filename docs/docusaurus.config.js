@@ -28,7 +28,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
     title: 'Dinky',  //网站标题 | Site title
     tagline: 'Dinky 为 Apache Flink 而生，让 Flink SQL 纵享丝滑', // 网站标语 | Tagline for your website
-    url: 'http://www.dlink.top/', // 网站网址 | Your website's URL
+    url: 'http://www.dinky.org.cn/', // 网站网址 | Your website's URL
     baseUrl: '/', // 站点的相对路径 可将其视为是主机名后的路径 | Path to your website
     staticDirectories: ['static/img', 'blog/blog_img'], // 静态文件目录 | Path to static files
     // trailingSlash: true, //此选项允许您自定义 URL/链接后是否添加结尾斜杠 | Whether to append a trailing slash to the URL when rendering URLs
@@ -37,7 +37,7 @@ const config = {
     onDuplicateRoutes: 'warn', // Docusaurus 在检测到重复的路由时的行为 |  Behavior of docusaurus when duplicate routes are detected  ->  类型：'ignore' | 'log' | 'warn' | 'error' | 'throw'
     favicon: 'dinky_logo.svg', // 左侧logo  | left logo
     organizationName: 'DataLinkDC', // 拥有此源的 GitHub 用户或组织。 用于部署命令。 |  The GitHub user or organization that owns this source. Command for deployment.
-    projectName: 'dlink', // GitHub 源的名称。 用于部署命令。 | The name of the GitHub repository. Command for deployment.
+    projectName: 'dinky', // GitHub 源的名称。 用于部署命令。 | The name of the GitHub repository. Command for deployment.
     deploymentBranch: 'main', // GitHub Pages 的部署分支。 用于部署命令。 | The branch to deploy to GitHub Pages. Command for deployment.
     customFields: { // 自定义字段 | Custom fields
         structTitle: 'Dinky',
@@ -84,10 +84,10 @@ const config = {
             /** @type {import('@docusaurus/preset-classic').Options} */
             ({
                 docs: {
-                    lastVersion: '0.7',
+                    lastVersion: 'current',
                     versions: {
                         current: {
-                            label: 'Next',
+                            label: '1.0.0',
                             path: '/next',
                         },
                         0.6: {
@@ -104,9 +104,9 @@ const config = {
                     // Please change this to your repo.
                     editUrl: ({locale, versionDocsDirPath, docPath}) => {
                         if (locale !== 'zh') {
-                            return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
+                            return `https://github.com/DataLinkDC/dinky/tree/master/docs/i18n/${locale}/${docPath}`;
                         }
-                        return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
+                        return `https://github.com/DataLinkDC/dinky/tree/master/docs/${versionDocsDirPath}/${docPath}`;
                     },
                 },
                 blog: {
@@ -133,17 +133,17 @@ const config = {
     themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
-            /*announcementBar: {
+            announcementBar: {
                 id: 'announcementBar-2', // Increment on change
-                content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dlink">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="http://docs.dinky.org.cn">docs.dinky.org.cn</a>`,
+                content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dinky">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="http://www.dinky.org.cn">www.dinky.org.cn</a>`,
                 backgroundColor: "#BBDFFF",
                 isCloseable: false,
-            },*/
+            },
             hideOnScroll: false, // 滚动时是否隐藏 | Whether to hide the sidebar on scroll
             docs: {
                 sidebar: {
                     hideable: true,// 是否隐藏侧边栏 | Whether to hide the sidebar in mobile
-                    autoCollapseCategories: true, // 点击另一个分类时自动折叠当前分类 | Click another category will automatically collapse the current category
+                    autoCollapseCategories: false, // 点击另一个分类时自动折叠当前分类 | Click another category will automatically collapse the current category
 
                 }
             },
@@ -157,8 +157,7 @@ const config = {
                     {
                         to: '/',
                         position: 'left',
-                        label: '主页',
-                        title: '主页',
+                        label: 'home',
                         activeBaseRegex: `^/$`,
                     },
                     {
@@ -169,50 +168,46 @@ const config = {
                     {
                         to: '/download/download',
                         position: 'right',
-                        label: '下载',
+                        label: 'download',
                         activeBaseRegex: `/download/`,
                     },
                     {
-                        label: '开发者指南',
+                        label: 'developer_guide',
                         to: '/docs/next/developer_guide/contribution/how_contribute',
                         position: 'right',
                         items: [
                             {
-                                label: "如何参与",
+                                label: "how_contribute",
                                 to: "/docs/next/developer_guide/contribution/how_contribute",
                             },
                             {
-                                label: "本地调试",
+                                label: "local_debug",
                                 to: "/docs/next/developer_guide/local_debug",
-                            },
-                            {
-                                label: "远程调试",
-                                to: "/docs/next/developer_guide/remote_debug",
                             },
                         ],
                     },
-                    /*{
-                        to: '/blog',
-                        position: 'right',
-                        label: '博客',
-                        // activeBaseRegex: `/!*!/`,
-                    },*/
+                    // {
+                    //     to: '/blog',
+                    //     position: 'right',
+                    //     label: 'bolg',
+                    //     // activeBaseRegex: `/*/`,
+                    // },
                     {
                         type: 'localeDropdown',
                         position: 'right',
                     },
                     {
-                        href: 'https://github.com/DataLinkDC/dlink/issues/884',
-                        label: 'FAQ',
+                        href: 'https://github.com/DataLinkDC/dinky/issues/884',
+                        label: 'faq',
                         position: 'right',
                     },
                     {
                         href: 'https://github.com/orgs/DataLinkDC/projects/1',
-                        label: 'Roadmap',
+                        label: 'roadmap',
                         position: 'right',
                     },
                     {
-                        href: 'https://github.com/DataLinkDC/dlink',
+                        href: 'https://github.com/DataLinkDC/dinky',
                         className: 'header-github-link',
                         position: 'right',
                         alt: 'Gitlab repository',
@@ -223,41 +218,37 @@ const config = {
                 style: 'dark',
                 links: [
                     {
-                        title: 'Docs',
+                        title: 'docs',
                         items: [
                             {
-                                label: '文档首页',
-                                to: '/docs/next/platform_intro/intro',
+                                label: 'doc_home',
+                                to: '/docs/next/get_started/overview',
                             },
                             {
-                                label: 'Open Api',
-                                to: '/docs/next/administrator_guide/studio/openapi',
+                                label: 'openapi',
+                                to: '/docs/next/openapi/openapi_overview',
                             },
                         ],
                     },
                     {
-                        title: 'Community',
+                        title: 'community',
                         items: [
                             {
-                                label: 'Discussions',
-                                href: 'https://github.com/DataLinkDC/dlink/discussions',
+                                label: 'issue',
+                                href: 'https://github.com/DataLinkDC/dinky/issues',
                             },
                             {
-                                label: 'Issue',
-                                href: 'https://github.com/DataLinkDC/dlink/issues',
-                            },
-                            {
-                                label: 'Pull Request',
-                                href: 'https://github.com/DataLinkDC/dlink/pulls',
+                                label: 'pr',
+                                href: 'https://github.com/DataLinkDC/dinky/pulls',
                             },
                         ],
                     },
                     {
-                        title: 'More',
+                        title: 'more',
                         items: [
                             {
-                                label: 'GitHub',
-                                href: 'https://github.com/DataLinkDC/dlink',
+                                label: 'github',
+                                href: 'https://github.com/DataLinkDC/dinky',
                             }
                         ],
                     },
@@ -269,7 +260,7 @@ const config = {
                     height: 30,
                 },
                 copyright: `Copyright © ${new Date().getFullYear()} Dinky, Inc. DataLinkDC.<br/>
-                    <a href="https://beian.miit.gov.cn" target="_blank">鲁ICP备20001630号-2</a>`,
+                    <a href="https://beian.miit.gov.cn" target="_blank">鲁ICP备20001630号-3</a>`,
             },
             prism: {
                 theme: lightCodeTheme,
@@ -286,9 +277,9 @@ const config = {
                 routeBasePath: 'download',
                 editUrl: ({locale, versionDocsDirPath, docPath}) => {
                     if (locale !== 'zh') {
-                        return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
+                        return `https://github.com/DataLinkDC/dinky/tree/master/docs/i18n/${locale}/${docPath}`;
                     }
-                    return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
+                    return `https://github.com/DataLinkDC/dinky/tree/master/docs/${versionDocsDirPath}/${docPath}`;
                 },
                 sidebarPath: require.resolve('./sidebars.js'),
             },
@@ -298,6 +289,19 @@ const config = {
             {
                 quality: 70,
                 max: 1030, // 最大缩放图片尺寸。
+                options: {
+                    // 图片加载失败时显示的图片
+                    // 默认的图片加载方式
+                    // 默认的图片加载方式
+                    loadType: 'default',
+                    // 图片加载失败时显示的图片
+                    errorImg: 'Cannot load image',
+                    // 图片加载失败时显示的图片
+                    errorType: 'default',
+                    // 图片加载失败时显示的图片
+                    errorImgType: 'default',
+                    // 图片加载失败时显示的图片
+                },
                 min: 640, // 最小缩放图片尺寸。 如果原始值比这还低，会使用原图尺寸。
                 steps: 2, // 在 min 和 max 之间最多生成的图片数量（包含两端点）
                 disableInDev: false,

@@ -20,24 +20,18 @@
 package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.model.SystemConfiguration;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
-import org.dinky.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
-import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.io.FileUtil;
@@ -76,29 +70,13 @@ public class YarnPerJobGateway extends YarnGateway {
                     clusterSpecificationBuilder.createClusterSpecification(), jobGraph, true);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             ApplicationId applicationId = clusterClient.getClusterId();
+            String webUrl = getWebUrl(clusterClient, result);
             result.setId(applicationId.toString());
-            result.setWebURL(clusterClient.getWebInterfaceURL());
-            Collection<JobStatusMessage> jobStatusMessages =
-                    clusterClient.listJobs().get();
-            int counts = SystemConfiguration.getInstances().getJobIdWait();
-            while (jobStatusMessages.size() == 0 && counts > 0) {
-                Thread.sleep(1000);
-                counts--;
-                jobStatusMessages = clusterClient.listJobs().get();
-                if (jobStatusMessages.size() > 0) {
-                    break;
-                }
-            }
-            if (jobStatusMessages.size() > 0) {
-                List<String> jids = new ArrayList<>();
-                for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
-                    jids.add(jobStatusMessage.getJobId().toHexString());
-                }
-                result.setJids(jids);
-            }
+            result.setWebURL(webUrl);
+
             result.success();
         } catch (Exception e) {
-            result.fail(LogUtil.getError(e));
+            throw new RuntimeException(e);
         }
         return result;
     }

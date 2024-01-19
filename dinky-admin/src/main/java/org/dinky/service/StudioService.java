@@ -19,8 +19,8 @@
 
 package org.dinky.service;
 
-import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
+import org.dinky.data.dto.StudioLineageDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.Column;
@@ -28,7 +28,6 @@ import org.dinky.data.model.Schema;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.SelectResult;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.util.List;
 
@@ -43,11 +42,9 @@ public interface StudioService {
 
     IResult executeDDL(StudioDDLDTO studioDDLDTO);
 
-    JdbcSelectResult getCommonSqlData(Integer taskId);
-
     SelectResult getJobData(String jobId);
 
-    LineageResult getLineage(StudioCADTO studioCADTO);
+    LineageResult getLineage(StudioLineageDTO studioCADTO);
 
     List<JsonNode> listFlinkJobs(Integer clusterId);
 
@@ -55,5 +52,5 @@ public interface StudioService {
 
     Schema getMSSchemaInfo(StudioMetaStoreDTO studioMetaStoreDTO);
 
-    List<Column> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO);
+    List<Column> getMSColumns(StudioMetaStoreDTO studioMetaStoreDTO);
 }

@@ -87,6 +87,13 @@ public enum Status {
     TEST_CONNECTION_FAILED(9030, "test.connection.failed"),
     DEBUG_SUCCESS(9031, "debug.success"),
     DEBUG_FAILED(9032, "debug.failed"),
+    PUBLISH_SUCCESS(9033, "publish.success"),
+    PUBLISH_FAILED(9034, "publish.failed"),
+    OFFLINE_SUCCESS(9035, "offline.success"),
+    OFFLINE_FAILED(9036, "offline.failed"),
+    VERSION_ROLLBACK_SUCCESS(9037, "version.rollback.success"),
+    VERSION_ROLLBACK_FAILED(9038, "version.rollback.failed"),
+
     /**
      * user,tenant,role
      */
@@ -117,6 +124,7 @@ public enum Status {
     KICK_OUT(10024, "kick.out"),
     TOKEN_FREEZED(10025, "token.freezed"),
     NO_PREFIX(10026, "no.prefix"),
+    USER_SUPERADMIN_CANNOT_DELETE(10027, "user.superadmin.cannot.delete"),
 
     // role
     ROLE_ALREADY_EXISTS(10101, "role.already.exists"),
@@ -163,6 +171,8 @@ public enum Status {
     // 清除库表缓存
     DATASOURCE_CLEAR_CACHE_SUCCESS(11005, "datasource.clear.cache.success"),
 
+    DATASOURCE_EXIST_RELATIONSHIP(11006, "datasource.exist.relationship"),
+
     /**
      * job or task about
      */
@@ -175,6 +185,10 @@ public enum Status {
     TASK_SQL_EXPLAN_FAILED(12007, "task.sql.explain.failed"),
     TASK_UPDATE_FAILED(12008, "task.update.failed"),
     TASK_IS_ONLINE(12009, "task.is.online"),
+    TASK_IS_EXIST(12010, "task.is.existed"),
+    TASK_IS_PUBLISH_CANNOT_DELETE(12011, "task.is.publish.cannot.delete"),
+    TASK_IS_RUNNING_CANNOT_DELETE(12012, "task.is.running.cannot.delete"),
+    JOB_ALERT_MAX_SEND_COUNT(12013, "job.alert.max.send.count"),
 
     /**
      * alert instance
@@ -191,6 +205,8 @@ public enum Status {
      * alert group
      */
     ALERT_GROUP_EXIST(14001, "alert.group.exist"),
+    //    "Alert group has relationship with other table, please delete the relationship first"
+    ALERT_GROUP_EXIST_RELATIONSHIP(14002, "alert.group.exist.relationship"),
 
     /**
      * cluster instance
@@ -200,6 +216,10 @@ public enum Status {
     CLUSTER_INSTANCE_KILL(15003, "cluster.instance.kill"),
     CLUSTER_INSTANCE_DEPLOY(15004, "cluster.instance.deploy"),
     CLUSTER_NOT_EXIST(15004, "cluster.not.exist"),
+    CLUSTER_INSTANCE_EXIST_RELATIONSHIP(15005, "cluster.instance.exist.relationship"),
+    CLUSTER_INSTANCE_LOCAL_NOT_SUPPORT_KILL(15006, "cluster.instance.local.not.support.kill"),
+    CLUSTER_INSTANCE_NOT_HEALTH(15007, "cluster.instance.not.health"),
+    CLUSTER_INSTANCE_HEALTH_NOT_DELETE(15008, "cluster.instance.health.not.delete"),
 
     /**
      * git
@@ -226,6 +246,7 @@ public enum Status {
     DS_TASK_NOT_EXIST(17007, "ds.task.not.exist"),
     DS_TASK_TYPE_NOT_SUPPORT(17008, "ds.task.type.not.support"),
     DS_WORK_FLOW_DEFINITION_NOT_EXIST(17009, "ds.work.flow.definition.not.exist"),
+    DS_PROCESS_DEFINITION_UPDATE(17010, "ds.work.flow.definition.process.update"),
 
     /**
      * LDAP About *
@@ -254,6 +275,21 @@ public enum Status {
     ALERT_RULE_CHECKPOINT_FAIL(20004, "alert.rule.checkpointFail"),
     ALERT_RULE_JOB_RUN_EXCEPTION(20005, "alert.rule.jobRunException"),
     ALERT_RULE_CHECKPOINT_TIMEOUT(20006, "alert.rule.checkpointTimeout"),
+
+    /**
+     * alert template
+     */
+    ALERT_TEMPLATE_EXIST_RELATIONSHIP(21001, "alert.template.exist.relationship"),
+
+    /**
+     * cluster config
+     */
+    CLUSTER_CONFIG_EXIST_RELATIONSHIP(22001, "cluster.config.exist.relationship"),
+
+    /**
+     * udf template
+     */
+    UDF_TEMPLATE_EXIST_RELATIONSHIP(23001, "udf.template.exist.relationship"),
 
     /**
      * Resource
@@ -291,10 +327,23 @@ public enum Status {
     SYS_MAVEN_SETTINGS_REPOSITORYUSER_NOTE(111, "sys.maven.settings.repositoryUser.note"),
     SYS_MAVEN_SETTINGS_REPOSITORYPASSWORD(112, "sys.maven.settings.repositoryPassword"),
     SYS_MAVEN_SETTINGS_REPOSITORYPASSWORD_NOTE(113, "sys.maven.settings.repositoryPassword.note"),
+
     SYS_ENV_SETTINGS_PYTHONHOME(114, "sys.env.settings.pythonHome"),
     SYS_ENV_SETTINGS_PYTHONHOME_NOTE(115, "sys.env.settings.pythonHome.note"),
     SYS_ENV_SETTINGS_DINKYADDR(116, "sys.env.settings.dinkyAddr"),
     SYS_ENV_SETTINGS_DINKYADDR_NOTE(117, "sys.env.settings.dinkyAddr.note"),
+
+    SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND(118, "sys.env.settings.jobResendDiffSecond"),
+    SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND_NOTE(119, "sys.env.settings.jobResendDiffSecond.note"),
+
+    SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT(120, "sys.env.settings.diffMinuteMaxSendCount"),
+    SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT_NOTE(121, "sys.env.settings.diffMinuteMaxSendCount.note"),
+
+    SYS_ENV_SETTINGS_MAX_RETAIN_DAYS(1171, "sys.env.settings.maxRetainDays"),
+    SYS_ENV_SETTINGS_MAX_RETAIN_DAYS_NOTE(1172, "sys.env.settings.maxRetainDays.note"),
+    SYS_ENV_SETTINGS_MAX_RETAIN_COUNT(1173, "sys.env.settings.maxRetainCount"),
+    SYS_ENV_SETTINGS_MAX_RETAIN_COUNT_NOTE(1174, "sys.env.settings.maxRetainCount.note"),
+
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE(118, "sys.dolphinscheduler.settings.enable"),
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE_NOTE(119, "sys.dolphinscheduler.settings.enable.note"),
     SYS_DOLPHINSCHEDULER_SETTINGS_URL(120, "sys.dolphinscheduler.settings.url"),
@@ -353,6 +402,8 @@ public enum Status {
     SYS_RESOURCE_SETTINGS_HDFS_ROOT_USER_NOTE(173, "sys.resource.settings.hdfs.root.user.note"),
     SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS(174, "sys.resource.settings.hdfs.fs.defaultFS"),
     SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS_NOTE(175, "sys.resource.settings.hdfs.fs.defaultFS.note"),
+    SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS(176, "sys.resource.settings.oss.path.style.access"),
+    SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS_NOTE(177, "sys.resource.settings.oss.path.style.access.note"),
 
     /**
      * gateway config
@@ -369,6 +420,7 @@ public enum Status {
     PROCESS_SUBMIT_BUILDCONFIG(193, "process.submit.buildConfig"),
     PROCESS_SUBMIT_EXECUTECOMMSQL(194, "process.submit.execute.commSql"),
     PROCESS_SUBMIT_EXECUTEFLINKSQL(195, "process.submit.execute.flinkSql"),
+    PROCESS_REGISTER_EXITS(196, "process.register.exits"),
     ;
     private final int code;
     private final String key;

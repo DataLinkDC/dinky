@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
@@ -21,26 +23,21 @@ import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { DataAction } from '@/components/StyledComponents';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
-import {
-  getAlertIcon,
-  getJSONData,
-  getSmsType
-} from '@/pages/RegCenter/Alert/AlertInstance/function';
+import { getAlertIcon, getSmsType } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import {
   createOrModifyAlertInstance,
   sendTest
 } from '@/pages/RegCenter/Alert/AlertInstance/service';
-import { queryList } from '@/services/api';
-import { handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
+import { handleRemoveById, queryDataByParams, updateDataByParam } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert } from '@/types/RegCenter/data.d';
-import { InitAlertInstanceState } from '@/types/RegCenter/init.d';
+import { InitAlertInstance, InitAlertInstanceState } from '@/types/RegCenter/init.d';
 import { AlertInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import { ProList } from '@ant-design/pro-components';
 import { ActionType } from '@ant-design/pro-table';
-import { Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
+import { Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
@@ -58,16 +55,22 @@ const AlertInstanceList: React.FC = () => {
    * execute query alert instance list
    * set alert instance list
    */
-  const queryAlertInstanceList = async () => {
-    queryList(API_CONSTANTS.ALERT_INSTANCE).then((res) =>
-      setAlertInstanceState((prevState) => ({ ...prevState, alertInstanceList: res.data }))
+  const queryAlertInstanceList = async (keyword = '') => {
+    queryDataByParams(API_CONSTANTS.ALERT_INSTANCE, { keyword }).then((res) =>
+      setAlertInstanceState((prevState) => ({
+        ...prevState,
+        alertInstanceList: res as Alert.AlertInstance[]
+      }))
     );
   };
+
+  useEffect(() => {
+    queryAlertInstanceList();
+  }, []);
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
     setAlertInstanceState((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    await queryAlertInstanceList();
     setAlertInstanceState((prevState) => ({ ...prevState, loading: false }));
   };
 
@@ -81,10 +84,12 @@ const AlertInstanceList: React.FC = () => {
       content: l('rc.ai.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
-      onOk: async () =>
-        executeAndCallbackRefresh(async () =>
-          handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id)
-        )
+      onOk: async () => {
+        await executeAndCallbackRefresh(
+          async () => await handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id)
+        );
+        await queryAlertInstanceList();
+      }
     });
   };
 
@@ -98,14 +103,8 @@ const AlertInstanceList: React.FC = () => {
         id: item.id
       })
     );
+    await queryAlertInstanceList();
   };
-
-  /**
-   * query alert instance list
-   */
-  useEffect(() => {
-    queryAlertInstanceList();
-  }, [alertInstanceState.addedOpen, alertInstanceState.editOpen]);
 
   /**
    * render alert instance sub title
@@ -151,8 +150,9 @@ const AlertInstanceList: React.FC = () => {
   };
 
   const renderSubType = (item: Alert.AlertInstance) => {
-    if (JSON.parse(item.params).manufacturers) {
-      return ` - ${getSmsType(JSON.parse(item.params).manufacturers)}`;
+    const params = item.params as Alert.AlertInstanceParamsSms;
+    if (params.suppliers) {
+      return ` - ${getSmsType(params.suppliers)}`;
     }
   };
 
@@ -179,18 +179,27 @@ const AlertInstanceList: React.FC = () => {
   /**
    * render data source
    */
-  const renderDataSource = alertInstanceState.alertInstanceList.map((item) => ({
-    subTitle: renderAlertInstanceSubTitle(item),
-    actions: <DataAction>{renderAlertInstanceActionButton(item)}</DataAction>,
-    avatar: getAlertIcon(item.type, 60),
-    content: renderAlertInstanceContent(item)
-  }));
+  const renderDataSource = alertInstanceState.alertInstanceList.map((item) => {
+    return {
+      subTitle: renderAlertInstanceSubTitle(item),
+      actions: <DataAction>{renderAlertInstanceActionButton(item)}</DataAction>,
+      avatar: getAlertIcon(item.type, 60),
+      content: renderAlertInstanceContent(item)
+    };
+  });
 
   /**
    * render right tool bar
    */
   const renderToolBar = () => {
     return () => [
+      <Input.Search
+        loading={alertInstanceState.loading}
+        key={`_search`}
+        allowClear
+        placeholder={l('rc.ai.search')}
+        onSearch={(value) => queryAlertInstanceList(value)}
+      />,
       <Authorized key='create' path='/registration/alert/instance/add'>
         <CreateBtn
           key={'CreateAlertInstanceBtn'}
@@ -208,7 +217,7 @@ const AlertInstanceList: React.FC = () => {
       ...prevState,
       addedOpen: false,
       editOpen: false,
-      value: {}
+      value: InitAlertInstance
     }));
     actionRef.current?.reload();
   };
@@ -218,9 +227,10 @@ const AlertInstanceList: React.FC = () => {
    * @param values
    */
   const handleSubmit = async (values: any) => {
-    const success = await createOrModifyAlertInstance(getJSONData(values));
+    const success = await createOrModifyAlertInstance(values);
     if (success) {
       cancelHandler();
+      await queryAlertInstanceList();
     }
   };
   /**
@@ -228,7 +238,7 @@ const AlertInstanceList: React.FC = () => {
    * @param values
    */
   const handleTestSend = async (values: any) => {
-    await sendTest(getJSONData(values));
+    await executeAndCallbackRefresh(async () => await sendTest(values));
   };
 
   /**
@@ -254,7 +264,8 @@ const AlertInstanceList: React.FC = () => {
           onCancel={cancelHandler}
           modalVisible={alertInstanceState.addedOpen}
           onSubmit={handleSubmit}
-          values={{}}
+          loading={alertInstanceState.loading}
+          values={InitAlertInstance}
         />
       )}
       {/* modify */}
@@ -266,6 +277,7 @@ const AlertInstanceList: React.FC = () => {
           modalVisible={alertInstanceState.editOpen}
           onSubmit={handleSubmit}
           values={alertInstanceState.value}
+          loading={alertInstanceState.loading}
         />
       )}
     </>

@@ -19,16 +19,18 @@
 
 package org.dinky.app.db;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
+import org.dinky.app.model.SysConfig;
+import org.dinky.data.app.AppDatabase;
+import org.dinky.data.app.AppParamConfig;
+import org.dinky.data.app.AppTask;
+
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import cn.hutool.core.text.StrFormatter;
+import cn.hutool.db.Db;
+import cn.hutool.db.Entity;
+import cn.hutool.db.ds.simple.SimpleDataSource;
 
 /**
  * DBUtil
@@ -37,100 +39,38 @@ import java.util.Map;
  */
 public class DBUtil {
 
-    private static Connection getConnection(DBConfig config) throws IOException {
-        Connection conn = null;
-        try {
-            Class.forName(config.getDriver());
-            conn = DriverManager.getConnection(config.getUrl(), config.getUsername(), config.getPassword());
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            close(conn);
-        }
-        return conn;
+    private static Db db;
+
+    public static void init(AppParamConfig config) {
+        db = Db.use(new SimpleDataSource(config.getUrl(), config.getUsername(), config.getPassword()));
     }
 
-    private static void close(Connection conn) {
-        try {
-            if (conn != null) {
-                conn.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public static AppTask getTask(int taskId) throws SQLException {
+        Entity option = Entity.create("dinky_task").set("id", taskId).set("enabled", true);
+        List<AppTask> entities = db.find(option, AppTask.class);
+        if (entities.size() <= 0) {
+            throw new IllegalArgumentException(
+                    StrFormatter.format("The Task is not found: {}, please check! ", taskId));
+        } else {
+            return entities.get(0);
         }
     }
 
-    public static String getOneByID(String sql, DBConfig config) throws SQLException, IOException {
-        Connection conn = getConnection(config);
-        String result = null;
-        try (Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
-            if (rs.next()) {
-                result = rs.getString(1);
-            }
+    public static String getDbSourceSQLStatement() throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        Entity option = Entity.create("dinky_database").set("enabled", true);
+        List<AppDatabase> entities = db.find(option, AppDatabase.class);
+        for (AppDatabase entity : entities) {
+            sb.append(entity.getName())
+                    .append(":=")
+                    .append(entity.getFlinkConfig())
+                    .append("\n;\n");
         }
-        close(conn);
-        /*
-         * catch (SQLException e1) { e1.printStackTrace(); String message = e1.getMessage();
-         * System.err.println(LocalDateTime.now().toString() + " --> 获取 FlinkSQL 异常，ID 为"); }
-         */
-        return result;
+        return sb.toString();
     }
 
-    public static Map<String, String> getMapByID(String sql, DBConfig config) throws SQLException, IOException {
-        Connection conn = getConnection(config);
-        HashMap<String, String> map = new HashMap();
-        try (Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
-            List<String> columnList = new ArrayList<>();
-            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
-                columnList.add(rs.getMetaData().getColumnLabel(i + 1));
-            }
-            if (rs.next()) {
-                for (int i = 0; i < columnList.size(); i++) {
-                    map.put(columnList.get(i), rs.getString(i + 1));
-                }
-            }
-        }
-        close(conn);
-        return map;
-    }
-    /**
-     * 获取数据源的连接信息，作为全局变量
-     *
-     * @param sql 查询SQL，必须只有两列的结果，第一个为数据库名称，第二个为配置信息
-     * @param config 核心数据库配置
-     */
-    public static String getDbSourceSQLStatement(String sql, DBConfig config) throws SQLException, IOException {
-        Connection conn = getConnection(config);
-        String sqlStatements = "";
-        try (Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                sqlStatements = sqlStatements + rs.getString(1) + ":=" + rs.getString(2) + "\n;\n";
-            }
-        }
-        close(conn);
-        return sqlStatements;
-    }
-
-    public static List<Map<String, String>> getListByID(String sql, DBConfig config) throws SQLException, IOException {
-        Connection conn = getConnection(config);
-        List<Map<String, String>> list = new ArrayList<>();
-        try (Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
-            List<String> columnList = new ArrayList<>();
-            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
-                columnList.add(rs.getMetaData().getColumnName(i));
-            }
-            while (rs.next()) {
-                HashMap<String, String> map = new HashMap();
-                for (int i = 0; i < columnList.size(); i++) {
-                    map.put(columnList.get(i), rs.getString(i));
-                }
-                list.add(map);
-            }
-        }
-        close(conn);
-        return list;
+    public static List<SysConfig> getSysConfigList() throws SQLException {
+        Entity option = Entity.create("dinky_sys_config");
+        return db.find(option, SysConfig.class);
     }
 }

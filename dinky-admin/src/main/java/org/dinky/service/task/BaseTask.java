@@ -20,7 +20,7 @@
 package org.dinky.service.task;
 
 import org.dinky.config.Dialect;
-import org.dinky.data.annotation.SupportDialect;
+import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.result.SelectResult;
@@ -69,12 +69,16 @@ public abstract class BaseTask {
             SupportDialect annotation = clazz.getAnnotation(SupportDialect.class);
             if (annotation != null) {
                 for (Dialect dialect : annotation.value()) {
-                    if (dialect.getValue().equalsIgnoreCase(taskDTO.getDialect())) {
+                    if (dialect.isDialect(taskDTO.getDialect())) {
                         return (BaseTask) ReflectUtil.newInstance(clazz, taskDTO);
                     }
                 }
             }
         }
         throw new RuntimeException("Not support dialect: " + taskDTO.getDialect());
+    }
+
+    public JobResult StreamExecute() {
+        return null;
     }
 }

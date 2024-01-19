@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -22,14 +22,16 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
+import useHookRequest from '@/hooks/useHookRequest';
 import { CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/Instance/components/contants';
 import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
+import { getData } from '@/services/api';
 import {
   handleAddOrUpdate,
   handleOption,
+  handlePutDataByParams,
   handleRemoveById,
-  queryDataByParams,
   updateDataByParam
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
@@ -40,11 +42,11 @@ import { ClusterInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
 import {
   CheckCircleOutlined,
-  ClearOutlined,
   ExclamationCircleOutlined,
-  HeartTwoTone
+  HeartTwoTone,
+  StopTwoTone
 } from '@ant-design/icons';
-import { ActionType, ProList } from '@ant-design/pro-components';
+import { ProList } from '@ant-design/pro-components';
 import {
   Badge,
   Button,
@@ -54,14 +56,15 @@ import {
   Divider,
   Input,
   List,
-  Popconfirm,
   Row,
   Space,
+  Switch,
   Tag,
   Tooltip,
   Typography
 } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
+
 const { Text, Paragraph, Link } = Typography;
 
 export default () => {
@@ -70,16 +73,17 @@ export default () => {
    */
   const [clusterInstanceStatus, setClusterInstanceStatus] =
     useState<ClusterInstanceState>(InitClusterInstanceState);
-  const actionRef = useRef<ActionType>();
+  const [isAutoCreate, setIsAutoCreate] = useState<boolean>(false);
+  const [searchKeyWord, setSearchKeyword] = useState<string>('');
 
-  const queryClusterInstanceList = async (keyword = '') => {
-    queryDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_LIST, { keyword }).then((res) => {
-      setClusterInstanceStatus((prevState) => ({
-        ...prevState,
-        instanceList: res as Cluster.Instance[]
-      }));
-    });
-  };
+  const { data, loading, refresh } = useHookRequest(getData, {
+    refreshDeps: [searchKeyWord, isAutoCreate],
+    defaultParams: [
+      API_CONSTANTS.CLUSTER_INSTANCE_LIST,
+      { searchKeyWord: searchKeyWord, isAutoCreate: isAutoCreate }
+    ]
+  });
+
   /**
    * execute and callback function
    * @param {() => void} callback
@@ -88,14 +92,9 @@ export default () => {
   const executeAndCallback = async (callback: () => void) => {
     setClusterInstanceStatus((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    queryClusterInstanceList();
     setClusterInstanceStatus((prevState) => ({ ...prevState, loading: false }));
-    actionRef.current?.reload?.();
+    await refresh();
   };
-
-  useEffect(() => {
-    queryClusterInstanceList();
-  }, []);
 
   /**
    * cancel
@@ -141,6 +140,11 @@ export default () => {
       handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_DELETE, id)
     );
   };
+  const handleKill = async (id: number) => {
+    await executeAndCallback(async () =>
+      handlePutDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_KILL, l('rc.ci.kill'), { id })
+    );
+  };
 
   /**
    * enable or disable
@@ -162,15 +166,6 @@ export default () => {
   };
 
   /**
-   * recycle instance
-   */
-  const handleRecycle = async () => {
-    await executeAndCallback(async () =>
-      handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_RECYCLE, 0)
-    );
-  };
-
-  /**
    * tool bar render
    */
   const renderActionButton = (record: Cluster.Instance) => (
@@ -186,6 +181,17 @@ export default () => {
           description={l('rc.ci.deleteConfirm')}
         />
       </Authorized>
+      {record.autoRegisters && record.status === 1 && (
+        <Authorized key={`${record.id}_delete_auth`} path='/registration/cluster/instance/kill'>
+          <PopconfirmDeleteBtn
+            key={`${record.id}_kill`}
+            onClick={() => handleKill(record.id)}
+            buttonIcon={<StopTwoTone />}
+            title={l('rc.ci.kill')}
+            description={l('rc.ci.killConfirm')}
+          />
+        </Authorized>
+      )}
     </Space>
   );
 
@@ -221,7 +227,7 @@ export default () => {
                 disabled={!HasAuthority('/registration/cluster/instance/edit')}
               />
               <Tag color='cyan'>
-                {CLUSTER_INSTANCE_TYPE.find((record) => item.type === record.value)?.label}
+                {CLUSTER_INSTANCE_TYPE().find((record) => item.type === record.value)?.label}
               </Tag>
               <Tag
                 icon={item.status === 1 ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
@@ -262,12 +268,10 @@ export default () => {
    * tool bar render
    */
   const toolBarRender = () => [
-    <Input.Search
-      loading={clusterInstanceStatus.loading}
-      key={`_search`}
-      allowClear
-      placeholder={l('rc.ci.search')}
-      onSearch={(value) => queryClusterInstanceList(value)}
+    <Switch
+      checkedChildren={l('rc.ci.ar')}
+      unCheckedChildren={l('rc.ci.mr')}
+      onChange={(v) => setIsAutoCreate(v)}
     />,
     <Authorized key={`_add_auth`} path='/registration/cluster/instance/add'>
       <CreateBtn
@@ -284,18 +288,6 @@ export default () => {
       >
         {l('button.heartbeat')}
       </Button>
-    </Authorized>,
-    <Authorized key={`_add_recycle`} path='/registration/cluster/instance/recovery'>
-      <Popconfirm
-        key={`_add_recycle_pop`}
-        title={l('rc.ci.recycle')}
-        description={l('rc.ci.recycleConfirm')}
-        onConfirm={handleRecycle}
-      >
-        <Button key={'recycle_btn'} type={'primary'} icon={<ClearOutlined />}>
-          {l('button.recycle')}
-        </Button>
-      </Popconfirm>
     </Authorized>
   ];
 
@@ -304,12 +296,12 @@ export default () => {
       <List.Item className={'card-list-item-wrapper'} key={item.id}>
         <Badge.Ribbon
           className={'card-list-item-wrapper'}
-          color={item.autoRegisters ? 'green' : 'yellow'}
+          color={item.autoRegisters ? '#95de64' : '#ffec3d'}
           text={
             item.autoRegisters ? (
               l('rc.ci.ar')
             ) : (
-              <span style={{ color: 'crimson' }}>{l('rc.ci.mr')}</span>
+              <span style={{ color: '#69b1ff' }}>{l('rc.ci.mr')}</span>
             )
           }
         >
@@ -334,15 +326,22 @@ export default () => {
   return (
     <>
       <ProList<Cluster.Instance>
-        headerTitle={l('rc.ci.management')}
+        headerTitle={
+          <Input.Search
+            loading={clusterInstanceStatus.loading}
+            key={`_search`}
+            allowClear
+            placeholder={l('rc.ci.search')}
+            onSearch={(v) => setSearchKeyword(v)}
+          />
+        }
         toolBarRender={toolBarRender}
         {...PROTABLE_OPTIONS_PUBLIC}
         {...(PRO_LIST_CARD_OPTIONS as any)}
         grid={{ gutter: 24, column: 4 }}
         pagination={{ size: 'small', defaultPageSize: 12, hideOnSinglePage: true }}
-        actionRef={actionRef}
-        dataSource={clusterInstanceStatus.instanceList}
-        loading={clusterInstanceStatus.loading}
+        dataSource={data}
+        loading={loading}
         itemLayout={'vertical'}
         renderItem={renderListItem}
       />

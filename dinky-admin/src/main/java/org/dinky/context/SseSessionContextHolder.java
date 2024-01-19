@@ -19,6 +19,7 @@
 
 package org.dinky.context;
 
+import org.dinky.data.constant.SseConstant;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.vo.SseDataVo;
 
@@ -51,7 +52,10 @@ public class SseSessionContextHolder {
         if (exists(sessionId)) {
             return sessionMap.get(sessionId).updateTopics(topics);
         } else {
-            throw new BusException("Session does not exist");
+            HashSet<String> reconnectMessage = new HashSet<>(1);
+            reconnectMessage.add(SseConstant.SSE_SESSION_INVALID);
+            log.warn("session id is invalid");
+            return reconnectMessage;
         }
     }
 
@@ -67,13 +71,13 @@ public class SseSessionContextHolder {
             log.warn("Session key already exists: {}", sessionKey);
             closeSse(sessionKey);
         }
-        SseEmitter sseEmitter = new SseEmitter(60 * 1000L);
+        SseEmitter sseEmitter = new SseEmitter(60 * 1000L * 10);
         sseEmitter.onError(err -> onError(sessionKey, err));
         sseEmitter.onTimeout(() -> onTimeout(sessionKey));
         sseEmitter.onCompletion(() -> onCompletion(sessionKey));
         try {
             // Set the client reconnection interval, 0 to reconnect immediately
-            sseEmitter.send(SseEmitter.event().reconnectTime(0));
+            sseEmitter.send(SseEmitter.event().reconnectTime(1000));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -159,7 +163,7 @@ public class SseSessionContextHolder {
                     SseDataVo data = new SseDataVo(sessionKey, topic, content);
                     sendSse(sessionKey, data);
                 } catch (Exception e) {
-                    log.error("Error sending sse data", e);
+                    log.error("Error sending sse data:{}", e.getMessage());
                     onError(sessionKey, e);
                 }
             }
@@ -173,7 +177,7 @@ public class SseSessionContextHolder {
      * @param content    The SSE data to send.
      * @throws IOException If an I/O error occurs while sending the data.
      */
-    public static void sendSse(String sessionKey, SseDataVo content) throws IOException {
+    public static void sendSse(String sessionKey, SseDataVo content) throws Exception {
         if (exists(sessionKey)) {
             sessionMap.get(sessionKey).getEmitter().send(content);
         } else {

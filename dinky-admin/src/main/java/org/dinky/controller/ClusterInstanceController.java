@@ -19,8 +19,9 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.ClusterInstance;
@@ -39,7 +40,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
@@ -63,29 +63,30 @@ public class ClusterInstanceController {
     /**
      * added or updated cluster instance
      *
-     * @param clusterInstance {@link ClusterInstance} cluster instance
+     * @param clusterInstanceDTO {@link ClusterInstanceDTO} cluster instance
      * @return {@link Result}<{@link Void}>
-     * @throws Exception exception
      */
     @PutMapping
     @Log(title = "Insert Or Update Cluster Instance", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Cluster Instance")
     @ApiImplicitParam(
-            name = "clusterInstance",
-            value = "ClusterInstance Instance",
-            dataType = "ClusterInstance",
+            name = "clusterInstanceDTO",
+            value = "ClusterInstanceDTO Instance",
+            dataType = "ClusterInstanceDTO",
             paramType = "body",
             required = true,
-            dataTypeClass = ClusterInstance.class)
+            dataTypeClass = ClusterInstanceDTO.class)
     @SaCheckPermission(
             value = {
                 PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT,
                 PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD
             },
             mode = SaMode.OR)
-    public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstance clusterInstance) throws Exception {
-        clusterInstance.setAutoRegisters(false);
-        clusterInstanceService.registersCluster(clusterInstance);
+    public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstanceDTO clusterInstanceDTO) {
+        if (clusterInstanceDTO.getAutoRegisters() == null) {
+            clusterInstanceDTO.setAutoRegisters(false);
+        }
+        clusterInstanceService.registersCluster(clusterInstanceDTO);
         return Result.succeed(Status.SAVE_SUCCESS);
     }
 
@@ -153,13 +154,10 @@ public class ClusterInstanceController {
             paramType = "query",
             required = true,
             dataTypeClass = JsonNode.class)
-    public Result<List<ClusterInstance>> listClusterInstance(@RequestParam("keyword") String searchKeyWord) {
-        return Result.succeed(clusterInstanceService.list(new LambdaQueryWrapper<ClusterInstance>()
-                .like(ClusterInstance::getName, searchKeyWord)
-                .or()
-                .like(ClusterInstance::getAlias, searchKeyWord)
-                .or()
-                .like(ClusterInstance::getNote, searchKeyWord)));
+    public Result<List<ClusterInstance>> listClusterInstance(
+            @RequestParam(defaultValue = "") String searchKeyWord,
+            @RequestParam(defaultValue = "false") boolean isAutoCreate) {
+        return Result.succeed(clusterInstanceService.selectListByKeyWord(searchKeyWord, isAutoCreate));
     }
 
     /**
@@ -206,26 +204,12 @@ public class ClusterInstanceController {
     }
 
     /**
-     * recycle cluster instances
-     *
-     * @return {@link Result}<{@link Integer}>
-     */
-    @DeleteMapping("/recycle")
-    @Log(title = "Cluster Instance Recycle", businessType = BusinessType.DELETE)
-    @ApiOperation("Cluster Instance Recycle")
-    @Transactional(rollbackFor = Exception.class)
-    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_RECYCLE})
-    public Result<Integer> recycleCluster() {
-        return Result.succeed(clusterInstanceService.recycleCluster(), Status.CLUSTER_INSTANCE_RECYCLE_SUCCESS);
-    }
-
-    /**
      * kill cluster instance
      *
      * @param id {@link Integer} cluster instance id
      * @return {@link Result}<{@link Void}>
      */
-    @GetMapping("/killCluster")
+    @PutMapping("/killCluster")
     @Log(title = "Cluster Instance Kill", businessType = BusinessType.UPDATE)
     @ApiOperation("Cluster Instance Kill")
     @ApiImplicitParam(

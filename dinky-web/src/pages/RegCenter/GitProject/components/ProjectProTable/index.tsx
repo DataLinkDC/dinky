@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -29,8 +29,8 @@ import ClassList from '@/pages/RegCenter/GitProject/components/BuildSteps/JarSho
 import { CodeTree } from '@/pages/RegCenter/GitProject/components/CodeTree';
 import ProjectModal from '@/pages/RegCenter/GitProject/components/ProjectModal';
 import {
-  GIT_PROJECT_BUILD_STEP,
-  GIT_PROJECT_BUILD_STEP_ENUM,
+  GIT_PROJECT_BUILD_STEP_JAVA_ENUM,
+  GIT_PROJECT_BUILD_STEP_PYTHON_ENUM,
   GIT_PROJECT_CODE_TYPE,
   GIT_PROJECT_CODE_TYPE_ENUM,
   GIT_PROJECT_STATUS,
@@ -227,8 +227,9 @@ const ProjectProTable: React.FC = () => {
       title: l('rc.gp.buildStep'),
       dataIndex: 'buildStep',
       hideInSearch: true,
-      filters: GIT_PROJECT_BUILD_STEP,
-      valueEnum: GIT_PROJECT_BUILD_STEP_ENUM
+      // filters: GIT_PROJECT_BUILD_STEP,
+      valueEnum: (row) =>
+        row.codeType === 1 ? GIT_PROJECT_BUILD_STEP_JAVA_ENUM : GIT_PROJECT_BUILD_STEP_PYTHON_ENUM
     },
     {
       title: l('rc.gp.buildState'),
@@ -303,6 +304,8 @@ const ProjectProTable: React.FC = () => {
             <Button
               title={l('button.build')}
               key={`${record.id}_buildbtn`}
+              htmlType={'submit'}
+              autoFocus
               icon={<BuildTwoTone />}
             />
           </Popconfirm>
@@ -353,6 +356,15 @@ const ProjectProTable: React.FC = () => {
   };
 
   /**
+   * re try build
+   * @param value
+   */
+  const handleReTryBuild = async (value: Partial<GitProject>) => {
+    handleCancel();
+    await handleBuild(value);
+  };
+
+  /**
    * render
    */
   return (
@@ -381,7 +393,7 @@ const ProjectProTable: React.FC = () => {
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.GIT_PROJECT, { ...params, sorter, filter })
         }
-        onDragSortEnd={handleDragSortEnd}
+        onDragSortEnd={(beforeIndex, afterIndex, newDataSource) => handleDragSortEnd(newDataSource)}
       />
       {/* added modal form */}
       <ProjectModal
@@ -401,7 +413,9 @@ const ProjectProTable: React.FC = () => {
       {gitProjectStatus.buildOpen && (
         <BuildSteps
           title={l('rc.gp.build')}
-          onCancel={handleCancel}
+          onOk={handleCancel}
+          onRebuild={() => handleReTryBuild(gitProjectStatus.value)}
+          onReTry={() => handleReTryBuild(gitProjectStatus.value)}
           values={gitProjectStatus.value}
         />
       )}
@@ -410,7 +424,9 @@ const ProjectProTable: React.FC = () => {
       {gitProjectStatus.logOpen && (
         <BuildSteps
           title={l('rc.gp.log')}
-          onCancel={handleCancel}
+          onOk={handleCancel}
+          showLog={gitProjectStatus.logOpen}
+          onRebuild={() => handleReTryBuild(gitProjectStatus.value)}
           values={gitProjectStatus.value}
         />
       )}

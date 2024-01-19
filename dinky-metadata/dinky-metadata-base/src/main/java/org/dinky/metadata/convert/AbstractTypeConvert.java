@@ -22,15 +22,16 @@ package org.dinky.metadata.convert;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
-import org.dinky.metadata.driver.DriverConfig;
+import org.dinky.metadata.config.DriverConfig;
+import org.dinky.metadata.config.IConnectConfig;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-public class AbstractTypeConvert implements ITypeConvert {
-    protected Map<String, BiFunction<Column, DriverConfig, Optional<ColumnType>>> convertMap = new LinkedHashMap<>();
+public class AbstractTypeConvert<T extends IConnectConfig> implements ITypeConvert<T> {
+    protected Map<String, BiFunction<Column, DriverConfig<T>, Optional<ColumnType>>> convertMap = new LinkedHashMap<>();
 
     @Override
     public String convertToDB(ColumnType columnType) {
@@ -43,11 +44,12 @@ public class AbstractTypeConvert implements ITypeConvert {
     }
 
     @Override
-    public ColumnType convert(Column column, DriverConfig driverConfig) {
+    public ColumnType convert(Column column, DriverConfig<T> driverConfig) {
         if (Asserts.isNull(column)) {
             return ColumnType.STRING;
         }
-        for (Map.Entry<String, BiFunction<Column, DriverConfig, Optional<ColumnType>>> entry : convertMap.entrySet()) {
+        for (Map.Entry<String, BiFunction<Column, DriverConfig<T>, Optional<ColumnType>>> entry :
+                convertMap.entrySet()) {
             if (column.getType().contains(entry.getKey())) {
                 Optional<ColumnType> columnType = entry.getValue().apply(column, driverConfig);
                 if (columnType.isPresent()) {
@@ -67,7 +69,7 @@ public class AbstractTypeConvert implements ITypeConvert {
         this.convertMap.put(type, (c, d) -> getColumnType(c, notNullType, nullType));
     }
 
-    protected void register(String type, BiFunction<Column, DriverConfig, Optional<ColumnType>> func) {
+    protected void register(String type, BiFunction<Column, DriverConfig<T>, Optional<ColumnType>> func) {
         this.convertMap.put(type, func);
     }
 

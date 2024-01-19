@@ -19,19 +19,17 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.ClusterConfiguration;
-import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.service.ClusterConfigurationService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,8 +39,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
@@ -70,7 +66,7 @@ public class ClusterConfigurationController {
      * @param clusterConfiguration
      * @return
      */
-    @PutMapping
+    @PutMapping("/saveOrUpdate")
     @Log(title = "Insert Or Update Cluster Config", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Cluster Config")
     @ApiImplicitParam(
@@ -98,29 +94,13 @@ public class ClusterConfigurationController {
 
     /**
      * query cluster config list
-     *
-     * @param para
+     * @param keyword
      * @return
      */
-    @PostMapping
+    @GetMapping("/list")
     @ApiOperation("Cluster Config List")
-    @ApiImplicitParam(
-            name = "para",
-            value = "Cluster Configuration",
-            dataType = "JsonNode",
-            paramType = "body",
-            required = true)
-    public ProTableResult<ClusterConfigurationDTO> listClusterConfigList(@RequestBody JsonNode para) {
-        ProTableResult<ClusterConfiguration> result = clusterConfigurationService.selectForProTable(para);
-        List<ClusterConfigurationDTO> dtoList =
-                result.getData().stream().map(ClusterConfigurationDTO::fromBean).collect(Collectors.toList());
-        return ProTableResult.<ClusterConfigurationDTO>builder()
-                .success(true)
-                .data(dtoList)
-                .total(result.getTotal())
-                .current(result.getCurrent())
-                .pageSize(result.getPageSize())
-                .build();
+    public Result<List<ClusterConfigurationDTO>> listClusterConfigList(@RequestParam String keyword) {
+        return Result.succeed(clusterConfigurationService.selectListByKeyWord(keyword));
     }
 
     /**
@@ -152,8 +132,7 @@ public class ClusterConfigurationController {
     @ApiImplicitParam(name = "id", value = "id", dataType = "Integer", paramType = "query", required = true)
     @SaCheckPermission(value = PermissionConstants.REGISTRATION_CLUSTER_CONFIG_DELETE)
     public Result<Void> deleteById(@RequestParam("id") Integer id) {
-        boolean removeById = clusterConfigurationService.removeById(id);
-        if (removeById) {
+        if (clusterConfigurationService.deleteClusterConfigurationById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
         } else {
             return Result.failed(Status.DELETE_FAILED);

@@ -107,7 +107,7 @@ mvn clean install -Dmaven.test.skip=true -P !web,pord,scala-2.11,flink-1.14,flin
 
 ### 问题
 
-如果在打包 dlink-web 过程失败，请先单独打包前端进行问题排查。
+如果在打包 dinky-web 过程失败，请先单独打包前端进行问题排查。
 
 ```bash
 npm build
@@ -122,7 +122,7 @@ Dinky开发环境配置有两种模式，分别是 provided 环境和 compile �
 > 开发时，在maven 配置文件 ,勾选即可。dev -> compiler 、 prod -> provided
 
 ### Maven Profile须知
-![local_debug_maven_profile_intro.png](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/local_debug/local_debug_maven_profile_intro.png)
+![local_debug_maven_profile_intro.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/local_debug_maven_profile_intro.png)
 ## Dinky本地开发环境
 
 ### 分支选择
@@ -195,13 +195,13 @@ npm start
 
 在IDEA启动后，等待几分钟，即可看到登录页，如下：
 
-![login](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/local_debug/login.png)
+![login](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/login.png)
 
 登录进去后，以配置数据源和查询数据源为例，观察IDEA的日志情况和dinky界面是否互通；
 
-![test_database_is_success](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/local_debug/test_database_is_success.png)
+![test_database_is_success](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/test_database_is_success.png)
 
-![url_log](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/local_debug/url_log.png)
+![url_log](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/url_log.png)
 
 如上，配置的数据源已经成功，IDEA日志也正常，这个时候就可以基于本地做二次开发或者贡献代码了。
 
@@ -241,7 +241,7 @@ dlink--父项目
     | |-dlink-metadata-doris--元数据-doris 实现
     | |-dlink-metadata-phoenix-元数据-phoenix 实现
     | |-dlink-metadata-sqlserver-元数据-sqlserver 实现
-    |-dlink-web--React 前端
+    |-dinky-web--React 前端
     |-docs--官网文档
 ```
 
@@ -301,7 +301,7 @@ Dlink 的任务网关，负责把实现不同执行模式的任务提交与管�
 
 Dlink 的元数据中心，用于实现各种外部数据源对接到 Dlink，以此使用其各种查询、执行等能力。未来用于 Flink Catalog 的预装载等。
 
-### dlink-web
+### dinky-web
 
 Dlink 的前端项目，基于 Ant Design Pro 5.0.0。Why Not Vue ? React Who Use Who Know。（中式英语 =。=）
 

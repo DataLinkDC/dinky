@@ -32,17 +32,66 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
-            <artifactId>dinky-executor</artifactId>
+            <artifactId>dinky-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.xiaoymin</groupId>
+                    <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.docker-java</groupId>
+                    <artifactId>docker-java-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.docker-java</groupId>
+                    <artifactId>docker-java-transport-httpclient5</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jeasy</groupId>
+                    <artifactId>easy-rules-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jeasy</groupId>
+                    <artifactId>easy-rules-spel</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jgit</groupId>
+                    <artifactId>org.eclipse.jgit.archive</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jgit</groupId>
+                    <artifactId>org.eclipse.jgit.ssh.jsch</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.oshi</groupId>
+                    <artifactId>oshi-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-gateway</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
         </dependency>
     </dependencies>
 
@@ -65,17 +114,6 @@
         <profile>
             <id>flink-all</id>
             <dependencies>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.13</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.13</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.14</artifactId>
@@ -117,6 +155,17 @@
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.17</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-client-1.18</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.18</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>

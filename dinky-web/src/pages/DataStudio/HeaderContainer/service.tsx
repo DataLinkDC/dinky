@@ -1,28 +1,27 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
-import { postAll } from '@/services/api';
 import { handleGetOption, handleOption } from '@/services/BusinessCrud';
-import { DIALECT } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 
-export async function explainSql(params: any) {
-  return postAll('/api/task/explainSql', params);
+export async function explainSql(title: string, params: any) {
+  return handleOption('/api/task/explainSql', title, params);
 }
 
 export async function getJobPlan(title: string, params: any) {
@@ -30,43 +29,29 @@ export async function getJobPlan(title: string, params: any) {
 }
 
 export async function debugTask(title: string, params: any) {
-  return postAll('/api/task/debugTask', params);
+  return handleOption('/api/task/debugTask', title, params);
 }
 
 export async function executeSql(title: string, id: number) {
   return handleGetOption('/api/task/submitTask', title, { id });
 }
 
-export function cancelTask(title: string, id: number) {
-  return handleGetOption('api/task/cancel', title, { id });
+export function cancelTask(
+  title: string,
+  id: number,
+  withSavePoint: boolean = true,
+  forceCancel: boolean = true
+) {
+  return handleGetOption(API_CONSTANTS.CANCEL_JOB, title, { id, withSavePoint, forceCancel });
 }
 
-export function onLineTask(id: number) {
-  return handleGetOption('api/task/onLineTask', '', { taskId: id });
+export function restartTask(id: number, savePointPath: string, title: string) {
+  return handleGetOption(API_CONSTANTS.RESTART_TASK, title, { id, savePointPath });
+}
+export function savePointTask(title: string, taskId: number, savePointType: string) {
+  return handleGetOption(API_CONSTANTS.SAVEPOINT, title, { taskId, savePointType });
 }
 
-export function offLinelTask(id: number) {
-  return handleGetOption('api/task/cancel', '', { taskId: id });
+export function changeTaskLife(title = '', id: number, life: number) {
+  return handleGetOption('api/task/changeTaskLife', title, { taskId: id, lifeCycle: life });
 }
-
-export const isSql = (dialect: string) => {
-  if (!dialect) {
-    return false;
-  }
-  switch (dialect.toLowerCase()) {
-    case DIALECT.SQL:
-    case DIALECT.MYSQL:
-    case DIALECT.ORACLE:
-    case DIALECT.SQLSERVER:
-    case DIALECT.POSTGRESQL:
-    case DIALECT.CLICKHOUSE:
-    case DIALECT.PHOENIX:
-    case DIALECT.DORIS:
-    case DIALECT.HIVE:
-    case DIALECT.STARROCKS:
-    case DIALECT.PRESTO:
-      return true;
-    default:
-      return false;
-  }
-};

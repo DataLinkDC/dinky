@@ -1,24 +1,24 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
 import { BaseBeanColumns } from '@/types/Public/data';
-import { Alert } from '@/types/RegCenter/data.d';
+import { Alert, Cluster } from '@/types/RegCenter/data.d';
 
 /**
  * about flink job
@@ -37,7 +37,7 @@ declare namespace Jobs {
     error: string;
     failedRestartCount: number;
     duration: number;
-    finishTime: Date;
+    finishTime: string;
   };
 
   export type JobConfig = {
@@ -45,8 +45,63 @@ declare namespace Jobs {
     savePointStrategy: string;
     savePointPath: string;
     useSqlFragment: string;
-    isJarTask: string;
     useBatchModel: string;
+  };
+
+  export type ExecutorSetting = {
+    type: string;
+    host: string;
+    port: number;
+    useBatchModel: boolean;
+    checkpoint: string;
+    parallelism: number;
+    useSqlFragment: boolean;
+    useStatementSet: boolean;
+    savePointPath: string;
+    jobName: string;
+    config: Map<string, string>;
+    variables: Map<string, string>;
+    jarFiles: [];
+    jobManagerAddress: string;
+    plan: boolean;
+    remote: boolean;
+    validParallelism: boolean;
+    validJobName: boolean;
+    validHost: boolean;
+    validPort: boolean;
+    validConfig: boolean;
+    validVariables: boolean;
+    validJarFiles: boolean;
+  };
+
+  export type JobConfigJsonInfo = {
+    type: string;
+    checkpoint: string;
+    savePointStrategy: string;
+    savePointPath: string;
+    parallelism: number;
+    clusterId: number;
+    clusterConfigurationId: number;
+    step: number;
+    configJson: {
+      'state.savepoints.dir': string;
+    };
+    useResult: boolean;
+    useChangeLog: boolean;
+    useAutoCancel: boolean;
+    useRemote: boolean;
+    address: string;
+    taskId: number;
+    jarFiles: [];
+    pyFiles: [];
+    jobName: string;
+    fragment: boolean;
+    statementSet: boolean;
+    batchModel: boolean;
+    maxRowNum: number;
+    gatewayConfig: any;
+    variables: Map<string, string>;
+    executorSetting: ExecutorSetting;
   };
 
   export type History = {
@@ -54,7 +109,6 @@ declare namespace Jobs {
     tenantId: number;
     clusterId: number;
     clusterConfigurationId: number;
-    session: string;
     jobId: string;
     jobName: string;
     jobManagerAddress: string;
@@ -63,8 +117,7 @@ declare namespace Jobs {
     type: string;
     error: string;
     result: string;
-    config: JobConfig;
-    configJson: string;
+    configJson: JobConfigJsonInfo;
     startTime: string;
     endTime: string;
     taskId: number;
@@ -169,13 +222,18 @@ declare namespace Jobs {
     jid: string;
     name: string;
     executionConfig: ExecutionConfig;
+    'execution-config': ExecutionConfig;
   };
   export type ExecutionConfig = {
     executionMode: string;
+    'execution-mode': string;
     restartStrategy: string;
+    'restart-strategy': string;
     jobParallelism: number;
-    objectReuse: boolean;
+    'job-parallelism': number;
+    'object-reuse': boolean;
     userConfig: any;
+    'user-config': any;
   };
 
   export type JobDataDtoItem = {
@@ -194,8 +252,8 @@ declare namespace Jobs {
   export type JobInfoDetail = {
     id: number;
     instance: JobInstance;
-    clusterInstance: any;
-    clusterConfiguration: any;
+    clusterInstance: Cluster.Instance;
+    clusterConfiguration: Cluster.Config;
     history: History;
     jobDataDto: JobDataDtoItem;
     jobManagerConfiguration: any;

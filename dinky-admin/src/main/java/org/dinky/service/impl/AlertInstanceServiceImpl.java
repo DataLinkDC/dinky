@@ -20,16 +20,17 @@
 package org.dinky.service.impl;
 
 import org.dinky.alert.Alert;
+import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
-import org.dinky.data.model.AlertGroup;
-import org.dinky.data.model.AlertInstance;
+import org.dinky.data.dto.AlertInstanceDTO;
+import org.dinky.data.model.alert.AlertGroup;
+import org.dinky.data.model.alert.AlertInstance;
 import org.dinky.data.result.Result;
 import org.dinky.mapper.AlertInstanceMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertInstanceService;
-import org.dinky.utils.JsonUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -66,20 +67,11 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
     }
 
     @Override
-    public AlertResult testAlert(AlertInstance alertInstance) {
-        AlertConfig alertConfig = AlertConfig.build(
-                alertInstance.getName(), alertInstance.getType(), JsonUtils.toMap(alertInstance.getParams()));
+    public AlertResult testAlert(AlertInstanceDTO alertInstanceDTO) {
+        AlertConfig alertConfig =
+                AlertConfig.build(alertInstanceDTO.getName(), alertInstanceDTO.getType(), alertInstanceDTO.getParams());
         Alert alert = Alert.buildTest(alertConfig);
-
-        String msg = "\n- **Job Name :** <font color='gray'>Test Job</font>\n"
-                + "- **Job Status :** <font color='red'>FAILED</font>\n"
-                + "- **Alert Time :** 2023-01-01  12:00:00\n"
-                + "- **Start Time :** 2023-01-01  12:00:00\n"
-                + "- **End Time :** 2023-01-01  12:00:00\n"
-                + "- **<font color='red'>The test exception, your job exception will pass here</font>**\n"
-                + "[Go to Task Web](https://github.com/DataLinkDC/dinky)";
-
-        return alert.send("Fei Shu Alert Test", msg);
+        return alert.send(AlertBaseConstant.ALERT_TEMPLATE_TITLE, AlertBaseConstant.ALERT_TEMPLATE_MSG);
     }
 
     /**
@@ -106,6 +98,19 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         AlertInstance alertInstance = getById(id);
         alertInstance.setEnabled(!alertInstance.getEnabled());
         return updateById(alertInstance);
+    }
+
+    /**
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<AlertInstance> selectListByKeyWord(String keyword) {
+        return getBaseMapper()
+                .selectList(new LambdaQueryWrapper<AlertInstance>()
+                        .like(AlertInstance::getName, keyword)
+                        .or()
+                        .like(AlertInstance::getType, keyword));
     }
 
     private void writeBackGroupInformation(Map<Integer, Set<Integer>> alertGroupInformation) {

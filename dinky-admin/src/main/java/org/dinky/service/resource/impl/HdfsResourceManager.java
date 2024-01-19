@@ -26,11 +26,13 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 
 public class HdfsResourceManager implements BaseResourceManager {
@@ -67,12 +69,24 @@ public class HdfsResourceManager implements BaseResourceManager {
     }
 
     @Override
-    public String getFileContent(String path) {
-        return IoUtil.readUtf8(getFile(path));
+    public void putFile(String path, File file) {
+        try {
+            FSDataOutputStream stream = getHdfs().create(new Path(getFilePath(path)), true);
+            stream.write(FileUtil.readBytes(file));
+            stream.flush();
+            stream.close();
+        } catch (IOException e) {
+            throw BusException.valueOf("file.upload.failed", e);
+        }
     }
 
     @Override
-    public InputStream getFile(String path) {
+    public String getFileContent(String path) {
+        return IoUtil.readUtf8(readFile(path));
+    }
+
+    @Override
+    public InputStream readFile(String path) {
         try {
             return getHdfs().open(new Path(getFilePath(path)));
         } catch (IOException e) {

@@ -1,17 +1,17 @@
 #!/bin/bash
 
-FLINK_VERSION=${2:-1.14}
+FLINK_VERSION=${2:-1.16}
 
 JAR_NAME="dinky-admin"
 
 # Use FLINK_HOME:
-CLASS_PATH=".:./lib/*:config:./plugins/*:./customJar/*:./plugins/flink${FLINK_VERSION}/*"
+CLASS_PATH=".:./lib/*:config:./extends/*:./plugins/*:./customJar/*:./plugins/flink${FLINK_VERSION}/dinky/*:./plugins/flink${FLINK_VERSION}/*:./extends/flink${FLINK_VERSION}/dinky/*:./extends/flink${FLINK_VERSION}/*"
 
 PID_FILE="dinky.pid"
 
 # JMX path
 APP_HOME="$(cd `dirname $0`; pwd)"
-JMX="-javaagent:$APP_HOME/lib/jmx_prometheus_javaagent-0.16.1.jar=10087:$APP_HOME/config/jmx/jmx_exporter_config.yaml"
+JMX="-javaagent:$APP_HOME/lib/jmx_prometheus_javaagent-0.20.0.jar=10087:$APP_HOME/config/jmx/jmx_exporter_config.yaml"
 
 # Check whether the pid path exists
 PID_PATH="$(cd "$(dirname "$0")";pwd)/run"
@@ -31,20 +31,20 @@ fi
 
 tips() {
   echo ""
-  echo "WARNING!!!......Tips, please use command: sh auto.sh [start|startOnPending|startWithJmx|stop|restart|status].   For example: sh auto.sh start  "
+  echo "WARNING!!!......Tips, please use command: sh auto.sh [start|startOnPending|startWithJmx|stop|restart|restartWithJmx|status].   For example: sh auto.sh start  "
   echo ""
   exit 1
 }
 
 updatePid() {
-  pid=$(ps -ef | grep [d]inky  | awk '{print $2}' | head -1)
+  pid=$(ps -ef | grep [D]inky  | awk '{print $2}' | head -1)
   echo $pid >"${PID_PATH}"/${PID_FILE}
 }
 
 start() {
   updatePid
   if [ -z "$pid" ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  &
+    nohup java -Ddruid.mysql.usePingMethod=false -Dlog4j2.isThreadContextMapInheritable=true -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  &
     echo $! >"${PID_PATH}"/${PID_FILE}
     echo "FLINK VERSION : $FLINK_VERSION"
     echo "........................................Start Dinky Successfully........................................"
@@ -68,7 +68,8 @@ startWithJmx() {
   updatePid
   if [ -z "$pid" ]; then
     nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky &
-    echo $! >"${PID_PATH}"/${PID_FILE}
+#    echo $! >"${PID_PATH}"/${PID_FILE}
+    updatePid
     echo "........................................Start Dinky with Jmx Successfully.....................................
     ..."
   else
@@ -110,6 +111,13 @@ restart() {
   echo "........................................Restart Successfully........................................"
 }
 
+restartWithJmx() {
+  echo ""
+  stop
+  startWithJmx
+  echo "........................................Restart with Jmx Successfully........................................"
+}
+
 case "$1" in
 "start")
   start
@@ -128,6 +136,9 @@ case "$1" in
   ;;
 "restart")
   restart
+  ;;
+"restartWithJmx")
+  restartWithJmx
   ;;
 *)
   tips

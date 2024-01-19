@@ -19,11 +19,11 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.AlertTemplate;
+import org.dinky.data.model.alert.AlertTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.service.AlertTemplateService;
 
@@ -70,7 +70,7 @@ public class AlertTemplateController {
             example = "1")
     @SaCheckPermission(PermissionConstants.REGISTRATION_ALERT_TEMPLATE_DELETE)
     public Result<Boolean> deleteAlertTemplateById(@RequestParam Integer id) {
-        if (alertTemplateService.removeById(id)) {
+        if (alertTemplateService.removeAlertTemplateById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
         }
         return Result.failed(Status.DELETE_FAILED);

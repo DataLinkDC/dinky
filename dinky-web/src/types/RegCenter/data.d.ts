@@ -1,21 +1,24 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import { BaseBeanColumns } from '@/types/Public/data';
+import { ConfigItem } from '@/types/Studio/data.d';
 
 /**
  * about alert
@@ -30,11 +33,121 @@ declare namespace Alert {
   };
 
   /**
+   * alert instance params sub type
+   */
+  export type AlertInstanceParamsDingTalk = {
+    webhook: string;
+    keyword: string;
+    secret: string;
+    isEnableProxy: boolean | false;
+    isAtAll: boolean | true;
+    atMobiles: string[];
+    proxy: string;
+    port: number;
+    user: string;
+    password: string;
+  };
+
+  export type AlertInstanceParamsFeiShu = {
+    webhook: string;
+    keyword: string;
+    secret: string;
+    isEnableProxy: boolean | false;
+    isAtAll: boolean | true;
+    atUsers: string[];
+    proxy: string;
+    port: number;
+    user: string;
+    password: string;
+  };
+
+  export type AlertInstanceParamsHttp = {
+    url: string;
+    method: string;
+    headers: ConfigItem[];
+    body: any;
+  };
+
+  export type AlertInstanceParamsEmail = {
+    serverHost: string;
+    serverPort: string;
+    sender: string;
+    receivers: string[];
+    receiverCcs?: string[];
+    enableSmtpAuth: boolean | false;
+    starttlsEnable: boolean | false;
+    sslEnable: boolean | false;
+    smtpSslTrust?: string;
+    User?: string;
+    Password?: string;
+  };
+
+  export type AlertInstanceParamsWeChat = {
+    sendType: string;
+    isAtAll: boolean;
+    webhook?: string;
+    keyword?: string;
+    users?: string;
+    corpId?: string;
+    secret?: string;
+    agentId?: number;
+  };
+
+  export type Supplier =
+    | 'alibaba'
+    | 'tencent'
+    | 'huawei'
+    | 'uni'
+    | 'yunpian'
+    | 'jdcloud'
+    | 'cloopen'
+    | 'emay'
+    | 'ctyun'
+    | 'netease'
+    | 'zhutong';
+
+  export type AlertInstanceParamsSmsBase = {
+    suppliers: Supplier;
+    accessKeyId: string;
+    sdkAppId?: string;
+    accessKeySecret: string;
+    signature: string;
+    templateId: string;
+    configId: string; // 注意此处是字符串 必须唯一 否则单厂商 多实例下会被新的配置覆盖导致一些问题
+    weight: number | 1;
+    retryInterval: number | 5;
+    maxRetries: number | 3;
+    phoneNumbers: string[];
+  };
+
+  export type AlertInstanceParamsSms = AlertInstanceParamsSmsBase & {
+    // public
+    requestUrl: string;
+    action: string;
+
+    // alibaba
+    templateName: string;
+    version: string;
+    regionId: string;
+
+    // tencent
+    territory: string;
+    connTimeout: number; // 单位秒
+    service: string;
+  };
+
+  /**
    * alert instance
    */
   export type AlertInstance = BaseBeanColumns & {
     type: string;
-    params: string;
+    params:
+      | AlertInstanceParamsDingTalk
+      | AlertInstanceParamsFeiShu
+      | AlertInstanceParamsEmail
+      | AlertInstanceParamsWeChat
+      | AlertInstanceParamsSms
+      | AlertInstanceParamsHttp;
   };
 
   /**
@@ -56,6 +169,7 @@ export const ALERT_TYPE = {
   FEISHU: 'FeiShu',
   EMAIL: 'Email',
   SMS: 'Sms',
+  HTTP: 'Http',
   GROUP: 'Group'
 };
 
@@ -76,6 +190,7 @@ declare namespace Cluster {
     version: string;
     status: number;
     note: string;
+    clusterConfigurationId: number;
   };
 
   /**
@@ -220,6 +335,40 @@ export type UDFTemplate = BaseBeanColumns & {
   functionType: string;
   templateCode: string;
 };
+
+export interface UDFRegisterInfo {
+  id: number;
+  resourcesId: number;
+  name: string;
+  className: string;
+  enable: boolean;
+  dialect: string;
+  source: string;
+  fileName: string;
+  // tenantId: number;
+  // createTime: string;
+  updateTime: Date;
+}
+export interface UDFRegisterInfoParent {
+  num: number;
+  resourcesId: number;
+  dialect: string;
+  source: string;
+  fileName: string;
+}
+export interface UDFRegisterInfoChild {
+  id: number;
+  resourcesId: number;
+  name: string;
+  className: string;
+  enable: boolean;
+  dialect: string;
+  source: string;
+  fileName: string;
+  // tenantId: number;
+  // createTime: string;
+  updateTime: Date;
+}
 
 export interface ResourceInfo {
   id: number;

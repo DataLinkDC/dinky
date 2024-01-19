@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -80,6 +81,10 @@ const TenantModalForm: React.FC<TenantModalFormProps> = (props) => {
       title={values.id ? l('tenant.update') : l('tenant.create')}
       open={modalVisible}
       onOk={() => submitForm()}
+      okButtonProps={{
+        htmlType: 'submit',
+        autoFocus: true
+      }}
       onCancel={() => handleCancel()}
     >
       <TenantForm values={values} form={form} />

@@ -19,28 +19,47 @@
 
 package org.dinky.app.flinksql;
 
-import org.dinky.app.db.DBConfig;
 import org.dinky.app.db.DBUtil;
+import org.dinky.app.model.StatementParam;
+import org.dinky.app.model.SysConfig;
+import org.dinky.app.resource.BaseResourceManager;
+import org.dinky.app.url.RsURLStreamHandlerFactory;
+import org.dinky.app.util.FlinkAppUtil;
 import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
+import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.data.app.AppParamConfig;
+import org.dinky.data.app.AppTask;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
+import org.dinky.trans.dml.ExecuteJarOperation;
+import org.dinky.trans.parse.AddJarSqlParseStrategy;
+import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.configuration.ReadableConfig;
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.python.PythonOptions;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -53,14 +72,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.URLUtil;
+import lombok.SneakyThrows;
 
 /**
  * FlinkSQLFactory
@@ -68,182 +90,83 @@ import cn.hutool.core.util.URLUtil;
  * @since 2021/10/27
  */
 public class Submitter {
+    private static final Logger log = LoggerFactory.getLogger(Submitter.class);
+    public static Executor executor = null;
 
-    private static final Logger logger = LoggerFactory.getLogger(Submitter.class);
-    private static final String NULL = "null";
-
-    private static String getQuerySQL(Integer id) throws SQLException {
-        if (id == null) {
-            throw new SQLException("请指定任务ID");
-        }
-        return "select statement from dinky_task_statement where id = " + id;
+    private static void initSystemConfiguration() throws SQLException {
+        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+        List<SysConfig> sysConfigList = DBUtil.getSysConfigList();
+        Map<String, String> configMap =
+                CollUtil.toMap(sysConfigList, new HashMap<>(), SysConfig::getName, SysConfig::getValue);
+        systemConfiguration.initSetConfiguration(configMap);
     }
 
-    private static String getTaskInfo(Integer id) throws SQLException {
-        if (id == null) {
-            throw new SQLException("请指定任务ID");
-        }
-        return "select id, name as jobName, type,check_point as checkPoint,save_point_path as"
-                + " savePointPath, parallelism,fragment as useSqlFragment,statement_set as"
-                + " useStatementSet,config_json as config, env_id as envId,batch_model AS"
-                + " useBatchModel from dinky_task where id = "
-                + id;
-    }
+    public static void submit(AppParamConfig config) throws SQLException {
+        initSystemConfiguration();
+        BaseResourceManager.initResourceManager();
+        URL.setURLStreamHandlerFactory(new RsURLStreamHandlerFactory());
+        log.info("{} Start Submit Job:{}", LocalDateTime.now(), config.getTaskId());
 
-    private static String getFlinkSQLStatement(Integer id, DBConfig config) {
-        String statement = "";
+        AppTask appTask = DBUtil.getTask(config.getTaskId());
+        String sql = buildSql(appTask);
+
+        ExecutorConfig executorConfig = ExecutorConfig.builder()
+                .type(appTask.getType())
+                .checkpoint(appTask.getCheckPoint())
+                .parallelism(appTask.getParallelism())
+                .useStatementSet(appTask.getStatementSet())
+                .useBatchModel(appTask.getBatchModel())
+                .savePointPath(appTask.getSavePointPath())
+                .jobName(appTask.getName())
+                // 此处不应该再设置config，否则破坏了正常配置优先级顺序
+                // .config(JsonUtils.toMap(appTask.getConfigJson()))
+                .build();
+
+        executor = ExecutorFactory.buildAppStreamExecutor(
+                executorConfig, new WeakReference<>(DinkyClassLoader.build()).get());
+
+        // 加载第三方jar //TODO 这里有问题，需要修一修
+        // loadDep(appTask.getType(),
+        // config.getTaskId(),DBUtil.getSysConfig(Status.SYS_ENV_SETTINGS_DINKYADDR.getKey()), executorConfig);
+        log.info("The job configuration is as follows: {}", executorConfig);
+
+        String[] statements =
+                SqlUtil.getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
+        Optional<JobClient> jobClient = Optional.empty();
         try {
-            statement = DBUtil.getOneByID(getQuerySQL(id), config);
-        } catch (IOException | SQLException e) {
-            logger.error(
-                    "{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ",
-                    LocalDateTime.now(),
-                    id,
-                    config,
-                    e.getMessage(),
-                    e);
-        }
-        return statement;
-    }
-
-    public static Map<String, String> getTaskConfig(Integer id, DBConfig config) {
-        Map<String, String> task = new HashMap<>();
-        try {
-            task = DBUtil.getMapByID(getTaskInfo(id), config);
-        } catch (IOException | SQLException e) {
-            logger.error(
-                    "{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ",
-                    LocalDateTime.now(),
-                    id,
-                    config,
-                    e.getMessage(),
-                    e);
-        }
-        return task;
-    }
-
-    public static List<String> getStatements(String sql) {
-        return Arrays.asList(SqlUtil.getStatements(sql));
-    }
-
-    public static String getDbSourceSqlStatements(DBConfig dbConfig, Integer id) {
-        String sql = "select name,flink_config from dinky_database where enabled = 1";
-        String sqlCheck = "select fragment from dinky_task where id = " + id;
-        try {
-            // 首先判断是否开启了全局变量
-            String fragment = DBUtil.getOneByID(sqlCheck, dbConfig);
-            if ("1".equals(fragment)) {
-                return DBUtil.getDbSourceSQLStatement(sql, dbConfig);
+            if (Dialect.FLINK_JAR == appTask.getDialect()) {
+                jobClient = executeJarJob(appTask.getType(), executor, statements);
+            } else {
+                jobClient = executeJob(executor, statements);
             }
-
-            // 全局变量未开启，返回空字符串
-            logger.info("任务 {} 未开启全局变量，不进行变量加载。", id);
-        } catch (IOException | SQLException e) {
-            logger.error(
-                    "{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}", LocalDateTime.now(), dbConfig, e.getMessage(), e);
+        } finally {
+            log.info("Start Monitor Job");
+            if (jobClient.isPresent()) {
+                FlinkAppUtil.monitorFlinkTask(jobClient.get(), config.getTaskId());
+            } else {
+                log.error("jobClient is empty, can not  monitor job");
+                // FlinkAppUtil.monitorFlinkTask(Submitter.executor, config.getTaskId());
+            }
         }
-
-        return "";
     }
 
-    public static void submit(Integer id, DBConfig dbConfig, String dinkyAddr) {
-        logger.info("{}开始提交作业 -- {}", LocalDateTime.now(), id);
-        if (NULL.equals(dinkyAddr)) {
-            dinkyAddr = "";
-        }
+    public static String buildSql(AppTask appTask) throws SQLException {
         StringBuilder sb = new StringBuilder();
-        Map<String, String> taskConfig = Submitter.getTaskConfig(id, dbConfig);
-
-        if (Asserts.isNotNull(taskConfig.get("envId"))) {
-            String envId = getFlinkSQLStatement(Integer.valueOf(taskConfig.get("envId")), dbConfig);
-            if (Asserts.isNotNullString(envId)) {
-                sb.append(envId);
-            }
-            sb.append("\n");
-        }
-
-        // 添加数据源全局变量
-        sb.append(getDbSourceSqlStatements(dbConfig, id));
-        // 添加自定义全局变量信息
-        sb.append(getFlinkSQLStatement(id, dbConfig));
-
-        ExecutorConfig executorConfig = ExecutorConfig.buildFromMap(taskConfig);
-        // 加载第三方jar
-        loadDep(taskConfig.get("type"), id, dinkyAddr, executorConfig);
-
-        logger.info("The job configuration is as follows: {}", executorConfig);
-        Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig);
-        List<StatementParam> ddl = new ArrayList<>();
-        List<StatementParam> trans = new ArrayList<>();
-        List<StatementParam> execute = new ArrayList<>();
-
-        List<String> statements = Submitter.getStatements(sb.toString());
-        for (String item : statements) {
-            String statement = FlinkInterceptor.pretreatStatement(executor, item);
-            if (statement.isEmpty()) {
-                continue;
-            }
-
-            SqlType operationType = Operations.getOperationType(statement);
-            if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
-                trans.add(new StatementParam(statement, operationType));
-                if (!executorConfig.isUseStatementSet()) {
-                    break;
-                }
-            } else if (operationType.equals(SqlType.EXECUTE)) {
-                execute.add(new StatementParam(statement, operationType));
-                if (!executorConfig.isUseStatementSet()) {
-                    break;
-                }
-            } else {
-                ddl.add(new StatementParam(statement, operationType));
+        // build env task
+        if (Asserts.isNotNull(appTask.getEnvId()) && appTask.getEnvId() > 0) {
+            AppTask envTask = DBUtil.getTask(appTask.getEnvId());
+            if (Asserts.isNotNullString(envTask.getStatement())) {
+                log.info("use statement is enable, load env:{}", envTask.getName());
+                sb.append(envTask.getStatement()).append("\n");
             }
         }
-
-        for (StatementParam item : ddl) {
-            logger.info("Executing FlinkSQL: {}", item.getValue());
-            executor.executeSql(item.getValue());
-            logger.info("Execution succeeded.");
+        // build Database golbal varibals
+        if (appTask.getFragment()) {
+            log.info("Global env is enable, load database flink config env.");
+            sb.append(DBUtil.getDbSourceSQLStatement()).append("\n");
         }
-
-        if (!trans.isEmpty()) {
-            if (executorConfig.isUseStatementSet()) {
-                List<String> inserts = new ArrayList<>();
-                for (StatementParam item : trans) {
-                    if (item.getType().equals(SqlType.INSERT)) {
-                        inserts.add(item.getValue());
-                    }
-                }
-                logger.info("Executing FlinkSQL statement set: {}", String.join(FlinkSQLConstant.SEPARATOR, inserts));
-                executor.executeStatementSet(inserts);
-                logger.info("Execution succeeded.");
-            } else {
-                StatementParam item = trans.get(0);
-                logger.info("Executing FlinkSQL: {}", item.getValue());
-                executor.executeSql(item.getValue());
-                logger.info("Execution succeeded.");
-            }
-        }
-
-        if (!execute.isEmpty()) {
-            List<String> executes = new ArrayList<>();
-            for (StatementParam item : execute) {
-                executes.add(item.getValue());
-                executor.executeSql(item.getValue());
-                if (!executorConfig.isUseStatementSet()) {
-                    break;
-                }
-            }
-
-            logger.info("正在执行 FlinkSQL 语句集： {}", String.join(FlinkSQLConstant.SEPARATOR, executes));
-            try {
-                executor.execute(executorConfig.getJobName());
-                logger.info("执行成功");
-            } catch (Exception e) {
-                logger.error("执行失败, {}", e.getMessage(), e);
-            }
-        }
-        logger.info("{}任务提交成功", LocalDateTime.now());
+        sb.append(appTask.getStatement());
+        return sb.toString();
     }
 
     private static void loadDep(String type, Integer taskId, String dinkyAddr, ExecutorConfig executorConfig) {
@@ -254,7 +177,7 @@ public class Submitter {
         if ("kubernetes-application".equals(type)) {
             try {
                 String httpJar = "http://" + dinkyAddr + "/download/downloadDepJar/" + taskId;
-                logger.info("下载依赖 http-url为：{}", httpJar);
+                log.info("下载依赖 http-url为：{}", httpJar);
                 String flinkHome = System.getenv("FLINK_HOME");
                 String usrlib = flinkHome + "/usrlib";
                 FileUtils.forceMkdir(new File(usrlib));
@@ -293,7 +216,7 @@ public class Submitter {
                     }
                 }
             } catch (IOException e) {
-                logger.error("");
+                log.error("");
                 throw new RuntimeException(e);
             }
         }
@@ -334,5 +257,124 @@ public class Submitter {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @SneakyThrows
+    public static Optional<JobClient> executeJarJob(String type, Executor executor, String[] statements) {
+        Optional<JobClient> jobClient = Optional.empty();
+
+        for (int i = 0; i < statements.length; i++) {
+            String sqlStatement = executor.pretreatStatement(statements[i]);
+            if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
+                ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
+                StreamGraph streamGraph = executeJarOperation.getStreamGraph(executor.getCustomTableEnvironment());
+                ReadableConfig configuration =
+                        executor.getStreamExecutionEnvironment().getConfiguration();
+                streamGraph
+                        .getExecutionConfig()
+                        .configure(configuration, Thread.currentThread().getContextClassLoader());
+                streamGraph.getCheckpointConfig().configure(configuration);
+                streamGraph.setJobName(executor.getExecutorConfig().getJobName());
+                String savePointPath = executor.getExecutorConfig().getSavePointPath();
+                if (Asserts.isNotNullString(savePointPath)) {
+                    streamGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
+                            savePointPath, configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
+                }
+                JobClient client = executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
+                jobClient = Optional.of(client);
+                break;
+            }
+            if (Operations.getOperationType(sqlStatement) == SqlType.ADD) {
+                File[] info = AddJarSqlParseStrategy.getInfo(sqlStatement);
+                Arrays.stream(info).forEach(executor.getDinkyClassLoader().getUdfPathContextHolder()::addOtherPlugins);
+                if ("kubernetes-application".equals(type)) {
+                    executor.addJar(info);
+                }
+            }
+        }
+        return jobClient;
+    }
+
+    public static Optional<JobClient> executeJob(Executor executor, String[] statements) {
+        Optional<JobClient> jobClient = Optional.empty();
+
+        ExecutorConfig executorConfig = executor.getExecutorConfig();
+        List<StatementParam> ddl = new ArrayList<>();
+        List<StatementParam> trans = new ArrayList<>();
+        List<StatementParam> execute = new ArrayList<>();
+
+        for (String item : statements) {
+            String statement = FlinkInterceptor.pretreatStatement(executor, item);
+            if (statement.isEmpty()) {
+                continue;
+            }
+
+            SqlType operationType = Operations.getOperationType(statement);
+            if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
+                trans.add(new StatementParam(statement, operationType));
+                if (!executorConfig.isUseStatementSet()) {
+                    break;
+                }
+            } else if (operationType.equals(SqlType.EXECUTE)) {
+                execute.add(new StatementParam(statement, operationType));
+                if (!executorConfig.isUseStatementSet()) {
+                    break;
+                }
+            } else {
+                ddl.add(new StatementParam(statement, operationType));
+            }
+        }
+
+        for (StatementParam item : ddl) {
+            log.info("Executing FlinkSQL: {}", item.getValue());
+            executor.executeSql(item.getValue());
+            log.info("Execution succeeded.");
+        }
+
+        if (!trans.isEmpty()) {
+            if (executorConfig.isUseStatementSet()) {
+                List<String> inserts = new ArrayList<>();
+                for (StatementParam item : trans) {
+                    if (item.getType().equals(SqlType.INSERT)) {
+                        inserts.add(item.getValue());
+                    }
+                }
+                log.info("Executing FlinkSQL statement set: {}", String.join(FlinkSQLConstant.SEPARATOR, inserts));
+                TableResult tableResult = executor.executeStatementSet(inserts);
+                jobClient = tableResult.getJobClient();
+                log.info("Execution succeeded.");
+            } else {
+                // UseStatementSet defaults to true, where the logic is never executed
+                StatementParam item = trans.get(0);
+                log.info("Executing FlinkSQL: {}", item.getValue());
+                TableResult tableResult = executor.executeSql(item.getValue());
+                jobClient = tableResult.getJobClient();
+                log.info("Execution succeeded.");
+            }
+        }
+
+        if (!execute.isEmpty()) {
+            List<String> executes = new ArrayList<>();
+            for (StatementParam item : execute) {
+                executes.add(item.getValue());
+                executor.executeSql(item.getValue());
+                if (!executorConfig.isUseStatementSet()) {
+                    break;
+                }
+            }
+
+            log.info(
+                    "The FlinkSQL statement set is being executed： {}",
+                    String.join(FlinkSQLConstant.SEPARATOR, executes));
+            try {
+                JobClient client = executor.executeAsync(executorConfig.getJobName());
+                jobClient = Optional.of(client);
+                log.info("The execution was successful");
+            } catch (Exception e) {
+                log.error("Execution failed, {}", e.getMessage(), e);
+            }
+        }
+        log.info("{} The task is successfully submitted", LocalDateTime.now());
+        return jobClient;
     }
 }

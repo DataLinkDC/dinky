@@ -19,9 +19,17 @@
 
 package org.dinky.executor;
 
+import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.table.delegation.Parser;
 
 /** */
 public interface ExtendedParser extends Parser {
+
+    SqlNode parseExpression(String sqlExpression);
+
+    SqlNode parseSql(String statement);
+
+    SqlNode validate(SqlNode sqlNode);
+
     CustomParser getCustomParser();
 }

@@ -88,6 +88,14 @@ public class SuperEntity<T extends Model<?>> extends Model<T> {
             example = "2021-05-28 00:00:00")
     private LocalDateTime updateTime;
 
+    @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty(value = "Creator", required = true, dataType = "String", example = "Creator")
+    private Integer creator;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty(value = "Updater", required = true, dataType = "String", example = "Updater")
+    private Integer updater;
+
     @Override
     public Serializable pkVal() {
         return this.id;

@@ -19,8 +19,8 @@
 
 package org.dinky.mapper;
 
-import org.dinky.data.model.Role;
-import org.dinky.data.model.UserRole;
+import org.dinky.data.model.rbac.Role;
+import org.dinky.data.model.rbac.UserRole;
 import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;

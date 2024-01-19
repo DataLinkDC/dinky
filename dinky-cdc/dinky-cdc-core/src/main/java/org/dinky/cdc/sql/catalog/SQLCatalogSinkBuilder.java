@@ -70,7 +70,8 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
         String sinkTableName = catalogName + "." + sinkSchemaName + "." + tableName;
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
 
-        customTableEnvironment.createTemporaryView(viewName, rowDataDataStream);
+        customTableEnvironment.createTemporaryView(
+                viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream));
         logger.info("Create {} temporaryView successful...", viewName);
 
         createInsertOperations(customTableEnvironment, table, viewName, sinkTableName);

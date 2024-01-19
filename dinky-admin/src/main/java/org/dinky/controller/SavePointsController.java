@@ -73,17 +73,16 @@ public class SavePointsController {
     public ProTableResult<Savepoints> listSavePoints(@RequestBody JsonNode para) {
         return savepointsService.selectForProTable(para);
     }
-
     /**
      * query savepoint list by task id
      *
-     * @param taskID {@link Integer}
+     * @param taskId {@link Integer}
      * @return {@link Result}<{@link List}<{@link Savepoints}>>
      */
     @GetMapping("/listSavepointsByTaskId")
     @ApiOperation("Query SavePoint List By TaskId")
-    @ApiImplicitParam(name = "taskID", value = "Task ID", dataType = "Integer", paramType = "query", required = true)
-    public Result<List<Savepoints>> listSavePointsByTaskId(@RequestParam Integer taskID) {
-        return Result.succeed(savepointsService.listSavepointsByTaskId(taskID));
+    @ApiImplicitParam(name = "taskId", value = "Task ID", dataType = "Integer", paramType = "query", required = true)
+    public Result<List<Savepoints>> listSavePointsByTaskId(@RequestParam Integer taskId) {
+        return Result.succeed(savepointsService.listSavepointsByTaskId(taskId));
     }
 }

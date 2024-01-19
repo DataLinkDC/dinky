@@ -22,23 +22,28 @@ package org.dinky.service.impl;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.dto.DataBaseDTO;
 import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
 import org.dinky.data.model.Table;
+import org.dinky.data.model.Task;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.job.Job;
 import org.dinky.job.JobResult;
 import org.dinky.mapper.DataBaseMapper;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.DataBaseService;
+import org.dinky.service.TaskService;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,9 +52,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 /**
@@ -60,56 +69,50 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 @Service
 public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBase> implements DataBaseService {
 
+    @Lazy
+    @Autowired
+    private TaskService taskService;
+
     @Override
-    public String testConnect(DataBase dataBase) {
-        return Driver.buildUnconnected(dataBase.getDriverConfig()).test();
+    public String testConnect(DataBaseDTO db) {
+        return Driver.buildUnconnected(db.getName(), db.getType(), db.getConnectConfig())
+                .test();
     }
 
     @Override
-    public Boolean checkHeartBeat(DataBase dataBase) {
+    public Boolean checkHeartBeat(DataBase db) {
         boolean isHealthy = false;
-        dataBase.setHeartbeatTime(LocalDateTime.now());
+        db.setHeartbeatTime(LocalDateTime.now());
         try {
             isHealthy = Asserts.isEquals(
                     CommonConstant.HEALTHY,
-                    Driver.buildUnconnected(dataBase.getDriverConfig()).test());
+                    Driver.buildUnconnected(db.getName(), db.getType(), db.getConnectConfig())
+                            .test());
             if (isHealthy) {
-                dataBase.setHealthTime(LocalDateTime.now());
+                db.setHealthTime(LocalDateTime.now());
             }
         } catch (Exception e) {
             isHealthy = false;
             throw e;
         } finally {
-            dataBase.setStatus(isHealthy);
+            db.setStatus(isHealthy);
         }
         return isHealthy;
     }
 
     @Override
-    public Boolean saveOrUpdateDataBase(DataBase dataBase) {
+    public Boolean saveOrUpdateDataBase(DataBaseDTO dataBaseDTO) {
+        DataBase dataBase = dataBaseDTO.toBean();
+
         if (Asserts.isNull(dataBase)) {
             return false;
         }
-        if (Asserts.isNull(dataBase.getId())) {
-            try {
-                checkHeartBeat(dataBase);
-            } finally {
+        try {
+            checkHeartBeat(dataBase);
+        } finally {
+            if (Asserts.isNull(dataBase.getId())) {
                 return save(dataBase);
-            }
-        } else {
-            DataBase dataBaseInfo = getById(dataBase.getId());
-            if (Asserts.isNull(dataBase.getUrl())) {
-                dataBase.setUrl(dataBaseInfo.getUrl());
-            }
-            if (Asserts.isNull(dataBase.getUsername())) {
-                dataBase.setUsername(dataBaseInfo.getUsername());
-            }
-            if (Asserts.isNull(dataBase.getPassword())) {
-                dataBase.setPassword(dataBaseInfo.getPassword());
-            }
-            try {
-                checkHeartBeat(dataBase);
-            } finally {
+            } else {
                 return updateById(dataBase);
             }
         }
@@ -132,6 +135,20 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public List<DataBase> listEnabledAll() {
         return this.list(new QueryWrapper<DataBase>().eq("enabled", 1));
+    }
+
+    /**
+     * delete database by id (physical deletion)
+     *
+     * @param id {@link Integer} database id
+     * @return {@link Boolean} true: success false: fail
+     */
+    @Override
+    public Boolean deleteDataSourceById(Integer id) {
+        if (hasRelationShip(id)) {
+            throw new BusException(Status.DATASOURCE_EXIST_RELATIONSHIP);
+        }
+        return this.removeById(id);
     }
 
     @Override
@@ -238,7 +255,9 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
-    public Boolean copyDatabase(DataBase database) {
+    public Boolean copyDatabase(DataBaseDTO dataBaseDTO) {
+        DataBase database = dataBaseDTO.toBean();
+
         String name = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
         database.setId(null);
         database.setName((database.getName().length() > 10 ? database.getName().substring(0, 10) : database.getName())
@@ -302,5 +321,82 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         }
         result.setEndTime(LocalDateTime.now());
         return result;
+    }
+
+    /**
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<DataBase> selectListByKeyWord(String keyword) {
+
+        return getBaseMapper()
+                .selectList(new LambdaQueryWrapper<DataBase>()
+                        .like(DataBase::getName, keyword)
+                        .or()
+                        .like(DataBase::getNote, keyword));
+    }
+
+    @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE_COMMON_SQL)
+    @Override
+    public JobResult StreamExecuteCommonSql(SqlDTO sqlDTO) {
+        JobResult result = new JobResult();
+        result.setStatement(sqlDTO.getStatement());
+        result.setStartTime(LocalDateTime.now());
+
+        if (Asserts.isNull(sqlDTO.getDatabaseId())) {
+            result.setSuccess(false);
+            result.setError("please assign data source");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
+        DataBase dataBase = getById(sqlDTO.getDatabaseId());
+        if (Asserts.isNull(dataBase)) {
+            result.setSuccess(false);
+            result.setError("data source not exist.");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
+        List<JdbcSelectResult> jdbcSelectResults = new ArrayList<>();
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            Stream<JdbcSelectResult> jdbcSelectResultStream =
+                    driver.StreamExecuteSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
+            jdbcSelectResultStream.forEach(res -> {
+                jdbcSelectResults.add(res);
+                if (!res.isSuccess()) {
+                    throw new RuntimeException();
+                }
+            });
+            result.setStatus(Job.JobStatus.SUCCESS);
+            result.setResults(jdbcSelectResults);
+            result.setSuccess(true);
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        } catch (RuntimeException e) {
+            if (!jdbcSelectResults.isEmpty()) {
+                result.setError(
+                        jdbcSelectResults.get(jdbcSelectResults.size() - 1).getError());
+            } else {
+                result.setError(e.getMessage());
+            }
+            result.setStatus(Job.JobStatus.FAILED);
+            result.setSuccess(true);
+            result.setEndTime(LocalDateTime.now());
+            result.setResults(jdbcSelectResults);
+            return result;
+        }
+    }
+
+    /**
+     * check datasource has relationship with other table
+     *
+     * @param id {@link Integer} alert group id
+     * @return {@link Boolean} true: has relationship, false: no relationship
+     */
+    @Override
+    public boolean hasRelationShip(Integer id) {
+        return !taskService
+                .list(new LambdaQueryWrapper<Task>().eq(Task::getAlertGroupId, id))
+                .isEmpty();
     }
 }

@@ -27,14 +27,18 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
+import cn.dev33.satoken.stp.StpUtil;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * DateMeta Object Handler
  *
  * @since 2021/5/25
  */
+@Slf4j
 public class DateMetaObjectHandler implements MetaObjectHandler {
 
-    private MybatisPlusFillProperties mybatisPlusFillProperties;
+    private final MybatisPlusFillProperties mybatisPlusFillProperties;
 
     public DateMetaObjectHandler(MybatisPlusFillProperties mybatisPlusFillProperties) {
         this.mybatisPlusFillProperties = mybatisPlusFillProperties;
@@ -52,6 +56,7 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
+
         Object createTime = getFieldValByName(mybatisPlusFillProperties.getCreateTimeField(), metaObject);
         Object updateTime = getFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), metaObject);
         Object name = getFieldValByName(mybatisPlusFillProperties.getName(), metaObject);
@@ -61,10 +66,42 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
         if (updateTime == null) {
             setFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), LocalDateTime.now(), metaObject);
         }
+        if (name == null) {
+            setFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), name, metaObject);
+        }
+        try {
+            int loginIdAsInt = StpUtil.getLoginIdAsInt();
+            setFillFieldValue(metaObject, loginIdAsInt);
+        } catch (Exception e) {
+            log.debug("Ignore set creater filed, because userId cant't get", e);
+        }
+    }
+
+    private void setFillFieldValue(MetaObject metaObject, int userId) {
+        Object creator = getFieldValByName(mybatisPlusFillProperties.getCreatorField(), metaObject);
+        Object updater = getFieldValByName(mybatisPlusFillProperties.getUpdaterField(), metaObject);
+        Object operator = getFieldValByName(mybatisPlusFillProperties.getOperatorField(), metaObject);
+
+        if (creator == null) {
+            setFieldValByName(mybatisPlusFillProperties.getCreatorField(), userId, metaObject);
+        }
+        if (updater == null) {
+            setFieldValByName(mybatisPlusFillProperties.getUpdaterField(), userId, metaObject);
+        }
+        if (operator == null) {
+            setFieldValByName(mybatisPlusFillProperties.getOperatorField(), userId, metaObject);
+        }
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        setFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), LocalDateTime.now(), metaObject);
+        try {
+            int loginIdAsInt = StpUtil.getLoginIdAsInt();
+            setFieldValByName(mybatisPlusFillProperties.getUpdaterField(), loginIdAsInt, metaObject);
+            setFieldValByName(mybatisPlusFillProperties.getOperatorField(), loginIdAsInt, metaObject);
+            setFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), LocalDateTime.now(), metaObject);
+        } catch (Exception e) {
+            log.debug("Ignore set update,operator filed, because userId cant't get", e);
+        }
     }
 }

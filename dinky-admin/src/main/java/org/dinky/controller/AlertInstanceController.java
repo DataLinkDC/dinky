@@ -21,12 +21,12 @@ package org.dinky.controller;
 
 import org.dinky.alert.AlertPool;
 import org.dinky.alert.AlertResult;
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.constant.PermissionConstants;
+import org.dinky.data.dto.AlertInstanceDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.AlertInstance;
-import org.dinky.data.result.ProTableResult;
+import org.dinky.data.model.alert.AlertInstance;
 import org.dinky.data.result.Result;
 import org.dinky.service.AlertInstanceService;
 
@@ -41,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
 
@@ -53,7 +52,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** AlertInstanceController */
+/**
+ * AlertInstanceController
+ */
 @Slf4j
 @RestController
 @Api(tags = "Alert Instance Controller")
@@ -70,7 +71,7 @@ public class AlertInstanceController {
      * @return {@link Result} of {@link Void}
      * @throws Exception {@link Exception}
      */
-    @PutMapping
+    @PutMapping("/saveOrUpdate")
     @Log(title = "Insert OR Update AlertInstance", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert OR Update AlertInstance")
     @ApiImplicitParam(
@@ -97,21 +98,12 @@ public class AlertInstanceController {
 
     /**
      * listAlertInstances
-     *
-     * @param para {@link JsonNode}
-     * @return {@link ProTableResult} of {@link AlertInstance}
+     * @return {@link Result} of {@link AlertInstance}
      */
-    @PostMapping
+    @GetMapping("/list")
     @ApiOperation("Query AlertInstance List")
-    @ApiImplicitParam(
-            name = "para",
-            value = "Query Condition",
-            dataType = "JsonNode",
-            paramType = "body",
-            required = true,
-            dataTypeClass = JsonNode.class)
-    public ProTableResult<AlertInstance> listAlertInstances(@RequestBody JsonNode para) {
-        return alertInstanceService.selectForProTable(para);
+    public Result<List<AlertInstance>> listAlertInstances(@RequestParam(value = "keyword") String keyword) {
+        return Result.succeed(alertInstanceService.selectListByKeyWord(keyword));
     }
 
     /**
@@ -186,23 +178,23 @@ public class AlertInstanceController {
     /**
      * send test alert message
      *
-     * @param alertInstance {@link AlertInstance}
+     * @param alertInstanceDTO {@link AlertInstanceDTO}
      * @return {@link Result} of {@link Void}
      */
     @PostMapping("/sendTest")
     @Log(title = "Test Send To AlertInstance", businessType = BusinessType.TEST)
     @ApiOperation("Test Send To AlertInstance")
     @ApiImplicitParam(
-            name = "alertInstance",
-            value = "AlertInstance",
-            dataType = "AlertInstance",
+            name = "alertInstanceDTO",
+            value = "AlertInstanceDTO",
+            dataType = "AlertInstanceDTO",
             paramType = "body",
             required = true,
-            dataTypeClass = AlertInstance.class)
-    public Result<Void> sendAlertMsgTest(@RequestBody AlertInstance alertInstance) {
-        AlertResult alertResult = alertInstanceService.testAlert(alertInstance);
+            dataTypeClass = AlertInstanceDTO.class)
+    public Result<String> sendAlertMsgTest(@RequestBody AlertInstanceDTO alertInstanceDTO) {
+        AlertResult alertResult = alertInstanceService.testAlert(alertInstanceDTO);
         if (alertResult.getSuccess()) {
-            return Result.succeed(Status.SEND_TEST_SUCCESS);
+            return Result.succeed(alertResult.getMessage(), Status.SEND_TEST_SUCCESS);
         } else {
             return Result.failed(Status.SEND_TEST_FAILED);
         }

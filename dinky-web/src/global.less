@@ -206,8 +206,8 @@ ol {
 }
 
 .ant-table-wrapper {
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow-x: hidden;
+  overflow-y: hidden;
   overflow-block: auto;
 }
 
@@ -237,8 +237,6 @@ ol {
 
 .siderTree {
   height: 100%;
-  min-height: 82vh;
-  max-height: 82vh;
   overflow-x: auto;
   overflow-y: auto;
 
@@ -256,8 +254,8 @@ ol {
 }
 
 .gitCodeTree {
-  min-height: 70vh;
-  max-height: 70vh;
+  min-height: 73vh;
+  max-height: 73vh;
 }
 
 .schemaTree {
@@ -281,6 +279,7 @@ ol {
   align-items: center;
   justify-content: space-between;
   height: 100%;
+  box-shadow: 0 0 2px 1px rgba(171, 165, 165, 0.32);
 
   .float-button {
     position: absolute;
@@ -324,8 +323,8 @@ ol {
 
 .radio-group-chart {
   position: absolute;
-  top: 7px;
-  right: 0;
+  top: 15px;
+  right: 10px;
 }
 
 .tag-content {
@@ -536,6 +535,7 @@ h5 {
   padding: 4px 4px 4px 6px;
   white-space: nowrap;
 }
+
 .butterfly-lineage-dag .table-node .field.hover-chain {
   color: #fff;
   transition: all 0.5s ease-in-out;
@@ -551,6 +551,7 @@ h5 {
   height: 100%;
   max-height: 4vh;
   margin: 0 20px;
+
   .operator-item {
     margin-left: 15px;
   }
@@ -583,15 +584,18 @@ h5 {
   right: 0;
   background: #0366d6;
 }
+
 // ====================  lineage style end ====================
 
 .card-list-item-wrapper {
   display: flex;
 }
+
 .card-list-item {
   width: 100%;
   margin: 0;
 }
+
 .card-list-item {
   transition: 0.3s;
 }
@@ -606,4 +610,82 @@ h5 {
 
 .card-list-item:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+// 自定义语言会把 '' 中间的内容加粗 , 在这里重置 不加粗
+span .mtkb {
+  font-weight: inherit;
+}
+
+// =============================  layout split pane style start =============================
+.split-pane {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+}
+
+.Resizer {
+  z-index: 1;
+  box-sizing: border-box;
+  background: #000;
+  background-clip: padding-box;
+  opacity: 0.2;
+}
+
+.Resizer:hover {
+  transition: all 2s ease;
+}
+
+.Resizer.horizontal {
+  height: 11px;
+  margin: -5px 0;
+  border-top: 5px solid rgba(255, 255, 255, 0);
+  border-bottom: 5px solid rgba(255, 255, 255, 0);
+  cursor: row-resize;
+}
+
+.Resizer.horizontal:hover,
+.Resizer.horizontal.resizing {
+  border-top: 5px solid rgba(0, 0, 0, 0.5);
+  border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+}
+
+.Resizer.vertical {
+  width: 11px;
+  height: 98%;
+  margin: 0 -5px;
+  border-right: 5px solid rgba(255, 255, 255, 0);
+  border-left: 5px solid rgba(255, 255, 255, 0);
+  cursor: col-resize;
+}
+
+.Resizer.vertical:hover,
+.Resizer.vertical.resizing {
+  border-right: 5px solid rgba(0, 0, 0, 0.5);
+  border-left: 5px solid rgba(0, 0, 0, 0.5);
+}
+
+.DragLayer {
+  z-index: 1;
+  pointer-events: none;
+}
+
+.DragLayer.resizing {
+  pointer-events: auto;
+}
+
+.DragLayer.horizontal {
+  cursor: row-resize;
+}
+
+.DragLayer.vertical {
+  cursor: col-resize;
+}
+
+// =============================  layout split pane style end =============================
+
+.ant-notification-notice-wrapper {
+  top: 80px !important;
 }

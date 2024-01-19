@@ -41,13 +41,7 @@ public class PrintStatementExplainer {
             + "AS SELECT * FROM {0}";
     public static final int DEFAULT_PORT = 7125;
 
-    private final String statement;
-
-    public PrintStatementExplainer(String statement) {
-        this.statement = statement;
-    }
-
-    public String[] getTableNames() {
+    public static String[] getTableNames(String statement) {
         return splitTableNames(statement);
     }
 
@@ -58,10 +52,6 @@ public class PrintStatementExplainer {
             return tableNames.replace(" ", "").split(",");
         }
         throw new IllegalArgumentException("Invalid print statement: " + statement);
-    }
-
-    public static String getCreateStatement(String tableName) {
-        return getCreateStatement(tableName, null, null);
     }
 
     public static String getCreateStatement(String tableName, String localIp, Integer localPort) {

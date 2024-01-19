@@ -19,4 +19,4 @@ title: 致谢
 
 此外，感谢 [JetBrains](https://www.jetbrains.com/?from=dlink) 提供的免费开源 License 赞助
 
-[![JetBrains](http://www.aiwenmo.com/dinky/docs/zh-CN/thanks/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
+[![JetBrains](http://pic.dinky.org.cn/dinky/docs/zh-CN/thanks/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)

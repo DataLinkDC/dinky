@@ -21,7 +21,7 @@ package org.dinky.metadata.convert;
 
 import org.dinky.data.enums.ColumnType;
 
-public class PhoenixTypeConvert extends AbstractTypeConvert {
+public class PhoenixTypeConvert extends AbstractJdbcTypeConvert {
 
     public PhoenixTypeConvert() {
         this.convertMap.clear();

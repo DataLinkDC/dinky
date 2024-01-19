@@ -44,7 +44,7 @@ function HomepageHeader() {
                             <div className={styles.buttonLink}>
                             <Link
                                 className="button button--secondary button--lg"
-                                to="https://github.com/DataLinkDC/dlink">
+                                to="https://github.com/DataLinkDC/dinky">
                                 GitHub
                             </Link>
                             </div>
@@ -66,7 +66,7 @@ function HomepageHeader() {
                             </div>
                             <div className={styles.buttonLink}>
                                <iframe style={{width:"100px",height:"30px"}}
-                                    src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dlink&amp;type=star&amp;count=true&amp;size=large"
+                                    src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dinky&amp;type=star&amp;count=true&amp;size=large"
                                     title="GitHub Stars"
                                 />
                             </div>
@@ -89,7 +89,7 @@ function Structure() {
     return (
         <div className={clsx("structure", styles.structure,styles.box_container)}>
             <div className={clsx("image", styles.box)}><img
-                src="http://www.aiwenmo.com/dinky/docs/zh-CN/concept_architecture/architecture/dinky.png"
+                src="http://pic.dinky.org.cn/dinky/docs/zh-CN/concept_architecture/architecture/dinky.png"
                 alt="structure"/></div>
             <div className={clsx("text", styles.box,styles.structureText)}>
                 <div className={clsx("title", styles.box,styles.structureText)}>

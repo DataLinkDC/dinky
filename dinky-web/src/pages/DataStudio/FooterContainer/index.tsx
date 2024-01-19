@@ -1,19 +1,19 @@
 /*
  *
- *   Licensed to the Apache Software Foundation (ASF) under one or more
- *   contributor license agreements.  See the NOTICE file distributed with
- *   this work for additional information regarding copyright ownership.
- *   The ASF licenses this file to You under the Apache License, Version 2.0
- *   (the "License"); you may not use this file except in compliance with
- *   the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
 
@@ -56,13 +56,12 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const themeValue = useThemeValue();
   const [viewJobRunning, setViewJobRunning] = useState(false);
   const [memDetailInfo, setMemDetailInfo] = useState(memDetails);
-
   const currentTab = getCurrentTab(tabs.panes ?? [], tabs.activeKey);
 
   useEffect(() => {
-    const eventSource = getSseData('/api/sse/getJvmInfo');
+    const eventSource = getSseData('/api/monitor/getJvmInfo');
     eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+      const data = JSON.parse(event.data).data;
       setMemDetailInfo(
         Number(data['heapUsed'] / 1024 / 1024).toFixed(0) +
           '/' +
@@ -184,7 +183,8 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
       </div>
       <JobRunningModal
         value={jobRunningMsg}
-        visible={viewJobRunning}
+        //TODO 目前实现不了，禁掉
+        visible={false}
         onCancel={() => setViewJobRunning(false)}
         onOk={() => setViewJobRunning(false)}
       />

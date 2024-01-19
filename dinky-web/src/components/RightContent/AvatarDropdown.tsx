@@ -1,26 +1,35 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 import { chooseTenantSubmit, outLogin } from '@/services/BusinessCrud';
-import { setTenantStorageAndCookie } from '@/utils/function';
-import { l } from '@/utils/intl';
-import { ErrorNotification, SuccessNotification } from '@/utils/messages';
+import { ENABLE_MODEL_TIP } from '@/services/constants';
 import {
+  getValueFromLocalStorage,
+  setKeyToLocalStorage,
+  setTenantStorageAndCookie
+} from '@/utils/function';
+import { l } from '@/utils/intl';
+import { ErrorNotification, SuccessNotification, WarningNotification } from '@/utils/messages';
+import {
+  BugOutlined,
   ClearOutlined,
+  CloseCircleOutlined,
   LogoutOutlined,
   TeamOutlined,
   UserOutlined,
@@ -33,8 +42,7 @@ import { Avatar, Modal, Spin } from 'antd';
 import { stringify } from 'querystring';
 import { ItemType } from 'rc-menu/es/interface';
 import type { MenuInfo } from 'rc-menu/lib/interface';
-import { useCallback } from 'react';
-import { flushSync } from 'react-dom';
+import { useCallback, useState } from 'react';
 import HeaderDropdown from '../HeaderDropdown';
 
 export const loginOut = async () => {
@@ -119,12 +127,14 @@ const AvatarDropdown = () => {
   });
   const { initialState, setInitialState } = useModel('@@initialState');
 
+  const [enableModelTip, setEnableModelTip] = useState<boolean>(
+    Boolean(getValueFromLocalStorage(ENABLE_MODEL_TIP))
+  );
+
   const loginOutHandler = useCallback(
     async (event: MenuInfo) => {
       const { key } = event;
-      flushSync(() => {
-        setInitialState((s) => ({ ...s, currentUser: undefined }));
-      });
+      setInitialState((s) => ({ ...s, currentUser: undefined }));
       await loginOut();
       return;
     },
@@ -189,6 +199,16 @@ const AvatarDropdown = () => {
     return chooseTenantList;
   };
 
+  const handleClickEnableModelTip = () => {
+    setKeyToLocalStorage(ENABLE_MODEL_TIP, String(!enableModelTip));
+    setEnableModelTip(!enableModelTip);
+    if (!enableModelTip) {
+      SuccessNotification(l('menu.account.openGlobalMessageTip'));
+    } else {
+      WarningNotification(l('menu.account.closeGlobalMessageTip'));
+    }
+  };
+
   const menuItems = [
     {
       key: 'currentTenant',
@@ -226,6 +246,14 @@ const AvatarDropdown = () => {
         window.localStorage.removeItem('persist:root');
         window.location.reload();
       }
+    },
+    {
+      key: 'enableModelTip',
+      icon: enableModelTip ? <CloseCircleOutlined /> : <BugOutlined />,
+      label: enableModelTip
+        ? l('menu.account.closeGlobalMessage')
+        : l('menu.account.openGlobalMessage'),
+      onClick: () => handleClickEnableModelTip()
     },
     {
       type: 'divider' as const

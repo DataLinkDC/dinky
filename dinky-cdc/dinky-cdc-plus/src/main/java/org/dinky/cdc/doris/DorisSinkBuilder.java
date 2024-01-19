@@ -30,6 +30,7 @@ import org.apache.doris.flink.cfg.DorisOptions;
 import org.apache.doris.flink.cfg.DorisReadOptions;
 import org.apache.doris.flink.sink.DorisSink;
 import org.apache.doris.flink.sink.writer.RowDataSerializer;
+import org.apache.doris.flink.sink.writer.serializer.DorisRecordSerializer;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.data.RowData;
@@ -87,8 +88,7 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
         final DorisReadOptions.Builder readOptionBuilder = DorisReadOptions.builder();
         if (sink.containsKey(DorisSinkOptions.DORIS_DESERIALIZE_ARROW_ASYNC.key())) {
             readOptionBuilder.setDeserializeArrowAsync(
-                    Boolean.valueOf(
-                            sink.get(DorisSinkOptions.DORIS_DESERIALIZE_ARROW_ASYNC.key())));
+                    Boolean.valueOf(sink.get(DorisSinkOptions.DORIS_DESERIALIZE_ARROW_ASYNC.key())));
         }
 
         if (sink.containsKey(DorisSinkOptions.DORIS_DESERIALIZE_QUEUE_SIZE.key())) {
@@ -97,13 +97,11 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
         }
 
         if (sink.containsKey(DorisSinkOptions.DORIS_EXEC_MEM_LIMIT.key())) {
-            readOptionBuilder.setExecMemLimit(
-                    Long.valueOf(sink.get(DorisSinkOptions.DORIS_EXEC_MEM_LIMIT.key())));
+            readOptionBuilder.setExecMemLimit(Long.valueOf(sink.get(DorisSinkOptions.DORIS_EXEC_MEM_LIMIT.key())));
         }
 
         if (sink.containsKey(DorisSinkOptions.DORIS_FILTER_QUERY.key())) {
-            readOptionBuilder.setFilterQuery(
-                    String.valueOf(sink.get(DorisSinkOptions.DORIS_FILTER_QUERY.key())));
+            readOptionBuilder.setFilterQuery(String.valueOf(sink.get(DorisSinkOptions.DORIS_FILTER_QUERY.key())));
         }
 
         if (sink.containsKey(DorisSinkOptions.DORIS_READ_FIELD.key())) {
@@ -111,26 +109,22 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
         }
 
         if (sink.containsKey(DorisSinkOptions.DORIS_BATCH_SIZE.key())) {
-            readOptionBuilder.setRequestBatchSize(
-                    Integer.valueOf(sink.get(DorisSinkOptions.DORIS_BATCH_SIZE.key())));
+            readOptionBuilder.setRequestBatchSize(Integer.valueOf(sink.get(DorisSinkOptions.DORIS_BATCH_SIZE.key())));
         }
 
         if (sink.containsKey(DorisSinkOptions.DORIS_REQUEST_CONNECT_TIMEOUT_MS.key())) {
             readOptionBuilder.setRequestConnectTimeoutMs(
-                    Integer.valueOf(
-                            sink.get(DorisSinkOptions.DORIS_REQUEST_CONNECT_TIMEOUT_MS.key())));
+                    Integer.valueOf(sink.get(DorisSinkOptions.DORIS_REQUEST_CONNECT_TIMEOUT_MS.key())));
         }
 
         if (sink.containsKey(DorisSinkOptions.DORIS_REQUEST_QUERY_TIMEOUT_S.key())) {
             readOptionBuilder.setRequestQueryTimeoutS(
-                    Integer.valueOf(
-                            sink.get(DorisSinkOptions.DORIS_REQUEST_QUERY_TIMEOUT_S.key())));
+                    Integer.valueOf(sink.get(DorisSinkOptions.DORIS_REQUEST_QUERY_TIMEOUT_S.key())));
         }
 
         if (sink.containsKey(DorisSinkOptions.DORIS_REQUEST_READ_TIMEOUT_MS.key())) {
             readOptionBuilder.setRequestReadTimeoutMs(
-                    Integer.valueOf(
-                            sink.get(DorisSinkOptions.DORIS_REQUEST_READ_TIMEOUT_MS.key())));
+                    Integer.valueOf(sink.get(DorisSinkOptions.DORIS_REQUEST_READ_TIMEOUT_MS.key())));
         }
 
         if (sink.containsKey(DorisSinkOptions.DORIS_REQUEST_RETRIES.key())) {
@@ -155,37 +149,35 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
         // Create DorisExecutionOptions for DorisSink.
         DorisExecutionOptions.Builder executionBuilder = DorisExecutionOptions.builder();
         if (sink.containsKey(DorisSinkOptions.SINK_BUFFER_COUNT.key())) {
-            executionBuilder.setBufferCount(
-                    Integer.parseInt(sink.get(DorisSinkOptions.SINK_BUFFER_COUNT.key())));
+            executionBuilder.setBufferCount(Integer.parseInt(sink.get(DorisSinkOptions.SINK_BUFFER_COUNT.key())));
         }
         if (sink.containsKey(DorisSinkOptions.SINK_BUFFER_SIZE.key())) {
-            executionBuilder.setBufferSize(
-                    Integer.parseInt(sink.get(DorisSinkOptions.SINK_BUFFER_SIZE.key())));
+            executionBuilder.setBufferSize(Integer.parseInt(sink.get(DorisSinkOptions.SINK_BUFFER_SIZE.key())));
         }
         if (sink.containsKey(DorisSinkOptions.SINK_ENABLE_DELETE.key())) {
-            executionBuilder.setDeletable(
-                    Boolean.valueOf(sink.get(DorisSinkOptions.SINK_ENABLE_DELETE.key())));
+            executionBuilder.setDeletable(Boolean.valueOf(sink.get(DorisSinkOptions.SINK_ENABLE_DELETE.key())));
         } else {
             executionBuilder.setDeletable(true);
         }
 
         if (sink.containsKey(DorisSinkOptions.SINK_LABEL_PREFIX.key())) {
-            executionBuilder.setLabelPrefix(
-                    String.format("%s-%s_%s", sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key()), getSinkSchemaName(table), getSinkTableName(table)));
+            executionBuilder.setLabelPrefix(String.format(
+                    "%s-%s_%s",
+                    sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key()),
+                    getSinkSchemaName(table),
+                    getSinkTableName(table)));
         } else {
-            executionBuilder.setLabelPrefix(
-                    String.format("dinky-%s_%s%s", getSinkSchemaName(table), getSinkTableName(table), UUID.randomUUID()));
+            executionBuilder.setLabelPrefix(String.format(
+                    "dinky-%s_%s%s", getSinkSchemaName(table), getSinkTableName(table), UUID.randomUUID()));
         }
 
         if (sink.containsKey(DorisSinkOptions.SINK_MAX_RETRIES.key())) {
-            executionBuilder.setMaxRetries(
-                    Integer.valueOf(sink.get(DorisSinkOptions.SINK_MAX_RETRIES.key())));
+            executionBuilder.setMaxRetries(Integer.valueOf(sink.get(DorisSinkOptions.SINK_MAX_RETRIES.key())));
         }
 
         Properties properties = getProperties();
         // Doris 1.1 need to this para to support delete
-        properties.setProperty(
-                "columns", String.join(",", columnNameList) + ",__DORIS_DELETE_SIGN__");
+        properties.setProperty("columns", String.join(",", columnNameList) + ",__DORIS_DELETE_SIGN__");
 
         executionBuilder.setStreamLoadProp(properties);
 
@@ -193,20 +185,17 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
         DorisSink.Builder<RowData> builder = DorisSink.builder();
         builder.setDorisReadOptions(readOptionBuilder.build())
                 .setDorisExecutionOptions(executionBuilder.build())
-                .setSerializer(
-                        RowDataSerializer.builder()
-                                .setFieldNames(columnNames)
-                                .setType("json")
-                                .enableDelete(true)
-                                .setFieldType(columnTypes)
-                                .build())
+                .setSerializer((DorisRecordSerializer<RowData>) RowDataSerializer.builder()
+                        .setFieldNames(columnNames)
+                        .setType("json")
+                        .enableDelete(true)
+                        .setFieldType(columnTypes)
+                        .build())
                 .setDorisOptions(dorisBuilder.build());
 
         rowDataDataStream
                 .sinkTo(builder.build())
-                .name(String.format("Doris Sink(table=[%s.%s])",
-                                getSinkSchemaName(table),
-                                getSinkTableName(table)));
+                .name(String.format("Doris Sink(table=[%s.%s])", getSinkSchemaName(table), getSinkTableName(table)));
     }
 
     @Override
@@ -217,8 +206,7 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
             if (Asserts.isNotNullString(entry.getKey())
                     && entry.getKey().startsWith("sink.properties")
                     && Asserts.isNotNullString(entry.getValue())) {
-                properties.setProperty(
-                        entry.getKey().replace("sink.properties.", ""), entry.getValue());
+                properties.setProperty(entry.getKey().replace("sink.properties.", ""), entry.getValue());
             }
         }
         return properties;

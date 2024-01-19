@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -16,7 +17,8 @@
  *
  */
 
-import { TabsItemType } from '@/pages/DataStudio/types';
+import { TabsItemType, TaskDataType } from '@/pages/DataStudio/model';
+import { Tab } from '@/pages/DataStudio/route';
 import { Button } from 'antd';
 import React from 'react';
 
@@ -26,6 +28,19 @@ export type CircleButtonProps = {
   onClick?: () => void;
   title?: string;
   key?: string;
+  href?: string;
+};
+export type CircleBottomButtonProps = {
+  icon: React.ReactNode;
+  loading?: boolean;
+  onClick?: (
+    tabs: Tab[],
+    key: string,
+    data: TaskDataType | undefined,
+    refresh: any
+  ) => Promise<void>;
+  title?: string;
+  key?: string;
 };
 export type CircleDataStudioButtonProps = {
   icon: React.ReactNode;
@@ -33,10 +48,11 @@ export type CircleDataStudioButtonProps = {
   onClick?: (panes: TabsItemType[], activeKey: string) => void;
   title?: string;
   key?: string;
+  isShow?: boolean;
 };
 
 export const CircleBtn: React.FC<CircleButtonProps> = (props) => {
-  const { onClick, title, icon, loading } = props;
+  const { onClick, title, icon, loading, href } = props;
 
   return (
     <Button
@@ -47,6 +63,8 @@ export const CircleBtn: React.FC<CircleButtonProps> = (props) => {
       type={'text'}
       shape={'circle'}
       onClick={onClick}
+      href={href}
+      download=''
     />
   );
 };

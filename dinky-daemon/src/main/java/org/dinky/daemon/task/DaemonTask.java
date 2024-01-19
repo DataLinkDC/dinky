@@ -49,6 +49,8 @@ public interface DaemonTask {
 
     DaemonTask setConfig(DaemonTaskConfig config);
 
+    DaemonTaskConfig getConfig();
+
     default boolean canHandle(String type) {
         return Asserts.isEqualsIgnoreCase(getType(), type);
     }

@@ -21,12 +21,12 @@ package org.dinky.daemon.entity;
 
 import org.dinky.daemon.task.DaemonTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+@Data
+@Slf4j
 public class TaskWorker implements Runnable {
-
-    private static final Logger log = LoggerFactory.getLogger(TaskWorker.class);
 
     private volatile boolean running = true;
 
@@ -50,12 +50,12 @@ public class TaskWorker implements Runnable {
     public void run() {
         log.debug("TaskWorker run:" + Thread.currentThread().getName());
         while (running) {
-            DaemonTask daemonTask = queue.dequeue();
+            DaemonTask daemonTask = queue.getNext();
             if (daemonTask != null) {
                 try {
                     boolean done = daemonTask.dealTask();
-                    if (!done) {
-                        queue.enqueue(daemonTask);
+                    if (done) {
+                        queue.removeByTask(daemonTask);
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);

@@ -19,22 +19,31 @@
 
 package org.dinky.utils;
 
+import org.dinky.assertion.Asserts;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.StrUtil;
 
-/** @since 0.7.0 */
+/**
+ * @since 0.7.0
+ */
 public class URLUtils {
     private static final String TMP_PATH = StrUtil.join(File.separator, System.getProperty("user.dir"), "tmp");
+
     /**
      * url download file to local
+     *
      * @param urlPath urlPath
      * @return file
      */
@@ -42,16 +51,14 @@ public class URLUtils {
         try {
             URL url = new URL(urlPath);
             URLConnection urlConnection = url.openConnection();
-            if ("http".equals(url.getProtocol())
-                    || "https".equals(url.getProtocol())
-                    || "hdfs".equals(url.getProtocol())
-                    || "rs".equals(url.getProtocol())) {
-                String path = StrUtil.join(File.separator, TMP_PATH, "downloadFile", url.getPath());
+            if ("rs".equals(url.getProtocol())) {
+                String path = StrUtil.join(File.separator, TMP_PATH, "rs", url.getPath());
                 return FileUtil.writeFromStream(urlConnection.getInputStream(), path);
             } else if ("file".equals(url.getProtocol())) {
                 return new File(url.getPath());
             }
-            return null;
+            throw new RuntimeException(StrFormatter.format(
+                    "The path {} unsupported protocol: {},please use rs:// or file://", urlPath, url.getProtocol()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -82,11 +89,28 @@ public class URLUtils {
      * @param files URL对应的文件对象
      * @return URL
      */
+    public static URL[] getURLs(List<File> files) {
+        return getURLs(files.stream().filter(File::exists).toArray(File[]::new));
+    }
+
     public static URL[] getURLs(Set<File> files) {
         return getURLs(files.stream().filter(File::exists).toArray(File[]::new));
     }
 
     public static String toString(URL[] urls) {
         return Arrays.stream(urls).map(URL::toString).collect(Collectors.joining(","));
+    }
+
+    public static String formatAddress(String webURL) {
+        if (Asserts.isNotNullString(webURL)) {
+            return webURL.replaceAll("http://", "");
+        } else {
+            return "";
+        }
+    }
+
+    public static int getRandomPort() {
+        Random random = new Random();
+        return 30000 + random.nextInt(35536);
     }
 }

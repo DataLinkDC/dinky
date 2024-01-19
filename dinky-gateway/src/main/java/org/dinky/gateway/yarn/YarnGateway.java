@@ -22,6 +22,7 @@ package org.dinky.gateway.yarn;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.gateway.AbstractGateway;
 import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;
@@ -29,14 +30,22 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.model.CustomConfig;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
+import org.dinky.gateway.result.YarnResult;
+import org.dinky.utils.FlinkJsonUtil;
+import org.dinky.utils.ThreadUtil;
 
 import org.apache.flink.client.deployment.ClusterRetrieveException;
 import org.apache.flink.client.program.ClusterClient;
+import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.configuration.SecurityOptions;
+import org.apache.flink.runtime.messages.webmonitor.JobDetails;
+import org.apache.flink.runtime.messages.webmonitor.MultipleJobsDetails;
+import org.apache.flink.runtime.rest.messages.JobsOverviewHeaders;
 import org.apache.flink.runtime.security.SecurityConfiguration;
 import org.apache.flink.runtime.security.SecurityUtils;
 import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
@@ -55,21 +64,31 @@ import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.http.HttpUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
 
     public static final String HADOOP_CONFIG = "fs.hdfs.hadoopconf";
+    private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
 
     protected YarnConfiguration yarnConfiguration;
+
     protected YarnClient yarnClient;
 
     public YarnGateway() {}
@@ -85,7 +104,9 @@ public abstract class YarnGateway extends AbstractGateway {
 
     private void initConfig() {
         final ClusterConfig clusterConfig = config.getClusterConfig();
-        configuration = GlobalConfiguration.loadConfiguration(clusterConfig.getFlinkConfigPath());
+        configuration = GlobalConfiguration.loadConfiguration(
+                clusterConfig.getFlinkConfigPath().trim());
+        configuration.set(CoreOptions.CLASSLOADER_RESOLVE_ORDER, "parent-first");
 
         final FlinkConfig flinkConfig = config.getFlinkConfig();
         if (Asserts.isNotNull(flinkConfig.getConfiguration())) {
@@ -100,8 +121,8 @@ public abstract class YarnGateway extends AbstractGateway {
             configuration.set(YarnConfigOptions.APPLICATION_NAME, flinkConfig.getJobName());
         }
 
-        if (Asserts.isNotNullString(clusterConfig.getYarnConfigPath())) {
-            configuration.setString(HADOOP_CONFIG, clusterConfig.getYarnConfigPath());
+        if (Asserts.isNotNullString(clusterConfig.getHadoopConfigPath())) {
+            configuration.setString(HADOOP_CONFIG, clusterConfig.getHadoopConfigPath());
         }
 
         if (configuration.containsKey(SecurityOptions.KERBEROS_LOGIN_KEYTAB.key())) {
@@ -110,8 +131,7 @@ public abstract class YarnGateway extends AbstractGateway {
                 UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
                 logger.info("安全认证结束，用户和认证方式:" + currentUser.toString());
             } catch (Exception e) {
-                logger.error(e.getMessage());
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -124,10 +144,20 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     private void initYarnClient() {
+        final ClusterConfig clusterConfig = config.getClusterConfig();
         yarnConfiguration = new YarnConfiguration();
         yarnConfiguration.addResource(getYanConfigFilePath("yarn-site.xml"));
         yarnConfiguration.addResource(getYanConfigFilePath("core-site.xml"));
         yarnConfiguration.addResource(getYanConfigFilePath("hdfs-site.xml"));
+
+        List<CustomConfig> hadoopConfigList = clusterConfig.getHadoopConfigList();
+        if (CollectionUtil.isNotEmpty(hadoopConfigList)) {
+            hadoopConfigList.forEach((customConfig) -> {
+                Assert.notNull(customConfig.getName(), "Custom hadoop config has null key");
+                Assert.notNull(customConfig.getValue(), "Custom hadoop config has null value");
+                yarnConfiguration.set(customConfig.getName(), customConfig.getValue());
+            });
+        }
 
         yarnClient = YarnClient.createYarnClient();
         yarnClient.init(yarnConfiguration);
@@ -135,7 +165,7 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     private Path getYanConfigFilePath(String path) {
-        return new Path(URI.create(config.getClusterConfig().getYarnConfigPath() + "/" + path));
+        return new Path(URI.create(config.getClusterConfig().getHadoopConfigPath() + "/" + path));
     }
 
     public SavePointResult savepointCluster(String savePoint) {
@@ -275,13 +305,18 @@ public abstract class YarnGateway extends AbstractGateway {
         }
     }
 
-    protected YarnClusterDescriptor createYarnClusterDescriptorWithJar() {
+    protected YarnClusterDescriptor createYarnClusterDescriptorWithJar(FlinkUdfPathContextHolder udfPathContextHolder) {
         YarnClusterDescriptor yarnClusterDescriptor = createInitYarnClusterDescriptor();
 
         if (Asserts.isNotNull(config.getJarPaths())) {
             yarnClusterDescriptor.addShipFiles(
                     Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
-            yarnClusterDescriptor.addShipFiles(new ArrayList<>(FlinkUdfPathContextHolder.getPyUdfFile()));
+            yarnClusterDescriptor.addShipFiles(new ArrayList<>(udfPathContextHolder.getPyUdfFile()));
+        }
+        Set<File> otherPluginsFiles = udfPathContextHolder.getOtherPluginsFiles();
+
+        if (CollUtil.isNotEmpty(otherPluginsFiles)) {
+            yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(otherPluginsFiles));
         }
         return yarnClusterDescriptor;
     }
@@ -294,5 +329,55 @@ public abstract class YarnGateway extends AbstractGateway {
                 YarnClientYarnClusterInformationRetriever.create(yarnClient),
                 true);
         return yarnClusterDescriptor;
+    }
+
+    protected String getWebUrl(ClusterClient<ApplicationId> clusterClient, YarnResult result)
+            throws YarnException, IOException, InterruptedException {
+        String webUrl;
+        int counts = SystemConfiguration.getInstances().getJobIdWait();
+        while (yarnClient.getApplicationReport(clusterClient.getClusterId()).getYarnApplicationState()
+                        == YarnApplicationState.ACCEPTED
+                && counts-- > 0) {
+            Thread.sleep(1000);
+        }
+        // 睡眠2秒，防止application快速识别抛出的错误
+        ThreadUtil.sleep(2000);
+        ApplicationReport applicationReport = yarnClient.getApplicationReport(clusterClient.getClusterId());
+        if (applicationReport.getYarnApplicationState() != YarnApplicationState.RUNNING) {
+            String logUrl = yarnClient
+                    .getContainers(applicationReport.getCurrentApplicationAttemptId())
+                    .get(0)
+                    .getLogUrl();
+            String log = ReUtil.getGroup1(HTML_TAG_REGEX, HttpUtil.get(logUrl + "/jobmanager.log?start=-10000"));
+            logger.error("\n\nHistory log url is: {}\n\n ", logUrl);
+            throw new RuntimeException(
+                    "Yarn application state is not running, please check yarn cluster status. Log content:\n" + log);
+        }
+        webUrl = applicationReport.getOriginalTrackingUrl();
+        final List<JobDetails> jobDetailsList = new ArrayList<>();
+        while (jobDetailsList.isEmpty() && counts-- > 0) {
+            Thread.sleep(1000);
+
+            String url = yarnClient
+                            .getApplicationReport(clusterClient.getClusterId())
+                            .getTrackingUrl()
+                    + JobsOverviewHeaders.URL.substring(1);
+
+            String json = HttpUtil.get(url);
+            MultipleJobsDetails jobsDetails = FlinkJsonUtil.toBean(json, JobsOverviewHeaders.getInstance());
+            jobDetailsList.addAll(jobsDetails.getJobs());
+            if (!jobDetailsList.isEmpty()) {
+                break;
+            }
+        }
+
+        if (!jobDetailsList.isEmpty()) {
+            List<String> jobIds = new ArrayList<>();
+            for (JobDetails jobDetails : jobDetailsList) {
+                jobIds.add(jobDetails.getJobId().toHexString());
+            }
+            result.setJids(jobIds);
+        }
+        return webUrl;
     }
 }

@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 export default {
@@ -35,6 +37,12 @@ export default {
   'menu.account.changePassword': 'Change Password',
   'menu.account.checkTenant': 'Switch Tenant',
   'menu.account.checkTenantConfirm': 'Are you sure to switch  tenant [ {tenantCode} ] ?',
+  'menu.account.closeGlobalMessage': 'Close developer mode',
+  'menu.account.openGlobalMessage': 'Turn on developer mode',
+  'menu.account.closeGlobalMessageTip':
+    'You have turned off the developer mode and will not receive all exception information returned by the background. You can only receive warning information.',
+  'menu.account.openGlobalMessageTip':
+    'Developer mode is turned on. You can receive all exception/warning information returned by the background. If you do not want to receive the exception stack, please turn off this function.',
 
   'menu.datastudio': 'Data Studio',
 
@@ -57,7 +65,7 @@ export default {
   'menu.registration.document': 'Document',
   'menu.registration.fragment': 'Global Variable',
   'menu.registration.gitproject': 'Git Project(Beta)',
-  'menu.registration.udf': 'UDF Template',
+  'menu.registration.udf': 'UDF',
   'menu.registration.resource': 'Resource',
   'menu.auth': 'Auth Center',
   'menu.auth.user': 'User',
@@ -79,10 +87,10 @@ export default {
 
   'menu.datastudio.project': 'Project',
   'menu.datastudio.catalog': 'Catalog',
-  'menu.datastudio.metadata': 'Metadata',
+  'menu.datastudio.datasource': 'Data Source',
   'menu.datastudio.console': 'Console',
   'menu.datastudio.jobConfig': 'Job Config',
-  'menu.datastudio.executeConfig': 'Execute Config',
+  'menu.datastudio.previewConfig': 'PreView Config',
   'menu.datastudio.savePoint': 'Save Point',
   'menu.datastudio.historyVision': 'History Vision',
   'menu.datastudio.jobInfo': 'Job Info',
@@ -92,8 +100,9 @@ export default {
   'menu.datastudio.bi': 'BI',
   'menu.datastudio.lineage': 'Lineage',
   'menu.datastudio.process': 'Process',
-  'menu.datastudio.history': 'History',
+  'menu.datastudio.history': 'Execution History',
   'menu.datastudio.table-data': 'Table Data',
 
-  'menu.datastudio.tool.text-comparison': 'Text Comparison'
+  'menu.datastudio.tool.text-comparison': 'Text Comparison',
+  'menu.datastudio.tool.jsonToSql': 'JSON TO Flink-SQL'
 };

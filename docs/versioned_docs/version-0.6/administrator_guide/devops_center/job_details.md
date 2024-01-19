@@ -8,7 +8,7 @@ title: 作业详情
 
 2.单击**作业总览**，进入作业详情页面，可以看到各个模块的详情信息。
 
-![detail](http://www.aiwenmo.com/dinky/docs/administrator_guide/devops_center/job_details/detail.png)
+![detail](http://pic.dinky.org.cn/dinky/docs/administrator_guide/devops_center/job_details/detail.png)
 
 :::info 信息
 

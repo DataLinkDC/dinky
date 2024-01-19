@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.Log;
+import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
@@ -147,6 +147,9 @@ public class CatalogueController {
             dataType = "CatalogueTaskDTO",
             dataTypeClass = CatalogueTaskDTO.class)
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
+        if (catalogueService.checkCatalogueTaskNameIsExistById(catalogueTaskDTO.getName(), catalogueTaskDTO.getId())) {
+            return Result.failed(Status.TASK_IS_EXIST);
+        }
         Catalogue catalogue = catalogueService.saveOrUpdateCatalogueAndTask(catalogueTaskDTO);
         if (catalogue.getId() != null) {
             return Result.succeed(catalogue, Status.SAVE_SUCCESS);

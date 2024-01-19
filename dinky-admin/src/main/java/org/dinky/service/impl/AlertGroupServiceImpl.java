@@ -20,14 +20,18 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.model.AlertGroup;
-import org.dinky.data.model.AlertHistory;
-import org.dinky.data.model.AlertInstance;
+import org.dinky.data.enums.Status;
+import org.dinky.data.exception.BusException;
+import org.dinky.data.model.Task;
+import org.dinky.data.model.alert.AlertGroup;
+import org.dinky.data.model.alert.AlertHistory;
+import org.dinky.data.model.alert.AlertInstance;
 import org.dinky.mapper.AlertGroupMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
 import org.dinky.service.AlertInstanceService;
+import org.dinky.service.TaskService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +47,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
-/** AlertGroupServiceImpl */
+/**
+ * AlertGroupServiceImpl
+ */
 @Service
 @RequiredArgsConstructor
 public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup> implements AlertGroupService {
@@ -55,6 +61,10 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
     @Lazy
     @Resource
     private AlertHistoryService alertHistoryService;
+
+    @Lazy
+    @Resource
+    private TaskService taskService;
 
     @Override
     public List<AlertGroup> listEnabledAllAlertGroups() {
@@ -95,9 +105,38 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteGroupById(Integer id) {
+        if (hasRelationShip(id)) {
+            throw new BusException(Status.ALERT_GROUP_EXIST_RELATIONSHIP);
+        }
         alertHistoryService
                 .list(new LambdaQueryWrapper<AlertHistory>().eq(AlertHistory::getAlertGroupId, id))
                 .forEach(alertHistory -> alertHistoryService.removeById(alertHistory.getId()));
         return removeById(id);
+    }
+
+    /**
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<AlertGroup> selectListByKeyWord(String keyword) {
+        return getBaseMapper()
+                .selectList(new LambdaQueryWrapper<>(AlertGroup.class)
+                        .like(AlertGroup::getName, keyword)
+                        .or()
+                        .like(AlertGroup::getNote, keyword));
+    }
+
+    /**
+     * check alert group has relationship with other table
+     *
+     * @param id {@link Integer} alert group id
+     * @return {@link Boolean} true: has relationship, false: no relationship
+     */
+    @Override
+    public boolean hasRelationShip(Integer id) {
+        return !taskService
+                .list(new LambdaQueryWrapper<Task>().eq(Task::getAlertGroupId, id))
+                .isEmpty();
     }
 }

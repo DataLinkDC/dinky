@@ -21,7 +21,6 @@ package org.dinky.assertion;
 
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ClusterInstance;
-import org.dinky.data.model.Jar;
 import org.dinky.data.model.Task;
 
 /**
@@ -46,12 +45,6 @@ public interface Assert {
     static void checkHost(String host) {
         if (host == null || "".equals(host)) {
             throw new BusException("集群地址暂不可用");
-        }
-    }
-
-    static void check(Jar jar) {
-        if (jar == null) {
-            throw new BusException("自定义Jar不存在");
         }
     }
 }

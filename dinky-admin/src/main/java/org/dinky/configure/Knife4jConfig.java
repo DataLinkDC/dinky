@@ -19,11 +19,12 @@
 
 package org.dinky.configure;
 
+import org.dinky.DinkyVersion;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.web.server.ManagementPortType;
@@ -61,8 +62,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 @Import(BeanValidatorPluginsConfiguration.class)
 public class Knife4jConfig {
 
-    @Value("${dinky.version}")
-    private String dinkyVersion;
+    private final String dinkyVersion = DinkyVersion.getVersion();
 
     private final OpenApiExtensionResolver openApiExtensionResolver;
 
@@ -86,7 +86,7 @@ public class Knife4jConfig {
                 .version(dinkyVersion)
                 .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0")
                 .license("Apache 2.0")
-                .contact(new Contact("Dinky 开源", "http://www.dlink.top/", ""))
+                .contact(new Contact("Dinky 开源", "http://www.dinky.org.cn/", ""))
                 .build();
     }
     /** 增加如下配置可解决Spring Boot 6.x 与Swagger 3.0.0 不兼容问题 */

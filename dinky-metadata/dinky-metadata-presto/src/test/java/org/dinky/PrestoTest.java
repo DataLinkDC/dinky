@@ -22,8 +22,9 @@ package org.dinky;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
+import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.sql.SQLException;
@@ -46,12 +47,14 @@ public class PrestoTest {
 
     @Before
     public void init() {
-        DriverConfig config = new DriverConfig();
-        config.setName(UUID.randomUUID().toString());
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setType("Presto");
-        config.setIp("10.168.100.115");
-        config.setUsername("presto");
-        config.setUrl("jdbc:presto://10.168.100.115:2080");
+        config.setName(UUID.randomUUID().toString());
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .ip("10.168.100.115")
+                .username("dca")
+                .url("jdbc:presto://10.168.100.115:2080")
+                .build());
         try {
             driver = Driver.build(config);
         } catch (Exception e) {

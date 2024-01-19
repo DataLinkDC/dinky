@@ -20,6 +20,7 @@
 package org.dinky.data.model;
 
 import org.dinky.data.enums.Status;
+import org.dinky.data.properties.OssProperties;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +61,7 @@ public class SystemConfiguration {
                     ReflectUtil.getFields(SystemConfiguration.class, f -> f.getType() == Configuration.class))
             .map(f -> (Configuration<?>) ReflectUtil.getFieldValue(systemConfiguration, f))
             .collect(Collectors.toList());
+
     private final Configuration<Boolean> useRestAPI = key(Status.SYS_FLINK_SETTINGS_USERESTAPI)
             .booleanType()
             .defaultValue(true)
@@ -103,6 +105,27 @@ public class SystemConfiguration {
             .stringType()
             .defaultValue(System.getProperty("dinkyAddr"))
             .note(Status.SYS_ENV_SETTINGS_DINKYADDR_NOTE);
+
+    private final Configuration<Integer> jobReSendDiffSecond = key(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND)
+            .intType()
+            .defaultValue(60)
+            .note(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND_NOTE);
+
+    private final Configuration<Integer> diffMinuteMaxSendCount =
+            key(Status.SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT)
+                    .intType()
+                    .defaultValue(2)
+                    .note(Status.SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT_NOTE);
+
+    private final Configuration<Integer> jobMaxRetainCount = key(Status.SYS_ENV_SETTINGS_MAX_RETAIN_COUNT)
+            .intType()
+            .defaultValue(10)
+            .note(Status.SYS_ENV_SETTINGS_MAX_RETAIN_COUNT_NOTE);
+
+    private final Configuration<Integer> jobMaxRetainDays = key(Status.SYS_ENV_SETTINGS_MAX_RETAIN_DAYS)
+            .intType()
+            .defaultValue(30)
+            .note(Status.SYS_ENV_SETTINGS_MAX_RETAIN_DAYS_NOTE);
 
     private final Configuration<Boolean> dolphinschedulerEnable = key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE)
             .booleanType()
@@ -201,14 +224,15 @@ public class SystemConfiguration {
             .defaultValue(true)
             .note(Status.SYS_RESOURCE_SETTINGS_ENABLE_NOTE);
 
+    private final Configuration<ResourcesModelEnum> resourcesModel = key(Status.SYS_RESOURCE_SETTINGS_MODEL)
+            .enumType(ResourcesModelEnum.class)
+            .defaultValue(ResourcesModelEnum.LOCAL)
+            .note(Status.SYS_RESOURCE_SETTINGS_MODEL_NOTE);
+
     private final Configuration<String> resourcesUploadBasePath = key(Status.SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH)
             .stringType()
             .defaultValue("/dinky")
             .note(Status.SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH_NOTE);
-    private final Configuration<ResourcesModelEnum> resourcesModel = key(Status.SYS_RESOURCE_SETTINGS_MODEL)
-            .enumType(ResourcesModelEnum.class)
-            .defaultValue(ResourcesModelEnum.HDFS)
-            .note(Status.SYS_RESOURCE_SETTINGS_MODEL_NOTE);
 
     private final Configuration<String> resourcesOssEndpoint = key(Status.SYS_RESOURCE_SETTINGS_OSS_ENDPOINT)
             .stringType()
@@ -241,6 +265,10 @@ public class SystemConfiguration {
             .stringType()
             .defaultValue("file:///")
             .note(Status.SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS_NOTE);
+    private final Configuration<Boolean> resourcesPathStyleAccess = key(Status.SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS)
+            .booleanType()
+            .defaultValue(true)
+            .note(Status.SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS_NOTE);
 
     /**
      * Initialize after spring bean startup
@@ -328,5 +356,17 @@ public class SystemConfiguration {
 
     public String getPythonHome() {
         return pythonHome.getValue();
+    }
+
+    public OssProperties getOssProperties() {
+        return OssProperties.builder()
+                .enable(true)
+                .endpoint(resourcesOssEndpoint.getValue())
+                .accessKey(resourcesOssAccessKey.getValue())
+                .secretKey(resourcesOssSecretKey.getValue())
+                .bucketName(resourcesOssBucketName.getValue())
+                .region(resourcesOssRegion.getValue())
+                .pathStyleAccess(resourcesPathStyleAccess.getValue())
+                .build();
     }
 }

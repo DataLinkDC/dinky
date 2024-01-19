@@ -22,8 +22,8 @@ package org.dinky.service.impl;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
-import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
+import org.dinky.data.dto.StudioLineageDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.ClusterInstance;
@@ -33,15 +33,14 @@ import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.DDLResult;
 import org.dinky.data.result.IResult;
-import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.StudioService;
@@ -87,11 +86,6 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public JdbcSelectResult getCommonSqlData(Integer taskId) {
-        return ResultPool.getCommonSqlCache(taskId);
-    }
-
-    @Override
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
         JobManager jobManager = JobManager.build(config);
@@ -104,10 +98,10 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public LineageResult getLineage(StudioCADTO studioCADTO) {
+    public LineageResult getLineage(StudioLineageDTO studioCADTO) {
         // TODO 添加ProcessStep
         if (Asserts.isNotNullString(studioCADTO.getDialect())
-                && !Dialect.FLINK_SQL.equalsVal(studioCADTO.getDialect())) {
+                && !Dialect.FLINK_SQL.isDialect(studioCADTO.getDialect())) {
             if (Asserts.isNull(studioCADTO.getDatabaseId())) {
                 log.error("Job's data source not selected!");
                 return null;
@@ -117,11 +111,10 @@ public class StudioServiceImpl implements StudioService {
                 log.error("Job's data source does not exist!");
                 return null;
             }
-            if (Dialect.DORIS.equalsVal(studioCADTO.getDialect())) {
-                return org.dinky.explainer.sqllineage.LineageBuilder.getSqlLineage(
-                        studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
+            if (Dialect.DORIS.isDialect(studioCADTO.getDialect())) {
+                return SQLLineageBuilder.getSqlLineage(studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
             } else {
-                return org.dinky.explainer.sqllineage.LineageBuilder.getSqlLineage(
+                return SQLLineageBuilder.getSqlLineage(
                         studioCADTO.getStatement(), studioCADTO.getDialect().toLowerCase(), dataBase.getDriverConfig());
             }
         } else {
@@ -188,12 +181,19 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public List<Column> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO) {
+    public List<Column> getMSColumns(StudioMetaStoreDTO studioMetaStoreDTO) {
+        String catalogName = studioMetaStoreDTO.getCatalog();
+        String database = studioMetaStoreDTO.getDatabase();
+        String tableName = studioMetaStoreDTO.getTable();
         List<Column> columns = new ArrayList<>();
-        if (!Dialect.isCommonSql(studioMetaStoreDTO.getDialect())) {
-            String catalogName = studioMetaStoreDTO.getCatalog();
-            String database = studioMetaStoreDTO.getDatabase();
-            String tableName = studioMetaStoreDTO.getTable();
+        if (Dialect.isCommonSql(studioMetaStoreDTO.getDialect())) {
+            DataBase dataBase = dataBaseService.getById(studioMetaStoreDTO.getDatabaseId());
+            if (Asserts.isNotNull(dataBase)) {
+                Driver driver = Driver.build(dataBase.getDriverConfig());
+                columns.addAll(driver.listColumns(database, tableName));
+            }
+        } else {
+
             String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
             CustomTableEnvironment customTableEnvironment =

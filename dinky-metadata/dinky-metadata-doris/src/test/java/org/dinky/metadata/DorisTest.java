@@ -22,8 +22,9 @@ package org.dinky.metadata;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
+import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.sql.SQLException;
@@ -46,14 +47,16 @@ public class DorisTest {
 
     @Before
     public void init() {
-        DriverConfig config = new DriverConfig();
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setName(UUID.randomUUID().toString());
         config.setType("Doris");
-        config.setIp("192.168.68.133");
-        config.setPort(9030);
-        config.setUsername("root");
-        config.setPassword("123456");
-        config.setUrl("jdbc:mysql://192.168.68.133:9030/test");
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .ip("192.168.68.133")
+                .port(9030)
+                .username("root")
+                .password("123456")
+                .url("jdbc:mysql://192.168.68.133:9030/test")
+                .build());
         try {
             driver = Driver.build(config);
         } catch (Exception e) {
