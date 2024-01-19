@@ -18,6 +18,7 @@
  */
 
 package org.dinky.constant;
+
 import org.dinky.sql.FlinkQuery;
 
 /**
@@ -26,8 +27,7 @@ import org.dinky.sql.FlinkQuery;
  * @since 2021/5/25 15:51
  */
 public class FlinkSQLConstant {
-    private FlinkSQLConstant() {
-    }
+    private FlinkSQLConstant() {}
 
     /** 分隔符 */
     public static final String SEPARATOR = FlinkQuery.separator();
