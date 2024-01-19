@@ -94,7 +94,6 @@
             <artifactId>hutool-all</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-metadata-base</artifactId>
@@ -217,14 +216,13 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <phase>package</phase>
                         <configuration>
                             <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                             </transformers>
                         </configuration>
                     </execution>
