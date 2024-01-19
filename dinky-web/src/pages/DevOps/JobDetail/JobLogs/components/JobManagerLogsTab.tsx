@@ -28,8 +28,7 @@ import { useState } from 'react';
 type ThreadDumpMessage = {
   stringifiedThreadInfo: string;
   threadName: string;
-}
-
+};
 
 const JobManagerLogsTab = (props: JobProps) => {
   const { jobDetail } = props;
@@ -69,10 +68,11 @@ const JobManagerLogsTab = (props: JobProps) => {
     if (!ur.data) {
       return;
     } else {
-      const threadInfos = JSON.parse(ur.data) && JSON.parse(ur.data)['threadInfos'] as ThreadDumpMessage[];
+      const threadInfos =
+        JSON.parse(ur.data) && (JSON.parse(ur.data)['threadInfos'] as ThreadDumpMessage[]);
       if (!threadInfos) {
         return 'No Log';
-      }else if (threadInfos && threadInfos.length === 0) {
+      } else if (threadInfos && threadInfos.length === 0) {
         return 'No Thread Info';
       }
       return threadInfos.map((x: ThreadDumpMessage) => x.stringifiedThreadInfo).join('');
