@@ -52,8 +52,8 @@ export const VIEW = {
   marginTop: 84,
   topHeight: 35.6,
   bottomHeight: 100,
-  rightMargin: 32,
-  leftMargin: 36,
+  rightMargin: 42,
+  leftMargin: 42,
   midMargin: 44,
   otherHeight: 0,
   paddingInline: 50
