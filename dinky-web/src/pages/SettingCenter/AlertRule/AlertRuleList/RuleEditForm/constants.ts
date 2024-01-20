@@ -56,7 +56,7 @@ export const BOOLEAN_VALUE_ENUM: DefaultOptionType[] = [
 ];
 
 export const AlertRules: any = {
-  jobName: {
+  taskId: {
     label: l('sys.alert.rule.label.taskId'),
     valueType: OperatorType.NUMBER_VALUE
   },

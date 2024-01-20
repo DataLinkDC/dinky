@@ -81,7 +81,7 @@ public class HttpUtils {
             int statusCode = response.getStatusLine().getStatusCode();
 
             if (statusCode == HttpStatus.SC_OK) {
-                logger.info(
+                logger.debug(
                         "post data success, return http status code: {} , msg: {}",
                         statusCode,
                         response.getStatusLine().getReasonPhrase());
