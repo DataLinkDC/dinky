@@ -63,13 +63,13 @@ public class FlinkJobThreadPool implements ThreadPool {
     public void execute(DaemonTask daemonTask) {
         if (daemonTask != null) {
             queue.addTask(daemonTask);
-            resizeWorkers(queue.getTaskSize() / 5);
+            resizeWorkers(queue.getTaskSize() / 10);
         }
     }
 
     public DaemonTask removeByTaskConfig(DaemonTaskConfig daemonTask) {
         DaemonTask removed = queue.removeByTaskConfig(daemonTask);
-        resizeWorkers(queue.getTaskSize() / 5);
+        resizeWorkers(queue.getTaskSize() / 10);
         return removed;
     }
 
