@@ -19,6 +19,10 @@
 
 package org.dinky.utils;
 
+import static org.dinky.data.enums.Status.SYS_FLINK_SETTINGS_SQLSEPARATOR;
+
+import org.dinky.data.model.SystemConfiguration;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,5 +48,16 @@ public class SqlUtilTest {
         String removedNoteSql = SqlUtil.removeNote(testSql);
         Assertions.assertThat(removedNoteSql).isNotNull();
         Assertions.assertThat(removedNoteSql).isNotEqualTo(testSql);
+    }
+
+    @Test
+    public void getStatements() {
+        String sql = "set 'state.savepoints.dir' = 'hdfs://namenode:9000/tmp/checkpoint'; --ddd\n"
+                + "set 'state.checkpoints.dir' = 'hdfs://namenode:9000/tmp/checkpoint'; --dd \n"
+                + "create table abc ;\n";
+        SystemConfiguration.getInstances()
+                .setConfiguration(SYS_FLINK_SETTINGS_SQLSEPARATOR.getKey(), ";\\s*(?:\\n|--.*)");
+        String[] statements = SqlUtil.getStatements(sql);
+        Assertions.assertThat(statements.length).isEqualTo(3);
     }
 }
