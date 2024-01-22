@@ -120,6 +120,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
     >
       <ProFormGroup>
         <ProFormText name='id' hidden={true} />
+        <ProFormText name='ruleType' hidden={true} />
         <ProFormText
           disabled={isSystem}
           rules={[{ required: true }]}
