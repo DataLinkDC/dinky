@@ -139,7 +139,7 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
     (keys) => {
       const treeArray = treeToArray(treeData);
       return keys.filter((key) =>
-        treeArray.some((tree) => tree.value == key && !tree.children.length)
+        treeArray.some((tree) => tree.value == key && !tree.isLeaf)
       );
     },
     [treeData]
@@ -169,7 +169,6 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
               defaultCheckedKeys={filterHalfKeys(roleAssignMenu.menuTreeData.selectedMenuIds)}
               checkable
               defaultExpandAll
-              // checkStrictly
               onCheck={(keys, e) => {
                 onCheck(keys?.concat(e.halfCheckedKeys));
               }}
