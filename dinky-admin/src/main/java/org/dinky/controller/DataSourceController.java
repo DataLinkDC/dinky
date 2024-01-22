@@ -65,10 +65,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
-@Api(tags = "DataBase Controller")
+@Api(tags = "DataSource Controller")
 @RequestMapping("/api/database")
 @RequiredArgsConstructor
-public class DataBaseController {
+public class DataSourceController {
 
     private final DataBaseService databaseService;
 
@@ -109,6 +109,7 @@ public class DataBaseController {
      */
     @GetMapping("/list")
     @ApiOperation("DataBase Get All")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_LIST)
     public Result<List<DataBase>> listDataBases(@RequestParam(value = "keyword") String keyword) {
         return Result.succeed(databaseService.selectListByKeyWord(keyword));
     }
@@ -168,6 +169,7 @@ public class DataBaseController {
      */
     @GetMapping("/listEnabledAll")
     @ApiOperation("Get All DataBase Enabled")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_LIST)
     public Result<List<DataBase>> listEnabledAll() {
         List<DataBase> dataBases = databaseService.listEnabledAll();
         return Result.succeed(dataBases);
@@ -250,6 +252,7 @@ public class DataBaseController {
             paramType = "path",
             dataTypeClass = Integer.class,
             example = "1")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_TREE)
     public Result<List<Schema>> getSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(databaseService.getSchemasAndTables(id));
     }
@@ -271,6 +274,13 @@ public class DataBaseController {
             paramType = "path",
             dataTypeClass = Integer.class,
             example = "1")
+    @SaCheckPermission(
+            value = {
+                PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_REFRESH,
+                PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_TREE,
+                PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_DESC,
+            },
+            mode = SaMode.OR)
     public Result<String> unCacheSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(Status.DATASOURCE_CLEAR_CACHE_SUCCESS);
     }
@@ -312,6 +322,13 @@ public class DataBaseController {
                         dataTypeClass = String.class,
                         example = "user")
             })
+    @SaCheckPermission(
+            value = {
+                PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_REFRESH,
+                PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_TREE,
+                PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_DESC,
+            },
+            mode = SaMode.OR)
     public Result<List<Column>> listColumns(
             @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
         return Result.succeed(databaseService.listColumns(id, schemaName, tableName));
@@ -332,6 +349,7 @@ public class DataBaseController {
             dataType = "QueryData",
             paramType = "body",
             dataTypeClass = QueryData.class)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_QUERY)
     public Result<JdbcSelectResult> queryData(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.queryData(queryData);
         if (jdbcSelectResult.isSuccess()) {
@@ -357,7 +375,7 @@ public class DataBaseController {
             dataType = "QueryData",
             paramType = "body",
             dataTypeClass = QueryData.class)
-    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_EXEC_SQL)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_CONSOLE)
     public Result<JdbcSelectResult> execSql(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.execSql(queryData);
         if (jdbcSelectResult.isSuccess()) {
@@ -404,6 +422,7 @@ public class DataBaseController {
                         dataTypeClass = String.class,
                         example = "user")
             })
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_GENSQL)
     public Result<SqlGeneration> getSqlGeneration(
             @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
         return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName));

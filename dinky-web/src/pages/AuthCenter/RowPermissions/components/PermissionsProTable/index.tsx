@@ -29,6 +29,7 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { RowPermissions } from '@/types/AuthCenter/data.d';
 import { InitRowPermissionsState } from '@/types/AuthCenter/init.d';
 import { RowPermissionsState } from '@/types/AuthCenter/state.d';
+import { PermissionConstants } from '@/types/Public/constants';
 import { getTenantByLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
@@ -144,10 +145,16 @@ const PermissionsProTable: React.FC = () => {
       width: '10%',
       fixed: 'right',
       render: (_: any, record: RowPermissions) => [
-        <Authorized key={`${record.id}_edit_auth`} path='/auth/rowPermissions/edit'>
+        <Authorized
+          key={`${record.id}_edit_auth`}
+          path={PermissionConstants.AUTH_ROW_PERMISSIONS_EDIT}
+        >
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete_auth`} path='/auth/rowPermissions/delete'>
+        <Authorized
+          key={`${record.id}_delete_auth`}
+          path={PermissionConstants.AUTH_ROW_PERMISSIONS_DELETE}
+        >
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteSubmit(record.id)}
@@ -169,7 +176,7 @@ const PermissionsProTable: React.FC = () => {
         actionRef={actionRef}
         loading={rowPermissions.loading}
         toolBarRender={() => [
-          <Authorized key={`createBtn_auth`} path='/auth/rowPermissions/add'>
+          <Authorized key={`createBtn_auth`} path={PermissionConstants.AUTH_ROW_PERMISSIONS_ADD}>
             <CreateBtn
               key='createBtn'
               onClick={() => setRowPermissions((prevState) => ({ ...prevState, addedOpen: true }))}

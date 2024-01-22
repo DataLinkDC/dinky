@@ -58,6 +58,8 @@ export default {
   'menu.registration.cluster.cluster-config': 'Cluster Config',
   'menu.registration.jar': 'Jar',
   'menu.registration.datasource': 'Data Source',
+  'menu.registration.datasource.list': 'Data Source List',
+  'menu.registration.datasource.detail': 'Data Source Detail',
   'menu.registration.alert': 'Alarm',
   'menu.registration.alert.instance': 'Alert Instance',
   'menu.registration.alert.group': 'Alert Group',

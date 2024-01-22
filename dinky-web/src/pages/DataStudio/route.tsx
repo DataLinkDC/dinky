@@ -37,6 +37,7 @@ import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
 import PreViewConfig from '@/pages/DataStudio/RightContainer/PreViewConfig';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
 import { DIALECT } from '@/services/constants';
+import { PermissionConstants } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -59,14 +60,14 @@ import React, { ReactNode } from 'react';
 
 export const LeftSide: TabProp[] = [
   {
-    auth: '/datastudio/left/project',
+    auth: PermissionConstants.DATA_STUDIO_LEFT_PROJECT,
     key: LeftMenuKey.PROJECT_KEY,
     icon: <ConsoleSqlOutlined />,
     label: l(LeftMenuKey.PROJECT_KEY),
     children: <Project />
   },
   {
-    auth: '/datastudio/left/catalog',
+    auth: PermissionConstants.DATASTUDIO_LEFT_CATALOG,
     key: LeftMenuKey.CATALOG_KEY,
     icon: <TableOutlined />,
     label: l(LeftMenuKey.CATALOG_KEY),
@@ -81,14 +82,14 @@ export const LeftSide: TabProp[] = [
       subType?.toLowerCase() !== DIALECT.FLINKSQLENV
   },
   {
-    auth: '/datastudio/left/datasource',
+    auth: PermissionConstants.DATASTUDIO_LEFT_DATASOURCE,
     key: LeftMenuKey.DATASOURCE_KEY,
     icon: <DatabaseOutlined />,
     label: l(LeftMenuKey.DATASOURCE_KEY),
     children: <DataSource />
   },
   {
-    auth: '/datastudio/left/globalVariable',
+    auth: PermissionConstants.DATASTUDIO_LEFT_GLOBAL_VARIABLE,
     key: LeftMenuKey.FRAGMENT_KEY,
     icon: <FunctionOutlined />,
     label: l(LeftMenuKey.FRAGMENT_KEY),
@@ -104,7 +105,7 @@ export const LeftSide: TabProp[] = [
 
 export const RightSide: TabProp[] = [
   {
-    auth: '/datastudio/right/jobConfig',
+    auth: PermissionConstants.DATASTUDIO_RIGHT_JOB_CONFIG,
     key: RightMenuKey.JOB_CONFIG_KEY,
     icon: <SettingOutlined />,
     label: l(RightMenuKey.JOB_CONFIG_KEY),
@@ -114,7 +115,7 @@ export const RightSide: TabProp[] = [
       (TabsPageSubType.flinkSql === subType || TabsPageSubType.flinkJar === subType)
   },
   {
-    auth: '/datastudio/right/previewConfig',
+    auth: PermissionConstants.DATASTUDIO_RIGHT_PREVIEW_CONFIG,
     key: RightMenuKey.PREVIEW_CONFIG_KEY,
     icon: <InsertRowRightOutlined />,
     label: l(RightMenuKey.PREVIEW_CONFIG_KEY),
@@ -124,7 +125,7 @@ export const RightSide: TabProp[] = [
       isSql(subType ?? '')
   },
   {
-    auth: '/datastudio/right/savePoint',
+    auth: PermissionConstants.DATASTUDIO_RIGHT_SAVE_POINT,
     key: RightMenuKey.SAVEPOINT_KEY,
     icon: <FolderOutlined />,
     label: l(RightMenuKey.SAVEPOINT_KEY),
@@ -132,7 +133,7 @@ export const RightSide: TabProp[] = [
     isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
   },
   {
-    auth: '/datastudio/right/historyVision',
+    auth: PermissionConstants.DATASTUDIO_RIGHT_HISTORY_VISION,
     key: RightMenuKey.HISTORY_VISION_KEY,
     icon: <HistoryOutlined />,
     label: l(RightMenuKey.HISTORY_VISION_KEY),
@@ -140,7 +141,7 @@ export const RightSide: TabProp[] = [
     isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
   },
   {
-    auth: '/datastudio/right/jobInfo',
+    auth: PermissionConstants.DATASTUDIO_RIGHT_JOB_INFO,
     key: RightMenuKey.JOB_INFO_KEY,
     icon: <InfoCircleOutlined />,
     label: l(RightMenuKey.JOB_INFO_KEY),
@@ -151,7 +152,7 @@ export const RightSide: TabProp[] = [
 
 export const LeftBottomSide: TabProp[] = [
   {
-    auth: '/datastudio/bottom/console',
+    auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_CONSOLE,
     key: LeftBottomKey.CONSOLE_KEY,
     icon: <RightSquareOutlined />,
     label: l(LeftBottomKey.CONSOLE_KEY),
@@ -164,7 +165,7 @@ export const LeftBottomSide: TabProp[] = [
       subType?.toLowerCase() !== DIALECT.JAVA
   },
   {
-    auth: '/datastudio/bottom/result',
+    auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_RESULT,
     key: LeftBottomKey.RESULT_KEY,
     icon: <MonitorOutlined />,
     label: l(LeftBottomKey.RESULT_KEY),
@@ -178,7 +179,7 @@ export const LeftBottomSide: TabProp[] = [
       subType?.toLowerCase() !== DIALECT.JAVA
   },
   {
-    auth: '/datastudio/bottom/lineage',
+    auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_LINEAGE,
     key: LeftBottomKey.LINEAGE_KEY,
     icon: <ApartmentOutlined />,
     label: l(LeftBottomKey.LINEAGE_KEY),
@@ -192,7 +193,7 @@ export const LeftBottomSide: TabProp[] = [
       subType?.toLowerCase() !== DIALECT.JAVA
   },
   {
-    auth: '/datastudio/bottom/history',
+    auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_HISTORY,
     key: LeftBottomKey.HISTORY_KEY,
     icon: <HistoryOutlined />,
     label: l(LeftBottomKey.HISTORY_KEY),
@@ -207,7 +208,7 @@ export const LeftBottomSide: TabProp[] = [
       subType?.toLowerCase() !== DIALECT.JAVA
   },
   {
-    auth: '/datastudio/bottom/table-data',
+    auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_TABLE_DATA,
     key: LeftBottomKey.TABLE_DATA_KEY,
     icon: <TableOutlined />,
     label: l(LeftBottomKey.TABLE_DATA_KEY),
@@ -216,7 +217,7 @@ export const LeftBottomSide: TabProp[] = [
       type === TabsPageType.project && subType?.toLowerCase() === DIALECT.FLINK_SQL
   },
   {
-    auth: '/datastudio/bottom/tool',
+    auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_TOOL,
     key: LeftBottomKey.TOOLS_KEY,
     icon: <ToolOutlined />,
     label: l(LeftBottomKey.TOOLS_KEY),
