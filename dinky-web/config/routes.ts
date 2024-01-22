@@ -128,14 +128,14 @@ export default [
             path: '/registration/datasource/list',
             name: 'list',
             hideInMenu: true,
-            component: './RegCenter/DataSource',
+            component: './RegCenter/DataSource'
           },
           {
             path: '/registration/datasource/detail',
             name: 'detail',
             hideInMenu: true,
             component: './RegCenter/DataSource/components/DataSourceDetail'
-          },
+          }
         ]
       },
       {

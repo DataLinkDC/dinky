@@ -28,13 +28,13 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { SysMenu } from '@/types/AuthCenter/data.d';
 import { InitMenuState } from '@/types/AuthCenter/init.d';
 import { MenuState } from '@/types/AuthCenter/state.d';
+import { PermissionConstants } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import { PlusSquareTwoTone, ReloadOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { Button, Space } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useEffect, useState } from 'react';
-import {PermissionConstants} from "@/types/Public/constants";
 
 const MenuList: React.FC = () => {
   const [menuState, setMenuState] = useState<MenuState>(InitMenuState);
