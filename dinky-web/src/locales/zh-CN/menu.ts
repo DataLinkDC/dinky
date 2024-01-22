@@ -58,6 +58,8 @@ export default {
   'menu.registration.cluster.cluster-config': '集群配置',
   'menu.registration.jar': 'Jar',
   'menu.registration.datasource': '数据源',
+  'menu.registration.datasource.list': '数据源列表',
+  'menu.registration.datasource.detail': '数据源详情',
   'menu.registration.alert': '告警',
   'menu.registration.alert.instance': '告警实例',
   'menu.registration.alert.group': '告警组',

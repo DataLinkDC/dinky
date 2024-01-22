@@ -46,7 +46,6 @@ const JobInfo = (props: any) => {
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.versionId')}>
           {currentInfo?.versionId}
         </Descriptions.Item>
-        <Descriptions.Item label={l('global.table.note')}>{currentInfo?.note}</Descriptions.Item>
       </Descriptions>
     </div>
   );

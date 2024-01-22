@@ -136,7 +136,7 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
   };
 
   const filterHalfKeys: any = useCallback(
-    (keys) => {
+    (keys: Key[]) => {
       const treeArray = treeToArray(treeData);
       return keys.filter((key) =>
         treeArray.some((tree) => tree.value == key && !tree.isLeaf)
@@ -169,7 +169,7 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
               defaultCheckedKeys={filterHalfKeys(roleAssignMenu.menuTreeData.selectedMenuIds)}
               checkable
               defaultExpandAll
-              onCheck={(keys, e) => {
+              onCheck={(keys : Key[], e) => {
                 onCheck(keys?.concat(e.halfCheckedKeys));
               }}
               multiple={true}

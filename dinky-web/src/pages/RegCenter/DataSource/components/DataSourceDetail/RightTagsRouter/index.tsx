@@ -17,6 +17,7 @@
  *
  */
 
+import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import GenSQL from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/GenSQL';
 import SchemaDesc from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc';
@@ -44,6 +45,8 @@ type RightTagsRouterProps = {
 };
 
 const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
+  const access = useAccess();
+
   const { tableInfo, queryParams, tagDisabled = false, rightButtons } = props;
   const [tableColumns, setTableColumns] = useState<Partial<DataSources.Column[]>>([]);
   useEffect(() => {
@@ -72,7 +75,8 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
         </Space>
       ),
       children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns} />,
-      disabled: tagDisabled
+      disabled: tagDisabled,
+      auth: '/registration/datasource/detail/desc'
     },
     {
       key: 'query',
@@ -83,7 +87,8 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
         </Space>
       ),
       children: <SQLQuery queryParams={queryParams} />,
-      disabled: tagDisabled
+      disabled: tagDisabled,
+      auth: '/registration/datasource/detail/query'
     },
     {
       key: 'gensql',
@@ -94,7 +99,8 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
         </Space>
       ),
       children: <GenSQL tagDisabled={tagDisabled} queryParams={queryParams} />,
-      disabled: tagDisabled
+      disabled: tagDisabled,
+      auth: '/registration/datasource/detail/gensql'
     },
     {
       key: 'console',
@@ -105,7 +111,8 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
         </Space>
       ),
       disabled: true,
-      children: <SQLConsole />
+      children: <SQLConsole />,
+      auth: '/registration/datasource/detail/console'
     }
   ];
 
@@ -116,7 +123,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
     tabBarExtraContent: rightButtons,
     animated: true,
     onChange: (key: string) => setActiveKey(key),
-    items: tabList
+    items: tabList.filter((item) => AuthorizedObject({ path: item.auth, children: item, access }))
   };
 
   /**

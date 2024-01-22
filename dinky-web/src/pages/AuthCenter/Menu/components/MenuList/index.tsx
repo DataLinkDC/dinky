@@ -34,6 +34,7 @@ import { ProCard } from '@ant-design/pro-components';
 import { Button, Space } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useEffect, useState } from 'react';
+import {PermissionConstants} from "@/types/Public/constants";
 
 const MenuList: React.FC = () => {
   const [menuState, setMenuState] = useState<MenuState>(InitMenuState);
@@ -115,6 +116,7 @@ const MenuList: React.FC = () => {
       editOpen: false,
       contextMenuOpen: false,
       isRootMenu: false,
+      isEditDisabled: false,
       sysMenuValue: {}
     }));
   };
@@ -176,7 +178,7 @@ const MenuList: React.FC = () => {
     const { editOpen, sysMenuValue, isEditDisabled } = menuState;
     return (
       <>
-        <Authorized key={`edit_auth`} path='/auth/menu/edit'>
+        <Authorized key={`edit_auth`} path={PermissionConstants.AUTH_MENU_EDIT}>
           <>
             {editOpen && sysMenuValue && isEditDisabled && (
               <Button
@@ -256,6 +258,7 @@ const MenuList: React.FC = () => {
             selectedKeys={selectedKeys}
             isRootMenu={isRootMenu}
             treeData={menuTreeData}
+            disabled={isEditDisabled}
             values={{}}
             open={addedOpen}
             onCancel={handleCancel}
@@ -283,7 +286,7 @@ const MenuList: React.FC = () => {
   const renderLeftExtra = () => {
     return (
       <Space>
-        <Authorized key={`added_auth`} path='/auth/menu/createRoot'>
+        <Authorized key={`added_auth`} path={PermissionConstants.AUTH_MENU_ADD_ROOT}>
           <Button
             size={'small'}
             key={'added-menu'}
@@ -294,7 +297,7 @@ const MenuList: React.FC = () => {
             {l('right.menu.createRoot')}
           </Button>
         </Authorized>
-        <Authorized key={`refresh_auth`} path='/auth/menu/refresh'>
+        <Authorized key={`refresh_auth`} path={PermissionConstants.AUTH_MENU_REFRESH}>
           <Button
             size={'small'}
             key={'refresh-menu'}
