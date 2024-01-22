@@ -30,7 +30,7 @@ import { RocketOutlined, SyncOutlined } from '@ant-design/icons';
 import { DiffEditor } from '@monaco-editor/react';
 import { Button, Card, Modal, Tag } from 'antd';
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 
 const HistoryVersion = (props: any) => {
@@ -48,7 +48,7 @@ const HistoryVersion = (props: any) => {
     if (current?.id) {
       versionList.run();
     }
-  } , [current,activeKey]);
+  }, [current, activeKey]);
 
   const [versionDiffVisible, setVersionDiffVisible] = useState<boolean>(false);
   const [versionDiffRow, setVersionDiffRow] = useState<TaskVersionListItem>();
