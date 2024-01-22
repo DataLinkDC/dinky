@@ -37,7 +37,6 @@ import { FullScreenProvider } from './hooks/useEditor';
 import { errorConfig } from './requestErrorConfig';
 import { getDataByParamsReturnResult } from './services/BusinessCrud';
 import { API } from './services/data';
-import Redirect from './pages/Other/Redirect';
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -231,7 +230,7 @@ const patch = (oldRoutes: any, routes: SysMenu[]) => {
  */
 export function patchClientRoutes({ routes }: { routes: SysMenu[] }) {
   // 根据 extraRoutes 对 routes 做一些修改
-  if(extraRoutes.length){
+  if (extraRoutes.length) {
     patch(routes, extraRoutes);
   }
 }
