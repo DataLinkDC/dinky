@@ -42,6 +42,7 @@ import { ProTable } from '@ant-design/pro-components';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useRef, useState } from 'react';
+import {PermissionConstants} from "@/types/Public/constants";
 
 const DocumentTableList: React.FC = () => {
   const [documentState, setDocumentState] = useState<DocumentState>(InitDocumentState);
@@ -170,7 +171,7 @@ const DocumentTableList: React.FC = () => {
         return (
           <EnableSwitchBtn
             key={`${record.id}_enable`}
-            disabled={!HasAuthority('/registration/document/edit')}
+            disabled={!HasAuthority(PermissionConstants.REGISTRATION_DOCUMENT_EDIT)}
             record={record}
             onChange={() => handleChangeEnable(record)}
           />
@@ -200,10 +201,10 @@ const DocumentTableList: React.FC = () => {
       fixed: 'right',
       hideInDescriptions: true,
       render: (_, record) => [
-        <Authorized key={`${record.id}_edit`} path='/registration/document/edit'>
+        <Authorized key={`${record.id}_edit`} path={PermissionConstants.REGISTRATION_DOCUMENT_EDIT}>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete`} path='/registration/document/delete'>
+        <Authorized key={`${record.id}_delete`} path={PermissionConstants.REGISTRATION_DOCUMENT_DELETE}>
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteSubmit(record.id)}
@@ -223,7 +224,7 @@ const DocumentTableList: React.FC = () => {
         headerTitle={l('rc.doc.management')}
         actionRef={actionRef}
         toolBarRender={() => [
-          <Authorized key='create' path='/registration/document/add'>
+          <Authorized key='create' path={PermissionConstants.REGISTRATION_DOCUMENT_ADD}>
             <CreateBtn
               key={'doctable'}
               onClick={() =>

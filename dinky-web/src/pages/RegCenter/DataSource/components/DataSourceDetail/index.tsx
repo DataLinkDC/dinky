@@ -32,6 +32,7 @@ import {Button, Space} from 'antd';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useLocation} from 'umi';
 import {showDataSourceTable} from "@/pages/DataStudio/LeftContainer/DataSource/service";
+import {PermissionConstants} from "@/types/Public/constants";
 
 
 const DataSourceDetail = (props: connect) => {
@@ -147,7 +148,7 @@ const DataSourceDetail = (props: connect) => {
                     size={'middle'}
                     icon={<ReloadOutlined spin={loading}/>}
                     type='primary'
-                    hidden={!HasAuthority('/registration/datasource/detail/refresh')}
+                    hidden={!HasAuthority(PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_REFRESH)}
                     onClick={() => querySchemaTree()}
                 >
                     {l('button.refresh')}
@@ -171,7 +172,7 @@ const DataSourceDetail = (props: connect) => {
         <ProCard loading={loading} ghost gutter={[16, 16]} split='vertical'>
             <ProCard hoverable bordered className={'siderTree schemaTree'} colSpan='16%'>
                 {/* tree */}
-                <Authorized key='schemaTree' path='/registration/datasource/detail/tree'>
+                <Authorized key='schemaTree' path={PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_TREE}>
                     <SchemaTree
                         selectKeys={selectKeys}
                         expandKeys={expandKeys}

@@ -25,6 +25,7 @@ import * as Icons from '@ant-design/icons';
 import { DeleteTwoTone, PlusCircleTwoTone } from '@ant-design/icons';
 import { Space } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
+import {PermissionConstants} from "@/types/Public/constants";
 
 /**
  * menu icon options
@@ -63,13 +64,13 @@ export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
     icon: <PlusCircleTwoTone />,
     label: l('right.menu.addSub'),
     disabled: isDisabled,
-    path: '/auth/menu/addSub'
+    path: PermissionConstants.AUTH_MENU_ADD_SUB,
   },
   {
     key: 'delete',
     icon: <DeleteTwoTone twoToneColor={'red'} />,
     label: l('button.delete'),
-    path: '/auth/menu/delete'
+    path: PermissionConstants.AUTH_MENU_DELETE,
   },
   {
     key: 'cancel',

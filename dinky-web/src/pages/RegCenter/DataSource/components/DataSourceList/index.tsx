@@ -53,6 +53,7 @@ import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DataSourceModal from '../DataSourceModal';
+import {PermissionConstants} from "@/types/Public/constants";
 
 const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const { dispatch, database } = props;
@@ -187,13 +188,13 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    */
   const renderDataSourceActionButton = (item: DataSources.DataSource) => {
     return [
-      <Authorized key={`${item.id}_edit`} path='/registration/datasource/list/edit'>
+      <Authorized key={`${item.id}_edit`} path={PermissionConstants.REGISTRATION_DATA_SOURCE_EDIT}>
         <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={`${item.id}_delete`} path='/registration/datasource/list/delete'>
+      <Authorized key={`${item.id}_delete`} path={PermissionConstants.REGISTRATION_DATA_SOURCE_DELETE}>
         <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>,
-      <Authorized key={`${item.id}_detail`} path='/registration/datasource/list/heartbeat'>
+      <Authorized key={`${item.id}_heart`} path={PermissionConstants.REGISTRATION_DATA_SOURCE_CHECK_HEARTBEAT}>
         <Button
           className={'options-button'}
           key={`${item.id}_heart`}
@@ -202,7 +203,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
           icon={<HeartTwoTone twoToneColor={item.status ? '#1ac431' : '#e10d0d'} />}
         />
       </Authorized>,
-      <Authorized key={`${item.id}_test`} path='/registration/datasource/list/copy'>
+      <Authorized key={`${item.id}_copy`} path={PermissionConstants.REGISTRATION_DATA_SOURCE_COPY}>
         <Button
           className={'options-button'}
           key={`${item.id}_copy`}
@@ -224,7 +225,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
         <EnableSwitchBtn
           record={item}
           onChange={() => handleEnable(item)}
-          disabled={!HasAuthority('/registration/datasource/list/edit')}
+          disabled={!HasAuthority(PermissionConstants.REGISTRATION_DATA_SOURCE_EDIT)}
         />
         <Tag
           icon={item.status ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
@@ -265,7 +266,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
         placeholder={l('rc.ds.search')}
         onSearch={(value) => queryDataSourceList(value)}
       />,
-      <Authorized key='create' path='/registration/datasource/list/add'>
+      <Authorized key='create' path={PermissionConstants.REGISTRATION_DATA_SOURCE_ADD}>
         <CreateBtn
           key={'CreateBtn'}
           onClick={() => setDatasourceState({ ...datasourceState, addedOpen: true })}

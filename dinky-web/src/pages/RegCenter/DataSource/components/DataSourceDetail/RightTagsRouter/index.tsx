@@ -33,6 +33,7 @@ import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
 import { SearchOutline } from 'antd-mobile-icons';
 import React, { useEffect, useState } from 'react';
+import {PermissionConstants} from "@/types/Public/constants";
 
 /**
  * props
@@ -76,7 +77,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
       ),
       children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns} />,
       disabled: tagDisabled,
-      auth: '/registration/datasource/detail/desc'
+      auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_DESC,
     },
     {
       key: 'query',
@@ -88,7 +89,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
       ),
       children: <SQLQuery queryParams={queryParams} />,
       disabled: tagDisabled,
-      auth: '/registration/datasource/detail/query'
+      auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_QUERY,
     },
     {
       key: 'gensql',
@@ -100,7 +101,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
       ),
       children: <GenSQL tagDisabled={tagDisabled} queryParams={queryParams} />,
       disabled: tagDisabled,
-      auth: '/registration/datasource/detail/gensql'
+      auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_GENSQL,
     },
     {
       key: 'console',
@@ -112,7 +113,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
       ),
       disabled: true,
       children: <SQLConsole />,
-      auth: '/registration/datasource/detail/console'
+      auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_CONSOLE,
     }
   ];
 

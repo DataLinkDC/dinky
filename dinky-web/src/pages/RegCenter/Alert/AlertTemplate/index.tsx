@@ -35,6 +35,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Card, List, Modal } from 'antd';
 import { useState } from 'react';
 import Markdown from 'react-markdown';
+import {PermissionConstants} from "@/types/Public/constants";
 
 export default () => {
   const [alertTemplateState, setAlertTemplateState] =
@@ -101,10 +102,10 @@ export default () => {
    */
   const renderAlertTemplateActionButton = (item: Alert.AlertTemplate) => {
     return [
-      <Authorized key={item.id} path='/registration/alert/template/edit'>
+      <Authorized key={item.id} path={PermissionConstants.REGISTRATION_ALERT_TEMPLATE_EDIT}>
         <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={item.id} path='/registration/alert/template/delete'>
+      <Authorized key={item.id} path={PermissionConstants.REGISTRATION_ALERT_TEMPLATE_DELETE}>
         <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>
     ];
@@ -112,7 +113,7 @@ export default () => {
 
   const renderToolBar = () => {
     return () => [
-      <Authorized key='create' path='/registration/alert/template/add'>
+      <Authorized key='create' path={PermissionConstants.REGISTRATION_ALERT_TEMPLATE_ADD}>
         <CreateBtn
           key={'CreateAlertTemplateBtn'}
           onClick={() =>
@@ -150,7 +151,7 @@ export default () => {
 
     return (
       <List.Item>
-        <Authorized key={item.id} path='/registration/alert/template/add'>
+        <Authorized key={item.id} path={PermissionConstants.REGISTRATION_ALERT_TEMPLATE_ADD}>
           <Button
             type='dashed'
             style={{ height: '25vh', width: '100%' }}

@@ -36,6 +36,7 @@ import { l } from '@/utils/intl';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { useRef, useState } from 'react';
+import {PermissionConstants} from "@/types/Public/constants";
 
 const GlobalVarProTable = () => {
   /**
@@ -143,7 +144,7 @@ const GlobalVarProTable = () => {
         return (
           <EnableSwitchBtn
             key={`${record.id}_enable`}
-            disabled={!HasAuthority('/registration/fragment/edit')}
+            disabled={!HasAuthority(PermissionConstants.REGISTRATION_FRAGMENT_EDIT)}
             record={record}
             onChange={() => handleChangeEnable(record)}
           />
@@ -176,10 +177,10 @@ const GlobalVarProTable = () => {
       valueType: 'option',
       hideInDescriptions: true,
       render: (_, record) => [
-        <Authorized key={`${record.id}_edit`} path='/registration/fragment/edit'>
+        <Authorized key={`${record.id}_edit`} path={PermissionConstants.REGISTRATION_FRAGMENT_EDIT}>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete`} path='/registration/fragment/delete'>
+        <Authorized key={`${record.id}_delete`} path={PermissionConstants.REGISTRATION_FRAGMENT_DELETE}>
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteSubmit(record.id)}
@@ -202,7 +203,7 @@ const GlobalVarProTable = () => {
         loading={globalVarState.loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
-          <Authorized key='create' path='/registration/fragment/add'>
+          <Authorized key='create' path={PermissionConstants.REGISTRATION_FRAGMENT_ADD}>
             <CreateBtn
               key={'vartable'}
               onClick={() => setGlobalVarState((prevState) => ({ ...prevState, addedOpen: true }))}

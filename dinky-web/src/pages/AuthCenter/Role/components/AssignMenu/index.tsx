@@ -27,6 +27,7 @@ import { l } from '@/utils/intl';
 import { Key } from '@ant-design/pro-components';
 import { Button, Drawer, Empty, Input, Space, Spin, Tree } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
+import {DataNode} from "antd/es/tree";
 
 type AssignMenuProps = {
   values: Partial<UserBaseInfo.Role>;
@@ -34,6 +35,10 @@ type AssignMenuProps = {
   onClose: () => void;
   onSubmit: (values: Key[]) => void;
 };
+
+interface TreeDataNode extends DataNode {
+    value: number;
+}
 
 const { DirectoryTree } = Tree;
 
@@ -79,7 +84,7 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
   const handleSubmit = async () => {
     setRoleAssignMenu((prevState) => ({ ...prevState, loading: true }));
     await onSubmit(roleAssignMenu.selectValue);
-    await setRoleAssignMenu((prevState) => ({
+    setRoleAssignMenu((prevState) => ({
       ...prevState,
       loading: false,
       menuTreeData: InitRoleAssignMenuState.menuTreeData
@@ -121,13 +126,13 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
     roleAssignMenu.searchValue
   );
 
-  const treeToArray = (list, newArr = []) => {
+  const treeToArray = (list : TreeDataNode[], newArr: TreeDataNode[] = []) => {
     list.forEach((item) => {
       const { children } = item;
       if (children) {
         if (children.length) {
           newArr.push(item);
-          return treeToArray(children, newArr);
+          return treeToArray(children as TreeDataNode[], newArr);
         }
       }
       newArr.push(item);
@@ -169,7 +174,8 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
               defaultCheckedKeys={filterHalfKeys(roleAssignMenu.menuTreeData.selectedMenuIds)}
               checkable
               defaultExpandAll
-              onCheck={(keys : Key[], e) => {
+              // @ts-ignore
+              onCheck={(keys : Key[], e : { halfCheckedKeys: Key[] }) => {
                 onCheck(keys?.concat(e.halfCheckedKeys));
               }}
               multiple={true}

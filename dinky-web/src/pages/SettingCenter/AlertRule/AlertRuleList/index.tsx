@@ -21,7 +21,7 @@ import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import { Authorized } from '@/hooks/useAccess';
+import {Authorized, HasAuthority} from '@/hooks/useAccess';
 import RuleEditForm from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm';
 import { RuleType } from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm/constants';
 import { queryList } from '@/services/api';
@@ -35,6 +35,7 @@ import { l } from '@/utils/intl';
 import { ActionType, ProTable } from '@ant-design/pro-components';
 import { ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
+import {PermissionConstants} from "@/types/Public/constants";
 
 const AlertRuleList: React.FC = () => {
   const [ruleState, setRuleState] = useState<AlertRuleListState>(InitAlertRuleState);
@@ -107,18 +108,16 @@ const AlertRuleList: React.FC = () => {
       hideInSearch: true,
       render: (_: any, record: AlertRule) => {
         return (
-          // todo: 实现 启用/禁用按钮的 权限控制该按钮是否处于禁用状态 , 如果有 edit 权限则该按钮可以正常操作, 否则不允许(此按钮禁用状态)
-          // <Authorized key={`${record.id}_enable_auth`} path='/settings/alertrule/edit'>
           <EnableSwitchBtn
             key={`${record.id}_enable`}
             record={record}
+            disabled={!HasAuthority(PermissionConstants.SYSTEM_ALERT_RULE_EDIT)}
             onChange={async () => {
               record.enabled = !record.enabled;
               record.rule = JSON.stringify(record.rule);
               await handleSubmit(record);
             }}
           />
-          // </Authorized>
         );
       },
       filters: STATUS_MAPPING(),
@@ -139,10 +138,10 @@ const AlertRuleList: React.FC = () => {
       title: l('global.table.operate'),
       valueType: 'option',
       render: (_text: any, record: AlertRule) => [
-        <Authorized key={`${record.id}_edit_auth`} path='/settings/alertrule/edit'>
+        <Authorized key={`${record.id}_edit_auth`} path={PermissionConstants.SYSTEM_ALERT_RULE_EDIT}>
           <EditBtn key={`${record.id}_edit`} onClick={() => editClick(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete_auth`} path='/settings/alertrule/delete'>
+        <Authorized key={`${record.id}_delete_auth`} path={PermissionConstants.SYSTEM_ALERT_RULE_DELETE}>
           <>
             {record.ruleType != RuleType.SYSTEM && (
               <PopconfirmDeleteBtn
@@ -165,7 +164,7 @@ const AlertRuleList: React.FC = () => {
         loading={ruleState.loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
-          <Authorized key={`CreateRule_auth`} path='/settings/alertrule/add'>
+          <Authorized key={`CreateRule_auth`} path={PermissionConstants.SYSTEM_ALERT_RULE_ADD}>
             <CreateBtn
               key={'CreateRule'}
               onClick={() => setRuleState((prevState) => ({ ...prevState, addedOpen: true }))}

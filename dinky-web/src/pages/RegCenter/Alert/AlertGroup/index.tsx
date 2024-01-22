@@ -45,6 +45,7 @@ import { ActionType } from '@ant-design/pro-table';
 import { connect, Dispatch } from '@umijs/max';
 import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
+import {PermissionConstants} from "@/types/Public/constants";
 
 const AlertGroupTableList: React.FC = (props: any) => {
   /**
@@ -151,7 +152,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
         placeholder={l('rc.ag.search')}
         onSearch={(value) => queryAlertGroupList(value)}
       />,
-      <Authorized key='create' path='/registration/alert/group/add'>
+      <Authorized key='create' path={PermissionConstants.REGISTRATION_ALERT_GROUP_ADD}>
         <Button
           key={'CreateAlertGroup'}
           type='primary'
@@ -181,10 +182,10 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const renderAlertGroupActionButton = (item: Alert.AlertGroup) => {
     return [
-      <Authorized key={`${item.id}_auth_edit`} path='/registration/alert/group/edit'>
+      <Authorized key={`${item.id}_auth_edit`} path={PermissionConstants.REGISTRATION_ALERT_GROUP_EDIT}>
         <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={`${item.id}_auth_delete`} path='/registration/alert/group/delete'>
+      <Authorized key={`${item.id}_auth_delete`} path={PermissionConstants.REGISTRATION_ALERT_GROUP_DELETE}>
         <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>
     ];
@@ -201,7 +202,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
         <Space className={'hidden-overflow'}>
           <EnableSwitchBtn
             key={`${item.id}_enable`}
-            disabled={!HasAuthority('/registration/alert/group/edit')}
+            disabled={!HasAuthority(PermissionConstants.REGISTRATION_ALERT_GROUP_EDIT)}
             record={item}
             onChange={() => handleEnable(item)}
           />

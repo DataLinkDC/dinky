@@ -64,6 +64,7 @@ import {
   Typography
 } from 'antd';
 import { useState } from 'react';
+import {PermissionConstants} from "@/types/Public/constants";
 
 const { Text, Paragraph, Link } = Typography;
 
@@ -171,10 +172,10 @@ export default () => {
   const renderActionButton = (record: Cluster.Instance) => (
     <Space wrap direction={'vertical'} align={'center'}>
       <br />
-      <Authorized key={`${record.id}_edit_auth`} path='/registration/cluster/instance/edit'>
+      <Authorized key={`${record.id}_edit_auth`} path={PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT}>
         <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />
       </Authorized>
-      <Authorized key={`${record.id}_delete_auth`} path='/registration/cluster/instance/delete'>
+      <Authorized key={`${record.id}_delete_auth`} path={PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_DELETE}>
         <PopconfirmDeleteBtn
           key={`${record.id}_delete`}
           onClick={() => handleDelete(record.id)}
@@ -182,7 +183,7 @@ export default () => {
         />
       </Authorized>
       {record.autoRegisters && record.status === 1 && (
-        <Authorized key={`${record.id}_delete_auth`} path='/registration/cluster/instance/kill'>
+        <Authorized key={`${record.id}_kill_auth`} path={PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_KILL}>
           <PopconfirmDeleteBtn
             key={`${record.id}_kill`}
             onClick={() => handleKill(record.id)}
@@ -224,7 +225,7 @@ export default () => {
               <EnableSwitchBtn
                 record={item}
                 onChange={() => handleChangeEnable(item)}
-                disabled={!HasAuthority('/registration/cluster/instance/edit')}
+                disabled={!HasAuthority(PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT)}
               />
               <Tag color='cyan'>
                 {CLUSTER_INSTANCE_TYPE().find((record) => item.type === record.value)?.label}
@@ -273,13 +274,13 @@ export default () => {
       unCheckedChildren={l('rc.ci.mr')}
       onChange={(v) => setIsAutoCreate(v)}
     />,
-    <Authorized key={`_add_auth`} path='/registration/cluster/instance/add'>
+    <Authorized key={`_add_auth`} path={PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD}>
       <CreateBtn
         key={`_add`}
         onClick={() => setClusterInstanceStatus((prevState) => ({ ...prevState, addedOpen: true }))}
       />
     </Authorized>,
-    <Authorized key={`_add_heartbeat`} path='/registration/cluster/instance/heartbeat'>
+    <Authorized key={`_add_heartbeat`} path={PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_HEARTBEATS}>
       <Button
         key={`_add_heartbeat_btn`}
         type={'primary'}
