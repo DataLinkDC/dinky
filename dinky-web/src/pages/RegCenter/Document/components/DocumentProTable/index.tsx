@@ -34,6 +34,7 @@ import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { Document } from '@/types/RegCenter/data.d';
 import { InitDocumentState } from '@/types/RegCenter/init.d';
 import { DocumentState } from '@/types/RegCenter/state.d';
@@ -42,7 +43,6 @@ import { ProTable } from '@ant-design/pro-components';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useRef, useState } from 'react';
-import {PermissionConstants} from "@/types/Public/constants";
 
 const DocumentTableList: React.FC = () => {
   const [documentState, setDocumentState] = useState<DocumentState>(InitDocumentState);
@@ -204,7 +204,10 @@ const DocumentTableList: React.FC = () => {
         <Authorized key={`${record.id}_edit`} path={PermissionConstants.REGISTRATION_DOCUMENT_EDIT}>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete`} path={PermissionConstants.REGISTRATION_DOCUMENT_DELETE}>
+        <Authorized
+          key={`${record.id}_delete`}
+          path={PermissionConstants.REGISTRATION_DOCUMENT_DELETE}
+        >
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteSubmit(record.id)}

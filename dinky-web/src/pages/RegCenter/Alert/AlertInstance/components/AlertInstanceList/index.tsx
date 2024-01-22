@@ -31,6 +31,7 @@ import {
 import { handleRemoveById, queryDataByParams, updateDataByParam } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { Alert } from '@/types/RegCenter/data.d';
 import { InitAlertInstance, InitAlertInstanceState } from '@/types/RegCenter/init.d';
 import { AlertInstanceState } from '@/types/RegCenter/state.d';
@@ -41,7 +42,6 @@ import { Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
-import {PermissionConstants} from "@/types/Public/constants";
 
 const AlertInstanceList: React.FC = () => {
   /**
@@ -141,10 +141,16 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderAlertInstanceActionButton = (item: Alert.AlertInstance) => {
     return [
-      <Authorized key={`${item.id}_auth_edit`} path={PermissionConstants.REGISTRATION_ALERT_INSTANCE_EDIT}>
+      <Authorized
+        key={`${item.id}_auth_edit`}
+        path={PermissionConstants.REGISTRATION_ALERT_INSTANCE_EDIT}
+      >
         <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={`${item.id}_auth_delete`} path={PermissionConstants.REGISTRATION_ALERT_INSTANCE_DELETE}>
+      <Authorized
+        key={`${item.id}_auth_delete`}
+        path={PermissionConstants.REGISTRATION_ALERT_INSTANCE_DELETE}
+      >
         <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>
     ];

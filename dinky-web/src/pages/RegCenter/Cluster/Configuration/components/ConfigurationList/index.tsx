@@ -38,6 +38,7 @@ import {
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { Cluster } from '@/types/RegCenter/data';
 import { InitClusterConfigState } from '@/types/RegCenter/init.d';
 import { ClusterConfigState } from '@/types/RegCenter/state.d';
@@ -46,7 +47,6 @@ import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@a
 import { ActionType, ProList } from '@ant-design/pro-components';
 import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import { useEffect, useRef, useState } from 'react';
-import {PermissionConstants} from "@/types/Public/constants";
 
 export default () => {
   /**
@@ -188,20 +188,32 @@ export default () => {
    */
   const renderDataActionButton = (item: Cluster.Config) => {
     return [
-      <Authorized key={`${item.id}_edit`} path={PermissionConstants.REGISTRATION_CLUSTER_CONFIG_ADD}>
+      <Authorized
+        key={`${item.id}_edit`}
+        path={PermissionConstants.REGISTRATION_CLUSTER_CONFIG_ADD}
+      >
         <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={`${item.id}_delete`} path={PermissionConstants.REGISTRATION_CLUSTER_CONFIG_DELETE}>
+      <Authorized
+        key={`${item.id}_delete`}
+        path={PermissionConstants.REGISTRATION_CLUSTER_CONFIG_DELETE}
+      >
         <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>,
-      <Authorized key={`${item.id}_deploy`} path={PermissionConstants.REGISTRATION_CLUSTER_CONFIG_DEPLOY}>
+      <Authorized
+        key={`${item.id}_deploy`}
+        path={PermissionConstants.REGISTRATION_CLUSTER_CONFIG_DEPLOY}
+      >
         <RunningBtn
           key={`${item.id}_running`}
           title={l('rc.cc.start')}
           onClick={() => handleStartCluster(item)}
         />
       </Authorized>,
-      <Authorized key={`${item.id}_heart`} path={PermissionConstants.REGISTRATION_CLUSTER_CONFIG_HEARTBEATS}>
+      <Authorized
+        key={`${item.id}_heart`}
+        path={PermissionConstants.REGISTRATION_CLUSTER_CONFIG_HEARTBEATS}
+      >
         <Button
           className={'options-button'}
           key={`${item.id}_heart`}

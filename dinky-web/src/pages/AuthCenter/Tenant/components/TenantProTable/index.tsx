@@ -37,10 +37,10 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { InitTenantListState } from '@/types/AuthCenter/init.d';
 import { TenantListState } from '@/types/AuthCenter/state.d';
+import { PermissionConstants } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
-import {PermissionConstants} from "@/types/Public/constants";
 
 const TenantProTable: React.FC = () => {
   /**
@@ -186,7 +186,10 @@ const TenantProTable: React.FC = () => {
         <Authorized key={`${record.id}_edit_auth`} path={PermissionConstants.AUTH_TENANT_EDIT}>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_ass_auth`} path={PermissionConstants.AUTH_TENANT_ASSIGN_USER}>
+        <Authorized
+          key={`${record.id}_ass_auth`}
+          path={PermissionConstants.AUTH_TENANT_ASSIGN_USER}
+        >
           <AssignBtn
             key={`${record.id}_ass`}
             onClick={() => handleAssignVisible(record)}

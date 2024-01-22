@@ -41,7 +41,11 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { InitUserListState } from '@/types/AuthCenter/init.d';
 import { UserListState } from '@/types/AuthCenter/state.d';
-import {PermissionConstants, YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING} from '@/types/Public/constants';
+import {
+  PermissionConstants,
+  YES_OR_NO_ENUM,
+  YES_OR_NO_FILTERS_MAPPING
+} from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import { SuccessMessage, WarningMessage } from '@/utils/messages';
 import { LockTwoTone, RedoOutlined } from '@ant-design/icons';
@@ -249,14 +253,20 @@ const UserProTable = () => {
         <Authorized key={`${record.id}_edit_auth`} path={PermissionConstants.AUTH_USER_EDIT}>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_assign_auth`} path={PermissionConstants.AUTH_USER_ASSIGN_ROLE}>
+        <Authorized
+          key={`${record.id}_assign_auth`}
+          path={PermissionConstants.AUTH_USER_ASSIGN_ROLE}
+        >
           <AssignBtn
             key={`${record.id}_assign`}
             onClick={() => handleAssignRole(record)}
             title={l('user.assignRole')}
           />
         </Authorized>,
-        <Authorized key={`${record.id}_change_auth`} path={PermissionConstants.AUTH_USER_CHANGE_PASSWORD}>
+        <Authorized
+          key={`${record.id}_change_auth`}
+          path={PermissionConstants.AUTH_USER_CHANGE_PASSWORD}
+        >
           <>
             {record.userType === UserType.LOCAL && (
               <Button
@@ -282,7 +292,10 @@ const UserProTable = () => {
             )}
           </>
         </Authorized>,
-        <Authorized key={`${record.id}_recovery_auth`} path={PermissionConstants.AUTH_USER_RECOVERY}>
+        <Authorized
+          key={`${record.id}_recovery_auth`}
+          path={PermissionConstants.AUTH_USER_RECOVERY}
+        >
           <>
             {access.isAdmin && record.isDelete && (
               <Popconfirm
@@ -298,7 +311,10 @@ const UserProTable = () => {
             )}
           </>
         </Authorized>,
-        <Authorized key={`${record.id}_reset_auth`} path={PermissionConstants.AUTH_USER_RESET_PASSWORD}>
+        <Authorized
+          key={`${record.id}_reset_auth`}
+          path={PermissionConstants.AUTH_USER_RESET_PASSWORD}
+        >
           <>
             {access.isAdmin && (
               <Popconfirm
