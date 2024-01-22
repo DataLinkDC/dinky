@@ -130,7 +130,11 @@ public class SystemInit implements ApplicationRunner {
                 .forEach(x -> x.addParameterCheck(y -> {
                     if (Boolean.TRUE.equals(
                             systemConfiguration.getResourcesEnable().getValue())) {
-                        BaseResourceManager.initResourceManager();
+                        try {
+                            BaseResourceManager.initResourceManager();
+                        } catch (Exception e) {
+                            log.error("Init resource error: ", e);
+                        }
                     }
                 }));
     }
