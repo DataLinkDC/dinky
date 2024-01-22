@@ -530,6 +530,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 taskDTO.setStatus(jobInstance.getStatus());
             }
         }
+        if (!Asserts.isNull(taskDTO.getAlertGroupId())) {
+            AlertGroup alertGroup = alertGroupService.getAlertGroupInfo(taskDTO.getAlertGroupId());
+            taskDTO.setAlertGroup(alertGroup);
+        }
         return taskDTO;
     }
 
@@ -547,16 +551,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         TaskDTO task = getTaskInfoById(taskId);
         task.setStep(lifeCycle.getValue());
         if (lifeCycle == JobLifeCycle.PUBLISH) {
-            //            List<SqlExplainResult> sqlExplainResults = explainTask(task);
-            //            for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
-            //                if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
-            //                    throw new SqlExplainExcepition(StrFormatter.format(
-            //                            "task [{}] sql explain failed, sql [{}], error: [{}]",
-            //                            task.getName(),
-            //                            sqlExplainResult.getSql(),
-            //                            sqlExplainResult.getError()));
-            //                }
-            //            }
             Integer taskVersionId = taskVersionService.createTaskVersionSnapshot(task);
             task.setVersionId(taskVersionId);
         }
@@ -570,7 +564,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 log.warn(
                         "JobInstance [{}] step change to [{}] ,Trigger Force Refresh",
                         jobInstance.getName(),
-                        lifeCycle.getValue());
+                        lifeCycle.name());
             }
         }
         return saved;

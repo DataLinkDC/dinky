@@ -60,6 +60,9 @@ const AlertRuleList: React.FC = () => {
     setRuleState(InitAlertRuleState);
   };
   async function handleSubmit(rule: AlertRule) {
+    if (rule.ruleType != RuleType.SYSTEM) {
+      rule.ruleType = RuleType.CUSTOM;
+    }
     await executeAndCallbackRefresh(() => handleAddOrUpdate(API_CONSTANTS.ALERT_RULE, rule));
     handleCleanState();
   }
