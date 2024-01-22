@@ -41,8 +41,14 @@ export default [
     ]
   },
   {
-    path: '/',
-    redirect: '/datastudio'
+    path:  '/',
+    redirect: '/redirect',
+  },
+  {
+    path: '/redirect',
+    component: './Other/Redirect',
+    layout: false,
+    hideInMenu: true,
   },
   // {
   //   path: '/home',

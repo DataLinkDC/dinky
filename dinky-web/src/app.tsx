@@ -37,6 +37,7 @@ import { FullScreenProvider } from './hooks/useEditor';
 import { errorConfig } from './requestErrorConfig';
 import { getDataByParamsReturnResult } from './services/BusinessCrud';
 import { API } from './services/data';
+import Redirect from './pages/Other/Redirect';
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -208,7 +209,7 @@ export const dva = {
  * 动态修改默认跳转路由
  */
 const patch = (oldRoutes: any, routes: SysMenu[]) => {
-  oldRoutes[1].routes = oldRoutes[1].routes.map(
+  oldRoutes[1].routes = oldRoutes[1]?.routes?.map(
     (route: { routes: { path: any; element: JSX.Element }[]; path: string }) => {
       if (route.routes?.length) {
         const redirect = routes?.filter((r) => r.path.startsWith(route.path));
@@ -230,7 +231,9 @@ const patch = (oldRoutes: any, routes: SysMenu[]) => {
  */
 export function patchClientRoutes({ routes }: { routes: SysMenu[] }) {
   // 根据 extraRoutes 对 routes 做一些修改
-  patch(routes, extraRoutes);
+  if(extraRoutes.length){
+    patch(routes, extraRoutes);
+  }
 }
 
 /***

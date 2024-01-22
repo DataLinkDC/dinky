@@ -116,6 +116,35 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
     setRoleAssignMenu((prevState) => ({ ...prevState, selectValue: selectKeys }));
   };
 
+  const treeData = buildMenuTree(
+    sortTreeData(roleAssignMenu.menuTreeData.menus),
+    roleAssignMenu.searchValue
+  );
+
+  const treeToArray = (list, newArr = []) => {
+    list.forEach((item) => {
+      const { children } = item;
+      if (children) {
+        if (children.length) {
+          newArr.push(item);
+          return treeToArray(children, newArr);
+        }
+      }
+      newArr.push(item);
+    });
+    return newArr;
+  };
+
+  const filterHalfKeys: any = useCallback(
+    (keys) => {
+      const treeArray = treeToArray(treeData);
+      return keys.filter((key) =>
+        treeArray.some((tree) => tree.value == key && !tree.isLeaf)
+      );
+    },
+    [treeData]
+  );
+
   return (
     <Drawer
       title={l('role.assignMenu', '', { roleName: values.roleName })}
@@ -137,16 +166,15 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
           <Spin spinning={roleAssignMenu.loading}>
             <DirectoryTree
               selectable
-              defaultCheckedKeys={[...roleAssignMenu.menuTreeData.selectedMenuIds]}
+              defaultCheckedKeys={filterHalfKeys(roleAssignMenu.menuTreeData.selectedMenuIds)}
               checkable
               defaultExpandAll
-              onCheck={(keys) => onCheck(keys)}
+              onCheck={(keys, e) => {
+                onCheck(keys?.concat(e.halfCheckedKeys));
+              }}
               multiple={true}
               className={'treeList'}
-              treeData={buildMenuTree(
-                sortTreeData(roleAssignMenu.menuTreeData.menus),
-                roleAssignMenu.searchValue
-              )}
+              treeData={treeData}
             />
           </Spin>
         </>
