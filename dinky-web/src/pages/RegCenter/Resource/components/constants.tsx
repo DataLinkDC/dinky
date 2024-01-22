@@ -17,6 +17,7 @@
  *
  */
 
+import { PermissionConstants } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import {
   DeleteOutlined,
@@ -24,7 +25,6 @@ import {
   PlusCircleOutlined,
   UploadOutlined
 } from '@ant-design/icons';
-import {PermissionConstants} from "@/types/Public/constants";
 
 /**
  *  the right context menu

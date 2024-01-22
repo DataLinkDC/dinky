@@ -30,11 +30,11 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { SysToken } from '@/types/AuthCenter/data';
 import { InitTokenListState } from '@/types/AuthCenter/init.d';
 import { TokenListState } from '@/types/AuthCenter/state.d';
+import { PermissionConstants } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { connect } from '@umijs/max';
 import { useRef, useState } from 'react';
-import {PermissionConstants} from "@/types/Public/constants";
 
 const TokenList = (props: any) => {
   const actionRef = useRef<ActionType>(); // table action
@@ -117,7 +117,7 @@ const TokenList = (props: any) => {
         <Authorized key={`${record.id}_edit_auth`} path={PermissionConstants.AUTH_TOKEN_EDIT}>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete_auth`}  path={PermissionConstants.AUTH_TOKEN_DELETE}>
+        <Authorized key={`${record.id}_delete_auth`} path={PermissionConstants.AUTH_TOKEN_DELETE}>
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteToken(record?.id)}

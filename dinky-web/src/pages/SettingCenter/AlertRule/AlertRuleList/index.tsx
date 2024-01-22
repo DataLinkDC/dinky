@@ -21,13 +21,14 @@ import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import RuleEditForm from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm';
 import { RuleType } from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm/constants';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { AlertRule } from '@/types/SettingCenter/data';
 import { InitAlertRuleState } from '@/types/SettingCenter/init.d';
 import { AlertRuleListState } from '@/types/SettingCenter/state';
@@ -35,7 +36,6 @@ import { l } from '@/utils/intl';
 import { ActionType, ProTable } from '@ant-design/pro-components';
 import { ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
-import {PermissionConstants} from "@/types/Public/constants";
 
 const AlertRuleList: React.FC = () => {
   const [ruleState, setRuleState] = useState<AlertRuleListState>(InitAlertRuleState);
@@ -138,10 +138,16 @@ const AlertRuleList: React.FC = () => {
       title: l('global.table.operate'),
       valueType: 'option',
       render: (_text: any, record: AlertRule) => [
-        <Authorized key={`${record.id}_edit_auth`} path={PermissionConstants.SYSTEM_ALERT_RULE_EDIT}>
+        <Authorized
+          key={`${record.id}_edit_auth`}
+          path={PermissionConstants.SYSTEM_ALERT_RULE_EDIT}
+        >
           <EditBtn key={`${record.id}_edit`} onClick={() => editClick(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete_auth`} path={PermissionConstants.SYSTEM_ALERT_RULE_DELETE}>
+        <Authorized
+          key={`${record.id}_delete_auth`}
+          path={PermissionConstants.SYSTEM_ALERT_RULE_DELETE}
+        >
           <>
             {record.ruleType != RuleType.SYSTEM && (
               <PopconfirmDeleteBtn

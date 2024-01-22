@@ -34,6 +34,7 @@ import {
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 import { InitAlertGroupState } from '@/types/RegCenter/init.d';
 import { AlertGroupState } from '@/types/RegCenter/state.d';
@@ -45,7 +46,6 @@ import { ActionType } from '@ant-design/pro-table';
 import { connect, Dispatch } from '@umijs/max';
 import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import {PermissionConstants} from "@/types/Public/constants";
 
 const AlertGroupTableList: React.FC = (props: any) => {
   /**
@@ -182,10 +182,16 @@ const AlertGroupTableList: React.FC = (props: any) => {
    */
   const renderAlertGroupActionButton = (item: Alert.AlertGroup) => {
     return [
-      <Authorized key={`${item.id}_auth_edit`} path={PermissionConstants.REGISTRATION_ALERT_GROUP_EDIT}>
+      <Authorized
+        key={`${item.id}_auth_edit`}
+        path={PermissionConstants.REGISTRATION_ALERT_GROUP_EDIT}
+      >
         <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={`${item.id}_auth_delete`} path={PermissionConstants.REGISTRATION_ALERT_GROUP_DELETE}>
+      <Authorized
+        key={`${item.id}_auth_delete`}
+        path={PermissionConstants.REGISTRATION_ALERT_GROUP_DELETE}
+      >
         <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>
     ];

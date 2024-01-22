@@ -33,6 +33,7 @@ import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { UDFTemplate } from '@/types/RegCenter/data';
 import { InitTemplateState } from '@/types/RegCenter/init.d';
 import { TemplateState } from '@/types/RegCenter/state.d';
@@ -42,7 +43,6 @@ import { ActionType, ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
 import TemplateModal from '../TemplateModal';
 import UDFTemplateDrawer from '../UDFTemplateDrawer';
-import {PermissionConstants} from "@/types/Public/constants";
 
 const CodeShowProps: any = {
   height: '40vh',
@@ -199,10 +199,16 @@ const TemplateTable: React.FC = () => {
       hideInSearch: true,
       hideInDescriptions: true,
       render: (text: any, record: UDFTemplate) => [
-        <Authorized key={`${record.id}_edit`} path={PermissionConstants.REGISTRATION_UDF_TEMPLATE_EDIT}>
+        <Authorized
+          key={`${record.id}_edit`}
+          path={PermissionConstants.REGISTRATION_UDF_TEMPLATE_EDIT}
+        >
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete`} path={PermissionConstants.REGISTRATION_UDF_TEMPLATE_DELETE}>
+        <Authorized
+          key={`${record.id}_delete`}
+          path={PermissionConstants.REGISTRATION_UDF_TEMPLATE_DELETE}
+        >
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteSubmit(record.id)}

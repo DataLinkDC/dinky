@@ -37,6 +37,7 @@ import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
 import PreViewConfig from '@/pages/DataStudio/RightContainer/PreViewConfig';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
 import { DIALECT } from '@/services/constants';
+import { PermissionConstants } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -56,7 +57,6 @@ import {
 } from '@ant-design/icons';
 import { TabPaneProps } from 'antd';
 import React, { ReactNode } from 'react';
-import {PermissionConstants} from "@/types/Public/constants";
 
 export const LeftSide: TabProp[] = [
   {

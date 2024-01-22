@@ -25,6 +25,7 @@ import SQLConsole from '@/pages/RegCenter/DataSource/components/DataSourceDetail
 import SQLQuery from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery';
 import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { BookOutlined, ConsoleSqlOutlined, HighlightOutlined } from '@ant-design/icons';
@@ -33,7 +34,6 @@ import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
 import { SearchOutline } from 'antd-mobile-icons';
 import React, { useEffect, useState } from 'react';
-import {PermissionConstants} from "@/types/Public/constants";
 
 /**
  * props
@@ -77,7 +77,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
       ),
       children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns} />,
       disabled: tagDisabled,
-      auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_DESC,
+      auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_DESC
     },
     {
       key: 'query',
@@ -89,7 +89,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
       ),
       children: <SQLQuery queryParams={queryParams} />,
       disabled: tagDisabled,
-      auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_QUERY,
+      auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_QUERY
     },
     {
       key: 'gensql',
@@ -101,7 +101,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
       ),
       children: <GenSQL tagDisabled={tagDisabled} queryParams={queryParams} />,
       disabled: tagDisabled,
-      auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_GENSQL,
+      auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_GENSQL
     },
     {
       key: 'console',
@@ -113,7 +113,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
       ),
       disabled: true,
       children: <SQLConsole />,
-      auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_CONSOLE,
+      auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_CONSOLE
     }
   ];
 

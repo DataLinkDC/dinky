@@ -24,6 +24,7 @@ import { Authorized } from '@/hooks/useAccess';
 import AlertTemplateForm from '@/pages/RegCenter/Alert/AlertTemplate/components/AlertTemplateForm';
 import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { Alert } from '@/types/RegCenter/data';
 import { InitAlertTemplateState } from '@/types/RegCenter/init.d';
 import { AlertTemplateState } from '@/types/RegCenter/state';
@@ -35,7 +36,6 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Card, List, Modal } from 'antd';
 import { useState } from 'react';
 import Markdown from 'react-markdown';
-import {PermissionConstants} from "@/types/Public/constants";
 
 export default () => {
   const [alertTemplateState, setAlertTemplateState] =

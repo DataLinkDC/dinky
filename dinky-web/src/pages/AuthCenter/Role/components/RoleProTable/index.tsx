@@ -36,13 +36,13 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { InitRoleListState } from '@/types/AuthCenter/init.d';
 import { RoleListState } from '@/types/AuthCenter/state.d';
+import { PermissionConstants } from '@/types/Public/constants';
 import { getTenantByLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Tag } from 'antd';
 import React, { Key, useRef, useState } from 'react';
 import RoleModalForm from '../RoleModalForm';
-import {PermissionConstants} from "@/types/Public/constants";
 
 const RoleProTable: React.FC = () => {
   /**
@@ -205,7 +205,10 @@ const RoleProTable: React.FC = () => {
             )}
           </>
         </Authorized>,
-        <Authorized key={`${record.id}_assignMenu_auth`} path={PermissionConstants.AUTH_ROLE_ASSIGN_MENU}>
+        <Authorized
+          key={`${record.id}_assignMenu_auth`}
+          path={PermissionConstants.AUTH_ROLE_ASSIGN_MENU}
+        >
           <AssignBtn
             key={`${record.id}_ass`}
             onClick={() => handleAssignVisible(record)}

@@ -21,10 +21,10 @@ import { LogSvg } from '@/components/Icons/CodeLanguageIcon';
 import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import LogList from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList';
 import RootLogs from '@/pages/SettingCenter/SystemLogs/TagInfo/RootLogs';
+import { PermissionConstants } from '@/types/Public/constants';
 import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
 import { useEffect, useState } from 'react';
-import {PermissionConstants} from "@/types/Public/constants";
 
 const TagInfo = () => {
   const [activeKey, setActiveKey] = useState('logs');
@@ -53,7 +53,7 @@ const TagInfo = () => {
         </Space>
       ),
       children: <LogList />,
-        path: PermissionConstants.SYSTEM_SETTING_INFO_LOG_LIST
+      path: PermissionConstants.SYSTEM_SETTING_INFO_LOG_LIST
     }
   ];
 

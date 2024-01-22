@@ -35,6 +35,7 @@ import {
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { DataSources } from '@/types/RegCenter/data.d';
 import { InitDataSourceState } from '@/types/RegCenter/init.d';
 import { DataSourceState } from '@/types/RegCenter/state.d';
@@ -53,7 +54,6 @@ import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DataSourceModal from '../DataSourceModal';
-import {PermissionConstants} from "@/types/Public/constants";
 
 const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const { dispatch, database } = props;
@@ -191,10 +191,16 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
       <Authorized key={`${item.id}_edit`} path={PermissionConstants.REGISTRATION_DATA_SOURCE_EDIT}>
         <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={`${item.id}_delete`} path={PermissionConstants.REGISTRATION_DATA_SOURCE_DELETE}>
+      <Authorized
+        key={`${item.id}_delete`}
+        path={PermissionConstants.REGISTRATION_DATA_SOURCE_DELETE}
+      >
         <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>,
-      <Authorized key={`${item.id}_heart`} path={PermissionConstants.REGISTRATION_DATA_SOURCE_CHECK_HEARTBEAT}>
+      <Authorized
+        key={`${item.id}_heart`}
+        path={PermissionConstants.REGISTRATION_DATA_SOURCE_CHECK_HEARTBEAT}
+      >
         <Button
           className={'options-button'}
           key={`${item.id}_heart`}

@@ -49,6 +49,7 @@ import {
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { GitProject } from '@/types/RegCenter/data.d';
 import { InitGitProjectState } from '@/types/RegCenter/init.d';
 import { GitProjectState } from '@/types/RegCenter/state.d';
@@ -57,7 +58,6 @@ import { BranchesOutlined, BuildTwoTone } from '@ant-design/icons';
 import { ActionType, DragSortTable, ProColumns } from '@ant-design/pro-table';
 import { Button, Empty, Popconfirm, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
-import {PermissionConstants} from "@/types/Public/constants";
 
 const ProjectProTable: React.FC = () => {
   const [gitProjectStatus, setGitProjectStatus] = useState<GitProjectState>(InitGitProjectState);
@@ -277,7 +277,10 @@ const ProjectProTable: React.FC = () => {
       width: '10%',
       fixed: 'right',
       render: (text: any, record: GitProject) => [
-        <Authorized key={`${record.id}_showLog`} path={PermissionConstants.REGISTRATION_GIT_PROJECT_SHOW_LOG}>
+        <Authorized
+          key={`${record.id}_showLog`}
+          path={PermissionConstants.REGISTRATION_GIT_PROJECT_SHOW_LOG}
+        >
           <ShowLogBtn
             disabled={record.buildStep === 0}
             key={`${record.id}_showLog`}
@@ -291,7 +294,10 @@ const ProjectProTable: React.FC = () => {
           icon={<ShowCodeTreeIcon />}
           onClick={() => handleShowCodeTree(record)}
         />,
-        <Authorized key={`${record.id}_build`} path={PermissionConstants.REGISTRATION_GIT_PROJECT_BUILD}>
+        <Authorized
+          key={`${record.id}_build`}
+          path={PermissionConstants.REGISTRATION_GIT_PROJECT_BUILD}
+        >
           <Popconfirm
             className={'options-button'}
             key={`${record.id}_build`}
@@ -311,10 +317,16 @@ const ProjectProTable: React.FC = () => {
             />
           </Popconfirm>
         </Authorized>,
-        <Authorized key={`${record.id}_edit`} path={PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT}>
+        <Authorized
+          key={`${record.id}_edit`}
+          path={PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT}
+        >
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete`} path={PermissionConstants.REGISTRATION_GIT_PROJECT_DELETE}>
+        <Authorized
+          key={`${record.id}_delete`}
+          path={PermissionConstants.REGISTRATION_GIT_PROJECT_DELETE}
+        >
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteSubmit(record.id)}
