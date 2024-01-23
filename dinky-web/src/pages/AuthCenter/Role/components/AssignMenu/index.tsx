@@ -26,6 +26,7 @@ import { RoleAssignMenuState } from '@/types/AuthCenter/state.d';
 import { l } from '@/utils/intl';
 import { Key } from '@ant-design/pro-components';
 import { Button, Drawer, Empty, Input, Space, Spin, Tree } from 'antd';
+import { DataNode } from 'antd/es/tree';
 import React, { useCallback, useEffect, useState } from 'react';
 
 type AssignMenuProps = {
@@ -34,6 +35,10 @@ type AssignMenuProps = {
   onClose: () => void;
   onSubmit: (values: Key[]) => void;
 };
+
+interface TreeDataNode extends DataNode {
+  value: number;
+}
 
 const { DirectoryTree } = Tree;
 
@@ -79,7 +84,7 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
   const handleSubmit = async () => {
     setRoleAssignMenu((prevState) => ({ ...prevState, loading: true }));
     await onSubmit(roleAssignMenu.selectValue);
-    await setRoleAssignMenu((prevState) => ({
+    setRoleAssignMenu((prevState) => ({
       ...prevState,
       loading: false,
       menuTreeData: InitRoleAssignMenuState.menuTreeData
@@ -116,6 +121,33 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
     setRoleAssignMenu((prevState) => ({ ...prevState, selectValue: selectKeys }));
   };
 
+  const treeData = buildMenuTree(
+    sortTreeData(roleAssignMenu.menuTreeData.menus),
+    roleAssignMenu.searchValue
+  );
+
+  const treeToArray = (list: TreeDataNode[], newArr: TreeDataNode[] = []) => {
+    list.forEach((item) => {
+      const { children } = item;
+      if (children) {
+        if (children.length) {
+          newArr.push(item);
+          return treeToArray(children as TreeDataNode[], newArr);
+        }
+      }
+      newArr.push(item);
+    });
+    return newArr;
+  };
+
+  const filterHalfKeys: any = useCallback(
+    (keys: Key[]) => {
+      const treeArray = treeToArray(treeData);
+      return keys.filter((key) => treeArray.some((tree) => tree.value == key && !tree.isLeaf));
+    },
+    [treeData]
+  );
+
   return (
     <Drawer
       title={l('role.assignMenu', '', { roleName: values.roleName })}
@@ -137,16 +169,16 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
           <Spin spinning={roleAssignMenu.loading}>
             <DirectoryTree
               selectable
-              defaultCheckedKeys={[...roleAssignMenu.menuTreeData.selectedMenuIds]}
+              defaultCheckedKeys={filterHalfKeys(roleAssignMenu.menuTreeData.selectedMenuIds)}
               checkable
               defaultExpandAll
-              onCheck={(keys) => onCheck(keys)}
+              // @ts-ignore
+              onCheck={(keys: Key[], e: { halfCheckedKeys: Key[] }) => {
+                onCheck(keys?.concat(e.halfCheckedKeys));
+              }}
               multiple={true}
               className={'treeList'}
-              treeData={buildMenuTree(
-                sortTreeData(roleAssignMenu.menuTreeData.menus),
-                roleAssignMenu.searchValue
-              )}
+              treeData={treeData}
             />
           </Spin>
         </>

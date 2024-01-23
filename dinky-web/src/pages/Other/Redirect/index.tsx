@@ -17,27 +17,24 @@
  *
  */
 
-package org.dinky.constant;
+import { SysMenu } from '@/types/AuthCenter/data';
+import { Navigate, useModel } from 'umi';
 
-import org.dinky.sql.FlinkQuery;
+const Redirect = () => {
+  const { initialState, _ } = useModel('@@initialState');
 
-/**
- * FlinkSQLConstant
- *
- * @since 2021/5/25 15:51
- */
-public class FlinkSQLConstant {
-    private FlinkSQLConstant() {}
+  console.log(initialState);
 
-    /** 分隔符 */
-    public static final String SEPARATOR = FlinkQuery.separator();
-    /** DDL 类型 */
-    public static final String DDL = "DDL";
-    /** DML 类型 */
-    public static final String DML = "DML";
-    /** DATASTREAM 类型 */
-    public static final String DATASTREAM = "DATASTREAM";
+  const filterMenus = (menus: SysMenu[]) => {
+    return menus?.filter((menu) => menu.type !== 'F');
+  };
+  let extraRoutes = filterMenus(initialState?.currentUser?.menuList);
 
-    /** The define identifier of FlinkSQL Variable */
-    public static final String VARIABLES = ":=";
-}
+  if (initialState?.currentUser?.user?.superAdminFlag) {
+    return <Navigate to='/datastudio' />;
+  }
+
+  return <Navigate to={extraRoutes[0]?.path} />;
+};
+
+export default Redirect;

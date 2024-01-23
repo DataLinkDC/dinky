@@ -33,7 +33,7 @@ const RestartForm = (props: { lastCheckpoint: any; instance: Jobs.JobInstance })
   const { lastCheckpoint, instance } = props;
 
   const { data, loading, run } = useHookRequest(restartTask, {
-    defaultParams: [instance?.taskId, ''],
+    defaultParams: [instance?.taskId, '', l('devops.jobinfo.ck.recovery')],
     manual: true
   });
 
@@ -77,7 +77,12 @@ const RestartForm = (props: { lastCheckpoint: any; instance: Jobs.JobInstance })
           bordered
           items={items}
           extra={
-            <Button type={'link'} onClick={() => run(instance?.taskId, ckp.external_path)}>
+            <Button
+              type={'link'}
+              onClick={() =>
+                run(instance?.taskId, ckp.external_path, l('devops.jobinfo.ck.recovery'))
+              }
+            >
               重启后此处恢复
             </Button>
           }
@@ -103,7 +108,11 @@ const RestartForm = (props: { lastCheckpoint: any; instance: Jobs.JobInstance })
             <Paragraph>
               <blockquote>{l('devops.jobinfo.smart_restart.help')}</blockquote>
             </Paragraph>
-            <Button type={'link'} size={'small'} onClick={() => run(instance?.taskId, '')}>
+            <Button
+              type={'link'}
+              size={'small'}
+              onClick={() => run(instance?.taskId, '', l('devops.jobinfo.ck.recovery'))}
+            >
               {l('devops.jobinfo.restart.auto.savepoint')}
             </Button>
           </>

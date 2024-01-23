@@ -35,7 +35,6 @@ import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.gateway.result.YarnResult;
 import org.dinky.utils.FlinkJsonUtil;
-import org.dinky.utils.ThreadUtil;
 
 import org.apache.flink.client.deployment.ClusterRetrieveException;
 import org.apache.flink.client.program.ClusterClient;
@@ -340,32 +339,33 @@ public abstract class YarnGateway extends AbstractGateway {
                 && counts-- > 0) {
             Thread.sleep(1000);
         }
-        // 睡眠2秒，防止application快速识别抛出的错误
-        ThreadUtil.sleep(2000);
-        ApplicationReport applicationReport = yarnClient.getApplicationReport(clusterClient.getClusterId());
-        if (applicationReport.getYarnApplicationState() != YarnApplicationState.RUNNING) {
-            String logUrl = yarnClient
-                    .getContainers(applicationReport.getCurrentApplicationAttemptId())
-                    .get(0)
-                    .getLogUrl();
-            String log = ReUtil.getGroup1(HTML_TAG_REGEX, HttpUtil.get(logUrl + "/jobmanager.log?start=-10000"));
-            logger.error("\n\nHistory log url is: {}\n\n ", logUrl);
-            throw new RuntimeException(
-                    "Yarn application state is not running, please check yarn cluster status. Log content:\n" + log);
-        }
-        webUrl = applicationReport.getOriginalTrackingUrl();
+        webUrl = clusterClient.getWebInterfaceURL();
         final List<JobDetails> jobDetailsList = new ArrayList<>();
         while (jobDetailsList.isEmpty() && counts-- > 0) {
+            ApplicationReport applicationReport = yarnClient.getApplicationReport(clusterClient.getClusterId());
+            if (applicationReport.getYarnApplicationState() != YarnApplicationState.RUNNING) {
+                String log = getYarnContainerLog(applicationReport);
+                throw new RuntimeException(
+                        "Yarn application state is not running, please check yarn cluster status. Log content:\n"
+                                + log);
+            }
+            // 睡眠1秒，防止flink因为依赖或其他问题导致任务秒挂
             Thread.sleep(1000);
-
             String url = yarnClient
                             .getApplicationReport(clusterClient.getClusterId())
                             .getTrackingUrl()
                     + JobsOverviewHeaders.URL.substring(1);
 
             String json = HttpUtil.get(url);
-            MultipleJobsDetails jobsDetails = FlinkJsonUtil.toBean(json, JobsOverviewHeaders.getInstance());
-            jobDetailsList.addAll(jobsDetails.getJobs());
+            try {
+                MultipleJobsDetails jobsDetails = FlinkJsonUtil.toBean(json, JobsOverviewHeaders.getInstance());
+                jobDetailsList.addAll(jobsDetails.getJobs());
+            } catch (Exception e) {
+                Thread.sleep(1000);
+                String log = getYarnContainerLog(applicationReport);
+                logger.error("Yarn application state is not running, please check yarn cluster status. Log content:\n"
+                        + log);
+            }
             if (!jobDetailsList.isEmpty()) {
                 break;
             }
@@ -379,5 +379,16 @@ public abstract class YarnGateway extends AbstractGateway {
             result.setJids(jobIds);
         }
         return webUrl;
+    }
+
+    protected String getYarnContainerLog(ApplicationReport applicationReport) throws YarnException, IOException {
+        String logUrl = yarnClient
+                .getContainers(applicationReport.getCurrentApplicationAttemptId())
+                .get(0)
+                .getLogUrl();
+        String content = HttpUtil.get(logUrl + "/jobmanager.log?start=-10000");
+        String log = ReUtil.getGroup1(HTML_TAG_REGEX, content);
+        logger.info("\n\nHistory log url is: {}\n\n ", logUrl);
+        return log;
     }
 }

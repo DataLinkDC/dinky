@@ -319,7 +319,7 @@ export default {
   'menu.tips.2': 'Add Root Menu',
   'menu.tips.3': 'Add/Delete SubMenu',
   'menu.type': 'Menu Type',
-  'menu.type.button': 'Button',
+  'menu.type.button': 'Button/Area Block',
   'menu.type.dir': 'Directory',
   'menu.type.menu': 'Menu',
   'menu.typePlaceholder': 'Please select the menu type',

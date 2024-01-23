@@ -306,7 +306,7 @@ export default {
   'menu.tips.2': '添加根菜单',
   'menu.tips.3': '新增/删除子菜单',
   'menu.type': '菜单类型',
-  'menu.type.button': '按钮',
+  'menu.type.button': '按钮/区块',
   'menu.type.dir': '目录',
   'menu.type.menu': '菜单',
   'menu.typePlaceholder': '请选择菜单类型',

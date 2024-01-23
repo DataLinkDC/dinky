@@ -35,7 +35,7 @@ public class FlinkStatementUtil {
 
     public static String getCDCInsertSql(Table table, String targetName, String sourceName) {
         StringBuilder sb = new StringBuilder("INSERT INTO ");
-        sb.append(targetName);
+        sb.append("`").append(targetName).append("`");
         sb.append(" SELECT\n");
         for (int i = 0; i < table.getColumns().size(); i++) {
             sb.append("    ");

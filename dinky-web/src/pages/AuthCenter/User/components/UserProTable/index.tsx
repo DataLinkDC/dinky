@@ -41,7 +41,11 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { InitUserListState } from '@/types/AuthCenter/init.d';
 import { UserListState } from '@/types/AuthCenter/state.d';
-import { YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING } from '@/types/Public/constants';
+import {
+  PermissionConstants,
+  YES_OR_NO_ENUM,
+  YES_OR_NO_FILTERS_MAPPING
+} from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import { SuccessMessage, WarningMessage } from '@/utils/messages';
 import { LockTwoTone, RedoOutlined } from '@ant-design/icons';
@@ -220,15 +224,12 @@ const UserProTable = () => {
       hideInSearch: true,
       render: (_: any, record: UserBaseInfo.User) => {
         return (
-          // todo: 实现 启用/禁用按钮的 权限控制该按钮是否处于禁用状态 , 如果有 edit 权限则该按钮可以正常操作, 否则不允许(此按钮禁用状态)
-          // <Authorized key={`${record.id}_enable_auth`} path='/auth/user/edit'>
           <EnableSwitchBtn
             key={`${record.id}_enable`}
             record={record}
-            disabled={!HasAuthority('/auth/user/edit')}
+            disabled={!HasAuthority(PermissionConstants.AUTH_USER_EDIT)}
             onChange={() => handleChangeEnable(record)}
           />
-          // </Authorized>
         );
       },
       filters: STATUS_MAPPING(),
@@ -249,17 +250,23 @@ const UserProTable = () => {
       width: '12%',
       fixed: 'right',
       render: (_: any, record: UserBaseInfo.User) => [
-        <Authorized key={`${record.id}_enable_auth`} path='/auth/user/edit'>
+        <Authorized key={`${record.id}_edit_auth`} path={PermissionConstants.AUTH_USER_EDIT}>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete_auth`} path='/auth/user/assignRole'>
+        <Authorized
+          key={`${record.id}_assign_auth`}
+          path={PermissionConstants.AUTH_USER_ASSIGN_ROLE}
+        >
           <AssignBtn
-            key={`${record.id}_delete`}
+            key={`${record.id}_assign`}
             onClick={() => handleAssignRole(record)}
             title={l('user.assignRole')}
           />
         </Authorized>,
-        <Authorized key={`${record.id}_change_auth`} path='/auth/user/changePassword'>
+        <Authorized
+          key={`${record.id}_change_auth`}
+          path={PermissionConstants.AUTH_USER_CHANGE_PASSWORD}
+        >
           <>
             {record.userType === UserType.LOCAL && (
               <Button
@@ -274,7 +281,7 @@ const UserProTable = () => {
             )}
           </>
         </Authorized>,
-        <Authorized key={`${record.id}_delete_auth`} path='/auth/user/delete'>
+        <Authorized key={`${record.id}_delete_auth`} path={PermissionConstants.AUTH_USER_DELETE}>
           <>
             {access.isAdmin && !record.isDelete && !record.superAdminFlag && (
               <PopconfirmDeleteBtn
@@ -285,7 +292,10 @@ const UserProTable = () => {
             )}
           </>
         </Authorized>,
-        <Authorized key={`${record.id}_recovery_auth`} path='/auth/user/recovery'>
+        <Authorized
+          key={`${record.id}_recovery_auth`}
+          path={PermissionConstants.AUTH_USER_RECOVERY}
+        >
           <>
             {access.isAdmin && record.isDelete && (
               <Popconfirm
@@ -301,7 +311,10 @@ const UserProTable = () => {
             )}
           </>
         </Authorized>,
-        <Authorized key={`${record.id}_reset_auth`} path='/auth/user/reset'>
+        <Authorized
+          key={`${record.id}_reset_auth`}
+          path={PermissionConstants.AUTH_USER_RESET_PASSWORD}
+        >
           <>
             {access.isAdmin && (
               <Popconfirm
@@ -337,7 +350,7 @@ const UserProTable = () => {
         actionRef={actionRef}
         loading={userState.loading}
         toolBarRender={() => [
-          <Authorized key={`CreateUser`} path='/auth/user/add'>
+          <Authorized key={`CreateUser`} path={PermissionConstants.AUTH_USER_ADD}>
             <CreateBtn
               key={'CreateUser'}
               onClick={() => setUserState((prevState) => ({ ...prevState, addedOpen: true }))}

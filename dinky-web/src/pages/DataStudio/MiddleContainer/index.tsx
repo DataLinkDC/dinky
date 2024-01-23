@@ -240,7 +240,7 @@ const MiddleContainer = (props: any) => {
               activeKey === item.key
                 ? fullscreen
                   ? document.body.clientHeight
-                  : props.centerContentHeight - 40
+                  : props.centerContentHeight - 48
                 : 0
             }
           />

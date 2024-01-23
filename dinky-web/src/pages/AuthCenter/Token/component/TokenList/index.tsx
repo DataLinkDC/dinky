@@ -30,6 +30,7 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { SysToken } from '@/types/AuthCenter/data';
 import { InitTokenListState } from '@/types/AuthCenter/init.d';
 import { TokenListState } from '@/types/AuthCenter/state.d';
+import { PermissionConstants } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { connect } from '@umijs/max';
@@ -113,10 +114,10 @@ const TokenList = (props: any) => {
       width: '10%',
       fixed: 'right',
       render: (_, record: SysToken) => [
-        <Authorized key={`${record.id}_edit_auth`} path='/auth/token/edit'>
+        <Authorized key={`${record.id}_edit_auth`} path={PermissionConstants.AUTH_TOKEN_EDIT}>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete_auth`} path='/auth/token/delete'>
+        <Authorized key={`${record.id}_delete_auth`} path={PermissionConstants.AUTH_TOKEN_DELETE}>
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteToken(record?.id)}
@@ -149,7 +150,7 @@ const TokenList = (props: any) => {
         actionRef={actionRef}
         loading={tokenState.loading}
         toolBarRender={() => [
-          <Authorized key={`CreateToken_auth`} path='/auth/token/add'>
+          <Authorized key={`CreateToken_auth`} path={PermissionConstants.AUTH_TOKEN_ADD}>
             <CreateBtn
               key={'CreateToken'}
               onClick={() => setTokenState((prevState) => ({ ...prevState, addedOpen: true }))}

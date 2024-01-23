@@ -31,6 +31,7 @@ import {
 import { handleRemoveById, queryDataByParams, updateDataByParam } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { Alert } from '@/types/RegCenter/data.d';
 import { InitAlertInstance, InitAlertInstanceState } from '@/types/RegCenter/init.d';
 import { AlertInstanceState } from '@/types/RegCenter/state.d';
@@ -140,10 +141,16 @@ const AlertInstanceList: React.FC = () => {
    */
   const renderAlertInstanceActionButton = (item: Alert.AlertInstance) => {
     return [
-      <Authorized key={`${item.id}_auth_edit`} path='/registration/alert/instance/edit'>
+      <Authorized
+        key={`${item.id}_auth_edit`}
+        path={PermissionConstants.REGISTRATION_ALERT_INSTANCE_EDIT}
+      >
         <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={`${item.id}_auth_delete`} path='/registration/alert/instance/delete'>
+      <Authorized
+        key={`${item.id}_auth_delete`}
+        path={PermissionConstants.REGISTRATION_ALERT_INSTANCE_DELETE}
+      >
         <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
       </Authorized>
     ];
@@ -168,7 +175,7 @@ const AlertInstanceList: React.FC = () => {
         </Tag>
         <EnableSwitchBtn
           key={`${item.id}_enable`}
-          disabled={!HasAuthority('/registration/alert/instance/edit')}
+          disabled={!HasAuthority(PermissionConstants.REGISTRATION_ALERT_INSTANCE_EDIT)}
           record={item}
           onChange={() => handleEnable(item)}
         />
@@ -200,7 +207,7 @@ const AlertInstanceList: React.FC = () => {
         placeholder={l('rc.ai.search')}
         onSearch={(value) => queryAlertInstanceList(value)}
       />,
-      <Authorized key='create' path='/registration/alert/instance/add'>
+      <Authorized key='create' path={PermissionConstants.REGISTRATION_ALERT_INSTANCE_ADD}>
         <CreateBtn
           key={'CreateAlertInstanceBtn'}
           onClick={() => setAlertInstanceState((prevState) => ({ ...prevState, addedOpen: true }))}

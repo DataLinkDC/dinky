@@ -42,7 +42,13 @@ export default [
   },
   {
     path: '/',
-    redirect: '/datastudio'
+    redirect: '/redirect'
+  },
+  {
+    path: '/redirect',
+    component: './Other/Redirect',
+    layout: false,
+    hideInMenu: true
   },
   // {
   //   path: '/home',
@@ -113,10 +119,22 @@ export default [
         path: '/registration/datasource',
         name: 'datasource',
         icon: 'DatabaseOutlined',
-        component: './RegCenter/DataSource',
         routes: [
           {
-            path: '/registration/datasource/detail/:id'
+            path: '/registration/datasource',
+            redirect: '/registration/datasource/list'
+          },
+          {
+            path: '/registration/datasource/list',
+            name: 'list',
+            hideInMenu: true,
+            component: './RegCenter/DataSource'
+          },
+          {
+            path: '/registration/datasource/detail',
+            name: 'detail',
+            hideInMenu: true,
+            component: './RegCenter/DataSource/components/DataSourceDetail'
           }
         ]
       },
