@@ -19,7 +19,6 @@
 
 package org.dinky.context;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.enums.UserType;
 import org.dinky.data.model.LdapUserIdentification;
 import org.dinky.data.model.SystemConfiguration;
@@ -34,6 +33,8 @@ import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.support.LdapContextSource;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LdapContext {
@@ -113,11 +114,10 @@ public class LdapContext {
                 user.setUserType(UserType.LDAP.getCode());
                 user.setEnabled(true);
                 return user;
-            }else {
+            } else {
                 log.error("LDAP user mapping failed, username attribute is null");
                 return null;
             }
-
         }
     }
 }
