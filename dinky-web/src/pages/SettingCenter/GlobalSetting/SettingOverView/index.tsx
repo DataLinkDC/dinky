@@ -28,6 +28,7 @@ import {
   ResourceIcon
 } from '@/components/Icons/CustomIcons';
 import { TagAlignCenter } from '@/components/StyledComponents';
+import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 import { DSConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/DSConfig';
 import { EnvConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/EnvConfig';
@@ -39,12 +40,11 @@ import { ResourcesConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOver
 import { handleOption, queryDataByParams } from '@/services/BusinessCrud';
 import { RESPONSE_CODE } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { BaseConfigProperties, Settings } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { memo, useEffect, useState } from 'react';
-import {PermissionConstants} from "@/types/Public/constants";
-import {AuthorizedObject, useAccess} from "@/hooks/useAccess";
 
 const imgSize = 25;
 
@@ -116,7 +116,13 @@ const SettingOverView = () => {
             {l('sys.setting.dinky')}
           </TagAlignCenter>
         ),
-        children: <EnvConfig  auth={PermissionConstants.SETTING_GLOBAL_DINKY_EDIT}  onSave={handleSaveSubmit} data={dinkyEnv} />,
+        children: (
+          <EnvConfig
+            auth={PermissionConstants.SETTING_GLOBAL_DINKY_EDIT}
+            onSave={handleSaveSubmit}
+            data={dinkyEnv}
+          />
+        ),
         path: PermissionConstants.SETTING_GLOBAL_DINKY
       },
       {
@@ -127,7 +133,13 @@ const SettingOverView = () => {
             {l('sys.setting.flink')}
           </TagAlignCenter>
         ),
-        children: <FlinkConfig  auth={PermissionConstants.SETTING_GLOBAL_FLINK_EDIT}  onSave={handleSaveSubmit} data={flinkConfig} />,
+        children: (
+          <FlinkConfig
+            auth={PermissionConstants.SETTING_GLOBAL_FLINK_EDIT}
+            onSave={handleSaveSubmit}
+            data={flinkConfig}
+          />
+        ),
         path: PermissionConstants.SETTING_GLOBAL_FLINK
       },
       {
@@ -138,7 +150,13 @@ const SettingOverView = () => {
             {l('sys.setting.maven')}
           </TagAlignCenter>
         ),
-        children: <MavenConfig  auth={PermissionConstants.SETTING_GLOBAL_MAVEN_EDIT}  onSave={handleSaveSubmit} data={mavenConfig} />,
+        children: (
+          <MavenConfig
+            auth={PermissionConstants.SETTING_GLOBAL_MAVEN_EDIT}
+            onSave={handleSaveSubmit}
+            data={mavenConfig}
+          />
+        ),
         path: PermissionConstants.SETTING_GLOBAL_MAVEN
       },
       {
@@ -149,7 +167,13 @@ const SettingOverView = () => {
             {l('sys.setting.ds')}
           </TagAlignCenter>
         ),
-        children: <DSConfig  auth={PermissionConstants.SETTING_GLOBAL_DS_EDIT}  onSave={handleSaveSubmit} data={dsConfig} />,
+        children: (
+          <DSConfig
+            auth={PermissionConstants.SETTING_GLOBAL_DS_EDIT}
+            onSave={handleSaveSubmit}
+            data={dsConfig}
+          />
+        ),
         path: PermissionConstants.SETTING_GLOBAL_DS
       },
       {
@@ -160,7 +184,13 @@ const SettingOverView = () => {
             {l('sys.setting.ldap')}
           </TagAlignCenter>
         ),
-        children: <LdapConfig  auth={PermissionConstants.SETTING_GLOBAL_LDAP_EDIT}  onSave={handleSaveSubmit} data={ldapConfig} />,
+        children: (
+          <LdapConfig
+            auth={PermissionConstants.SETTING_GLOBAL_LDAP_EDIT}
+            onSave={handleSaveSubmit}
+            data={ldapConfig}
+          />
+        ),
         path: PermissionConstants.SETTING_GLOBAL_LDAP
       },
       {
@@ -171,7 +201,13 @@ const SettingOverView = () => {
             {l('sys.setting.metrics')}
           </TagAlignCenter>
         ),
-        children: <MetricsConfig  auth={PermissionConstants.SETTING_GLOBAL_METRICS_EDIT}  onSave={handleSaveSubmit} data={metricsConfig} />,
+        children: (
+          <MetricsConfig
+            auth={PermissionConstants.SETTING_GLOBAL_METRICS_EDIT}
+            onSave={handleSaveSubmit}
+            data={metricsConfig}
+          />
+        ),
         path: PermissionConstants.SETTING_GLOBAL_METRICS
       },
       {
@@ -182,7 +218,13 @@ const SettingOverView = () => {
             {l('sys.setting.resource')}
           </TagAlignCenter>
         ),
-        children: <ResourcesConfig auth={PermissionConstants.SETTING_GLOBAL_RESOURCE_EDIT} onSave={handleSaveSubmit} data={resourceConfig} />,
+        children: (
+          <ResourcesConfig
+            auth={PermissionConstants.SETTING_GLOBAL_RESOURCE_EDIT}
+            onSave={handleSaveSubmit}
+            data={resourceConfig}
+          />
+        ),
         path: PermissionConstants.SETTING_GLOBAL_RESOURCE
       }
     ];
@@ -210,7 +252,8 @@ const SettingOverView = () => {
             animated: true,
             onChange: (key: any) => setActiveKey(key),
             items: renderDataTag().filter(
-              (menu) => !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+              (menu) =>
+                !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
             )
           }}
         />

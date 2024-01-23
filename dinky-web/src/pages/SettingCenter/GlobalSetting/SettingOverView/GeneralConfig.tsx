@@ -19,6 +19,8 @@
 
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { BackIcon } from '@/components/Icons/CustomIcons';
+import { HasAuthority } from '@/hooks/useAccess';
+import { ButtonFrontendType } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 import { SWITCH_OPTIONS } from '@/services/constants';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
@@ -28,8 +30,6 @@ import { ProListMetas, ProListProps } from '@ant-design/pro-list';
 import { ActionType } from '@ant-design/pro-table';
 import { Descriptions, Input, Radio, RadioChangeEvent, Space, Switch } from 'antd';
 import React, { useRef } from 'react';
-import {HasAuthority} from "@/hooks/useAccess";
-import {ButtonFrontendType} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/constants";
 
 type GeneralConfigProps = {
   data: BaseConfigProperties[];
@@ -42,7 +42,7 @@ type GeneralConfigProps = {
 };
 
 const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
-  const { data, tag, auth , onSave: handleSubmit, loading, toolBarRender, selectChanges } = props;
+  const { data, tag, auth, onSave: handleSubmit, loading, toolBarRender, selectChanges } = props;
 
   const actionRef = useRef<ActionType>();
 
@@ -57,7 +57,8 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
    * @param entity entity
    */
   const renderActions = (action: any, entity: BaseConfigProperties) => {
-    return entity.frontType === ButtonFrontendType.BOOLEAN || entity.frontType === ButtonFrontendType.OPTION
+    return entity.frontType === ButtonFrontendType.BOOLEAN ||
+      entity.frontType === ButtonFrontendType.OPTION
       ? []
       : [
           <EditBtn
@@ -155,7 +156,9 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
       saveText: <SaveTwoTone title={l('button.save')} />,
       cancelText: <BackIcon title={l('button.back')} />,
       actionRender: (row, config, dom) =>
-        row.frontType === ButtonFrontendType.BOOLEAN || row.frontType === ButtonFrontendType.OPTION ? [] : [dom.save, dom.cancel],
+        row.frontType === ButtonFrontendType.BOOLEAN || row.frontType === ButtonFrontendType.OPTION
+          ? []
+          : [dom.save, dom.cancel],
       onSave: async (key, record) => handleSave(record)
     }
   };

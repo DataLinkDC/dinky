@@ -28,8 +28,7 @@ export enum SettingConfigKeyEnum {
   ENV = 'Env'
 }
 
-
 export enum ButtonFrontendType {
   BOOLEAN = 'boolean',
-  OPTION = 'option',
+  OPTION = 'option'
 }

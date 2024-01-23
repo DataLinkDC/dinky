@@ -29,7 +29,7 @@ interface MetricsConfigProps {
   auth: string;
 }
 
-export const MetricsConfig = ({ data, onSave , auth}: MetricsConfigProps) => {
+export const MetricsConfig = ({ data, onSave, auth }: MetricsConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const onSaveHandler = async (data: BaseConfigProperties) => {

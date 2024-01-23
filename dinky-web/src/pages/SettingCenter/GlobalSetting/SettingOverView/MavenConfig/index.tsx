@@ -26,7 +26,7 @@ import React from 'react';
 interface MavenConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
-  auth : string
+  auth: string;
 }
 
 export const MavenConfig = ({ data, onSave, auth }: MavenConfigProps) => {
