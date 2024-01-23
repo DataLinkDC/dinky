@@ -139,7 +139,7 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
     (keys) => {
       const treeArray = treeToArray(treeData);
       return keys.filter((key) =>
-        treeArray.some((tree) => tree.value == key && !tree.isLeaf)
+        treeArray.some((tree) => tree.value == key && tree.isLeaf)
       );
     },
     [treeData]
