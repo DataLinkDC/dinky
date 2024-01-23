@@ -19,6 +19,8 @@
 
 package org.dinky.sql;
 
+import org.dinky.data.model.SystemConfiguration;
+
 /**
  * FlinkQuery
  *
@@ -27,7 +29,7 @@ package org.dinky.sql;
 public class FlinkQuery {
 
     public static String separator() {
-        return ";\n";
+        return SystemConfiguration.getInstances().getSqlSeparator();
     }
 
     public static String defaultCatalog() {

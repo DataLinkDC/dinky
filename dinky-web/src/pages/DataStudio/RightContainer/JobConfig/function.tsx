@@ -75,7 +75,7 @@ export const buildRunModelOptions = () => {
  */
 export const buildClusterOptions = (
   selectedRunMode: string,
-  sessionCluster: Cluster.Instance[]
+  sessionCluster: Cluster.Instance[] = []
 ) => {
   const sessionClusterOptions: DefaultOptionType[] = [];
   // filter session cluster options, and need to filter auto register cluster and status is normal(1)

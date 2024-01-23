@@ -19,21 +19,25 @@
 
 package org.dinky.constant;
 
+import org.dinky.sql.FlinkQuery;
+
 /**
  * FlinkSQLConstant
  *
  * @since 2021/5/25 15:51
  */
-public interface FlinkSQLConstant {
+public class FlinkSQLConstant {
+    private FlinkSQLConstant() {}
+
     /** 分隔符 */
-    String SEPARATOR = ";\n";
+    public static final String SEPARATOR = FlinkQuery.separator();
     /** DDL 类型 */
-    String DDL = "DDL";
+    public static final String DDL = "DDL";
     /** DML 类型 */
-    String DML = "DML";
+    public static final String DML = "DML";
     /** DATASTREAM 类型 */
-    String DATASTREAM = "DATASTREAM";
+    public static final String DATASTREAM = "DATASTREAM";
 
     /** The define identifier of FlinkSQL Variable */
-    String VARIABLES = ":=";
+    public static final String VARIABLES = ":=";
 }

@@ -28,6 +28,7 @@ import org.apache.flink.client.deployment.StandaloneClusterId;
 import org.apache.flink.client.program.rest.RestClusterClient;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.ReadableConfig;
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.client.JobStatusMessage;
 
 import java.util.Collection;
@@ -75,6 +76,27 @@ public class FlinkAppUtil {
         }
     }
 
+    public static void monitorFlinkTask(JobClient jobClient, int taskId) {
+        boolean isRun = true;
+        String jobId = jobClient.getJobID().toHexString();
+        try {
+            while (isRun) {
+                String jobStatus = jobClient.getJobStatus().get().toString();
+                JobStatus status = JobStatus.get(jobStatus);
+                if (status.isDone()) {
+                    sendHook(taskId, jobId, 0);
+                    log.info("refesh job status finished, status is {}", status);
+                    isRun = false;
+                }
+                Thread.sleep(5000);
+            }
+        } catch (Exception e) {
+            // If an exception is thrown, it will cause the k8s pod to trigger a restart,
+            // resulting in an inability to exit normally
+            log.error("refesh status failed:", e);
+        }
+    }
+
     /**
      * The sendHook method is used to send a Hook request.
      * This method sends an HTTP request to notify a specific address about the completion status of a task.
@@ -82,9 +104,9 @@ public class FlinkAppUtil {
      * If sending the request fails, it will be retried up to 30 times with a 1-second interval between each retry.
      * If the retry limit is exceeded, an exception is thrown.
      */
-    private static void sendHook(int taskId, String jobId, int reTryCount) throws InterruptedException {
+    private static void sendHook(int taskId, String jobId, int reTryCount) {
+        String dinkyAddr = SystemConfiguration.getInstances().getDinkyAddr().getValue();
         try {
-            String dinkyAddr = SystemConfiguration.getInstances().getDinkyAddr().getValue();
             String url = StrFormatter.format(
                     "http://{}/api/jobInstance/hookJobDone?taskId={}&jobId={}", dinkyAddr, taskId, jobId);
             String resultStr = HttpUtil.get(url);
@@ -97,10 +119,14 @@ public class FlinkAppUtil {
         } catch (Exception e) {
             if (reTryCount < 30) {
                 log.error("send hook failed,retry later taskId:{},jobId:{},{}", taskId, jobId, e.getMessage());
-                Thread.sleep(1000);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
                 sendHook(taskId, jobId, reTryCount + 1);
             } else {
-                throw new RuntimeException("Hook Job Done failed, The retry limit is exceeded: " + e.getMessage());
+                log.error("Hook Job Done failed to {}, The retry limit is exceeded: {}", dinkyAddr, e.getMessage());
             }
         }
     }

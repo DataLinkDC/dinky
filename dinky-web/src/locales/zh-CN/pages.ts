@@ -306,7 +306,7 @@ export default {
   'menu.tips.2': '添加根菜单',
   'menu.tips.3': '新增/删除子菜单',
   'menu.type': '菜单类型',
-  'menu.type.button': '按钮',
+  'menu.type.button': '按钮/区块',
   'menu.type.dir': '目录',
   'menu.type.menu': '菜单',
   'menu.typePlaceholder': '请选择菜单类型',
@@ -422,6 +422,7 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig.tip2':
     '如下拉框无数据,请先配置/新建集群实例,或者检查集群配置/集群实例是否为健康可用状态',
   'pages.datastudio.label.jobConfig.execmode.tip': '指定 Flink 任务的执行模式，默认为 Local',
+  'pages.datastudio.label.jobConfig.watermark': '当前任务已发布，配置禁止修改，如需修改，请先下线',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL 环境',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
     '选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。',

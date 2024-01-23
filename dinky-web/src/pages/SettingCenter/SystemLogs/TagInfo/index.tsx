@@ -21,6 +21,7 @@ import { LogSvg } from '@/components/Icons/CodeLanguageIcon';
 import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import LogList from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList';
 import RootLogs from '@/pages/SettingCenter/SystemLogs/TagInfo/RootLogs';
+import { PermissionConstants } from '@/types/Public/constants';
 import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
 import { useEffect, useState } from 'react';
@@ -41,7 +42,7 @@ const TagInfo = () => {
         </Space>
       ),
       children: <RootLogs />,
-      path: '/settings/systemlog/rootlog'
+      path: PermissionConstants.SYSTEM_SETTING_INFO_ROOT_LOG
     },
     {
       key: 'logList',
@@ -52,7 +53,7 @@ const TagInfo = () => {
         </Space>
       ),
       children: <LogList />,
-      path: '/settings/systemlog/loglist'
+      path: PermissionConstants.SYSTEM_SETTING_INFO_LOG_LIST
     }
   ];
 

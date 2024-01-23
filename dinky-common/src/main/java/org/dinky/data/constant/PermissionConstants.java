@@ -90,16 +90,19 @@ public class PermissionConstants {
     /**
      * data source
      */
-    public static final String REGISTRATION_DATA_SOURCE_ADD = "registration:datasource:add";
+    public static final String REGISTRATION_DATA_SOURCE_LIST = "registration:datasource:list";
 
-    public static final String REGISTRATION_DATA_SOURCE_EDIT = "registration:datasource:edit";
-    public static final String REGISTRATION_DATA_SOURCE_DELETE = "registration:datasource:delete";
-    // copy
-    public static final String REGISTRATION_DATA_SOURCE_COPY = "registration:datasource:copy";
-    // checkHeartBeat
-    public static final String REGISTRATION_DATA_SOURCE_CHECK_HEARTBEAT = "registration:datasource:heartbeat";
-    // execSql
-    public static final String REGISTRATION_DATA_SOURCE_EXEC_SQL = "registration:datasource:execSql";
+    public static final String REGISTRATION_DATA_SOURCE_ADD = "registration:datasource:list:add";
+    public static final String REGISTRATION_DATA_SOURCE_EDIT = "registration:datasource:list:edit";
+    public static final String REGISTRATION_DATA_SOURCE_DELETE = "registration:datasource:list:delete";
+    public static final String REGISTRATION_DATA_SOURCE_COPY = "registration:datasource:list:copy";
+    public static final String REGISTRATION_DATA_SOURCE_CHECK_HEARTBEAT = "registration:datasource:list:heartbeat";
+    public static final String REGISTRATION_DATA_SOURCE_DETAIL_TREE = "registration:datasource:detail:tree";
+    public static final String REGISTRATION_DATA_SOURCE_DETAIL_DESC = "registration:datasource:detail:desc";
+    public static final String REGISTRATION_DATA_SOURCE_DETAIL_QUERY = "registration:datasource:detail:query";
+    public static final String REGISTRATION_DATA_SOURCE_DETAIL_GENSQL = "registration:datasource:detail:gensql";
+    public static final String REGISTRATION_DATA_SOURCE_DETAIL_CONSOLE = "registration:datasource:detail:console";
+    public static final String REGISTRATION_DATA_SOURCE_DETAIL_REFRESH = "registration:datasource:detail:refresh";
 
     /**
      * document

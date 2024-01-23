@@ -25,6 +25,11 @@ import { ProCard } from '@ant-design/pro-components';
 import { Spin } from 'antd';
 import { useState } from 'react';
 
+type ThreadDumpMessage = {
+  stringifiedThreadInfo: string;
+  threadName: string;
+};
+
 const JobManagerLogsTab = (props: JobProps) => {
   const { jobDetail } = props;
   const jmaddr = jobDetail?.history?.jobManagerAddress;
@@ -63,9 +68,14 @@ const JobManagerLogsTab = (props: JobProps) => {
     if (!ur.data) {
       return;
     } else {
-      return (JSON.parse(ur.data)['threadInfos'] as any[])
-        .map((x) => x['stringifiedThreadInfo'])
-        .join('');
+      const threadInfos =
+        JSON.parse(ur.data) && (JSON.parse(ur.data)['threadInfos'] as ThreadDumpMessage[]);
+      if (!threadInfos) {
+        return 'No Log';
+      } else if (threadInfos && threadInfos.length === 0) {
+        return 'No Thread Info';
+      }
+      return threadInfos.map((x: ThreadDumpMessage) => x.stringifiedThreadInfo).join('');
     }
   };
 

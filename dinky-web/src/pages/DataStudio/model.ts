@@ -52,8 +52,8 @@ export const VIEW = {
   marginTop: 84,
   topHeight: 35.6,
   bottomHeight: 100,
-  rightMargin: 32,
-  leftMargin: 36,
+  rightMargin: 42,
+  leftMargin: 42,
   midMargin: 44,
   otherHeight: 0,
   paddingInline: 50
@@ -231,19 +231,6 @@ export type Container = {
 
 export type BottomContainerContent = {
   console: string;
-};
-
-export type SessionType = {
-  session?: string;
-  sessionConfig?: {
-    type?: string;
-    clusterId?: number;
-    clusterName?: string;
-    address?: string;
-  };
-  createUser?: string;
-  createTime?: string;
-  connectors: ConnectorType[];
 };
 
 /**
@@ -457,7 +444,7 @@ const Model: ModelType = {
       });
     },
     *querySessionData({ payload }, { call, put }) {
-      const response: SessionType = yield call(getSessionData, payload);
+      const response: Cluster.Instance[] = yield call(getSessionData, payload);
       yield put({
         type: 'saveSession',
         payload: response

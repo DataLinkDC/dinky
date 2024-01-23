@@ -18,13 +18,13 @@
  */
 
 import { DataSourceDetailBackButton } from '@/components/StyledComponents';
+import { Authorized, HasAuthority, useAccess } from '@/hooks/useAccess';
+import { showDataSourceTable } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
-import { getDataByIdReturnResult } from '@/services/BusinessCrud';
-import { RESPONSE_CODE } from '@/services/constants';
-import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { BackwardOutlined, ReloadOutlined } from '@ant-design/icons';
@@ -32,15 +32,12 @@ import { Key, ProCard } from '@ant-design/pro-components';
 import { connect, history } from '@umijs/max';
 import { Button, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
+import { useLocation } from 'umi';
 
-interface DataSourceDetailProps {
-  dataSource: DataSources.DataSource;
-  backClick: () => void;
-}
-const DataSourceDetail = (props: DataSourceDetailProps & connect) => {
+const DataSourceDetail = (props: connect) => {
+  const access = useAccess();
+
   const {
-    dataSource,
-    backClick,
     dispatch,
     database: { dbData, selectDatabaseId, expandKeys, selectKeys }
   } = props;
@@ -55,11 +52,12 @@ const DataSourceDetail = (props: DataSourceDetailProps & connect) => {
   });
   const selectDb = (dbData as DataSources.DataSource[]).filter((x) => x.id === selectDatabaseId)[0];
 
+  const location = useLocation();
+  const paramsId = location.search.split('=')[1];
+
   const handleBackClick = () => {
     // go back
-    history.push(`/registration/datasource`);
-    // back click callback
-    backClick();
+    history.push(`/registration/datasource/list`);
   };
 
   const clearState = () => {
@@ -75,15 +73,9 @@ const DataSourceDetail = (props: DataSourceDetailProps & connect) => {
   const querySchemaTree = useCallback(async () => {
     clearState();
     setLoading(true);
-    await getDataByIdReturnResult(API_CONSTANTS.DATASOURCE_GET_SCHEMA_TABLES, dataSource.id).then(
-      (res) => {
-        if (res.code === RESPONSE_CODE.SUCCESS) {
-          setTreeData(res.data);
-        }
-      }
-    );
+    await showDataSourceTable(Number(paramsId)).then((res) => res && setTreeData(res));
     setLoading(false);
-  }, [dataSource.id]);
+  }, [paramsId]);
 
   useEffect(() => {
     querySchemaTree();
@@ -123,7 +115,7 @@ const DataSourceDetail = (props: DataSourceDetailProps & connect) => {
     });
 
     setParams({
-      id: dataSource.id as number,
+      id: Number(paramsId),
       schemaName,
       tableName
     });
@@ -155,6 +147,7 @@ const DataSourceDetail = (props: DataSourceDetailProps & connect) => {
           size={'middle'}
           icon={<ReloadOutlined spin={loading} />}
           type='primary'
+          hidden={!HasAuthority(PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_REFRESH)}
           onClick={() => querySchemaTree()}
         >
           {l('button.refresh')}
@@ -178,13 +171,18 @@ const DataSourceDetail = (props: DataSourceDetailProps & connect) => {
     <ProCard loading={loading} ghost gutter={[16, 16]} split='vertical'>
       <ProCard hoverable bordered className={'siderTree schemaTree'} colSpan='16%'>
         {/* tree */}
-        <SchemaTree
-          selectKeys={selectKeys}
-          expandKeys={expandKeys}
-          onExpand={handleTreeExpand}
-          onNodeClick={onSchemaTreeNodeClick}
-          treeData={treeData}
-        />
+        <Authorized
+          key='schemaTree'
+          path={PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_TREE}
+        >
+          <SchemaTree
+            selectKeys={selectKeys}
+            expandKeys={expandKeys}
+            onExpand={handleTreeExpand}
+            onNodeClick={onSchemaTreeNodeClick}
+            treeData={treeData}
+          />
+        </Authorized>
       </ProCard>
       <ProCard hoverable colSpan='84%' ghost headerBordered>
         {/* tags */}

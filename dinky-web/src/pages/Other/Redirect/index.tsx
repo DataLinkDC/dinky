@@ -17,15 +17,24 @@
  *
  */
 
-import { getIntl } from '@umijs/max';
+import { SysMenu } from '@/types/AuthCenter/data';
+import { Navigate, useModel } from 'umi';
 
-export const l = (id: string, defaultMessage?: string, value?: {}): string => {
-  if (!id) {
-    return '';
+const Redirect = () => {
+  const { initialState, _ } = useModel('@@initialState');
+
+  console.log(initialState);
+
+  const filterMenus = (menus: SysMenu[]) => {
+    return menus?.filter((menu) => menu.type !== 'F');
+  };
+  let extraRoutes = filterMenus(initialState?.currentUser?.menuList);
+
+  if (initialState?.currentUser?.user?.superAdminFlag) {
+    return <Navigate to='/datastudio' />;
   }
-  return getIntl().formatMessage({ id, defaultMessage }, value);
+
+  return <Navigate to={extraRoutes[0]?.path} />;
 };
 
-export const parseSplitI18nToWaterMarkList = (i18nMsg: string, splitter: string): string[] => {
-  return i18nMsg.split(splitter);
-};
+export default Redirect;

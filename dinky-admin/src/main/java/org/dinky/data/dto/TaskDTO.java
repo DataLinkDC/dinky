@@ -21,6 +21,7 @@ package org.dinky.data.dto;
 
 import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.model.Task;
+import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.job.JobConfig;
 
@@ -126,6 +127,9 @@ public class TaskDTO extends AbstractStatementDTO {
             example = "7001",
             notes = "ID of the alert group associated with the task")
     private Integer alertGroupId;
+
+    @ApiModelProperty(value = "Alert Group", dataType = "AlertGroup", notes = "Alert group associated with the task")
+    private AlertGroup alertGroup;
 
     @ApiModelProperty(value = "Note", dataType = "String", notes = "Additional notes for the task")
     private String note;

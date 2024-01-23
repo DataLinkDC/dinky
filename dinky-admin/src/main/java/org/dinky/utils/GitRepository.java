@@ -124,6 +124,7 @@ public class GitRepository {
                                 super.write(str);
                             }
                         }))
+                        .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
                         .call();
                 git.close();
             } else {

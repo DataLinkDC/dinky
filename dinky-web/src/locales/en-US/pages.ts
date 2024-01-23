@@ -319,7 +319,7 @@ export default {
   'menu.tips.2': 'Add Root Menu',
   'menu.tips.3': 'Add/Delete SubMenu',
   'menu.type': 'Menu Type',
-  'menu.type.button': 'Button',
+  'menu.type.button': 'Button/Area Block',
   'menu.type.dir': 'Directory',
   'menu.type.menu': 'Menu',
   'menu.typePlaceholder': 'Please select the menu type',
@@ -442,6 +442,8 @@ export default {
     'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available.',
   'pages.datastudio.label.jobConfig.execmode.tip':
     'Specify the execution mode of the Flink task, the default is Local',
+  'pages.datastudio.label.jobConfig.watermark':
+    'Current task has published,Config cannot modified,If you need to modify, please offline first',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL environment',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
     'Select the FlinkSQL execution environment of the current task, and the environment statement will be executed in advance. The default is none. ',

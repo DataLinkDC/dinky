@@ -21,7 +21,6 @@ package org.dinky.init;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
-import org.dinky.daemon.constant.FlinkTaskConstant;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.daemon.pool.ScheduleThreadPool;
 import org.dinky.daemon.task.DaemonTask;
@@ -35,7 +34,6 @@ import org.dinky.data.model.rbac.Tenant;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.ClearJobHistoryTask;
-import org.dinky.job.DynamicResizeFlinkJobPoolTask;
 import org.dinky.job.FlinkJobTask;
 import org.dinky.job.SystemMetricsTask;
 import org.dinky.scheduler.client.ProjectClient;
@@ -132,7 +130,11 @@ public class SystemInit implements ApplicationRunner {
                 .forEach(x -> x.addParameterCheck(y -> {
                     if (Boolean.TRUE.equals(
                             systemConfiguration.getResourcesEnable().getValue())) {
-                        BaseResourceManager.initResourceManager();
+                        try {
+                            BaseResourceManager.initResourceManager();
+                        } catch (Exception e) {
+                            log.error("Init resource error: ", e);
+                        }
                     }
                 }));
     }
@@ -161,10 +163,6 @@ public class SystemInit implements ApplicationRunner {
         // Init clear job history task
         DaemonTask clearJobHistoryTask = DaemonTask.build(new DaemonTaskConfig(ClearJobHistoryTask.TYPE));
         schedule.addSchedule(clearJobHistoryTask, new PeriodicTrigger(1, TimeUnit.HOURS));
-
-        // Init flink job dynamic pool task
-        DaemonTask flinkJobPoolTask = DaemonTask.build(new DaemonTaskConfig(DynamicResizeFlinkJobPoolTask.TYPE));
-        schedule.addSchedule(flinkJobPoolTask, new PeriodicTrigger(FlinkTaskConstant.POLLING_GAP));
 
         // Add flink running job task to flink job thread pool
         List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();

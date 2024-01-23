@@ -61,13 +61,14 @@ public class SystemConfiguration {
                     ReflectUtil.getFields(SystemConfiguration.class, f -> f.getType() == Configuration.class))
             .map(f -> (Configuration<?>) ReflectUtil.getFieldValue(systemConfiguration, f))
             .collect(Collectors.toList());
+
     private final Configuration<Boolean> useRestAPI = key(Status.SYS_FLINK_SETTINGS_USERESTAPI)
             .booleanType()
             .defaultValue(true)
             .note(Status.SYS_FLINK_SETTINGS_USERESTAPI_NOTE);
     private final Configuration<String> sqlSeparator = key(Status.SYS_FLINK_SETTINGS_SQLSEPARATOR)
             .stringType()
-            .defaultValue(";\\n")
+            .defaultValue(";\\s*(?:\\n|--.*)")
             .note(Status.SYS_FLINK_SETTINGS_SQLSEPARATOR_NOTE);
     private final Configuration<Integer> jobIdWait = key(Status.SYS_FLINK_SETTINGS_JOBIDWAIT)
             .intType()
@@ -104,6 +105,17 @@ public class SystemConfiguration {
             .stringType()
             .defaultValue(System.getProperty("dinkyAddr"))
             .note(Status.SYS_ENV_SETTINGS_DINKYADDR_NOTE);
+
+    private final Configuration<Integer> jobReSendDiffSecond = key(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND)
+            .intType()
+            .defaultValue(60)
+            .note(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND_NOTE);
+
+    private final Configuration<Integer> diffMinuteMaxSendCount =
+            key(Status.SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT)
+                    .intType()
+                    .defaultValue(2)
+                    .note(Status.SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT_NOTE);
 
     private final Configuration<Integer> jobMaxRetainCount = key(Status.SYS_ENV_SETTINGS_MAX_RETAIN_COUNT)
             .intType()

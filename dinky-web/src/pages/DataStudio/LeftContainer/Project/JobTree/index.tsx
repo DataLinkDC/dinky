@@ -159,7 +159,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
           selectedKeys={selectKey}
           onExpand={onExpand}
           treeData={data}
-          autoExpandParent={autoExpandParent}
+          // autoExpandParent={autoExpandParent}
         />
       ) : (
         <Empty

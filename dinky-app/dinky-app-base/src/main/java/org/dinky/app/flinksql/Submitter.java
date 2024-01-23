@@ -48,10 +48,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.ReadableConfig;
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.python.PythonOptions;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -70,6 +72,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -129,15 +132,21 @@ public class Submitter {
 
         String[] statements =
                 SqlUtil.getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
+        Optional<JobClient> jobClient = Optional.empty();
         try {
             if (Dialect.FLINK_JAR == appTask.getDialect()) {
-                executeJarJob(appTask.getType(), executor, statements);
+                jobClient = executeJarJob(appTask.getType(), executor, statements);
             } else {
-                executeJob(executor, statements);
+                jobClient = executeJob(executor, statements);
             }
         } finally {
             log.info("Start Monitor Job");
-            FlinkAppUtil.monitorFlinkTask(Submitter.executor, config.getTaskId());
+            if (jobClient.isPresent()) {
+                FlinkAppUtil.monitorFlinkTask(jobClient.get(), config.getTaskId());
+            } else {
+                log.error("jobClient is empty, can not  monitor job");
+                // FlinkAppUtil.monitorFlinkTask(Submitter.executor, config.getTaskId());
+            }
         }
     }
 
@@ -251,7 +260,9 @@ public class Submitter {
     }
 
     @SneakyThrows
-    public static void executeJarJob(String type, Executor executor, String[] statements) {
+    public static Optional<JobClient> executeJarJob(String type, Executor executor, String[] statements) {
+        Optional<JobClient> jobClient = Optional.empty();
+
         for (int i = 0; i < statements.length; i++) {
             String sqlStatement = executor.pretreatStatement(statements[i]);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
@@ -269,7 +280,8 @@ public class Submitter {
                     streamGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
                             savePointPath, configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
                 }
-                executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
+                JobClient client = executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
+                jobClient = Optional.of(client);
                 break;
             }
             if (Operations.getOperationType(sqlStatement) == SqlType.ADD) {
@@ -280,9 +292,11 @@ public class Submitter {
                 }
             }
         }
+        return jobClient;
     }
 
-    public static void executeJob(Executor executor, String[] statements) {
+    public static Optional<JobClient> executeJob(Executor executor, String[] statements) {
+        Optional<JobClient> jobClient = Optional.empty();
 
         ExecutorConfig executorConfig = executor.getExecutorConfig();
         List<StatementParam> ddl = new ArrayList<>();
@@ -326,12 +340,15 @@ public class Submitter {
                     }
                 }
                 log.info("Executing FlinkSQL statement set: {}", String.join(FlinkSQLConstant.SEPARATOR, inserts));
-                executor.executeStatementSet(inserts);
+                TableResult tableResult = executor.executeStatementSet(inserts);
+                jobClient = tableResult.getJobClient();
                 log.info("Execution succeeded.");
             } else {
+                // UseStatementSet defaults to true, where the logic is never executed
                 StatementParam item = trans.get(0);
                 log.info("Executing FlinkSQL: {}", item.getValue());
-                executor.executeSql(item.getValue());
+                TableResult tableResult = executor.executeSql(item.getValue());
+                jobClient = tableResult.getJobClient();
                 log.info("Execution succeeded.");
             }
         }
@@ -350,12 +367,14 @@ public class Submitter {
                     "The FlinkSQL statement set is being executed： {}",
                     String.join(FlinkSQLConstant.SEPARATOR, executes));
             try {
-                executor.executeAsync(executorConfig.getJobName());
+                JobClient client = executor.executeAsync(executorConfig.getJobName());
+                jobClient = Optional.of(client);
                 log.info("The execution was successful");
             } catch (Exception e) {
                 log.error("Execution failed, {}", e.getMessage(), e);
             }
         }
         log.info("{} The task is successfully submitted", LocalDateTime.now());
+        return jobClient;
     }
 }

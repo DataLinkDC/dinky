@@ -37,7 +37,6 @@ public class FlinkCDCConfig {
     public static final String TABLE_UPPER = "table.upper";
     public static final String TABLE_LOWER = "table.lower";
     public static final String TABLE_RENAME = "table.rename";
-    public static final String COLUMN_REPLACE_LINE_BREAK = "column.replace.line-break";
     public static final String TIMEZONE = "timezone";
     private String type;
     private String hostname;
@@ -144,7 +143,6 @@ public class FlinkCDCConfig {
             case TABLE_UPPER:
             case TABLE_LOWER:
             case TABLE_RENAME:
-            case COLUMN_REPLACE_LINE_BREAK:
             case TIMEZONE:
                 return true;
             default:
