@@ -62,23 +62,17 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.planner.delegation.DefaultExecutor;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.core.util.URLUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -231,22 +225,9 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
-    public void addJar(File... jarPath) {
-        Configuration configuration =
-                (Configuration) getStreamExecutionEnvironment().getConfiguration();
-        List<String> pathList =
-                Arrays.stream(URLUtil.getURLs(jarPath)).map(URL::toString).collect(Collectors.toList());
-        List<String> jars = configuration.get(PipelineOptions.JARS);
-        if (jars != null) {
-            CollUtil.addAll(jars, pathList);
-        }
-        Map<String, Object> flinkConfigurationMap = getFlinkConfigurationMap();
-        flinkConfigurationMap.put(PipelineOptions.JARS.key(), jars);
-    }
-
-    @Override
     public <T> void addConfiguration(ConfigOption<T> option, T value) {
         Map<String, Object> flinkConfigurationMap = getFlinkConfigurationMap();
+        getConfig().addConfiguration(new Configuration().set(option, value));
         flinkConfigurationMap.put(option.key(), value);
     }
 

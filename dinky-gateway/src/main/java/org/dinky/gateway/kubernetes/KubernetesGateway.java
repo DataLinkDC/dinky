@@ -40,6 +40,7 @@ import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.apache.flink.kubernetes.kubeclient.Fabric8FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClientFactory;
+import org.apache.flink.python.PythonOptions;
 import org.apache.http.util.TextUtils;
 
 import java.lang.reflect.Method;
@@ -101,6 +102,8 @@ public abstract class KubernetesGateway extends AbstractGateway {
         preparPodTemplate(k8sConfig.getKubeConfig(), KubernetesConfigOptions.KUBE_CONFIG_FILE);
 
         if (getType().isApplicationMode()) {
+            // remove python file
+            configuration.removeConfig(PythonOptions.PYTHON_FILES);
             resetCheckpointInApplicationMode(flinkConfig.getJobName());
         }
     }

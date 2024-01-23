@@ -52,6 +52,10 @@ public class UdfCodePool {
         CODE_POOL.put(udf.getClassName(), udf);
     }
 
+    public static void remove(String className) {
+        CODE_POOL.remove(className);
+    }
+
     public static UDF getUDF(String className) {
         UDF udf = CODE_POOL.get(className);
         if (udf == null) {
