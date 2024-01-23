@@ -87,6 +87,7 @@ public class LdapController {
         List<User> users = ldapService.listUsers();
         List<User> localUsers = userService.list();
 
+        // 已经存在的用户不可导入 | Existing users cannot be imported
         users.stream()
                 .filter(ldapUser ->
                         localUsers.stream().anyMatch(user -> user.getUsername().equals(ldapUser.getUsername())))
