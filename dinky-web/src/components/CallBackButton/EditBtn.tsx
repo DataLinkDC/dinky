@@ -24,15 +24,17 @@ import React from 'react';
 
 type EditButtonProps = {
   onClick: () => void;
+  disabled?: boolean;
 };
 
 export const EditBtn: React.FC<EditButtonProps> = (props) => {
-  const { onClick } = props;
+  const { onClick, disabled = false } = props;
 
   return (
     <Button
       className={'options-button'}
       icon={<EditTwoTone />}
+      disabled={disabled}
       title={l('button.edit')}
       onClick={() => onClick()}
     />
