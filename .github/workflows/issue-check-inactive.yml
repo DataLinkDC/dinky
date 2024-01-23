@@ -1,0 +1,25 @@
+name: Issue Check Inactive
+
+# 定时触发：每月 1 号 UTC 0 点，即北京时间 8 点
+# Timed trigger: UTC 0 on the 1st of each month.
+on:
+  schedule:
+    - cron: "0 0 1 * *"
+
+jobs:
+  check-inactive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check-inactive
+        uses: actions-cool/issues-helper@v1.7
+        with:
+          actions: 'check-inactive'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # 为 30 天不活跃的 issues 增加 inactive label，更多参数请参考：https://github.com/actions-cool/issues-helper
+          # Add the inactive label to all issues that have not been active for more than 30 days. More see: https://github.com/actions-cool/issues-helper
+          inactive-day: 30
+          inactive-label: 'inactive'
+          body: |
+            Hello @${{ github.event.issue.user.login }}, this issue has not been active for more than 30 days. This issue will be closed in 7 days if there is no response. If you have any questions, you can comment and reply.
+            
+            你好 @${{ github.event.issue.user.login }}, 这个 issue 30 天内没有活跃，7 天后将关闭，如需回复，可以评论回复。
