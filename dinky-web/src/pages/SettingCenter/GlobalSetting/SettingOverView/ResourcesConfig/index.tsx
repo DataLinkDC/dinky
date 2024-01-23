@@ -26,7 +26,7 @@ import React, { useEffect, useState } from 'react';
 interface ResourcesConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
-  auth :string;
+  auth: string;
 }
 
 const ModelType = {
@@ -40,13 +40,13 @@ type ResourceConfig = {
   oss: BaseConfigProperties[];
 };
 
-export const ResourcesConfig = ({ data, onSave,auth }: ResourcesConfigProps) => {
+export const ResourcesConfig = ({ data, onSave, auth }: ResourcesConfigProps) => {
   const [loading, setLoading] = React.useState(false);
   const [model, setModel] = React.useState('hdfs');
   const [filterData, setFilterData] = useState<ResourceConfig>({
     base: [],
     hdfs: [],
-    oss: [],
+    oss: []
   });
 
   useEffect(() => {

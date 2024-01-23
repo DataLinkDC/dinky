@@ -20,16 +20,16 @@
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
-import {Alert, Tag} from 'antd';
+import { Tag } from 'antd';
 import React from 'react';
 
 interface EnvConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
-  auth: string
+  auth: string;
 }
 
-export const EnvConfig = ({ data, onSave , auth}: EnvConfigProps) => {
+export const EnvConfig = ({ data, onSave, auth }: EnvConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const onSaveHandler = async (data: BaseConfigProperties) => {

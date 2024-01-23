@@ -20,13 +20,13 @@
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
-import {Alert, Tag} from 'antd';
+import { Tag } from 'antd';
 import React from 'react';
 
 interface DSConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
-  auth :string
+  auth: string;
 }
 
 export const DSConfig = ({ data, onSave, auth }: DSConfigProps) => {

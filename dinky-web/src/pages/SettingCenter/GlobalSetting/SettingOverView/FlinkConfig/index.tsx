@@ -26,7 +26,7 @@ import React from 'react';
 interface FlinkConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
-  auth: string
+  auth: string;
 }
 
 export const FlinkConfig = ({ data, onSave, auth }: FlinkConfigProps) => {

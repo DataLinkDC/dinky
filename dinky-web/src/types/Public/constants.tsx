@@ -249,6 +249,4 @@ export enum PermissionConstants {
   SYSTEM_ALERT_RULE_ADD = '/settings/alertrule/add',
   SYSTEM_ALERT_RULE_EDIT = '/settings/alertrule/edit',
   SYSTEM_ALERT_RULE_DELETE = '/settings/alertrule/delete'
-
-
 }

@@ -32,10 +32,10 @@ import React from 'react';
 interface LdapConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
-  auth :string;
+  auth: string;
 }
 
-export const LdapConfig = ({ data, onSave ,auth}: LdapConfigProps) => {
+export const LdapConfig = ({ data, onSave, auth }: LdapConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const testConnection = async () => {
