@@ -95,7 +95,7 @@ import cn.hutool.json.JSONUtil;
 public class UDFUtil {
 
     public static final String FUNCTION_SQL_REGEX =
-            "^CREATE\\s+(?:(?:TEMPORARY|TEMPORARY\\s+SYSTEM)\\s+)?FUNCTION\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?(\\S+)\\s+AS\\s+'(\\S+)'\\s*(?:LANGUAGE\\s+(?:JAVA|SCALA|PYTHON)\\s?)?(?:USING\\s+JAR\\s+'(\\S+)'\\s*(?:,\\s*JAR\\s+'(\\S+)'\\s*)*)?";
+            "^CREATE\\s+(?:(?:TEMPORARY|TEMPORARY\\s+SYSTEM)\\s+)?FUNCTION\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?(\\S+)\\s+AS\\s+'(\\S+)'\\s*(?:LANGUAGE\\s+(?:JAVA|SCALA|PYTHON)\\s*)?(?:USING\\s+JAR\\s+'(\\S+)'\\s*(?:,\\s*JAR\\s+'(\\S+)'\\s*)*)?";
     public static final Pattern PATTERN = Pattern.compile(FUNCTION_SQL_REGEX, Pattern.CASE_INSENSITIVE);
 
     public static final String SESSION = "SESSION";
