@@ -51,6 +51,7 @@ import com.ververica.cdc.composer.flink.translator.RouteTranslator;
 import com.ververica.cdc.composer.flink.translator.SchemaOperatorTranslator;
 import com.ververica.cdc.composer.utils.FactoryDiscoveryUtils;
 import com.ververica.cdc.runtime.serializer.event.EventSerializer;
+import org.dinky.executor.Executor;
 
 /**
  * DinkyFlinkPipelineComposer
@@ -61,37 +62,14 @@ import com.ververica.cdc.runtime.serializer.event.EventSerializer;
 public class DinkyFlinkPipelineComposer implements PipelineComposer {
 
     private final StreamExecutionEnvironment env;
-    private final boolean isBlocking;
 
-    public static DinkyFlinkPipelineComposer ofRemoteCluster(
-            org.apache.flink.configuration.Configuration flinkConfig, List<Path> additionalJars) {
-        org.apache.flink.configuration.Configuration effectiveConfiguration =
-                new org.apache.flink.configuration.Configuration();
-        // Use "remote" as the default target
-        effectiveConfiguration.set(DeploymentOptions.TARGET, "remote");
-        effectiveConfiguration.addAll(flinkConfig);
-        StreamExecutionEnvironment env = new StreamExecutionEnvironment(effectiveConfiguration);
-        additionalJars.forEach(jarPath -> {
-            try {
-                FlinkEnvironmentUtils.addJar(env, jarPath.toUri().toURL());
-            } catch (Exception e) {
-                throw new RuntimeException(
-                        String.format(
-                                "Unable to convert JAR path \"%s\" to URL when adding JAR to Flink environment",
-                                jarPath),
-                        e);
-            }
-        });
-        return new DinkyFlinkPipelineComposer(env, false);
+    public static DinkyFlinkPipelineComposer create(Executor executor) {
+
+        return new DinkyFlinkPipelineComposer(executor.getStreamExecutionEnvironment());
     }
 
-    public static DinkyFlinkPipelineComposer ofMiniCluster() {
-        return new DinkyFlinkPipelineComposer(StreamExecutionEnvironment.getExecutionEnvironment(), true);
-    }
-
-    private DinkyFlinkPipelineComposer(StreamExecutionEnvironment env, boolean isBlocking) {
+    private DinkyFlinkPipelineComposer(StreamExecutionEnvironment env) {
         this.env = env;
-        this.isBlocking = isBlocking;
     }
 
     @Override

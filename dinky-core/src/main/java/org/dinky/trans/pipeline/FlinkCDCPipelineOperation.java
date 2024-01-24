@@ -99,19 +99,12 @@ public class FlinkCDCPipelineOperation extends AbstractOperation implements Oper
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        boolean useMiniCluster =
-                GatewayType.get(executor.getExecutorConfig().getType()).isLocalExecute();
-        Configuration configuration = Configuration.fromMap(executor.getSetConfig());
-        configuration.addAll(executor.getCustomTableEnvironment().getRootConfiguration());
-        List<Path> additionalJars = new ArrayList<>();
         // Create composer
-        PipelineComposer composer = createComposer(useMiniCluster, configuration, additionalJars);
+        PipelineComposer composer = createComposer( executor);
 
         // Compose pipeline
         DinkyFlinkPipelineExecution execution = (DinkyFlinkPipelineExecution) composer.compose(pipelineDef);
-        executor.setStreamExecutionEnvironment(execution.getEnv());
-
+execution.execute()
         return null;
     }
 
@@ -126,10 +119,8 @@ public class FlinkCDCPipelineOperation extends AbstractOperation implements Oper
     }
 
     public DinkyFlinkPipelineComposer createComposer(
-            boolean useMiniCluster, Configuration flinkConfig, List<Path> additionalJars) {
-        if (useMiniCluster) {
-            return DinkyFlinkPipelineComposer.ofMiniCluster();
-        }
-        return DinkyFlinkPipelineComposer.ofRemoteCluster(flinkConfig, additionalJars);
+            Executor executor) {
+
+        return DinkyFlinkPipelineComposer.create(executor);
     }
 }
