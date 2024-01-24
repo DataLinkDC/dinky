@@ -28,7 +28,6 @@ import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.utils.KerberosUtil;
 
-import org.apache.flink.FlinkVersion;
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.Configuration;
@@ -146,9 +145,7 @@ public abstract class Executor {
                 env.configure(env.getConfiguration(), classLoader);
             } catch (Throwable e) {
                 log.warn(
-                        "The version of flink: {} does not have a Classloader field and the classloader cannot be set.",
-                        FlinkVersion.current().toString(),
-                        e);
+                        "The version of flink does not have a Classloader field and the classloader cannot be set.", e);
             }
         }
     }
