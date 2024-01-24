@@ -800,8 +800,8 @@ export default {
   'rc.ci.killConfirm':
     'Are you sure to stop this Flink Cluster instance?  Please note that after stopping, it will not be recovered! The associated task will affect, please be careful!',
   'rc.ci.kill': 'Stop Flink Cluster Instance',
-  'rc.ci.jma': 'JobManger Address',
-  'rc.ci.jmha': 'JobManger HA Address',
+  'rc.ci.jma': 'JobManager Address',
+  'rc.ci.jmha': 'JobManager HA Address',
   'rc.ci.jmha.tips':
     'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example',
   'rc.ci.jmha.validate.port': 'Does not meet the rules! Port number range [0-65535]',
@@ -811,7 +811,7 @@ export default {
   'rc.ci.modify': 'Modify cluster Instance',
   'rc.ci.name': 'Name',
   'rc.ci.autoRegisterCannotModify':
-    'Automatically registered instances can only modify the `JobManger high-availability address` attribute, and others cannot be modified!',
+    'Automatically registered instances can only modify the `JobManager high-availability address` attribute, and others cannot be modified!',
   'rc.ci.namePlaceholder': 'Please enter a name!',
   'rc.ci.recycle': 'Recycle Flink Cluster Instances',
   'rc.ci.recycleConfirm':
