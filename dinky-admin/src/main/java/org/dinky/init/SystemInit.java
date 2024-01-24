@@ -124,6 +124,8 @@ public class SystemInit implements ApplicationRunner {
                         systemConfiguration.getResourcesOssEndpoint(),
                         systemConfiguration.getResourcesHdfsUser(),
                         systemConfiguration.getResourcesHdfsDefaultFS(),
+                        systemConfiguration.getResourcesHdfsCoreSite(),
+                        systemConfiguration.getResourcesHdfsHdfsSite(),
                         systemConfiguration.getResourcesOssAccessKey(),
                         systemConfiguration.getResourcesOssRegion(),
                         systemConfiguration.getResourcesPathStyleAccess())

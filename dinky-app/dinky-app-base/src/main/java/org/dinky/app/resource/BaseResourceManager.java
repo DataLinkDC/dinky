@@ -30,8 +30,11 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Opt;
 import cn.hutool.core.lang.Singleton;
 
 public interface BaseResourceManager {
@@ -64,6 +67,11 @@ public interface BaseResourceManager {
                 final Configuration configuration = new Configuration();
                 configuration.set(
                         "fs.defaultFS", instances.getResourcesHdfsDefaultFS().getValue());
+                Charset charset = Charset.defaultCharset();
+                Opt.ofBlankAble(instances.getResourcesHdfsCoreSite().getValue())
+                        .ifPresent(x -> configuration.addResource(IoUtil.toStream(x, charset)));
+                Opt.ofBlankAble(instances.getResourcesHdfsHdfsSite().getValue())
+                        .ifPresent(x -> configuration.addResource(IoUtil.toStream(x, charset)));
                 try {
                     FileSystem fileSystem = FileSystem.get(
                             FileSystem.getDefaultUri(configuration),
