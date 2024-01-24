@@ -26,9 +26,10 @@ import React from 'react';
 interface MetricsConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
+  auth: string;
 }
 
-export const MetricsConfig = ({ data, onSave }: MetricsConfigProps) => {
+export const MetricsConfig = ({ data, onSave, auth }: MetricsConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const onSaveHandler = async (data: BaseConfigProperties) => {
@@ -41,6 +42,7 @@ export const MetricsConfig = ({ data, onSave }: MetricsConfigProps) => {
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
+        auth={auth}
         tag={
           <>
             <Tag color={'error'}>{l('sys.setting.tag.system')}</Tag>

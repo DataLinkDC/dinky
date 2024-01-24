@@ -26,9 +26,10 @@ import React from 'react';
 interface FlinkConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
+  auth: string;
 }
 
-export const FlinkConfig = ({ data, onSave }: FlinkConfigProps) => {
+export const FlinkConfig = ({ data, onSave, auth }: FlinkConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const onSaveHandler = async (data: BaseConfigProperties) => {
@@ -39,10 +40,10 @@ export const FlinkConfig = ({ data, onSave }: FlinkConfigProps) => {
 
   return (
     <>
-      {/*<Text keyboard>{l('sys.setting.flink.tooltip')}</Text>*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
+        auth={auth}
         tag={
           <>
             <Tag color={'success'}>{l('sys.setting.tag.extend')}</Tag>
