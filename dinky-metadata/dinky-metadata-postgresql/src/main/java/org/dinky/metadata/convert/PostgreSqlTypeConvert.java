@@ -30,7 +30,7 @@ public class PostgreSqlTypeConvert extends AbstractJdbcTypeConvert {
 
     public PostgreSqlTypeConvert() {
         this.convertMap.clear();
-        register("smallint", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
+        register("smallint", ColumnType.INT, ColumnType.INTEGER);
         register("int2", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
         register("smallserial", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
         register("serial2", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
