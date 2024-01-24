@@ -94,7 +94,7 @@ public class FlinkAPI {
     }
 
     /**
-     * get请求获取jobManger/TaskManager的日志 (结果为字符串并不是json格式)
+     * get请求获取jobManager/TaskManager的日志 (结果为字符串并不是json格式)
      *
      * @param route route
      * @return {@link String}
