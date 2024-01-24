@@ -11,6 +11,8 @@ title: ADD CUSTOMJAR
 
 以达到在 Dinky 支持的所有 Flink 版本都可使用, 且不影响原生 ADD JAR 语法的目的。同时支持全模式提交。
 
+!!! jar只能使用original打头的小jar包, 否则会报错 not extend from 'org.apache.flink.table.functions.UserDefinedFunction'
+
 
 :::
 
