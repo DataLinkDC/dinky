@@ -79,6 +79,7 @@ import org.apache.flink.table.api.TableResult;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -235,6 +236,11 @@ public class JobManager {
     public boolean close() {
         CustomTableEnvironmentContext.clear();
         RowLevelPermissionsContext.clear();
+        try {
+            getExecutor().getDinkyClassLoader().close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 

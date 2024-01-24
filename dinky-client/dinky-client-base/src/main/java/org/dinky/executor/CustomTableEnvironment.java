@@ -84,7 +84,7 @@ public interface CustomTableEnvironment
                 Arrays.stream(URLUtil.getURLs(jarPath)).map(URL::toString).collect(Collectors.toList());
         List<String> jars = configuration.get(PipelineOptions.JARS);
         if (jars == null) {
-            configuration.set(PipelineOptions.JARS, pathList);
+            addConfiguration(PipelineOptions.JARS, pathList);
         } else {
             CollUtil.addAll(jars, pathList);
         }

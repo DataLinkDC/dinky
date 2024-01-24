@@ -596,17 +596,22 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                     task.setStatement(code);
                 }
             }
+            String className = "";
             // to compiler udf
             if (Asserts.isNotNullString(task.getDialect())
                     && Dialect.JAVA.isDialect(task.getDialect())
                     && Asserts.isNotNullString(task.getStatement())) {
                 CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
-                task.setSavePointPath(compiler.getFullClassName());
+                className = compiler.getFullClassName();
             } else if (Dialect.PYTHON.isDialect(task.getDialect())) {
-                task.setSavePointPath(task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
+                className = task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement());
             } else if (Dialect.SCALA.isDialect(task.getDialect())) {
-                task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
+                className = UDFUtil.getScalaFullClassName(task.getStatement());
             }
+            if (!task.getConfigJson().getUdfConfig().getClassName().equals(className)) {
+                UdfCodePool.remove(task.getConfigJson().getUdfConfig().getClassName());
+            }
+            task.getConfigJson().getUdfConfig().setClassName(className);
             UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task));
         }
 
