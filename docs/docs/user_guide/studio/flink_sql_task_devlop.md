@@ -170,6 +170,8 @@ EXECUTE JAR WITH (
 **样例代码**
 
 ```sql
+set 'execution.checkpointing.interval'='21 s';
+
 EXECUTE JAR WITH (
 'uri'='rs:/jar/flink/demo/SocketWindowWordCount.jar',
 'main-class'='org.apache.flink.streaming.examples.socket',
