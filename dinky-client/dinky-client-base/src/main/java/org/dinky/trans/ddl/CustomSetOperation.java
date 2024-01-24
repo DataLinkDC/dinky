@@ -29,8 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
 
 import java.util.Collections;
@@ -82,7 +80,8 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
             if (null != Class.forName("org.apache.log4j.Logger")) {
                 if (this.isValid()) {
                     callSet(new SetOperation(this.getKey(), this.getValue()), tEnv);
-                }                return Optional.of(TABLE_RESULT_OK);
+                }
+                return Optional.of(TABLE_RESULT_OK);
             }
         } catch (ClassNotFoundException e) {
             logger.error("Class not found: org.apache.log4j.Logger");
