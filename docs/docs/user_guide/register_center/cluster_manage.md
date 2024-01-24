@@ -52,7 +52,7 @@ title: 集群
 | 集群名称            | 集群名称, 用于区分不同集群                                                              |  是   |   无   | flink-session |
 | 集群别名            | 集群别名, 用于区分不同集群, 如不填默认同集群名称                                                  |  否   | 同集群名称 | flink-session |
 | 集群类型            | 集群类型, 目前支持 Local, Standalone, Yarn Session, Kubernetes Session              |  是   |   无   |  Standalone   |
-| JobManger 高可用地址 | 添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101 |  是   |   无   |
+| JobManager 高可用地址 | 添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101 |  是   |   无   |
 | 备注              | 备注, 用于备注集群信息                                                                |  否   |   无   | flink-session |
 
 ## 集群配置
