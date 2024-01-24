@@ -65,6 +65,7 @@ import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.PipelineOptions;
@@ -250,12 +251,12 @@ public class JobManager {
         ready();
         JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
         StreamGraph streamGraph = jobJarStreamGraphBuilder.getJarStreamGraph(statement, getDinkyClassLoader());
+        Configuration configuration =
+                executor.getCustomTableEnvironment().getConfig().getConfiguration();
         if (Asserts.isNotNullString(config.getSavePointPath())) {
             streamGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
                     config.getSavePointPath(),
-                    executor.getStreamExecutionEnvironment()
-                            .getConfiguration()
-                            .get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
+                    configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
         }
         try {
             if (!useGateway) {
@@ -276,7 +277,7 @@ public class JobManager {
                 }
             } else {
                 GatewayResult gatewayResult;
-                config.addGatewayConfig(executor.getSetConfig());
+                config.addGatewayConfig(configuration);
                 if (runMode.isApplicationMode()) {
                     gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar(getUdfPathContextHolder());
                 } else {
