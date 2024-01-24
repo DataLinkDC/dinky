@@ -31,11 +31,15 @@ import org.apache.hadoop.fs.FileSystem;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Opt;
 import cn.hutool.core.lang.Singleton;
+import cn.hutool.core.util.StrUtil;
 
 public interface BaseResourceManager {
     SystemConfiguration instances = SystemConfiguration.getInstances();
@@ -75,8 +79,16 @@ public interface BaseResourceManager {
                 break;
             case HDFS:
                 final Configuration configuration = new Configuration();
-                configuration.set(
-                        "fs.defaultFS", instances.getResourcesHdfsDefaultFS().getValue());
+                Charset charset = Charset.defaultCharset();
+                String coreSite = instances.getResourcesHdfsCoreSite().getValue();
+                Opt.ofBlankAble(coreSite).ifPresent(x -> configuration.addResource(IoUtil.toStream(x, charset), true));
+                String hdfsSite = instances.getResourcesHdfsHdfsSite().getValue();
+                Opt.ofBlankAble(hdfsSite).ifPresent(x -> configuration.addResource(IoUtil.toStream(x, charset), true));
+                if (StrUtil.isEmpty(coreSite)) {
+                    configuration.set(
+                            "fs.defaultFS",
+                            instances.getResourcesHdfsDefaultFS().getValue());
+                }
                 try {
                     FileSystem fileSystem = FileSystem.get(
                             FileSystem.getDefaultUri(configuration),
