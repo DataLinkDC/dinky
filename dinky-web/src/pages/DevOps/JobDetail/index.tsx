@@ -105,9 +105,10 @@ const JobDetail = (props: any) => {
     },
     { tab: l('devops.jobinfo.config.JobAlert'), key: OperatorEnum.JOB_ALERT }
   ];
+    console.log(!!data)
 
   return (
-    <PageContainer
+    <PageContainer loading={!data}
       title={jobInfoDetail?.instance?.name}
       subTitle={<JobLifeCycleTag status={jobInfoDetail?.instance?.step} />}
       ghost={false}
