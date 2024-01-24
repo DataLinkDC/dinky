@@ -72,7 +72,7 @@ const Server: React.FC<ServerProp> = (props) => {
   useEffect(() => {
     if (timeRange.isReal) {
       return subscribeTopic([`${SSE_TOPIC.METRICS}/local`], (data: SseData) =>
-        setJvmData((prevState) => processData(prevState, [data.data]))
+        setJvmData((prevState) => [...processData(prevState, [data.data])])
       );
     }
   }, [timeRange]);
