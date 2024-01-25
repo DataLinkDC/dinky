@@ -20,16 +20,12 @@
 package org.dinky.trans.pipeline;
 
 import org.dinky.executor.Executor;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.Operation;
 
-import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.api.internal.TableResultImpl;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,31 +36,31 @@ import com.ververica.cdc.composer.definition.PipelineDef;
 
 /**
  * FlinkCDCPipelineOperation
- *
+ * <p>
  * ################################################################################
  * # Description: Sync MySQL all tables to Doris
  * ################################################################################
  * source:
- *   type: mysql
- *   hostname: localhost
- *   port: 3306
- *   username: root
- *   password: 123456
- *   tables: app_db.\.*
- *   server-id: 5400-5404
- *   server-time-zone: UTC
- *
+ * type: mysql
+ * hostname: localhost
+ * port: 3306
+ * username: root
+ * password: 123456
+ * tables: app_db.\.*
+ * server-id: 5400-5404
+ * server-time-zone: UTC
+ * <p>
  * sink:
- *   type: doris
- *   fenodes: 127.0.0.1:8030
- *   username: root
- *   password: ""
- *   table.create.properties.light_schema_change: true
- *   table.create.properties.replication_num: 1
- *
+ * type: doris
+ * fenodes: 127.0.0.1:8030
+ * username: root
+ * password: ""
+ * table.create.properties.light_schema_change: true
+ * table.create.properties.replication_num: 1
+ * <p>
  * pipeline:
- *   name: Sync MySQL Database to Doris
- *   parallelism: 2
+ * name: Sync MySQL Database to Doris
+ * parallelism: 2
  */
 public class FlinkCDCPipelineOperation extends AbstractOperation implements Operation {
 
@@ -93,19 +89,18 @@ public class FlinkCDCPipelineOperation extends AbstractOperation implements Oper
                 com.ververica.cdc.common.configuration.Configuration.fromMap(executor.getSetConfig());
         // Parse pipeline definition file
         YamlTextPipelineDefinitionParser pipelineDefinitionParser = new YamlTextPipelineDefinitionParser();
-        PipelineDef pipelineDef = null;
-        try {
-            pipelineDef = pipelineDefinitionParser.parse(yamlText, globalPipelineConfig);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         // Create composer
-        PipelineComposer composer = createComposer( executor);
+        PipelineComposer composer = createComposer(executor);
 
-        // Compose pipeline
-        DinkyFlinkPipelineExecution execution = (DinkyFlinkPipelineExecution) composer.compose(pipelineDef);
-execution.execute()
-        return null;
+        try {
+            PipelineDef pipelineDef = pipelineDefinitionParser.parse(yamlText, globalPipelineConfig);
+            // Compose pipeline
+            composer.compose(pipelineDef);
+            return TableResultImpl.TABLE_RESULT_OK;
+        } catch (Exception e) {
+            logger.error("", e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Nullable
@@ -118,9 +113,8 @@ execution.execute()
         return "";
     }
 
-    public DinkyFlinkPipelineComposer createComposer(
-            Executor executor) {
+    public DinkyFlinkPipelineComposer createComposer(Executor executor) {
 
-        return DinkyFlinkPipelineComposer.create(executor);
+        return DinkyFlinkPipelineComposer.of(executor);
     }
 }

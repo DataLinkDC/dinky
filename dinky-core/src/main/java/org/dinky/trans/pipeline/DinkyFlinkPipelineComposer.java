@@ -19,17 +19,16 @@
 
 package org.dinky.trans.pipeline;
 
-import org.apache.flink.configuration.DeploymentOptions;
+import org.dinky.executor.Executor;
+
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,6 +39,7 @@ import com.ververica.cdc.common.factories.FactoryHelper;
 import com.ververica.cdc.common.pipeline.PipelineOptions;
 import com.ververica.cdc.common.sink.DataSink;
 import com.ververica.cdc.composer.PipelineComposer;
+import com.ververica.cdc.composer.PipelineExecution;
 import com.ververica.cdc.composer.definition.PipelineDef;
 import com.ververica.cdc.composer.definition.SinkDef;
 import com.ververica.cdc.composer.flink.FlinkEnvironmentUtils;
@@ -51,7 +51,6 @@ import com.ververica.cdc.composer.flink.translator.RouteTranslator;
 import com.ververica.cdc.composer.flink.translator.SchemaOperatorTranslator;
 import com.ververica.cdc.composer.utils.FactoryDiscoveryUtils;
 import com.ververica.cdc.runtime.serializer.event.EventSerializer;
-import org.dinky.executor.Executor;
 
 /**
  * DinkyFlinkPipelineComposer
@@ -63,7 +62,7 @@ public class DinkyFlinkPipelineComposer implements PipelineComposer {
 
     private final StreamExecutionEnvironment env;
 
-    public static DinkyFlinkPipelineComposer create(Executor executor) {
+    public static DinkyFlinkPipelineComposer of(Executor executor) {
 
         return new DinkyFlinkPipelineComposer(executor.getStreamExecutionEnvironment());
     }
@@ -72,8 +71,7 @@ public class DinkyFlinkPipelineComposer implements PipelineComposer {
         this.env = env;
     }
 
-    @Override
-    public DinkyFlinkPipelineExecution compose(PipelineDef pipelineDef) {
+    public PipelineExecution compose(PipelineDef pipelineDef) {
         int parallelism = pipelineDef.getConfig().get(PipelineOptions.PIPELINE_PARALLELISM);
         env.getConfig().setParallelism(parallelism);
 
@@ -108,8 +106,7 @@ public class DinkyFlinkPipelineComposer implements PipelineComposer {
         // Add framework JARs
         addFrameworkJars();
 
-        return new DinkyFlinkPipelineExecution(
-                env, pipelineDef.getConfig().get(PipelineOptions.PIPELINE_NAME), isBlocking);
+        return new DinkyFlinkPipelineExecution(env, pipelineDef.getConfig().get(PipelineOptions.PIPELINE_NAME));
     }
 
     private DataSink createDataSink(SinkDef sinkDef, Configuration pipelineConfig) {
