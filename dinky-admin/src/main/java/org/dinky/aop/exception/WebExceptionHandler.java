@@ -22,7 +22,6 @@ package org.dinky.aop.exception;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.result.Result;
-import org.dinky.utils.I18n;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,7 +46,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -64,9 +62,6 @@ public class WebExceptionHandler {
     @ResponseBody
     public Result<Void> busException(BusException e) {
         log.error("BusException:", e);
-        if (StrUtil.isEmpty(e.getMsg())) {
-            return Result.failed(I18n.getMessage(e.getCode(), e.getMessage()));
-        }
         return Result.failed(e.getMsg());
     }
 
