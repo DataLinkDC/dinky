@@ -36,31 +36,31 @@ import com.ververica.cdc.composer.definition.PipelineDef;
 
 /**
  * FlinkCDCPipelineOperation
- * <p>
+ *
  * ################################################################################
  * # Description: Sync MySQL all tables to Doris
  * ################################################################################
  * source:
- * type: mysql
- * hostname: localhost
- * port: 3306
- * username: root
- * password: 123456
- * tables: app_db.\.*
- * server-id: 5400-5404
- * server-time-zone: UTC
- * <p>
+ *   type: mysql
+ *   hostname: localhost
+ *   port: 3306
+ *   username: root
+ *   password: 123456
+ *   tables: app_db.\.*
+ *   server-id: 5400-5404
+ *   server-time-zone: UTC
+ *
  * sink:
- * type: doris
- * fenodes: 127.0.0.1:8030
- * username: root
- * password: ""
- * table.create.properties.light_schema_change: true
- * table.create.properties.replication_num: 1
- * <p>
+ *   type: doris
+ *   fenodes: 127.0.0.1:8030
+ *   username: root
+ *   password: ""
+ *   table.create.properties.light_schema_change: true
+ *   table.create.properties.replication_num: 1
+ *
  * pipeline:
- * name: Sync MySQL Database to Doris
- * parallelism: 2
+ *   name: Sync MySQL Database to Doris
+ *   parallelism: 2
  */
 public class FlinkCDCPipelineOperation extends AbstractOperation implements Operation {
 
