@@ -31,6 +31,7 @@ import JobVersionTab from '@/pages/DevOps/JobDetail/JobVersion/JobVersionTab';
 import { refeshJobInstance } from '@/pages/DevOps/JobDetail/srvice';
 import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
+import { history } from '@@/core/history';
 import { ClusterOutlined, FireOutlined, RocketOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import { Tag } from 'antd';
@@ -59,6 +60,9 @@ const OperatorEnum = {
 const JobDetail = (props: any) => {
   const params = useLocation();
   const id = params.search.split('=')[1];
+  if (!id) {
+    history.push(`/devops/`);
+  }
 
   const { data, run } = useHookRequest(refeshJobInstance, {
     defaultParams: [id, false],
@@ -105,9 +109,11 @@ const JobDetail = (props: any) => {
     },
     { tab: l('devops.jobinfo.config.JobAlert'), key: OperatorEnum.JOB_ALERT }
   ];
+  console.log(!!data);
 
   return (
     <PageContainer
+      loading={!data}
       title={jobInfoDetail?.instance?.name}
       subTitle={<JobLifeCycleTag status={jobInfoDetail?.instance?.step} />}
       ghost={false}
