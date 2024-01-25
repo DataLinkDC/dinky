@@ -189,17 +189,20 @@ public class Submitter {
                             Arrays.stream(FileUtil.file(depPath).listFiles())
                                     .map(File::getName)
                                     .collect(Collectors.joining(",\n")));
+
                     // move all jar
-                    FileUtil.listFileNames(depPath + "/jar").forEach(f -> {
-                        FileUtil.move(FileUtil.file(depPath + "/jar/" + f), FileUtil.file(usrlib + "/" + f), true);
-                    });
-                    if (FileUtil.isDirectory(usrlib)) {
-                        URL[] jarUrls = FileUtil.listFileNames(usrlib).stream()
-                                .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
-                                .toArray(URL[]::new);
-                        addURLs(jarUrls);
-                        executor.getCustomTableEnvironment()
-                                .addJar(FileUtil.file(usrlib).listFiles());
+                    if (FileUtil.isDirectory(depPath + "/jar/")) {
+                        FileUtil.listFileNames(depPath + "/jar").forEach(f -> {
+                            FileUtil.move(FileUtil.file(depPath + "/jar/" + f), FileUtil.file(usrlib + "/" + f), true);
+                        });
+                        if (FileUtil.isDirectory(usrlib)) {
+                            URL[] jarUrls = FileUtil.listFileNames(usrlib).stream()
+                                    .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
+                                    .toArray(URL[]::new);
+                            addURLs(jarUrls);
+                            executor.getCustomTableEnvironment()
+                                    .addJar(FileUtil.file(usrlib).listFiles());
+                        }
                     }
                     if (FileUtil.isDirectory(depPath + "/py/")) {
                         URL[] pyUrls = FileUtil.listFileNames(depPath + "/py/").stream()
