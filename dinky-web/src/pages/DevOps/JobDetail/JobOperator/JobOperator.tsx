@@ -39,7 +39,7 @@ export type OperatorType = {
 };
 const JobOperator = (props: OperatorType) => {
   const { jobDetail, refesh } = props;
-  const webUri = `/api/flink/${jobDetail?.history?.jobManagerAddress}/#/job/running/${jobDetail?.instance?.jid}/overview`;
+  const webUri = `/api/flink/${jobDetail?.clusterInstance?.jobManagerHost}/#/job/running/${jobDetail?.instance?.jid}/overview`;
 
   const handleJobOperator = (key: string) => {
     Modal.confirm({

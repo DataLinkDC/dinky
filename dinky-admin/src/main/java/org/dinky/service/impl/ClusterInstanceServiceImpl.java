@@ -233,13 +233,13 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
         if (gatewayResult.isSuccess()) {
             Asserts.checkNullString(gatewayResult.getWebURL(), "Unable to obtain Web URL.");
-            return registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
-                    gatewayResult.getWebURL().replace("http://", ""),
-                    gatewayResult.getId(),
-                    clusterCfg.getName() + "_" + LocalDateTime.now(),
-                    gatewayConfig.getType().getLongValue(),
-                    id,
-                    null));
+            return registersCluster(ClusterInstanceDTO.builder()
+                    .hosts(gatewayResult.getWebURL().replace("http://", ""))
+                    .name(gatewayResult.getId())
+                    .alias(clusterCfg.getName() + "_" + LocalDateTime.now())
+                    .type(gatewayConfig.getType().getLongValue())
+                    .clusterConfigurationId(id).autoRegisters(true).enabled(true)
+                    .build());
         }
         throw new DinkyException("Deploy session cluster error: " + gatewayResult.getError());
     }
