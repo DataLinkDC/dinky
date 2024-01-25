@@ -16,6 +16,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           assignees: gaoyan1998,zackyoungh
+      - name: Assign developer Comment
+        uses: actions-cool/issues-helper@v1.7
+        with:
+          actions: 'create-comment'
+          issue-number: ${{ github.event.issue.number }}
           body: |
             Hello, this issue is about UDF, so I assign it to @gaoyan1998 and @zackyoungh. If you have any questions, you can comment and reply.
             
@@ -32,6 +37,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           assignees: gaoyan1998,zackyoungh
+      - name: Assign developer Comment
+        uses: actions-cool/issues-helper@v1.7
+        with:
+          actions: 'create-comment'
+          issue-number: ${{ github.event.issue.number }}
           body: |
             Hello, this issue is about K8S, so I assign it to @gaoyan1998 and @zackyoungh. If you have any questions, you can comment and reply.
             
@@ -48,6 +58,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           assignees: Zzm0809
+      - name: Assign developer Comment
+        uses: actions-cool/issues-helper@v1.7
+        with:
+          actions: 'create-comment'
+          issue-number: ${{ github.event.issue.number }}
           body: |
             Hello, this issue is about web, so I assign it to @Zzm0809. If you have any questions, you can comment and reply.
             
@@ -64,6 +79,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           assignees: aiwenmo
+      - name: Assign developer Comment
+        uses: actions-cool/issues-helper@v1.7
+        with:
+          actions: 'create-comment'
+          issue-number: ${{ github.event.issue.number }}
           body: |
             Hello, this issue is about CDC, so I assign it to @aiwenmo. If you have any questions, you can comment and reply.
             
