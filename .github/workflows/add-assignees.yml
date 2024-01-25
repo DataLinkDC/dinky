@@ -43,7 +43,7 @@ jobs:
 
   assign-k8s-problem-to-developer:
     runs-on: ubuntu-latest
-    if: contains(github.event.issue.title, 'k8s') == true || contains(github.event.issue.title, 'kubernetes') == true
+    if: contains(github.event.issue.title, 'k8s') == true || contains(github.event.issue.title, 'kubernetes') == true || contains(github.event.issue.body, 'kubernetes') == true
     steps:
       - name: assign problem to developer of k8s
         uses: actions-cool/issues-helper@v3
@@ -64,7 +64,7 @@ jobs:
 
   assign-web-problem-to-developer:
     runs-on: ubuntu-latest
-    if: contains(github.event.issue.title, 'web') == true
+    if: contains(github.event.issue.title, 'web') == true || contains(github.event.issue.body, 'web') == true
     steps:
       - name: assign problem to developer of web
         uses: actions-cool/issues-helper@v3
@@ -85,7 +85,7 @@ jobs:
 
   assign-cdc-problem-to-developer:
     runs-on: ubuntu-latest
-    if: contains(github.event.issue.title, 'cdc') == true || contains(github.event.issue.title, 'CDCSOURCE') == true
+    if: contains(github.event.issue.title, 'cdc') == true || contains(github.event.issue.title, 'cdcsource') == true || contains(github.event.issue.body, 'cdcsource') == true
     steps:
       - name: assign problem to developer of cdc and cdcsource
         uses: actions-cool/issues-helper@v3
@@ -100,6 +100,6 @@ jobs:
           actions: 'create-comment'
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Hello, this issue is about CDC, so I assign it to @aiwenmo. If you have any questions, you can comment and reply.
+            Hello, this issue is about CDC/CDCSOURCE, so I assign it to @aiwenmo. If you have any questions, you can comment and reply.
             
             你好, 这个 issue 是关于 CDC/CDCSOURCE 的，所以我把它分配给了 @aiwenmo。如有任何问题，可以评论回复。
