@@ -51,7 +51,7 @@ public class SqlUtilTest {
                 "\n" +
                 "\n" +
                 "select 1 \n" +
-                " from test \n" +
+                " from test # test9\n" +
                 " where '1'  <> '-- ::.' //test6\n" +
                 " and 1=1 \n" +
                 " and 'zz' <> null;");
