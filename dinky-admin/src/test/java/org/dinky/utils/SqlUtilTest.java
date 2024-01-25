@@ -47,7 +47,14 @@ public class SqlUtilTest {
 
         String removedNoteSql = SqlUtil.removeNote(testSql);
         Assertions.assertThat(removedNoteSql).isNotNull();
-        Assertions.assertThat(removedNoteSql).isNotEqualTo(testSql);
+        Assertions.assertThat(removedNoteSql)
+                .isEqualTo("//test2\n" + "\n"
+                        + "\n"
+                        + "select 1 \n"
+                        + " from test # test9\n"
+                        + " where '1'  <> '-- ::.' //test6\n"
+                        + " and 1=1 \n"
+                        + " and 'zz' <> null;");
     }
 
     @Test
