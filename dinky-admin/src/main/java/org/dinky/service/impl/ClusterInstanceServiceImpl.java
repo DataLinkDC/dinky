@@ -238,7 +238,9 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                     .name(gatewayResult.getId())
                     .alias(clusterCfg.getName() + "_" + LocalDateTime.now())
                     .type(gatewayConfig.getType().getLongValue())
-                    .clusterConfigurationId(id).autoRegisters(true).enabled(true)
+                    .clusterConfigurationId(id)
+                    .autoRegisters(true)
+                    .enabled(true)
                     .build());
         }
         throw new DinkyException("Deploy session cluster error: " + gatewayResult.getError());

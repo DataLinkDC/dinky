@@ -138,7 +138,9 @@ public class Job2MysqlHandler extends AbsJobHandler {
                     .alias(job.getJobConfig().getJobName() + "_" + LocalDateTime.now())
                     .type(job.getType().getLongValue())
                     .clusterConfigurationId(clusterConfigurationId)
-                    .taskId(taskId).autoRegisters(true).enabled(true)
+                    .taskId(taskId)
+                    .autoRegisters(true)
+                    .enabled(true)
                     .build());
 
             if (Asserts.isNotNull(clusterInstance)) {
@@ -152,7 +154,9 @@ public class Job2MysqlHandler extends AbsJobHandler {
                     .name(job.getJobId())
                     .alias(job.getJobConfig().getJobName() + "_" + LocalDateTime.now())
                     .type(job.getType().getLongValue())
-                    .taskId(taskId).autoRegisters(true).enabled(true)
+                    .taskId(taskId)
+                    .autoRegisters(true)
+                    .enabled(true)
                     .build());
             if (Asserts.isNotNull(clusterInstance)) {
                 clusterId = clusterInstance.getId();

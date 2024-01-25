@@ -111,5 +111,4 @@ public class ClusterInstance extends SuperEntity<ClusterInstance> {
 
     @ApiModelProperty(value = "taskId", required = true, dataType = "Integer", example = "test", notes = "task id")
     private Integer taskId;
-
 }

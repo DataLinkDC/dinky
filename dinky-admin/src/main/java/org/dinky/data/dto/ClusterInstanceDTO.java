@@ -19,7 +19,6 @@
 
 package org.dinky.data.dto;
 
-import lombok.Builder;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.mybatis.annotation.Save;
 
@@ -29,6 +28,7 @@ import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -99,5 +99,4 @@ public class ClusterInstanceDTO {
         BeanUtil.copyProperties(this, clusterInstance);
         return clusterInstance;
     }
-
 }
