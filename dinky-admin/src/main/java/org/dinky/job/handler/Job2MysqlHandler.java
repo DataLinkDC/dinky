@@ -132,26 +132,32 @@ public class Job2MysqlHandler extends AbsJobHandler {
         ClusterInstance clusterInstance;
         final Integer clusterConfigurationId = job.getJobConfig().getClusterConfigurationId();
         if (job.isUseGateway()) {
-            clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
-                    job.getJobManagerAddress(),
-                    job.getJobId(),
-                    job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
-                    job.getType().getLongValue(),
-                    clusterConfigurationId,
-                    taskId));
+            clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.builder()
+                    .hosts(job.getJobManagerAddress())
+                    .name(job.getJobId())
+                    .alias(job.getJobConfig().getJobName() + "_" + LocalDateTime.now())
+                    .type(job.getType().getLongValue())
+                    .clusterConfigurationId(clusterConfigurationId)
+                    .taskId(taskId)
+                    .autoRegisters(true)
+                    .enabled(true)
+                    .build());
+
             if (Asserts.isNotNull(clusterInstance)) {
                 clusterId = clusterInstance.getId();
             }
         } else if (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
                 && Asserts.isNotNullString(job.getJobManagerAddress())
                 && Asserts.isNotNullString(job.getJobId())) {
-            clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
-                    job.getJobManagerAddress(),
-                    job.getJobId(),
-                    job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
-                    job.getType().getLongValue(),
-                    null,
-                    taskId));
+            clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.builder()
+                    .hosts(job.getJobManagerAddress())
+                    .name(job.getJobId())
+                    .alias(job.getJobConfig().getJobName() + "_" + LocalDateTime.now())
+                    .type(job.getType().getLongValue())
+                    .taskId(taskId)
+                    .autoRegisters(true)
+                    .enabled(true)
+                    .build());
             if (Asserts.isNotNull(clusterInstance)) {
                 clusterId = clusterInstance.getId();
             }

@@ -28,6 +28,7 @@ import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -40,6 +41,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "ClusterInstanceDTO", description = "API Cluster Instance Data Transfer Object")
+@Builder
 public class ClusterInstanceDTO {
 
     @ApiModelProperty(value = "id", required = true, dataType = "Integer", example = "id")
@@ -66,14 +68,6 @@ public class ClusterInstanceDTO {
 
     @ApiModelProperty(value = "hosts", required = true, dataType = "String", example = "test", notes = "cluster hosts")
     private String hosts;
-
-    @ApiModelProperty(
-            value = "jobManagerHost",
-            required = true,
-            dataType = "String",
-            example = "test",
-            notes = "job manager host")
-    private String jobManagerHost;
 
     @ApiModelProperty(
             value = "autoRegisters",
@@ -104,19 +98,5 @@ public class ClusterInstanceDTO {
         ClusterInstance clusterInstance = new ClusterInstance();
         BeanUtil.copyProperties(this, clusterInstance);
         return clusterInstance;
-    }
-
-    public static ClusterInstanceDTO autoRegistersClusterDTO(
-            String hosts, String name, String alias, String type, Integer clusterConfigurationId, Integer taskId) {
-        ClusterInstanceDTO clusterInstanceDTO = new ClusterInstanceDTO();
-        clusterInstanceDTO.setName(name);
-        clusterInstanceDTO.setAlias(alias);
-        clusterInstanceDTO.setHosts(hosts);
-        clusterInstanceDTO.setType(type);
-        clusterInstanceDTO.setClusterConfigurationId(clusterConfigurationId);
-        clusterInstanceDTO.setTaskId(taskId);
-        clusterInstanceDTO.setAutoRegisters(true);
-        clusterInstanceDTO.setEnabled(true);
-        return clusterInstanceDTO;
     }
 }
