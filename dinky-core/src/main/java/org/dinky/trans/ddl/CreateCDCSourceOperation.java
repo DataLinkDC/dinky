@@ -75,24 +75,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
     public TableResult execute(Executor executor) {
         logger.info("Start build CDCSOURCE Task...");
         CDCSource cdcSource = CDCSource.build(statement);
-        FlinkCDCConfig config = new FlinkCDCConfig(
-                cdcSource.getConnector(),
-                cdcSource.getHostname(),
-                cdcSource.getPort(),
-                cdcSource.getUsername(),
-                cdcSource.getPassword(),
-                cdcSource.getCheckpoint(),
-                cdcSource.getParallelism(),
-                cdcSource.getDatabase(),
-                cdcSource.getSchema(),
-                cdcSource.getTable(),
-                cdcSource.getStartupMode(),
-                cdcSource.getSplit(),
-                cdcSource.getDebezium(),
-                cdcSource.getSource(),
-                cdcSource.getSink(),
-                cdcSource.getSinks(),
-                cdcSource.getJdbc());
+        FlinkCDCConfig config = cdcSource.buildFlinkCDCConfig();
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
