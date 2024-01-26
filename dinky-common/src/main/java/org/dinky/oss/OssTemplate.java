@@ -19,8 +19,6 @@
 
 package org.dinky.oss;
 
-import com.amazonaws.services.s3.model.ListObjectsV2Request;
-import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import org.dinky.data.properties.OssProperties;
 
 import java.io.IOException;
@@ -45,6 +43,8 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.ListObjectsV2Request;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -307,9 +307,8 @@ public class OssTemplate {
 
     public List<S3ObjectSummary> listBucketObjects(String bucketName, String prefix) {
         List<S3ObjectSummary> s3ObjectSummaries = new ArrayList<>();
-        ListObjectsV2Request listObjectsRequest = new ListObjectsV2Request()
-                .withBucketName(bucketName)
-                .withPrefix(prefix);
+        ListObjectsV2Request listObjectsRequest =
+                new ListObjectsV2Request().withBucketName(bucketName).withPrefix(prefix);
         ListObjectsV2Result listing;
         do {
             listing = amazonS3.listObjectsV2(listObjectsRequest);

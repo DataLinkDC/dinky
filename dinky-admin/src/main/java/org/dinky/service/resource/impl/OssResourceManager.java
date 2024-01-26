@@ -19,7 +19,6 @@
 
 package org.dinky.service.resource.impl;
 
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.Resources;
@@ -38,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
@@ -90,7 +90,8 @@ public class OssResourceManager implements BaseResourceManager {
     @Override
     public List<Resources> getFullDirectoryStructure(int rootId) {
         String basePath = getBasePath();
-        List<S3ObjectSummary> listBucketObjects = getOssTemplate().listBucketObjects(getOssTemplate().getBucketName(), basePath);
+        List<S3ObjectSummary> listBucketObjects =
+                getOssTemplate().listBucketObjects(getOssTemplate().getBucketName(), basePath);
         return listBucketObjects.stream()
                 .map(obj -> {
                     Path path = Paths.get(obj.getKey());
