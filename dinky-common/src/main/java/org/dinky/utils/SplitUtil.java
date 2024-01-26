@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SplitUtil {
     public static final String ENABLE = "enable";
     public static final String MATCH_NUMBER_REGEX = "match_number_regex";
-    public static final String MAX_MATCH_VALUE = "match_number_regex";
+    public static final String MAX_MATCH_VALUE = "max_match_value";
     public static final String MATCH_WAY = "match_way";
 
     public static boolean contains(String regex, String sourceData) {
