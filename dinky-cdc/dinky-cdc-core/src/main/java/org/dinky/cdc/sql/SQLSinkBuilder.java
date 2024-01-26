@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.google.common.collect.Lists;
+import cn.hutool.core.collection.CollUtil;
 
 public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
@@ -58,7 +58,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
 
     @Override
     protected void initTypeConverterList() {
-        typeConverterList = Lists.newArrayList(
+        typeConverterList = CollUtil.newArrayList(
                 this::convertDateType,
                 this::convertTimestampType,
                 this::convertFloatType,
